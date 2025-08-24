@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "psi:psigem"
+    },
+    "I": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "S": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "GSG",
+    "I I",
+    "I I"
+  ],
+  "result": {
+    "item": "psitweaks:moval_suit_leggings"
+  },
+  "show_notification": true
+}
