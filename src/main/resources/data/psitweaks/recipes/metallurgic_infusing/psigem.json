@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "infuse_type": "psitweaks:infuse_psigem"
+  },
+  "itemInput": {
+    "ingredient": { "item": "minecraft:diamond" }
+  },
+  "output": { "item": "psi:psigem" }
+}

@@ -98,13 +98,13 @@ public class MovalSuitMaterial extends PsimetalArmorMaterial {
 
     public static final PsimetalArmorMaterial MOVAL_SUIT_MATERIAL;
     public MovalSuitMaterial(ArmorItem.Type type, Item.Properties props) {
-        super("moval_suit", 54, new int[]{8, 15, 12, 7}, 60,  SoundEvents.ARMOR_EQUIP_IRON, 6.0F, () -> Ingredient.EMPTY,0.1F);
+        super("moval_suit", 0, new int[]{8, 15, 12, 7}, 60,  SoundEvents.ARMOR_EQUIP_IRON, 6.0F, () -> Ingredient.EMPTY,0.1F);
     }
 
     static {
         MOVAL_SUIT_MATERIAL = new PsimetalArmorMaterial(
                 "moval_suit", // 名前
-                54,                // 耐久値倍率（18 → 25 に変更）
+                0,                // 耐久値倍率
                 new int[]{8, 15, 12, 7}, // 防御力（頭、胸、脚、足）
                 60,                // エンチャント適性
                 SoundEvents.ARMOR_EQUIP_IRON,
@@ -115,7 +115,14 @@ public class MovalSuitMaterial extends PsimetalArmorMaterial {
 
     }
 
+    @Override
+    public int getDurabilityForType(ArmorItem.Type type) {
+        return 0;
+    }
+
 }
+
+
 
 
 

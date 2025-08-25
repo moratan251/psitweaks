@@ -3,6 +3,16 @@
   "item.psitweaks.moval_suit_chestplate": "M.O.V.A.L. スーツチェストプレート",
   "item.psitweaks.moval_suit_leggings": "M.O.V.A.L. スーツレギンス",
   "item.psitweaks.moval_suit_boots": "M.O.V.A.L. スーツブーツ",
+  "item.psitweaks.enriched_psigem": "濃縮サイジェム",
+  "item.psitweaks.alloy_psion": "サイオン合金",
+
+  "infuse_type.psitweaks.infuse_psigem": "サイジェム",
+
+  "psitweaks.spellpiece.trick_explode_no_destroy": "対人爆発",
+  "psitweaks.spellpiece.trick_explode_no_destroy.desc": "ブロックを破壊しない爆発を起こす",
+
+
   "creativetabs.psitweaks": "Psi: Tweaks and Additions"
+
 
 }

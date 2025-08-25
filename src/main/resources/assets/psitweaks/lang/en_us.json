@@ -3,6 +3,13 @@
   "item.psitweaks.moval_suit_chestplate": "M.O.V.A.L.Suit ChestPlate",
   "item.psitweaks.moval_suit_leggings": "M.O.V.A.L.Suit Leggings",
   "item.psitweaks.moval_suit_boots": "M.O.V.A.L.Suit Boots",
+  "item.psitweaks.enriched_psigem": "Enriched Psigem",
+  "item.psitweaks.alloy_psion": "Psionic Alloy",
+
+  "infuse_type.psitweaks.infuse_psigem": "Psigem",
+
+  "spellpiece.trick_explode_no_destroy": "Antipersonnel Explode",
+
   "creativetabs.psitweaks": "Psi: Tweaks and Additions"
 
 }

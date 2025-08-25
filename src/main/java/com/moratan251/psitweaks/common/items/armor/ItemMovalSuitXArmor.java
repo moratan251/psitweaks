@@ -1,14 +1,12 @@
 package com.moratan251.psitweaks.common.items.armor;
 
-import net.minecraft.resources.ResourceLocation;
+import mekanism.api.radiation.capability.IRadiationShielding;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.api.exosuit.IPsiEventArmor;
 import vazkii.psi.api.material.PsimetalArmorMaterial;
@@ -16,12 +14,12 @@ import vazkii.psi.common.item.armor.ItemPsimetalArmor;
 import vazkii.psi.common.item.tool.IPsimetalTool;
 
 
-public  class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor{
+public  class ItemMovalSuitXArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor, IRadiationShielding {
     private final ArmorMaterial material;
     public static final PsimetalArmorMaterial MOVAL_SUIT_MATERIAL;
 
 
-    public ItemMovalSuitArmor(ArmorMaterial material, Type type, Properties props) {
+    public ItemMovalSuitXArmor(ArmorMaterial material, Type type, Properties props) {
         super(type, material,props);
         this.material = material;
 
@@ -30,12 +28,12 @@ public  class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalT
     static {
         MOVAL_SUIT_MATERIAL = new PsimetalArmorMaterial(
                 "moval_suit", // 名前
-                60,                // 耐久値倍率（18 → 25 に変更）
-                new int[]{3, 8, 6, 3}, // 防御力（頭、胸、脚、足）
+                800,                // 耐久値倍率（18 → 25 に変更）
+                new int[]{5, 8, 7, 4}, // 防御力（頭、胸、脚、足）
                 60,                // エンチャント適性
                 SoundEvents.ARMOR_EQUIP_IRON,
-                3.0F,
-                () -> Ingredient.of(new ItemLike[]{(ItemLike) ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psitweaks", "alloy_psion"))}),
+                2.0F,
+                () -> Ingredient.EMPTY,
                 0.1F             // ノックバック耐性
         );
 
@@ -48,12 +46,13 @@ public  class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalT
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return "psitweaks:textures/models/armor/moval_suit.png";
+        return "psitweaks/textures/models/armor/moval_suit.png";
     }
 
 
-
-
-
+    @Override
+    public double getRadiationShielding() {
+        return 1.0;
+    }
 
 }

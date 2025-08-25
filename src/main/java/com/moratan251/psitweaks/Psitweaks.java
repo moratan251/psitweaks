@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks;
 
+import com.moratan251.psitweaks.common.chemicals.ModChemicals;
 import com.moratan251.psitweaks.common.items.ModItems;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
@@ -10,7 +11,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +36,7 @@ public class Psitweaks {
         modEventBus.addListener(this::commonSetup);
 
         ModItems.register(modEventBus);
+        ModChemicals.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

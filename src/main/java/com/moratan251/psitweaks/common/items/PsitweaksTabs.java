@@ -16,12 +16,14 @@ public class PsitweaksTabs {
     public static final RegistryObject<CreativeModeTab> PSITWEAKS_TAB = TABS.register("psitweaks",
             () -> CreativeModeTab.builder().
                     title(Component.translatable("creativetabs.psitweaks")).
-                    icon(ModItems.MOVAL_SUIT_HELMET.get()::getDefaultInstance).
+                    icon(ModItems.ALLOY_PSION.get()::getDefaultInstance).
                     displayItems((((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.MOVAL_SUIT_HELMET.get());
                         pOutput.accept(ModItems.MOVAL_SUIT_CHESTPLATE.get());
                         pOutput.accept(ModItems.MOVAL_SUIT_LEGGINGS.get());
                         pOutput.accept(ModItems.MOVAL_SUIT_BOOTS.get());
+                        pOutput.accept(ModItems.ENRICHED_PSIGEM.get());
+                        pOutput.accept(ModItems.ALLOY_PSION.get());
 
 
                     })))

@@ -4,10 +4,10 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemMovalSuitBoots extends ItemMovalSuitArmor {
+public class ItemMovalSuitXBoots extends ItemMovalSuitXArmor {
     private final ArmorMaterial material;
 
-    public ItemMovalSuitBoots(ArmorMaterial material, Type type, Properties props) {
+    public ItemMovalSuitXBoots(ArmorMaterial material, Type type, Properties props) {
         super(material, type, props);
         this.material = material;
     }
@@ -15,6 +15,14 @@ public class ItemMovalSuitBoots extends ItemMovalSuitArmor {
     public String getEvent(ItemStack stack) {
         return "psi.event.jump";
     }
+/*
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return 2400;
+    }
+
+ */
+
 
     @Override
     public @NotNull ArmorMaterial getMaterial() {

@@ -21,48 +21,39 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
     protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
         // PsiGem を取得
         Item psiGem = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "psigem"));
-        if (psiGem == null) return;
 
 // ヘルメット
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.MOVAL_SUIT_HELMET.get())
-                .define('S', Items.NETHER_STAR)
-                .define('I', Items.NETHERITE_INGOT)
-                .define('G', psiGem)
-                .pattern("GSG")
-                .pattern("I I")
-                .unlockedBy("has_psigem", has(psiGem))
+                .define('A', ModItems.ALLOY_PSION.get())
+                .pattern("AAA")
+                .pattern("A A")
+                .unlockedBy("has_psigem", has(ModItems.ALLOY_PSION.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_helmet"));
 
 // チェスト
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.MOVAL_SUIT_CHESTPLATE.get())
-                .define('S', Items.NETHER_STAR)
-                .define('I', Items.NETHERITE_INGOT)
-                .define('G', psiGem)
-                .pattern("I I")
-                .pattern("GSG")
-                .pattern("III")
-                .unlockedBy("has_psigem", has(psiGem))
+                .define('A', ModItems.ALLOY_PSION.get())
+                .pattern("A A")
+                .pattern("AAA")
+                .pattern("AAA")
+                .unlockedBy("has_psigem", has(ModItems.ALLOY_PSION.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_chestplate"));
 
 // レギンス
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.MOVAL_SUIT_LEGGINGS.get())
-                .define('S', Items.NETHER_STAR)
-                .define('I', Items.NETHERITE_INGOT)
-                .define('G', psiGem)
-                .pattern("GSG")
-                .pattern("I I")
-                .pattern("I I")
-                .unlockedBy("has_psigem", has(psiGem))
+                .define('A', ModItems.ALLOY_PSION.get())
+                .pattern("AAA")
+                .pattern("A A")
+                .pattern("A A")
+                .unlockedBy("has_psigem", has(ModItems.ALLOY_PSION.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_leggings"));
 
 // ブーツ
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.MOVAL_SUIT_BOOTS.get())
-                .define('S', Items.NETHER_STAR)
-                .define('I', Items.NETHERITE_INGOT)
-                .define('G', psiGem)
-                .pattern("G G")
-                .pattern("ISI")
-                .unlockedBy("has_psigem", has(psiGem))
+                .define('A', ModItems.ALLOY_PSION.get())
+                .pattern("A A")
+                .pattern("A A")
+                .unlockedBy("has_psigem", has(ModItems.ALLOY_PSION.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_boots"));
     }
 }

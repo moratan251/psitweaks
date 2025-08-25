@@ -10,22 +10,7 @@ import vazkii.psi.api.PsiAPI;
 public class ModSpells {
 
 
-        /*
-        public static void registerPieces(FMLCommonSetupEvent event) {
-            System.out.println("Psitweaks:register spells");
-            event.enqueueWork(() -> {
-                PsiAPI.registerSpellPiece(
-                        ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_explode_no_destroy"),
-                        PieceTrickExplodeNoDestroy.class
-                );
-                PsiAPI.addPieceToGroup(
-                        PieceTrickExplodeNoDestroy.class,
-                        ResourceLocation.fromNamespaceAndPath("psitweaks", "misc_tricks"),
-                        true
-                );
-            });
-        }
-*/  @SubscribeEvent
+    @SubscribeEvent
     public static void registerPieces(FMLCommonSetupEvent event) {
         System.out.println("Psitweaks: register spells");
         event.enqueueWork(() -> {

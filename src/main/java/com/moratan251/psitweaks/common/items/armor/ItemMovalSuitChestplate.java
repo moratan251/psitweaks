@@ -18,18 +18,6 @@ public class ItemMovalSuitChestplate extends ItemMovalSuitArmor {
         return "psi.event.damage";
     }
 
-    public int getCastCooldown(ItemStack stack) {
-        return 40;
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return 2400;
-    }
-
-
-
-
     @Override
     public @NotNull ArmorMaterial getMaterial() {
         return material;

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 5,
+    "infuse_type": "psitweaks:infuse_psigem"
+  },
+  "itemInput": {
+    "ingredient": { "item": "minecraft:gold_ingot" }
+  },
+  "output": { "item": "psi:psimetal" }
+}

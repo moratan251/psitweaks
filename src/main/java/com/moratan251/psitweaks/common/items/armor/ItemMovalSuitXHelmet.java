@@ -12,13 +12,21 @@ import vazkii.psi.api.exosuit.IExosuitSensor;
 
 import javax.annotation.Nonnull;
 
-public class ItemMovalSuitHelmet extends ItemMovalSuitArmor {
+public class ItemMovalSuitXHelmet extends ItemMovalSuitXArmor {
     private final ArmorMaterial material;
 
-    public ItemMovalSuitHelmet(ArmorMaterial material, Type type, Properties props) {
+    public ItemMovalSuitXHelmet(ArmorMaterial material, Type type, Properties props) {
         super(material, type, props);
         this.material = material;
     }
+/*
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return 2400;
+    }
+    */
+
+
 
     @Override
     public float getToughness() {

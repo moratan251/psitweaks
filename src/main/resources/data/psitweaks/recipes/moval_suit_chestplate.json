@@ -2,20 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "item": "psi:psigem"
-    },
-    "I": {
-      "item": "minecraft:netherite_ingot"
-    },
-    "S": {
-      "item": "minecraft:nether_star"
+    "A": {
+      "item": "psitweaks:alloy_psion"
     }
   },
   "pattern": [
-    "I I",
-    "GSG",
-    "III"
+    "A A",
+    "AAA",
+    "AAA"
   ],
   "result": {
     "item": "psitweaks:moval_suit_chestplate"

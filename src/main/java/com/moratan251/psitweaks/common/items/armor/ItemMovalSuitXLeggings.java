@@ -4,14 +4,24 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemMovalSuitLeggings extends ItemMovalSuitArmor {
+public class ItemMovalSuitXLeggings extends ItemMovalSuitXArmor {
 
     private  final ArmorMaterial material;
 
-    public ItemMovalSuitLeggings(ArmorMaterial material, Type type, Properties props) {
+    public ItemMovalSuitXLeggings(ArmorMaterial material, Type type, Properties props) {
         super(material,type, props);
         this.material = material;
     }
+
+    /*
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return 2400;
+    }
+
+     */
+
+
 
     @Override
     public float getToughness() {

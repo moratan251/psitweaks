@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "item": "psitweaks:enriched_psigem"
+    }
+  },
+  "output": {
+    "infuse_type": "psitweaks:infuse_psigem",
+    "amount": 80
+  }
+}
+
