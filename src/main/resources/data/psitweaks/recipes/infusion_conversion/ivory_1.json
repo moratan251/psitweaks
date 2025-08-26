@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "item": "psi:ivory_substance"
+    }
+  },
+  "output": {
+    "infuse_type": "psitweaks:infuse_ivory",
+    "amount": 10
+  }
+}
+

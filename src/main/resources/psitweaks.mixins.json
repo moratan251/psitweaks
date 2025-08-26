@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.moratan251.psitweaks.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "psitweaks.refmap.json",
+  "mixins": [
+    "DisableDamagePsiDeduction",
+    ,
+    "DisableRegenCooldown"
+  ],
+  "client": [
+  ]
+}

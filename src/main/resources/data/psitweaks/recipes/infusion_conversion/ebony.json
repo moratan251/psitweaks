@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "item": "psitweaks:enriched_ebony"
+    }
+  },
+  "output": {
+    "infuse_type": "psitweaks:infuse_ebony",
+    "amount": 80
+  }
+}
+

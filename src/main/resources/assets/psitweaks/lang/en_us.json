@@ -1,0 +1,20 @@
+{
+  "item.psitweaks.moval_suit_helmet": "M.O.V.A.L.Suit Helmet",
+  "item.psitweaks.moval_suit_chestplate": "M.O.V.A.L.Suit ChestPlate",
+  "item.psitweaks.moval_suit_leggings": "M.O.V.A.L.Suit Leggings",
+  "item.psitweaks.moval_suit_boots": "M.O.V.A.L.Suit Boots",
+  "item.psitweaks.flash_ring": "Flash Ring",
+  "item.psitweaks.enriched_psigem": "Enriched Psigem",
+  "item.psitweaks.enriched_ebony": "Enriched Ebony",
+  "item.psitweaks.enriched_ivory": "Enriched Ivory",
+  "item.psitweaks.alloy_psion": "Psionic Alloy",
+
+  "infuse_type.psitweaks.infuse_psigem": "Psigem",
+  "infuse_type.psitweaks.infuse_ebony": "Ebony",
+  "infuse_type.psitweaks.infuse_ivory": "Ivory",
+
+  "spellpiece.trick_explode_no_destroy": "Antipersonnel Explode",
+
+  "creativetabs.psitweaks": "Psi: Tweaks and Additions"
+
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 40,
+    "infuse_type": "psitweaks:infuse_psigem"
+  },
+  "itemInput": {
+    "ingredient": { "item": "mekanism:alloy_atomic" }
+  },
+  "output": { "item": "psitweaks:alloy_psion" }
+}
