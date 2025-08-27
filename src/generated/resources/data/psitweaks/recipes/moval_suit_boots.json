@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_psion"
+    },
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "E": {
+      "item": "psi:ebony_psimetal"
+    }
+  },
+  "pattern": [
+    "A A",
+    "ECE"
+  ],
+  "result": {
+    "item": "psitweaks:moval_suit_boots"
+  },
+  "show_notification": true
+}

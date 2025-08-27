@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_psion"
+    },
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "E": {
+      "item": "psi:ebony_psimetal"
+    },
+    "F": {
+      "item": "psitweaks:flight_chip"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "EFE",
+    "E E"
+  ],
+  "result": {
+    "item": "psitweaks:moval_suit_leggings"
+  },
+  "show_notification": true
+}

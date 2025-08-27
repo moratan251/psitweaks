@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_psion"
+    },
+    "U": {
+      "item": "mekanism:ultimate_control_circuit"
+    }
+  },
+  "pattern": [
+    "AUA"
+  ],
+  "result": {
+    "item": "psitweaks:psionic_control_circuit"
+  },
+  "show_notification": true
+}
