@@ -26,11 +26,19 @@ public class ModItems {
     public static final RegistryObject<Item> MOVAL_SUIT_BOOTS = ITEMS.register("moval_suit_boots",
             () -> new ItemMovalSuitBoots(ItemMovalSuitArmor.MOVAL_SUIT_MATERIAL,ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.RARE)));
 
+    public static final RegistryObject<Item> MOVAL_SUIT_LEGGINGS_IVORY = ITEMS.register("moval_suit_leggings_ivory",
+            () -> new ItemMovalSuitLeggingsP(ItemMovalSuitArmor.MOVAL_SUIT_MATERIAL,ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.RARE)));
+
+    //public static final RegistryObject<Item> PSYON_SUPPLY_RING = ITEMS.register("psyon_supply_ring",
+     //       () -> new ItemPsyonSupplyRing(new Item.Properties().rarity(Rarity.RARE)));
+
     public static final RegistryObject<Item> FLASH_RING = ITEMS.register("flash_ring",
             () -> new ItemFlashRing(new Item.Properties().rarity(Rarity.RARE)));
 
 
-    public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> FLIGHT_CHIP = ITEMS.register("flight_chip", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ENRICHED_PSIGEM = ITEMS.register("enriched_psigem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_EBONY = ITEMS.register("enriched_ebony", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_IVORY = ITEMS.register("enriched_ivory", () -> new Item(new Item.Properties()));

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.items.armor;
 
+import com.machinezoo.noexception.throwing.ThrowingBiConsumer;
 import com.moratan251.psitweaks.common.items.ModItems;
 import com.moratan251.psitweaks.player.ModCapabilities;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -11,7 +12,10 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import vazkii.psi.api.cad.RegenPsiEvent;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+
+import java.util.function.ObjIntConsumer;
 
 
 @Mod.EventBusSubscriber(modid = "psitweaks")
@@ -26,13 +30,12 @@ public class MovalSuitEvent {
 
         if (player.level().isClientSide) return;
 
-        boolean hasLeggings = player.getItemBySlot(EquipmentSlot.LEGS).getItem() == ModItems.MOVAL_SUIT_LEGGINGS.get();
-
+       // boolean hasLeggings = player.getItemBySlot(EquipmentSlot.LEGS).getItem() == ModItems.MOVAL_SUIT_LEGGINGS.get();
 
         var abilities = player.getAbilities();
         var persistentData = player.getPersistentData();
 
-        if (hasLeggings) {
+        if (player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof ItemMovalSuitLeggings) {
             if (!abilities.mayfly) {
                 abilities.mayfly = true;
              //   abilities.flying = true; // すぐ飛べるように
@@ -66,6 +69,7 @@ public class MovalSuitEvent {
 
             if (newStack.getItem() instanceof ItemMovalSuitBoots) {
                 PlayerDataHandler.get(player).regen += 8;
+
             }
 
             if (oldStack.getItem() instanceof ItemMovalSuitBoots) {

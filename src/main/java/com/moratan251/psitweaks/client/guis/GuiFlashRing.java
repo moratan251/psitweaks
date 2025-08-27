@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.client.guis;
 
+import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import net.minecraft.world.item.ItemStack;
 
 

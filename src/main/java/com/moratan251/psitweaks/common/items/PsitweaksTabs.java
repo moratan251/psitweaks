@@ -22,11 +22,15 @@ public class PsitweaksTabs {
                         pOutput.accept(ModItems.MOVAL_SUIT_CHESTPLATE.get());
                         pOutput.accept(ModItems.MOVAL_SUIT_LEGGINGS.get());
                         pOutput.accept(ModItems.MOVAL_SUIT_BOOTS.get());
+                        pOutput.accept(ModItems.MOVAL_SUIT_LEGGINGS_IVORY.get());
                         pOutput.accept(ModItems.ENRICHED_PSIGEM.get());
                         pOutput.accept(ModItems.ENRICHED_EBONY.get());
                         pOutput.accept(ModItems.ENRICHED_IVORY.get());
                         pOutput.accept(ModItems.ALLOY_PSION.get());
+                        pOutput.accept(ModItems.PSIONIC_CONTROL_CIRCUIT.get());
+                        pOutput.accept(ModItems.FLIGHT_CHIP.get());
                         pOutput.accept(ModItems.FLASH_RING.get());
+                       // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());
 
 
                     })))

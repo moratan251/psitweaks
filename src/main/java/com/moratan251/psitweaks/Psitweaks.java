@@ -1,9 +1,9 @@
 package com.moratan251.psitweaks;
 
-import com.moratan251.psitweaks.client.proxy.ClientProxy;
 import com.moratan251.psitweaks.common.chemicals.ModChemicals;
-import com.moratan251.psitweaks.client.guis.NetworkHandler;
+import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.items.ModItems;
+import com.moratan251.psitweaks.common.effects.ModEffects;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
@@ -25,6 +25,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.ISpellAcceptor;
+
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Psitweaks.MOD_ID)
@@ -49,6 +50,8 @@ public class Psitweaks {
 
         // Register the item to a creative tab
         PsitweaksTabs.register(modEventBus);
+
+        ModEffects.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
 

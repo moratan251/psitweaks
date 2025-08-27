@@ -12,10 +12,13 @@ public class ModSpells {
 
     @SubscribeEvent
     public static void registerPieces(FMLCommonSetupEvent event) {
-        System.out.println("Psitweaks: register spells");
+       // System.out.println("Psitweaks: register spells");
         event.enqueueWork(() -> {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_explode_no_destroy"), PieceTrickExplodeNoDestroy.class);
             PsiAPI.addPieceToGroup(PieceTrickExplodeNoDestroy.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_explode_no_destroy"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_parade"), PieceTrickParade.class);
+            PsiAPI.addPieceToGroup(PieceTrickExplodeNoDestroy.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_parade"), false);
         });
     }
 }

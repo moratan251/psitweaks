@@ -1,6 +1,10 @@
 package com.moratan251.psitweaks.common.items.armor;
 
 import com.moratan251.psitweaks.common.items.ModItems;
+import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXBoots;
+import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXChestplate;
+import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXHelmet;
+import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXLeggings;
 import com.moratan251.psitweaks.player.ModCapabilities;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

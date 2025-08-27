@@ -147,6 +147,9 @@ dependencies {
     implementation fg.deobf("curse.maven:mekanism-268560:6552911")
     implementation fg.deobf("curse.maven:mekanism-generators-268566:6552914")
     implementation fg.deobf("curse.maven:psionic-utilities-611991:6549076")
+    implementation fg.deobf("curse.maven:untranslated-items-401770:4711897")
+    implementation fg.deobf("curse.maven:borderless-378979:4575494")
+    implementation fg.deobf("curse.maven:server-tab-info-291788:4594932")
     implementation "org.spongepowered:mixin:0.8.5"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
