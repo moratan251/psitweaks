@@ -585,7 +585,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [278月2025 15:46:37.630] [modloading-worker-0/DEBUG] [mixin/]: Mixing client.AccessorKeyMapping from patchouli_xplat.mixins.json into net.minecraft.client.KeyMapping
 [278月2025 15:46:37.631] [modloading-worker-0/DEBUG] [mixin/]: Renaming @Accessor method getAllKeyMappings()Ljava/util/Map; to getAllKeyMappings_$md$3b947f$0 in patchouli_xplat.mixins.json:client.AccessorKeyMapping
 [278月2025 15:46:37.652] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for psitweaks
-[278月2025 15:46:37.653] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.chemicals.ModChemicals to MOD
+[278月2025 15:46:37.653] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals to MOD
 [278月2025 15:46:37.653] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.handler.EffectHandler to FORGE
 [278月2025 15:46:37.655] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file curios-client.toml for curios tracking
 [278月2025 15:46:37.665] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.items.armor.MovalSuitEvent to FORGE
