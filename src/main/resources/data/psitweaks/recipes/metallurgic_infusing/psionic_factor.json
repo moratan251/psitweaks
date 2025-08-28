@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 640,
+    "infuse_type": "psitweaks:infuse_psigem"
+  },
+  "itemInput": {
+    "ingredient": { "item": "minecraft:ender_pearl" }
+  },
+  "output": { "item": "psitweaks:psionic_factor" }
+}

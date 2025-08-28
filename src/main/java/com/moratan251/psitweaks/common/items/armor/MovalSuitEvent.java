@@ -1,10 +1,5 @@
 package com.moratan251.psitweaks.common.items.armor;
 
-import com.machinezoo.noexception.throwing.ThrowingBiConsumer;
-import com.moratan251.psitweaks.common.items.ModItems;
-import com.moratan251.psitweaks.player.ModCapabilities;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -12,10 +7,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import vazkii.psi.api.cad.RegenPsiEvent;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
-
-import java.util.function.ObjIntConsumer;
 
 
 @Mod.EventBusSubscriber(modid = "psitweaks")

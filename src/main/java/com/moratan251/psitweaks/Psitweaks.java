@@ -1,11 +1,12 @@
 package com.moratan251.psitweaks;
 
-import com.moratan251.psitweaks.common.chemicals.ModChemicals;
+import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
-import com.moratan251.psitweaks.common.items.ModItems;
-import com.moratan251.psitweaks.common.effects.ModEffects;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
+import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.data.DataGenerator;
@@ -42,8 +43,8 @@ public class Psitweaks {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        ModItems.register(modEventBus);
-        ModChemicals.register(modEventBus);
+        PsitweaksItems.register(modEventBus);
+        PsitweaksChemicals.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -51,9 +52,11 @@ public class Psitweaks {
         // Register the item to a creative tab
         PsitweaksTabs.register(modEventBus);
 
-        ModEffects.register(modEventBus);
+        PsitweaksEffects.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
+
+        //ComponentStats.onCommonSetup(modEventBus);
 
 
     }
@@ -79,7 +82,7 @@ public class Psitweaks {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             // FLASH_RING は RegistryObject<Item>
-            ItemProperties.register(ModItems.FLASH_RING.get(),
+            ItemProperties.register(PsitweaksItems.FLASH_RING.get(),
                     ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
                     (stack, world, entity, seed) ->
                             stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)

@@ -1,12 +1,15 @@
-// 1.20.1	2025-08-27T15:46:40.525788	Recipes
+// 1.20.1	2025-08-28T23:33:49.6130084	Recipes
 4dd319bba619e48dbf62e279af9c33bfdfc6de0a data/psitweaks/advancements/recipes/combat/flash_ring.json
 4d72ca97950dbf7b340410a1303200e4cddb536e data/psitweaks/advancements/recipes/combat/moval_suit_boots.json
 7e01bf10cc16e2379169b9b3a973a6668724e69c data/psitweaks/advancements/recipes/combat/moval_suit_chestplate.json
 d6e87b3e81ee62dec359bef709ae5b497314b8eb data/psitweaks/advancements/recipes/combat/moval_suit_helmet.json
 89e9232d448a374d0a2e72132c6f06fa665e943c data/psitweaks/advancements/recipes/combat/moval_suit_leggings.json
 6aa763fe3828c12a09b5e82ce08ee15ba9bc1faf data/psitweaks/advancements/recipes/combat/moval_suit_leggings_ivory.json
+88a5e21c825983e5fc7caca5d62522bb7a642245 data/psitweaks/advancements/recipes/combat/psimetal_bow.json
+080c2e7c3b1c861d706601970dceca09e1adf239 data/psitweaks/advancements/recipes/misc/cad_assembly_alloy_psion.json
 e00973ad1642ae6513841e4dcd5d2607911a4bdf data/psitweaks/advancements/recipes/misc/flight_chip.json
 94169261a9b770f56792d40cb4934eb4ddd42c0d data/psitweaks/advancements/recipes/misc/psionic_control_circuit.json
+d52829f532880a5e9f1e05150f61dd7193581b60 data/psitweaks/recipes/cad_assembly_alloy_psion.json
 418e7d94b0e0555054cc666609630b144d30ae4b data/psitweaks/recipes/flash_ring.json
 b021361b85055633299fed69ed6467c1d047e036 data/psitweaks/recipes/flight_chip.json
 23b629ed78a928746f8c5f4714079b059be42bb6 data/psitweaks/recipes/moval_suit_boots.json
@@ -14,4 +17,5 @@ b021361b85055633299fed69ed6467c1d047e036 data/psitweaks/recipes/flight_chip.json
 3a7fbbe19dd69fb8120092d975d304f1ac30d0dd data/psitweaks/recipes/moval_suit_helmet.json
 d4134173cce02535d1c861749dc57ae4380dfd4c data/psitweaks/recipes/moval_suit_leggings.json
 931ade154de3899149829f8645c2bbf5794bb8d9 data/psitweaks/recipes/moval_suit_leggings_ivory.json
+d6bfff791be1d1ee864bfca3a4e22819afa72f27 data/psitweaks/recipes/psimetal_bow.json
 ad4906c7658136d29fc9df6754f087ba8628daea data/psitweaks/recipes/psionic_control_circuit.json

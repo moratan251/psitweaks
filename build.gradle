@@ -150,6 +150,8 @@ dependencies {
     implementation fg.deobf("curse.maven:untranslated-items-401770:4711897")
     implementation fg.deobf("curse.maven:borderless-378979:4575494")
     implementation fg.deobf("curse.maven:server-tab-info-291788:4594932")
+    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
+    implementation fg.deobf("curse.maven:selene-499980:6933139")
     implementation "org.spongepowered:mixin:0.8.5"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"

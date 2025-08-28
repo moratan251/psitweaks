@@ -1,0 +1,15 @@
+Psitweaks Mod - Credits
+
+This mod makes use of source code and concepts from the following projects:
+
+- Psi (by Vazkii and contributors)
+  License: MIT License
+  Source: https://github.com/VazkiiMods/Psi
+
+- Mekanism (by Aidan Brady and contributors)
+  License: MIT License
+  Source: https://github.com/mekanism/Mekanism
+
+- Psionic Peripherals (by Dudblockman and contributors)
+  License: MIT License
+  Source: https://github.com/Dudblockman/Psipherals

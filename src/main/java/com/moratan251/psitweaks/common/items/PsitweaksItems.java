@@ -9,9 +9,10 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import vazkii.psi.common.item.component.ItemCADAssembly;
 
 
-public class ModItems {
+public class PsitweaksItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Psitweaks.MOD_ID);
 
@@ -29,11 +30,16 @@ public class ModItems {
     public static final RegistryObject<Item> MOVAL_SUIT_LEGGINGS_IVORY = ITEMS.register("moval_suit_leggings_ivory",
             () -> new ItemMovalSuitLeggingsP(ItemMovalSuitArmor.MOVAL_SUIT_MATERIAL,ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.RARE)));
 
+
+
     //public static final RegistryObject<Item> PSYON_SUPPLY_RING = ITEMS.register("psyon_supply_ring",
      //       () -> new ItemPsyonSupplyRing(new Item.Properties().rarity(Rarity.RARE)));
 
     public static final RegistryObject<Item> FLASH_RING = ITEMS.register("flash_ring",
             () -> new ItemFlashRing(new Item.Properties().rarity(Rarity.RARE)));
+
+    public static final RegistryObject<Item> PSIMETAL_BOW = ITEMS.register("psimetal_bow",
+            () -> new ItemPsimetalBow(new Item.Properties()));
 
 
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
@@ -42,6 +48,14 @@ public class ModItems {
     public static final RegistryObject<Item> ENRICHED_PSIGEM = ITEMS.register("enriched_psigem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_EBONY = ITEMS.register("enriched_ebony", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_IVORY = ITEMS.register("enriched_ivory", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PSIONIC_FACTOR = ITEMS.register("psionic_factor", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PSIONIC_FACTOR_IVORY = ITEMS.register("psionic_factor_ivory", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PSIONIC_FACTOR_EBONY = ITEMS.register("psionic_factor_ebony", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHAOTIC_FACTOR = ITEMS.register("chaotic_factor", () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_psimetal"));
+
+
 
 
 

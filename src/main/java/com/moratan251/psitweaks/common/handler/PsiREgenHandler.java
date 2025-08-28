@@ -1,14 +1,6 @@
 package com.moratan251.psitweaks.common.handler;
 
 
-import com.moratan251.psitweaks.common.items.ModItems;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
-import vazkii.psi.api.internal.IPlayerData;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
-
 /*
 @Mod.EventBusSubscriber
 public class PsiRegenHandler {

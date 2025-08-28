@@ -5,12 +5,18 @@
   "item.psitweaks.moval_suit_boots": "M.O.V.A.L.Suit Boots",
   "item.psitweaks.moval_suit_leggings_ivory": "M.O.V.A.L.Suit Leggings",
   "item.psitweaks.flash_ring": "Flash Ring",
+  "item.psitweaks.psimetal_bow": "Psimetal Bow",
   "item.psitweaks.enriched_psigem": "Enriched Psigem",
   "item.psitweaks.enriched_ebony": "Enriched Ebony",
   "item.psitweaks.enriched_ivory": "Enriched Ivory",
   "item.psitweaks.alloy_psion": "Psionic Alloy",
   "item.psitweaks.psionic_control_circuit": "Psionic Control Circuit",
   "item.psitweaks.flight_chip": "Flight Chip",
+  "item.psitweaks.psionic_factor": "Psionic Factor",
+  "item.psitweaks.psionic_factor_ivory": "Ivory Psionic Factor",
+  "item.psitweaks.psionic_factor_ebony": "Ebony Psionic Factor",
+  "item.psitweaks.chaotic_factor": "Chaotic Factor",
+  "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
 
   "effect.psitweaks.parade": "Parade",
 
@@ -19,6 +25,7 @@
   "infuse_type.psitweaks.infuse_psigem": "Psigem",
   "infuse_type.psitweaks.infuse_ebony": "Ebony",
   "infuse_type.psitweaks.infuse_ivory": "Ivory",
+  "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
 
   "spellpiece.trick_explode_no_destroy": "Trick: Antipersonnel Explode",
 

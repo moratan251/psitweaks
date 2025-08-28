@@ -5,12 +5,18 @@
   "item.psitweaks.moval_suit_boots": "M.O.V.A.L. スーツブーツ",
   "item.psitweaks.moval_suit_leggings_ivory": "M.O.V.A.L. スーツレギンス",
   "item.psitweaks.flash_ring": "フラッシュリング",
+  "item.psitweaks.psimetal_bow": "サイメタルの弓",
   "item.psitweaks.enriched_psigem": "濃縮サイジェム",
   "item.psitweaks.enriched_ebony": "濃縮エボニー",
   "item.psitweaks.enriched_ivory": "濃縮アイボリー",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
   "item.psitweaks.flight_chip": "飛行チップ",
+  "item.psitweaks.psionic_factor": "サイオニック因子",
+  "item.psitweaks.psionic_factor_ivory": "偏陽サイオニック因子",
+  "item.psitweaks.psionic_factor_ebony": "偏陰サイオニック因子",
+  "item.psitweaks.chaotic_factor": "カオティック因子",
+  "item.psitweaks.cad_assembly_alloy_psion": "サイオニック合金のCAD素体",
 
   "effect.psitweaks.parade": "仮想行列",
 
@@ -19,6 +25,7 @@
   "infuse_type.psitweaks.infuse_psigem": "サイジェム",
   "infuse_type.psitweaks.infuse_ebony": "エボニー",
   "infuse_type.psitweaks.infuse_ivory": "アイボリー",
+  "infuse_type.psitweaks.infuse_chaotic_factor": "混沌",
 
   "psitweaks.spellpiece.trick_explode_no_destroy": "作動式: 対人爆発",
   "psitweaks.spellpiece.trick_explode_no_destroy.desc": "ブロックを破壊しない爆発を起こす",

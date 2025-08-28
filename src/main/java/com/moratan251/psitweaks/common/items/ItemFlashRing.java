@@ -1,5 +1,12 @@
 package com.moratan251.psitweaks.common.items;
 
+/*
+ * This class is based on code from Psi (https://github.com/VazkiiMods/Psi)
+ * Licensed under the MIT License.
+ *
+ * Original author: Vazkii
+ */
+
 import com.moratan251.psitweaks.client.guis.GuiFlashRing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;

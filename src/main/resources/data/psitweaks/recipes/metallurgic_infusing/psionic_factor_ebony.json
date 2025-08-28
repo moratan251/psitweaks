@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 1280,
+    "infuse_type": "psitweaks:infuse_ebony"
+  },
+  "itemInput": {
+    "ingredient": { "item": "psitweaks:psionic_factor" }
+  },
+  "output": { "item": "psitweaks:psionic_factor_ebony" }
+}

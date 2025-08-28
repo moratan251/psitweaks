@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "item": "psitweaks:chaotic_factor"
+    }
+  },
+  "output": {
+    "infuse_type": "psitweaks:infuse_chaotic_factor",
+    "amount": 80
+  }
+}
+

@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.items.armor;
 
-import com.moratan251.psitweaks.common.items.ModItems;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXBoots;
 import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXChestplate;
 import com.moratan251.psitweaks.common.items.armor.unused.ItemMovalSuitXHelmet;
@@ -92,7 +92,7 @@ public class MovalSuitXEvent {
         if (player.level().isClientSide) return;
 
         player.getCapability(ModCapabilities.FLIGHT_DATA).ifPresent(data -> {
-            boolean hasArmor = player.getInventory().armor.get(1).getItem() == ModItems.MOVAL_SUIT_LEGGINGS.get();
+            boolean hasArmor = player.getInventory().armor.get(1).getItem() == PsitweaksItems.MOVAL_SUIT_LEGGINGS.get();
 /*
             if (hasArmor != data.hasFlightArmor()) {
                 data.setHasFlightArmor(hasArmor);

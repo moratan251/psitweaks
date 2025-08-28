@@ -1,14 +1,13 @@
 package com.moratan251.psitweaks.common.effects;
 
 import com.moratan251.psitweaks.Psitweaks;
-import com.moratan251.psitweaks.common.effects.EffectParade;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModEffects {
+public class PsitweaksEffects {
     public static final DeferredRegister<MobEffect> EFFECTS =
             DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Psitweaks.MOD_ID);
 

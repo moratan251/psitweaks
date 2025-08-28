@@ -1,9 +1,8 @@
 package com.moratan251.psitweaks.common.spells;
 
 
-import com.moratan251.psitweaks.common.effects.ModEffects;
+import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffects;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.common.spell.trick.potion.PieceTrickPotionBase;
 
@@ -13,7 +12,7 @@ public class PieceTrickParade extends PieceTrickPotionBase {
     }
 
     public MobEffect getPotion() {
-        return ModEffects.PARADE.get();
+        return PsitweaksEffects.PARADE.get();
     }
 
 
