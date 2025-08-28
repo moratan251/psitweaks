@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "psi:psigem"
+    },
+    "M": {
+      "item": "psi:psimetal"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    " MS",
+    "G S",
+    " MS"
+  ],
+  "result": {
+    "item": "psitweaks:psimetal_bow"
+  },
+  "show_notification": true
+}

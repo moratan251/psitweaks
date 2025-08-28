@@ -1,0 +1,6 @@
+{
+  "parent": "item/bow",
+  "textures": {
+    "layer0": "psitweaks:item/psimetal_bow_pulling_0"
+  }
+}
