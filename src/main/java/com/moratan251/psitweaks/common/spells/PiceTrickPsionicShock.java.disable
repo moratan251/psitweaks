@@ -1,0 +1,60 @@
+package com.moratan251.psitweaks.common.spell;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.spell.*;
+import vazkii.psi.api.spell.param.ParamVector;
+import vazkii.psi.api.spell.param.ParamNumber;
+import vazkii.psi.api.spell.piece.PieceTrick;
+
+import java.util.List;
+
+public class PieceAoEAttack extends PieceTrick {
+
+    SpellParam<Vec3> position;
+    SpellParam<Number> radius;
+    SpellParam<Number> power;
+
+    public PieceAoEAttack(Spell spell) {
+        super(spell);
+    }
+
+    @Override
+    public void initParams() {
+        addParam(position = new ParamVector("psi.param.position", SpellParam.BLUE, false, false));
+        addParam(radius   = new ParamNumber("psi.param.radius", SpellParam.GREEN, false, true));
+        addParam(power    = new ParamNumber("psi.param.power", SpellParam.RED, false, true));
+    }
+
+    @Override
+    public Object execute(SpellContext context) throws SpellRuntimeException {
+        Vec3 pos = this.getParamValue(context, position);
+        Number r = this.getParamValue(context, radius);
+        Number p = this.getParamValue(context, power);
+
+        if (pos == null || r == null || p == null)
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
+
+        double radiusVal = r.doubleValue();
+        float damage = p.floatValue();
+
+        // 指定範囲内のエンティティを取得
+        List<LivingEntity> entities = context.caster.level().getEntitiesOfClass(
+                LivingEntity.class,
+                new net.minecraft.world.phys.AABB(
+                        pos.x - radiusVal, pos.y - radiusVal, pos.z - radiusVal,
+                        pos.x + radiusVal, pos.y + radiusVal, pos.z + radiusVal
+                )
+        );
+
+        for (LivingEntity target : entities) {
+            // 自分自身は除外
+            if (target == context.caster) continue;
+
+            target.hurt(context.caster.damageSources().magic(), damage);
+        }
+
+        return null;
+    }
+}
