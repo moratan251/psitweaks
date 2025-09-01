@@ -14,6 +14,11 @@ public class PsitweaksEffects {
     public static final RegistryObject<MobEffect> PARADE =
             EFFECTS.register("parade", EffectParade::new);
 
+    public static final RegistryObject<MobEffect> FLIGHT =
+            EFFECTS.register("flight", EffectFlight::new);
+
+
+
     public static void register(IEventBus eventBus) {
         EFFECTS.register(eventBus);
     }

@@ -14,7 +14,7 @@ import vazkii.psi.common.core.handler.PlayerDataHandler;
 public class MovalSuitEvent {
 
     private static final String MOVAL_SUIT_FLIGHT = "psitweaks_moval_suit_flight";
-
+/*
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -49,6 +49,8 @@ public class MovalSuitEvent {
             }
         }
     }
+
+ */
 
     @SubscribeEvent
     public static void onEquip(LivingEquipmentChangeEvent event) {

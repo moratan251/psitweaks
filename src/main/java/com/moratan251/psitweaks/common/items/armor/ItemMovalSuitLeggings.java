@@ -1,7 +1,11 @@
 package com.moratan251.psitweaks.common.items.armor;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemMovalSuitLeggings extends ItemMovalSuitArmor {
@@ -35,4 +39,26 @@ public class ItemMovalSuitLeggings extends ItemMovalSuitArmor {
     public @NotNull ArmorMaterial getMaterial() {
         return material;
     }
+
+
+    @Override
+    public void onArmorTick(ItemStack stack, Level level, Player player) {
+        if (!level.isClientSide) {
+            ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
+            if (leggings == stack) {
+                if (!player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities();
+                }
+            } else {
+                if (!player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
+                }
+            }
+        }
+    }
+
+
 }

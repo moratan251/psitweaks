@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.items.armor.*;
+import com.moratan251.psitweaks.common.items.curios.ItemCuriosCompat;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -40,6 +41,9 @@ public class PsitweaksItems {
 
     public static final RegistryObject<Item> PSIMETAL_BOW = ITEMS.register("psimetal_bow",
             () -> new ItemPsimetalBow(new Item.Properties()));
+
+    public static final RegistryObject<Item> AUTO_CAST_RING = ITEMS.register("auto_cast_ring",
+            () -> new ItemCuriosCompat(new Item.Properties()));
 
 
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));

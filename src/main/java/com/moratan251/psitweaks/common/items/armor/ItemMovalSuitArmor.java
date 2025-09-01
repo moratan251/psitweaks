@@ -19,13 +19,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.api.exosuit.IPsiEventArmor;
 import vazkii.psi.api.material.PsimetalArmorMaterial;
+import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.armor.ItemPsimetalArmor;
 import vazkii.psi.common.item.tool.IPsimetalTool;
 
 import java.util.Objects;
 
 
-public  class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor{
+public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor{
     private final ArmorMaterial material;
     public static final PsimetalArmorMaterial MOVAL_SUIT_MATERIAL;
 
@@ -59,6 +60,23 @@ public  class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalT
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return "psitweaks:textures/models/armor/moval_suit.png";
     }
+/*
+    @Override
+    public void regen(ItemStack stack, Entity entityIn) {
+        if (IPsimetalTool.isItemValidForRegen(stack, entityIn)) {
+            Player player = (Player)entityIn;
+            PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
+            int regenTime = stack.getOrCreateTag().getInt("regenTime");
+            if (!data.overflowed && regenTime % 16 == 0 && (float)data.getAvailablePsi() / (float)data.getTotalPsi() > 0.5F) {
+                data.deductPsi(150, 0, true);
+                stack.setDamageValue(stack.getDamageValue() - 10);
+            }
 
+            stack.getOrCreateTag().putInt("regenTime", regenTime + 1);
+        }
+
+    }
+
+ */
 
 }

@@ -22,6 +22,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.MOVAL_SUIT_BOOTS.get());
                         pOutput.accept(PsitweaksItems.MOVAL_SUIT_LEGGINGS_IVORY.get());
                         pOutput.accept(PsitweaksItems.PSIMETAL_BOW.get());
+                        pOutput.accept(PsitweaksItems.AUTO_CAST_RING.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_PSIGEM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_EBONY.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_IVORY.get());

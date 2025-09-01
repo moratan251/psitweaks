@@ -152,6 +152,10 @@ dependencies {
     implementation fg.deobf("curse.maven:server-tab-info-291788:4594932")
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
     implementation fg.deobf("curse.maven:selene-499980:6933139")
+    implementation fg.deobf("curse.maven:ticex-tinkers-construct-ex-1242469:6907653")
+    implementation fg.deobf("curse.maven:tinkers-construct-74072:6777068")
+    implementation fg.deobf("curse.maven:moffs-addonapi-dynload-1242459:6420515")
+    implementation fg.deobf("curse.maven:tinkers-construct-74924:6819217")
     implementation "org.spongepowered:mixin:0.8.5"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"

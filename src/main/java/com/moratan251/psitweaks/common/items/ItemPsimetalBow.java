@@ -48,7 +48,7 @@ public class ItemPsimetalBow extends BowItem implements IPsimetalTool {
     @Override
     public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity living, int timeLeft) {
         if (living instanceof Player player) {
-            boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
+            boolean flag = player.getAbilities().instabuild || stack.getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0;
             ItemStack ammo = player.getProjectile(stack);
             int i = this.getUseDuration(stack) - timeLeft;
             i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, level, player, i, !ammo.isEmpty() || flag);
@@ -73,17 +73,18 @@ public class ItemPsimetalBow extends BowItem implements IPsimetalTool {
                             arrow.setCritArrow(true);
                         }
 
-                        int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+                        //int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+                        int j = stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
                         if (j > 0) {
                             arrow.setBaseDamage(arrow.getBaseDamage() + (double) j * 0.5D + 0.5D);
                         }
 
-                        int k = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, stack);
+                        int k = stack.getEnchantmentLevel(Enchantments.PUNCH_ARROWS);
                         if (k > 0) {
                             arrow.setKnockback(k);
                         }
 
-                        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
+                        if (stack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) {
                             arrow.setSecondsOnFire(100);
                         }
 
