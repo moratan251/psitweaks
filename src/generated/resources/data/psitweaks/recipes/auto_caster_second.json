@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "F": {
+      "item": "psitweaks:chaotic_factor"
+    },
+    "I": {
+      "item": "psi:ivory_psimetal"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "IFI",
+    "III"
+  ],
+  "result": {
+    "item": "psitweaks:auto_caster_second"
+  },
+  "show_notification": true
+}

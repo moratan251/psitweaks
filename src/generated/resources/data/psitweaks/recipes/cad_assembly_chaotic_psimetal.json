@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "B": {
+      "item": "psitweaks:psionic_control_circuit"
+    }
+  },
+  "pattern": [
+    "AAA",
+    " BA"
+  ],
+  "result": {
+    "item": "psitweaks:cad_assembly_chaotic_psimetal"
+  },
+  "show_notification": true
+}

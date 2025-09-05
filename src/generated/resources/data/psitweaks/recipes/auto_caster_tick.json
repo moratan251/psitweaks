@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "E": {
+      "item": "psi:ebony_psimetal"
+    },
+    "F": {
+      "item": "psitweaks:chaotic_factor"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "EFE",
+    "EEE"
+  ],
+  "result": {
+    "item": "psitweaks:auto_caster_tick"
+  },
+  "show_notification": true
+}
