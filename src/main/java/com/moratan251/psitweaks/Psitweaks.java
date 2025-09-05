@@ -100,4 +100,8 @@ public class Psitweaks {
 
         gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(gen.getPackOutput()));
     }
+
+    public static ResourceLocation location(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
 }
