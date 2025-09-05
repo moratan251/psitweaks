@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ISocketable;
+import vazkii.psi.api.exosuit.IPsiEventArmor;
 import vazkii.psi.api.exosuit.PsiArmorEvent;
 import vazkii.psi.api.internal.TooltipHelper;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
@@ -25,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool{
+public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool, IPsiEventArmor {
 
 
     public ItemCuriosCompat(Properties pProperties) {
@@ -59,7 +60,7 @@ public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool{
     public void cast(ItemStack stack, PsiArmorEvent event) {
         PlayerDataHandler.PlayerData data = PlayerDataHandler.get(event.getEntity());
         ItemStack playerCad = PsiAPI.getPlayerCAD(event.getEntity());
-        if (this.isEnabled(stack) && !playerCad.isEmpty()) {
+        if (!playerCad.isEmpty()) {
             int timesCast = stack.getOrCreateTag().getInt("timesCast");
             ItemStack bullet = ISocketable.socketable(stack).getSelectedBullet();
             ItemCAD.cast(event.getEntity().getCommandSenderWorld(), event.getEntity(), data, bullet, playerCad, this.getCastCooldown(stack), 0, this.getCastVolume(), (context) -> {
@@ -74,7 +75,9 @@ public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool{
     }
 
     public void onEvent(ItemStack stack, PsiArmorEvent event) {
+
         if (event.type.equals(this.getTrueEvent(stack)) && event.getEntity() != null) {
+
             this.cast(stack, event);
         }
 

@@ -8,16 +8,13 @@
     "C": {
       "item": "psitweaks:psionic_control_circuit"
     },
-    "F": {
-      "item": "psitweaks:flight_chip"
-    },
     "I": {
       "item": "psi:ivory_psimetal"
     }
   },
   "pattern": [
     "ACA",
-    "IFI",
+    "I I",
     "I I"
   ],
   "result": {

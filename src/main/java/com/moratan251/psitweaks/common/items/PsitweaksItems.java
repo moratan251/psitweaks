@@ -2,11 +2,14 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.items.armor.*;
-import com.moratan251.psitweaks.common.items.curios.ItemCuriosCompat;
+import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterSecond;
+import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
+import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -42,8 +45,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PSIMETAL_BOW = ITEMS.register("psimetal_bow",
             () -> new ItemPsimetalBow(new Item.Properties()));
 
-    public static final RegistryObject<Item> AUTO_CAST_RING = ITEMS.register("auto_cast_ring",
-            () -> new ItemCuriosCompat(new Item.Properties()));
+
 
 
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
@@ -56,18 +58,26 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PSIONIC_FACTOR_IVORY = ITEMS.register("psionic_factor_ivory", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> PSIONIC_FACTOR_EBONY = ITEMS.register("psionic_factor_ebony", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CHAOTIC_FACTOR = ITEMS.register("chaotic_factor", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHAOTIC_PSIMETAL = ITEMS.register("chaotic_psimetal", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_psimetal"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_ivory_psimetal"));
 
 
+    public static final RegistryObject<Item> CURIOS_CONTROLLER = ITEMS.register("curios_controller", () -> new ItemCuriosController(new Item.Properties()));
+    public static final RegistryObject<Item> AUTO_CASTER_SECOND = ITEMS.register("auto_caster_second", () -> new ItemAutoCasterSecond(new Item.Properties()));
+    public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
 
 
 
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+
     }
 
 
 }
+
+
 

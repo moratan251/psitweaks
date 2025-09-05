@@ -1,4 +1,4 @@
 {
   "entities": ["player"],
-  "slots": ["bracelet"]
+  "slots": ["magic_calculation_area"]
 }

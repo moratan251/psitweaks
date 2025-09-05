@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.common.effects;
 
+import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitLeggings;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,7 @@ public class EffectFlight extends MobEffect {
     public void removeAttributeModifiers(@NotNull LivingEntity entity, net.minecraft.world.entity.ai.attributes.@NotNull AttributeMap attributeMap, int amplifier) {
         super.removeAttributeModifiers(entity, attributeMap, amplifier);
 
-        if (entity instanceof Player player && !player.level().isClientSide) {
+        if (entity instanceof Player player && !player.level().isClientSide && !player.hasEffect(PsitweaksEffects.FLIGHT.get())) {
             if (!player.isCreative() && !player.isSpectator()) {
                 player.getAbilities().mayfly = false;
                 player.getAbilities().flying = false;

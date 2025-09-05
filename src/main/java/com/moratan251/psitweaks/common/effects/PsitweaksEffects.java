@@ -17,6 +17,12 @@ public class PsitweaksEffects {
     public static final RegistryObject<MobEffect> FLIGHT =
             EFFECTS.register("flight", EffectFlight::new);
 
+    public static final RegistryObject<MobEffect> BARRIER =
+            EFFECTS.register("barrier", EffectBarrier::new);
+
+    public static final RegistryObject<MobEffect> HARDENING =
+            EFFECTS.register("hardening", EffectHardening::new);
+
 
 
     public static void register(IEventBus eventBus) {

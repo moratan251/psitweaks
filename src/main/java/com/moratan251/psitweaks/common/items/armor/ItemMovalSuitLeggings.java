@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.items.armor;
 
-import net.minecraft.world.entity.Entity;
+import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
@@ -42,23 +42,8 @@ public class ItemMovalSuitLeggings extends ItemMovalSuitArmor {
 
 
     @Override
-    public void onArmorTick(ItemStack stack, Level level, Player player) {
-        if (!level.isClientSide) {
-            ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
-            if (leggings == stack) {
-                if (!player.isCreative() && !player.isSpectator()) {
-                    player.getAbilities().mayfly = true;
-                    player.onUpdateAbilities();
-                }
-            } else {
-                if (!player.isCreative() && !player.isSpectator()) {
-                    player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false;
-                    player.onUpdateAbilities();
-                }
-            }
-        }
-    }
+    public void onInventoryTick(ItemStack stack, Level level, Player player) {
 
+    }
 
 }

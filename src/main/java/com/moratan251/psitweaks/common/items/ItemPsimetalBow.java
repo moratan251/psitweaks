@@ -166,10 +166,13 @@ public class ItemPsimetalBow extends BowItem implements IPsimetalTool {
         tooltip.add(Component.translatable("psimisc.spell_selected", new Object[]{componentName}));
     }
 
-
+    @SuppressWarnings("deprecation")
     public boolean isRepairable(ItemStack thisStack, @Nonnull ItemStack material) {
         return IPsimetalTool.isRepairableBy(material) || super.isRepairable(thisStack);
     }
+
+
+
 
 
 }

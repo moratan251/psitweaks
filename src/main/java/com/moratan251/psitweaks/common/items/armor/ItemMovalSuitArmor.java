@@ -1,20 +1,15 @@
 package com.moratan251.psitweaks.common.items.armor;
 
-import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
-import mekanism.common.integration.gender.GenderCapabilityHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.api.exosuit.IPsiEventArmor;
@@ -22,8 +17,6 @@ import vazkii.psi.api.material.PsimetalArmorMaterial;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.armor.ItemPsimetalArmor;
 import vazkii.psi.common.item.tool.IPsimetalTool;
-
-import java.util.Objects;
 
 
 public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor{
@@ -60,6 +53,8 @@ public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IP
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return "psitweaks:textures/models/armor/moval_suit.png";
     }
+
+    public abstract void onInventoryTick(ItemStack stack, Level level, Player player);
 /*
     @Override
     public void regen(ItemStack stack, Entity entityIn) {
@@ -75,6 +70,18 @@ public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IP
             stack.getOrCreateTag().putInt("regenTime", regenTime + 1);
         }
 
+    }
+
+ */
+/*
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+
+        if (entity instanceof Player player && !level.isClientSide) {
+            // プレイヤーが防具を装備しているかチェック
+
+        }
     }
 
  */

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psi:ebony_psimetal"
+    },
+    "B": {
+      "item": "psi:psigem"
+    },
+    "C": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " C "
+  ],
+  "result": {
+    "item": "psitweaks:flash_ring"
+  },
+  "show_notification": true
+}

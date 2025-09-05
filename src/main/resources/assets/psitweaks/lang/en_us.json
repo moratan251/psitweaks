@@ -6,6 +6,7 @@
   "item.psitweaks.moval_suit_leggings_ivory": "M.O.V.A.L.Suit Leggings",
   "item.psitweaks.flash_ring": "Flash Ring",
   "item.psitweaks.psimetal_bow": "Psimetal Bow",
+  "item.psitweaks.curios_controller": "Curios Controller",
   "item.psitweaks.enriched_psigem": "Enriched Psigem",
   "item.psitweaks.enriched_ebony": "Enriched Ebony",
   "item.psitweaks.enriched_ivory": "Enriched Ivory",
@@ -16,9 +17,16 @@
   "item.psitweaks.psionic_factor_ivory": "Ivory Psionic Factor",
   "item.psitweaks.psionic_factor_ebony": "Ebony Psionic Factor",
   "item.psitweaks.chaotic_factor": "Chaotic Factor",
+  "item.psitweaks.chaotic_psimetal": "Chaotic Psimetal",
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
+  "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
+  "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
+  "item.psitweaks.auto_caster_second": "Auto Caster: second",
 
   "effect.psitweaks.parade": "Parade",
+  "effect.psitweaks.flight": "Flight",
+  "effect.psitweaks.barrier": "Bariier",
+  "effect.psitweaks.hardening": "Hardening",
 
   "psitweaks.event.second": "§bEvent§7: Second",
 
@@ -27,10 +35,17 @@
   "infuse_type.psitweaks.infuse_ivory": "Ivory",
   "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
 
+  "curios.identifier.magic_calculation_area": "Magic Calculation Area",
+
   "spellpiece.trick_explode_no_destroy": "Trick: Antipersonnel Explode",
+
+  "psitweaks.spellpiece.trick_barrier": "Trick: Barrier",
+
+  "psitweaks.spellpiece.trick_hardening": "Trick: Hardening",
 
   "spellpiece.trick_parade": "Trick: Parade",
 
-  "creativetabs.psitweaks": "Psi: Tweaks and Additions"
+  "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 
+  "psitweaks.spellpiece.trick_flight": "Trick: Flight"
 }

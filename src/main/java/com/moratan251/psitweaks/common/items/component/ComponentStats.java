@@ -31,6 +31,18 @@ public class ComponentStats {
                 EnumCADStat.POTENCY,
                 400
         );
+
+
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get(),
+                EnumCADStat.EFFICIENCY,
+                150
+        );
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get(),
+                EnumCADStat.POTENCY,
+                450
+        );
     }
 
     // 他の registerXXXStats は同様にここへ

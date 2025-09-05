@@ -10,14 +10,11 @@
     },
     "E": {
       "item": "psi:ebony_psimetal"
-    },
-    "F": {
-      "item": "psitweaks:flight_chip"
     }
   },
   "pattern": [
     "ACA",
-    "EFE",
+    "E E",
     "E E"
   ],
   "result": {

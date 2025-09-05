@@ -22,7 +22,9 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.MOVAL_SUIT_BOOTS.get());
                         pOutput.accept(PsitweaksItems.MOVAL_SUIT_LEGGINGS_IVORY.get());
                         pOutput.accept(PsitweaksItems.PSIMETAL_BOW.get());
-                        pOutput.accept(PsitweaksItems.AUTO_CAST_RING.get());
+                        pOutput.accept(PsitweaksItems.CURIOS_CONTROLLER.get());
+                        pOutput.accept(PsitweaksItems.AUTO_CASTER_SECOND.get());
+                        pOutput.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_PSIGEM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_EBONY.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_IVORY.get());
@@ -34,7 +36,9 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_EBONY.get());
                         pOutput.accept(PsitweaksItems.CHAOTIC_FACTOR.get());
+                        pOutput.accept(PsitweaksItems.CHAOTIC_PSIMETAL.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
+                        pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
                        // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());
 
 

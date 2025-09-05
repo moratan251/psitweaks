@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.tool.IPsimetalTool;
@@ -25,10 +26,10 @@ public class ItemMovalSuitBoots extends ItemMovalSuitArmor {
         return material;
     }
 
+    @Override
+    public void onInventoryTick(ItemStack stack, Level level, Player player) {
 
-
-
-
+    }
 
 
 }
