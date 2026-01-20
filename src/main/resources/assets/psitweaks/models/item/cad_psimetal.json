@@ -8,7 +8,7 @@
   "textures": {
     "missing": "psi:block/empty",
     "1": "psi:item/cad_color",
-    "2": "psi:item/cad_assembly_0"
+    "2": "psitweaks:item/cad_assembly_0"
   },
   "elements": [
     {

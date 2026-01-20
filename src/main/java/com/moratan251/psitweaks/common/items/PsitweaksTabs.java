@@ -39,6 +39,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CHAOTIC_PSIMETAL.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
+                        pOutput.accept(PsitweaksItems.AIM_ASSISTING_DEVICE.get());
+                     //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
                        // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());
 
 

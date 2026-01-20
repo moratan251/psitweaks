@@ -2,7 +2,8 @@
   "replace": false,
   "values": [
     "psitweaks:auto_caster_tick",
-    "psitweaks:auto_caster_second"
+    "psitweaks:auto_caster_second",
+    "psitweaks:aim_assisting_device"
 
 
   ]

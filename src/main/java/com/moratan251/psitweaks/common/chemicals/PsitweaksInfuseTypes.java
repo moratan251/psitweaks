@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class PsitweaksChemicals {
+public class PsitweaksInfuseTypes {
 
     public static final InfuseTypeDeferredRegister INFUSE_TYPES = new InfuseTypeDeferredRegister("psitweaks");
 

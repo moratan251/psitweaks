@@ -1,12 +1,17 @@
 package com.moratan251.psitweaks;
 
-import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
+import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
+import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
+import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
-import com.moratan251.psitweaks.common.items.component.ComponentStats;
+//import com.moratan251.psitweaks.common.registries.PsitweaksModules;
+import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
+import com.moratan251.psitweaks.common.proxy.ServerProxyPsitweaks;
+import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.data.DataGenerator;
@@ -19,7 +24,6 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,6 +31,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.ISpellAcceptor;
+
+import static net.minecraftforge.fml.loading.FMLEnvironment.dist;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -36,6 +42,7 @@ public class Psitweaks {
     public static final String MOD_ID = "psitweaks";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
+    public static IProxyPsitweaks proxyPsitweaks;
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
 
     public Psitweaks(FMLJavaModLoadingContext context) {
@@ -44,8 +51,12 @@ public class Psitweaks {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
+
         PsitweaksItems.register(modEventBus);
-        PsitweaksChemicals.register(modEventBus);
+        PsitweaksInfuseTypes.register(modEventBus);
+        PsitweaksGases.register(modEventBus);
+        PsitweaksModules.MODULES.register(modEventBus);
+
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -56,6 +67,8 @@ public class Psitweaks {
         PsitweaksEffects.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
+
+        proxyPsitweaks = (IProxyPsitweaks) (dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks());
 
         //ComponentStats.onCommonSetup(modEventBus);
 

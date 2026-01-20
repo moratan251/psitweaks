@@ -49,7 +49,7 @@ public class ItemMovalSuitHelmet extends ItemMovalSuitArmor {
 
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         boolean overlay = type != null && type.equals("overlay");
-        return overlay ? "psi:textures/model/psimetal_exosuit.png" : "psi:textures/model/psimetal_exosuit_sensor.png";
+        return overlay ? "psitweaks:textures/models/armor/moval_suit.png" : "psi:textures/model/psimetal_exosuit_sensor.png";
     }
 
     @Override

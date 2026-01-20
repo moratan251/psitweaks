@@ -156,6 +156,10 @@ dependencies {
     implementation fg.deobf("curse.maven:tinkers-construct-74072:6777068")
     implementation fg.deobf("curse.maven:moffs-addonapi-dynload-1242459:6420515")
     implementation fg.deobf("curse.maven:tinkers-construct-74924:6819217")
+   // implementation fg.deobf("curse.maven:geckolib-388172:6920925")
+   // implementation fg.deobf("curse.maven:ars-nouveau-401955:6688854")
+    implementation fg.deobf("curse.maven:applied-energistics-2-223794:6852919")
+    implementation fg.deobf("curse.maven:guideme-1173950:6942062")
     implementation "org.spongepowered:mixin:0.8.5"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
@@ -242,4 +246,12 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.register('buildDeobf', Jar) {
+    group = 'build'
+    archiveClassifier.set('deobf')
+    from sourceSets.main.output
+
+    finalizedBy 'reobfJar'
 }

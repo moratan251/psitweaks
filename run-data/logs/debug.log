@@ -897,7 +897,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [039月2025 22:25:46.104] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for psitweaks
 [039月2025 22:25:46.104] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.client.ClientEventBusSubscriber to MOD
 [039月2025 22:25:46.106] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing vazkii.psi.common.core.handler.ContributorSpellCircleHandler to FORGE
-[039月2025 22:25:46.109] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals to MOD
+[039月2025 22:25:46.109] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes to MOD
 [039月2025 22:25:46.109] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.handler.EffectHandler to FORGE
 [039月2025 22:25:46.112] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.moratan251.psitweaks.common.handler.FlightHandler to FORGE
 [039月2025 22:25:46.113] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing vazkii.psi.common.core.handler.PsiSoundHandler to MOD

@@ -1,15 +1,19 @@
 package com.moratan251.psitweaks.client.proxy;
 
+import com.moratan251.psitweaks.client.guis.GuiFlashRing;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.ISpellAcceptor;
 
-public class ClientProxy {
+public class ClientProxyPsitweaks implements IProxyPsitweaks {
 
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(FMLClientSetupEvent event) {
@@ -24,6 +28,10 @@ public class ClientProxy {
                     }
             );
         });
+    }
+
+    public void openFlashRingGUI(ItemStack stack) {
+        Minecraft.getInstance().setScreen(new GuiFlashRing(stack));
     }
 
 

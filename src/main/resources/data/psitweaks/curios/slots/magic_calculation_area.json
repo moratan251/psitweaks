@@ -3,7 +3,7 @@
   "size": 4,
   "operation": "SET",
   "order": 35,
-  "icon": "curios:slot/empty_bracelet_slot",
+  "icon": "curios:slot/empty_magic_calculation_area_slot",
   "add_cosmetic": false,
   "use_native_gui": true,
   "render_toggle": false

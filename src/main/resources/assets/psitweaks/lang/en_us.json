@@ -17,16 +17,21 @@
   "item.psitweaks.psionic_factor_ivory": "Ivory Psionic Factor",
   "item.psitweaks.psionic_factor_ebony": "Ebony Psionic Factor",
   "item.psitweaks.chaotic_factor": "Chaotic Factor",
-  "item.psitweaks.chaotic_psimetal": "Chaotic Psimetal",
+  "item.psitweaks.chaotic_psimetal": "Chaotic Psimetal Ingot",
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
+  "item.psitweaks.aim_assisting_device": "Long-Range Aiming Aid Device",
 
   "effect.psitweaks.parade": "Parade",
   "effect.psitweaks.flight": "Flight",
   "effect.psitweaks.barrier": "Bariier",
   "effect.psitweaks.hardening": "Hardening",
+
+
+
+
 
   "psitweaks.event.second": "§bEvent§7: Second",
 
@@ -37,13 +42,30 @@
 
   "curios.identifier.magic_calculation_area": "Magic Calculation Area",
 
-  "spellpiece.trick_explode_no_destroy": "Trick: Antipersonnel Explode",
+  "psitweaks.spellpiece.trick_explode_no_destroy": "Trick: Antipersonnel Explode",
 
   "psitweaks.spellpiece.trick_barrier": "Trick: Barrier",
 
   "psitweaks.spellpiece.trick_hardening": "Trick: Hardening",
 
-  "spellpiece.trick_parade": "Trick: Parade",
+  "psitweaks.spellpiece.trick_parade": "Trick: Parade",
+
+  "psitweaks.spellpiece.trick_interact_block": "Trick: Block Interact",
+
+  "psitweaks.spellpiece.trick_store_entity": "Trick: Store Entity",
+  "psitweaks.spellpiece.trick_store_entity.desc": "Store the entity's UUID in the CAD memory",
+
+  "psitweaks.spellpiece.selector_stored_entity": "Selector: Stored Entity",
+  "psitweaks.spellpiece.selector_stored_entity.desc": "Retrieve entities from the UUID stored in the CAD memory",
+
+  "psitweaks.spellpiece.trick_dispel": "Trick: Dispel",
+  "psitweaks.spellpiece.trick_dispel.desc": "Remove effects from target entity",
+
+  "psitweaks.spellpiece.trick_dispel_beneficial": "Trick: Dispel Beneficial",
+  "psitweaks.spellpiece.trick_dispel_beneficial.desc": "Remove beneficial effects from target entity",
+
+  "psitweaks.spellpiece.trick_dispel_non_beneficial": "Trick: Dispel Non Beneficial",
+  "psitweaks.spellpiece.trick_dispel_non_beneficial.desc": "Remove non beneficial effects from target entity",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 

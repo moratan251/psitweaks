@@ -2,9 +2,19 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.items.armor.*;
+import com.moratan251.psitweaks.common.items.curios.ItemAimAssistingDevice;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterSecond;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
 import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
+import com.moratan251.psitweaks.common.items.modules.ModulePsyonSupplyingUnit;
+//import com.moratan251.psitweaks.common.registries.PsitweaksModules;
+import com.moratan251.psitweaks.common.registries.PsitweaksModules;
+import mekanism.common.content.gear.shared.ModuleEnergyUnit;
+import mekanism.common.item.ItemModule;
+import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -18,7 +28,7 @@ import vazkii.psi.common.item.component.ItemCADAssembly;
 
 public class PsitweaksItems {
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Psitweaks.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "psitweaks");
 
    // public static final RegistryObject<Item> TEST_ITEM = ITEMS.register("test_item", () -> new Item(new Item.Properties()));
 
@@ -63,10 +73,28 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_psimetal"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_ivory_psimetal"));
 
+    //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
+    //public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
+
 
     public static final RegistryObject<Item> CURIOS_CONTROLLER = ITEMS.register("curios_controller", () -> new ItemCuriosController(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_SECOND = ITEMS.register("auto_caster_second", () -> new ItemAutoCasterSecond(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
+    public static final RegistryObject<Item> AIM_ASSISTING_DEVICE = ITEMS.register("aim_assisting_device", () -> new ItemAimAssistingDevice(new Item.Properties().rarity(Rarity.EPIC)));
+
+
+    public static final ItemDeferredRegister MODULES = new ItemDeferredRegister("psitweaks");
+    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING  = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);;
+/*
+    static{
+
+        MODULE_PSYON_SUPPLYING = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);
+    }
+
+ */
+
+
+
 
 
 

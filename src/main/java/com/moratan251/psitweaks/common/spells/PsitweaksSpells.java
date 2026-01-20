@@ -29,8 +29,26 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_barrier"), PieceTrickBarrier.class);
             PsiAPI.addPieceToGroup(PieceTrickBarrier.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_barrier"), false);
 
-          //  PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_interact_block"), PieceTrickInteractBlock.class);
-          //  PsiAPI.addPieceToGroup(PieceTrickInteractBlock.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_interact_block"), false);
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_interact_block"), PieceTrickInteractBlock.class);
+            PsiAPI.addPieceToGroup(PieceTrickInteractBlock.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_interact_block"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_store_entity"), PieceTrickStoreEntityUUID.class);
+            PsiAPI.addPieceToGroup(PieceTrickStoreEntityUUID.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_store_entity"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "selector_stored_entity"), PieceSelectorStoredEntity.class);
+            PsiAPI.addPieceToGroup(PieceSelectorStoredEntity.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "selector_stored_entity"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel"), PieceTrickDispel.class);
+            PsiAPI.addPieceToGroup(PieceTrickDispel.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel_beneficial"), PieceTrickDispelBeneficial.class);
+            PsiAPI.addPieceToGroup(PieceTrickDispelBeneficial.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel_beneficial"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel_non_beneficial"), PieceTrickDispelNonBeneficial.class);
+            PsiAPI.addPieceToGroup(PieceTrickDispelNonBeneficial.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel_non_beneficial"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_cocytus"), PieceTrickCocytus.class);
+            PsiAPI.addPieceToGroup(PieceTrickCocytus.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_cocytus"), false);
         });
     }
 }

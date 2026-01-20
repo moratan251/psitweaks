@@ -1,4 +1,4 @@
-### Psi: Tweaks And Additions
+## Psi: Tweaks And Additions
 
 Psiに追加要素やMekanismとの連携レシピを追加するmodです。
 前提modとしてMekanism, Mekanism Generators, Psi が必要です。
@@ -14,4 +14,8 @@ Psiに追加要素やMekanismとの連携レシピを追加するmodです。
 Mekanismの冶金注入によるサイメタルなどの作成レシピ追加
 
 Psi1.20.1よりフラッシュリングのバックポート
+
+#### v0.5.1
+
+サーバー側でクラッシュする問題を修正
 

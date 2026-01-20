@@ -7,32 +7,7 @@ import vazkii.psi.api.cad.EnumCADComponent;
 import vazkii.psi.api.cad.ICADAssembly;
 import vazkii.psi.common.item.component.ItemCADAssembly;
 import vazkii.psi.common.item.component.ItemCADComponent;
-/*
-public class ItemCADAssemblyPsitweaks extends ItemCADAssembly {
 
-    private final String model;
-
-    public ItemCADAssemblyPsitweaks(Properties props, String model) {
-        super(props, model);
-        this.model = model;
-    }
-
-    @Override
-    public ResourceLocation getCADModel(ItemStack stack, ItemStack cad) {
-        return ResourceLocation.fromNamespaceAndPath("psitweaks", "item/cad_alloy_psion");
-    }
-
-
-    @Override
-    public ResourceLocation getCadTexture(ItemStack stack, ItemStack cad) {
-        return ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_alloy_psion");
-    }
-
-
-
-}
-
- */
 
 public class ItemCADAssemblyPsitweaks extends ItemCADComponent implements ICADAssembly {
     private final String model;
@@ -47,11 +22,11 @@ public class ItemCADAssemblyPsitweaks extends ItemCADComponent implements ICADAs
     }
 
     public ResourceLocation getCADModel(ItemStack stack, ItemStack cad) {
-        return ResourceLocation.fromNamespaceAndPath("psitweaks", "item/" + this.model);
+        return ResourceLocation.fromNamespaceAndPath("psitweaks", "models/item/" + this.model);
     }
 
     public ResourceLocation getCadTexture(ItemStack stack, ItemStack cad) {
-        return ResourceLocation.fromNamespaceAndPath("psitweaks", this.model);
+        return ResourceLocation.fromNamespaceAndPath("psitweaks", "textures/item/" + this.model + ".png");
     }
 }
 

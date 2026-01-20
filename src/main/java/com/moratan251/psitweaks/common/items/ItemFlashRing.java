@@ -7,8 +7,7 @@ package com.moratan251.psitweaks.common.items;
  * Original author: Vazkii
  */
 
-import com.moratan251.psitweaks.client.guis.GuiFlashRing;
-import net.minecraft.client.Minecraft;
+import com.moratan251.psitweaks.Psitweaks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -79,15 +78,11 @@ public class ItemFlashRing extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand usedHand) {
         ItemStack held = player.getItemInHand(usedHand);
         boolean isSneaking = player.isShiftKeyDown();
-
-        // GUIを開く
         if (isSneaking && level.isClientSide) {
-            //Psi.proxy.openFlashRingGUI(held);
-            Minecraft.getInstance().setScreen(new GuiFlashRing(held));
+            Psitweaks.proxyPsitweaks.openFlashRingGUI(held);
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, held);
         }
 
-        // Spellをキャスト
         if (!isSneaking && ISpellAcceptor.hasSpell(held)) {
             PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
             ItemStack cad = data.getCAD();
