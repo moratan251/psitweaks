@@ -22,7 +22,7 @@
   "item.psitweaks.cad_assembly_chaotic_psimetal": "カオティックサイメタルのCAD素体",
   "item.psitweaks.auto_caster_tick": "術式自動起動デバイス: tick",
   "item.psitweaks.auto_caster_second": "術式自動起動デバイス: セカンド",
-  "item.psitweaks.aim_assisting_device": "長距離照準補助デバイス",
+  "item.psitweaks.third_eye_device": "サードアイデバイス",
 
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",
@@ -72,7 +72,10 @@
   "psitweaks.spellpiece.trick_dispel_non_beneficial.desc": "対象から有益でないエフェクトを除去する",
 
   "psitweaks.spellpiece.trick_cocytus": "作動式: コキュートス",
-  "psitweaks.spellpiece.trick_cocytus.desc": "対象の精神を永久に凍結させる(プレイヤーには無効)",
+  "psitweaks.spellpiece.trick_cocytus.desc": "対象のモブの精神を永久に凍結させる",
+
+  "psitweaks.spellpiece.trick_supply_fe": "作動式: FE供給",
+  "psitweaks.spellpiece.trick_supply_fe.desc": "ブロックにFEを供給します。方向の指定が可能です(Mekanism機械などは方向の指定が必須です)。",
 
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",

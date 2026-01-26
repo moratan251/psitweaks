@@ -1,25 +1,19 @@
 package com.moratan251.psitweaks.common.items;
 
-import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.items.armor.*;
-import com.moratan251.psitweaks.common.items.curios.ItemAimAssistingDevice;
+import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterSecond;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
 import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
-import com.moratan251.psitweaks.common.items.modules.ModulePsyonSupplyingUnit;
 //import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
-import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.registries.MekanismItems;
-import mekanism.common.registries.MekanismModules;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -80,7 +74,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> CURIOS_CONTROLLER = ITEMS.register("curios_controller", () -> new ItemCuriosController(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_SECOND = ITEMS.register("auto_caster_second", () -> new ItemAutoCasterSecond(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
-    public static final RegistryObject<Item> AIM_ASSISTING_DEVICE = ITEMS.register("aim_assisting_device", () -> new ItemAimAssistingDevice(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC)));
 
 
     public static final ItemDeferredRegister MODULES = new ItemDeferredRegister("psitweaks");

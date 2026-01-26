@@ -11,6 +11,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 //import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
 import com.moratan251.psitweaks.common.proxy.ServerProxyPsitweaks;
+import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -67,6 +68,8 @@ public class Psitweaks {
         PsitweaksEffects.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
+
+        PsitweaksEntities.register(modEventBus);
 
         proxyPsitweaks = (IProxyPsitweaks) (dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks());
 

@@ -22,7 +22,7 @@
   "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
-  "item.psitweaks.aim_assisting_device": "Long-Range Aiming Aid Device",
+  "item.psitweaks.third_eye_device": "Third‐Eye Device",
 
   "effect.psitweaks.parade": "Parade",
   "effect.psitweaks.flight": "Flight",
@@ -66,6 +66,13 @@
 
   "psitweaks.spellpiece.trick_dispel_non_beneficial": "Trick: Dispel Non Beneficial",
   "psitweaks.spellpiece.trick_dispel_non_beneficial.desc": "Remove non beneficial effects from target entity",
+
+  "psitweaks.spellpiece.trick_cocytus": "Trick: Cocytus",
+  "psitweaks.spellpiece.trick_cocytus.desc": "Permanently freeze the target mob's mind",
+
+
+  "psitweaks.spellpiece.trick_supply_fe": "Trick: FE Charge",
+  "psitweaks.spellpiece.trick_supply_fe.desc": "Supplies FE to blocks. Direction can be specified (direction specification is required for Mekanism machinery, etc.)",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 

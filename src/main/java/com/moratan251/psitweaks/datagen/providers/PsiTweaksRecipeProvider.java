@@ -25,8 +25,9 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         Item psimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "psimetal"));
         Item ebonyPsimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "ebony_psimetal"));
         Item ivoryPsimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "ivory_psimetal"));
-        Item loopCastBullet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "spell_bullet_loop"));
         Item ultimateControlCircuit = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ultimate_control_circuit"));
+        Item plutoniumPellet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "pellet_plutonium"));
+        Item teleportationCore = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "teleportation_core"));
 
 
 
@@ -156,6 +157,16 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern(" BA")
                 .unlockedBy("has_chaotic_factor", has(PsitweaksItems.CHAOTIC_FACTOR.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_chaotic_psimetal"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.THIRD_EYE_DEVICE.get())
+                .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('B', plutoniumPellet)
+                .define('C', teleportationCore)
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "third_eye_device"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)
                 .requires(ModItems.exosuitController)

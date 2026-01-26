@@ -6,7 +6,9 @@
   "refmap": "psitweaks.refmap.json",
   "mixins": [
     "DisableDamagePsiDeduction",
-    "DisableRegenCooldown"
+    "DisableRegenCooldown",
+    "isInRadiusMixin",
+    "rangeLimitParamMixin"
   ],
   "client": [
   ]

@@ -49,6 +49,14 @@ public class PsitweaksSpells {
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_cocytus"), PieceTrickCocytus.class);
             PsiAPI.addPieceToGroup(PieceTrickCocytus.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_cocytus"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_supply_fe"), PieceTrickSupplyFE.class);
+            PsiAPI.addPieceToGroup(PieceTrickSupplyFE.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_supply_fe"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_time_accelerate"), PieceTrickTimeAccelerate.class);
+            PsiAPI.addPieceToGroup(PieceTrickTimeAccelerate.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_time_accelerate"), false);
+
+
         });
     }
 }
