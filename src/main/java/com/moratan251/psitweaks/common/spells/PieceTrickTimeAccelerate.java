@@ -41,22 +41,22 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
     public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
         super.addToMetadata(meta);
 
-        Double p = (Double) getParamEvaluation(power);
-        Double t = (Double) getParamEvaluation(timeSeconds);
+        Double poweVal = (Double) getParamEvaluation(power);
+        Double timeVal = (Double) getParamEvaluation(timeSeconds);
 
-        if (p == null || p <= 0 || p.intValue() != p) {
+        if (poweVal == null || poweVal <= 0 || poweVal.intValue() != poweVal) {
             throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_INTEGER, x, y);
         }
-        if (t == null || t <= 0 || t.intValue() != t) {
+        if (timeVal == null || timeVal <= 0 || timeVal.intValue() != timeVal) {
             throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_INTEGER, x, y);
         }
 
-        int rate = p.intValue();
-        int seconds = t.intValue();
+        int rate = poweVal.intValue();
+        int seconds = timeVal.intValue();
 
         // ざっくり：倍率と秒数に比例して重くなるのでコストも比例
-        meta.addStat(EnumSpellStat.COST, rate * seconds * 2);
-        meta.addStat(EnumSpellStat.POTENCY, rate * 10);
+        meta.addStat(EnumSpellStat.COST, (int) (Math.pow(2,rate) * seconds * 3));
+        meta.addStat(EnumSpellStat.POTENCY, 150 + rate * 50);
     }
 
     @Override
@@ -67,8 +67,9 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
 
         if (posVec == null) throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
 
-        int rate = powerVal.intValue();
+        int rate = (int) Math.pow(2,powerVal.intValue());
         int seconds = timeVal.intValue();
+        if (rate > 512) rate = 512;
         if (rate <= 0) throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         if (seconds <= 0) throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
 
@@ -112,4 +113,7 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
 
         return null;
     }
+
+
+
 }

@@ -64,11 +64,11 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> CHAOTIC_FACTOR = ITEMS.register("chaotic_factor", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CHAOTIC_PSIMETAL = ITEMS.register("chaotic_psimetal", () -> new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_psimetal"));
-    public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_ivory_psimetal"));
+    //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
+    //public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
 
-    //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
-    //public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
 
 
     public static final RegistryObject<Item> CURIOS_CONTROLLER = ITEMS.register("curios_controller", () -> new ItemCuriosController(new Item.Properties()));

@@ -99,6 +99,11 @@ public class EntityTimeAccelerator extends Entity {
         BlockEntity blockEntity = serverLevel.getBlockEntity(targetPos);
 
         int rate = getTimeRate();
+        rate -= 1;
+        if (rate == 0) {
+            discard();
+            return;
+        }
 
         for (int i = 0; i < rate; i++) {
             if (blockEntity != null) {
