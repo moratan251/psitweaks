@@ -72,6 +72,7 @@ public class Psitweaks {
         PsitweaksEntities.register(modEventBus);
 
         proxyPsitweaks = (IProxyPsitweaks) (dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks());
+        proxyPsitweaks.registerHandlers();
 
         //ComponentStats.onCommonSetup(modEventBus);
 

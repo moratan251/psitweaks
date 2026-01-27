@@ -5,17 +5,34 @@ import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.ISpellAcceptor;
+import vazkii.psi.client.model.ModelCAD;
+import vazkii.psi.common.item.base.ModItems;
 
+@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(
+        value = {Dist.CLIENT},
+        modid = "psitweaks",
+        bus = Mod.EventBusSubscriber.Bus.MOD
+)
 public class ClientProxyPsitweaks implements IProxyPsitweaks {
+    public void registerHandlers() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::modelBake);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCADModels);
+    }
 
-    @OnlyIn(Dist.CLIENT)
+
     public void initializeClient(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ResourceLocation activeProperty =  ResourceLocation.fromNamespaceAndPath("psitweaks", "active");
@@ -32,6 +49,16 @@ public class ClientProxyPsitweaks implements IProxyPsitweaks {
 
     public void openFlashRingGUI(ItemStack stack) {
         Minecraft.getInstance().setScreen(new GuiFlashRing(stack));
+    }
+
+    public void modelBake(ModelEvent.ModifyBakingResult event) {
+        event.getModels().computeIfPresent(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(ModItems.cad), "inventory"), (k, oldModel) -> new ModelCAD());
+    }
+
+    public void addCADModels(ModelEvent.RegisterAdditional event) {
+        event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_alloy_psion"));
+        event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_chaotic_psimetal"));
+
     }
 
 

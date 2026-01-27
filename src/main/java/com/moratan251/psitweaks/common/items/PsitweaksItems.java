@@ -77,6 +77,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC)));
 
 
+
+
     public static final ItemDeferredRegister MODULES = new ItemDeferredRegister("psitweaks");
     public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING  = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);;
 /*

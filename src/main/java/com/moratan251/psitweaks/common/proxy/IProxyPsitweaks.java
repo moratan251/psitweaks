@@ -9,5 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 
 public interface IProxyPsitweaks {
+
+    public void registerHandlers();
     void openFlashRingGUI(ItemStack var1);
 }

@@ -4,6 +4,11 @@ import net.minecraft.world.item.ItemStack;
 
 public class ServerProxyPsitweaks implements IProxyPsitweaks   {
 
+    @Override
+    public void registerHandlers() {
+
+    }
+
     public void openFlashRingGUI(ItemStack stack) {
     }
 
