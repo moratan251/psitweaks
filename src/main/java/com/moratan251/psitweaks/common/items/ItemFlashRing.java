@@ -152,7 +152,7 @@ public class ItemFlashRing extends Item {
 
         @Override
         public double getCostModifier() {
-            return 2;
+            return 1.0;
         }
 
         @Override
