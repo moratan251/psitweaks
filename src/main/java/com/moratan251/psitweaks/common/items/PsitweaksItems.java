@@ -76,6 +76,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
     public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC)));
 
+    public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler", () -> new ItemPortableCADAssembler(new Item.Properties()));
+
 
 
 

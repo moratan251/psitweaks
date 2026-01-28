@@ -13,4 +13,8 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<FlashRingMenu>> FLASH_RING =
             MENUS.register("flash_ring",
                     () -> IForgeMenuType.create(FlashRingMenu::new));
+
+    public static final RegistryObject<MenuType<PortableCADAssemblerMenu>> PORTABLE_CAD_ASSEMBLER =
+            MENUS.register("portable_cad_assembler",
+                    () -> IForgeMenuType.create(PortableCADAssemblerMenu::new));
 }
