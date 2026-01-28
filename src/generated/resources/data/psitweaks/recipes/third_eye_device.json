@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "B": {
+      "item": "mekanism:pellet_plutonium"
+    },
+    "C": {
+      "item": "mekanism:teleportation_core"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:third_eye_device"
+  },
+  "show_notification": true
+}

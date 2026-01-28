@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psi:psimetal"
+    },
+    "B": {
+      "item": "psi:spell_bullet_projectile"
+    },
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:advanced_spell_bullet_projectile"
+  },
+  "show_notification": true
+}
