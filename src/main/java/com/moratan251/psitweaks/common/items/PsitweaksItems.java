@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.common.items.armor.*;
+import com.moratan251.psitweaks.common.items.bullet.*;
 import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterSecond;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
@@ -12,6 +13,7 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -76,7 +78,14 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
     public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC)));
 
-    public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler", () -> new ItemPortableCADAssembler(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET = ITEMS.register("advanced_spell_bullet", () -> new ItemAdvancedSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_LOOP = ITEMS.register("advanced_spell_bullet_loop", () -> new ItemAdvancedLoopcastSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_MINE = ITEMS.register("advanced_spell_bullet_mine", () -> new ItemAdvancedMineSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_CHARGE = ITEMS.register("advanced_spell_bullet_charge", () -> new ItemAdvancedChargeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_GRENADE = ITEMS.register("advanced_spell_bullet_grenade", () -> new ItemAdvancedGrenadeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_PROJECTILE = ITEMS.register("advanced_spell_bullet_projectile", () -> new ItemAdvancedProjectileSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_CIRCLE = ITEMS.register("advanced_spell_bullet_circle", () -> new ItemAdvancedCircleSpellBullet(new Item.Properties()));
+    //public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler", () -> new ItemPortableCADAssembler(new Item.Properties()));
 
 
 

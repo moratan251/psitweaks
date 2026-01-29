@@ -24,6 +24,48 @@
   "item.psitweaks.auto_caster_second": "術式自動起動デバイス: セカンド",
   "item.psitweaks.third_eye_device": "サードアイデバイス",
 
+  "item.psitweaks.advanced_spell_bullet": "改良術式弾",
+  "item.psitweaks.resonant_spell_bullet": "共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet": "昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet": "覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet": "超越術式弾",
+
+  "item.psitweaks.advanced_spell_bullet_projectile": "発射型改良術式弾",
+  "item.psitweaks.resonant_spell_bullet_projectile": "発射型共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet_projectile": "発射型昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet_projectile": "発射型覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet_projectile": "発射型超越術式弾",
+
+  "item.psitweaks.advanced_spell_bullet_loop": "ループ型改良術式弾",
+  "item.psitweaks.resonant_spell_bullet_loop": "ループ型共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet_loop": "ループ型昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet_loop": "ループ型覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet_loop": "ループ型超越術式弾",
+
+  "item.psitweaks.advanced_spell_bullet_charge": "チャージ型改良術式弾",
+  "item.psitweaks.resonant_spell_bullet_charge": "チャージ型共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet_charge": "チャージ型昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet_charge": "チャージ型覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet_charge": "チャージ型超越術式弾",
+
+  "item.psitweaks.advanced_spell_bullet_mine": "地雷型改良術式弾",
+  "item.psitweaks.resonant_spell_bullet_mine": "地雷型共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet_mine": "地雷型昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet_mine": "地雷型覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet_mine": "地雷型超越術式弾",
+
+  "item.psitweaks.advanced_spell_bullet_grenade": "榴弾型改良術式弾",
+  "item.psitweaks.resonant_spell_bullet_grenade": "榴弾型共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet_grenade": "榴弾型昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet_grenade": "榴弾型覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet_grenade": "榴弾型超越術式弾",
+
+  "item.psitweaks.advanced_spell_bullet_circle": "円形改良術式弾",
+  "item.psitweaks.resonant_spell_bullet_circle": "円形共鳴術式弾",
+  "item.psitweaks.sublimated_spell_bullet_circle": "円形昇華術式弾",
+  "item.psitweaks.awakened_spell_bullet_circle": "円形覚醒術式弾",
+  "item.psitweaks.transcendent_spell_bullet_circle": "円形超越術式弾",
+
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",
   "effect.psitweaks.barrier": "障壁",
@@ -75,7 +117,10 @@
   "psitweaks.spellpiece.trick_cocytus.desc": "対象のモブの精神を永久に凍結させる",
 
   "psitweaks.spellpiece.trick_supply_fe": "作動式: FE供給",
-  "psitweaks.spellpiece.trick_supply_fe.desc": "ブロックにFEを供給します。方向の指定が可能です(Mekanism機械などは方向の指定が必須です)。",
+  "psitweaks.spellpiece.trick_supply_fe.desc": "ブロックにFEを供給します。方向の指定が可能です。",
+
+  "psitweaks.spellpiece.trick_time_accelerate": "作動式: 時間加速",
+  "psitweaks.spellpiece.trick_time_accelerate.desc": "対象のブロックの時を加速させます。",
 
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",

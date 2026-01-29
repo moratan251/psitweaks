@@ -25,6 +25,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         Item psimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "psimetal"));
         Item ebonyPsimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "ebony_psimetal"));
         Item ivoryPsimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "ivory_psimetal"));
+        Item spellBullet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "spell_bullet"));
         Item ultimateControlCircuit = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ultimate_control_circuit"));
         Item plutoniumPellet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "pellet_plutonium"));
         Item teleportationCore = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "teleportation_core"));
@@ -167,6 +168,78 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("ABA")
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "third_eye_device"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET.get())
+                .define('A', psimetal)
+                .define('B', spellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get())
+                .define('A', psimetal)
+                .define('B', ModItems.loopSpellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet_loop"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET_MINE.get())
+                .define('A', psimetal)
+                .define('B', ModItems.mineSpellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet_mine"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET_CHARGE.get())
+                .define('A', psimetal)
+                .define('B', ModItems.chargeSpellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet_charge"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET_GRENADE.get())
+                .define('A', psimetal)
+                .define('B', ModItems.grenadeSpellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet_grenade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE.get())
+                .define('A', psimetal)
+                .define('B', ModItems.projectileSpellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet_projectile"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET_CIRCLE.get())
+                .define('A', psimetal)
+                .define('B', ModItems.circleSpellBullet)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "advanced_spell_bullet_circle"));
+
+
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)
                 .requires(ModItems.exosuitController)

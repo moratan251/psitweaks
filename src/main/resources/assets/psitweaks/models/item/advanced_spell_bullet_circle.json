@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "psitweaks:item/advanced_spell_bullet_circle"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "psitweaks:active": 1.0
+      },
+      "model": "psitweaks:item/advanced_spell_bullet_circle_active"
+    }
+  ]
+}

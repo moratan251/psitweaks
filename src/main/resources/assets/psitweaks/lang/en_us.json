@@ -24,6 +24,50 @@
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
   "item.psitweaks.third_eye_device": "Third‐Eye Device",
 
+  "item.psitweaks.advanced_spell_bullet": "Advanced Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet": "Resonant Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet": "Sublimated Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet": "Awakened Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet": "Transcendent Spell Bullet",
+
+  "item.psitweaks.advanced_spell_bullet_projectile": "Advanced Projectile Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet_projectile": "Resonant Projectile Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet_projectile": "Sublimated Projectile Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet_projectile": "Awakened Projectile Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet_projectile": "Transcendent Projectile Spell Bullet",
+
+  "item.psitweaks.advanced_spell_bullet_loop": "Advanced Loopcast Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet_loop": "Resonant Loopcast Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet_loop": "Sublimated Loopcast Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet_loop": "Awakened Loopcast Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet_loop": "Transcendent Loopcast Spell Bullet",
+
+  "item.psitweaks.advanced_spell_bullet_charge": "Advanced Charge Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet_charge": "Resonant Charge Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet_charge": "Sublimated Charge Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet_charge": "Awakened Charge Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet_charge": "Transcendent Charge  Spell Bullet",
+
+  "item.psitweaks.advanced_spell_bullet_mine": "Advanced Mine Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet_mine": "Resonant Mine Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet_mine": "Sublimated Mine Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet_mine": "Awakened Mine Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet_mine": "Transcendent Mine Spell Bullet",
+
+  "item.psitweaks.advanced_spell_bullet_grenade": "Advanced Grenade Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet_grenade": "Resonant Grenade Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet_grenade": "Sublimated Grenade Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet_grenade": "Awakened Grenade Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet_grenade": "Transcendent Grenade Spell Bullet",
+
+  "item.psitweaks.advanced_spell_bullet_circle": "Advanced Circle Spell Bullet",
+  "item.psitweaks.resonant_spell_bullet_circle": "Resonant Circle Spell Bullet",
+  "item.psitweaks.sublimated_spell_bullet_circle": "Sublimated Circle Spell Bullet",
+  "item.psitweaks.awakened_spell_bullet_circle": "Awakened Circle Spell Bullet",
+  "item.psitweaks.transcendent_spell_bullet_circle": "Transcendent Circle Spell Bullet",
+
+
+
   "effect.psitweaks.parade": "Parade",
   "effect.psitweaks.flight": "Flight",
   "effect.psitweaks.barrier": "Bariier",
@@ -70,9 +114,12 @@
   "psitweaks.spellpiece.trick_cocytus": "Trick: Cocytus",
   "psitweaks.spellpiece.trick_cocytus.desc": "Permanently freeze the target mob's mind",
 
+  "psitweaks.spellpiece.trick_time_accelerate": "Trick: Time Accelerate",
+  "psitweaks.spellpiece.trick_time_accelerate.desc": "Accelerates the time of the target block.",
+
 
   "psitweaks.spellpiece.trick_supply_fe": "Trick: FE Charge",
-  "psitweaks.spellpiece.trick_supply_fe.desc": "Supplies FE to blocks. Direction can be specified (direction specification is required for Mekanism machinery, etc.)",
+  "psitweaks.spellpiece.trick_supply_fe.desc": "Supplies FE to blocks. Direction can be specified.",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 
