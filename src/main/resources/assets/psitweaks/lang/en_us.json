@@ -87,14 +87,20 @@
   "curios.identifier.magic_calculation_area": "Magic Calculation Area",
 
   "psitweaks.spellpiece.trick_explode_no_destroy": "Trick: Antipersonnel Explode",
+  "psitweaks.spellpiece.trick_explode_no_destroy.desc": "Cause an explosion that does not destroy blocks",
 
   "psitweaks.spellpiece.trick_barrier": "Trick: Barrier",
+  "psitweaks.spellpiece.trick_barrier.desc": "Reduce damage taken",
 
   "psitweaks.spellpiece.trick_hardening": "Trick: Hardening",
+  "psitweaks.spellpiece.trick_hardening.desc": "When taking heavy damage, reduce it to a certain value",
+
 
   "psitweaks.spellpiece.trick_parade": "Trick: Parade",
+  "psitweaks.spellpiece.trick_parade.desc": "Avoid damage with a certain probability",
 
   "psitweaks.spellpiece.trick_interact_block": "Trick: Block Interact",
+  "psitweaks.spellpiece.trick_interact_block.desc": "Right-click with the off-hand item on the target block.",
 
   "psitweaks.spellpiece.trick_store_entity": "Trick: Store Entity",
   "psitweaks.spellpiece.trick_store_entity.desc": "Store the entity's UUID in the CAD memory",
@@ -123,5 +129,6 @@
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 
-  "psitweaks.spellpiece.trick_flight": "Trick: Flight"
+  "psitweaks.spellpiece.trick_flight": "Trick: Flight",
+  "psitweaks.spellpiece.trick_flight.desc": "Enabling creative flight"
 }
