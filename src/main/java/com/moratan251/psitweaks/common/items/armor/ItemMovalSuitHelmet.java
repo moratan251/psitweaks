@@ -11,11 +11,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.api.exosuit.IExosuitSensor;
+import vazkii.psi.api.exosuit.ISensorHoldable;
 
 import javax.annotation.Nonnull;
 
-public class ItemMovalSuitHelmet extends ItemMovalSuitArmor {
+public class ItemMovalSuitHelmet extends ItemMovalSuitArmor implements ISensorHoldable {
     private final ArmorMaterial material;
+    private static final String TAG_SENSOR = "sensor";
 
     public ItemMovalSuitHelmet(ArmorMaterial material, Type type, Properties props) {
         super(material, type, props);
