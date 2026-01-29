@@ -168,6 +168,7 @@
   "psi.book.page.vectorPrimer.21": "Congratulations on making it through this tutorial!$(p)Again, this is just an introduction to vectors-- I've not said anything about dot or cross products, or vector projections, for example.$(p)But this should be more than enough to put together some quite interesting $(thing)Spells$(0) already.$(p)That's all-- now go forth and spellsling!",
   "psi.book.entry.tutorial1": "Tutorial (1): Writing A Spell",
 
+  "psi.desc": "これは第四の壁を破るジョークです、どうぞお楽しみください。",
   "advancement.psi:iron_cad_pickup": "スイート・ボッド",
   "advancement.psi:iron_cad_pickup.desc": "鉄のCAD素体を作成する",
   "advancement.psi:gold_assembly_pickup": "金に値する",
