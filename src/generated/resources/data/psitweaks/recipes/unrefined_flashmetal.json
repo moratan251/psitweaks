@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "B": {
+      "item": "mekanism:ingot_refined_glowstone"
+    }
+  },
+  "pattern": [
+    "B",
+    "A",
+    "B"
+  ],
+  "result": {
+    "item": "psitweaks:unrefined_flashmetal"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chaotic_psimetal": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:chaotic_psimetal"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:unrefined_flashmetal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_chaotic_psimetal",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:unrefined_flashmetal"
+    ]
+  },
+  "sends_telemetry_event": false
+}
