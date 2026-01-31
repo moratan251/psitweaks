@@ -10,9 +10,9 @@
     }
   },
   "pattern": [
-    "B",
-    "A",
-    "B"
+    "BBB",
+    "AAA",
+    "BBB"
   ],
   "result": {
     "item": "psitweaks:unrefined_flashmetal"

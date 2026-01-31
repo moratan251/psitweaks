@@ -1,4 +1,4 @@
-// 1.20.1	2026-01-31T01:50:17.3590563	Recipes
+// 1.20.1	2026-01-31T21:44:13.6088188	Recipes
 c6e2695049bbfa9cee27062c7374bc20b1440c2e data/psitweaks/advancements/recipes/combat/advanced_spell_bullet.json
 f60f9c63ea460e59c4c0ace7b73ae4984f30142c data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_charge.json
 51b592c34676cc780dc439e7364eccc0504ab468 data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_circle.json
@@ -42,4 +42,4 @@ a7869c0092adadaa178f21589d229aff35dac552 data/psitweaks/recipes/moval_suit_leggi
 d6bfff791be1d1ee864bfca3a4e22819afa72f27 data/psitweaks/recipes/psimetal_bow.json
 ad4906c7658136d29fc9df6754f087ba8628daea data/psitweaks/recipes/psionic_control_circuit.json
 643b93b2ab398e2d38de1247631ff856fda82ebf data/psitweaks/recipes/third_eye_device.json
-b723e9c01af1f3ed97cf82e3b65e77f8c9098760 data/psitweaks/recipes/unrefined_flashmetal.json
+4b5c7e11f907a13f70f6bd8dcf5363f3a3aa8e3a data/psitweaks/recipes/unrefined_flashmetal.json

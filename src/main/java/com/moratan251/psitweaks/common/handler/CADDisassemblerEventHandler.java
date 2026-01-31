@@ -3,6 +3,8 @@ package com.moratan251.psitweaks.common.handler;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -66,6 +68,15 @@ public class CADDisassemblerEventHandler {
 
         // CADを分解
         disassembleCAD(level, pos, heldStack);
+
+        level.playSound(
+                null,                           // プレイヤー（nullでサーバー側から全員に送信）
+                pos,                            // 位置
+                SoundEvents.ITEM_BREAK,         // 破損音
+                SoundSource.BLOCKS,             // サウンドカテゴリ
+                1.0F,                           // 音量
+                1.0F                            // ピッチ
+        );
 
         // CADを消費
         heldStack.shrink(1);

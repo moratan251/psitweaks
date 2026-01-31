@@ -163,9 +163,9 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.UNREFINED_FLASHMETAL.get())
                 .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
                 .define('B', MekanismItems.REFINED_GLOWSTONE_INGOT)
-                .pattern("B")
-                .pattern("A")
-                .pattern("B")
+                .pattern("BBB")
+                .pattern("AAA")
+                .pattern("BBB")
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "unrefined_flashmetal"));
 /*
