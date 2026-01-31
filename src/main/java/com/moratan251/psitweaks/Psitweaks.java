@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
@@ -54,6 +55,7 @@ public class Psitweaks {
 
 
         PsitweaksItems.register(modEventBus);
+        PsitweaksBlocks.register(modEventBus);
         PsitweaksInfuseTypes.register(modEventBus);
         PsitweaksGases.register(modEventBus);
         PsitweaksModules.MODULES.register(modEventBus);

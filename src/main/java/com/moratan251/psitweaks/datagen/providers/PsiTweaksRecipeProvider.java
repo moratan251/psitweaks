@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.datagen.providers;
 
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -158,6 +159,28 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern(" BA")
                 .unlockedBy("has_chaotic_factor", has(PsitweaksItems.CHAOTIC_FACTOR.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_chaotic_psimetal"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.UNREFINED_FLASHMETAL.get())
+                .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('B', MekanismItems.REFINED_GLOWSTONE_INGOT)
+                .pattern("B")
+                .pattern("A")
+                .pattern("B")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "unrefined_flashmetal"));
+/*
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismItems.TELEPORTATION_CORE)
+                .define('A', Items.GOLD_INGOT)
+                .define('B', Items.ENDER_PEARL)
+                .define('C', Items.DIAMOND)
+                .define('D', MekanismItems.ATOMIC_ALLOY)
+                .pattern("BDB")
+                .pattern("ACA")
+                .pattern("BDB")
+                .unlockedBy("ender_pearl", has(Items.ENDER_PEARL))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "unrefined_flashmetal"));
+
+ */
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.THIRD_EYE_DEVICE.get())
                 .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())

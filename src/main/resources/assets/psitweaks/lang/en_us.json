@@ -18,6 +18,8 @@
   "item.psitweaks.psionic_factor_ebony": "Ebony Psionic Factor",
   "item.psitweaks.chaotic_factor": "Chaotic Factor",
   "item.psitweaks.chaotic_psimetal": "Chaotic Psimetal Ingot",
+  "item.psitweaks.flashmetal": "Flashmetal Ingot",
+  "item.psitweaks.unrefined_flashmetal": " Unrefined Flashmetal",
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
@@ -65,6 +67,8 @@
   "item.psitweaks.sublimated_spell_bullet_circle": "Sublimated Circle Spell Bullet",
   "item.psitweaks.awakened_spell_bullet_circle": "Awakened Circle Spell Bullet",
   "item.psitweaks.transcendent_spell_bullet_circle": "Transcendent Circle Spell Bullet",
+
+  "block.psitweaks.cad_disassembler": "CAD Disassembler",
 
 
 

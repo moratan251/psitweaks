@@ -12,12 +12,14 @@
   "item.psitweaks.enriched_ivory": "濃縮アイボリー",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
-  "item.psitweaks.flight_chip": "飛行チップ",
+
   "item.psitweaks.psionic_factor": "サイオニック因子",
   "item.psitweaks.psionic_factor_ivory": "偏陽サイオニック因子",
   "item.psitweaks.psionic_factor_ebony": "偏陰サイオニック因子",
   "item.psitweaks.chaotic_factor": "カオティック因子",
   "item.psitweaks.chaotic_psimetal": "カオティックサイメタルインゴット",
+  "item.psitweaks.flashmetal": "フラッシュメタルインゴット",
+  "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル",
   "item.psitweaks.cad_assembly_alloy_psion": "サイオニック合金のCAD素体",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "カオティックサイメタルのCAD素体",
   "item.psitweaks.auto_caster_tick": "術式自動起動デバイス: tick",
@@ -65,6 +67,8 @@
   "item.psitweaks.sublimated_spell_bullet_circle": "円形昇華術式弾",
   "item.psitweaks.awakened_spell_bullet_circle": "円形覚醒術式弾",
   "item.psitweaks.transcendent_spell_bullet_circle": "円形超越術式弾",
+
+  "block.psitweaks.cad_disassembler": "CAD分解台",
 
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",

@@ -1,7 +1,7 @@
 {
   "type": "mekanism:metallurgic_infusing",
   "chemicalInput": {
-    "amount": 640,
+    "amount": 80,
     "infuse_type": "psitweaks:infuse_psigem"
   },
   "itemInput": {
