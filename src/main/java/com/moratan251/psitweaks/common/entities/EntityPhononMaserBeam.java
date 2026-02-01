@@ -18,9 +18,12 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -29,17 +32,19 @@ import java.util.UUID;
 
 public class EntityPhononMaserBeam extends Entity {
 
+    private static final EntityDataAccessor<Float> START_X = SynchedEntityData.defineId(EntityPhononMaserBeam.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> START_Y = SynchedEntityData.defineId(EntityPhononMaserBeam.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> START_Z = SynchedEntityData.defineId(EntityPhononMaserBeam.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> END_X = SynchedEntityData.defineId(EntityPhononMaserBeam.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> END_Y = SynchedEntityData.defineId(EntityPhononMaserBeam.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> END_Z = SynchedEntityData.defineId(EntityPhononMaserBeam.class, EntityDataSerializers.FLOAT);
 
-    private static final int DURATION_TICKS = 20; // 1秒 = 20tick
+    private static final double MAX_RANGE = 32.0;
 
-    private int ticksRemaining = DURATION_TICKS;
+    private int ticksRemaining = 20;
+    private int totalDuration = 20;
     private double power = 1.0;
     private UUID casterUUID;
-    private Vec3 endPos;
-    private BlockPos hitBlockPos;
     private boolean soundPlayed = false;
 
     public EntityPhononMaserBeam(EntityType<?> type, Level level) {
@@ -48,22 +53,22 @@ public class EntityPhononMaserBeam extends Entity {
         this.setNoGravity(true);
     }
 
-    public EntityPhononMaserBeam(Level level, LivingEntity caster, Vec3 start, Vec3 end, double power, @Nullable BlockPos hitBlock) {
+    public EntityPhononMaserBeam(Level level, LivingEntity caster, double power, int durationTicks) {
         this(PsitweaksEntities.PHONON_MASER_BEAM.get(), level);
-        this.setPos(start.x, start.y, start.z);
-        this.endPos = end;
         this.power = power;
+        this.ticksRemaining = durationTicks;
+        this.totalDuration = durationTicks;
         this.casterUUID = caster.getUUID();
-        this.hitBlockPos = hitBlock;
 
-        // クライアント同期用にエンドポイントを設定
-        this.entityData.set(END_X, (float) end.x);
-        this.entityData.set(END_Y, (float) end.y);
-        this.entityData.set(END_Z, (float) end.z);
+        // 初期位置を設定
+        updateBeamPositions(caster);
     }
 
     @Override
     protected void defineSynchedData() {
+        this.entityData.define(START_X, 0.0F);
+        this.entityData.define(START_Y, 0.0F);
+        this.entityData.define(START_Z, 0.0F);
         this.entityData.define(END_X, 0.0F);
         this.entityData.define(END_Y, 0.0F);
         this.entityData.define(END_Z, 0.0F);
@@ -74,29 +79,98 @@ public class EntityPhononMaserBeam extends Entity {
         super.tick();
 
         if (!level().isClientSide) {
-            // サーバー側：サウンド再生（最初のtickのみ）
+            // サーバー側
+            LivingEntity caster = getCaster();
+
+            if (caster == null) {
+                this.discard();
+                return;
+            }
+
+            // サウンド再生（最初のtickのみ）
             if (!soundPlayed) {
                 playLaserSound();
                 soundPlayed = true;
             }
 
-            // サーバー側：ダメージとエネルギー供給
-            ticksRemaining--;
+            // 毎tickビームの位置を更新（プレイヤーの向きに追従）
+            updateBeamPositions(caster);
 
-            if (ticksRemaining <= 0) {
-                this.discard();
-                return;
-            }
-
-            // 毎tick処理
-            LivingEntity caster = getCaster();
+            // ダメージ処理
             damageEntitiesAlongPath(caster);
 
-            // 最初のtickでのみブロックにエネルギー供給
-            if (ticksRemaining == DURATION_TICKS - 1 && hitBlockPos != null) {
-                supplyEnergyToBlock();
+            // ブロックへのエネルギー供給（毎tick）
+            BlockPos hitBlockPos = getHitBlockPos();
+            if (hitBlockPos != null) {
+                supplyEnergyToBlock(hitBlockPos);
+            }
+
+            ticksRemaining--;
+            if (ticksRemaining <= 0) {
+                this.discard();
             }
         }
+    }
+
+    /**
+     * 術者の視線に基づいてビームの開始点と終点を更新
+     */
+    private void updateBeamPositions(LivingEntity caster) {
+        Vec3 startPos = caster.getEyePosition();
+        Vec3 lookVec = caster.getLookAngle();
+        Vec3 potentialEndPos = startPos.add(lookVec.scale(MAX_RANGE));
+
+        // ブロックへのレイトレース
+        BlockHitResult blockHit = level().clip(new ClipContext(
+                startPos,
+                potentialEndPos,
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                caster
+        ));
+
+        Vec3 endPos = potentialEndPos;
+        if (blockHit.getType() != HitResult.Type.MISS) {
+            endPos = blockHit.getLocation();
+        }
+
+        // エンティティの位置を開始点に設定
+        this.setPos(startPos.x, startPos.y, startPos.z);
+
+        // 同期データを更新
+        this.entityData.set(START_X, (float) startPos.x);
+        this.entityData.set(START_Y, (float) startPos.y);
+        this.entityData.set(START_Z, (float) startPos.z);
+        this.entityData.set(END_X, (float) endPos.x);
+        this.entityData.set(END_Y, (float) endPos.y);
+        this.entityData.set(END_Z, (float) endPos.z);
+    }
+
+    /**
+     * 現在のレイトレースでヒットしているブロック位置を取得
+     */
+    @Nullable
+    private BlockPos getHitBlockPos() {
+        Vec3 start = getStartPos();
+        Vec3 end = getEndPos();
+
+        LivingEntity caster = getCaster();
+        if (caster == null) {
+            return null;
+        }
+
+        BlockHitResult blockHit = level().clip(new ClipContext(
+                start,
+                end.add(caster.getLookAngle().scale(0.1)),
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                caster
+        ));
+
+        if (blockHit.getType() != HitResult.Type.MISS) {
+            return blockHit.getBlockPos();
+        }
+        return null;
     }
 
     /**
@@ -142,7 +216,7 @@ public class EntityPhononMaserBeam extends Entity {
      * レーザー経路上のエンティティにダメージを与える（ノックバックなし）
      */
     private void damageEntitiesAlongPath(@Nullable LivingEntity caster) {
-        Vec3 start = position();
+        Vec3 start = getStartPos();
         Vec3 end = getEndPos();
 
         AABB laserBounds = new AABB(start, end).inflate(0.5);
@@ -164,24 +238,20 @@ public class EntityPhononMaserBeam extends Entity {
             return;
         }
 
-        float damagePerTick = (float) (power * 4.0);
+        // ダメージ計算と適用
+        float damagePerTick = (float) ( power);
         DamageSource damageSource = createLaserDamageSource(caster);
 
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity living) {
-                // 現在の位置とモーションを保存
-                double oldX = living.getX();
-                double oldY = living.getY();
-                double oldZ = living.getZ();
                 Vec3 oldDeltaMovement = living.getDeltaMovement();
 
-                // ダメージ無敵時間をリセットしてダメージを与える
                 living.invulnerableTime = 0;
                 living.hurt(damageSource, damagePerTick);
 
-                // ノックバックを無効化（位置とモーションを復元）
+                // ノックバックを無効化
                 living.setDeltaMovement(oldDeltaMovement);
-                living.hurtMarked = true; // クライアントに同期
+                living.hurtMarked = true;
             }
         }
     }
@@ -213,21 +283,24 @@ public class EntityPhononMaserBeam extends Entity {
     /**
      * ILaserReceptorにエネルギーを供給
      */
-    private void supplyEnergyToBlock() {
-        if (hitBlockPos == null) {
-            return;
-        }
+    private void supplyEnergyToBlock(BlockPos hitBlockPos) {
         BlockEntity blockEntity = level().getBlockEntity(hitBlockPos);
         if (blockEntity instanceof ILaserReceptor receptor) {
-            long energyToSend = (long) (power * 100_000_000L);
-            receptor.receiveLaserEnergy(FloatingLong.create(energyToSend));
+            // 1tick当たりのエネルギー = 威力 * 100MJ / 持続時間
+            long energyPerTick = (long) (power * 5000L );
+            receptor.receiveLaserEnergy(FloatingLong.create(energyPerTick));
         }
     }
 
+    public Vec3 getStartPos() {
+        return new Vec3(
+                entityData.get(START_X),
+                entityData.get(START_Y),
+                entityData.get(START_Z)
+        );
+    }
+
     public Vec3 getEndPos() {
-        if (endPos != null) {
-            return endPos;
-        }
         return new Vec3(
                 entityData.get(END_X),
                 entityData.get(END_Y),
@@ -239,39 +312,29 @@ public class EntityPhononMaserBeam extends Entity {
         return power;
     }
 
+    public int getTotalDuration() {
+        return totalDuration;
+    }
+
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         this.ticksRemaining = tag.getInt("TicksRemaining");
+        this.totalDuration = tag.getInt("TotalDuration");
         this.power = tag.getDouble("Power");
         this.soundPlayed = tag.getBoolean("SoundPlayed");
         if (tag.hasUUID("CasterUUID")) {
             this.casterUUID = tag.getUUID("CasterUUID");
-        }
-        if (tag.contains("EndX")) {
-            this.endPos = new Vec3(tag.getDouble("EndX"), tag.getDouble("EndY"), tag.getDouble("EndZ"));
-        }
-        if (tag.contains("HitBlockX")) {
-            this.hitBlockPos = new BlockPos(tag.getInt("HitBlockX"), tag.getInt("HitBlockY"), tag.getInt("HitBlockZ"));
         }
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("TicksRemaining", this.ticksRemaining);
+        tag.putInt("TotalDuration", this.totalDuration);
         tag.putDouble("Power", this.power);
         tag.putBoolean("SoundPlayed", this.soundPlayed);
         if (this.casterUUID != null) {
             tag.putUUID("CasterUUID", this.casterUUID);
-        }
-        if (this.endPos != null) {
-            tag.putDouble("EndX", this.endPos.x);
-            tag.putDouble("EndY", this.endPos.y);
-            tag.putDouble("EndZ", this.endPos.z);
-        }
-        if (this.hitBlockPos != null) {
-            tag.putInt("HitBlockX", this.hitBlockPos.getX());
-            tag.putInt("HitBlockY", this.hitBlockPos.getY());
-            tag.putInt("HitBlockZ", this.hitBlockPos.getZ());
         }
     }
 }

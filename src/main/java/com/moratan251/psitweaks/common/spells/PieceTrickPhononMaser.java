@@ -1,53 +1,78 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.spell.*;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 public class PieceTrickPhononMaser extends PieceTrick {
 
-    private static final double MAX_RANGE = 32.0; // 射程32m
-
     SpellParam<Number> power;
+    SpellParam<Number> time;
 
     public PieceTrickPhononMaser(Spell spell) {
         super(spell);
         this.setStatLabel(EnumSpellStat.POTENCY,
-                (new StatLabel("psi.spellparam.power", true)).mul(50.0).floor());
+                (new StatLabel("psi.spellparam.power", true)).mul(50.0)
+                        .add(new StatLabel("psi.spellparam.time", true).mul(10.0)).floor());
         this.setStatLabel(EnumSpellStat.COST,
-                (new StatLabel("psi.spellparam.power", true)).mul(100.0).floor());
+                (new StatLabel("psi.spellparam.power", true)).mul(100.0)
+                        .mul(new StatLabel("psi.spellparam.time", true)).floor());
     }
 
     @Override
     public void initParams() {
+        // 威力: 小数を許可（第4引数true）
         this.addParam(this.power = new ParamNumber("psi.spellparam.power", SpellParam.RED, false, true));
+        // 時間: 整数のみ（第4引数false）
+        this.addParam(this.time = new ParamNumber("psi.spellparam.time", SpellParam.BLUE, false, false));
     }
 
     @Override
     public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
         super.addToMetadata(meta);
+
         Double powerVal = (Double) this.getParamEvaluation(this.power);
+        Double timeVal = (Double) this.getParamEvaluation(this.time);
+
+        // 威力チェック（正の数）
         if (powerVal == null || powerVal <= 0.0) {
-            throw new SpellCompilationException("psi.spellerror.nonpositivevalue", this.x, this.y);
+            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, this.x, this.y);
         }
-        meta.addStat(EnumSpellStat.POTENCY, (int) (powerVal * 50.0));
-        meta.addStat(EnumSpellStat.COST, (int) (powerVal * 100.0));
+
+        // 時間チェック（正の整数）
+        if (timeVal == null || timeVal <= 0.0) {
+            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, this.x, this.y);
+        }
+        if (timeVal != Math.floor(timeVal)) {
+            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_INTEGER, this.x, this.y);
+        }
+
+        int intTime = timeVal.intValue();
+
+
+
+        // コスト計算: 威力 * 100 * 時間
+        int cost = (int) (  (intTime + 1) * (powerVal + 1) * 2000 );
+        // ポテンシー計算: 威力 * 50 + 時間 * 10
+        int potency = (int) (500 + 100 * powerVal);
+
+        meta.addStat(EnumSpellStat.POTENCY, potency);
+        meta.addStat(EnumSpellStat.COST, cost);
     }
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         double powerVal = this.getParamValue(context, this.power).doubleValue();
+        int timeVal = this.getParamValue(context, this.time).intValue();
 
         if (powerVal <= 0) {
-            throw new SpellRuntimeException("psi.spellerror.nonpositivevalue");
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
+        }
+        if (timeVal <= 0) {
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
 
         Level level = context.caster.level();
@@ -57,37 +82,11 @@ public class PieceTrickPhononMaser extends PieceTrick {
 
         LivingEntity caster = context.caster;
 
-        // プレイヤーの視線方向を取得
-        Vec3 startPos = caster.getEyePosition();
-        Vec3 lookVec = caster.getLookAngle();
-        Vec3 endPos = startPos.add(lookVec.scale(MAX_RANGE));
-
-        // ブロックへのレイトレース
-        BlockHitResult blockHit = level.clip(new ClipContext(
-                startPos,
-                endPos,
-                ClipContext.Block.COLLIDER,
-                ClipContext.Fluid.NONE,
-                caster
-        ));
-
-        Vec3 actualEndPos = endPos;
-        BlockPos hitBlockPos = null;
-
-        if (blockHit.getType() != HitResult.Type.MISS) {
-            actualEndPos = blockHit.getLocation();
-            hitBlockPos = blockHit.getBlockPos();
-        }
+        double realPower = powerVal + 2.0; // ベースで2.0ダメージ
+        int realTime = timeVal + 20; // ベースで20ティック
 
         // レーザービームエンティティをスポーン
-        EntityPhononMaserBeam beam = new EntityPhononMaserBeam(
-                level,
-                caster,
-                startPos,
-                actualEndPos,
-                powerVal,
-                hitBlockPos
-        );
+        EntityPhononMaserBeam beam = new EntityPhononMaserBeam(level, caster, realPower, realTime);
         level.addFreshEntity(beam);
 
         return null;

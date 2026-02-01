@@ -36,7 +36,7 @@ public class PhononMaserBeamRenderer extends EntityRenderer<EntityPhononMaserBea
     public void render(EntityPhononMaserBeam entity, float entityYaw, float partialTicks,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
 
-        Vec3 start = entity.position();
+        Vec3 start = entity.getStartPos();
         Vec3 end = entity.getEndPos();
         Vec3 diff = end.subtract(start);
         double length = diff.length();
@@ -49,7 +49,12 @@ public class PhononMaserBeamRenderer extends EntityRenderer<EntityPhononMaserBea
 
         poseStack.pushPose();
 
-        // レンダー用のバッファを取得（半透明、発光、両面描画）
+        // エンティティ位置からの相対座標で描画
+        Vec3 entityPos = entity.position();
+        Vec3 relStart = start.subtract(entityPos);
+        Vec3 relEnd = end.subtract(entityPos);
+
+        // レンダー用のバッファを取得
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.lightning());
 
         Matrix4f matrix = poseStack.last().pose();
@@ -62,10 +67,6 @@ public class PhononMaserBeamRenderer extends EntityRenderer<EntityPhononMaserBea
         // 斜め45度のオフセットを計算
         Vec3 offset1 = perpendicular1.add(perpendicular2).normalize().scale(BEAM_WIDTH);
         Vec3 offset2 = perpendicular1.subtract(perpendicular2).normalize().scale(BEAM_WIDTH);
-
-        // 開始・終了位置（エンティティからの相対座標）
-        Vec3 relStart = Vec3.ZERO;
-        Vec3 relEnd = diff;
 
         // 1枚目の長方形（表面と裏面）
         drawQuadBothSides(vertexConsumer, matrix, normal, relStart, relEnd, offset1);
