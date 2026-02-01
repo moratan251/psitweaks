@@ -42,6 +42,9 @@ public class PsitweaksTabs {
 
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
+                        pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get());
+
+
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get());
@@ -50,6 +53,22 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_GRENADE.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_CIRCLE.get());
+
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET.get());
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET_LOOP.get());
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET_MINE.get());
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET_CHARGE.get());
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET_GRENADE.get());
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET_PROJECTILE.get());
+                        pOutput.accept(PsitweaksItems.RESONANT_SPELL_BULLET_CIRCLE.get());
+
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET.get());
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP.get());
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_MINE.get());
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CHARGE.get());
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_GRENADE.get());
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE.get());
+                        pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE.get());
 
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
                        // pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());

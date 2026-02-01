@@ -43,6 +43,20 @@ public class ComponentStats {
                 EnumCADStat.POTENCY,
                 450
         );
+
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get(),
+                EnumCADStat.EFFICIENCY,
+                200
+        );
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get(),
+                EnumCADStat.POTENCY,
+                550
+        );
+
+
+
     }
 
     // 他の registerXXXStats は同様にここへ

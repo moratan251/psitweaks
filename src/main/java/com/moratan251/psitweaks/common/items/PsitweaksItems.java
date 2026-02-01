@@ -70,6 +70,7 @@ public class PsitweaksItems {
 
     public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_FLASHMETAL = ITEMS.register("cad_assembly_flashmetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_flashmetal"));
 
     //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
     //public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
@@ -87,6 +88,24 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_GRENADE = ITEMS.register("advanced_spell_bullet_grenade", () -> new ItemAdvancedGrenadeSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_PROJECTILE = ITEMS.register("advanced_spell_bullet_projectile", () -> new ItemAdvancedProjectileSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_CIRCLE = ITEMS.register("advanced_spell_bullet_circle", () -> new ItemAdvancedCircleSpellBullet(new Item.Properties()));
+
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET = ITEMS.register("resonant_spell_bullet", () -> new ItemResonantSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET_LOOP = ITEMS.register("resonant_spell_bullet_loop", () -> new ItemResonantLoopcastSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET_MINE = ITEMS.register("resonant_spell_bullet_mine", () -> new ItemResonantMineSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET_CHARGE = ITEMS.register("resonant_spell_bullet_charge", () -> new ItemResonantChargeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET_GRENADE = ITEMS.register("resonant_spell_bullet_grenade", () -> new ItemResonantGrenadeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET_PROJECTILE = ITEMS.register("resonant_spell_bullet_projectile", () -> new ItemResonantProjectileSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> RESONANT_SPELL_BULLET_CIRCLE = ITEMS.register("resonant_spell_bullet_circle", () -> new ItemResonantCircleSpellBullet(new Item.Properties()));
+
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET = ITEMS.register("sublimated_spell_bullet", () -> new ItemSublimatedSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_LOOP = ITEMS.register("sublimated_spell_bullet_loop", () -> new ItemSublimatedLoopcastSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_MINE = ITEMS.register("sublimated_spell_bullet_mine", () -> new ItemSublimatedMineSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_CHARGE = ITEMS.register("sublimated_spell_bullet_charge", () -> new ItemSublimatedChargeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_GRENADE = ITEMS.register("sublimated_spell_bullet_grenade", () -> new ItemSublimatedGrenadeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_PROJECTILE = ITEMS.register("sublimated_spell_bullet_projectile", () -> new ItemSublimatedProjectileSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_CIRCLE = ITEMS.register("sublimated_spell_bullet_circle", () -> new ItemSublimatedCircleSpellBullet(new Item.Properties()));
+
+
     //public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler", () -> new ItemPortableCADAssembler(new Item.Properties()));
 
 
