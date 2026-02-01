@@ -56,6 +56,9 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_time_accelerate"), PieceTrickTimeAccelerate.class);
             PsiAPI.addPieceToGroup(PieceTrickTimeAccelerate.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_time_accelerate"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_phonon_maser"), PieceTrickPhononMaser.class);
+            PsiAPI.addPieceToGroup(PieceTrickPhononMaser.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_phonon_maser"), false);
+
 
         });
     }

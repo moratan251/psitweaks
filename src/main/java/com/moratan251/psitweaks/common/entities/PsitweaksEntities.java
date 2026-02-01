@@ -22,6 +22,15 @@ public class PsitweaksEntities {
                             .updateInterval(1)
                             .build(Psitweaks.MOD_ID + ":time_accelerator"));
 
+    public static final RegistryObject<EntityType<EntityPhononMaserBeam>> PHONON_MASER_BEAM =
+            ENTITY_TYPES.register("phonon_maser_beam",
+                    () -> EntityType.Builder.<EntityPhononMaserBeam>of(EntityPhononMaserBeam::new, MobCategory.MISC)
+                            .sized(0.1f, 0.1f)
+                            .clientTrackingRange(64)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":phonon_maser_beam"));
+
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);
     }

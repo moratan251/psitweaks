@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
+import com.moratan251.psitweaks.client.renderer.EmptyRenderer;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
@@ -20,6 +21,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -258,6 +260,8 @@ public class Psitweaks {
                                     .orElse(false) ? 1f : 0f);
 
         }
+
+
     }
 
 
