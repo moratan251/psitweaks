@@ -43,7 +43,7 @@ public class EntityPhononMaserBeam extends Entity {
 
     private int ticksRemaining = 20;
     private int totalDuration = 20;
-    private double power = 1.0;
+    private int power = 1;
     private UUID casterUUID;
     private boolean soundPlayed = false;
 
@@ -53,7 +53,7 @@ public class EntityPhononMaserBeam extends Entity {
         this.setNoGravity(true);
     }
 
-    public EntityPhononMaserBeam(Level level, LivingEntity caster, double power, int durationTicks) {
+    public EntityPhononMaserBeam(Level level, LivingEntity caster, int power, int durationTicks) {
         this(PsitweaksEntities.PHONON_MASER_BEAM.get(), level);
         this.power = power;
         this.ticksRemaining = durationTicks;
@@ -238,8 +238,8 @@ public class EntityPhononMaserBeam extends Entity {
             return;
         }
 
-        // ダメージ計算と適用
-        float damagePerTick = (float) ( power);
+        // 1tick当たりのダメージ
+        float damagePerTick = (float) power * 8.0f;
         DamageSource damageSource = createLaserDamageSource(caster);
 
         for (Entity entity : entities) {
@@ -286,8 +286,8 @@ public class EntityPhononMaserBeam extends Entity {
     private void supplyEnergyToBlock(BlockPos hitBlockPos) {
         BlockEntity blockEntity = level().getBlockEntity(hitBlockPos);
         if (blockEntity instanceof ILaserReceptor receptor) {
-            // 1tick当たりのエネルギー = 威力 * 100MJ / 持続時間
-            long energyPerTick = (long) (power * 5000L );
+            // 1tick当たりのエネルギー
+            long energyPerTick = (long) power * 4000000L;
             receptor.receiveLaserEnergy(FloatingLong.create(energyPerTick));
         }
     }
@@ -308,7 +308,7 @@ public class EntityPhononMaserBeam extends Entity {
         );
     }
 
-    public double getPower() {
+    public int getPower() {
         return power;
     }
 
@@ -320,7 +320,7 @@ public class EntityPhononMaserBeam extends Entity {
     protected void readAdditionalSaveData(CompoundTag tag) {
         this.ticksRemaining = tag.getInt("TicksRemaining");
         this.totalDuration = tag.getInt("TotalDuration");
-        this.power = tag.getDouble("Power");
+        this.power = tag.getInt("Power");
         this.soundPlayed = tag.getBoolean("SoundPlayed");
         if (tag.hasUUID("CasterUUID")) {
             this.casterUUID = tag.getUUID("CasterUUID");
@@ -331,7 +331,7 @@ public class EntityPhononMaserBeam extends Entity {
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("TicksRemaining", this.ticksRemaining);
         tag.putInt("TotalDuration", this.totalDuration);
-        tag.putDouble("Power", this.power);
+        tag.putInt("Power", this.power);
         tag.putBoolean("SoundPlayed", this.soundPlayed);
         if (this.casterUUID != null) {
             tag.putUUID("CasterUUID", this.casterUUID);
