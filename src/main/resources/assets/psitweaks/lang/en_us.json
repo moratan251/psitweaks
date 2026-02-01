@@ -20,8 +20,11 @@
   "item.psitweaks.chaotic_psimetal": "Chaotic Psimetal Ingot",
   "item.psitweaks.flashmetal": "Flashmetal Ingot",
   "item.psitweaks.unrefined_flashmetal": " Unrefined Flashmetal",
+
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
+  "item.psitweaks.cad_assembly_flashmetal": "Flashmetal CAD Assembly",
+
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
   "item.psitweaks.third_eye_device": "Third‐Eye Device",

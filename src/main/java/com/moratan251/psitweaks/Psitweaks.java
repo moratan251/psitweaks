@@ -102,6 +102,7 @@ public class Psitweaks {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             // FLASH_RING は RegistryObject<Item>
+
             ItemProperties.register(PsitweaksItems.FLASH_RING.get(),
                     ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
                     (stack, world, entity, seed) ->
@@ -157,6 +158,105 @@ public class Psitweaks {
                             stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
                                     .map(ISpellAcceptor::containsSpell)
                                     .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET_PROJECTILE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET_CHARGE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET_MINE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET_GRENADE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET_LOOP.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.RESONANT_SPELL_BULLET_CIRCLE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CHARGE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_MINE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_GRENADE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
         }
     }
 

@@ -20,8 +20,11 @@
   "item.psitweaks.chaotic_psimetal": "カオティックサイメタルインゴット",
   "item.psitweaks.flashmetal": "フラッシュメタルインゴット",
   "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル",
+
   "item.psitweaks.cad_assembly_alloy_psion": "サイオニック合金のCAD素体",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "カオティックサイメタルのCAD素体",
+  "item.psitweaks.cad_assembly_flashmetal": "フラッシュメタルのCAD素体",
+
   "item.psitweaks.auto_caster_tick": "術式自動起動デバイス: tick",
   "item.psitweaks.auto_caster_second": "術式自動起動デバイス: セカンド",
   "item.psitweaks.third_eye_device": "サードアイデバイス",

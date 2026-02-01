@@ -31,28 +31,23 @@ public class CADDisassemblerEventHandler {
         Player player = event.getEntity();
         ItemStack heldStack = event.getItemStack();
 
-        LOGGER.info("[CADDisassembler Event] RightClickBlock triggered");
 
         // CAD分解ブロックかチェック
         if (!level.getBlockState(pos).is(PsitweaksBlocks.CAD_DISASSEMBLER.get())) {
             return;
         }
 
-        LOGGER.info("[CADDisassembler Event] It's the disassembler block!");
+
 
         // CADを持っているかチェック
         if (!(heldStack.getItem() instanceof ItemCAD)) {
-            LOGGER.info("[CADDisassembler Event] Not holding CAD");
             return;
         }
 
         // シフトを押しているかチェック
         if (!player.isShiftKeyDown()) {
-            LOGGER.info("[CADDisassembler Event] Not shifting");
             return;
         }
-
-        LOGGER.info("[CADDisassembler Event] All conditions met!");
 
         // イベントをキャンセルして自分で処理
         event.setCanceled(true);
@@ -63,8 +58,6 @@ public class CADDisassemblerEventHandler {
         if (level.isClientSide) {
             return;
         }
-
-        LOGGER.info("[CADDisassembler Event] Disassembling CAD...");
 
         // CADを分解
         disassembleCAD(level, pos, heldStack);
@@ -81,7 +74,6 @@ public class CADDisassemblerEventHandler {
         // CADを消費
         heldStack.shrink(1);
 
-        LOGGER.info("[CADDisassembler Event] Done!");
     }
 
     private static void disassembleCAD(Level level, BlockPos pos, ItemStack cadStack) {
@@ -90,7 +82,6 @@ public class CADDisassemblerEventHandler {
             for (EnumCADComponent component : EnumCADComponent.values()) {
                 ItemStack componentStack = cad.getComponentInSlot(cadStack, component);
                 if (!componentStack.isEmpty()) {
-                    LOGGER.info("[CADDisassembler Event] Dropping component: {}", component.name());
                     dropItem(level, pos, componentStack.copy());
                 }
             }
@@ -103,7 +94,6 @@ public class CADDisassemblerEventHandler {
                 if (socketable.isSocketSlotAvailable(i)) {
                     ItemStack bulletStack = socketable.getBulletInSocket(i);
                     if (!bulletStack.isEmpty()) {
-                        LOGGER.info("[CADDisassembler Event] Dropping bullet from slot {}", i);
                         dropItem(level, pos, bulletStack.copy());
                     }
                 }

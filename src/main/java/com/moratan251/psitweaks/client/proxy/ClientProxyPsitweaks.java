@@ -58,6 +58,7 @@ public class ClientProxyPsitweaks implements IProxyPsitweaks {
     public void addCADModels(ModelEvent.RegisterAdditional event) {
         event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_alloy_psion"));
         event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_chaotic_psimetal"));
+        event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_flashmetal"));
 
     }
 
