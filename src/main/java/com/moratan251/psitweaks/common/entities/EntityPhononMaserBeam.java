@@ -164,7 +164,7 @@ public class EntityPhononMaserBeam extends Entity {
             return;
         }
 
-        float damagePerTick = (float) (power * 4.0 / DURATION_TICKS);
+        float damagePerTick = (float) (power * 4.0);
         DamageSource damageSource = createLaserDamageSource(caster);
 
         for (Entity entity : entities) {

@@ -130,8 +130,8 @@
   "psitweaks.spellpiece.trick_time_accelerate": "Trick: Time Accelerate",
   "psitweaks.spellpiece.trick_time_accelerate.desc": "Accelerates the time of the target block",
 
-  "psitweaks.spellpiece.trick_time_accelerate": "Trick: Phonon Maser",
-  "psitweaks.spellpiece.trick_time_accelerate.desc": "Vibrates ultrasonic waves to emit heat rays",
+  "psitweaks.spellpiece.trick_phonon_maser": "Trick: Phonon Maser",
+  "psitweaks.spellpiece.trick_phonon_maser.desc": "Vibrates ultrasonic waves to emit heat rays",
 
 
   "psitweaks.spellpiece.trick_supply_fe": "Trick: FE Charge",

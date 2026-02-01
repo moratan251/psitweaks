@@ -15,20 +15,18 @@ import org.joml.Matrix4f;
 
 /**
  * Mekanismレーザー風の緑色ビームレンダラー
+ * 断面がX字型になるよう2枚の長方形で描画
  */
 public class PhononMaserBeamRenderer extends EntityRenderer<EntityPhononMaserBeam> {
 
     // ビームの色（緑色）
-    private static final int RED = 50;
+    private static final int RED = 0;
     private static final int GREEN = 255;
-    private static final int BLUE = 50;
-    private static final int ALPHA = 200;
+    private static final int BLUE = 0;
+    private static final int ALPHA = 180;
 
-    // ビームのコア色（明るい緑）
-    private static final int CORE_RED = 150;
-    private static final int CORE_GREEN = 255;
-    private static final int CORE_BLUE = 150;
-    private static final int CORE_ALPHA = 255;
+    // ビームの幅
+    private static final float BEAM_WIDTH = 0.15f;
 
     public PhononMaserBeamRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -40,82 +38,91 @@ public class PhononMaserBeamRenderer extends EntityRenderer<EntityPhononMaserBea
 
         Vec3 start = entity.position();
         Vec3 end = entity.getEndPos();
-        Vec3 direction = end.subtract(start);
-        double length = direction.length();
+        Vec3 diff = end.subtract(start);
+        double length = diff.length();
 
         if (length < 0.01) {
             return;
         }
 
+        Vec3 direction = diff.normalize();
+
         poseStack.pushPose();
 
-        // エンティティ位置からの相対描画のため、原点に移動
-        poseStack.translate(-start.x + entity.getX(), -start.y + entity.getY(), -start.z + entity.getZ());
+        // レンダー用のバッファを取得（半透明、発光、両面描画）
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.lightning());
 
-        // 外側のグロー（太いビーム）
-        renderBeam(poseStack, buffer, start, end, 0.15f, RED, GREEN, BLUE, ALPHA);
+        Matrix4f matrix = poseStack.last().pose();
+        Matrix3f normal = poseStack.last().normal();
 
-        // 内側のコア（細いビーム、より明るい）
-        renderBeam(poseStack, buffer, start, end, 0.05f, CORE_RED, CORE_GREEN, CORE_BLUE, CORE_ALPHA);
+        // X字型になるよう2つの直交する軸を計算
+        Vec3 perpendicular1 = getPerpendicular(direction);
+        Vec3 perpendicular2 = direction.cross(perpendicular1).normalize();
+
+        // 斜め45度のオフセットを計算
+        Vec3 offset1 = perpendicular1.add(perpendicular2).normalize().scale(BEAM_WIDTH);
+        Vec3 offset2 = perpendicular1.subtract(perpendicular2).normalize().scale(BEAM_WIDTH);
+
+        // 開始・終了位置（エンティティからの相対座標）
+        Vec3 relStart = Vec3.ZERO;
+        Vec3 relEnd = diff;
+
+        // 1枚目の長方形（表面と裏面）
+        drawQuadBothSides(vertexConsumer, matrix, normal, relStart, relEnd, offset1);
+
+        // 2枚目の長方形（表面と裏面）
+        drawQuadBothSides(vertexConsumer, matrix, normal, relStart, relEnd, offset2);
 
         poseStack.popPose();
     }
 
-    private void renderBeam(PoseStack poseStack, MultiBufferSource buffer,
-                            Vec3 start, Vec3 end, float width,
-                            int r, int g, int b, int a) {
-
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.lightning());
-        Matrix4f matrix = poseStack.last().pose();
-        Matrix3f normal = poseStack.last().normal();
-
-        Vec3 direction = end.subtract(start).normalize();
-
-        // カメラに向かう直交ベクトルを計算
+    /**
+     * 方向に対して垂直なベクトルを取得
+     */
+    private Vec3 getPerpendicular(Vec3 direction) {
         Vec3 up = new Vec3(0, 1, 0);
-        if (Math.abs(direction.dot(up)) > 0.99) {
+        if (Math.abs(direction.dot(up)) > 0.9) {
             up = new Vec3(1, 0, 0);
         }
-        Vec3 perpendicular1 = direction.cross(up).normalize().scale(width);
-        Vec3 perpendicular2 = direction.cross(perpendicular1).normalize().scale(width);
-
-        // 4面のビームを描画（ビルボードのような効果）
-        drawQuad(vertexConsumer, matrix, normal, start, end, perpendicular1, r, g, b, a);
-        drawQuad(vertexConsumer, matrix, normal, start, end, perpendicular1.scale(-1), r, g, b, a);
-        drawQuad(vertexConsumer, matrix, normal, start, end, perpendicular2, r, g, b, a);
-        drawQuad(vertexConsumer, matrix, normal, start, end, perpendicular2.scale(-1), r, g, b, a);
+        return direction.cross(up).normalize();
     }
 
-    private void drawQuad(VertexConsumer consumer, Matrix4f matrix, Matrix3f normal,
-                          Vec3 start, Vec3 end, Vec3 offset,
-                          int r, int g, int b, int a) {
+    /**
+     * 両面の長方形を描画
+     */
+    private void drawQuadBothSides(VertexConsumer consumer, Matrix4f matrix, Matrix3f normal,
+                                   Vec3 start, Vec3 end, Vec3 offset) {
+        // 4頂点を計算
+        Vec3 v1 = start.add(offset);
+        Vec3 v2 = start.subtract(offset);
+        Vec3 v3 = end.subtract(offset);
+        Vec3 v4 = end.add(offset);
 
-        // 四角形の4頂点
-        Vec3 p1 = start.add(offset);
-        Vec3 p2 = start.subtract(offset);
-        Vec3 p3 = end.subtract(offset);
-        Vec3 p4 = end.add(offset);
+        // 表面
+        addVertex(consumer, matrix, normal, v1);
+        addVertex(consumer, matrix, normal, v2);
+        addVertex(consumer, matrix, normal, v3);
+        addVertex(consumer, matrix, normal, v4);
 
-        // 三角形1
-        addVertex(consumer, matrix, normal, p1, r, g, b, a);
-        addVertex(consumer, matrix, normal, p2, r, g, b, a);
-        addVertex(consumer, matrix, normal, p3, r, g, b, a);
-        addVertex(consumer, matrix, normal, p4, r, g, b, a);
+        // 裏面（逆順）
+        addVertex(consumer, matrix, normal, v4);
+        addVertex(consumer, matrix, normal, v3);
+        addVertex(consumer, matrix, normal, v2);
+        addVertex(consumer, matrix, normal, v1);
     }
 
-    private void addVertex(VertexConsumer consumer, Matrix4f matrix, Matrix3f normal,
-                           Vec3 pos, int r, int g, int b, int a) {
+    private void addVertex(VertexConsumer consumer, Matrix4f matrix, Matrix3f normal, Vec3 pos) {
         consumer.vertex(matrix, (float) pos.x, (float) pos.y, (float) pos.z)
-                .color(r, g, b, a)
+                .color(RED, GREEN, BLUE, ALPHA)
                 .uv(0, 0)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(15728880) // フルブライト
+                .uv2(15728880)
                 .normal(normal, 0, 1, 0)
                 .endVertex();
     }
 
     @Override
     public ResourceLocation getTextureLocation(EntityPhononMaserBeam entity) {
-        return null; // テクスチャは使用しない
+        return null;
     }
 }
