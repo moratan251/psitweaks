@@ -36,7 +36,7 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get(),
                 EnumCADStat.EFFICIENCY,
-                150
+                110
         );
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get(),
@@ -47,7 +47,7 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get(),
                 EnumCADStat.EFFICIENCY,
-                200
+                125
         );
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get(),
