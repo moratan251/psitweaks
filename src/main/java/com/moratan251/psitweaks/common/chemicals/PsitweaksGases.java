@@ -17,6 +17,8 @@ public class PsitweaksGases {
 
     public static final GasRegistryObject<Gas> PSIONIC_ECHO =
             GASES.register("gas_psionic_echo", 0x40006e);
+    public static final GasRegistryObject<Gas> PEO_FUEL =
+            GASES.register("gas_peo_fuel", 0x4d749b);
 
 
     public static void register(IEventBus eventBus) {
