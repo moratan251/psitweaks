@@ -101,7 +101,8 @@
   "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
   "infuse_type.psitweaks.infuse_psionic_echo": "Psinonic Echo",
 
-  "gas_type.psitweaks.gas_psionic_echo": "Echo Gas",
+  "gas.psitweaks.gas_psionic_echo": "Echo Gas",
+  "gas.psitweaks.gas_peo_fuel": "PE-O Fuel",
 
   "curios.identifier.magic_calculation_area": "Magic Calculation Area",
 

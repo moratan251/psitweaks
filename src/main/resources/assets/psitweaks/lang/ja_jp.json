@@ -91,7 +91,8 @@
   "infuse_type.psitweaks.infuse_chaotic_factor": "混沌",
   "infuse_type.psitweaks.infuse_psionic_echo": "サイオニックエコー",
 
-  "gas_type.psitweaks.gas_psionic_echo": " 残響ガス",
+  "gas.psitweaks.gas_psionic_echo": "残響ガス",
+  "gas.psitweaks.gas_peo_fuel": "PE-O燃料",
 
   "curios.identifier.magic_calculation_area": "魔法演算領域",
 
