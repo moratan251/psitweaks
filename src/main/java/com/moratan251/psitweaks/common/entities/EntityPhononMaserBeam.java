@@ -239,7 +239,7 @@ public class EntityPhononMaserBeam extends Entity {
         }
 
         // 1tick当たりのダメージ
-        float damagePerTick = (float) power * 8.0f;
+        float damagePerTick = (float) power * 2.0f;
         DamageSource damageSource = createLaserDamageSource(caster);
 
         for (Entity entity : entities) {
@@ -252,6 +252,9 @@ public class EntityPhononMaserBeam extends Entity {
                 // ノックバックを無効化
                 living.setDeltaMovement(oldDeltaMovement);
                 living.hurtMarked = true;
+
+                //炎上させる
+                living.setSecondsOnFire(5);
             }
         }
     }
@@ -287,7 +290,7 @@ public class EntityPhononMaserBeam extends Entity {
         BlockEntity blockEntity = level().getBlockEntity(hitBlockPos);
         if (blockEntity instanceof ILaserReceptor receptor) {
             // 1tick当たりのエネルギー
-            long energyPerTick = (long) power * 4000000L;
+            long energyPerTick = (long) power * 2000000L;
             receptor.receiveLaserEnergy(FloatingLong.create(energyPerTick));
         }
     }

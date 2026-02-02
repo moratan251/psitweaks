@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.datagen.providers;
 
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.PackOutput;
@@ -416,12 +417,33 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_flashmetal"));
 
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksBlocks.CAD_DISASSEMBLER.get())
+                .define('P', ModItems.psimetal)
+                .define('A', Items.ANVIL)
+                .pattern("PPP")
+                .pattern("PAP")
+                .pattern("PPP")
+                .unlockedBy("has_psimetal", has(ModItems.psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_disassembler"));
+
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)
                 .requires(ModItems.exosuitController)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get())
                 .unlockedBy("has_exosuit_controller", has(ModItems.exosuitController))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "curios_controller"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.HEAVY_PSIMETAL.get(), 1)
+                .requires(PsitweaksItems.FLASHMETAL.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .requires(PsitweaksItems.FLASHMETAL.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .requires(PsitweaksItems.FLASHMETAL.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .requires(PsitweaksItems.FLASHMETAL.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal"));
 
 
     }

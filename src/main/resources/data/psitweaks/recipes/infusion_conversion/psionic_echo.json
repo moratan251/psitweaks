@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "item": "psitweaks:enriched_echo"
+    }
+  },
+  "output": {
+    "infuse_type": "psitweaks:infuse_psionic_echo",
+    "amount": 80
+  }
+}
+

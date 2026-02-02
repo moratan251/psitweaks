@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": { "item": "psitweaks:psionic_echo" }
+  },
+  "output": {
+    "item": "psitweaks:enriched_echo"
+  }
+}

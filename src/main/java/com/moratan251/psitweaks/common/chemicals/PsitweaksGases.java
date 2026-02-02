@@ -15,8 +15,8 @@ public class PsitweaksGases {
 
     public static final GasDeferredRegister GASES = new GasDeferredRegister("psitweaks");
 
-    public static final GasRegistryObject<Gas> PSYON =
-            GASES.register("gas_psyon", 0x00ffff);
+    public static final GasRegistryObject<Gas> PSIONIC_ECHO =
+            GASES.register("gas_psionic_echo", 0x40006e);
 
 
     public static void register(IEventBus eventBus) {

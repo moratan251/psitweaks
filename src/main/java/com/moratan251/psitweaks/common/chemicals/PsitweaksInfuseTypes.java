@@ -20,6 +20,8 @@ public class PsitweaksInfuseTypes {
             INFUSE_TYPES.register("infuse_ivory", 0xf5f5f5);
     public static final InfuseTypeRegistryObject<InfuseType> CHAOTIC =
             INFUSE_TYPES.register("infuse_chaotic_factor", 0x7f7f7f);
+    public static final InfuseTypeRegistryObject<InfuseType> PSIONIC_ECHO =
+            INFUSE_TYPES.register("infuse_psionic_echo", 0x15044b);
 
     public static void register(IEventBus eventBus) {
         INFUSE_TYPES.register(eventBus);
