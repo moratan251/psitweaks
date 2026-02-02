@@ -1,48 +1,48 @@
-[012月2026 23:05:01.859] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\htv432\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.4.6, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, --mod, psitweaks, --all, --output, C:\Users\htv432\IdeaProjects\psitweaks\src\generated\resources, --existing, C:\Users\htv432\IdeaProjects\psitweaks\src\main\resources, --mixin.config, psitweaks.mixins.json]
-[012月2026 23:05:01.864] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.8 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
-[012月2026 23:05:01.989] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
-[012月2026 23:05:02.038] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/htv432/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23128!/ Service=ModLauncher Env=CLIENT
-[012月2026 23:05:02.351] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.4.6\9e86bf67e222253576e982856d9958695725adb5\javafmllanguage-1.20.1-47.4.6.jar is missing mods.toml file
-[012月2026 23:05:02.355] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\lowcodelanguage\1.20.1-47.4.6\56100545804adc991cc48ab68b86ba46c5873246\lowcodelanguage-1.20.1-47.4.6.jar is missing mods.toml file
-[012月2026 23:05:02.358] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\mclanguage\1.20.1-47.4.6\fd228d7d879a9da774eda022ea3092cedb5178f1\mclanguage-1.20.1-47.4.6.jar is missing mods.toml file
-[012月2026 23:05:02.360] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.4.6\cefc55ada370ce2f23f92834530eb967c0de1fdd\fmlcore-1.20.1-47.4.6.jar is missing mods.toml file
-[012月2026 23:05:02.732] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
-[012月2026 23:05:05.828] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
-[012月2026 23:05:05.875] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\htv432\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, psitweaks, --all, --output, C:\Users\htv432\IdeaProjects\psitweaks\src\generated\resources, --existing, C:\Users\htv432\IdeaProjects\psitweaks\src\main\resources]
-[012月2026 23:05:06.012] [main/WARN] [mixin/]: Reference map 'psitweaks.refmap.json' for psitweaks.mixins.json could not be read. If this is a development environment you can ignore this message
-[012月2026 23:05:06.480] [main/INFO] [mixin/]: Remapping refMap moonlight-common-refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.481] [main/INFO] [mixin/]: Remapping refMap moonlight-forge-refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.482] [main/INFO] [mixin/]: Remapping refMap jade.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.484] [main/INFO] [mixin/]: Remapping refMap ae2.mixins.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.485] [main/INFO] [mixin/]: Remapping refMap untranslateditems.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.486] [main/INFO] [mixin/]: Remapping refMap psi.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.487] [main/INFO] [mixin/]: Remapping refMap psionicutilities.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.488] [main/INFO] [mixin/]: Remapping refMap dummmmmmy-common-refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.490] [main/INFO] [mixin/]: Remapping refMap curios.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.491] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.495] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.498] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.507] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.569] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.572] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.576] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.579] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:06.580] [main/INFO] [mixin/]: Remapping refMap patchouli.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
-[012月2026 23:05:07.527] [main/WARN] [mixin/]: Error loading class: gdavid/phi/util/ParamHelper (java.lang.ClassNotFoundException: gdavid.phi.util.ParamHelper)
-[012月2026 23:05:08.046] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.4.1).
-[012月2026 23:05:08.328] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [psitweaks]
-[012月2026 23:05:13.235] [main/WARN] [AE2:C/]: Unable to find class com.simibubi.create.foundation.ponder.PonderWorld. Integration with PonderJS disabled.
-[012月2026 23:05:13.902] [modloading-worker-0/INFO] [de.nekeras.borderless.BorderlessWindow/]: Creating mod instance
-[012月2026 23:05:13.902] [modloading-worker-0/INFO] [de.nekeras.borderless.BorderlessWindow/]: Enable server compatibility
-[012月2026 23:05:13.903] [modloading-worker-0/INFO] [de.nekeras.borderless.BorderlessWindow/]: Register client configuration
-[012月2026 23:05:13.935] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.6, for MC 1.20.1 with MCP 20230612.114412
-[012月2026 23:05:13.937] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.4.6 Initialized
-[012月2026 23:05:14.631] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
-[012月2026 23:05:14.681] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 46.68 ms
-[012月2026 23:05:19.205] [main/INFO] [Moonlight/]: Initialized block sets in 10ms
-[012月2026 23:05:20.217] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/htv432/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1/forge-1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1-recomp.jar%23191!/assets/.mcassetsroot' uses unexpected schema
-[012月2026 23:05:20.217] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/htv432/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1/forge-1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1-recomp.jar%23191!/data/.mcassetsroot' uses unexpected schema
-[012月2026 23:05:20.514] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
-[012月2026 23:05:20.543] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 27 ms
-[012月2026 23:05:20.543] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 28 ms
-[012月2026 23:05:20.554] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 74, old count: 74, new count: 75, removed stale: 0, written: 1
+[032月2026 00:43:02.857] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\htv432\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.4.6, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, --mod, psitweaks, --all, --output, C:\Users\htv432\IdeaProjects\psitweaks\src\generated\resources, --existing, C:\Users\htv432\IdeaProjects\psitweaks\src\main\resources, --mixin.config, psitweaks.mixins.json]
+[032月2026 00:43:02.875] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.8 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
+[032月2026 00:43:03.019] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
+[032月2026 00:43:03.080] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/htv432/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23128!/ Service=ModLauncher Env=CLIENT
+[032月2026 00:43:03.357] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.4.6\9e86bf67e222253576e982856d9958695725adb5\javafmllanguage-1.20.1-47.4.6.jar is missing mods.toml file
+[032月2026 00:43:03.360] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\lowcodelanguage\1.20.1-47.4.6\56100545804adc991cc48ab68b86ba46c5873246\lowcodelanguage-1.20.1-47.4.6.jar is missing mods.toml file
+[032月2026 00:43:03.362] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\mclanguage\1.20.1-47.4.6\fd228d7d879a9da774eda022ea3092cedb5178f1\mclanguage-1.20.1-47.4.6.jar is missing mods.toml file
+[032月2026 00:43:03.366] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\htv432\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.4.6\cefc55ada370ce2f23f92834530eb967c0de1fdd\fmlcore-1.20.1-47.4.6.jar is missing mods.toml file
+[032月2026 00:43:03.822] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[032月2026 00:43:08.298] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[032月2026 00:43:08.341] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\htv432\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, psitweaks, --all, --output, C:\Users\htv432\IdeaProjects\psitweaks\src\generated\resources, --existing, C:\Users\htv432\IdeaProjects\psitweaks\src\main\resources]
+[032月2026 00:43:08.470] [main/WARN] [mixin/]: Reference map 'psitweaks.refmap.json' for psitweaks.mixins.json could not be read. If this is a development environment you can ignore this message
+[032月2026 00:43:08.968] [main/INFO] [mixin/]: Remapping refMap moonlight-common-refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.969] [main/INFO] [mixin/]: Remapping refMap moonlight-forge-refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.970] [main/INFO] [mixin/]: Remapping refMap jade.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.973] [main/INFO] [mixin/]: Remapping refMap ae2.mixins.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.974] [main/INFO] [mixin/]: Remapping refMap untranslateditems.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.975] [main/INFO] [mixin/]: Remapping refMap psi.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.976] [main/INFO] [mixin/]: Remapping refMap psionicutilities.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.977] [main/INFO] [mixin/]: Remapping refMap dummmmmmy-common-refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.979] [main/INFO] [mixin/]: Remapping refMap curios.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.979] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.982] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.984] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.985] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.986] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.988] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.990] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.991] [main/INFO] [mixin/]: Remapping refMap ticex.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:08.993] [main/INFO] [mixin/]: Remapping refMap patchouli.refmap.json using C:\Users\htv432\IdeaProjects\psitweaks\build\createSrgToMcp\output.srg
+[032月2026 00:43:09.812] [main/WARN] [mixin/]: Error loading class: gdavid/phi/util/ParamHelper (java.lang.ClassNotFoundException: gdavid.phi.util.ParamHelper)
+[032月2026 00:43:10.107] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.4.1).
+[032月2026 00:43:10.311] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [psitweaks]
+[032月2026 00:43:15.284] [main/WARN] [AE2:C/]: Unable to find class com.simibubi.create.foundation.ponder.PonderWorld. Integration with PonderJS disabled.
+[032月2026 00:43:15.910] [modloading-worker-0/INFO] [de.nekeras.borderless.BorderlessWindow/]: Creating mod instance
+[032月2026 00:43:15.910] [modloading-worker-0/INFO] [de.nekeras.borderless.BorderlessWindow/]: Enable server compatibility
+[032月2026 00:43:15.910] [modloading-worker-0/INFO] [de.nekeras.borderless.BorderlessWindow/]: Register client configuration
+[032月2026 00:43:15.935] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.6, for MC 1.20.1 with MCP 20230612.114412
+[032月2026 00:43:15.936] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.4.6 Initialized
+[032月2026 00:43:16.513] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
+[032月2026 00:43:16.556] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 40.61 ms
+[032月2026 00:43:21.320] [main/INFO] [Moonlight/]: Initialized block sets in 11ms
+[032月2026 00:43:22.238] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/htv432/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1/forge-1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1-recomp.jar%23191!/assets/.mcassetsroot' uses unexpected schema
+[032月2026 00:43:22.239] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/htv432/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1/forge-1.20.1-47.4.6_mapped_parchment_2023.09.03-1.20.1-recomp.jar%23191!/data/.mcassetsroot' uses unexpected schema
+[032月2026 00:43:22.614] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[032月2026 00:43:22.639] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 24 ms
+[032月2026 00:43:22.639] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 25 ms
+[032月2026 00:43:22.652] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 78, old count: 74, new count: 79, removed stale: 0, written: 4

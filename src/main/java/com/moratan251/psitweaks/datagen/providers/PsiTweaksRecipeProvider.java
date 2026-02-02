@@ -434,14 +434,14 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "curios_controller"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.HEAVY_PSIMETAL.get(), 1)
-                .requires(PsitweaksItems.FLASHMETAL.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
                 .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
                 .requires(PsitweaksItems.FLASHMETAL.get())
-                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
                 .requires(PsitweaksItems.FLASHMETAL.get())
-                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
                 .requires(PsitweaksItems.FLASHMETAL.get())
-                .requires(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get())
+                .requires(PsitweaksItems.FLASHMETAL.get())
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal"));
 

@@ -1,0 +1,13 @@
+{
+  "type": "psi:trick_crafting",
+  "cad": {
+    "item": "psitweaks:cad_assembly_flashmetal"
+  },
+  "input": {
+    "item": "minecraft:echo_shard"
+  },
+  "output": {
+    "item": "psitweaks:psionic_echo"
+  },
+  "trick": "psitweaks:trick_supreme_infusion"
+}

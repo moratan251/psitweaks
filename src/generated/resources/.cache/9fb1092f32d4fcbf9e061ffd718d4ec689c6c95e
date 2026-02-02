@@ -1,4 +1,4 @@
-// 1.20.1	2026-02-01T23:05:20.5442276	Recipes
+// 1.20.1	2026-02-03T00:43:22.6406787	Recipes
 c6e2695049bbfa9cee27062c7374bc20b1440c2e data/psitweaks/advancements/recipes/combat/advanced_spell_bullet.json
 f60f9c63ea460e59c4c0ace7b73ae4984f30142c data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_charge.json
 51b592c34676cc780dc439e7364eccc0504ab468 data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_circle.json
@@ -33,6 +33,8 @@ bd1aec9b26e8af71588d11b99d6a9ad88f112b2f data/psitweaks/advancements/recipes/com
 3e9f1ae09fa4d33480fdbebbd0e57c8dfc36deac data/psitweaks/advancements/recipes/combat/sublimated_spell_bullet_projectile.json
 07f1c54d779f543322d1dfa207cd21082f558423 data/psitweaks/advancements/recipes/combat/third_eye_device.json
 080c2e7c3b1c861d706601970dceca09e1adf239 data/psitweaks/advancements/recipes/misc/cad_assembly_alloy_psion.json
+de9099b0fc582bf3e7cd87f57b4a3d5cac3a50a8 data/psitweaks/advancements/recipes/misc/cad_disassembler.json
+05634a50e00edb9ad1b2f590707afd29a04ab3a0 data/psitweaks/advancements/recipes/misc/heavy_psimetal.json
 94169261a9b770f56792d40cb4934eb4ddd42c0d data/psitweaks/advancements/recipes/misc/psionic_control_circuit.json
 3dd72c1ba715bc19d808c5b0f6f94166bc6355d6 data/psitweaks/advancements/recipes/misc/unrefined_flashmetal.json
 145ffbd03335b01c7f4fd715cf3ad11fe9f11fe2 data/psitweaks/advancements/recipes/tools/curios_controller.json
@@ -48,8 +50,10 @@ c2649465efcee0d757992550deb804a91d0c458c data/psitweaks/recipes/advanced_spell_b
 d52829f532880a5e9f1e05150f61dd7193581b60 data/psitweaks/recipes/cad_assembly_alloy_psion.json
 f6006a447e04e213c6b91713088b4d59f5b47d41 data/psitweaks/recipes/cad_assembly_chaotic_psimetal.json
 5896856706b88d97f83a21fb15dec05a51235b2f data/psitweaks/recipes/cad_assembly_flashmetal.json
+10df79a4e69c99bb0e6705cb1458bedb799d4de3 data/psitweaks/recipes/cad_disassembler.json
 8b8beffcd7541a3f36aa24f4004c203ac83f3cfe data/psitweaks/recipes/curios_controller.json
 f45583fde5fe9dc36d31ee6a5a56eb58d43595d9 data/psitweaks/recipes/flash_ring.json
+2006f9af5607cad9a80ba81cf58f3a94899be61a data/psitweaks/recipes/heavy_psimetal.json
 23b629ed78a928746f8c5f4714079b059be42bb6 data/psitweaks/recipes/moval_suit_boots.json
 16fdc24f6eeec3688fee31f07e114a0a81ce7bec data/psitweaks/recipes/moval_suit_chestplate.json
 3a7fbbe19dd69fb8120092d975d304f1ac30d0dd data/psitweaks/recipes/moval_suit_helmet.json

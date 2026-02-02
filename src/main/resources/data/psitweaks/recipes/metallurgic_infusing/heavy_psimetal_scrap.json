@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "infuse_type": "psitweaks:infuse_psionic_echo"
+  },
+  "itemInput": {
+    "ingredient": { "item": "minecraft:netherite_scrap" }
+  },
+  "output": { "item": "psitweaks:heavy_psimetal_scrap" }
+}

@@ -59,6 +59,9 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_phonon_maser"), PieceTrickPhononMaser.class);
             PsiAPI.addPieceToGroup(PieceTrickPhononMaser.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_phonon_maser"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_supreme_infusion"), PieceTrickSupremeInfusion.class);
+            PsiAPI.addPieceToGroup(PieceTrickSupremeInfusion.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_supreme_infusion"), false);
+
 
         });
     }

@@ -10,8 +10,15 @@
   "item.psitweaks.enriched_psigem": "Enriched Psigem",
   "item.psitweaks.enriched_ebony": "Enriched Ebony",
   "item.psitweaks.enriched_ivory": "Enriched Ivory",
+  "item.psitweaks.enriched_echo": "Enriched Echo",
+  "item.psitweaks.psionic_echo": "Psionic Echo",
   "item.psitweaks.alloy_psion": "Psionic Alloy",
   "item.psitweaks.psionic_control_circuit": "Psionic Control Circuit",
+  "item.psitweaks.alloy_psionic_echo": "Echo Alloy",
+  "item.psitweaks.heavy_psimetal_scrap": "Heavy Psimetal Scrap",
+
+
+
   "item.psitweaks.flight_chip": "Flight Chip",
   "item.psitweaks.psionic_factor": "Psionic Factor",
   "item.psitweaks.psionic_factor_ivory": "Ivory Psionic Factor",
@@ -20,6 +27,8 @@
   "item.psitweaks.chaotic_psimetal": "Chaotic Psimetal Ingot",
   "item.psitweaks.flashmetal": "Flashmetal Ingot",
   "item.psitweaks.unrefined_flashmetal": " Unrefined Flashmetal",
+  "item.psitweaks.heavy_psimetal": "Heavy Psimetal Ingot",
+
 
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
@@ -90,6 +99,9 @@
   "infuse_type.psitweaks.infuse_ebony": "Ebony",
   "infuse_type.psitweaks.infuse_ivory": "Ivory",
   "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
+  "infuse_type.psitweaks.infuse_psionic_echo": "Psinonic Echo",
+
+  "gas_type.psitweaks.gas_psionic_echo": "Echo Gas",
 
   "curios.identifier.magic_calculation_area": "Magic Calculation Area",
 
@@ -136,6 +148,9 @@
 
   "psitweaks.spellpiece.trick_supply_fe": "Trick: FE Charge",
   "psitweaks.spellpiece.trick_supply_fe.desc": "Supplies FE to blocks. Direction can be specified.",
+
+  "psitweaks.spellpiece.trick_supreme_infusion": "Trick: Supreme Infusion",
+  "psitweaks.spellpiece.trick_supreme_infusion.desc": "Infuse Echo Shards into Psionic Echoes",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 

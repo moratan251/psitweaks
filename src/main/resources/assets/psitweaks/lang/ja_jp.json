@@ -10,8 +10,12 @@
   "item.psitweaks.enriched_psigem": "濃縮サイジェム",
   "item.psitweaks.enriched_ebony": "濃縮エボニー",
   "item.psitweaks.enriched_ivory": "濃縮アイボリー",
+  "item.psitweaks.enriched_echo": "濃縮エコー ",
+  "item.psitweaks.psionic_echo": "サイオニックエコー",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
+  "item.psitweaks.alloy_psionic_echo": "残響合金",
+  "item.psitweaks.heavy_psimetal_scrap": "ヘビーサイメタルの欠片",
 
   "item.psitweaks.psionic_factor": "サイオニック因子",
   "item.psitweaks.psionic_factor_ivory": "偏陽サイオニック因子",
@@ -20,6 +24,7 @@
   "item.psitweaks.chaotic_psimetal": "カオティックサイメタルインゴット",
   "item.psitweaks.flashmetal": "フラッシュメタルインゴット",
   "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル",
+  "item.psitweaks.heavy_psimetal": "ヘビーサイメタルインゴット",
 
   "item.psitweaks.cad_assembly_alloy_psion": "サイオニック合金のCAD素体",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "カオティックサイメタルのCAD素体",
@@ -84,6 +89,9 @@
   "infuse_type.psitweaks.infuse_ebony": "エボニー",
   "infuse_type.psitweaks.infuse_ivory": "アイボリー",
   "infuse_type.psitweaks.infuse_chaotic_factor": "混沌",
+  "infuse_type.psitweaks.infuse_psionic_echo": "サイオニックエコー",
+
+  "gas_type.psitweaks.gas_psionic_echo": " 残響ガス",
 
   "curios.identifier.magic_calculation_area": "魔法演算領域",
 
@@ -131,6 +139,9 @@
 
   "psitweaks.spellpiece.trick_phonon_maser": "作動式: フォノンメーザー",
   "psitweaks.spellpiece.trick_phonon_maser.desc": "超音波を振動させ熱線を放出する",
+
+  "psitweaks.spellpiece.trick_supreme_infusion": "作動式: 超位注入",
+  "psitweaks.spellpiece.trick_supreme_infusion.desc": "残響の欠片に注入してサイオニックエコーにします",
 
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
