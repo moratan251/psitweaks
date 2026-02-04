@@ -31,6 +31,15 @@ public class PsitweaksEntities {
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":phonon_maser_beam"));
 
+    public static final RegistryObject<EntityType<EntityMolecularDivider>> MOLECULAR_DIVIDER =
+            ENTITY_TYPES.register("molecular_divider",
+                    () -> EntityType.Builder.<EntityMolecularDivider>of(EntityMolecularDivider::new, MobCategory.MISC)
+                            .sized(0.1f, 0.1f)
+                            .clientTrackingRange(64)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":molecular_divider"));
+
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);
     }
