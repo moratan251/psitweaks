@@ -90,7 +90,7 @@
 
   "effect.psitweaks.parade": "Parade",
   "effect.psitweaks.flight": "Flight",
-  "effect.psitweaks.barrier": "Bariier",
+  "effect.psitweaks.barrier": "Barrier",
   "effect.psitweaks.hardening": "Hardening",
 
 
@@ -156,6 +156,9 @@
 
   "psitweaks.spellpiece.trick_supreme_infusion": "Trick: Supreme Infusion",
   "psitweaks.spellpiece.trick_supreme_infusion.desc": "Infuse Echo Shards into Psionic Echoes",
+
+  "psitweaks.spellpiece.trick_molecular_divider": "Trick: Molecular Divider",
+  "psitweaks.spellpiece.trick_molecular_divider.desc": "divide the living creatures within the area",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 
