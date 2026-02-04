@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.blocks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,7 +21,10 @@ public class PsitweaksBlocks {
 
     // CAD分解台
     public static final RegistryObject<Block> CAD_DISASSEMBLER = registerBlock("cad_disassembler",
-            () -> new Block(BlockBehaviour.Properties.copy(ModBlocks.psimetalBlock)));
+            () -> new Block(BlockBehaviour.Properties.copy(ModBlocks.psimetalBlock)
+                    .strength(5.0f, 15.0f)
+                    .sound(SoundType.METAL)
+            ));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
