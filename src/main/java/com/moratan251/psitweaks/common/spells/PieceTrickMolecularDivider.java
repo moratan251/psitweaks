@@ -38,9 +38,9 @@ public class PieceTrickMolecularDivider extends PieceTrick {
 
     @Override
     public void initParams() {
-        this.addParam(this.position1 = new ParamVector("psitweaks.spellparam.position1", SpellParam.BLUE, false, false));
-        this.addParam(this.position2 = new ParamVector("psitweaks.spellparam.position2", SpellParam.CYAN, false, false));
-        this.addParam(this.position3 = new ParamVector("psitweaks.spellparam.position3", SpellParam.PURPLE, false, false));
+        this.addParam(this.position1 = new ParamVector("psi.spellparam.position", SpellParam.BLUE, false, false));
+        this.addParam(this.position2 = new ParamVector("psi.spellparam.position", SpellParam.CYAN, false, false));
+        this.addParam(this.position3 = new ParamVector("psi.spellparam.position", SpellParam.PURPLE, false, false));
         this.addParam(this.power = new ParamNumber("psi.spellparam.power", SpellParam.RED, false, true));
     }
 
@@ -94,7 +94,7 @@ public class PieceTrickMolecularDivider extends PieceTrick {
 
         // ========== Configからダメージ倍率を取得 ==========
         double damageMul = PsitweaksConfig.COMMON.molecularDividerDamageMultiplier.get();
-        float damage = (float) (40.0 * powerVal * damageMul);
+        float damage = (float) (60.0 * powerVal * damageMul);
         // ================================================
 
         for (Entity entity : entities) {
