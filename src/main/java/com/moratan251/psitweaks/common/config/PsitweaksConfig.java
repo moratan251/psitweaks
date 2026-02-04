@@ -23,9 +23,8 @@ public class PsitweaksConfig {
 
             molecularDividerDamageMultiplier = builder
                     .comment("分子ディバイダーのダメージ倍率",
-                            "Damage multiplier for Molecular Divider",
-                            "実際のダメージ = 威力 × この値")
-                    .defineInRange("damageMultiplier", 1.0, 1.0, 1000000.0);
+                            "Damage multiplier for Molecular Divider")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
 
             builder.pop(); // molecular_divider カテゴリ終了
 
@@ -34,8 +33,8 @@ public class PsitweaksConfig {
                     .push("phonon_maser");
 
             phononMaserDamageMultiplier = builder
-                    .comment("フォノンメーザーのダメージ倍率")
-                    .defineInRange("damageMultiplier", 1.0, 1.0, 1000000.0);
+                    .comment("フォノンメーザーのダメージ倍率", "Damage multiplier for Phonon Maser" )
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
 
             builder.pop(); // phonon_maser カテゴリ終了
 
