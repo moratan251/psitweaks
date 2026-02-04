@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "psitweaks:cad_disassembler",
+          "name": "psitweaks:cad_disassembler"
         }
       ],
       "conditions": [

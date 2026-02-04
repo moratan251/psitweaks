@@ -21,7 +21,7 @@ public class PsitweaksBlocks {
 
     // CAD分解台
     public static final RegistryObject<Block> CAD_DISASSEMBLER = registerBlock("cad_disassembler",
-            () -> new Block(BlockBehaviour.Properties.copy(ModBlocks.psimetalBlock)
+            () -> new Block(BlockBehaviour.Properties.of()
                     .strength(5.0f, 15.0f)
                     .sound(SoundType.METAL)
             ));
