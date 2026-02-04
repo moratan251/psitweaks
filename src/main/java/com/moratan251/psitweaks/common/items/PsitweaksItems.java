@@ -55,11 +55,13 @@ public class PsitweaksItems {
 
 
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
-    public static final RegistryObject<Item> ALLOY_PSIONIC_ECHO = ITEMS.register("alloy_psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
-    public static final RegistryObject<Item> PSIONIC_ECHO = ITEMS.register("psionic_echo", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ALLOY_PSIONIC_ECHO = ITEMS.register("alloy_psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> PSIONIC_ECHO = ITEMS.register("psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> ECHO_CONTROL_CIRCUIT = ITEMS.register("echo_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+
     public static final RegistryObject<Item> ENRICHED_PSIGEM = ITEMS.register("enriched_psigem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_EBONY = ITEMS.register("enriched_ebony", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_IVORY = ITEMS.register("enriched_ivory", () -> new Item(new Item.Properties()));
@@ -73,12 +75,18 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> FLASHMETAL = ITEMS.register("flashmetal", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> HEAVY_PSIMETAL = ITEMS.register("heavy_psimetal", () -> new Item(new Item.Properties()));
 
+    public static final RegistryObject<Item> ECHO_PELLET = ITEMS.register("echo_pellet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+
 
 
 
     public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_FLASHMETAL = ITEMS.register("cad_assembly_flashmetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_flashmetal"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA = ITEMS.register("cad_assembly_heavy_psimetal_alpha", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_heavy_psimetal_alpha"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA = ITEMS.register("cad_assembly_heavy_psimetal_beta", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_heavy_psimetal_beta"));
+    public static final RegistryObject<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.register("incomplete_heavy_psimetal_assembly", () -> new Item(new Item.Properties().stacksTo(1)));
 
     //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
     //public static final RegistryObject<Item> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = ITEMS.register("cad_assembly_chaotic_psimetal", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_chaotic_psimetal"));
@@ -87,7 +95,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> CURIOS_CONTROLLER = ITEMS.register("curios_controller", () -> new ItemCuriosController(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_SECOND = ITEMS.register("auto_caster_second", () -> new ItemAutoCasterSecond(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
-    public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
 
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET = ITEMS.register("advanced_spell_bullet", () -> new ItemAdvancedSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_LOOP = ITEMS.register("advanced_spell_bullet_loop", () -> new ItemAdvancedLoopcastSpellBullet(new Item.Properties()));

@@ -55,6 +55,29 @@ public class ComponentStats {
                 550
         );
 
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get(),
+                EnumCADStat.EFFICIENCY,
+                150
+        );
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get(),
+                EnumCADStat.POTENCY,
+                750
+        );
+
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get(),
+                EnumCADStat.EFFICIENCY,
+                175
+        );
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get(),
+                EnumCADStat.POTENCY,
+                640
+        );
+
+
 
 
     }

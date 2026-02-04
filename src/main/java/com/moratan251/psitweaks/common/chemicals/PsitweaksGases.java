@@ -25,8 +25,8 @@ public class PsitweaksGases {
             GASES.register("gas_peo_fuel", () -> new Gas(GasBuilder.builder()
                     .tint(0x4d749b)
                     .with(new GasAttributes.Fuel(
-                            1,    // burnTicks: 1mBあたりの燃焼tick数
-                            FloatingLong.create(64000)  // energyDensity: 1mBあたりの総エネルギー量（FE）
+                            720,    // burnTicks: 1mBあたりの燃焼tick数
+                            FloatingLong.create(540000)  // energyDensity: 1mBあたりの総エネルギー量（FE）
                     ))
             ));
 

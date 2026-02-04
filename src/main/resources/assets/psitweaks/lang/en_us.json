@@ -14,12 +14,13 @@
   "item.psitweaks.psionic_echo": "Psionic Echo",
   "item.psitweaks.alloy_psion": "Psionic Alloy",
   "item.psitweaks.psionic_control_circuit": "Psionic Control Circuit",
+  "item.psitweaks.echo_control_circuit": "Echo Control Circuit",
   "item.psitweaks.alloy_psionic_echo": "Echo Alloy",
   "item.psitweaks.heavy_psimetal_scrap": "Heavy Psimetal Scrap",
+  "item.psitweaks.echo_pellet": "HDΨE Pellet",
+  "item.psitweaks.echo_sheet": "HDΨE Sheet",
 
 
-
-  "item.psitweaks.flight_chip": "Flight Chip",
   "item.psitweaks.psionic_factor": "Psionic Factor",
   "item.psitweaks.psionic_factor_ivory": "Ivory Psionic Factor",
   "item.psitweaks.psionic_factor_ebony": "Ebony Psionic Factor",
@@ -33,6 +34,9 @@
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "Chaotic Psimetal CAD Assembly",
   "item.psitweaks.cad_assembly_flashmetal": "Flashmetal CAD Assembly",
+  "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "Heavy Psimetal CAD Assembly α",
+  "item.psitweaks.cad_assembly_heavy_psimetal_beta": "Heavy Psimetal CAD Assembly β",
+  "item.psitweaks.incomplete_heavy_psimetal_assembly": "Incomplete Heavy Psimetal CAD Assembly",
 
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
@@ -101,7 +105,7 @@
   "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
   "infuse_type.psitweaks.infuse_psionic_echo": "Psinonic Echo",
 
-  "gas.psitweaks.gas_psionic_echo": "Echo Gas",
+  "gas.psitweaks.gas_psionic_echo": "Psionic Echo Gas",
   "gas.psitweaks.gas_peo_fuel": "PE-O Fuel",
 
   "curios.identifier.magic_calculation_area": "Magic Calculation Area",

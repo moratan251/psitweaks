@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "amount": 100,
+    "amount": 1000,
     "gas": "psitweaks:gas_psionic_echo"
   }
 }

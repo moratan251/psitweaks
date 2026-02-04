@@ -35,6 +35,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PSIONIC_ECHO.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get());
+                        pOutput.accept(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.FLASH_RING.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
@@ -45,9 +46,15 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.FLASHMETAL.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL.get());
 
+                        pOutput.accept(PsitweaksItems.ECHO_PELLET.get());
+                        pOutput.accept(PsitweaksItems.ECHO_SHEET.get());
+
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get());
+                        pOutput.accept(PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get());
+                        pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get());
+                        pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get());
 
 
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());

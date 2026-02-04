@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_alloy_psion": {
+    "has_heavy_psimetal": {
       "conditions": {
         "items": [
           {
             "items": [
-              "psitweaks:alloy_psion"
+              "psitweaks:heavy_psimetal"
             ]
           }
         ]
@@ -22,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_alloy_psion",
+      "has_heavy_psimetal",
       "has_the_recipe"
     ]
   ],

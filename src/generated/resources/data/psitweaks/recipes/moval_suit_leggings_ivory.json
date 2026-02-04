@@ -3,17 +3,14 @@
   "category": "equipment",
   "key": {
     "A": {
-      "item": "psitweaks:alloy_psion"
-    },
-    "C": {
-      "item": "psitweaks:psionic_control_circuit"
+      "item": "psitweaks:heavy_psimetal"
     },
     "I": {
       "item": "psi:ivory_psimetal"
     }
   },
   "pattern": [
-    "ACA",
+    "IAI",
     "I I",
     "I I"
   ],

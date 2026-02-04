@@ -14,8 +14,11 @@
   "item.psitweaks.psionic_echo": "サイオニックエコー",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
-  "item.psitweaks.alloy_psionic_echo": "残響合金",
+  "item.psitweaks.echo_control_circuit": "感応制御回路",
+  "item.psitweaks.alloy_psionic_echo": "感応合金",
   "item.psitweaks.heavy_psimetal_scrap": "ヘビーサイメタルの欠片",
+  "item.psitweaks.echo_pellet": "HDΨEペレット",
+  "item.psitweaks.echo_sheet": "HDΨEシート",
 
   "item.psitweaks.psionic_factor": "サイオニック因子",
   "item.psitweaks.psionic_factor_ivory": "偏陽サイオニック因子",
@@ -29,6 +32,9 @@
   "item.psitweaks.cad_assembly_alloy_psion": "サイオニック合金のCAD素体",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "カオティックサイメタルのCAD素体",
   "item.psitweaks.cad_assembly_flashmetal": "フラッシュメタルのCAD素体",
+  "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "ヘビーサイメタルのCAD素体 α型",
+  "item.psitweaks.cad_assembly_heavy_psimetal_beta": "ヘビーサイメタルのCAD素体 β型",
+  "item.psitweaks.incomplete_heavy_psimetal_assembly": "未完成ヘビーサイメタルCAD素体",
 
   "item.psitweaks.auto_caster_tick": "術式自動起動デバイス: tick",
   "item.psitweaks.auto_caster_second": "術式自動起動デバイス: セカンド",
@@ -91,8 +97,8 @@
   "infuse_type.psitweaks.infuse_chaotic_factor": "混沌",
   "infuse_type.psitweaks.infuse_psionic_echo": "サイオニックエコー",
 
-  "gas.psitweaks.gas_psionic_echo": "残響ガス",
-  "gas.psitweaks.gas_peo_fuel": "PE-O燃料",
+  "gas.psitweaks.gas_psionic_echo": "気化サイオニックエコー",
+  "gas.psitweaks.gas_peo_fuel": "ΨE-O燃料",
 
   "curios.identifier.magic_calculation_area": "魔法演算領域",
 

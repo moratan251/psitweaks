@@ -2,19 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "psitweaks:alloy_psion"
-    },
-    "C": {
-      "item": "psitweaks:psionic_control_circuit"
-    },
     "E": {
       "item": "psi:ebony_psimetal"
+    },
+    "H": {
+      "item": "psitweaks:heavy_psimetal"
     }
   },
   "pattern": [
     "E E",
-    "ACA",
+    "EHE",
     "EEE"
   ],
   "result": {

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "amount": 3,
+    "ingredient": {
+      "item": "psitweaks:echo_pellet"
+    }
+  },
+  "output": {
+    "item": "psitweaks:echo_sheet"
+  }
+}

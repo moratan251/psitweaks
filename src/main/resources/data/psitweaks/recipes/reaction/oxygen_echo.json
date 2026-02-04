@@ -2,7 +2,7 @@
   "type": "mekanism:reaction",
   "duration": 100,
   "fluidInput": {
-    "amount": 100,
+    "amount": 200,
     "tag": "forge:oxygen"
   },
   "gasInput": {
@@ -10,16 +10,16 @@
     "gas": "psitweaks:gas_psionic_echo"
   },
   "gasOutput": {
-    "amount": 100,
+    "amount": 300,
     "gas": "psitweaks:gas_peo_fuel"
   },
   "itemInput": {
-    "amount": 2,
+    "amount": 4,
     "ingredient": {
       "item": "mekanism:substrate"
     }
   },
   "itemOutput": {
-    "item": "psitweaks:psionic_echo"
+    "item": "psitweaks:echo_pellet"
   }
 }

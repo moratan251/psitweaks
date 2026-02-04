@@ -36,55 +36,50 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
 
 // ヘルメット
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.MOVAL_SUIT_HELMET.get())
-                .define('A', PsitweaksItems.ALLOY_PSION.get())
-                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('H', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .define('E', ebonyPsimetal)
-                .pattern("ACA")
+                .pattern("EHE")
                 .pattern("E E")
-                .unlockedBy("has_alloy_psion", has(PsitweaksItems.ALLOY_PSION.get()))
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_helmet"));
 
 // チェスト
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.MOVAL_SUIT_CHESTPLATE.get())
-                .define('A', PsitweaksItems.ALLOY_PSION.get())
-                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('H', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .define('E', ebonyPsimetal)
                 .pattern("E E")
-                .pattern("ACA")
+                .pattern("EHE")
                 .pattern("EEE")
-                .unlockedBy("has_alloy_psion", has(PsitweaksItems.ALLOY_PSION.get()))
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_chestplate"));
 
 // レギンス
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.MOVAL_SUIT_LEGGINGS.get())
-                .define('A', PsitweaksItems.ALLOY_PSION.get())
-                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .define('E', ebonyPsimetal)
-                .pattern("ACA")
+                .pattern("EAE")
                 .pattern("E E")
                 .pattern("E E")
-                .unlockedBy("has_alloy_psion", has(PsitweaksItems.ALLOY_PSION.get()))
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_leggings"));
 
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.MOVAL_SUIT_LEGGINGS_IVORY.get())
-                .define('A', PsitweaksItems.ALLOY_PSION.get())
-                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .define('I', ivoryPsimetal)
-                .pattern("ACA")
+                .pattern("IAI")
                 .pattern("I I")
                 .pattern("I I")
-                .unlockedBy("has_alloy_psion", has(PsitweaksItems.ALLOY_PSION.get()))
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_leggings_ivory"));
 
 // ブーツ
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.MOVAL_SUIT_BOOTS.get())
-                .define('A', PsitweaksItems.ALLOY_PSION.get())
-                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .define('E', ebonyPsimetal)
-                .pattern("A A")
-                .pattern("ECE")
-                .unlockedBy("has_alloy_psion", has(PsitweaksItems.ALLOY_PSION.get()))
+                .pattern("E E")
+                .pattern("EAE")
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "moval_suit_boots"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
@@ -184,7 +179,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
  */
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.THIRD_EYE_DEVICE.get())
-                .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('A', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .define('B', plutoniumPellet)
                 .define('C', teleportationCore)
                 .pattern("ABA")
@@ -425,6 +420,46 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("PPP")
                 .unlockedBy("has_psimetal", has(ModItems.psimetal))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_disassembler"));
+
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('S', PsitweaksItems.ECHO_SHEET.get())
+                .define('A', PsitweaksItems.ALLOY_PSIONIC_ECHO.get())
+                .pattern("SSS")
+                .pattern("ACA")
+                .pattern("SSS")
+                .unlockedBy("has_alloy_psionic_echo", has(PsitweaksItems.ALLOY_PSIONIC_ECHO.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "echo_control_circuit"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get())
+                .define('I', PsitweaksItems.HEAVY_PSIMETAL.get())
+                .pattern("III")
+                .pattern("  I")
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "incomplete_heavy_psimetal_assembly"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get())
+                .define('I', PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get())
+                .define('S', PsitweaksItems.ECHO_SHEET.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('N', Items.NETHER_STAR)
+                .pattern("SNS")
+                .pattern("CIC")
+                .pattern("SCS")
+                .unlockedBy("has_echo_sheet", has(PsitweaksItems.ECHO_SHEET.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_heavy_psimetal_alpha"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get())
+                .define('I', PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get())
+                .define('S', PsitweaksItems.ECHO_SHEET.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('P', MekanismItems.PLUTONIUM_PELLET)
+                .pattern("SCS")
+                .pattern("PIP")
+                .pattern("SCS")
+                .unlockedBy("has_echo_sheet", has(PsitweaksItems.ECHO_SHEET.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_heavy_psimetal_beta"));
 
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)

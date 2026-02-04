@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "A": {
-      "item": "psitweaks:chaotic_psimetal"
+      "item": "psitweaks:heavy_psimetal"
     },
     "B": {
       "item": "mekanism:pellet_plutonium"
