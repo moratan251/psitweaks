@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "extraInput": {
+    "amount": 8,
+    "ingredient": {
+      "item": "minecraft:sculk"
+    }
+  },
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:amethyst_shard"
+    }
+  },
+  "output": {
+    "item": "minecraft:echo_shard"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:reaction",
+  "duration": 800,
+  "fluidInput": {
+    "amount": 100,
+    "tag": "minecraft:water"
+  },
+  "gasInput": {
+    "amount": 50,
+    "gas": "psitweaks:gas_psionic_echo"
+  },
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:amethyst_shard"
+    }
+  },
+  "itemOutput": {
+    "count": 2,
+    "item": "minecraft:amethyst_shard"
+  }
+}

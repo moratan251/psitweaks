@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 1,
+    "infuse_type": "psitweaks:infuse_psionic_echo"
+  },
+  "itemInput": {
+    "ingredient": { "item": "minecraft:echo_shard" }
+  },
+  "output": { "item": "psitweaks:psionic_echo" }
+}

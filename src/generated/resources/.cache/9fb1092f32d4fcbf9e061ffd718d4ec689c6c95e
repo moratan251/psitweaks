@@ -1,4 +1,4 @@
-// 1.20.1	2026-02-04T03:57:23.3258084	Recipes
+// 1.20.1	2026-02-04T21:32:38.5370434	Recipes
 c6e2695049bbfa9cee27062c7374bc20b1440c2e data/psitweaks/advancements/recipes/combat/advanced_spell_bullet.json
 f60f9c63ea460e59c4c0ace7b73ae4984f30142c data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_charge.json
 51b592c34676cc780dc439e7364eccc0504ab468 data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_circle.json
@@ -34,6 +34,7 @@ bd1aec9b26e8af71588d11b99d6a9ad88f112b2f data/psitweaks/advancements/recipes/com
 7afa54b260d111b149c73bc569dff47c191e4b08 data/psitweaks/advancements/recipes/combat/sublimated_spell_bullet_mine.json
 3e9f1ae09fa4d33480fdbebbd0e57c8dfc36deac data/psitweaks/advancements/recipes/combat/sublimated_spell_bullet_projectile.json
 07f1c54d779f543322d1dfa207cd21082f558423 data/psitweaks/advancements/recipes/combat/third_eye_device.json
+267fe2a931864fba60a0fa11d286e4138f8b76a5 data/psitweaks/advancements/recipes/misc/amethyst_shard_from_block.json
 080c2e7c3b1c861d706601970dceca09e1adf239 data/psitweaks/advancements/recipes/misc/cad_assembly_alloy_psion.json
 de9099b0fc582bf3e7cd87f57b4a3d5cac3a50a8 data/psitweaks/advancements/recipes/misc/cad_disassembler.json
 a2486c90d3150c42ed74d134a745b45a24f500d6 data/psitweaks/advancements/recipes/misc/echo_control_circuit.json
@@ -49,6 +50,7 @@ f713b9e62f17a0c241eeb9fbc0bc9aca83b9cf9e data/psitweaks/recipes/advanced_spell_b
 a54eed33f5c6dbeb3d843049bf96afb80a11986c data/psitweaks/recipes/advanced_spell_bullet_loop.json
 fe924175151c9a36fa1e9213fef08a982eb05dc5 data/psitweaks/recipes/advanced_spell_bullet_mine.json
 c2649465efcee0d757992550deb804a91d0c458c data/psitweaks/recipes/advanced_spell_bullet_projectile.json
+599ad5d2856252eb73d6774dead329cd99cac7c1 data/psitweaks/recipes/amethyst_shard_from_block.json
 4d92325e4b67b4a1048742b22bc8b3557e238f28 data/psitweaks/recipes/auto_caster_second.json
 4bd9ecaf2f715385bd5e90630db9a22c8e400d8a data/psitweaks/recipes/auto_caster_tick.json
 d52829f532880a5e9f1e05150f61dd7193581b60 data/psitweaks/recipes/cad_assembly_alloy_psion.json

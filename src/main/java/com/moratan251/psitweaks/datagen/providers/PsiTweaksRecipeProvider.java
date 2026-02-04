@@ -8,6 +8,7 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -462,6 +463,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_heavy_psimetal_beta"));
 
 
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)
                 .requires(ModItems.exosuitController)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get())
@@ -479,6 +481,12 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .requires(PsitweaksItems.FLASHMETAL.get())
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.AMETHYST_SHARD, 4)
+                .requires(Items.AMETHYST_BLOCK)
+                .unlockedBy("has_amethyst_block", has(Items.AMETHYST_BLOCK))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "amethyst_shard_from_block"));
+
 
 
     }
