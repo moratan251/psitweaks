@@ -161,6 +161,9 @@ dependencies {
    // implementation fg.deobf("curse.maven:ars-nouveau-401955:6688854")
     implementation fg.deobf("curse.maven:applied-energistics-2-223794:6852919")
     implementation fg.deobf("curse.maven:guideme-1173950:6942062")
+    implementation fg.deobf("curse.maven:psiex-1408745:7583049")
+    implementation fg.deobf("curse.maven:just-zoom-561885:6290336")
+
     implementation "org.spongepowered:mixin:0.8.5"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
