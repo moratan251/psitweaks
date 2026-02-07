@@ -51,8 +51,8 @@ public class PieceTrickPhononMaser extends PieceTrick {
 
         // コスト計算: 威力 * 時間(秒) * 1500
         int cost = intPower * intTime * 700;
-        // ポテンシー計算: 威力 * 100
-        int potency = intPower * 50 + 500;
+        // ポテンシー計算: 威力 * 100 + 800
+        int potency = intPower * 100 + 800;
 
         meta.addStat(EnumSpellStat.POTENCY, potency);
         meta.addStat(EnumSpellStat.COST, cost);

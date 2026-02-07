@@ -21,11 +21,11 @@ public class PieceTrickFlight extends PieceTrickPotionBase {
     }
 
     public int getCost(int power, int time) throws SpellCompilationException {
-        return (int)this.multiplySafe((double)(200 + 20 * time), 1.0);
+        return (int)this.multiplySafe((double)(300 + 30 * time), 1.0);
     }
 
     public int getPotency(int power, int time) throws SpellCompilationException {
-        return (int)this.multiplySafe(380 + time,1.0);
+        return (int)this.multiplySafe(1000 + time,1.0);
     }
 
 

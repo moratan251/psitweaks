@@ -17,8 +17,8 @@ public class PieceTrickCocytus extends PieceTrick {
 
     public PieceTrickCocytus(Spell spell) {
         super(spell);
-        this.setStatLabel(EnumSpellStat.POTENCY,new StatLabel((double)600.0F));
-        this.setStatLabel(EnumSpellStat.COST, new StatLabel((double)3000.0F));
+        this.setStatLabel(EnumSpellStat.POTENCY,new StatLabel((double)1250));
+        this.setStatLabel(EnumSpellStat.COST, new StatLabel((double)5000));
     }
 
     public void initParams() {
@@ -27,8 +27,8 @@ public class PieceTrickCocytus extends PieceTrick {
 
     public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
         super.addToMetadata(meta);
-        meta.addStat(EnumSpellStat.POTENCY, 600);
-        meta.addStat(EnumSpellStat.COST, 3000);
+        meta.addStat(EnumSpellStat.POTENCY, 1250);
+        meta.addStat(EnumSpellStat.COST, 5000);
     }
 
     public Object execute(SpellContext context) throws SpellRuntimeException {
