@@ -124,13 +124,13 @@
   "psitweaks.spellpiece.trick_parade.desc": "Avoid damage with a certain probability",
 
   "psitweaks.spellpiece.trick_interact_block": "Trick: Block Interact",
-  "psitweaks.spellpiece.trick_interact_block.desc": "Right-click with the off-hand item on the target block.",
+  "psitweaks.spellpiece.trick_interact_block.desc": "Right-click with the off-hand item on the target block",
 
   "psitweaks.spellpiece.trick_break_fortune": "Trick: Break Block (Fortune)",
-  "psitweaks.spellpiece.trick_break_fortune.desc": "Break a block with Fortune applied (level 1-3).",
+  "psitweaks.spellpiece.trick_break_fortune.desc": "Break a block with Fortune applied",
 
   "psitweaks.spellpiece.trick_break_silk": "Trick: Break Block (Silk Touch)",
-  "psitweaks.spellpiece.trick_break_silk.desc": "Break a block with Silk Touch applied.",
+  "psitweaks.spellpiece.trick_break_silk.desc": "Break a block with Silk Touch applied",
 
   "psitweaks.spellpiece.trick_store_entity": "Trick: Store Entity",
   "psitweaks.spellpiece.trick_store_entity.desc": "Store the entity's UUID in the CAD memory",
