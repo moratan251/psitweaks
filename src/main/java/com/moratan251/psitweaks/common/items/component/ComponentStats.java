@@ -24,12 +24,12 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get(),
                 EnumCADStat.EFFICIENCY,
-                65
+                250
         );
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get(),
                 EnumCADStat.POTENCY,
-                400
+                60
         );
 
 
@@ -37,11 +37,12 @@ public class ComponentStats {
                 PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get(),
                 EnumCADStat.EFFICIENCY,
                 110
+
         );
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get(),
                 EnumCADStat.POTENCY,
-                450
+                640//450
         );
 
         ItemCADComponent.addStatToStack(
@@ -52,7 +53,9 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get(),
                 EnumCADStat.POTENCY,
-                550
+                1050//550
+
+
         );
 
         ItemCADComponent.addStatToStack(
@@ -63,7 +66,7 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get(),
                 EnumCADStat.POTENCY,
-                750
+                1600//750
         );
 
         ItemCADComponent.addStatToStack(
@@ -74,7 +77,7 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(
                 PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get(),
                 EnumCADStat.POTENCY,
-                640
+                1400//640
         );
 
 

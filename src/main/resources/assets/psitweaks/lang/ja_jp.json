@@ -120,6 +120,12 @@
   "psitweaks.spellpiece.trick_interact_block": "作動式: ブロック作用",
   "psitweaks.spellpiece.trick_interact_block.desc": "座標のブロックに、オフハンドのアイテムで右クリックの動作を行う",
 
+  "psitweaks.spellpiece.trick_break_fortune": "作動式: ブロック破壊(幸運)",
+  "psitweaks.spellpiece.trick_break_fortune.desc": "幸運付きでブロックを破壊する (レベル1-3)",
+
+  "psitweaks.spellpiece.trick_break_silk": "作動式: ブロック破壊(シルクタッチ)",
+  "psitweaks.spellpiece.trick_break_silk.desc": "シルクタッチ付きでブロックを破壊する",
+
   "psitweaks.spellpiece.trick_store_entity": "作動式: エンティティ保存",
   "psitweaks.spellpiece.trick_store_entity.desc": "CADのメモリにエンティティのUUIDを保存する",
 

@@ -65,6 +65,12 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_molecular_divider"), PieceTrickMolecularDivider.class);
             PsiAPI.addPieceToGroup(PieceTrickMolecularDivider.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_molecular_divider"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_break_fortune"), PieceTrickBreakBlockFortune.class);
+            PsiAPI.addPieceToGroup(PieceTrickBreakBlockFortune.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_break_fortune"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_break_silk"), PieceTrickBreakBlockSilk.class);
+            PsiAPI.addPieceToGroup(PieceTrickBreakBlockSilk.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_break_silk"), false);
+
 
         });
     }

@@ -15,15 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
-import vazkii.psi.api.spell.EnumSpellStat;
-import vazkii.psi.api.spell.Spell;
-import vazkii.psi.api.spell.SpellCompilationException;
-import vazkii.psi.api.spell.SpellContext;
-import vazkii.psi.api.spell.SpellMetadata;
-import vazkii.psi.api.spell.SpellParam;
-import vazkii.psi.api.spell.SpellRuntimeException;
-import vazkii.psi.api.spell.StatLabel;
-import vazkii.psi.api.spell.param.ParamNumber;
+import vazkii.psi.api.spell.*;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
@@ -31,42 +23,34 @@ import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PieceTrickBreakBlockFortune extends PieceTrick {
+public class PieceTrickBreakBlockSilk extends PieceTrick {
+
+    private static final int POTENCY = 250;
+    private static final int COST = 250;
 
     SpellParam<Vector3> position;
-    SpellParam<Number> fortuneLevel;
 
-    public PieceTrickBreakBlockFortune(Spell spell) {
+    public PieceTrickBreakBlockSilk(Spell spell) {
         super(spell);
-        // 幸運レベルに応じてコストが変動
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(80).add(new StatLabel("psi.spellparam.power", true).mul(50)));
-        setStatLabel(EnumSpellStat.COST, new StatLabel(100).add(new StatLabel("psi.spellparam.power", true).mul(100)));
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(POTENCY));
+        setStatLabel(EnumSpellStat.COST, new StatLabel(COST));
     }
 
     @Override
     public void initParams() {
         addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, false, false));
-        addParam(fortuneLevel = new ParamNumber("psi.spellparam.power", SpellParam.GREEN, false, true));
     }
 
     @Override
     public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
         super.addToMetadata(meta);
-
-        Double fortuneVal = this.<Double>getParamEvaluation(fortuneLevel);
-        if (fortuneVal == null || fortuneVal < 1) {
-            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
-        }
-
-        int fortune = fortuneVal.intValue();
-        meta.addStat(EnumSpellStat.POTENCY, 100 + fortune * 100);
-        meta.addStat(EnumSpellStat.COST, 100 + fortune * 100);
+        meta.addStat(EnumSpellStat.POTENCY, POTENCY);
+        meta.addStat(EnumSpellStat.COST, COST);
     }
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Vector3 positionVal = this.getParamValue(context, position);
-        Number fortuneVal = this.getParamValue(context, fortuneLevel);
 
         if (positionVal == null) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
@@ -75,34 +59,26 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         }
 
-        int fortune = Math.max(1, fortuneVal.intValue());
         BlockPos pos = positionVal.toBlockPos();
         Level world = context.focalPoint.getCommandSenderWorld();
 
-        // 幸運付きのダイヤモンドピッケルを作成
-        ItemStack fortuneTool = createFortuneTool(fortune);
+        ItemStack silkTool = createSilkTool();
 
-        removeBlockWithDropsFortune(context, context.caster, world, fortuneTool, pos,
-                (state) -> fortuneTool.isCorrectToolForDrops(state) ||
+        removeBlockWithDropsSilk(context, context.caster, world, silkTool, pos,
+                (state) -> silkTool.isCorrectToolForDrops(state) ||
                         PieceTrickBreakBlock.canHarvest(4, state));
 
         return null;
     }
 
-    /**
-     * 幸運エンチャント付きのツールを作成
-     */
-    private ItemStack createFortuneTool(int level) {
+    private ItemStack createSilkTool() {
         ItemStack tool = new ItemStack(Items.NETHERITE_PICKAXE);
-        tool.enchant(Enchantments.BLOCK_FORTUNE, level);
+        tool.enchant(Enchantments.SILK_TOUCH, 1);
         return tool;
     }
 
-    /**
-     * 幸運でブロックを破壊してドロップを得る
-     */
-    public static void removeBlockWithDropsFortune(SpellContext context, Player player, Level world,
-                                                   ItemStack stack, BlockPos pos, Predicate<BlockState> filter) {
+    public static void removeBlockWithDropsSilk(SpellContext context, Player player, Level world,
+                                                ItemStack stack, BlockPos pos, Predicate<BlockState> filter) {
 
         if (stack.isEmpty()) {
             stack = PsiAPI.getPlayerCAD(player);
@@ -120,21 +96,17 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
                 return;
             }
 
-            // ブロック破壊エフェクトを送信
             ((ServerPlayer) player).connection.send(
                     new ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, pos,
                             Block.getId(blockstate), false));
 
-            // 幸運でドロップを取得
             List<ItemStack> drops = Block.getDrops(blockstate, (ServerLevel) world, pos,
                     world.getBlockEntity(pos), player, stack);
 
-            // ドロップをスポーン
             for (ItemStack drop : drops) {
                 Block.popResource(world, pos, drop);
             }
 
-            // ブロックを削除
             world.removeBlock(pos, false);
         }
     }
