@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities;
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -110,6 +111,11 @@ public class EntityPhononMaserBeam extends Entity {
                 this.discard();
             }
         }
+    }
+
+    @Override
+    public boolean shouldRenderAtSqrDistance(double distance) {
+        return true; //
     }
 
     /**
@@ -238,8 +244,11 @@ public class EntityPhononMaserBeam extends Entity {
             return;
         }
 
-        // 1tick当たりのダメージ
-        float damagePerTick = (float) power * 2.0f;
+        // 1tick当たりのダメージ（個別倍率 x 全体倍率）
+        double perSpellDamageMul = PsitweaksConfig.COMMON.phononMaserDamageMultiplier.get();
+        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
+        double damageMul = perSpellDamageMul * globalDamageMul;
+        float damagePerTick = (float) power * 2.0f * (float) damageMul;
         DamageSource damageSource = createLaserDamageSource(caster);
 
         for (Entity entity : entities) {

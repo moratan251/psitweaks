@@ -9,13 +9,20 @@ public class PsitweaksConfig {
     // COMMON CONFIG（サーバー・クライアント両方で使用）
     // ===========================================
     public static class Common {
+        public final ForgeConfigSpec.DoubleValue globalSpellPowerMultiplier;
         // 分子ディバイダー関連
         public final ForgeConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue phononMaserDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue aquaCutterDamageMultiplier;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
                     .push("spells"); // カテゴリ開始
+
+            globalSpellPowerMultiplier = builder
+                    .comment("Psitweaks攻撃スペル全体に適用する一律倍率",
+                            "Global multiplier for all Psitweaks offensive spell damage")
+                    .defineInRange("globalSpellPowerMultiplier", 1.0, 0.1, 1000000.0);
 
             // --- 分子ディバイダー ---
             builder.comment("Molecular Divider Settings")
@@ -37,6 +44,16 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
 
             builder.pop(); // phonon_maser カテゴリ終了
+
+            // --- アクアカッター ---
+            builder.comment("Aqua Cutter Settings")
+                    .push("aqua_cutter");
+
+            aquaCutterDamageMultiplier = builder
+                    .comment("アクアカッターのダメージ倍率", "Damage multiplier for Aqua Cutter")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.pop(); // aqua_cutter カテゴリ終了
 
 
             builder.pop(); // spells カテゴリ終了

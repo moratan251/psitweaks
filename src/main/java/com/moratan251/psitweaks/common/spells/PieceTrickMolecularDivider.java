@@ -1,7 +1,10 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityMolecularDivider;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,6 +27,7 @@ import java.util.List;
  */
 public class PieceTrickMolecularDivider extends PieceTrick {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
     SpellParam<Vector3> position1;
     SpellParam<Vector3> position2;
     SpellParam<Vector3> position3;
@@ -93,9 +97,13 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         AABB boundingBox = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
         List<Entity> entities = world.getEntities(context.caster, boundingBox, entity -> entity instanceof LivingEntity);
 
-        // Configからダメージ倍率を取得
-        double damageMul = PsitweaksConfig.COMMON.molecularDividerDamageMultiplier.get();
+        // Configからダメージ倍率を取得（個別倍率 x 全体倍率）
+        double perSpellDamageMul = PsitweaksConfig.COMMON.molecularDividerDamageMultiplier.get();
+        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
+        double damageMul = perSpellDamageMul * globalDamageMul;
         float damage = (float) (60.0 * powerVal * damageMul);
+        LOGGER.debug("Molecular Divider Damage: {} (Power: {}, PerSpell: {}, Global: {})",
+                damage, powerVal, perSpellDamageMul, globalDamageMul);
 
         for (Entity entity : entities) {
             Vec3 entityPos = entity.position();

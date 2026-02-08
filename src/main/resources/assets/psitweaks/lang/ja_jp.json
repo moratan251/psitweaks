@@ -159,6 +159,9 @@
   "psitweaks.spellpiece.trick_molecular_divider": "作動式: 分子ディバイダー",
   "psitweaks.spellpiece.trick_molecular_divider.desc": "三点で作られた平面で生物を切断する",
 
+  "psitweaks.spellpiece.trick_aqua_cutter": "作動式: アクアカッター",
+  "psitweaks.spellpiece.trick_aqua_cutter.desc": "水刃の発射体を前方に放ち、命中した対象にダメージを与える",
+
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 
