@@ -14,6 +14,7 @@ public class PsitweaksConfig {
         public final ForgeConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue phononMaserDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue aquaCutterDamageMultiplier;
+        public final ForgeConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
@@ -57,6 +58,18 @@ public class PsitweaksConfig {
 
 
             builder.pop(); // spells カテゴリ終了
+
+            builder.comment("Mekanism Integration Settings")
+                    .push("mekanism");
+
+            gasBurningGeneratorEnergyCapacity = builder
+                    .comment("ガス燃焼発電機の内部エネルギー容量オーバーライド（J）",
+                            "-1に設定するとMekanismのデフォルト動作（HydrogenEnergyDensityを基準）を使用します。",
+                            "Gas-Burning Generator internal energy capacity override in Joules.",
+                            "Set to -1 to use Mekanism default behavior (HydrogenEnergyDensity based).")
+                    .defineInRange("gasBurningGeneratorEnergyCapacity", 2000000, -1L, Long.MAX_VALUE);
+
+            builder.pop(); // mekanism カテゴリ終了
         }
     }
 

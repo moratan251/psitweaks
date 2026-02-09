@@ -84,8 +84,8 @@
 
   "block.psitweaks.cad_disassembler": "CAD分解台",
   "block.psitweaks.sculk_eroder": "スカルク侵食機",
-  "container.psitweaks.sculk_eroder": "スカルク侵食機",
-  "description.psitweaks.sculk_eroder": "石材・土・砂系のブロックをスカルクに侵食加工する",
+  "container.psitweaks.sculk_eroder": "スカルク侵食室",
+  "description.psitweaks.sculk_eroder": "石・土・砂系のブロックをスカルクに加工します",
 
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",
