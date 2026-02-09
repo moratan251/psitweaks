@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.items;
 
+import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.items.armor.*;
 import com.moratan251.psitweaks.common.items.bullet.*;
 import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
@@ -137,25 +138,12 @@ public class PsitweaksItems {
 
 
 
-    public static final ItemDeferredRegister MODULES = new ItemDeferredRegister("psitweaks");
-    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING  = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);;
-/*
-    static{
-
-        MODULE_PSYON_SUPPLYING = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);
-    }
-
- */
-
-
-
-
-
-
+    public static final ItemDeferredRegister MODULES = new ItemDeferredRegister(Psitweaks.MOD_ID);
+    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING  = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
-
+        MODULES.register(eventBus);
     }
 
 

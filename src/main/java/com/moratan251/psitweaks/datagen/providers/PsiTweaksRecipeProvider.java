@@ -534,6 +534,15 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_echo_sheet", has(PsitweaksItems.ECHO_SHEET.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_heavy_psimetal_beta"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.FLASH_CHARM.get())
+                .define('F', PsitweaksItems.FLASHMETAL.get())
+                .define('N', Items.NETHER_WART)
+                .pattern(" F ")
+                .pattern("FNF")
+                .pattern(" F ")
+                .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flash_charm"));
+
 
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)
