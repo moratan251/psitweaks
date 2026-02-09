@@ -27,6 +27,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CURIOS_CONTROLLER.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_SECOND.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
+                        pOutput.accept(PsitweaksItems.FLASH_CHARM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_PSIGEM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_EBONY.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_IVORY.get());

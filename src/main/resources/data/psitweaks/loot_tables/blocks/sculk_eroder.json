@@ -2,18 +2,68 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1,
+      "bonus_rolls": 0.0,
+      "name": "main",
+      "rolls": 1.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "psitweaks:sculk_eroder"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
+          "name": "psitweaks:sculk_eroder",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "componentSecurity.owner",
+                  "target": "mekData.owner"
+                },
+                {
+                  "op": "replace",
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode"
+                },
+                {
+                  "op": "replace",
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade"
+                },
+                {
+                  "op": "replace",
+                  "source": "componentConfig",
+                  "target": "mekData.componentConfig"
+                },
+                {
+                  "op": "replace",
+                  "source": "componentEjector",
+                  "target": "mekData.componentEjector"
+                },
+                {
+                  "op": "replace",
+                  "source": "controlType",
+                  "target": "mekData.controlType"
+                },
+                {
+                  "op": "replace",
+                  "source": "EnergyContainers",
+                  "target": "mekData.EnergyContainers"
+                },
+                {
+                  "op": "replace",
+                  "source": "Items",
+                  "target": "mekData.Items"
+                }
+              ]
+            }
+          ]
         }
       ]
     }
-  ]
+  ],
+  "random_sequence": "psitweaks:blocks/sculk_eroder"
 }
