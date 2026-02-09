@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "psitweaks:flashmetal"
+    },
+    "N": {
+      "item": "minecraft:nether_wart"
+    }
+  },
+  "pattern": [
+    " F ",
+    "FNF",
+    " F "
+  ],
+  "result": {
+    "item": "psitweaks:flash_charm"
+  },
+  "show_notification": true
+}
