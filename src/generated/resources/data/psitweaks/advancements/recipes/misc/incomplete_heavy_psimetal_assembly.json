@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_heavy_psimetal": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:heavy_psimetal"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:incomplete_heavy_psimetal_assembly"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_heavy_psimetal",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:incomplete_heavy_psimetal_assembly"
+    ]
+  },
+  "sends_telemetry_event": false
+}

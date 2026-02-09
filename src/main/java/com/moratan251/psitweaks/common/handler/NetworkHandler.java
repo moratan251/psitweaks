@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.handler;
 
-import com.moratan251.psitweaks.client.guis.MessageFlashRingSync;
+import com.moratan251.psitweaks.client.gui.machine.MessageFlashRingSync;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "I": {
+      "item": "psitweaks:incomplete_heavy_psimetal_assembly"
+    },
+    "P": {
+      "item": "mekanism:pellet_plutonium"
+    },
+    "S": {
+      "item": "psitweaks:echo_sheet"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "PIP",
+    "SCS"
+  ],
+  "result": {
+    "item": "psitweaks:cad_assembly_heavy_psimetal_beta"
+  },
+  "show_notification": true
+}

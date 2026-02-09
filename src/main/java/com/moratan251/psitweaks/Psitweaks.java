@@ -9,6 +9,11 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
+import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 //import com.moratan251.psitweaks.common.registries.PsitweaksModules;
@@ -52,6 +57,7 @@ public class Psitweaks {
     public static IProxyPsitweaks proxyPsitweaks;
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
 
+    @SuppressWarnings("removal")
     public Psitweaks(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
 
@@ -63,6 +69,11 @@ public class Psitweaks {
 
         PsitweaksItems.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
+        PsitweaksMekanismBlocks.register(modEventBus);
+        PsitweaksMekanismTileEntityTypes.register(modEventBus);
+        PsitweaksMekanismContainerTypes.register(modEventBus);
+        PsitweaksRecipeTypes.register(modEventBus);
+        PsitweaksRecipeSerializers.register(modEventBus);
         PsitweaksInfuseTypes.register(modEventBus);
         PsitweaksGases.register(modEventBus);
         PsitweaksModules.MODULES.register(modEventBus);
@@ -258,6 +269,55 @@ public class Psitweaks {
                                     .orElse(false) ? 1f : 0f);
 
             ItemProperties.register(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET_MINE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
+                    (stack, world, entity, seed) ->
+                            stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
+                                    .map(ISpellAcceptor::containsSpell)
+                                    .orElse(false) ? 1f : 0f);
+
+            ItemProperties.register(PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get(),
                     ResourceLocation.fromNamespaceAndPath("psitweaks", "active"),
                     (stack, world, entity, seed) ->
                             stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)

@@ -83,6 +83,9 @@
   "item.psitweaks.transcendent_spell_bullet_circle": "円形超越術式弾",
 
   "block.psitweaks.cad_disassembler": "CAD分解台",
+  "block.psitweaks.sculk_eroder": "スカルク侵食機",
+  "container.psitweaks.sculk_eroder": "スカルク侵食機",
+  "description.psitweaks.sculk_eroder": "石材・土・砂系のブロックをスカルクに侵食加工する",
 
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",
@@ -213,7 +216,7 @@
   "advancement.psi:iron_cad_pickup.desc": "鉄のCAD素体を作成する",
   "advancement.psi:gold_assembly_pickup": "金に値する",
   "advancement.psi:gold_assembly_pickup.desc": "金のCAD素体を作成する",
-  "advancement.psi:psimetal_assembly_pickup": "少しの改良",
+  "advancement.psi:psimetal_assembly_pickup": "ちょっとした改良",
   "advancement.psi:psimetal_assembly_pickup.desc": "サイメタルのCAD素体を作成する",
   "advancement.psi:ebony_assembly_pickup": "強力で重厚",
   "advancement.psi:ebony_assembly_pickup.desc": "エボニーサイメタルのCAD素体を作成する",

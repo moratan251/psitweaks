@@ -1,0 +1,11 @@
+{
+  "type": "psitweaks:sculk_eroder",
+  "input": {
+    "ingredient": {
+      "tag": "forge:stone"
+    }
+  },
+  "output": {
+    "item": "minecraft:sculk"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "psitweaks:sculk_eroder",
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:dirt"
+    }
+  },
+  "output": {
+    "item": "minecraft:sculk"
+  }
+}

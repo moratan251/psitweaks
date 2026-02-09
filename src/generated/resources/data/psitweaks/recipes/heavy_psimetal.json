@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:heavy_psimetal_scrap"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal_scrap"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal_scrap"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal_scrap"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    }
+  ],
+  "result": {
+    "item": "psitweaks:heavy_psimetal"
+  }
+}

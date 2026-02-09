@@ -41,9 +41,6 @@ public class ItemMovalSuitLeggings extends ItemMovalSuitArmor {
     }
 
 
-    @Override
-    public void onInventoryTick(ItemStack stack, Level level, Player player) {
 
-    }
 
 }

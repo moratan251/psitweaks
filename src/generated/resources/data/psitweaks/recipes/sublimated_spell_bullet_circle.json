@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:flashmetal"
+    },
+    "B": {
+      "item": "psitweaks:resonant_spell_bullet_circle"
+    },
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:sublimated_spell_bullet_circle"
+  },
+  "show_notification": true
+}

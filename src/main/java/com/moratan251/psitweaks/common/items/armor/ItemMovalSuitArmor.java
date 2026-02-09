@@ -4,30 +4,26 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.api.exosuit.IPsiEventArmor;
 import vazkii.psi.api.material.PsimetalArmorMaterial;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.armor.ItemPsimetalArmor;
 import vazkii.psi.common.item.tool.IPsimetalTool;
 
+import java.util.function.Consumer;
 
-public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor{
+public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IPsimetalTool, IPsiEventArmor {
     private final ArmorMaterial material;
     public static final PsimetalArmorMaterial MOVAL_SUIT_MATERIAL;
 
-
     public ItemMovalSuitArmor(ArmorMaterial material, Type type, Properties props) {
-        super(type, material,props);
+        super(type, material, props);
         this.material = material;
-
     }
 
     static {
@@ -51,39 +47,14 @@ public abstract class ItemMovalSuitArmor extends ItemPsimetalArmor implements IP
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return "psitweaks:textures/models/armor/moval_suit.png";
+        return slot == EquipmentSlot.LEGS
+                ? "psitweaks:textures/models/armor/moval_suit_layer_2.png"
+                : "psitweaks:textures/models/armor/moval_suit_layer_1.png";
     }
 
-    public abstract void onInventoryTick(ItemStack stack, Level level, Player player);
-/*
+
     @Override
-    public void regen(ItemStack stack, Entity entityIn) {
-        if (IPsimetalTool.isItemValidForRegen(stack, entityIn)) {
-            Player player = (Player)entityIn;
-            PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
-            int regenTime = stack.getOrCreateTag().getInt("regenTime");
-            if (!data.overflowed && regenTime % 16 == 0 && (float)data.getAvailablePsi() / (float)data.getTotalPsi() > 0.5F) {
-                data.deductPsi(150, 0, true);
-                stack.setDamageValue(stack.getDamageValue() - 10);
-            }
-
-            stack.getOrCreateTag().putInt("regenTime", regenTime + 1);
-        }
-
+    public void initializeClient(Consumer<net.minecraftforge.client.extensions.common.IClientItemExtensions> consumer) {
+        // Intentionally skip Psi's exosuit model override so this armor uses the vanilla biped model.
     }
-
- */
-/*
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
-
-        if (entity instanceof Player player && !level.isClientSide) {
-            // プレイヤーが防具を装備しているかチェック
-
-        }
-    }
-
- */
-
 }

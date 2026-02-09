@@ -25,8 +25,5 @@ public class ItemMovalSuitChestplate extends ItemMovalSuitArmor {
         return material;
     }
 
-    @Override
-    public void onInventoryTick(ItemStack stack, Level level, Player player) {
 
-    }
 }

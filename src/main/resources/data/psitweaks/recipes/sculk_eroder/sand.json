@@ -1,0 +1,11 @@
+{
+  "type": "psitweaks:sculk_eroder",
+  "input": {
+    "ingredient": {
+      "tag": "forge:sand"
+    }
+  },
+  "output": {
+    "item": "minecraft:sculk"
+  }
+}

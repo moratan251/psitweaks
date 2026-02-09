@@ -85,6 +85,9 @@
   "item.psitweaks.transcendent_spell_bullet_circle": "Transcendent Circle Spell Bullet",
 
   "block.psitweaks.cad_disassembler": "CAD Disassembler",
+  "block.psitweaks.sculk_eroder": "Sculk Eroder",
+  "container.psitweaks.sculk_eroder": "Sculk Eroder",
+  "description.psitweaks.sculk_eroder": "Corrodes stone, dirt, and sand type blocks into Sculk",
 
 
 

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "F": {
+      "item": "psitweaks:flashmetal"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    }
+  },
+  "pattern": [
+    "HHH",
+    "FFF",
+    " CF"
+  ],
+  "result": {
+    "item": "psitweaks:cad_assembly_flashmetal"
+  },
+  "show_notification": true
+}

@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
@@ -17,6 +18,7 @@ public class ClientSetup {
         // エンティティのレンダラーを登録
         event.registerEntityRenderer(PsitweaksEntities.PHONON_MASER_BEAM.get(), PhononMaserBeamRenderer::new);
         event.registerEntityRenderer(PsitweaksEntities.MOLECULAR_DIVIDER.get(), MolecularDividerRenderer::new);
+        event.registerEntityRenderer(PsitweaksEntities.TIME_ACCELERATOR.get(), EntityTimeAcceleratorRenderer::new);
 
     }
 }

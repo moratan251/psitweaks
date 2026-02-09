@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "psitweaks:block/sculk_eroder/right",
+    "front": "psitweaks:block/sculk_eroder/front",
+    "west": "psitweaks:block/sculk_eroder/right",
+    "east": "psitweaks:block/sculk_eroder/left",
+    "south": "psitweaks:block/sculk_eroder/back",
+    "up": "psitweaks:block/sculk_eroder/top",
+    "down": "psitweaks:block/sculk_eroder/bottom"
+  }
+}

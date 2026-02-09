@@ -121,6 +121,14 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_PROJECTILE = ITEMS.register("sublimated_spell_bullet_projectile", () -> new ItemSublimatedProjectileSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> SUBLIMATED_SPELL_BULLET_CIRCLE = ITEMS.register("sublimated_spell_bullet_circle", () -> new ItemSublimatedCircleSpellBullet(new Item.Properties()));
 
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET = ITEMS.register("awakened_spell_bullet", () -> new ItemAwakenedSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_LOOP = ITEMS.register("awakened_spell_bullet_loop", () -> new ItemAwakenedLoopcastSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_MINE = ITEMS.register("awakened_spell_bullet_mine", () -> new ItemAwakenedMineSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_CHARGE = ITEMS.register("awakened_spell_bullet_charge", () -> new ItemAwakenedChargeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_GRENADE = ITEMS.register("awakened_spell_bullet_grenade", () -> new ItemAwakenedGrenadeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_PROJECTILE = ITEMS.register("awakened_spell_bullet_projectile", () -> new ItemAwakenedProjectileSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_CIRCLE = ITEMS.register("awakened_spell_bullet_circle", () -> new ItemAwakenedCircleSpellBullet(new Item.Properties()));
+
 
     //public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler", () -> new ItemPortableCADAssembler(new Item.Properties()));
 

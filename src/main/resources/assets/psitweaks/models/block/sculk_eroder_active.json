@@ -1,0 +1,6 @@
+{
+  "parent": "psitweaks:block/sculk_eroder",
+  "textures": {
+    "front": "psitweaks:block/sculk_eroder/front_active"
+  }
+}

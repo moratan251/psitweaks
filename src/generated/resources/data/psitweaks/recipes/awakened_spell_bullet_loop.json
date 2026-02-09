@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    "B": {
+      "item": "psitweaks:sublimated_spell_bullet_loop"
+    },
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:awakened_spell_bullet_loop"
+  },
+  "show_notification": true
+}

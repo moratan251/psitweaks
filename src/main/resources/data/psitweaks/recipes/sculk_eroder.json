@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_psionic_echo"
+    },
+    "B": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "C": {
+      "item": "minecraft:sculk_catalyst"
+    },
+    "D": {
+      "item": "mekanism:steel_casing"
+    }
+  },
+  "result": {
+    "item": "psitweaks:sculk_eroder"
+  }
+}

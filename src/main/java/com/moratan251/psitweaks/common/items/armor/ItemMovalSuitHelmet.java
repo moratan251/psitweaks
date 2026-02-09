@@ -1,12 +1,8 @@
 package com.moratan251.psitweaks.common.items.armor;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -45,19 +41,11 @@ public class ItemMovalSuitHelmet extends ItemMovalSuitArmor implements ISensorHo
     }
 
     public ItemStack getAttachedSensor(ItemStack stack) {
-        CompoundTag cmp = stack.getOrCreateTag().getCompound("sensor");
+        CompoundTag cmp = stack.getOrCreateTag().getCompound(TAG_SENSOR);
         return ItemStack.of(cmp);
     }
 
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        boolean overlay = type != null && type.equals("overlay");
-        return overlay ? "psitweaks:textures/models/armor/moval_suit.png" : "psi:textures/model/psimetal_exosuit_sensor.png";
-    }
 
-    @Override
-    public void onInventoryTick(ItemStack stack, Level level, Player player) {
-
-    }
 
     public void attachSensor(ItemStack stack, ItemStack sensor) {
         CompoundTag cmp = new CompoundTag();
@@ -65,7 +53,7 @@ public class ItemMovalSuitHelmet extends ItemMovalSuitArmor implements ISensorHo
             sensor.save(cmp);
         }
 
-        stack.getOrCreateTag().put("sensor", cmp);
+        stack.getOrCreateTag().put(TAG_SENSOR, cmp);
     }
 
 

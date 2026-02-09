@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "psitweaks:heavy_psimetal"
+    }
+  },
+  "pattern": [
+    "III",
+    "  I"
+  ],
+  "result": {
+    "item": "psitweaks:incomplete_heavy_psimetal_assembly"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "B": {
+      "item": "psitweaks:advanced_spell_bullet_mine"
+    },
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:resonant_spell_bullet_mine"
+  },
+  "show_notification": true
+}

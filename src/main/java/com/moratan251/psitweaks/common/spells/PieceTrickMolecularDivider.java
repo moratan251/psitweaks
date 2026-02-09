@@ -102,8 +102,8 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
         double damageMul = perSpellDamageMul * globalDamageMul;
         float damage = (float) (60.0 * powerVal * damageMul);
-        LOGGER.debug("Molecular Divider Damage: {} (Power: {}, PerSpell: {}, Global: {})",
-                damage, powerVal, perSpellDamageMul, globalDamageMul);
+     //   LOGGER.debug("Molecular Divider Damage: {} (Power: {}, PerSpell: {}, Global: {})",
+       //         damage, powerVal, perSpellDamageMul, globalDamageMul);
 
         for (Entity entity : entities) {
             Vec3 entityPos = entity.position();

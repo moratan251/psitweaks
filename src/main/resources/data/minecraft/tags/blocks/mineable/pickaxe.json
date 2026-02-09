@@ -13,6 +13,7 @@
     "psi:white_psimetal_plate",
     "psi:lit_white_psimetal_plate",
     "psi:programmer",
-    "psitweaks:cad_disassembler"
+    "psitweaks:cad_disassembler",
+    "psitweaks:sculk_eroder"
   ]
 }

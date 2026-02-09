@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.client.proxy;
 
-import com.moratan251.psitweaks.client.guis.GuiFlashRing;
+import com.moratan251.psitweaks.client.gui.machine.GuiFlashRing;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
 import net.minecraft.client.Minecraft;
@@ -26,6 +26,8 @@ import vazkii.psi.common.item.base.ModItems;
         modid = "psitweaks",
         bus = Mod.EventBusSubscriber.Bus.MOD
 )
+
+@SuppressWarnings("removal")
 public class ClientProxyPsitweaks implements IProxyPsitweaks {
     public void registerHandlers() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::modelBake);

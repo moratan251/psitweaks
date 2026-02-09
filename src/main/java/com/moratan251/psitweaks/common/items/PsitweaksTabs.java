@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -82,7 +83,16 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE.get());
                         pOutput.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE.get());
 
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET.get());
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP.get());
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_MINE.get());
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE.get());
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE.get());
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE.get());
+                        pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get());
+
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
+                        pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                        // pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
                      //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
                        // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());
