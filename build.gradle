@@ -93,6 +93,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    def isRunDataInvocation = gradle.startParameter.taskNames.any { it.toLowerCase().contains("rundata") }
     implementation fg.deobf("curse.maven:psi-241665:6472034")
     implementation fg.deobf("curse.maven:patchouli-306770:4892162")
     implementation fg.deobf("curse.maven:curios-309927:6418456")
@@ -116,9 +117,15 @@ dependencies {
     implementation fg.deobf("curse.maven:guideme-1173950:6942062")
     implementation fg.deobf("curse.maven:psiex-1408745:7540798")
     implementation fg.deobf("curse.maven:re-avaritia-623969:7525231")
-    implementation fg.deobf("curse.maven:konkrete-410295:5028413")
-    implementation fg.deobf("curse.maven:just-zoom-561885:6290336")
+    if (!isRunDataInvocation) {
+        implementation fg.deobf("curse.maven:konkrete-410295:5028413")
+        implementation fg.deobf("curse.maven:just-zoom-561885:6290336")
+        implementation fg.deobf("curse.maven:botania-225643:6870713")
+    } else {
+        logger.lifecycle("Skipping client-only dependencies for runData")
+    }
     implementation fg.deobf("curse.maven:neat-238372:5838485")
+
 
 
     // mplementation "org.spongepowered:mixin:0.8.5"
