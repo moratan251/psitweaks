@@ -1,4 +1,4 @@
-// 1.20.1	2026-02-08T23:35:38.0388882	Recipes
+// 1.20.1	2026-02-10T00:15:48.3136114	Recipes
 c6e2695049bbfa9cee27062c7374bc20b1440c2e data/psitweaks/advancements/recipes/combat/advanced_spell_bullet.json
 f60f9c63ea460e59c4c0ace7b73ae4984f30142c data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_charge.json
 51b592c34676cc780dc439e7364eccc0504ab468 data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_circle.json
@@ -19,6 +19,7 @@ eda3f7f776fa38f826e5bfd92dc215c94d7ae8f0 data/psitweaks/advancements/recipes/com
 69e65a864bbb1abf0e025a1cef7c6dff279dc48f data/psitweaks/advancements/recipes/combat/cad_assembly_flashmetal.json
 7820ca965df7c546a25bd382d24914b79a128ebb data/psitweaks/advancements/recipes/combat/cad_assembly_heavy_psimetal_alpha.json
 05fdf1d5c90bbe57f6f5c1cf1cf76fc1b10f42e4 data/psitweaks/advancements/recipes/combat/cad_assembly_heavy_psimetal_beta.json
+e9e0f41708c587ab4c525b92763ee44aabcfcff5 data/psitweaks/advancements/recipes/combat/flash_charm.json
 4dd319bba619e48dbf62e279af9c33bfdfc6de0a data/psitweaks/advancements/recipes/combat/flash_ring.json
 62d16e3436ab83444b52c2e740fe332e6eefd048 data/psitweaks/advancements/recipes/combat/moval_suit_boots.json
 aa9e3e3dc93ae4fad2bffa0069018eeafd5b16f7 data/psitweaks/advancements/recipes/combat/moval_suit_chestplate.json
@@ -75,6 +76,7 @@ f6006a447e04e213c6b91713088b4d59f5b47d41 data/psitweaks/recipes/cad_assembly_cha
 10df79a4e69c99bb0e6705cb1458bedb799d4de3 data/psitweaks/recipes/cad_disassembler.json
 8b8beffcd7541a3f36aa24f4004c203ac83f3cfe data/psitweaks/recipes/curios_controller.json
 f7a4a6a72c96d6fe98b329875a54a98fe3289af6 data/psitweaks/recipes/echo_control_circuit.json
+96908bbe47e95704bda70cf7443ec91552911f32 data/psitweaks/recipes/flash_charm.json
 f45583fde5fe9dc36d31ee6a5a56eb58d43595d9 data/psitweaks/recipes/flash_ring.json
 649438fcf2c58012f182ca252e479e7987647d69 data/psitweaks/recipes/heavy_psimetal.json
 7bbe4a3ac788f4e9ddc002a1a14c920165e3cf12 data/psitweaks/recipes/incomplete_heavy_psimetal_assembly.json

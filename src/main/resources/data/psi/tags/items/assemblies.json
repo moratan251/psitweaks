@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "psitweaks:cad_assembly_alloy_psion",
+    "psitweaks:cad_assembly_chaotic_psimetal",
+    "psitweaks:cad_assembly_flashmetal",
+    "psitweaks:cad_assembly_heavy_psimetal_alpha",
+    "psitweaks:cad_assembly_heavy_psimetal_beta"
+  ]
+}

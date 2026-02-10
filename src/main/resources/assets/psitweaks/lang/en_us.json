@@ -176,5 +176,6 @@
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 
   "psitweaks.spellpiece.trick_flight": "Trick: Flight",
-  "psitweaks.spellpiece.trick_flight.desc": "Enabling creative flight"
+  "psitweaks.spellpiece.trick_flight.desc": "Enabling creative flight",
+  "entity.minecraft.villager.psitweaks.spellcaster": "Spellcaster"
 }

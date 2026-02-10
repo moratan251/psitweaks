@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:ingots/chaotic_psimetal",
+    "#forge:ingots/flashmetal",
+    "#forge:ingots/heavy_psimetal"
+  ]
+}

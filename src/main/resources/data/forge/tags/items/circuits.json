@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "psitweaks:psionic_control_circuit",
+    "psitweaks:echo_control_circuit"
+  ]
+}

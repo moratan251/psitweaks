@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerType
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 //import com.moratan251.psitweaks.common.registries.PsitweaksModules;
@@ -74,6 +75,7 @@ public class Psitweaks {
         PsitweaksMekanismContainerTypes.register(modEventBus);
         PsitweaksRecipeTypes.register(modEventBus);
         PsitweaksRecipeSerializers.register(modEventBus);
+        PsitweaksVillagers.register(modEventBus);
         PsitweaksInfuseTypes.register(modEventBus);
         PsitweaksGases.register(modEventBus);
         PsitweaksModules.MODULES.register(modEventBus);
