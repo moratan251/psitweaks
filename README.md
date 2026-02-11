@@ -9,13 +9,13 @@ Required mods: Mekanism, Mekanism Generators, Psi, Curios API.
 
 ### Main Features
 
-- Disables Sion loss upon taking damage
-- Removes cooldown from Sion recovery
-- Adds upgraded versions of Cymetal equipment
-- Adds recipes for crafting Cymetal and other materials via Mekanism Metallurgy Infusion
+- Disables psi deduction upon taking damage
+- Removes cooldown from psi recovery
+- Adds upgraded versions of psimetal exosuit
+- Adds recipes for crafting psimetal and other materials via Mekanism Metallurgy Infusion
 - Adds new materials and high-performance spell bullets and CADs using them
 - Adds utility and offensive spells
-- Flash Ring backported from Psi 1.20.1
+- Flash Ring backported from Psi 1.21.1
 
 ### Credits
 
