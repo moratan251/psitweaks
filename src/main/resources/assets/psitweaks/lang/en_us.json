@@ -90,7 +90,7 @@
   "block.psitweaks.sculk_eroder": "Sculk Eroder",
   "container.psitweaks.sculk_eroder": "Sculk Eroder",
   "description.psitweaks.sculk_eroder": "Corrodes stone, dirt, and sand type blocks into Sculk",
-  "message.psitweaks.cad_disassembler.unsupported_tic_cad": "This CAD cannot be disassembled (PsiEX TiCCAD).",
+  "message.psitweaks.cad_disassembler.unsupported_tic_cad": "Failed to safely disassemble this TiCCAD.",
 
 
 

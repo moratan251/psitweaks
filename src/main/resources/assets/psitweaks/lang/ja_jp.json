@@ -86,7 +86,7 @@
 
   "block.psitweaks.cad_disassembler": "CAD分解台",
   "block.psitweaks.sculk_eroder": "スカルク侵食室",
-  "message.psitweaks.cad_disassembler.unsupported_tic_cad": "このCADは分解できません（PsiEX TiCCAD）",
+  "message.psitweaks.cad_disassembler.unsupported_tic_cad": "このTiCCADは安全に分解できませんでした",
   "container.psitweaks.sculk_eroder": "スカルク侵食室",
   "description.psitweaks.sculk_eroder": "石・土・砂系のブロックをスカルクに加工します",
 
