@@ -1,5 +1,7 @@
 ## Psi: Tweaks And Additions
 
+[日本語](README_ja.md)
+
 Psiに追加要素やMekanismとの連携レシピを追加するmodです。
 前提modとしてMekanism, Mekanism Generators, Psi が必要です。
 
