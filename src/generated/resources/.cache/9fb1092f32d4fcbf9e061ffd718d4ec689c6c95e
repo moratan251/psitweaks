@@ -1,4 +1,4 @@
-// 1.20.1	2026-02-10T00:15:48.3136114	Recipes
+// 1.20.1	2026-02-11T15:50:27.9483291	Recipes
 c6e2695049bbfa9cee27062c7374bc20b1440c2e data/psitweaks/advancements/recipes/combat/advanced_spell_bullet.json
 f60f9c63ea460e59c4c0ace7b73ae4984f30142c data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_charge.json
 51b592c34676cc780dc439e7364eccc0504ab468 data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_circle.json
@@ -48,6 +48,7 @@ de9099b0fc582bf3e7cd87f57b4a3d5cac3a50a8 data/psitweaks/advancements/recipes/mis
 a2486c90d3150c42ed74d134a745b45a24f500d6 data/psitweaks/advancements/recipes/misc/echo_control_circuit.json
 05634a50e00edb9ad1b2f590707afd29a04ab3a0 data/psitweaks/advancements/recipes/misc/heavy_psimetal.json
 cc9ce4ac68dccec5e3c772837164060d2dfec1c0 data/psitweaks/advancements/recipes/misc/incomplete_heavy_psimetal_assembly.json
+d02cad286e7c87ef13361de98ddad1d8f8d59610 data/psitweaks/advancements/recipes/misc/portable_cad_assembler.json
 94169261a9b770f56792d40cb4934eb4ddd42c0d data/psitweaks/advancements/recipes/misc/psionic_control_circuit.json
 3dd72c1ba715bc19d808c5b0f6f94166bc6355d6 data/psitweaks/advancements/recipes/misc/unrefined_flashmetal.json
 145ffbd03335b01c7f4fd715cf3ad11fe9f11fe2 data/psitweaks/advancements/recipes/tools/curios_controller.json
@@ -85,6 +86,7 @@ c4515cc2c2250321c2fb814c14602cd7511f67d0 data/psitweaks/recipes/moval_suit_chest
 ab452644c7dbced7a042ad647296d18a44f33b72 data/psitweaks/recipes/moval_suit_helmet.json
 0eedc61053718dcece6137f8b01228f156e7b0d4 data/psitweaks/recipes/moval_suit_leggings.json
 605a01d2377aa79e7a923a1aebf25269f0d273b2 data/psitweaks/recipes/moval_suit_leggings_ivory.json
+3ee7489c69eff6e7d616f09bb263dd07dac16cc1 data/psitweaks/recipes/portable_cad_assembler.json
 d6bfff791be1d1ee864bfca3a4e22819afa72f27 data/psitweaks/recipes/psimetal_bow.json
 ad4906c7658136d29fc9df6754f087ba8628daea data/psitweaks/recipes/psionic_control_circuit.json
 271c78b0a4a7c94fb0a83855bae53cbb46bd1248 data/psitweaks/recipes/resonant_spell_bullet.json

@@ -3,16 +3,20 @@ package com.moratan251.psitweaks.common.handler;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.EnumCADComponent;
@@ -23,6 +27,8 @@ import vazkii.psi.common.item.ItemCAD;
 public class CADDisassemblerEventHandler {
 
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final String TIC_CAD_CLASS_NAME = "com.hutuneko.psi_ex.item.TiCCAD";
+    private static final String UNSUPPORTED_CAD_MESSAGE = "message.psitweaks.cad_disassembler.unsupported_tic_cad";
 
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
@@ -59,6 +65,11 @@ public class CADDisassemblerEventHandler {
             return;
         }
 
+        if (isUnsupportedCAD(heldStack)) {
+            player.sendSystemMessage(Component.translatable(UNSUPPORTED_CAD_MESSAGE));
+            return;
+        }
+
         // CADを分解
         disassembleCAD(level, pos, heldStack);
 
@@ -74,6 +85,18 @@ public class CADDisassemblerEventHandler {
         // CADを消費
         heldStack.shrink(1);
 
+    }
+
+    private static boolean isUnsupportedCAD(ItemStack cadStack) {
+        Item item = cadStack.getItem();
+        if (item.getClass().getName().equals(TIC_CAD_CLASS_NAME)) {
+            return true;
+        }
+
+        ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(item);
+        return itemId != null
+                && "psi_ex".equals(itemId.getNamespace())
+                && itemId.getPath().contains("tic_cad");
     }
 
     private static void disassembleCAD(Level level, BlockPos pos, ItemStack cadStack) {

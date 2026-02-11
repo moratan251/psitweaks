@@ -36,6 +36,7 @@
   "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "ヘビーサイメタルのCAD素体 α型",
   "item.psitweaks.cad_assembly_heavy_psimetal_beta": "ヘビーサイメタルのCAD素体 β型",
   "item.psitweaks.incomplete_heavy_psimetal_assembly": "未完成ヘビーサイメタルCAD素体",
+  "item.psitweaks.portable_cad_assembler": "携帯型CAD組立機",
 
   "item.psitweaks.auto_caster_tick": "術式自動起動デバイス: tick",
   "item.psitweaks.auto_caster_second": "術式自動起動デバイス: セカンド",
@@ -85,6 +86,7 @@
 
   "block.psitweaks.cad_disassembler": "CAD分解台",
   "block.psitweaks.sculk_eroder": "スカルク侵食室",
+  "message.psitweaks.cad_disassembler.unsupported_tic_cad": "このCADは分解できません（PsiEX TiCCAD）",
   "container.psitweaks.sculk_eroder": "スカルク侵食室",
   "description.psitweaks.sculk_eroder": "石・土・砂系のブロックをスカルクに加工します",
 

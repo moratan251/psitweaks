@@ -69,7 +69,7 @@ public final class PsitweaksVillagers {
 
         Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 
-        addTrade(trades, 1, new BasicItemListing(new ItemStack(ModItems.psimetal, 3), new ItemStack(Items.EMERALD, 1), 16, 2, 0.05F));
+        addTrade(trades, 1, new BasicItemListing(new ItemStack(ModItems.psidust, 8), new ItemStack(Items.EMERALD, 1), 16, 2, 0.05F));
         addTrade(trades, 1, new BasicItemListing(3, new ItemStack(ModItems.spellBullet, 1), 8, 2, 0.05F));
         addTrade(trades, 1, new BasicItemListing(4, new ItemStack(ModItems.projectileSpellBullet, 1), 8, 2, 0.05F));
 

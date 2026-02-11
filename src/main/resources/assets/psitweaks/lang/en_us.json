@@ -38,6 +38,7 @@
   "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "Heavy Psimetal CAD Assembly α",
   "item.psitweaks.cad_assembly_heavy_psimetal_beta": "Heavy Psimetal CAD Assembly β",
   "item.psitweaks.incomplete_heavy_psimetal_assembly": "Incomplete Heavy Psimetal CAD Assembly",
+  "item.psitweaks.portable_cad_assembler": "Portable CAD Assembler",
 
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
@@ -89,6 +90,7 @@
   "block.psitweaks.sculk_eroder": "Sculk Eroder",
   "container.psitweaks.sculk_eroder": "Sculk Eroder",
   "description.psitweaks.sculk_eroder": "Corrodes stone, dirt, and sand type blocks into Sculk",
+  "message.psitweaks.cad_disassembler.unsupported_tic_cad": "This CAD cannot be disassembled (PsiEX TiCCAD).",
 
 
 

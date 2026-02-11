@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.client.gui.machine;
 
+import com.moratan251.psitweaks.common.menu.PortableCADAssemblerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,7 +15,7 @@ public class ModMenuTypes {
             MENUS.register("flash_ring",
                     () -> IForgeMenuType.create(FlashRingMenu::new));
 
-  //  public static final RegistryObject<MenuType<PortableCADAssemblerMenu>> PORTABLE_CAD_ASSEMBLER =
-  //          MENUS.register("portable_cad_assembler",
-   //                 () -> IForgeMenuType.create(PortableCADAssemblerMenu::new));
+    public static final RegistryObject<MenuType<PortableCADAssemblerMenu>> PORTABLE_CAD_ASSEMBLER =
+            MENUS.register("portable_cad_assembler",
+                    () -> IForgeMenuType.create(PortableCADAssemblerMenu::fromNetwork));
 }

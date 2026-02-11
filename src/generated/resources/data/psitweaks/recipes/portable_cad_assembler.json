@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psi:cad_assembler"
+    },
+    "C": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "G": {
+      "item": "psi:psigem"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "EAE",
+    "CGC"
+  ],
+  "result": {
+    "item": "psitweaks:portable_cad_assembler"
+  },
+  "show_notification": true
+}

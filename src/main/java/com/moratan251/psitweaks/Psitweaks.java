@@ -2,6 +2,7 @@ package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
 import com.moratan251.psitweaks.client.renderer.EmptyRenderer;
+import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
@@ -73,6 +74,7 @@ public class Psitweaks {
         PsitweaksMekanismBlocks.register(modEventBus);
         PsitweaksMekanismTileEntityTypes.register(modEventBus);
         PsitweaksMekanismContainerTypes.register(modEventBus);
+        ModMenuTypes.MENUS.register(modEventBus);
         PsitweaksRecipeTypes.register(modEventBus);
         PsitweaksRecipeSerializers.register(modEventBus);
         PsitweaksVillagers.register(modEventBus);

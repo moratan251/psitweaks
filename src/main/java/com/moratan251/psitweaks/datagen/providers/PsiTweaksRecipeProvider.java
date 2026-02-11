@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import vazkii.psi.common.block.base.ModBlocks;
 import vazkii.psi.common.item.base.ModItems;
 
 import java.util.function.Consumer;
@@ -29,6 +30,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         Item ebonyPsimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "ebony_psimetal"));
         Item ivoryPsimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "ivory_psimetal"));
         Item spellBullet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "spell_bullet"));
+        Item cadAssembler = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "cad_assembler"));
         Item ultimateControlCircuit = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ultimate_control_circuit"));
         Item plutoniumPellet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "pellet_plutonium"));
         Item teleportationCore = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "teleportation_core"));
@@ -494,7 +496,6 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_psimetal", has(ModItems.psimetal))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_disassembler"));
 
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
                 .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
                 .define('S', PsitweaksItems.ECHO_SHEET.get())
@@ -542,6 +543,17 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern(" F ")
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flash_charm"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get())
+                .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('G', ModItems.psigem)
+                .define('E', Items.ENDER_PEARL)
+                .define('A', ModBlocks.cadAssembler)
+                .pattern("CGC")
+                .pattern("EAE")
+                .pattern("CGC")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "portable_cad_assembler"));
 
 
 

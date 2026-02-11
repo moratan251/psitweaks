@@ -57,6 +57,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get());
+                        pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
 
 
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
@@ -94,7 +95,6 @@ public class PsitweaksTabs {
 
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
-                       // pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
                      //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
                        // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());
 
