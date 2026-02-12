@@ -1,0 +1,6 @@
+{
+  "command_id": "phonon_maser",
+  "piece": "psitweaks:trick_phonon_maser",
+  "unlock_item": "psitweaks:program_phonon_maser",
+  "unlock_tag": "psitweaks.unlock.trick_phonon_maser"
+}

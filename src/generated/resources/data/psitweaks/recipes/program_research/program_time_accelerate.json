@@ -1,0 +1,40 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 300000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:clock"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:redstone_block"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:psionic_echo"
+      }
+    },
+    {
+      "count": 48,
+      "ingredient": {
+        "item": "minecraft:powered_rail"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_time_accelerate"
+  },
+  "time": 360
+}

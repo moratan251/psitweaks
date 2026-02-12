@@ -1,0 +1,40 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 100000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "mekanism:laser"
+      }
+    },
+    {
+      "count": 12,
+      "ingredient": {
+        "item": "minecraft:amethyst_shard"
+      }
+    },
+    {
+      "count": 12,
+      "ingredient": {
+        "item": "psitweaks:flashmetal"
+      }
+    },
+    {
+      "count": 48,
+      "ingredient": {
+        "item": "minecraft:note_block"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_phonon_maser"
+  },
+  "time": 420
+}

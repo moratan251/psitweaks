@@ -10,6 +10,7 @@ public class PsitweaksConfig {
     // ===========================================
     public static class Common {
         public final ForgeConfigSpec.DoubleValue globalSpellPowerMultiplier;
+        public final ForgeConfigSpec.BooleanValue requireSpellUnlocks;
         // 分子ディバイダー関連
         public final ForgeConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue phononMaserDamageMultiplier;
@@ -24,6 +25,16 @@ public class PsitweaksConfig {
                     .comment("Psitweaks攻撃スペル全体に適用する一律倍率",
                             "Global multiplier for all Psitweaks offensive spell damage")
                     .defineInRange("globalSpellPowerMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.comment("Spell unlock requirements")
+                    .push("unlocks");
+
+            requireSpellUnlocks = builder
+                    .comment("特定スペルの利用に解禁を要求するかどうか",
+                            "Whether configured spells require unlock progression in Spell Programmer")
+                    .define("requireSpellUnlocks", true);
+
+            builder.pop(); // unlocks カテゴリ終了
 
             // --- 分子ディバイダー ---
             builder.comment("Molecular Divider Settings")

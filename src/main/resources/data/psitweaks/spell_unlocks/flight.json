@@ -1,0 +1,6 @@
+{
+  "command_id": "flight",
+  "piece": "psitweaks:trick_flight",
+  "unlock_item": "psitweaks:program_flight",
+  "unlock_tag": "psitweaks.unlock.trick_flight"
+}

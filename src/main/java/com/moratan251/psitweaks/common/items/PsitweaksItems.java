@@ -59,6 +59,12 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ALLOY_PSIONIC_ECHO = ITEMS.register("alloy_psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> PSIONIC_ECHO = ITEMS.register("psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> PROGRAM_BLANK = ITEMS.register("program_blank", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PROGRAM_COCYTUS = ITEMS.register("program_cocytus", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PROGRAM_TIME_ACCELERATE = ITEMS.register("program_time_accelerate", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PROGRAM_FLIGHT = ITEMS.register("program_flight", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PROGRAM_PHONON_MASER = ITEMS.register("program_phonon_maser", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));

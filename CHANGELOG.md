@@ -12,6 +12,6 @@
 - Added Portable CAD Assembly 
 
 
-
+- Fixed an issue when using PsiEX:TiCCAD with CADDisassembler
 
 

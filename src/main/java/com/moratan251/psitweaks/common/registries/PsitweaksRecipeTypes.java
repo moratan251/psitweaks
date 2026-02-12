@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import com.moratan251.psitweaks.common.recipe.SculkEroderRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,6 +18,14 @@ public class PsitweaksRecipeTypes {
                 @Override
                 public String toString() {
                     return Psitweaks.MOD_ID + ":sculk_eroder";
+                }
+            });
+
+    public static final RegistryObject<RecipeType<ProgramResearchRecipe>> PROGRAM_RESEARCH =
+            RECIPE_TYPES.register("program_research", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return Psitweaks.MOD_ID + ":program_research";
                 }
             });
 

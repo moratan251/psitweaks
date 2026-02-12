@@ -1,0 +1,40 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 500000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "minecraft:heart_of_the_sea"
+      }
+    },
+    {
+      "count": 64,
+      "ingredient": {
+        "item": "minecraft:blue_ice"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psitweaks:psionic_echo"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:sculk_shrieker"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_cocytus"
+  },
+  "time": 320
+}

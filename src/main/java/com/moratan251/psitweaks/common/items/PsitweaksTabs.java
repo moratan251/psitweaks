@@ -35,6 +35,12 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.ALLOY_PSIONIC_ECHO.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_ECHO.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_BLANK.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_COCYTUS.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_TIME_ACCELERATE.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_FLIGHT.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_PHONON_MASER.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get());
@@ -94,6 +100,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get());
 
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
+                        pOutput.accept(PsitweaksBlocks.PROGRAM_RESEARCHER.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                      //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
                        // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());

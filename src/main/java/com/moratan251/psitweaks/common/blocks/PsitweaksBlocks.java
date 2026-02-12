@@ -5,12 +5,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import vazkii.psi.common.block.base.ModBlocks;
 
 import java.util.function.Supplier;
 
@@ -24,6 +22,14 @@ public class PsitweaksBlocks {
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(5.0f, 15.0f)
                     .sound(SoundType.METAL)
+            ));
+
+    // プログラム研究台
+    public static final RegistryObject<Block> PROGRAM_RESEARCHER = registerBlock("program_researcher",
+            () -> new ProgramResearcherBlock(BlockBehaviour.Properties.of()
+                    .strength(5.0f, 15.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
             ));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {

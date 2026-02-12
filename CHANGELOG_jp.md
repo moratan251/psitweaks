@@ -1,6 +1,6 @@
 ## Changelog
 
-#### v0.7.3 (plan)
+#### v0.7.3
 
 - アイテムなどにタグ追加
 
@@ -9,6 +9,9 @@
 
 
 - 携帯型CAD組立機 を追加
+
+
+- PsiEX:TiCCADを CADDisassembler に使用した際の不具合を修正
 
 
 #### v0.7.2

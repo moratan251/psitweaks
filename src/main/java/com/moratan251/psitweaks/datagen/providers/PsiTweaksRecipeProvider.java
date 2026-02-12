@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.common.block.base.ModBlocks;
@@ -496,6 +495,26 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_psimetal", has(ModItems.psimetal))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_disassembler"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksBlocks.PROGRAM_RESEARCHER.get())
+                .define('P', ModItems.psimetal)
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('D', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .pattern("PCP")
+                .pattern("CDC")
+                .pattern("PCP")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_researcher"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PROGRAM_BLANK.get())
+                .define('P', Items.PAPER)
+                .define('M', psimetal)
+                .define('D', ModItems.psidust)
+                .pattern("D")
+                .pattern("P")
+                .pattern("M")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_blank"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
                 .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
                 .define('S', PsitweaksItems.ECHO_SHEET.get())
@@ -580,7 +599,6 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst_block", has(Items.AMETHYST_BLOCK))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "amethyst_shard_from_block"));
 
-
-
+        ProgramResearchRecipeProvider.addRecipes(consumer);
     }
 }

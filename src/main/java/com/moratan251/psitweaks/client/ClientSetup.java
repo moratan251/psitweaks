@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.client.gui.machine.GuiPortableCADAssembler;
+import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
 import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
@@ -28,7 +29,9 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() ->
-                MenuScreens.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new));
+        event.enqueueWork(() -> {
+            MenuScreens.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
+            MenuScreens.register(ModMenuTypes.PROGRAM_RESEARCHER.get(), GuiProgramResearcher::new);
+        });
     }
 }

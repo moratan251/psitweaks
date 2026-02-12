@@ -1,0 +1,40 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 200000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psi:psigem"
+      }
+    },
+    {
+      "count": 48,
+      "ingredient": {
+        "item": "minecraft:quartz"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:heavy_psimetal"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "psitweaks:echo_control_circuit"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_molecular_divider"
+  },
+  "time": 480
+}
