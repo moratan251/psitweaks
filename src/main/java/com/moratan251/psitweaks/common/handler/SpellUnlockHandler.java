@@ -65,7 +65,9 @@ public class SpellUnlockHandler {
             definition("time_accelerate", "trick_time_accelerate", "program_time_accelerate"),
             definition("flight", "trick_flight", "program_flight"),
             definition("phonon_maser", "trick_phonon_maser", "program_phonon_maser"),
-            definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider")
+            definition("supreme_infusion", "trick_supreme_infusion", "program_supreme_infusion"),
+            definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider"),
+            definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();

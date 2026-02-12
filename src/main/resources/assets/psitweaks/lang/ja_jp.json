@@ -18,7 +18,9 @@
   "item.psitweaks.program_time_accelerate": "プログラム: 時間加速",
   "item.psitweaks.program_flight": "プログラム: 飛行",
   "item.psitweaks.program_phonon_maser": "プログラム: フォノンメーザー",
+  "item.psitweaks.program_supreme_infusion": "プログラム: 超位注入",
   "item.psitweaks.program_molecular_divider": "プログラム: 分子ディバイダー",
+  "item.psitweaks.program_radiation_injection": "プログラム: 放射線注入",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
   "item.psitweaks.echo_control_circuit": "感応制御回路",
@@ -195,6 +197,9 @@
 
   "psitweaks.spellpiece.trick_aqua_cutter": "作動式: アクアカッター",
   "psitweaks.spellpiece.trick_aqua_cutter.desc": "水刃の発射体を前方に放ち、命中した対象にダメージを与える",
+
+  "psitweaks.spellpiece.trick_radiation_injection": "作動式: 放射線注入",
+  "psitweaks.spellpiece.trick_radiation_injection.desc": "対象を被ばくさせる",
 
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",

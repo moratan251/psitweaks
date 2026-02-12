@@ -18,7 +18,9 @@
   "item.psitweaks.program_time_accelerate": "Program: Time Accelerate",
   "item.psitweaks.program_flight": "Program: Flight",
   "item.psitweaks.program_phonon_maser": "Program: Phonon Maser",
+  "item.psitweaks.program_supreme_infusion": "Program: Supreme Infusion",
   "item.psitweaks.program_molecular_divider": "Program: Molecular Divider",
+  "item.psitweaks.program_radiation_injection": "Program: Radiation Injection",
   "item.psitweaks.alloy_psion": "Psionic Alloy",
   "item.psitweaks.psionic_control_circuit": "Psionic Control Circuit",
   "item.psitweaks.echo_control_circuit": "Echo Control Circuit",
@@ -202,6 +204,9 @@
 
   "psitweaks.spellpiece.trick_aqua_cutter": "Trick: Aqua Cutter",
   "psitweaks.spellpiece.trick_aqua_cutter.desc": "Launches a water blade projectile that damages on hit",
+
+  "psitweaks.spellpiece.trick_radiation_injection": "Trick: Radiation Injection",
+  "psitweaks.spellpiece.trick_radiation_injection.desc": "Applies radiation exposure to the target",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 

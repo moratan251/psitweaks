@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 150000,
+  "energy": 10000000,
   "inputs": [
     {
       "count": 1,
@@ -36,5 +36,5 @@
   "output": {
     "item": "psitweaks:program_flight"
   },
-  "time": 320
+  "time": 600
 }

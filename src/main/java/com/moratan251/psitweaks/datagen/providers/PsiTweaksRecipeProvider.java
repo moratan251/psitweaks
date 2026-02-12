@@ -498,9 +498,9 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksBlocks.PROGRAM_RESEARCHER.get())
                 .define('P', ModItems.psimetal)
                 .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
-                .define('D', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('G', ModItems.psigem)
                 .pattern("PCP")
-                .pattern("CDC")
+                .pattern("CGC")
                 .pattern("PCP")
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_researcher"));

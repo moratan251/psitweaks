@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 300000,
+  "energy": 10000000,
   "inputs": [
     {
       "count": 1,
@@ -36,5 +36,5 @@
   "output": {
     "item": "psitweaks:program_time_accelerate"
   },
-  "time": 360
+  "time": 1200
 }

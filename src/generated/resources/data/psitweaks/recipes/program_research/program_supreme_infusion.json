@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 80000000,
+  "energy": 40000000,
   "inputs": [
     {
       "count": 1,
@@ -9,32 +9,32 @@
       }
     },
     {
-      "count": 32,
+      "count": 1,
       "ingredient": {
-        "item": "psi:psigem"
-      }
-    },
-    {
-      "count": 48,
-      "ingredient": {
-        "item": "minecraft:quartz"
+        "item": "minecraft:netherite_ingot"
       }
     },
     {
       "count": 8,
       "ingredient": {
-        "item": "psitweaks:heavy_psimetal"
+        "item": "psitweaks:flashmetal"
       }
     },
     {
-      "count": 3,
+      "count": 24,
       "ingredient": {
-        "item": "psitweaks:echo_control_circuit"
+        "item": "psitweaks:alloy_psion"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:amethyst_block"
       }
     }
   ],
   "output": {
-    "item": "psitweaks:program_molecular_divider"
+    "item": "psitweaks:program_supreme_infusion"
   },
-  "time": 6000
+  "time": 2400
 }

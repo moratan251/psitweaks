@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 500000,
+  "energy": 500000000,
   "inputs": [
     {
       "count": 1,
@@ -36,5 +36,5 @@
   "output": {
     "item": "psitweaks:program_cocytus"
   },
-  "time": 320
+  "time": 36000
 }

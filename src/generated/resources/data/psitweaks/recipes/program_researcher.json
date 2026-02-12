@@ -5,8 +5,8 @@
     "C": {
       "item": "psitweaks:psionic_control_circuit"
     },
-    "D": {
-      "item": "psitweaks:chaotic_psimetal"
+    "G": {
+      "item": "psi:psigem"
     },
     "P": {
       "item": "psi:psimetal"
@@ -14,7 +14,7 @@
   },
   "pattern": [
     "PCP",
-    "CDC",
+    "CGC",
     "PCP"
   ],
   "result": {

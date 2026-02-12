@@ -1,0 +1,6 @@
+{
+  "command_id": "radiation_injection",
+  "piece": "psitweaks:trick_radiation_injection",
+  "unlock_item": "psitweaks:program_radiation_injection",
+  "unlock_tag": "psitweaks.unlock.trick_radiation_injection"
+}

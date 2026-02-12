@@ -1,0 +1,34 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 60000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "mekanism:ingot_uranium"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "mekanism:ingot_lead"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:chaotic_psimetal"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_radiation_injection"
+  },
+  "time": 3600
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "psitweaks:item/program_trick_supreme_infusion"
+  }
+}

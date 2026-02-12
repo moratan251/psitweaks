@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 100000,
+  "energy": 40000000,
   "inputs": [
     {
       "count": 1,
@@ -36,5 +36,5 @@
   "output": {
     "item": "psitweaks:program_phonon_maser"
   },
-  "time": 420
+  "time": 2400
 }
