@@ -9,25 +9,25 @@
       }
     },
     {
-      "count": 16,
+      "count": 8,
       "ingredient": {
         "item": "minecraft:clock"
       }
     },
     {
-      "count": 16,
+      "count": 8,
       "ingredient": {
         "item": "minecraft:redstone_block"
       }
     },
     {
-      "count": 1,
+      "count": 8,
       "ingredient": {
-        "item": "psitweaks:psionic_echo"
+        "item": "psitweaks:chaotic_psimetal"
       }
     },
     {
-      "count": 48,
+      "count": 32,
       "ingredient": {
         "item": "minecraft:powered_rail"
       }

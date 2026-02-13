@@ -28,14 +28,16 @@ public class PieceTrickActiveAirMine extends PieceTrick {
 
     private static final double MIN_POWER = 0.1;
     private static final double MIN_RADIUS = 2.0;
-    private static final double MAX_RADIUS = 6.0;
-    private static final double RADIUS_PER_POWER = 0.5;
-    private static final float BASE_DAMAGE = 4.5F;
-    private static final float DAMAGE_PER_POWER = 8.0F;
+    private static final double MAX_RADIUS = 10.0;
+    private static final double RADIUS_PER_POWER = 1.0 ;
+    private static final float BASE_DAMAGE = 7.0F;
+    private static final float DAMAGE_PER_POWER = 14.0F;
     private static final double POTENCY_BASE = 200;
     private static final double POTENCY_PER_POWER = 50;
     private static final double COST_BASE = 100;
-    private static final double COST_PER_POWER = 400;
+    private static final double COST_PER_POWER = 270;
+    private static final double EDGE_DAMAGE_FACTOR = 0.35;
+    private static final double GOLDEN_ANGLE = Math.PI * (3.0 - Math.sqrt(5.0));
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;
@@ -112,19 +114,19 @@ public class PieceTrickActiveAirMine extends PieceTrick {
         );
 
         for (LivingEntity target : targets) {
-            target.hurt(context.caster.damageSources().sonicBoom(context.caster), finalDamage);
+            double distance = target.getBoundingBox().getCenter().distanceTo(center);
+            if (distance > radius) {
+                continue;
+            }
+
+            float distanceDamage = calculateDistanceAdjustedDamage(finalDamage, distance, radius);
+            if (distanceDamage <= 0.0F) {
+                continue;
+            }
+
+            target.hurt(context.caster.damageSources().sonicBoom(context.caster), distanceDamage);
         }
 
-        level.playSound(
-                null,
-                center.x,
-                center.y,
-                center.z,
-                SoundEvents.GENERIC_EXPLODE,
-                SoundSource.PLAYERS,
-                1.0F,
-                1.0F
-        );
         level.playSound(
                 null,
                 center.x,
@@ -135,11 +137,20 @@ public class PieceTrickActiveAirMine extends PieceTrick {
                 0.7F,
                 1.0F
         );
+        level.playSound(
+                null,
+                center.x,
+                center.y,
+                center.z,
+                SoundEvents.GENERIC_EXPLODE,
+                SoundSource.PLAYERS,
+                0.7F,
+                1.0F
+        );
 
         if (level instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ParticleTypes.EXPLOSION, center.x, center.y, center.z, 1, 0.0, 0.0, 0.0, 0.0);
-            serverLevel.sendParticles(ParticleTypes.CLOUD, center.x, center.y, center.z, 28, radius * 0.35, radius * 0.2, radius * 0.35, 0.03);
-            serverLevel.sendParticles(ParticleTypes.CRIT, center.x, center.y, center.z, 20, radius * 0.3, radius * 0.25, radius * 0.3, 0.05);
+            spawnSonicSphere(serverLevel, center, radius);
+            serverLevel.sendParticles(ParticleTypes.CLOUD, center.x, center.y, center.z, 14, radius * 0.2, radius * 0.2, radius * 0.2, 0.02);
         }
 
         return null;
@@ -151,5 +162,43 @@ public class PieceTrickActiveAirMine extends PieceTrick {
 
     private static float calculateDamage(double powerVal) {
         return BASE_DAMAGE + (float) (powerVal * DAMAGE_PER_POWER);
+    }
+
+    private static float calculateDistanceAdjustedDamage(float baseDamage, double distance, double radius) {
+        if (radius <= 0.0) {
+            return baseDamage;
+        }
+
+        double normalized = Math.min(1.0, Math.max(0.0, distance / radius));
+        double multiplier = EDGE_DAMAGE_FACTOR + (1.0 - EDGE_DAMAGE_FACTOR) * (1.0 - normalized);
+        return (float) (baseDamage * multiplier);
+    }
+
+    private static void spawnSonicSphere(ServerLevel level, Vec3 center, double radius) {
+        int pointCount = Math.max(18, (int) Math.ceil(radius * 12.0));
+        emitFibonacciSphere(level, center, radius, pointCount);
+        emitFibonacciSphere(level, center, radius * 0.55, Math.max(8, pointCount / 2));
+    }
+
+    private static void emitFibonacciSphere(ServerLevel level, Vec3 center, double radius, int pointCount) {
+        for (int i = 0; i < pointCount; i++) {
+            double y = 1.0 - (2.0 * (i + 0.5)) / pointCount;
+            double horizontal = Math.sqrt(Math.max(0.0, 1.0 - y * y));
+            double theta = GOLDEN_ANGLE * i;
+            double x = Math.cos(theta) * horizontal;
+            double z = Math.sin(theta) * horizontal;
+
+            level.sendParticles(
+                    ParticleTypes.SONIC_BOOM,
+                    center.x + x * radius,
+                    center.y + y * radius,
+                    center.z + z * radius,
+                    1,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+            );
+        }
     }
 }

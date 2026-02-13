@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 15000000,
+  "energy": 4000000,
   "inputs": [
     {
       "count": 1,
@@ -9,7 +9,7 @@
       }
     },
     {
-      "count": 16,
+      "count": 8,
       "ingredient": {
         "item": "minecraft:tnt"
       }
@@ -17,17 +17,11 @@
     {
       "count": 16,
       "ingredient": {
-        "item": "minecraft:amethyst_shard"
-      }
-    },
-    {
-      "count": 32,
-      "ingredient": {
         "item": "psi:psidust"
       }
     },
     {
-      "count": 16,
+      "count": 2,
       "ingredient": {
         "item": "psi:psigem"
       }
@@ -36,5 +30,5 @@
   "output": {
     "item": "psitweaks:program_active_air_mine"
   },
-  "time": 1200
+  "time": 400
 }

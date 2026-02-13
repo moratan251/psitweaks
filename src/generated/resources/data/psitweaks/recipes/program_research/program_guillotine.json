@@ -21,27 +21,21 @@
       }
     },
     {
-      "count": 1,
+      "count": 24,
       "ingredient": {
-        "item": "psi:psimetal_sword"
+        "item": "minecraft:rotten_flesh"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:bone"
       }
     },
     {
       "count": 1,
       "ingredient": {
         "item": "psi:psimetal_sword"
-      }
-    },
-    {
-      "count": 1,
-      "ingredient": {
-        "item": "psi:psimetal_axe"
-      }
-    },
-    {
-      "count": 1,
-      "ingredient": {
-        "item": "psi:psimetal_axe"
       }
     }
   ],

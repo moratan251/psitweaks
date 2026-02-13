@@ -15,6 +15,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -78,14 +79,33 @@ public class PieceTrickGuillotine extends PieceTrick {
         playSlashEffect(livingEntity);
         boolean wasAlive = livingEntity.isAlive();
         boolean damaged = livingEntity.hurt(context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
-        if (damaged && wasAlive && !livingEntity.isAlive() && livingEntity instanceof Mob mob) {
-            Item headItem = resolveMobHeadItem(mob);
-            if (headItem != null) {
-                mob.spawnAtLocation(new ItemStack(headItem));
+        if (damaged && wasAlive && !livingEntity.isAlive()) {
+            ItemStack headStack = resolveHeadDrop(livingEntity);
+            if (!headStack.isEmpty()) {
+                livingEntity.spawnAtLocation(headStack);
             }
         }
 
         return null;
+    }
+
+    private ItemStack resolveHeadDrop(LivingEntity livingEntity) {
+        if (livingEntity instanceof Player player) {
+            return createPlayerHead(player);
+        }
+        if (livingEntity instanceof Mob mob) {
+            Item headItem = resolveMobHeadItem(mob);
+            if (headItem != null) {
+                return new ItemStack(headItem);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private ItemStack createPlayerHead(Player player) {
+        ItemStack playerHead = new ItemStack(Items.PLAYER_HEAD);
+        playerHead.getOrCreateTag().putString("SkullOwner", player.getGameProfile().getName());
+        return playerHead;
     }
 
     private void playSlashEffect(LivingEntity target) {

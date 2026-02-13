@@ -38,7 +38,7 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         this.setStatLabel(EnumSpellStat.POTENCY,
                 (new StatLabel("psi.spellparam.power", true)).floor().add(1100).add(300.0));
         this.setStatLabel(EnumSpellStat.COST,
-                (new StatLabel("psi.spellparam.power", true)).floor().add(0.0).add(2500.0));
+                (new StatLabel("psi.spellparam.power", true)).floor().add(0.0).add(1200.0));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class PieceTrickMolecularDivider extends PieceTrick {
 
         powerVal = Math.max(0.1, powerVal);
         meta.addStat(EnumSpellStat.POTENCY, (int) (1100 + powerVal * 300));
-        meta.addStat(EnumSpellStat.COST, (int) (2500 * powerVal));
+        meta.addStat(EnumSpellStat.COST, (int) (1200 * powerVal));
     }
 
     @Override

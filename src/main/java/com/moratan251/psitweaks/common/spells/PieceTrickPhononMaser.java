@@ -49,7 +49,7 @@ public class PieceTrickPhononMaser extends PieceTrick {
         int intPower = powerVal.intValue();
         int intTime = timeVal.intValue();
 
-        // コスト計算: 威力 * 時間(秒) * 1500
+        // コスト計算: 威力 * 時間(秒) * 500
         int cost = intPower * intTime * 700;
         // ポテンシー計算: 威力 * 100 + 800
         int potency = intPower * 100 + 800;

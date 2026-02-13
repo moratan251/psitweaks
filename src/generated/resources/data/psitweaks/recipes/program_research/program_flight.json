@@ -9,25 +9,25 @@
       }
     },
     {
-      "count": 4,
+      "count": 2,
       "ingredient": {
         "item": "minecraft:phantom_membrane"
       }
     },
     {
-      "count": 48,
+      "count": 32,
       "ingredient": {
         "item": "minecraft:feather"
       }
     },
     {
-      "count": 12,
+      "count": 8,
       "ingredient": {
-        "item": "psi:psigem"
+        "item": "psitweaks:chaotic_factor"
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
         "item": "minecraft:nether_wart"
       }
