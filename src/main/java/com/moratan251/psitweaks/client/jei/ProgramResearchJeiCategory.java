@@ -32,7 +32,7 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
     private static final int INPUT_START_X = 8;
     private static final int INPUT_START_Y = 12;
     private static final int OUTPUT_X = 148;
-    private static final int OUTPUT_Y = 26;
+    private static final int OUTPUT_Y = 28;
     private static final int ARROW_X = 90;
     private static final int ARROW_Y = 28;
 
@@ -88,7 +88,7 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
         }
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_X, OUTPUT_Y)
-                .setBackground(outputSlotDrawable, -1, -1)
+                .setBackground(outputSlotDrawable, -5, -5)
                 .setPosition(OUTPUT_X, OUTPUT_Y, 16, 16, HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
                 .addItemStack(recipe.getOutput());
     }

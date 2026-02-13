@@ -193,16 +193,17 @@ public class SpellUnlockHandler {
             return;
         }
 
-        // This unlock item only sets progression; it should not consume or trigger other behavior.
-        event.setCancellationResult(InteractionResult.SUCCESS);
-        event.setCanceled(true);
-
         if (event.getLevel().isClientSide()) {
+            // On dedicated servers, canceling on client can prevent the use packet from reaching server.
             return;
         }
         if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
             return;
         }
+
+        // This unlock item only sets progression; it should not consume or trigger other behavior.
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        event.setCanceled(true);
 
         boolean unlocked = setSpellUnlocked(serverPlayer, definition, true);
         if (unlocked) {
@@ -536,3 +537,4 @@ public class SpellUnlockHandler {
         }
     }
 }
+
