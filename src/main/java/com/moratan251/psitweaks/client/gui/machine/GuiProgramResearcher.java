@@ -18,10 +18,10 @@ public class GuiProgramResearcher extends AbstractContainerScreen<ProgramResearc
     private static final int ENERGY_WIDTH = 8;
     private static final int ENERGY_HEIGHT = 54;
 
-    private static final int PROGRESS_X = 104;
-    private static final int PROGRESS_Y = 34;
-    private static final int PROGRESS_WIDTH = 24;
-    private static final int PROGRESS_HEIGHT = 16;
+    private static final int PROGRESS_X = 94;
+    private static final int PROGRESS_Y = 40;
+    private static final int PROGRESS_WIDTH = 34;
+    private static final int PROGRESS_HEIGHT = 8;
 
     private static final int INPUT_START_X = 38;
     private static final int INPUT_START_Y = 18;

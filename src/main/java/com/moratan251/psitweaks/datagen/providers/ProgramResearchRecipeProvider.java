@@ -98,5 +98,27 @@ public final class ProgramResearchRecipeProvider {
                 .energy(60000000)
                 .time(3600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_radiation_injection"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_GUILLOTINE.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(Items.WITHER_SKELETON_SKULL, 1)
+                .requires(Items.ANVIL, 3)
+                .requires(ModItems.psimetalSword, 1)
+                .requires(ModItems.psimetalSword, 1)
+                .requires(ModItems.psimetalAxe, 1)
+                .requires(ModItems.psimetalAxe, 1)
+                .energy(50000000)
+                .time(3000)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_guillotine"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(Items.TNT, 16)
+                .requires(Items.AMETHYST_SHARD, 16)
+                .requires(ModItems.psidust, 32)
+                .requires(ModItems.psigem, 16)
+                .energy(15000000)
+                .time(1200)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_active_air_mine"));
     }
 }

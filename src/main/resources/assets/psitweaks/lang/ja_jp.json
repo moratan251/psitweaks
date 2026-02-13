@@ -21,6 +21,8 @@
   "item.psitweaks.program_supreme_infusion": "プログラム: 超位注入",
   "item.psitweaks.program_molecular_divider": "プログラム: 分子ディバイダー",
   "item.psitweaks.program_radiation_injection": "プログラム: 放射線注入",
+  "item.psitweaks.program_guillotine": "プログラム: ギロチン",
+  "item.psitweaks.program_active_air_mine": "プログラム: 能動空中機雷",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
   "item.psitweaks.echo_control_circuit": "感応制御回路",
@@ -111,6 +113,12 @@
   "message.psitweaks.spell_unlock.command.status.unlocked": "%s は %s を解禁済みです",
   "message.psitweaks.spell_unlock.command.status.locked": "%s は %s が未解禁です",
   "message.psitweaks.spell_unlock.command.no_change": "%s の解禁状態は変更されませんでした",
+  "message.psitweaks.spell_unlock.command.all.no_change": "全術式の解禁状態は変更されませんでした（対象%s人・術式%s個）",
+  "message.psitweaks.spell_unlock.command.all.grant.single": "%s に全術式の解禁を付与しました（%s/%s 件変更）",
+  "message.psitweaks.spell_unlock.command.all.grant.multi": "全術式の解禁を付与しました（%s/%s 件変更、対象変更%s/%s人）",
+  "message.psitweaks.spell_unlock.command.all.revoke.single": "%s から全術式の解禁を剥奪しました（%s/%s 件変更）",
+  "message.psitweaks.spell_unlock.command.all.revoke.multi": "全術式の解禁を剥奪しました（%s/%s 件変更、対象変更%s/%s人）",
+  "message.psitweaks.spell_unlock.command.all.status": "%s は術式を %s/%s 解禁済みです",
   "message.psitweaks.spell_unlock.command.cocytus.grant.single": "%s に作動式: コキュートスの解禁を付与しました",
   "message.psitweaks.spell_unlock.command.cocytus.grant.multi": "%s/%s 人に作動式: コキュートスの解禁を付与しました",
   "message.psitweaks.spell_unlock.command.cocytus.revoke.single": "%s の作動式: コキュートス解禁を剥奪しました",
@@ -198,8 +206,17 @@
   "psitweaks.spellpiece.trick_aqua_cutter": "作動式: アクアカッター",
   "psitweaks.spellpiece.trick_aqua_cutter.desc": "水刃の発射体を前方に放ち、命中した対象にダメージを与える",
 
+  "psitweaks.spellpiece.trick_blaze_ball": "作動式: ブレイズボール",
+  "psitweaks.spellpiece.trick_blaze_ball.desc": "前方へ火の玉を発射し、命中した対象へ炎属性ダメージを与える",
+
   "psitweaks.spellpiece.trick_radiation_injection": "作動式: 放射線注入",
   "psitweaks.spellpiece.trick_radiation_injection.desc": "対象を被ばくさせる",
+
+  "psitweaks.spellpiece.trick_guillotine": "作動式: ギロチン",
+  "psitweaks.spellpiece.trick_guillotine.desc": "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる",
+
+  "psitweaks.spellpiece.trick_active_air_mine": "作動式: 能動空中機雷",
+  "psitweaks.spellpiece.trick_active_air_mine.desc": "指定座標を中心とした範囲内の生物にダメージを与える",
 
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",

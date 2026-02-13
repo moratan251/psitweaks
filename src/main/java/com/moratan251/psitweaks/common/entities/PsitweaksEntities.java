@@ -40,6 +40,15 @@ public class PsitweaksEntities {
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":molecular_divider"));
 
+    public static final RegistryObject<EntityType<EntityBlazeBall>> BLAZE_BALL =
+            ENTITY_TYPES.register("blaze_ball",
+                    () -> EntityType.Builder.<EntityBlazeBall>of(EntityBlazeBall::new, MobCategory.MISC)
+                            .sized(0.3125f, 0.3125f)
+                            .clientTrackingRange(64)
+                            .updateInterval(10)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":blaze_ball"));
+
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);
     }

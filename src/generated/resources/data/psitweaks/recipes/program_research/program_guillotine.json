@@ -1,0 +1,52 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 50000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "minecraft:wither_skeleton_skull"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:anvil"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psi:psimetal_sword"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psi:psimetal_sword"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psi:psimetal_axe"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psi:psimetal_axe"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_guillotine"
+  },
+  "time": 3000
+}

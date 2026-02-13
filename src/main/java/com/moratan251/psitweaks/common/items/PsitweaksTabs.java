@@ -43,6 +43,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get());

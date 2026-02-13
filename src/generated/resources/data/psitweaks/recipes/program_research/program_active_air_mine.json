@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 60000000,
+  "energy": 15000000,
   "inputs": [
     {
       "count": 1,
@@ -11,24 +11,30 @@
     {
       "count": 16,
       "ingredient": {
-        "item": "mekanism:ingot_uranium"
+        "item": "minecraft:tnt"
       }
     },
     {
-      "count": 8,
+      "count": 16,
       "ingredient": {
-        "item": "mekanism:ingot_lead"
+        "item": "minecraft:amethyst_shard"
       }
     },
     {
-      "count": 8,
+      "count": 32,
       "ingredient": {
-        "item": "psitweaks:chaotic_psimetal"
+        "item": "psi:psidust"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psi:psigem"
       }
     }
   ],
   "output": {
-    "item": "psitweaks:program_radiation_injection"
+    "item": "psitweaks:program_active_air_mine"
   },
-  "time": 3600
+  "time": 1200
 }

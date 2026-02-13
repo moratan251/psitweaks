@@ -6,6 +6,8 @@ import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.placement.HorizontalAlignment;
+import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -28,11 +30,11 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
     private static final int WIDTH = 176;
     private static final int HEIGHT = 88;
     private static final int INPUT_START_X = 8;
-    private static final int INPUT_START_Y = 18;
-    private static final int OUTPUT_X = 152;
-    private static final int OUTPUT_Y = 36;
-    private static final int ARROW_X = 124;
-    private static final int ARROW_Y = 36;
+    private static final int INPUT_START_Y = 12;
+    private static final int OUTPUT_X = 148;
+    private static final int OUTPUT_Y = 26;
+    private static final int ARROW_X = 90;
+    private static final int ARROW_Y = 28;
 
     private final IDrawable icon;
     private final IDrawable slotDrawable;
@@ -74,18 +76,20 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ProgramResearchRecipe recipe, IFocusGroup focuses) {
         List<ProgramResearchRecipe.RequiredInput> inputs = recipe.getInputs();
-        for (int i = 0; i < inputs.size() && i < ProgramResearchRecipe.MAX_INPUT_SLOTS; i++) {
-            ProgramResearchRecipe.RequiredInput input = inputs.get(i);
+        for (int i = 0; i < ProgramResearchRecipe.MAX_INPUT_SLOTS; i++) {
             int x = INPUT_START_X + (i % 3) * 18;
             int y = INPUT_START_Y + (i / 3) * 18;
 
-            builder.addSlot(RecipeIngredientRole.INPUT, x, y)
-                    .setBackground(slotDrawable, -1, -1)
-                    .addItemStacks(toDisplayStacks(input));
+            var inputSlot = builder.addSlot(RecipeIngredientRole.INPUT, x, y)
+                    .setBackground(slotDrawable, -1, -1);
+            if (i < inputs.size()) {
+                inputSlot.addItemStacks(toDisplayStacks(inputs.get(i)));
+            }
         }
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_X, OUTPUT_Y)
                 .setBackground(outputSlotDrawable, -1, -1)
+                .setPosition(OUTPUT_X, OUTPUT_Y, 16, 16, HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
                 .addItemStack(recipe.getOutput());
     }
 
@@ -101,16 +105,16 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
                 font,
                 Component.translatable("jei.psitweaks.program_research.energy", recipe.getEnergy()),
                 8,
-                72,
-                0xFFFFFF,
+                68,
+                0x202020,
                 false
         );
         graphics.drawString(
                 font,
                 Component.translatable("jei.psitweaks.program_research.time", minutes, seconds),
-                92,
-                72,
-                0xFFFFFF,
+                8,
+                79,
+                0x202020,
                 false
         );
     }

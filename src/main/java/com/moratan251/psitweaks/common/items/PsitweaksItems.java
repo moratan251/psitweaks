@@ -67,6 +67,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
     public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
     public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = ITEMS.register("program_radiation_injection", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+    public static final RegistryObject<Item> PROGRAM_GUILLOTINE = ITEMS.register("program_guillotine", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+    public static final RegistryObject<Item> PROGRAM_ACTIVE_AIR_MINE = ITEMS.register("program_active_air_mine", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));

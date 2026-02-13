@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import mekanism.api.radiation.IRadiationManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,8 +21,8 @@ public class PieceTrickRadiationInjection extends PieceTrick {
     private static final double MIN_POWER = 0.1;
     private static final double POTENCY_BASE = 400.0;
     private static final double POTENCY_PER_POWER = 100.0;
-    private static final double COST_BASE = 200.0;
-    private static final double COST_PER_POWER = 400.0;
+    private static final double COST_BASE = 300.0;
+    private static final double COST_PER_POWER = 600.0;
 
     private SpellParam<Entity> target;
     private SpellParam<Number> power;
@@ -75,8 +76,14 @@ public class PieceTrickRadiationInjection extends PieceTrick {
             return null;
         }
 
-        double radiation = Math.max(MIN_POWER, powerVal);
-        IRadiationManager.INSTANCE.radiate(livingEntity, radiation);
+
+        double radiation = 4.0 * Math.max(MIN_POWER, powerVal);
+        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
+        double radiationMultiplier = PsitweaksConfig.COMMON.radiationInjectionMultiplier.get();
+        if (radiationMultiplier <= 0.0) {
+            return null;
+        }
+        IRadiationManager.INSTANCE.radiate(livingEntity, radiation * radiationMultiplier * globalDamageMul);
         return null;
     }
 }

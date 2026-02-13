@@ -1,0 +1,6 @@
+{
+  "command_id": "active_air_mine",
+  "piece": "psitweaks:trick_active_air_mine",
+  "unlock_item": "psitweaks:program_active_air_mine",
+  "unlock_tag": "psitweaks.unlock.trick_active_air_mine"
+}

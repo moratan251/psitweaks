@@ -67,7 +67,9 @@ public class SpellUnlockHandler {
             definition("phonon_maser", "trick_phonon_maser", "program_phonon_maser"),
             definition("supreme_infusion", "trick_supreme_infusion", "program_supreme_infusion"),
             definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider"),
-            definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection")
+            definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection"),
+            definition("guillotine", "trick_guillotine", "program_guillotine"),
+            definition("active_air_mine", "trick_active_air_mine", "program_active_air_mine")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();
@@ -102,6 +104,7 @@ public class SpellUnlockHandler {
 
     private static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> spellUnlockRoot = Commands.literal("spellunlock");
+        spellUnlockRoot.then(createAllSpellCommand());
         for (SpellUnlockDefinition definition : SPELL_UNLOCKS) {
             spellUnlockRoot.then(createSpellCommand(definition));
         }
@@ -135,6 +138,27 @@ public class SpellUnlockHandler {
                                         ctx.getSource(),
                                         EntityArgument.getPlayer(ctx, "target"),
                                         definition))));
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> createAllSpellCommand() {
+        return Commands.literal("all")
+                .then(Commands.literal("grant")
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .executes(ctx -> setAllSpellUnlock(
+                                        ctx.getSource(),
+                                        EntityArgument.getPlayers(ctx, "targets"),
+                                        true))))
+                .then(Commands.literal("revoke")
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .executes(ctx -> setAllSpellUnlock(
+                                        ctx.getSource(),
+                                        EntityArgument.getPlayers(ctx, "targets"),
+                                        false))))
+                .then(Commands.literal("status")
+                        .then(Commands.argument("target", EntityArgument.player())
+                                .executes(ctx -> showAllSpellUnlockStatus(
+                                        ctx.getSource(),
+                                        EntityArgument.getPlayer(ctx, "target")))));
     }
 
     @SubscribeEvent
@@ -252,6 +276,62 @@ public class SpellUnlockHandler {
         return changed;
     }
 
+    private static int setAllSpellUnlock(CommandSourceStack source, Collection<ServerPlayer> targets, boolean unlocked) {
+        int changed = 0;
+        int changedPlayers = 0;
+        int totalSpells = SPELL_UNLOCKS.size();
+        int totalOperations = targets.size() * totalSpells;
+
+        for (ServerPlayer target : targets) {
+            boolean targetChanged = false;
+            for (SpellUnlockDefinition definition : SPELL_UNLOCKS) {
+                if (setSpellUnlocked(target, definition, unlocked)) {
+                    changed++;
+                    targetChanged = true;
+                }
+            }
+            if (targetChanged) {
+                changedPlayers++;
+            }
+        }
+
+        if (changed <= 0) {
+            source.sendFailure(Component.translatable(
+                    "message.psitweaks.spell_unlock.command.all.no_change",
+                    targets.size(),
+                    totalSpells
+            ));
+            return 0;
+        }
+
+        if (targets.size() == 1) {
+            ServerPlayer target = targets.iterator().next();
+            final int changedCount = changed;
+            source.sendSuccess(() -> Component.translatable(
+                    unlocked
+                            ? "message.psitweaks.spell_unlock.command.all.grant.single"
+                            : "message.psitweaks.spell_unlock.command.all.revoke.single",
+                    target.getDisplayName(),
+                    changedCount,
+                    totalSpells
+            ), true);
+        } else {
+            final int changedCount = changed;
+            final int changedPlayerCount = changedPlayers;
+            source.sendSuccess(() -> Component.translatable(
+                    unlocked
+                            ? "message.psitweaks.spell_unlock.command.all.grant.multi"
+                            : "message.psitweaks.spell_unlock.command.all.revoke.multi",
+                    changedCount,
+                    totalOperations,
+                    changedPlayerCount,
+                    targets.size()
+            ), true);
+        }
+
+        return changed;
+    }
+
     private static int showSpellUnlockStatus(CommandSourceStack source, ServerPlayer target, SpellUnlockDefinition definition) {
         boolean unlocked = isSpellUnlocked(target, definition);
         source.sendSuccess(() -> Component.translatable(
@@ -261,6 +341,25 @@ public class SpellUnlockHandler {
                 target.getDisplayName(),
                 definition.spellNameComponent()), false);
         return unlocked ? 1 : 0;
+    }
+
+    private static int showAllSpellUnlockStatus(CommandSourceStack source, ServerPlayer target) {
+        int unlockedCount = 0;
+        int totalSpells = SPELL_UNLOCKS.size();
+        for (SpellUnlockDefinition definition : SPELL_UNLOCKS) {
+            if (isSpellUnlocked(target, definition)) {
+                unlockedCount++;
+            }
+        }
+
+        final int unlockedTotal = unlockedCount;
+        source.sendSuccess(() -> Component.translatable(
+                "message.psitweaks.spell_unlock.command.all.status",
+                target.getDisplayName(),
+                unlockedTotal,
+                totalSpells
+        ), false);
+        return unlockedCount;
     }
 
     private static boolean setSpellUnlocked(ServerPlayer player, SpellUnlockDefinition definition, boolean unlocked) {
@@ -329,6 +428,10 @@ public class SpellUnlockHandler {
 
             if (byCommand.containsKey(commandId)) {
                 LOGGER.warn("Skipping duplicate spell unlock command id '{}'.", commandId);
+                continue;
+            }
+            if ("all".equals(commandId)) {
+                LOGGER.warn("Skipping spell unlock command id '{}' because it is reserved.", commandId);
                 continue;
             }
             if (byPiece.containsKey(definition.pieceId())) {

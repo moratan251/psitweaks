@@ -15,6 +15,10 @@ public class PsitweaksConfig {
         public final ForgeConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue phononMaserDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue aquaCutterDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue blazeBallDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue activeAirMineDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue radiationInjectionMultiplier;
+        public final ForgeConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ForgeConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
 
         public Common(ForgeConfigSpec.Builder builder) {
@@ -67,6 +71,48 @@ public class PsitweaksConfig {
 
             builder.pop(); // aqua_cutter カテゴリ終了
 
+            // --- ブレイズボール ---
+            builder.comment("Blaze Ball Settings")
+                    .push("blaze_ball");
+
+            blazeBallDamageMultiplier = builder
+                    .comment("ブレイズボールのダメージ倍率", "Damage multiplier for Blaze Ball")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.pop(); // blaze_ball カテゴリ終了
+
+            // --- 能動空中機雷 ---
+            builder.comment("Active Air Mine Settings")
+                    .push("active_air_mine");
+
+            activeAirMineDamageMultiplier = builder
+                    .comment("作動式: 能動空中機雷 のダメージ倍率",
+                            "Damage multiplier for Trick: Active Air Mine")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.pop(); // active_air_mine カテゴリ終了
+
+            // --- 放射線注入 ---
+            builder.comment("Radiation Injection Settings")
+                    .push("radiation_injection");
+
+            radiationInjectionMultiplier = builder
+                    .comment("作動式: 放射線注入 の被ばく量倍率",
+                            "Radiation amount multiplier for Trick: Radiation Injection")
+                    .defineInRange("radiationMultiplier", 1.0, 0.0, 1000000.0);
+
+            builder.pop(); // radiation_injection カテゴリ終了
+
+            // --- ギロチン ---
+            builder.comment("Guillotine Settings")
+                    .push("guillotine");
+
+            guillotineDamageMultiplier = builder
+                    .comment("作動式: ギロチン のダメージ倍率",
+                            "Damage multiplier for Trick: Guillotine")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.pop(); // guillotine カテゴリ終了
 
             builder.pop(); // spells カテゴリ終了
 
