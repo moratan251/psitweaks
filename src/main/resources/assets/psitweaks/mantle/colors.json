@@ -1,0 +1,11 @@
+{
+  "modifier.psitweaks": {
+    "__custom__": null,
+    "psi_buffer": "#225588",
+    "load_computation": "#4444AA",
+    "erosion_computation": "#AA4444",
+    "casting_assist": "#A0A0FF",
+    "psicological": "#22C0C0",
+    "global_traveler": "#30EFAF"
+  }
+}

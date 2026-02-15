@@ -1,0 +1,21 @@
+{
+  "type": "tconstruct:material_fluid",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_heavy_psimetal"
+    }
+  ],
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_heavy_psimetal"
+  },
+  "output": "psitweaks:heavy_psimetal",
+  "temperature": 1100
+}
+

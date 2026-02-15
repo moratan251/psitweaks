@@ -4,7 +4,11 @@ import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -599,6 +603,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst_block", has(Items.AMETHYST_BLOCK))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "amethyst_shard_from_block"));
 
+        PsiTweaksSmeltryRecipeProvider.addRecipes(consumer);
         ProgramResearchRecipeProvider.addRecipes(consumer);
     }
 }

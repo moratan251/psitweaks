@@ -38,6 +38,7 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -46,6 +47,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.ISpellAcceptor;
+
+import java.lang.reflect.Method;
 
 import static net.minecraftforge.fml.loading.FMLEnvironment.dist;
 
@@ -82,6 +85,7 @@ public class Psitweaks {
         PsitweaksVillagers.register(modEventBus);
         PsitweaksInfuseTypes.register(modEventBus);
         PsitweaksGases.register(modEventBus);
+        registerTConstructCompat(modEventBus);
         PsitweaksModules.MODULES.register(modEventBus);
 
 
@@ -109,6 +113,20 @@ public class Psitweaks {
 
         NetworkHandler.registerMessages();
 
+    }
+
+    private static void registerTConstructCompat(IEventBus modEventBus) {
+        if (!ModList.get().isLoaded("tconstruct")) {
+            return;
+        }
+
+        try {
+            Class<?> compatClass = Class.forName("com.moratan251.psitweaks.compat.tconstruct.PsitweaksTConstructCompat");
+            Method registerMethod = compatClass.getMethod("register", IEventBus.class);
+            registerMethod.invoke(null, modEventBus);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Tinker's Construct is not installed or available", e);
+        }
     }
 
 
@@ -341,7 +359,7 @@ public class Psitweaks {
         PackOutput packOutput = gen.getPackOutput();
         ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
-        gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(gen.getPackOutput()));
+        gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
     }
 
     public static ResourceLocation location(String path) {

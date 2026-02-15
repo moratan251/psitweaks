@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:material_fluid",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "psi"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_ivory_psimetal"
+    }
+  ],
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_ivory_psimetal"
+  },
+  "output": "psitweaks:ivory_psimetal",
+  "temperature": 1050
+}
+

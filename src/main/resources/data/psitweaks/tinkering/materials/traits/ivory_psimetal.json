@@ -1,0 +1,28 @@
+{
+  "perStat": {
+    "tconstruct:melee_harvest": [
+      {
+        "name": "psitweaks:erosion_computation",
+        "level": 1
+      }
+    ],
+    "tconstruct:ranged": [
+      {
+        "name": "psitweaks:erosion_computation",
+        "level": 1
+      }
+    ],
+    "tconstruct:armor": [
+      {
+        "name": "psitweaks:psicological",
+        "level": 1
+      }
+    ],
+    "tconstruct:plating_shield": [
+      {
+        "name": "psitweaks:psicological",
+        "level": 1
+      }
+    ]
+  }
+}

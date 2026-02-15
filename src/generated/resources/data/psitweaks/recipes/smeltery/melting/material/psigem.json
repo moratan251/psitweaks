@@ -1,0 +1,27 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "psi"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_psigem"
+    }
+  ],
+  "ingredient": {
+    "item": "psi:psigem"
+  },
+  "result": {
+    "amount": 100,
+    "tag": "forge:molten_psigem"
+  },
+  "temperature": 1000,
+  "time": 75
+}

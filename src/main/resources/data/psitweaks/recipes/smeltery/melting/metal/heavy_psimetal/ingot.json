@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_heavy_psimetal"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/heavy_psimetal"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:molten_heavy_psimetal"
+  },
+  "temperature": 1300,
+  "time": 130
+}
+

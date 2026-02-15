@@ -1,0 +1,30 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/multi_use/ingot"
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:ingots/chaotic_psimetal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_chaotic_psimetal"
+    }
+  ],
+  "cooling_time": 95,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_chaotic_psimetal"
+  },
+  "result": {
+    "tag": "forge:ingots/chaotic_psimetal"
+  }
+}
+

@@ -1,0 +1,39 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_refined_glowstone"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_chaotic_psimetal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_flashmetal"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 540,
+      "tag": "forge:molten_refined_glowstone"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:molten_chaotic_psimetal"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:molten_flashmetal"
+  },
+  "temperature": 900
+}

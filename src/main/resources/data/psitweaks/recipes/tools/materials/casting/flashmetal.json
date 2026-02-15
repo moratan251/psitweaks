@@ -1,0 +1,21 @@
+{
+  "type": "tconstruct:material_fluid",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_flashmetal"
+    }
+  ],
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_flashmetal"
+  },
+  "output": "psitweaks:flashmetal",
+  "temperature": 900
+}
+

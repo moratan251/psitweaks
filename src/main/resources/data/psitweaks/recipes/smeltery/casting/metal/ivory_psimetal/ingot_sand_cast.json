@@ -1,0 +1,35 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/single_use/ingot"
+  },
+  "cast_consumed": true,
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "psi"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:ingots/ivory_psimetal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_ivory_psimetal"
+    }
+  ],
+  "cooling_time": 78,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_ivory_psimetal"
+  },
+  "result": {
+    "tag": "forge:ingots/ivory_psimetal"
+  }
+}
+

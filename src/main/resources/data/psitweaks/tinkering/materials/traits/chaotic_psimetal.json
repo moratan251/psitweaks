@@ -1,0 +1,12 @@
+{
+  "default": [
+    {
+      "name": "psitweaks:psicological",
+      "level": 1
+    },
+    {
+      "name": "psitweaks:casting_assist",
+      "level": 1
+    }
+  ]
+}

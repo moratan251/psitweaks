@@ -1,0 +1,23 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_psionic_echo"
+    }
+  ],
+  "ingredient": {
+    "item": "psitweaks:psionic_echo"
+  },
+  "result": {
+    "amount": 100,
+    "tag": "forge:molten_psionic_echo"
+  },
+  "temperature": 1000,
+  "time": 75
+}

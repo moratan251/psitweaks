@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_flashmetal"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/flashmetal"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:molten_flashmetal"
+  },
+  "temperature": 800,
+  "time": 55
+}
+

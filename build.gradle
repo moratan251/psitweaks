@@ -113,6 +113,7 @@ dependencies {
     implementation fg.deobf("curse.maven:jade-324717:6271651")
     // implementation fg.deobf("curse.maven:geckolib-388172:6920925")
     // implementation fg.deobf("curse.maven:ars-nouveau-401955:6688854")
+    // compileOnly
     implementation fg.deobf("curse.maven:applied-energistics-2-223794:6852919")
     implementation fg.deobf("curse.maven:guideme-1173950:6942062")
     implementation fg.deobf("curse.maven:psiex-1408745:7540798")

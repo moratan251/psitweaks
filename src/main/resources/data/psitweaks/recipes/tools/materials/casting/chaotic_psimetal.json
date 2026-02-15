@@ -1,0 +1,21 @@
+{
+  "type": "tconstruct:material_fluid",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_chaotic_psimetal"
+    }
+  ],
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_chaotic_psimetal"
+  },
+  "output": "psitweaks:chaotic_psimetal",
+  "temperature": 1300
+}
+
