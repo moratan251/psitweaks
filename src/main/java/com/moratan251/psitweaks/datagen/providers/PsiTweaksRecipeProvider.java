@@ -2,7 +2,9 @@ package com.moratan251.psitweaks.datagen.providers;
 
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -10,9 +12,12 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.common.block.base.ModBlocks;
@@ -24,6 +29,9 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
     public PsiTweaksRecipeProvider(PackOutput output) {
         super(output);
     }
+
+    private static final TagKey<Item> FORGE_INGOTS_LEAD =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/lead"));
 
     @Override
     protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
@@ -577,6 +585,105 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("CGC")
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "portable_cad_assembler"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismBlocks.QIO_DRIVE_ARRAY)
+                .define('P', MekanismTags.Items.PERSONAL_STORAGE)
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .define('C', MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+                .define('T', MekanismItems.TELEPORTATION_CORE)
+                .pattern("TGT")
+                .pattern("CPC")
+                .pattern("TET")
+                .unlockedBy("has_teleportation_core", has(MekanismItems.TELEPORTATION_CORE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "qio_drive_array"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismBlocks.QIO_DASHBOARD)
+                .define('L', FORGE_INGOTS_LEAD)
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .define('T', MekanismItems.TELEPORTATION_CORE)
+                .pattern("LEL")
+                .pattern("EGE")
+                .pattern("LTL")
+                .unlockedBy("has_teleportation_core", has(MekanismItems.TELEPORTATION_CORE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "qio_dashboard"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismBlocks.QIO_EXPORTER)
+                .define('L', FORGE_INGOTS_LEAD)
+                .define('P', Items.PISTON)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .define('T', MekanismItems.TELEPORTATION_CORE)
+                .define('C', MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+                .pattern("LTL")
+                .pattern("ECE")
+                .pattern(" P ")
+                .unlockedBy("has_teleportation_core", has(MekanismItems.TELEPORTATION_CORE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "qio_exporter"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismBlocks.QIO_IMPORTER)
+                .define('L', FORGE_INGOTS_LEAD)
+                .define('P', Items.STICKY_PISTON)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .define('T', MekanismItems.TELEPORTATION_CORE)
+                .define('C', MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+                .pattern("LTL")
+                .pattern("ECE")
+                .pattern(" P ")
+                .unlockedBy("has_teleportation_core", has(MekanismItems.TELEPORTATION_CORE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "qio_importer"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismBlocks.QIO_REDSTONE_ADAPTER)
+                .define('A', Items.REDSTONE_TORCH)
+                .define('R', Items.REDSTONE)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .define('T', MekanismItems.TELEPORTATION_CORE)
+                .define('C', MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+                .pattern("EAE")
+                .pattern("CRC")
+                .pattern("ETE")
+                .unlockedBy("has_teleportation_core", has(MekanismItems.TELEPORTATION_CORE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "qio_redstone_adapter"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismItems.BASE_QIO_DRIVE)
+                .define('L', FORGE_INGOTS_LEAD)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .define('C', MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+                .pattern("LCL")
+                .pattern("CEC")
+                .pattern("LCL")
+                .unlockedBy("has_lead_ingot", has(FORGE_INGOTS_LEAD))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "base_qio_drive"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismItems.HYPER_DENSE_QIO_DRIVE)
+                .define('D', MekanismItems.BASE_QIO_DRIVE)
+                .define('T', MekanismItems.TELEPORTATION_CORE)
+                .define('P', MekanismItems.PLUTONIUM_PELLET)
+                .pattern("PDP")
+                .pattern("DTD")
+                .pattern("PDP")
+                .unlockedBy("has_teleportation_core", has(MekanismItems.TELEPORTATION_CORE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "hyper_dense_qio_drive"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismItems.TIME_DILATING_QIO_DRIVE)
+                .define('D', MekanismItems.HYPER_DENSE_QIO_DRIVE)
+                .define('T', MekanismItems.POLONIUM_PELLET)
+                .define('P', MekanismItems.PLUTONIUM_PELLET)
+                .pattern("PDP")
+                .pattern("DTD")
+                .pattern("PDP")
+                .unlockedBy("has_polonium_pellet", has(MekanismItems.POLONIUM_PELLET))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "time_dilating_qio_drive"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismItems.SUPERMASSIVE_QIO_DRIVE)
+                .define('D', MekanismItems.TIME_DILATING_QIO_DRIVE)
+                .define('A', MekanismItems.ANTIMATTER_PELLET)
+                .define('P', MekanismItems.POLONIUM_PELLET)
+                .pattern("PDP")
+                .pattern("DAD")
+                .pattern("PDP")
+                .unlockedBy("has_polonium_pellet", has(MekanismItems.POLONIUM_PELLET))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "supermassive_qio_drive"));
 
 
 

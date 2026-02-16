@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "forge:ender_pearls"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "L": {
+      "tag": "forge:ingots/lead"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
+  },
+  "pattern": [
+    "LEL",
+    "EGE",
+    "LTL"
+  ],
+  "result": {
+    "item": "mekanism:qio_dashboard"
+  },
+  "show_notification": true
+}

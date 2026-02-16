@@ -6,47 +6,43 @@
       "modid": "tconstruct"
     },
     {
-      "type": "forge:mod_loaded",
-      "modid": "psi"
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_flashmetal"
     },
     {
       "type": "mantle:tag_filled",
       "registry": "minecraft:fluid",
-      "tag": "forge:molten_ebony_psimetal"
+      "tag": "forge:molten_debris"
     },
     {
       "type": "mantle:tag_filled",
       "registry": "minecraft:fluid",
-      "tag": "forge:molten_ivory_psimetal"
+      "tag": "forge:molten_psionic_echo"
     },
     {
       "type": "mantle:tag_filled",
       "registry": "minecraft:fluid",
-      "tag": "forge:molten_chaotic_psimetal"
-    },
-    {
-      "type": "mantle:tag_filled",
-      "registry": "minecraft:fluid",
-      "tag": "forge:molten_psigem"
+      "tag": "forge:molten_heavy_psimetal"
     }
   ],
   "inputs": [
     {
-      "amount": 90,
-      "tag": "forge:molten_ebony_psimetal"
+      "amount": 360,
+      "tag": "forge:molten_flashmetal"
     },
     {
-      "amount": 90,
-      "tag": "forge:molten_ivory_psimetal"
+      "amount": 360,
+      "tag": "forge:molten_debris"
     },
     {
-      "amount": 100,
-      "tag": "forge:molten_psigem"
+      "amount": 50,
+      "tag": "forge:molten_psionic_echo"
     }
   ],
   "result": {
-    "amount": 180,
-    "tag": "forge:molten_chaotic_psimetal"
+    "amount": 90,
+    "tag": "forge:molten_heavy_psimetal"
   },
-  "temperature": 1000
+  "temperature": 1300
 }

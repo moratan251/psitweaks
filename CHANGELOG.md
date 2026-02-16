@@ -1,7 +1,13 @@
 ## Changelog
 
+#### v0.8.1
 
-#### v0.8.0 (planned)
+- Added TiC compat molten psimetals, tools, modifiers
+  * some modifiers are inspired by PlusTiC
+
+- Backported Mekanism QIO recipes from 1.21.1
+
+#### v0.8.0 
 
 - Added Program Research Station
     * Unlock new spell pieces by spending items, power, and time

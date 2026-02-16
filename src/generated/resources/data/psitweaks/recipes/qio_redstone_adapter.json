@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:redstone_torch"
+    },
+    "C": {
+      "item": "mekanism:ultimate_control_circuit"
+    },
+    "E": {
+      "tag": "forge:ender_pearls"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
+  },
+  "pattern": [
+    "EAE",
+    "CRC",
+    "ETE"
+  ],
+  "result": {
+    "item": "mekanism:qio_redstone_adapter"
+  },
+  "show_notification": true
+}

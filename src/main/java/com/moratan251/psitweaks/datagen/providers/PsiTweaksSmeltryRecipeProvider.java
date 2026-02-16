@@ -30,7 +30,9 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/alloys/molten_chaotic_psimetal"),
                 List.of(
                         new FluidInput("forge:molten_ebony_psimetal", INGOT_AMOUNT),
-                        new FluidInput("forge:molten_ivory_psimetal", INGOT_AMOUNT)
+                        new FluidInput("forge:molten_ivory_psimetal", INGOT_AMOUNT),
+                        new FluidInput("forge:molten_psigem", 100)
+
                 ),
                 "forge:molten_chaotic_psimetal",
                 180,
@@ -39,7 +41,8 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 List.of(
                         "forge:molten_ebony_psimetal",
                         "forge:molten_ivory_psimetal",
-                        "forge:molten_chaotic_psimetal"
+                        "forge:molten_chaotic_psimetal",
+                        "forge:molten_psigem"
                 ));
 
         alloy(consumer,
@@ -56,6 +59,24 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                         "forge:molten_refined_glowstone",
                         "forge:molten_chaotic_psimetal",
                         "forge:molten_flashmetal"
+                ));
+
+        alloy(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/alloys/molten_heavy_psimetal"),
+                List.of(
+                        new FluidInput("forge:molten_flashmetal", 360),
+                        new FluidInput("forge:molten_debris", 360),
+                        new FluidInput("forge:molten_psionic_echo", 50)
+                ),
+                "forge:molten_heavy_psimetal",
+                INGOT_AMOUNT,
+                1300,
+                List.of("tconstruct"),
+                List.of(
+                        "forge:molten_flashmetal",
+                        "forge:molten_debris",
+                        "forge:molten_psionic_echo",
+                        "forge:molten_heavy_psimetal"
                 ));
 
         meltingWithItem(consumer,

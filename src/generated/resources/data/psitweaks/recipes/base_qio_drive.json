@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "mekanism:ultimate_control_circuit"
+    },
+    "E": {
+      "tag": "forge:ender_pearls"
+    },
+    "L": {
+      "tag": "forge:ingots/lead"
+    }
+  },
+  "pattern": [
+    "LCL",
+    "CEC",
+    "LCL"
+  ],
+  "result": {
+    "item": "mekanism:qio_drive_base"
+  },
+  "show_notification": true
+}
