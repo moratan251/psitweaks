@@ -22,7 +22,7 @@
       "accuracy": 0.1,
       "draw_speed": 0.05,
       "durability": 1620,
-      "velocity": 0.5
+      "velocity": 0.7
     },
     "tconstruct:maille": {},
     "tconstruct:plating_boots": {

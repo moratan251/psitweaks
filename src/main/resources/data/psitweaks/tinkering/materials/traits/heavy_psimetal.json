@@ -3,41 +3,41 @@
     "tconstruct:melee_harvest": [
       {
         "name": "psitweaks:psicological",
-        "level": 2
+        "level": 1
       },
       {
         "name": "psitweaks:erosion_computation",
-        "level": 1
+        "level": 2
       }
     ],
     "tconstruct:ranged": [
       {
         "name": "psitweaks:psicological",
-        "level": 2
+        "level": 1
       },
       {
         "name": "psitweaks:erosion_computation",
-        "level": 1
+        "level": 2
       }
     ],
     "tconstruct:armor": [
       {
         "name": "psitweaks:psicological",
-        "level": 2
+        "level": 1
       },
       {
         "name": "psitweaks:psi_buffer",
-        "level": 2
+        "level": 1
       }
     ],
     "tconstruct:plating_shield": [
       {
         "name": "psitweaks:psicological",
-        "level": 2
+        "level": 1
       },
       {
         "name": "psitweaks:psi_buffer",
-        "level": 2
+        "level": 1
       }
     ]
   }

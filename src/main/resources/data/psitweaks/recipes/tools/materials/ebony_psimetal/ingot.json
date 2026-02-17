@@ -1,0 +1,15 @@
+{
+  "type": "tconstruct:material",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/ebony_psimetal"
+  },
+  "material": "psitweaks:ebony_psimetal",
+  "needed": 1,
+  "value": 1
+}

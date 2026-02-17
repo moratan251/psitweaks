@@ -1,0 +1,15 @@
+{
+  "type": "tconstruct:material",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/heavy_psimetal"
+  },
+  "material": "psitweaks:heavy_psimetal",
+  "needed": 1,
+  "value": 1
+}

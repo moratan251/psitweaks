@@ -17,7 +17,7 @@ public class PsicologicalModifier extends NoLevelsModifier implements InventoryT
     private static final int REPAIR_PSI_COST = 28;
     private static final int PSI_PER_DURABILITY_PREVENTED = 28;
     private static final int REPAIR_INTERVAL = 20;
-    private static final int REPAIR_AMOUNT = 1;
+    private static final int REPAIR_AMOUNT = 5;
 
     @Override
     protected void registerHooks(ModuleHookMap.Builder hookBuilder) {

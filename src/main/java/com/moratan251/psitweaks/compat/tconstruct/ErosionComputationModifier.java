@@ -1,5 +1,7 @@
 package com.moratan251.psitweaks.compat.tconstruct;
 
+import com.moratan251.psitweaks.Psitweaks;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +16,12 @@ import slimeknights.tconstruct.library.tools.nbt.IToolStackView;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 
 public class ErosionComputationModifier extends Modifier implements MeleeHitModifierHook {
-    private static final int DRAINED_PSI_PER_LEVEL = 200;
+    private static final int DRAINED_PSI_PER_LEVEL = 150;
+    private static final int COOLDOWN_TICKS = 10;
+    private static final ResourceLocation NEXT_AVAILABLE_TICK = ResourceLocation.fromNamespaceAndPath(
+            Psitweaks.MOD_ID,
+            "erosion_computation_next_available_tick"
+    );
 
     @Override
     protected void registerHooks(ModuleHookMap.Builder hookBuilder) {
@@ -25,6 +32,15 @@ public class ErosionComputationModifier extends Modifier implements MeleeHitModi
     @Override
     public void afterMeleeHit(IToolStackView tool, ModifierEntry modifier, ToolAttackContext context, float damageDealt) {
         if (damageDealt <= 0.0F) {
+            return;
+        }
+
+        LivingEntity attacker = context.getAttacker();
+        if (attacker == null) {
+            return;
+        }
+        int currentTick = (int) attacker.level().getGameTime();
+        if (isOnCooldown(tool, currentTick)) {
             return;
         }
 
@@ -41,11 +57,16 @@ public class ErosionComputationModifier extends Modifier implements MeleeHitModi
 
         int drainedPsi = DRAINED_PSI_PER_LEVEL * level;
 
-        LivingEntity attacker = context.getAttacker();
         if (attacker instanceof Player attackerPlayer) {
             PlayerDataHandler.PlayerData attackerData = PlayerDataHandler.get(attackerPlayer);
-            attackerData.deductPsi(-Math.max(1, drainedPsi / 2), 0, true, false);
+            int recoveredPsi = Math.max(1, drainedPsi);
+            int maxRecoverable = Math.max(0, attackerData.getTotalPsi() - attackerData.getAvailablePsi());
+            if (maxRecoverable > 0) {
+                attackerData.deductPsi(-Math.min(recoveredPsi, maxRecoverable), 0, true, false);
+            }
         }
+
+        tool.getPersistentData().putInt(NEXT_AVAILABLE_TICK, currentTick + COOLDOWN_TICKS);
 
         if (!(target instanceof Player targetPlayer)) {
             return;
@@ -56,5 +77,12 @@ public class ErosionComputationModifier extends Modifier implements MeleeHitModi
         if (targetDrain > 0) {
             targetData.deductPsi(targetDrain, 0, true, false);
         }
+    }
+
+    private static boolean isOnCooldown(IToolStackView tool, int currentTick) {
+        if (!tool.getPersistentData().contains(NEXT_AVAILABLE_TICK)) {
+            return false;
+        }
+        return currentTick < tool.getPersistentData().getInt(NEXT_AVAILABLE_TICK);
     }
 }

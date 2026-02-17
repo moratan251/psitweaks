@@ -2,11 +2,19 @@
   "perStat": {
     "tconstruct:melee_harvest": [
       {
+        "name": "psitweaks:psicological",
+        "level": 1
+      },
+      {
         "name": "psitweaks:erosion_computation",
         "level": 1
       }
     ],
     "tconstruct:ranged": [
+      {
+        "name": "psitweaks:psicological",
+        "level": 1
+      },
       {
         "name": "psitweaks:erosion_computation",
         "level": 1

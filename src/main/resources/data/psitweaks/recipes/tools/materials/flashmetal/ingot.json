@@ -1,0 +1,15 @@
+{
+  "type": "tconstruct:material",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/flashmetal"
+  },
+  "material": "psitweaks:flashmetal",
+  "needed": 1,
+  "value": 1
+}

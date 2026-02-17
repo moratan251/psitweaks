@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.compat.tconstruct;
 import com.moratan251.psitweaks.Psitweaks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
@@ -17,25 +18,27 @@ import java.util.function.Consumer;
 public class PsitweaksTConstructFluids {
     private static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(Psitweaks.MOD_ID);
 
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIMETAL = registerMoltenFluid("molten_psimetal", 0xFFB3BFF3, 1000, 10);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIGEM = registerMoltenFluid("molten_psigem", 0xFF747ED3, 1000, 10);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_IVORY_PSIMETAL = registerMoltenFluid("molten_ivory_psimetal", 0xFFFFFFF0, 1000, 10);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_EBONY_PSIMETAL = registerMoltenFluid("molten_ebony_psimetal", 0xFF101010, 1000, 10);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_FLASHMETAL = registerMoltenFluid("molten_flashmetal", 0xFFFFFA95, 1100, 12);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_CHAOTIC_PSIMETAL = registerMoltenFluid("molten_chaotic_psimetal", 0xFF7F7F7F, 1000, 10);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_HEAVY_PSIMETAL = registerMoltenFluid("molten_heavy_psimetal", 0xFF325980, 1300, 13);
-    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIONIC_ECHO = registerMoltenFluid("molten_psionic_echo", 0xFF40006E, 1000, 10);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIMETAL = registerMoltenFluid("molten_psimetal", 0xFFB3BFF3, 1000, 10, MapColor.COLOR_LIGHT_BLUE);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIGEM = registerMoltenFluid("molten_psigem", 0xFF747ED3, 1000, 10, MapColor.COLOR_BLUE);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_IVORY_PSIMETAL = registerMoltenFluid("molten_ivory_psimetal", 0xFFFFFFF0, 1000, 10, MapColor.QUARTZ);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_EBONY_PSIMETAL = registerMoltenFluid("molten_ebony_psimetal", 0xFF101010, 1000, 10, MapColor.COLOR_BLACK);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_FLASHMETAL = registerMoltenFluid("molten_flashmetal", 0xFFFFFA95, 1100, 15, MapColor.GOLD);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_CHAOTIC_PSIMETAL = registerMoltenFluid("molten_chaotic_psimetal", 0xFF7F7F7F, 1000, 10, MapColor.COLOR_GRAY);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_HEAVY_PSIMETAL = registerMoltenFluid("molten_heavy_psimetal", 0xFF325980, 1300, 12, MapColor.COLOR_CYAN);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIONIC_ECHO = registerMoltenFluid("molten_psionic_echo", 0xFF40006E, 1000, 10, MapColor.COLOR_PURPLE);
 
-    private static FlowingFluidObject<ForgeFlowingFluid> registerMoltenFluid(String name, int tintColor, int temperature, int lightLevel) {
+    private static FlowingFluidObject<ForgeFlowingFluid> registerMoltenFluid(String name, int tintColor, int temperature, int lightLevel, MapColor mapColor) {
         String textureName = withoutMoltenPrefix(name);
-        return FLUIDS.register(name)
+        FluidDeferredRegister.Builder builder = FLUIDS.register(name)
                 .type(() -> new MoltenFluidType(hot(name, temperature, lightLevel), tintColor, textureName))
                 .commonTag()
+                .burningBlock(mapColor, lightLevel, 10, 5.0f)
                 .slopeFindDistance(2)
                 .levelDecreasePerBlock(2)
                 .tickRate(30)
-                .explosionResistance(100)
-                .flowing();
+                .explosionResistance(100);
+        builder.bucket();
+        return builder.flowing();
     }
 
     private static String withoutMoltenPrefix(String name) {

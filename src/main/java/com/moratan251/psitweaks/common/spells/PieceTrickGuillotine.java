@@ -34,7 +34,7 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 
 public class PieceTrickGuillotine extends PieceTrick {
 
-    private static final int POTENCY = 500;
+    private static final int POTENCY = 300;
     private static final int COST = 2400;
     private static final float BASE_DAMAGE = 24.0F;
 

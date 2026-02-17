@@ -7,7 +7,7 @@
       "melee_damage": 3.0
     },
     "tconstruct:handle": {
-      "durability": 0.2,
+      "durability": 0.3,
       "melee_damage": 0.3,
       "melee_speed": 0.3,
       "mining_speed": 0.3
@@ -22,7 +22,7 @@
       "accuracy": 0.1,
       "draw_speed": 0.1,
       "durability": 930,
-      "velocity": 0.1
+      "velocity": 0.3
     },
     "tconstruct:maille": {},
     "tconstruct:plating_boots": {
