@@ -59,16 +59,16 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ALLOY_PSIONIC_ECHO = ITEMS.register("alloy_psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> PSIONIC_ECHO = ITEMS.register("psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
-    public static final RegistryObject<Item> PROGRAM_BLANK = ITEMS.register("program_blank", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> PROGRAM_COCYTUS = ITEMS.register("program_cocytus", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_TIME_ACCELERATE = ITEMS.register("program_time_accelerate", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_FLIGHT = ITEMS.register("program_flight", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_PHONON_MASER = ITEMS.register("program_phonon_maser", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = ITEMS.register("program_radiation_injection", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_GUILLOTINE = ITEMS.register("program_guillotine", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final RegistryObject<Item> PROGRAM_ACTIVE_AIR_MINE = ITEMS.register("program_active_air_mine", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+    public static final RegistryObject<Item> PROGRAM_BLANK = ITEMS.register("program_blank", () -> new ItemPsitweaksProgram(new Item.Properties(), true));
+    public static final RegistryObject<Item> PROGRAM_COCYTUS = ITEMS.register("program_cocytus", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_TIME_ACCELERATE = ITEMS.register("program_time_accelerate", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_FLIGHT = ITEMS.register("program_flight", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_PHONON_MASER = ITEMS.register("program_phonon_maser", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = ITEMS.register("program_radiation_injection", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_GUILLOTINE = ITEMS.register("program_guillotine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_ACTIVE_AIR_MINE = ITEMS.register("program_active_air_mine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));

@@ -1,11 +1,9 @@
 package com.moratan251.psitweaks.datagen.providers;
 
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.datagen.builders.ProgramResearchRecipeBuilder;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismItems;
-import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;

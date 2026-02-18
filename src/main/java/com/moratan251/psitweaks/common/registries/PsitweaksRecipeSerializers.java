@@ -1,9 +1,11 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.recipe.ProgramDuplicationRecipe;
 import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import com.moratan251.psitweaks.common.recipe.SculkEroderRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -19,6 +21,10 @@ public class PsitweaksRecipeSerializers {
 
     public static final RegistryObject<RecipeSerializer<ProgramResearchRecipe>> PROGRAM_RESEARCH =
             RECIPE_SERIALIZERS.register("program_research", ProgramResearchRecipe.Serializer::new);
+
+    public static final RegistryObject<SimpleCraftingRecipeSerializer<ProgramDuplicationRecipe>> PROGRAM_DUPLICATION =
+            RECIPE_SERIALIZERS.register("crafting_special_program_duplication",
+                    () -> new SimpleCraftingRecipeSerializer<>(ProgramDuplicationRecipe::new));
 
     private PsitweaksRecipeSerializers() {
     }

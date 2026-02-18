@@ -1,4 +1,4 @@
-package com.moratan251.psitweaks.datagen.providers;
+package com.moratan251.psitweaks.datagen.builders;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
