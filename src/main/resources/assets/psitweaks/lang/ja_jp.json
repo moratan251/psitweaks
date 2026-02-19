@@ -23,6 +23,7 @@
   "item.psitweaks.program_radiation_injection": "プログラム: 放射線注入",
   "item.psitweaks.program_guillotine": "プログラム: ギロチン",
   "item.psitweaks.program_active_air_mine": "プログラム: 能動空中機雷",
+  "item.psitweaks.program_die_flex": "プログラム: 柔軟停止",
   "item.psitweaks.alloy_psion": "サイオニック合金",
   "item.psitweaks.psionic_control_circuit": "サイオニック制御回路",
   "item.psitweaks.echo_control_circuit": "感応制御回路",
@@ -48,8 +49,9 @@
   "item.psitweaks.incomplete_heavy_psimetal_assembly": "未完成ヘビーサイメタルCAD素体",
   "item.psitweaks.portable_cad_assembler": "携帯型CAD組立機",
 
-  "item.psitweaks.auto_caster_tick": "術式自動起動デバイス: tick",
-  "item.psitweaks.auto_caster_second": "術式自動起動デバイス: セカンド",
+  "item.psitweaks.auto_caster_tick": "術式自動詠唱デバイス: tick",
+  "item.psitweaks.auto_caster_second": "術式自動詠唱デバイス: セカンド",
+  "item.psitweaks.auto_caster_custom_tick": "術式自動詠唱デバイス: カスタムtick",
   "item.psitweaks.third_eye_device": "サードアイデバイス",
 
   "item.psitweaks.advanced_spell_bullet": "改良術式弾",
@@ -136,6 +138,14 @@
   "effect.psitweaks.hardening": "硬化",
 
   "psitweaks.event.second": "§bイベント§7: セカンド",
+  "psitweaks.event.custom_tick": "§bイベント§7: カスタムtick",
+
+  "screen.psitweaks.auto_caster_custom_tick": "オートキャスター設定",
+  "screen.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔 (tick)",
+  "screen.psitweaks.auto_caster_custom_tick.range": "設定可能範囲: %s - %s",
+  "screen.psitweaks.auto_caster_custom_tick.invalid": "%s から %s の間で入力してください",
+  "tooltip.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔: %s tick",
+  "gui.psitweaks.apply": "適用",
 
   "infuse_type.psitweaks.infuse_psigem": "サイジェム",
   "infuse_type.psitweaks.infuse_ebony": "エボニー",
@@ -219,6 +229,8 @@
 
   "psitweaks.spellpiece.trick_active_air_mine": "作動式: 能動空中機雷",
   "psitweaks.spellpiece.trick_active_air_mine.desc": "指定座標を中心とした範囲内の生物にダメージを与える",
+  "psitweaks.spellpiece.trick_die_flex": "作動式: 柔軟停止",
+  "psitweaks.spellpiece.trick_die_flex.desc": "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります",
 
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",

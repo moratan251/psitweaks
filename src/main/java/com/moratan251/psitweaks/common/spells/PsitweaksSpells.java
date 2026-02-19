@@ -80,6 +80,9 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_active_air_mine"), PieceTrickActiveAirMine.class);
             PsiAPI.addPieceToGroup(PieceTrickActiveAirMine.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_active_air_mine"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_die_flex"), PieceTrickDieFlex.class);
+            PsiAPI.addPieceToGroup(PieceTrickDieFlex.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_die_flex"), false);
+
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_injection"), PieceTrickRadiationInjection.class);
             PsiAPI.addPieceToGroup(PieceTrickRadiationInjection.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_injection"), false);
 

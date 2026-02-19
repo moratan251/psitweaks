@@ -162,6 +162,16 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chaotic_factor", has(PsitweaksItems.CHAOTIC_FACTOR.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "auto_caster_tick"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.AUTO_CASTER_CUSTOM_TICK.get())
+                .define('E', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('F', PsitweaksItems.CHAOTIC_FACTOR.get())
+                .define('C', Items.CLOCK)
+                .pattern("ECE")
+                .pattern("EFE")
+                .pattern("EEE")
+                .unlockedBy("has_chaotic_factor", has(PsitweaksItems.CHAOTIC_FACTOR.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "auto_caster_custom_tick"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get())
                 .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
                 .define('B', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())

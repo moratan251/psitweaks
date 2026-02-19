@@ -1,11 +1,30 @@
 ## Changelog
 
+
+#### v0.8.2
+
+- Program items can now be duplicated by crafting them with a Blank Program
+
+
+- Added Trick: Flexible Die
+  * In addition to Psi's Trick: Die behavior, refunds Psi cost for unexecuted spell pieces
+  * Known minor issue: when used in spells that run every tick, Psi display can become desynced
+
+
+- Added Auto Caster: custom tick
+  * Cast interval can be configured in ticks
+
+
+- Increased Auto Caster socket count to 7
+
 #### v0.8.1
 
 - Added TiC compat molten psimetals, tools, modifiers
   * some modifiers are inspired by PlusTiC
 
+
 - Backported Mekanism QIO recipes from 1.21.1
+
 
 #### v0.8.0 
 
@@ -44,5 +63,3 @@
 
 
 - Fixed an issue when using PsiEX:TiCCAD with CADDisassembler
-
-

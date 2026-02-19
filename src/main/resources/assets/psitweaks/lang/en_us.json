@@ -23,6 +23,7 @@
   "item.psitweaks.program_radiation_injection": "Program: Radiation Injection",
   "item.psitweaks.program_guillotine": "Program: Guillotine",
   "item.psitweaks.program_active_air_mine": "Program: Active Air Mine",
+  "item.psitweaks.program_die_flex": "Program: Flexible Die",
   "item.psitweaks.alloy_psion": "Psionic Alloy",
   "item.psitweaks.psionic_control_circuit": "Psionic Control Circuit",
   "item.psitweaks.echo_control_circuit": "Echo Control Circuit",
@@ -52,6 +53,7 @@
 
   "item.psitweaks.auto_caster_tick": "Auto Caster: tick",
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
+  "item.psitweaks.auto_caster_custom_tick": "Auto Caster: custom tick",
   "item.psitweaks.third_eye_device": "Third‐Eye Device",
 
   "item.psitweaks.advanced_spell_bullet": "Advanced Spell Bullet",
@@ -144,6 +146,14 @@
 
 
   "psitweaks.event.second": "§bEvent§7: Second",
+  "psitweaks.event.custom_tick": "§bEvent§7: Custom Tick",
+
+  "screen.psitweaks.auto_caster_custom_tick": "Auto Caster Settings",
+  "screen.psitweaks.auto_caster_custom_tick.interval": "Cast Interval (ticks)",
+  "screen.psitweaks.auto_caster_custom_tick.range": "Range: %s - %s",
+  "screen.psitweaks.auto_caster_custom_tick.invalid": "Enter a value between %s and %s",
+  "tooltip.psitweaks.auto_caster_custom_tick.interval": "Cast interval: %s ticks",
+  "gui.psitweaks.apply": "Apply",
 
   "infuse_type.psitweaks.infuse_psigem": "Psigem",
   "infuse_type.psitweaks.infuse_ebony": "Ebony",
@@ -224,6 +234,8 @@
   "psitweaks.spellpiece.trick_guillotine.desc": "Deals a heavy slash to the target and drops a head on kill",
   "psitweaks.spellpiece.trick_active_air_mine": "Trick: Active Air Mine",
   "psitweaks.spellpiece.trick_active_air_mine.desc": "Deals magic damage to entities inside a spherical area around the target position",
+  "psitweaks.spellpiece.trick_die_flex": "Trick: Flexible Die",
+  "psitweaks.spellpiece.trick_die_flex.desc": "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 

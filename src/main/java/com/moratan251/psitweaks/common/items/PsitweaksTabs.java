@@ -27,6 +27,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CURIOS_CONTROLLER.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_SECOND.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
+                        pOutput.accept(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK.get());
                         pOutput.accept(PsitweaksItems.FLASH_CHARM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_PSIGEM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_EBONY.get());
@@ -45,6 +46,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get());

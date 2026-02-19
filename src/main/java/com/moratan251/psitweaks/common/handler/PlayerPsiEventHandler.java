@@ -31,6 +31,7 @@ public class PlayerPsiEventHandler extends PlayerDataHandler {
                     PsiArmorEvent.post(new PsiArmorEvent(player, "psitweaks.event.second"));
 
                 }
+                PsiArmorEvent.post(new PsiArmorEvent(player, "psitweaks.event.custom_tick"));
             }
         }
     }

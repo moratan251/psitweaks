@@ -92,7 +92,7 @@ public class ItemFlashRing extends Item {
             }
 
             boolean casted = ItemCAD.cast(level, player, data, held, cad,
-                    100, 25, 0.5f, ctx -> {}).isPresent();
+                    100, 25, 0.5f, ctx -> ctx.tool = held).isPresent();
 
             return new InteractionResultHolder<>(casted ? InteractionResult.SUCCESS : InteractionResult.PASS, held);
         }

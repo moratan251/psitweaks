@@ -116,5 +116,14 @@ public final class ProgramResearchRecipeProvider {
                 .energy(4000000)
                 .time(400)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_active_air_mine"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_DIE_FLEX.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(Items.COMPARATOR, 4)
+                .requires(Items.REDSTONE, 32)
+                .requires(ModItems.psidust, 24)
+                .energy(6000000)
+                .time(600)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_die_flex"));
     }
 }

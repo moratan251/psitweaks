@@ -36,7 +36,7 @@ public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool,
 
     @Nonnull
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new ItemPsimetalArmor.ArmorSocketable(stack, 3);
+        return new ItemPsimetalArmor.ArmorSocketable(stack, 7);
     }
 
 

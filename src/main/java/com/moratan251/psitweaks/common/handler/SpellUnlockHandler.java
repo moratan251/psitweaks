@@ -69,7 +69,8 @@ public class SpellUnlockHandler {
             definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider"),
             definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection"),
             definition("guillotine", "trick_guillotine", "program_guillotine"),
-            definition("active_air_mine", "trick_active_air_mine", "program_active_air_mine")
+            definition("active_air_mine", "trick_active_air_mine", "program_active_air_mine"),
+            definition("die_flex", "trick_die_flex", "program_die_flex")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();
@@ -181,10 +182,6 @@ public class SpellUnlockHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void onProgrammerPopulate(ProgrammerPopulateEvent event) {
-        PsiExSpellGroupCompatHandler.addMissingPsiExPieceGroups(event.getSpellPieceRegistry());
-    }
 
     @SubscribeEvent
     public static void onRightClickUnlockItem(PlayerInteractEvent.RightClickItem event) {
@@ -537,4 +534,3 @@ public class SpellUnlockHandler {
         }
     }
 }
-

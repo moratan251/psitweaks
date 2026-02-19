@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.handler;
 
+import com.moratan251.psitweaks.client.gui.machine.MessageAutoCasterCustomTickSync;
 import com.moratan251.psitweaks.client.gui.machine.MessageFlashRingSync;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -22,6 +23,14 @@ public class NetworkHandler {
                 MessageFlashRingSync::encode,
                 MessageFlashRingSync::decode,
                 MessageFlashRingSync::handle
+        );
+
+        CHANNEL.registerMessage(
+                id++,
+                MessageAutoCasterCustomTickSync.class,
+                MessageAutoCasterCustomTickSync::encode,
+                MessageAutoCasterCustomTickSync::decode,
+                MessageAutoCasterCustomTickSync::handle
         );
     }
 }
