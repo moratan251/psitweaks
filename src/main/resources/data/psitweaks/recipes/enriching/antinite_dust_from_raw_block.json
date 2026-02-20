@@ -1,13 +1,12 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/antinite"
+      "tag": "forge:storage_blocks/raw_antinite"
     }
   },
   "output": {
     "item": "psitweaks:antinite_dust",
-    "count": 4
+    "count": 12
   }
 }

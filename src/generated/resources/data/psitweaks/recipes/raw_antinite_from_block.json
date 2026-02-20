@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:raw_antinite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "psitweaks:raw_antinite"
+  }
+}

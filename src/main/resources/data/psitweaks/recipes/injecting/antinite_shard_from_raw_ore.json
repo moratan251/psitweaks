@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:hydrogen_chloride"
+  },
+  "itemInput": {
+    "amount": 3,
+    "ingredient": {
+      "tag": "forge:raw_materials/antinite"
+    }
+  },
+  "output": {
+    "item": "psitweaks:shard_antinite",
+    "count": 8
+  }
+}

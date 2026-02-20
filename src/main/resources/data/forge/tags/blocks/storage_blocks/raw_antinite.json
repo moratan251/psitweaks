@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "psitweaks:ore_antinite",
-    "psitweaks:antinite_block",
     "psitweaks:raw_antinite_block"
   ]
 }

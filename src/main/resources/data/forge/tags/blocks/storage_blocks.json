@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:storage_blocks/antinite",
+    "#forge:storage_blocks/raw_antinite"
+  ]
+}

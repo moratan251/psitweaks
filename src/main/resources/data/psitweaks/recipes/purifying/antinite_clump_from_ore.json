@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ores/antinite"
+    }
+  },
+  "output": {
+    "item": "psitweaks:clump_antinite",
+    "count": 3
+  }
+}

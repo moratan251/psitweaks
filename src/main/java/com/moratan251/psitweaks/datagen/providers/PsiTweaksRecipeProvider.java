@@ -695,6 +695,32 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_polonium_pellet", has(MekanismItems.POLONIUM_PELLET))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "supermassive_qio_drive"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.ANTINITE_BLOCK.get())
+                .define('I', PsitweaksItems.ANTINITE_INGOT.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .unlockedBy("has_antinite_ingot", has(PsitweaksItems.ANTINITE_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "antinite_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.RAW_ANTINITE_BLOCK.get())
+                .define('R', PsitweaksItems.RAW_ANTINITE.get())
+                .pattern("RRR")
+                .pattern("RRR")
+                .pattern("RRR")
+                .unlockedBy("has_raw_antinite", has(PsitweaksItems.RAW_ANTINITE.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "raw_antinite_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.ANTINITE_INGOT.get(), 9)
+                .requires(PsitweaksBlocks.ANTINITE_BLOCK.get())
+                .unlockedBy("has_antinite_block", has(PsitweaksBlocks.ANTINITE_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "antinite_ingot_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.RAW_ANTINITE.get(), 9)
+                .requires(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get())
+                .unlockedBy("has_raw_antinite_block", has(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "raw_antinite_from_block"));
+
 
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)

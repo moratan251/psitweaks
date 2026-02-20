@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:purifying",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:shards/antinite"
+    }
+  },
+  "output": {
+    "item": "psitweaks:clump_antinite"
+  }
+}

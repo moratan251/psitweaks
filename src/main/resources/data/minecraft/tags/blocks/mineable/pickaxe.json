@@ -16,6 +16,8 @@
     "psitweaks:cad_disassembler",
     "psitweaks:program_researcher",
     "psitweaks:ore_antinite",
+    "psitweaks:antinite_block",
+    "psitweaks:raw_antinite_block",
     "psitweaks:sculk_eroder"
   ]
 }

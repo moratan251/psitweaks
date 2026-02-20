@@ -25,6 +25,7 @@ run-data
 AGENTS.md
 docs
 tmp
+.tmp*
 wiki
 
 # Files from Forge MDK
