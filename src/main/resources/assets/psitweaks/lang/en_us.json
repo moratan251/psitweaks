@@ -41,6 +41,9 @@
   "item.psitweaks.flashmetal": "Flashmetal Ingot",
   "item.psitweaks.unrefined_flashmetal": " Unrefined Flashmetal",
   "item.psitweaks.heavy_psimetal": "Heavy Psimetal Ingot",
+  "item.psitweaks.raw_antinite": "Raw Antinite",
+  "item.psitweaks.antinite_dust": "Antinite Dust",
+  "item.psitweaks.antinite_ingot": "Antinite Ingot",
 
 
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
@@ -100,6 +103,7 @@
 
   "block.psitweaks.cad_disassembler": "CAD Disassembler",
   "block.psitweaks.program_researcher": "Program Research Table",
+  "block.psitweaks.ore_antinite": "Antinite Ore",
   "block.psitweaks.sculk_eroder": "Sculk Eroder",
   "container.psitweaks.program_researcher": "Program Research Table",
   "jei.psitweaks.program_research": "Program Research",
@@ -163,6 +167,8 @@
 
   "gas.psitweaks.gas_psionic_echo": "Psionic Echo Gas",
   "gas.psitweaks.gas_peo_fuel": "PE-O Fuel",
+  "slurry.psitweaks.dirty_antinite": "Dirty Antinite Slurry",
+  "slurry.psitweaks.clean_antinite": "Clean Antinite Slurry",
 
   "curios.identifier.magic_calculation_area": "Magic Calculation Area",
 

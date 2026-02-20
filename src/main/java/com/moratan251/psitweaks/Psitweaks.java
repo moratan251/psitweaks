@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
+import com.moratan251.psitweaks.common.chemicals.PsitweaksSlurries;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
@@ -85,6 +86,7 @@ public class Psitweaks {
         PsitweaksVillagers.register(modEventBus);
         PsitweaksInfuseTypes.register(modEventBus);
         PsitweaksGases.register(modEventBus);
+        PsitweaksSlurries.register(modEventBus);
         registerTConstructCompat(modEventBus);
         PsitweaksModules.MODULES.register(modEventBus);
 

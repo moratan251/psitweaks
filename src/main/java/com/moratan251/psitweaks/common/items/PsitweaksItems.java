@@ -88,6 +88,9 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> UNREFINED_FLASHMETAL = ITEMS.register("unrefined_flashmetal", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FLASHMETAL = ITEMS.register("flashmetal", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> HEAVY_PSIMETAL = ITEMS.register("heavy_psimetal", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> RAW_ANTINITE = ITEMS.register("raw_antinite", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANTINITE_DUST = ITEMS.register("antinite_dust", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANTINITE_INGOT = ITEMS.register("antinite_ingot", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> ECHO_PELLET = ITEMS.register("echo_pellet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));

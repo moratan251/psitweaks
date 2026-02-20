@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#psitweaks:has_antinite_ore",
+  "features": "psitweaks:ore_antinite",
+  "step": "underground_ores"
+}

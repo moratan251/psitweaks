@@ -1,4 +1,4 @@
-// 1.20.1	2026-02-20T01:13:52.95522	Recipes
+// 1.20.1	2026-02-20T15:17:19.16655	Recipes
 c6e2695049bbfa9cee27062c7374bc20b1440c2e data/psitweaks/advancements/recipes/combat/advanced_spell_bullet.json
 f60f9c63ea460e59c4c0ace7b73ae4984f30142c data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_charge.json
 51b592c34676cc780dc439e7364eccc0504ab468 data/psitweaks/advancements/recipes/combat/advanced_spell_bullet_circle.json
@@ -128,7 +128,7 @@ a90f5033f9b9d9a321b54bf9391f39eb1ced784a data/psitweaks/recipes/qio_importer.jso
 cca8e792b26c52d034b6d53c1921ee26d2f792b7 data/psitweaks/recipes/resonant_spell_bullet_loop.json
 f624b300c3f6000b48c4ce9f44c5f3e6af541876 data/psitweaks/recipes/resonant_spell_bullet_mine.json
 9b15f319548595b2c0994fcc1bc505225f3d6736 data/psitweaks/recipes/resonant_spell_bullet_projectile.json
-36c7e0a462c8e5ac45808d9ba2b12219d0f3e552 data/psitweaks/recipes/smeltery/alloys/molten_chaotic_psimetal.json
+a356c56376f81b888551c5c660d1921b51a22060 data/psitweaks/recipes/smeltery/alloys/molten_chaotic_psimetal.json
 1c3cb246dd709d2a81fc5fc2305b2777a7ee25f8 data/psitweaks/recipes/smeltery/alloys/molten_flashmetal.json
 9a9ffed69516fdfc4cf3bab56f737a0c02f321c9 data/psitweaks/recipes/smeltery/alloys/molten_heavy_psimetal.json
 0868c6e162f720e9f62c7d9e256deb8e6b729879 data/psitweaks/recipes/smeltery/melting/material/psigem.json

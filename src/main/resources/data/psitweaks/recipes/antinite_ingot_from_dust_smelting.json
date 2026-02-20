@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "psitweaks:antinite_dust"
+  },
+  "result": "psitweaks:antinite_ingot",
+  "experience": 0.3,
+  "cookingtime": 200
+}

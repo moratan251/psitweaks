@@ -59,6 +59,9 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.UNREFINED_FLASHMETAL.get());
                         pOutput.accept(PsitweaksItems.FLASHMETAL.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL.get());
+                        pOutput.accept(PsitweaksItems.RAW_ANTINITE.get());
+                        pOutput.accept(PsitweaksItems.ANTINITE_DUST.get());
+                        pOutput.accept(PsitweaksItems.ANTINITE_INGOT.get());
 
                         pOutput.accept(PsitweaksItems.ECHO_PELLET.get());
                         pOutput.accept(PsitweaksItems.ECHO_SHEET.get());
@@ -107,6 +110,7 @@ public class PsitweaksTabs {
 
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
                         pOutput.accept(PsitweaksBlocks.PROGRAM_RESEARCHER.get());
+                        pOutput.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                      //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
                        // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());

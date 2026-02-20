@@ -40,6 +40,9 @@
   "item.psitweaks.flashmetal": "フラッシュメタルインゴット",
   "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル",
   "item.psitweaks.heavy_psimetal": "ヘビーサイメタルインゴット",
+  "item.psitweaks.raw_antinite": "アンティナイトの原石",
+  "item.psitweaks.antinite_dust": "アンティナイトの粉",
+  "item.psitweaks.antinite_ingot": "アンティナイトインゴット",
 
   "item.psitweaks.cad_assembly_alloy_psion": "サイオニック合金のCAD素体",
   "item.psitweaks.cad_assembly_chaotic_psimetal": "カオティックサイメタルのCAD素体",
@@ -98,6 +101,7 @@
 
   "block.psitweaks.cad_disassembler": "CAD分解台",
   "block.psitweaks.program_researcher": "プログラム研究台",
+  "block.psitweaks.ore_antinite": "アンティナイト鉱石",
   "block.psitweaks.sculk_eroder": "スカルク侵食室",
   "container.psitweaks.program_researcher": "プログラム研究台",
   "jei.psitweaks.program_research": "プログラム研究",
@@ -155,6 +159,8 @@
 
   "gas.psitweaks.gas_psionic_echo": "気化サイオニックエコー",
   "gas.psitweaks.gas_peo_fuel": "ΨE-O燃料",
+  "slurry.psitweaks.dirty_antinite": "汚れたアンティナイトの懸濁液",
+  "slurry.psitweaks.clean_antinite": "純粋なアンティナイトの懸濁液",
 
   "curios.identifier.magic_calculation_area": "魔法演算領域",
 

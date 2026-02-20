@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#forge:ingots/antinite",
     "#forge:ingots/chaotic_psimetal",
     "#forge:ingots/flashmetal",
     "#forge:ingots/heavy_psimetal"

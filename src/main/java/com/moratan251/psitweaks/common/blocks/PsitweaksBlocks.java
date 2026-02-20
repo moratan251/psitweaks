@@ -32,6 +32,13 @@ public class PsitweaksBlocks {
                     .requiresCorrectToolForDrops()
             ));
 
+    public static final RegistryObject<Block> ORE_ANTINITE = registerBlock("ore_antinite",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(10.0f)
+                    .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()
+            ));
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
