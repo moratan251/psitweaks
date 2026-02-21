@@ -1,5 +1,16 @@
 ## Changelog
 
+#### v0.8.3
+
+- Added Antinite Ore
+  * Rarely generates outside the End main island; currently has no use
+
+
+- Added Chaotic Psimetal Block, Flashmetal Block, and Heavy Psimetal Block
+
+
+- Spell pieces can now be searched in English during spell programming regardless of the current language setting
+
 
 #### v0.8.2
 

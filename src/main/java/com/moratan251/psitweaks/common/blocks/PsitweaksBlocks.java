@@ -46,6 +46,27 @@ public class PsitweaksBlocks {
                     .requiresCorrectToolForDrops()
             ));
 
+    public static final RegistryObject<Block> CHAOTIC_PSIMETAL_BLOCK = registerBlock("chaotic_psimetal_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(10.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
+    public static final RegistryObject<Block> FLASHMETAL_BLOCK = registerBlock("flashmetal_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(10.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
+    public static final RegistryObject<Block> HEAVY_PSIMETAL_BLOCK = registerBlock("heavy_psimetal_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(10.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
     public static final RegistryObject<Block> RAW_ANTINITE_BLOCK = registerBlock("raw_antinite_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(10.0f)

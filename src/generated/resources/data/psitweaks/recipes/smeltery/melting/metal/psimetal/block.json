@@ -1,0 +1,27 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "psi"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_psimetal"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:storage_blocks/psimetal"
+  },
+  "result": {
+    "amount": 810,
+    "tag": "forge:molten_psimetal"
+  },
+  "temperature": 1000,
+  "time": 180
+}

@@ -36,17 +36,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.ALLOY_PSIONIC_ECHO.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_ECHO.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_BLANK.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_COCYTUS.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_TIME_ACCELERATE.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_FLIGHT.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_PHONON_MASER.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
+
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get());
@@ -55,17 +45,19 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_EBONY.get());
                         pOutput.accept(PsitweaksItems.CHAOTIC_FACTOR.get());
+
                         pOutput.accept(PsitweaksItems.CHAOTIC_PSIMETAL.get());
-                        pOutput.accept(PsitweaksItems.UNREFINED_FLASHMETAL.get());
                         pOutput.accept(PsitweaksItems.FLASHMETAL.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL.get());
+                        pOutput.accept(PsitweaksItems.ANTINITE_INGOT.get());
+
+                        pOutput.accept(PsitweaksItems.UNREFINED_FLASHMETAL.get());
                         pOutput.accept(PsitweaksItems.RAW_ANTINITE.get());
                         pOutput.accept(PsitweaksItems.CRYSTAL_ANTINITE.get());
                         pOutput.accept(PsitweaksItems.SHARD_ANTINITE.get());
                         pOutput.accept(PsitweaksItems.CLUMP_ANTINITE.get());
                         pOutput.accept(PsitweaksItems.DIRTY_DUST_ANTINITE.get());
                         pOutput.accept(PsitweaksItems.ANTINITE_DUST.get());
-                        pOutput.accept(PsitweaksItems.ANTINITE_INGOT.get());
 
                         pOutput.accept(PsitweaksItems.ECHO_PELLET.get());
                         pOutput.accept(PsitweaksItems.ECHO_SHEET.get());
@@ -112,10 +104,25 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE.get());
                         pOutput.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get());
 
+                        pOutput.accept(PsitweaksItems.PROGRAM_BLANK.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_COCYTUS.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_TIME_ACCELERATE.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_FLIGHT.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_PHONON_MASER.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
+
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
                         pOutput.accept(PsitweaksBlocks.PROGRAM_RESEARCHER.get());
                         pOutput.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         pOutput.accept(PsitweaksBlocks.ANTINITE_BLOCK.get());
+                        pOutput.accept(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());
+                        pOutput.accept(PsitweaksBlocks.FLASHMETAL_BLOCK.get());
+                        pOutput.accept(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                      //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());

@@ -120,6 +120,10 @@ dependencies {
     implementation fg.deobf("curse.maven:re-avaritia-623969:7525231")
     implementation fg.deobf("curse.maven:just-enough-professions-jep-417645:4587024")
     implementation fg.deobf("curse.maven:botania-225643:6870713")
+    implementation fg.deobf("curse.maven:placebo-283644:6274231")
+    implementation fg.deobf("curse.maven:apotheosis-313970:6461960")
+    implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+
     if (!isRunDataInvocation) {
         implementation fg.deobf("curse.maven:konkrete-410295:5028413")
         implementation fg.deobf("curse.maven:just-zoom-561885:6290336")

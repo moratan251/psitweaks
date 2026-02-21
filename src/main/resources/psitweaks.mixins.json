@@ -12,5 +12,6 @@
     "rangeLimitParamMixin"
   ],
   "client": [
+    "client.PiecePanelWidgetEnglishSearchMixin"
   ]
 }

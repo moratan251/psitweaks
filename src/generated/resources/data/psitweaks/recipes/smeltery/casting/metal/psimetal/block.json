@@ -1,0 +1,30 @@
+{
+  "type": "tconstruct:casting_basin",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "psi"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:storage_blocks/psimetal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_psimetal"
+    }
+  ],
+  "cooling_time": 225,
+  "fluid": {
+    "amount": 810,
+    "tag": "forge:molten_psimetal"
+  },
+  "result": {
+    "tag": "forge:storage_blocks/psimetal"
+  }
+}

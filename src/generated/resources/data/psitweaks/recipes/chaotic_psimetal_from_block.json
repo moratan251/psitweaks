@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:chaotic_psimetal_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "psitweaks:chaotic_psimetal"
+  }
+}

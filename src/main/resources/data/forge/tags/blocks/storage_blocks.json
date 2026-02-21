@@ -2,6 +2,9 @@
   "replace": false,
   "values": [
     "#forge:storage_blocks/antinite",
+    "#forge:storage_blocks/chaotic_psimetal",
+    "#forge:storage_blocks/flashmetal",
+    "#forge:storage_blocks/heavy_psimetal",
     "#forge:storage_blocks/raw_antinite"
   ]
 }

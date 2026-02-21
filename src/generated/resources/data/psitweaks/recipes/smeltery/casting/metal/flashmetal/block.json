@@ -1,0 +1,26 @@
+{
+  "type": "tconstruct:casting_basin",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:storage_blocks/flashmetal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_flashmetal"
+    }
+  ],
+  "cooling_time": 210,
+  "fluid": {
+    "amount": 810,
+    "tag": "forge:molten_flashmetal"
+  },
+  "result": {
+    "tag": "forge:storage_blocks/flashmetal"
+  }
+}

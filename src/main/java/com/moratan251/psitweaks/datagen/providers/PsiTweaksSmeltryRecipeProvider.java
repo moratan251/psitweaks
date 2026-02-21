@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
     private static final int INGOT_AMOUNT = 90;
+    private static final int BLOCK_AMOUNT = INGOT_AMOUNT * 9;
 
     public PsiTweaksSmeltryRecipeProvider(PackOutput output) {
         super(output);
@@ -98,6 +99,126 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 75,
                 List.of("tconstruct"),
                 List.of("forge:molten_psionic_echo"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/chaotic_psimetal/block"),
+                "forge:storage_blocks/chaotic_psimetal",
+                "forge:molten_chaotic_psimetal",
+                BLOCK_AMOUNT,
+                1000,
+                75 * 3,
+                List.of("tconstruct"),
+                List.of("forge:molten_chaotic_psimetal"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/flashmetal/block"),
+                "forge:storage_blocks/flashmetal",
+                "forge:molten_flashmetal",
+                BLOCK_AMOUNT,
+                800,
+                35 * 3,
+                List.of("tconstruct"),
+                List.of("forge:molten_flashmetal"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/heavy_psimetal/block"),
+                "forge:storage_blocks/heavy_psimetal",
+                "forge:molten_heavy_psimetal",
+                BLOCK_AMOUNT,
+                1300,
+                100 * 3,
+                List.of("tconstruct"),
+                List.of("forge:molten_heavy_psimetal"));
+
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/chaotic_psimetal/block"),
+                "forge:molten_chaotic_psimetal",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/chaotic_psimetal",
+                95 * 3,
+                List.of("tconstruct"),
+                List.of("forge:storage_blocks/chaotic_psimetal"),
+                List.of("forge:molten_chaotic_psimetal"));
+
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/flashmetal/block"),
+                "forge:molten_flashmetal",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/flashmetal",
+                70 * 3,
+                List.of("tconstruct"),
+                List.of("forge:storage_blocks/flashmetal"),
+                List.of("forge:molten_flashmetal"));
+
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/heavy_psimetal/block"),
+                "forge:molten_heavy_psimetal",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/heavy_psimetal",
+                85 * 3,
+                List.of("tconstruct"),
+                List.of("forge:storage_blocks/heavy_psimetal"),
+                List.of("forge:molten_heavy_psimetal"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/psimetal/block"),
+                "forge:storage_blocks/psimetal",
+                "forge:molten_psimetal",
+                BLOCK_AMOUNT,
+                1000,
+                60 * 3,
+                List.of("tconstruct", "psi"),
+                List.of("forge:molten_psimetal"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/ebony_psimetal/block"),
+                "forge:storage_blocks/ebony_psimetal",
+                "forge:molten_ebony_psimetal",
+                BLOCK_AMOUNT,
+                1000,
+                65 * 3,
+                List.of("tconstruct", "psi"),
+                List.of("forge:molten_ebony_psimetal"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/ivory_psimetal/block"),
+                "forge:storage_blocks/ivory_psimetal",
+                "forge:molten_ivory_psimetal",
+                BLOCK_AMOUNT,
+                1000,
+                65 * 3,
+                List.of("tconstruct", "psi"),
+                List.of("forge:molten_ivory_psimetal"));
+
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/psimetal/block"),
+                "forge:molten_psimetal",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/psimetal",
+                75 * 3,
+                List.of("tconstruct", "psi"),
+                List.of("forge:storage_blocks/psimetal"),
+                List.of("forge:molten_psimetal"));
+
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/ebony_psimetal/block"),
+                "forge:molten_ebony_psimetal",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/ebony_psimetal",
+                82 * 3,
+                List.of("tconstruct", "psi"),
+                List.of("forge:storage_blocks/ebony_psimetal"),
+                List.of("forge:molten_ebony_psimetal"));
+
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/ivory_psimetal/block"),
+                "forge:molten_ivory_psimetal",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/ivory_psimetal",
+                78 * 3,
+                List.of("tconstruct", "psi"),
+                List.of("forge:storage_blocks/ivory_psimetal"),
+                List.of("forge:molten_ivory_psimetal"));
     }
 
     private static void alloy(Consumer<FinishedRecipe> consumer, ResourceLocation id, List<FluidInput> inputs,
@@ -110,6 +231,19 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                                         String resultTag, int resultAmount, int temperature, int time,
                                         List<String> requiredMods, List<String> requiredFluidTags) {
         consumer.accept(new MeltingRecipeResult(id, ingredientItem, resultTag, resultAmount, temperature, time, requiredMods, requiredFluidTags));
+    }
+
+    private static void meltingWithTag(Consumer<FinishedRecipe> consumer, ResourceLocation id, String ingredientTag,
+                                       String resultTag, int resultAmount, int temperature, int time,
+                                       List<String> requiredMods, List<String> requiredFluidTags) {
+        consumer.accept(new MeltingTagRecipeResult(id, ingredientTag, resultTag, resultAmount, temperature, time, requiredMods, requiredFluidTags));
+    }
+
+    private static void castingBasinWithTag(Consumer<FinishedRecipe> consumer, ResourceLocation id, String fluidTag,
+                                            int fluidAmount, String resultTag, int coolingTime, List<String> requiredMods,
+                                            List<String> requiredItemTags, List<String> requiredFluidTags) {
+        consumer.accept(new CastingBasinRecipeResult(id, fluidTag, fluidAmount, resultTag, coolingTime,
+                requiredMods, requiredItemTags, requiredFluidTags));
     }
 
     private record FluidInput(String tag, int amount) {
@@ -212,6 +346,129 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
             json.add("result", result);
             json.addProperty("temperature", temperature);
             json.addProperty("time", time);
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return RecipeSerializer.SHAPELESS_RECIPE;
+        }
+
+        @Nullable
+        @Override
+        public JsonObject serializeAdvancement() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return null;
+        }
+    }
+
+    private record MeltingTagRecipeResult(ResourceLocation id, String ingredientTag, String resultTag, int resultAmount,
+                                          int temperature, int time, List<String> requiredMods,
+                                          List<String> requiredFluidTags) implements FinishedRecipe {
+
+        @Override
+        public void serializeRecipeData(JsonObject json) {
+            json.addProperty("type", "tconstruct:melting");
+
+            JsonArray conditions = new JsonArray();
+            for (String modId : requiredMods) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "forge:mod_loaded");
+                condition.addProperty("modid", modId);
+                conditions.add(condition);
+            }
+            for (String fluidTag : requiredFluidTags) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "mantle:tag_filled");
+                condition.addProperty("registry", "minecraft:fluid");
+                condition.addProperty("tag", fluidTag);
+                conditions.add(condition);
+            }
+            json.add("conditions", conditions);
+
+            JsonObject ingredient = new JsonObject();
+            ingredient.addProperty("tag", ingredientTag);
+            json.add("ingredient", ingredient);
+
+            JsonObject result = new JsonObject();
+            result.addProperty("amount", resultAmount);
+            result.addProperty("tag", resultTag);
+            json.add("result", result);
+            json.addProperty("temperature", temperature);
+            json.addProperty("time", time);
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return RecipeSerializer.SHAPELESS_RECIPE;
+        }
+
+        @Nullable
+        @Override
+        public JsonObject serializeAdvancement() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return null;
+        }
+    }
+
+    private record CastingBasinRecipeResult(ResourceLocation id, String fluidTag, int fluidAmount, String resultTag,
+                                            int coolingTime, List<String> requiredMods, List<String> requiredItemTags,
+                                            List<String> requiredFluidTags) implements FinishedRecipe {
+
+        @Override
+        public void serializeRecipeData(JsonObject json) {
+            json.addProperty("type", "tconstruct:casting_basin");
+
+            JsonArray conditions = new JsonArray();
+            for (String modId : requiredMods) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "forge:mod_loaded");
+                condition.addProperty("modid", modId);
+                conditions.add(condition);
+            }
+            for (String itemTag : requiredItemTags) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "mantle:tag_filled");
+                condition.addProperty("tag", itemTag);
+                conditions.add(condition);
+            }
+            for (String requiredFluidTag : requiredFluidTags) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "mantle:tag_filled");
+                condition.addProperty("registry", "minecraft:fluid");
+                condition.addProperty("tag", requiredFluidTag);
+                conditions.add(condition);
+            }
+            json.add("conditions", conditions);
+
+            JsonObject fluid = new JsonObject();
+            fluid.addProperty("amount", fluidAmount);
+            fluid.addProperty("tag", fluidTag);
+            json.add("fluid", fluid);
+
+            JsonObject result = new JsonObject();
+            result.addProperty("tag", resultTag);
+            json.add("result", result);
+            json.addProperty("cooling_time", coolingTime);
         }
 
         @Override

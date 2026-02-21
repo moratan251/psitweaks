@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:heavy_psimetal_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "psitweaks:heavy_psimetal"
+  }
+}

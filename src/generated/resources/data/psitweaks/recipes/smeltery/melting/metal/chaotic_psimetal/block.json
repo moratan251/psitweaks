@@ -1,0 +1,23 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_chaotic_psimetal"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:storage_blocks/chaotic_psimetal"
+  },
+  "result": {
+    "amount": 810,
+    "tag": "forge:molten_chaotic_psimetal"
+  },
+  "temperature": 1000,
+  "time": 225
+}

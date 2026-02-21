@@ -17,6 +17,9 @@
     "psitweaks:program_researcher",
     "psitweaks:ore_antinite",
     "psitweaks:antinite_block",
+    "psitweaks:chaotic_psimetal_block",
+    "psitweaks:flashmetal_block",
+    "psitweaks:heavy_psimetal_block",
     "psitweaks:raw_antinite_block",
     "psitweaks:sculk_eroder"
   ]

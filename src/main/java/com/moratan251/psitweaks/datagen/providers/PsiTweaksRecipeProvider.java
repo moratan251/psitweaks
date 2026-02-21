@@ -703,6 +703,30 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_antinite_ingot", has(PsitweaksItems.ANTINITE_INGOT.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "antinite_block"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get())
+                .define('I', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "chaotic_psimetal_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.FLASHMETAL_BLOCK.get())
+                .define('I', PsitweaksItems.FLASHMETAL.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flashmetal_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get())
+                .define('I', PsitweaksItems.HEAVY_PSIMETAL.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal_block"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.RAW_ANTINITE_BLOCK.get())
                 .define('R', PsitweaksItems.RAW_ANTINITE.get())
                 .pattern("RRR")
@@ -715,6 +739,21 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .requires(PsitweaksBlocks.ANTINITE_BLOCK.get())
                 .unlockedBy("has_antinite_block", has(PsitweaksBlocks.ANTINITE_BLOCK.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "antinite_ingot_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.CHAOTIC_PSIMETAL.get(), 9)
+                .requires(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get())
+                .unlockedBy("has_chaotic_psimetal_block", has(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "chaotic_psimetal_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.FLASHMETAL.get(), 9)
+                .requires(PsitweaksBlocks.FLASHMETAL_BLOCK.get())
+                .unlockedBy("has_flashmetal_block", has(PsitweaksBlocks.FLASHMETAL_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flashmetal_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.HEAVY_PSIMETAL.get(), 9)
+                .requires(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get())
+                .unlockedBy("has_heavy_psimetal_block", has(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal_from_block"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.RAW_ANTINITE.get(), 9)
                 .requires(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get())

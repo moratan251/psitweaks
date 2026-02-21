@@ -1,0 +1,26 @@
+{
+  "type": "tconstruct:casting_basin",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:storage_blocks/chaotic_psimetal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_chaotic_psimetal"
+    }
+  ],
+  "cooling_time": 285,
+  "fluid": {
+    "amount": 810,
+    "tag": "forge:molten_chaotic_psimetal"
+  },
+  "result": {
+    "tag": "forge:storage_blocks/chaotic_psimetal"
+  }
+}
