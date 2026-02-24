@@ -40,14 +40,14 @@ public class EffectHandler {
         if (entity.hasEffect(PsitweaksEffects.HARDENING.get())) {
             MobEffectInstance effectHardening = entity.getEffect(PsitweaksEffects.HARDENING.get());
             int ampHardening = Objects.requireNonNull(effectHardening).getAmplifier();
-            if(ampHardening <= 4) {
+            if (ampHardening <= 4) {
                 damage = Math.min(damage, 12.0F - (ampHardening + 1) * 2.0F);
-            }else{
+            } else {
                 damage = Math.min(damage, 1.0F);
             }
 
         }
-        event.setAmount(Math.max(0,damage));
+        event.setAmount(Math.max(0, damage));
     }
 }
 

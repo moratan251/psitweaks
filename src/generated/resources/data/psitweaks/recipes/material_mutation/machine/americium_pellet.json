@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "psitweaks:plutonium_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "psitweaks:pellet_americium"
+  },
+  "time": 200
+}

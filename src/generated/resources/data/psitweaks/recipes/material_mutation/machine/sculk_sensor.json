@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:note_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:sculk_sensor"
+  },
+  "time": 200
+}

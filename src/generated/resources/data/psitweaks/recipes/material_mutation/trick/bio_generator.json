@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:composter"
+      },
+      "output": {
+        "block": "mekanismgenerators:bio_generator",
+        "count": 1
+      }
+    }
+  ]
+}

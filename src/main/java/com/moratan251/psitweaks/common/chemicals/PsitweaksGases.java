@@ -4,12 +4,9 @@ package com.moratan251.psitweaks.common.chemicals;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
-import mekanism.common.registration.impl.InfuseTypeDeferredRegister;
-import mekanism.common.registration.impl.InfuseTypeRegistryObject;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 
@@ -30,7 +27,11 @@ public class PsitweaksGases {
                     ))
             ));
 
+    public static final GasRegistryObject<Gas> AMERICIUM =
+            GASES.register("gas_americium", 0xFF66CC, new GasAttributes.Radiation(0.004));
 
+    public static final GasRegistryObject<Gas> NEPTUNIUM =
+            GASES.register("gas_neptunium", 0x4A8DFF, new GasAttributes.Radiation(0.001e-3));
 
 
 

@@ -68,9 +68,11 @@ public class SpellUnlockHandler {
             definition("supreme_infusion", "trick_supreme_infusion", "program_supreme_infusion"),
             definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider"),
             definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection"),
+            definition("radiation_filter", "trick_radiation_filter", "program_radiation_filter"),
             definition("guillotine", "trick_guillotine", "program_guillotine"),
             definition("active_air_mine", "trick_active_air_mine", "program_active_air_mine"),
-            definition("die_flex", "trick_die_flex", "program_die_flex")
+            definition("die_flex", "trick_die_flex", "program_die_flex"),
+            definition("material_mutation", "trick_material_mutation", "program_material_mutation")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();

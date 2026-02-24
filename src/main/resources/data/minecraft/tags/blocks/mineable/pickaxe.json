@@ -20,7 +20,10 @@
     "psitweaks:chaotic_psimetal_block",
     "psitweaks:flashmetal_block",
     "psitweaks:heavy_psimetal_block",
+    "psitweaks:plutonium_block",
+    "psitweaks:polonium_block",
     "psitweaks:raw_antinite_block",
-    "psitweaks:sculk_eroder"
+    "psitweaks:sculk_eroder",
+    "psitweaks:material_mutator"
   ]
 }

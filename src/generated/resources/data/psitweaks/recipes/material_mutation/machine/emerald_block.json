@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:amethyst_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:emerald_block"
+  },
+  "time": 200
+}

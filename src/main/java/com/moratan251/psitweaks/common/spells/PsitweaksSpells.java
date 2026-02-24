@@ -86,8 +86,14 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_injection"), PieceTrickRadiationInjection.class);
             PsiAPI.addPieceToGroup(PieceTrickRadiationInjection.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_injection"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_filter"), PieceTrickRadiationFilter.class);
+            PsiAPI.addPieceToGroup(PieceTrickRadiationFilter.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_filter"), false);
+
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_guillotine"), PieceTrickGuillotine.class);
             PsiAPI.addPieceToGroup(PieceTrickGuillotine.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_guillotine"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_material_mutation"), PieceTrickMaterialMutation.class);
+            PsiAPI.addPieceToGroup(PieceTrickMaterialMutation.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_material_mutation"), false);
 
 
         });

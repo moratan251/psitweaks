@@ -13,7 +13,7 @@
     {
       "type": "mantle:tag_filled",
       "registry": "minecraft:fluid",
-      "tag": "forge:molten_debris"
+      "tag": "tconstruct:molten_debris"
     },
     {
       "type": "mantle:tag_filled",
@@ -33,7 +33,7 @@
     },
     {
       "amount": 360,
-      "tag": "forge:molten_debris"
+      "tag": "tconstruct:molten_debris"
     },
     {
       "amount": 50,

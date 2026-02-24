@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "psitweaks:antinite_block"
+      },
+      "output": {
+        "count": 1,
+        "item": "psitweaks:hypostasis_gem"
+      }
+    }
+  ]
+}

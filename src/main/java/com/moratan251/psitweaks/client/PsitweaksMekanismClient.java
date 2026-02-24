@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.client;
 
+import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
@@ -17,6 +18,9 @@ public class PsitweaksMekanismClient {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.SCULK_ERODER, GuiSculkEroder::new));
+        event.enqueueWork(() -> {
+            ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.SCULK_ERODER, GuiSculkEroder::new);
+            ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.MATERIAL_MUTATOR, GuiMaterialMutator::new);
+        });
     }
 }

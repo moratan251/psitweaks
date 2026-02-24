@@ -8,6 +8,7 @@
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
     "GeneratorsBlockTypesMixin",
+    "RadiationManagerMixin",
     "isInRadiusMixin",
     "rangeLimitParamMixin"
   ],

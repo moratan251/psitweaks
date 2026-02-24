@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "psitweaks:plutonium_block"
+      },
+      "output": {
+        "count": 1,
+        "item": "psitweaks:pellet_americium"
+      }
+    }
+  ]
+}

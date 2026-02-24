@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:crying_obsidian"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:ender_pearl"
+  },
+  "time": 200
+}

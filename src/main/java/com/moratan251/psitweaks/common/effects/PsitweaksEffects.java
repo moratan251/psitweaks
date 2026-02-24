@@ -23,6 +23,9 @@ public class PsitweaksEffects {
     public static final RegistryObject<MobEffect> HARDENING =
             EFFECTS.register("hardening", EffectHardening::new);
 
+    public static final RegistryObject<MobEffect> RADIATION_FILTER =
+            EFFECTS.register("radiation_filter", EffectRadiationFilter::new);
+
 
 
     public static void register(IEventBus eventBus) {

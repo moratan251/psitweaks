@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:daylight_detector"
+      },
+      "output": {
+        "block": "mekanismgenerators:advanced_solar_generator",
+        "count": 1
+      }
+    }
+  ]
+}

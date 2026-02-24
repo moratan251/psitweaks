@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -16,6 +17,11 @@ public class PsitweaksMekanismBlocks {
     public static final BlockRegistryObject<BlockTile.BlockTileModel<TileEntitySculkEroder, BlockTypeTile<TileEntitySculkEroder>>, ItemBlockMachine> SCULK_ERODER =
             BLOCKS.register("sculk_eroder",
                     () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.SCULK_ERODER, properties -> properties),
+                    ItemBlockMachine::new);
+
+    public static final BlockRegistryObject<BlockTile.BlockTileModel<TileEntityMaterialMutator, BlockTypeTile<TileEntityMaterialMutator>>, ItemBlockMachine> MATERIAL_MUTATOR =
+            BLOCKS.register("material_mutator",
+                    () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.MATERIAL_MUTATOR, properties -> properties),
                     ItemBlockMachine::new);
 
     private PsitweaksMekanismBlocks() {

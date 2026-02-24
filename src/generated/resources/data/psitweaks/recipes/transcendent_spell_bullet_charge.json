@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    "B": {
+      "item": "psitweaks:awakened_spell_bullet_charge"
+    },
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:transcendent_spell_bullet_charge"
+  },
+  "show_notification": true
+}

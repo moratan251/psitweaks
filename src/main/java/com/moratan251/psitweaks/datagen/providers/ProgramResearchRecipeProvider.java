@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.datagen.providers;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.datagen.builders.ProgramResearchRecipeBuilder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -26,6 +27,10 @@ public final class ProgramResearchRecipeProvider {
         Item leadIngot = Objects.requireNonNull(
                 ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_lead")),
                 "Missing item: mekanism:ingot_lead"
+        );
+        Item radiationShieldingUnit = Objects.requireNonNull(
+                ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "module_radiation_shielding_unit")),
+                "Missing item: mekanism:module_radiation_shielding_unit"
         );
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_COCYTUS.get())
@@ -97,6 +102,15 @@ public final class ProgramResearchRecipeProvider {
                 .time(3600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_radiation_injection"));
 
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_RADIATION_FILTER.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(leadIngot, 16)
+                .requires(MekanismItems.FLUORITE_DUST, 16)
+                .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 8)
+                .energy(60000000)
+                .time(3600)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_radiation_filter"));
+
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_GUILLOTINE.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
                 .requires(Items.WITHER_SKELETON_SKULL, 1)
@@ -125,5 +139,16 @@ public final class ProgramResearchRecipeProvider {
                 .energy(6000000)
                 .time(600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_die_flex"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requiresCatalyst(PsitweaksItems.PHILOSOPHERS_STONE.get(), 1)
+                .requires(Items.SCULK_CATALYST, 1)
+                .requires(PsitweaksItems.CHAOTIC_FACTOR.get(), 16)
+                .requires(PsitweaksItems.ANTINITE_INGOT.get(), 32)
+                .requires(PsitweaksItems.PSIONIC_ECHO.get(), 16)
+                .energy(250000000)
+                .time(24000)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_material_mutation"));
     }
 }

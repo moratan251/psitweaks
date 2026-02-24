@@ -1,0 +1,6 @@
+{
+  "command_id": "radiation_filter",
+  "piece": "psitweaks:trick_radiation_filter",
+  "unlock_item": "psitweaks:program_radiation_filter",
+  "unlock_tag": "psitweaks.unlock.trick_radiation_filter"
+}

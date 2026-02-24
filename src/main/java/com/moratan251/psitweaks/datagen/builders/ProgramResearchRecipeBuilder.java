@@ -34,17 +34,29 @@ public class ProgramResearchRecipeBuilder {
     }
 
     public ProgramResearchRecipeBuilder requires(ItemLike item, int count) {
-        return requires(Ingredient.of(item), count);
+        return requires(Ingredient.of(item), count, true);
     }
 
     public ProgramResearchRecipeBuilder requires(Ingredient ingredient, int count) {
+        return requires(ingredient, count, true);
+    }
+
+    public ProgramResearchRecipeBuilder requiresCatalyst(ItemLike item, int count) {
+        return requires(Ingredient.of(item), count, false);
+    }
+
+    public ProgramResearchRecipeBuilder requiresCatalyst(Ingredient ingredient, int count) {
+        return requires(ingredient, count, false);
+    }
+
+    private ProgramResearchRecipeBuilder requires(Ingredient ingredient, int count, boolean consume) {
         if (count < 1) {
             throw new IllegalArgumentException("Program research input count must be >= 1");
         }
         if (inputs.size() >= ProgramResearchRecipe.MAX_INPUT_SLOTS) {
             throw new IllegalStateException("Program research supports up to " + ProgramResearchRecipe.MAX_INPUT_SLOTS + " inputs");
         }
-        inputs.add(new RequiredInputData(ingredient, count));
+        inputs.add(new RequiredInputData(ingredient, count, consume));
         return this;
     }
 
@@ -74,7 +86,7 @@ public class ProgramResearchRecipeBuilder {
         consumer.accept(new Result(recipeId, result, List.copyOf(inputs), energy, time));
     }
 
-    private record RequiredInputData(Ingredient ingredient, int count) {
+    private record RequiredInputData(Ingredient ingredient, int count, boolean consume) {
     }
 
     private record Result(ResourceLocation id, ItemStack result, List<RequiredInputData> inputs, int energy,
@@ -89,6 +101,9 @@ public class ProgramResearchRecipeBuilder {
                 JsonObject inputObject = new JsonObject();
                 inputObject.add("ingredient", input.ingredient().toJson());
                 inputObject.addProperty("count", input.count());
+                if (!input.consume()) {
+                    inputObject.addProperty("consume", false);
+                }
                 inputArray.add(inputObject);
             }
             json.add("inputs", inputArray);

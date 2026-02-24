@@ -59,6 +59,7 @@ public class PsitweaksItems {
 
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ALLOY_PSIONIC_ECHO = ITEMS.register("alloy_psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> PHILOSOPHERS_STONE = ITEMS.register("philosophers_stone", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> PSIONIC_ECHO = ITEMS.register("psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> PROGRAM_BLANK = ITEMS.register("program_blank", () -> new ItemPsitweaksProgram(new Item.Properties(), true));
     public static final RegistryObject<Item> PROGRAM_COCYTUS = ITEMS.register("program_cocytus", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
@@ -68,9 +69,11 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = ITEMS.register("program_radiation_injection", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_RADIATION_FILTER = ITEMS.register("program_radiation_filter", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_GUILLOTINE = ITEMS.register("program_guillotine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_ACTIVE_AIR_MINE = ITEMS.register("program_active_air_mine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_DIE_FLEX = ITEMS.register("program_die_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_MATERIAL_MUTATION = ITEMS.register("program_material_mutation", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
@@ -95,8 +98,14 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> DIRTY_DUST_ANTINITE = ITEMS.register("dirty_dust_antinite", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ANTINITE_DUST = ITEMS.register("antinite_dust", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ANTINITE_INGOT = ITEMS.register("antinite_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PSYCHEONIC_METAL_INGOT = ITEMS.register("psycheonic_metal_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PSYCHEONIC_METAL_NUGGET = ITEMS.register("psycheonic_metal_nugget", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ENRICHED_HYPOSTASIS = ITEMS.register("enriched_hypostasis", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> ECHO_PELLET = ITEMS.register("echo_pellet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PELLET_NEPTUNIUM = ITEMS.register("pellet_neptunium", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> PELLET_AMERICIUM = ITEMS.register("pellet_americium", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> HYPOSTASIS_GEM = ITEMS.register("hypostasis_gem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
 
 
@@ -151,6 +160,14 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_GRENADE = ITEMS.register("awakened_spell_bullet_grenade", () -> new ItemAwakenedGrenadeSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_PROJECTILE = ITEMS.register("awakened_spell_bullet_projectile", () -> new ItemAwakenedProjectileSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> AWAKENED_SPELL_BULLET_CIRCLE = ITEMS.register("awakened_spell_bullet_circle", () -> new ItemAwakenedCircleSpellBullet(new Item.Properties()));
+
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET = ITEMS.register("transcendent_spell_bullet", () -> new ItemTranscendentSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_LOOP = ITEMS.register("transcendent_spell_bullet_loop", () -> new ItemTranscendentLoopcastSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_MINE = ITEMS.register("transcendent_spell_bullet_mine", () -> new ItemTranscendentMineSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_CHARGE = ITEMS.register("transcendent_spell_bullet_charge", () -> new ItemTranscendentChargeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_GRENADE = ITEMS.register("transcendent_spell_bullet_grenade", () -> new ItemTranscendentGrenadeSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_PROJECTILE = ITEMS.register("transcendent_spell_bullet_projectile", () -> new ItemTranscendentProjectileSpellBullet(new Item.Properties()));
+    public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_CIRCLE = ITEMS.register("transcendent_spell_bullet_circle", () -> new ItemTranscendentCircleSpellBullet(new Item.Properties()));
 
 
     public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler",

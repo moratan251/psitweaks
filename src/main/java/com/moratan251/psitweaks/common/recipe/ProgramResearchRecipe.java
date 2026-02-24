@@ -82,10 +82,12 @@ public class ProgramResearchRecipe implements Recipe<Container> {
         }
 
         int requirementCount = inputs.size();
+        ItemStack[] availableStacks = new ItemStack[slotCount];
         int[] sourceCapacities = new int[slotCount];
         int totalAvailable = 0;
         for (int slot = 0; slot < slotCount; slot++) {
             ItemStack stack = stackProvider.apply(slot);
+            availableStacks[slot] = stack;
             int count = stack.isEmpty() ? 0 : stack.getCount();
             sourceCapacities[slot] = count;
             totalAvailable += count;
@@ -113,7 +115,7 @@ public class ProgramResearchRecipe implements Recipe<Container> {
             residual[reqNode][sink] = requiredInput.count();
 
             for (int slot = 0; slot < slotCount; slot++) {
-                ItemStack stack = stackProvider.apply(slot);
+                ItemStack stack = availableStacks[slot];
                 if (requiredInput.matches(stack)) {
                     int slotNode = slotStart + slot;
                     residual[slotNode][reqNode] = FLOW_INF;
@@ -129,7 +131,16 @@ public class ProgramResearchRecipe implements Recipe<Container> {
         int[] consumedPerSlot = new int[slotCount];
         for (int slot = 0; slot < slotCount; slot++) {
             int slotNode = slotStart + slot;
-            consumedPerSlot[slot] = sourceCapacities[slot] - residual[source][slotNode];
+            int consumed = 0;
+            for (int reqIndex = 0; reqIndex < requirementCount; reqIndex++) {
+                RequiredInput requiredInput = inputs.get(reqIndex);
+                if (!requiredInput.consume()) {
+                    continue;
+                }
+                int reqNode = requirementStart + reqIndex;
+                consumed += residual[reqNode][slotNode];
+            }
+            consumedPerSlot[slot] = consumed;
         }
         return consumedPerSlot;
     }
@@ -231,7 +242,7 @@ public class ProgramResearchRecipe implements Recipe<Container> {
         return true;
     }
 
-    public record RequiredInput(Ingredient ingredient, int count) {
+    public record RequiredInput(Ingredient ingredient, int count, boolean consume) {
 
         public RequiredInput {
             if (count < 1) {
@@ -267,7 +278,8 @@ public class ProgramResearchRecipe implements Recipe<Container> {
                 if (inputCount < 1) {
                     throw new IllegalArgumentException("Program research input count must be >= 1: " + recipeId);
                 }
-                inputs.add(new RequiredInput(ingredient, inputCount));
+                boolean consume = GsonHelper.getAsBoolean(inputObject, "consume", true);
+                inputs.add(new RequiredInput(ingredient, inputCount, consume));
             }
 
             JsonObject outputObject = GsonHelper.getAsJsonObject(json, "output");
@@ -296,7 +308,8 @@ public class ProgramResearchRecipe implements Recipe<Container> {
             for (int i = 0; i < inputSize; i++) {
                 Ingredient ingredient = Ingredient.fromNetwork(buffer);
                 int count = Math.max(1, buffer.readVarInt());
-                inputs.add(new RequiredInput(ingredient, count));
+                boolean consume = buffer.readBoolean();
+                inputs.add(new RequiredInput(ingredient, count, consume));
             }
             ItemStack output = buffer.readItem();
             int energy = Math.max(0, buffer.readVarInt());
@@ -310,6 +323,7 @@ public class ProgramResearchRecipe implements Recipe<Container> {
             for (RequiredInput input : recipe.inputs) {
                 input.ingredient().toNetwork(buffer);
                 buffer.writeVarInt(input.count());
+                buffer.writeBoolean(input.consume());
             }
             buffer.writeItem(recipe.output);
             buffer.writeVarInt(recipe.energy);

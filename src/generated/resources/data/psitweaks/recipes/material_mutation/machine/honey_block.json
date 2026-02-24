@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:slime_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:honey_block"
+  },
+  "time": 200
+}

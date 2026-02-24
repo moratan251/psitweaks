@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.datagen.providers;
 
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -494,6 +495,76 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "awakened_spell_bullet_circle"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet_loop"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_MINE.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet_mine"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet_charge"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet_grenade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet_projectile"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_spell_bullet_circle"));
+
 
 
 
@@ -527,6 +598,17 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_researcher"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock())
+                .define('A', PsitweaksItems.ALLOY_PSIONIC_ECHO.get())
+                .define('B', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('D', MekanismBlocks.CHEMICAL_INJECTION_CHAMBER)
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("ABA")
+                .unlockedBy("has_chemical_injection_chamber", has(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "material_mutator"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PROGRAM_BLANK.get())
                 .define('P', Items.PAPER)
                 .define('M', psimetal)
@@ -546,6 +628,16 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("SSS")
                 .unlockedBy("has_alloy_psionic_echo", has(PsitweaksItems.ALLOY_PSIONIC_ECHO.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "echo_control_circuit"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .define('A', PsitweaksItems.ANTINITE_INGOT.get())
+                .define('E', PsitweaksItems.ALLOY_PSIONIC_ECHO.get())
+                .define('N', Items.NETHER_STAR)
+                .pattern("AEA")
+                .pattern("ENE")
+                .pattern("AEA")
+                .unlockedBy("has_nether_star", has(Items.NETHER_STAR))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get())
                 .define('I', PsitweaksItems.HEAVY_PSIMETAL.get())
@@ -727,6 +819,22 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heavy_psimetal", has(PsitweaksItems.HEAVY_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal_block"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.PLUTONIUM_BLOCK.get())
+                .define('P', MekanismItems.PLUTONIUM_PELLET)
+                .pattern("PPP")
+                .pattern("PPP")
+                .pattern("PPP")
+                .unlockedBy("has_plutonium_pellet", has(MekanismItems.PLUTONIUM_PELLET))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "plutonium_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.POLONIUM_BLOCK.get())
+                .define('P', MekanismItems.POLONIUM_PELLET)
+                .pattern("PPP")
+                .pattern("PPP")
+                .pattern("PPP")
+                .unlockedBy("has_polonium_pellet", has(MekanismItems.POLONIUM_PELLET))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "polonium_block"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.RAW_ANTINITE_BLOCK.get())
                 .define('R', PsitweaksItems.RAW_ANTINITE.get())
                 .pattern("RRR")
@@ -734,6 +842,14 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("RRR")
                 .unlockedBy("has_raw_antinite", has(PsitweaksItems.RAW_ANTINITE.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "raw_antinite_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('N', PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get())
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .unlockedBy("has_psycheonic_metal_nugget", has(PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psycheonic_metal_ingot"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.ANTINITE_INGOT.get(), 9)
                 .requires(PsitweaksBlocks.ANTINITE_BLOCK.get())
@@ -755,10 +871,25 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heavy_psimetal_block", has(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "heavy_psimetal_from_block"));
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MekanismItems.PLUTONIUM_PELLET, 9)
+                .requires(PsitweaksBlocks.PLUTONIUM_BLOCK.get())
+                .unlockedBy("has_plutonium_block", has(PsitweaksBlocks.PLUTONIUM_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "plutonium_pellet_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MekanismItems.POLONIUM_PELLET, 9)
+                .requires(PsitweaksBlocks.POLONIUM_BLOCK.get())
+                .unlockedBy("has_polonium_block", has(PsitweaksBlocks.POLONIUM_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "polonium_pellet_from_block"));
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.RAW_ANTINITE.get(), 9)
                 .requires(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get())
                 .unlockedBy("has_raw_antinite_block", has(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "raw_antinite_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get(), 9)
+                .requires(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psycheonic_metal_nugget_from_ingot"));
 
 
 

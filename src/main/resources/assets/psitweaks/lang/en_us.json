@@ -12,6 +12,7 @@
   "item.psitweaks.enriched_ebony": "Enriched Ebony",
   "item.psitweaks.enriched_ivory": "Enriched Ivory",
   "item.psitweaks.enriched_echo": "Enriched Echo",
+  "item.psitweaks.enriched_hypostasis": "Enriched Hypostasis Gem",
   "item.psitweaks.psionic_echo": "Psionic Echo",
   "item.psitweaks.program_blank": "Blank Program",
   "item.psitweaks.program_cocytus": "Program: Cocytus",
@@ -21,15 +22,21 @@
   "item.psitweaks.program_supreme_infusion": "Program: Supreme Infusion",
   "item.psitweaks.program_molecular_divider": "Program: Molecular Divider",
   "item.psitweaks.program_radiation_injection": "Program: Radiation Injection",
+  "item.psitweaks.program_radiation_filter": "Program: Radiation Filter",
   "item.psitweaks.program_guillotine": "Program: Guillotine",
   "item.psitweaks.program_active_air_mine": "Program: Active Air Mine",
   "item.psitweaks.program_die_flex": "Program: Flexible Die",
+  "item.psitweaks.program_material_mutation": "Program: Material Mutation",
   "item.psitweaks.alloy_psion": "Psionic Alloy",
   "item.psitweaks.psionic_control_circuit": "Psionic Control Circuit",
   "item.psitweaks.echo_control_circuit": "Echo Control Circuit",
   "item.psitweaks.alloy_psionic_echo": "Echo Alloy",
+  "item.psitweaks.philosophers_stone": "Philosopher's Stone",
   "item.psitweaks.heavy_psimetal_scrap": "Heavy Psimetal Scrap",
   "item.psitweaks.echo_pellet": "HDΨE Pellet",
+  "item.psitweaks.pellet_neptunium": "Neptunium Pellet",
+  "item.psitweaks.pellet_americium": "Americium Pellet",
+  "item.psitweaks.hypostasis_gem": "Hypostasis Gem",
   "item.psitweaks.echo_sheet": "HDΨE Sheet",
 
 
@@ -48,6 +55,8 @@
   "item.psitweaks.dirty_dust_antinite": "Dirty Antinite Dust",
   "item.psitweaks.antinite_dust": "Antinite Dust",
   "item.psitweaks.antinite_ingot": "Antinite Ingot",
+  "item.psitweaks.psycheonic_metal_ingot": "Psycheonic Metal Ingot",
+  "item.psitweaks.psycheonic_metal_nugget": "Psycheonic Metal Nugget",
 
 
   "item.psitweaks.cad_assembly_alloy_psion": "Psionic Alloy CAD Assembly",
@@ -112,14 +121,20 @@
   "block.psitweaks.chaotic_psimetal_block": "Chaotic Psimetal Block",
   "block.psitweaks.flashmetal_block": "Flashmetal Block",
   "block.psitweaks.heavy_psimetal_block": "Heavy Psimetal Block",
+  "block.psitweaks.plutonium_block": "Plutonium Block",
+  "block.psitweaks.polonium_block": "Polonium Block",
   "block.psitweaks.raw_antinite_block": "Raw Antinite Block",
   "block.psitweaks.sculk_eroder": "Sculk Eroder",
+  "block.psitweaks.material_mutator": "Material Mutator",
   "container.psitweaks.program_researcher": "Program Research Table",
   "jei.psitweaks.program_research": "Program Research",
+  "jei.psitweaks.material_mutation": "Material Mutation",
   "jei.psitweaks.program_research.energy": "Energy: %s FE",
   "jei.psitweaks.program_research.time": "Time: %s min %s sec",
   "container.psitweaks.sculk_eroder": "Sculk Eroder",
+  "container.psitweaks.material_mutator": "Material Mutator",
   "description.psitweaks.sculk_eroder": "Corrodes stone, dirt, and sand type blocks into Sculk",
+  "description.psitweaks.material_mutator": "Mutates items into different materials using Psionic Echo Gas",
   "message.psitweaks.cad_disassembler.unsupported_tic_cad": "Failed to safely disassemble this TiCCAD.",
   "message.psitweaks.global_traveler.linked": "Linked Global Traveler to inventory at (%s, %s, %s)",
   "message.psitweaks.global_traveler.unlinked": "Unlinked Global Traveler destination",
@@ -153,6 +168,7 @@
   "effect.psitweaks.flight": "Flight",
   "effect.psitweaks.barrier": "Barrier",
   "effect.psitweaks.hardening": "Hardening",
+  "effect.psitweaks.radiation_filter": "Radiation Filter",
 
 
 
@@ -173,9 +189,12 @@
   "infuse_type.psitweaks.infuse_ivory": "Ivory",
   "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
   "infuse_type.psitweaks.infuse_psionic_echo": "Psinonic Echo",
+  "infuse_type.psitweaks.infuse_hypostasis": "Hypostasis Gem",
 
   "gas.psitweaks.gas_psionic_echo": "Psionic Echo Gas",
   "gas.psitweaks.gas_peo_fuel": "PE-O Fuel",
+  "gas.psitweaks.gas_americium": "Americium",
+  "gas.psitweaks.gas_neptunium": "Neptunium",
   "slurry.psitweaks.dirty_antinite": "Dirty Antinite Slurry",
   "slurry.psitweaks.clean_antinite": "Clean Antinite Slurry",
 
@@ -245,12 +264,16 @@
 
   "psitweaks.spellpiece.trick_radiation_injection": "Trick: Radiation Injection",
   "psitweaks.spellpiece.trick_radiation_injection.desc": "Applies radiation exposure to the target",
+  "psitweaks.spellpiece.trick_radiation_filter": "Trick: Radiation Filter",
+  "psitweaks.spellpiece.trick_radiation_filter.desc": "Applies a radiation-shielding filter effect to the target",
   "psitweaks.spellpiece.trick_guillotine": "Trick: Guillotine",
   "psitweaks.spellpiece.trick_guillotine.desc": "Deals a heavy slash to the target and drops a head on kill",
   "psitweaks.spellpiece.trick_active_air_mine": "Trick: Active Air Mine",
   "psitweaks.spellpiece.trick_active_air_mine.desc": "Deals magic damage to entities inside a spherical area around the target position",
   "psitweaks.spellpiece.trick_die_flex": "Trick: Flexible Die",
   "psitweaks.spellpiece.trick_die_flex.desc": "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.",
+  "psitweaks.spellpiece.trick_material_mutation": "Trick: Material Mutation",
+  "psitweaks.spellpiece.trick_material_mutation.desc": "Acts on a specific block, alters its material structure, and transmutes it into a different substance.",
 
   "creativetabs.psitweaks": "Psi: Tweaks and Additions",
 

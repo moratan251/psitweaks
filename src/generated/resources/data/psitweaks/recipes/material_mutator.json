@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_psionic_echo"
+    },
+    "B": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "C": {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    "D": {
+      "item": "mekanism:chemical_injection_chamber"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:material_mutator"
+  },
+  "show_notification": true
+}

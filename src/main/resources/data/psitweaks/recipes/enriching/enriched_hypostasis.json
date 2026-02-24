@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": { "item": "psitweaks:hypostasis_gem" }
+  },
+  "output": {
+    "item": "psitweaks:enriched_hypostasis"
+  }
+}

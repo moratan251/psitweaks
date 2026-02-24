@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:daylight_detector"
+  },
+  "output": {
+    "count": 1,
+    "item": "mekanismgenerators:advanced_solar_generator"
+  },
+  "time": 200
+}

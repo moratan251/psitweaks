@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -13,6 +14,11 @@ public class PsitweaksMekanismTileEntityTypes {
 
     public static final TileEntityTypeRegistryObject<TileEntitySculkEroder> SCULK_ERODER =
             TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.SCULK_ERODER, TileEntitySculkEroder::new,
+                    (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
+                    (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
+
+    public static final TileEntityTypeRegistryObject<TileEntityMaterialMutator> MATERIAL_MUTATOR =
+            TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.MATERIAL_MUTATOR, TileEntityMaterialMutator::new,
                     (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
                     (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
 

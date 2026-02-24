@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chemical_injection_chamber": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:chemical_injection_chamber"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:material_mutator"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_injection_chamber",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:material_mutator"
+    ]
+  },
+  "sends_telemetry_event": false
+}

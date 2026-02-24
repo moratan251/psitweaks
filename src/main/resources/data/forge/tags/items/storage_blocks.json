@@ -5,6 +5,8 @@
     "#forge:storage_blocks/chaotic_psimetal",
     "#forge:storage_blocks/flashmetal",
     "#forge:storage_blocks/heavy_psimetal",
+    "#forge:storage_blocks/plutonium",
+    "#forge:storage_blocks/polonium",
     "#forge:storage_blocks/raw_antinite"
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:polonium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "mekanism:pellet_polonium"
+  }
+}

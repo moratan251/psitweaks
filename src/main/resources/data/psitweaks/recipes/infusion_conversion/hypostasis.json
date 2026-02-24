@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "item": "psitweaks:enriched_hypostasis"
+    }
+  },
+  "output": {
+    "infuse_type": "psitweaks:infuse_hypostasis",
+    "amount": 80
+  }
+}

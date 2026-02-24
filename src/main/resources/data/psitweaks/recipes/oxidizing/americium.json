@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "ingredient": {
+      "item": "psitweaks:pellet_americium"
+    }
+  },
+  "output": {
+    "amount": 1000,
+    "gas": "psitweaks:gas_americium"
+  }
+}

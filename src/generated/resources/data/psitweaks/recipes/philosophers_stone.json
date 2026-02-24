@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:antinite_ingot"
+    },
+    "E": {
+      "item": "psitweaks:alloy_psionic_echo"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "AEA",
+    "ENE",
+    "AEA"
+  ],
+  "result": {
+    "item": "psitweaks:philosophers_stone"
+  },
+  "show_notification": true
+}

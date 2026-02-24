@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "ingredient": {
+      "item": "mekanism:pellet_polonium"
+    }
+  },
+  "output": {
+    "amount": 1000,
+    "gas": "mekanism:polonium"
+  }
+}

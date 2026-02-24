@@ -48,14 +48,14 @@ public class PsitweaksBlocks {
 
     public static final RegistryObject<Block> CHAOTIC_PSIMETAL_BLOCK = registerBlock("chaotic_psimetal_block",
             () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(10.0f)
+                    .strength(5.0f)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
             ));
 
     public static final RegistryObject<Block> FLASHMETAL_BLOCK = registerBlock("flashmetal_block",
             () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(10.0f)
+                    .strength(5.0f)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
             ));
@@ -63,6 +63,20 @@ public class PsitweaksBlocks {
     public static final RegistryObject<Block> HEAVY_PSIMETAL_BLOCK = registerBlock("heavy_psimetal_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(10.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
+    public static final RegistryObject<Block> PLUTONIUM_BLOCK = registerBlock("plutonium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
+    public static final RegistryObject<Block> POLONIUM_BLOCK = registerBlock("polonium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5.0f)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
             ));

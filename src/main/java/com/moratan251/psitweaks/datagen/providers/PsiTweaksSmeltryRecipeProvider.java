@@ -66,7 +66,7 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/alloys/molten_heavy_psimetal"),
                 List.of(
                         new FluidInput("forge:molten_flashmetal", 360),
-                        new FluidInput("forge:molten_debris", 360),
+                        new FluidInput("tconstruct:molten_debris", 360),
                         new FluidInput("forge:molten_psionic_echo", 50)
                 ),
                 "forge:molten_heavy_psimetal",
@@ -75,7 +75,7 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 List.of("tconstruct"),
                 List.of(
                         "forge:molten_flashmetal",
-                        "forge:molten_debris",
+                        "tconstruct:molten_debris",
                         "forge:molten_psionic_echo",
                         "forge:molten_heavy_psimetal"
                 ));
