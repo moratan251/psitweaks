@@ -6,11 +6,14 @@
       "item": "psitweaks:philosophers_stone"
     },
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:ender_pearl"
     }
   ],
   "result": {
-    "count": 16,
-    "item": "minecraft:coal"
+    "count": 4,
+    "item": "minecraft:blaze_rod"
   }
 }

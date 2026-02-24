@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "psitweaks:antinite_ingot"
+      "item": "psitweaks:alloy_hypostasis"
     },
     "B": {
       "item": "psitweaks:hypostasis_control_circuit"
     },
     "C": {
-      "item": "psitweaks:psycheonic_metal_ingot"
+      "item": "psitweaks:antinite_ingot"
     },
     "D": {
       "item": "psitweaks:spellmachinery_casing"

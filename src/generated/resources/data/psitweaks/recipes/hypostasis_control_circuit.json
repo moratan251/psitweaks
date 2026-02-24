@@ -8,17 +8,14 @@
     "C": {
       "item": "psitweaks:echo_control_circuit"
     },
-    "N": {
-      "item": "psitweaks:pellet_neptunium"
-    },
-    "P": {
-      "item": "psitweaks:pellet_americium"
+    "J": {
+      "item": "psitweaks:jade"
     }
   },
   "pattern": [
-    " P ",
+    "JJJ",
     "ACA",
-    " N "
+    "JJJ"
   ],
   "result": {
     "item": "psitweaks:hypostasis_control_circuit"

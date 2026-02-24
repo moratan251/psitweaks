@@ -618,9 +618,9 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_researcher"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock())
-                .define('A', PsitweaksItems.ANTINITE_INGOT.get())
+                .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
                 .define('B', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
-                .define('C', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('C', PsitweaksItems.ANTINITE_INGOT.get())
                 .define('D', PsitweaksBlocks.SPELLMACHINERY_CASING.get())
                 .define('P', PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get())
                 .pattern("APA")
@@ -651,12 +651,11 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
-                .define('P', PsitweaksItems.PELLET_AMERICIUM.get())
-                .define('N', PsitweaksItems.PELLET_NEPTUNIUM.get())
                 .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
-                .pattern(" P ")
+                .define('J', PsitweaksItems.JADE.get())
+                .pattern("JJJ")
                 .pattern("ACA")
-                .pattern(" N ")
+                .pattern("JJJ")
                 .unlockedBy("has_alloy_hypostasis", has(PsitweaksItems.ALLOY_HYPOSTASIS.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "hypostasis_control_circuit"));
 
@@ -1015,23 +1014,47 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.DIAMOND, 1)
                 .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
-                .requires(Items.COAL_BLOCK, 7)
-                .requires(Items.COAL)
+                .requires(Items.COAL_BLOCK, 1)
+                .requires(Items.COAL, 7)
                 .unlockedBy("has_coal_block", has(Items.COAL_BLOCK))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_coal_to_diamond"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.DIAMOND, 1)
                 .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
-                .requires(MekanismBlocks.CHARCOAL_BLOCK, 7)
-                .requires(Items.CHARCOAL)
+                .requires(MekanismBlocks.CHARCOAL_BLOCK, 1)
+                .requires(Items.CHARCOAL, 7)
                 .unlockedBy("has_charcoal", has(Items.CHARCOAL))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_charcoal_to_diamond"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.COAL, 64)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.COAL, 16)
                 .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
                 .requires(Items.DIAMOND)
                 .unlockedBy("has_diamond", has(Items.DIAMOND))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_diamond_to_coal"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.DIAMOND, 2)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.ENDER_PEARL, 4)
+                .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_ender_pearl_to_diamond"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.ENDER_PEARL, 4)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.DIAMOND, 2)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_diamond_to_ender_pearl"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.ENDER_PEARL, 2)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.BLAZE_ROD, 4)
+                .unlockedBy("has_blaze_rod", has(Items.BLAZE_ROD))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_blaze_rod_to_ender_pearl"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BLAZE_ROD, 4)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.ENDER_PEARL, 2)
+                .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_ender_pearl_to_blaze_rod"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.EMERALD, 5)
                 .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
