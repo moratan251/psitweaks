@@ -120,6 +120,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> CAD_ASSEMBLY_FLASHMETAL = ITEMS.register("cad_assembly_flashmetal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_flashmetal"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA = ITEMS.register("cad_assembly_heavy_psimetal_alpha", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_heavy_psimetal_alpha"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA = ITEMS.register("cad_assembly_heavy_psimetal_beta", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_heavy_psimetal_beta"));
+    public static final RegistryObject<Item> CAD_ASSEMBLY_PSYCHEONIC_METAL = ITEMS.register("cad_assembly_psycheonic_metal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.EPIC),"cad_psycheonicmetal"));
     public static final RegistryObject<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.register("incomplete_heavy_psimetal_assembly", () -> new Item(new Item.Properties().stacksTo(1)));
 
     //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));

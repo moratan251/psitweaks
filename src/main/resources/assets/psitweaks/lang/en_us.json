@@ -68,6 +68,7 @@
   "item.psitweaks.cad_assembly_flashmetal": "Flashmetal CAD Assembly",
   "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "Heavy Psimetal CAD Assembly α",
   "item.psitweaks.cad_assembly_heavy_psimetal_beta": "Heavy Psimetal CAD Assembly β",
+  "item.psitweaks.cad_assembly_psycheonic_metal": "Psycheonic Metal CAD Assembly",
   "item.psitweaks.incomplete_heavy_psimetal_assembly": "Incomplete Heavy Psimetal CAD Assembly",
   "item.psitweaks.portable_cad_assembler": "Portable CAD Assembler",
 
@@ -290,6 +291,7 @@
   "material.psitweaks.ebony_psimetal": "Ebony Psimetal",
   "material.psitweaks.heavy_psimetal": "Heavy Psimetal",
   "material.psitweaks.chaotic_psimetal": "Chaotic Psimetal",
+  "material.psitweaks.psycheonic_metal": "Psycheonic Metal",
   "item.psitweaks.molten_psimetal_bucket": "Molten Psimetal Bucket",
   "item.psitweaks.molten_psigem_bucket": "Molten Psigem Bucket",
   "item.psitweaks.molten_ivory_psimetal_bucket": "Molten Ivory Psimetal Bucket",

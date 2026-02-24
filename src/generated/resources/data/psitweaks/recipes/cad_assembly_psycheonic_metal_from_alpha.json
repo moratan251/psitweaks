@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:pellet_americium"
+    },
+    "C": {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    "H": {
+      "item": "psitweaks:cad_assembly_heavy_psimetal_alpha"
+    },
+    "P": {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "AHA",
+    "PCP"
+  ],
+  "result": {
+    "item": "psitweaks:cad_assembly_psycheonic_metal"
+  },
+  "show_notification": true
+}

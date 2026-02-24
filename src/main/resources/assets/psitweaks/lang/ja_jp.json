@@ -66,6 +66,7 @@
   "item.psitweaks.cad_assembly_flashmetal": "フラッシュメタルのCAD素体",
   "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "ヘビーサイメタルのCAD素体 α型",
   "item.psitweaks.cad_assembly_heavy_psimetal_beta": "ヘビーサイメタルのCAD素体 β型",
+  "item.psitweaks.cad_assembly_psycheonic_metal": "プシオニックメタルのCAD素体",
   "item.psitweaks.incomplete_heavy_psimetal_assembly": "未完成ヘビーサイメタルCAD素体",
   "item.psitweaks.portable_cad_assembler": "携帯型CAD組立機",
 
@@ -350,6 +351,7 @@
   "material.psitweaks.ebony_psimetal": "エボニーサイメタル",
   "material.psitweaks.heavy_psimetal": "ヘビーサイメタル",
   "material.psitweaks.chaotic_psimetal": "カオティックサイメタル",
+  "material.psitweaks.psycheonic_metal": "プシオニックメタル",
   "item.psitweaks.molten_psimetal_bucket": "溶融サイメタルバケツ",
   "item.psitweaks.molten_psigem_bucket": "溶融サイジェムバケツ",
   "item.psitweaks.molten_ivory_psimetal_bucket": "溶融アイボリーサイメタルバケツ",

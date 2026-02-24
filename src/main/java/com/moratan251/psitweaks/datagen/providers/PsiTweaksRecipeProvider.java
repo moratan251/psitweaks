@@ -652,7 +652,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
                 .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
-                .define('J', PsitweaksItems.JADE.get())
+                .define('J', PsitweaksItems.ECHO_SHEET.get())
                 .pattern("JJJ")
                 .pattern("ACA")
                 .pattern("JJJ")
@@ -706,6 +706,28 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("SCS")
                 .unlockedBy("has_echo_sheet", has(PsitweaksItems.ECHO_SHEET.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_heavy_psimetal_beta"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get())
+                .define('H', PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get())
+                .define('P', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.PELLET_AMERICIUM.get())
+                .pattern("PCP")
+                .pattern("AHA")
+                .pattern("PCP")
+                .unlockedBy("has_heavy_psimetal_assembly_alpha", has(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_psycheonic_metal_from_alpha"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get())
+                .define('H', PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get())
+                .define('P', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.PELLET_AMERICIUM.get())
+                .pattern("PCP")
+                .pattern("AHA")
+                .pattern("PCP")
+                .unlockedBy("has_heavy_psimetal_assembly_beta", has(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_assembly_psycheonic_metal_from_beta"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.FLASH_CHARM.get())
                 .define('F', PsitweaksItems.FLASHMETAL.get())

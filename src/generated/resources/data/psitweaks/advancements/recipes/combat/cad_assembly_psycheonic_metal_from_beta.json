@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_heavy_psimetal_assembly_beta": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:cad_assembly_heavy_psimetal_beta"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:cad_assembly_psycheonic_metal_from_beta"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_heavy_psimetal_assembly_beta",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:cad_assembly_psycheonic_metal_from_beta"
+    ]
+  },
+  "sends_telemetry_event": false
+}

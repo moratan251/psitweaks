@@ -79,6 +79,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get());
+                        pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get());
                         pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
 
 

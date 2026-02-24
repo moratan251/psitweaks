@@ -80,6 +80,17 @@ public class ComponentStats {
                 1400//640
         );
 
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get(),
+                EnumCADStat.EFFICIENCY,
+                200
+        );
+        ItemCADComponent.addStatToStack(
+                PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get(),
+                EnumCADStat.POTENCY,
+                2000
+        );
+
 
 
 
