@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hypostasis_control_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:hypostasis_control_circuit"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:spellmachinery_casing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_hypostasis_control_circuit",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:spellmachinery_casing"
+    ]
+  },
+  "sends_telemetry_event": false
+}

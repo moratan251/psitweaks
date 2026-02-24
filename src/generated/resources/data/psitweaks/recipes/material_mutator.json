@@ -3,20 +3,23 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "psitweaks:alloy_psionic_echo"
+      "item": "psitweaks:antinite_ingot"
     },
     "B": {
-      "item": "psitweaks:echo_control_circuit"
+      "item": "psitweaks:hypostasis_control_circuit"
     },
     "C": {
       "item": "psitweaks:psycheonic_metal_ingot"
     },
     "D": {
-      "item": "mekanism:chemical_injection_chamber"
+      "item": "psitweaks:spellmachinery_casing"
+    },
+    "P": {
+      "item": "psitweaks:program_material_mutation"
     }
   },
   "pattern": [
-    "ABA",
+    "APA",
     "CDC",
     "ABA"
   ],

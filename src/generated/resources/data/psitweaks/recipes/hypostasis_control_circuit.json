@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "N": {
+      "item": "psitweaks:pellet_neptunium"
+    },
+    "P": {
+      "item": "psitweaks:pellet_americium"
+    }
+  },
+  "pattern": [
+    " P ",
+    "ACA",
+    " N "
+  ],
+  "result": {
+    "item": "psitweaks:hypostasis_control_circuit"
+  },
+  "show_notification": true
+}

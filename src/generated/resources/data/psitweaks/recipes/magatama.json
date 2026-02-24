@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": {
+      "item": "psitweaks:hypostasis_gem"
+    },
+    "J": {
+      "item": "psitweaks:jade"
+    }
+  },
+  "pattern": [
+    "JJJ",
+    "JHJ",
+    "JJJ"
+  ],
+  "result": {
+    "item": "psitweaks:magatama"
+  },
+  "show_notification": true
+}

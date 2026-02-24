@@ -54,12 +54,13 @@ public class MaterialMutationRecipeProvider implements DataProvider {
         addItemMutation(consumer, "americium_pellet", PsitweaksBlocks.PLUTONIUM_BLOCK.get(), PsitweaksItems.PELLET_AMERICIUM.get(), 1);
         addItemMutation(consumer, "neptunium_pellet", PsitweaksBlocks.POLONIUM_BLOCK.get(), PsitweaksItems.PELLET_NEPTUNIUM.get(), 1);
         addItemMutation(consumer, "hypostasis_gem", PsitweaksBlocks.ANTINITE_BLOCK.get(), PsitweaksItems.HYPOSTASIS_GEM.get(), 1);
+        addItemMutation(consumer, "jade", Blocks.EMERALD_BLOCK, PsitweaksItems.JADE.get(), 9);
         addBlockMutation(consumer, "sculk_sensor", Blocks.NOTE_BLOCK, Blocks.SCULK_SENSOR, 1);
         addBlockMutation(consumer, "crying_obsidian", Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, 1);
         addItemMutation(consumer, "ender_pearl", Blocks.CRYING_OBSIDIAN, Items.ENDER_PEARL, 1);
-        addBlockMutation(consumer, "amethyst_block", Blocks.DIAMOND_BLOCK, Blocks.AMETHYST_BLOCK, 1);
-        addBlockMutation(consumer, "emerald_block", Blocks.AMETHYST_BLOCK, Blocks.EMERALD_BLOCK, 1);
-        addBlockMutation(consumer, "diamond_block", Blocks.EMERALD_BLOCK, Blocks.DIAMOND_BLOCK, 1);
+     //   addBlockMutation(consumer, "amethyst_block", Blocks.DIAMOND_BLOCK, Blocks.AMETHYST_BLOCK, 1);
+     //   addBlockMutation(consumer, "emerald_block", Blocks.AMETHYST_BLOCK, Blocks.EMERALD_BLOCK, 1);
+    //    addBlockMutation(consumer, "diamond_block", Blocks.EMERALD_BLOCK, Blocks.DIAMOND_BLOCK, 1);
         addItemMutation(consumer, "end_rod", Blocks.TORCH, Items.END_ROD, 1);
         addBlockMutation(consumer, "advanced_solar_generator", Blocks.DAYLIGHT_DETECTOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR.getBlock(), 1);
         addBlockMutation(consumer, "wind_generator", Blocks.LOOM, GeneratorsBlocks.WIND_GENERATOR.getBlock(), 1);

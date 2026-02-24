@@ -3,8 +3,8 @@
     "item": "minecraft:emerald_block"
   },
   "output": {
-    "count": 1,
-    "item": "minecraft:diamond_block"
+    "count": 9,
+    "item": "psitweaks:jade"
   },
   "time": 200
 }

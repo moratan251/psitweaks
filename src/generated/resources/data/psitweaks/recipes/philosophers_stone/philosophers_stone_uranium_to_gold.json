@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:philosophers_stone"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "minecraft:gold_ingot"
+  }
+}

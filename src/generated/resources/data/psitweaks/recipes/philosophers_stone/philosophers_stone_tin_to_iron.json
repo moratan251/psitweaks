@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:philosophers_stone"
+    },
+    {
+      "tag": "forge:ingots/tin"
+    },
+    {
+      "tag": "forge:ingots/tin"
+    },
+    {
+      "tag": "forge:ingots/tin"
+    },
+    {
+      "tag": "forge:ingots/tin"
+    },
+    {
+      "tag": "forge:ingots/tin"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "item": "minecraft:iron_ingot"
+  }
+}

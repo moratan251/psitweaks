@@ -28,6 +28,11 @@
       "type": "mantle:tag_filled",
       "registry": "minecraft:fluid",
       "tag": "forge:molten_psigem"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:ender_pearl"
     }
   ],
   "inputs": [
@@ -42,6 +47,10 @@
     {
       "amount": 50,
       "tag": "forge:molten_psigem"
+    },
+    {
+      "amount": 125,
+      "tag": "forge:ender_pearl"
     }
   ],
   "result": {

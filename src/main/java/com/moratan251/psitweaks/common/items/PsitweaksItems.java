@@ -59,7 +59,8 @@ public class PsitweaksItems {
 
     public static final RegistryObject<Item> ALLOY_PSION = ITEMS.register("alloy_psion", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ALLOY_PSIONIC_ECHO = ITEMS.register("alloy_psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
-    public static final RegistryObject<Item> PHILOSOPHERS_STONE = ITEMS.register("philosophers_stone", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> ALLOY_HYPOSTASIS = ITEMS.register("alloy_hypostasis", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> PHILOSOPHERS_STONE = ITEMS.register("philosophers_stone", () -> new ItemPhilosophersStone(new Item.Properties()));
     public static final RegistryObject<Item> PSIONIC_ECHO = ITEMS.register("psionic_echo", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> PROGRAM_BLANK = ITEMS.register("program_blank", () -> new ItemPsitweaksProgram(new Item.Properties(), true));
     public static final RegistryObject<Item> PROGRAM_COCYTUS = ITEMS.register("program_cocytus", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
@@ -78,6 +79,7 @@ public class PsitweaksItems {
 
     public static final RegistryObject<Item> PSIONIC_CONTROL_CIRCUIT = ITEMS.register("psionic_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ECHO_CONTROL_CIRCUIT = ITEMS.register("echo_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> HYPOSTASIS_CONTROL_CIRCUIT = ITEMS.register("hypostasis_control_circuit", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
 
     public static final RegistryObject<Item> ENRICHED_PSIGEM = ITEMS.register("enriched_psigem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_EBONY = ITEMS.register("enriched_ebony", () -> new Item(new Item.Properties()));
@@ -101,6 +103,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PSYCHEONIC_METAL_INGOT = ITEMS.register("psycheonic_metal_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> PSYCHEONIC_METAL_NUGGET = ITEMS.register("psycheonic_metal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_HYPOSTASIS = ITEMS.register("enriched_hypostasis", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> JADE = ITEMS.register("jade", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> MAGATAMA = ITEMS.register("magatama", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> ECHO_PELLET = ITEMS.register("echo_pellet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> PELLET_NEPTUNIUM = ITEMS.register("pellet_neptunium", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));

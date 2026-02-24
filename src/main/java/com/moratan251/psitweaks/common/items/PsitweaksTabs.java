@@ -36,12 +36,14 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.ENRICHED_HYPOSTASIS.get());
                         pOutput.accept(PsitweaksItems.ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.ALLOY_PSIONIC_ECHO.get());
+                        pOutput.accept(PsitweaksItems.ALLOY_HYPOSTASIS.get());
                         pOutput.accept(PsitweaksItems.PHILOSOPHERS_STONE.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_ECHO.get());
 
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_SCRAP.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get());
+                        pOutput.accept(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get());
                         pOutput.accept(PsitweaksItems.FLASH_RING.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
@@ -67,6 +69,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PELLET_NEPTUNIUM.get());
                         pOutput.accept(PsitweaksItems.PELLET_AMERICIUM.get());
                         pOutput.accept(PsitweaksItems.HYPOSTASIS_GEM.get());
+                        pOutput.accept(PsitweaksItems.JADE.get());
+                        pOutput.accept(PsitweaksItems.MAGATAMA.get());
                         pOutput.accept(PsitweaksItems.ECHO_SHEET.get());
 
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
@@ -143,6 +147,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksBlocks.PLUTONIUM_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.POLONIUM_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());
+                        pOutput.accept(PsitweaksBlocks.SPELLMACHINERY_CASING.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                         pOutput.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock());
                      //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());

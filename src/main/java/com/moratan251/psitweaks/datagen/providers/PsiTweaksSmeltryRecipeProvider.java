@@ -32,7 +32,8 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 List.of(
                         new FluidInput("forge:molten_ebony_psimetal", INGOT_AMOUNT),
                         new FluidInput("forge:molten_ivory_psimetal", INGOT_AMOUNT),
-                        new FluidInput("forge:molten_psigem", 50)
+                        new FluidInput("forge:molten_psigem", 50),
+                        new FluidInput("forge:ender_pearl", 125)
 
                 ),
                 "forge:molten_chaotic_psimetal",
@@ -43,7 +44,8 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                         "forge:molten_ebony_psimetal",
                         "forge:molten_ivory_psimetal",
                         "forge:molten_chaotic_psimetal",
-                        "forge:molten_psigem"
+                        "forge:molten_psigem",
+                        "forge:ender_pearl"
                 ));
 
         alloy(consumer,

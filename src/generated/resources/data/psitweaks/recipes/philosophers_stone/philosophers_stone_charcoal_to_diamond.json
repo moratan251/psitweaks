@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:philosophers_stone"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "mekanism:block_charcoal"
+    },
+    {
+      "item": "minecraft:charcoal"
+    }
+  ],
+  "result": {
+    "item": "minecraft:diamond"
+  }
+}

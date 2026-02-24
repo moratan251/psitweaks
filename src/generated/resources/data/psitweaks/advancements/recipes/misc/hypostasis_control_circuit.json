@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alloy_hypostasis": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:alloy_hypostasis"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:hypostasis_control_circuit"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_alloy_hypostasis",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:hypostasis_control_circuit"
+    ]
+  },
+  "sends_telemetry_event": false
+}

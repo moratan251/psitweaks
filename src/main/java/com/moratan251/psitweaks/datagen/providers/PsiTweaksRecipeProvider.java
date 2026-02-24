@@ -17,6 +17,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,6 +34,20 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
 
     private static final TagKey<Item> FORGE_INGOTS_LEAD =
             ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/lead"));
+    private static final TagKey<Item> FORGE_INGOTS_COPPER =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/copper"));
+    private static final TagKey<Item> FORGE_INGOTS_IRON =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/iron"));
+    private static final TagKey<Item> FORGE_INGOTS_TIN =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/tin"));
+    private static final TagKey<Item> FORGE_INGOTS_OSMIUM =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/osmium"));
+    private static final TagKey<Item> FORGE_INGOTS_GOLD =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/gold"));
+    private static final TagKey<Item> FORGE_INGOTS_URANIUM =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/uranium"));
+    private static final TagKey<Item> FORGE_GEMS_DIAMOND =
+            ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "gems/diamond"));
 
     @Override
     protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
@@ -46,6 +61,10 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         Item ultimateControlCircuit = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ultimate_control_circuit"));
         Item plutoniumPellet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "pellet_plutonium"));
         Item teleportationCore = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "teleportation_core"));
+        Item osmiumIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_osmium"));
+        Item tinIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_tin"));
+        Item leadIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_lead"));
+        Item uraniumIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_uranium"));
 
 
 
@@ -599,11 +618,12 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_researcher"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock())
-                .define('A', PsitweaksItems.ALLOY_PSIONIC_ECHO.get())
-                .define('B', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.ANTINITE_INGOT.get())
+                .define('B', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .define('C', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
-                .define('D', MekanismBlocks.CHEMICAL_INJECTION_CHAMBER)
-                .pattern("ABA")
+                .define('D', PsitweaksBlocks.SPELLMACHINERY_CASING.get())
+                .define('P', PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get())
+                .pattern("APA")
                 .pattern("CDC")
                 .pattern("ABA")
                 .unlockedBy("has_chemical_injection_chamber", has(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER))
@@ -629,6 +649,17 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_alloy_psionic_echo", has(PsitweaksItems.ALLOY_PSIONIC_ECHO.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "echo_control_circuit"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
+                .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
+                .define('P', PsitweaksItems.PELLET_AMERICIUM.get())
+                .define('N', PsitweaksItems.PELLET_NEPTUNIUM.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .pattern(" P ")
+                .pattern("ACA")
+                .pattern(" N ")
+                .unlockedBy("has_alloy_hypostasis", has(PsitweaksItems.ALLOY_HYPOSTASIS.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "hypostasis_control_circuit"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PHILOSOPHERS_STONE.get())
                 .define('A', PsitweaksItems.ANTINITE_INGOT.get())
                 .define('E', PsitweaksItems.ALLOY_PSIONIC_ECHO.get())
@@ -638,6 +669,15 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("AEA")
                 .unlockedBy("has_nether_star", has(Items.NETHER_STAR))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MAGATAMA.get())
+                .define('J', PsitweaksItems.JADE.get())
+                .define('H', PsitweaksItems.HYPOSTASIS_GEM.get())
+                .pattern("JJJ")
+                .pattern("JHJ")
+                .pattern("JJJ")
+                .unlockedBy("has_jade", has(PsitweaksItems.JADE.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "magatama"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get())
                 .define('I', PsitweaksItems.HEAVY_PSIMETAL.get())
@@ -843,6 +883,16 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_raw_antinite", has(PsitweaksItems.RAW_ANTINITE.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "raw_antinite_block"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.SPELLMACHINERY_CASING.get())
+                .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
+                .define('H', PsitweaksItems.MAGATAMA.get())
+                .define('P', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .pattern("AHA")
+                .pattern("HPH")
+                .pattern("AHA")
+                .unlockedBy("has_hypostasis_control_circuit", has(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "spellmachinery_casing"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('N', PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get())
                 .pattern("NNN")
@@ -891,7 +941,121 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psycheonic_metal_nugget_from_ingot"));
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.IRON_INGOT, 2)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_COPPER), 4)
+                .unlockedBy("has_copper_ingot", has(FORGE_INGOTS_COPPER))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_copper_to_iron"));
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.COPPER_INGOT, 4)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_IRON), 2)
+                .unlockedBy("has_iron_ingot", has(FORGE_INGOTS_IRON))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_iron_to_copper"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, osmiumIngot, 2)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_IRON), 4)
+                .unlockedBy("has_iron_ingot", has(FORGE_INGOTS_IRON))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_iron_to_osmium"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.IRON_INGOT, 4)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_OSMIUM), 2)
+                .unlockedBy("has_osmium_ingot", has(FORGE_INGOTS_OSMIUM))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_osmium_to_iron"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.GOLD_INGOT, 2)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_OSMIUM), 4)
+                .unlockedBy("has_osmium_ingot", has(FORGE_INGOTS_OSMIUM))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_osmium_to_gold"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, osmiumIngot, 4)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_GOLD), 2)
+                .unlockedBy("has_gold_ingot", has(FORGE_INGOTS_GOLD))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_gold_to_osmium"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, uraniumIngot, 2)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_GOLD), 4)
+                .unlockedBy("has_gold_ingot", has(FORGE_INGOTS_GOLD))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_gold_to_uranium"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.GOLD_INGOT, 4)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_URANIUM), 2)
+                .unlockedBy("has_uranium_ingot", has(FORGE_INGOTS_URANIUM))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_uranium_to_gold"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, tinIngot, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_IRON), 5)
+                .unlockedBy("has_iron_ingot", has(FORGE_INGOTS_IRON))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_iron_to_tin"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.IRON_INGOT, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_TIN), 5)
+                .unlockedBy("has_tin_ingot", has(FORGE_INGOTS_TIN))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_tin_to_iron"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, leadIngot, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_OSMIUM), 5)
+                .unlockedBy("has_osmium_ingot", has(FORGE_INGOTS_OSMIUM))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_osmium_to_lead"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, osmiumIngot, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Ingredient.of(FORGE_INGOTS_LEAD), 5)
+                .unlockedBy("has_lead_ingot", has(FORGE_INGOTS_LEAD))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_lead_to_osmium"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.DIAMOND, 1)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.COAL_BLOCK, 7)
+                .requires(Items.COAL)
+                .unlockedBy("has_coal_block", has(Items.COAL_BLOCK))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_coal_to_diamond"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.DIAMOND, 1)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(MekanismBlocks.CHARCOAL_BLOCK, 7)
+                .requires(Items.CHARCOAL)
+                .unlockedBy("has_charcoal", has(Items.CHARCOAL))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_charcoal_to_diamond"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.COAL, 64)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.DIAMOND)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_diamond_to_coal"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.EMERALD, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.DIAMOND, 5)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_diamond_to_emerald"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.DIAMOND, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.EMERALD, 5)
+                .unlockedBy("has_emerald", has(Items.EMERALD))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_emerald_to_diamond"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.QUARTZ, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.COAL, 5)
+                .unlockedBy("has_coal", has(Items.COAL))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_coal_to_quartz"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.COAL, 5)
+                .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
+                .requires(Items.QUARTZ, 5)
+                .unlockedBy("has_quartz", has(Items.QUARTZ))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "philosophers_stone/philosophers_stone_quartz_to_coal"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PsitweaksItems.CURIOS_CONTROLLER.get(), 1)
                 .requires(ModItems.exosuitController)

@@ -88,6 +88,13 @@ public class PsitweaksBlocks {
                     .requiresCorrectToolForDrops()
             ));
 
+    public static final RegistryObject<Block> SPELLMACHINERY_CASING = registerBlock("spellmachinery_casing",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(8.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

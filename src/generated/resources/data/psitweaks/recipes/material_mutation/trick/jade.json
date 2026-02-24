@@ -5,8 +5,8 @@
         "block": "minecraft:emerald_block"
       },
       "output": {
-        "block": "minecraft:diamond_block",
-        "count": 1
+        "count": 9,
+        "item": "psitweaks:jade"
       }
     }
   ]
