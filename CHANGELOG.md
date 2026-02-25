@@ -1,5 +1,43 @@
 ## Changelog
 
+#### v0.9.0
+
+- Added Trick: Material Mutation
+  * Breaks specific blocks and transmutes them into different items
+
+
+- Added Trick: Radiation Filter
+  * Protects the target from radiation exposure
+
+
+- Added Material Mutator
+  * A machine that performs Trick: Material Mutation processing using power and Psionic Echo Gas
+
+
+- Added Polonium Block and Plutonium Block
+
+
+- Added intermediate materials
+  * Americium Pellet
+  * Neptunium Pellet
+  * Hypostasis Gem
+  * Enriched Hypostasis Gem
+  * Hypostasis Alloy
+  * Hypostasis Control Circuit
+  * Psycheonic Metal Nugget
+  * Psycheonic Metal Ingot
+  * Jade
+  * Magatama
+  * Spellmachinery Casing
+
+
+- Added Philosopher's Stone
+  * Enables item-transmutation-style crafting inspired by ProjectE (similar concept, different implementation)
+
+
+- Added Psycheonic Metal CAD Assembly
+
+
 #### v0.8.3
 
 - Added Antinite Ore

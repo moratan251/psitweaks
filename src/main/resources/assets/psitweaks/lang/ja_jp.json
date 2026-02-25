@@ -164,7 +164,7 @@
   "container.psitweaks.sculk_eroder": "スカルク侵食室",
   "container.psitweaks.material_mutator": "物質変成機",
   "description.psitweaks.sculk_eroder": "石・土・砂系のブロックをスカルクに加工します",
-  "description.psitweaks.material_mutator": "気化サイオニックエコーを使ってアイテムを別の物質へ変成します",
+  "description.psitweaks.material_mutator": "サイオニックエコーを用いて物質変成を行います。",
 
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",
@@ -264,7 +264,7 @@
   "psitweaks.spellpiece.trick_radiation_injection": "作動式: 放射線注入",
   "psitweaks.spellpiece.trick_radiation_injection.desc": "対象を被ばくさせる",
   "psitweaks.spellpiece.trick_radiation_filter": "作動式: 放射線フィルタ",
-  "psitweaks.spellpiece.trick_radiation_filter.desc": "対象に放射線防護フィルタの効果を付与する",
+  "psitweaks.spellpiece.trick_radiation_filter.desc": "対象に放射線防護効果を付与する",
 
   "psitweaks.spellpiece.trick_guillotine": "作動式: ギロチン",
   "psitweaks.spellpiece.trick_guillotine.desc": "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる",
