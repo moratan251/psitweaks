@@ -11,6 +11,7 @@ public class PsitweaksConfig {
     public static class Common {
         public final ForgeConfigSpec.DoubleValue globalSpellPowerMultiplier;
         public final ForgeConfigSpec.BooleanValue requireSpellUnlocks;
+        public final ForgeConfigSpec.BooleanValue safeToPlayers;
         // 分子ディバイダー関連
         public final ForgeConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue phononMaserDamageMultiplier;
@@ -29,6 +30,11 @@ public class PsitweaksConfig {
                     .comment("Psitweaks攻撃スペル全体に適用する一律倍率",
                             "Global multiplier for all Psitweaks offensive spell damage")
                     .defineInRange("globalSpellPowerMultiplier", 1.0, 0.1, 1000000.0);
+
+            safeToPlayers = builder
+                    .comment("Trueにすると、Psitweaksの全攻撃スペルがプレイヤーをダメージ対象から除外します（フレンドリーファイア防止）",
+                            "If true, all Psitweaks offensive spells will not damage players (friendly fire prevention)")
+                    .define("safeToPlayers", false);
 
             builder.comment("Spell unlock requirements")
                     .push("unlocks");

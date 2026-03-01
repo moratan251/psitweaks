@@ -26,6 +26,8 @@ public class PsitweaksTConstructFluids {
     public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_CHAOTIC_PSIMETAL = registerMoltenFluid("molten_chaotic_psimetal", 0xFF7F7F7F, 1000, 10, MapColor.COLOR_GRAY);
     public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_HEAVY_PSIMETAL = registerMoltenFluid("molten_heavy_psimetal", 0xFF325980, 1300, 12, MapColor.COLOR_CYAN);
     public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSIONIC_ECHO = registerMoltenFluid("molten_psionic_echo", 0xFF40006E, 1000, 10, MapColor.COLOR_PURPLE);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_ANTINITE = registerMoltenFluid("molten_antinite", 0xFFE5D27A, 1000, 10, MapColor.GOLD);
+    public static final FlowingFluidObject<ForgeFlowingFluid> MOLTEN_PSYCHEONIC_METAL = registerMoltenFluid("molten_psycheonic_metal", 0xFF5A7AD5, 1050, 10, MapColor.COLOR_BLUE);
 
     private static FlowingFluidObject<ForgeFlowingFluid> registerMoltenFluid(String name, int tintColor, int temperature, int lightLevel, MapColor mapColor) {
         String textureName = withoutMoltenPrefix(name);

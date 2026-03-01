@@ -1,0 +1,23 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_psycheonic_metal"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/psycheonic_metal"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:molten_psycheonic_metal"
+  },
+  "temperature": 1050,
+  "time": 70
+}

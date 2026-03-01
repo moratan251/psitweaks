@@ -87,6 +87,7 @@ public class PieceTrickBlazeBall extends PieceTrick {
         );
         projectile.shootFromRotation(context.caster, context.caster.getXRot(), context.caster.getYRot(), 0.0F, speed, 0.0F);
         projectile.setDamage(finalDamage);
+        projectile.setSafeToPlayers(SpellSafetyUtils.hasSafeToPlayers(context));
 
         level.addFreshEntity(projectile);
         level.playSound(

@@ -14,6 +14,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamEntity;
 import vazkii.psi.api.spell.param.ParamNumber;
+import net.minecraft.world.entity.player.Player;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 public class PieceTrickRadiationInjection extends PieceTrick {
@@ -72,6 +73,9 @@ public class PieceTrickRadiationInjection extends PieceTrick {
             return null;
         }
 
+        if (livingEntity instanceof Player && SpellSafetyUtils.hasSafeToPlayers(context)) {
+            return null;
+        }
         if (!IRadiationManager.INSTANCE.isRadiationEnabled()) {
             return null;
         }

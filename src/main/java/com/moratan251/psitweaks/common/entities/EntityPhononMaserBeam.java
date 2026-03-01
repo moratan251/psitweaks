@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -19,6 +20,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,6 +49,7 @@ public class EntityPhononMaserBeam extends Entity {
     private int power = 1;
     private UUID casterUUID;
     private boolean soundPlayed = false;
+    private boolean safeToPlayers = false;
 
     public EntityPhononMaserBeam(EntityType<?> type, Level level) {
         super(type, level);
@@ -237,6 +240,9 @@ public class EntityPhononMaserBeam extends Entity {
             if (!(entity instanceof LivingEntity)) {
                 return false;
             }
+            if (safeToPlayers && entity instanceof Player) {
+                return false;
+            }
             return isEntityOnLaserPath(entity, start, end);
         });
 
@@ -320,6 +326,10 @@ public class EntityPhononMaserBeam extends Entity {
         );
     }
 
+    public void setSafeToPlayers(boolean safeToPlayers) {
+        this.safeToPlayers = safeToPlayers;
+    }
+
     public int getPower() {
         return power;
     }
@@ -334,6 +344,7 @@ public class EntityPhononMaserBeam extends Entity {
         this.totalDuration = tag.getInt("TotalDuration");
         this.power = tag.getInt("Power");
         this.soundPlayed = tag.getBoolean("SoundPlayed");
+        this.safeToPlayers = tag.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS);
         if (tag.hasUUID("CasterUUID")) {
             this.casterUUID = tag.getUUID("CasterUUID");
         }
@@ -345,6 +356,7 @@ public class EntityPhononMaserBeam extends Entity {
         tag.putInt("TotalDuration", this.totalDuration);
         tag.putInt("Power", this.power);
         tag.putBoolean("SoundPlayed", this.soundPlayed);
+        tag.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, this.safeToPlayers);
         if (this.casterUUID != null) {
             tag.putUUID("CasterUUID", this.casterUUID);
         }

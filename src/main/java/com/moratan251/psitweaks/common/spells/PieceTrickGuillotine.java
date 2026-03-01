@@ -73,6 +73,10 @@ public class PieceTrickGuillotine extends PieceTrick {
             return null;
         }
 
+        if (livingEntity instanceof Player && SpellSafetyUtils.hasSafeToPlayers(context)) {
+            return null;
+        }
+
         double perSpellDamageMultiplier = PsitweaksConfig.COMMON.guillotineDamageMultiplier.get();
         double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
         float damage = (float) (BASE_DAMAGE * perSpellDamageMultiplier * globalDamageMultiplier);

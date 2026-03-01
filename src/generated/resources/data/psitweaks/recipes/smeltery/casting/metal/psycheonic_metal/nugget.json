@@ -1,0 +1,29 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/multi_use/nugget"
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:nuggets/psycheonic_metal"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_psycheonic_metal"
+    }
+  ],
+  "cooling_time": 35,
+  "fluid": {
+    "amount": 10,
+    "tag": "forge:molten_psycheonic_metal"
+  },
+  "result": {
+    "tag": "forge:nuggets/psycheonic_metal"
+  }
+}

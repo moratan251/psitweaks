@@ -1,0 +1,30 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/single_use/ingot"
+  },
+  "cast_consumed": true,
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "tag": "forge:ingots/antinite"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_antinite"
+    }
+  ],
+  "cooling_time": 60,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:molten_antinite"
+  },
+  "result": {
+    "tag": "forge:ingots/antinite"
+  }
+}

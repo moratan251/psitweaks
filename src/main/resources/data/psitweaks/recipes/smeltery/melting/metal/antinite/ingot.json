@@ -1,0 +1,23 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "mantle:tag_filled",
+      "registry": "minecraft:fluid",
+      "tag": "forge:molten_antinite"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:ingots/antinite"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:molten_antinite"
+  },
+  "temperature": 1000,
+  "time": 60
+}

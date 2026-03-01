@@ -82,6 +82,7 @@ public class PieceTrickPhononMaser extends PieceTrick {
 
         // レーザービームエンティティをスポーン
         EntityPhononMaserBeam beam = new EntityPhononMaserBeam(level, caster, powerVal, durationTicks);
+        beam.setSafeToPlayers(SpellSafetyUtils.hasSafeToPlayers(context));
         level.addFreshEntity(beam);
 
         return null;

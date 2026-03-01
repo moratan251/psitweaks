@@ -1,0 +1,28 @@
+{
+  "perStat": {
+    "tconstruct:melee_harvest": [
+      {
+        "name": "tconstruct:insatiable",
+        "level": 1
+      }
+    ],
+    "tconstruct:ranged": [
+      {
+        "name": "tconstruct:insatiable",
+        "level": 1
+      }
+    ],
+    "tconstruct:armor": [
+      {
+        "name": "tconstruct:magic_protection",
+        "level": 1
+      }
+    ],
+    "tconstruct:plating_shield": [
+      {
+        "name": "tconstruct:magic_protection",
+        "level": 1
+      }
+    ]
+  }
+}

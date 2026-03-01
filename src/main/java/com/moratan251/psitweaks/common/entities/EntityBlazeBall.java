@@ -6,10 +6,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,6 +22,7 @@ public class EntityBlazeBall extends SmallFireball {
     private static final String NBT_DAMAGE = "Damage";
     private static final int MAX_LIFETIME_TICKS = 160;
     private float damage = 5.0F;
+    private boolean safeToPlayers = false;
 
     public EntityBlazeBall(EntityType<? extends EntityBlazeBall> type, Level level) {
         super(type, level);
@@ -31,6 +34,10 @@ public class EntityBlazeBall extends SmallFireball {
 
     public float getDamage() {
         return damage;
+    }
+
+    public void setSafeToPlayers(boolean safeToPlayers) {
+        this.safeToPlayers = safeToPlayers;
     }
 
     @Override
@@ -64,6 +71,10 @@ public class EntityBlazeBall extends SmallFireball {
         }
 
         Entity target = result.getEntity();
+        if (safeToPlayers && target instanceof Player) {
+            discard();
+            return;
+        }
         Entity owner = getOwner();
         DamageSource source = damageSources().fireball(this, owner);
 
@@ -111,6 +122,7 @@ public class EntityBlazeBall extends SmallFireball {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat(NBT_DAMAGE, damage);
+        tag.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, safeToPlayers);
     }
 
     @Override
@@ -119,5 +131,6 @@ public class EntityBlazeBall extends SmallFireball {
         if (tag.contains(NBT_DAMAGE)) {
             damage = Math.max(0.0F, tag.getFloat(NBT_DAMAGE));
         }
+        safeToPlayers = tag.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS);
     }
 }

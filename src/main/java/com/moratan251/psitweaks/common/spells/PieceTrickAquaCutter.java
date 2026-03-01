@@ -82,6 +82,7 @@ public class PieceTrickAquaCutter extends PieceTrick {
         CompoundTag data = projectile.getPersistentData();
         data.putBoolean(AquaCutterProjectileHandler.TAG_AQUA_CUTTER, true);
         data.putFloat(AquaCutterProjectileHandler.TAG_AQUA_CUTTER_DAMAGE, finalDamage);
+        data.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, SpellSafetyUtils.hasSafeToPlayers(context));
 
         level.addFreshEntity(projectile);
         level.playSound(null, context.caster.getX(), context.caster.getY(), context.caster.getZ(),

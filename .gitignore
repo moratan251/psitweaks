@@ -22,11 +22,18 @@ build
 eclipse
 run
 run-data
-AGENTS.md
-docs
 tmp
 .tmp*
 wiki
+.devcontainer
+
+#for AI
+AGENTS.md
+CLAUDE.md
+.claude
+.agents
+.steering
+docs
 
 # Files from Forge MDK
 forge*changelog.txt

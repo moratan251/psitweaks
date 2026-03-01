@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -105,7 +106,11 @@ public class PieceTrickMolecularDivider extends PieceTrick {
      //   LOGGER.debug("Molecular Divider Damage: {} (Power: {}, PerSpell: {}, Global: {})",
        //         damage, powerVal, perSpellDamageMul, globalDamageMul);
 
+        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
         for (Entity entity : entities) {
+            if (entity instanceof Player && safeToPlayers) {
+                continue;
+            }
             Vec3 entityPos = entity.position();
 
             if (isPointInTrianglePrism(entityPos, v1, v2, v3)) {

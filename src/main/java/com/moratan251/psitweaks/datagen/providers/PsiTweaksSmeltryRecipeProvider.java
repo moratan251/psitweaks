@@ -221,6 +221,71 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                 List.of("tconstruct", "psi"),
                 List.of("forge:storage_blocks/ivory_psimetal"),
                 List.of("forge:molten_ivory_psimetal"));
+
+        // antinite: 原石・粉・ブロック の溶融
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/antinite/raw"),
+                "forge:raw_materials/antinite",
+                "forge:molten_antinite",
+                120,
+                1000,
+                90,
+                List.of("tconstruct"),
+                List.of("forge:molten_antinite"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/antinite/dust"),
+                "forge:dusts/antinite",
+                "forge:molten_antinite",
+                INGOT_AMOUNT,
+                1000,
+                50,
+                List.of("tconstruct"),
+                List.of("forge:molten_antinite"));
+
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/antinite/block"),
+                "forge:storage_blocks/antinite",
+                "forge:molten_antinite",
+                BLOCK_AMOUNT,
+                1000,
+                60 * 3,
+                List.of("tconstruct"),
+                List.of("forge:molten_antinite"));
+
+        // antinite: ブロックへの鋳造
+        castingBasinWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/antinite/block"),
+                "forge:molten_antinite",
+                BLOCK_AMOUNT,
+                "forge:storage_blocks/antinite",
+                60 * 3,
+                List.of("tconstruct"),
+                List.of("forge:storage_blocks/antinite"),
+                List.of("forge:molten_antinite"));
+
+        // psycheonic_metal: ナゲットの溶融
+        meltingWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/melting/metal/psycheonic_metal/nugget"),
+                "forge:nuggets/psycheonic_metal",
+                "forge:molten_psycheonic_metal",
+                INGOT_AMOUNT / 9,
+                1050,
+                35,
+                List.of("tconstruct"),
+                List.of("forge:molten_psycheonic_metal"));
+
+        // psycheonic_metal: ナゲットへの鋳造
+        castingTableWithTag(consumer,
+                ResourceLocation.fromNamespaceAndPath("psitweaks", "smeltery/casting/metal/psycheonic_metal/nugget"),
+                "forge:molten_psycheonic_metal",
+                INGOT_AMOUNT / 9,
+                "tconstruct:casts/multi_use/nugget",
+                "forge:nuggets/psycheonic_metal",
+                35,
+                List.of("tconstruct"),
+                List.of("forge:nuggets/psycheonic_metal"),
+                List.of("forge:molten_psycheonic_metal"));
     }
 
     private static void alloy(Consumer<FinishedRecipe> consumer, ResourceLocation id, List<FluidInput> inputs,
@@ -245,6 +310,14 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
                                             int fluidAmount, String resultTag, int coolingTime, List<String> requiredMods,
                                             List<String> requiredItemTags, List<String> requiredFluidTags) {
         consumer.accept(new CastingBasinRecipeResult(id, fluidTag, fluidAmount, resultTag, coolingTime,
+                requiredMods, requiredItemTags, requiredFluidTags));
+    }
+
+    private static void castingTableWithTag(Consumer<FinishedRecipe> consumer, ResourceLocation id, String fluidTag,
+                                            int fluidAmount, String castTag, String resultTag, int coolingTime,
+                                            List<String> requiredMods, List<String> requiredItemTags,
+                                            List<String> requiredFluidTags) {
+        consumer.accept(new CastingTableRecipeResult(id, fluidTag, fluidAmount, castTag, resultTag, coolingTime,
                 requiredMods, requiredItemTags, requiredFluidTags));
     }
 
@@ -407,6 +480,75 @@ public class PsiTweaksSmeltryRecipeProvider extends RecipeProvider {
             json.add("result", result);
             json.addProperty("temperature", temperature);
             json.addProperty("time", time);
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return RecipeSerializer.SHAPELESS_RECIPE;
+        }
+
+        @Nullable
+        @Override
+        public JsonObject serializeAdvancement() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return null;
+        }
+    }
+
+    private record CastingTableRecipeResult(ResourceLocation id, String fluidTag, int fluidAmount, String castTag,
+                                            String resultTag, int coolingTime, List<String> requiredMods,
+                                            List<String> requiredItemTags,
+                                            List<String> requiredFluidTags) implements FinishedRecipe {
+
+        @Override
+        public void serializeRecipeData(JsonObject json) {
+            json.addProperty("type", "tconstruct:casting_table");
+
+            JsonArray conditions = new JsonArray();
+            for (String modId : requiredMods) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "forge:mod_loaded");
+                condition.addProperty("modid", modId);
+                conditions.add(condition);
+            }
+            for (String itemTag : requiredItemTags) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "mantle:tag_filled");
+                condition.addProperty("tag", itemTag);
+                conditions.add(condition);
+            }
+            for (String fluidTagEntry : requiredFluidTags) {
+                JsonObject condition = new JsonObject();
+                condition.addProperty("type", "mantle:tag_filled");
+                condition.addProperty("registry", "minecraft:fluid");
+                condition.addProperty("tag", fluidTagEntry);
+                conditions.add(condition);
+            }
+            json.add("conditions", conditions);
+
+            JsonObject cast = new JsonObject();
+            cast.addProperty("tag", castTag);
+            json.add("cast", cast);
+
+            JsonObject fluid = new JsonObject();
+            fluid.addProperty("amount", fluidAmount);
+            fluid.addProperty("tag", fluidTag);
+            json.add("fluid", fluid);
+
+            JsonObject result = new JsonObject();
+            result.addProperty("tag", resultTag);
+            json.add("result", result);
+            json.addProperty("cooling_time", coolingTime);
         }
 
         @Override

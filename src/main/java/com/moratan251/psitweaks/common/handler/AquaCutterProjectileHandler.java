@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.handler;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -9,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -36,6 +38,11 @@ public class AquaCutterProjectileHandler {
 
         HitResult hitResult = event.getRayTraceResult();
         if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {
+            if (target instanceof Player && data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)) {
+                projectile.discard();
+                event.setImpactResult(ProjectileImpactEvent.ImpactResult.DEFAULT);
+                return;
+            }
             float damage = Math.max(0.0F, data.getFloat(TAG_AQUA_CUTTER_DAMAGE));
             if (target.isSensitiveToWater()) {
                 damage *= 2.0F;

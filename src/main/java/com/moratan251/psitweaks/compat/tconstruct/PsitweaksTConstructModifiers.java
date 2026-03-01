@@ -20,6 +20,8 @@ public final class PsitweaksTConstructModifiers {
             MODIFIERS.register("psicological", PsicologicalModifier::new);
     public static final StaticModifier<GlobalTravelerModifier> GLOBAL_TRAVELER =
             MODIFIERS.register("global_traveler", GlobalTravelerModifier::new);
+    public static final StaticModifier<MindCrushModifier> MIND_CRUSH =
+            MODIFIERS.register("mind_crush", MindCrushModifier::new);
 
     private PsitweaksTConstructModifiers() {
     }

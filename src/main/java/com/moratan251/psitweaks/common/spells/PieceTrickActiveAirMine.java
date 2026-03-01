@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -105,11 +106,13 @@ public class PieceTrickActiveAirMine extends PieceTrick {
                 center.x + radius, center.y + radius, center.z + radius
         );
 
+        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
         List<LivingEntity> targets = level.getEntitiesOfClass(
                 LivingEntity.class,
                 searchArea,
                 target -> target.isAlive()
                         && target != context.caster
+                        && !(target instanceof Player && safeToPlayers)
                         && target.getBoundingBox().distanceToSqr(center) <= radiusSq
         );
 

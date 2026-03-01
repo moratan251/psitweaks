@@ -1,4 +1,4 @@
-// 1.20.1	2026-02-25T00:51:09.4338193	Recipes
+// 1.20.1	2026-03-02T00:56:55.9287242	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -231,20 +231,26 @@ f624b300c3f6000b48c4ce9f44c5f3e6af541876 data/psitweaks/recipes/resonant_spell_b
 90c0a99ca7cbc45bf0041d4b2f965f0e6aa7bb34 data/psitweaks/recipes/smeltery/alloys/molten_chaotic_psimetal.json
 1c3cb246dd709d2a81fc5fc2305b2777a7ee25f8 data/psitweaks/recipes/smeltery/alloys/molten_flashmetal.json
 c39756d417d2a4ebe628349b141444b8648bcf3b data/psitweaks/recipes/smeltery/alloys/molten_heavy_psimetal.json
+f71ff4d017892ee966baa5852e86ee766f861eb2 data/psitweaks/recipes/smeltery/casting/metal/antinite/block.json
 fc1920c514c2c0c310d295ccf3c3c585a4bd599c data/psitweaks/recipes/smeltery/casting/metal/chaotic_psimetal/block.json
 509c29b9ed3119c9b50b0913cc47cd004dcf8d2d data/psitweaks/recipes/smeltery/casting/metal/ebony_psimetal/block.json
 50212ec0a85a7a0763b9bbfdbe871baaf6d2fc25 data/psitweaks/recipes/smeltery/casting/metal/flashmetal/block.json
 21fee54b92640f7fe102514cbb2e92c0a7e6eeb3 data/psitweaks/recipes/smeltery/casting/metal/heavy_psimetal/block.json
 2b1eb5bb9bd0e4528167b395951628039e77d9ee data/psitweaks/recipes/smeltery/casting/metal/ivory_psimetal/block.json
 6c39e0576dc6f5b19f0c4cff7aa243cbeca2a390 data/psitweaks/recipes/smeltery/casting/metal/psimetal/block.json
+2e658ec844646f6ae9c6666852738c32cc3b8f88 data/psitweaks/recipes/smeltery/casting/metal/psycheonic_metal/nugget.json
 0868c6e162f720e9f62c7d9e256deb8e6b729879 data/psitweaks/recipes/smeltery/melting/material/psigem.json
 03abab2e2501a2cc6d1d5838b454e5f8974c7b7b data/psitweaks/recipes/smeltery/melting/material/psionic_echo.json
+1eea93c628d25c9a41aa390af5cdf54e21dae014 data/psitweaks/recipes/smeltery/melting/metal/antinite/block.json
+cce01220d20c2218903e59aef54bcfea0699a379 data/psitweaks/recipes/smeltery/melting/metal/antinite/dust.json
+dfbae6e591c5afbd4df8206f689c4cb09dd702fd data/psitweaks/recipes/smeltery/melting/metal/antinite/raw.json
 249cb5b4639a9504ef973501a0a462ce414895fb data/psitweaks/recipes/smeltery/melting/metal/chaotic_psimetal/block.json
 b652225551fe4892d48692ad1d81cc35ffab6752 data/psitweaks/recipes/smeltery/melting/metal/ebony_psimetal/block.json
 a20ad502e1c2e0389e6455179ca0f6749b3088f7 data/psitweaks/recipes/smeltery/melting/metal/flashmetal/block.json
 868512e3a619592b9deb712e42a9bd8e0091f489 data/psitweaks/recipes/smeltery/melting/metal/heavy_psimetal/block.json
 ef0d7afe0c621749736b374e3766fdcc76142f3d data/psitweaks/recipes/smeltery/melting/metal/ivory_psimetal/block.json
 6845cf4ac058bc161d964b84a8412c2917cbab0f data/psitweaks/recipes/smeltery/melting/metal/psimetal/block.json
+791bcfd356b16252bc7edb05a0ac27b41d8a0088 data/psitweaks/recipes/smeltery/melting/metal/psycheonic_metal/nugget.json
 ae238feda122dcde2c081757840f39f84e40a752 data/psitweaks/recipes/spellmachinery_casing.json
 f3c674a5ea3caccfab8b71f585a3003175e4b2a6 data/psitweaks/recipes/sublimated_spell_bullet.json
 f4bc7a4ea0d9049d3f28f2340d1088a03554c770 data/psitweaks/recipes/sublimated_spell_bullet_charge.json
