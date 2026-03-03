@@ -38,6 +38,9 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "selector_stored_entity"), PieceSelectorStoredEntity.class);
             PsiAPI.addPieceToGroup(PieceSelectorStoredEntity.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "selector_stored_entity"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "selector_nearby_spellgram"), PieceSelectorNearbySpellGram.class);
+            PsiAPI.addPieceToGroup(PieceSelectorNearbySpellGram.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "selector_nearby_spellgram"), false);
+
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel"), PieceTrickDispel.class);
             PsiAPI.addPieceToGroup(PieceTrickDispel.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dispel"), false);
 
@@ -79,6 +82,15 @@ public class PsitweaksSpells {
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_active_air_mine"), PieceTrickActiveAirMine.class);
             PsiAPI.addPieceToGroup(PieceTrickActiveAirMine.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_active_air_mine"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_flare_circle"), PieceTrickFlareCircle.class);
+            PsiAPI.addPieceToGroup(PieceTrickFlareCircle.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_flare_circle"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_ice_circle"), PieceTrickIceCircle.class);
+            PsiAPI.addPieceToGroup(PieceTrickIceCircle.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_ice_circle"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_set_spellgram_follow_target"), PieceTrickSetSpellGramFollowTarget.class);
+            PsiAPI.addPieceToGroup(PieceTrickSetSpellGramFollowTarget.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_set_spellgram_follow_target"), false);
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_die_flex"), PieceTrickDieFlex.class);
             PsiAPI.addPieceToGroup(PieceTrickDieFlex.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_die_flex"), false);

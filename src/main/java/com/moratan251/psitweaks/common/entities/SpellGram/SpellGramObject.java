@@ -35,6 +35,8 @@ public abstract class SpellGramObject extends Entity {
     private static final String NBT_MOTION_DAMPING = "SpellGramMotionDamping";
     private static final String NBT_CASTER_UUID = "SpellGramCaster";
     private static final String NBT_AOE_COUNTER = "SpellGramAoeCounter";
+    private static final String NBT_ENTITY_FOLLOW_MODE = "SpellGramEntityFollowMode";
+    private static final String NBT_FOLLOW_TARGET_UUID = "SpellGramFollowTarget";
 
     private static final EntityDataAccessor<Integer> DATA_REMAINING_TICKS =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.INT);
@@ -48,10 +50,18 @@ public abstract class SpellGramObject extends Entity {
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_MOTION_DAMPING =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DATA_ENTITY_FOLLOW_MODE =
+            SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_FOLLOW_TARGET_ID =
+            SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.INT);
+
+    private static final int NO_FOLLOW_TARGET_ENTITY_ID = -1;
 
     private int aoeTickCounter;
     @Nullable
     private UUID casterUuid;
+    @Nullable
+    private UUID followTargetUuid;
 
     protected SpellGramObject(EntityType<? extends SpellGramObject> type, Level level) {
         super(type, level);
@@ -67,6 +77,8 @@ public abstract class SpellGramObject extends Entity {
         this.entityData.define(DATA_DAMAGE_INTERVAL, 20);
         this.entityData.define(DATA_INTEGRITY, 1.0F);
         this.entityData.define(DATA_MOTION_DAMPING, 0.85F);
+        this.entityData.define(DATA_ENTITY_FOLLOW_MODE, false);
+        this.entityData.define(DATA_FOLLOW_TARGET_ID, NO_FOLLOW_TARGET_ENTITY_ID);
         defineSpellGramSynchedData();
     }
 
@@ -88,6 +100,10 @@ public abstract class SpellGramObject extends Entity {
     }
 
     protected void tickMotion() {
+        if (tickEntityFollow()) {
+            return;
+        }
+
         Vec3 velocity = getDeltaMovement();
         if (velocity.lengthSqr() <= 1.0E-7) {
             return;
@@ -101,6 +117,29 @@ public abstract class SpellGramObject extends Entity {
         } else if (damping < 1.0F) {
             setDeltaMovement(velocity.scale(damping));
         }
+    }
+
+    protected boolean tickEntityFollow() {
+        if (!isEntityFollowMode()) {
+            return false;
+        }
+
+        Entity followTarget = getFollowTargetEntity();
+        if (!isValidFollowTarget(followTarget)) {
+            return false;
+        }
+
+        setDeltaMovement(Vec3.ZERO);
+        setPos(followTarget.getX(), followTarget.getY(), followTarget.getZ());
+        return true;
+    }
+
+    protected boolean isValidFollowTarget(@Nullable Entity entity) {
+        return entity != null
+                && entity != this
+                && !entity.isRemoved()
+                && entity.isAlive()
+                && entity.level() == level();
     }
 
     protected void tickAreaDamage() {
@@ -288,6 +327,80 @@ public abstract class SpellGramObject extends Entity {
         this.entityData.set(DATA_MOTION_DAMPING, Math.max(0.0F, Math.min(1.0F, damping)));
     }
 
+    public boolean isEntityFollowMode() {
+        return this.entityData.get(DATA_ENTITY_FOLLOW_MODE);
+    }
+
+    public void setEntityFollowMode(boolean enabled) {
+        this.entityData.set(DATA_ENTITY_FOLLOW_MODE, enabled);
+    }
+
+    public void setFollowTarget(@Nullable Entity target, boolean enableFollowMode) {
+        setFollowTargetEntity(target);
+        setEntityFollowMode(enableFollowMode);
+    }
+
+    public void setFollowTargetEntity(@Nullable Entity target) {
+        if (!isValidFollowTarget(target)) {
+            clearFollowTargetEntity();
+            return;
+        }
+
+        followTargetUuid = target.getUUID();
+        setFollowTargetEntityId(target.getId());
+    }
+
+    public void clearFollowTargetEntity() {
+        followTargetUuid = null;
+        setFollowTargetEntityId(NO_FOLLOW_TARGET_ENTITY_ID);
+    }
+
+    public boolean hasFollowTargetEntity() {
+        return getFollowTargetEntityId() != NO_FOLLOW_TARGET_ENTITY_ID || followTargetUuid != null;
+    }
+
+    @Nullable
+    public UUID getFollowTargetUuid() {
+        return followTargetUuid;
+    }
+
+    @Nullable
+    public Entity getFollowTargetEntity() {
+        Entity resolvedById = resolveFollowTargetById();
+        if (isValidFollowTarget(resolvedById)) {
+            return resolvedById;
+        }
+
+        if (followTargetUuid == null || !(level() instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+
+        Entity resolvedByUuid = serverLevel.getEntity(followTargetUuid);
+        if (!isValidFollowTarget(resolvedByUuid)) {
+            return null;
+        }
+
+        setFollowTargetEntityId(resolvedByUuid.getId());
+        return resolvedByUuid;
+    }
+
+    private int getFollowTargetEntityId() {
+        return this.entityData.get(DATA_FOLLOW_TARGET_ID);
+    }
+
+    private void setFollowTargetEntityId(int targetEntityId) {
+        this.entityData.set(DATA_FOLLOW_TARGET_ID, targetEntityId);
+    }
+
+    @Nullable
+    private Entity resolveFollowTargetById() {
+        int targetEntityId = getFollowTargetEntityId();
+        if (targetEntityId == NO_FOLLOW_TARGET_ENTITY_ID) {
+            return null;
+        }
+        return level().getEntity(targetEntityId);
+    }
+
     public void setCaster(@Nullable LivingEntity caster) {
         this.casterUuid = caster == null ? null : caster.getUUID();
     }
@@ -341,6 +454,19 @@ public abstract class SpellGramObject extends Entity {
             casterUuid = null;
         }
 
+        setEntityFollowMode(tag.getBoolean(NBT_ENTITY_FOLLOW_MODE));
+        if (tag.hasUUID(NBT_FOLLOW_TARGET_UUID)) {
+            followTargetUuid = tag.getUUID(NBT_FOLLOW_TARGET_UUID);
+            if (level() instanceof ServerLevel serverLevel) {
+                Entity followTarget = serverLevel.getEntity(followTargetUuid);
+                setFollowTargetEntityId(followTarget != null ? followTarget.getId() : NO_FOLLOW_TARGET_ENTITY_ID);
+            } else {
+                setFollowTargetEntityId(NO_FOLLOW_TARGET_ENTITY_ID);
+            }
+        } else {
+            clearFollowTargetEntity();
+        }
+
         readSpellGramData(tag);
     }
 
@@ -353,8 +479,12 @@ public abstract class SpellGramObject extends Entity {
         tag.putFloat(NBT_INTEGRITY, getIntegrity());
         tag.putFloat(NBT_MOTION_DAMPING, getMotionDamping());
         tag.putInt(NBT_AOE_COUNTER, aoeTickCounter);
+        tag.putBoolean(NBT_ENTITY_FOLLOW_MODE, isEntityFollowMode());
         if (casterUuid != null) {
             tag.putUUID(NBT_CASTER_UUID, casterUuid);
+        }
+        if (followTargetUuid != null) {
+            tag.putUUID(NBT_FOLLOW_TARGET_UUID, followTargetUuid);
         }
 
         addSpellGramData(tag);

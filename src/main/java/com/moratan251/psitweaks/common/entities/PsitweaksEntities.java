@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -48,6 +50,24 @@ public class PsitweaksEntities {
                             .updateInterval(10)
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":blaze_ball"));
+
+    public static final RegistryObject<EntityType<EntityFlareCircle>> FLARE_CIRCLE =
+            ENTITY_TYPES.register("flare_circle",
+                    () -> EntityType.Builder.<EntityFlareCircle>of(EntityFlareCircle::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(64)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":flare_circle"));
+
+    public static final RegistryObject<EntityType<EntityIceCircle>> ICE_CIRCLE =
+            ENTITY_TYPES.register("ice_circle",
+                    () -> EntityType.Builder.<EntityIceCircle>of(EntityIceCircle::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(64)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":ice_circle"));
 
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);

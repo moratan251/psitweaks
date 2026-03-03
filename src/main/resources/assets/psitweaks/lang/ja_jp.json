@@ -227,6 +227,10 @@
 
   "psitweaks.spellpiece.selector_stored_entity": "取得子: 保存されたエンティティ",
   "psitweaks.spellpiece.selector_stored_entity.desc": "CADのメモリに保存されたUUIDからエンティティを取得する",
+  "psitweaks.spellpiece.selector_nearby_spellgram": "取得子: 近くの魔法式オブジェクト",
+  "psitweaks.spellpiece.selector_nearby_spellgram.desc": "指定座標の周囲にある魔法式オブジェクトを取得する",
+  "psitweaks.spellparam.spellgram": "魔法式",
+  "psitweaks.spellerror.not_spellgram_object": "エラー: 入力はSpellGramObjectである必要があります",
 
   "psitweaks.spellpiece.trick_dispel": "作動式: 解呪",
   "psitweaks.spellpiece.trick_dispel.desc": "対象からエフェクトを除去する",
@@ -271,6 +275,12 @@
 
   "psitweaks.spellpiece.trick_active_air_mine": "作動式: 能動空中機雷",
   "psitweaks.spellpiece.trick_active_air_mine.desc": "指定座標を中心とした範囲内の生物にダメージを与える",
+  "psitweaks.spellpiece.trick_flare_circle": "作動式: フレアサークル",
+  "psitweaks.spellpiece.trick_flare_circle.desc": "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える",
+  "psitweaks.spellpiece.trick_ice_circle": "作動式: アイスサークル",
+  "psitweaks.spellpiece.trick_ice_circle.desc": "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与え粉雪状態にする",
+  "psitweaks.spellpiece.trick_set_spellgram_follow_target": "作動式: 魔法式追従",
+  "psitweaks.spellpiece.trick_set_spellgram_follow_target.desc": "魔法式オブジェクトの追従対象エンティティを設定する",
   "psitweaks.spellpiece.trick_die_flex": "作動式: 柔軟停止",
   "psitweaks.spellpiece.trick_die_flex.desc": "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります",
   "psitweaks.spellpiece.trick_material_mutation": "作動式: 物質変成",

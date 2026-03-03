@@ -233,6 +233,10 @@
 
   "psitweaks.spellpiece.selector_stored_entity": "Selector: Stored Entity",
   "psitweaks.spellpiece.selector_stored_entity.desc": "Retrieve entities from the UUID stored in the CAD memory",
+  "psitweaks.spellpiece.selector_nearby_spellgram": "Selector: Nearby SpellGram Object",
+  "psitweaks.spellpiece.selector_nearby_spellgram.desc": "Retrieve SpellGram objects around the specified position",
+  "psitweaks.spellparam.spellgram": "SpellGram",
+  "psitweaks.spellerror.not_spellgram_object": "ERROR: The input must be a SpellGramObject",
 
   "psitweaks.spellpiece.trick_dispel": "Trick: Dispel",
   "psitweaks.spellpiece.trick_dispel.desc": "Remove effects from target entity",
@@ -278,6 +282,12 @@
   "psitweaks.spellpiece.trick_guillotine.desc": "Deals a heavy slash to the target and drops a head on kill",
   "psitweaks.spellpiece.trick_active_air_mine": "Trick: Active Air Mine",
   "psitweaks.spellpiece.trick_active_air_mine.desc": "Deals magic damage to entities inside a spherical area around the target position",
+  "psitweaks.spellpiece.trick_flare_circle": "Trick: Flare Circle",
+  "psitweaks.spellpiece.trick_flare_circle.desc": "Places a flare Spell Gram Circle that repeatedly deals fire damage around it",
+  "psitweaks.spellpiece.trick_ice_circle": "Trick: Ice Circle",
+  "psitweaks.spellpiece.trick_ice_circle.desc": "Places an ice Spell Gram Circle that repeatedly deals freeze damage and applies freezing to entities around it",
+  "psitweaks.spellpiece.trick_set_spellgram_follow_target": "Trick: Set SpellGram Follow Target",
+  "psitweaks.spellpiece.trick_set_spellgram_follow_target.desc": "Sets the follow target entity for a SpellGram object",
   "psitweaks.spellpiece.trick_die_flex": "Trick: Flexible Die",
   "psitweaks.spellpiece.trick_die_flex.desc": "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.",
   "psitweaks.spellpiece.trick_material_mutation": "Trick: Material Mutation",

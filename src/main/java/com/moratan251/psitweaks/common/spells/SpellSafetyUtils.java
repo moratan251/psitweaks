@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
-import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import net.minecraft.server.MinecraftServer;
 import vazkii.psi.api.spell.SpellContext;
 
 public final class SpellSafetyUtils {
@@ -10,10 +10,17 @@ public final class SpellSafetyUtils {
     private SpellSafetyUtils() {}
 
     /**
-     * Configの safeToPlayers が有効なら true を返す。
-     * 攻撃スペルはプレイヤーをダメージ対象から除外する。
+     * サーバーの pvp 設定が無効（false）なら true を返す。
+     * true の場合、攻撃スペルはプレイヤーをダメージ対象から除外する。
      */
     public static boolean hasSafeToPlayers(SpellContext context) {
-        return PsitweaksConfig.COMMON.safeToPlayers.get();
+        if (context == null || context.caster == null) {
+            return false;
+        }
+        MinecraftServer server = context.caster.level().getServer();
+        if (server == null) {
+            return false;
+        }
+        return !server.isPvpAllowed();
     }
 }

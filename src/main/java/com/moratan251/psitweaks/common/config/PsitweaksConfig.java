@@ -11,13 +11,16 @@ public class PsitweaksConfig {
     public static class Common {
         public final ForgeConfigSpec.DoubleValue globalSpellPowerMultiplier;
         public final ForgeConfigSpec.BooleanValue requireSpellUnlocks;
-        public final ForgeConfigSpec.BooleanValue safeToPlayers;
+        // `safeToPlayers` は server.properties の pvp 設定連動へ移行したため無効化。
+        // public final ForgeConfigSpec.BooleanValue safeToPlayers;
         // 分子ディバイダー関連
         public final ForgeConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue phononMaserDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue aquaCutterDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue blazeBallDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue activeAirMineDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue flareCircleDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue iceCircleDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ForgeConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ForgeConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
@@ -31,10 +34,10 @@ public class PsitweaksConfig {
                             "Global multiplier for all Psitweaks offensive spell damage")
                     .defineInRange("globalSpellPowerMultiplier", 1.0, 0.1, 1000000.0);
 
-            safeToPlayers = builder
-                    .comment("Trueにすると、Psitweaksの全攻撃スペルがプレイヤーをダメージ対象から除外します（フレンドリーファイア防止）",
-                            "If true, all Psitweaks offensive spells will not damage players (friendly fire prevention)")
-                    .define("safeToPlayers", false);
+            // safeToPlayers = builder
+            //         .comment("Trueにすると、Psitweaksの全攻撃スペルがプレイヤーをダメージ対象から除外します（フレンドリーファイア防止）",
+            //                 "If true, all Psitweaks offensive spells will not damage players (friendly fire prevention)")
+            //         .define("safeToPlayers", false);
 
             builder.comment("Spell unlock requirements")
                     .push("unlocks");
@@ -97,6 +100,28 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
 
             builder.pop(); // active_air_mine カテゴリ終了
+
+            // --- フレアサークル ---
+            builder.comment("Flare Circle Settings")
+                    .push("flare_circle");
+
+            flareCircleDamageMultiplier = builder
+                    .comment("作動式: フレアサークル の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for Trick: Flare Circle")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.pop(); // flare_circle カテゴリ終了
+
+            // --- アイスサークル ---
+            builder.comment("Ice Circle Settings")
+                    .push("ice_circle");
+
+            iceCircleDamageMultiplier = builder
+                    .comment("作動式: アイスサークル の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for Trick: Ice Circle")
+                    .defineInRange("damageMultiplier", 1.0, 0.1, 1000000.0);
+
+            builder.pop(); // ice_circle カテゴリ終了
 
             // --- 放射線注入 ---
             builder.comment("Radiation Injection Settings")

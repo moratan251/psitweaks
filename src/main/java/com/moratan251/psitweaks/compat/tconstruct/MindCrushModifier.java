@@ -1,5 +1,9 @@
 package com.moratan251.psitweaks.compat.tconstruct;
 
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -36,10 +40,7 @@ public class MindCrushModifier extends Modifier implements MeleeHitModifierHook,
             return;
         }
 
-        float chance = modifier.getLevel() * CHANCE_PER_LEVEL;
-        if (mob.level().random.nextFloat() < chance) {
-            mob.setNoAi(true);
-        }
+        tryApplyMindCrush(mob, modifier.getLevel());
     }
 
     @Override
@@ -56,11 +57,64 @@ public class MindCrushModifier extends Modifier implements MeleeHitModifierHook,
             return amount;
         }
 
-        float chance = modifier.getLevel() * CHANCE_PER_LEVEL;
-        if (mob.level().random.nextFloat() < chance) {
-            mob.setNoAi(true);
-        }
+        tryApplyMindCrush(mob, modifier.getLevel());
 
         return amount;
+    }
+
+    private static void tryApplyMindCrush(Mob mob, int modifierLevel) {
+        if (mob.isNoAi()) {
+            return;
+        }
+
+        float chance = modifierLevel * CHANCE_PER_LEVEL;
+        if (mob.level().random.nextFloat() >= chance) {
+            return;
+        }
+
+        mob.setNoAi(true);
+
+        if (mob.level() instanceof ServerLevel serverLevel) {
+            playIceBreakEffects(serverLevel, mob);
+        }
+    }
+
+    private static void playIceBreakEffects(ServerLevel serverLevel, Mob mob) {
+        double x = mob.getX();
+        double y = mob.getY(0.5D);
+        double z = mob.getZ();
+
+        serverLevel.playSound(
+                null,
+                x,
+                y,
+                z,
+                SoundEvents.GLASS_BREAK,
+                SoundSource.PLAYERS,
+                0.9F,
+                1.1F
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.SNOWFLAKE,
+                x,
+                y,
+                z,
+                18,
+                0.3D,
+                0.35D,
+                0.3D,
+                0.01D
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.ITEM_SNOWBALL,
+                x,
+                y,
+                z,
+                10,
+                0.25D,
+                0.25D,
+                0.25D,
+                0.02D
+        );
     }
 }

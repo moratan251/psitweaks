@@ -38,13 +38,13 @@
       "toughness": 3.0
     },
     "tconstruct:plating_helmet": {
-      "armor": 6.0,
+      "armor": 3.0,
       "durability": 770,
       "knockback_resistance": 0.1,
       "toughness": 3.0
     },
     "tconstruct:plating_leggings": {
-      "armor": 3.0,
+      "armor": 6.0,
       "durability": 1050,
       "knockback_resistance": 0.1,
       "toughness": 3.0

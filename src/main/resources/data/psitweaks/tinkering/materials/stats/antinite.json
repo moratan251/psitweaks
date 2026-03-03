@@ -7,10 +7,10 @@
       "melee_damage": 2.5
     },
     "tconstruct:handle": {
-      "durability": 0.32,
-      "melee_damage": 0.28,
-      "melee_speed": 0.3,
-      "mining_speed": 0.35
+      "durability": 0.1,
+      "melee_damage": 0.0,
+      "melee_speed": 0.1,
+      "mining_speed": 0.2
     },
     "tconstruct:head": {
       "durability": 1100,
@@ -27,30 +27,30 @@
     "tconstruct:maille": {},
     "tconstruct:plating_boots": {
       "armor": 3.0,
-      "durability": 580,
+      "durability": 650,
       "knockback_resistance": 0.05,
       "toughness": 1.5
     },
     "tconstruct:plating_chestplate": {
       "armor": 8.0,
-      "durability": 720,
+      "durability": 800,
       "knockback_resistance": 0.05,
       "toughness": 1.5
     },
     "tconstruct:plating_helmet": {
-      "armor": 5.0,
-      "durability": 500,
+      "armor": 3.0,
+      "durability": 550,
       "knockback_resistance": 0.05,
       "toughness": 1.5
     },
     "tconstruct:plating_leggings": {
-      "armor": 3.0,
-      "durability": 680,
+      "armor": 6.0,
+      "durability": 750,
       "knockback_resistance": 0.05,
       "toughness": 1.5
     },
     "tconstruct:plating_shield": {
-      "durability": 800,
+      "durability": 900,
       "knockback_resistance": 0.05,
       "toughness": 1.5
     }

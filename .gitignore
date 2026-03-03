@@ -34,6 +34,7 @@ CLAUDE.md
 .agents
 .steering
 docs
+.board
 
 # Files from Forge MDK
 forge*changelog.txt
