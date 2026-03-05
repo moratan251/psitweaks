@@ -73,6 +73,7 @@ public class MindCrushModifier extends Modifier implements MeleeHitModifierHook,
         }
 
         mob.setNoAi(true);
+        mob.setSilent(true);
 
         if (mob.level() instanceof ServerLevel serverLevel) {
             playIceBreakEffects(serverLevel, mob);

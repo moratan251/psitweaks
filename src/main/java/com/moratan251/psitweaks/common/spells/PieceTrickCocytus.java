@@ -43,6 +43,7 @@ public class PieceTrickCocytus extends PieceTrick {
 
                 if(targetVal instanceof Mob mob){
                     mob.setNoAi(true);
+                    mob.setSilent(true);
                     if (context.caster.level() instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(
                                 ParticleTypes.SNOWFLAKE,  // パーティクルの種類

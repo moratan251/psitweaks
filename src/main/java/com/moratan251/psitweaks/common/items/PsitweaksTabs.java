@@ -133,6 +133,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());

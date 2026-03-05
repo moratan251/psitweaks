@@ -23,6 +23,7 @@
   "item.psitweaks.program_molecular_divider": "プログラム: 分子ディバイダー",
   "item.psitweaks.program_radiation_injection": "プログラム: 放射線注入",
   "item.psitweaks.program_radiation_filter": "プログラム: 放射線フィルタ",
+  "item.psitweaks.program_cure_radiation": "プログラム: 放射線除去",
   "item.psitweaks.program_guillotine": "プログラム: ギロチン",
   "item.psitweaks.program_active_air_mine": "プログラム: 能動空中機雷",
   "item.psitweaks.program_die_flex": "プログラム: 柔軟停止",
@@ -227,6 +228,7 @@
 
   "psitweaks.spellpiece.selector_stored_entity": "取得子: 保存されたエンティティ",
   "psitweaks.spellpiece.selector_stored_entity.desc": "CADのメモリに保存されたUUIDからエンティティを取得する",
+
   "psitweaks.spellpiece.selector_nearby_spellgram": "取得子: 近くの魔法式オブジェクト",
   "psitweaks.spellpiece.selector_nearby_spellgram.desc": "指定座標の周囲にある魔法式オブジェクトを取得する",
   "psitweaks.spellparam.spellgram": "魔法式",
@@ -269,16 +271,18 @@
   "psitweaks.spellpiece.trick_radiation_injection.desc": "対象を被ばくさせる",
   "psitweaks.spellpiece.trick_radiation_filter": "作動式: 放射線フィルタ",
   "psitweaks.spellpiece.trick_radiation_filter.desc": "対象に放射線防護効果を付与する",
+  "psitweaks.spellpiece.trick_cure_radiation": "作動式: 放射線除去",
+  "psitweaks.spellpiece.trick_cure_radiation.desc": "対象の被ばく量を除去する",
 
   "psitweaks.spellpiece.trick_guillotine": "作動式: ギロチン",
   "psitweaks.spellpiece.trick_guillotine.desc": "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる",
 
   "psitweaks.spellpiece.trick_active_air_mine": "作動式: 能動空中機雷",
   "psitweaks.spellpiece.trick_active_air_mine.desc": "指定座標を中心とした範囲内の生物にダメージを与える",
-  "psitweaks.spellpiece.trick_flare_circle": "作動式: フレアサークル",
+  "psitweaks.spellpiece.trick_flare_circle": "作動式: ファイアサークル",
   "psitweaks.spellpiece.trick_flare_circle.desc": "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える",
   "psitweaks.spellpiece.trick_ice_circle": "作動式: アイスサークル",
-  "psitweaks.spellpiece.trick_ice_circle.desc": "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与え粉雪状態にする",
+  "psitweaks.spellpiece.trick_ice_circle.desc": "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える",
   "psitweaks.spellpiece.trick_set_spellgram_follow_target": "作動式: 魔法式追従",
   "psitweaks.spellpiece.trick_set_spellgram_follow_target.desc": "魔法式オブジェクトの追従対象エンティティを設定する",
   "psitweaks.spellpiece.trick_die_flex": "作動式: 柔軟停止",

@@ -69,6 +69,7 @@ public class SpellUnlockHandler {
             definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider"),
             definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection"),
             definition("radiation_filter", "trick_radiation_filter", "program_radiation_filter"),
+            definition("cure_radiation", "trick_cure_radiation", "program_cure_radiation"),
             definition("guillotine", "trick_guillotine", "program_guillotine"),
             definition("active_air_mine", "trick_active_air_mine", "program_active_air_mine"),
             definition("die_flex", "trick_die_flex", "program_die_flex"),

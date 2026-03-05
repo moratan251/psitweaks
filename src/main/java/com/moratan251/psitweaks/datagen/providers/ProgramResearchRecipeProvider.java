@@ -111,6 +111,15 @@ public final class ProgramResearchRecipeProvider {
                 .time(3600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_radiation_filter"));
 
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_CURE_RADIATION.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(Items.GOLDEN_APPLE, 8)
+                .requires(leadIngot, 16)
+                .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 8)
+                .energy(60000000)
+                .time(3600)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_cure_radiation"));
+
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_GUILLOTINE.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
                 .requires(Items.WITHER_SKELETON_SKULL, 1)

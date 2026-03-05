@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -14,14 +15,11 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamEntity;
 import vazkii.psi.api.spell.param.ParamNumber;
-import net.minecraft.world.entity.player.Player;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
-public class PieceTrickRadiationInjection extends PieceTrick {
+public class PieceTrickCureRadiation extends PieceTrick {
 
     private static final double MIN_POWER = 0.1;
-    private static final double RADIATION_BASE_AT_POWER_ONE = 0.4;
-    private static final double RADIATION_GROWTH_BASE = 10.0;
     private static final double POTENCY_BASE = 300.0;
     private static final double POTENCY_PER_POWER = 200.0;
     private static final double COST_BASE = 200.0;
@@ -30,7 +28,7 @@ public class PieceTrickRadiationInjection extends PieceTrick {
     private SpellParam<Entity> target;
     private SpellParam<Number> power;
 
-    public PieceTrickRadiationInjection(Spell spell) {
+    public PieceTrickCureRadiation(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(COST_PER_POWER).add(COST_BASE).floor());
@@ -74,26 +72,25 @@ public class PieceTrickRadiationInjection extends PieceTrick {
         if (context.caster.level().isClientSide) {
             return null;
         }
-
-        if (livingEntity instanceof Player && SpellSafetyUtils.hasSafeToPlayers(context)) {
-            return null;
-        }
         if (!IRadiationManager.INSTANCE.isRadiationEnabled()) {
             return null;
         }
 
-        double radiation = calculateRadiationDose(powerVal);
+        double radiationAmount = PieceTrickRadiationInjection.calculateRadiationDose(powerVal);
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
         double radiationMultiplier = PsitweaksConfig.COMMON.radiationInjectionMultiplier.get();
         if (radiationMultiplier <= 0.0) {
             return null;
         }
-        IRadiationManager.INSTANCE.radiate(livingEntity, radiation * radiationMultiplier * globalDamageMul);
-        return null;
-    }
+        double removedRadiation = radiationAmount * radiationMultiplier * globalDamageMul;
+        if (removedRadiation <= 0.0) {
+            return null;
+        }
 
-    static double calculateRadiationDose(double powerVal) {
-        double adjustedPower = Math.max(MIN_POWER, powerVal);
-        return RADIATION_BASE_AT_POWER_ONE * Math.pow(RADIATION_GROWTH_BASE, adjustedPower - 1.0);
+        livingEntity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(radiationEntity -> {
+            double remaining = Math.max(0.0, radiationEntity.getRadiation() - removedRadiation);
+            radiationEntity.set(remaining);
+        });
+        return null;
     }
 }

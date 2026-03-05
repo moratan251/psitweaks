@@ -1,5 +1,38 @@
 ## Changelog
 
+#### v0.9.2
+
+- Fixed Recipe Error
+
+#### v0.9.1
+
+- Antinite and Psycheonic Metal can now be melted in Tinkers' Construct
+
+
+- Added Trick: Fire Circle
+  * Places a fire spell object that deals fire damage to entities inside it
+
+
+- Added Selector: Nearby SpellGram Object
+
+
+- Added Trick: Set SpellGram Follow Target
+  * Sets a spellgram object to follow a specified entity
+
+
+- Added Trick: Ice Circle
+  * Places an ice spell object that deals freezing damage to entities inside it
+
+
+- Added Trick: Cure Radiation
+
+
+- On multiplayer servers, Psitweaks offensive spells no longer hit players when pvp=false in server.properties
+
+
+- Changed Trick: Radiation Injection to scale exposure amount exponentially based on power
+
+
 #### v0.9.0
 
 - Added Trick: Material Mutation
