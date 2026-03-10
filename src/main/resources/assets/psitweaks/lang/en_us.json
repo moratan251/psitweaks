@@ -369,5 +369,8 @@
   "modifier.psitweaks.mind_crush": "Mind Crush",
   "modifier.psitweaks.mind_crush.flavor": "Blue Metal of Death",
   "modifier.psitweaks.mind_crush.description": "On attack, has a level×5% chance to freeze the target mob with NoAI. When worn as armor, triggers on the attacker instead",
-  "entity.minecraft.villager.psitweaks.spellcaster": "Spellcaster"
+  "entity.minecraft.villager.psitweaks.spellcaster": "Spellcaster",
+
+  "attribute.psitweaks.psi_max": "Psi Max",
+  "attribute.psitweaks.psi_regen": "Psi Regen"
 }

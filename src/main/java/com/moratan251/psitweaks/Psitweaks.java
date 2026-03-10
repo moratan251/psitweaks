@@ -15,6 +15,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
@@ -99,6 +100,7 @@ public class Psitweaks {
         PsitweaksTabs.register(modEventBus);
 
         PsitweaksEffects.register(modEventBus);
+        PsitweaksAttributes.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
 

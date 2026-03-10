@@ -428,5 +428,8 @@
   "modifier.psitweaks.mind_crush": "マインドクラッシュ",
   "modifier.psitweaks.mind_crush.flavor": "略称: マイクラ",
   "modifier.psitweaks.mind_crush.description": "攻撃時にレベル×5%の確率で対象のモブをNoAI状態にして行動不能にする。防具装備中は被弾時に攻撃者へ同様の効果を発動する",
-  "entity.minecraft.villager.psitweaks.spellcaster": "魔法師"
+  "entity.minecraft.villager.psitweaks.spellcaster": "魔法師",
+
+  "attribute.psitweaks.psi_max": "Psi上限",
+  "attribute.psitweaks.psi_regen": "Psi再生速度"
 }
