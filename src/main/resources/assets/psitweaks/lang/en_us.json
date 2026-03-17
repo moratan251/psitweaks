@@ -43,6 +43,7 @@
   "item.psitweaks.jade": "Jade",
   "item.psitweaks.magatama": "Magatama",
   "item.psitweaks.echo_sheet": "HDΨE Sheet",
+  "item.psitweaks.magicians_brain": "Magician's Brain",
 
 
   "item.psitweaks.psionic_factor": "Psionic Factor",
@@ -77,6 +78,8 @@
   "item.psitweaks.auto_caster_second": "Auto Caster: second",
   "item.psitweaks.auto_caster_custom_tick": "Auto Caster: custom tick",
   "item.psitweaks.third_eye_device": "Third‐Eye Device",
+  "item.psitweaks.sorcery_booster": "Sorcery Booster",
+  "item.psitweaks.spell_magazine": "Spell Magazine",
 
   "item.psitweaks.advanced_spell_bullet": "Advanced Spell Bullet",
   "item.psitweaks.resonant_spell_bullet": "Resonant Spell Bullet",
@@ -177,6 +180,10 @@
   "effect.psitweaks.hardening": "Hardening",
   "effect.psitweaks.radiation_filter": "Radiation Filter",
 
+  "attribute.psitweaks.spell_damage_factor": "Spell Damage Factor",
+  "attribute.psitweaks.max_psi_bonus": "Max Psi Bonus",
+  "attribute.psitweaks.psi_regen_bonus": "Psi Regeneration Bonus",
+
 
 
 
@@ -189,6 +196,7 @@
   "screen.psitweaks.auto_caster_custom_tick.range": "Range: %s - %s",
   "screen.psitweaks.auto_caster_custom_tick.invalid": "Enter a value between %s and %s",
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "Cast interval: %s ticks",
+  "tooltip.psitweaks.spell_magazine.bullets": "Loaded spell bullets: %s/%s",
   "gui.psitweaks.apply": "Apply",
 
   "infuse_type.psitweaks.infuse_psigem": "Psigem",
@@ -369,5 +377,5 @@
   "modifier.psitweaks.mind_crush": "Mind Crush",
   "modifier.psitweaks.mind_crush.flavor": "Blue Metal of Death",
   "modifier.psitweaks.mind_crush.description": "On attack, has a level×5% chance to freeze the target mob with NoAI. When worn as armor, triggers on the attacker instead",
-  "entity.minecraft.villager.psitweaks.spellcaster": "Spellcaster"
+  "entity.minecraft.villager.psitweaks.spellcaster": "Magician"
 }

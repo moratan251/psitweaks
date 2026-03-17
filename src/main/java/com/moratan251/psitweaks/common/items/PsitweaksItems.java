@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterSecond;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
 import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
 import com.moratan251.psitweaks.common.items.curios.ItemFlashCharm;
+import com.moratan251.psitweaks.common.items.curios.ItemSorceryBooster;
 //import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import mekanism.common.item.ItemModule;
@@ -112,6 +113,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PELLET_AMERICIUM = ITEMS.register("pellet_americium", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> HYPOSTASIS_GEM = ITEMS.register("hypostasis_gem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> MAGICIANS_BRAIN = ITEMS.register("magicians_brain", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
 
 
 
@@ -133,7 +135,9 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_CUSTOM_TICK = ITEMS.register("auto_caster_custom_tick", () -> new ItemAutoCasterCustomTick(new Item.Properties()));
     public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
+    public static final RegistryObject<Item> SORCERY_BOOSTER = ITEMS.register("sorcery_booster", () -> new ItemSorceryBooster(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
     public static final RegistryObject<Item> FLASH_CHARM = ITEMS.register("flash_charm", () -> new ItemFlashCharm(new Item.Properties()));
+    public static final RegistryObject<Item> SPELL_MAGAZINE = ITEMS.register("spell_magazine", () -> new ItemSpellMagazine(new Item.Properties()));
 
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET = ITEMS.register("advanced_spell_bullet", () -> new ItemAdvancedSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_LOOP = ITEMS.register("advanced_spell_bullet_loop", () -> new ItemAdvancedLoopcastSpellBullet(new Item.Properties()));

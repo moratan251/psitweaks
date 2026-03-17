@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.mojang.logging.LogUtils;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityMolecularDivider;
 import com.mojang.logging.LogUtils;
@@ -101,7 +102,8 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         // Configからダメージ倍率を取得（個別倍率 x 全体倍率）
         double perSpellDamageMul = PsitweaksConfig.COMMON.molecularDividerDamageMultiplier.get();
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double damageMul = perSpellDamageMul * globalDamageMul;
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get());
+        double damageMul = perSpellDamageMul * globalDamageMul * spellDamageFactor;
         float damage = (float) (60.0 * powerVal * damageMul);
      //   LOGGER.debug("Molecular Divider Damage: {} (Power: {}, PerSpell: {}, Global: {})",
        //         damage, powerVal, perSpellDamageMul, globalDamageMul);

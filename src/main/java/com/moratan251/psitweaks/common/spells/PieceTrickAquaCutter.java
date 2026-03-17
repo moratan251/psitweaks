@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.AquaCutterProjectileHandler;
 import net.minecraft.core.particles.ParticleTypes;
@@ -70,7 +71,8 @@ public class PieceTrickAquaCutter extends PieceTrick {
         float damage = (float) (BASE_DAMAGE + powerVal * DAMAGE_PER_POWER);
         double perSpellDamageMul = PsitweaksConfig.COMMON.aquaCutterDamageMultiplier.get();
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        float finalDamage = (float) (damage * perSpellDamageMul * globalDamageMul);
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get());
+        float finalDamage = (float) (damage * perSpellDamageMul * globalDamageMul * spellDamageFactor);
         float velocity = 1.8F + (float) (powerVal * 0.3);
 
         Snowball projectile = new Snowball(level, context.caster);

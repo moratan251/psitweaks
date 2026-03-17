@@ -232,6 +232,16 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "third_eye_device"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PsitweaksItems.SORCERY_BOOSTER.get())
+                .define('B', PsitweaksItems.MAGICIANS_BRAIN.get())
+                .define('C', PsitweaksItems.FLASHMETAL.get())
+                .define('D', PsitweaksItems.HEAVY_PSIMETAL.get())
+                .pattern("CDC")
+                .pattern("BBB")
+                .pattern("CCC")
+                .unlockedBy("has_magicians_brain", has(PsitweaksItems.MAGICIANS_BRAIN.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "sorcery_booster"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.ADVANCED_SPELL_BULLET.get())
                 .define('A', psimetal)
                 .define('B', spellBullet)
@@ -748,6 +758,14 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("CGC")
                 .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "portable_cad_assembler"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PsitweaksItems.SPELL_MAGAZINE.get())
+                .define('P', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('B', PsitweaksItems.FLASHMETAL.get())
+                .define('H', ModItems.cadSocketHuge)
+                .pattern("PBH")
+                .unlockedBy("has_huge_cad_socket", has(ModItems.cadSocketHuge))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "spell_magazine"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MekanismBlocks.QIO_DRIVE_ARRAY)
                 .define('P', MekanismTags.Items.PERSONAL_STORAGE)

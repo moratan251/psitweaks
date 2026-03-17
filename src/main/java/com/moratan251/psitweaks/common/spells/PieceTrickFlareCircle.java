@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
 import net.minecraft.core.particles.ParticleTypes;
@@ -101,7 +102,8 @@ public class PieceTrickFlareCircle extends PieceTrick {
 
         double spellPowerMultiplier = PsitweaksConfig.COMMON.flareCircleDamageMultiplier.get();
         double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier);
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get());
+        float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
 
         ItemStack cad = context.tool;
         removeExistingFlareCircleByCAD(serverLevel, cad);

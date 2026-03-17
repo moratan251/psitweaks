@@ -72,6 +72,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.JADE.get());
                         pOutput.accept(PsitweaksItems.MAGATAMA.get());
                         pOutput.accept(PsitweaksItems.ECHO_SHEET.get());
+                        pOutput.accept(PsitweaksItems.MAGICIANS_BRAIN.get());
 
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
@@ -81,9 +82,11 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get());
                         pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
+                        pOutput.accept(PsitweaksItems.SPELL_MAGAZINE.get());
 
 
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
+                        pOutput.accept(PsitweaksItems.SORCERY_BOOSTER.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_MINE.get());

@@ -1,4 +1,4 @@
-// 1.20.1	2026-03-05T21:20:02.3950597	Recipes
+// 1.20.1	2026-03-17T23:03:24.2592723	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -117,6 +117,8 @@ a7816d639572950c2d161de2e330cb8cd8f9fcf0 data/psitweaks/advancements/recipes/mis
 bb7b29d1d45d6adb4f548a67a9f19bc0acf95aa1 data/psitweaks/advancements/recipes/misc/time_dilating_qio_drive.json
 3dd72c1ba715bc19d808c5b0f6f94166bc6355d6 data/psitweaks/advancements/recipes/misc/unrefined_flashmetal.json
 145ffbd03335b01c7f4fd715cf3ad11fe9f11fe2 data/psitweaks/advancements/recipes/tools/curios_controller.json
+445536b6c8e7f4c62b4b4206366359896bcf6fc0 data/psitweaks/advancements/recipes/tools/sorcery_booster.json
+89e4a28167a402a369e5c2e2fa5f051f983e107b data/psitweaks/advancements/recipes/tools/spell_magazine.json
 740a1ca31589b30b896aba32cbc1c4d9624ca8db data/psitweaks/recipes/advanced_spell_bullet.json
 0aa6ea58bf554f7c5e461b2aa154a4d6b5989626 data/psitweaks/recipes/advanced_spell_bullet_charge.json
 f713b9e62f17a0c241eeb9fbc0bc9aca83b9cf9e data/psitweaks/recipes/advanced_spell_bullet_circle.json
@@ -252,7 +254,9 @@ a20ad502e1c2e0389e6455179ca0f6749b3088f7 data/psitweaks/recipes/smeltery/melting
 ef0d7afe0c621749736b374e3766fdcc76142f3d data/psitweaks/recipes/smeltery/melting/metal/ivory_psimetal/block.json
 6845cf4ac058bc161d964b84a8412c2917cbab0f data/psitweaks/recipes/smeltery/melting/metal/psimetal/block.json
 791bcfd356b16252bc7edb05a0ac27b41d8a0088 data/psitweaks/recipes/smeltery/melting/metal/psycheonic_metal/nugget.json
+e3cfd22187f2004ee414b7882d90022cd3ecd75a data/psitweaks/recipes/sorcery_booster.json
 ae238feda122dcde2c081757840f39f84e40a752 data/psitweaks/recipes/spellmachinery_casing.json
+86c6a1c7aa48edf89df67dca80d88aa775dc75c7 data/psitweaks/recipes/spell_magazine.json
 f3c674a5ea3caccfab8b71f585a3003175e4b2a6 data/psitweaks/recipes/sublimated_spell_bullet.json
 f4bc7a4ea0d9049d3f28f2340d1088a03554c770 data/psitweaks/recipes/sublimated_spell_bullet_charge.json
 aaa1afac270935ef70b174af2db44b3e8705e842 data/psitweaks/recipes/sublimated_spell_bullet_circle.json

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_magicians_brain": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:magicians_brain"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:sorcery_booster"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_magicians_brain",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:sorcery_booster"
+    ]
+  },
+  "sends_telemetry_event": false
+}

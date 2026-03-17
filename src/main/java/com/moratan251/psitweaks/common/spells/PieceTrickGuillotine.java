@@ -1,6 +1,9 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -15,6 +18,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +83,8 @@ public class PieceTrickGuillotine extends PieceTrick {
 
         double perSpellDamageMultiplier = PsitweaksConfig.COMMON.guillotineDamageMultiplier.get();
         double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        float damage = (float) (BASE_DAMAGE * perSpellDamageMultiplier * globalDamageMultiplier);
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get());
+        float damage = (float) (BASE_DAMAGE * perSpellDamageMultiplier * globalDamageMultiplier * spellDamageFactor);
         playSlashEffect(livingEntity);
         boolean wasAlive = livingEntity.isAlive();
         boolean damaged = livingEntity.hurt(context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
@@ -87,6 +92,10 @@ public class PieceTrickGuillotine extends PieceTrick {
             ItemStack headStack = resolveHeadDrop(livingEntity);
             if (!headStack.isEmpty()) {
                 livingEntity.spawnAtLocation(headStack);
+            }
+            if (livingEntity instanceof Villager villager
+                    && villager.getVillagerData().getProfession() == PsitweaksVillagers.SPELLCASTER.get()) {
+                villager.spawnAtLocation(new ItemStack(PsitweaksItems.MAGICIANS_BRAIN.get()));
             }
         }
 

@@ -10,6 +10,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksSlurries;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
@@ -99,6 +100,7 @@ public class Psitweaks {
         PsitweaksTabs.register(modEventBus);
 
         PsitweaksEffects.register(modEventBus);
+        PsitweaksAttributes.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
 

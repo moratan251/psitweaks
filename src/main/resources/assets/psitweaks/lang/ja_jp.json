@@ -43,6 +43,7 @@
   "item.psitweaks.jade": "翡翠",
   "item.psitweaks.magatama": "勾玉",
   "item.psitweaks.echo_sheet": "HDΨEシート",
+  "item.psitweaks.magicians_brain": "魔法師の脳",
 
   "item.psitweaks.psionic_factor": "サイオニック因子",
   "item.psitweaks.psionic_factor_ivory": "偏陽サイオニック因子",
@@ -75,6 +76,8 @@
   "item.psitweaks.auto_caster_second": "術式自動詠唱デバイス: セカンド",
   "item.psitweaks.auto_caster_custom_tick": "術式自動詠唱デバイス: カスタムtick",
   "item.psitweaks.third_eye_device": "サードアイデバイス",
+  "item.psitweaks.sorcery_booster": "ソーサリーブースター",
+  "item.psitweaks.spell_magazine": "スペルマガジン",
 
   "item.psitweaks.advanced_spell_bullet": "改良術式弾",
   "item.psitweaks.resonant_spell_bullet": "共鳴術式弾",
@@ -173,6 +176,10 @@
   "effect.psitweaks.hardening": "硬化",
   "effect.psitweaks.radiation_filter": "放射線フィルタ",
 
+  "attribute.psitweaks.spell_damage_factor": "術式ダメージ倍率",
+  "attribute.psitweaks.max_psi_bonus": "Psi保有量",
+  "attribute.psitweaks.psi_regen_bonus": "Psi回復速度",
+
   "psitweaks.event.second": "§bイベント§7: セカンド",
   "psitweaks.event.custom_tick": "§bイベント§7: カスタムtick",
 
@@ -181,6 +188,7 @@
   "screen.psitweaks.auto_caster_custom_tick.range": "設定可能範囲: %s - %s",
   "screen.psitweaks.auto_caster_custom_tick.invalid": "%s から %s の間で入力してください",
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔: %s tick",
+  "tooltip.psitweaks.spell_magazine.bullets": "装填済み術式弾: %s/%s",
   "gui.psitweaks.apply": "適用",
 
   "infuse_type.psitweaks.infuse_psigem": "サイジェム",

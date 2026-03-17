@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -97,7 +98,8 @@ public class PieceTrickActiveAirMine extends PieceTrick {
 
         double perSpellDamageMultiplier = PsitweaksConfig.COMMON.activeAirMineDamageMultiplier.get();
         double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        float finalDamage = (float) (damage * perSpellDamageMultiplier * globalDamageMultiplier);
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get());
+        float finalDamage = (float) (damage * perSpellDamageMultiplier * globalDamageMultiplier * spellDamageFactor);
 
         Vec3 center = new Vec3(positionVal.x, positionVal.y, positionVal.z);
         double radiusSq = radius * radius;

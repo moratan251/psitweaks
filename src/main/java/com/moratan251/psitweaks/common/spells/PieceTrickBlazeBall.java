@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityBlazeBall;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
@@ -74,7 +75,8 @@ public class PieceTrickBlazeBall extends PieceTrick {
         float baseDamage = BASE_DAMAGE + (float) (powerVal * DAMAGE_PER_POWER);
         double perSpellDamageMul = PsitweaksConfig.COMMON.blazeBallDamageMultiplier.get();
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        float finalDamage = (float) (baseDamage * perSpellDamageMul * globalDamageMul);
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get());
+        float finalDamage = (float) (baseDamage * perSpellDamageMul * globalDamageMul * spellDamageFactor);
         float speed = BASE_SPEED + (float) (powerVal * SPEED_PER_POWER);
 
         EntityBlazeBall projectile = new EntityBlazeBall(PsitweaksEntities.BLAZE_BALL.get(), level);

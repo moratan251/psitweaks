@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import mekanism.api.lasers.ILaserReceptor;
@@ -250,10 +251,11 @@ public class EntityPhononMaserBeam extends Entity {
             return;
         }
 
-        // 1tick当たりのダメージ（個別倍率 x 全体倍率）
+        // 1tick当たりのダメージ（個別倍率 x 全体倍率 x SpellDamageFactor）
         double perSpellDamageMul = PsitweaksConfig.COMMON.phononMaserDamageMultiplier.get();
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double damageMul = perSpellDamageMul * globalDamageMul;
+        double spellDamageFactor = caster != null ? caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR.get()) : 1.0;
+        double damageMul = perSpellDamageMul * globalDamageMul * spellDamageFactor;
         float damagePerTick = (float) power * 2.0f * (float) damageMul;
         DamageSource damageSource = createLaserDamageSource(caster);
 
