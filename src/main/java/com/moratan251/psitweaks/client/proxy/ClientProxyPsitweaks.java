@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.client.model.ModelCAD;
+import vazkii.psi.common.Psi;
 import vazkii.psi.common.item.base.ModItems;
 
 @OnlyIn(Dist.CLIENT)
@@ -34,6 +36,7 @@ public class ClientProxyPsitweaks implements IProxyPsitweaks {
     public void registerHandlers() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::modelBake);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCADModels);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerItemColors);
     }
 
 
@@ -76,6 +79,22 @@ public class ClientProxyPsitweaks implements IProxyPsitweaks {
         event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_3"));
 
 
+    }
+
+    public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex) -> {
+            if (tintIndex != 1) {
+                return -1;
+            }
+
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.player == null) {
+                return 1295871;
+            }
+
+            ItemStack cadStack = PsiAPI.getPlayerCAD(minecraft.player);
+            return cadStack.isEmpty() ? 1295871 : Psi.proxy.getColorForCAD(cadStack);
+        }, PsitweaksItems.INLINE_CASTER.get(), PsitweaksItems.SECONDARY_CASTER.get(), PsitweaksItems.PARALLEL_CASTER.get());
     }
 
 

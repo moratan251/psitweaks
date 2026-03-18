@@ -131,6 +131,11 @@ public class ItemSpellMagazine extends Item {
         }
 
         @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack bullet) {
+            return isSocketSlotAvailable(slot) && ISpellAcceptor.isContainer(bullet);
+        }
+
+        @Override
         public @NotNull ItemStack getBulletInSocket(int slot) {
             if (!isSocketSlotAvailable(slot)) {
                 return ItemStack.EMPTY;

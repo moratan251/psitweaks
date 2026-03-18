@@ -42,7 +42,8 @@ public class ItemInlineCasterBase extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack casterStack = player.getItemInHand(hand);
-        if (!ISpellAcceptor.hasSpell(casterStack)) {
+        ItemStack bulletStack = ISocketable.socketable(casterStack).getSelectedBullet();
+        if (!ISpellAcceptor.hasSpell(bulletStack)) {
             return new InteractionResultHolder<>(InteractionResult.PASS, casterStack);
         }
 
@@ -52,8 +53,10 @@ public class ItemInlineCasterBase extends Item {
             return new InteractionResultHolder<>(InteractionResult.PASS, casterStack);
         }
 
-        boolean casted = ItemCAD.cast(level, player, data, casterStack, cadStack, 5, 10, 0.05F,
-                context -> context.tool = casterStack).isPresent();
+        boolean casted = ItemCAD.cast(level, player, data, bulletStack, cadStack, 40, 25, 0.5F, context -> {
+            context.tool = casterStack;
+            context.castFrom = hand;
+        }).isPresent();
         return new InteractionResultHolder<>(casted ? InteractionResult.SUCCESS : InteractionResult.PASS, casterStack);
     }
 
@@ -110,6 +113,11 @@ public class ItemInlineCasterBase extends Item {
         @Override
         public boolean isSocketSlotAvailable(int slot) {
             return slot >= 0 && slot < slotCount;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack bullet) {
+            return isSocketSlotAvailable(slot) && ISpellAcceptor.isContainer(bullet);
         }
 
         @Override
