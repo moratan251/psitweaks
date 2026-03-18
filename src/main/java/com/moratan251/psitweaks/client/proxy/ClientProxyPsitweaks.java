@@ -71,6 +71,9 @@ public class ClientProxyPsitweaks implements IProxyPsitweaks {
         event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_heavy_psimetal_alpha"));
         event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_heavy_psimetal_beta"));
         event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_psycheonicmetal"));
+        event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_1"));
+        event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_2"));
+        event.register(ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_3"));
 
 
     }

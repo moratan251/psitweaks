@@ -192,6 +192,39 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chaotic_factor", has(PsitweaksItems.CHAOTIC_FACTOR.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "auto_caster_custom_tick"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.INLINE_CASTER.get())
+                .define('P', psimetal)
+                .define('G', psiGem)
+                .define('B', ModItems.cadAssemblyPsimetal)
+                .pattern(" G ")
+                .pattern("PBP")
+                .pattern(" P ")
+                .unlockedBy("has_psimetal", has(psimetal))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "inline_caster"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.SECONDARY_CASTER.get())
+                .define('F', PsitweaksItems.FLASHMETAL.get())
+                .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('B', ModItems.cadAssemblyPsimetal)
+                .define('T', ModItems.cadSocketSignaling)
+                .pattern(" F ")
+                .pattern("CBC")
+                .pattern(" T ")
+                .unlockedBy("has_psionic_control_circuit", has(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "secondary_caster"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.PARALLEL_CASTER.get())
+                .define('F', PsitweaksItems.FLASHMETAL.get())
+                .define('H', PsitweaksItems.HEAVY_PSIMETAL.get())
+                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('B', ModItems.cadAssemblyPsimetal)
+                .define('T', ModItems.cadSocketTransmissive)
+                .pattern("FHF")
+                .pattern("CBC")
+                .pattern("FTF")
+                .unlockedBy("has_echo_control_circuit", has(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "parallel_caster"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get())
                 .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
                 .define('B', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())

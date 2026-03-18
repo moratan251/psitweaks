@@ -138,6 +138,9 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> SORCERY_BOOSTER = ITEMS.register("sorcery_booster", () -> new ItemSorceryBooster(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
     public static final RegistryObject<Item> FLASH_CHARM = ITEMS.register("flash_charm", () -> new ItemFlashCharm(new Item.Properties()));
     public static final RegistryObject<Item> SPELL_MAGAZINE = ITEMS.register("spell_magazine", () -> new ItemSpellMagazine(new Item.Properties()));
+    public static final RegistryObject<Item> INLINE_CASTER = ITEMS.register("inline_caster", () -> new ItemInlineCaster(new Item.Properties()));
+    public static final RegistryObject<Item> SECONDARY_CASTER = ITEMS.register("secondary_caster", () -> new ItemSecondaryCaster(new Item.Properties()));
+    public static final RegistryObject<Item> PARALLEL_CASTER = ITEMS.register("parallel_caster", () -> new ItemParallelCaster(new Item.Properties()));
 
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET = ITEMS.register("advanced_spell_bullet", () -> new ItemAdvancedSpellBullet(new Item.Properties()));
     public static final RegistryObject<Item> ADVANCED_SPELL_BULLET_LOOP = ITEMS.register("advanced_spell_bullet_loop", () -> new ItemAdvancedLoopcastSpellBullet(new Item.Properties()));

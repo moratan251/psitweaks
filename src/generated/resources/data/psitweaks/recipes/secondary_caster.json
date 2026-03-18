@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "psi:cad_assembly_psimetal"
+    },
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "F": {
+      "item": "psitweaks:flashmetal"
+    },
+    "T": {
+      "item": "psi:cad_socket_signaling"
+    }
+  },
+  "pattern": [
+    " F ",
+    "CBC",
+    " T "
+  ],
+  "result": {
+    "item": "psitweaks:secondary_caster"
+  },
+  "show_notification": true
+}

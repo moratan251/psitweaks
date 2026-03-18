@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "psi:cad_assembly_psimetal"
+    },
+    "G": {
+      "item": "psi:psigem"
+    },
+    "P": {
+      "item": "psi:psimetal"
+    }
+  },
+  "pattern": [
+    " G ",
+    "PBP",
+    " P "
+  ],
+  "result": {
+    "item": "psitweaks:inline_caster"
+  },
+  "show_notification": true
+}

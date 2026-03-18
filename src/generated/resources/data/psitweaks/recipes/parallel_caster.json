@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "psi:cad_assembly_psimetal"
+    },
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "F": {
+      "item": "psitweaks:flashmetal"
+    },
+    "H": {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    "T": {
+      "item": "psi:cad_socket_transmissive"
+    }
+  },
+  "pattern": [
+    "FHF",
+    "CBC",
+    "FTF"
+  ],
+  "result": {
+    "item": "psitweaks:parallel_caster"
+  },
+  "show_notification": true
+}

@@ -83,6 +83,9 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get());
                         pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
                         pOutput.accept(PsitweaksItems.SPELL_MAGAZINE.get());
+                        pOutput.accept(PsitweaksItems.INLINE_CASTER.get());
+                        pOutput.accept(PsitweaksItems.SECONDARY_CASTER.get());
+                        pOutput.accept(PsitweaksItems.PARALLEL_CASTER.get());
 
 
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
