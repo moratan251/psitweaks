@@ -182,6 +182,11 @@ public class ItemInlineCasterBase extends Item {
         }
 
         @Override
+        public boolean canLoopcast() {
+            return true;
+        }
+
+        @Override
         public Spell getSpell() {
             ItemStack bullet = getSelectedBullet();
             return ISpellAcceptor.isAcceptor(bullet) ? ISpellAcceptor.acceptor(bullet).getSpell() : null;
