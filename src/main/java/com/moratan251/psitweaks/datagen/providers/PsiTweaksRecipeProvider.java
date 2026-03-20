@@ -1176,6 +1176,39 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst_block", has(Items.AMETHYST_BLOCK))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "amethyst_shard_from_block"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MODULE_PSYON_SUPPLYING.get())
+                .define('A', PsitweaksItems.ALLOY_PSION.get())
+                .define('E', PsitweaksItems.CHAOTIC_FACTOR.get())
+                .define('M', MekanismItems.MODULE_BASE)
+                .define('S', PsitweaksItems.ECHO_SHEET.get())
+                .pattern("AEA")
+                .pattern("AMA")
+                .pattern("SSS")
+                .unlockedBy("has_module_base", has(MekanismItems.MODULE_BASE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "module_psyon_supplying_unit"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MODULE_PSYON_CAPACITY.get())
+                .define('A', PsitweaksItems.ALLOY_PSION.get())
+                .define('E', PsitweaksItems.ANTINITE_INGOT.get())
+                .define('M', MekanismItems.MODULE_BASE)
+                .define('S', PsitweaksItems.ECHO_SHEET.get())
+                .pattern("AEA")
+                .pattern("AMA")
+                .pattern("SSS")
+                .unlockedBy("has_module_base", has(MekanismItems.MODULE_BASE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "module_psyon_capacity_unit"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get())
+                .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
+                .define('E', PsitweaksItems.MAGICIANS_BRAIN.get())
+                .define('M', MekanismItems.MODULE_BASE)
+                .define('N', PsitweaksItems.PELLET_NEPTUNIUM.get())
+                .pattern("AEA")
+                .pattern("AMA")
+                .pattern("NNN")
+                .unlockedBy("has_module_base", has(MekanismItems.MODULE_BASE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "module_phenomenon_interference_enhancement_unit"));
+
         PsiTweaksSmeltryRecipeProvider.addRecipes(consumer);
         ProgramResearchRecipeProvider.addRecipes(consumer);
     }

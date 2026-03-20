@@ -90,6 +90,9 @@ public class PsitweaksTabs {
 
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
                         pOutput.accept(PsitweaksItems.SORCERY_BOOSTER.get());
+                        pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
+                        pOutput.accept(PsitweaksItems.MODULE_PSYON_CAPACITY.get());
+                        pOutput.accept(PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_MINE.get());
@@ -158,8 +161,6 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksBlocks.SPELLMACHINERY_CASING.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                         pOutput.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock());
-                     //   pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
-                       // pOutput.accept(ModItems.PSYON_SUPPLY_RING.get());
 
 
                     })))

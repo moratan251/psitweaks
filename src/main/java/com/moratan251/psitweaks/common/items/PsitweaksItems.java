@@ -190,7 +190,10 @@ public class PsitweaksItems {
 
 
     public static final ItemDeferredRegister MODULES = new ItemDeferredRegister(Psitweaks.MOD_ID);
-    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING  = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_CAPACITY = MODULES.registerModule(PsitweaksModules.PSYON_CAPACITY_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT =
+            MODULES.registerModule(PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

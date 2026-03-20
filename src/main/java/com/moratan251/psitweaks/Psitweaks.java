@@ -3,6 +3,7 @@ package com.moratan251.psitweaks;
 import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
 import com.moratan251.psitweaks.client.renderer.EmptyRenderer;
 import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
+import mekanism.api.MekanismIMC;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
@@ -46,6 +47,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import vazkii.psi.api.PsiAPI;
@@ -74,6 +76,7 @@ public class Psitweaks {
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::enqueueIMC);
 
 
         PsitweaksItems.register(modEventBus);
@@ -118,6 +121,14 @@ public class Psitweaks {
 
         NetworkHandler.registerMessages();
 
+    }
+
+    private void enqueueIMC(final InterModEnqueueEvent event) {
+        MekanismIMC.addMekaSuitBodyarmorModules(
+                PsitweaksModules.PSYON_SUPPLYING_UNIT,
+                PsitweaksModules.PSYON_CAPACITY_UNIT
+        );
+        MekanismIMC.addMekaSuitHelmetModules(PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT);
     }
 
     private static void registerTConstructCompat(IEventBus modEventBus) {

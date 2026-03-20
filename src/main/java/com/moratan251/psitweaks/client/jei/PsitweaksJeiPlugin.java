@@ -15,6 +15,7 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -22,6 +23,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.network.chat.Component;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -76,6 +78,11 @@ public class PsitweaksJeiPlugin implements IModPlugin {
         registration.addRecipes(ProgramResearchJeiCategory.RECIPE_TYPE, programResearchRecipes);
 
         registration.addRecipes(MaterialMutationJeiCategory.RECIPE_TYPE, getMaterialMutationJeiRecipes());
+        registration.addIngredientInfo(
+                new ItemStack(PsitweaksItems.MAGICIANS_BRAIN.get()),
+                VanillaTypes.ITEM_STACK,
+                Component.translatable("description.psitweaks.magicians_brain")
+        );
     }
 
     @Override

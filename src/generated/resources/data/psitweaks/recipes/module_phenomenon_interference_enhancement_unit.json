@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    "E": {
+      "item": "psitweaks:magicians_brain"
+    },
+    "M": {
+      "item": "mekanism:module_base"
+    },
+    "N": {
+      "item": "psitweaks:pellet_neptunium"
+    }
+  },
+  "pattern": [
+    "AEA",
+    "AMA",
+    "NNN"
+  ],
+  "result": {
+    "item": "psitweaks:module_phenomenon_interference_enhancement_unit"
+  },
+  "show_notification": true
+}

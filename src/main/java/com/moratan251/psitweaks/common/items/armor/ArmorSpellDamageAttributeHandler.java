@@ -2,6 +2,11 @@ package com.moratan251.psitweaks.common.items.armor;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.registries.PsitweaksModules;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
+import mekanism.api.providers.IModuleDataProvider;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -26,6 +31,9 @@ public class ArmorSpellDamageAttributeHandler {
     private static final double PSI_EXOSUIT_MAX_PSI_BONUS = 250.0D;
     private static final double MOVAL_SUIT_PSI_REGEN_BONUS = 5.0D;
     private static final double MOVAL_SUIT_MAX_PSI_BONUS = 500.0D;
+    private static final double MEKASUIT_PSYON_SUPPLYING_REGEN_BONUS = 5.0D;
+    private static final double MEKASUIT_PSYON_CAPACITY_MAX_PSI_BONUS = 1_000.0D;
+    private static final double MEKASUIT_PHENOMENON_INTERFERENCE_SPELL_DAMAGE_BONUS = 0.15D;
     private static final Map<EquipmentSlot, UUID> SPELL_DAMAGE_MODIFIER_IDS = Map.of(
             EquipmentSlot.HEAD, UUID.fromString("7fd7092d-74f3-49ae-a8f2-2d93ffca7d55"),
             EquipmentSlot.CHEST, UUID.fromString("9f76d7ff-82df-4b89-b60e-a455968f7db3"),
@@ -60,9 +68,9 @@ public class ArmorSpellDamageAttributeHandler {
         boolean isMovalSuit = stack.getItem() instanceof ItemMovalSuitArmor;
         boolean isPsiExosuit = isPsiExosuitArmor(stack);
 
-        addSpellDamageModifier(event, slot, getSpellDamageBonus(isMovalSuit, isPsiExosuit));
-        addPsiRegenModifier(event, slot, getPsiRegenBonus(isMovalSuit, isPsiExosuit));
-        addMaxPsiModifier(event, slot, getMaxPsiBonus(isMovalSuit, isPsiExosuit));
+        addSpellDamageModifier(event, slot, getSpellDamageBonus(stack, slot, isMovalSuit, isPsiExosuit));
+        addPsiRegenModifier(event, slot, getPsiRegenBonus(stack, slot, isMovalSuit, isPsiExosuit));
+        addMaxPsiModifier(event, slot, getMaxPsiBonus(stack, slot, isMovalSuit, isPsiExosuit));
     }
 
     private static void addSpellDamageModifier(ItemAttributeModifierEvent event, EquipmentSlot slot, double bonus) {
@@ -113,44 +121,73 @@ public class ArmorSpellDamageAttributeHandler {
         );
     }
 
-    private static double getSpellDamageBonus(boolean isMovalSuit, boolean isPsiExosuit) {
+    private static double getSpellDamageBonus(ItemStack stack, EquipmentSlot slot, boolean isMovalSuit, boolean isPsiExosuit) {
+        double bonus = 0.0D;
         if (isMovalSuit) {
-            return MOVAL_SUIT_BONUS;
+            bonus += MOVAL_SUIT_BONUS;
         }
 
         if (isPsiExosuit) {
-            return PSI_EXOSUIT_BONUS;
+            bonus += PSI_EXOSUIT_BONUS;
         }
 
-        return 0.0D;
+        if (slot == EquipmentSlot.HEAD && isMekaSuitHelmet(stack)) {
+            bonus += getInstalledModuleCount(stack, PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT)
+                    * MEKASUIT_PHENOMENON_INTERFERENCE_SPELL_DAMAGE_BONUS;
+        }
+
+        return bonus;
     }
 
-    private static double getPsiRegenBonus(boolean isMovalSuit, boolean isPsiExosuit) {
+    private static double getPsiRegenBonus(ItemStack stack, EquipmentSlot slot, boolean isMovalSuit, boolean isPsiExosuit) {
+        double bonus = 0.0D;
         if (isMovalSuit) {
-            return MOVAL_SUIT_PSI_REGEN_BONUS;
+            bonus += MOVAL_SUIT_PSI_REGEN_BONUS;
         }
 
         if (isPsiExosuit) {
-            return PSI_EXOSUIT_PSI_REGEN_BONUS;
+            bonus += PSI_EXOSUIT_PSI_REGEN_BONUS;
         }
 
-        return 0.0D;
+        if (slot == EquipmentSlot.CHEST && isMekaSuitBodyarmor(stack)) {
+            bonus += getInstalledModuleCount(stack, PsitweaksModules.PSYON_SUPPLYING_UNIT) * MEKASUIT_PSYON_SUPPLYING_REGEN_BONUS;
+        }
+
+        return bonus;
     }
 
-    private static double getMaxPsiBonus(boolean isMovalSuit, boolean isPsiExosuit) {
+    private static double getMaxPsiBonus(ItemStack stack, EquipmentSlot slot, boolean isMovalSuit, boolean isPsiExosuit) {
+        double bonus = 0.0D;
         if (isMovalSuit) {
-            return MOVAL_SUIT_MAX_PSI_BONUS;
+            bonus += MOVAL_SUIT_MAX_PSI_BONUS;
         }
 
         if (isPsiExosuit) {
-            return PSI_EXOSUIT_MAX_PSI_BONUS;
+            bonus += PSI_EXOSUIT_MAX_PSI_BONUS;
         }
 
-        return 0.0D;
+        if (slot == EquipmentSlot.CHEST && isMekaSuitBodyarmor(stack)) {
+            bonus += getInstalledModuleCount(stack, PsitweaksModules.PSYON_CAPACITY_UNIT) * MEKASUIT_PSYON_CAPACITY_MAX_PSI_BONUS;
+        }
+
+        return bonus;
     }
 
     private static boolean isPsiExosuitArmor(ItemStack stack) {
         ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(stack.getItem());
         return itemId != null && itemId.getNamespace().equals("psi") && itemId.getPath().startsWith("psimetal_exosuit_");
+    }
+
+    private static boolean isMekaSuitHelmet(ItemStack stack) {
+        return stack.getItem() == MekanismItems.MEKASUIT_HELMET.get();
+    }
+
+    private static boolean isMekaSuitBodyarmor(ItemStack stack) {
+        return stack.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get();
+    }
+
+    private static int getInstalledModuleCount(ItemStack stack, IModuleDataProvider<?> moduleProvider) {
+        IModule<?> module = IModuleHelper.INSTANCE.load(stack, moduleProvider);
+        return module == null ? 0 : module.getInstalledCount();
     }
 }

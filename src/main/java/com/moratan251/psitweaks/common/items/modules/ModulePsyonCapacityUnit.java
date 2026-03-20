@@ -4,6 +4,5 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 
 @ParametersAreNotNullByDefault
-public class ModulePsyonSupplyingUnit implements ICustomModule<ModulePsyonSupplyingUnit> {
+public class ModulePsyonCapacityUnit implements ICustomModule<ModulePsyonCapacityUnit> {
 }
-

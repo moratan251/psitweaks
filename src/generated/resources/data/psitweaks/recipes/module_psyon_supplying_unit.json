@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_psion"
+    },
+    "E": {
+      "item": "psitweaks:chaotic_factor"
+    },
+    "M": {
+      "item": "mekanism:module_base"
+    },
+    "S": {
+      "item": "psitweaks:echo_sheet"
+    }
+  },
+  "pattern": [
+    "AEA",
+    "AMA",
+    "SSS"
+  ],
+  "result": {
+    "item": "psitweaks:module_psyon_supplying_unit"
+  },
+  "show_notification": true
+}

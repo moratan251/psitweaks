@@ -148,6 +148,7 @@
   "container.psitweaks.material_mutator": "Material Mutator",
   "description.psitweaks.sculk_eroder": "Corrodes stone, dirt, and sand type blocks into Sculk",
   "description.psitweaks.material_mutator": "Mutates items into different materials using Psionic Echo Gas",
+  "description.psitweaks.magicians_brain": "Left behind when a Magician meets a brutal end.",
   "message.psitweaks.cad_disassembler.unsupported_tic_cad": "Failed to safely disassemble this TiCCAD.",
   "message.psitweaks.global_traveler.linked": "Linked Global Traveler to inventory at (%s, %s, %s)",
   "message.psitweaks.global_traveler.unlinked": "Unlinked Global Traveler destination",
@@ -186,6 +187,12 @@
   "attribute.psitweaks.spell_damage_factor": "Spell Damage Factor",
   "attribute.psitweaks.max_psi_bonus": "Max Psi Bonus",
   "attribute.psitweaks.psi_regen_bonus": "Psi Regeneration Bonus",
+  "module.psitweaks.psyon_supplying_unit": "Psyon Supplying Unit",
+  "description.psitweaks.psyon_supplying_unit": "Increases Psi regeneration.",
+  "module.psitweaks.psyon_capacity_unit": "Psyon Capacity Unit",
+  "description.psitweaks.psyon_capacity_unit": "Increases maximum Psi.",
+  "module.psitweaks.phenomenon_interference_enhancement_unit": "Phenomenon Interference Enhancement Unit",
+  "description.psitweaks.phenomenon_interference_enhancement_unit": "Increases spell damage.",
 
 
 

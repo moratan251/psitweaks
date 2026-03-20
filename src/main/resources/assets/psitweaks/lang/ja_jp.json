@@ -172,6 +172,7 @@
   "container.psitweaks.material_mutator": "物質変成機",
   "description.psitweaks.sculk_eroder": "石・土・砂系のブロックをスカルクに加工します",
   "description.psitweaks.material_mutator": "サイオニックエコーを用いて物質変成を行います。",
+  "description.psitweaks.magicians_brain": "魔法師が苛烈な最期を迎えたとき、その場に遺す。",
 
   "effect.psitweaks.parade": "仮想行列",
   "effect.psitweaks.flight": "飛行",
@@ -182,6 +183,12 @@
   "attribute.psitweaks.spell_damage_factor": "術式ダメージ倍率",
   "attribute.psitweaks.max_psi_bonus": "Psi保有量",
   "attribute.psitweaks.psi_regen_bonus": "Psi回復速度",
+  "module.psitweaks.psyon_supplying_unit": "サイオン供給ユニット",
+  "description.psitweaks.psyon_supplying_unit": "Psi量回復速度を増加させます。",
+  "module.psitweaks.psyon_capacity_unit": "サイオン容量ユニット",
+  "description.psitweaks.psyon_capacity_unit": "Psi量保有上限を増加させます。",
+  "module.psitweaks.phenomenon_interference_enhancement_unit": "事象干渉力増大ユニット",
+  "description.psitweaks.phenomenon_interference_enhancement_unit": "ユーザーの術式の威力を増大させます。",
 
   "psitweaks.event.second": "§bイベント§7: セカンド",
   "psitweaks.event.custom_tick": "§bイベント§7: カスタムtick",

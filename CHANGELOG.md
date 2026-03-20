@@ -1,5 +1,32 @@
 ## Changelog
 
+#### v0.9.3
+
+- Added attributes: Spell Damage Multiplier, Psi Regeneration Rate, and Psi Capacity
+
+
+- Added Spell Damage Multiplier, Psi Regeneration Rate, and Psi Capacity bonuses to the M.O.V.A.L Suit and Psi's psimetal exosuit armor
+
+
+- Added Spell Magazine
+  * Stores up to 12 spell bullets, and can swap its stored spell bullet with the one in a CAD by right-clicking while holding a CAD
+  * Inspired by the item of the same name from 1.12.2 Random PSIdeas (by kamefrede123)
+
+
+- Added Sorcery Booster
+  * Increases Spell Damage Multiplier by 30% when equipped in the socket circle
+
+
+- Added Inline Caster
+  * Has a single internal socket slot and can store a Spell Bullet via the CAD Assembler and similar methods
+  * Casts the currently selected spell bullet when right-clicked while holding a CAD
+  * Treated as casting through the CAD being carried
+  * Inspired by the item of the same name from 1.12.2 Random PSIdeas (by kamefrede123)
+
+
+- Added Secondary Caster and Parallel Caster
+  * 5-slot and 11-slot variants of the Inline Caster
+
 #### v0.9.2
 
 - Fixed Recipe Error
