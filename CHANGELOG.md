@@ -14,7 +14,7 @@
 
 
 - Added Sorcery Booster
-  * Increases Spell Damage Multiplier by 30% when equipped in the socket circle
+  * Increases Spell Damage Multiplier by 30% when equipped in the Magic Calculation Area
 
 
 - Added Inline Caster
