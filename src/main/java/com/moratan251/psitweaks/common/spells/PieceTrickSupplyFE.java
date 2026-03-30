@@ -13,14 +13,24 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 
 public class PieceTrickSupplyFE extends PieceTrick {
 
+    private static final double MIN_POWER = 0.5D;
+    // powerVal 1.0 あたりに加算する Potency 量
+    private static final double POTENCY_PER_POWER = 80.0D;
+    // powerVal に関係なく加算する Potency 固定値
+    private static final double POTENCY_BASE = 20.0D;
+    // powerVal 1.0 あたりの Psi Cost
+    private static final double COST_PER_POWER = 200.0D;
+    // powerVal 1.0 あたりに供給する FE 量
+    private static final int FE_PER_POWER = 4000;
+
     SpellParam<Vector3> position;
     SpellParam<Number> power;
     SpellParam<Vector3> direction;
 
     public PieceTrickSupplyFE(Spell spell) {
         super(spell);
-        this.setStatLabel(EnumSpellStat.POTENCY, (new StatLabel("psi.spellparam.power", true)).max((double)0.5F).mul((double)20.0F).floor());
-        this.setStatLabel(EnumSpellStat.COST, (new StatLabel("psi.spellparam.power", true)).max((double)0.5F).mul((double)200.0F).floor());
+        this.setStatLabel(EnumSpellStat.POTENCY, (new StatLabel("psi.spellparam.power", true)).max(MIN_POWER).mul(POTENCY_PER_POWER).floor());
+        this.setStatLabel(EnumSpellStat.COST, (new StatLabel("psi.spellparam.power", true)).max(MIN_POWER).mul(COST_PER_POWER).floor());
         this.addParam(this.direction = new ParamVector("psi.spellparam.direction", SpellParam.GREEN, true, false));
 
 
@@ -38,9 +48,9 @@ public class PieceTrickSupplyFE extends PieceTrick {
         super.addToMetadata(meta);
         Double powerVal = (Double)this.getParamEvaluation(this.power);
         if (powerVal != null && !(powerVal <= (double)0.0F)) {
-            powerVal = Math.max((double)0.5F, powerVal);
-            meta.addStat(EnumSpellStat.POTENCY, (int)( 50.0 + powerVal * (double)20.0F));
-            meta.addStat(EnumSpellStat.COST, (int)(powerVal * (double)200.0F));
+            powerVal = Math.max(MIN_POWER, powerVal);
+            meta.addStat(EnumSpellStat.POTENCY, (int)(POTENCY_BASE + powerVal * POTENCY_PER_POWER));
+            meta.addStat(EnumSpellStat.COST, (int)(powerVal * COST_PER_POWER));
         } else {
             throw new SpellCompilationException("psi.spellerror.nonpositivevalue", this.x, this.y);
         }
@@ -51,7 +61,7 @@ public class PieceTrickSupplyFE extends PieceTrick {
         Vector3 directionVal = (Vector3)this.getParamValue(context, this.direction);
         Vector3 positionVal = (Vector3)this.getParamValue(context, this.position);
         double powerVal = ((Number)this.getParamValue(context, this.power)).doubleValue();
-        int feAmount = (int)(Math.max(0,powerVal * 1000));
+        int feAmount = (int)(Math.max(0, powerVal * FE_PER_POWER));
         Direction facing = Direction.UP;
         if (directionVal != null) {
             facing = Direction.getNearest(directionVal.x, directionVal.y, directionVal.z);
