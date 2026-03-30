@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.blocks.transmitter.BlockTranscendentCable;
+import com.moratan251.psitweaks.common.items.block.ItemBlockTranscendentCable;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import mekanism.common.block.prefab.BlockTile;
@@ -23,6 +25,9 @@ public class PsitweaksMekanismBlocks {
             BLOCKS.register("material_mutator",
                     () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.MATERIAL_MUTATOR, properties -> properties),
                     ItemBlockMachine::new);
+
+    public static final BlockRegistryObject<BlockTranscendentCable, ItemBlockTranscendentCable> TRANSCENDENT_CABLE =
+            BLOCKS.register("transcendent_universal_cable", BlockTranscendentCable::new, ItemBlockTranscendentCable::new);
 
     private PsitweaksMekanismBlocks() {
     }

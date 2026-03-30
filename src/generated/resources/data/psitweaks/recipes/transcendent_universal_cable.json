@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    "N": {
+      "item": "psitweaks:pellet_neptunium"
+    },
+    "P": {
+      "item": "mekanism:ultimate_universal_cable"
+    }
+  },
+  "pattern": [
+    "APA",
+    "PNP",
+    "APA"
+  ],
+  "result": {
+    "count": 4,
+    "item": "psitweaks:transcendent_universal_cable"
+  },
+  "show_notification": true
+}

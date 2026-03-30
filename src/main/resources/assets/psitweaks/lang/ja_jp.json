@@ -137,6 +137,7 @@
   "block.psitweaks.spellmachinery_casing": "魔導機構ケーシング",
   "block.psitweaks.sculk_eroder": "スカルク侵食室",
   "block.psitweaks.material_mutator": "物質変成機",
+  "block.psitweaks.transcendent_universal_cable": "超越ユニバーサルケーブル",
   "container.psitweaks.program_researcher": "プログラム研究台",
   "jei.psitweaks.program_research": "プログラム研究",
   "jei.psitweaks.material_mutation": "物質変成",
@@ -172,6 +173,7 @@
   "container.psitweaks.material_mutator": "物質変成機",
   "description.psitweaks.sculk_eroder": "石・土・砂系のブロックをスカルクに加工します",
   "description.psitweaks.material_mutator": "サイオニックエコーを用いて物質変成を行います。",
+  "description.psitweaks.transcendent_universal_cable.transfer": "転送容量: %s/t",
   "description.psitweaks.magicians_brain": "魔法師が苛烈な最期を迎えたとき、その場に遺す。",
 
   "effect.psitweaks.parade": "仮想行列",

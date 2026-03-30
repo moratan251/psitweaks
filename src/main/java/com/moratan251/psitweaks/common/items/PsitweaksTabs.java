@@ -161,6 +161,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksBlocks.SPELLMACHINERY_CASING.get());
                         pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
                         pOutput.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock());
+                        pOutput.accept(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.getBlock());
 
 
                     })))

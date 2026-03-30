@@ -1,4 +1,4 @@
-// 1.20.1	2026-03-20T00:01:53.1074057	Recipes
+// 1.20.1	2026-03-30T20:26:57.3641888	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -125,6 +125,7 @@ bb7b29d1d45d6adb4f548a67a9f19bc0acf95aa1 data/psitweaks/advancements/recipes/mis
 145ffbd03335b01c7f4fd715cf3ad11fe9f11fe2 data/psitweaks/advancements/recipes/tools/curios_controller.json
 445536b6c8e7f4c62b4b4206366359896bcf6fc0 data/psitweaks/advancements/recipes/tools/sorcery_booster.json
 89e4a28167a402a369e5c2e2fa5f051f983e107b data/psitweaks/advancements/recipes/tools/spell_magazine.json
+3aa4f214641491ce930709c3a349012339006b31 data/psitweaks/advancements/recipes/transportation/transcendent_universal_cable.json
 740a1ca31589b30b896aba32cbc1c4d9624ca8db data/psitweaks/recipes/advanced_spell_bullet.json
 0aa6ea58bf554f7c5e461b2aa154a4d6b5989626 data/psitweaks/recipes/advanced_spell_bullet_charge.json
 f713b9e62f17a0c241eeb9fbc0bc9aca83b9cf9e data/psitweaks/recipes/advanced_spell_bullet_circle.json
@@ -286,4 +287,5 @@ f486c71ebc079abd3c1e422770086b8569d65a2f data/psitweaks/recipes/transcendent_spe
 074f5cb0ada6b50b3a4275ad18529229c5146b60 data/psitweaks/recipes/transcendent_spell_bullet_loop.json
 a05cca7113f57840eaa857f629feacf6db9ddb3f data/psitweaks/recipes/transcendent_spell_bullet_mine.json
 f2bb2bfe9f00b15f3d68b1cf7845ecbac3836968 data/psitweaks/recipes/transcendent_spell_bullet_projectile.json
+366775dc1e9c3f871eaf1c2209a9cdef3a4e1e8c data/psitweaks/recipes/transcendent_universal_cable.json
 4b5c7e11f907a13f70f6bd8dcf5363f3a3aa8e3a data/psitweaks/recipes/unrefined_flashmetal.json

@@ -1,0 +1,9 @@
+{
+  "parent": "mekanism:block/transmitter/small/small",
+  "textures": {
+    "side": "psitweaks:block/models/multipart/transcendent_universal_cable_vertical",
+    "center_down": "psitweaks:block/models/multipart/transcendent_universal_cable",
+    "side_opaque": "psitweaks:block/models/multipart/opaque/transcendent_universal_cable_vertical",
+    "center_opaque": "psitweaks:block/models/multipart/transcendent_universal_cable"
+  }
+}
