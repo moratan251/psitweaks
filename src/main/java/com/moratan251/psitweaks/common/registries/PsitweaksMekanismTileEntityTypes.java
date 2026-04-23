@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import com.moratan251.psitweaks.common.tile.transmitter.TileEntityTranscendentCable;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
@@ -21,6 +22,11 @@ public class PsitweaksMekanismTileEntityTypes {
 
     public static final TileEntityTypeRegistryObject<TileEntityMaterialMutator> MATERIAL_MUTATOR =
             TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.MATERIAL_MUTATOR, TileEntityMaterialMutator::new,
+                    (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
+                    (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
+
+    public static final TileEntityTypeRegistryObject<TileEntityPsionicGenerator> PSIONIC_GENERATOR =
+            TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, TileEntityPsionicGenerator::new,
                     (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
                     (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
 

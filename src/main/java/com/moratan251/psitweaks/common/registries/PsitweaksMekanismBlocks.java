@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.blocks.transmitter.BlockTranscendentCable;
 import com.moratan251.psitweaks.common.items.block.ItemBlockTranscendentCable;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -24,6 +25,11 @@ public class PsitweaksMekanismBlocks {
     public static final BlockRegistryObject<BlockTile.BlockTileModel<TileEntityMaterialMutator, BlockTypeTile<TileEntityMaterialMutator>>, ItemBlockMachine> MATERIAL_MUTATOR =
             BLOCKS.register("material_mutator",
                     () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.MATERIAL_MUTATOR, properties -> properties),
+                    ItemBlockMachine::new);
+
+    public static final BlockRegistryObject<BlockTile.BlockTileModel<TileEntityPsionicGenerator, BlockTypeTile<TileEntityPsionicGenerator>>, ItemBlockMachine> PSIONIC_GENERATOR =
+            BLOCKS.register("psionic_generator",
+                    () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.PSIONIC_GENERATOR, properties -> properties),
                     ItemBlockMachine::new);
 
     public static final BlockRegistryObject<BlockTranscendentCable, ItemBlockTranscendentCable> TRANSCENDENT_CABLE =

@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ILangEntry;
@@ -26,6 +28,7 @@ public class PsitweaksMekanismBlockTypes {
     private static final FloatingLong MATERIAL_MUTATOR_STORAGE = FloatingLong.createConst(4_000_000);
     private static final ILangEntry DESCRIPTION_SCULK_ERODER = () -> "description.psitweaks.sculk_eroder";
     private static final ILangEntry DESCRIPTION_MATERIAL_MUTATOR = () -> "description.psitweaks.material_mutator";
+    private static final ILangEntry DESCRIPTION_PSIONIC_GENERATOR = () -> "description.psitweaks.psionic_generator";
 
     public static final BlockTypeTile<TileEntitySculkEroder> SCULK_ERODER =
             BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.SCULK_ERODER, DESCRIPTION_SCULK_ERODER)
@@ -67,6 +70,25 @@ public class PsitweaksMekanismBlockTypes {
                     .withComputerSupport("materialMutator")
                     .build();
 
+    public static final BlockTypeTile<TileEntityPsionicGenerator> PSIONIC_GENERATOR =
+            BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.PSIONIC_GENERATOR, DESCRIPTION_PSIONIC_GENERATOR)
+                    .with(
+                            Attributes.ACTIVE_LIGHT,
+                            new AttributeStateFacing(),
+                            Attributes.INVENTORY,
+                            Attributes.SECURITY,
+                            Attributes.REDSTONE,
+                            Attributes.COMPARATOR,
+                            new AttributeUpgradeSupport(EnumSet.of(Upgrade.MUFFLING))
+                    )
+                    .with(new AttributeParticleFX()
+                            .add(SparkleParticleData.sparkle(0.45F, 0.95F, 1.0F, 1.0F, 10, 0.0D, -0.01D, 0.0D), PsitweaksMekanismBlockTypes::machineFrontParticleOffset)
+                            .addDense(SparkleParticleData.sparkle(0.75F, 0.45F, 1.0F, 1.0F, 8, 0.0D, -0.02D, 0.0D), 2, PsitweaksMekanismBlockTypes::machineFrontParticleOffset))
+                    .withGui(() -> PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR)
+                    .withSound(MekanismSounds.CHEMICAL_INJECTION_CHAMBER)
+                    .withEnergyConfig(() -> FloatingLong.createConst(2500), PsitweaksMekanismBlockTypes::psionicGeneratorStorage)
+                    .build();
+
     private PsitweaksMekanismBlockTypes() {
     }
 
@@ -76,5 +98,9 @@ public class PsitweaksMekanismBlockTypes {
                 random.nextFloat() * 6.0F / 16.0F,
                 0.52D
         );
+    }
+
+    private static FloatingLong psionicGeneratorStorage() {
+        return FloatingLong.createConst(Math.max(1L, PsitweaksConfig.COMMON.psionicGeneratorEnergyCapacity.get()));
     }
 }

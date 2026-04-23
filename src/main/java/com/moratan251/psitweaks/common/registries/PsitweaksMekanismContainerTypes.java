@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
@@ -17,6 +18,9 @@ public class PsitweaksMekanismContainerTypes {
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMaterialMutator>> MATERIAL_MUTATOR =
             CONTAINER_TYPES.register(PsitweaksMekanismBlocks.MATERIAL_MUTATOR, TileEntityMaterialMutator.class);
+
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPsionicGenerator>> PSIONIC_GENERATOR =
+            CONTAINER_TYPES.register(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, TileEntityPsionicGenerator.class);
 
     private PsitweaksMekanismContainerTypes() {
     }

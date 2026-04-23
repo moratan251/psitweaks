@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "psitweaks:block/psi_link_generator/right",
+    "front": "psitweaks:block/psi_link_generator/front",
+    "west": "psitweaks:block/psi_link_generator/right",
+    "east": "psitweaks:block/psi_link_generator/left",
+    "south": "psitweaks:block/psi_link_generator/back",
+    "up": "psitweaks:block/psi_link_generator/top",
+    "down": "psitweaks:block/psi_link_generator/bottom"
+  }
+}

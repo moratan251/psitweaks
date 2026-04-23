@@ -25,6 +25,7 @@
     "psitweaks:raw_antinite_block",
     "psitweaks:spellmachinery_casing",
     "psitweaks:sculk_eroder",
-    "psitweaks:material_mutator"
+    "psitweaks:material_mutator",
+    "psitweaks:psionic_generator"
   ]
 }

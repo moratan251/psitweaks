@@ -682,6 +682,17 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chemical_injection_chamber", has(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "material_mutator"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock())
+                .define('A', ModItems.psimetal)
+                .define('B', Items.ENDER_PEARL)
+                .define('P', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('T', MekanismItems.ENERGY_TABLET)
+                .pattern("ABA")
+                .pattern("TPT")
+                .pattern("ABA")
+                .unlockedBy("has_energy_tablet", has(MekanismItems.ENERGY_TABLET))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psionic_generator"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PROGRAM_BLANK.get())
                 .define('P', Items.PAPER)
                 .define('M', psimetal)

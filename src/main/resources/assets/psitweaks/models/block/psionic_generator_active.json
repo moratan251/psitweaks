@@ -1,0 +1,6 @@
+{
+  "parent": "psitweaks:block/psionic_generator",
+  "textures": {
+    "front": "psitweaks:block/psi_link_generator/front_active"
+  }
+}

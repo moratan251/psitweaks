@@ -24,6 +24,7 @@ public class PsitweaksConfig {
         public final ForgeConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ForgeConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ForgeConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
+        public final ForgeConfigSpec.LongValue psionicGeneratorEnergyCapacity;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
@@ -156,6 +157,11 @@ public class PsitweaksConfig {
                             "Gas-Burning Generator internal energy capacity override in Joules.",
                             "Set to -1 to use Mekanism default behavior (HydrogenEnergyDensity based).")
                     .defineInRange("gasBurningGeneratorEnergyCapacity", 2000000, -1L, Long.MAX_VALUE);
+
+            psionicGeneratorEnergyCapacity = builder
+                    .comment("サイリンク発電機の内部エネルギー容量（J）",
+                            "Internal energy capacity for the Psi-Link Generator in Joules.")
+                    .defineInRange("psionicGeneratorEnergyCapacity", 1600000, 1L, Long.MAX_VALUE);
 
             builder.pop(); // mekanism カテゴリ終了
         }
