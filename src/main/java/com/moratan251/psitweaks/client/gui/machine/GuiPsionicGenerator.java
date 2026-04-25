@@ -2,7 +2,6 @@ package com.moratan251.psitweaks.client.gui.machine;
 
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -32,8 +31,8 @@ public class GuiPsionicGenerator extends GuiMekanismTile<TileEntityPsionicGenera
         addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
                 EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent(),
                 Component.translatable("gui.psitweaks.psionic_generator.summary_generate_full",
-                        EnergyDisplay.of(FloatingLong.createConst(tile.getCurrentGenerationRate())).getTextComponent(),
-                        EnergyDisplay.of(FloatingLong.createConst(tile.getConfiguredGenerationRate())).getTextComponent()),
+                        EnergyDisplay.of(tile.getCurrentGenerationRateJoules()).getTextComponent(),
+                        EnergyDisplay.of(tile.getConfiguredGenerationRateJoules()).getTextComponent()),
                 Component.translatable("gui.psitweaks.psionic_generator.summary_consume_full",
                         tile.getConsumePsiPerTick())
         )));
@@ -98,8 +97,8 @@ public class GuiPsionicGenerator extends GuiMekanismTile<TileEntityPsionicGenera
         lines.add(Component.translatable("gui.psitweaks.psionic_generator.consume",
                 tile.getConsumePsiPerTick()));
         lines.add(Component.translatable("gui.psitweaks.psionic_generator.generate",
-                EnergyDisplay.of(FloatingLong.createConst(tile.getCurrentGenerationRate())).getTextComponent(),
-                EnergyDisplay.of(FloatingLong.createConst(tile.getConfiguredGenerationRate())).getTextComponent()));
+                EnergyDisplay.of(tile.getCurrentGenerationRateJoules()).getTextComponent(),
+                EnergyDisplay.of(tile.getConfiguredGenerationRateJoules()).getTextComponent()));
         return lines;
     }
 

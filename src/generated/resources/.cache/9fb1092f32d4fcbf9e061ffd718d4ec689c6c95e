@@ -1,4 +1,4 @@
-// 1.20.1	2026-03-31T01:04:47.0988963	Recipes
+// 1.20.1	2026-04-25T21:00:17.9116737	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -228,7 +228,7 @@ c42e59d770f0fa8bc6929081df0a06bf8640a756 data/psitweaks/recipes/program_research
 058d673a1cb4a9a82aa1d6e70d682a366e85be35 data/psitweaks/recipes/program_research/program_time_accelerate.json
 d6bfff791be1d1ee864bfca3a4e22819afa72f27 data/psitweaks/recipes/psimetal_bow.json
 ad4906c7658136d29fc9df6754f087ba8628daea data/psitweaks/recipes/psionic_control_circuit.json
-265c97a201a356436419b127ea8c3e88fa89961f data/psitweaks/recipes/psionic_generator.json
+7924df993fbd1c200e97725b24f9c1d03673062c data/psitweaks/recipes/psionic_generator.json
 5ba03e12ca535e679b41061c1f1c2ba329b8595d data/psitweaks/recipes/psycheonic_metal_ingot.json
 78f0007460b213f75f3a29a8b5a82b041dc12983 data/psitweaks/recipes/psycheonic_metal_nugget_from_ingot.json
 0a20edf0ef6f55f5e4ba0f2c356fc0f17f6b52fd data/psitweaks/recipes/qio_dashboard.json

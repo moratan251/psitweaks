@@ -15,6 +15,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.base.SubstanceType;
@@ -39,7 +40,8 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
     private static final int DEFAULT_CONSUME_PSI = 25;
     private static final int MIN_CONSUME_PSI = 1;
     private static final int MAX_CONSUME_PSI = 100;
-    private static final int FE_PER_PSI = 25;
+    private static final long JOULES_PER_PSI_NUMERATOR = 125;
+    private static final long JOULES_PER_PSI_DENOMINATOR = 2;
 
     private BasicEnergyContainer energyContainer;
     private EnergyInventorySlot energySlot;
@@ -51,7 +53,7 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
     private boolean ownerOnline;
     private int ownerAvailablePsi;
     private int ownerTotalPsi;
-    private int currentGenerationRate;
+    private FloatingLong currentGenerationRateJoules = FloatingLong.ZERO;
 
     public TileEntityPsionicGenerator(BlockPos pos, BlockState state) {
         super(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, pos, state);
@@ -80,7 +82,7 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
         syncOwnerState();
         refreshOwnerPsiState();
 
-        currentGenerationRate = 0;
+        currentGenerationRateJoules = FloatingLong.ZERO;
         if (!linkActive || !ownerOnline || !MekanismUtils.canFunction(this)) {
             setActive(false);
             return;
@@ -98,7 +100,7 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
             return;
         }
 
-        FloatingLong generation = FloatingLong.createConst((long) consume * FE_PER_PSI);
+        FloatingLong generation = getGenerationRateJoules(consume);
         if (energyContainer.getNeeded().isZero()) {
             setActive(false);
             return;
@@ -107,7 +109,7 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
         data.deductPsi(consume, 0, true, false);
         energyContainer.insert(generation, Action.EXECUTE, AutomationType.INTERNAL);
         ownerAvailablePsi = Math.max(0, ownerAvailablePsi - consume);
-        currentGenerationRate = consume * FE_PER_PSI;
+        currentGenerationRateJoules = generation;
         setActive(true);
     }
 
@@ -143,7 +145,7 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
         container.track(SyncableInt.create(this::getConsumePsiPerTick, value -> consumePsiPerTick = value));
         container.track(SyncableInt.create(this::getOwnerAvailablePsi, value -> ownerAvailablePsi = value));
         container.track(SyncableInt.create(this::getOwnerTotalPsi, value -> ownerTotalPsi = value));
-        container.track(SyncableInt.create(this::getCurrentGenerationRate, value -> currentGenerationRate = value));
+        container.track(SyncableFloatingLong.create(this::getCurrentGenerationRateJoules, value -> currentGenerationRateJoules = value));
     }
 
     @Override
@@ -182,12 +184,12 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
         return ownerTotalPsi;
     }
 
-    public int getCurrentGenerationRate() {
-        return currentGenerationRate;
+    public FloatingLong getCurrentGenerationRateJoules() {
+        return currentGenerationRateJoules;
     }
 
-    public int getConfiguredGenerationRate() {
-        return getConsumePsiPerTick() * FE_PER_PSI;
+    public FloatingLong getConfiguredGenerationRateJoules() {
+        return getGenerationRateJoules(getConsumePsiPerTick());
     }
 
     public BasicEnergyContainer getEnergyContainer() {
@@ -259,6 +261,12 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
 
     private static int clampConsumePsi(int consumePsiPerTick) {
         return Math.max(MIN_CONSUME_PSI, Math.min(MAX_CONSUME_PSI, consumePsiPerTick));
+    }
+
+    private static FloatingLong getGenerationRateJoules(int consumePsiPerTick) {
+        return FloatingLong.createConst(consumePsiPerTick)
+                .multiply(JOULES_PER_PSI_NUMERATOR)
+                .divide(JOULES_PER_PSI_DENOMINATOR);
     }
 
     private static FloatingLong getConfiguredEnergyCapacity() {

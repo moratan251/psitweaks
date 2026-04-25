@@ -685,11 +685,11 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock())
                 .define('A', ModItems.psimetal)
                 .define('B', Items.ENDER_PEARL)
-                .define('P', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .define('C', MekanismItems.BASIC_CONTROL_CIRCUIT.get())
                 .define('T', MekanismItems.ENERGY_TABLET)
-                .pattern("ABA")
-                .pattern("TPT")
-                .pattern("ABA")
+                .pattern(" B ")
+                .pattern("ACA")
+                .pattern("ATA")
                 .unlockedBy("has_energy_tablet", has(MekanismItems.ENERGY_TABLET))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psionic_generator"));
 

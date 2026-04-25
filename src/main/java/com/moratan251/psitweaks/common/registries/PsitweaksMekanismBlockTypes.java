@@ -26,6 +26,7 @@ public class PsitweaksMekanismBlockTypes {
 
     private static final FloatingLong SCULK_ERODER_STORAGE = FloatingLong.createConst(20000);
     private static final FloatingLong MATERIAL_MUTATOR_STORAGE = FloatingLong.createConst(4_000_000);
+    private static final FloatingLong PSIONIC_GENERATOR_MAX_OUTPUT = FloatingLong.createConst(6_250);
     private static final ILangEntry DESCRIPTION_SCULK_ERODER = () -> "description.psitweaks.sculk_eroder";
     private static final ILangEntry DESCRIPTION_MATERIAL_MUTATOR = () -> "description.psitweaks.material_mutator";
     private static final ILangEntry DESCRIPTION_PSIONIC_GENERATOR = () -> "description.psitweaks.psionic_generator";
@@ -85,8 +86,8 @@ public class PsitweaksMekanismBlockTypes {
                             .add(SparkleParticleData.sparkle(0.45F, 0.95F, 1.0F, 1.0F, 10, 0.0D, -0.01D, 0.0D), PsitweaksMekanismBlockTypes::machineFrontParticleOffset)
                             .addDense(SparkleParticleData.sparkle(0.75F, 0.45F, 1.0F, 1.0F, 8, 0.0D, -0.02D, 0.0D), 2, PsitweaksMekanismBlockTypes::machineFrontParticleOffset))
                     .withGui(() -> PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR)
-                    .withSound(MekanismSounds.CHEMICAL_INJECTION_CHAMBER)
-                    .withEnergyConfig(() -> FloatingLong.createConst(2500), PsitweaksMekanismBlockTypes::psionicGeneratorStorage)
+                    .withSound(MekanismSounds.LASER)
+                    .withEnergyConfig(() -> PSIONIC_GENERATOR_MAX_OUTPUT, PsitweaksMekanismBlockTypes::psionicGeneratorStorage)
                     .build();
 
     private PsitweaksMekanismBlockTypes() {

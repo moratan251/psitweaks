@@ -8,17 +8,17 @@
     "B": {
       "item": "minecraft:ender_pearl"
     },
-    "P": {
-      "item": "psitweaks:psionic_control_circuit"
+    "C": {
+      "item": "mekanism:basic_control_circuit"
     },
     "T": {
       "item": "mekanism:energy_tablet"
     }
   },
   "pattern": [
-    "ABA",
-    "TPT",
-    "ABA"
+    " B ",
+    "ACA",
+    "ATA"
   ],
   "result": {
     "item": "psitweaks:psionic_generator"
