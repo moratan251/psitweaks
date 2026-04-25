@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_active_air_mine",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_active_air_mine.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_active_air_mine"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "psi.book.entry.psitweaks_overview",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:psionic_control_circuit",
+  "priority": true,
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_overview.0"
+    },
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_overview.1",
+      "item": "psitweaks:psionic_control_circuit",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_overview.2"
+    }
+  ]
+}

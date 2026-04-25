@@ -1,0 +1,27 @@
+{
+  "name": "psi.book.entry.psitweaks_machines",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:psionic_generator",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machines.0"
+    },
+    {
+      "type": "crafting_multi",
+      "text": "psi.book.page.psitweaks_machines.1",
+      "recipes": [
+        "psitweaks:psionic_generator",
+        "psitweaks:material_mutator",
+        "psitweaks:sculk_eroder",
+        "psitweaks:program_researcher"
+      ]
+    },
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machines.2",
+      "item": "psitweaks:psionic_generator",
+      "link_recipe": true
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "psi.book.entry.psitweaks_cad_and_gear",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:inline_caster",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_cad_and_gear.0"
+    },
+    {
+      "type": "crafting_multi",
+      "text": "psi.book.page.psitweaks_cad_and_gear.1",
+      "recipes": [
+        "psitweaks:inline_caster",
+        "psitweaks:spell_magazine",
+        "psitweaks:sorcery_booster",
+        "psitweaks:third_eye_device",
+        "psitweaks:portable_cad_assembler"
+      ]
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_cad_and_gear.2"
+    }
+  ]
+}
