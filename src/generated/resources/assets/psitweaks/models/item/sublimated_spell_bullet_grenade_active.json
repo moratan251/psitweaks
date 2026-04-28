@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "psitweaks:item/sublimated_spell_bullet_grenade_active"
+  }
+}

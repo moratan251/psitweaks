@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "down": "psitweaks:block/material_mutator/bottom",
+    "east": "psitweaks:block/material_mutator/left",
+    "front": "psitweaks:block/material_mutator/front",
+    "sides": "psitweaks:block/material_mutator/right",
+    "south": "psitweaks:block/material_mutator/back",
+    "up": "psitweaks:block/material_mutator/top",
+    "west": "psitweaks:block/material_mutator/right"
+  }
+}

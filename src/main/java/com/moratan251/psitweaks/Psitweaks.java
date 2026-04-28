@@ -29,6 +29,9 @@ import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -426,6 +429,10 @@ public class Psitweaks {
 
         gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
         gen.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
+        gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));
+        gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
+        gen.addProvider(event.includeClient(), new PsitweaksItemModelProvider(packOutput, fileHelper));
+        gen.addProvider(event.includeClient(), new PsitweaksBlockStateProvider(packOutput, fileHelper));
     }
 
     public static ResourceLocation location(String path) {

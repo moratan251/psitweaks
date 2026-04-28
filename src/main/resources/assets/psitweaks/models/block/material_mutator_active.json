@@ -1,6 +1,0 @@
-{
-  "parent": "psitweaks:block/material_mutator",
-  "textures": {
-    "front": "psitweaks:block/material_mutator/front_active"
-  }
-}
