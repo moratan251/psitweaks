@@ -35,6 +35,7 @@ CLAUDE.md
 .steering
 docs
 .board
+book
 
 # Files from Forge MDK
 forge*changelog.txt
