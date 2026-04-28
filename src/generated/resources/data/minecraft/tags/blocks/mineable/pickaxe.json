@@ -1,0 +1,30 @@
+{
+  "values": [
+    "psi:cad_assembler",
+    "psi:psimetal_block",
+    "psi:ebony_psimetal_block",
+    "psi:ivory_psimetal_block",
+    "psi:psigem_block",
+    "psi:psidust_block",
+    "psi:psimetal_block",
+    "psi:black_psimetal_plate",
+    "psi:lit_black_psimetal_plate",
+    "psi:white_psimetal_plate",
+    "psi:lit_white_psimetal_plate",
+    "psi:programmer",
+    "psitweaks:cad_disassembler",
+    "psitweaks:program_researcher",
+    "psitweaks:ore_antinite",
+    "psitweaks:antinite_block",
+    "psitweaks:chaotic_psimetal_block",
+    "psitweaks:flashmetal_block",
+    "psitweaks:heavy_psimetal_block",
+    "psitweaks:plutonium_block",
+    "psitweaks:polonium_block",
+    "psitweaks:raw_antinite_block",
+    "psitweaks:spellmachinery_casing",
+    "psitweaks:sculk_eroder",
+    "psitweaks:material_mutator",
+    "psitweaks:psionic_generator"
+  ]
+}

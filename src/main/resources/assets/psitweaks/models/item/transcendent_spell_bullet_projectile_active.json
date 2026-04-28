@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "psitweaks:item/transcendent_spell_bullet_projectile_active"
-  }
-}
