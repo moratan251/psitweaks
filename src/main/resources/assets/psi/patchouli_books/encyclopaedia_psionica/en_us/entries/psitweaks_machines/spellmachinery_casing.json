@@ -1,0 +1,13 @@
+{
+  "name": "block.psitweaks.spellmachinery_casing",
+  "category": "psi:psitweaks_machines",
+  "icon": "psitweaks:spellmachinery_casing",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.spellmachinery_casing",
+      "item": "psitweaks:spellmachinery_casing",
+      "link_recipe": true
+    }
+  ]
+}

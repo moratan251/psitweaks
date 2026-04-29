@@ -1,0 +1,13 @@
+{
+  "name": "block.psitweaks.program_researcher",
+  "category": "psi:psitweaks_machines",
+  "icon": "psitweaks:program_researcher",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.program_researcher",
+      "item": "psitweaks:program_researcher",
+      "link_recipe": true
+    }
+  ]
+}

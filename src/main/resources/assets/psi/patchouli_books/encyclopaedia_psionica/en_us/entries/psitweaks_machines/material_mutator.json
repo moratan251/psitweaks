@@ -1,0 +1,13 @@
+{
+  "name": "block.psitweaks.material_mutator",
+  "category": "psi:psitweaks_machines",
+  "icon": "psitweaks:material_mutator",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.material_mutator",
+      "item": "psitweaks:material_mutator",
+      "link_recipe": true
+    }
+  ]
+}
