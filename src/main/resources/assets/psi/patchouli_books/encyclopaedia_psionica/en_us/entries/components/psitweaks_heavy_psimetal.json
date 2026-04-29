@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.heavy_psimetal",
+  "category": "psi:components",
+  "icon": "psitweaks:heavy_psimetal",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.heavy_psimetal",
+      "item": "psitweaks:heavy_psimetal",
+      "link_recipe": true
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.psionic_echo",
+  "category": "psi:components",
+  "icon": "psitweaks:psionic_echo",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.psionic_echo",
+      "item": "psitweaks:psionic_echo",
+      "link_recipe": true
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.hypostasis_gem",
+  "category": "psi:components",
+  "icon": "psitweaks:hypostasis_gem",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.hypostasis_gem",
+      "item": "psitweaks:hypostasis_gem",
+      "link_recipe": true
+    }
+  ]
+}

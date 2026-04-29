@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.chaotic_factor",
+  "category": "psi:components",
+  "icon": "psitweaks:chaotic_factor",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.chaotic_factor",
+      "item": "psitweaks:chaotic_factor",
+      "link_recipe": true
+    }
+  ]
+}

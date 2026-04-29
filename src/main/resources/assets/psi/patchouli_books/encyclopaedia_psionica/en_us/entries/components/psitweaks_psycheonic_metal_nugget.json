@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.psycheonic_metal_nugget",
+  "category": "psi:components",
+  "icon": "psitweaks:psycheonic_metal_nugget",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.psycheonic_metal_nugget",
+      "item": "psitweaks:psycheonic_metal_nugget",
+      "link_recipe": true
+    }
+  ]
+}
