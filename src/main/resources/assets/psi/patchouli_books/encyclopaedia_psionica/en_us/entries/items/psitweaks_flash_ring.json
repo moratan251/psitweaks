@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.flash_ring",
+  "category": "psi:items",
+  "icon": "psitweaks:flash_ring",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.flash_ring",
+      "item": "psitweaks:flash_ring",
+      "link_recipe": true
+    }
+  ]
+}

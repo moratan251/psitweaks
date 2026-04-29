@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.third_eye_device",
+  "category": "psi:items",
+  "icon": "psitweaks:third_eye_device",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.third_eye_device",
+      "item": "psitweaks:third_eye_device",
+      "link_recipe": true
+    }
+  ]
+}
