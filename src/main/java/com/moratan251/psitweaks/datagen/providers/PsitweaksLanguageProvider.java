@@ -415,6 +415,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_cad_and_gear.0", "Several PsiTweaks items make spellcasting easier to carry, automate, or specialize. Some are direct CAD tools, while others support bullet handling or improve a caster's combat role.");
         add("psi.book.page.psitweaks_cad_and_gear.1", "These recipes cover portable assembly, inline casting, spell storage, and caster support gear.");
         add("psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks also adds new CAD assemblies and psionic materials for stronger progression. Use them together with the upgraded bullets and attributes when ordinary Psi equipment no longer keeps up.");
+        add("psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) adds four higher CAD material lines: $(l:components/psitweaks_chaotic_psimetal)Chaotic Psimetal$(/l), $(l:components/psitweaks_flashmetal)Flashmetal$(/l), $(l:components/psitweaks_heavy_psimetal)Heavy Psimetal$(/l), and $(l:components/psitweaks_psycheonic_metal_ingot)Psycheonic Metal$(/l).$(p)They extend CAD progression beyond ordinary Psimetal, with later materials intended for stronger Psi capacity, regeneration, and spell damage builds.");
         add("psi.book.entry.psitweaks_inline_casters", "Inline Casters");
         add("psi.book.entry.psitweaks_auto_casters", "Auto Casters");
         add("psi.book.page.psitweaks_item.blank_program", "Used as the base item for program research. Put it into the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) with the required materials to create a written program.$(p)It can also be crafted with an existing written program item to duplicate that program.");
@@ -857,6 +858,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_cad_and_gear.0", "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります.");
         add("psi.book.page.psitweaks_cad_and_gear.1", "これらのレシピは, 携帯型組立, インライン詠唱, 術式保存, 魔法師支援装備の入口です.");
         add("psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks は, より強い進行のための新しいCAD素体とサイオニック素材も追加します. 通常のPsi装備では物足りなくなったら, 高位術式弾や属性強化と組み合わせて使ってください.");
+        add("psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) は上位CAD素材として, $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の4系統を追加します.$(p)通常のサイメタルより先のCAD進行で, 後半の素材ほどPsi保有量, 回復速度, 術式ダメージを伸ばす構成に向きます.");
         add("psi.book.entry.psitweaks_inline_casters", "インラインキャスター");
         add("psi.book.entry.psitweaks_auto_casters", "術式自動詠唱デバイス");
         add("psi.book.page.psitweaks_item.blank_program", "プログラム研究の基礎素材です. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材と一緒に入れることで, 記入済みのプログラムを作成できます.$(p)既存の記入済みプログラムアイテムとクラフトすると, そのプログラムを複製することもできます.");
