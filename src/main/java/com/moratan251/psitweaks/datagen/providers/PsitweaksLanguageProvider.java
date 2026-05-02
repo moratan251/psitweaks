@@ -387,8 +387,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.psitweaks_machines", "Machines");
         add("psi.book.category.psitweaks_machines.desc", "Machine blocks and infrastructure added by PsiTweaks.");
         add("psi.book.entry.psitweaks_overview", "What PsiTweaks Adds");
-        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It keeps spell programming at the center, then adds more ways to automate, amplify, store, and industrialize psionic power.$(p)The mod is intended for packs where Psi grows into a long-term progression system rather than ending at the base CAD and common bullets.");
-        add("psi.book.page.psitweaks_overview.2", "Major additions include higher-tier spell bullets, new CAD assemblies and casting tools, psionic resource attributes, research and mutation machines, and a Psi-powered generator for Mekanism energy networks.$(p)Most systems are built to reward stronger Psi capacity, regeneration, and spell damage investment.");
+        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds many elements, including industrialized material production, new gear, and new spells.$(p)The mod is intended for setups where Psi remains powerful through the late game as both combat and utility, rather than ending at ordinary CADs and basic spell bullets.");
+        add("psi.book.page.psitweaks_overview.2", "Major additions include higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)Most systems are built to bridge Psi with industrial environments and to strengthen Psi's late-game capabilities.");
         add("psi.book.entry.psitweaks_research", "Research");
         add("psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed.");
         add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.");
@@ -837,8 +837,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.psitweaks_machines", "機械");
         add("psi.book.category.psitweaks_machines.desc", "PsiTweaks が追加する機械ブロックと基盤設備です.");
         add("psi.book.entry.psitweaks_overview", "PsiTweaksの追加要素");
-        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 術式プログラミングを中心に据えたまま, サイオニックな力を自動化, 増幅, 保存, 産業化する手段を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを長期的な成長要素として扱う構成を想定しています.");
-        add("psi.book.page.psitweaks_overview.2", "主な追加要素は, 高位術式弾, 新しいCAD素体と詠唱補助具, Psiリソース属性, 研究・物質変成機械, そしてMekanismエネルギー網へ接続できるPsi駆動の発電機です.$(p)多くのシステムは, Psi保有量, Psi回復速度, 術式ダメージへの投資が意味を持つように作られています.");
+        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 素材生成の工業化や, 新しい装備, 新しい術式など多数の要素を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを戦闘やユーティリティとして終盤まで強力に扱う構成を想定しています.");
+        add("psi.book.page.psitweaks_overview.2", "主な追加要素は, 高位術式弾, 新しいCAD素体や詠唱補助具,新しい魔法, 加工機械や発電機です.$(p)多くのシステムは, Psiと工業環境の橋渡しや, Psiの終盤での能力強化などを目的として作られています.");
         add("psi.book.entry.psitweaks_research", "研究");
         add("psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).");
         add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.");
