@@ -132,6 +132,17 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .pattern("APA")
                 .unlockedBy("has_pellet_neptunium", has(PsitweaksItems.PELLET_NEPTUNIUM.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_universal_cable"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getBlock())
+                .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
+                .define('E', MekanismItems.ENERGY_TABLET)
+                .define('N', PsitweaksItems.PELLET_NEPTUNIUM.get())
+                .define('C', MekanismBlocks.ULTIMATE_ENERGY_CUBE)
+                .pattern("AEA")
+                .pattern("NCN")
+                .pattern("AEA")
+                .unlockedBy("has_ultimate_energy_cube", has(MekanismBlocks.ULTIMATE_ENERGY_CUBE))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "transcendent_energy_cube"));
 /*
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.FLIGHT_CHIP.get())
                 .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())

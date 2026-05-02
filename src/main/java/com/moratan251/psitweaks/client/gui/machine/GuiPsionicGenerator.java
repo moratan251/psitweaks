@@ -12,6 +12,7 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -66,6 +67,12 @@ public class GuiPsionicGenerator extends GuiMekanismTile<TileEntityPsionicGenera
                 null));
     }
 
+    @Override
+    protected void drawForegroundText(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+    }
+
     private List<Component> getSummaryLines() {
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(trimToInnerWidth(tile.getOwnerDisplayName())));
@@ -78,6 +85,8 @@ public class GuiPsionicGenerator extends GuiMekanismTile<TileEntityPsionicGenera
                         : "gui.psitweaks.psionic_generator.link_off")));
         lines.add(Component.translatable("gui.psitweaks.psionic_generator.summary_psi",
                 tile.getOwnerAvailablePsi(), tile.getOwnerTotalPsi()));
+        lines.add(Component.translatable("gui.psitweaks.psionic_generator.summary_consume_full",
+                tile.getConsumePsiPerTick()));
         return lines;
     }
 

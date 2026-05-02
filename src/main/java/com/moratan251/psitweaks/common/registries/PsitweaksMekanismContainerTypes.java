@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -21,6 +22,11 @@ public class PsitweaksMekanismContainerTypes {
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPsionicGenerator>> PSIONIC_GENERATOR =
             CONTAINER_TYPES.register(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, TileEntityPsionicGenerator.class);
+
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTranscendentEnergyCube>> TRANSCENDENT_ENERGY_CUBE =
+            CONTAINER_TYPES.custom(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE, TileEntityTranscendentEnergyCube.class)
+                    .armorSideBar(180, 41, 0)
+                    .build();
 
     private PsitweaksMekanismContainerTypes() {
     }

@@ -5,6 +5,7 @@ import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -36,6 +37,7 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         machine(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock(), "material_mutator", "material_mutator");
         machine(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock(), "psionic_generator", "psi_link_generator");
         transcendentCable();
+        energyCube(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getBlock(), "transcendent_energy_cube", "transcendent");
     }
 
     private void cubeAll(Block block, String name) {
@@ -91,11 +93,62 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.getBlock(), model);
     }
 
+    private void energyCube(Block block, String name, String tier) {
+        ModelFile model = models().getBuilder("block/energy_cube/" + tier)
+                .parent(unchecked(resource("mekanism", "block/energy_cube/base")))
+                .texture("corner", resource("mekanism", "block/models/energy_cube_" + tier + "_corner"));
+        DirectionProperty facing = (DirectionProperty) block.getStateDefinition().getProperty("facing");
+        getVariantBuilder(block)
+                .partialState().with(facing, Direction.NORTH)
+                .modelForState().modelFile(model).addModel()
+                .partialState().with(facing, Direction.SOUTH)
+                .modelForState().modelFile(model).rotationY(180).addModel()
+                .partialState().with(facing, Direction.EAST)
+                .modelForState().modelFile(model).rotationY(90).addModel()
+                .partialState().with(facing, Direction.WEST)
+                .modelForState().modelFile(model).rotationY(270).addModel();
+        itemModels().getBuilder(name)
+                .parent(unchecked("builtin/entity"))
+                .transforms()
+                .transform(ItemDisplayContext.GUI)
+                .rotation(30, 315, 0)
+                .scale(0.625F)
+                .end()
+                .transform(ItemDisplayContext.GROUND)
+                .rotation(0, 90, 0)
+                .translation(0, 2, 0)
+                .scale(0.25F)
+                .end()
+                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+                .rotation(75, 135, 0)
+                .translation(0, 2.5F, 0)
+                .scale(0.375F)
+                .end()
+                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+                .rotation(0, 135, 0)
+                .scale(0.4F)
+                .end()
+                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
+                .rotation(75, 135, 0)
+                .translation(0, 2.5F, 0)
+                .scale(0.375F)
+                .end()
+                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
+                .rotation(0, 135, 0)
+                .scale(0.4F)
+                .end()
+                .end();
+    }
+
     private static net.minecraft.resources.ResourceLocation resource(String namespace, String path) {
         return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(namespace, path);
     }
 
     private static ModelFile unchecked(net.minecraft.resources.ResourceLocation location) {
+        return new ModelFile.UncheckedModelFile(location);
+    }
+
+    private static ModelFile unchecked(String location) {
         return new ModelFile.UncheckedModelFile(location);
     }
 

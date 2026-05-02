@@ -1,5 +1,20 @@
 ## Changelog
 
+#### v0.9.4
+
+- Added Psi-Link Generator
+  * An early-game generator that produces power while consuming the owner's remaining Psi
+  * Generates 25 FE/Psi
+
+
+- Added Transcendent Universal Cable and Transcendent Energy Cube
+  * 128x the performance of the Ultimate tier
+
+
+- Added PsiTweaks documentation to Encyclopaedia Psionica
+
+
+
 #### v0.9.3
 
 - Added attributes: Spell Damage Multiplier, Psi Regeneration Rate, and Psi Capacity

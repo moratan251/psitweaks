@@ -1,4 +1,4 @@
-// 1.20.1	2026-04-25T21:00:17.9116737	Recipes
+// 1.20.1	2026-05-02T16:50:12.7159228	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -122,6 +122,7 @@ a7816d639572950c2d161de2e330cb8cd8f9fcf0 data/psitweaks/advancements/recipes/mis
 6f7f71a8e06a2466d235270615e359b748498e1e data/psitweaks/advancements/recipes/misc/raw_antinite_from_block.json
 7fb295fe4ef8974bed363f3ab6f0118dc5a05e50 data/psitweaks/advancements/recipes/misc/supermassive_qio_drive.json
 bb7b29d1d45d6adb4f548a67a9f19bc0acf95aa1 data/psitweaks/advancements/recipes/misc/time_dilating_qio_drive.json
+e34840bc583d7eb729974a9d9dfc50ccf0f2cdd0 data/psitweaks/advancements/recipes/misc/transcendent_energy_cube.json
 3dd72c1ba715bc19d808c5b0f6f94166bc6355d6 data/psitweaks/advancements/recipes/misc/unrefined_flashmetal.json
 145ffbd03335b01c7f4fd715cf3ad11fe9f11fe2 data/psitweaks/advancements/recipes/tools/curios_controller.json
 445536b6c8e7f4c62b4b4206366359896bcf6fc0 data/psitweaks/advancements/recipes/tools/sorcery_booster.json
@@ -282,6 +283,7 @@ aaa1afac270935ef70b174af2db44b3e8705e842 data/psitweaks/recipes/sublimated_spell
 14748c6bcfdd46b7ff32c80067d45f1239c158a5 data/psitweaks/recipes/supermassive_qio_drive.json
 abaa836dcf7d435beca61336ae9ac190c0bc0d16 data/psitweaks/recipes/third_eye_device.json
 36be85705a99b1049f1bfdfbb26549ca4962c4a3 data/psitweaks/recipes/time_dilating_qio_drive.json
+88ff9f4c9d4219f64e426cf7d6518d0717fcb6f1 data/psitweaks/recipes/transcendent_energy_cube.json
 c70bb4930bd819dd37c76cfe4e66f735cec77747 data/psitweaks/recipes/transcendent_spell_bullet.json
 f486c71ebc079abd3c1e422770086b8569d65a2f data/psitweaks/recipes/transcendent_spell_bullet_charge.json
 5a34b48337e2a96f7bb1ad6bbfce6c7e9eb8fdc8 data/psitweaks/recipes/transcendent_spell_bullet_circle.json

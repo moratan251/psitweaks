@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
 import com.moratan251.psitweaks.common.tile.transmitter.TileEntityTranscendentCable;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -34,6 +35,11 @@ public class PsitweaksMekanismTileEntityTypes {
             TILE_ENTITY_TYPES.builder(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE, TileEntityTranscendentCable::new)
                     .serverTicker((level, pos, state, tile) -> TileEntityTransmitter.tickServer(level, pos, state, tile))
                     .build();
+
+    public static final TileEntityTypeRegistryObject<TileEntityTranscendentEnergyCube> TRANSCENDENT_ENERGY_CUBE =
+            TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE, TileEntityTranscendentEnergyCube::new,
+                    (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
+                    (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
 
     private PsitweaksMekanismTileEntityTypes() {
     }

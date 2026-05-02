@@ -4,11 +4,15 @@ import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
+import com.moratan251.psitweaks.common.tier.TranscendentEnergyCubeTier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes;
 import mekanism.common.lib.math.Pos3D;
@@ -88,6 +92,20 @@ public class PsitweaksMekanismBlockTypes {
                     .withGui(() -> PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR)
                     .withSound(MekanismSounds.LASER)
                     .withEnergyConfig(() -> PSIONIC_GENERATOR_MAX_OUTPUT, PsitweaksMekanismBlockTypes::psionicGeneratorStorage)
+                    .build();
+
+    public static final BlockTypeTile<TileEntityTranscendentEnergyCube> TRANSCENDENT_ENERGY_CUBE =
+            BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.TRANSCENDENT_ENERGY_CUBE, MekanismLang.DESCRIPTION_ENERGY_CUBE)
+                    .with(
+                            new AttributeStateFacing(),
+                            Attributes.INVENTORY,
+                            Attributes.SECURITY,
+                            Attributes.REDSTONE,
+                            Attributes.COMPARATOR,
+                            new AttributeTier<>(TranscendentEnergyCubeTier.TRANSCENDENT)
+                    )
+                    .withGui(() -> PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE)
+                    .withEnergyConfig(TileEntityTranscendentEnergyCube::getStorage)
                     .build();
 
     private PsitweaksMekanismBlockTypes() {

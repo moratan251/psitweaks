@@ -151,6 +151,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("block.psitweaks.material_mutator", "Material Mutator");
         add("block.psitweaks.psionic_generator", "Psi-Link Generator");
         add("block.psitweaks.transcendent_universal_cable", "Transcendent Universal Cable");
+        add("block.psitweaks.transcendent_energy_cube", "Transcendent Energy Cube");
         add("container.psitweaks.program_researcher", "Program Research Table");
         add("jei.psitweaks.program_research", "Program Research");
         add("jei.psitweaks.material_mutation", "Material Mutation");
@@ -159,6 +160,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.sculk_eroder", "Sculk Eroder");
         add("container.psitweaks.material_mutator", "Material Mutator");
         add("container.psitweaks.psionic_generator", "Psi-Link Generator");
+        add("container.psitweaks.transcendent_energy_cube", "Transcendent Energy Cube");
         add("description.psitweaks.sculk_eroder", "Corrodes stone, dirt, and sand type blocks into Sculk");
         add("description.psitweaks.material_mutator", "Mutates items into different materials using Psionic Echo Gas");
         add("description.psitweaks.psionic_generator", "Consumes the owner's Psi and converts it into FE while linked");
@@ -237,7 +239,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("infuse_type.psitweaks.infuse_psionic_echo", "Psinonic Echo");
         add("infuse_type.psitweaks.infuse_hypostasis", "Hypostasis Gem");
         add("gas.psitweaks.gas_psionic_echo", "Psionic Echo Gas");
-        add("gas.psitweaks.gas_peo_fuel", "PE-O Fuel");
+        add("gas.psitweaks.gas_peo_fuel", "ΨE-O Fuel");
         add("gas.psitweaks.gas_americium", "Americium");
         add("gas.psitweaks.gas_neptunium", "Neptunium");
         add("slurry.psitweaks.dirty_antinite", "Dirty Antinite Slurry");
@@ -388,8 +390,12 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It keeps spell programming at the center, then adds more ways to automate, amplify, store, and industrialize psionic power.$(p)The mod is intended for packs where Psi grows into a long-term progression system rather than ending at the base CAD and common bullets.");
         add("psi.book.page.psitweaks_overview.2", "Major additions include higher-tier spell bullets, new CAD assemblies and casting tools, psionic resource attributes, research and mutation machines, and a Psi-powered generator for Mekanism energy networks.$(p)Most systems are built to reward stronger Psi capacity, regeneration, and spell damage investment.");
         add("psi.book.entry.psitweaks_research", "Research");
-        add("psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. After obtaining the required program, the related spell piece becomes available according to the mod's unlock rules.");
+        add("psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed.");
         add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.");
+        add("psi.book.entry.psitweaks_magician", "Magician");
+        add("psi.book.page.psitweaks_magician.0", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades.");
+        add("psi.book.page.psitweaks_magician.1", "An unemployed villager can become a $(thing)Magician$(0) by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site.$(p)Place the assembler where a villager can reach it, just like other villager workstation blocks.");
+        add("psi.book.page.psitweaks_magician.2", "A Magician is also the source of the $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l). It drops when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l), and is used in caster-focused recipes.");
         add("psi.book.entry.psitweaks_mekanism_integration", "Mekanism Integration");
         add("psi.book.title.psitweaks_mekanism_integration.infusing", "Metallurgic Infusing");
         add("psi.book.title.psitweaks_mekanism_integration.mekasuit", "MekaSuit Modules");
@@ -411,6 +417,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_machine.psionic_generator", "A generator that links to its Mekanism owner and converts that player's Psi into energy while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Higher consumption gives higher output and drains the owner faster.");
         add("psi.book.page.psitweaks_machine.spellmachinery_casing", "A casing block used to execute advanced magic through machinery.");
         add("psi.book.page.psitweaks_machine.transcendent_universal_cable", "This is simply an upgraded version of Mekanism's Universal Cable. It has 128 times the performance of the Ultimate Cable, making it suitable for fusion reactor-class power output.");
+        add("psi.book.page.psitweaks_machine.transcendent_energy_cube", "This is simply an upgraded version of Mekanism's Energy Cube. It has 128 times the capacity and output performance of the Ultimate Energy Cube, making it suitable for buffering fission reactor-class power.");
         add("psi.book.entry.psitweaks_cad_and_gear", "CADs and Gear");
         add("psi.book.page.psitweaks_cad_and_gear.0", "Several PsiTweaks items make spellcasting easier to carry, automate, or specialize. Some are direct CAD tools, while others support bullet handling or improve a caster's combat role.");
         add("psi.book.page.psitweaks_cad_and_gear.1", "These recipes cover portable assembly, inline casting, spell storage, and caster support gear.");
@@ -622,6 +629,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("block.psitweaks.material_mutator", "物質変成機");
         add("block.psitweaks.psionic_generator", "サイリンク発電機");
         add("block.psitweaks.transcendent_universal_cable", "超越ユニバーサルケーブル");
+        add("block.psitweaks.transcendent_energy_cube", "超越エネルギーキューブ");
         add("container.psitweaks.program_researcher", "プログラム研究台");
         add("jei.psitweaks.program_research", "プログラム研究");
         add("jei.psitweaks.material_mutation", "物質変成");
@@ -656,6 +664,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.sculk_eroder", "スカルク侵食室");
         add("container.psitweaks.material_mutator", "物質変成機");
         add("container.psitweaks.psionic_generator", "サイリンク発電機");
+        add("container.psitweaks.transcendent_energy_cube", "超越エネルギーキューブ");
         add("description.psitweaks.sculk_eroder", "石・土・砂系のブロックをスカルクに加工します");
         add("description.psitweaks.material_mutator", "サイオニックエコーを用いて物質変成を行います。");
         add("description.psitweaks.psionic_generator", "所有者の Psi を消費し、リンク中のみ FE に変換します");
@@ -831,8 +840,12 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 術式プログラミングを中心に据えたまま, サイオニックな力を自動化, 増幅, 保存, 産業化する手段を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを長期的な成長要素として扱う構成を想定しています.");
         add("psi.book.page.psitweaks_overview.2", "主な追加要素は, 高位術式弾, 新しいCAD素体と詠唱補助具, Psiリソース属性, 研究・物質変成機械, そしてMekanismエネルギー網へ接続できるPsi駆動の発電機です.$(p)多くのシステムは, Psi保有量, Psi回復速度, 術式ダメージへの投資が意味を持つように作られています.");
         add("psi.book.entry.psitweaks_research", "研究");
-        add("psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. 必要なプログラムを入手すると, mod の解禁ルールに従って関連するスペルピースが使用可能になります.");
+        add("psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).");
         add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.");
+        add("psi.book.entry.psitweaks_magician", "魔法師");
+        add("psi.book.page.psitweaks_magician.0", "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. Psi機械を扱う村人であり, 魔法師向けの素材や強化装備と関係します.");
+        add("psi.book.page.psitweaks_magician.1", "無職の村人は, $(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l) を職業ブロックとして取得すると $(thing)魔法師$(0) になります.$(p)ほかの村人作業台と同じように, 村人が到達できる場所にCAD組立機を置いてください.");
+        add("psi.book.page.psitweaks_magician.2", "魔法師は $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) の入手元でもあります. 魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップし, 魔法師向けのレシピに使います.");
         add("psi.book.entry.psitweaks_mekanism_integration", "Mekanism連携");
         add("psi.book.title.psitweaks_mekanism_integration.infusing", "冶金吹き込み");
         add("psi.book.title.psitweaks_mekanism_integration.mekasuit", "MekaSuitモジュール");
@@ -854,6 +867,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_machine.psionic_generator", "Mekanismの所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.");
         add("psi.book.page.psitweaks_machine.spellmachinery_casing", "高度な魔法を機械により実行するための筐体ブロックです.");
         add("psi.book.page.psitweaks_machine.transcendent_universal_cable", "これは単純に, MekanismのUniversal Cableの強化版です. 究極ケーブルの128倍の性能を持ち, 核融合炉級の電力出力を扱うのに向きます.");
+        add("psi.book.page.psitweaks_machine.transcendent_energy_cube", "これは単純に, MekanismのEnergy Cubeの強化版です. 究極エネルギーキューブの128倍の容量と出力性能を持ち, 核分裂炉級の電力を蓄えるのに向きます.");
         add("psi.book.entry.psitweaks_cad_and_gear", "CADと装備");
         add("psi.book.page.psitweaks_cad_and_gear.0", "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります.");
         add("psi.book.page.psitweaks_cad_and_gear.1", "これらのレシピは, 携帯型組立, インライン詠唱, 術式保存, 魔法師支援装備の入口です.");

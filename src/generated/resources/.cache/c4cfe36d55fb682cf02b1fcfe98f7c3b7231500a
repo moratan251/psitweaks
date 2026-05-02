@@ -1,4 +1,4 @@
-// 1.20.1	2026-04-29T02:53:29.9070463	Block States: psitweaks
+// 1.20.1	2026-05-02T17:52:13.977509	Block States: psitweaks
 7b358be415c4e4c4ad576f8ad3a7726f773e3234 assets/psitweaks/blockstates/antinite_block.json
 f53b293bec50205ba0ccea724cd730ee3ca67767 assets/psitweaks/blockstates/cad_disassembler.json
 38e534e3e554cc654190cdc06dbeaa34c1590479 assets/psitweaks/blockstates/chaotic_psimetal_block.json
@@ -13,10 +13,12 @@ c0a1acc87d5560924dbff591678c6fe3f428f79f assets/psitweaks/blockstates/psionic_ge
 68da06d9ad67bf97af51db3f110fef8fbd9dd158 assets/psitweaks/blockstates/raw_antinite_block.json
 fdf2edafb6cf240b6ff34e35a679478866f97052 assets/psitweaks/blockstates/sculk_eroder.json
 2bb4391fe3b3e822535add075add2443bb1fbeff assets/psitweaks/blockstates/spellmachinery_casing.json
+a15d11ae6335732607b0d552b8f2c8e2382aca8f assets/psitweaks/blockstates/transcendent_energy_cube.json
 8b0ee3552c537c54dc99fceae13b0f67bdb56208 assets/psitweaks/blockstates/transcendent_universal_cable.json
 45e15769ab67c3e899695fe12b9727584c6c19d2 assets/psitweaks/models/block/antinite_block.json
 1a72529995a4977939003410b35280cd7effde9f assets/psitweaks/models/block/cad_disassembler.json
 6d5a7a0baf308f474e362595ee94cc732ce4b4fe assets/psitweaks/models/block/chaotic_psimetal_block.json
+37182c5f77edb584161603374f6cafac166e4c99 assets/psitweaks/models/block/energy_cube/transcendent.json
 d97f8ad4ba8344303c5fc3cb027452d9577a5626 assets/psitweaks/models/block/flashmetal_block.json
 920d6296b381e5c8296237dbd57f2441590f063c assets/psitweaks/models/block/heavy_psimetal_block.json
 8f6009c5d083a8ca9204665cdb3fe6046882c601 assets/psitweaks/models/block/material_mutator.json
@@ -47,4 +49,5 @@ df9d2483cade9f155ec8d3a90f877e272808af0a assets/psitweaks/models/item/material_m
 ba867fa0c2eab384fa564491f69cee7f4514212e assets/psitweaks/models/item/raw_antinite_block.json
 c18b409f858a064a37b5f072b573c00cb3fbee01 assets/psitweaks/models/item/sculk_eroder.json
 5e9e6b29a84fe8ebe3792a52faaa74db9882b6f1 assets/psitweaks/models/item/spellmachinery_casing.json
+7e7ef9be77fca87465bd430db3dac37d30fcbb77 assets/psitweaks/models/item/transcendent_energy_cube.json
 9b47534fd41549df1d1fc57cb6937095b181d11a assets/psitweaks/models/item/transcendent_universal_cable.json

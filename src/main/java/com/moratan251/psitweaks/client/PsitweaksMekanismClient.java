@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiPsionicGenerator;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
+import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import mekanism.client.ClientRegistrationUtil;
@@ -26,6 +27,7 @@ public class PsitweaksMekanismClient {
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.SCULK_ERODER, GuiSculkEroder::new);
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.MATERIAL_MUTATOR, GuiMaterialMutator::new);
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR, GuiPsionicGenerator::new);
+            ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE, GuiTranscendentEnergyCube::new);
         });
     }
 

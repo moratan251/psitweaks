@@ -73,6 +73,10 @@ public class PsiTweaksLootTableProvider implements DataProvider {
                         new NbtCopy("lastOwnerUUID", "lastOwnerUUID")
                 )
         ));
+        save(futures, output, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getBlock(), machineDrop(
+                PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getBlock(),
+                nbtPaths("Items")
+        ));
 
         dropSelf(futures, output, requiredBlock("psi", "psimetal_block"));
 

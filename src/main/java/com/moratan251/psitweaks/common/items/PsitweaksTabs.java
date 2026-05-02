@@ -2,9 +2,12 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -163,6 +166,12 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock());
                         pOutput.accept(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock());
                         pOutput.accept(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.getBlock());
+                        ItemStack emptyTranscendentEnergyCube = new ItemStack(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getBlock());
+                        pOutput.accept(emptyTranscendentEnergyCube);
+                        pOutput.accept(StorageUtils.getFilledEnergyVariant(
+                                emptyTranscendentEnergyCube.copy(),
+                                TileEntityTranscendentEnergyCube.getStorage()
+                        ));
 
 
                     })))
