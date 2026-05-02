@@ -425,6 +425,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) adds five CAD material lines: $(l:components/psitweaks_alloy_psion)Psionic Alloy$(/l), $(l:components/psitweaks_chaotic_psimetal)Chaotic Psimetal$(/l), $(l:components/psitweaks_flashmetal)Flashmetal$(/l), $(l:components/psitweaks_heavy_psimetal)Heavy Psimetal$(/l), and $(l:components/psitweaks_psycheonic_metal_ingot)Psycheonic Metal$(/l).$(p)Psionic Alloy CADs have excellent Efficiency but very small Potency. The other CAD assemblies improve in Efficiency and Potency as their materials move into later progression.");
         add("psi.book.entry.psitweaks_inline_casters", "Inline Casters");
         add("psi.book.entry.psitweaks_auto_casters", "Auto Casters");
+        add("psi.book.entry.psitweaks_moval_suit", "M.O.V.A.L. Suit");
         add("psi.book.page.psitweaks_item.blank_program", "Used as the base item for program research. Put it into the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) with the required materials to create a written program.$(p)It can also be crafted with an existing written program item to duplicate that program.");
         add("psi.book.page.psitweaks_item.philosophers_stone", "A reusable catalyst that provides interconversion recipes for metals, diamonds, coal, ender pearls, and other resources.");
         add("psi.book.page.psitweaks_item.spell_magazine", "Stores up to twelve spell bullets and swaps them with the matching slots of your equipped CAD when used.$(p)Use it as a portable loadout carrier when you need to change many bullets at once.");
@@ -438,6 +439,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_item.auto_casters.0", "Auto Casters can be equipped in Curios slots and automatically cast spells.$(p)With the Curios Controller, you can change their spell bullets in the same way as psimetal exosuit armor.");
         add("psi.book.page.psitweaks_item.auto_casters.1", "The tick model fires every tick, the second model fires every 0.9 seconds, and the custom tick model lets you set an interval from 1 to 1200 ticks by using the item.");
         add("psi.book.page.psitweaks_item.curios_controller", "Controls the selected bullet slot of socketable items equipped in Magic Calculation Area slots.$(p)Use it while Auto Casters are equipped as the Curios-side counterpart to the exosuit controller.");
+        add("psi.book.page.psitweaks_item.moval_suit.0", "The $(item)M.O.V.A.L. Suit$(0) is a high-grade Psi armor set crafted with $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) and $(item)Ebony Psimetal$(0). Each equipped piece supports spellcasters by increasing spell damage, Psi regeneration, and maximum Psi.$(p)Use it when you want armor that improves both survival and sustained spellcasting instead of only adding protection.");
+        add("psi.book.page.psitweaks_item.moval_suit.1", "Like Psi's exosuit armor, M.O.V.A.L. Suit pieces can trigger spells from armor events. The helmet accepts exosuit sensors, the normal leggings cast on tick, the Ivory leggings cast on second, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi.");
         add("psi.book.title.psitweaks_material.chaotic_psimetal", "Chaotic Psimetal Ingot");
         add("psi.book.title.psitweaks_material.psycheonic_metal_ingot", "Psycheonic Metal Ingot");
         add("psi.book.page.psitweaks_material.psionic_echo", "Made by infusing an $(item)Echo Shard$(0) with Psionic Echo infusion, or by using the $(l:psitweaks_spell_pieces/trick_supreme_infusion)$(o)Trick: Supreme Infusion$(0)$(/l).$(p)Used as the base catalyst for $(l:components/psitweaks_alloy_psionic_echo)echo-tier alloys$(/l), HDΨE materials, gas processing, and advanced psionic machinery.");
@@ -875,6 +878,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) はCAD素材として, $(l:components/psitweaks_alloy_psion)サイオニック合金$(/l), $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の5系統を追加します.$(p)サイオニック合金CADは効率が非常に優れる一方で, 規模は非常に小さいCADです. 他のCAD素体は, 後半の素材ほど効率と規模が相応に強化されています.");
         add("psi.book.entry.psitweaks_inline_casters", "インラインキャスター");
         add("psi.book.entry.psitweaks_auto_casters", "術式自動詠唱デバイス");
+        add("psi.book.entry.psitweaks_moval_suit", "M.O.V.A.L. スーツ");
         add("psi.book.page.psitweaks_item.blank_program", "プログラム研究の基礎素材です. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材と一緒に入れることで, 記入済みのプログラムを作成できます.$(p)既存の記入済みプログラムアイテムとクラフトすると, そのプログラムを複製することもできます.");
         add("psi.book.page.psitweaks_item.philosophers_stone", "再利用可能な触媒で, 金属, ダイヤモンド, 石炭やエンダーパールなどの相互変換レシピを提供します.");
         add("psi.book.page.psitweaks_item.spell_magazine", "最大12個の術式弾を保持し, 使用すると装備中のCADの対応スロットと入れ替えます.$(p)複数の術式弾をまとめて切り替えるための携帯用ロードアウトです.");
@@ -888,6 +892,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_item.auto_casters.0", "術式自動詠唱デバイスは, Curiosスロットに装備可能であり, 自動で術式を詠唱する装備です. $(p) キュリオスコントローラを用いることで、サイメタル外装と同じ要領で術式弾を変更できます.");
         add("psi.book.page.psitweaks_item.auto_casters.1", "tick型は毎tick, セカンド型は0.9秒ごとに詠唱します. カスタムtick型は, アイテム使用で1から1200tickの範囲から詠唱間隔を設定できます.");
         add("psi.book.page.psitweaks_item.curios_controller", "魔法演算領域スロットに装備したソケット対応アイテムの選択術式弾スロットを操作します.$(p)術式自動詠唱デバイスを装備しているときに使う, Curios版の外装コントローラです.");
+        add("psi.book.page.psitweaks_item.moval_suit.0", "$(item)M.O.V.A.L. スーツ$(0) は, $(l:components/psitweaks_heavy_psimetal)$(o)$(item)ヘビーサイメタル$(0)$(/l) と $(item)エボニーサイメタル$(0) を使って製作する高性能なPsi系防具です. 各部位を装備するごとに, 術式ダメージ, Psi回復速度, 最大Psiを強化します.$(p)単なる防御力だけでなく, 継続的な詠唱能力も伸ばしたいときに使う装備です.");
+        add("psi.book.page.psitweaks_item.moval_suit.1", "Psiの外装防具と同様に, M.O.V.A.L. スーツの各部位は防具イベントから術式を発動できます. ヘルメットは外装センサーに対応し, 通常レギンスはtick時, Ivory版レギンスはsecond時, ブーツはjump時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復速度+5, 最大Psi+500を付与します.");
         add("psi.book.title.psitweaks_material.chaotic_psimetal", "カオティックサイメタル");
         add("psi.book.title.psitweaks_material.psycheonic_metal_ingot", "プシオニックメタル");
         add("psi.book.page.psitweaks_material.psionic_echo", "$(item)残響の欠片$(0) にサイオニックエコーを注入するか, $(l:psitweaks_spell_pieces/trick_supreme_infusion)$(o)作動式: 超位注入$(0)$(/l)で作成します.$(p)$(l:components/psitweaks_alloy_psionic_echo)感応系合金$(/l), HDΨE 素材, 気体加工, 上位のサイオニック機械の基礎触媒です.");
