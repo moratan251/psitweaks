@@ -18,8 +18,11 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +35,7 @@ import vazkii.psi.common.core.handler.PlayerDataHandler.PlayerData;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TileEntityPsionicGenerator extends TileEntityMekanism {
+public class TileEntityPsionicGenerator extends TileEntityConfigurableMachine {
 
     private static final String NBT_LINK_ACTIVE = "linkActive";
     private static final String NBT_CONSUME_PSI = "consumePsiPerTick";
@@ -42,6 +45,17 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
     private static final int MAX_CONSUME_PSI = 100;
     private static final long JOULES_PER_PSI_NUMERATOR = 125;
     private static final long JOULES_PER_PSI_DENOMINATOR = 2;
+    private static final long AUTO_EJECT_FE_PER_TICK = 6_400;
+    private static final FloatingLong AUTO_EJECT_RATE_JOULES = FloatingLong.createConst(AUTO_EJECT_FE_PER_TICK)
+            .multiply(5)
+            .divide(2);
+    private static final RelativeSide[] ENERGY_OUTPUT_SIDES = {
+            RelativeSide.BACK,
+            RelativeSide.LEFT,
+            RelativeSide.RIGHT,
+            RelativeSide.TOP,
+            RelativeSide.BOTTOM
+    };
 
     private BasicEnergyContainer energyContainer;
     private EnergyInventorySlot energySlot;
@@ -57,11 +71,20 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
 
     public TileEntityPsionicGenerator(BlockPos pos, BlockState state) {
         super(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, pos, state);
+        configComponent = new TileComponentConfig(this, TransmissionType.ENERGY);
+        configComponent.setupOutputConfig(TransmissionType.ENERGY, energyContainer, ENERGY_OUTPUT_SIDES)
+                .addDisabledSides(RelativeSide.FRONT);
+        ejectorComponent = new TileComponentEjector(this, TileEntityPsionicGenerator::getAutoEjectRateJoules)
+                .setOutputData(configComponent, TransmissionType.ENERGY)
+                .setCanEject(type -> MekanismUtils.canFunction(this));
     }
 
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(
+                this::getDirection,
+                () -> configComponent
+        );
         energyContainer = BasicEnergyContainer.create(getConfiguredEnergyCapacity(), BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, listener);
         builder.addContainer(energyContainer);
         return builder.build();
@@ -267,6 +290,10 @@ public class TileEntityPsionicGenerator extends TileEntityMekanism {
         return FloatingLong.createConst(consumePsiPerTick)
                 .multiply(JOULES_PER_PSI_NUMERATOR)
                 .divide(JOULES_PER_PSI_DENOMINATOR);
+    }
+
+    private static FloatingLong getAutoEjectRateJoules() {
+        return AUTO_EJECT_RATE_JOULES;
     }
 
     private static FloatingLong getConfiguredEnergyCapacity() {
