@@ -99,44 +99,47 @@ dependencies {
     implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("curse.maven:jei-238222:6600311")
     implementation fg.deobf("curse.maven:just-enough-professions-jep-417645:4587024")
-    //implementation fg.deobf("curse.maven:emi-580555:6420945")
-    //implementation fg.deobf("curse.maven:emi-professions-emip-1065904:7279969")
-    //implementation fg.deobf("curse.maven:projecte-226410:4901949")
     implementation fg.deobf("curse.maven:mekanism-268560:6552911")
     implementation fg.deobf("curse.maven:mekanism-generators-268566:6552914")
-    implementation fg.deobf("curse.maven:psionic-utilities-611991:6549076")
-    implementation fg.deobf("curse.maven:untranslated-items-401770:4711897")
-    implementation fg.deobf("curse.maven:borderless-378979:4575494")
-    implementation fg.deobf("curse.maven:server-tab-info-291788:4594932")
-    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
-    implementation fg.deobf("curse.maven:selene-499980:6933139")
-    implementation fg.deobf("curse.maven:ticex-tinkers-construct-ex-1242469:7515155")
-    implementation fg.deobf("curse.maven:tinkers-construct-74072:7449219")
-    implementation fg.deobf("curse.maven:mantle-74924:7563777")
     implementation fg.deobf("curse.maven:moffs-addonapi-dynload-1242459:7441442")
-    implementation fg.deobf("curse.maven:jade-324717:6271651")
-    implementation fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
-    // implementation fg.deobf("curse.maven:geckolib-388172:6920925")
-    // implementation fg.deobf("curse.maven:ars-nouveau-401955:6688854")
-    // compileOnly
-    implementation fg.deobf("curse.maven:applied-energistics-2-223794:6852919")
-    implementation fg.deobf("curse.maven:guideme-1173950:6942062")
     implementation fg.deobf("curse.maven:psiex-1408745:7638676")
-    implementation fg.deobf("curse.maven:re-avaritia-623969:7525231")
+    implementation fg.deobf("curse.maven:mantle-74924:7563777")
+    implementation fg.deobf("curse.maven:tinkers-construct-74072:7449219")
 
-    implementation fg.deobf("curse.maven:botania-225643:6870713")
-    implementation fg.deobf("curse.maven:placebo-283644:6274231")
-    implementation fg.deobf("curse.maven:apotheosis-313970:6461960")
-    implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+
+
+    runtimeOnly fg.deobf("curse.maven:untranslated-items-401770:4711897")
+    runtimeOnly fg.deobf("curse.maven:borderless-378979:4575494")
+    runtimeOnly fg.deobf("curse.maven:server-tab-info-291788:4594932")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
+    runtimeOnly fg.deobf("curse.maven:selene-499980:6933139")
+    runtimeOnly fg.deobf("curse.maven:ticex-tinkers-construct-ex-1242469:7515155")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:6271651")
+    runtimeOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
+    runtimeOnly fg.deobf("curse.maven:psionic-utilities-611991:6549076")
+    // runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
+    // runtimeOnly fg.deobf("curse.maven:ars-nouveau-401955:6688854")
+    // runtimeOnly fg.deobf("curse.maven:emi-580555:6420945")
+    // runtimeOnly fg.deobf("curse.maven:emi-professions-emip-1065904:7279969")
+    // runtimeOnly fg.deobf("curse.maven:projecte-226410:4901949")
+    runtimeOnly fg.deobf("curse.maven:applied-energistics-2-223794:6852919")
+    runtimeOnly fg.deobf("curse.maven:guideme-1173950:6942062")
+
+    runtimeOnly fg.deobf("curse.maven:re-avaritia-623969:7525231")
+
+    runtimeOnly fg.deobf("curse.maven:botania-225643:6870713")
+    runtimeOnly fg.deobf("curse.maven:placebo-283644:6274231")
+    runtimeOnly fg.deobf("curse.maven:apotheosis-313970:6461960")
+    runtimeOnly fg.deobf("curse.maven:apothic-attributes-898963:5634071")
 
     if (!isRunDataInvocation) {
-        implementation fg.deobf("curse.maven:konkrete-410295:5028413")
-        implementation fg.deobf("curse.maven:just-zoom-561885:6290336")
+        runtimeOnly fg.deobf("curse.maven:konkrete-410295:5028413")
+        runtimeOnly fg.deobf("curse.maven:just-zoom-561885:6290336")
 
     } else {
         logger.lifecycle("Skipping client-only dependencies for runData")
     }
-    implementation fg.deobf("curse.maven:neat-238372:5838485")
+    runtimeOnly fg.deobf("curse.maven:neat-238372:5838485")
 
 
 
