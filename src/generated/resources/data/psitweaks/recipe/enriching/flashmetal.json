@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "psitweaks:unrefined_flashmetal"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:flashmetal"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 10,
+    "chemical": "psitweaks:infuse_psionic_echo"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:netherite_scrap"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:heavy_psimetal_scrap"
+  },
+  "per_tick_usage": false
+}

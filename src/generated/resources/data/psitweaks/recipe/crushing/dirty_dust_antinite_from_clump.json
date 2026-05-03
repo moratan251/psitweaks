@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "mekanism:clumps/antinite"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:dirty_dust_antinite"
+  }
+}

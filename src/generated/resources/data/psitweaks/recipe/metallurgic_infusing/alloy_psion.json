@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 40,
+    "chemical": "psitweaks:infuse_psigem"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "mekanism:alloy_atomic"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:alloy_psion"
+  },
+  "per_tick_usage": false
+}

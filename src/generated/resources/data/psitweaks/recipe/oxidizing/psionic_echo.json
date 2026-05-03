@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "count": 1,
+    "item": "psitweaks:psionic_echo"
+  },
+  "output": {
+    "amount": 1000,
+    "id": "psitweaks:gas_psionic_echo"
+  }
+}

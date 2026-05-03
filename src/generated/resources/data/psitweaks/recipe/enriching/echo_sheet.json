@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 3,
+    "item": "psitweaks:echo_pellet"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:echo_sheet"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "psitweaks:hypostasis_gem"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:enriched_hypostasis"
+  }
+}

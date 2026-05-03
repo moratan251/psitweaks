@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "psitweaks:infuse_psigem"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:redstone"
+  },
+  "output": {
+    "count": 1,
+    "id": "psi:psidust"
+  },
+  "per_tick_usage": false
+}

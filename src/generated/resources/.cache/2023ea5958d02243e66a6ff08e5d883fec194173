@@ -1,0 +1,5 @@
+// 1.21.1	2026-05-03T23:00:22.7720942	PsiTweaks worldgen
+31986ff2a51404e93b7e3756801c788125c0a3c2 data/psitweaks/neoforge/biome_modifier/add_ore_antinite.json
+fb0b25668f1e615d890d1707ba840f152ab93135 data/psitweaks/tags/worldgen/biome/has_antinite_ore.json
+902072e4385fa817502405230352c1a0d1af0173 data/psitweaks/worldgen/configured_feature/ore_antinite.json
+b58b416c4bbd363f4d0e3ec64b986e7d3af227f0 data/psitweaks/worldgen/placed_feature/ore_antinite.json

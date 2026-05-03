@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 320,
+    "chemical": "psitweaks:infuse_ivory"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "psi:psimetal"
+  },
+  "output": {
+    "count": 1,
+    "id": "psi:ivory_psimetal"
+  },
+  "per_tick_usage": false
+}

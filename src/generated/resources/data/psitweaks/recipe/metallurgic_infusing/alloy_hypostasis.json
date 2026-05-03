@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 40,
+    "chemical": "psitweaks:infuse_hypostasis"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "psitweaks:alloy_psionic_echo"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:alloy_hypostasis"
+  },
+  "per_tick_usage": false
+}

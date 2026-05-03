@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "tag": "mekanism:dirty_dusts/antinite"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:antinite_dust"
+  }
+}

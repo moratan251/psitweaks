@@ -1,6 +1,20 @@
 package com.moratan251.psitweaks;
 
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.items.PsitweaksTabs;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksTagsProvider;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksWorldgenProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
 import com.mojang.logging.LogUtils;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -12,6 +26,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
@@ -30,9 +45,12 @@ public class Psitweaks {
         // TODO(port): Re-enable Mekanism IMC after PsitweaksModules is ported.
         // modEventBus.addListener(this::enqueueIMC);
 
+        PsitweaksItems.register(modEventBus);
+        PsitweaksBlocks.register(modEventBus);
+        PsitweaksChemicals.register(modEventBus);
+        PsitweaksTabs.register(modEventBus);
+
         // TODO(port): Re-enable registries as their 1.21.1 NeoForge implementations are ported.
-        // PsitweaksItems.register(modEventBus);
-        // PsitweaksBlocks.register(modEventBus);
         // PsitweaksBlockEntityTypes.register(modEventBus);
         // PsitweaksMekanismBlocks.register(modEventBus);
         // PsitweaksMekanismTileEntityTypes.register(modEventBus);
@@ -46,13 +64,11 @@ public class Psitweaks {
         // PsitweaksSlurries.register(modEventBus);
         // registerTConstructCompat(modEventBus);
         // PsitweaksModules.MODULES.register(modEventBus);
-        // PsitweaksTabs.register(modEventBus);
         // PsitweaksEffects.register(modEventBus);
         // PsitweaksAttributes.register(modEventBus);
         // PsitweaksEntities.register(modEventBus);
 
-        // TODO(port): Re-enable data providers after datagen classes are ported.
-        // modEventBus.addListener(this::registerProviders);
+        modEventBus.addListener(this::registerProviders);
 
         NeoForge.EVENT_BUS.register(this);
 
@@ -66,6 +82,21 @@ public class Psitweaks {
 
         // TODO(port): Re-enable after NetworkHandler is ported.
         // NetworkHandler.registerMessages();
+    }
+
+    private void registerProviders(GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+
+        generator.addProvider(event.includeClient(), new PsitweaksBlockStateProvider(packOutput));
+        generator.addProvider(event.includeClient(), new PsitweaksItemModelProvider(packOutput));
+        generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));
+        generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
+        generator.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiTweaksTagsProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiTweaksMekanismRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiTweaksWorldgenProvider(packOutput));
     }
 
     @SubscribeEvent

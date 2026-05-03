@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "S": {
+      "item": "psitweaks:echo_sheet"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "ACA",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:hypostasis_control_circuit"
+  }
+}

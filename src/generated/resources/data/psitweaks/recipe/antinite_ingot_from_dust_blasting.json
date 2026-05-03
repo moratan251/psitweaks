@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.3,
+  "ingredient": {
+    "item": "psitweaks:antinite_dust"
+  },
+  "result": {
+    "count": 1,
+    "id": "psitweaks:antinite_ingot"
+  }
+}

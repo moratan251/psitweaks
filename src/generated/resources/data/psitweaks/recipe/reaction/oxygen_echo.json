@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:reaction",
+  "chemical_input": {
+    "amount": 100,
+    "chemical": "psitweaks:gas_psionic_echo"
+  },
+  "chemical_output": {
+    "amount": 300,
+    "id": "psitweaks:gas_peo_fuel"
+  },
+  "duration": 100,
+  "fluid_input": {
+    "amount": 200,
+    "tag": "c:oxygen"
+  },
+  "item_input": {
+    "count": 4,
+    "item": "mekanism:substrate"
+  },
+  "item_output": {
+    "count": 1,
+    "id": "psitweaks:echo_pellet"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "item": "psitweaks:enriched_ivory"
+  },
+  "output": {
+    "amount": 80,
+    "id": "psitweaks:infuse_ivory"
+  }
+}

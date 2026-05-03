@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 10,
+    "chemical": "psitweaks:infuse_hypostasis"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "psitweaks:heavy_psimetal"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:psycheonic_metal_nugget"
+  },
+  "per_tick_usage": false
+}

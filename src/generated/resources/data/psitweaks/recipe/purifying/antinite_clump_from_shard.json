@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:oxygen"
+  },
+  "item_input": {
+    "count": 1,
+    "tag": "mekanism:shards/antinite"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:clump_antinite"
+  },
+  "per_tick_usage": true
+}

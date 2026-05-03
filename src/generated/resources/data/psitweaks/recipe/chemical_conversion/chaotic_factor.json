@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "item": "psitweaks:chaotic_factor"
+  },
+  "output": {
+    "amount": 80,
+    "id": "psitweaks:infuse_chaotic_factor"
+  }
+}

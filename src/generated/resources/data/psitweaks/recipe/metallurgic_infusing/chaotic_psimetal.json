@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 40,
+    "chemical": "psitweaks:infuse_chaotic_factor"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "psi:psimetal"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:chaotic_psimetal"
+  },
+  "per_tick_usage": false
+}

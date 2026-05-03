@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "psitweaks:infuse_psionic_echo"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:echo_shard"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:psionic_echo"
+  },
+  "per_tick_usage": false
+}
