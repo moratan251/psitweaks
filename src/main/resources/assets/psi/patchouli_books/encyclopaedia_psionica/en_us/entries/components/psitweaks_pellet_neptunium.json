@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.pellet_neptunium",
+  "category": "psi:components",
+  "icon": "psitweaks:pellet_neptunium",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.pellet_neptunium",
+      "item": "psitweaks:pellet_neptunium",
+      "link_recipe": true
+    }
+  ]
+}

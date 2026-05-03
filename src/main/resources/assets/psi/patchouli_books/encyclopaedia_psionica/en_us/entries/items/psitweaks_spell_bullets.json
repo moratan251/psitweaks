@@ -1,0 +1,26 @@
+{
+  "name": "psi.book.entry.psitweaks_spell_bullets",
+  "category": "psi:items",
+  "icon": "psitweaks:transcendent_spell_bullet",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spell_bullets.0"
+    },
+    {
+      "type": "crafting_multi",
+      "text": "psi.book.page.psitweaks_spell_bullets.1",
+      "recipes": [
+        "psitweaks:advanced_spell_bullet",
+        "psitweaks:resonant_spell_bullet",
+        "psitweaks:sublimated_spell_bullet",
+        "psitweaks:awakened_spell_bullet",
+        "psitweaks:transcendent_spell_bullet"
+      ]
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spell_bullets.2"
+    }
+  ]
+}

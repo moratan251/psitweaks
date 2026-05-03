@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.portable_cad_assembler",
+  "category": "psi:items",
+  "icon": "psitweaks:portable_cad_assembler",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.portable_cad_assembler",
+      "item": "psitweaks:portable_cad_assembler",
+      "link_recipe": true
+    }
+  ]
+}

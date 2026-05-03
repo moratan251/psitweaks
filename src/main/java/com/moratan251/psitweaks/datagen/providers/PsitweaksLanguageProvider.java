@@ -52,6 +52,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addChemical(root, "gas_peo_fuel", "PEO Fuel", "PEO燃料");
         addChemical(root, "dirty_antinite", "Dirty Antinite Slurry", "汚れたアンティナイトの懸濁液");
         addChemical(root, "clean_antinite", "Clean Antinite Slurry", "純粋なアンティナイトの懸濁液");
+        addSpellPiece(
+                root,
+                "trick_supreme_infusion",
+                "Trick: Supreme Infusion",
+                "Infuse Echo Shards into Psionic Echoes",
+                "作動式: 超位注入",
+                "残響の欠片に注入してサイオニックエコーにします"
+        );
 
         return root;
     }
@@ -60,6 +68,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("chemical.psitweaks." + id, switch (locale) {
             case "ja_jp" -> jaJp;
             default -> enUs;
+        });
+    }
+
+    private void addSpellPiece(JsonObject root, String id, String enUs, String enUsDesc, String jaJp, String jaJpDesc) {
+        root.addProperty("psitweaks.spellpiece." + id, switch (locale) {
+            case "ja_jp" -> jaJp;
+            default -> enUs;
+        });
+        root.addProperty("psitweaks.spellpiece." + id + ".desc", switch (locale) {
+            case "ja_jp" -> jaJpDesc;
+            default -> enUsDesc;
         });
     }
 }

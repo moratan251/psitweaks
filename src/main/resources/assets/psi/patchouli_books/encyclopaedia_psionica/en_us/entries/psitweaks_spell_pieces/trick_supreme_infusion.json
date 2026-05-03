@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_supreme_infusion",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_supreme_infusion.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_supreme_infusion"
+    }
+  ]
+}

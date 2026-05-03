@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.echo_sheet",
+  "category": "psi:components",
+  "icon": "psitweaks:echo_sheet",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.echo_sheet",
+      "item": "psitweaks:echo_sheet",
+      "link_recipe": true
+    }
+  ]
+}

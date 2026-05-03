@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.magicians_brain",
+  "category": "psi:components",
+  "icon": "psitweaks:magicians_brain",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.magicians_brain",
+      "item": "psitweaks:magicians_brain",
+      "link_recipe": true
+    }
+  ]
+}

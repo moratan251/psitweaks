@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_material_mutation",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_material_mutation.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_material_mutation"
+    }
+  ]
+}

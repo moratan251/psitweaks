@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.sorcery_booster",
+  "category": "psi:items",
+  "icon": "psitweaks:sorcery_booster",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.sorcery_booster",
+      "item": "psitweaks:sorcery_booster",
+      "link_recipe": true
+    }
+  ]
+}

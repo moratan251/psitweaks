@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_hardening",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_hardening.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_hardening"
+    }
+  ]
+}

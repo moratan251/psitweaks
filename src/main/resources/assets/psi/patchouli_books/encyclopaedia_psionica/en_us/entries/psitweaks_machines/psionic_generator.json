@@ -1,0 +1,13 @@
+{
+  "name": "block.psitweaks.psionic_generator",
+  "category": "psi:psitweaks_machines",
+  "icon": "psitweaks:psionic_generator",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.psionic_generator",
+      "item": "psitweaks:psionic_generator",
+      "link_recipe": true
+    }
+  ]
+}

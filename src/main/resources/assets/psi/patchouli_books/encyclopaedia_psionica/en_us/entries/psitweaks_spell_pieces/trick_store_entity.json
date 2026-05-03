@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_store_entity",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_store_entity.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_store_entity"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "psi.book.title.psitweaks_material.psycheonic_metal_ingot",
+  "category": "psi:components",
+  "icon": "psitweaks:psycheonic_metal_ingot",
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "psi.book.title.psitweaks_material.psycheonic_metal_ingot",
+      "text": "psi.book.page.psitweaks_material.psycheonic_metal_ingot",
+      "item": "psitweaks:psycheonic_metal_ingot",
+      "link_recipe": true
+    }
+  ]
+}

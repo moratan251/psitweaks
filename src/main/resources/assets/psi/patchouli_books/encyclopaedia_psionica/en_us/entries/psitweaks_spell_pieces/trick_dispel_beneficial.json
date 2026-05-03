@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_dispel_beneficial",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_dispel_beneficial.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial"
+    }
+  ]
+}

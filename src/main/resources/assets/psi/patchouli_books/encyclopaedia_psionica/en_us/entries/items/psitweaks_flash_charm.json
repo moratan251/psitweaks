@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.flash_charm",
+  "category": "psi:items",
+  "icon": "psitweaks:flash_charm",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.flash_charm",
+      "item": "psitweaks:flash_charm",
+      "link_recipe": true
+    }
+  ]
+}

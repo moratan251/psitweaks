@@ -1,9 +1,11 @@
 package com.moratan251.psitweaks;
 
+import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
@@ -25,6 +27,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -49,6 +52,10 @@ public class Psitweaks {
         PsitweaksBlocks.register(modEventBus);
         PsitweaksChemicals.register(modEventBus);
         PsitweaksTabs.register(modEventBus);
+        PsitweaksSpells.register(modEventBus);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            PsitweaksClientSpells.register(modEventBus);
+        }
 
         // TODO(port): Re-enable registries as their 1.21.1 NeoForge implementations are ported.
         // PsitweaksBlockEntityTypes.register(modEventBus);

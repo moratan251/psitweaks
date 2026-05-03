@@ -58,5 +58,7 @@
   "item.psitweaks.psycheonic_metal_nugget": "プシオニックメタルナゲット",
   "item.psitweaks.raw_antinite": "アンティナイトの原石",
   "item.psitweaks.shard_antinite": "アンティナイトの欠片",
-  "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル"
+  "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル",
+  "psitweaks.spellpiece.trick_supreme_infusion": "作動式: 超位注入",
+  "psitweaks.spellpiece.trick_supreme_infusion.desc": "残響の欠片に注入してサイオニックエコーにします"
 }

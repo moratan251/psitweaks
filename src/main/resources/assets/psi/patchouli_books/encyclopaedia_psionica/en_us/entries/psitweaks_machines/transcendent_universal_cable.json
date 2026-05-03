@@ -1,0 +1,13 @@
+{
+  "name": "block.psitweaks.transcendent_universal_cable",
+  "category": "psi:psitweaks_machines",
+  "icon": "psitweaks:transcendent_universal_cable",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.transcendent_universal_cable",
+      "item": "psitweaks:transcendent_universal_cable",
+      "link_recipe": true
+    }
+  ]
+}

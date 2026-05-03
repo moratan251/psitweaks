@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_cure_radiation",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_cure_radiation.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_cure_radiation"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.echo_pellet",
+  "category": "psi:components",
+  "icon": "psitweaks:echo_pellet",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.echo_pellet",
+      "item": "psitweaks:echo_pellet",
+      "link_recipe": true
+    }
+  ]
+}

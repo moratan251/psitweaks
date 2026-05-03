@@ -58,5 +58,7 @@
   "item.psitweaks.psycheonic_metal_nugget": "Psycheonic Metal Nugget",
   "item.psitweaks.raw_antinite": "Raw Antinite",
   "item.psitweaks.shard_antinite": "Antinite Shard",
-  "item.psitweaks.unrefined_flashmetal": " Unrefined Flashmetal"
+  "item.psitweaks.unrefined_flashmetal": " Unrefined Flashmetal",
+  "psitweaks.spellpiece.trick_supreme_infusion": "Trick: Supreme Infusion",
+  "psitweaks.spellpiece.trick_supreme_infusion.desc": "Infuse Echo Shards into Psionic Echoes"
 }

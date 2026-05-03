@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.jade",
+  "category": "psi:components",
+  "icon": "psitweaks:jade",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.jade",
+      "item": "psitweaks:jade",
+      "link_recipe": true
+    }
+  ]
+}

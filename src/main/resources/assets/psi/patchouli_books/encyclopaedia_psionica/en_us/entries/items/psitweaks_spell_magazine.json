@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.spell_magazine",
+  "category": "psi:items",
+  "icon": "psitweaks:spell_magazine",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.spell_magazine",
+      "item": "psitweaks:spell_magazine",
+      "link_recipe": true
+    }
+  ]
+}
