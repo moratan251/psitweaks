@@ -1,251 +1,120 @@
 package com.moratan251.psitweaks;
 
-import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
-import com.moratan251.psitweaks.client.renderer.EmptyRenderer;
-import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
-import mekanism.api.MekanismIMC;
-import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
-import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
-import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
-import com.moratan251.psitweaks.common.chemicals.PsitweaksSlurries;
-import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.handler.NetworkHandler;
-import com.moratan251.psitweaks.common.items.PsitweaksItems;
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
-import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
-import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
-import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
-import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
-import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.mojang.logging.LogUtils;
-import com.moratan251.psitweaks.common.items.PsitweaksTabs;
-//import com.moratan251.psitweaks.common.registries.PsitweaksModules;
-import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
-import com.moratan251.psitweaks.common.proxy.ServerProxyPsitweaks;
-import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
-import com.moratan251.psitweaks.common.registries.PsitweaksModules;
-import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
-import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
-import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
-import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
-import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
-import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
-import com.moratan251.psitweaks.datagen.providers.PsiTweaksTagsProvider;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
-import vazkii.psi.api.PsiAPI;
-import vazkii.psi.api.spell.ISpellAcceptor;
 
-import java.lang.reflect.Method;
-
-import static net.minecraftforge.fml.loading.FMLEnvironment.dist;
-
-
-// The value here should match an entry in the META-INF/mods.toml file
-@Mod(Psitweaks.MOD_ID)
+// The value here should match an entry in the META-INF/neoforge.mods.toml file
+@Mod(Psitweaks.MODID)
 public class Psitweaks {
     // Define mod id in a common place for everything to reference
-    public static final String MOD_ID = "psitweaks";
+    public static final String MODID = "psitweaks";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static IProxyPsitweaks proxyPsitweaks;
-    // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
+    // Create a Deferred Register to hold Blocks which will all be registered under the "psitweaks" namespace
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    // Create a Deferred Register to hold Items which will all be registered under the "psitweaks" namespace
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "psitweaks" namespace
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    @SuppressWarnings("removal")
-    public Psitweaks(FMLJavaModLoadingContext context) {
-        IEventBus modEventBus = context.getModEventBus();
+    // Creates a new Block with the id "psitweaks:example_block", combining the namespace and path
+    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
+    // Creates a new BlockItem with the id "psitweaks:example_block", combining the namespace and path
+    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PsitweaksConfig.COMMON_SPEC, "psitweaks-common.toml");
+    // Creates a new food item with the id "psitweaks:example_id", nutrition 1 and saturation 2
+    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder().alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
+    // Creates a creative tab with the id "psitweaks:example_tab" for the example item, that is placed after the combat tab
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.psitweaks")).withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> EXAMPLE_ITEM.get().getDefaultInstance()).displayItems((parameters, output) -> {
+        output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+    }).build());
+
+    // The constructor for the mod class is the first code that is run when your mod is loaded.
+    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+    public Psitweaks(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::enqueueIMC);
 
+        // Register the Deferred Register to the mod event bus so blocks get registered
+        BLOCKS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so items get registered
+        ITEMS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so tabs get registered
+        CREATIVE_MODE_TABS.register(modEventBus);
 
-        PsitweaksItems.register(modEventBus);
-        PsitweaksBlocks.register(modEventBus);
-        PsitweaksBlockEntityTypes.register(modEventBus);
-        PsitweaksMekanismBlocks.register(modEventBus);
-        PsitweaksMekanismTileEntityTypes.register(modEventBus);
-        PsitweaksMekanismContainerTypes.register(modEventBus);
-        ModMenuTypes.MENUS.register(modEventBus);
-        PsitweaksRecipeTypes.register(modEventBus);
-        PsitweaksRecipeSerializers.register(modEventBus);
-        PsitweaksVillagers.register(modEventBus);
-        PsitweaksInfuseTypes.register(modEventBus);
-        PsitweaksGases.register(modEventBus);
-        PsitweaksSlurries.register(modEventBus);
-        registerTConstructCompat(modEventBus);
-        PsitweaksModules.MODULES.register(modEventBus);
-
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        // Register ourselves for server and other game events we are interested in.
+        // Note that this is necessary if and only if we want *this* class (Psitweaks) to respond directly to events.
+        // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
+        NeoForge.EVENT_BUS.register(this);
 
         // Register the item to a creative tab
-        PsitweaksTabs.register(modEventBus);
+        modEventBus.addListener(this::addCreative);
 
-        PsitweaksEffects.register(modEventBus);
-        PsitweaksAttributes.register(modEventBus);
-
-        modEventBus.addListener(this::registerProviders);
-
-        PsitweaksEntities.register(modEventBus);
-
-        proxyPsitweaks = (IProxyPsitweaks) (dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks());
-        proxyPsitweaks.registerHandlers();
-
-        //ComponentStats.onCommonSetup(modEventBus);
-
-
+        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        // Some common setup code
+        LOGGER.info("HELLO FROM COMMON SETUP");
 
-        NetworkHandler.registerMessages();
+        if (Config.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
 
+        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
+
+        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
-    private void enqueueIMC(final InterModEnqueueEvent event) {
-        MekanismIMC.addMekaSuitBodyarmorModules(
-                PsitweaksModules.PSYON_SUPPLYING_UNIT,
-                PsitweaksModules.PSYON_CAPACITY_UNIT
-        );
-        MekanismIMC.addMekaSuitHelmetModules(PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT);
+    // Add the example block item to the building blocks tab
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
     }
-
-    private static void registerTConstructCompat(IEventBus modEventBus) {
-        if (!ModList.get().isLoaded("tconstruct")) {
-            return;
-        }
-
-        try {
-            Class<?> compatClass = Class.forName("com.moratan251.psitweaks.compat.tconstruct.PsitweaksTConstructCompat");
-            Method registerMethod = compatClass.getMethod("register", IEventBus.class);
-            registerMethod.invoke(null, modEventBus);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Tinker's Construct is not installed or available", e);
-        }
-    }
-
-
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-
+        // Do something when the server starts
+        LOGGER.info("HELLO from server starting");
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @Mod.EventBusSubscriber(modid = "psitweaks", bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
-        private static final ResourceLocation ACTIVE_PROPERTY = Psitweaks.location("active");
-
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            registerActiveSpellProperties(
-                    PsitweaksItems.FLASH_RING,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_MINE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_MINE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_LOOP,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_MINE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_MINE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE
-            );
+            // Some client setup code
+            LOGGER.info("HELLO FROM CLIENT SETUP");
+            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
-
-        @SafeVarargs
-        private static void registerActiveSpellProperties(RegistryObject<? extends Item>... items) {
-            for (RegistryObject<? extends Item> item : items) {
-                ItemProperties.register(item.get(), ACTIVE_PROPERTY,
-                        (stack, world, entity, seed) -> hasSpell(stack));
-            }
-        }
-
-        private static float hasSpell(ItemStack stack) {
-            return stack.getCapability(PsiAPI.SPELL_ACCEPTOR_CAPABILITY)
-                    .map(ISpellAcceptor::containsSpell)
-                    .orElse(false) ? 1f : 0f;
-        }
-
-    }
-
-
-    private void registerProviders(GatherDataEvent event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput packOutput = gen.getPackOutput();
-        ExistingFileHelper fileHelper = event.getExistingFileHelper();
-
-        gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
-        gen.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
-        gen.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
-        gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));
-        gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
-        gen.addProvider(event.includeClient(), new PsitweaksItemModelProvider(packOutput, fileHelper));
-        gen.addProvider(event.includeClient(), new PsitweaksBlockStateProvider(packOutput, fileHelper));
-        PsiTweaksTagsProvider.Blocks blockTags = new PsiTweaksTagsProvider.Blocks(packOutput, event.getLookupProvider(), fileHelper);
-        gen.addProvider(event.includeServer(), blockTags);
-        gen.addProvider(event.includeServer(), new PsiTweaksTagsProvider.Items(packOutput, event.getLookupProvider(), blockTags.contentsGetter(), fileHelper));
-        gen.addProvider(event.includeServer(), new PsiTweaksTagsProvider.Fluids(packOutput, event.getLookupProvider(), fileHelper));
-        gen.addProvider(event.includeServer(), new PsiTweaksTagsProvider.Biomes(packOutput, event.getLookupProvider(), fileHelper));
-        gen.addProvider(event.includeServer(), new PsiTweaksTagsProvider.PoiTypes(packOutput, event.getLookupProvider(), fileHelper));
-    }
-
-    public static ResourceLocation location(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

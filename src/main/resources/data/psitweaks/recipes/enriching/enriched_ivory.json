@@ -1,9 +1,0 @@
-{
-  "type": "mekanism:enriching",
-  "input": {
-    "ingredient": { "item": "psi:ivory_substance" }
-  },
-  "output": {
-    "item": "psitweaks:enriched_ivory"
-  }
-}

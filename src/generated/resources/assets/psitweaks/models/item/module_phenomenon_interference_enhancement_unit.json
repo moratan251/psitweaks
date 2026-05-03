@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "psitweaks:item/module_phenomenon_interference_enhancement_unit"
-  }
-}

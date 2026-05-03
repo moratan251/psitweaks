@@ -1,9 +1,0 @@
-{
-  "type": "mekanism:enriching",
-  "input": {
-    "ingredient": { "item": "psitweaks:unrefined_flashmetal" }
-  },
-  "output": {
-    "item": "psitweaks:flashmetal"
-  }
-}

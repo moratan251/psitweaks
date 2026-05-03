@@ -1,9 +1,0 @@
-{
-  "type": "mekanism:enriching",
-  "input": {
-    "ingredient": { "item": "psi:psigem" }
-  },
-  "output": {
-    "item": "psitweaks:enriched_psigem"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "parent": "forge:item/bucket_drip",
-  "flip_gas": false,
-  "fluid": "psitweaks:molten_psigem",
-  "loader": "tconstruct:fluid_container"
-}
