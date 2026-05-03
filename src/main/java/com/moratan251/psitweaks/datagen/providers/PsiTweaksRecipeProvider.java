@@ -53,10 +53,70 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'J', ingredientItem(item("jade"))
                 ),
                 item("magatama"), 1));
+        recipe(recipes, "psionic_echo", trickCrafting(
+                ingredientItem("minecraft:echo_shard"),
+                item("psionic_echo"),
+                "psitweaks:trick_supreme_infusion",
+                "psi:cad_assembly_psimetal"));
         recipe(recipes, "incomplete_heavy_psimetal_assembly", shaped(
                 List.of("III", "  I"),
                 Map.of('I', ingredientItem(item("heavy_psimetal"))),
                 item("incomplete_heavy_psimetal_assembly"), 1));
+        recipe(recipes, "cad_assembly_alloy_psion", shaped(
+                List.of("AAA", "  A"),
+                Map.of('A', ingredientItem(item("alloy_psion"))),
+                item("cad_assembly_alloy_psion"), 1));
+        recipe(recipes, "cad_assembly_chaotic_psimetal", shaped("equipment",
+                List.of("AAA", " BA"),
+                Map.of(
+                        'A', ingredientItem(item("chaotic_psimetal")),
+                        'B', ingredientItem(item("psionic_control_circuit"))
+                ),
+                item("cad_assembly_chaotic_psimetal"), 1));
+        recipe(recipes, "cad_assembly_flashmetal", shaped("equipment",
+                List.of("HHH", "FFF", " CF"),
+                Map.of(
+                        'C', ingredientItem(item("psionic_control_circuit")),
+                        'F', ingredientItem(item("flashmetal")),
+                        'H', ingredientItem("mekanism:hdpe_sheet")
+                ),
+                item("cad_assembly_flashmetal"), 1));
+        recipe(recipes, "cad_assembly_heavy_psimetal_alpha", shaped("equipment",
+                List.of("SNS", "CIC", "SCS"),
+                Map.of(
+                        'C', ingredientItem(item("echo_control_circuit")),
+                        'I', ingredientItem(item("incomplete_heavy_psimetal_assembly")),
+                        'N', ingredientItem("minecraft:nether_star"),
+                        'S', ingredientItem(item("echo_sheet"))
+                ),
+                item("cad_assembly_heavy_psimetal_alpha"), 1));
+        recipe(recipes, "cad_assembly_heavy_psimetal_beta", shaped("equipment",
+                List.of("SCS", "PIP", "SCS"),
+                Map.of(
+                        'C', ingredientItem(item("echo_control_circuit")),
+                        'I', ingredientItem(item("incomplete_heavy_psimetal_assembly")),
+                        'P', ingredientItem("mekanism:pellet_plutonium"),
+                        'S', ingredientItem(item("echo_sheet"))
+                ),
+                item("cad_assembly_heavy_psimetal_beta"), 1));
+        recipe(recipes, "cad_assembly_psycheonic_metal_from_alpha", shaped("equipment",
+                List.of("PCP", "AHA", "PCP"),
+                Map.of(
+                        'A', ingredientItem(item("pellet_americium")),
+                        'C', ingredientItem(item("hypostasis_control_circuit")),
+                        'H', ingredientItem(item("cad_assembly_heavy_psimetal_alpha")),
+                        'P', ingredientItem(item("psycheonic_metal_ingot"))
+                ),
+                item("cad_assembly_psycheonic_metal"), 1));
+        recipe(recipes, "cad_assembly_psycheonic_metal_from_beta", shaped("equipment",
+                List.of("PCP", "AHA", "PCP"),
+                Map.of(
+                        'A', ingredientItem(item("pellet_americium")),
+                        'C', ingredientItem(item("hypostasis_control_circuit")),
+                        'H', ingredientItem(item("cad_assembly_heavy_psimetal_beta")),
+                        'P', ingredientItem(item("psycheonic_metal_ingot"))
+                ),
+                item("cad_assembly_psycheonic_metal"), 1));
         recipe(recipes, "unrefined_flashmetal", shaped(
                 List.of("BBB", "AAA", "BBB"),
                 Map.of(
@@ -109,6 +169,33 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'A', ingredientItem("minecraft:anvil")
                 ),
                 block("cad_disassembler"), 1));
+        recipe(recipes, "inline_caster", shaped("equipment",
+                List.of(" G ", "PBP", " P "),
+                Map.of(
+                        'B', ingredientItem("psi:cad_assembly_psimetal"),
+                        'G', ingredientItem("psi:psigem"),
+                        'P', ingredientItem("psi:psimetal")
+                ),
+                item("inline_caster"), 1));
+        recipe(recipes, "secondary_caster", shaped("equipment",
+                List.of(" F ", "CBC", " T "),
+                Map.of(
+                        'B', ingredientItem("psi:cad_assembly_psimetal"),
+                        'C', ingredientItem(item("psionic_control_circuit")),
+                        'F', ingredientItem(item("flashmetal")),
+                        'T', ingredientItem("psi:cad_socket_signaling")
+                ),
+                item("secondary_caster"), 1));
+        recipe(recipes, "parallel_caster", shaped("equipment",
+                List.of("FHF", "CBC", "FTF"),
+                Map.of(
+                        'B', ingredientItem("psi:cad_assembly_psimetal"),
+                        'C', ingredientItem(item("echo_control_circuit")),
+                        'F', ingredientItem(item("flashmetal")),
+                        'H', ingredientItem(item("heavy_psimetal")),
+                        'T', ingredientItem("psi:cad_socket_transmissive")
+                ),
+                item("parallel_caster"), 1));
         recipe(recipes, "antinite_block", shaped("building",
                 List.of("III", "III", "III"),
                 Map.of('I', ingredientItem(item("antinite_ingot"))),
@@ -230,6 +317,18 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         root.add("result", result(result, 1));
         root.addProperty("experience", experience);
         root.addProperty("cookingtime", cookingTime);
+
+        return root;
+    }
+
+    private static JsonObject trickCrafting(JsonObject input, String output, String piece, String cadAssembly) {
+        JsonObject root = new JsonObject();
+
+        root.addProperty("type", "psi:trick_crafting");
+        root.add("cad", result(cadAssembly, 1));
+        root.add("input", input);
+        root.add("output", result(output, 1));
+        root.addProperty("piece", piece);
 
         return root;
     }

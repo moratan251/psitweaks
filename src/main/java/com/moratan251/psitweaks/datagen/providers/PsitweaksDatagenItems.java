@@ -42,7 +42,16 @@ final class PsitweaksDatagenItems {
             item("hypostasis_gem", "Hypostasis Gem", "ヒュポスタシスジェム"),
             item("echo_sheet", "HDΨE Sheet", "HDΨEシート"),
             item("magicians_brain", "Magician's Brain", "魔法師の脳"),
-            item("incomplete_heavy_psimetal_assembly", "Incomplete Heavy Psimetal CAD Assembly", "未完成ヘビーサイメタルCAD素体")
+            item("cad_assembly_alloy_psion", "Psionic Alloy CAD Assembly", "サイオニック合金のCAD素体"),
+            item("cad_assembly_chaotic_psimetal", "Chaotic Psimetal CAD Assembly", "カオティックサイメタルのCAD素体"),
+            item("cad_assembly_flashmetal", "Flashmetal CAD Assembly", "フラッシュメタルのCAD素体"),
+            item("cad_assembly_heavy_psimetal_alpha", "Heavy Psimetal CAD Assembly Alpha", "ヘビーサイメタルのCAD素体 α型"),
+            item("cad_assembly_heavy_psimetal_beta", "Heavy Psimetal CAD Assembly Beta", "ヘビーサイメタルのCAD素体 β型"),
+            item("cad_assembly_psycheonic_metal", "Psycheonic Metal CAD Assembly", "プシオニックメタルのCAD素体", "cad_assembly_psycheonicmetal"),
+            item("incomplete_heavy_psimetal_assembly", "Incomplete Heavy Psimetal CAD Assembly", "未完成ヘビーサイメタルCAD素体"),
+            modelItem("inline_caster", "Inline Caster", "インラインキャスター", "psi:item/cad_inline_1"),
+            modelItem("secondary_caster", "Secondary Caster", "セカンダリキャスター", "psi:item/cad_inline_2"),
+            modelItem("parallel_caster", "Parallel Caster", "パラレルキャスター", "psi:item/cad_inline_3")
     );
 
     private PsitweaksDatagenItems() {
@@ -57,9 +66,13 @@ final class PsitweaksDatagenItems {
     }
 
     private static GeneratedItem item(String id, String enUs, String jaJp, String texture) {
-        return new GeneratedItem(id, enUs, jaJp, texture);
+        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", texture);
     }
 
-    record GeneratedItem(String id, String enUs, String jaJp, String texture) {
+    private static GeneratedItem modelItem(String id, String enUs, String jaJp, String parent) {
+        return new GeneratedItem(id, enUs, jaJp, parent, null);
+    }
+
+    record GeneratedItem(String id, String enUs, String jaJp, String parent, String texture) {
     }
 }

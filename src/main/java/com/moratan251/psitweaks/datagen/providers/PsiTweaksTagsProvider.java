@@ -121,6 +121,21 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/polonium", item("polonium_block"));
         tag(tags, "c", "storage_blocks/raw_antinite", item("raw_antinite_block"));
 
+        tag(tags, "psi", "assemblies",
+                item("cad_assembly_alloy_psion"),
+                item("cad_assembly_chaotic_psimetal"),
+                item("cad_assembly_flashmetal"),
+                item("cad_assembly_heavy_psimetal_alpha"),
+                item("cad_assembly_heavy_psimetal_beta"),
+                item("cad_assembly_psycheonic_metal"));
+        tag(tags, "psi", "components",
+                item("cad_assembly_alloy_psion"),
+                item("cad_assembly_chaotic_psimetal"),
+                item("cad_assembly_flashmetal"),
+                item("cad_assembly_heavy_psimetal_alpha"),
+                item("cad_assembly_heavy_psimetal_beta"),
+                item("cad_assembly_psycheonic_metal"));
+
         tag(tags, "mekanism", "alloys", item("alloy_psion"), item("alloy_psionic_echo"), item("alloy_hypostasis"));
         tag(tags, "mekanism", "clumps", tagRef("mekanism:clumps/antinite"));
         tag(tags, "mekanism", "clumps/antinite", item("clump_antinite"));

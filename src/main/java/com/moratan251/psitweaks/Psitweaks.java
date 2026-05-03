@@ -3,6 +3,9 @@ package com.moratan251.psitweaks;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
+import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
+import com.moratan251.psitweaks.common.items.component.ComponentStats;
+import com.moratan251.psitweaks.common.items.PsitweaksItemCapabilities;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
@@ -45,12 +48,14 @@ public class Psitweaks {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC, "psitweaks-common.toml");
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(PsitweaksItemCapabilities::registerCapabilities);
         // TODO(port): Re-enable Mekanism IMC after PsitweaksModules is ported.
         // modEventBus.addListener(this::enqueueIMC);
 
         PsitweaksItems.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
         PsitweaksChemicals.register(modEventBus);
+        PsitweaksEffects.register(modEventBus);
         PsitweaksTabs.register(modEventBus);
         PsitweaksSpells.register(modEventBus);
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -71,7 +76,6 @@ public class Psitweaks {
         // PsitweaksSlurries.register(modEventBus);
         // registerTConstructCompat(modEventBus);
         // PsitweaksModules.MODULES.register(modEventBus);
-        // PsitweaksEffects.register(modEventBus);
         // PsitweaksAttributes.register(modEventBus);
         // PsitweaksEntities.register(modEventBus);
 
@@ -86,6 +90,8 @@ public class Psitweaks {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("PsiTweaks common setup");
+
+        event.enqueueWork(ComponentStats::registerAssemblyStats);
 
         // TODO(port): Re-enable after NetworkHandler is ported.
         // NetworkHandler.registerMessages();

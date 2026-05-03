@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "DisableDamagePsiDeduction",
-    "DisableRegenCooldown"
+    "DisableRegenCooldown",
+    "RadiationUtilMixin"
   ],
   "client": [
     "client.PiecePanelWidgetEnglishSearchMixin"

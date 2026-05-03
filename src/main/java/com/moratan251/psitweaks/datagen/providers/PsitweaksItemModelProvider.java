@@ -18,7 +18,7 @@ public class PsitweaksItemModelProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput output) {
         CompletableFuture<?>[] futures = PsitweaksDatagenItems.items().stream()
-                .map(item -> DataProvider.saveStable(output, itemModel(item.texture()), pathProvider.json(Psitweaks.location(item.id()))))
+                .map(item -> DataProvider.saveStable(output, itemModel(item), pathProvider.json(Psitweaks.location(item.id()))))
                 .toArray(CompletableFuture[]::new);
         return CompletableFuture.allOf(futures);
     }
@@ -28,13 +28,15 @@ public class PsitweaksItemModelProvider implements DataProvider {
         return "PsiTweaks item models";
     }
 
-    private static JsonObject itemModel(String texture) {
+    private static JsonObject itemModel(PsitweaksDatagenItems.GeneratedItem item) {
         JsonObject root = new JsonObject();
-        JsonObject textures = new JsonObject();
 
-        root.addProperty("parent", "minecraft:item/generated");
-        textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "item/" + texture).toString());
-        root.add("textures", textures);
+        root.addProperty("parent", item.parent());
+        if (item.texture() != null) {
+            JsonObject textures = new JsonObject();
+            textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "item/" + item.texture()).toString());
+            root.add("textures", textures);
+        }
 
         return root;
     }

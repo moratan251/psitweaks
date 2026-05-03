@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-03T22:51:15.6306427	PsiTweaks tags
+// 1.21.1	2026-05-04T01:07:26.9776327	PsiTweaks tags
 12b82ad554d363a016b4ce2de01ba017806a484e data/c/tags/block/ores.json
 39774d70224c5befc396600acda04217838272fe data/c/tags/block/ores/antinite.json
 c8003186b13c39f6f9e4e93e5f4e6e03344d0b8a data/c/tags/block/storage_blocks.json
@@ -46,3 +46,5 @@ e47d1c23ac2a0875e909021229546614858d19c4 data/mekanism/tags/item/shards.json
 d5bf711fc7a7fddaff2fd59a87f6cfb4cdd7fa74 data/minecraft/tags/block/needs_diamond_tool.json
 ad75f7bce216e548880390ee50eec3d9fba331b2 data/minecraft/tags/block/needs_iron_tool.json
 c5affe723fcbf6c8bf68162b13189c5f210f37f0 data/neoforge/tags/block/needs_netherite_tool.json
+513dbbf3ee8615afd3e8211d82654e8e6fb4468e data/psi/tags/item/assemblies.json
+513dbbf3ee8615afd3e8211d82654e8e6fb4468e data/psi/tags/item/components.json

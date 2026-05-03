@@ -6,6 +6,7 @@ import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import vazkii.psi.common.item.component.ItemCADAssembly;
 
 public final class PsitweaksItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Psitweaks.MOD_ID);
@@ -162,9 +163,51 @@ public final class PsitweaksItems {
             "magicians_brain",
             new Item.Properties().rarity(Rarity.UNCOMMON)
     );
+    public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_ALLOY_PSION = registerCadAssembly(
+            "cad_assembly_alloy_psion",
+            Rarity.RARE,
+            "cad_alloy_psion"
+    );
+    public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_CHAOTIC_PSIMETAL = registerCadAssembly(
+            "cad_assembly_chaotic_psimetal",
+            Rarity.RARE,
+            "cad_chaotic_psimetal"
+    );
+    public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_FLASHMETAL = registerCadAssembly(
+            "cad_assembly_flashmetal",
+            Rarity.RARE,
+            "cad_flashmetal"
+    );
+    public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA = registerCadAssembly(
+            "cad_assembly_heavy_psimetal_alpha",
+            Rarity.RARE,
+            "cad_heavy_psimetal_alpha"
+    );
+    public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA = registerCadAssembly(
+            "cad_assembly_heavy_psimetal_beta",
+            Rarity.RARE,
+            "cad_heavy_psimetal_beta"
+    );
+    public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_PSYCHEONIC_METAL = registerCadAssembly(
+            "cad_assembly_psycheonic_metal",
+            Rarity.EPIC,
+            "cad_psycheonicmetal"
+    );
     public static final DeferredItem<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.registerSimpleItem(
             "incomplete_heavy_psimetal_assembly",
             new Item.Properties().stacksTo(1)
+    );
+    public static final DeferredItem<ItemInlineCaster> INLINE_CASTER = ITEMS.register(
+            "inline_caster",
+            () -> new ItemInlineCaster(new Item.Properties())
+    );
+    public static final DeferredItem<ItemSecondaryCaster> SECONDARY_CASTER = ITEMS.register(
+            "secondary_caster",
+            () -> new ItemSecondaryCaster(new Item.Properties())
+    );
+    public static final DeferredItem<ItemParallelCaster> PARALLEL_CASTER = ITEMS.register(
+            "parallel_caster",
+            () -> new ItemParallelCaster(new Item.Properties())
     );
 
     private PsitweaksItems() {
@@ -172,5 +215,9 @@ public final class PsitweaksItems {
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+    }
+
+    private static DeferredItem<ItemCADAssembly> registerCadAssembly(String id, Rarity rarity, String model) {
+        return ITEMS.register(id, () -> new ItemCADAssembly(new Item.Properties().rarity(rarity), model));
     }
 }

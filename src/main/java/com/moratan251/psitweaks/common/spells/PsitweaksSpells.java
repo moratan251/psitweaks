@@ -17,8 +17,29 @@ public final class PsitweaksSpells {
 
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSupremeInfusion>> TRICK_SUPREME_INFUSION =
             SPELL_PIECES.register("trick_supreme_infusion", () -> PieceTrickSupremeInfusion.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickParade>> TRICK_PARADE =
+            SPELL_PIECES.register("trick_parade", () -> PieceTrickParade.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickFlight>> TRICK_FLIGHT =
+            SPELL_PIECES.register("trick_flight", () -> PieceTrickFlight.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickHardening>> TRICK_HARDENING =
+            SPELL_PIECES.register("trick_hardening", () -> PieceTrickHardening.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickBarrier>> TRICK_BARRIER =
+            SPELL_PIECES.register("trick_barrier", () -> PieceTrickBarrier.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationFilter>> TRICK_RADIATION_FILTER =
+            SPELL_PIECES.register("trick_radiation_filter", () -> PieceTrickRadiationFilter.class);
+
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SUPREME_INFUSION =
             ADVANCEMENT_GROUPS.register("trick_supreme_infusion", () -> List.of(PieceTrickSupremeInfusion.class));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> PARADE =
+            ADVANCEMENT_GROUPS.register("trick_parade", () -> List.of(PieceTrickParade.class));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> FLIGHT =
+            ADVANCEMENT_GROUPS.register("trick_flight", () -> List.of(PieceTrickFlight.class));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> HARDENING =
+            ADVANCEMENT_GROUPS.register("trick_hardening", () -> List.of(PieceTrickHardening.class));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BARRIER =
+            ADVANCEMENT_GROUPS.register("trick_barrier", () -> List.of(PieceTrickBarrier.class));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_FILTER =
+            ADVANCEMENT_GROUPS.register("trick_radiation_filter", () -> List.of(PieceTrickRadiationFilter.class));
 
     private PsitweaksSpells() {
     }

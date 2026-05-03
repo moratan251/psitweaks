@@ -59,7 +59,16 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.MAGATAMA.get());
                         output.accept(PsitweaksItems.ECHO_SHEET.get());
                         output.accept(PsitweaksItems.MAGICIANS_BRAIN.get());
+                        output.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
+                        output.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
+                        output.accept(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get());
+                        output.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get());
+                        output.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get());
+                        output.accept(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get());
                         output.accept(PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get());
+                        output.accept(PsitweaksItems.INLINE_CASTER.get());
+                        output.accept(PsitweaksItems.SECONDARY_CASTER.get());
+                        output.accept(PsitweaksItems.PARALLEL_CASTER.get());
                         output.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
                         output.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         output.accept(PsitweaksBlocks.ANTINITE_BLOCK.get());
