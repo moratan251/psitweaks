@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-03T23:37:51.4311089	PsiTweaks Mekanism recipes
+// 1.21.1	2026-05-03T23:44:23.5033934	PsiTweaks Mekanism recipes
 c909e4fe2316a28788c41f47a8f239abd1da8f1b data/psitweaks/recipe/chemical_conversion/chaotic_factor.json
 1e3b8f143b6e96d15f4615550f0a26ae9b8a002b data/psitweaks/recipe/chemical_conversion/ebony.json
 cf9daba97b73c02d966046e6b4978665420319c1 data/psitweaks/recipe/chemical_conversion/hypostasis.json
@@ -51,5 +51,6 @@ a25fa9e38ae2e1b974b5fde512ee59a4c68d168f data/psitweaks/recipe/purifying/antinit
 871d7f09f2d824daeb271c70b15f9a56e309f9a1 data/psitweaks/recipe/purifying/antinite_clump_from_raw_block.json
 2bbeb7925c0c8d3733295c596a1a5d6681b2afa1 data/psitweaks/recipe/purifying/antinite_clump_from_raw_ore.json
 90f8eb611b2f47a0a918a4aa2ad45c041267bb5d data/psitweaks/recipe/purifying/antinite_clump_from_shard.json
+f0f9370b28a52c86a5fb1e39654b201cca2203e0 data/psitweaks/recipe/reaction/amethyst.json
 878c66705774e9751fb98b01b8d9b520fdb6e44f data/psitweaks/recipe/reaction/oxygen_echo.json
 24913a446c94acc25c98d7b2a7acb9136c664e49 data/psitweaks/recipe/washing/clean_antinite_slurry.json

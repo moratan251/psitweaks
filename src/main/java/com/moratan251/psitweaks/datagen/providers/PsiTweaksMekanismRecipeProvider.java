@@ -118,6 +118,12 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
                 itemInput("minecraft:amethyst_shard"),
                 itemInput("minecraft:sculk", 8),
                 "minecraft:echo_shard", 1));
+        recipe(recipes, "reaction/amethyst", reaction(
+                fluidTagInput("minecraft:water", 100),
+                chemicalInput(chemical("gas_psionic_echo"), 50),
+                itemInput("minecraft:amethyst_shard"),
+                itemOutput("minecraft:amethyst_shard", 2),
+                800));
     }
 
     private static void addEnrichingRecipes(Map<ResourceLocation, JsonObject> recipes) {
@@ -338,6 +344,20 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         root.addProperty("type", "mekanism:reaction");
         root.add("chemical_input", chemicalInput);
         root.add("chemical_output", chemicalOutput);
+        root.addProperty("duration", duration);
+        root.add("fluid_input", fluidInput);
+        root.add("item_input", itemInput);
+        root.add("item_output", itemOutput);
+
+        return root;
+    }
+
+    private static JsonObject reaction(JsonObject fluidInput, JsonObject chemicalInput, JsonObject itemInput,
+                                       JsonObject itemOutput, int duration) {
+        JsonObject root = new JsonObject();
+
+        root.addProperty("type", "mekanism:reaction");
+        root.add("chemical_input", chemicalInput);
         root.addProperty("duration", duration);
         root.add("fluid_input", fluidInput);
         root.add("item_input", itemInput);

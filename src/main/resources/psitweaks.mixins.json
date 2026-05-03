@@ -4,8 +4,11 @@
   "package": "com.moratan251.psitweaks.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "DisableDamagePsiDeduction",
+    "DisableRegenCooldown"
   ],
   "client": [
+    "client.PiecePanelWidgetEnglishSearchMixin"
   ],
   "injectors": {
     "defaultRequire": 1
