@@ -10,6 +10,12 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    maven {
+        url = "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 base {
@@ -96,6 +102,19 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
+    implementation "curse.maven:psi-241665:7664607"
+    implementation "curse.maven:mekanism-268560:7904058"
+    implementation "curse.maven:mekanism-generators-268566:7904061"
+    implementation "curse.maven:curios-309927:6529130"
+    implementation "curse.maven:patchouli-306770:7730942"
+    implementation "curse.maven:jei-238222:6756166"
+
+    runtimeOnly "curse.maven:mmmmmmmmmmmm-225738:7943676"
+    runtimeOnly "curse.maven:selene-499980:8031229"
+    runtimeOnly "curse.maven:neat-238372:7774002"
+    runtimeOnly "curse.maven:untranslated-items-401770:5574485"
+    runtimeOnly "curse.maven:jade-324717:7545219"
+
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
