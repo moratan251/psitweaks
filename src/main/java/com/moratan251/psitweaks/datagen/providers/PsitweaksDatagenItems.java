@@ -42,6 +42,41 @@ final class PsitweaksDatagenItems {
             item("hypostasis_gem", "Hypostasis Gem", "ヒュポスタシスジェム"),
             item("echo_sheet", "HDΨE Sheet", "HDΨEシート"),
             item("magicians_brain", "Magician's Brain", "魔法師の脳"),
+            activeItem("advanced_spell_bullet", "Advanced Spell Bullet", "改良術式弾"),
+            activeItem("advanced_spell_bullet_loop", "Advanced Loopcast Spell Bullet", "ループ型改良術式弾"),
+            activeItem("advanced_spell_bullet_mine", "Advanced Mine Spell Bullet", "地雷型改良術式弾"),
+            activeItem("advanced_spell_bullet_charge", "Advanced Charge Spell Bullet", "チャージ型改良術式弾"),
+            activeItem("advanced_spell_bullet_grenade", "Advanced Grenade Spell Bullet", "榴弾型改良術式弾"),
+            activeItem("advanced_spell_bullet_projectile", "Advanced Projectile Spell Bullet", "発射型改良術式弾"),
+            activeItem("advanced_spell_bullet_circle", "Advanced Circle Spell Bullet", "円形改良術式弾"),
+            activeItem("resonant_spell_bullet", "Resonant Spell Bullet", "共鳴術式弾"),
+            activeItem("resonant_spell_bullet_loop", "Resonant Loopcast Spell Bullet", "ループ型共鳴術式弾"),
+            activeItem("resonant_spell_bullet_mine", "Resonant Mine Spell Bullet", "地雷型共鳴術式弾"),
+            activeItem("resonant_spell_bullet_charge", "Resonant Charge Spell Bullet", "チャージ型共鳴術式弾"),
+            activeItem("resonant_spell_bullet_grenade", "Resonant Grenade Spell Bullet", "榴弾型共鳴術式弾"),
+            activeItem("resonant_spell_bullet_projectile", "Resonant Projectile Spell Bullet", "発射型共鳴術式弾"),
+            activeItem("resonant_spell_bullet_circle", "Resonant Circle Spell Bullet", "円形共鳴術式弾"),
+            activeItem("sublimated_spell_bullet", "Sublimated Spell Bullet", "昇華術式弾"),
+            activeItem("sublimated_spell_bullet_loop", "Sublimated Loopcast Spell Bullet", "ループ型昇華術式弾"),
+            activeItem("sublimated_spell_bullet_mine", "Sublimated Mine Spell Bullet", "地雷型昇華術式弾"),
+            activeItem("sublimated_spell_bullet_charge", "Sublimated Charge Spell Bullet", "チャージ型昇華術式弾"),
+            activeItem("sublimated_spell_bullet_grenade", "Sublimated Grenade Spell Bullet", "榴弾型昇華術式弾"),
+            activeItem("sublimated_spell_bullet_projectile", "Sublimated Projectile Spell Bullet", "発射型昇華術式弾"),
+            activeItem("sublimated_spell_bullet_circle", "Sublimated Circle Spell Bullet", "円形昇華術式弾"),
+            activeItem("awakened_spell_bullet", "Awakened Spell Bullet", "覚醒術式弾"),
+            activeItem("awakened_spell_bullet_loop", "Awakened Loopcast Spell Bullet", "ループ型覚醒術式弾"),
+            activeItem("awakened_spell_bullet_mine", "Awakened Mine Spell Bullet", "地雷型覚醒術式弾"),
+            activeItem("awakened_spell_bullet_charge", "Awakened Charge Spell Bullet", "チャージ型覚醒術式弾"),
+            activeItem("awakened_spell_bullet_grenade", "Awakened Grenade Spell Bullet", "榴弾型覚醒術式弾"),
+            activeItem("awakened_spell_bullet_projectile", "Awakened Projectile Spell Bullet", "発射型覚醒術式弾"),
+            activeItem("awakened_spell_bullet_circle", "Awakened Circle Spell Bullet", "円形覚醒術式弾"),
+            activeItem("transcendent_spell_bullet", "Transcendent Spell Bullet", "超越術式弾"),
+            activeItem("transcendent_spell_bullet_loop", "Transcendent Loopcast Spell Bullet", "ループ型超越術式弾"),
+            activeItem("transcendent_spell_bullet_mine", "Transcendent Mine Spell Bullet", "地雷型超越術式弾"),
+            activeItem("transcendent_spell_bullet_charge", "Transcendent Charge Spell Bullet", "チャージ型超越術式弾"),
+            activeItem("transcendent_spell_bullet_grenade", "Transcendent Grenade Spell Bullet", "榴弾型超越術式弾"),
+            activeItem("transcendent_spell_bullet_projectile", "Transcendent Projectile Spell Bullet", "発射型超越術式弾"),
+            activeItem("transcendent_spell_bullet_circle", "Transcendent Circle Spell Bullet", "円形超越術式弾"),
             item("cad_assembly_alloy_psion", "Psionic Alloy CAD Assembly", "サイオニック合金のCAD素体"),
             item("cad_assembly_chaotic_psimetal", "Chaotic Psimetal CAD Assembly", "カオティックサイメタルのCAD素体"),
             item("cad_assembly_flashmetal", "Flashmetal CAD Assembly", "フラッシュメタルのCAD素体"),
@@ -66,13 +101,17 @@ final class PsitweaksDatagenItems {
     }
 
     private static GeneratedItem item(String id, String enUs, String jaJp, String texture) {
-        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", texture);
+        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", texture, false);
+    }
+
+    private static GeneratedItem activeItem(String id, String enUs, String jaJp) {
+        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", id, true);
     }
 
     private static GeneratedItem modelItem(String id, String enUs, String jaJp, String parent) {
-        return new GeneratedItem(id, enUs, jaJp, parent, null);
+        return new GeneratedItem(id, enUs, jaJp, parent, null, false);
     }
 
-    record GeneratedItem(String id, String enUs, String jaJp, String parent, String texture) {
+    record GeneratedItem(String id, String enUs, String jaJp, String parent, String texture, boolean activeModel) {
     }
 }

@@ -1,6 +1,14 @@
 package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksChargeSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksCircleSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksGrenadeSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksLoopcastSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksMineSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksProjectileSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksSpellBullet;
+import com.moratan251.psitweaks.common.items.bullet.SpellBulletTier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
@@ -163,6 +171,146 @@ public final class PsitweaksItems {
             "magicians_brain",
             new Item.Properties().rarity(Rarity.UNCOMMON)
     );
+    public static final DeferredItem<ItemPsitweaksSpellBullet> ADVANCED_SPELL_BULLET = registerSpellBullet(
+            "advanced_spell_bullet",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksLoopcastSpellBullet> ADVANCED_SPELL_BULLET_LOOP = registerLoopcastSpellBullet(
+            "advanced_spell_bullet_loop",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksMineSpellBullet> ADVANCED_SPELL_BULLET_MINE = registerMineSpellBullet(
+            "advanced_spell_bullet_mine",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksChargeSpellBullet> ADVANCED_SPELL_BULLET_CHARGE = registerChargeSpellBullet(
+            "advanced_spell_bullet_charge",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksGrenadeSpellBullet> ADVANCED_SPELL_BULLET_GRENADE = registerGrenadeSpellBullet(
+            "advanced_spell_bullet_grenade",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksProjectileSpellBullet> ADVANCED_SPELL_BULLET_PROJECTILE = registerProjectileSpellBullet(
+            "advanced_spell_bullet_projectile",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksCircleSpellBullet> ADVANCED_SPELL_BULLET_CIRCLE = registerCircleSpellBullet(
+            "advanced_spell_bullet_circle",
+            SpellBulletTier.ADVANCED
+    );
+    public static final DeferredItem<ItemPsitweaksSpellBullet> RESONANT_SPELL_BULLET = registerSpellBullet(
+            "resonant_spell_bullet",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksLoopcastSpellBullet> RESONANT_SPELL_BULLET_LOOP = registerLoopcastSpellBullet(
+            "resonant_spell_bullet_loop",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksMineSpellBullet> RESONANT_SPELL_BULLET_MINE = registerMineSpellBullet(
+            "resonant_spell_bullet_mine",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksChargeSpellBullet> RESONANT_SPELL_BULLET_CHARGE = registerChargeSpellBullet(
+            "resonant_spell_bullet_charge",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksGrenadeSpellBullet> RESONANT_SPELL_BULLET_GRENADE = registerGrenadeSpellBullet(
+            "resonant_spell_bullet_grenade",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksProjectileSpellBullet> RESONANT_SPELL_BULLET_PROJECTILE = registerProjectileSpellBullet(
+            "resonant_spell_bullet_projectile",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksCircleSpellBullet> RESONANT_SPELL_BULLET_CIRCLE = registerCircleSpellBullet(
+            "resonant_spell_bullet_circle",
+            SpellBulletTier.RESONANT
+    );
+    public static final DeferredItem<ItemPsitweaksSpellBullet> SUBLIMATED_SPELL_BULLET = registerSpellBullet(
+            "sublimated_spell_bullet",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksLoopcastSpellBullet> SUBLIMATED_SPELL_BULLET_LOOP = registerLoopcastSpellBullet(
+            "sublimated_spell_bullet_loop",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksMineSpellBullet> SUBLIMATED_SPELL_BULLET_MINE = registerMineSpellBullet(
+            "sublimated_spell_bullet_mine",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksChargeSpellBullet> SUBLIMATED_SPELL_BULLET_CHARGE = registerChargeSpellBullet(
+            "sublimated_spell_bullet_charge",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksGrenadeSpellBullet> SUBLIMATED_SPELL_BULLET_GRENADE = registerGrenadeSpellBullet(
+            "sublimated_spell_bullet_grenade",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksProjectileSpellBullet> SUBLIMATED_SPELL_BULLET_PROJECTILE = registerProjectileSpellBullet(
+            "sublimated_spell_bullet_projectile",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksCircleSpellBullet> SUBLIMATED_SPELL_BULLET_CIRCLE = registerCircleSpellBullet(
+            "sublimated_spell_bullet_circle",
+            SpellBulletTier.SUBLIMATED
+    );
+    public static final DeferredItem<ItemPsitweaksSpellBullet> AWAKENED_SPELL_BULLET = registerSpellBullet(
+            "awakened_spell_bullet",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksLoopcastSpellBullet> AWAKENED_SPELL_BULLET_LOOP = registerLoopcastSpellBullet(
+            "awakened_spell_bullet_loop",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksMineSpellBullet> AWAKENED_SPELL_BULLET_MINE = registerMineSpellBullet(
+            "awakened_spell_bullet_mine",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksChargeSpellBullet> AWAKENED_SPELL_BULLET_CHARGE = registerChargeSpellBullet(
+            "awakened_spell_bullet_charge",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksGrenadeSpellBullet> AWAKENED_SPELL_BULLET_GRENADE = registerGrenadeSpellBullet(
+            "awakened_spell_bullet_grenade",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksProjectileSpellBullet> AWAKENED_SPELL_BULLET_PROJECTILE = registerProjectileSpellBullet(
+            "awakened_spell_bullet_projectile",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksCircleSpellBullet> AWAKENED_SPELL_BULLET_CIRCLE = registerCircleSpellBullet(
+            "awakened_spell_bullet_circle",
+            SpellBulletTier.AWAKENED
+    );
+    public static final DeferredItem<ItemPsitweaksSpellBullet> TRANSCENDENT_SPELL_BULLET = registerSpellBullet(
+            "transcendent_spell_bullet",
+            SpellBulletTier.TRANSCENDENT
+    );
+    public static final DeferredItem<ItemPsitweaksLoopcastSpellBullet> TRANSCENDENT_SPELL_BULLET_LOOP = registerLoopcastSpellBullet(
+            "transcendent_spell_bullet_loop",
+            SpellBulletTier.TRANSCENDENT
+    );
+    public static final DeferredItem<ItemPsitweaksMineSpellBullet> TRANSCENDENT_SPELL_BULLET_MINE = registerMineSpellBullet(
+            "transcendent_spell_bullet_mine",
+            SpellBulletTier.TRANSCENDENT
+    );
+    public static final DeferredItem<ItemPsitweaksChargeSpellBullet> TRANSCENDENT_SPELL_BULLET_CHARGE = registerChargeSpellBullet(
+            "transcendent_spell_bullet_charge",
+            SpellBulletTier.TRANSCENDENT
+    );
+    public static final DeferredItem<ItemPsitweaksGrenadeSpellBullet> TRANSCENDENT_SPELL_BULLET_GRENADE = registerGrenadeSpellBullet(
+            "transcendent_spell_bullet_grenade",
+            SpellBulletTier.TRANSCENDENT
+    );
+    public static final DeferredItem<ItemPsitweaksProjectileSpellBullet> TRANSCENDENT_SPELL_BULLET_PROJECTILE = registerProjectileSpellBullet(
+            "transcendent_spell_bullet_projectile",
+            SpellBulletTier.TRANSCENDENT
+    );
+    public static final DeferredItem<ItemPsitweaksCircleSpellBullet> TRANSCENDENT_SPELL_BULLET_CIRCLE = registerCircleSpellBullet(
+            "transcendent_spell_bullet_circle",
+            SpellBulletTier.TRANSCENDENT
+    );
     public static final DeferredItem<ItemCADAssembly> CAD_ASSEMBLY_ALLOY_PSION = registerCadAssembly(
             "cad_assembly_alloy_psion",
             Rarity.RARE,
@@ -219,5 +367,33 @@ public final class PsitweaksItems {
 
     private static DeferredItem<ItemCADAssembly> registerCadAssembly(String id, Rarity rarity, String model) {
         return ITEMS.register(id, () -> new ItemCADAssembly(new Item.Properties().rarity(rarity), model));
+    }
+
+    private static DeferredItem<ItemPsitweaksSpellBullet> registerSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksSpellBullet(new Item.Properties(), tier));
+    }
+
+    private static DeferredItem<ItemPsitweaksLoopcastSpellBullet> registerLoopcastSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksLoopcastSpellBullet(new Item.Properties(), tier));
+    }
+
+    private static DeferredItem<ItemPsitweaksMineSpellBullet> registerMineSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksMineSpellBullet(new Item.Properties(), tier));
+    }
+
+    private static DeferredItem<ItemPsitweaksChargeSpellBullet> registerChargeSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksChargeSpellBullet(new Item.Properties(), tier));
+    }
+
+    private static DeferredItem<ItemPsitweaksGrenadeSpellBullet> registerGrenadeSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksGrenadeSpellBullet(new Item.Properties(), tier));
+    }
+
+    private static DeferredItem<ItemPsitweaksProjectileSpellBullet> registerProjectileSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksProjectileSpellBullet(new Item.Properties(), tier));
+    }
+
+    private static DeferredItem<ItemPsitweaksCircleSpellBullet> registerCircleSpellBullet(String id, SpellBulletTier tier) {
+        return ITEMS.register(id, () -> new ItemPsitweaksCircleSpellBullet(new Item.Properties(), tier));
     }
 }

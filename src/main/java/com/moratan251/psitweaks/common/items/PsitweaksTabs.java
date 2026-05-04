@@ -59,6 +59,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.MAGATAMA.get());
                         output.accept(PsitweaksItems.ECHO_SHEET.get());
                         output.accept(PsitweaksItems.MAGICIANS_BRAIN.get());
+                        acceptSpellBullets(output);
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get());
@@ -88,5 +89,43 @@ public final class PsitweaksTabs {
 
     public static void register(IEventBus eventBus) {
         TABS.register(eventBus);
+    }
+
+    private static void acceptSpellBullets(CreativeModeTab.Output output) {
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET.get());
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get());
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_MINE.get());
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_CHARGE.get());
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_GRENADE.get());
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE.get());
+        output.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_CIRCLE.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET_LOOP.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET_MINE.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET_CHARGE.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET_GRENADE.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET_PROJECTILE.get());
+        output.accept(PsitweaksItems.RESONANT_SPELL_BULLET_CIRCLE.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_MINE.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CHARGE.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_GRENADE.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE.get());
+        output.accept(PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_MINE.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE.get());
+        output.accept(PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE.get());
+        output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE.get());
     }
 }

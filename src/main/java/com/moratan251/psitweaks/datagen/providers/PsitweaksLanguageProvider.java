@@ -56,6 +56,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "装填済み術式弾: %s/%s";
             default -> "Loaded spell bullets: %s/%s";
         });
+        addSpellBulletsBook(root);
         addEffect(root, "parade", "Parade", "仮想行列");
         addEffect(root, "flight", "Flight", "飛行");
         addEffect(root, "barrier", "Barrier", "障壁");
@@ -173,6 +174,25 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_spellpiece." + id, switch (locale) {
             case "ja_jp" -> jaJp;
             default -> enUs;
+        });
+    }
+
+    private void addSpellBulletsBook(JsonObject root) {
+        root.addProperty("psi.book.entry.psitweaks_spell_bullets", switch (locale) {
+            case "ja_jp" -> "強化術式弾";
+            default -> "Upgraded Spell Bullets";
+        });
+        root.addProperty("psi.book.page.psitweaks_spell_bullets.0", switch (locale) {
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています.";
+            default -> "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available.";
+        });
+        root.addProperty("psi.book.page.psitweaks_spell_bullets.1", switch (locale) {
+            case "ja_jp" -> "術式弾の強化は前段階の術式弾を4つ必要とするため、非常に高コストです.";
+            default -> "Upgrading a spell bullet requires four bullets from the previous tier, making it very expensive.";
+        });
+        root.addProperty("psi.book.page.psitweaks_spell_bullets.2", switch (locale) {
+            case "ja_jp" -> "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります.";
+            default -> "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast.";
         });
     }
 }

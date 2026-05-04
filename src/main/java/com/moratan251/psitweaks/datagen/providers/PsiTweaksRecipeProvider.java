@@ -254,6 +254,8 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 ),
                 block("spellmachinery_casing"), 1));
 
+        addSpellBulletRecipes(recipes);
+
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
                 .toArray(CompletableFuture[]::new);
@@ -267,6 +269,44 @@ public class PsiTweaksRecipeProvider implements DataProvider {
 
     private static void recipe(Map<ResourceLocation, JsonObject> recipes, String id, JsonObject recipe) {
         recipes.put(Psitweaks.location(id), recipe);
+    }
+
+    private static void addSpellBulletRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        List<SpellBulletVariant> variants = List.of(
+                new SpellBulletVariant("", "psi:spell_bullet"),
+                new SpellBulletVariant("_loop", "psi:spell_bullet_loop"),
+                new SpellBulletVariant("_mine", "psi:spell_bullet_mine"),
+                new SpellBulletVariant("_charge", "psi:spell_bullet_charge"),
+                new SpellBulletVariant("_grenade", "psi:spell_bullet_grenade"),
+                new SpellBulletVariant("_projectile", "psi:spell_bullet_projectile"),
+                new SpellBulletVariant("_circle", "psi:spell_bullet_circle")
+        );
+        List<SpellBulletRecipeTier> tiers = List.of(
+                new SpellBulletRecipeTier("advanced", "psi:psimetal", item("psionic_control_circuit")),
+                new SpellBulletRecipeTier("resonant", item("chaotic_psimetal"), item("psionic_control_circuit")),
+                new SpellBulletRecipeTier("sublimated", item("flashmetal"), item("psionic_control_circuit")),
+                new SpellBulletRecipeTier("awakened", item("heavy_psimetal"), item("echo_control_circuit")),
+                new SpellBulletRecipeTier("transcendent", item("psycheonic_metal_ingot"), item("echo_control_circuit"))
+        );
+
+        for (SpellBulletVariant variant : variants) {
+            String previousItem = variant.psiItem();
+            for (SpellBulletRecipeTier tier : tiers) {
+                String id = tier.id() + "_spell_bullet" + variant.suffix();
+                String result = item(id);
+
+                recipe(recipes, id, shaped("equipment",
+                        List.of("ABA", "BCB", "ABA"),
+                        Map.of(
+                                'A', ingredientItem(tier.material()),
+                                'B', ingredientItem(previousItem),
+                                'C', ingredientItem(tier.circuit())
+                        ),
+                        result, 1));
+
+                previousItem = result;
+            }
+        }
     }
 
     private static JsonObject shaped(List<String> pattern, Map<Character, JsonObject> keys, String result, int count) {
@@ -352,5 +392,11 @@ public class PsiTweaksRecipeProvider implements DataProvider {
 
     private static String block(String path) {
         return Psitweaks.MOD_ID + ":" + path;
+    }
+
+    private record SpellBulletVariant(String suffix, String psiItem) {
+    }
+
+    private record SpellBulletRecipeTier(String id, String material, String circuit) {
     }
 }
