@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "tools",
+  "ingredients": [
+    {
+      "item": "psi:exosuit_controller"
+    },
+    {
+      "item": "psitweaks:chaotic_psimetal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:curios_controller"
+  }
+}

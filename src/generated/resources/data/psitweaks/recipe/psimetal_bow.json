@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "combat",
+  "key": {
+    "G": {
+      "item": "psi:psigem"
+    },
+    "M": {
+      "item": "psi:psimetal"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    " MS",
+    "G S",
+    " MS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:psimetal_bow"
+  }
+}

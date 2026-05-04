@@ -1,13 +1,20 @@
 package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
+import com.moratan251.psitweaks.client.gui.machine.GuiPortableCADAssembler;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributeEvents;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
+import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
+import com.moratan251.psitweaks.common.items.armor.PsitweaksArmorMaterials;
 import com.moratan251.psitweaks.common.items.PsitweaksItemCapabilities;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
+import com.moratan251.psitweaks.common.menu.ModMenuTypes;
+import com.moratan251.psitweaks.common.network.PsitweaksNetwork;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismRecipeProvider;
@@ -34,6 +41,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -54,15 +62,20 @@ public class Psitweaks {
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(PsitweaksItemCapabilities::registerCapabilities);
+        modEventBus.addListener(PsitweaksAttributeEvents::onEntityAttributeModification);
+        modEventBus.addListener(PsitweaksNetwork::registerPayloadHandlers);
         // TODO(port): Re-enable Mekanism IMC after PsitweaksModules is ported.
         // modEventBus.addListener(this::enqueueIMC);
 
+        PsitweaksArmorMaterials.register(modEventBus);
         PsitweaksItems.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
         PsitweaksChemicals.register(modEventBus);
         PsitweaksEffects.register(modEventBus);
+        PsitweaksAttributes.register(modEventBus);
         PsitweaksTabs.register(modEventBus);
         PsitweaksSpells.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             PsitweaksClientSpells.register(modEventBus);
         }
@@ -72,7 +85,6 @@ public class Psitweaks {
         // PsitweaksMekanismBlocks.register(modEventBus);
         // PsitweaksMekanismTileEntityTypes.register(modEventBus);
         // PsitweaksMekanismContainerTypes.register(modEventBus);
-        // ModMenuTypes.MENUS.register(modEventBus);
         // PsitweaksRecipeTypes.register(modEventBus);
         // PsitweaksRecipeSerializers.register(modEventBus);
         // PsitweaksVillagers.register(modEventBus);
@@ -81,12 +93,12 @@ public class Psitweaks {
         // PsitweaksSlurries.register(modEventBus);
         // registerTConstructCompat(modEventBus);
         // PsitweaksModules.MODULES.register(modEventBus);
-        // PsitweaksAttributes.register(modEventBus);
         // PsitweaksEntities.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
 
         NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.addListener(ArmorSpellDamageAttributeHandler::onItemAttributeModifier);
 
         // TODO(port): Re-enable client/server proxy handlers after proxy classes are ported.
         // proxyPsitweaks = dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks();
@@ -97,6 +109,7 @@ public class Psitweaks {
         LOGGER.info("PsiTweaks common setup");
 
         event.enqueueWork(ComponentStats::registerAssemblyStats);
+        event.enqueueWork(PsitweaksItems::registerCurioItems);
 
         // TODO(port): Re-enable after NetworkHandler is ported.
         // NetworkHandler.registerMessages();
@@ -130,43 +143,51 @@ public class Psitweaks {
         public static void onClientSetup(FMLClientSetupEvent event) {
             LOGGER.info("PsiTweaks client setup");
 
-            event.enqueueWork(() -> registerActiveSpellProperties(
-                    PsitweaksItems.ADVANCED_SPELL_BULLET,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_MINE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.ADVANCED_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_LOOP,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_MINE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.RESONANT_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_MINE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_MINE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE,
-                    PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE
-            ));
+            event.enqueueWork(() -> {
+                registerPsimetalBowProperties();
+                registerActiveSpellProperties(
+                        PsitweaksItems.ADVANCED_SPELL_BULLET,
+                        PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,
+                        PsitweaksItems.ADVANCED_SPELL_BULLET_MINE,
+                        PsitweaksItems.ADVANCED_SPELL_BULLET_CHARGE,
+                        PsitweaksItems.ADVANCED_SPELL_BULLET_GRENADE,
+                        PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE,
+                        PsitweaksItems.ADVANCED_SPELL_BULLET_CIRCLE,
+                        PsitweaksItems.RESONANT_SPELL_BULLET,
+                        PsitweaksItems.RESONANT_SPELL_BULLET_LOOP,
+                        PsitweaksItems.RESONANT_SPELL_BULLET_MINE,
+                        PsitweaksItems.RESONANT_SPELL_BULLET_CHARGE,
+                        PsitweaksItems.RESONANT_SPELL_BULLET_GRENADE,
+                        PsitweaksItems.RESONANT_SPELL_BULLET_PROJECTILE,
+                        PsitweaksItems.RESONANT_SPELL_BULLET_CIRCLE,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET_MINE,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET_CHARGE,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET_GRENADE,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET_PROJECTILE,
+                        PsitweaksItems.SUBLIMATED_SPELL_BULLET_CIRCLE,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET_MINE,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE,
+                        PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE,
+                        PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE
+                );
+            });
+        }
+
+        @SubscribeEvent
+        public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
+            event.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
         }
 
         @SafeVarargs
@@ -178,6 +199,19 @@ public class Psitweaks {
 
         private static float hasSpell(ItemStack stack) {
             return ISpellAcceptor.hasSpell(stack) ? 1.0F : 0.0F;
+        }
+
+        private static void registerPsimetalBowProperties() {
+            ItemProperties.register(PsitweaksItems.PSIMETAL_BOW.get(), ResourceLocation.withDefaultNamespace("pulling"),
+                    (stack, level, entity, seed) -> entity != null && entity.isUsingItem()
+                            && entity.getUseItem() == stack ? 1.0F : 0.0F);
+            ItemProperties.register(PsitweaksItems.PSIMETAL_BOW.get(), ResourceLocation.withDefaultNamespace("pull"),
+                    (stack, level, entity, seed) -> {
+                        if (entity == null || entity.getUseItem() != stack) {
+                            return 0.0F;
+                        }
+                        return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
+                    });
         }
     }
 

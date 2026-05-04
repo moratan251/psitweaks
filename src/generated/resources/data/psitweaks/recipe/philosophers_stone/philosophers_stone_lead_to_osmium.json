@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:philosophers_stone"
+    },
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "id": "mekanism:ingot_osmium"
+  }
+}

@@ -32,6 +32,9 @@ public class PsitweaksItemModelProvider implements DataProvider {
                 ));
             }
         }
+        futures.add(DataProvider.saveStable(output, bowPullingModel("psimetal_bow_pulling_0"), pathProvider.json(Psitweaks.location("psimetal_bow_pulling_0"))));
+        futures.add(DataProvider.saveStable(output, bowPullingModel("psimetal_bow_pulling_1"), pathProvider.json(Psitweaks.location("psimetal_bow_pulling_1"))));
+        futures.add(DataProvider.saveStable(output, bowPullingModel("psimetal_bow_pulling_2"), pathProvider.json(Psitweaks.location("psimetal_bow_pulling_2"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -42,6 +45,10 @@ public class PsitweaksItemModelProvider implements DataProvider {
     }
 
     private static JsonObject itemModel(PsitweaksDatagenItems.GeneratedItem item) {
+        if ("psimetal_bow".equals(item.id())) {
+            return bowModel(item);
+        }
+
         JsonObject root = new JsonObject();
 
         root.addProperty("parent", item.parent());
@@ -61,6 +68,47 @@ public class PsitweaksItemModelProvider implements DataProvider {
             overrides.add(override);
             root.add("overrides", overrides);
         }
+
+        return root;
+    }
+
+    private static JsonObject bowModel(PsitweaksDatagenItems.GeneratedItem item) {
+        JsonObject root = generatedModel("minecraft:item/bow", item.texture());
+        JsonArray overrides = new JsonArray();
+
+        overrides.add(bowOverride(1.0F, null, "psimetal_bow_pulling_0"));
+        overrides.add(bowOverride(1.0F, 0.65F, "psimetal_bow_pulling_1"));
+        overrides.add(bowOverride(1.0F, 0.9F, "psimetal_bow_pulling_2"));
+        root.add("overrides", overrides);
+
+        return root;
+    }
+
+    private static JsonObject bowPullingModel(String id) {
+        return generatedModel("minecraft:item/bow", id);
+    }
+
+    private static JsonObject bowOverride(float pulling, Float pull, String model) {
+        JsonObject override = new JsonObject();
+        JsonObject predicate = new JsonObject();
+
+        predicate.addProperty(ResourceLocation.withDefaultNamespace("pulling").toString(), pulling);
+        if (pull != null) {
+            predicate.addProperty(ResourceLocation.withDefaultNamespace("pull").toString(), pull);
+        }
+        override.add("predicate", predicate);
+        override.addProperty("model", Psitweaks.location("item/" + model).toString());
+
+        return override;
+    }
+
+    private static JsonObject generatedModel(String parent, String texture) {
+        JsonObject root = new JsonObject();
+        JsonObject textures = new JsonObject();
+
+        root.addProperty("parent", parent);
+        textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "item/" + texture).toString());
+        root.add("textures", textures);
 
         return root;
     }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "tools",
+  "key": {
+    "B": {
+      "item": "psitweaks:magicians_brain"
+    },
+    "C": {
+      "item": "psitweaks:flashmetal"
+    },
+    "D": {
+      "item": "psitweaks:heavy_psimetal"
+    }
+  },
+  "pattern": [
+    "CDC",
+    "BBB",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:sorcery_booster"
+  }
+}

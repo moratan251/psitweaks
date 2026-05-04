@@ -15,7 +15,6 @@
       "text": "psi.book.page.psitweaks_item.auto_casters.1",
       "recipes": [
         "psitweaks:auto_caster_tick",
-        "psitweaks:auto_caster_second",
         "psitweaks:auto_caster_custom_tick"
       ]
     }

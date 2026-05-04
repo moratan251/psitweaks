@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "tools",
+  "key": {
+    "B": {
+      "item": "psitweaks:flashmetal"
+    },
+    "H": {
+      "item": "psi:cad_socket_huge"
+    },
+    "P": {
+      "item": "psitweaks:chaotic_psimetal"
+    }
+  },
+  "pattern": [
+    "PBH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:spell_magazine"
+  }
+}

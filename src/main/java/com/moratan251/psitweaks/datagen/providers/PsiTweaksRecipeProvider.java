@@ -169,6 +169,58 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'A', ingredientItem("minecraft:anvil")
                 ),
                 block("cad_disassembler"), 1));
+        recipe(recipes, "psimetal_bow", shaped("combat",
+                List.of(" MS", "G S", " MS"),
+                Map.of(
+                        'M', ingredientItem("psi:psimetal"),
+                        'G', ingredientItem("psi:psigem"),
+                        'S', ingredientItem("minecraft:string")
+                ),
+                item("psimetal_bow"), 1));
+        recipe(recipes, "auto_caster_tick", shaped("combat",
+                List.of("ECE", "EFE", "EEE"),
+                Map.of(
+                        'E', ingredientItem("psi:ebony_psimetal"),
+                        'F', ingredientItem(item("chaotic_factor")),
+                        'C', ingredientItem("minecraft:clock")
+                ),
+                item("auto_caster_tick"), 1));
+        recipe(recipes, "auto_caster_custom_tick", shaped("combat",
+                List.of("ECE", "EFE", "EEE"),
+                Map.of(
+                        'E', ingredientItem(item("chaotic_psimetal")),
+                        'F', ingredientItem(item("chaotic_factor")),
+                        'C', ingredientItem("minecraft:clock")
+                ),
+                item("auto_caster_custom_tick"), 1));
+        recipe(recipes, "moval_suit_helmet", shaped("equipment",
+                List.of("EHE", "E E"),
+                Map.of(
+                        'E', ingredientItem("psi:ebony_psimetal"),
+                        'H', ingredientItem(item("heavy_psimetal"))
+                ),
+                item("moval_suit_helmet"), 1));
+        recipe(recipes, "moval_suit_chestplate", shaped("equipment",
+                List.of("E E", "EHE", "EEE"),
+                Map.of(
+                        'E', ingredientItem("psi:ebony_psimetal"),
+                        'H', ingredientItem(item("heavy_psimetal"))
+                ),
+                item("moval_suit_chestplate"), 1));
+        recipe(recipes, "moval_suit_leggings", shaped("equipment",
+                List.of("EHE", "E E", "E E"),
+                Map.of(
+                        'E', ingredientItem("psi:ebony_psimetal"),
+                        'H', ingredientItem(item("heavy_psimetal"))
+                ),
+                item("moval_suit_leggings"), 1));
+        recipe(recipes, "moval_suit_boots", shaped("equipment",
+                List.of("E E", "EHE"),
+                Map.of(
+                        'E', ingredientItem("psi:ebony_psimetal"),
+                        'H', ingredientItem(item("heavy_psimetal"))
+                ),
+                item("moval_suit_boots"), 1));
         recipe(recipes, "inline_caster", shaped("equipment",
                 List.of(" G ", "PBP", " P "),
                 Map.of(
@@ -253,8 +305,55 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'P', ingredientItem(item("psycheonic_metal_ingot"))
                 ),
                 block("spellmachinery_casing"), 1));
+        recipe(recipes, "philosophers_stone", shaped(
+                List.of("AEA", "ENE", "AEA"),
+                Map.of(
+                        'A', ingredientItem(item("antinite_ingot")),
+                        'E', ingredientItem(item("alloy_psionic_echo")),
+                        'N', ingredientItem("minecraft:nether_star")
+                ),
+                item("philosophers_stone"), 1));
+        recipe(recipes, "portable_cad_assembler", shaped(
+                List.of("CGC", "EAE", "CGC"),
+                Map.of(
+                        'C', ingredientItem(item("chaotic_psimetal")),
+                        'G', ingredientItem("psi:psigem"),
+                        'E', ingredientItem("minecraft:ender_pearl"),
+                        'A', ingredientItem("psi:cad_assembler")
+                ),
+                item("portable_cad_assembler"), 1));
+        recipe(recipes, "spell_magazine", shaped("tools",
+                List.of("PBH"),
+                Map.of(
+                        'P', ingredientItem(item("chaotic_psimetal")),
+                        'B', ingredientItem(item("flashmetal")),
+                        'H', ingredientItem("psi:cad_socket_huge")
+                ),
+                item("spell_magazine"), 1));
+        recipe(recipes, "curios_controller", shapeless("tools",
+                List.of(
+                        ingredientItem("psi:exosuit_controller"),
+                        ingredientItem(item("chaotic_psimetal"))
+                ),
+                item("curios_controller"), 1));
+        recipe(recipes, "flash_charm", shaped("combat",
+                List.of(" F ", "FNF", " F "),
+                Map.of(
+                        'F', ingredientItem(item("flashmetal")),
+                        'N', ingredientItem("minecraft:nether_wart")
+                ),
+                item("flash_charm"), 1));
+        recipe(recipes, "sorcery_booster", shaped("tools",
+                List.of("CDC", "BBB", "CCC"),
+                Map.of(
+                        'B', ingredientItem(item("magicians_brain")),
+                        'C', ingredientItem(item("flashmetal")),
+                        'D', ingredientItem(item("heavy_psimetal"))
+                ),
+                item("sorcery_booster"), 1));
 
         addSpellBulletRecipes(recipes);
+        addPhilosophersStoneRecipes(recipes);
 
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
@@ -307,6 +406,98 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 previousItem = result;
             }
         }
+    }
+
+    private static void addPhilosophersStoneRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        recipe(recipes, "philosophers_stone/philosophers_stone_copper_to_iron", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/copper"),
+                        ingredientTag("c:ingots/copper"), ingredientTag("c:ingots/copper"), ingredientTag("c:ingots/copper")),
+                "minecraft:iron_ingot", 2));
+        recipe(recipes, "philosophers_stone/philosophers_stone_iron_to_copper", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/iron"), ingredientTag("c:ingots/iron")),
+                "minecraft:copper_ingot", 4));
+        recipe(recipes, "philosophers_stone/philosophers_stone_iron_to_osmium", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/iron"), ingredientTag("c:ingots/iron"),
+                        ingredientTag("c:ingots/iron"), ingredientTag("c:ingots/iron")),
+                "mekanism:ingot_osmium", 2));
+        recipe(recipes, "philosophers_stone/philosophers_stone_osmium_to_iron", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/osmium"), ingredientTag("c:ingots/osmium")),
+                "minecraft:iron_ingot", 4));
+        recipe(recipes, "philosophers_stone/philosophers_stone_osmium_to_gold", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/osmium"), ingredientTag("c:ingots/osmium"),
+                        ingredientTag("c:ingots/osmium"), ingredientTag("c:ingots/osmium")),
+                "minecraft:gold_ingot", 2));
+        recipe(recipes, "philosophers_stone/philosophers_stone_gold_to_osmium", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/gold"), ingredientTag("c:ingots/gold")),
+                "mekanism:ingot_osmium", 4));
+        recipe(recipes, "philosophers_stone/philosophers_stone_gold_to_uranium", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/gold"), ingredientTag("c:ingots/gold"),
+                        ingredientTag("c:ingots/gold"), ingredientTag("c:ingots/gold")),
+                "mekanism:ingot_uranium", 2));
+        recipe(recipes, "philosophers_stone/philosophers_stone_uranium_to_gold", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/uranium"), ingredientTag("c:ingots/uranium")),
+                "minecraft:gold_ingot", 4));
+        recipe(recipes, "philosophers_stone/philosophers_stone_iron_to_tin", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/iron"), ingredientTag("c:ingots/iron"),
+                        ingredientTag("c:ingots/iron"), ingredientTag("c:ingots/iron"), ingredientTag("c:ingots/iron")),
+                "mekanism:ingot_tin", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_tin_to_iron", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/tin"), ingredientTag("c:ingots/tin"),
+                        ingredientTag("c:ingots/tin"), ingredientTag("c:ingots/tin"), ingredientTag("c:ingots/tin")),
+                "minecraft:iron_ingot", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_osmium_to_lead", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/osmium"), ingredientTag("c:ingots/osmium"),
+                        ingredientTag("c:ingots/osmium"), ingredientTag("c:ingots/osmium"), ingredientTag("c:ingots/osmium")),
+                "mekanism:ingot_lead", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_lead_to_osmium", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientTag("c:ingots/lead"), ingredientTag("c:ingots/lead"),
+                        ingredientTag("c:ingots/lead"), ingredientTag("c:ingots/lead"), ingredientTag("c:ingots/lead")),
+                "mekanism:ingot_osmium", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_coal_to_diamond", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:coal_block"),
+                        ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal"),
+                        ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal"),
+                        ingredientItem("minecraft:coal")),
+                "minecraft:diamond", 1));
+        recipe(recipes, "philosophers_stone/philosophers_stone_charcoal_to_diamond", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("mekanism:block_charcoal"),
+                        ingredientItem("minecraft:charcoal"), ingredientItem("minecraft:charcoal"), ingredientItem("minecraft:charcoal"),
+                        ingredientItem("minecraft:charcoal"), ingredientItem("minecraft:charcoal"), ingredientItem("minecraft:charcoal"),
+                        ingredientItem("minecraft:charcoal")),
+                "minecraft:diamond", 1));
+        recipe(recipes, "philosophers_stone/philosophers_stone_diamond_to_coal", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:diamond")),
+                "minecraft:coal", 16));
+        recipe(recipes, "philosophers_stone/philosophers_stone_ender_pearl_to_diamond", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:ender_pearl"), ingredientItem("minecraft:ender_pearl"),
+                        ingredientItem("minecraft:ender_pearl"), ingredientItem("minecraft:ender_pearl")),
+                "minecraft:diamond", 2));
+        recipe(recipes, "philosophers_stone/philosophers_stone_diamond_to_ender_pearl", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:diamond"), ingredientItem("minecraft:diamond")),
+                "minecraft:ender_pearl", 4));
+        recipe(recipes, "philosophers_stone/philosophers_stone_blaze_rod_to_ender_pearl", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:blaze_rod"), ingredientItem("minecraft:blaze_rod"),
+                        ingredientItem("minecraft:blaze_rod"), ingredientItem("minecraft:blaze_rod")),
+                "minecraft:ender_pearl", 2));
+        recipe(recipes, "philosophers_stone/philosophers_stone_ender_pearl_to_blaze_rod", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:ender_pearl"), ingredientItem("minecraft:ender_pearl")),
+                "minecraft:blaze_rod", 4));
+        recipe(recipes, "philosophers_stone/philosophers_stone_diamond_to_emerald", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:diamond"), ingredientItem("minecraft:diamond"),
+                        ingredientItem("minecraft:diamond"), ingredientItem("minecraft:diamond"), ingredientItem("minecraft:diamond")),
+                "minecraft:emerald", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_emerald_to_diamond", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:emerald"), ingredientItem("minecraft:emerald"),
+                        ingredientItem("minecraft:emerald"), ingredientItem("minecraft:emerald"), ingredientItem("minecraft:emerald")),
+                "minecraft:diamond", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_coal_to_quartz", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal"),
+                        ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal"), ingredientItem("minecraft:coal")),
+                "minecraft:quartz", 5));
+        recipe(recipes, "philosophers_stone/philosophers_stone_quartz_to_coal", shapeless(
+                List.of(ingredientItem(item("philosophers_stone")), ingredientItem("minecraft:quartz"), ingredientItem("minecraft:quartz"),
+                        ingredientItem("minecraft:quartz"), ingredientItem("minecraft:quartz"), ingredientItem("minecraft:quartz")),
+                "minecraft:coal", 5));
     }
 
     private static JsonObject shaped(List<String> pattern, Map<Character, JsonObject> keys, String result, int count) {
@@ -376,6 +567,12 @@ public class PsiTweaksRecipeProvider implements DataProvider {
     private static JsonObject ingredientItem(String item) {
         JsonObject ingredient = new JsonObject();
         ingredient.addProperty("item", item);
+        return ingredient;
+    }
+
+    private static JsonObject ingredientTag(String tag) {
+        JsonObject ingredient = new JsonObject();
+        ingredient.addProperty("tag", tag);
         return ingredient;
     }
 

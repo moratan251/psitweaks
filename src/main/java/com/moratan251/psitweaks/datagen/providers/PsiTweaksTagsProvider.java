@@ -121,6 +121,21 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/polonium", item("polonium_block"));
         tag(tags, "c", "storage_blocks/raw_antinite", item("raw_antinite_block"));
 
+        tag(tags, "minecraft", "head_armor", item("moval_suit_helmet"));
+        tag(tags, "minecraft", "chest_armor", item("moval_suit_chestplate"));
+        tag(tags, "minecraft", "leg_armor", item("moval_suit_leggings"));
+        tag(tags, "minecraft", "foot_armor", item("moval_suit_boots"));
+        tag(tags, "minecraft", "enchantable/head_armor", item("moval_suit_helmet"));
+        tag(tags, "minecraft", "enchantable/chest_armor", item("moval_suit_chestplate"));
+        tag(tags, "minecraft", "enchantable/leg_armor", item("moval_suit_leggings"));
+        tag(tags, "minecraft", "enchantable/foot_armor", item("moval_suit_boots"));
+        tag(tags, "minecraft", "enchantable/bow", item("psimetal_bow"));
+        tag(tags, "curios", "charm", item("flash_charm"));
+        tag(tags, "curios", "magic_calculation_area",
+                item("auto_caster_tick"),
+                item("auto_caster_custom_tick"),
+                item("sorcery_booster"));
+
         tag(tags, "psi", "assemblies",
                 item("cad_assembly_alloy_psion"),
                 item("cad_assembly_chaotic_psimetal"),

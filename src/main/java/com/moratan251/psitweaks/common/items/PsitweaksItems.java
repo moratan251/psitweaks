@@ -9,11 +9,22 @@ import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksMineSpellBullet
 import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksProjectileSpellBullet;
 import com.moratan251.psitweaks.common.items.bullet.ItemPsitweaksSpellBullet;
 import com.moratan251.psitweaks.common.items.bullet.SpellBulletTier;
+import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterCustomTick;
+import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
+import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
+import com.moratan251.psitweaks.common.items.curios.ItemFlashCharm;
+import com.moratan251.psitweaks.common.items.curios.ItemSorceryBooster;
+import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitBoots;
+import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitChestplate;
+import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitHelmet;
+import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitLeggings;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.psi.common.item.component.ItemCADAssembly;
 
 public final class PsitweaksItems {
@@ -170,6 +181,58 @@ public final class PsitweaksItems {
     public static final DeferredItem<Item> MAGICIANS_BRAIN = ITEMS.registerSimpleItem(
             "magicians_brain",
             new Item.Properties().rarity(Rarity.UNCOMMON)
+    );
+    public static final DeferredItem<ItemPhilosophersStone> PHILOSOPHERS_STONE = ITEMS.register(
+            "philosophers_stone",
+            () -> new ItemPhilosophersStone(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemPsimetalBow> PSIMETAL_BOW = ITEMS.register(
+            "psimetal_bow",
+            () -> new ItemPsimetalBow(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemCuriosController> CURIOS_CONTROLLER = ITEMS.register(
+            "curios_controller",
+            () -> new ItemCuriosController(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemAutoCasterTick> AUTO_CASTER_TICK = ITEMS.register(
+            "auto_caster_tick",
+            () -> new ItemAutoCasterTick(new Item.Properties())
+    );
+    public static final DeferredItem<ItemAutoCasterCustomTick> AUTO_CASTER_CUSTOM_TICK = ITEMS.register(
+            "auto_caster_custom_tick",
+            () -> new ItemAutoCasterCustomTick(new Item.Properties())
+    );
+    public static final DeferredItem<ItemSpellMagazine> SPELL_MAGAZINE = ITEMS.register(
+            "spell_magazine",
+            () -> new ItemSpellMagazine(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemPortableCADAssembler> PORTABLE_CAD_ASSEMBLER = ITEMS.register(
+            "portable_cad_assembler",
+            () -> new ItemPortableCADAssembler(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemFlashCharm> FLASH_CHARM = ITEMS.register(
+            "flash_charm",
+            () -> new ItemFlashCharm(new Item.Properties())
+    );
+    public static final DeferredItem<ItemSorceryBooster> SORCERY_BOOSTER = ITEMS.register(
+            "sorcery_booster",
+            () -> new ItemSorceryBooster(new Item.Properties())
+    );
+    public static final DeferredItem<ItemMovalSuitHelmet> MOVAL_SUIT_HELMET = ITEMS.register(
+            "moval_suit_helmet",
+            () -> new ItemMovalSuitHelmet(ArmorItem.Type.HELMET, movalSuitProperties(ArmorItem.Type.HELMET))
+    );
+    public static final DeferredItem<ItemMovalSuitChestplate> MOVAL_SUIT_CHESTPLATE = ITEMS.register(
+            "moval_suit_chestplate",
+            () -> new ItemMovalSuitChestplate(ArmorItem.Type.CHESTPLATE, movalSuitProperties(ArmorItem.Type.CHESTPLATE))
+    );
+    public static final DeferredItem<ItemMovalSuitLeggings> MOVAL_SUIT_LEGGINGS = ITEMS.register(
+            "moval_suit_leggings",
+            () -> new ItemMovalSuitLeggings(ArmorItem.Type.LEGGINGS, movalSuitProperties(ArmorItem.Type.LEGGINGS))
+    );
+    public static final DeferredItem<ItemMovalSuitBoots> MOVAL_SUIT_BOOTS = ITEMS.register(
+            "moval_suit_boots",
+            () -> new ItemMovalSuitBoots(ArmorItem.Type.BOOTS, movalSuitProperties(ArmorItem.Type.BOOTS))
     );
     public static final DeferredItem<ItemPsitweaksSpellBullet> ADVANCED_SPELL_BULLET = registerSpellBullet(
             "advanced_spell_bullet",
@@ -365,8 +428,21 @@ public final class PsitweaksItems {
         ITEMS.register(eventBus);
     }
 
+    public static void registerCurioItems() {
+        CuriosApi.registerCurio(AUTO_CASTER_TICK.get(), AUTO_CASTER_TICK.get());
+        CuriosApi.registerCurio(AUTO_CASTER_CUSTOM_TICK.get(), AUTO_CASTER_CUSTOM_TICK.get());
+        CuriosApi.registerCurio(FLASH_CHARM.get(), FLASH_CHARM.get());
+        CuriosApi.registerCurio(SORCERY_BOOSTER.get(), SORCERY_BOOSTER.get());
+    }
+
     private static DeferredItem<ItemCADAssembly> registerCadAssembly(String id, Rarity rarity, String model) {
         return ITEMS.register(id, () -> new ItemCADAssembly(new Item.Properties().rarity(rarity), model));
+    }
+
+    private static Item.Properties movalSuitProperties(ArmorItem.Type type) {
+        return new Item.Properties()
+                .rarity(Rarity.RARE)
+                .durability(type.getDurability(60));
     }
 
     private static DeferredItem<ItemPsitweaksSpellBullet> registerSpellBullet(String id, SpellBulletTier tier) {

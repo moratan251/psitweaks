@@ -1,4 +1,6 @@
-// 1.21.1	2026-05-04T01:07:26.9776327	PsiTweaks tags
+// 1.21.1	2026-05-04T11:47:20.974863	PsiTweaks tags
+2b0972694544ef7efe860eb052a12b017ce5f26d data/curios/tags/item/charm.json
+b91569a742f2d88743a6da70e6618ba263b4cc5f data/curios/tags/item/magic_calculation_area.json
 12b82ad554d363a016b4ce2de01ba017806a484e data/c/tags/block/ores.json
 39774d70224c5befc396600acda04217838272fe data/c/tags/block/ores/antinite.json
 c8003186b13c39f6f9e4e93e5f4e6e03344d0b8a data/c/tags/block/storage_blocks.json
@@ -45,6 +47,15 @@ e47d1c23ac2a0875e909021229546614858d19c4 data/mekanism/tags/item/shards.json
 9ba374bb38f85b03bbd912a94443fd7934baf4c5 data/minecraft/tags/block/mineable/pickaxe.json
 d5bf711fc7a7fddaff2fd59a87f6cfb4cdd7fa74 data/minecraft/tags/block/needs_diamond_tool.json
 ad75f7bce216e548880390ee50eec3d9fba331b2 data/minecraft/tags/block/needs_iron_tool.json
+9772e2a3f4567aa532caa79b7963f0b331ae28be data/minecraft/tags/item/chest_armor.json
+c825e64155f573fb74dc9446c8b4106b9cf7fd58 data/minecraft/tags/item/enchantable/bow.json
+9772e2a3f4567aa532caa79b7963f0b331ae28be data/minecraft/tags/item/enchantable/chest_armor.json
+4647c6fadd20c8008ef6e8cbfd6a47891b9bb812 data/minecraft/tags/item/enchantable/foot_armor.json
+f4943f6be06ec1e893a863f5040eea89f66cfd22 data/minecraft/tags/item/enchantable/head_armor.json
+fd505dfc0e8f2e19faad940004fab697444a369d data/minecraft/tags/item/enchantable/leg_armor.json
+4647c6fadd20c8008ef6e8cbfd6a47891b9bb812 data/minecraft/tags/item/foot_armor.json
+f4943f6be06ec1e893a863f5040eea89f66cfd22 data/minecraft/tags/item/head_armor.json
+fd505dfc0e8f2e19faad940004fab697444a369d data/minecraft/tags/item/leg_armor.json
 c5affe723fcbf6c8bf68162b13189c5f210f37f0 data/neoforge/tags/block/needs_netherite_tool.json
 513dbbf3ee8615afd3e8211d82654e8e6fb4468e data/psi/tags/item/assemblies.json
 513dbbf3ee8615afd3e8211d82654e8e6fb4468e data/psi/tags/item/components.json

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "psi:ebony_psimetal"
+    },
+    "H": {
+      "item": "psitweaks:heavy_psimetal"
+    }
+  },
+  "pattern": [
+    "EHE",
+    "E E",
+    "E E"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:moval_suit_leggings"
+  }
+}

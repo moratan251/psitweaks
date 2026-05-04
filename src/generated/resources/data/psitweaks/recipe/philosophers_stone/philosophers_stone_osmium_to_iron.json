@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:philosophers_stone"
+    },
+    {
+      "tag": "c:ingots/osmium"
+    },
+    {
+      "tag": "c:ingots/osmium"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "minecraft:iron_ingot"
+  }
+}
