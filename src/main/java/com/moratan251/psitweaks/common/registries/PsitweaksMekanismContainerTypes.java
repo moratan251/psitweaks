@@ -2,8 +2,10 @@ package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
+import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.SculkEroderBlockEntity;
+import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -14,10 +16,16 @@ public final class PsitweaksMekanismContainerTypes {
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<SculkEroderBlockEntity>> SCULK_ERODER =
             CONTAINER_TYPES.register(PsitweaksMekanismBlocks.SCULK_ERODER, SculkEroderBlockEntity.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<ProgramResearcherBlockEntity>> PROGRAM_RESEARCHER =
+            CONTAINER_TYPES.register(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER, ProgramResearcherBlockEntity.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<MaterialMutatorBlockEntity>> MATERIAL_MUTATOR =
             CONTAINER_TYPES.register(PsitweaksMekanismBlocks.MATERIAL_MUTATOR, MaterialMutatorBlockEntity.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<PsionicGeneratorBlockEntity>> PSIONIC_GENERATOR =
             CONTAINER_TYPES.register(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, PsionicGeneratorBlockEntity.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTranscendentEnergyCube>> TRANSCENDENT_ENERGY_CUBE =
+            CONTAINER_TYPES.custom(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE, TileEntityTranscendentEnergyCube.class)
+                    .armorSideBar(180, 41, 0)
+                    .build();
 
     private PsitweaksMekanismContainerTypes() {
     }

@@ -1,6 +1,6 @@
-// 1.21.1	2026-05-05T21:47:06.3583281	PsiTweaks tags
+// 1.21.1	2026-05-06T01:43:01.9395402	PsiTweaks tags
 2b0972694544ef7efe860eb052a12b017ce5f26d data/curios/tags/item/charm.json
-b91569a742f2d88743a6da70e6618ba263b4cc5f data/curios/tags/item/magic_calculation_area.json
+035f94be00fe3e536fc172030444c372c1a2c5a8 data/curios/tags/item/magic_calculation_area.json
 12b82ad554d363a016b4ce2de01ba017806a484e data/c/tags/block/ores.json
 39774d70224c5befc396600acda04217838272fe data/c/tags/block/ores/antinite.json
 c8003186b13c39f6f9e4e93e5f4e6e03344d0b8a data/c/tags/block/storage_blocks.json
@@ -56,6 +56,7 @@ fd505dfc0e8f2e19faad940004fab697444a369d data/minecraft/tags/item/enchantable/le
 4647c6fadd20c8008ef6e8cbfd6a47891b9bb812 data/minecraft/tags/item/foot_armor.json
 f4943f6be06ec1e893a863f5040eea89f66cfd22 data/minecraft/tags/item/head_armor.json
 fd505dfc0e8f2e19faad940004fab697444a369d data/minecraft/tags/item/leg_armor.json
+8fff326a642034a146f878860d5b469c085ff913 data/minecraft/tags/point_of_interest_type/acquirable_job_site.json
 c5affe723fcbf6c8bf68162b13189c5f210f37f0 data/neoforge/tags/block/needs_netherite_tool.json
 513dbbf3ee8615afd3e8211d82654e8e6fb4468e data/psi/tags/item/assemblies.json
 513dbbf3ee8615afd3e8211d82654e8e6fb4468e data/psi/tags/item/components.json

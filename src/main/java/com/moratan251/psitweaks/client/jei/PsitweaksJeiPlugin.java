@@ -2,10 +2,12 @@ package com.moratan251.psitweaks.client.jei;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
+import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
+import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.SculkEroderBlockEntity;
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class PsitweaksJeiPlugin implements IModPlugin {
                 registration.getJeiHelpers().getGuiHelper(),
                 PsitweaksMekanismJeiRecipeTypes.MATERIAL_MUTATOR
         ));
+        registration.addRecipeCategories(new ProgramResearchJeiCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new MaterialMutationJeiCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
@@ -66,6 +69,13 @@ public class PsitweaksJeiPlugin implements IModPlugin {
                 : MaterialMutatorBlockEntity.getAllMutationMachineRecipeHolders(level);
         registration.addRecipes(materialMutatorRecipeType(), materialMutatorRecipes);
 
+        List<ProgramResearchJeiRecipe> programResearchRecipes = level == null
+                ? List.of()
+                : level.getRecipeManager().getAllRecipesFor(PsitweaksRecipeTypes.PROGRAM_RESEARCH.get()).stream()
+                        .map(holder -> new ProgramResearchJeiRecipe(holder.id(), holder.value()))
+                        .toList();
+        registration.addRecipes(ProgramResearchJeiCategory.RECIPE_TYPE, programResearchRecipes);
+
         registration.addRecipes(MaterialMutationJeiCategory.RECIPE_TYPE, getMaterialMutationJeiRecipes());
     }
 
@@ -73,6 +83,7 @@ public class PsitweaksJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(PsitweaksMekanismBlocks.SCULK_ERODER.get(), sculkEroderRecipeType());
         registration.addRecipeCatalyst(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get(), materialMutatorRecipeType());
+        registration.addRecipeCatalyst(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.get(), ProgramResearchJeiCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get(), MaterialMutationJeiCategory.RECIPE_TYPE);
     }
 
@@ -80,6 +91,7 @@ public class PsitweaksJeiPlugin implements IModPlugin {
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(GuiSculkEroder.class, 78, 34, 24, 17, sculkEroderRecipeType());
         registration.addRecipeClickArea(GuiMaterialMutator.class, 78, 34, 24, 17, materialMutatorRecipeType());
+        registration.addRecipeClickArea(GuiProgramResearcher.class, 104, 38, 24, 17, ProgramResearchJeiCategory.RECIPE_TYPE);
     }
 
     private static RecipeType<RecipeHolder<ItemStackToItemStackRecipe>> sculkEroderRecipeType() {

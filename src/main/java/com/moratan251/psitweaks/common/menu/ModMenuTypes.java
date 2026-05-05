@@ -15,9 +15,6 @@ public final class ModMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<PortableCADAssemblerMenu>> PORTABLE_CAD_ASSEMBLER =
             MENUS.register("portable_cad_assembler",
                     () -> IMenuTypeExtension.create(PortableCADAssemblerMenu::fromNetwork));
-    public static final DeferredHolder<MenuType<?>, MenuType<ProgramResearcherMenu>> PROGRAM_RESEARCHER =
-            MENUS.register("program_researcher",
-                    () -> IMenuTypeExtension.create(ProgramResearcherMenu::fromNetwork));
 
     private ModMenuTypes() {
     }

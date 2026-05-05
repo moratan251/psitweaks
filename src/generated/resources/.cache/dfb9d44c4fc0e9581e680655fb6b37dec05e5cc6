@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-05T04:08:49.1759806	PsiTweaks item models
+// 1.21.1	2026-05-06T01:43:01.9355415	PsiTweaks item models
 9be455b28f25dc7c439ae3a70c704949d5cfdbbc assets/psitweaks/models/item/advanced_spell_bullet.json
 65ce1cfdd3a5f75a916309b6710a6a7943340c9a assets/psitweaks/models/item/advanced_spell_bullet_active.json
 b869ae5a156c2b46ba5f2806a743b94e892f705a assets/psitweaks/models/item/advanced_spell_bullet_charge.json
@@ -135,6 +135,7 @@ a9ce249da39ebb02b9994f48907776de04d547e7 assets/psitweaks/models/item/sublimated
 4608c6881c695e3c4425024a196bfbc3ec7f2bd0 assets/psitweaks/models/item/sublimated_spell_bullet_mine_active.json
 ede485ab9a8062ff6c70c284924939b81f9dc2b2 assets/psitweaks/models/item/sublimated_spell_bullet_projectile.json
 8b83ad339f429507ed359b1630d3cc1ee9cde962 assets/psitweaks/models/item/sublimated_spell_bullet_projectile_active.json
+49469aad77098c7797325fd9a3d89ff12abb9686 assets/psitweaks/models/item/third_eye_device.json
 6b9398db8d2af1823dd2515f676d24178524be12 assets/psitweaks/models/item/transcendent_spell_bullet.json
 8f3ff236157f4a64ec7486c97444d0f4d9028d19 assets/psitweaks/models/item/transcendent_spell_bullet_active.json
 0bc633747e79cf5d65d53cbc1f85f62413bffc85 assets/psitweaks/models/item/transcendent_spell_bullet_charge.json

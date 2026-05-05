@@ -1,9 +1,9 @@
 package com.moratan251.psitweaks.common.spells;
 
-import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.particles.ParticleTypes;
@@ -200,7 +200,6 @@ public class PieceTrickGuillotine extends PieceTrick {
     }
 
     private boolean isSpellcasterVillager(Villager villager) {
-        ResourceLocation professionId = BuiltInRegistries.VILLAGER_PROFESSION.getKey(villager.getVillagerData().getProfession());
-        return Psitweaks.location("spellcaster").equals(professionId);
+        return villager.getVillagerData().getProfession() == PsitweaksVillagers.SPELLCASTER.get();
     }
 }

@@ -4,12 +4,10 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -39,9 +37,6 @@ public class PieceTrickIceCircle extends PieceTrick {
     private static final double POTENCY_PER_POWER = 120.0D;
     private static final double COST_BASE = 2000.0D;
     private static final double COST_PER_POWER = 1200.0D;
-
-    private static final String NBT_ICE_UUID = "PsitweaksIceCircleUUID";
-    private static final String NBT_ICE_DIM  = "PsitweaksIceCircleDim";
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;
@@ -88,7 +83,7 @@ public class PieceTrickIceCircle extends PieceTrick {
         if (!context.isInRadius(positionVal)) {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         }
-        if (!(context.caster.level() instanceof ServerLevel serverLevel)) {
+        if (context.caster == null || !(context.caster.level() instanceof ServerLevel serverLevel)) {
             return null;
         }
 
@@ -100,8 +95,7 @@ public class PieceTrickIceCircle extends PieceTrick {
         double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
         float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
 
-        ItemStack cad = context.tool;
-        removeExistingIceCircleByCAD(serverLevel, cad);
+        removeExistingIceCircleByCaster(serverLevel, context.caster.getUUID());
 
         EntityIceCircle iceCircle = new EntityIceCircle(serverLevel);
         iceCircle.setPos(positionVal.x, positionVal.y + 0.01D, positionVal.z);
@@ -112,7 +106,6 @@ public class PieceTrickIceCircle extends PieceTrick {
         iceCircle.configureAreaDamage(FIXED_RADIUS, finalDamage, DAMAGE_INTERVAL_TICKS);
 
         serverLevel.addFreshEntity(iceCircle);
-        saveIceCircleToCAD(cad, iceCircle, serverLevel);
 
         Vec3 center = iceCircle.position();
         serverLevel.playSound(
@@ -140,36 +133,16 @@ public class PieceTrickIceCircle extends PieceTrick {
         return null;
     }
 
-    private static void removeExistingIceCircleByCAD(ServerLevel castingLevel, ItemStack cad) {
-        CompoundTag nbt = SpellItemDataUtils.getCustomData(cad);
-        if (!nbt.hasUUID(NBT_ICE_UUID)) {
-            return;
-        }
-
-        UUID uuid = nbt.getUUID(NBT_ICE_UUID);
-        String dimKey = nbt.getString(NBT_ICE_DIM);
-
+    private static void removeExistingIceCircleByCaster(ServerLevel castingLevel, UUID casterUuid) {
         for (ServerLevel level : castingLevel.getServer().getAllLevels()) {
-            if (level.dimension().location().toString().equals(dimKey)) {
-                Entity entity = level.getEntity(uuid);
-                if (entity instanceof EntityIceCircle circle) {
+            for (Entity entity : level.getAllEntities()) {
+                if (entity instanceof EntityIceCircle circle
+                        && !circle.isRemoved()
+                        && casterUuid.equals(circle.getCasterUuid())) {
                     circle.destroyBySpell();
                 }
-                break;
             }
         }
-
-        SpellItemDataUtils.updateCustomData(cad, tag -> {
-            tag.remove(NBT_ICE_UUID);
-            tag.remove(NBT_ICE_DIM);
-        });
-    }
-
-    private static void saveIceCircleToCAD(ItemStack cad, EntityIceCircle circle, ServerLevel level) {
-        SpellItemDataUtils.updateCustomData(cad, tag -> {
-            tag.putUUID(NBT_ICE_UUID, circle.getUUID());
-            tag.putString(NBT_ICE_DIM, level.dimension().location().toString());
-        });
     }
 
     private static float calculateDamage(double powerVal) {

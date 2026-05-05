@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    "C": {
+      "item": "mekanism:ultimate_energy_cube"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "N": {
+      "item": "psitweaks:pellet_neptunium"
+    }
+  },
+  "pattern": [
+    "AEA",
+    "NCN",
+    "AEA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:transcendent_energy_cube"
+  }
+}

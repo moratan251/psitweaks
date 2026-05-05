@@ -6,7 +6,9 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
-    "RadiationUtilMixin"
+    "RadiationUtilMixin",
+    "SpellContextRangeMixin",
+    "SpellHelpersRangeLimitMixin"
   ],
   "client": [
     "client.PiecePanelWidgetEnglishSearchMixin"

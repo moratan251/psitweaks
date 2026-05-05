@@ -6,11 +6,13 @@ import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiPortableCADAssembler;
 import com.moratan251.psitweaks.client.gui.machine.GuiPsionicGenerator;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
+import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
 import com.moratan251.psitweaks.client.renderer.FlareCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.IceCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
+import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributeEvents;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
@@ -34,6 +36,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTyp
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
@@ -48,6 +51,7 @@ import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellUnlockProvider;
 import com.mojang.logging.LogUtils;
 import mekanism.api.MekanismIMC;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -65,7 +69,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -109,8 +116,7 @@ public class Psitweaks {
         PsitweaksMekanismBlocks.register(modEventBus);
         PsitweaksMekanismTileEntityTypes.register(modEventBus);
         PsitweaksMekanismContainerTypes.register(modEventBus);
-        // TODO(port): Re-enable as their 1.21.1 NeoForge implementations are ported.
-        // PsitweaksVillagers.register(modEventBus);
+        PsitweaksVillagers.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
 
@@ -217,9 +223,25 @@ public class Psitweaks {
         public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
             event.register(PsitweaksMekanismContainerTypes.SCULK_ERODER.get(), GuiSculkEroder::new);
+            event.register(PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER.get(), GuiProgramResearcher::new);
             event.register(PsitweaksMekanismContainerTypes.MATERIAL_MUTATOR.get(), GuiMaterialMutator::new);
             event.register(PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR.get(), GuiPsionicGenerator::new);
-            event.register(ModMenuTypes.PROGRAM_RESEARCHER.get(), GuiProgramResearcher::new);
+            event.register(PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE.get(), GuiTranscendentEnergyCube::new);
+        }
+
+        @SubscribeEvent
+        public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
+            event.registerReloadListener(RenderTranscendentEnergyCubeItem.RENDERER);
+        }
+
+        @SubscribeEvent
+        public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+            event.registerItem(new IClientItemExtensions() {
+                @Override
+                public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                    return RenderTranscendentEnergyCubeItem.RENDERER;
+                }
+            }, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.asItem());
         }
 
         @SubscribeEvent

@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-04T14:23:22.0433708	PsiTweaks block loot tables
+// 1.21.1	2026-05-06T00:37:46.2334534	PsiTweaks block loot tables
 edbd08a69bd4c03a48386192e341436b02b304cc data/psitweaks/loot_table/blocks/antinite_block.json
 6cb1572d8368a8ff16a54cdfc9cd84752d617810 data/psitweaks/loot_table/blocks/cad_disassembler.json
 43fa73f6d2911179262f55259277037b66160c5c data/psitweaks/loot_table/blocks/chaotic_psimetal_block.json
@@ -13,3 +13,5 @@ f955f00ccf989f2ca182a04bf40a4c7681d41188 data/psitweaks/loot_table/blocks/ore_an
 1a0d7ab1522c91db53a5da0a8be61f2c32bfe350 data/psitweaks/loot_table/blocks/raw_antinite_block.json
 9c666379231d89bd00b4aefad45e7a8cb3b43b3e data/psitweaks/loot_table/blocks/sculk_eroder.json
 d63b206e17f37cae1610b529fa8f66e52bf99e34 data/psitweaks/loot_table/blocks/spellmachinery_casing.json
+7aa1747ade5cbb9db63c19f674b784570f3a28a2 data/psitweaks/loot_table/blocks/transcendent_energy_cube.json
+140ede03f519ed0e6d5711368ef8bf0e6708f7e6 data/psitweaks/loot_table/blocks/transcendent_universal_cable.json

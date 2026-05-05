@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "psitweaks:block/energy_cube/transcendent",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "psitweaks:block/energy_cube/transcendent",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "psitweaks:block/energy_cube/transcendent"
+    },
+    "facing=south": {
+      "model": "psitweaks:block/energy_cube/transcendent",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "psitweaks:block/energy_cube/transcendent",
+      "x": -90
+    },
+    "facing=west": {
+      "model": "psitweaks:block/energy_cube/transcendent",
+      "y": -90
+    }
+  }
+}

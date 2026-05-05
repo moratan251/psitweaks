@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
 import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
 import com.moratan251.psitweaks.common.items.curios.ItemFlashCharm;
 import com.moratan251.psitweaks.common.items.curios.ItemSorceryBooster;
+import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitBoots;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitChestplate;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitHelmet;
@@ -229,6 +230,10 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemFlashCharm> FLASH_CHARM = ITEMS.register(
             "flash_charm",
             () -> new ItemFlashCharm(new Item.Properties())
+    );
+    public static final DeferredItem<ItemThirdEyeDevice> THIRD_EYE_DEVICE = ITEMS.register(
+            "third_eye_device",
+            () -> new ItemThirdEyeDevice(new Item.Properties())
     );
     public static final DeferredItem<ItemSorceryBooster> SORCERY_BOOSTER = ITEMS.register(
             "sorcery_booster",
@@ -460,6 +465,7 @@ public final class PsitweaksItems {
         CuriosApi.registerCurio(AUTO_CASTER_TICK.get(), AUTO_CASTER_TICK.get());
         CuriosApi.registerCurio(AUTO_CASTER_CUSTOM_TICK.get(), AUTO_CASTER_CUSTOM_TICK.get());
         CuriosApi.registerCurio(FLASH_CHARM.get(), FLASH_CHARM.get());
+        CuriosApi.registerCurio(THIRD_EYE_DEVICE.get(), THIRD_EYE_DEVICE.get());
         CuriosApi.registerCurio(SORCERY_BOOSTER.get(), SORCERY_BOOSTER.get());
     }
 

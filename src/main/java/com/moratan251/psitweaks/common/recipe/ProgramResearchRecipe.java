@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.IntFunction;
+import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -67,6 +68,11 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
     public @Nullable int[] createConsumptionPlan(IItemHandler inputInventory) {
         int slotCount = Math.min(inputInventory.getSlots(), MAX_INPUT_SLOTS);
         return createConsumptionPlan(inputInventory::getStackInSlot, slotCount);
+    }
+
+    public @Nullable int[] createConsumptionPlan(List<? extends IInventorySlot> inputInventory) {
+        int slotCount = Math.min(inputInventory.size(), MAX_INPUT_SLOTS);
+        return createConsumptionPlan(slot -> inputInventory.get(slot).getStack(), slotCount);
     }
 
     private @Nullable int[] createConsumptionPlan(IntFunction<ItemStack> stackProvider, int slotCount) {

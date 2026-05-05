@@ -15,22 +15,27 @@ import net.minecraft.resources.ResourceLocation;
 public class PsiTweaksTagsProvider implements DataProvider {
     private final PackOutput.PathProvider blockPathProvider;
     private final PackOutput.PathProvider itemPathProvider;
+    private final PackOutput.PathProvider poiTypePathProvider;
 
     public PsiTweaksTagsProvider(PackOutput output) {
         this.blockPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/block");
         this.itemPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/item");
+        this.poiTypePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/point_of_interest_type");
     }
 
     @Override
     public CompletableFuture<?> run(CachedOutput output) {
         Map<ResourceLocation, JsonObject> blockTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> itemTags = new LinkedHashMap<>();
+        Map<ResourceLocation, JsonObject> poiTypeTags = new LinkedHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
         addBlockTags(blockTags);
         addItemTags(itemTags);
+        addPoiTypeTags(poiTypeTags);
         saveTags(futures, output, blockPathProvider, blockTags);
         saveTags(futures, output, itemPathProvider, itemTags);
+        saveTags(futures, output, poiTypePathProvider, poiTypeTags);
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -149,6 +154,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "curios", "magic_calculation_area",
                 item("auto_caster_tick"),
                 item("auto_caster_custom_tick"),
+                item("third_eye_device"),
                 item("sorcery_booster"));
 
         tag(tags, "psi", "assemblies",
@@ -175,6 +181,10 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "mekanism", "dirty_dusts/antinite", item("dirty_dust_antinite"));
         tag(tags, "mekanism", "shards", tagRef("mekanism:shards/antinite"));
         tag(tags, "mekanism", "shards/antinite", item("shard_antinite"));
+    }
+
+    private static void addPoiTypeTags(Map<ResourceLocation, JsonObject> tags) {
+        tag(tags, "minecraft", "acquirable_job_site", "psitweaks:cad_assembler");
     }
 
     private static void saveTags(List<CompletableFuture<?>> futures, CachedOutput output,

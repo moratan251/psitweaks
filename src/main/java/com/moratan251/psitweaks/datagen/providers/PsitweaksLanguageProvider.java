@@ -42,6 +42,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 default -> item.enUs();
             });
         }
+        root.addProperty("entity.minecraft.villager.psitweaks.spellcaster", switch (locale) {
+            case "ja_jp" -> "魔法師";
+            default -> "Magician";
+        });
         addChemical(root, "infuse_psigem", "Psigem", "サイジェム");
         addChemical(root, "infuse_ebony", "Ebony", "黒檀");
         addChemical(root, "infuse_ivory", "Ivory", "白象牙");
@@ -165,6 +169,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "サイリンク発電機";
             default -> "Psi-Link Generator";
         });
+        root.addProperty("container.psitweaks.transcendent_energy_cube", switch (locale) {
+            case "ja_jp" -> "超越エネルギーキューブ";
+            default -> "Transcendent Energy Cube";
+        });
+        root.addProperty("description.psitweaks.program_researcher", switch (locale) {
+            case "ja_jp" -> "素材と電力からプログラムアイテムを研究します";
+            default -> "Researches program items from materials and power";
+        });
         root.addProperty("description.psitweaks.sculk_eroder", switch (locale) {
             case "ja_jp" -> "石・土・砂系のブロックをスカルクへ侵食加工します";
             default -> "Corrodes stone, dirt, and sand type blocks into Sculk";
@@ -176,6 +188,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("description.psitweaks.psionic_generator", switch (locale) {
             case "ja_jp" -> "所有者の Psi を消費し、リンク中のみ FE に変換します";
             default -> "Consumes the owner's Psi and converts it into FE while linked";
+        });
+        root.addProperty("description.psitweaks.transcendent_universal_cable", switch (locale) {
+            case "ja_jp" -> "究極ユニバーサルケーブルの128倍の容量を持つエネルギーケーブルです";
+            default -> "An energy cable with 128 times the capacity of Ultimate Universal Cable";
+        });
+        root.addProperty("description.psitweaks.transcendent_energy_cube", switch (locale) {
+            case "ja_jp" -> "究極エネルギーキューブの128倍の容量と出力を持つ蓄電ブロックです";
+            default -> "An energy cube with 128 times the storage and output of Ultimate Energy Cube";
         });
         root.addProperty("jei.psitweaks.program_research", switch (locale) {
             case "ja_jp" -> "プログラム研究";
@@ -242,6 +262,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_machine.psionic_generator", switch (locale) {
             case "ja_jp" -> "所有者にリンクし, 所有者がオンラインのときにPsiをFEへ変換する発電機です.$(p)GUIでリンクの有効化とtickあたりのPsi消費量を設定できます. 発電したFEは正面以外の面へ最大6400 FE/tickで自動出力します.";
             default -> "A generator that links to its owner and converts that player's Psi into FE while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Generated FE auto-outputs from every side except the front, up to 6400 FE/tick.";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.transcendent_universal_cable", switch (locale) {
+            case "ja_jp" -> "$(item)究極ユニバーサルケーブル$(0) の128倍の転送容量を持つ上位ケーブルです.$(p)核融合炉級の電力出力など, 大量のFEを一度に扱う設備に向きます.";
+            default -> "An upgraded cable with 128 times the transfer capacity of $(item)Ultimate Universal Cable$(0).$(p)Use it for high-throughput FE lines such as fusion-reactor-class power output.";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.transcendent_energy_cube", switch (locale) {
+            case "ja_jp" -> "$(item)究極エネルギーキューブ$(0) の128倍の蓄電容量と出力を持つ上位キューブです.$(p)大規模発電や高負荷機械群のバッファとして使えます.";
+            default -> "An upgraded energy cube with 128 times the storage and output of $(item)Ultimate Energy Cube$(0).$(p)Use it as a buffer for large generators or high-load machine arrays.";
         });
         root.addProperty("psi.book.page.psitweaks_item.blank_program", switch (locale) {
             case "ja_jp" -> "プログラム研究の基礎になる空白のプログラムです. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に素材と一緒に入れることで, 記述済みプログラムを作成できます.$(p)既存のプログラムとクラフトすると, そのプログラムを複製できます.";
@@ -452,6 +480,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_item.flash_charm", switch (locale) {
             case "ja_jp" -> "装備者の盲目と暗闇を継続的に解除するCuriosチャームです.$(p)インベントリ内に持っているだけでも機能するため, ディープダークや視界妨害効果への対策になります.";
             default -> "A Curios charm that continually removes Blindness and Darkness from the wearer.$(p)It also works while carried in inventory, making it useful in the Deep Dark and against vision-disrupting effects.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.third_eye_device", switch (locale) {
+            case "ja_jp" -> "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)通常のCAD射程を大きく超える位置を対象にできるため, 扱いには注意してください.";
+            default -> "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully.";
         });
         root.addProperty("psi.book.page.psitweaks_item.sorcery_booster", switch (locale) {
             case "ja_jp" -> "魔法演算領域スロットに装備し, 術式ダメージを30%増加させます.$(p)$(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使う, 戦闘向けの魔法師強化装備です.";

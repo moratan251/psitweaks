@@ -4,12 +4,10 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -41,9 +39,6 @@ public class PieceTrickFlareCircle extends PieceTrick {
     private static final double POTENCY_PER_POWER = 120.0D;
     private static final double COST_BASE = 2000.0D;
     private static final double COST_PER_POWER = 1200.0D;
-
-    private static final String NBT_FLARE_UUID = "PsitweaksFlareCircleUUID";
-    private static final String NBT_FLARE_DIM  = "PsitweaksFlareCircleDim";
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;
@@ -90,7 +85,7 @@ public class PieceTrickFlareCircle extends PieceTrick {
         if (!context.isInRadius(positionVal)) {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         }
-        if (!(context.caster.level() instanceof ServerLevel serverLevel)) {
+        if (context.caster == null || !(context.caster.level() instanceof ServerLevel serverLevel)) {
             return null;
         }
 
@@ -105,8 +100,7 @@ public class PieceTrickFlareCircle extends PieceTrick {
         double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
         float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
 
-        ItemStack cad = context.tool;
-        removeExistingFlareCircleByCAD(serverLevel, cad);
+        removeExistingFlareCircleByCaster(serverLevel, context.caster.getUUID());
 
         EntityFlareCircle flareCircle = new EntityFlareCircle(serverLevel);
         flareCircle.setPos(positionVal.x, positionVal.y + 0.01D, positionVal.z);
@@ -117,7 +111,6 @@ public class PieceTrickFlareCircle extends PieceTrick {
         flareCircle.configureAreaDamage(radius, finalDamage, DAMAGE_INTERVAL_TICKS);
 
         serverLevel.addFreshEntity(flareCircle);
-        saveFlareCircleToCAD(cad, flareCircle, serverLevel);
 
         Vec3 center = flareCircle.position();
         serverLevel.playSound(
@@ -145,36 +138,16 @@ public class PieceTrickFlareCircle extends PieceTrick {
         return null;
     }
 
-    private static void removeExistingFlareCircleByCAD(ServerLevel castingLevel, ItemStack cad) {
-        CompoundTag nbt = SpellItemDataUtils.getCustomData(cad);
-        if (!nbt.hasUUID(NBT_FLARE_UUID)) {
-            return;
-        }
-
-        UUID uuid = nbt.getUUID(NBT_FLARE_UUID);
-        String dimKey = nbt.getString(NBT_FLARE_DIM);
-
+    private static void removeExistingFlareCircleByCaster(ServerLevel castingLevel, UUID casterUuid) {
         for (ServerLevel level : castingLevel.getServer().getAllLevels()) {
-            if (level.dimension().location().toString().equals(dimKey)) {
-                Entity entity = level.getEntity(uuid);
-                if (entity instanceof EntityFlareCircle circle) {
+            for (Entity entity : level.getAllEntities()) {
+                if (entity instanceof EntityFlareCircle circle
+                        && !circle.isRemoved()
+                        && casterUuid.equals(circle.getCasterUuid())) {
                     circle.destroyBySpell();
                 }
-                break;
             }
         }
-
-        SpellItemDataUtils.updateCustomData(cad, tag -> {
-            tag.remove(NBT_FLARE_UUID);
-            tag.remove(NBT_FLARE_DIM);
-        });
-    }
-
-    private static void saveFlareCircleToCAD(ItemStack cad, EntityFlareCircle circle, ServerLevel level) {
-        SpellItemDataUtils.updateCustomData(cad, tag -> {
-            tag.putUUID(NBT_FLARE_UUID, circle.getUUID());
-            tag.putString(NBT_FLARE_DIM, level.dimension().location().toString());
-        });
     }
 
     private static float calculateDamage(double powerVal) {

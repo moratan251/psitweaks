@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import java.util.function.Supplier;
 
 public final class PsitweaksBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Psitweaks.MOD_ID);
@@ -19,10 +18,6 @@ public final class PsitweaksBlocks {
             BlockBehaviour.Properties.of()
                     .strength(5.0F, 15.0F)
                     .sound(SoundType.METAL)
-    );
-    public static final DeferredBlock<ProgramResearcherBlock> PROGRAM_RESEARCHER = registerBlock(
-            "program_researcher",
-            () -> new ProgramResearcherBlock(machineProperties())
     );
     public static final DeferredBlock<Block> ORE_ANTINITE = registerSimpleBlock(
             "ore_antinite",
@@ -102,16 +97,4 @@ public final class PsitweaksBlocks {
         return block;
     }
 
-    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> blockSupplier) {
-        DeferredBlock<T> block = BLOCKS.register(name, blockSupplier);
-        BLOCK_ITEMS.registerSimpleBlockItem(block, new Item.Properties());
-        return block;
-    }
-
-    private static BlockBehaviour.Properties machineProperties() {
-        return BlockBehaviour.Properties.of()
-                .strength(5.0F, 15.0F)
-                .sound(SoundType.METAL)
-                .requiresCorrectToolForDrops();
-    }
 }
