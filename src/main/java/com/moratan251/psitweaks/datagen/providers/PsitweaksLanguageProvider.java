@@ -92,6 +92,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%s から %s の間で入力してください";
             default -> "Enter a value between %s and %s";
         });
+        addPsitweaksCategoryBook(root);
         addMachineTranslations(root);
         addSpellUnlockMessages(root);
         addCadDisassembler(root);
@@ -141,6 +142,77 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("description.psitweaks." + id, switch (locale) {
             case "ja_jp" -> jaJpDesc;
             default -> enUsDesc;
+        });
+    }
+
+    private void addPsitweaksCategoryBook(JsonObject root) {
+        root.addProperty("psi.book.category.psitweaks", switch (locale) {
+            case "ja_jp" -> "PsiTweaks";
+            default -> "PsiTweaks";
+        });
+        root.addProperty("psi.book.category.psitweaks.desc", switch (locale) {
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) は, 高位術式弾, CAD部品, 機械, Mekanism連携, そして終盤向けのサイオニック素材を追加して, $(thing)Psi$(0) の進行を拡張します.";
+            default -> "$(thing)PsiTweaks$(0) expands Psi with stronger spell bullets, CAD parts, machinery, Mekanism integration, and late-game psionic materials.";
+        });
+        root.addProperty("psi.book.entry.psitweaks_overview", switch (locale) {
+            case "ja_jp" -> "PsiTweaksの追加要素";
+            default -> "What PsiTweaks Adds";
+        });
+        root.addProperty("psi.book.page.psitweaks_overview.0", switch (locale) {
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 素材生成の工業化や, 新しい装備, 新しい術式など多数の要素を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを戦闘やユーティリティとして終盤まで強力に扱う構成を想定しています.";
+            default -> "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds many elements, including industrialized material production, new gear, and new spells.$(p)The mod is intended for setups where Psi remains powerful through the late game as both combat and utility, rather than ending at ordinary CADs and basic spell bullets.";
+        });
+        root.addProperty("psi.book.page.psitweaks_overview.2", switch (locale) {
+            case "ja_jp" -> "主な追加要素は, 高位術式弾, 新しいCAD素体や詠唱補助具, 新しい魔法, 加工機械や発電機です.$(p)多くのシステムは, Psiと工業環境の橋渡しや, Psiの終盤での能力強化などを目的として作られています.";
+            default -> "Major additions include higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)Most systems are built to bridge Psi with industrial environments and to strengthen Psi's late-game capabilities.";
+        });
+        root.addProperty("psi.book.entry.psitweaks_research", switch (locale) {
+            case "ja_jp" -> "研究";
+            default -> "Research";
+        });
+        root.addProperty("psi.book.page.psitweaks_research.0", switch (locale) {
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).";
+            default -> "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed.";
+        });
+        root.addProperty("psi.book.page.psitweaks_research.1", switch (locale) {
+            case "ja_jp" -> "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.";
+            default -> "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.";
+        });
+        root.addProperty("psi.book.entry.psitweaks_magician", switch (locale) {
+            case "ja_jp" -> "魔法師";
+            default -> "Magician";
+        });
+        root.addProperty("psi.book.page.psitweaks_magician.0", switch (locale) {
+            case "ja_jp" -> "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. Psi機械を扱う村人であり, 魔法師向けの素材や強化装備と関係します.";
+            default -> "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades.";
+        });
+        root.addProperty("psi.book.page.psitweaks_magician.1", switch (locale) {
+            case "ja_jp" -> "無職の村人は, $(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l) を職業ブロックとして取得すると $(thing)魔法師$(0) になります.$(p)ほかの村人作業台と同じように, 村人が到達できる場所にCAD組立機を置いてください.";
+            default -> "An unemployed villager can become a $(thing)Magician$(0) by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site.$(p)Place the assembler where a villager can reach it, just like other villager workstation blocks.";
+        });
+        root.addProperty("psi.book.page.psitweaks_magician.2", switch (locale) {
+            case "ja_jp" -> "魔法師は $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) の入手元でもあります. 魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップし, 魔法師向けのレシピに使います.";
+            default -> "A Magician is also the source of the $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l). It drops when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l), and is used in caster-focused recipes.";
+        });
+        root.addProperty("psi.book.entry.psitweaks_cad_and_gear", switch (locale) {
+            case "ja_jp" -> "CADと装備";
+            default -> "CADs and Gear";
+        });
+        root.addProperty("psi.book.page.psitweaks_cad_and_gear.0", switch (locale) {
+            case "ja_jp" -> "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります.";
+            default -> "Several PsiTweaks items make spellcasting easier to carry, automate, or specialize. Some are direct CAD tools, while others support bullet handling or improve a caster's combat role.";
+        });
+        root.addProperty("psi.book.page.psitweaks_cad_and_gear.1", switch (locale) {
+            case "ja_jp" -> "これらのレシピは, 携帯型組立, インライン詠唱, 術式保存, 魔法師支援装備の入口です.";
+            default -> "These recipes cover portable assembly, inline casting, spell storage, and caster support gear.";
+        });
+        root.addProperty("psi.book.page.psitweaks_cad_and_gear.2", switch (locale) {
+            case "ja_jp" -> "PsiTweaks は, 高コストなインゴットを素材とした強力なCAD素体を追加します. 通常のPsi装備では物足りなくなったら, 高位術式弾などと組み合わせて使ってください.";
+            default -> "PsiTweaks also adds powerful CAD assemblies made from expensive ingots. When ordinary Psi equipment no longer keeps up, use them together with high-tier spell bullets and similar upgrades.";
+        });
+        root.addProperty("psi.book.page.psitweaks_cad_and_gear.3", switch (locale) {
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) はCAD素材として, $(l:components/psitweaks_alloy_psion)サイオニック合金$(/l), $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の5系統を追加します.$(p)サイオニック合金CADは効率が非常に優れる一方で, 規模は非常に小さいCADです. 他のCAD素体は, 後半の素材ほど効率と規模が相応に強化されています.";
+            default -> "$(thing)PsiTweaks$(0) adds five CAD material lines: $(l:components/psitweaks_alloy_psion)Psionic Alloy$(/l), $(l:components/psitweaks_chaotic_psimetal)Chaotic Psimetal$(/l), $(l:components/psitweaks_flashmetal)Flashmetal$(/l), $(l:components/psitweaks_heavy_psimetal)Heavy Psimetal$(/l), and $(l:components/psitweaks_psycheonic_metal_ingot)Psycheonic Metal$(/l).$(p)Psionic Alloy CADs have excellent Efficiency but very small Potency. The other CAD assemblies improve in Efficiency and Potency as their materials move into later progression.";
         });
     }
 
@@ -238,6 +310,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Disabled";
         });
         root.addProperty("gui.psitweaks.psionic_generator.summary_status", "%1$s / %2$s");
+        root.addProperty("gui.psitweaks.psionic_generator.summary_psi", "Psi: %1$s/%2$s");
         root.addProperty("gui.psitweaks.psionic_generator.psi", "Psi: %s / %s");
         root.addProperty("gui.psitweaks.psionic_generator.consume", switch (locale) {
             case "ja_jp" -> "消費: %s Psi/t";
@@ -428,7 +501,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range. This is an area attack detonated at a chosen location.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます. 場所を指定して起爆する範囲攻撃です.");
         addBookPage(root, "trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds.", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けます.");
         addBookPage(root, "trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control.", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いています.");
-        addBookPage(root, "trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object.", "魔法式オブジェクトの追従対象エンティティを設定します.");
+        addBookPage(root, "trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object. For example, by setting the Fire Circle to follow the caster, it will continue to follow the caster and keep burning surrounding enemies.", "魔法式オブジェクトの追従対象エンティティを設定します. 例えば、ファイアサークルの追従対象を術者に設定することで、術者に追従し続け周囲の敵を燃やし続けます.");
         addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
         addBookPage(root, "trick_radiation_injection", "Applies Mekanism radiation exposure to the target.", "対象へMekanismの放射線被ばくを付与します. ");
         addBookPage(root, "trick_radiation_filter", "Applies a radiation protection effect to the target, protecting them from radiation.", "対象に放射線防護効果を付与し、放射線の影響から身を守ります.");

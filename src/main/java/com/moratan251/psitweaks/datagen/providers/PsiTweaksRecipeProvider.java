@@ -475,7 +475,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 new SpellBulletRecipeTier("resonant", item("chaotic_psimetal"), item("psionic_control_circuit")),
                 new SpellBulletRecipeTier("sublimated", item("flashmetal"), item("psionic_control_circuit")),
                 new SpellBulletRecipeTier("awakened", item("heavy_psimetal"), item("echo_control_circuit")),
-                new SpellBulletRecipeTier("transcendent", item("psycheonic_metal_ingot"), item("echo_control_circuit"))
+                new SpellBulletRecipeTier("transcendent", item("psycheonic_metal_ingot"), item("hypostasis_control_circuit"))
         );
 
         for (SpellBulletVariant variant : variants) {
