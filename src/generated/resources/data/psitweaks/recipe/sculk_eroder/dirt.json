@@ -1,0 +1,29 @@
+{
+  "type": "psitweaks:sculk_eroder",
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:coarse_dirt"
+      },
+      {
+        "item": "minecraft:rooted_dirt"
+      },
+      {
+        "item": "minecraft:grass_block"
+      },
+      {
+        "item": "minecraft:podzol"
+      },
+      {
+        "item": "minecraft:mycelium"
+      }
+    ]
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:sculk"
+  }
+}

@@ -1,5 +1,9 @@
 {
   "values": [
+    "psitweaks:program_researcher",
+    "psitweaks:sculk_eroder",
+    "psitweaks:material_mutator",
+    "psitweaks:psionic_generator",
     "psitweaks:chaotic_psimetal_block",
     "psitweaks:flashmetal_block",
     "psitweaks:plutonium_block",

@@ -53,6 +53,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addChemical(root, "dirty_antinite", "Dirty Antinite Slurry", "汚れたアンティナイトの懸濁液");
         addChemical(root, "clean_antinite", "Clean Antinite Slurry", "純粋なアンティナイトの懸濁液");
         addAttribute(root, "spell_damage_factor", "Spell Damage Factor", "術式ダメージ倍率");
+        addModule(root, "psyon_supplying_unit", "Psyon Supplying Unit", "Increases Psi regeneration.", "サイオン供給ユニット", "ユーザーのPsi回復速度を増加させます.");
+        addModule(root, "psyon_capacity_unit", "Psyon Capacity Unit", "Increases maximum Psi.", "サイオン容量ユニット", "ユーザーの最大Psi量を増加させます.");
+        addModule(root, "phenomenon_interference_enhancement_unit", "Phenomenon Interference Enhancement Unit", "Increases spell damage.", "事象干渉力増大ユニット", "ユーザーの術式の威力を増大させます.");
         root.addProperty("curios.identifier.magic_calculation_area", switch (locale) {
             case "ja_jp" -> "魔法演算領域";
             default -> "Magic Calculation Area";
@@ -85,9 +88,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%s から %s の間で入力してください";
             default -> "Enter a value between %s and %s";
         });
+        addMachineTranslations(root);
         addCadDisassembler(root);
         addUtilityItemsBook(root);
         addMovalSuitBook(root);
+        addMekanismIntegrationBook(root);
+        addMaterialBookAdditions(root);
         addSpellBulletsBook(root);
         addEffect(root, "parade", "Parade", "仮想行列");
         addEffect(root, "flight", "Flight", "飛行");
@@ -95,84 +101,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addEffect(root, "hardening", "Hardening", "硬化");
         addEffect(root, "radiation_filter", "Radiation Filter", "放射線フィルタ");
 
-        addSpellPiece(
-                root,
-                "trick_supreme_infusion",
-                "Trick: Supreme Infusion",
-                "Infuse Echo Shards into Psionic Echoes",
-                "作動式: 超位注入",
-                "残響の欠片に注入してサイオニックエコーにします"
-        );
-        addSpellPiece(
-                root,
-                "trick_barrier",
-                "Trick: Barrier",
-                "Reduce damage taken",
-                "作動式: 障壁",
-                "受けるダメージを減少させる"
-        );
-        addSpellPiece(
-                root,
-                "trick_hardening",
-                "Trick: Hardening",
-                "When taking heavy damage, reduce it to a certain value",
-                "作動式: 硬化",
-                "大ダメージを受けた時、一定値まで減少させる"
-        );
-        addSpellPiece(
-                root,
-                "trick_parade",
-                "Trick: Parade",
-                "Avoid damage with a certain probability",
-                "作動式: パレード",
-                "確率で被ダメージを回避する"
-        );
-        addSpellPiece(
-                root,
-                "trick_radiation_filter",
-                "Trick: Radiation Filter",
-                "Applies a radiation filter effect to the target",
-                "作動式: 放射線フィルタ",
-                "対象に放射線防護効果を付与する"
-        );
-        addSpellPiece(
-                root,
-                "trick_flight",
-                "Trick: Flight",
-                "Enabling creative flight",
-                "作動式: 飛行",
-                "クリエイティブ飛行を可能にする"
-        );
-        addBookPage(
-                root,
-                "trick_barrier",
-                "Applies a barrier effect that reduces incoming damage. It reduces damage taken by (level * 4).",
-                "被ダメージを軽減する障壁効果を付与します.(レベル * 4)だけ被ダメージを減少させます."
-        );
-        addBookPage(
-                root,
-                "trick_hardening",
-                "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).",
-                "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます."
-        );
-        addBookPage(
-                root,
-                "trick_parade",
-                "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance.",
-                "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します."
-        );
-        addBookPage(
-                root,
-                "trick_flight",
-                "Gives the target an effect that enables creative flight.",
-                "対象にクリエイティブ飛行を可能にする効果を与えます. "
-        );
-        addBookPage(
-                root,
-                "trick_radiation_filter",
-                "Applies a radiation protection effect to the target, protecting them from radiation.",
-                "対象に放射線防護効果を付与し、放射線の影響から身を守ります."
-        );
+        addSpellPieces(root);
+        addSpellPiecesBook(root);
 
         return root;
     }
@@ -198,6 +128,126 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
     }
 
+    private void addModule(JsonObject root, String id, String enUs, String enUsDesc, String jaJp, String jaJpDesc) {
+        root.addProperty("module.psitweaks." + id, switch (locale) {
+            case "ja_jp" -> jaJp;
+            default -> enUs;
+        });
+        root.addProperty("description.psitweaks." + id, switch (locale) {
+            case "ja_jp" -> jaJpDesc;
+            default -> enUsDesc;
+        });
+    }
+
+    private void addMachineTranslations(JsonObject root) {
+        root.addProperty("psi.book.category.psitweaks_machines", switch (locale) {
+            case "ja_jp" -> "PsiTweaks機械";
+            default -> "PsiTweaks Machines";
+        });
+        root.addProperty("psi.book.category.psitweaks_machines.desc", switch (locale) {
+            case "ja_jp" -> "PsiTweaks が追加する機械です. Psi, FE, Mekanism 資源を扱う加工・研究装置が含まれます.";
+            default -> "Machines added by PsiTweaks. They cover processing and research workflows involving Psi, FE, and Mekanism resources.";
+        });
+        root.addProperty("container.psitweaks.program_researcher", switch (locale) {
+            case "ja_jp" -> "プログラム研究台";
+            default -> "Program Research Table";
+        });
+        root.addProperty("container.psitweaks.sculk_eroder", switch (locale) {
+            case "ja_jp" -> "スカルク侵食機";
+            default -> "Sculk Eroder";
+        });
+        root.addProperty("container.psitweaks.material_mutator", switch (locale) {
+            case "ja_jp" -> "物質変成機";
+            default -> "Material Mutator";
+        });
+        root.addProperty("container.psitweaks.psionic_generator", switch (locale) {
+            case "ja_jp" -> "サイリンク発電機";
+            default -> "Psi-Link Generator";
+        });
+        root.addProperty("description.psitweaks.sculk_eroder", switch (locale) {
+            case "ja_jp" -> "石・土・砂系のブロックをスカルクへ侵食加工します";
+            default -> "Corrodes stone, dirt, and sand type blocks into Sculk";
+        });
+        root.addProperty("description.psitweaks.material_mutator", switch (locale) {
+            case "ja_jp" -> "電力と気化サイオニックエコーで物質変成を行います";
+            default -> "Performs material mutation using FE and vaporized Psionic Echo";
+        });
+        root.addProperty("description.psitweaks.psionic_generator", switch (locale) {
+            case "ja_jp" -> "所有者の Psi を消費し、リンク中のみ FE に変換します";
+            default -> "Consumes the owner's Psi and converts it into FE while linked";
+        });
+        root.addProperty("jei.psitweaks.program_research", switch (locale) {
+            case "ja_jp" -> "プログラム研究";
+            default -> "Program Research";
+        });
+        root.addProperty("jei.psitweaks.material_mutation", switch (locale) {
+            case "ja_jp" -> "物質変成";
+            default -> "Material Mutation";
+        });
+        root.addProperty("jei.psitweaks.program_research.energy", switch (locale) {
+            case "ja_jp" -> "消費電力: %s FE";
+            default -> "Energy: %s FE";
+        });
+        root.addProperty("jei.psitweaks.program_research.time", switch (locale) {
+            case "ja_jp" -> "研究時間: %s分 %s秒";
+            default -> "Time: %s min %s sec";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.toggle", switch (locale) {
+            case "ja_jp" -> "切替";
+            default -> "Toggle";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.owner", switch (locale) {
+            case "ja_jp" -> "所有者: %s";
+            default -> "Owner: %s";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.owner_online", switch (locale) {
+            case "ja_jp" -> "オンライン";
+            default -> "Online";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.owner_offline", switch (locale) {
+            case "ja_jp" -> "オフライン";
+            default -> "Offline";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.link_on", switch (locale) {
+            case "ja_jp" -> "有効";
+            default -> "Enabled";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.link_off", switch (locale) {
+            case "ja_jp" -> "無効";
+            default -> "Disabled";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.summary_status", "%1$s / %2$s");
+        root.addProperty("gui.psitweaks.psionic_generator.psi", "Psi: %s / %s");
+        root.addProperty("gui.psitweaks.psionic_generator.consume", switch (locale) {
+            case "ja_jp" -> "消費: %s Psi/t";
+            default -> "Consume: %s Psi/t";
+        });
+        root.addProperty("gui.psitweaks.psionic_generator.generate", switch (locale) {
+            case "ja_jp" -> "発電: %1$s / %2$s FE/t";
+            default -> "Producing: %1$s / %2$s FE/t";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.program_researcher", switch (locale) {
+            case "ja_jp" -> "PsiTweaks のプログラムアイテムを作成するための電力式研究台です. 入力スロットに必要素材を入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究の素材, 消費電力, 時間はJEIのプログラム研究レシピで確認できます.";
+            default -> "A powered research table for producing PsiTweaks program items. Put the required ingredients in the input slots and supply FE; completed research outputs the program item.$(p)JEI shows each research recipe's energy cost and time.";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.sculk_eroder", switch (locale) {
+            case "ja_jp" -> "石, 土, 砂などのブロックアイテムをスカルクへ侵食加工する機械です.$(p)自然発生やスカルクカタリストに頼らず, スカルク素材を安定して作りたいときに使います.";
+            default -> "A machine that corrodes stone, dirt, sand, and related block items into Sculk outputs.$(p)Use it when you need Sculk materials without relying on natural spread.";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.material_mutator", switch (locale) {
+            case "ja_jp" -> "$(item)気化サイオニックエコー$(0) とFEを使って物質変成を行う機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l) でも行える変成を自動化し, 翡翠やヒュポスタシスジェムなどを加工できます.";
+            default -> "A machine that performs material mutation with $(item)Psionic Echo Gas$(0) and FE.$(p)It automates mutations that can also be produced by $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)Trick: Material Mutation$(0)$(/l), such as Jade and Hypostasis Gems.";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.psionic_generator", switch (locale) {
+            case "ja_jp" -> "所有者にリンクし, 所有者がオンラインのときにPsiをFEへ変換する発電機です.$(p)GUIでリンクの有効化とtickあたりのPsi消費量を設定できます. 発電したFEは正面以外の面へ最大6400 FE/tickで自動出力します.";
+            default -> "A generator that links to its owner and converts that player's Psi into FE while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Generated FE auto-outputs from every side except the front, up to 6400 FE/tick.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.blank_program", switch (locale) {
+            case "ja_jp" -> "プログラム研究の基礎になる空白のプログラムです. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に素材と一緒に入れることで, 記述済みプログラムを作成できます.$(p)既存のプログラムとクラフトすると, そのプログラムを複製できます.";
+            default -> "Used as the base item for program research. Put it into the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) with the required materials to create a written program.$(p)It can also be crafted with an existing written program item to duplicate that program.";
+        });
+    }
+
     private void addSpellPiece(JsonObject root, String id, String enUs, String enUsDesc, String jaJp, String jaJpDesc) {
         root.addProperty("psitweaks.spellpiece." + id, switch (locale) {
             case "ja_jp" -> jaJp;
@@ -214,6 +264,85 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> jaJp;
             default -> enUs;
         });
+    }
+
+    private void addSpellPieces(JsonObject root) {
+        addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
+        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Reduce damage taken", "作動式: 障壁", "受けるダメージを減少させる");
+        addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時、一定値まで減少させる");
+        addSpellPiece(root, "trick_parade", "Trick: Parade", "Avoid damage with a certain probability", "作動式: パレード", "確率で被ダメージを回避する");
+        addSpellPiece(root, "trick_flight", "Trick: Flight", "Enabling creative flight", "作動式: 飛行", "クリエイティブ飛行を可能にする");
+        addSpellPiece(root, "trick_interact_block", "Trick: Block Interact", "Right-click with the off-hand item on the target block", "作動式: ブロック作用", "座標のブロックに、オフハンドのアイテムで右クリックの動作を行う");
+        addSpellPiece(root, "trick_break_fortune", "Trick: Break Block (Fortune)", "Break a block with Fortune applied", "作動式: ブロック破壊(幸運)", "幸運付きでブロックを破壊する");
+        addSpellPiece(root, "trick_break_silk", "Trick: Break Block (Silk Touch)", "Break a block with Silk Touch applied", "作動式: ブロック破壊(シルクタッチ)", "シルクタッチ付きでブロックを破壊する");
+        addSpellPiece(root, "trick_store_entity", "Trick: Store Entity", "Store the entity's UUID in the CAD memory", "作動式: エンティティ保存", "CADのメモリにエンティティのUUIDを保存する");
+        addSpellPiece(root, "selector_stored_entity", "Selector: Stored Entity", "Retrieve entities from the UUID stored in the CAD memory", "取得子: 保存されたエンティティ", "CADのメモリに保存されたUUIDからエンティティを取得する");
+        addSpellPiece(root, "selector_nearby_spellgram", "Selector: Nearby SpellGram Object", "Retrieve SpellGram objects around the specified position", "取得子: 近くの魔法式オブジェクト", "指定座標の周囲にある魔法式オブジェクトを取得する");
+        addSpellPiece(root, "trick_dispel", "Trick: Dispel", "Remove effects from target entity", "作動式: 解呪", "対象からエフェクトを除去する");
+        addSpellPiece(root, "trick_dispel_beneficial", "Trick: Dispel Beneficial", "Remove beneficial effects from target entity", "作動式: 良性解呪", "対象から有益なエフェクトを除去する");
+        addSpellPiece(root, "trick_dispel_non_beneficial", "Trick: Dispel Non Beneficial", "Remove non beneficial effects from target entity", "作動式: 悪性解呪", "対象から有益でないエフェクトを除去する");
+        addSpellPiece(root, "trick_cocytus", "Trick: Cocytus", "Permanently freeze the target mob's mind", "作動式: コキュートス", "対象のモブの精神を永久に凍結させる");
+        addSpellPiece(root, "trick_supply_fe", "Trick: FE Charge", "Supplies FE to blocks. Direction can be specified.", "作動式: FE供給", "ブロックにFEを供給します。方向の指定が可能です。");
+        addSpellPiece(root, "trick_time_accelerate", "Trick: Time Accelerate", "Accelerates the time of the target block", "作動式: 時間加速", "対象のブロックの時を加速させます。");
+        addSpellPiece(root, "trick_phonon_maser", "Trick: Phonon Maser", "Vibrates ultrasonic waves to emit heat rays", "作動式: フォノンメーザー", "超音波を振動させ熱線を放出する");
+        addSpellPiece(root, "trick_supreme_infusion", "Trick: Supreme Infusion", "Infuse Echo Shards into Psionic Echoes", "作動式: 超位注入", "残響の欠片に注入してサイオニックエコーにします");
+        addSpellPiece(root, "trick_molecular_divider", "Trick: Molecular Divider", "divide the living creatures within the area", "作動式: 分子ディバイダー", "三点で作られた平面で生物を切断する");
+        addSpellPiece(root, "trick_aqua_cutter", "Trick: Aqua Cutter", "Launches a water blade projectile that damages on hit", "作動式: アクアカッター", "水刃の発射体を前方に放ち、命中した対象にダメージを与える");
+        addSpellPiece(root, "trick_blaze_ball", "Trick: Blaze Ball", "Launches a fireball forward that deals fire damage on hit", "作動式: ブレイズボール", "前方へ火の玉を発射し、命中した対象へ炎属性ダメージを与える");
+        addSpellPiece(root, "trick_radiation_injection", "Trick: Radiation Injection", "Applies radiation exposure to the target", "作動式: 放射線注入", "対象を被ばくさせる");
+        addSpellPiece(root, "trick_radiation_filter", "Trick: Radiation Filter", "Applies a radiation filter effect to the target", "作動式: 放射線フィルタ", "対象に放射線防護効果を付与する");
+        addSpellPiece(root, "trick_cure_radiation", "Trick: Cure Radiation", "Removes radiation exposure from the target", "作動式: 放射線除去", "対象の被ばく量を除去する");
+        addSpellPiece(root, "trick_guillotine", "Trick: Guillotine", "Deals a heavy slash to the target and drops a head on kill", "作動式: ギロチン", "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる");
+        addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
+        addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a flare Spell Gram Circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える");
+        addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Spell Gram Circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
+        addSpellPiece(root, "trick_set_spellgram_follow_target", "Trick: Set SpellGram Follow Target", "Sets the follow target entity for a SpellGram object", "作動式: 魔法式追従", "魔法式オブジェクトの追従対象エンティティを設定する");
+        addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります");
+        addSpellPiece(root, "trick_material_mutation", "Trick: Material Mutation", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.", "作動式: 物質変成", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
+    }
+
+    private void addSpellPiecesBook(JsonObject root) {
+        root.addProperty("psi.book.category.psitweaks_spell_pieces", switch (locale) {
+            case "ja_jp" -> "追加術式";
+            default -> "Additional Spell Pieces";
+        });
+        root.addProperty("psi.book.category.psitweaks_spell_pieces.desc", switch (locale) {
+            case "ja_jp" -> "PsiTweaks が追加するスペルピースです. 攻撃, 工業処理, 補助用途のものが多く, 設定によっては研究解禁が必要になります.";
+            default -> "Spell pieces added by PsiTweaks. Many are offensive, industrial, or utility-focused, and some require research depending on the config.";
+        });
+
+        addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Be careful: dropped items and similar entities can still be erased.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムなどは消滅するので注意してください.");
+        addBookPage(root, "trick_barrier", "Applies a barrier effect that reduces incoming damage. It reduces damage taken by (level * 4).", "被ダメージを軽減する障壁効果を付与します.(レベル * 4)だけ被ダメージを減少させます.");
+        addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
+        addBookPage(root, "trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance.", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します.");
+        addBookPage(root, "trick_flight", "Gives the target an effect that enables creative flight.", "対象にクリエイティブ飛行を可能にする効果を与えます. ");
+        addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
+        addBookPage(root, "trick_break_fortune", "Breaks the target block with Fortune.", "対象ブロックを幸運付きで破壊します.");
+        addBookPage(root, "trick_break_silk", "Breaks the target block with Silk Touch.", "対象ブロックをシルクタッチ付きで破壊します.");
+        addBookPage(root, "trick_store_entity", "Stores the target entity's UUID in CAD memory.", "対象エンティティのUUIDをCADメモリに保存します.");
+        addBookPage(root, "selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.", "CADメモリに保存されたUUIDからエンティティを取得します. ");
+        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
+        addBookPage(root, "trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects.", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です.");
+        addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
+        addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
+        addBookPage(root, "trick_cocytus", "Permanently freezes the mind of the target mob. Rather than merely dealing damage, this very powerful control trick prevents action.", "対象モブの精神を永久に凍結させます. 単なるダメージではなく行動を封じる, 非常に強力な制御術式です.");
+        addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです.");
+        addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
+        addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration. It is a powerful offensive trick.", "超音波振動による高威力の熱線を放ちます. 攻撃用の強力な術式です.");
+        addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
+        addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points. It is a high-power area attack trick.", "三点で定義した平面で生物を切断します. 高威力の範囲攻撃術式です.");
+        addBookPage(root, "trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick.", "前方へ水刃の発射体を放つ序盤用の攻撃術式です.");
+        addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
+        addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range. This is an area attack detonated at a chosen location.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます. 場所を指定して起爆する範囲攻撃です.");
+        addBookPage(root, "trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds.", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けます.");
+        addBookPage(root, "trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control.", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いています.");
+        addBookPage(root, "trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object.", "魔法式オブジェクトの追従対象エンティティを設定します.");
+        addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
+        addBookPage(root, "trick_radiation_injection", "Applies Mekanism radiation exposure to the target.", "対象へMekanismの放射線被ばくを付与します. ");
+        addBookPage(root, "trick_radiation_filter", "Applies a radiation protection effect to the target, protecting them from radiation.", "対象に放射線防護効果を付与し、放射線の影響から身を守ります.");
+        addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
+        addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed. This is a single-target offensive trick.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます. 単体対象の攻撃術式です.");
+        addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
     }
 
     private void addCadDisassembler(JsonObject root) {
@@ -278,6 +407,44 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_item.moval_suit.1", switch (locale) {
             case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復量+5, 最大Psi量+500を付与します. Psi回復量と最大Psi量はPsi本体のAttributeを使用します.";
             default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi. Psi regeneration and maximum Psi use Psi's own attributes.";
+        });
+    }
+
+    private void addMekanismIntegrationBook(JsonObject root) {
+        root.addProperty("psi.book.entry.psitweaks_mekanism_integration", switch (locale) {
+            case "ja_jp" -> "Mekanism連携";
+            default -> "Mekanism Integration";
+        });
+        root.addProperty("psi.book.title.psitweaks_mekanism_integration.infusing", switch (locale) {
+            case "ja_jp" -> "冶金吹き込み";
+            default -> "Metallurgic Infusing";
+        });
+        root.addProperty("psi.book.title.psitweaks_mekanism_integration.mekasuit", switch (locale) {
+            case "ja_jp" -> "MekaSuitモジュール";
+            default -> "MekaSuit Modules";
+        });
+        root.addProperty("psi.book.page.psitweaks_mekanism_integration.0", switch (locale) {
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) を $(thing)Mekanism$(0) の進行へ接続します. 連携要素には, Psi素材を作る冶金吹き込みレシピ, 魔法師能力を伸ばすMekaSuitモジュール, Psi・FE・サイオニック資源を扱う機械があります.$(p)正確なレシピはJEIで確認してください. この項目では各要素の役割をまとめます.";
+            default -> "$(thing)PsiTweaks$(0) ties $(thing)Psi$(0) into $(thing)Mekanism$(0) progression. Its integration covers Metallurgic Infusing recipes for Psi materials, MekaSuit modules that improve caster stats, and machines that exchange Psi, FE, and psionic resources.$(p)Use JEI as the exact recipe reference; this entry explains what each group is for.";
+        });
+        root.addProperty("psi.book.page.psitweaks_mekanism_integration.1", switch (locale) {
+            case "ja_jp" -> "$(item)冶金吹き込み機$(0) では, PsiTweaks の注入タイプを使って主要なPsi素材を作れます. サイジェム注入はレッドストーンを$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)に, 金インゴットを$(item)サイメタル$(0)に変換します.$(p)エボニー注入とアイボリー注入では, $(item)エボニー基質$(0), $(item)アイボリー基質$(0), それぞれのサイメタル派生素材を作れます. さらに$(l:components/psitweaks_chaotic_factor)サイオニック因子$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l), $(l:components/psitweaks_psionic_echo)サイオニックエコー素材$(/l), $(l:components/psitweaks_alloy_hypostasis)位格合金$(/l)へ発展します.";
+            default -> "The $(item)Metallurgic Infuser$(0) can produce core Psi materials with PsiTweaks infuse types. Psigem infusion turns redstone into $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l) and gold into $(item)Psimetal$(0).$(p)Ebony and Ivory infusion can make $(item)Ebony Substance$(0), $(item)Ivory Substance$(0), and their Psimetal variants. Later recipes extend this chain into $(l:components/psitweaks_chaotic_factor)psionic factors$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l), $(l:components/psitweaks_psionic_echo)Psionic Echo materials$(/l), and $(l:components/psitweaks_alloy_hypostasis)Hypostasis-tier metal$(/l).";
+        });
+        root.addProperty("psi.book.page.psitweaks_mekanism_integration.2", switch (locale) {
+            case "ja_jp" -> "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します. これらはPsi本体のAttributeを使用します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 術式ダメージを増加させます.";
+            default -> "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi. These bonuses use Psi's own attributes.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases spell damage.";
+        });
+    }
+
+    private void addMaterialBookAdditions(JsonObject root) {
+        root.addProperty("psi.book.page.psitweaks_material.pellet_neptunium", switch (locale) {
+            case "ja_jp" -> "$(item)ポロニウムブロック$(0) を $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l) で変成するか, $(l:psitweaks_machines/material_mutator)$(o)物質変成機$(0)$(/l) で加工して作成します.$(p)MekaSuit用の $(item)事象干渉力増大ユニット$(0) に使用します.";
+            default -> "Made by mutating a $(item)Polonium Block$(0) with $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)Trick: Material Mutation$(0)$(/l), or by processing it in the $(l:psitweaks_machines/material_mutator)$(o)Material Mutator$(0)$(/l).$(p)Used for the MekaSuit $(item)Phenomenon Interference Enhancement Unit$(0).";
+        });
+        root.addProperty("psi.book.page.psitweaks_material.magicians_brain", switch (locale) {
+            case "ja_jp" -> "$(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で魔法師の村人を倒したときに入手できます.$(p)$(l:items/psitweaks_sorcery_booster)$(o)$(item)ソーサリーブースター$(0)$(/l) と $(item)事象干渉力増大ユニット$(0) に使用します.";
+            default -> "Dropped when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l).$(p)Used for the $(l:items/psitweaks_sorcery_booster)$(o)$(item)Sorcery Booster$(0)$(/l) and the Phenomenon Interference Enhancement Unit module.";
         });
     }
 

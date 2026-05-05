@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:loom"
+  },
+  "output": {
+    "count": 1,
+    "item": "mekanismgenerators:wind_generator"
+  },
+  "time": 200
+}

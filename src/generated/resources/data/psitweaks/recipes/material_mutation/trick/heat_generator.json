@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:campfire"
+      },
+      "output": {
+        "block": "mekanismgenerators:heat_generator",
+        "count": 1
+      }
+    }
+  ]
+}

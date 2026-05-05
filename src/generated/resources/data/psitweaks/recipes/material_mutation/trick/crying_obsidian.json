@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:obsidian"
+      },
+      "output": {
+        "block": "minecraft:crying_obsidian",
+        "count": 1
+      }
+    }
+  ]
+}

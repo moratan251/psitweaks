@@ -1,6 +1,10 @@
 {
   "values": [
     "psitweaks:cad_disassembler",
+    "psitweaks:program_researcher",
+    "psitweaks:sculk_eroder",
+    "psitweaks:material_mutator",
+    "psitweaks:psionic_generator",
     "psitweaks:ore_antinite",
     "psitweaks:antinite_block",
     "psitweaks:chaotic_psimetal_block",

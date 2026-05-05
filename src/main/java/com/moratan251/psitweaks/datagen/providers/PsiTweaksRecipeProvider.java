@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.datagen.providers;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
 import java.util.LinkedHashMap;
@@ -169,6 +170,41 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'A', ingredientItem("minecraft:anvil")
                 ),
                 block("cad_disassembler"), 1));
+        recipe(recipes, "program_researcher", shaped(
+                List.of("PCP", "CGC", "PCP"),
+                Map.of(
+                        'P', ingredientItem("psi:psimetal"),
+                        'C', ingredientItem(item("psionic_control_circuit")),
+                        'G', ingredientItem("psi:psigem")
+                ),
+                block("program_researcher"), 1));
+        recipe(recipes, "material_mutator", shaped(
+                List.of("APA", "CDC", "ABA"),
+                Map.of(
+                        'A', ingredientItem(item("alloy_hypostasis")),
+                        'B', ingredientItem(item("hypostasis_control_circuit")),
+                        'C', ingredientItem(item("antinite_ingot")),
+                        'D', ingredientItem(block("spellmachinery_casing")),
+                        'P', ingredientItem(item("program_material_mutation"))
+                ),
+                block("material_mutator"), 1));
+        recipe(recipes, "psionic_generator", shaped(
+                List.of(" B ", "ACA", "ATA"),
+                Map.of(
+                        'A', ingredientItem("psi:psimetal"),
+                        'B', ingredientItem("minecraft:ender_pearl"),
+                        'C', ingredientItem("mekanism:basic_control_circuit"),
+                        'T', ingredientItem("mekanism:energy_tablet")
+                ),
+                block("psionic_generator"), 1));
+        recipe(recipes, "program_blank", shaped(
+                List.of("D", "P", "M"),
+                Map.of(
+                        'D', ingredientItem("psi:psidust"),
+                        'P', ingredientItem("minecraft:paper"),
+                        'M', ingredientItem("psi:psimetal")
+                ),
+                item("program_blank"), 1));
         recipe(recipes, "psimetal_bow", shaped("combat",
                 List.of(" MS", "G S", " MS"),
                 Map.of(
@@ -221,6 +257,33 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'H', ingredientItem(item("heavy_psimetal"))
                 ),
                 item("moval_suit_boots"), 1));
+        recipe(recipes, "module_psyon_supplying_unit", shaped("equipment",
+                List.of("AEA", "AMA", "SSS"),
+                Map.of(
+                        'A', ingredientItem(item("alloy_psion")),
+                        'E', ingredientItem(item("chaotic_factor")),
+                        'M', ingredientItem("mekanism:module_base"),
+                        'S', ingredientItem(item("echo_sheet"))
+                ),
+                item("module_psyon_supplying_unit"), 1));
+        recipe(recipes, "module_psyon_capacity_unit", shaped("equipment",
+                List.of("AEA", "AMA", "SSS"),
+                Map.of(
+                        'A', ingredientItem(item("alloy_psion")),
+                        'E', ingredientItem(item("antinite_ingot")),
+                        'M', ingredientItem("mekanism:module_base"),
+                        'S', ingredientItem(item("echo_sheet"))
+                ),
+                item("module_psyon_capacity_unit"), 1));
+        recipe(recipes, "module_phenomenon_interference_enhancement_unit", shaped("equipment",
+                List.of("AEA", "AMA", "NNN"),
+                Map.of(
+                        'A', ingredientItem(item("alloy_hypostasis")),
+                        'E', ingredientItem(item("magicians_brain")),
+                        'M', ingredientItem("mekanism:module_base"),
+                        'N', ingredientItem(item("pellet_neptunium"))
+                ),
+                item("module_phenomenon_interference_enhancement_unit"), 1));
         recipe(recipes, "inline_caster", shaped("equipment",
                 List.of(" G ", "PBP", " P "),
                 Map.of(
@@ -353,7 +416,10 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 item("sorcery_booster"), 1));
 
         addSpellBulletRecipes(recipes);
+        addSculkEroderRecipes(recipes);
+        addProgramResearchRecipes(recipes);
         addPhilosophersStoneRecipes(recipes);
+        recipe(recipes, "program_duplication", specialCrafting("psitweaks:crafting_special_program_duplication"));
 
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
@@ -406,6 +472,128 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 previousItem = result;
             }
         }
+    }
+
+    private static void addSculkEroderRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        recipe(recipes, "sculk_eroder/stone", sculkEroder(ingredientAny(
+                ingredientTag("c:stones"),
+                ingredientItem("minecraft:stone"),
+                ingredientItem("minecraft:andesite"),
+                ingredientItem("minecraft:diorite"),
+                ingredientItem("minecraft:granite"),
+                ingredientItem("minecraft:deepslate"),
+                ingredientItem("minecraft:tuff")
+        ), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/dirt", sculkEroder(ingredientAny(
+                ingredientItem("minecraft:dirt"),
+                ingredientItem("minecraft:coarse_dirt"),
+                ingredientItem("minecraft:rooted_dirt"),
+                ingredientItem("minecraft:grass_block"),
+                ingredientItem("minecraft:podzol"),
+                ingredientItem("minecraft:mycelium")
+        ), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/sand", sculkEroder(ingredientAny(
+                ingredientTag("c:sands"),
+                ingredientItem("minecraft:sand"),
+                ingredientItem("minecraft:red_sand")
+        ), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/cobblestone", sculkEroder(ingredientAny(
+                ingredientTag("c:cobblestones"),
+                ingredientItem("minecraft:cobblestone"),
+                ingredientItem("minecraft:cobbled_deepslate"),
+                ingredientItem("minecraft:mossy_cobblestone")
+        ), "minecraft:sculk", 1));
+    }
+
+    private static void addProgramResearchRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        programResearch(recipes, "program_cocytus", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:heart_of_the_sea", 1),
+                researchInput("minecraft:blue_ice", 64),
+                researchInput(item("psionic_echo"), 32),
+                researchInput("minecraft:sculk_shrieker", 8)
+        ), item("program_cocytus"), 500_000_000, 36_000);
+        programResearch(recipes, "program_time_accelerate", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:clock", 8),
+                researchInput("minecraft:redstone_block", 8),
+                researchInput(item("chaotic_psimetal"), 8),
+                researchInput("minecraft:powered_rail", 32)
+        ), item("program_time_accelerate"), 10_000_000, 1_200);
+        programResearch(recipes, "program_flight", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:phantom_membrane", 2),
+                researchInput("minecraft:feather", 32),
+                researchInput(item("chaotic_factor"), 8),
+                researchInput("minecraft:nether_wart", 4)
+        ), item("program_flight"), 10_000_000, 600);
+        programResearch(recipes, "program_phonon_maser", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("mekanism:laser", 1),
+                researchInput("minecraft:amethyst_shard", 12),
+                researchInput(item("flashmetal"), 8),
+                researchInput("minecraft:note_block", 48)
+        ), item("program_phonon_maser"), 40_000_000, 2_400);
+        programResearch(recipes, "program_supreme_infusion", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:netherite_ingot", 1),
+                researchInput(item("flashmetal"), 8),
+                researchInput(item("alloy_psion"), 24),
+                researchInput("minecraft:amethyst_block", 16)
+        ), item("program_supreme_infusion"), 40_000_000, 2_400);
+        programResearch(recipes, "program_molecular_divider", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("psi:psigem", 32),
+                researchInput("minecraft:quartz", 48),
+                researchInput(item("heavy_psimetal"), 8),
+                researchInput(item("echo_control_circuit"), 3)
+        ), item("program_molecular_divider"), 80_000_000, 6_000);
+        programResearch(recipes, "program_radiation_injection", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("mekanism:ingot_uranium", 16),
+                researchInput("mekanism:ingot_lead", 8),
+                researchInput(item("chaotic_psimetal"), 8)
+        ), item("program_radiation_injection"), 60_000_000, 3_600);
+        programResearch(recipes, "program_radiation_filter", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("mekanism:ingot_lead", 16),
+                researchInput("mekanism:dust_fluorite", 16),
+                researchInput(item("chaotic_psimetal"), 8)
+        ), item("program_radiation_filter"), 60_000_000, 3_600);
+        programResearch(recipes, "program_cure_radiation", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:golden_apple", 8),
+                researchInput("mekanism:ingot_lead", 16),
+                researchInput(item("chaotic_psimetal"), 8)
+        ), item("program_cure_radiation"), 60_000_000, 3_600);
+        programResearch(recipes, "program_guillotine", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:wither_skeleton_skull", 1),
+                researchInput("minecraft:anvil", 3),
+                researchInput("minecraft:rotten_flesh", 24),
+                researchInput("minecraft:bone", 16),
+                researchInput("psi:psimetal_sword", 1)
+        ), item("program_guillotine"), 50_000_000, 3_000);
+        programResearch(recipes, "program_active_air_mine", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:tnt", 8),
+                researchInput("psi:psidust", 16),
+                researchInput("psi:psigem", 2)
+        ), item("program_active_air_mine"), 4_000_000, 400);
+        programResearch(recipes, "program_die_flex", List.of(
+                researchInput(item("program_blank"), 1),
+                researchInput("minecraft:comparator", 4),
+                researchInput("minecraft:redstone", 32),
+                researchInput("psi:psidust", 24)
+        ), item("program_die_flex"), 6_000_000, 600);
+        programResearch(recipes, "program_material_mutation", List.of(
+                researchInput(item("program_blank"), 1),
+                researchCatalyst(item("philosophers_stone"), 1),
+                researchInput("minecraft:sculk_catalyst", 1),
+                researchInput(item("chaotic_factor"), 16),
+                researchInput(item("antinite_ingot"), 32),
+                researchInput(item("psionic_echo"), 16)
+        ), item("program_material_mutation"), 250_000_000, 24_000);
     }
 
     private static void addPhilosophersStoneRecipes(Map<ResourceLocation, JsonObject> recipes) {
@@ -564,6 +752,62 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         return root;
     }
 
+    private static JsonObject sculkEroder(JsonElement inputIngredient, String output, int outputCount) {
+        JsonObject root = new JsonObject();
+        JsonObject input = new JsonObject();
+
+        root.addProperty("type", "psitweaks:sculk_eroder");
+        input.add("ingredient", inputIngredient);
+        root.add("input", input);
+        root.add("output", result(output, outputCount));
+
+        return root;
+    }
+
+    private static void programResearch(Map<ResourceLocation, JsonObject> recipes, String id, List<JsonObject> inputs,
+                                        String output, int energy, int time) {
+        recipe(recipes, "program_research/" + id, programResearch(inputs, output, energy, time));
+    }
+
+    private static JsonObject programResearch(List<JsonObject> inputs, String output, int energy, int time) {
+        JsonObject root = new JsonObject();
+        JsonArray inputArray = new JsonArray();
+
+        root.addProperty("type", "psitweaks:program_research");
+        inputs.forEach(inputArray::add);
+        root.add("inputs", inputArray);
+        root.add("output", result(output, 1));
+        root.addProperty("energy", energy);
+        root.addProperty("time", time);
+
+        return root;
+    }
+
+    private static JsonObject researchInput(String item, int count) {
+        return researchInput(item, count, true);
+    }
+
+    private static JsonObject researchCatalyst(String item, int count) {
+        return researchInput(item, count, false);
+    }
+
+    private static JsonObject researchInput(String item, int count, boolean consume) {
+        JsonObject input = new JsonObject();
+        input.add("ingredient", ingredientItem(item));
+        input.addProperty("count", count);
+        if (!consume) {
+            input.addProperty("consume", false);
+        }
+        return input;
+    }
+
+    private static JsonObject specialCrafting(String type) {
+        JsonObject root = new JsonObject();
+        root.addProperty("type", type);
+        root.addProperty("category", "misc");
+        return root;
+    }
+
     private static JsonObject ingredientItem(String item) {
         JsonObject ingredient = new JsonObject();
         ingredient.addProperty("item", item);
@@ -574,6 +818,14 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         JsonObject ingredient = new JsonObject();
         ingredient.addProperty("tag", tag);
         return ingredient;
+    }
+
+    private static JsonArray ingredientAny(JsonObject... ingredients) {
+        JsonArray ingredientArray = new JsonArray();
+        for (JsonObject ingredient : ingredients) {
+            ingredientArray.add(ingredient);
+        }
+        return ingredientArray;
     }
 
     private static JsonObject result(String item, int count) {

@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:coal_block"
+      },
+      "output": {
+        "block": "minecraft:diamond_block",
+        "count": 1
+      }
+    }
+  ]
+}

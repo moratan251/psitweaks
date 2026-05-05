@@ -15,5 +15,10 @@ public final class PsitweaksNetwork {
                 MessageAutoCasterCustomTickSync.STREAM_CODEC,
                 MessageAutoCasterCustomTickSync::handle
         );
+        registrar.playToServer(
+                MessagePsiLinkGeneratorSettingsSync.TYPE,
+                MessagePsiLinkGeneratorSettingsSync.STREAM_CODEC,
+                MessagePsiLinkGeneratorSettingsSync::handle
+        );
     }
 }

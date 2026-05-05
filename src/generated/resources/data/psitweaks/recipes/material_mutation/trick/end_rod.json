@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:torch"
+      },
+      "output": {
+        "count": 1,
+        "item": "minecraft:end_rod"
+      }
+    }
+  ]
+}

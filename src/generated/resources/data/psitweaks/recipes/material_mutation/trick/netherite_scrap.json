@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:gold_block"
+      },
+      "output": {
+        "count": 4,
+        "item": "minecraft:netherite_scrap"
+      }
+    }
+  ]
+}

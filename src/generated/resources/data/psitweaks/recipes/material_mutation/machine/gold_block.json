@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:glowstone"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:gold_block"
+  },
+  "time": 200
+}

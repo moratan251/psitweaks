@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:loom"
+      },
+      "output": {
+        "block": "mekanismgenerators:wind_generator",
+        "count": 1
+      }
+    }
+  ]
+}

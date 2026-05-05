@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:torch"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:end_rod"
+  },
+  "time": 200
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "psitweaks:block/psi_link_generator/bottom",
+    "east": "psitweaks:block/psi_link_generator/right",
+    "north": "psitweaks:block/psi_link_generator/front",
+    "particle": "psitweaks:block/psi_link_generator/front",
+    "south": "psitweaks:block/psi_link_generator/back",
+    "up": "psitweaks:block/psi_link_generator/top",
+    "west": "psitweaks:block/psi_link_generator/left"
+  }
+}

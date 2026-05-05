@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "psitweaks:block/material_mutator/bottom",
+    "east": "psitweaks:block/material_mutator/right",
+    "north": "psitweaks:block/material_mutator/front",
+    "particle": "psitweaks:block/material_mutator/front",
+    "south": "psitweaks:block/material_mutator/back",
+    "up": "psitweaks:block/material_mutator/top",
+    "west": "psitweaks:block/material_mutator/left"
+  }
+}

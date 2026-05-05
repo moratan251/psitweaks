@@ -1,0 +1,35 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 4000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:tnt"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psi:psidust"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "psi:psigem"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_active_air_mine"
+  },
+  "time": 400
+}

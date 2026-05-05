@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:honey_block"
+      },
+      "output": {
+        "block": "minecraft:slime_block",
+        "count": 1
+      }
+    }
+  ]
+}

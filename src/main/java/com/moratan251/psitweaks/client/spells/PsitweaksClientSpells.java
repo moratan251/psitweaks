@@ -12,29 +12,80 @@ public final class PsitweaksClientSpells {
     public static final DeferredRegister<Material> SPELL_PIECE_MATERIALS =
             DeferredRegister.create(ClientPsiAPI.SPELL_PIECE_MATERIAL, Psitweaks.MOD_ID);
 
-    public static final DeferredHolder<Material, Material> TRICK_SUPREME_INFUSION =
-            SPELL_PIECE_MATERIALS.register("trick_supreme_infusion",
-                    () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/trick_supreme_infusion")));
+    public static final DeferredHolder<Material, Material> TRICK_EXPLODE_NO_DESTROY =
+            registerPieceMaterial("trick_explode_no_destroy");
     public static final DeferredHolder<Material, Material> TRICK_PARADE =
-            SPELL_PIECE_MATERIALS.register("trick_parade",
-                    () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/trick_parade")));
+            registerPieceMaterial("trick_parade");
     public static final DeferredHolder<Material, Material> TRICK_FLIGHT =
-            SPELL_PIECE_MATERIALS.register("trick_flight",
-                    () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/trick_flight")));
+            registerPieceMaterial("trick_flight");
     public static final DeferredHolder<Material, Material> TRICK_HARDENING =
-            SPELL_PIECE_MATERIALS.register("trick_hardening",
-                    () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/trick_hardening")));
+            registerPieceMaterial("trick_hardening");
     public static final DeferredHolder<Material, Material> TRICK_BARRIER =
-            SPELL_PIECE_MATERIALS.register("trick_barrier",
-                    () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/trick_barrier")));
+            registerPieceMaterial("trick_barrier");
+    public static final DeferredHolder<Material, Material> TRICK_INTERACT_BLOCK =
+            registerPieceMaterial("trick_interact_block");
+    public static final DeferredHolder<Material, Material> TRICK_STORE_ENTITY =
+            registerPieceMaterial("trick_store_entity");
+    public static final DeferredHolder<Material, Material> SELECTOR_STORED_ENTITY =
+            registerPieceMaterial("selector_stored_entity");
+    public static final DeferredHolder<Material, Material> SELECTOR_NEARBY_SPELLGRAM =
+            registerPieceMaterial("selector_nearby_spellgram");
+    public static final DeferredHolder<Material, Material> TRICK_DISPEL =
+            registerPieceMaterial("trick_dispel");
+    public static final DeferredHolder<Material, Material> TRICK_DISPEL_BENEFICIAL =
+            registerPieceMaterial("trick_dispel_beneficial");
+    public static final DeferredHolder<Material, Material> TRICK_DISPEL_NON_BENEFICIAL =
+            registerPieceMaterial("trick_dispel_non_beneficial");
+    public static final DeferredHolder<Material, Material> TRICK_COCYTUS =
+            registerPieceMaterial("trick_cocytus");
+    public static final DeferredHolder<Material, Material> TRICK_SUPPLY_FE =
+            registerPieceMaterial("trick_supply_fe");
+    public static final DeferredHolder<Material, Material> TRICK_TIME_ACCELERATE =
+            registerPieceMaterial("trick_time_accelerate");
+    public static final DeferredHolder<Material, Material> TRICK_PHONON_MASER =
+            registerPieceMaterial("trick_phonon_maser");
+    public static final DeferredHolder<Material, Material> TRICK_SUPREME_INFUSION =
+            registerPieceMaterial("trick_supreme_infusion");
+    public static final DeferredHolder<Material, Material> TRICK_MOLECULAR_DIVIDER =
+            registerPieceMaterial("trick_molecular_divider");
+    public static final DeferredHolder<Material, Material> TRICK_BREAK_FORTUNE =
+            registerPieceMaterial("trick_break_fortune");
+    public static final DeferredHolder<Material, Material> TRICK_BREAK_SILK =
+            registerPieceMaterial("trick_break_silk");
+    public static final DeferredHolder<Material, Material> TRICK_AQUA_CUTTER =
+            registerPieceMaterial("trick_aqua_cutter");
+    public static final DeferredHolder<Material, Material> TRICK_BLAZE_BALL =
+            registerPieceMaterial("trick_blaze_ball");
+    public static final DeferredHolder<Material, Material> TRICK_ACTIVE_AIR_MINE =
+            registerPieceMaterial("trick_active_air_mine");
+    public static final DeferredHolder<Material, Material> TRICK_FLARE_CIRCLE =
+            registerPieceMaterial("trick_flare_circle");
+    public static final DeferredHolder<Material, Material> TRICK_ICE_CIRCLE =
+            registerPieceMaterial("trick_ice_circle");
+    public static final DeferredHolder<Material, Material> TRICK_SET_SPELLGRAM_FOLLOW_TARGET =
+            registerPieceMaterial("trick_set_spellgram_follow_target");
+    public static final DeferredHolder<Material, Material> TRICK_DIE_FLEX =
+            registerPieceMaterial("trick_die_flex");
+    public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =
+            registerPieceMaterial("trick_radiation_injection");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_FILTER =
-            SPELL_PIECE_MATERIALS.register("trick_radiation_filter",
-                    () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/trick_radiation_filter")));
+            registerPieceMaterial("trick_radiation_filter");
+    public static final DeferredHolder<Material, Material> TRICK_CURE_RADIATION =
+            registerPieceMaterial("trick_cure_radiation");
+    public static final DeferredHolder<Material, Material> TRICK_GUILLOTINE =
+            registerPieceMaterial("trick_guillotine");
+    public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
+            registerPieceMaterial("trick_material_mutation");
 
     private PsitweaksClientSpells() {
     }
 
     public static void register(IEventBus eventBus) {
         SPELL_PIECE_MATERIALS.register(eventBus);
+    }
+
+    private static DeferredHolder<Material, Material> registerPieceMaterial(String id) {
+        return SPELL_PIECE_MATERIALS.register(id,
+                () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/" + id)));
     }
 }

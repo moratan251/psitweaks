@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:composter"
+  },
+  "output": {
+    "count": 1,
+    "item": "mekanismgenerators:bio_generator"
+  },
+  "time": 200
+}

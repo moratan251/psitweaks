@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:grass_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:mycelium"
+  },
+  "time": 200
+}

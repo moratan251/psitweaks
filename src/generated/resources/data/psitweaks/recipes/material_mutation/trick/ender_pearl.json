@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:crying_obsidian"
+      },
+      "output": {
+        "count": 1,
+        "item": "minecraft:ender_pearl"
+      }
+    }
+  ]
+}

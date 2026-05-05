@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "G": {
+      "item": "psi:psigem"
+    },
+    "P": {
+      "item": "psi:psimetal"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "CGC",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_researcher"
+  }
+}

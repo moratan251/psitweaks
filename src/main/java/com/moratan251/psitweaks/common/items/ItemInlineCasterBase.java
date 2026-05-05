@@ -82,7 +82,7 @@ public class ItemInlineCasterBase extends Item {
         return new ComponentItemHandler(stack, ModDataComponents.BULLETS.get(), slotCount) {
             @Override
             public boolean isItemValid(int slot, ItemStack bullet) {
-                return slot >= 0 && slot < slotCount && ISpellAcceptor.isContainer(bullet);
+                return slot >= 0 && slot < slotCount && (bullet.isEmpty() || ISpellAcceptor.isContainer(bullet));
             }
         };
     }

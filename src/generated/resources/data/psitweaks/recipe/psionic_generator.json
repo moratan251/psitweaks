@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psi:psimetal"
+    },
+    "B": {
+      "item": "minecraft:ender_pearl"
+    },
+    "C": {
+      "item": "mekanism:basic_control_circuit"
+    },
+    "T": {
+      "item": "mekanism:energy_tablet"
+    }
+  },
+  "pattern": [
+    " B ",
+    "ACA",
+    "ATA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:psionic_generator"
+  }
+}

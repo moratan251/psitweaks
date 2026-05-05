@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -72,6 +73,9 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.MOVAL_SUIT_CHESTPLATE.get());
                         output.accept(PsitweaksItems.MOVAL_SUIT_LEGGINGS.get());
                         output.accept(PsitweaksItems.MOVAL_SUIT_BOOTS.get());
+                        output.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
+                        output.accept(PsitweaksItems.MODULE_PSYON_CAPACITY.get());
+                        output.accept(PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get());
                         acceptSpellBullets(output);
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
@@ -84,6 +88,10 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.SECONDARY_CASTER.get());
                         output.accept(PsitweaksItems.PARALLEL_CASTER.get());
                         output.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
+                        output.accept(PsitweaksBlocks.PROGRAM_RESEARCHER.get());
+                        output.accept(PsitweaksMekanismBlocks.SCULK_ERODER.get());
+                        output.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get());
+                        output.accept(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get());
                         output.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         output.accept(PsitweaksBlocks.ANTINITE_BLOCK.get());
                         output.accept(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());

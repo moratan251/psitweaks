@@ -1,0 +1,32 @@
+{
+  "type": "psitweaks:sculk_eroder",
+  "input": {
+    "ingredient": [
+      {
+        "tag": "c:stones"
+      },
+      {
+        "item": "minecraft:stone"
+      },
+      {
+        "item": "minecraft:andesite"
+      },
+      {
+        "item": "minecraft:diorite"
+      },
+      {
+        "item": "minecraft:granite"
+      },
+      {
+        "item": "minecraft:deepslate"
+      },
+      {
+        "item": "minecraft:tuff"
+      }
+    ]
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:sculk"
+  }
+}

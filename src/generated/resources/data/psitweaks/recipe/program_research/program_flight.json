@@ -1,0 +1,41 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 10000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:phantom_membrane"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "minecraft:feather"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:chaotic_factor"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:nether_wart"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_flight"
+  },
+  "time": 600
+}

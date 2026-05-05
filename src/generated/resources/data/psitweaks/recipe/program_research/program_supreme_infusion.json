@@ -1,0 +1,41 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 40000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "minecraft:netherite_ingot"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:flashmetal"
+      }
+    },
+    {
+      "count": 24,
+      "ingredient": {
+        "item": "psitweaks:alloy_psion"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:amethyst_block"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_supreme_infusion"
+  },
+  "time": 2400
+}

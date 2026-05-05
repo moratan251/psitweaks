@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "psitweaks:block/sculk_eroder/bottom",
+    "east": "psitweaks:block/sculk_eroder/right",
+    "north": "psitweaks:block/sculk_eroder/front_active",
+    "particle": "psitweaks:block/sculk_eroder/front_active",
+    "south": "psitweaks:block/sculk_eroder/back",
+    "up": "psitweaks:block/sculk_eroder/top",
+    "west": "psitweaks:block/sculk_eroder/left"
+  }
+}

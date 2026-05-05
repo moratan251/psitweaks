@@ -43,6 +43,10 @@ public class PsiTweaksTagsProvider implements DataProvider {
     private static void addBlockTags(Map<ResourceLocation, JsonObject> tags) {
         tag(tags, "minecraft", "mineable/pickaxe",
                 block("cad_disassembler"),
+                block("program_researcher"),
+                block("sculk_eroder"),
+                block("material_mutator"),
+                block("psionic_generator"),
                 block("ore_antinite"),
                 block("antinite_block"),
                 block("chaotic_psimetal_block"),
@@ -54,6 +58,10 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 block("spellmachinery_casing"));
         tag(tags, "minecraft", "needs_diamond_tool", block("heavy_psimetal_block"));
         tag(tags, "minecraft", "needs_iron_tool",
+                block("program_researcher"),
+                block("sculk_eroder"),
+                block("material_mutator"),
+                block("psionic_generator"),
                 block("chaotic_psimetal_block"),
                 block("flashmetal_block"),
                 block("plutonium_block"),

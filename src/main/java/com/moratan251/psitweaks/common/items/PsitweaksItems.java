@@ -18,6 +18,8 @@ import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitBoots;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitChestplate;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitHelmet;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitLeggings;
+import com.moratan251.psitweaks.common.registries.PsitweaksModules;
+import mekanism.common.item.ItemModule;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -182,6 +184,20 @@ public final class PsitweaksItems {
             "magicians_brain",
             new Item.Properties().rarity(Rarity.UNCOMMON)
     );
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BLANK = registerProgram("program_blank", true);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_COCYTUS = registerProgram("program_cocytus", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_TIME_ACCELERATE = registerProgram("program_time_accelerate", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_FLIGHT = registerProgram("program_flight", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PHONON_MASER = registerProgram("program_phonon_maser", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_SUPREME_INFUSION = registerProgram("program_supreme_infusion", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MOLECULAR_DIVIDER = registerProgram("program_molecular_divider", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_RADIATION_INJECTION = registerProgram("program_radiation_injection", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_RADIATION_FILTER = registerProgram("program_radiation_filter", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CURE_RADIATION = registerProgram("program_cure_radiation", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_GUILLOTINE = registerProgram("program_guillotine", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_ACTIVE_AIR_MINE = registerProgram("program_active_air_mine", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DIE_FLEX = registerProgram("program_die_flex", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MATERIAL_MUTATION = registerProgram("program_material_mutation", false);
     public static final DeferredItem<ItemPhilosophersStone> PHILOSOPHERS_STONE = ITEMS.register(
             "philosophers_stone",
             () -> new ItemPhilosophersStone(new Item.Properties().rarity(Rarity.RARE))
@@ -233,6 +249,18 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemMovalSuitBoots> MOVAL_SUIT_BOOTS = ITEMS.register(
             "moval_suit_boots",
             () -> new ItemMovalSuitBoots(ArmorItem.Type.BOOTS, movalSuitProperties(ArmorItem.Type.BOOTS))
+    );
+    public static final DeferredItem<ItemModule> MODULE_PSYON_SUPPLYING = registerModule(
+            "module_psyon_supplying_unit",
+            () -> PsitweaksModules.PSYON_SUPPLYING_UNIT
+    );
+    public static final DeferredItem<ItemModule> MODULE_PSYON_CAPACITY = registerModule(
+            "module_psyon_capacity_unit",
+            () -> PsitweaksModules.PSYON_CAPACITY_UNIT
+    );
+    public static final DeferredItem<ItemModule> MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT = registerModule(
+            "module_phenomenon_interference_enhancement_unit",
+            () -> PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT
     );
     public static final DeferredItem<ItemPsitweaksSpellBullet> ADVANCED_SPELL_BULLET = registerSpellBullet(
             "advanced_spell_bullet",
@@ -439,10 +467,18 @@ public final class PsitweaksItems {
         return ITEMS.register(id, () -> new ItemCADAssembly(new Item.Properties().rarity(rarity), model));
     }
 
+    private static DeferredItem<ItemPsitweaksProgram> registerProgram(String id, boolean blankProgram) {
+        return ITEMS.register(id, () -> new ItemPsitweaksProgram(new Item.Properties().stacksTo(1), blankProgram));
+    }
+
     private static Item.Properties movalSuitProperties(ArmorItem.Type type) {
         return new Item.Properties()
                 .rarity(Rarity.RARE)
                 .durability(type.getDurability(60));
+    }
+
+    private static DeferredItem<ItemModule> registerModule(String id, java.util.function.Supplier<net.minecraft.core.Holder<mekanism.api.gear.ModuleData<?>>> module) {
+        return ITEMS.register(id, () -> new ItemModule(module, new Item.Properties().rarity(Rarity.RARE)));
     }
 
     private static DeferredItem<ItemPsitweaksSpellBullet> registerSpellBullet(String id, SpellBulletTier tier) {
