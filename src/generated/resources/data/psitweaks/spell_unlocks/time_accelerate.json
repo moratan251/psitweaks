@@ -1,0 +1,6 @@
+{
+  "command_id": "time_accelerate",
+  "piece": "psitweaks:trick_time_accelerate",
+  "unlock_item": "psitweaks:program_time_accelerate",
+  "unlock_tag": "psitweaks.unlock.trick_time_accelerate"
+}

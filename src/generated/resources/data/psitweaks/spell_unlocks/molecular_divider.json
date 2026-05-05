@@ -1,0 +1,6 @@
+{
+  "command_id": "molecular_divider",
+  "piece": "psitweaks:trick_molecular_divider",
+  "unlock_item": "psitweaks:program_molecular_divider",
+  "unlock_tag": "psitweaks.unlock.trick_molecular_divider"
+}

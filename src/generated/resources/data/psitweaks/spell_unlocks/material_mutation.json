@@ -1,0 +1,6 @@
+{
+  "command_id": "material_mutation",
+  "piece": "psitweaks:trick_material_mutation",
+  "unlock_item": "psitweaks:program_material_mutation",
+  "unlock_tag": "psitweaks.unlock.trick_material_mutation"
+}

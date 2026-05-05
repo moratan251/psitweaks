@@ -1,26 +1,9 @@
 {
   "type": "psitweaks:sculk_eroder",
   "input": {
-    "ingredient": [
-      {
-        "item": "minecraft:dirt"
-      },
-      {
-        "item": "minecraft:coarse_dirt"
-      },
-      {
-        "item": "minecraft:rooted_dirt"
-      },
-      {
-        "item": "minecraft:grass_block"
-      },
-      {
-        "item": "minecraft:podzol"
-      },
-      {
-        "item": "minecraft:mycelium"
-      }
-    ]
+    "ingredient": {
+      "tag": "minecraft:dirt"
+    }
   },
   "output": {
     "count": 1,

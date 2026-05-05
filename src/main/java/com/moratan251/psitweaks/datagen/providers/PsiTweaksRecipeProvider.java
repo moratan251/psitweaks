@@ -1,7 +1,6 @@
 package com.moratan251.psitweaks.datagen.providers;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
 import java.util.LinkedHashMap;
@@ -475,34 +474,10 @@ public class PsiTweaksRecipeProvider implements DataProvider {
     }
 
     private static void addSculkEroderRecipes(Map<ResourceLocation, JsonObject> recipes) {
-        recipe(recipes, "sculk_eroder/stone", sculkEroder(ingredientAny(
-                ingredientTag("c:stones"),
-                ingredientItem("minecraft:stone"),
-                ingredientItem("minecraft:andesite"),
-                ingredientItem("minecraft:diorite"),
-                ingredientItem("minecraft:granite"),
-                ingredientItem("minecraft:deepslate"),
-                ingredientItem("minecraft:tuff")
-        ), "minecraft:sculk", 1));
-        recipe(recipes, "sculk_eroder/dirt", sculkEroder(ingredientAny(
-                ingredientItem("minecraft:dirt"),
-                ingredientItem("minecraft:coarse_dirt"),
-                ingredientItem("minecraft:rooted_dirt"),
-                ingredientItem("minecraft:grass_block"),
-                ingredientItem("minecraft:podzol"),
-                ingredientItem("minecraft:mycelium")
-        ), "minecraft:sculk", 1));
-        recipe(recipes, "sculk_eroder/sand", sculkEroder(ingredientAny(
-                ingredientTag("c:sands"),
-                ingredientItem("minecraft:sand"),
-                ingredientItem("minecraft:red_sand")
-        ), "minecraft:sculk", 1));
-        recipe(recipes, "sculk_eroder/cobblestone", sculkEroder(ingredientAny(
-                ingredientTag("c:cobblestones"),
-                ingredientItem("minecraft:cobblestone"),
-                ingredientItem("minecraft:cobbled_deepslate"),
-                ingredientItem("minecraft:mossy_cobblestone")
-        ), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/stone", sculkEroder(ingredientTag("c:stones"), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/dirt", sculkEroder(ingredientTag("minecraft:dirt"), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/sand", sculkEroder(ingredientTag("c:sands"), "minecraft:sculk", 1));
+        recipe(recipes, "sculk_eroder/cobblestone", sculkEroder(ingredientTag("c:cobblestones"), "minecraft:sculk", 1));
     }
 
     private static void addProgramResearchRecipes(Map<ResourceLocation, JsonObject> recipes) {
@@ -752,7 +727,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject sculkEroder(JsonElement inputIngredient, String output, int outputCount) {
+    private static JsonObject sculkEroder(JsonObject inputIngredient, String output, int outputCount) {
         JsonObject root = new JsonObject();
         JsonObject input = new JsonObject();
 
@@ -818,14 +793,6 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         JsonObject ingredient = new JsonObject();
         ingredient.addProperty("tag", tag);
         return ingredient;
-    }
-
-    private static JsonArray ingredientAny(JsonObject... ingredients) {
-        JsonArray ingredientArray = new JsonArray();
-        for (JsonObject ingredient : ingredients) {
-            ingredientArray.add(ingredient);
-        }
-        return ingredientArray;
     }
 
     private static JsonObject result(String item, int count) {

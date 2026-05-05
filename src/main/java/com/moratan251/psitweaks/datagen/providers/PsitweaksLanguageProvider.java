@@ -89,6 +89,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Enter a value between %s and %s";
         });
         addMachineTranslations(root);
+        addSpellUnlockMessages(root);
         addCadDisassembler(root);
         addUtilityItemsBook(root);
         addMovalSuitBook(root);
@@ -245,6 +246,69 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_item.blank_program", switch (locale) {
             case "ja_jp" -> "プログラム研究の基礎になる空白のプログラムです. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に素材と一緒に入れることで, 記述済みプログラムを作成できます.$(p)既存のプログラムとクラフトすると, そのプログラムを複製できます.";
             default -> "Used as the base item for program research. Put it into the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) with the required materials to create a written program.$(p)It can also be crafted with an existing written program item to duplicate that program.";
+        });
+    }
+
+    private void addSpellUnlockMessages(JsonObject root) {
+        root.addProperty("message.psitweaks.spell_unlock.unlocked", switch (locale) {
+            case "ja_jp" -> "%s を解禁しました";
+            default -> "Unlocked %s";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.already", switch (locale) {
+            case "ja_jp" -> "%s は既に解禁済みです";
+            default -> "%s is already unlocked";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.grant.single", switch (locale) {
+            case "ja_jp" -> "%s の解禁を %s に付与しました";
+            default -> "Granted %s unlock to %s";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.grant.multi", switch (locale) {
+            case "ja_jp" -> "%s の解禁を %s/%s 人に付与しました";
+            default -> "Granted %s unlock to %s/%s players";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.revoke.single", switch (locale) {
+            case "ja_jp" -> "%s の解禁を %s から剥奪しました";
+            default -> "Revoked %s unlock from %s";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.revoke.multi", switch (locale) {
+            case "ja_jp" -> "%s の解禁を %s/%s 人から剥奪しました";
+            default -> "Revoked %s unlock from %s/%s players";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.status.unlocked", switch (locale) {
+            case "ja_jp" -> "%s は %s を解禁済みです";
+            default -> "%s has %s unlocked";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.status.locked", switch (locale) {
+            case "ja_jp" -> "%s は %s が未解禁です";
+            default -> "%s has %s locked";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.no_change", switch (locale) {
+            case "ja_jp" -> "%s の解禁状態は変更されませんでした";
+            default -> "No %s unlock status was changed";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.all.no_change", switch (locale) {
+            case "ja_jp" -> "全術式の解禁状態は変更されませんでした（対象%s人・術式%s個）";
+            default -> "No all-spell unlock status was changed (%s player(s), %s spell(s))";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.all.grant.single", switch (locale) {
+            case "ja_jp" -> "%s に全術式の解禁を付与しました（%s/%s 件変更）";
+            default -> "Granted all spell unlocks to %s (%s/%s changed)";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.all.grant.multi", switch (locale) {
+            case "ja_jp" -> "全術式の解禁を付与しました（%s/%s 件変更、対象変更%s/%s人）";
+            default -> "Granted all spell unlocks: %s/%s changes, players changed %s/%s";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.all.revoke.single", switch (locale) {
+            case "ja_jp" -> "%s から全術式の解禁を剥奪しました（%s/%s 件変更）";
+            default -> "Revoked all spell unlocks from %s (%s/%s changed)";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.all.revoke.multi", switch (locale) {
+            case "ja_jp" -> "全術式の解禁を剥奪しました（%s/%s 件変更、対象変更%s/%s人）";
+            default -> "Revoked all spell unlocks: %s/%s changes, players changed %s/%s";
+        });
+        root.addProperty("message.psitweaks.spell_unlock.command.all.status", switch (locale) {
+            case "ja_jp" -> "%s は術式を %s/%s 解禁済みです";
+            default -> "%s has %s/%s spell unlocks";
         });
     }
 

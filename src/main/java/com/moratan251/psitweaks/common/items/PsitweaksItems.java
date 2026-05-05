@@ -468,7 +468,14 @@ public final class PsitweaksItems {
     }
 
     private static DeferredItem<ItemPsitweaksProgram> registerProgram(String id, boolean blankProgram) {
-        return ITEMS.register(id, () -> new ItemPsitweaksProgram(new Item.Properties().stacksTo(1), blankProgram));
+        return ITEMS.register(id, () -> new ItemPsitweaksProgram(programProperties(blankProgram), blankProgram));
+    }
+
+    private static Item.Properties programProperties(boolean blankProgram) {
+        if (blankProgram) {
+            return new Item.Properties();
+        }
+        return new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1);
     }
 
     private static Item.Properties movalSuitProperties(ArmorItem.Type type) {

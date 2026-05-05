@@ -1,17 +1,9 @@
 {
   "type": "psitweaks:sculk_eroder",
   "input": {
-    "ingredient": [
-      {
-        "tag": "c:sands"
-      },
-      {
-        "item": "minecraft:sand"
-      },
-      {
-        "item": "minecraft:red_sand"
-      }
-    ]
+    "ingredient": {
+      "tag": "c:sands"
+    }
   },
   "output": {
     "count": 1,

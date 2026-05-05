@@ -22,8 +22,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -49,9 +51,25 @@ public final class MaterialMutationRecipeHandler {
         event.addListener(MACHINE_RELOAD_LISTENER);
     }
 
+    @EventBusSubscriber(modid = Psitweaks.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static final class ClientReloadEvents {
+        private ClientReloadEvents() {
+        }
+
+        @SubscribeEvent
+        public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
+            event.registerReloadListener(TRICK_RELOAD_LISTENER);
+            event.registerReloadListener(MACHINE_RELOAD_LISTENER);
+        }
+    }
+
     public static ItemStack getMutationOutput(Block inputBlock) {
         ItemStack output = trickRecipesByInputBlock.get(inputBlock);
         return output == null ? ItemStack.EMPTY : output.copy();
+    }
+
+    public static Map<Block, ItemStack> getAllMutationOutputs() {
+        return trickRecipesByInputBlock;
     }
 
     @Nullable
@@ -82,7 +100,7 @@ public final class MaterialMutationRecipeHandler {
         return java.util.List.copyOf(machineRecipesByInputItem.values());
     }
 
-    public record MachineRecipe(Item input, int inputCount, ItemStack output, int time) {
+    public record MachineRecipe(ResourceLocation id, Item input, int inputCount, ItemStack output, int time) {
     }
 
     private static final class TrickRecipeReloadListener extends SimpleJsonResourceReloadListener {
@@ -154,7 +172,7 @@ public final class MaterialMutationRecipeHandler {
 
                 int inputCount = Math.max(1, GsonHelper.getAsInt(GsonHelper.getAsJsonObject(root, "input"), "count", 1));
                 int time = Math.max(1, GsonHelper.getAsInt(root, "time", 200));
-                loadedRecipes.put(inputItem, new MachineRecipe(inputItem, inputCount, outputStack, time));
+                loadedRecipes.put(inputItem, new MachineRecipe(fileId, inputItem, inputCount, outputStack, time));
             }
 
             machineRecipesByInputItem = Map.copyOf(loadedRecipes);

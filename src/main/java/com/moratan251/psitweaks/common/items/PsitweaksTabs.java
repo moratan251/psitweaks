@@ -77,6 +77,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.MODULE_PSYON_CAPACITY.get());
                         output.accept(PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get());
                         acceptSpellBullets(output);
+                        acceptProgramItems(output);
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL.get());
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL.get());
@@ -148,5 +149,22 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE.get());
         output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE.get());
         output.accept(PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE.get());
+    }
+
+    private static void acceptProgramItems(CreativeModeTab.Output output) {
+        output.accept(PsitweaksItems.PROGRAM_BLANK.get());
+        output.accept(PsitweaksItems.PROGRAM_COCYTUS.get());
+        output.accept(PsitweaksItems.PROGRAM_TIME_ACCELERATE.get());
+        output.accept(PsitweaksItems.PROGRAM_FLIGHT.get());
+        output.accept(PsitweaksItems.PROGRAM_PHONON_MASER.get());
+        output.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
+        output.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
+        output.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
+        output.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
+        output.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
+        output.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
+        output.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
+        output.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
+        output.accept(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get());
     }
 }

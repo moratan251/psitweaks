@@ -129,6 +129,13 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/polonium", item("polonium_block"));
         tag(tags, "c", "storage_blocks/raw_antinite", item("raw_antinite_block"));
 
+//        tag(tags, "minecraft", "dirt",
+//                "minecraft:dirt",
+//                "minecraft:coarse_dirt",
+//                "minecraft:rooted_dirt",
+//                "minecraft:grass_block",
+//                "minecraft:podzol",
+//                "minecraft:mycelium");
         tag(tags, "minecraft", "head_armor", item("moval_suit_helmet"));
         tag(tags, "minecraft", "chest_armor", item("moval_suit_chestplate"));
         tag(tags, "minecraft", "leg_armor", item("moval_suit_leggings"));

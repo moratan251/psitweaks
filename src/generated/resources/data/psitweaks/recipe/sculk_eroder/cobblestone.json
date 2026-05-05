@@ -1,20 +1,9 @@
 {
   "type": "psitweaks:sculk_eroder",
   "input": {
-    "ingredient": [
-      {
-        "tag": "c:cobblestones"
-      },
-      {
-        "item": "minecraft:cobblestone"
-      },
-      {
-        "item": "minecraft:cobbled_deepslate"
-      },
-      {
-        "item": "minecraft:mossy_cobblestone"
-      }
-    ]
+    "ingredient": {
+      "tag": "c:cobblestones"
+    }
   },
   "output": {
     "count": 1,

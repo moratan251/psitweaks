@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.tile.machine;
 
+import com.moratan251.psitweaks.client.jei.PsitweaksMekanismJeiRecipeTypes;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.List;
@@ -11,6 +12,7 @@ import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -19,6 +21,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -49,6 +52,11 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
     @Override
     public IMekanismRecipeTypeProvider<mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, InputRecipeCache.ItemChemical<ItemStackChemicalToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.INJECTING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeViewerType() {
+        return PsitweaksMekanismJeiRecipeTypes.MATERIAL_MUTATOR;
     }
 
     @Override
@@ -105,6 +113,12 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
         return MaterialMutationRecipeHandler.getAllMachineRecipes().stream()
                 .map(MaterialMutatorBlockEntity::asMekanismRecipe)
                 .map(recipe -> (ItemStackChemicalToItemStackRecipe) recipe)
+                .toList();
+    }
+
+    public static List<RecipeHolder<ItemStackChemicalToItemStackRecipe>> getAllMutationMachineRecipeHolders(Level level) {
+        return MaterialMutationRecipeHandler.getAllMachineRecipes().stream()
+                .map(recipe -> new RecipeHolder<ItemStackChemicalToItemStackRecipe>(recipe.id(), asMekanismRecipe(recipe)))
                 .toList();
     }
 

@@ -1,0 +1,6 @@
+{
+  "command_id": "die_flex",
+  "piece": "psitweaks:trick_die_flex",
+  "unlock_item": "psitweaks:program_die_flex",
+  "unlock_tag": "psitweaks.unlock.trick_die_flex"
+}

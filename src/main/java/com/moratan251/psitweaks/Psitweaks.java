@@ -44,6 +44,7 @@ import com.moratan251.psitweaks.datagen.providers.PsiTweaksWorldgenProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellUnlockProvider;
 import com.mojang.logging.LogUtils;
 import mekanism.api.MekanismIMC;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -153,6 +154,7 @@ public class Psitweaks {
         generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsitweaksSpellUnlockProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksWorldgenProvider(packOutput));
     }
 
