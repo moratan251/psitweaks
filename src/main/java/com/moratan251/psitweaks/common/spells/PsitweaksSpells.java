@@ -27,6 +27,10 @@ public final class PsitweaksSpells {
             registerPiece("trick_barrier", PieceTrickBarrier.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickInteractBlock>> TRICK_INTERACT_BLOCK =
             registerPiece("trick_interact_block", PieceTrickInteractBlock.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickFreezeBlock>> TRICK_FREEZE_BLOCK =
+            registerPiece("trick_freeze_block", PieceTrickFreezeBlock.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMeltBlock>> TRICK_MELT_BLOCK =
+            registerPiece("trick_melt_block", PieceTrickMeltBlock.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickStoreEntityUUID>> TRICK_STORE_ENTITY =
             registerPiece("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorStoredEntity>> SELECTOR_STORED_ENTITY =
@@ -92,6 +96,10 @@ public final class PsitweaksSpells {
             registerGroup("trick_barrier", PieceTrickBarrier.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> INTERACT_BLOCK =
             registerGroup("trick_interact_block", PieceTrickInteractBlock.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> FREEZE_BLOCK =
+            registerGroup("trick_freeze_block", PieceTrickFreezeBlock.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MELT_BLOCK =
+            registerGroup("trick_melt_block", PieceTrickMeltBlock.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORE_ENTITY =
             registerGroup("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORED_ENTITY =
