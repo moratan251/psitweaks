@@ -28,8 +28,8 @@ public class PieceTrickBlazeBall extends PieceTrick {
     private static final float DAMAGE_PER_POWER = 2.0F;
     private static final float BASE_SPEED = 1.0F;
     private static final float SPEED_PER_POWER = 0.04F;
-    private static final double POTENCY_BASE = 50.0;
-    private static final double POTENCY_PER_POWER = 50.0;
+    private static final double POTENCY_BASE = 45.0;
+    private static final double POTENCY_PER_POWER = 45.0;
     private static final double COST_BASE = 150.0;
     private static final double COST_PER_POWER = 150.0;
 
@@ -37,7 +37,7 @@ public class PieceTrickBlazeBall extends PieceTrick {
 
     public PieceTrickBlazeBall(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(0.1).mul(100).floor());
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(0.1).mul(200).add(200).floor());
     }
 

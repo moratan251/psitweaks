@@ -1,0 +1,10 @@
+{
+  "values": {
+    "psitweaks:clean_antinite": {
+      "representation": "c:ores/antinite"
+    },
+    "psitweaks:dirty_antinite": {
+      "representation": "c:ores/antinite"
+    }
+  }
+}

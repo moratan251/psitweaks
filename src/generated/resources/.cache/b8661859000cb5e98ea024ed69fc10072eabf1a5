@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-06T01:43:01.9395402	PsiTweaks tags
+// 1.21.1	2026-05-06T04:11:37.0695526	PsiTweaks tags
 2b0972694544ef7efe860eb052a12b017ce5f26d data/curios/tags/item/charm.json
 035f94be00fe3e536fc172030444c372c1a2c5a8 data/curios/tags/item/magic_calculation_area.json
 12b82ad554d363a016b4ce2de01ba017806a484e data/c/tags/block/ores.json
@@ -44,6 +44,7 @@ a8324a3daaa0e1a32e2dbb735ae72e9acb4c1ef6 data/mekanism/tags/item/dirty_dusts.jso
 4d9ae1b6f505a40e87ef60fa885fc7e4c3ef387d data/mekanism/tags/item/dirty_dusts/antinite.json
 e47d1c23ac2a0875e909021229546614858d19c4 data/mekanism/tags/item/shards.json
 56e1acd7e64b79a2d94e4a80af5806e3bbcca6c7 data/mekanism/tags/item/shards/antinite.json
+faf970e52b05db0a07726e7601cd0486da4fd6d0 data/mekanism/tags/mekanism/chemical/gaseous.json
 4dff294527c95699e0df6f6e0d2e51824e70a67a data/minecraft/tags/block/mineable/pickaxe.json
 d5bf711fc7a7fddaff2fd59a87f6cfb4cdd7fa74 data/minecraft/tags/block/needs_diamond_tool.json
 aa1691026ec763ff9c0a50a9344383c6f88ee67a data/minecraft/tags/block/needs_iron_tool.json

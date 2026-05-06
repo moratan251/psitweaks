@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks;
 
+import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
@@ -20,6 +21,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.items.armor.PsitweaksArmorMaterials;
@@ -39,6 +41,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismDataMapProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
@@ -49,6 +52,7 @@ import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellUnlockProvider;
 import com.mojang.logging.LogUtils;
+import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.api.MekanismIMC;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -62,7 +66,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -70,6 +73,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -111,6 +115,9 @@ public class Psitweaks {
         ModMenuTypes.register(modEventBus);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             PsitweaksClientSpells.register(modEventBus);
+            PsitweaksClientModels.register(modEventBus);
+            MaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
+            ClientModEvents.register(modEventBus);
         }
 
         PsitweaksMekanismBlocks.register(modEventBus);
@@ -159,6 +166,7 @@ public class Psitweaks {
         generator.addProvider(event.includeServer(), new PsiTweaksTagsProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiTweaksMekanismDataMapProvider(packOutput));
         generator.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsitweaksSpellUnlockProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksWorldgenProvider(packOutput));
@@ -169,11 +177,18 @@ public class Psitweaks {
         LOGGER.debug("PsiTweaks server starting");
     }
 
-    @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         private static final ResourceLocation ACTIVE_PROPERTY = Psitweaks.location("active");
 
-        @SubscribeEvent
+        private static void register(IEventBus modEventBus) {
+            modEventBus.addListener(ClientModEvents::onClientSetup);
+            modEventBus.addListener(ClientModEvents::onRegisterMenuScreens);
+            modEventBus.addListener(ClientModEvents::onRegisterClientReloadListeners);
+            modEventBus.addListener(ClientModEvents::onRegisterClientExtensions);
+            modEventBus.addListener(ClientModEvents::onRegisterItemDecorations);
+            modEventBus.addListener(ClientModEvents::onRegisterEntityRenderers);
+        }
+
         public static void onClientSetup(FMLClientSetupEvent event) {
             LOGGER.info("PsiTweaks client setup");
 
@@ -219,7 +234,6 @@ public class Psitweaks {
             });
         }
 
-        @SubscribeEvent
         public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
             event.register(PsitweaksMekanismContainerTypes.SCULK_ERODER.get(), GuiSculkEroder::new);
@@ -229,12 +243,10 @@ public class Psitweaks {
             event.register(PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE.get(), GuiTranscendentEnergyCube::new);
         }
 
-        @SubscribeEvent
         public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
             event.registerReloadListener(RenderTranscendentEnergyCubeItem.RENDERER);
         }
 
-        @SubscribeEvent
         public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
             event.registerItem(new IClientItemExtensions() {
                 @Override
@@ -244,7 +256,10 @@ public class Psitweaks {
             }, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.asItem());
         }
 
-        @SubscribeEvent
+        public static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
+            TransmitterTypeDecorator.registerDecorators(event, PsitweaksMekanismBlocks.TRANSCENDENT_CABLE);
+        }
+
         public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(PsitweaksEntities.PHONON_MASER_BEAM.get(), PhononMaserBeamRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.MOLECULAR_DIVIDER.get(), MolecularDividerRenderer::new);

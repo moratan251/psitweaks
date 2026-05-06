@@ -23,7 +23,7 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 
 public class PieceTrickMaterialMutation extends PieceTrick {
 
-    private static final int POTENCY = 1250;
+    private static final int POTENCY = 900;
     private static final int COST = 10000;
 
     private SpellParam<Vector3> position;

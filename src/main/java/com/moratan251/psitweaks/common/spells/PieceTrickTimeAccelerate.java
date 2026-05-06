@@ -25,7 +25,7 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
         super(spell);
 
         this.setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).mul(200).floor());
-        this.setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.time", true).mul(100).floor());
+        this.setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).mul(150).add(50).floor());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
 
         // ざっくり：倍率と秒数に比例して重くなるのでコストも比例
         meta.addStat(EnumSpellStat.COST, (int) (Math.pow(2,rate) * seconds * 4));
-        meta.addStat(EnumSpellStat.POTENCY, 100 + rate * 100);
+        meta.addStat(EnumSpellStat.POTENCY, 50 + rate * 150);
     }
 
     @Override

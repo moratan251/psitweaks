@@ -3,13 +3,16 @@ package com.moratan251.psitweaks.common.spells;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
+import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
+import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.common.spell.trick.potion.PieceTrickPotionBase;
 
 public class PieceTrickFlight extends PieceTrickPotionBase {
     public PieceTrickFlight(Spell spell) {
         super(spell);
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.time", true).add(770));
     }
 
     @Override
@@ -29,6 +32,6 @@ public class PieceTrickFlight extends PieceTrickPotionBase {
 
     @Override
     public int getPotency(int power, int time) throws SpellCompilationException {
-        return (int) this.multiplySafe(1000 + time, 1.0);
+        return (int) this.multiplySafe(750 + time, 1.0);
     }
 }

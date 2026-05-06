@@ -1,16 +1,12 @@
 package com.moratan251.psitweaks.client.models;
 
-import com.moratan251.psitweaks.Psitweaks;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import vazkii.psi.client.model.ModelCAD;
 import vazkii.psi.common.item.base.ModItems;
 
-@EventBusSubscriber(modid = Psitweaks.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class PsitweaksClientModels {
     private static final String[] CAD_MODEL_PATHS = {
             "cad_alloy_psion",
@@ -27,7 +23,11 @@ public final class PsitweaksClientModels {
     private PsitweaksClientModels() {
     }
 
-    @SubscribeEvent
+    public static void register(IEventBus modEventBus) {
+        modEventBus.addListener(PsitweaksClientModels::modifyBakingResult);
+        modEventBus.addListener(PsitweaksClientModels::registerAdditional);
+    }
+
     public static void modifyBakingResult(ModelEvent.ModifyBakingResult event) {
         event.getModels().computeIfPresent(
                 ModelResourceLocation.inventory(ModItems.cad.getId()),
@@ -35,7 +35,6 @@ public final class PsitweaksClientModels {
         );
     }
 
-    @SubscribeEvent
     public static void registerAdditional(ModelEvent.RegisterAdditional event) {
         for (String path : CAD_MODEL_PATHS) {
             event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("psi", "item/" + path)));

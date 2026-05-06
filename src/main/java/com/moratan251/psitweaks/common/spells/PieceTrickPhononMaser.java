@@ -15,7 +15,7 @@ public class PieceTrickPhononMaser extends PieceTrick {
     public PieceTrickPhononMaser(Spell spell) {
         super(spell);
         this.setStatLabel(EnumSpellStat.POTENCY,
-                (new StatLabel("psi.spellparam.power", true)).mul(50.0).floor().add(500.0));
+                (new StatLabel("psi.spellparam.power", true)).mul(100.0).floor().add(650.0));
         this.setStatLabel(EnumSpellStat.COST,
                 (new StatLabel("psi.spellparam.power", true))
                         .mul(new StatLabel("psi.spellparam.time", true)).mul(700.0).floor());
@@ -51,8 +51,8 @@ public class PieceTrickPhononMaser extends PieceTrick {
 
         // コスト計算: 威力 * 時間(秒) * 500
         int cost = intPower * intTime * 700;
-        // ポテンシー計算: 威力 * 100 + 800
-        int potency = intPower * 100 + 800;
+        // ポテンシー計算: 威力 * 100 + 650
+        int potency = intPower * 100 + 650;
 
         meta.addStat(EnumSpellStat.POTENCY, potency);
         meta.addStat(EnumSpellStat.COST, cost);

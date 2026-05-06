@@ -29,12 +29,13 @@ public class PieceTrickAquaCutter extends PieceTrick {
     private static final double MIN_POWER = 0.1;
     private static final float BASE_DAMAGE = 2.0F;
     private static final float DAMAGE_PER_POWER = 3.0F;
+    private static final double POTENCY_PER_POWER = 90.0;
 
     private SpellParam<Number> power;
 
     public PieceTrickAquaCutter(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(0.1).mul(100).floor());
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(0.1).mul(200).add(200).floor());
     }
 
@@ -52,7 +53,7 @@ public class PieceTrickAquaCutter extends PieceTrick {
         }
 
         powerVal = Math.max(MIN_POWER, powerVal);
-        meta.addStat(EnumSpellStat.POTENCY, (int) (powerVal * 100));
+        meta.addStat(EnumSpellStat.POTENCY, (int) (powerVal * POTENCY_PER_POWER));
         meta.addStat(EnumSpellStat.COST, (int) (200 + powerVal * 200));
     }
 

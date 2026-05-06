@@ -22,8 +22,8 @@ public class PieceTrickRadiationInjection extends PieceTrick {
     private static final double MIN_POWER = 0.1;
     private static final double RADIATION_BASE_AT_POWER_ONE = 0.4;
     private static final double RADIATION_GROWTH_BASE = 10.0;
-    private static final double POTENCY_BASE = 300.0;
-    private static final double POTENCY_PER_POWER = 200.0;
+    private static final double POTENCY_BASE = 250.0;
+    private static final double POTENCY_PER_POWER = 175.0;
     private static final double COST_BASE = 200.0;
     private static final double COST_PER_POWER = 1000.0;
 

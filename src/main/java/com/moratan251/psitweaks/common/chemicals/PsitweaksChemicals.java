@@ -3,14 +3,9 @@ package com.moratan251.psitweaks.common.chemicals;
 import com.moratan251.psitweaks.Psitweaks;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.common.registration.impl.ChemicalDeferredRegister;
 import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.SlurryRegistryObject;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 
 public final class PsitweaksChemicals {
@@ -25,21 +20,16 @@ public final class PsitweaksChemicals {
 
     public static final DeferredChemical<Chemical> GAS_PSIONIC_ECHO = CHEMICALS.register(
             "gas_psionic_echo",
-            () -> new Chemical(ChemicalBuilder.builder().tint(0x40006E).gaseous())
+            () -> new Chemical(ChemicalBuilder.builder().tint(0x40006E))
     );
     public static final DeferredChemical<Chemical> GAS_PEO_FUEL = CHEMICALS.register(
             "gas_peo_fuel",
             () -> new Chemical(ChemicalBuilder.builder()
-                    .tint(0x4D749B)
-                    .gaseous()
-                    .with(new ChemicalAttributes.Fuel(240, 540_000L)))
+                    .tint(0x4D749B))
     );
 
-    private static final TagKey<Item> ANTINITE_ORES =
-            ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/antinite"));
-
     public static final SlurryRegistryObject<Chemical, Chemical> ANTINITE =
-            CHEMICALS.registerSlurry("antinite", builder -> builder.tint(0xBBBB60).ore(ANTINITE_ORES));
+            CHEMICALS.registerSlurry("antinite", builder -> builder.tint(0xBBBB60));
 
     private PsitweaksChemicals() {
     }

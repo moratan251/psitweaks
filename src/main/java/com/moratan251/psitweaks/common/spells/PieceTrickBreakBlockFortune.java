@@ -42,7 +42,7 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
     public PieceTrickBreakBlockFortune(Spell spell) {
         super(spell);
         // 幸運レベルに応じてコストが変動
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(100).add(new StatLabel("psi.spellparam.power", true).mul(100)));
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(150).add(new StatLabel("psi.spellparam.power", true).mul(100)));
         setStatLabel(EnumSpellStat.COST, new StatLabel(100).add(new StatLabel("psi.spellparam.power", true).mul(100)));
     }
 
@@ -62,7 +62,7 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
         }
 
         int fortune = fortuneVal.intValue();
-        meta.addStat(EnumSpellStat.POTENCY, 100 + fortune * 100);
+        meta.addStat(EnumSpellStat.POTENCY, 150 + fortune * 100);
         meta.addStat(EnumSpellStat.COST, 100 + fortune * 100);
     }
 

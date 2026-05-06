@@ -31,7 +31,7 @@ public class PieceTrickSupplyFE extends PieceTrick {
 
     public PieceTrickSupplyFE(Spell spell) {
         super(spell);
-        this.setStatLabel(EnumSpellStat.POTENCY, (new StatLabel("psi.spellparam.power", true)).max(MIN_POWER).mul(POTENCY_PER_POWER).floor());
+        this.setStatLabel(EnumSpellStat.POTENCY, (new StatLabel("psi.spellparam.power", true)).max(MIN_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
         this.setStatLabel(EnumSpellStat.COST, (new StatLabel("psi.spellparam.power", true)).max(MIN_POWER).mul(COST_PER_POWER).floor());
         this.addParam(this.direction = new ParamVector("psi.spellparam.direction", SpellParam.GREEN, true, false));
 

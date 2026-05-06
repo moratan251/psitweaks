@@ -4,9 +4,10 @@ import com.moratan251.psitweaks.client.jei.PsitweaksMekanismJeiRecipeTypes;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.List;
+import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
@@ -37,11 +38,11 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener, IContentsListener chemicalTankListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        java.util.function.Predicate<Chemical> validInput = chemical -> chemical == MaterialMutationRecipeHandler.getPsionicEchoChemical();
-        chemicalTank = BasicChemicalTank.create(
+        Predicate<ChemicalStack> validInput = chemicalStack -> chemicalStack.is(MaterialMutationRecipeHandler.getPsionicEchoChemical());
+        chemicalTank = BasicChemicalTank.createModern(
                 CHEMICAL_TANK_CAPACITY,
-                allowExtractingChemical() ? BasicChemicalTank.alwaysTrueBi : BasicChemicalTank.notExternal,
-                (chemical, automationType) -> validInput.test(chemical),
+                (chemicalStack, automationType) -> allowExtractingChemical() || automationType != AutomationType.EXTERNAL,
+                (chemicalStack, automationType) -> validInput.test(chemicalStack),
                 validInput,
                 chemicalTankListener
         );
@@ -125,7 +126,7 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
     private static TimedInjectingRecipe asMekanismRecipe(MaterialMutationRecipeHandler.MachineRecipe recipe) {
         return new TimedInjectingRecipe(
                 IngredientCreatorAccess.item().from(recipe.input(), recipe.inputCount()),
-                IngredientCreatorAccess.chemicalStack().from(MaterialMutationRecipeHandler.getPsionicEchoChemical(), CHEMICAL_PER_CRAFT),
+                IngredientCreatorAccess.chemicalStack().fromHolder(MaterialMutationRecipeHandler.getPsionicEchoChemicalHolder(), CHEMICAL_PER_CRAFT),
                 recipe.output(),
                 false,
                 recipe.time()

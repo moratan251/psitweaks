@@ -34,7 +34,7 @@ public class PieceTrickIceCircle extends PieceTrick {
     private static final int LIFETIME_TICKS = 60 * 20;
     private static final int DAMAGE_INTERVAL_TICKS = 10;
     private static final double POTENCY_BASE = 200.0D;
-    private static final double POTENCY_PER_POWER = 120.0D;
+    private static final double POTENCY_PER_POWER = 100.0D;
     private static final double COST_BASE = 2000.0D;
     private static final double COST_PER_POWER = 1200.0D;
 

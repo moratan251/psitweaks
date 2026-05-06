@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 
 public class PieceTrickBreakBlockSilk extends PieceTrick {
 
-    private static final int POTENCY = 250;
+    private static final int POTENCY = 240;
     private static final int COST = 250;
 
     SpellParam<Vector3> position;

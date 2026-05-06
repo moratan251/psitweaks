@@ -11,13 +11,13 @@ import vazkii.psi.common.spell.trick.infusion.PieceTrickEbonyIvory;
 public class PieceTrickSupremeInfusion extends PieceTrickEbonyIvory {
     public PieceTrickSupremeInfusion(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(500));
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(750));
         setStatLabel(EnumSpellStat.COST, new StatLabel(7000));
     }
 
     @Override
     protected void addPotencyAndCost(SpellMetadata meta) throws SpellCompilationException {
-        meta.addStat(EnumSpellStat.POTENCY, 500);
+        meta.addStat(EnumSpellStat.POTENCY, 750);
         meta.addStat(EnumSpellStat.COST, 7000);
     }
 

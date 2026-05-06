@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -22,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
@@ -51,13 +52,12 @@ public final class MaterialMutationRecipeHandler {
         event.addListener(MACHINE_RELOAD_LISTENER);
     }
 
-    @EventBusSubscriber(modid = Psitweaks.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static final class ClientReloadEvents {
-        private ClientReloadEvents() {
-        }
+    public static void registerClientReloadListeners(IEventBus modEventBus) {
+        modEventBus.addListener(ClientReloadEvents::onRegisterClientReloadListeners);
+    }
 
-        @SubscribeEvent
-        public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
+    private static final class ClientReloadEvents {
+        private static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
             event.registerReloadListener(TRICK_RELOAD_LISTENER);
             event.registerReloadListener(MACHINE_RELOAD_LISTENER);
         }
@@ -94,6 +94,10 @@ public final class MaterialMutationRecipeHandler {
 
     public static Chemical getPsionicEchoChemical() {
         return PsitweaksChemicals.GAS_PSIONIC_ECHO.get();
+    }
+
+    public static Holder<Chemical> getPsionicEchoChemicalHolder() {
+        return PsitweaksChemicals.GAS_PSIONIC_ECHO;
     }
 
     public static java.util.List<MachineRecipe> getAllMachineRecipes() {
