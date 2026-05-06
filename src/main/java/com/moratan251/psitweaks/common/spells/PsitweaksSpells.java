@@ -32,6 +32,12 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_interact_block"), PieceTrickInteractBlock.class);
             PsiAPI.addPieceToGroup(PieceTrickInteractBlock.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_interact_block"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_freeze_block"), PieceTrickFreezeBlock.class);
+            PsiAPI.addPieceToGroup(PieceTrickFreezeBlock.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_freeze_block"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_melt_block"), PieceTrickMeltBlock.class);
+            PsiAPI.addPieceToGroup(PieceTrickMeltBlock.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_melt_block"), false);
+
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_store_entity"), PieceTrickStoreEntityUUID.class);
             PsiAPI.addPieceToGroup(PieceTrickStoreEntityUUID.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_store_entity"), false);
 

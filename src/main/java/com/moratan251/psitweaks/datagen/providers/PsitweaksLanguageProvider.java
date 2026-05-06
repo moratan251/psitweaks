@@ -255,6 +255,10 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_parade.desc", "Avoid damage with a certain probability");
         add("psitweaks.spellpiece.trick_interact_block", "Trick: Block Interact");
         add("psitweaks.spellpiece.trick_interact_block.desc", "Right-click with the off-hand item on the target block");
+        add("psitweaks.spellpiece.trick_freeze_block", "Trick: Block Freeze");
+        add("psitweaks.spellpiece.trick_freeze_block.desc", "Freeze the block at the target position into its next colder form");
+        add("psitweaks.spellpiece.trick_melt_block", "Trick: Block Melt");
+        add("psitweaks.spellpiece.trick_melt_block.desc", "Melt the block at the target position into its hotter form");
         add("psitweaks.spellpiece.trick_break_fortune", "Trick: Break Block (Fortune)");
         add("psitweaks.spellpiece.trick_break_fortune.desc", "Break a block with Fortune applied");
         add("psitweaks.spellpiece.trick_break_silk", "Trick: Break Block (Silk Touch)");
@@ -474,6 +478,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance.");
         add("psi.book.page.psitweaks_spellpiece.trick_flight", "Gives the target an effect that enables creative flight.");
         add("psi.book.page.psitweaks_spellpiece.trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.");
+        add("psi.book.page.psitweaks_spellpiece.trick_freeze_block", "Freezes the target block one stage. Water becomes ice, ice becomes packed ice, packed ice becomes blue ice, lava becomes magma block, and magma block becomes obsidian.");
+        add("psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_silk", "Breaks the target block with Silk Touch.");
         add("psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID in CAD memory.");
@@ -738,6 +744,10 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_hardening.desc", "大ダメージを受けた時、一定値まで減少させる");
         add("psitweaks.spellpiece.trick_interact_block", "作動式: ブロック作用");
         add("psitweaks.spellpiece.trick_interact_block.desc", "座標のブロックに、オフハンドのアイテムで右クリックの動作を行う");
+        add("psitweaks.spellpiece.trick_freeze_block", "作動式: ブロック凍結");
+        add("psitweaks.spellpiece.trick_freeze_block.desc", "指定座標のブロックを次の凍結段階に変化させる");
+        add("psitweaks.spellpiece.trick_melt_block", "作動式: ブロック溶解");
+        add("psitweaks.spellpiece.trick_melt_block.desc", "指定座標のブロックを溶解して高温の状態に変化させる");
         add("psitweaks.spellpiece.trick_break_fortune", "作動式: ブロック破壊(幸運)");
         add("psitweaks.spellpiece.trick_break_fortune.desc", "幸運付きでブロックを破壊する");
         add("psitweaks.spellpiece.trick_break_silk", "作動式: ブロック破壊(シルクタッチ)");
@@ -927,6 +937,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_parade", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します.");
         add("psi.book.page.psitweaks_spellpiece.trick_flight", "対象にクリエイティブ飛行を可能にする効果を与えます. ");
         add("psi.book.page.psitweaks_spellpiece.trick_interact_block", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
+        add("psi.book.page.psitweaks_spellpiece.trick_freeze_block", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");
+        add("psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_silk", "対象ブロックをシルクタッチ付きで破壊します.");
         add("psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをCADメモリに保存します.");
