@@ -22,6 +22,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.items.armor.PsitweaksArmorMaterials;
@@ -140,6 +141,7 @@ public class Psitweaks {
 
         event.enqueueWork(ComponentStats::registerAssemblyStats);
         event.enqueueWork(PsitweaksItems::registerCurioItems);
+        event.enqueueWork(PsitweaksMekanismGeneratorTweaks::registerGeneratorTweaks);
         event.enqueueWork(this::enqueueIMC);
 
         // TODO(port): Re-enable after NetworkHandler is ported.

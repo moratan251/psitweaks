@@ -1,6 +1,5 @@
 package com.moratan251.psitweaks.common.registries;
 
-import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
@@ -117,7 +116,7 @@ public final class PsitweaksMekanismBlockTypes {
                             .addDense(new SparkleParticleData(0.75F, 0.45F, 1.0F, 1.0F, 8, 0.0D, -0.02D, 0.0D), 2, PsitweaksMekanismBlockTypes::machineFrontParticleOffset))
                     .withGui(() -> PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR)
                     .withSound(MekanismSounds.LASER)
-                    .withEnergyConfig(() -> PSIONIC_GENERATOR_MAX_OUTPUT, PsitweaksMekanismBlockTypes::psionicGeneratorStorage)
+                    .withEnergyConfig(() -> PSIONIC_GENERATOR_MAX_OUTPUT, PsionicGeneratorBlockEntity::getEnergyCapacityJoules)
                     .build();
 
     public static final BlockTypeTile<TileEntityTranscendentCable> TRANSCENDENT_CABLE =
@@ -153,7 +152,4 @@ public final class PsitweaksMekanismBlockTypes {
         );
     }
 
-    private static long psionicGeneratorStorage() {
-        return Math.max(1L, PsitweaksConfig.COMMON.psionicGeneratorEnergyCapacity.get());
-    }
 }

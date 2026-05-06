@@ -1,6 +1,5 @@
 package com.moratan251.psitweaks.common.tile.machine;
 
-import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,6 +38,7 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
     private static final int MAX_CONSUME_PSI = 100;
     private static final long JOULES_PER_PSI_NUMERATOR = 125;
     private static final long JOULES_PER_PSI_DENOMINATOR = 2;
+    private static final long ENERGY_CAPACITY_JOULES = 1_600_000L;
     private static final long AUTO_EJECT_FE_PER_TICK = 6_400;
     private static final long AUTO_EJECT_RATE_JOULES = AUTO_EJECT_FE_PER_TICK * 5 / 2;
     private static final RelativeSide[] ENERGY_OUTPUT_SIDES = {
@@ -73,7 +73,7 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
-        energyContainer = BasicEnergyContainer.create(getConfiguredEnergyCapacity(), automationType -> true, automationType -> true, listener);
+        energyContainer = BasicEnergyContainer.create(getEnergyCapacityJoules(), automationType -> true, automationType -> true, listener);
         builder.addContainer(energyContainer);
         return builder.build();
     }
@@ -279,7 +279,7 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
         return AUTO_EJECT_RATE_JOULES;
     }
 
-    private static long getConfiguredEnergyCapacity() {
-        return Math.max(1L, PsitweaksConfig.COMMON.psionicGeneratorEnergyCapacity.get());
+    public static long getEnergyCapacityJoules() {
+        return ENERGY_CAPACITY_JOULES;
     }
 }
