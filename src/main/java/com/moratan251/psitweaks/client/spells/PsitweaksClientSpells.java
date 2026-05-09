@@ -80,6 +80,16 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_guillotine");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
+    public static final DeferredHolder<Material, Material> OPERATOR_TAN =
+            registerPieceMaterial("operator_tan");
+    public static final DeferredHolder<Material, Material> OPERATOR_ATAN =
+            registerPieceMaterial("operator_atan");
+    public static final DeferredHolder<Material, Material> OPERATOR_SINH =
+            registerPieceMaterial("operator_sinh");
+    public static final DeferredHolder<Material, Material> OPERATOR_COSH =
+            registerPieceMaterial("operator_cosh");
+    public static final DeferredHolder<Material, Material> OPERATOR_TANH =
+            registerPieceMaterial("operator_tanh");
 
     private PsitweaksClientSpells() {
     }

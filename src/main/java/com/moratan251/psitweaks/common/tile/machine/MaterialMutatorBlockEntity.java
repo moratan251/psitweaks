@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachine {
     private static final int BASE_TICKS_REQUIRED = 200;
     private static final long CHEMICAL_TANK_CAPACITY = 1_010L;
-    private static final long CHEMICAL_PER_CRAFT = 5L;
+    private static final long CHEMICAL_PER_CRAFT = 1_000L;
 
     public MaterialMutatorBlockEntity(BlockPos pos, BlockState state) {
         super(PsitweaksMekanismBlocks.MATERIAL_MUTATOR, pos, state, BASE_TICKS_REQUIRED);
