@@ -116,6 +116,21 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_material_mutation"), PieceTrickMaterialMutation.class);
             PsiAPI.addPieceToGroup(PieceTrickMaterialMutation.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_material_mutation"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tan"), PieceOperatorTan.class);
+            PsiAPI.addPieceToGroup(PieceOperatorTan.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tan"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_atan"), PieceOperatorAtan.class);
+            PsiAPI.addPieceToGroup(PieceOperatorAtan.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_atan"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_sinh"), PieceOperatorSinh.class);
+            PsiAPI.addPieceToGroup(PieceOperatorSinh.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_sinh"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_cosh"), PieceOperatorCosh.class);
+            PsiAPI.addPieceToGroup(PieceOperatorCosh.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_cosh"), false);
+
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), PieceOperatorTanh.class);
+            PsiAPI.addPieceToGroup(PieceOperatorTanh.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), false);
+
 
         });
     }

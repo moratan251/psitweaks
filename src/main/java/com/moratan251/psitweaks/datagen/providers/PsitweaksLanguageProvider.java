@@ -313,6 +313,16 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_die_flex.desc", "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.");
         add("psitweaks.spellpiece.trick_material_mutation", "Trick: Material Mutation");
         add("psitweaks.spellpiece.trick_material_mutation.desc", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.");
+        add("psitweaks.spellpiece.operator_tan", "Operator: Tangent");
+        add("psitweaks.spellpiece.operator_tan.desc", "tan(A)");
+        add("psitweaks.spellpiece.operator_atan", "Operator: Arc Tangent");
+        add("psitweaks.spellpiece.operator_atan.desc", "atan(A)");
+        add("psitweaks.spellpiece.operator_sinh", "Operator: Hyperbolic Sine");
+        add("psitweaks.spellpiece.operator_sinh.desc", "sinh(A)");
+        add("psitweaks.spellpiece.operator_cosh", "Operator: Hyperbolic Cosine");
+        add("psitweaks.spellpiece.operator_cosh.desc", "cosh(A)");
+        add("psitweaks.spellpiece.operator_tanh", "Operator: Hyperbolic Tangent");
+        add("psitweaks.spellpiece.operator_tanh.desc", "tanh(A)");
         add("creativetabs.psitweaks", "Psi: Tweaks and Additions");
         add("psitweaks.spellpiece.trick_flight", "Trick: Flight");
         add("psitweaks.spellpiece.trick_flight.desc", "Enabling creative flight");
@@ -506,6 +516,11 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_cure_radiation", "Removes the target's radiation exposure.");
         add("psi.book.page.psitweaks_spellpiece.trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed. This is a single-target offensive trick.");
         add("psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.");
+        add("psi.book.page.psitweaks_spellpiece.operator_tan", "Returns the tangent of the target number.");
+        add("psi.book.page.psitweaks_spellpiece.operator_atan", "Returns the arc tangent of the target number.");
+        add("psi.book.page.psitweaks_spellpiece.operator_sinh", "Returns the hyperbolic sine of the target number.");
+        add("psi.book.page.psitweaks_spellpiece.operator_cosh", "Returns the hyperbolic cosine of the target number.");
+        add("psi.book.page.psitweaks_spellpiece.operator_tanh", "Returns the hyperbolic tangent of the target number.");
     }
 
     private void addJapaneseTranslations() {
@@ -802,6 +817,16 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_die_flex.desc", "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります");
         add("psitweaks.spellpiece.trick_material_mutation", "作動式: 物質変成");
         add("psitweaks.spellpiece.trick_material_mutation.desc", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
+        add("psitweaks.spellpiece.operator_tan", "演算子: タンジェント");
+        add("psitweaks.spellpiece.operator_tan.desc", "tan(A)");
+        add("psitweaks.spellpiece.operator_atan", "演算子: アークタンジェント");
+        add("psitweaks.spellpiece.operator_atan.desc", "atan(A)");
+        add("psitweaks.spellpiece.operator_sinh", "演算子: ハイパボリックサイン");
+        add("psitweaks.spellpiece.operator_sinh.desc", "sinh(A)");
+        add("psitweaks.spellpiece.operator_cosh", "演算子: ハイパボリックコサイン");
+        add("psitweaks.spellpiece.operator_cosh.desc", "cosh(A)");
+        add("psitweaks.spellpiece.operator_tanh", "演算子: ハイパボリックタンジェント");
+        add("psitweaks.spellpiece.operator_tanh.desc", "tanh(A)");
         add("creativetabs.psitweaks", "Psi: Tweaks and Additions");
         add("psi.book.subtitle", "魔法学入門");
         add("psi.book.name", "サイオニカ魔法大全");
@@ -965,6 +990,11 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_cure_radiation", "対象の被ばく量を除去します.");
         add("psi.book.page.psitweaks_spellpiece.trick_guillotine", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます. 単体対象の攻撃術式です.");
         add("psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
+        add("psi.book.page.psitweaks_spellpiece.operator_tan", "対象数値のタンジェントを返します.");
+        add("psi.book.page.psitweaks_spellpiece.operator_atan", "対象数値のアークタンジェントを返します.");
+        add("psi.book.page.psitweaks_spellpiece.operator_sinh", "対象数値のハイパボリックサインを返します.");
+        add("psi.book.page.psitweaks_spellpiece.operator_cosh", "対象数値のハイパボリックコサインを返します.");
+        add("psi.book.page.psitweaks_spellpiece.operator_tanh", "対象数値のハイパボリックタンジェントを返します.");
         add("psi.desc", "これは第四の壁を破るジョークです、どうぞお楽しみください。");
         add("advancement.psi:iron_cad_pickup", "スイート・ボッド");
         add("advancement.psi:iron_cad_pickup.desc", "鉄のCAD素体を作成する");

@@ -21,8 +21,8 @@ import java.util.Set;
 
 public class PieceTrickMeltBlock extends PieceTrick {
 
-    private static final int POTENCY = 80;
-    private static final int COST = 250;
+    private static final int POTENCY = 480;
+    private static final int COST = 2500;
 
     private static final Set<Block> STONE_BLOCKS = Set.of(
             Blocks.STONE,

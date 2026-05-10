@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_tanh",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_tanh.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_tanh"
+    }
+  ]
+}
