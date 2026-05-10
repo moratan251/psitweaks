@@ -30,6 +30,9 @@ import java.util.List;
 public class PieceTrickMolecularDivider extends PieceTrick {
 
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final double DEGENERATE_EPSILON = 1.0E-7;
+    private static final double AXIS_EPSILON = 1.0E-12;
+
     SpellParam<Vector3> position1;
     SpellParam<Vector3> position2;
     SpellParam<Vector3> position3;
@@ -113,9 +116,8 @@ public class PieceTrickMolecularDivider extends PieceTrick {
             if (entity instanceof Player && safeToPlayers) {
                 continue;
             }
-            Vec3 entityPos = entity.position();
 
-            if (isPointInTrianglePrism(entityPos, v1, v2, v3)) {
+            if (doesHitboxIntersectTriangle(entity.getBoundingBox(), v1, v2, v3)) {
                 entity.hurt(context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
 
                 // ヒット時のパーティクル
@@ -163,29 +165,115 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         return null;
     }
 
-    private boolean isPointInTrianglePrism(Vec3 point, Vec3 v1, Vec3 v2, Vec3 v3) {
-        double minY = Math.min(Math.min(v1.y, v2.y), v3.y) - 1.0;
-        double maxY = Math.max(Math.max(v1.y, v2.y), v3.y) + 1.0;
+    private boolean doesHitboxIntersectTriangle(AABB box, Vec3 v1, Vec3 v2, Vec3 v3) {
+        Vec3 center = box.getCenter();
+        Vec3 halfSize = new Vec3(
+                (box.maxX - box.minX) * 0.5,
+                (box.maxY - box.minY) * 0.5,
+                (box.maxZ - box.minZ) * 0.5
+        );
 
-        if (point.y < minY || point.y > maxY) {
+        Vec3 tv1 = v1.subtract(center);
+        Vec3 tv2 = v2.subtract(center);
+        Vec3 tv3 = v3.subtract(center);
+
+        Vec3 edge1 = tv2.subtract(tv1);
+        Vec3 edge2 = tv3.subtract(tv2);
+        Vec3 edge3 = tv1.subtract(tv3);
+        Vec3 normal = edge1.cross(edge2);
+
+        if (normal.lengthSqr() < DEGENERATE_EPSILON) {
+            return doesDegenerateTriangleIntersectBox(box, v1, v2, v3);
+        }
+
+        if (!overlapsOnAxis(new Vec3(1.0, 0.0, 0.0), halfSize, tv1, tv2, tv3)
+                || !overlapsOnAxis(new Vec3(0.0, 1.0, 0.0), halfSize, tv1, tv2, tv3)
+                || !overlapsOnAxis(new Vec3(0.0, 0.0, 1.0), halfSize, tv1, tv2, tv3)
+                || !overlapsOnAxis(normal, halfSize, tv1, tv2, tv3)) {
             return false;
         }
 
-        return isPointInTriangle2D(point.x, point.z, v1.x, v1.z, v2.x, v2.z, v3.x, v3.z);
+        Vec3[] boxAxes = {
+                new Vec3(1.0, 0.0, 0.0),
+                new Vec3(0.0, 1.0, 0.0),
+                new Vec3(0.0, 0.0, 1.0)
+        };
+        Vec3[] triangleEdges = {edge1, edge2, edge3};
+        for (Vec3 edge : triangleEdges) {
+            for (Vec3 boxAxis : boxAxes) {
+                if (!overlapsOnAxis(edge.cross(boxAxis), halfSize, tv1, tv2, tv3)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    private boolean isPointInTriangle2D(double px, double pz, double x1, double z1, double x2, double z2, double x3, double z3) {
-        double d1 = sign(px, pz, x1, z1, x2, z2);
-        double d2 = sign(px, pz, x2, z2, x3, z3);
-        double d3 = sign(px, pz, x3, z3, x1, z1);
+    private boolean overlapsOnAxis(Vec3 axis, Vec3 halfSize, Vec3 v1, Vec3 v2, Vec3 v3) {
+        if (axis.lengthSqr() < AXIS_EPSILON) {
+            return true;
+        }
 
-        boolean hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-        boolean hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+        double p1 = v1.dot(axis);
+        double p2 = v2.dot(axis);
+        double p3 = v3.dot(axis);
+        double min = Math.min(Math.min(p1, p2), p3);
+        double max = Math.max(Math.max(p1, p2), p3);
+        double radius = halfSize.x * Math.abs(axis.x)
+                + halfSize.y * Math.abs(axis.y)
+                + halfSize.z * Math.abs(axis.z);
 
-        return !(hasNeg && hasPos);
+        return min <= radius && max >= -radius;
     }
 
-    private double sign(double px, double pz, double x1, double z1, double x2, double z2) {
-        return (px - x2) * (z1 - z2) - (x1 - x2) * (pz - z2);
+    private boolean doesDegenerateTriangleIntersectBox(AABB box, Vec3 v1, Vec3 v2, Vec3 v3) {
+        return isPointInsideBox(box, v1)
+                || isPointInsideBox(box, v2)
+                || isPointInsideBox(box, v3)
+                || doesSegmentIntersectBox(box, v1, v2)
+                || doesSegmentIntersectBox(box, v2, v3)
+                || doesSegmentIntersectBox(box, v3, v1);
+    }
+
+    private boolean isPointInsideBox(AABB box, Vec3 point) {
+        return point.x >= box.minX && point.x <= box.maxX
+                && point.y >= box.minY && point.y <= box.maxY
+                && point.z >= box.minZ && point.z <= box.maxZ;
+    }
+
+    private boolean doesSegmentIntersectBox(AABB box, Vec3 start, Vec3 end) {
+        double tMin = 0.0;
+        double tMax = 1.0;
+        double[] startCoords = {start.x, start.y, start.z};
+        double[] endCoords = {end.x, end.y, end.z};
+        double[] minCoords = {box.minX, box.minY, box.minZ};
+        double[] maxCoords = {box.maxX, box.maxY, box.maxZ};
+
+        for (int i = 0; i < 3; i++) {
+            double direction = endCoords[i] - startCoords[i];
+            if (Math.abs(direction) < DEGENERATE_EPSILON) {
+                if (startCoords[i] < minCoords[i] || startCoords[i] > maxCoords[i]) {
+                    return false;
+                }
+                continue;
+            }
+
+            double inverseDirection = 1.0 / direction;
+            double axisMin = (minCoords[i] - startCoords[i]) * inverseDirection;
+            double axisMax = (maxCoords[i] - startCoords[i]) * inverseDirection;
+            if (axisMin > axisMax) {
+                double swap = axisMin;
+                axisMin = axisMax;
+                axisMax = swap;
+            }
+            tMin = Math.max(tMin, axisMin);
+            tMax = Math.min(tMax, axisMax);
+            if (tMin > tMax) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
