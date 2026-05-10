@@ -1,0 +1,6 @@
+{
+  "command_id": "meteor_line",
+  "piece": "psitweaks:trick_meteor_line",
+  "unlock_item": "psitweaks:program_meteor_line",
+  "unlock_tag": "psitweaks.unlock.trick_meteor_line"
+}

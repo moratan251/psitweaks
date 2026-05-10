@@ -1,5 +1,50 @@
 ## Changelog
 
+#### v0.9.5
+
+- Added spell pieces
+  * Trick: Meteor Line
+  * Trick: Block Melt
+  * Trick: Block Freeze
+  * Operator: Tangent
+  * Operator: Arc Tangent
+  * Operator: Hyperbolic Sine
+  * Operator: Hyperbolic Cosine
+  * Operator: Hyperbolic Tangent
+
+
+- Fixed Molecular Divider's hit detection not behaving as intended
+
+
+- Made the Program: Cocytus recipe harder
+
+
+- Changed the Material Mutator so Gas Upgrades can no longer be installed
+
+
+
+- (1.20.1) Changed Magician villager trades to match 1.21.1
+
+
+- (1.20.1) Fixed unintended Psi refund amounts when combining High-efficiency Computation with Trick: Flexible Die
+
+
+- (1.21.1) Fixed the Material Mutator's Psionic Echo consumption amount
+
+
+- (1.21.1) Fixed Program Research Station research progress resetting unexpectedly
+
+
+- (1.21.1) Fixed the Sculk Eroder crafting recipe
+
+
+- (1.21.1) Added Create Aeronautics (Sable) compat features
+    * Simulated Contraptions are no longer treated as out of range when using spells that refer to block positions
+    * Added Trick: Physical Propulsion
+
+
+
+
 #### v0.9.4
 
 - Added Psi-Link Generator

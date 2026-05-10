@@ -42,6 +42,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.program_time_accelerate", "Program: Time Accelerate");
         add("item.psitweaks.program_flight", "Program: Flight");
         add("item.psitweaks.program_phonon_maser", "Program: Phonon Maser");
+        add("item.psitweaks.program_meteor_line", "Program: Meteor Line");
         add("item.psitweaks.program_supreme_infusion", "Program: Supreme Infusion");
         add("item.psitweaks.program_molecular_divider", "Program: Molecular Divider");
         add("item.psitweaks.program_radiation_injection", "Program: Radiation Injection");
@@ -106,6 +107,9 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.sublimated_spell_bullet", "Sublimated Spell Bullet");
         add("item.psitweaks.awakened_spell_bullet", "Awakened Spell Bullet");
         add("item.psitweaks.transcendent_spell_bullet", "Transcendent Spell Bullet");
+        add("death.attack.psitweaks.meteor_line", "%1$s was permeated by light");
+        add("death.attack.psitweaks.meteor_line.player", "%1$s was permeated by light");
+        add("death.attack.psitweaks.meteor_line.item", "%1$s was permeated by light");
         add("item.psitweaks.advanced_spell_bullet_projectile", "Advanced Projectile Spell Bullet");
         add("item.psitweaks.resonant_spell_bullet_projectile", "Resonant Projectile Spell Bullet");
         add("item.psitweaks.sublimated_spell_bullet_projectile", "Sublimated Projectile Spell Bullet");
@@ -283,6 +287,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_time_accelerate.desc", "Accelerates the time of the target block");
         add("psitweaks.spellpiece.trick_phonon_maser", "Trick: Phonon Maser");
         add("psitweaks.spellpiece.trick_phonon_maser.desc", "Vibrates ultrasonic waves to emit heat rays");
+        add("psitweaks.spellpiece.trick_meteor_line", "Trick: Meteor Line");
+        add("psitweaks.spellpiece.trick_meteor_line.desc", "Creates a line that permeates light and pierces living beings on its path");
         add("psitweaks.spellpiece.trick_supply_fe", "Trick: FE Charge");
         add("psitweaks.spellpiece.trick_supply_fe.desc", "Supplies FE to blocks. Direction can be specified.");
         add("psitweaks.spellpiece.trick_supreme_infusion", "Trick: Supreme Infusion");
@@ -403,6 +409,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.entry.psitweaks_overview", "What PsiTweaks Adds");
         add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds many elements, including industrialized material production, new gear, and new spells.$(p)The mod is intended for setups where Psi remains powerful through the late game as both combat and utility, rather than ending at ordinary CADs and basic spell bullets.");
         add("psi.book.page.psitweaks_overview.2", "Major additions include higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)Most systems are built to bridge Psi with industrial environments and to strengthen Psi's late-game capabilities.");
+        add("psi.book.entry.psitweaks_changes", "Changes by PsiTweaks");
+        add("psi.book.page.psitweaks_changes.0", "Installing $(thing)Psi: Tweaks And Additions$(0) applies several adjustments to improve QOL.$(p)Psi is no longer reduced when you take damage, and the Psi regeneration cooldown after casting is removed.$(p)In the Spell Programmer screen, spell pieces can be searched in English regardless of the current language setting.");
         add("psi.book.entry.psitweaks_research", "Research");
         add("psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed.");
         add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.");
@@ -502,6 +510,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi.");
         add("psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.");
         add("psi.book.page.psitweaks_spellpiece.trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration. It is a powerful offensive trick.");
+        add("psi.book.page.psitweaks_spellpiece.trick_meteor_line", "Creates a beam from the specified position in the direction of the Ray vector, dealing special and lethally massive damage to living beings along its path.");
         add("psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.");
         add("psi.book.page.psitweaks_spellpiece.trick_molecular_divider", "Cuts living beings along a plane defined by three points. It is a high-power area attack trick.");
         add("psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick.");
@@ -544,6 +553,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.program_time_accelerate", "プログラム: 時間加速");
         add("item.psitweaks.program_flight", "プログラム: 飛行");
         add("item.psitweaks.program_phonon_maser", "プログラム: フォノンメーザー");
+        add("item.psitweaks.program_meteor_line", "プログラム: 流星群");
         add("item.psitweaks.program_supreme_infusion", "プログラム: 超位注入");
         add("item.psitweaks.program_molecular_divider", "プログラム: 分子ディバイダー");
         add("item.psitweaks.program_radiation_injection", "プログラム: 放射線注入");
@@ -608,6 +618,9 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.sublimated_spell_bullet", "昇華術式弾");
         add("item.psitweaks.awakened_spell_bullet", "覚醒術式弾");
         add("item.psitweaks.transcendent_spell_bullet", "超越術式弾");
+        add("death.attack.psitweaks.meteor_line", "%1$sは光に透過された");
+        add("death.attack.psitweaks.meteor_line.player", "%1$sは光に透過された");
+        add("death.attack.psitweaks.meteor_line.item", "%1$sは光に透過された");
         add("item.psitweaks.advanced_spell_bullet_projectile", "発射型改良術式弾");
         add("item.psitweaks.resonant_spell_bullet_projectile", "発射型共鳴術式弾");
         add("item.psitweaks.sublimated_spell_bullet_projectile", "発射型昇華術式弾");
@@ -789,6 +802,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_time_accelerate.desc", "対象のブロックの時を加速させます。");
         add("psitweaks.spellpiece.trick_phonon_maser", "作動式: フォノンメーザー");
         add("psitweaks.spellpiece.trick_phonon_maser.desc", "超音波を振動させ熱線を放出する");
+        add("psitweaks.spellpiece.trick_meteor_line", "作動式: 流星群");
+        add("psitweaks.spellpiece.trick_meteor_line.desc", "光を透過させるラインを作り出し経路上の生物を穿つ");
         add("psitweaks.spellpiece.trick_supreme_infusion", "作動式: 超位注入");
         add("psitweaks.spellpiece.trick_supreme_infusion.desc", "残響の欠片に注入してサイオニックエコーにします");
         add("psitweaks.spellpiece.trick_molecular_divider", "作動式: 分子ディバイダー");
@@ -877,6 +892,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.entry.psitweaks_overview", "PsiTweaksの追加要素");
         add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 素材生成の工業化や, 新しい装備, 新しい術式など多数の要素を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを戦闘やユーティリティとして終盤まで強力に扱う構成を想定しています.");
         add("psi.book.page.psitweaks_overview.2", "主な追加要素は, 高位術式弾, 新しいCAD素体や詠唱補助具,新しい魔法, 加工機械や発電機です.$(p)多くのシステムは, Psiと工業環境の橋渡しや, Psiの終盤での能力強化などを目的として作られています.");
+        add("psi.book.entry.psitweaks_changes", "PsiTweaksによる変更");
+        add("psi.book.page.psitweaks_changes.0", "$(thing)Psi: Tweaks And Additions$(0) を導入することによって QOL を改善するためのいくつかの調整が加えられます.$(p)ダメージを受けた際に Psi量 が減少しなくなり, 詠唱時の Psi回復クールタイムも撤廃されます.$(p)スペルプログラム画面では, 現在の設定言語に関わらず英語でスペルピースを検索することができます.");
         add("psi.book.entry.psitweaks_research", "研究");
         add("psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).");
         add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.");
@@ -976,6 +993,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_supply_fe", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです.");
         add("psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
         add("psi.book.page.psitweaks_spellpiece.trick_phonon_maser", "超音波振動による高威力の熱線を放ちます. 攻撃用の強力な術式です.");
+        add("psi.book.page.psitweaks_spellpiece.trick_meteor_line", "指定位置からRayベクトル方向へ光線を生み出し、経路上の生物に特殊かつ致死的な大ダメージを与えます。");
         add("psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "残響の欠片をサイオニックエコーへ注入変換します.");
         add("psi.book.page.psitweaks_spellpiece.trick_molecular_divider", "三点で定義した平面で生物を切断します. 高威力の範囲攻撃術式です.");
         add("psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です.");

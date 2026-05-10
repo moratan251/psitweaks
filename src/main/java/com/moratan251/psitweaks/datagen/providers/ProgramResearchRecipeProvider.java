@@ -35,12 +35,12 @@ public final class ProgramResearchRecipeProvider {
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_COCYTUS.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
-                .requires(Items.HEART_OF_THE_SEA, 1)
+                .requires(MekanismItems.ANTIMATTER_PELLET, 8)
                 .requires(Items.BLUE_ICE, 64)
-                .requires(PsitweaksItems.PSIONIC_ECHO.get(), 32)
-                .requires(Items.SCULK_SHRIEKER, 8)
-                .energy(500000000)
-                .time(36000)
+                .requires(Items.SCULK_SHRIEKER, 24)
+                .requires(Items.HEART_OF_THE_SEA, 4)
+                .energy(1_500_000_000)
+                .time(108_000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_cocytus"));
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_TIME_ACCELERATE.get())
@@ -72,6 +72,17 @@ public final class ProgramResearchRecipeProvider {
                 .energy(40000000)
                 .time(2400)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_phonon_maser"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_METEOR_LINE.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(Items.NETHER_STAR, 24)
+                .requires(MekanismItems.ANTIMATTER_PELLET, 16)
+                .requires(PsitweaksItems.ALLOY_HYPOSTASIS.get(), 48)
+                .requires(PsitweaksItems.FLASHMETAL.get(), 64)
+                .requires(PsitweaksItems.FLASHMETAL.get(), 64)
+                .energy(1_500_000_000)
+                .time(288_000)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_meteor_line"));
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)

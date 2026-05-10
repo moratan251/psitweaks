@@ -68,6 +68,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_TIME_ACCELERATE = ITEMS.register("program_time_accelerate", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_FLIGHT = ITEMS.register("program_flight", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_PHONON_MASER = ITEMS.register("program_phonon_maser", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_METEOR_LINE = ITEMS.register("program_meteor_line", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = ITEMS.register("program_radiation_injection", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));

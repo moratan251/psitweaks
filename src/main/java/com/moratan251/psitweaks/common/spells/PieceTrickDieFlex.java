@@ -1,6 +1,10 @@
 package com.moratan251.psitweaks.common.spells;
 
+import java.lang.reflect.Method;
+
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.spell.CompiledSpell;
@@ -21,6 +25,9 @@ import vazkii.psi.common.item.ItemCircleSpellBullet;
 
 public class PieceTrickDieFlex extends PieceTrick {
     private static final double STOP_THRESHOLD = 1.0D;
+    private static final String TCONSTRUCT_MOD_ID = "tconstruct";
+    private static final String CASTING_ASSIST_EVENT_HANDLER_CLASS = "com.moratan251.psitweaks.compat.tconstruct.CastingAssistEventHandler";
+    private static final String ADJUST_COST_FOR_PLAYER_METHOD = "adjustCostForPlayer";
 
     private SpellParam<Number> target;
 
@@ -65,11 +72,31 @@ public class PieceTrickDieFlex extends PieceTrick {
         if (isCircleSpellBullet(spellContainer)) {
             refundCost /= 20;
         }
+        refundCost = applyOptionalCastingAssistAdjustment(context, refundCost);
         if (refundCost <= 0) {
             return;
         }
 
         PlayerDataHandler.get(context.caster).deductPsi(-refundCost, 0, true, true);
+    }
+
+    private int applyOptionalCastingAssistAdjustment(SpellContext context, int refundCost) {
+        if (refundCost <= 0 || context.caster == null || !ModList.get().isLoaded(TCONSTRUCT_MOD_ID)) {
+            return refundCost;
+        }
+
+        try {
+            Class<?> handlerClass = Class.forName(CASTING_ASSIST_EVENT_HANDLER_CLASS);
+            Method method = handlerClass.getMethod(ADJUST_COST_FOR_PLAYER_METHOD, Player.class, int.class);
+            Object adjustedCost = method.invoke(null, context.caster, refundCost);
+            if (adjustedCost instanceof Integer cost) {
+                return Math.max(0, cost);
+            }
+        } catch (ReflectiveOperationException ignored) {
+            return refundCost;
+        }
+
+        return refundCost;
     }
 
     private ItemStack getCastingSpellContainer(SpellContext context, ItemStack cad) {

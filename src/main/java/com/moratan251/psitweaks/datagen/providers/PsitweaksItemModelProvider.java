@@ -82,6 +82,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "program_flight",
             "program_guillotine",
             "program_material_mutation",
+            "program_meteor_line",
             "program_molecular_divider",
             "program_phonon_maser",
             "program_radiation_filter",
@@ -235,6 +236,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             case "program_flight" -> modLoc("item/program__trick_flight");
             case "program_guillotine" -> modLoc("item/program_trick_guillotine");
             case "program_material_mutation" -> modLoc("item/program_trick_material_mutation");
+            case "program_meteor_line" -> modLoc("item/program_trick_meteor_line");
             case "program_molecular_divider" -> modLoc("item/program_trick_molecular_divider");
             case "program_phonon_maser" -> modLoc("item/program_trick_phonon_maser");
             case "program_radiation_filter" -> modLoc("item/program_trick_radiation_filter");

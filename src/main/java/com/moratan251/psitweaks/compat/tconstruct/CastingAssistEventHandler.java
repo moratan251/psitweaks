@@ -12,20 +12,19 @@ public class CastingAssistEventHandler {
 
     @SubscribeEvent
     public void onPreSpellCast(PreSpellCastEvent event) {
-        Player player = event.getPlayer();
-        if (!hasCastingAssist(player)) {
-            return;
-        }
-
         int originalCost = event.getCost();
-        if (originalCost <= 0) {
-            return;
-        }
-
-        int adjustedCost = Math.max(0, Math.round(originalCost * (1.0F - COST_REDUCTION)));
+        int adjustedCost = adjustCostForPlayer(event.getPlayer(), originalCost);
         if (adjustedCost < originalCost) {
             event.setCost(adjustedCost);
         }
+    }
+
+    public static int adjustCostForPlayer(Player player, int originalCost) {
+        if (player == null || originalCost <= 0 || !hasCastingAssist(player)) {
+            return originalCost;
+        }
+
+        return Math.max(0, Math.round(originalCost * (1.0F - COST_REDUCTION)));
     }
 
     private static boolean hasCastingAssist(Player player) {

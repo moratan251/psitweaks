@@ -1,0 +1,11 @@
+{
+  "name": "psi.book.entry.psitweaks_changes",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:psionic_control_circuit",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_changes.0"
+    }
+  ]
+}

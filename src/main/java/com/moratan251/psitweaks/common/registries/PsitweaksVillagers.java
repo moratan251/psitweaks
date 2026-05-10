@@ -81,13 +81,14 @@ public final class PsitweaksVillagers {
         addTrade(trades, 3, new BasicItemListing(14, new ItemStack(PsitweaksItems.ADVANCED_SPELL_BULLET.get(), 1), 8, 12, 0.05F));
         addTrade(trades, 3, new BasicItemListing(6, new ItemStack(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get(), 1), 12, 5, 0.05F));
 
-        addTrade(trades, 4, new BasicItemListing(6, new ItemStack(Items.ECHO_SHARD, 1), 12, 5, 0.1F));
+        addTrade(trades, 4, new BasicItemListing(2, new ItemStack(Items.ECHO_SHARD, 1), 12, 3, 0.1F));
         addTrade(trades, 4, new BasicItemListing(15, new ItemStack(PsitweaksItems.ADVANCED_SPELL_BULLET_PROJECTILE.get(), 1), 8, 15, 0.1F));
         addTrade(trades, 4, new BasicItemListing(9, new ItemStack(PsitweaksItems.PSIMETAL_BOW.get(), 1), 4, 10, 0.1F));
 
         addTrade(trades, 5, new BasicItemListing(22, new ItemStack(PsitweaksItems.FLASH_RING.get(), 1), 2, 24, 0.2F));
-        addTrade(trades, 5, new BasicItemListing(29, new ItemStack(PsitweaksItems.AUTO_CASTER_SECOND.get(), 1), 2, 30, 0.2F));
         addTrade(trades, 5, new BasicItemListing(29, new ItemStack(PsitweaksItems.AUTO_CASTER_TICK.get(), 1), 2, 30, 0.2F));
+        addTrade(trades, 4, new BasicItemListing(1, new ItemStack(ModItems.ebonySubstance, 3), 16, 2, 0.1F));
+        addTrade(trades, 4, new BasicItemListing(1, new ItemStack(ModItems.ivorySubstance, 3), 16, 2, 0.1F));
     }
 
     private static void addTrade(Int2ObjectMap<List<VillagerTrades.ItemListing>> trades, int level, VillagerTrades.ItemListing listing) {

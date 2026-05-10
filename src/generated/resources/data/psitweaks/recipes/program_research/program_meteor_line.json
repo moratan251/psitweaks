@@ -9,32 +9,38 @@
       }
     },
     {
-      "count": 8,
+      "count": 24,
+      "ingredient": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    {
+      "count": 16,
       "ingredient": {
         "item": "mekanism:pellet_antimatter"
       }
     },
     {
+      "count": 48,
+      "ingredient": {
+        "item": "psitweaks:alloy_hypostasis"
+      }
+    },
+    {
       "count": 64,
       "ingredient": {
-        "item": "minecraft:blue_ice"
+        "item": "psitweaks:flashmetal"
       }
     },
     {
-      "count": 24,
+      "count": 64,
       "ingredient": {
-        "item": "minecraft:sculk_shrieker"
-      }
-    },
-    {
-      "count": 4,
-      "ingredient": {
-        "item": "minecraft:heart_of_the_sea"
+        "item": "psitweaks:flashmetal"
       }
     }
   ],
   "output": {
-    "item": "psitweaks:program_cocytus"
+    "item": "psitweaks:program_meteor_line"
   },
-  "time": 108000
+  "time": 288000
 }
