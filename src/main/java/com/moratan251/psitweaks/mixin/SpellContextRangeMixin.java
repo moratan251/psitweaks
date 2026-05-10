@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.mixin;
 
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.items.curios.CuriosSlotChecker;
 import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
 import net.minecraft.world.entity.Entity;
@@ -17,10 +18,21 @@ public abstract class SpellContextRangeMixin {
     @Shadow
     public Player caster;
 
+    @Shadow
+    public Entity focalPoint;
+
     @Inject(method = "isInRadius(Lvazkii/psi/api/internal/Vector3;)Z", at = @At("HEAD"), cancellable = true)
     private void psitweaks$extendVectorRange(Vector3 vec, CallbackInfoReturnable<Boolean> cir) {
-        if (vec != null && psitweaks$hasThirdEyeDevice()) {
+        if (vec == null) {
+            return;
+        }
+        if (psitweaks$hasThirdEyeDevice()) {
             cir.setReturnValue(true);
+            return;
+        }
+        Boolean sableResult = SableRangeCompat.isInRadius(focalPoint, vec.x, vec.y, vec.z);
+        if (sableResult != null) {
+            cir.setReturnValue(sableResult);
         }
     }
 
@@ -35,6 +47,11 @@ public abstract class SpellContextRangeMixin {
     private void psitweaks$extendCoordinateRange(double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
         if (psitweaks$hasThirdEyeDevice()) {
             cir.setReturnValue(true);
+            return;
+        }
+        Boolean sableResult = SableRangeCompat.isInRadius(focalPoint, x, y, z);
+        if (sableResult != null) {
+            cir.setReturnValue(sableResult);
         }
     }
 
@@ -42,4 +59,3 @@ public abstract class SpellContextRangeMixin {
         return caster != null && CuriosSlotChecker.hasItemInMagicSlot(caster, ItemThirdEyeDevice.class);
     }
 }
-

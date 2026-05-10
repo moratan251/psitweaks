@@ -16,6 +16,13 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 base {
@@ -117,6 +124,9 @@ dependencies {
     implementation "curse.maven:curios-309927:6529130"
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"
+    implementation "curse.maven:create-328085:7963363"
+    implementation "maven.modrinth:create-aeronautics:YhZLrAFC"
+    implementation "curse.maven:sable-1312371:8007005"
 
     runtimeOnly "curse.maven:mmmmmmmmmmmm-225738:7943676"
     runtimeOnly "curse.maven:selene-499980:8031229"
