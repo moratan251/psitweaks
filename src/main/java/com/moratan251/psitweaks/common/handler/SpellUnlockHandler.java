@@ -61,6 +61,7 @@ public final class SpellUnlockHandler {
             definition("time_accelerate", "trick_time_accelerate", "program_time_accelerate"),
             definition("flight", "trick_flight", "program_flight"),
             definition("phonon_maser", "trick_phonon_maser", "program_phonon_maser"),
+            definition("meteor_line", "trick_meteor_line", "program_meteor_line"),
             definition("supreme_infusion", "trick_supreme_infusion", "program_supreme_infusion"),
             definition("molecular_divider", "trick_molecular_divider", "program_molecular_divider"),
             definition("radiation_injection", "trick_radiation_injection", "program_radiation_injection"),

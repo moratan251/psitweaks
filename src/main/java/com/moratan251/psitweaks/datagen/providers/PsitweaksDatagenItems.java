@@ -47,6 +47,7 @@ final class PsitweaksDatagenItems {
             item("program_time_accelerate", "Program: Time Accelerate", "プログラム: 時間加速", "program_trick_time_accelerate"),
             item("program_flight", "Program: Flight", "プログラム: 飛行", "program__trick_flight"),
             item("program_phonon_maser", "Program: Phonon Maser", "プログラム: フォノンメーザー", "program_trick_phonon_maser"),
+            item("program_meteor_line", "Program: Meteor Line", "プログラム: 流星群", "program_trick_meteor_line"),
             item("program_supreme_infusion", "Program: Supreme Infusion", "プログラム: 超位注入", "program_trick_supreme_infusion"),
             item("program_molecular_divider", "Program: Molecular Divider", "プログラム: 分子ディバイダー", "program_trick_molecular_divider"),
             item("program_radiation_injection", "Program: Radiation Injection", "プログラム: 放射線注入", "program_trick_radiation_injection"),

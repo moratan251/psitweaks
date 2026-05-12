@@ -25,6 +25,7 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "time_accelerate", "trick_time_accelerate", "program_time_accelerate");
         spellUnlock(entries, "flight", "trick_flight", "program_flight");
         spellUnlock(entries, "phonon_maser", "trick_phonon_maser", "program_phonon_maser");
+        spellUnlock(entries, "meteor_line", "trick_meteor_line", "program_meteor_line");
         spellUnlock(entries, "supreme_infusion", "trick_supreme_infusion", "program_supreme_infusion");
         spellUnlock(entries, "molecular_divider", "trick_molecular_divider", "program_molecular_divider");
         spellUnlock(entries, "radiation_injection", "trick_radiation_injection", "program_radiation_injection");

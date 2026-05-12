@@ -53,6 +53,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_time_accelerate", PieceTrickTimeAccelerate.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickPhononMaser>> TRICK_PHONON_MASER =
             registerPiece("trick_phonon_maser", PieceTrickPhononMaser.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMeteorLine>> TRICK_METEOR_LINE =
+            registerPiece("trick_meteor_line", PieceTrickMeteorLine.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSupremeInfusion>> TRICK_SUPREME_INFUSION =
             registerPiece("trick_supreme_infusion", PieceTrickSupremeInfusion.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMolecularDivider>> TRICK_MOLECULAR_DIVIDER =
@@ -132,6 +134,8 @@ public final class PsitweaksSpells {
             registerGroup("trick_time_accelerate", PieceTrickTimeAccelerate.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> PHONON_MASER =
             registerGroup("trick_phonon_maser", PieceTrickPhononMaser.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> METEOR_LINE =
+            registerGroup("trick_meteor_line", PieceTrickMeteorLine.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SUPREME_INFUSION =
             registerGroup("trick_supreme_infusion", PieceTrickSupremeInfusion.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MOLECULAR_DIVIDER =

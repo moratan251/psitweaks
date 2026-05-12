@@ -162,6 +162,7 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_TIME_ACCELERATE.get());
         output.accept(PsitweaksItems.PROGRAM_FLIGHT.get());
         output.accept(PsitweaksItems.PROGRAM_PHONON_MASER.get());
+        output.accept(PsitweaksItems.PROGRAM_METEOR_LINE.get());
         output.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
         output.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
         output.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());

@@ -44,6 +44,15 @@ public final class ProgramResearchRecipeProvider {
                 input("minecraft:note_block", 48)
         ), item("program_phonon_maser"), 40_000_000, 2_400);
 
+        research(recipes, "program_meteor_line", List.of(
+                input(item("program_blank"), 1),
+                input("minecraft:nether_star", 24),
+                input("mekanism:pellet_antimatter", 16),
+                input(item("alloy_hypostasis"), 48),
+                input(item("flashmetal"), 64),
+                input(item("flashmetal"), 64)
+        ), item("program_meteor_line"), 1_500_000_000, 288_000);
+
         research(recipes, "program_supreme_infusion", List.of(
                 input(item("program_blank"), 1),
                 input("minecraft:netherite_ingot", 1),

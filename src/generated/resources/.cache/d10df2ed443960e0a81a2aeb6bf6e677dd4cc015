@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-06T03:52:53.973939	PsiTweaks recipes
+// 1.21.1	2026-05-12T23:36:00.3185463	PsiTweaks recipes
 fd2b8bc2c740f04d4e85e1fae1bc531fb3c58602 data/psitweaks/recipe/advanced_spell_bullet.json
 a63214713c27e8dfec94187e4d913e27433cf4da data/psitweaks/recipe/advanced_spell_bullet_charge.json
 bfbbe421447b945d42a215fd2dd2b8a96441808f data/psitweaks/recipe/advanced_spell_bullet_circle.json
@@ -92,6 +92,7 @@ a8ad134e2013453d331c2f401c424c7f3197caec data/psitweaks/recipe/program_research/
 36b3bc2015c477e33a6dfb3c7d020eac949cdc4f data/psitweaks/recipe/program_research/program_flight.json
 3944c121e2bf506839453578b8e09eca5629e91b data/psitweaks/recipe/program_research/program_guillotine.json
 01fb970defa6a01e0a71406558b2e6c0eb8cbf7f data/psitweaks/recipe/program_research/program_material_mutation.json
+ce88cbc21e15cde27092430c4671e0b0f751e516 data/psitweaks/recipe/program_research/program_meteor_line.json
 874182e2f04438602c62ad6076c80d66a2231452 data/psitweaks/recipe/program_research/program_molecular_divider.json
 2c48f3d2343b9faabf1f8b4d62f020c914aa8945 data/psitweaks/recipe/program_research/program_phonon_maser.json
 5705370e8dfdec202d4332819387ee9a106b3b35 data/psitweaks/recipe/program_research/program_radiation_filter.json

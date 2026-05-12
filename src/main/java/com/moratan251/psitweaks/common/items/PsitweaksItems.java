@@ -190,6 +190,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_TIME_ACCELERATE = registerProgram("program_time_accelerate", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_FLIGHT = registerProgram("program_flight", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PHONON_MASER = registerProgram("program_phonon_maser", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_METEOR_LINE = registerProgram("program_meteor_line", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_SUPREME_INFUSION = registerProgram("program_supreme_infusion", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MOLECULAR_DIVIDER = registerProgram("program_molecular_divider", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_RADIATION_INJECTION = registerProgram("program_radiation_injection", false);

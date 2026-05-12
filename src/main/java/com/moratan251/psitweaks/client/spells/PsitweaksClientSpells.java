@@ -48,6 +48,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_time_accelerate");
     public static final DeferredHolder<Material, Material> TRICK_PHONON_MASER =
             registerPieceMaterial("trick_phonon_maser");
+    public static final DeferredHolder<Material, Material> TRICK_METEOR_LINE =
+            registerPieceMaterial("trick_meteor_line");
     public static final DeferredHolder<Material, Material> TRICK_SUPREME_INFUSION =
             registerPieceMaterial("trick_supreme_infusion");
     public static final DeferredHolder<Material, Material> TRICK_MOLECULAR_DIVIDER =

@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-05T21:47:06.3623298	PsiTweaks spell unlocks
+// 1.21.1	2026-05-12T23:36:00.3092891	PsiTweaks spell unlocks
 806d376a0de6262a5487a0e3935efab91d184532 data/psitweaks/spell_unlocks/active_air_mine.json
 8c3c7abe64b0df7cf4a2548515904ebac05ca247 data/psitweaks/spell_unlocks/cocytus.json
 abd469499050eaae27059283882ac022d08d1e9f data/psitweaks/spell_unlocks/cure_radiation.json
@@ -6,6 +6,7 @@ e7d867d6e79df94b6fa95ce52390ad6d9c167a91 data/psitweaks/spell_unlocks/die_flex.j
 b2941cdc1824ab8889489f44aefb95325161fa54 data/psitweaks/spell_unlocks/flight.json
 a122f2eae6103749e32d5c83424695b7d2280c22 data/psitweaks/spell_unlocks/guillotine.json
 21a4817329a11ca9886f8f6e1ccc69c26e40fceb data/psitweaks/spell_unlocks/material_mutation.json
+8c1eabab1c815a888179fcb7be308c31cf004a3e data/psitweaks/spell_unlocks/meteor_line.json
 3d346a0581ae44238bca0abcd89033cfe2903b2d data/psitweaks/spell_unlocks/molecular_divider.json
 34cef8a2ed2de70617397a8ac405419d0ffa35ff data/psitweaks/spell_unlocks/phonon_maser.json
 cfc0433c073d929726e2e42f92f4350615bf10f8 data/psitweaks/spell_unlocks/radiation_filter.json
