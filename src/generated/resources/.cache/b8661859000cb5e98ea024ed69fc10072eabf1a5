@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-06T04:11:37.0695526	PsiTweaks tags
+// 1.21.1	2026-05-12T23:14:14.4778498	PsiTweaks tags
 2b0972694544ef7efe860eb052a12b017ce5f26d data/curios/tags/item/charm.json
 035f94be00fe3e536fc172030444c372c1a2c5a8 data/curios/tags/item/magic_calculation_area.json
 12b82ad554d363a016b4ce2de01ba017806a484e data/c/tags/block/ores.json
@@ -48,6 +48,14 @@ faf970e52b05db0a07726e7601cd0486da4fd6d0 data/mekanism/tags/mekanism/chemical/ga
 4dff294527c95699e0df6f6e0d2e51824e70a67a data/minecraft/tags/block/mineable/pickaxe.json
 d5bf711fc7a7fddaff2fd59a87f6cfb4cdd7fa74 data/minecraft/tags/block/needs_diamond_tool.json
 aa1691026ec763ff9c0a50a9344383c6f88ee67a data/minecraft/tags/block/needs_iron_tool.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_armor.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_cooldown.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_effects.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_enchantments.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_invulnerability.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_resistance.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/bypasses_shield.json
+57f60e1ffab9e2ff192b3ca7403a9df0dc7620d6 data/minecraft/tags/damage_type/no_knockback.json
 9772e2a3f4567aa532caa79b7963f0b331ae28be data/minecraft/tags/item/chest_armor.json
 c825e64155f573fb74dc9446c8b4106b9cf7fd58 data/minecraft/tags/item/enchantable/bow.json
 9772e2a3f4567aa532caa79b7963f0b331ae28be data/minecraft/tags/item/enchantable/chest_armor.json

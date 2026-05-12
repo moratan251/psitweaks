@@ -15,12 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 public class PsiTweaksTagsProvider implements DataProvider {
     private final PackOutput.PathProvider blockPathProvider;
     private final PackOutput.PathProvider chemicalPathProvider;
+    private final PackOutput.PathProvider damageTypePathProvider;
     private final PackOutput.PathProvider itemPathProvider;
     private final PackOutput.PathProvider poiTypePathProvider;
 
     public PsiTweaksTagsProvider(PackOutput output) {
         this.blockPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/block");
         this.chemicalPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/mekanism/chemical");
+        this.damageTypePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/damage_type");
         this.itemPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/item");
         this.poiTypePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/point_of_interest_type");
     }
@@ -29,16 +31,19 @@ public class PsiTweaksTagsProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput output) {
         Map<ResourceLocation, JsonObject> blockTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> chemicalTags = new LinkedHashMap<>();
+        Map<ResourceLocation, JsonObject> damageTypeTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> itemTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> poiTypeTags = new LinkedHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
         addBlockTags(blockTags);
         addChemicalTags(chemicalTags);
+        addDamageTypeTags(damageTypeTags);
         addItemTags(itemTags);
         addPoiTypeTags(poiTypeTags);
         saveTags(futures, output, blockPathProvider, blockTags);
         saveTags(futures, output, chemicalPathProvider, chemicalTags);
+        saveTags(futures, output, damageTypePathProvider, damageTypeTags);
         saveTags(futures, output, itemPathProvider, itemTags);
         saveTags(futures, output, poiTypePathProvider, poiTypeTags);
 
@@ -105,6 +110,18 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "mekanism", "gaseous",
                 chemical("gas_psionic_echo"),
                 chemical("gas_peo_fuel"));
+    }
+
+    private static void addDamageTypeTags(Map<ResourceLocation, JsonObject> tags) {
+        String meteorLine = damageType("meteor_line");
+        tag(tags, "minecraft", "bypasses_armor", meteorLine);
+        tag(tags, "minecraft", "bypasses_cooldown", meteorLine);
+        tag(tags, "minecraft", "bypasses_effects", meteorLine);
+        tag(tags, "minecraft", "bypasses_enchantments", meteorLine);
+        tag(tags, "minecraft", "bypasses_invulnerability", meteorLine);
+        tag(tags, "minecraft", "bypasses_resistance", meteorLine);
+        tag(tags, "minecraft", "bypasses_shield", meteorLine);
+        tag(tags, "minecraft", "no_knockback", meteorLine);
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {
@@ -222,6 +239,10 @@ public class PsiTweaksTagsProvider implements DataProvider {
     }
 
     private static String chemical(String path) {
+        return "psitweaks:" + path;
+    }
+
+    private static String damageType(String path) {
         return "psitweaks:" + path;
     }
 

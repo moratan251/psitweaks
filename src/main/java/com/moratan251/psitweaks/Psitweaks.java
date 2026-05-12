@@ -49,6 +49,7 @@ import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksTagsProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksWorldgenProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksDamageTypeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellUnlockProvider;
@@ -165,6 +166,7 @@ public class Psitweaks {
         generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));
         generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
         generator.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsitweaksDamageTypeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksTagsProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismRecipeProvider(packOutput));

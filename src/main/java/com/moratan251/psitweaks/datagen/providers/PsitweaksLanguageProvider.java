@@ -46,6 +46,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "魔法師";
             default -> "Magician";
         });
+        addDeathMessages(root);
         addChemical(root, "infuse_psigem", "Psigem", "サイジェム");
         addChemical(root, "infuse_ebony", "Ebony", "黒檀");
         addChemical(root, "infuse_ivory", "Ivory", "白象牙");
@@ -53,7 +54,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addChemical(root, "infuse_psionic_echo", "Psionic Echo", "サイオニックエコー");
         addChemical(root, "infuse_hypostasis", "Hypostasis", "ヒュポスタシス");
         addChemical(root, "gas_psionic_echo", "Psionic Echo", "サイオニックエコー");
-        addChemical(root, "gas_peo_fuel", "PEO Fuel", "PEO燃料");
+        addChemical(root, "gas_peo_fuel", "ΨE-O Fuel", "ΨE-O 燃料");
         addChemical(root, "dirty_antinite", "Dirty Antinite Slurry", "汚れたアンティナイトの懸濁液");
         addChemical(root, "clean_antinite", "Clean Antinite Slurry", "純粋なアンティナイトの懸濁液");
         addAttribute(root, "spell_damage_factor", "Spell Damage Factor", "術式ダメージ倍率");
@@ -122,6 +123,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         for (String[] entry : translations) {
             root.addProperty(entry[0], entry[1]);
         }
+    }
+
+    private void addDeathMessages(JsonObject root) {
+        root.addProperty("death.attack.psitweaks.meteor_line", switch (locale) {
+            case "ja_jp" -> "%1$sは光に透過された";
+            default -> "%1$s was permeated by light";
+        });
     }
 
     private static final String[][] LEGACY_PATCHOULI_BOOK_EN_US = {
