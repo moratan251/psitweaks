@@ -6,6 +6,7 @@ import net.minecraft.core.Position;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.internal.Vector3;
 
 public final class SableRangeCompat {
     private static final double MAX_DISTANCE_SQUARED = 32.0D * 32.0D;
@@ -48,6 +49,63 @@ public final class SableRangeCompat {
         }
     }
 
+    public static Vec3 projectForEffect(Level level, Vector3 position) {
+        if (position == null) {
+            return null;
+        }
+        return projectForEffect(level, position.toVec3D());
+    }
+
+    public static Vector3 projectVectorForEffect(Level level, Vector3 position) {
+        if (position == null) {
+            return null;
+        }
+        return new Vector3(projectForEffect(level, position));
+    }
+
+    public static Vec3 projectDirectionForEffect(Level level, Vector3 origin, Vector3 direction) {
+        if (origin == null || direction == null) {
+            return direction == null ? null : direction.toVec3D();
+        }
+        return projectDirectionForEffect(level, origin.toVec3D(), direction.toVec3D());
+    }
+
+    public static Vec3 projectDirectionForEffect(Level level, Vec3 origin, Vec3 direction) {
+        if (origin == null || direction == null) {
+            return direction;
+        }
+
+        Vec3 projectedOrigin = projectForEffect(level, origin);
+        Vec3 projectedEnd = projectForEffect(level, origin.add(direction));
+        return projectedEnd.subtract(projectedOrigin);
+    }
+
+    public static Vec3 projectForEffect(Level level, Vec3 position) {
+        if (level == null || position == null || disabled) {
+            return position;
+        }
+
+        Hooks loadedHooks = getHooks();
+        if (loadedHooks == null) {
+            return position;
+        }
+
+        try {
+            Object subLevel = loadedHooks.getContaining.invoke(loadedHooks.helper, level, position);
+            if (subLevel == null) {
+                return position;
+            }
+
+            Object projected = loadedHooks.projectOutOfSubLevel.invoke(loadedHooks.helper, level, position);
+            if (projected instanceof Vec3 projectedPosition) {
+                return projectedPosition;
+            }
+        } catch (ReflectiveOperationException | LinkageError | ClassCastException e) {
+            disabled = true;
+        }
+        return position;
+    }
+
     private static Hooks getHooks() {
         Hooks loadedHooks = hooks;
         if (loadedHooks != null || disabled) {
@@ -69,7 +127,12 @@ public final class SableRangeCompat {
                         Position.class,
                         Position.class
                 );
-                hooks = new Hooks(helper, getContaining, distanceSquaredWithSubLevels);
+                Method projectOutOfSubLevel = helper.getClass().getMethod(
+                        "projectOutOfSubLevel",
+                        Level.class,
+                        Position.class
+                );
+                hooks = new Hooks(helper, getContaining, distanceSquaredWithSubLevels, projectOutOfSubLevel);
                 return hooks;
             } catch (ReflectiveOperationException | LinkageError e) {
                 disabled = true;
@@ -78,6 +141,11 @@ public final class SableRangeCompat {
         }
     }
 
-    private record Hooks(Object helper, Method getContaining, Method distanceSquaredWithSubLevels) {
+    private record Hooks(
+            Object helper,
+            Method getContaining,
+            Method distanceSquaredWithSubLevels,
+            Method projectOutOfSubLevel
+    ) {
     }
 }

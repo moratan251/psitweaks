@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -101,7 +102,7 @@ public class PieceTrickActiveAirMine extends PieceTrick {
         double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
         float finalDamage = (float) (damage * perSpellDamageMultiplier * globalDamageMultiplier * spellDamageFactor);
 
-        Vec3 center = new Vec3(positionVal.x, positionVal.y, positionVal.z);
+        Vec3 center = SableRangeCompat.projectForEffect(level, positionVal);
         double radiusSq = radius * radius;
         AABB searchArea = new AABB(
                 center.x - radius, center.y - radius, center.z - radius,

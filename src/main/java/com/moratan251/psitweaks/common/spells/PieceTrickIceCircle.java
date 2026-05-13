@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import net.minecraft.core.particles.ParticleTypes;
@@ -97,8 +98,9 @@ public class PieceTrickIceCircle extends PieceTrick {
 
         removeExistingIceCircleByCaster(serverLevel, context.caster.getUUID());
 
+        Vec3 effectPosition = SableRangeCompat.projectForEffect(serverLevel, positionVal);
         EntityIceCircle iceCircle = new EntityIceCircle(serverLevel);
-        iceCircle.setPos(positionVal.x, positionVal.y + 0.01D, positionVal.z);
+        iceCircle.setPos(effectPosition.x, effectPosition.y + 0.01D, effectPosition.z);
         iceCircle.setCaster(context.caster);
         iceCircle.setSafeToPlayers(SpellSafetyUtils.hasSafeToPlayers(context));
         iceCircle.setVisualScale(FIXED_VISUAL_SCALE);

@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import mekanism.api.lasers.ILaserReceptor;
@@ -140,7 +141,7 @@ public class EntityPhononMaserBeam extends Entity {
 
         Vec3 endPos = potentialEndPos;
         if (blockHit.getType() != HitResult.Type.MISS) {
-            endPos = blockHit.getLocation();
+            endPos = SableRangeCompat.projectForEffect(level(), blockHit.getLocation());
         }
 
         // エンティティの位置を開始点に設定

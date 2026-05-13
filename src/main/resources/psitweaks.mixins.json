@@ -6,6 +6,7 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
+    "PieceTrickMassExodusMixin",
     "RadiationUtilMixin",
     "SpellContextRangeMixin",
     "SpellHelpersRangeLimitMixin"

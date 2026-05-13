@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityMolecularDivider;
 import com.mojang.logging.LogUtils;
@@ -88,9 +89,9 @@ public class PieceTrickMolecularDivider extends PieceTrick {
             return null;
         }
 
-        Vec3 v1 = new Vec3(pos1.x, pos1.y, pos1.z);
-        Vec3 v2 = new Vec3(pos2.x, pos2.y, pos2.z);
-        Vec3 v3 = new Vec3(pos3.x, pos3.y, pos3.z);
+        Vec3 v1 = SableRangeCompat.projectForEffect(world, pos1);
+        Vec3 v2 = SableRangeCompat.projectForEffect(world, pos2);
+        Vec3 v3 = SableRangeCompat.projectForEffect(world, pos3);
 
         double minX = Math.min(Math.min(v1.x, v2.x), v3.x) - 0.5;
         double minY = Math.min(Math.min(v1.y, v2.y), v3.y) - 0.5;

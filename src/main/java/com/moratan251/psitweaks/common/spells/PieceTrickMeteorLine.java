@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -65,9 +66,8 @@ public class PieceTrickMeteorLine extends PieceTrick {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         }
 
-        Vec3 start = positionValue.toVec3D();
-        Vec3 direction = rayValue.toVec3D();
-        if (direction.lengthSqr() < MIN_RAY_LENGTH_SQR) {
+        Vec3 rawDirection = rayValue.toVec3D();
+        if (rawDirection.lengthSqr() < MIN_RAY_LENGTH_SQR) {
             throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
 
@@ -80,6 +80,12 @@ public class PieceTrickMeteorLine extends PieceTrick {
         Level level = context.caster.level();
         if (level.isClientSide) {
             return null;
+        }
+
+        Vec3 start = SableRangeCompat.projectForEffect(level, positionValue);
+        Vec3 direction = SableRangeCompat.projectDirectionForEffect(level, positionValue, rayValue);
+        if (direction.lengthSqr() < MIN_RAY_LENGTH_SQR) {
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
 
         EntityMeteorLineBeam beam = new EntityMeteorLineBeam(level, context.caster, start, direction, distance);
