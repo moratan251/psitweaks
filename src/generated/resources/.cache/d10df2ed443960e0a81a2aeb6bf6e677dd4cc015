@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-12T23:36:00.3185463	PsiTweaks recipes
+// 1.21.1	2026-05-16T11:28:58.8399849	PsiTweaks recipes
 fd2b8bc2c740f04d4e85e1fae1bc531fb3c58602 data/psitweaks/recipe/advanced_spell_bullet.json
 a63214713c27e8dfec94187e4d913e27433cf4da data/psitweaks/recipe/advanced_spell_bullet_charge.json
 bfbbe421447b945d42a215fd2dd2b8a96441808f data/psitweaks/recipe/advanced_spell_bullet_circle.json
@@ -86,7 +86,7 @@ ad827cf98a5df74b764619387a2d9996d946aedd data/psitweaks/recipe/philosophers_ston
 09a731a3ddd70ef2b7c9f8675fe32ce007d46a46 data/psitweaks/recipe/program_duplication.json
 06531ef590cff830a4d049bd65e92dc814832574 data/psitweaks/recipe/program_researcher.json
 eaa9ec315633948b78dd429bca799011e033ea18 data/psitweaks/recipe/program_research/program_active_air_mine.json
-a8ad134e2013453d331c2f401c424c7f3197caec data/psitweaks/recipe/program_research/program_cocytus.json
+59e3e4162bb4697d2b211ece24563be7929eaa0b data/psitweaks/recipe/program_research/program_cocytus.json
 23c6a601c83c277e5ec0797595e06ba1b2f70752 data/psitweaks/recipe/program_research/program_cure_radiation.json
 51f9e6b86b1af90e2a7fbdb0b5c268660ef71ca5 data/psitweaks/recipe/program_research/program_die_flex.json
 36b3bc2015c477e33a6dfb3c7d020eac949cdc4f data/psitweaks/recipe/program_research/program_flight.json
@@ -114,6 +114,7 @@ cada167a1f5b78f8b9129c9cd2a672da9657f408 data/psitweaks/recipe/resonant_spell_bu
 081389231f13ab8f8ccb912d14d398061e2bf301 data/psitweaks/recipe/resonant_spell_bullet_loop.json
 142dae521847e307aecc22e3d0ff31020a10de0b data/psitweaks/recipe/resonant_spell_bullet_mine.json
 073baf075de1cd7de52924e8a3e790671587bffc data/psitweaks/recipe/resonant_spell_bullet_projectile.json
+aa4d58255738bab2cfbcc1dbce8d9ddb6d80f728 data/psitweaks/recipe/sculk_eroder.json
 133500665ea159647bfeebe6882c446b85a5e0db data/psitweaks/recipe/sculk_eroder/cobblestone.json
 341be4621bc664aa3eaefe8498543b4358a701cf data/psitweaks/recipe/sculk_eroder/dirt.json
 60187555168cb3ea9f1ce9dc238a0b4c35910d00 data/psitweaks/recipe/sculk_eroder/sand.json

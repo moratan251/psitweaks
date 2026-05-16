@@ -2,6 +2,7 @@ package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
+import com.moratan251.psitweaks.client.event.PsitweaksClientGuiEvents;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiPortableCADAssembler;
@@ -121,6 +122,7 @@ public class Psitweaks {
             PsitweaksClientModels.register(modEventBus);
             MaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
+            PsitweaksClientGuiEvents.register(NeoForge.EVENT_BUS);
         }
 
         PsitweaksMekanismBlocks.register(modEventBus);

@@ -88,7 +88,7 @@ public final class PsitweaksMekanismBlockTypes {
                             Attributes.REDSTONE,
                             Attributes.COMPARATOR,
                             AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE,
-                            new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.CHEMICAL, Upgrade.MUFFLING))
+                            new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
                     )
                     .with(new AttributeParticleFX()
                             .add(new SparkleParticleData(0.9F, 0.55F, 0.85F, 1.0F, 10, 0.0D, -0.01D, 0.0D), PsitweaksMekanismBlockTypes::machineFrontParticleOffset)

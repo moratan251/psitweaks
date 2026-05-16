@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 500000000,
+  "energy": 1500000000,
   "inputs": [
     {
       "count": 1,
@@ -9,9 +9,9 @@
       }
     },
     {
-      "count": 1,
+      "count": 8,
       "ingredient": {
-        "item": "minecraft:heart_of_the_sea"
+        "item": "mekanism:pellet_antimatter"
       }
     },
     {
@@ -21,15 +21,15 @@
       }
     },
     {
-      "count": 32,
+      "count": 24,
       "ingredient": {
-        "item": "psitweaks:psionic_echo"
+        "item": "minecraft:sculk_shrieker"
       }
     },
     {
-      "count": 8,
+      "count": 4,
       "ingredient": {
-        "item": "minecraft:sculk_shrieker"
+        "item": "minecraft:heart_of_the_sea"
       }
     }
   ],
@@ -37,5 +37,5 @@
     "count": 1,
     "id": "psitweaks:program_cocytus"
   },
-  "time": 36000
+  "time": 108000
 }

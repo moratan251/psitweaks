@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.bus.api.IEventBus;
@@ -82,6 +83,11 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_guillotine");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
+    static {
+        if (SablePhysicsCompat.isLoaded()) {
+            registerPieceMaterial("trick_physical_propulsion");
+        }
+    }
     public static final DeferredHolder<Material, Material> OPERATOR_TAN =
             registerPieceMaterial("operator_tan");
     public static final DeferredHolder<Material, Material> OPERATOR_ATAN =
@@ -92,6 +98,18 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_cosh");
     public static final DeferredHolder<Material, Material> OPERATOR_TANH =
             registerPieceMaterial("operator_tanh");
+    public static final DeferredHolder<Material, Material> CONSTANT_STRING =
+            registerPieceMaterial("constant_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_TO_NUMBER =
+            registerPieceMaterial("operator_string_to_number");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_TO_STRING =
+            registerPieceMaterial("operator_number_to_string");
+    public static final DeferredHolder<Material, Material> SELECTOR_ENTITY_TYPE_ID =
+            registerPieceMaterial("selector_entity_type_id");
+    public static final DeferredHolder<Material, Material> SELECTOR_BLOCK_ID =
+            registerPieceMaterial("selector_block_id");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_EQUALS =
+            registerPieceMaterial("operator_string_equals");
 
     private PsitweaksClientSpells() {
     }
