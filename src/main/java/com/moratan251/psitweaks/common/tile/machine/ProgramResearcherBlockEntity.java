@@ -59,6 +59,9 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
     private int progress;
     private int maxProgress = 1;
     private long currentEnergyCost;
+    @Nullable
+    private ProgramResearchRecipe activeRecipe;
+    private List<ItemStack> activeInputSnapshot = List.of();
 
     public ProgramResearcherBlockEntity(BlockPos pos, BlockState blockState) {
         super(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER, pos, blockState);
@@ -83,16 +86,12 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
-        IContentsListener inputListener = () -> {
-            listener.onContentsChanged();
-            resetProgress();
-        };
 
         List<InputInventorySlot> inputs = new ArrayList<>(INPUT_SLOTS);
         for (int slot = 0; slot < INPUT_SLOTS; slot++) {
             int x = INPUT_START_X + (slot % 3) * 18;
             int y = INPUT_START_Y + (slot / 3) * 18;
-            inputs.add(builder.addSlot(InputInventorySlot.at(inputListener, x, y)));
+            inputs.add(builder.addSlot(InputInventorySlot.at(listener, x, y)));
         }
         inputSlots = List.copyOf(inputs);
 
@@ -128,6 +127,7 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
             return sendUpdate || changed;
         }
 
+        boolean changed = validateActiveInputs(recipe);
         maxProgress = Math.max(1, recipe.getTime());
         long energyCost = recipe.getEnergyCostForTick(progress);
         currentEnergyCost = energyCost;
@@ -140,13 +140,14 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
         }
 
         progress++;
-        boolean changed = setActiveState(true);
+        changed |= setActiveState(true);
         setChanged();
 
         if (progress >= maxProgress) {
             consumeInputs(consumptionPlan);
             craftOutput(result);
             progress = 0;
+            clearActiveInputs();
             changed = true;
             setChanged();
         }
@@ -163,6 +164,51 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
                 .getRecipeFor(PsitweaksRecipeTypes.PROGRAM_RESEARCH.get(), MachineRecipeInput.of(inputSlots), level)
                 .map(holder -> holder.value())
                 .orElse(null);
+    }
+
+    private boolean validateActiveInputs(ProgramResearchRecipe recipe) {
+        if (progress <= 0 || activeRecipe == null) {
+            captureActiveInputs(recipe);
+            return false;
+        }
+        if (recipe == activeRecipe && activeInputSnapshotMatches()) {
+            return false;
+        }
+        boolean changed = resetProgress();
+        captureActiveInputs(recipe);
+        return changed;
+    }
+
+    private void captureActiveInputs(ProgramResearchRecipe recipe) {
+        activeRecipe = recipe;
+        List<ItemStack> snapshot = new ArrayList<>(inputSlots.size());
+        for (InputInventorySlot inputSlot : inputSlots) {
+            snapshot.add(inputSlot.getStack().copy());
+        }
+        activeInputSnapshot = List.copyOf(snapshot);
+    }
+
+    private boolean activeInputSnapshotMatches() {
+        if (activeInputSnapshot.size() != inputSlots.size()) {
+            return false;
+        }
+        for (int slot = 0; slot < inputSlots.size(); slot++) {
+            ItemStack current = inputSlots.get(slot).getStack();
+            ItemStack snapshot = activeInputSnapshot.get(slot);
+            if (current.isEmpty() && snapshot.isEmpty()) {
+                continue;
+            }
+            if (current.getCount() != snapshot.getCount()
+                    || !ItemStack.isSameItemSameComponents(current, snapshot)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void clearActiveInputs() {
+        activeRecipe = null;
+        activeInputSnapshot = List.of();
     }
 
     private boolean canOutput(ItemStack result) {
@@ -196,11 +242,12 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
     }
 
     private boolean resetProgress() {
-        if (progress == 0 && maxProgress == 1) {
+        if (progress == 0 && maxProgress == 1 && activeRecipe == null && activeInputSnapshot.isEmpty()) {
             return false;
         }
         progress = 0;
         maxProgress = 1;
+        clearActiveInputs();
         setChanged();
         return true;
     }

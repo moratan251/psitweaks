@@ -196,6 +196,15 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'P', ingredientItem(PsitweaksItems.PROGRAM_MATERIAL_MUTATION)
                 ),
                 block("material_mutator"), 1));
+        recipe(recipes, "sculk_eroder", shaped(
+                List.of("ABA", "CDC", "ABA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.ALLOY_PSIONIC_ECHO),
+                        'B', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'C', ingredientItem(Blocks.SCULK_CATALYST),
+                        'D', ingredientItem(MekanismBlocks.STEEL_CASING)
+                ),
+                block("sculk_eroder"), 1));
         recipe(recipes, "psionic_generator", shaped(
                 List.of(" B ", "ACA", "ATA"),
                 Map.of(

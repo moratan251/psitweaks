@@ -9,6 +9,8 @@
     "PieceTrickMassExodusMixin",
     "RadiationUtilMixin",
     "SpellContextRangeMixin",
+    "SpellGridOptionalCompatMixin",
+    "SpellPieceOptionalCompatMixin",
     "SpellHelpersRangeLimitMixin"
   ],
   "client": [

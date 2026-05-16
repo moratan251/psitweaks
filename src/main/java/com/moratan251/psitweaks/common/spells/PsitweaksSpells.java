@@ -1,10 +1,10 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
+import com.moratan251.psitweaks.common.spells.operator.*;
 import java.util.Collection;
 import java.util.List;
-
-import com.moratan251.psitweaks.common.spells.operator.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -87,6 +87,11 @@ public final class PsitweaksSpells {
             registerPiece("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMaterialMutation>> TRICK_MATERIAL_MUTATION =
             registerPiece("trick_material_mutation", PieceTrickMaterialMutation.class);
+    static {
+        if (SablePhysicsCompat.isLoaded()) {
+            registerPiece("trick_physical_propulsion", PieceTrickPhysicalPropulsion.class);
+        }
+    }
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorTan>> OPERATOR_TAN =
             registerPiece("operator_tan", PieceOperatorTan.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorAtan>> OPERATOR_ATAN =
@@ -168,6 +173,11 @@ public final class PsitweaksSpells {
             registerGroup("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MATERIAL_MUTATION =
             registerGroup("trick_material_mutation", PieceTrickMaterialMutation.class);
+    static {
+        if (SablePhysicsCompat.isLoaded()) {
+            registerGroup("trick_physical_propulsion", PieceTrickPhysicalPropulsion.class);
+        }
+    }
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> TAN =
             registerGroup("operator_tan", PieceOperatorTan.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> ATAN =

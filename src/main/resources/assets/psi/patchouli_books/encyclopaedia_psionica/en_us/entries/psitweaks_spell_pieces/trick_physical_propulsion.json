@@ -1,0 +1,12 @@
+{
+  "name": "psitweaks.spellpiece.trick_physical_propulsion",
+  "flag": "mod:sable",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_physical_propulsion.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_physical_propulsion"
+    }
+  ]
+}

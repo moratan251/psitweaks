@@ -14,11 +14,11 @@ public final class ProgramResearchRecipeProvider {
     static void addRecipes(Map<ResourceLocation, JsonObject> recipes) {
         research(recipes, "program_cocytus", List.of(
                 input(item("program_blank"), 1),
-                input("minecraft:heart_of_the_sea", 1),
+                input("mekanism:pellet_antimatter", 8),
                 input("minecraft:blue_ice", 64),
-                input(item("psionic_echo"), 32),
-                input("minecraft:sculk_shrieker", 8)
-        ), item("program_cocytus"), 500_000_000, 36_000);
+                input("minecraft:sculk_shrieker", 24),
+                input("minecraft:heart_of_the_sea", 4)
+        ), item("program_cocytus"), 1_500_000_000, 108_000);
 
         research(recipes, "program_time_accelerate", List.of(
                 input(item("program_blank"), 1),

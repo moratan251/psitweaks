@@ -125,13 +125,13 @@ dependencies {
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"
 
-    implementation "curse.maven:create-328085:7963363"
-    implementation "maven.modrinth:create-aeronautics:YhZLrAFC"
-    implementation "curse.maven:sable-1312371:8007005"
+//    implementation "curse.maven:create-328085:7963363"
+//    implementation "maven.modrinth:create-aeronautics:YhZLrAFC"
+//    implementation "curse.maven:sable-1312371:8007005"
 
-//    compileOnly "curse.maven:create-328085:7963363"
-//    compileOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
-//    compileOnly "curse.maven:sable-1312371:8007005"
+    compileOnly "curse.maven:create-328085:7963363"
+    compileOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
+    compileOnly "curse.maven:sable-1312371:8007005"
 
     runtimeOnly "curse.maven:mmmmmmmmmmmm-225738:7943676"
     runtimeOnly "curse.maven:selene-499980:8031229"

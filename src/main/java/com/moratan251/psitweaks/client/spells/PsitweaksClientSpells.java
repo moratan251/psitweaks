@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.bus.api.IEventBus;
@@ -82,6 +83,11 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_guillotine");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
+    static {
+        if (SablePhysicsCompat.isLoaded()) {
+            registerPieceMaterial("trick_physical_propulsion");
+        }
+    }
     public static final DeferredHolder<Material, Material> OPERATOR_TAN =
             registerPieceMaterial("operator_tan");
     public static final DeferredHolder<Material, Material> OPERATOR_ATAN =
