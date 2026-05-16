@@ -114,6 +114,10 @@ public final class PsitweaksSpells {
             registerPiece("selector_block_id", PieceSelectorBlockId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringEquals>> OPERATOR_STRING_EQUALS =
             registerPiece("operator_string_equals", PieceOperatorStringEquals.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListSearch>> OPERATOR_ENTITY_LIST_SEARCH =
+            registerPiece("operator_entity_list_search", PieceOperatorEntityListSearch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListExclude>> OPERATOR_ENTITY_LIST_EXCLUDE =
+            registerPiece("operator_entity_list_exclude", PieceOperatorEntityListExclude.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -207,7 +211,9 @@ public final class PsitweaksSpells {
                     PieceOperatorNumberToString.class,
                     PieceSelectorEntityTypeId.class,
                     PieceSelectorBlockId.class,
-                    PieceOperatorStringEquals.class
+                    PieceOperatorStringEquals.class,
+                    PieceOperatorEntityListSearch.class,
+                    PieceOperatorEntityListExclude.class
             ));
 
     private PsitweaksSpells() {

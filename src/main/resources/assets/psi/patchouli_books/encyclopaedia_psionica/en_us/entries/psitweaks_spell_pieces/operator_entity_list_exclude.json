@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_entity_list_exclude",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_entity_list_exclude.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_entity_list_exclude"
+    }
+  ]
+}

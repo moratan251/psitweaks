@@ -834,6 +834,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_entity_type_id", "Selector: Entity Type ID", "Outputs the registry ID of the target entity type. Example: minecraft:zombie", "取得子: エンティティ種別ID", "指定エンティティの種別レジストリIDを文字列として出力します。例: minecraft:zombie");
         addSpellPiece(root, "selector_block_id", "Selector: Block ID", "Outputs the registry ID of the block at the given position. Example: minecraft:stone", "取得子: ブロックID", "指定座標のブロックのレジストリIDを文字列として出力します。例: minecraft:stone");
         addSpellPiece(root, "operator_string_equals", "Operator: String Equals", "Outputs 1 if two strings are exactly equal, otherwise outputs 0.", "演算子: 文字列一致", "2つの文字列が完全一致するなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "operator_entity_list_search", "Operator: Entity List Search", "Keeps only entities whose registry ID matches the string.", "演算子: エンティティリスト検索", "文字列とエンティティIDが一致するエンティティだけを残します。");
+        addSpellPiece(root, "operator_entity_list_exclude", "Operator: Entity List Exclude", "Removes entities whose registry ID matches the string.", "演算子: エンティティリスト除外", "文字列とエンティティIDが一致するエンティティを除外します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -893,6 +895,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_entity_type_id", "Outputs the registry ID of the target entity type as a String, such as minecraft:zombie.", "対象エンティティ種別のレジストリIDをStringとして出力します. 例: minecraft:zombie.");
         addBookPage(root, "selector_block_id", "Outputs the registry ID of the block at the target position as a String, such as minecraft:stone.", "対象座標にあるブロックのレジストリIDをStringとして出力します. 例: minecraft:stone.");
         addBookPage(root, "operator_string_equals", "Compares two String values exactly. It outputs 1 when they match and 0 otherwise.", "2つのString値を完全一致で比較します. 一致するなら1, そうでなければ0を出力します.");
+        addBookPage(root, "operator_entity_list_search", "Filters an Entity List by registry ID. It returns a new Entity List containing only entities whose type ID exactly matches the String input, such as minecraft:zombie.", "Entity List をエンティティ種別のレジストリIDで絞り込みます. String入力と完全一致するエンティティだけを含む新しい Entity List を返します. 例: minecraft:zombie.");
+        addBookPage(root, "operator_entity_list_exclude", "Filters an Entity List by registry ID. It returns a new Entity List with entities whose type ID exactly matches the String input removed.", "Entity List からエンティティ種別のレジストリIDが String入力と完全一致するエンティティを除外し, 新しい Entity List を返します.");
     }
 
     private void addCadDisassembler(JsonObject root) {

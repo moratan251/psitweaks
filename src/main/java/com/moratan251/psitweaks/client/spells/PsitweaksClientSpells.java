@@ -110,6 +110,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_block_id");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_EQUALS =
             registerPieceMaterial("operator_string_equals");
+    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_SEARCH =
+            registerPieceMaterial("operator_entity_list_search");
+    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_EXCLUDE =
+            registerPieceMaterial("operator_entity_list_exclude");
 
     private PsitweaksClientSpells() {
     }
