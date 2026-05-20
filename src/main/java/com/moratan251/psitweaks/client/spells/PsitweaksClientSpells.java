@@ -108,12 +108,36 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_entity_type_id");
     public static final DeferredHolder<Material, Material> SELECTOR_BLOCK_ID =
             registerPieceMaterial("selector_block_id");
+    public static final DeferredHolder<Material, Material> SELECTOR_ONLINE_PLAYERS =
+            registerPieceMaterial("selector_online_players");
+    public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
+            registerPieceMaterial("selector_held_items");
+    public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =
+            registerPieceMaterial("selector_internal_items");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT =
+            registerPieceMaterial("selector_nbt");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT_KEYS =
+            registerPieceMaterial("selector_nbt_keys");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT_VALUE =
+            registerPieceMaterial("selector_nbt_value");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_EQUALS =
             registerPieceMaterial("operator_string_equals");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_PARTIAL_MATCH =
+            registerPieceMaterial("operator_string_partial_match");
+    public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =
+            registerPieceMaterial("operator_player_name");
     public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_SEARCH =
             registerPieceMaterial("operator_entity_list_search");
     public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_EXCLUDE =
             registerPieceMaterial("operator_entity_list_exclude");
+    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_TO_STRING_LIST =
+            registerPieceMaterial("operator_entity_list_to_string_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_ADD =
+            registerPieceMaterial("operator_string_list_add");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_REMOVE =
+            registerPieceMaterial("operator_string_list_remove");
+    public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_STRING =
+            registerPieceMaterial("operator_random_string");
 
     private PsitweaksClientSpells() {
     }

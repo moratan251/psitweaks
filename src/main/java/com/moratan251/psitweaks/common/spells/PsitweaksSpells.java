@@ -112,12 +112,36 @@ public final class PsitweaksSpells {
             registerPiece("selector_entity_type_id", PieceSelectorEntityTypeId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlockId>> SELECTOR_BLOCK_ID =
             registerPiece("selector_block_id", PieceSelectorBlockId.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorOnlinePlayers>> SELECTOR_ONLINE_PLAYERS =
+            registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItems>> SELECTOR_HELD_ITEMS =
+            registerPiece("selector_held_items", PieceSelectorHeldItems.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorInternalItems>> SELECTOR_INTERNAL_ITEMS =
+            registerPiece("selector_internal_items", PieceSelectorInternalItems.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNbt>> SELECTOR_NBT =
+            registerPiece("selector_nbt", PieceSelectorNbt.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNbtKeys>> SELECTOR_NBT_KEYS =
+            registerPiece("selector_nbt_keys", PieceSelectorNbtKeys.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNbtValue>> SELECTOR_NBT_VALUE =
+            registerPiece("selector_nbt_value", PieceSelectorNbtValue.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringEquals>> OPERATOR_STRING_EQUALS =
             registerPiece("operator_string_equals", PieceOperatorStringEquals.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringPartialMatch>> OPERATOR_STRING_PARTIAL_MATCH =
+            registerPiece("operator_string_partial_match", PieceOperatorStringPartialMatch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorPlayerName>> OPERATOR_PLAYER_NAME =
+            registerPiece("operator_player_name", PieceOperatorPlayerName.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListSearch>> OPERATOR_ENTITY_LIST_SEARCH =
             registerPiece("operator_entity_list_search", PieceOperatorEntityListSearch.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListExclude>> OPERATOR_ENTITY_LIST_EXCLUDE =
             registerPiece("operator_entity_list_exclude", PieceOperatorEntityListExclude.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListToStringList>> OPERATOR_ENTITY_LIST_TO_STRING_LIST =
+            registerPiece("operator_entity_list_to_string_list", PieceOperatorEntityListToStringList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringListAdd>> OPERATOR_STRING_LIST_ADD =
+            registerPiece("operator_string_list_add", PieceOperatorStringListAdd.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringListRemove>> OPERATOR_STRING_LIST_REMOVE =
+            registerPiece("operator_string_list_remove", PieceOperatorStringListRemove.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRandomString>> OPERATOR_RANDOM_STRING =
+            registerPiece("operator_random_string", PieceOperatorRandomString.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -211,9 +235,21 @@ public final class PsitweaksSpells {
                     PieceOperatorNumberToString.class,
                     PieceSelectorEntityTypeId.class,
                     PieceSelectorBlockId.class,
+                    PieceSelectorOnlinePlayers.class,
+                    PieceSelectorHeldItems.class,
+                    PieceSelectorInternalItems.class,
+                    PieceSelectorNbt.class,
+                    PieceSelectorNbtKeys.class,
+                    PieceSelectorNbtValue.class,
                     PieceOperatorStringEquals.class,
+                    PieceOperatorStringPartialMatch.class,
+                    PieceOperatorPlayerName.class,
                     PieceOperatorEntityListSearch.class,
-                    PieceOperatorEntityListExclude.class
+                    PieceOperatorEntityListExclude.class,
+                    PieceOperatorEntityListToStringList.class,
+                    PieceOperatorStringListAdd.class,
+                    PieceOperatorStringListRemove.class,
+                    PieceOperatorRandomString.class
             ));
 
     private PsitweaksSpells() {

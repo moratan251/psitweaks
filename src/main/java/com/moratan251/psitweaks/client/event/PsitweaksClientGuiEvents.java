@@ -12,6 +12,7 @@ public final class PsitweaksClientGuiEvents {
     public static void register(IEventBus eventBus) {
         eventBus.addListener(PsitweaksClientGuiEvents::onScreenRenderPost);
         eventBus.addListener(PsitweaksClientGuiEvents::onKeyPressedPre);
+        eventBus.addListener(PsitweaksClientGuiEvents::onCharacterTypedPre);
         eventBus.addListener(PsitweaksClientGuiEvents::onMouseButtonPressedPre);
         eventBus.addListener(PsitweaksClientGuiEvents::onMouseButtonPressedPost);
         eventBus.addListener(PsitweaksClientGuiEvents::onScreenClosing);
@@ -26,6 +27,13 @@ public final class PsitweaksClientGuiEvents {
     private static void onKeyPressedPre(ScreenEvent.KeyPressed.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
                 && StringConstantInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())) {
+            event.setCanceled(true);
+        }
+    }
+
+    private static void onCharacterTypedPre(ScreenEvent.CharacterTyped.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen
+                && StringConstantInputOverlay.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers())) {
             event.setCanceled(true);
         }
     }
