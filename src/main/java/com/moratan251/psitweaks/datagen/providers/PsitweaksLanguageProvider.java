@@ -101,6 +101,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "文字列";
             default -> "String";
         });
+        root.addProperty("psitweaks.datatype.string_list", switch (locale) {
+            case "ja_jp" -> "文字列リスト";
+            default -> "String List";
+        });
         root.addProperty("psitweaks.spellparam.string", switch (locale) {
             case "ja_jp" -> "文字列";
             default -> "String";
@@ -833,9 +837,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_number_to_string", "Operator: Number to String", "Converts a number to a string. Non-finite values become an empty string.", "演算子: 数値文字列化", "数値を文字列に変換します。非有限値は空文字列になります。");
         addSpellPiece(root, "selector_entity_type_id", "Selector: Entity Type ID", "Outputs the registry ID of the target entity type. Example: minecraft:zombie", "取得子: エンティティ種別ID", "指定エンティティの種別レジストリIDを文字列として出力します。例: minecraft:zombie");
         addSpellPiece(root, "selector_block_id", "Selector: Block ID", "Outputs the registry ID of the block at the given position. Example: minecraft:stone", "取得子: ブロックID", "指定座標のブロックのレジストリIDを文字列として出力します。例: minecraft:stone");
+        addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として出力します。");
+        addSpellPiece(root, "selector_held_items", "Selector: Held Items", "Outputs the target entity's carried items as a String List in item_id|count format.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを item_id|count 形式の String List として出力します。");
+        addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as a String List in item_id|count format.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを item_id|count 形式の String List として出力します。");
+        addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target entity's top-level NBT as key:value strings. The entity id is not included.", "取得子: NBT", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します。エンティティIDは含みません。");
+        addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target entity's top-level NBT keys as a String List. The entity id is not included.", "取得子: NBTキー", "対象 Entity のNBTトップレベルキーを String List として出力します。エンティティIDは含みません。");
+        addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target entity's top-level NBT value matching the String key. Missing keys output an empty string.", "取得子: NBT値", "対象 Entity のNBTトップレベルから String キーに一致する値を出力します。一致しない場合は空文字列です。");
         addSpellPiece(root, "operator_string_equals", "Operator: String Equals", "Outputs 1 if two strings are exactly equal, otherwise outputs 0.", "演算子: 文字列一致", "2つの文字列が完全一致するなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "operator_string_partial_match", "Operator: Partial Match", "Outputs 1 if String 1 contains String 2, otherwise outputs 0.", "演算子: 部分一致", "文字列1が文字列2を含むなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "operator_player_name", "Operator: Player Name", "Outputs the player name if the Entity is a player, otherwise outputs an empty string.", "演算子: プレイヤーネーム", "Entity がプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。");
         addSpellPiece(root, "operator_entity_list_search", "Operator: Entity List Search", "Keeps only entities whose registry ID matches the string.", "演算子: エンティティリスト検索", "文字列とエンティティIDが一致するエンティティだけを残します。");
         addSpellPiece(root, "operator_entity_list_exclude", "Operator: Entity List Exclude", "Removes entities whose registry ID matches the string.", "演算子: エンティティリスト除外", "文字列とエンティティIDが一致するエンティティを除外します。");
+        addSpellPiece(root, "operator_entity_list_to_string_list", "Operator: List Conversion", "Converts entity type IDs from an Entity List into a String List.", "演算子: リスト変換", "Entity List のエンティティ種別IDを String List に変換します。");
+        addSpellPiece(root, "operator_string_list_add", "Operator: String List Add", "Adds a string to the end of a String List.", "演算子: 文字列リスト追加", "文字列を String List の末尾に追加します。");
+        addSpellPiece(root, "operator_string_list_remove", "Operator: String List Remove", "Removes the first matching string from a String List.", "演算子: 文字列リスト削除", "String List から最初に一致した文字列を1つ削除します。");
+        addSpellPiece(root, "operator_random_string", "Operator: Random String", "Outputs one random string from a String List. Outputs an empty string if the list is empty.", "演算子: ランダム文字列", "String List からランダムに文字列を1つ出力します。リストが空の場合は空文字列を出力します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -894,9 +910,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_number_to_string", "Converts the Number input into a String. Integer values omit the decimal part, and non-finite values become an empty string.", "Number入力をStringへ変換します. 整数値は小数部を省略し, 非有限値は空文字列になります.");
         addBookPage(root, "selector_entity_type_id", "Outputs the registry ID of the target entity type as a String, such as minecraft:zombie.", "対象エンティティ種別のレジストリIDをStringとして出力します. 例: minecraft:zombie.");
         addBookPage(root, "selector_block_id", "Outputs the registry ID of the block at the target position as a String, such as minecraft:stone.", "対象座標にあるブロックのレジストリIDをStringとして出力します. 例: minecraft:stone.");
+        addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
+        addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as a String List. Entries are aggregated by item registry ID and formatted as item_id|count, such as minecraft:stone|64. Empty inventories output an empty String List.", "対象 Entity の所持アイテムを String List として出力します. 各要素はアイテムID単位で合算され, minecraft:stone|64 のような item_id|count 形式になります. 空の場合は空の String List を出力します.");
+        addBookPage(root, "selector_internal_items", "Outputs items from the target block's internal inventory as a String List. Entries are aggregated by item registry ID and formatted as item_id|count. Blocks without readable inventories output an empty String List.", "対象ブロックの内部インベントリを String List として出力します. 各要素はアイテムID単位で合算され, item_id|count 形式になります. 読み取り可能なインベントリがない場合は空の String List を出力します.");
+        addBookPage(root, "selector_nbt", "Outputs the target Entity's top-level NBT as key:value strings in a String List. Values use SNBT text, and the entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します. 値はSNBT文字列で, エンティティIDは専用の取得子があるため意図的に含めません.");
+        addBookPage(root, "selector_nbt_keys", "Outputs the target Entity's top-level NBT keys as a String List. The entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルキーを String List として出力します. エンティティIDは専用の取得子があるため意図的に含めません.");
+        addBookPage(root, "selector_nbt_value", "Outputs the target Entity's top-level NBT value matching the String key as SNBT text. Missing keys and the omitted id key output an empty String.", "対象 Entity のNBTトップレベルから Stringキーに完全一致する値をSNBT文字列として出力します. キーが存在しない場合や省略対象のidキーは空文字列になります.");
         addBookPage(root, "operator_string_equals", "Compares two String values exactly. It outputs 1 when they match and 0 otherwise.", "2つのString値を完全一致で比較します. 一致するなら1, そうでなければ0を出力します.");
+        addBookPage(root, "operator_string_partial_match", "Checks whether String 1 contains String 2. The comparison is case-sensitive and outputs 1 when String 2 is found, otherwise 0.", "文字列1が文字列2を含むか判定します. 比較は大文字小文字を区別し, 文字列2が見つかるなら1, そうでなければ0を出力します.");
+        addBookPage(root, "operator_player_name", "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.", "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.");
         addBookPage(root, "operator_entity_list_search", "Filters an Entity List by registry ID. It returns a new Entity List containing only entities whose type ID exactly matches the String input, such as minecraft:zombie.", "Entity List をエンティティ種別のレジストリIDで絞り込みます. String入力と完全一致するエンティティだけを含む新しい Entity List を返します. 例: minecraft:zombie.");
         addBookPage(root, "operator_entity_list_exclude", "Filters an Entity List by registry ID. It returns a new Entity List with entities whose type ID exactly matches the String input removed.", "Entity List からエンティティ種別のレジストリIDが String入力と完全一致するエンティティを除外し, 新しい Entity List を返します.");
+        addBookPage(root, "operator_entity_list_to_string_list", "Converts an Entity List into a String List. Each output string is the entity type registry ID, such as minecraft:zombie, preserving the input order.", "Entity List を String List に変換します. 各文字列は minecraft:zombie のようなエンティティ種別のレジストリIDで, 入力順を維持します.");
+        addBookPage(root, "operator_string_list_add", "Adds the String input to the end of the optional String List input. If the list input is not connected, it starts from an empty String List. Duplicate strings are allowed.", "String入力を optional の String List 入力の末尾に追加します. リスト入力が未接続の場合は空の String List から始めます. 重複する文字列も許可されます.");
+        addBookPage(root, "operator_string_list_remove", "Removes the first entry that exactly matches the String input from the String List input. If no entry matches, the list is returned unchanged.", "String List 入力から, String入力と完全一致する最初の要素を1つ削除します. 一致する要素がない場合はリストをそのまま返します.");
+        addBookPage(root, "operator_random_string", "Chooses one random String from the String List input. Empty lists output an empty String.", "String List 入力からランダムに1つの String を選びます. 空のリストは空文字列を出力します.");
     }
 
     private void addCadDisassembler(JsonObject root) {

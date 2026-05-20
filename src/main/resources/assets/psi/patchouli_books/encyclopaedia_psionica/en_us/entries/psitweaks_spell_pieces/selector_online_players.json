@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.selector_online_players",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/selector_online_players.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_online_players"
+    }
+  ]
+}

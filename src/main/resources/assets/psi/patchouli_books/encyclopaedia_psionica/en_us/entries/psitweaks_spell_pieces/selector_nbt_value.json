@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.selector_nbt_value",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/selector_nbt_value.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_nbt_value"
+    }
+  ]
+}

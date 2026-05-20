@@ -39,6 +39,7 @@ public final class StringConstantInputOverlay {
 
     private static int activeX = -1;
     private static int activeY = -1;
+    private static int activeCursorPosition = -1;
     private static int lastClickX = -1;
     private static int lastClickY = -1;
     private static long lastClickTime = 0L;
@@ -78,6 +79,22 @@ public final class StringConstantInputOverlay {
         if (button == 0 && layout.containsTextArea(mouseX, mouseY)) {
             Font font = Minecraft.getInstance().font;
             piece.moveCursorTo(cursorPositionForClick(font, piece, layout, mouseX, mouseY));
+            rememberCursor(piece);
+        }
+        return true;
+    }
+
+    public static boolean handleCharacterTypedPre(GuiProgrammer screen, char codePoint, int modifiers) {
+        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        if (piece == null) {
+            return false;
+        }
+
+        if (!screen.isSpectator() && piece.onCharTyped(codePoint, modifiers, false)) {
+            screen.pushState(true);
+            piece.onCharTyped(codePoint, modifiers, true);
+            screen.onSpellChanged(false);
+            rememberCursor(piece);
         }
         return true;
     }
@@ -99,14 +116,17 @@ public final class StringConstantInputOverlay {
 
         if (keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_DOWN) {
             moveCursorVertically(screen, piece, keyCode == GLFW.GLFW_KEY_UP ? -1 : 1);
+            rememberCursor(piece);
             return true;
         }
 
         if (isHorizontalCursorKey(keyCode)) {
             moveCursorHorizontally(piece, keyCode);
+            rememberCursor(piece);
             return true;
         }
-        return false;
+
+        return handleEditingKey(screen, piece, keyCode, scanCode);
     }
 
     public static void handleMousePressedPost(GuiProgrammer screen, double mouseX, double mouseY, int button) {
@@ -149,13 +169,15 @@ public final class StringConstantInputOverlay {
         }
         activeX = -1;
         activeY = -1;
+        activeCursorPosition = -1;
     }
 
     private static void activate(PieceConstantString piece, int x, int y) {
         activeX = x;
         activeY = y;
+        activeCursorPosition = piece.getValue().length();
         piece.setCursorEditing(true);
-        piece.moveCursorTo(piece.getValue().length());
+        piece.moveCursorTo(activeCursorPosition);
     }
 
     private static PieceConstantString getActiveSelectedStringConstant(GuiProgrammer screen) {
@@ -167,6 +189,8 @@ public final class StringConstantInputOverlay {
         PieceConstantString piece = getStringConstant(screen, activeX, activeY);
         if (piece == null) {
             deactivate(screen);
+        } else {
+            applyActiveCursor(piece);
         }
         return piece;
     }
@@ -342,6 +366,49 @@ public final class StringConstantInputOverlay {
         screen.pushState(true);
         piece.insertLineBreak(true);
         screen.onSpellChanged(false);
+        rememberCursor(piece);
+    }
+
+    private static boolean handleEditingKey(GuiProgrammer screen, PieceConstantString piece, int keyCode, int scanCode) {
+        if (screen.isSpectator()) {
+            return isContentEditingKey(keyCode);
+        }
+
+        if (!isContentEditingKey(keyCode) || !piece.onKeyPressed(keyCode, scanCode, false)) {
+            return false;
+        }
+
+        screen.pushState(true);
+        piece.onKeyPressed(keyCode, scanCode, true);
+        screen.onSpellChanged(false);
+        rememberCursor(piece);
+        return true;
+    }
+
+    private static boolean isContentEditingKey(int keyCode) {
+        return keyCode == GLFW.GLFW_KEY_BACKSPACE
+                || keyCode == GLFW.GLFW_KEY_DELETE
+                || Screen.isPaste(keyCode);
+    }
+
+    private static void applyActiveCursor(PieceConstantString piece) {
+        if (activeCursorPosition < 0) {
+            activeCursorPosition = piece.getValue().length();
+        }
+
+        int clamped = clampCursor(piece, activeCursorPosition);
+        if (!piece.isCursorEditing() || piece.getCursorPosition() != clamped) {
+            piece.moveCursorTo(clamped);
+        }
+        activeCursorPosition = clamped;
+    }
+
+    private static void rememberCursor(PieceConstantString piece) {
+        activeCursorPosition = piece.getCursorPosition();
+    }
+
+    private static int clampCursor(PieceConstantString piece, int cursorPosition) {
+        return Math.max(0, Math.min(cursorPosition, piece.getValue().length()));
     }
 
     private static int cursorPositionForLineX(Font font, String value, TextLine line, int targetX) {
