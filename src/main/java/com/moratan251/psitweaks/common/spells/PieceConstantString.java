@@ -216,6 +216,52 @@ public class PieceConstantString extends SpellPiece {
         return insertText("\n", modify, true);
     }
 
+    public boolean replaceRange(int start, int end, String input, boolean modify, boolean consumeWhenUnchanged) {
+        int rangeStart = clampCursorPosition(Math.min(start, end));
+        int rangeEnd = clampCursorPosition(Math.max(start, end));
+        String sanitized = StringSpellHelper.sanitize(input);
+        if (sanitized.isEmpty()) {
+            return consumeWhenUnchanged;
+        }
+
+        int available = StringSpellHelper.MAX_STRING_LENGTH - (value.length() - (rangeEnd - rangeStart));
+        if (available <= 0) {
+            return consumeWhenUnchanged;
+        }
+
+        if (sanitized.length() > available) {
+            sanitized = sanitized.substring(0, available);
+        }
+
+        if (modify) {
+            value = value.substring(0, rangeStart) + sanitized + value.substring(rangeEnd);
+            cursorEditing = true;
+            cursorPosition = rangeStart + sanitized.length();
+        }
+        return true;
+    }
+
+    public boolean deleteRange(int start, int end, boolean modify) {
+        int rangeStart = clampCursorPosition(Math.min(start, end));
+        int rangeEnd = clampCursorPosition(Math.max(start, end));
+        if (rangeStart == rangeEnd) {
+            return false;
+        }
+
+        if (modify) {
+            value = value.substring(0, rangeStart) + value.substring(rangeEnd);
+            cursorEditing = true;
+            cursorPosition = rangeStart;
+        }
+        return true;
+    }
+
+    public void replaceValue(String input) {
+        value = StringSpellHelper.sanitize(input);
+        cursorEditing = true;
+        cursorPosition = value.length();
+    }
+
     public void setCursorEditing(boolean cursorEditing) {
         this.cursorEditing = cursorEditing;
         if (!cursorEditing) {
@@ -243,5 +289,9 @@ public class PieceConstantString extends SpellPiece {
 
     private int inputCursor() {
         return cursorEditing ? getCursorPosition() : value.length();
+    }
+
+    private int clampCursorPosition(int position) {
+        return Math.max(0, Math.min(position, value.length()));
     }
 }

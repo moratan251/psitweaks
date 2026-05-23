@@ -6,9 +6,12 @@ public final class PsitweaksSpellParams {
     public static final String STRING = PREFIX + "string";
     public static final String STRING1 = PREFIX + "string1";
     public static final String STRING2 = PREFIX + "string2";
+    public static final String ITEM = PREFIX + "item";
 
     public static final int STRING_COLOR = 0xE0A030;
     public static final int STRING_LIST_COLOR = 0xD2D22A;
+    public static final int ITEM_COLOR = 0xD8B45C;
+    public static final int ITEM_LIST_COLOR = 0xE2C66A;
 
     private PsitweaksSpellParams() {
     }

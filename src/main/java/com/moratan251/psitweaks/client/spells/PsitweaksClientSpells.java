@@ -110,6 +110,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_block_id");
     public static final DeferredHolder<Material, Material> SELECTOR_ONLINE_PLAYERS =
             registerPieceMaterial("selector_online_players");
+    public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEM =
+            registerPieceMaterial("selector_held_item");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
             registerPieceMaterial("selector_held_items");
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =
@@ -138,6 +140,14 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_string_list_remove");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_STRING =
             registerPieceMaterial("operator_random_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
+            registerPieceMaterial("operator_random_element", "operator_random_string");
+    public static final DeferredHolder<Material, Material> MODE_STRING =
+            registerPieceMaterial("mode/string");
+    public static final DeferredHolder<Material, Material> MODE_ENTITY =
+            registerPieceMaterial("mode/entity");
+    public static final DeferredHolder<Material, Material> MODE_ITEM =
+            registerPieceMaterial("mode/item");
 
     private PsitweaksClientSpells() {
     }
@@ -147,7 +157,11 @@ public final class PsitweaksClientSpells {
     }
 
     private static DeferredHolder<Material, Material> registerPieceMaterial(String id) {
+        return registerPieceMaterial(id, id);
+    }
+
+    private static DeferredHolder<Material, Material> registerPieceMaterial(String id, String textureId) {
         return SPELL_PIECE_MATERIALS.register(id,
-                () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/" + id)));
+                () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/" + textureId)));
     }
 }

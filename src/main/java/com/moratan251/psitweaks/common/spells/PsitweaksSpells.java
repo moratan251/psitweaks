@@ -114,6 +114,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_block_id", PieceSelectorBlockId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorOnlinePlayers>> SELECTOR_ONLINE_PLAYERS =
             registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItem>> SELECTOR_HELD_ITEM =
+            registerPiece("selector_held_item", PieceSelectorHeldItem.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItems>> SELECTOR_HELD_ITEMS =
             registerPiece("selector_held_items", PieceSelectorHeldItems.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorInternalItems>> SELECTOR_INTERNAL_ITEMS =
@@ -142,6 +144,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_string_list_remove", PieceOperatorStringListRemove.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRandomString>> OPERATOR_RANDOM_STRING =
             registerPiece("operator_random_string", PieceOperatorRandomString.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRandomElement>> OPERATOR_RANDOM_ELEMENT =
+            registerPiece("operator_random_element", PieceOperatorRandomElement.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -249,7 +253,12 @@ public final class PsitweaksSpells {
                     PieceOperatorEntityListToStringList.class,
                     PieceOperatorStringListAdd.class,
                     PieceOperatorStringListRemove.class,
-                    PieceOperatorRandomString.class
+                    PieceOperatorRandomString.class,
+                    PieceOperatorRandomElement.class
+            ));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> ITEM =
+            ADVANCEMENT_GROUPS.register("item", () -> List.of(
+                    PieceSelectorHeldItem.class
             ));
 
     private PsitweaksSpells() {

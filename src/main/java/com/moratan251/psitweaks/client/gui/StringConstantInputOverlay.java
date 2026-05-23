@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class StringConstantInputOverlay {
-    private static final int PANEL_WIDTH = 260;
-    private static final int PANEL_HEIGHT = 92;
+    private static final int PANEL_WIDTH = 320;
+    private static final int PANEL_HEIGHT = 122;
     private static final int MARGIN = 8;
-    private static final int MAX_LINES = 4;
+    private static final int MAX_LINES = 6;
     private static final int GRID_CELL_SIZE = 18;
     private static final int GRID_SIZE = 9;
     private static final int DOUBLE_CLICK_INTERVAL_MS = 500;
@@ -28,21 +28,30 @@ public final class StringConstantInputOverlay {
     private static final int TEXT_WIDTH_INSET = 22;
     private static final int TEXT_AREA_LEFT_OFFSET = 8;
     private static final int TEXT_AREA_TOP_OFFSET = 20;
-    private static final int TEXT_AREA_BOTTOM_OFFSET = 18;
+    private static final int TEXT_AREA_BOTTOM_OFFSET = 36;
+    private static final int ACTION_BUTTON_WIDTH = 68;
+    private static final int ACTION_BUTTON_HEIGHT = 14;
+    private static final int ACTION_BUTTON_GAP = 4;
+    private static final int ACTION_BUTTON_BOTTOM_OFFSET = 28;
 
     private static final int OUTER_COLOR = 0xF0100018;
     private static final int BORDER_COLOR = 0xFF7F1ED4;
     private static final int INNER_COLOR = 0xF0222024;
+    private static final int BUTTON_COLOR = 0xFF34263D;
+    private static final int BUTTON_DISABLED_COLOR = 0xFF242128;
     private static final int TEXT_COLOR = 0xFFEDE8F8;
     private static final int MUTED_TEXT_COLOR = 0xFFB8ACC8;
     private static final int COUNT_COLOR = 0xFFCFA9FF;
+    private static final int SELECTION_COLOR = 0x805E35A5;
 
     private static int activeX = -1;
     private static int activeY = -1;
     private static int activeCursorPosition = -1;
+    private static int selectionAnchor = -1;
     private static int lastClickX = -1;
     private static int lastClickY = -1;
     private static long lastClickTime = 0L;
+    private static boolean draggingSelection = false;
 
     private StringConstantInputOverlay() {
     }
@@ -76,10 +85,51 @@ public final class StringConstantInputOverlay {
             return false;
         }
 
+        if (button == 0) {
+            ActionButton actionButton = actionButtonAt(layout, mouseX, mouseY);
+            if (actionButton != null) {
+                ClientGuiSounds.playClick();
+                handleActionButton(screen, piece, actionButton);
+                return true;
+            }
+        }
+
         if (button == 0 && layout.containsTextArea(mouseX, mouseY)) {
             Font font = Minecraft.getInstance().font;
-            piece.moveCursorTo(cursorPositionForClick(font, piece, layout, mouseX, mouseY));
-            rememberCursor(piece);
+            activeCursorPosition = clampCursor(piece, cursorPositionForClick(font, piece, layout, mouseX, mouseY));
+            selectionAnchor = activeCursorPosition;
+            draggingSelection = true;
+            piece.moveCursorTo(activeCursorPosition);
+        }
+        return true;
+    }
+
+    public static boolean handleMouseDraggedPre(GuiProgrammer screen, double mouseX, double mouseY, int button) {
+        if (button != 0 || !draggingSelection) {
+            return false;
+        }
+
+        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        if (piece == null) {
+            draggingSelection = false;
+            return false;
+        }
+
+        PanelLayout layout = layoutFor(screen);
+        Font font = Minecraft.getInstance().font;
+        activeCursorPosition = clampCursor(piece, cursorPositionForClick(font, piece, layout, mouseX, mouseY));
+        piece.moveCursorTo(activeCursorPosition);
+        return true;
+    }
+
+    public static boolean handleMouseReleasedPre(GuiProgrammer screen, int button) {
+        if (button != 0 || !draggingSelection) {
+            return false;
+        }
+
+        draggingSelection = false;
+        if (getActiveSelectedStringConstant(screen) == null || !hasSelection()) {
+            clearSelection();
         }
         return true;
     }
@@ -90,11 +140,8 @@ public final class StringConstantInputOverlay {
             return false;
         }
 
-        if (!screen.isSpectator() && piece.onCharTyped(codePoint, modifiers, false)) {
-            screen.pushState(true);
-            piece.onCharTyped(codePoint, modifiers, true);
-            screen.onSpellChanged(false);
-            rememberCursor(piece);
+        if (!screen.isSpectator()) {
+            replaceSelectionOrInsert(screen, piece, String.valueOf(codePoint), false);
         }
         return true;
     }
@@ -105,9 +152,24 @@ public final class StringConstantInputOverlay {
             return false;
         }
 
+        if (Screen.isSelectAll(keyCode)) {
+            selectAll(piece);
+            return true;
+        }
+
+        if (Screen.isCopy(keyCode)) {
+            copySelection(piece);
+            return true;
+        }
+
+        if (Screen.isCut(keyCode)) {
+            cutSelection(screen, piece);
+            return true;
+        }
+
         if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
             if (Screen.hasShiftDown()) {
-                insertLineBreak(screen, piece);
+                replaceSelectionOrInsert(screen, piece, "\n", true);
             } else {
                 deactivate(screen);
             }
@@ -115,14 +177,17 @@ public final class StringConstantInputOverlay {
         }
 
         if (keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_DOWN) {
-            moveCursorVertically(screen, piece, keyCode == GLFW.GLFW_KEY_UP ? -1 : 1);
-            rememberCursor(piece);
+            moveCursorVertically(screen, piece, keyCode == GLFW.GLFW_KEY_UP ? -1 : 1, Screen.hasShiftDown());
             return true;
         }
 
         if (isHorizontalCursorKey(keyCode)) {
-            moveCursorHorizontally(piece, keyCode);
-            rememberCursor(piece);
+            moveCursorHorizontally(
+                    piece,
+                    keyCode,
+                    Screen.hasShiftDown(),
+                    Screen.hasControlDown() && (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT)
+            );
             return true;
         }
 
@@ -170,12 +235,16 @@ public final class StringConstantInputOverlay {
         activeX = -1;
         activeY = -1;
         activeCursorPosition = -1;
+        clearSelection();
+        draggingSelection = false;
     }
 
     private static void activate(PieceConstantString piece, int x, int y) {
         activeX = x;
         activeY = y;
         activeCursorPosition = piece.getValue().length();
+        clearSelection();
+        draggingSelection = false;
         piece.setCursorEditing(true);
         piece.moveCursorTo(activeCursorPosition);
     }
@@ -246,7 +315,7 @@ public final class StringConstantInputOverlay {
     private static void drawPanel(GuiGraphics guiGraphics, int x, int y, int width, int height) {
         guiGraphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, BORDER_COLOR);
         guiGraphics.fill(x, y, x + width, y + height, OUTER_COLOR);
-        guiGraphics.fill(x + 8, y + 20, x + width - 8, y + height - 18, INNER_COLOR);
+        guiGraphics.fill(x + 8, y + 20, x + width - 8, y + height - TEXT_AREA_BOTTOM_OFFSET, INNER_COLOR);
     }
 
     private static void drawText(
@@ -273,10 +342,12 @@ public final class StringConstantInputOverlay {
             int firstLine = firstVisibleLine(lines, cursorLine);
             int textY = layout.textY();
             for (int i = firstLine; i < Math.min(lines.size(), firstLine + MAX_LINES); i++) {
-                guiGraphics.drawString(font, lines.get(i).text, layout.textX(), textY, TEXT_COLOR, false);
+                TextLine line = lines.get(i);
+                drawSelection(guiGraphics, font, value, line, layout.textX(), textY);
+                guiGraphics.drawString(font, line.text, layout.textX(), textY, TEXT_COLOR, false);
                 if (i == cursorLine) {
                     int cursorX = layout.textX()
-                            + font.width(value.substring(lines.get(i).start, piece.getCursorPosition()));
+                            + font.width(value.substring(line.start, piece.getCursorPosition()));
                     drawCursor(screen, guiGraphics, cursorX, textY);
                 }
                 textY += font.lineHeight;
@@ -287,6 +358,36 @@ public final class StringConstantInputOverlay {
                 ? "psitweaks.gui.string_constant_input.read_only"
                 : "psitweaks.gui.string_constant_input.hint");
         guiGraphics.drawString(font, hint, layout.x + 8, layout.y + layout.height - 12, MUTED_TEXT_COLOR, false);
+        drawActionButtons(screen, guiGraphics, font, layout);
+    }
+
+    private static void drawActionButtons(GuiProgrammer screen, GuiGraphics guiGraphics, Font font, PanelLayout layout) {
+        for (ActionButton actionButton : ActionButton.values()) {
+            drawActionButton(screen, guiGraphics, font, layout, actionButton);
+        }
+    }
+
+    private static void drawActionButton(
+            GuiProgrammer screen,
+            GuiGraphics guiGraphics,
+            Font font,
+            PanelLayout layout,
+            ActionButton actionButton
+    ) {
+        int x = actionButtonX(layout, actionButton);
+        int y = actionButtonY(layout);
+        boolean disabled = screen.isSpectator() && actionButton.requiresEditing;
+        int fillColor = disabled ? BUTTON_DISABLED_COLOR : BUTTON_COLOR;
+        int labelColor = disabled ? MUTED_TEXT_COLOR : TEXT_COLOR;
+        Component label = Component.translatable(actionButton.translationKey);
+
+        guiGraphics.fill(x - 1, y - 1, x + ACTION_BUTTON_WIDTH + 1, y + ACTION_BUTTON_HEIGHT + 1, BORDER_COLOR);
+        guiGraphics.fill(x, y, x + ACTION_BUTTON_WIDTH, y + ACTION_BUTTON_HEIGHT, fillColor);
+        guiGraphics.drawString(font, label,
+                x + Math.max(2, (ACTION_BUTTON_WIDTH - font.width(label)) / 2),
+                y + 3,
+                labelColor,
+                false);
     }
 
     private static void drawCursor(GuiProgrammer screen, GuiGraphics guiGraphics, int x, int y) {
@@ -297,6 +398,38 @@ public final class StringConstantInputOverlay {
 
     private static boolean shouldShowCursor() {
         return (System.currentTimeMillis() / 500L) % 2L == 0L;
+    }
+
+    private static void drawSelection(
+            GuiGraphics guiGraphics,
+            Font font,
+            String value,
+            TextLine line,
+            int x,
+            int y
+    ) {
+        if (!hasSelection()) {
+            return;
+        }
+
+        int selectedStart = selectionStart();
+        int selectedEnd = selectionEnd();
+        if (line.start == line.end) {
+            if (selectedStart <= line.start && selectedEnd > line.start) {
+                guiGraphics.fill(x, y - 1, x + Math.max(1, font.width(" ")), y + font.lineHeight, SELECTION_COLOR);
+            }
+            return;
+        }
+
+        int start = Math.max(line.start, selectedStart);
+        int end = Math.min(line.end, selectedEnd);
+        if (start >= end) {
+            return;
+        }
+
+        int startX = x + font.width(value.substring(line.start, start));
+        int endX = x + font.width(value.substring(line.start, end));
+        guiGraphics.fill(startX, y - 1, Math.max(startX + 1, endX), y + font.lineHeight, SELECTION_COLOR);
     }
 
     private static int cursorPositionForClick(
@@ -329,10 +462,15 @@ public final class StringConstantInputOverlay {
         return line.end;
     }
 
-    private static void moveCursorVertically(GuiProgrammer screen, PieceConstantString piece, int direction) {
+    private static void moveCursorVertically(
+            GuiProgrammer screen,
+            PieceConstantString piece,
+            int direction,
+            boolean selecting
+    ) {
         String value = piece.getValue();
         if (value.isEmpty()) {
-            piece.moveCursorTo(0);
+            moveCursorTo(piece, 0, selecting);
             return;
         }
 
@@ -343,35 +481,180 @@ public final class StringConstantInputOverlay {
         TextLine currentLine = lines.get(currentLineIndex);
         TextLine targetLine = lines.get(targetLineIndex);
         int targetX = font.width(value.substring(currentLine.start, piece.getCursorPosition()));
-        piece.moveCursorTo(cursorPositionForLineX(font, value, targetLine, targetX));
+        moveCursorTo(piece, cursorPositionForLineX(font, value, targetLine, targetX), selecting);
     }
 
-    private static void moveCursorHorizontally(PieceConstantString piece, int keyCode) {
+    private static void moveCursorHorizontally(
+            PieceConstantString piece,
+            int keyCode,
+            boolean selecting,
+            boolean movingByWord
+    ) {
+        int cursorPosition = piece.getCursorPosition();
         if (keyCode == GLFW.GLFW_KEY_LEFT) {
-            piece.moveCursorTo(piece.getCursorPosition() - 1);
+            moveCursorTo(piece, movingByWord ? previousWordPosition(piece.getValue(), cursorPosition) : cursorPosition - 1,
+                    selecting);
         } else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
-            piece.moveCursorTo(piece.getCursorPosition() + 1);
+            moveCursorTo(piece, movingByWord ? nextWordPosition(piece.getValue(), cursorPosition) : cursorPosition + 1,
+                    selecting);
         } else if (keyCode == GLFW.GLFW_KEY_HOME) {
-            piece.moveCursorTo(0);
+            moveCursorTo(piece, 0, selecting);
         } else if (keyCode == GLFW.GLFW_KEY_END) {
-            piece.moveCursorTo(piece.getValue().length());
+            moveCursorTo(piece, piece.getValue().length(), selecting);
         }
     }
 
-    private static void insertLineBreak(GuiProgrammer screen, PieceConstantString piece) {
-        if (screen.isSpectator() || piece.getValue().length() >= StringSpellHelper.MAX_STRING_LENGTH) {
+    private static int previousWordPosition(String value, int cursorPosition) {
+        int index = Math.max(0, Math.min(cursorPosition, value.length()));
+        if (index <= 0) {
+            return 0;
+        }
+
+        index--;
+        while (index > 0 && Character.isWhitespace(value.charAt(index))) {
+            index--;
+        }
+
+        boolean word = isWordCharacter(value.charAt(index));
+        while (index > 0 && isSameWordClass(value.charAt(index - 1), word)) {
+            index--;
+        }
+        return index;
+    }
+
+    private static int nextWordPosition(String value, int cursorPosition) {
+        int index = Math.max(0, Math.min(cursorPosition, value.length()));
+        int length = value.length();
+        while (index < length && Character.isWhitespace(value.charAt(index))) {
+            index++;
+        }
+        if (index >= length) {
+            return length;
+        }
+
+        boolean word = isWordCharacter(value.charAt(index));
+        while (index < length && isSameWordClass(value.charAt(index), word)) {
+            index++;
+        }
+        return index;
+    }
+
+    private static boolean isSameWordClass(char character, boolean word) {
+        return !Character.isWhitespace(character) && isWordCharacter(character) == word;
+    }
+
+    private static boolean isWordCharacter(char character) {
+        return Character.isLetterOrDigit(character)
+                || character == '_'
+                || character == ':'
+                || character == '-'
+                || character == '.'
+                || character == '/';
+    }
+
+    private static void moveCursorTo(PieceConstantString piece, int cursorPosition, boolean selecting) {
+        int previousCursor = piece.getCursorPosition();
+        if (selecting) {
+            if (selectionAnchor < 0) {
+                selectionAnchor = previousCursor;
+            }
+        } else {
+            clearSelection();
+        }
+
+        piece.moveCursorTo(cursorPosition);
+        rememberCursor(piece);
+        if (selecting && !hasSelection()) {
+            clearSelection();
+        }
+    }
+
+    private static boolean replaceSelectionOrInsert(
+            GuiProgrammer screen,
+            PieceConstantString piece,
+            String input,
+            boolean consumeWhenUnchanged
+    ) {
+        if (screen.isSpectator()) {
+            return true;
+        }
+
+        int start = hasSelection() ? selectionStart() : piece.getCursorPosition();
+        int end = hasSelection() ? selectionEnd() : piece.getCursorPosition();
+        if (!piece.replaceRange(start, end, input, false, consumeWhenUnchanged)) {
+            return consumeWhenUnchanged;
+        }
+
+        screen.pushState(true);
+        piece.replaceRange(start, end, input, true, consumeWhenUnchanged);
+        screen.onSpellChanged(false);
+        rememberCursor(piece);
+        clearSelection();
+        return true;
+    }
+
+    private static boolean deleteSelection(GuiProgrammer screen, PieceConstantString piece) {
+        if (!hasSelection()) {
+            return false;
+        }
+
+        int start = selectionStart();
+        int end = selectionEnd();
+        if (!piece.deleteRange(start, end, false)) {
+            return false;
+        }
+
+        screen.pushState(true);
+        piece.deleteRange(start, end, true);
+        screen.onSpellChanged(false);
+        rememberCursor(piece);
+        clearSelection();
+        return true;
+    }
+
+    private static void handleActionButton(GuiProgrammer screen, PieceConstantString piece, ActionButton actionButton) {
+        switch (actionButton) {
+            case COPY_ALL -> copyAllText(piece);
+            case CLEAR_ALL -> replaceAllText(screen, piece, "");
+            case REPLACE_ALL -> replaceAllText(screen, piece, Minecraft.getInstance().keyboardHandler.getClipboard());
+        }
+    }
+
+    private static void copyAllText(PieceConstantString piece) {
+        Minecraft.getInstance().keyboardHandler.setClipboard(piece.getValue());
+    }
+
+    private static void replaceAllText(GuiProgrammer screen, PieceConstantString piece, String input) {
+        if (screen.isSpectator()) {
+            return;
+        }
+
+        String sanitized = StringSpellHelper.sanitize(input);
+        if (piece.getValue().equals(sanitized)) {
+            piece.moveCursorTo(sanitized.length());
+            rememberCursor(piece);
+            clearSelection();
             return;
         }
 
         screen.pushState(true);
-        piece.insertLineBreak(true);
+        piece.replaceValue(input);
         screen.onSpellChanged(false);
         rememberCursor(piece);
+        clearSelection();
     }
 
     private static boolean handleEditingKey(GuiProgrammer screen, PieceConstantString piece, int keyCode, int scanCode) {
         if (screen.isSpectator()) {
             return isContentEditingKey(keyCode);
+        }
+
+        if (Screen.isPaste(keyCode)) {
+            return replaceSelectionOrInsert(screen, piece, Minecraft.getInstance().keyboardHandler.getClipboard(), true);
+        }
+
+        if ((keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE) && hasSelection()) {
+            return deleteSelection(screen, piece);
         }
 
         if (!isContentEditingKey(keyCode) || !piece.onKeyPressed(keyCode, scanCode, false)) {
@@ -397,6 +680,9 @@ public final class StringConstantInputOverlay {
         }
 
         int clamped = clampCursor(piece, activeCursorPosition);
+        if (selectionAnchor >= 0) {
+            selectionAnchor = clampCursor(piece, selectionAnchor);
+        }
         if (!piece.isCursorEditing() || piece.getCursorPosition() != clamped) {
             piece.moveCursorTo(clamped);
         }
@@ -409,6 +695,43 @@ public final class StringConstantInputOverlay {
 
     private static int clampCursor(PieceConstantString piece, int cursorPosition) {
         return Math.max(0, Math.min(cursorPosition, piece.getValue().length()));
+    }
+
+    private static boolean hasSelection() {
+        return selectionAnchor >= 0 && selectionAnchor != activeCursorPosition;
+    }
+
+    private static int selectionStart() {
+        return Math.min(selectionAnchor, activeCursorPosition);
+    }
+
+    private static int selectionEnd() {
+        return Math.max(selectionAnchor, activeCursorPosition);
+    }
+
+    private static void clearSelection() {
+        selectionAnchor = -1;
+    }
+
+    private static void selectAll(PieceConstantString piece) {
+        activeCursorPosition = piece.getValue().length();
+        piece.moveCursorTo(activeCursorPosition);
+        selectionAnchor = activeCursorPosition == 0 ? -1 : 0;
+    }
+
+    private static void copySelection(PieceConstantString piece) {
+        if (hasSelection()) {
+            Minecraft.getInstance().keyboardHandler.setClipboard(
+                    piece.getValue().substring(selectionStart(), selectionEnd())
+            );
+        }
+    }
+
+    private static void cutSelection(GuiProgrammer screen, PieceConstantString piece) {
+        copySelection(piece);
+        if (!screen.isSpectator()) {
+            deleteSelection(screen, piece);
+        }
     }
 
     private static int cursorPositionForLineX(Font font, String value, TextLine line, int targetX) {
@@ -427,6 +750,32 @@ public final class StringConstantInputOverlay {
                 || keyCode == GLFW.GLFW_KEY_RIGHT
                 || keyCode == GLFW.GLFW_KEY_HOME
                 || keyCode == GLFW.GLFW_KEY_END;
+    }
+
+    private static ActionButton actionButtonAt(PanelLayout layout, double mouseX, double mouseY) {
+        int y = actionButtonY(layout);
+        if (mouseY < y || mouseY >= y + ACTION_BUTTON_HEIGHT) {
+            return null;
+        }
+
+        for (ActionButton actionButton : ActionButton.values()) {
+            int x = actionButtonX(layout, actionButton);
+            if (mouseX >= x && mouseX < x + ACTION_BUTTON_WIDTH) {
+                return actionButton;
+            }
+        }
+        return null;
+    }
+
+    private static int actionButtonX(PanelLayout layout, ActionButton actionButton) {
+        int totalWidth = ActionButton.values().length * ACTION_BUTTON_WIDTH
+                + (ActionButton.values().length - 1) * ACTION_BUTTON_GAP;
+        return layout.x + layout.width - 8 - totalWidth
+                + actionButton.ordinal() * (ACTION_BUTTON_WIDTH + ACTION_BUTTON_GAP);
+    }
+
+    private static int actionButtonY(PanelLayout layout) {
+        return layout.y + layout.height - ACTION_BUTTON_BOTTOM_OFFSET;
     }
 
     private static List<TextLine> splitLines(Font font, String value, int width) {
@@ -480,6 +829,20 @@ public final class StringConstantInputOverlay {
     }
 
     private record TextLine(int start, int end, String text) {
+    }
+
+    private enum ActionButton {
+        COPY_ALL("psitweaks.gui.string_constant_input.button.copy_all", false),
+        CLEAR_ALL("psitweaks.gui.string_constant_input.button.clear_all", true),
+        REPLACE_ALL("psitweaks.gui.string_constant_input.button.replace_all", true);
+
+        private final String translationKey;
+        private final boolean requiresEditing;
+
+        ActionButton(String translationKey, boolean requiresEditing) {
+            this.translationKey = translationKey;
+            this.requiresEditing = requiresEditing;
+        }
     }
 
     private record PanelLayout(int x, int y, int width, int height) {

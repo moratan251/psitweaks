@@ -105,6 +105,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "文字列リスト";
             default -> "String List";
         });
+        root.addProperty("psitweaks.datatype.entity", switch (locale) {
+            case "ja_jp" -> "Entity";
+            default -> "Entity";
+        });
+        root.addProperty("psitweaks.datatype.entity_list", switch (locale) {
+            case "ja_jp" -> "Entity List";
+            default -> "Entity List";
+        });
+        root.addProperty("psitweaks.datatype.item", switch (locale) {
+            case "ja_jp" -> "Item";
+            default -> "Item";
+        });
+        root.addProperty("psitweaks.datatype.item_list", switch (locale) {
+            case "ja_jp" -> "Item List";
+            default -> "Item List";
+        });
+        root.addProperty("psitweaks.gui.spell_piece_mode", switch (locale) {
+            case "ja_jp" -> "モード: %s";
+            default -> "Mode: %s";
+        });
+        root.addProperty("psitweaks.gui.spell_piece_mode.title", switch (locale) {
+            case "ja_jp" -> "モード選択";
+            default -> "Mode Select";
+        });
         root.addProperty("psitweaks.spellparam.string", switch (locale) {
             case "ja_jp" -> "文字列";
             default -> "String";
@@ -117,6 +141,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "文字列2";
             default -> "String 2";
         });
+        root.addProperty("psitweaks.spellparam.item", switch (locale) {
+            case "ja_jp" -> "Item";
+            default -> "Item";
+        });
         root.addProperty("psitweaks.gui.string_constant_input.empty", switch (locale) {
             case "ja_jp" -> "空文字列";
             default -> "Empty string";
@@ -128,6 +156,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.gui.string_constant_input.read_only", switch (locale) {
             case "ja_jp" -> "閲覧のみ";
             default -> "Read only";
+        });
+        root.addProperty("psitweaks.gui.string_constant_input.button.copy_all", switch (locale) {
+            case "ja_jp" -> "全コピー";
+            default -> "Copy All";
+        });
+        root.addProperty("psitweaks.gui.string_constant_input.button.clear_all", switch (locale) {
+            case "ja_jp" -> "全削除";
+            default -> "Clear";
+        });
+        root.addProperty("psitweaks.gui.string_constant_input.button.replace_all", switch (locale) {
+            case "ja_jp" -> "貼付";
+            default -> "Paste";
         });
         addPsitweaksCategoryBook(root);
         addMachineTranslations(root);
@@ -832,14 +872,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_sinh", "Operator: Hyperbolic Sine", "sinh(A)", "演算子: ハイパボリックサイン", "sinh(A)");
         addSpellPiece(root, "operator_cosh", "Operator: Hyperbolic Cosine", "cosh(A)", "演算子: ハイパボリックコサイン", "cosh(A)");
         addSpellPiece(root, "operator_tanh", "Operator: Hyperbolic Tangent", "tanh(A)", "演算子: ハイパボリックタンジェント", "tanh(A)");
-        addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 128 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大128文字です。");
-        addSpellPiece(root, "operator_string_to_number", "Operator: String to Number", "Parses a string as a finite number. Outputs 0 if parsing fails.", "演算子: 文字列数値化", "文字列を有限の数値に変換します。変換できない場合は0を出力します。");
+        addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1000 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大1000文字です。");
+        addSpellPiece(root, "operator_string_to_number", "Operator: String to Number", "Parses a string as a finite number. Outputs 0 if parsing fails.", "演算子: 文字列数値化", "文字列を有限の数値に変換します。変換できない場合は0を返します。");
         addSpellPiece(root, "operator_number_to_string", "Operator: Number to String", "Converts a number to a string. Non-finite values become an empty string.", "演算子: 数値文字列化", "数値を文字列に変換します。非有限値は空文字列になります。");
-        addSpellPiece(root, "selector_entity_type_id", "Selector: Entity Type ID", "Outputs the registry ID of the target entity type. Example: minecraft:zombie", "取得子: エンティティ種別ID", "指定エンティティの種別レジストリIDを文字列として出力します。例: minecraft:zombie");
+        addSpellPiece(root, "selector_entity_type_id", "Selector: Entity Type ID", "Outputs the registry ID of the target entity type. Example: minecraft:zombie", "取得子: エンティティ種別ID", "指定エンティティの種別レジストリIDを文字列として取得します。例: minecraft:zombie");
         addSpellPiece(root, "selector_block_id", "Selector: Block ID", "Outputs the registry ID of the block at the given position. Example: minecraft:stone", "取得子: ブロックID", "指定座標のブロックのレジストリIDを文字列として出力します。例: minecraft:stone");
-        addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として出力します。");
-        addSpellPiece(root, "selector_held_items", "Selector: Held Items", "Outputs the target entity's carried items as a String List in item_id|count format.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを item_id|count 形式の String List として出力します。");
-        addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as a String List in item_id|count format.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを item_id|count 形式の String List として出力します。");
+        addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
+        addSpellPiece(root, "selector_held_item", "Selector: Held Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
+        addSpellPiece(root, "selector_held_items", "Selector: Held Items", "Outputs the target entity's carried items as a String List in item_id|count format.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを item_id|count 形式の String List として取得します。");
+        addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as a String List in item_id|count format.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを item_id|count 形式の String List として取得します。");
         addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target entity's top-level NBT as key:value strings. The entity id is not included.", "取得子: NBT", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します。エンティティIDは含みません。");
         addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target entity's top-level NBT keys as a String List. The entity id is not included.", "取得子: NBTキー", "対象 Entity のNBTトップレベルキーを String List として出力します。エンティティIDは含みません。");
         addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target entity's top-level NBT value matching the String key. Missing keys output an empty string.", "取得子: NBT値", "対象 Entity のNBTトップレベルから String キーに一致する値を出力します。一致しない場合は空文字列です。");
@@ -852,6 +893,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_string_list_add", "Operator: String List Add", "Adds a string to the end of a String List.", "演算子: 文字列リスト追加", "文字列を String List の末尾に追加します。");
         addSpellPiece(root, "operator_string_list_remove", "Operator: String List Remove", "Removes the first matching string from a String List.", "演算子: 文字列リスト削除", "String List から最初に一致した文字列を1つ削除します。");
         addSpellPiece(root, "operator_random_string", "Operator: Random String", "Outputs one random string from a String List. Outputs an empty string if the list is empty.", "演算子: ランダム文字列", "String List からランダムに文字列を1つ出力します。リストが空の場合は空文字列を出力します。");
+        addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the selected list mode: String, Entity, or Item.", "演算子: ランダム要素", "選択中のモードに応じて String List、Entity List、Item List からランダムに1要素を出力します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -905,12 +947,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_sinh", "Returns the hyperbolic sine of the target number.", "対象数値のハイパボリックサインを返します. ");
         addBookPage(root, "operator_cosh", "Returns the hyperbolic cosine of the target number.", "対象数値のハイパボリックコサインを返します.");
         addBookPage(root, "operator_tanh", "Returns the hyperbolic tangent of the target number.", "対象数値のハイパボリックタンジェントを返します.");
-        addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 128 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大128文字です.");
+        addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1000 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大1000文字です.");
         addBookPage(root, "operator_string_to_number", "Parses the String input as a finite number. Invalid, NaN, and Infinity inputs output 0.", "String入力を有限の数値として解析します. 無効な入力, NaN, Infinity は0を出力します.");
         addBookPage(root, "operator_number_to_string", "Converts the Number input into a String. Integer values omit the decimal part, and non-finite values become an empty string.", "Number入力をStringへ変換します. 整数値は小数部を省略し, 非有限値は空文字列になります.");
         addBookPage(root, "selector_entity_type_id", "Outputs the registry ID of the target entity type as a String, such as minecraft:zombie.", "対象エンティティ種別のレジストリIDをStringとして出力します. 例: minecraft:zombie.");
         addBookPage(root, "selector_block_id", "Outputs the registry ID of the block at the target position as a String, such as minecraft:stone.", "対象座標にあるブロックのレジストリIDをStringとして出力します. 例: minecraft:stone.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
+        addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.");
         addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as a String List. Entries are aggregated by item registry ID and formatted as item_id|count, such as minecraft:stone|64. Empty inventories output an empty String List.", "対象 Entity の所持アイテムを String List として出力します. 各要素はアイテムID単位で合算され, minecraft:stone|64 のような item_id|count 形式になります. 空の場合は空の String List を出力します.");
         addBookPage(root, "selector_internal_items", "Outputs items from the target block's internal inventory as a String List. Entries are aggregated by item registry ID and formatted as item_id|count. Blocks without readable inventories output an empty String List.", "対象ブロックの内部インベントリを String List として出力します. 各要素はアイテムID単位で合算され, item_id|count 形式になります. 読み取り可能なインベントリがない場合は空の String List を出力します.");
         addBookPage(root, "selector_nbt", "Outputs the target Entity's top-level NBT as key:value strings in a String List. Values use SNBT text, and the entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します. 値はSNBT文字列で, エンティティIDは専用の取得子があるため意図的に含めません.");
@@ -925,6 +968,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_string_list_add", "Adds the String input to the end of the optional String List input. If the list input is not connected, it starts from an empty String List. Duplicate strings are allowed.", "String入力を optional の String List 入力の末尾に追加します. リスト入力が未接続の場合は空の String List から始めます. 重複する文字列も許可されます.");
         addBookPage(root, "operator_string_list_remove", "Removes the first entry that exactly matches the String input from the String List input. If no entry matches, the list is returned unchanged.", "String List 入力から, String入力と完全一致する最初の要素を1つ削除します. 一致する要素がない場合はリストをそのまま返します.");
         addBookPage(root, "operator_random_string", "Chooses one random String from the String List input. Empty lists output an empty String.", "String List 入力からランダムに1つの String を選びます. 空のリストは空文字列を出力します.");
+        addBookPage(root, "operator_random_element", "Chooses one random element from the selected list mode. String mode accepts a String List and returns a String. Entity mode accepts an Entity List and returns an Entity. Item mode accepts an Item List and returns an Item. Empty lists output an empty value for the current mode.", "選択中のモードに応じたリストからランダムに1要素を選びます. StringモードはString ListからString, EntityモードはEntity ListからEntity, ItemモードはItem ListからItemを出力します. 空リストの場合は現在モードの空値を出力します.");
     }
 
     private void addCadDisassembler(JsonObject root) {

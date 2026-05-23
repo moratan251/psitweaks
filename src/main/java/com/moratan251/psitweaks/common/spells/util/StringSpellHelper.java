@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.OptionalDouble;
 
 public final class StringSpellHelper {
-    public static final int MAX_STRING_LENGTH = 128;
+    public static final int MAX_STRING_LENGTH = 1000;
 
     private StringSpellHelper() {
     }
