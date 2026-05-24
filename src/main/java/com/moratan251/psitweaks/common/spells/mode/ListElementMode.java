@@ -4,7 +4,9 @@ import java.util.Locale;
 
 public enum ListElementMode {
     STRING("string", "S", "psitweaks.datatype.string", "psitweaks.datatype.string_list"),
-    ENTITY("entity", "E", "psitweaks.datatype.entity", "psitweaks.datatype.entity_list"),
+    NUMBER("number", "N", "psi.datatype.number", "psitweaks.datatype.number_list"),
+    VECTOR("vector", "V", "psi.datatype.vector3", "psitweaks.datatype.vector_list"),
+    ENTITY("entity", "E", "psi.datatype.entity", "psi.datatype.entity_list_wrapper"),
     ITEM("item", "I", "psitweaks.datatype.item", "psitweaks.datatype.item_list");
 
     private final String id;

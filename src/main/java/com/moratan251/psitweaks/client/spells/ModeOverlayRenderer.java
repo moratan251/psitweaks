@@ -38,7 +38,9 @@ public final class ModeOverlayRenderer {
         return switch (mode) {
             case ENTITY -> PsitweaksClientSpells.MODE_ENTITY.get();
             case ITEM -> PsitweaksClientSpells.MODE_ITEM.get();
+            case NUMBER -> PsitweaksClientSpells.MODE_NUMBER.get();
             case STRING -> PsitweaksClientSpells.MODE_STRING.get();
+            case VECTOR -> PsitweaksClientSpells.MODE_VECTOR.get();
         };
     }
 }

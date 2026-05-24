@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
-import com.moratan251.psitweaks.common.spells.util.ItemListStringHelper;
-import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
+import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
+import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -40,23 +40,23 @@ public class PieceSelectorInternalItems extends PieceSelector {
 
         IItemHandler handler = Capabilities.ItemHandler.BLOCK.getCapability(level, pos, state, blockEntity, null);
         if (handler != null) {
-            return ItemListStringHelper.fromItemHandler(handler);
+            return ItemListValueHelper.fromBlockItemHandler(level, pos, handler);
         }
 
         if (blockEntity instanceof Container container) {
-            return ItemListStringHelper.fromContainer(container);
+            return ItemListValueHelper.fromBlockContainer(level, pos, container);
         }
 
-        return StringListWrapper.EMPTY;
+        return SpellItemListWrapper.EMPTY;
     }
 
     @Override
     public Class<?> getEvaluationType() {
-        return StringListWrapper.class;
+        return SpellItemListWrapper.class;
     }
 
     @Override
     public Component getEvaluationTypeString() {
-        return Component.translatable("psitweaks.datatype.string_list");
+        return Component.translatable("psitweaks.datatype.item_list");
     }
 }

@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.client.spells;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -102,8 +103,16 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("constant_string");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_TO_NUMBER =
             registerPieceMaterial("operator_string_to_number");
+    public static final DeferredHolder<Material, Material> OPERATOR_FROM_STRING =
+            registerPieceMaterial("operator_from_string", "operator_from_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_FROM_STRING_LIST =
+            registerPieceMaterial("operator_list_from_string_list", "operator_list_from_string_list");
     public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_TO_STRING =
             registerPieceMaterial("operator_number_to_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_TO_STRING =
+            registerPieceMaterial("operator_to_string", "operator_to_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_TO_STRING_LIST =
+            registerPieceMaterial("operator_list_to_string_list", "operator_list_to_string_list");
     public static final DeferredHolder<Material, Material> SELECTOR_ENTITY_TYPE_ID =
             registerPieceMaterial("selector_entity_type_id");
     public static final DeferredHolder<Material, Material> SELECTOR_BLOCK_ID =
@@ -116,6 +125,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_held_items");
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =
             registerPieceMaterial("selector_internal_items");
+    public static final DeferredHolder<Material, Material> SELECTOR_INDEXED_ELEMENT =
+            registerPieceMaterial("selector_indexed_element", "psi", "operator_list_index");
     public static final DeferredHolder<Material, Material> SELECTOR_NBT =
             registerPieceMaterial("selector_nbt");
     public static final DeferredHolder<Material, Material> SELECTOR_NBT_KEYS =
@@ -138,12 +149,26 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_string_list_add");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_REMOVE =
             registerPieceMaterial("operator_string_list_remove");
-    public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_STRING =
-            registerPieceMaterial("operator_random_string");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
             registerPieceMaterial("operator_random_element", "operator_random_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =
+            registerPieceMaterial("operator_list_add");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE =
+            registerPieceMaterial("operator_list_remove");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SIZE =
+            registerPieceMaterial("operator_list_size");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_EXCLUSION =
+            registerPieceMaterial("operator_list_exclusion");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_INTERSECTION =
+            registerPieceMaterial("operator_list_intersection");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_CONCATENATION =
+            registerPieceMaterial("operator_list_concatenation");
     public static final DeferredHolder<Material, Material> MODE_STRING =
             registerPieceMaterial("mode/string");
+    public static final DeferredHolder<Material, Material> MODE_NUMBER =
+            registerPieceMaterial("mode/number");
+    public static final DeferredHolder<Material, Material> MODE_VECTOR =
+            registerPieceMaterial("mode/vector");
     public static final DeferredHolder<Material, Material> MODE_ENTITY =
             registerPieceMaterial("mode/entity");
     public static final DeferredHolder<Material, Material> MODE_ITEM =
@@ -163,5 +188,12 @@ public final class PsitweaksClientSpells {
     private static DeferredHolder<Material, Material> registerPieceMaterial(String id, String textureId) {
         return SPELL_PIECE_MATERIALS.register(id,
                 () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/" + textureId)));
+    }
+
+    private static DeferredHolder<Material, Material> registerPieceMaterial(String id, String textureNamespace,
+            String textureId) {
+        return SPELL_PIECE_MATERIALS.register(id,
+                () -> new Material(InventoryMenu.BLOCK_ATLAS,
+                        ResourceLocation.fromNamespaceAndPath(textureNamespace, "spell/" + textureId)));
     }
 }

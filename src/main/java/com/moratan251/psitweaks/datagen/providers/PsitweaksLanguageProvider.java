@@ -94,24 +94,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Enter a value between %s and %s";
         });
         root.addProperty("psitweaks.spellparam.spellgram", switch (locale) {
-            case "ja_jp" -> "魔法式";
+            case "ja_jp" -> "SpellGram";
             default -> "SpellGram";
         });
         root.addProperty("psitweaks.datatype.string", switch (locale) {
-            case "ja_jp" -> "文字列";
+            case "ja_jp" -> "String";
             default -> "String";
         });
         root.addProperty("psitweaks.datatype.string_list", switch (locale) {
-            case "ja_jp" -> "文字列リスト";
+            case "ja_jp" -> "String List";
             default -> "String List";
         });
-        root.addProperty("psitweaks.datatype.entity", switch (locale) {
-            case "ja_jp" -> "Entity";
-            default -> "Entity";
+        root.addProperty("psitweaks.datatype.number_list", switch (locale) {
+            case "ja_jp" -> "Number List";
+            default -> "Number List";
         });
-        root.addProperty("psitweaks.datatype.entity_list", switch (locale) {
-            case "ja_jp" -> "Entity List";
-            default -> "Entity List";
+        root.addProperty("psitweaks.datatype.vector_list", switch (locale) {
+            case "ja_jp" -> "Vector List";
+            default -> "Vector List";
         });
         root.addProperty("psitweaks.datatype.item", switch (locale) {
             case "ja_jp" -> "Item";
@@ -140,6 +140,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellparam.string2", switch (locale) {
             case "ja_jp" -> "文字列2";
             default -> "String 2";
+        });
+        root.addProperty("psitweaks.spellparam.element1", switch (locale) {
+            case "ja_jp" -> "要素1";
+            default -> "Element 1";
+        });
+        root.addProperty("psitweaks.spellparam.element2", switch (locale) {
+            case "ja_jp" -> "要素2";
+            default -> "Element 2";
+        });
+        root.addProperty("psitweaks.spellparam.element3", switch (locale) {
+            case "ja_jp" -> "要素3";
+            default -> "Element 3";
         });
         root.addProperty("psitweaks.spellparam.item", switch (locale) {
             case "ja_jp" -> "Item";
@@ -262,7 +274,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_machine.transcendent_universal_cable", "This is simply an upgraded version of Mekanism's Universal Cable. It has 128 times the performance of the Ultimate Cable, making it suitable for fusion reactor-class power output."},
             {"psi.book.page.psitweaks_machines.0", "PsiTweaks adds machines that connect spellcraft with automation and industrial processing. Some machines are pure psionic tools, while others integrate with Mekanism-style energy and materials."},
             {"psi.book.page.psitweaks_machines.1", "These machines are the main entry points for research, mutation, Sculk processing, and Psi-to-energy conversion."},
-            {"psi.book.page.psitweaks_machines.2", "The $(l:psitweaks_machines/psionic_generator)$(o)$(item)Psi-Link Generator$(0)$(/l) links to its Mekanism owner. When enabled, loaded, and the owner is online, it consumes that player's Psi and produces energy for the machine's buffer.$(p)The rate is set in the GUI. More Psi per tick means more power, but it also drains the owner faster."},
+            {"psi.book.page.psitweaks_machines.2", "The $(l:psitweaks_machines/psionic_generator)$(o)$(item)Psi-Link Generator$(0)$(/l) links to its owner. When enabled, loaded, and the owner is online, it consumes that player's Psi and produces energy for the machine's buffer.$(p)The rate is set in the GUI. More Psi per tick means more power, but it also drains the owner faster."},
             {"psi.book.page.psitweaks_magician.0", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades."},
             {"psi.book.page.psitweaks_magician.1", "An unemployed villager can become a $(thing)Magician$(0) by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site.$(p)Place the assembler where a villager can reach it, just like other villager workstation blocks."},
             {"psi.book.page.psitweaks_magician.2", "A Magician is also the source of the $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l). It drops when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l), and is used in caster-focused recipes."},
@@ -395,7 +407,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_machine.cad_disassembler", "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.$(p)CAD素体を交換するときや, 古い構成から部品を回収したいときに使います."},
             {"psi.book.page.psitweaks_machine.material_mutator", "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます."},
             {"psi.book.page.psitweaks_machine.program_researcher", "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究の消費電力と時間はJEIで確認できます."},
-            {"psi.book.page.psitweaks_machine.psionic_generator", "Mekanismの所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります."},
+            {"psi.book.page.psitweaks_machine.psionic_generator", "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります."},
             {"psi.book.page.psitweaks_machine.sculk_eroder", "石, 土, 砂系などのブロックアイテムをスカルク系の出力へ侵食加工する機械です.$(p)自然なスカルク伝播に頼らず, スカルク素材を得たいときに使います."},
             {"psi.book.page.psitweaks_machine.spellmachinery_casing", "高度な魔法を機械により実行するための筐体ブロックです."},
             {"psi.book.page.psitweaks_machine.transcendent_energy_cube", "これは単純に, MekanismのEnergy Cubeの強化版です. 究極エネルギーキューブの128倍の容量と出力性能を持ち, 核分裂炉級の電力を蓄えるのに向きます."},
@@ -874,13 +886,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_tanh", "Operator: Hyperbolic Tangent", "tanh(A)", "演算子: ハイパボリックタンジェント", "tanh(A)");
         addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1000 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大1000文字です。");
         addSpellPiece(root, "operator_string_to_number", "Operator: String to Number", "Parses a string as a finite number. Outputs 0 if parsing fails.", "演算子: 文字列数値化", "文字列を有限の数値に変換します。変換できない場合は0を返します。");
+        addSpellPiece(root, "operator_from_string", "Operator: From String", "Converts a String into a Number or Vector for the selected mode.", "演算子: 文字列から変換", "選択中のモードに応じて String を Number または Vector に変換します。");
+        addSpellPiece(root, "operator_list_from_string_list", "Operator: From String List", "Converts a String List into a Number List or Vector List for the selected mode.", "演算子: 文字列リストから変換", "選択中のモードに応じて String List を Number List または Vector List に変換します。");
         addSpellPiece(root, "operator_number_to_string", "Operator: Number to String", "Converts a number to a string. Non-finite values become an empty string.", "演算子: 数値文字列化", "数値を文字列に変換します。非有限値は空文字列になります。");
+        addSpellPiece(root, "operator_to_string", "Operator: To String", "Converts an Entity, Item, Vector, or Number into a String.", "演算子: 文字列へ変換", "Entity、Item、Vector、Number を String に変換します。");
+        addSpellPiece(root, "operator_list_to_string_list", "Operator: To String List", "Converts an Entity List, Item List, Vector List, or Number List into a String List.", "演算子: 文字列リストへ変換", "Entity List、Item List、Vector List、Number List を String List に変換します。");
         addSpellPiece(root, "selector_entity_type_id", "Selector: Entity Type ID", "Outputs the registry ID of the target entity type. Example: minecraft:zombie", "取得子: エンティティ種別ID", "指定エンティティの種別レジストリIDを文字列として取得します。例: minecraft:zombie");
         addSpellPiece(root, "selector_block_id", "Selector: Block ID", "Outputs the registry ID of the block at the given position. Example: minecraft:stone", "取得子: ブロックID", "指定座標のブロックのレジストリIDを文字列として出力します。例: minecraft:stone");
         addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
         addSpellPiece(root, "selector_held_item", "Selector: Held Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
-        addSpellPiece(root, "selector_held_items", "Selector: Held Items", "Outputs the target entity's carried items as a String List in item_id|count format.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを item_id|count 形式の String List として取得します。");
-        addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as a String List in item_id|count format.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを item_id|count 形式の String List として取得します。");
+        addSpellPiece(root, "selector_held_items", "Selector: Held Items", "Outputs the target entity's carried items as an Item List.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを Item List として取得します。");
+        addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as an Item List.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを Item List として取得します。");
+        addSpellPiece(root, "selector_indexed_element", "Selector: Indexed Element", "Outputs the element at a zero-based index from the selected mode's List.", "取得子: インデックス要素", "選択中のモードの List から0始まりのインデックスにある要素を取得します。");
         addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target entity's top-level NBT as key:value strings. The entity id is not included.", "取得子: NBT", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します。エンティティIDは含みません。");
         addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target entity's top-level NBT keys as a String List. The entity id is not included.", "取得子: NBTキー", "対象 Entity のNBTトップレベルキーを String List として出力します。エンティティIDは含みません。");
         addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target entity's top-level NBT value matching the String key. Missing keys output an empty string.", "取得子: NBT値", "対象 Entity のNBTトップレベルから String キーに一致する値を出力します。一致しない場合は空文字列です。");
@@ -892,8 +909,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_entity_list_to_string_list", "Operator: List Conversion", "Converts entity type IDs from an Entity List into a String List.", "演算子: リスト変換", "Entity List のエンティティ種別IDを String List に変換します。");
         addSpellPiece(root, "operator_string_list_add", "Operator: String List Add", "Adds a string to the end of a String List.", "演算子: 文字列リスト追加", "文字列を String List の末尾に追加します。");
         addSpellPiece(root, "operator_string_list_remove", "Operator: String List Remove", "Removes the first matching string from a String List.", "演算子: 文字列リスト削除", "String List から最初に一致した文字列を1つ削除します。");
-        addSpellPiece(root, "operator_random_string", "Operator: Random String", "Outputs one random string from a String List. Outputs an empty string if the list is empty.", "演算子: ランダム文字列", "String List からランダムに文字列を1つ出力します。リストが空の場合は空文字列を出力します。");
-        addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the selected list mode: String, Entity, or Item.", "演算子: ランダム要素", "選択中のモードに応じて String List、Entity List、Item List からランダムに1要素を出力します。");
+        addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the list for the selected mode.", "演算子: ランダム要素", "選択中のモードに応じてリストからランダムに1要素を出力します。");
+        addSpellPiece(root, "operator_list_add", "Operator: List Add", "Adds up to three elements to the list for the selected mode.", "演算子: リスト追加", "選択中のモードのリストに最大3つの要素を追加します。");
+        addSpellPiece(root, "operator_list_remove", "Operator: List Remove", "Removes up to three elements from the list for the selected mode.", "演算子: リスト削除", "選択中のモードのリストから最大3つの要素を削除します。");
+        addSpellPiece(root, "operator_list_size", "Operator: List Size", "Outputs the size of the list for the selected mode.", "演算子: リストサイズ", "選択中のモードのリストの要素数を出力します。");
+        addSpellPiece(root, "operator_list_exclusion", "Operator: List Exclusion", "Outputs the elements of List 1 that are not present in List 2 for the selected mode.", "演算子: リスト除外", "選択中のモードでリスト1からリスト2に含まれる要素を除外します。");
+        addSpellPiece(root, "operator_list_intersection", "Operator: List Intersection", "Outputs the elements shared by two lists for the selected mode.", "演算子: リスト共通部分", "選択中のモードで2つのリストに共通する要素を出力します。");
+        addSpellPiece(root, "operator_list_concatenation", "Operator: List Concatenation", "Combines two lists for the selected mode.", "演算子: リスト結合", "選択中のモードで2つのリストを結合します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -949,13 +971,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_tanh", "Returns the hyperbolic tangent of the target number.", "対象数値のハイパボリックタンジェントを返します.");
         addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1000 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大1000文字です.");
         addBookPage(root, "operator_string_to_number", "Parses the String input as a finite number. Invalid, NaN, and Infinity inputs output 0.", "String入力を有限の数値として解析します. 無効な入力, NaN, Infinity は0を出力します.");
+        addBookPage(root, "operator_from_string", "Converts the String input into a Number or Vector for the selected mode. Number mode matches Operator: String to Number and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails. Left-click the spell piece to select the mode.", "選択中のモードに応じて String 入力を Number または Vector に変換します. Number モードは 演算子: 文字列数値化 と同じく, 無効な入力では0を出力します. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) を受け付けます. Vector は大文字小文字を区別せず, 解析失敗時はゼロベクトルを出力します. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_from_string_list", "Converts a String List into a Number List or Vector List for the selected mode. Number mode applies Operator: String to Number to each entry, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries. Left-click the spell piece to select the mode.", "選択中のモードに応じて String List を Number List または Vector List に変換します. Number モードは各要素に 演算子: 文字列数値化 と同じ処理を行うため, 無効な要素は0になります. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) に一致する要素のみ変換し, 無効な要素は無視します. Vector は大文字小文字を区別しません. スペルピースを左クリックでモードを選択できます.");
         addBookPage(root, "operator_number_to_string", "Converts the Number input into a String. Integer values omit the decimal part, and non-finite values become an empty string.", "Number入力をStringへ変換します. 整数値は小数部を省略し, 非有限値は空文字列になります.");
+        addBookPage(root, "operator_to_string", "Converts the selected mode's value into a String. Entity and Item modes output registry IDs. Vector and Number modes use the same text form shown by Trick: Debug. Left-click the spell piece to select the mode.", "選択中のモードの値を String に変換します. Entity と Item モードはレジストリIDを出力します. Vector と Number モードは 作動式: デバッグ と同じ文字列表現を使います. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_to_string_list", "Converts the selected mode's List into a String List while preserving input order. Entity and Item modes output registry IDs. Vector and Number modes use the same text form shown by Trick: Debug. Left-click the spell piece to select the mode.", "選択中のモードの List を入力順のまま String List に変換します. Entity と Item モードはレジストリIDを出力します. Vector と Number モードは 作動式: デバッグ と同じ文字列表現を使います. スペルピースを左クリックでモードを選択できます.");
         addBookPage(root, "selector_entity_type_id", "Outputs the registry ID of the target entity type as a String, such as minecraft:zombie.", "対象エンティティ種別のレジストリIDをStringとして出力します. 例: minecraft:zombie.");
         addBookPage(root, "selector_block_id", "Outputs the registry ID of the block at the target position as a String, such as minecraft:stone.", "対象座標にあるブロックのレジストリIDをStringとして出力します. 例: minecraft:stone.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
         addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.");
-        addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as a String List. Entries are aggregated by item registry ID and formatted as item_id|count, such as minecraft:stone|64. Empty inventories output an empty String List.", "対象 Entity の所持アイテムを String List として出力します. 各要素はアイテムID単位で合算され, minecraft:stone|64 のような item_id|count 形式になります. 空の場合は空の String List を出力します.");
-        addBookPage(root, "selector_internal_items", "Outputs items from the target block's internal inventory as a String List. Entries are aggregated by item registry ID and formatted as item_id|count. Blocks without readable inventories output an empty String List.", "対象ブロックの内部インベントリを String List として出力します. 各要素はアイテムID単位で合算され, item_id|count 形式になります. 読み取り可能なインベントリがない場合は空の String List を出力します.");
+        addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List.", "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を出力します.");
+        addBookPage(root, "selector_internal_items", "Outputs items from the target block's internal inventory as an Item List. Item handlers and containers are read slot by slot. Blocks without readable inventories output an empty Item List.", "対象ブロックの内部インベントリを Item List として出力します. ItemHandler と Container をスロット単位で読み取ります. 読み取り可能なインベントリがない場合は空の Item List を出力します.");
+        addBookPage(root, "selector_indexed_element", "Outputs the element at a zero-based index from the selected mode's List. String, Number, Vector, Entity, and Item modes each accept the matching List type and return one value of that type. Out-of-range indexes produce the same out-of-bounds spell error as Psi's Indexed Element. Left-click the spell piece to select the mode.", "選択中のモードの List から, 0始まりのインデックスにある要素を出力します. String, Number, Vector, Entity, Item の各モードは対応する List 型を入力し, その型の値を1つ返します. 範囲外のインデックスは Psi 本体の Indexed Element と同じ範囲外エラーになります. スペルピースを左クリックでモードを選択できます.");
         addBookPage(root, "selector_nbt", "Outputs the target Entity's top-level NBT as key:value strings in a String List. Values use SNBT text, and the entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します. 値はSNBT文字列で, エンティティIDは専用の取得子があるため意図的に含めません.");
         addBookPage(root, "selector_nbt_keys", "Outputs the target Entity's top-level NBT keys as a String List. The entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルキーを String List として出力します. エンティティIDは専用の取得子があるため意図的に含めません.");
         addBookPage(root, "selector_nbt_value", "Outputs the target Entity's top-level NBT value matching the String key as SNBT text. Missing keys and the omitted id key output an empty String.", "対象 Entity のNBTトップレベルから Stringキーに完全一致する値をSNBT文字列として出力します. キーが存在しない場合や省略対象のidキーは空文字列になります.");
@@ -967,8 +994,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_entity_list_to_string_list", "Converts an Entity List into a String List. Each output string is the entity type registry ID, such as minecraft:zombie, preserving the input order.", "Entity List を String List に変換します. 各文字列は minecraft:zombie のようなエンティティ種別のレジストリIDで, 入力順を維持します.");
         addBookPage(root, "operator_string_list_add", "Adds the String input to the end of the optional String List input. If the list input is not connected, it starts from an empty String List. Duplicate strings are allowed.", "String入力を optional の String List 入力の末尾に追加します. リスト入力が未接続の場合は空の String List から始めます. 重複する文字列も許可されます.");
         addBookPage(root, "operator_string_list_remove", "Removes the first entry that exactly matches the String input from the String List input. If no entry matches, the list is returned unchanged.", "String List 入力から, String入力と完全一致する最初の要素を1つ削除します. 一致する要素がない場合はリストをそのまま返します.");
-        addBookPage(root, "operator_random_string", "Chooses one random String from the String List input. Empty lists output an empty String.", "String List 入力からランダムに1つの String を選びます. 空のリストは空文字列を出力します.");
-        addBookPage(root, "operator_random_element", "Chooses one random element from the selected list mode. String mode accepts a String List and returns a String. Entity mode accepts an Entity List and returns an Entity. Item mode accepts an Item List and returns an Item. Empty lists output an empty value for the current mode.", "選択中のモードに応じたリストからランダムに1要素を選びます. StringモードはString ListからString, EntityモードはEntity ListからEntity, ItemモードはItem ListからItemを出力します. 空リストの場合は現在モードの空値を出力します.");
+        addBookPage(root, "operator_random_element", "Chooses one random element from the list for the selected mode. String, Number, Vector, Entity, and Item modes each accept the matching List type and return one value of that type. Empty lists output an empty value for the current mode. Left-click the spell piece to select the mode.", "選択中のモードに応じたリストからランダムに1要素を選びます. String, Number, Vector, Entity, Item の各モードは対応する List 型を入力し, その型の値を1つ出力します. 空リストの場合は現在モードの空値を出力します. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_add", "Adds up to three element inputs to the selected mode's List. String, Number, and Vector modes preserve order and allow duplicates, appending new elements to the end. Entity mode follows Psi's Entity List Add behavior. Left-click the spell piece to select the mode.", "選択中のモードの List に最大3つの要素入力を追加します. String, Number, Vector モードは順序と重複を保持し, 新しい要素を末尾へ追加します. Entity モードは Psi 本体の Entity List Add と同じ挙動です. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_remove", "Removes up to three element inputs from the selected mode's List. String, Number, and Vector modes remove one matching entry for each element input. Entity mode follows Psi's Entity List Remove behavior. Left-click the spell piece to select the mode.", "選択中のモードの List から最大3つの要素入力を削除します. String, Number, Vector モードは各要素入力につき一致する要素を1つ削除します. Entity モードは Psi 本体の Entity List Remove と同じ挙動です. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_size", "Outputs the number of elements in the selected mode's List. Left-click the spell piece to select the mode.", "選択中のモードの List に含まれる要素数を出力します. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_exclusion", "Returns List 1 with elements that are present in List 2 removed. String, Number, and Vector modes preserve the order and duplicates that remain from List 1. Entity mode follows Psi's Entity List Exclusion behavior. Left-click the spell piece to select the mode.", "List 1 から List 2 に含まれる要素を除外して返します. String, Number, Vector モードは List 1 側に残る順序と重複を保持します. Entity モードは Psi 本体の Entity List Exclusion と同じ挙動です. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_intersection", "Returns elements from List 1 that are also present in List 2. String, Number, and Vector modes preserve List 1 order and duplicates. Entity mode follows Psi's Entity List Intersection behavior. Left-click the spell piece to select the mode.", "List 1 のうち List 2 にも含まれる要素を返します. String, Number, Vector モードは List 1 側の順序と重複を保持します. Entity モードは Psi 本体の Entity List Intersection と同じ挙動です. スペルピースを左クリックでモードを選択できます.");
+        addBookPage(root, "operator_list_concatenation", "Combines two Lists for the selected mode. String, Number, and Vector modes append List 2 after List 1 while preserving order and duplicates. Entity mode follows Psi's Entity List Concatenation behavior. Left-click the spell piece to select the mode.", "選択中のモードで2つの List を結合します. String, Number, Vector モードは List 1 の後ろに List 2 を追加し, 順序と重複を保持します. Entity モードは Psi 本体の Entity List Concatenation と同じ挙動です. スペルピースを左クリックでモードを選択できます.");
     }
 
     private void addCadDisassembler(JsonObject root) {

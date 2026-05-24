@@ -4,5 +4,6 @@ public sealed interface ItemSourceRef permits
         ItemEntitySource,
         EntityHandSource,
         EntityEquipmentSource,
+        EntityInventorySlotSource,
         BlockInventorySlotSource {
 }

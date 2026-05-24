@@ -12,7 +12,6 @@ import vazkii.psi.client.gui.GuiProgrammer;
 
 public final class SpellPieceModeButtonOverlay {
     private static final int PANEL_WIDTH = 160;
-    private static final int PANEL_HEIGHT = 92;
     private static final int PANEL_MARGIN = 8;
     private static final int OPTION_HEIGHT = 18;
     private static final int OPTION_GAP = 4;
@@ -51,9 +50,9 @@ public final class SpellPieceModeButtonOverlay {
         }
 
         if (piece != null && isMenuActiveForSelection()) {
-            PanelLayout panel = panelLayoutFor(screen);
+            PanelLayout panel = panelLayoutFor(screen, piece);
             if (panel.contains(mouseX, mouseY)) {
-                ListElementMode selectedMode = modeAt(panel, mouseX, mouseY);
+                ListElementMode selectedMode = modeAt(panel, piece.getAvailableElementModes(), mouseX, mouseY);
                 if (selectedMode != null) {
                     ClientGuiSounds.playClick();
                     if (!screen.isSpectator() && selectedMode != piece.getElementMode()) {
@@ -103,7 +102,8 @@ public final class SpellPieceModeButtonOverlay {
             int mouseX,
             int mouseY
     ) {
-        PanelLayout panel = panelLayoutFor(screen);
+        ListElementMode[] modes = piece.getAvailableElementModes();
+        PanelLayout panel = panelLayoutFor(screen, piece);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 360.0F);
@@ -114,8 +114,8 @@ public final class SpellPieceModeButtonOverlay {
         Component title = Component.translatable("psitweaks.gui.spell_piece_mode.title");
         guiGraphics.drawString(font, title, panel.x + 8, panel.y + 7, TEXT_COLOR, false);
 
-        for (ListElementMode mode : ListElementMode.values()) {
-            renderModeOption(screen, guiGraphics, font, piece, panel, mode, mouseX, mouseY);
+        for (int i = 0; i < modes.length; i++) {
+            renderModeOption(screen, guiGraphics, font, piece, panel, modes[i], i, mouseX, mouseY);
         }
         guiGraphics.pose().popPose();
     }
@@ -127,11 +127,12 @@ public final class SpellPieceModeButtonOverlay {
             ModeConfigurableSpellPiece piece,
             PanelLayout panel,
             ListElementMode mode,
+            int index,
             int mouseX,
             int mouseY
     ) {
         int x = panel.x + 8;
-        int y = optionY(panel, mode);
+        int y = optionY(panel, index);
         int width = panel.width - 16;
         boolean selected = mode == piece.getElementMode();
         boolean hovered = contains(x, y, width, OPTION_HEIGHT, mouseX, mouseY);
@@ -184,12 +185,19 @@ public final class SpellPieceModeButtonOverlay {
         return new GridPosition(x, y);
     }
 
-    private static PanelLayout panelLayoutFor(GuiProgrammer screen) {
+    private static PanelLayout panelLayoutFor(GuiProgrammer screen, ModeConfigurableSpellPiece piece) {
         int width = Math.min(PANEL_WIDTH, screen.width - PANEL_MARGIN * 2);
-        int height = PANEL_HEIGHT;
+        int height = menuHeight(piece.getAvailableElementModes().length);
         int x = chooseX(screen, width);
         int y = Math.max(PANEL_MARGIN, Math.min(screen.top + 42, screen.height - height - PANEL_MARGIN));
         return new PanelLayout(x, y, width, height);
+    }
+
+    private static int menuHeight(int optionCount) {
+        if (optionCount <= 0) {
+            return OPTION_TOP + PANEL_MARGIN;
+        }
+        return OPTION_TOP + optionCount * OPTION_HEIGHT + (optionCount - 1) * OPTION_GAP + PANEL_MARGIN;
     }
 
     private static int chooseX(GuiProgrammer screen, int width) {
@@ -206,17 +214,17 @@ public final class SpellPieceModeButtonOverlay {
         return Math.max(PANEL_MARGIN, (screen.width - width) / 2);
     }
 
-    private static int optionY(PanelLayout panel, ListElementMode mode) {
-        return panel.y + OPTION_TOP + mode.ordinal() * (OPTION_HEIGHT + OPTION_GAP);
+    private static int optionY(PanelLayout panel, int index) {
+        return panel.y + OPTION_TOP + index * (OPTION_HEIGHT + OPTION_GAP);
     }
 
-    private static ListElementMode modeAt(PanelLayout panel, double mouseX, double mouseY) {
+    private static ListElementMode modeAt(PanelLayout panel, ListElementMode[] modes, double mouseX, double mouseY) {
         int x = panel.x + 8;
         int width = panel.width - 16;
-        for (ListElementMode mode : ListElementMode.values()) {
-            int y = optionY(panel, mode);
+        for (int i = 0; i < modes.length; i++) {
+            int y = optionY(panel, i);
             if (contains(x, y, width, OPTION_HEIGHT, mouseX, mouseY)) {
-                return mode;
+                return modes[i];
             }
         }
         return null;

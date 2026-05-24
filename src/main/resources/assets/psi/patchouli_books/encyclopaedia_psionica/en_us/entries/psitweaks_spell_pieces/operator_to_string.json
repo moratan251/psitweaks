@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_to_string",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_number_to_string.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_to_string"
+    }
+  ]
+}

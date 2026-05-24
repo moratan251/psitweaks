@@ -1,14 +1,11 @@
 package com.moratan251.psitweaks.common.spells;
 
-import com.moratan251.psitweaks.common.spells.util.ItemListStringHelper;
-import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
-import java.util.ArrayList;
-import java.util.List;
+import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
+import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import vazkii.psi.api.spell.Spell;
@@ -36,31 +33,28 @@ public class PieceSelectorHeldItems extends PieceSelector {
         context.verifyEntity(entity);
 
         if (entity instanceof Player player) {
-            return ItemListStringHelper.fromContainer(player.getInventory());
+            return ItemListValueHelper.fromEntityContainer(player, player.getInventory());
         }
 
         IItemHandler handler = Capabilities.ItemHandler.ENTITY.getCapability(entity, null);
         if (handler != null) {
-            return ItemListStringHelper.fromItemHandler(handler);
+            return ItemListValueHelper.fromEntityItemHandler(entity, handler);
         }
 
         if (entity instanceof LivingEntity living) {
-            List<ItemStack> stacks = new ArrayList<>();
-            living.getHandSlots().forEach(stacks::add);
-            living.getArmorSlots().forEach(stacks::add);
-            return ItemListStringHelper.fromStacks(stacks);
+            return ItemListValueHelper.fromLivingEquipment(living);
         }
 
-        return StringListWrapper.EMPTY;
+        return SpellItemListWrapper.EMPTY;
     }
 
     @Override
     public Class<?> getEvaluationType() {
-        return StringListWrapper.class;
+        return SpellItemListWrapper.class;
     }
 
     @Override
     public Component getEvaluationTypeString() {
-        return Component.translatable("psitweaks.datatype.string_list");
+        return Component.translatable("psitweaks.datatype.item_list");
     }
 }

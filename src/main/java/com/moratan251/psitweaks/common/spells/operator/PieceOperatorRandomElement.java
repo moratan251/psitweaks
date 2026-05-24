@@ -6,16 +6,21 @@ import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
+import com.moratan251.psitweaks.common.spells.param.ParamNumberListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamSpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
+import com.moratan251.psitweaks.common.spells.param.ParamVectorListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.VectorListWrapper;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -43,6 +48,8 @@ public class PieceOperatorRandomElement extends PieceOperator implements ModeCon
     public Object execute(SpellContext context) throws SpellRuntimeException {
         return switch (currentMode()) {
             case STRING -> randomString(context);
+            case NUMBER -> randomNumber(context);
+            case VECTOR -> randomVector(context);
             case ENTITY -> randomEntity(context);
             case ITEM -> randomItem(context);
         };
@@ -52,6 +59,8 @@ public class PieceOperatorRandomElement extends PieceOperator implements ModeCon
     public Class<?> getEvaluationType() {
         return switch (currentMode()) {
             case STRING -> String.class;
+            case NUMBER -> Double.class;
+            case VECTOR -> Vector3.class;
             case ENTITY -> Entity.class;
             case ITEM -> SpellItemValue.class;
         };
@@ -106,6 +115,24 @@ public class PieceOperatorRandomElement extends PieceOperator implements ModeCon
         return source.get(context.caster.getRandom().nextInt(source.size()));
     }
 
+    private Object randomNumber(SpellContext context) throws SpellRuntimeException {
+        NumberListWrapper source = getNotNullParamValue(context, typedList());
+        if (source.size() == 0) {
+            return 0.0D;
+        }
+
+        return source.get(context.caster.getRandom().nextInt(source.size()));
+    }
+
+    private Object randomVector(SpellContext context) throws SpellRuntimeException {
+        VectorListWrapper source = getNotNullParamValue(context, typedList());
+        if (source.size() == 0) {
+            return Vector3.zero.copy();
+        }
+
+        return source.get(context.caster.getRandom().nextInt(source.size()));
+    }
+
     private Object randomEntity(SpellContext context) throws SpellRuntimeException {
         EntityListWrapper source = getNotNullParamValue(context, typedList());
         if (source.size() == 0) {
@@ -131,6 +158,10 @@ public class PieceOperatorRandomElement extends PieceOperator implements ModeCon
         list = switch (currentMode()) {
             case STRING -> new ParamStringListWrapper(SpellParam.GENERIC_NAME_LIST,
                     PsitweaksSpellParams.STRING_LIST_COLOR, false, false);
+            case NUMBER -> new ParamNumberListWrapper(SpellParam.GENERIC_NAME_LIST,
+                    PsitweaksSpellParams.NUMBER_LIST_COLOR, false, false);
+            case VECTOR -> new ParamVectorListWrapper(SpellParam.GENERIC_NAME_LIST,
+                    PsitweaksSpellParams.VECTOR_LIST_COLOR, false, false);
             case ENTITY -> new ParamEntityListWrapper(SpellParam.GENERIC_NAME_LIST, SpellParam.BLUE, false, false);
             case ITEM -> new ParamSpellItemListWrapper(SpellParam.GENERIC_NAME_LIST,
                     PsitweaksSpellParams.ITEM_LIST_COLOR, false, false);

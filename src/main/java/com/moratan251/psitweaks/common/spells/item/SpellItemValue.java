@@ -59,6 +59,9 @@ public record SpellItemValue(ItemStack snapshot, Optional<ItemSourceRef> source)
         if (source instanceof EntityEquipmentSource equipmentSource) {
             return "equipment:" + equipmentSource.slot().name().toLowerCase(Locale.ROOT);
         }
+        if (source instanceof EntityInventorySlotSource inventorySlotSource) {
+            return "entity_inventory:" + inventorySlotSource.slot();
+        }
         if (source instanceof ItemEntitySource) {
             return "item_entity";
         }

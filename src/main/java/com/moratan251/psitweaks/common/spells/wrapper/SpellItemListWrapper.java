@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import net.minecraft.world.item.ItemStack;
 
 public final class SpellItemListWrapper implements Iterable<SpellItemValue> {
     public static final SpellItemListWrapper EMPTY = new SpellItemListWrapper(List.of());
@@ -23,7 +24,10 @@ public final class SpellItemListWrapper implements Iterable<SpellItemValue> {
         List<SpellItemValue> result = new ArrayList<>(values.size());
         for (SpellItemValue value : values) {
             if (value != null && !value.isEmpty()) {
-                result.add(new SpellItemValue(value.copyStack(), value.source()));
+                SpellItemValue copied = new SpellItemValue(value.copyStack(), value.source());
+                if (!containsEquivalent(result, copied)) {
+                    result.add(copied);
+                }
             }
         }
 
@@ -51,5 +55,21 @@ public final class SpellItemListWrapper implements Iterable<SpellItemValue> {
     @Override
     public String toString() {
         return list.toString();
+    }
+
+    private static boolean containsEquivalent(List<SpellItemValue> values, SpellItemValue candidate) {
+        for (SpellItemValue value : values) {
+            if (isEquivalent(value, candidate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isEquivalent(SpellItemValue left, SpellItemValue right) {
+        if (left.source().isPresent() || right.source().isPresent()) {
+            return left.source().equals(right.source());
+        }
+        return ItemStack.matches(left.copyStack(), right.copyStack());
     }
 }
