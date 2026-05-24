@@ -8,6 +8,8 @@ import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.VectorListWrapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.function.Function;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.internal.Vector3;
@@ -29,6 +31,45 @@ public final class ModeStringConversionHelper {
         };
     }
 
+    public static String anyToString(Object value) {
+        if (value == null) {
+            return "";
+        }
+
+        if (value instanceof String string) {
+            return string;
+        }
+        if (value instanceof Entity entity) {
+            return entityToRegistryId(entity);
+        }
+        if (value instanceof SpellItemValue item) {
+            return itemToRegistryId(item);
+        }
+        if (value instanceof Vector3 vector) {
+            return debugString(vector);
+        }
+        if (value instanceof Number number) {
+            return debugString(number);
+        }
+        if (value instanceof EntityListWrapper list) {
+            return joinConverted(list, ModeStringConversionHelper::entityToRegistryId);
+        }
+        if (value instanceof SpellItemListWrapper list) {
+            return joinConverted(list, ModeStringConversionHelper::itemToRegistryId);
+        }
+        if (value instanceof VectorListWrapper list) {
+            return joinConverted(list, vector -> debugString(vector));
+        }
+        if (value instanceof NumberListWrapper list) {
+            return joinConverted(list, number -> debugString(number));
+        }
+        if (value instanceof StringListWrapper list) {
+            return joinConverted(list, string -> string == null ? "" : string);
+        }
+
+        return debugString(value);
+    }
+
     public static StringListWrapper listToStringList(ListElementMode mode, Object value) {
         if (value == null) {
             return StringListWrapper.EMPTY;
@@ -41,6 +82,30 @@ public final class ModeStringConversionHelper {
             case NUMBER -> numbersToStringList((NumberListWrapper) value);
             case STRING -> (StringListWrapper) value;
         };
+    }
+
+    public static StringListWrapper anyToStringList(Object value) {
+        if (value == null) {
+            return StringListWrapper.EMPTY;
+        }
+
+        if (value instanceof EntityListWrapper list) {
+            return entitiesToStringList(list);
+        }
+        if (value instanceof SpellItemListWrapper list) {
+            return itemsToStringList(list);
+        }
+        if (value instanceof VectorListWrapper list) {
+            return vectorsToStringList(list);
+        }
+        if (value instanceof NumberListWrapper list) {
+            return numbersToStringList(list);
+        }
+        if (value instanceof StringListWrapper list) {
+            return list;
+        }
+
+        return StringListWrapper.make(List.of(anyToString(value)));
     }
 
     private static String entityToRegistryId(Entity entity) {
@@ -59,6 +124,18 @@ public final class ModeStringConversionHelper {
 
     private static String debugString(Object value) {
         return StringSpellHelper.sanitize(String.valueOf(value));
+    }
+
+    private static <T> String joinConverted(Iterable<T> source, Function<T, String> converter) {
+        if (source == null) {
+            return "";
+        }
+
+        StringJoiner joiner = new StringJoiner(",");
+        for (T value : source) {
+            joiner.add(converter.apply(value));
+        }
+        return StringSpellHelper.sanitize(joiner.toString());
     }
 
     private static StringListWrapper entitiesToStringList(EntityListWrapper source) {

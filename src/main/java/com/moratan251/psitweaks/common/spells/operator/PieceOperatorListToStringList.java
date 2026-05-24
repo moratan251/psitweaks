@@ -1,16 +1,16 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
-import com.moratan251.psitweaks.common.spells.util.ModeListOperations;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
-import java.util.Map;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.api.spell.param.ParamAny;
+import vazkii.psi.api.spell.piece.PieceOperator;
 
-public class PieceOperatorListToStringList extends PieceOperatorModeConversionBase {
+public class PieceOperatorListToStringList extends PieceOperator {
     private SpellParam<?> list;
 
     public PieceOperatorListToStringList(Spell spell) {
@@ -18,9 +18,14 @@ public class PieceOperatorListToStringList extends PieceOperatorModeConversionBa
     }
 
     @Override
+    public void initParams() {
+        addParam(list = new ParamAny(SpellParam.GENERIC_NAME_LIST, SpellParam.GRAY, false));
+    }
+
+    @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Object source = getNotNullParamValue(context, typed(list));
-        return ModeStringConversionHelper.listToStringList(currentMode(), source);
+        return ModeStringConversionHelper.anyToStringList(source);
     }
 
     @Override
@@ -33,10 +38,8 @@ public class PieceOperatorListToStringList extends PieceOperatorModeConversionBa
         return Component.translatable("psitweaks.datatype.string_list");
     }
 
-    @Override
-    protected void rebuildParams(Map<String, SpellParam.Side> savedSides) {
-        clearModeParams();
-        addParam(list = ModeListOperations.createListParam(currentMode(), SpellParam.GENERIC_NAME_LIST, false));
-        restoreParamSides(savedSides);
+    @SuppressWarnings("unchecked")
+    private static <T> SpellParam<T> typed(SpellParam<?> param) {
+        return (SpellParam<T>) param;
     }
 }

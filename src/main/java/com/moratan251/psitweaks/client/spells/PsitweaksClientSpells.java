@@ -99,16 +99,18 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_cosh");
     public static final DeferredHolder<Material, Material> OPERATOR_TANH =
             registerPieceMaterial("operator_tanh");
+    public static final DeferredHolder<Material, Material> OPERATOR_GREATER_THAN =
+            registerPieceMaterial("operator_greater_than");
+    public static final DeferredHolder<Material, Material> OPERATOR_GREATER_THAN_OR_EQUAL =
+            registerPieceMaterial("operator_greater_than_or_equal");
+    public static final DeferredHolder<Material, Material> OPERATOR_EQUAL =
+            registerPieceMaterial("operator_equal");
     public static final DeferredHolder<Material, Material> CONSTANT_STRING =
             registerPieceMaterial("constant_string");
-    public static final DeferredHolder<Material, Material> OPERATOR_STRING_TO_NUMBER =
-            registerPieceMaterial("operator_string_to_number");
     public static final DeferredHolder<Material, Material> OPERATOR_FROM_STRING =
             registerPieceMaterial("operator_from_string", "operator_from_string");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_FROM_STRING_LIST =
             registerPieceMaterial("operator_list_from_string_list", "operator_list_from_string_list");
-    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_TO_STRING =
-            registerPieceMaterial("operator_number_to_string");
     public static final DeferredHolder<Material, Material> OPERATOR_TO_STRING =
             registerPieceMaterial("operator_to_string", "operator_to_string");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_TO_STRING_LIST =
@@ -133,8 +135,6 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_nbt_keys");
     public static final DeferredHolder<Material, Material> SELECTOR_NBT_VALUE =
             registerPieceMaterial("selector_nbt_value");
-    public static final DeferredHolder<Material, Material> OPERATOR_STRING_EQUALS =
-            registerPieceMaterial("operator_string_equals");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_PARTIAL_MATCH =
             registerPieceMaterial("operator_string_partial_match");
     public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =
@@ -143,12 +143,6 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_entity_list_search");
     public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_EXCLUDE =
             registerPieceMaterial("operator_entity_list_exclude");
-    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_TO_STRING_LIST =
-            registerPieceMaterial("operator_entity_list_to_string_list");
-    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_ADD =
-            registerPieceMaterial("operator_string_list_add");
-    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_REMOVE =
-            registerPieceMaterial("operator_string_list_remove");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
             registerPieceMaterial("operator_random_element", "operator_random_string");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =

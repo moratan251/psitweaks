@@ -1,7 +1,7 @@
 {
   "name": "psitweaks.spellpiece.operator_list_to_string_list",
   "category": "psi:psitweaks_spell_pieces",
-  "icon": "psitweaks:textures/spell/operator_entity_list_to_string_list.png",
+  "icon": "psitweaks:textures/spell/operator_list_to_string_list.png",
   "pages": [
     {
       "type": "text",
