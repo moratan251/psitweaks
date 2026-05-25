@@ -1,10 +1,13 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
@@ -33,18 +36,18 @@ public abstract class PieceOperatorModeConversionBase extends PieceOperator impl
     }
 
     @Override
-    public final ListElementMode[] getAvailableElementModes() {
-        return availableElementModes().clone();
+    public final List<PsitweaksModeOption> getAvailableModeOptions() {
+        return Arrays.stream(availableElementModes()).map(ListElementMode::option).toList();
     }
 
     @Override
-    public final ListElementMode getElementMode() {
-        return currentMode();
+    public final PsitweaksModeOption getModeOption() {
+        return currentMode().option();
     }
 
     @Override
-    public final void setElementMode(ListElementMode mode) {
-        ListElementMode nextMode = normalizeElementMode(mode);
+    public final void setModeOption(PsitweaksModeOption mode) {
+        ListElementMode nextMode = normalizeElementMode(ListElementMode.fromOption(mode));
         if (nextMode == currentMode()) {
             return;
         }

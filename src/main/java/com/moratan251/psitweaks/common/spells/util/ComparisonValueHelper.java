@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.util;
 
+import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
@@ -26,6 +27,9 @@ public final class ComparisonValueHelper {
         }
         if (left instanceof Number leftNumber && right instanceof Number rightNumber) {
             return Double.compare(leftNumber.doubleValue(), rightNumber.doubleValue()) == 0;
+        }
+        if (left instanceof BlockValue leftBlock && right instanceof BlockValue rightBlock) {
+            return blockEquals(leftBlock, rightBlock);
         }
         if (left instanceof Vector3 leftVector && right instanceof Vector3 rightVector) {
             return leftVector.equals(rightVector);
@@ -56,6 +60,12 @@ public final class ComparisonValueHelper {
             return left.isEmpty() && right.isEmpty();
         }
         return left.source().equals(right.source()) && ItemStack.matches(left.copyStack(), right.copyStack());
+    }
+
+    private static boolean blockEquals(BlockValue left, BlockValue right) {
+        return Objects.equals(left.dimension(), right.dimension())
+                && Objects.equals(left.blockPos(), right.blockPos())
+                && Objects.equals(left.state(), right.state());
     }
 
     private static boolean itemListEquals(List<SpellItemValue> left, List<SpellItemValue> right) {

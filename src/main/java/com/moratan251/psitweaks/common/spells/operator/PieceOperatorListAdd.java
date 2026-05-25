@@ -1,7 +1,6 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
-import com.moratan251.psitweaks.common.spells.util.ModeListOperations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +22,13 @@ public class PieceOperatorListAdd extends PieceOperatorModeListBase {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        Object source = getParamValueOrDefault(context, typed(list), ModeListOperations.emptyList(currentMode()));
-        return ModeListOperations.add(currentMode(), source, elementValues(context));
+        Object source = getParamValueOrDefault(context, typed(list), currentAdapter().emptyList());
+        return currentAdapter().add(source, elementValues(context));
     }
 
     @Override
     public Class<?> getEvaluationType() {
-        return ModeListOperations.listType(currentMode());
+        return currentListType();
     }
 
     @Override
@@ -40,13 +39,10 @@ public class PieceOperatorListAdd extends PieceOperatorModeListBase {
     @Override
     protected void rebuildParams(Map<String, SpellParam.Side> savedSides) {
         clearModeParams();
-        addParam(element1 = ModeListOperations.createElementParam(currentMode(), PsitweaksSpellParams.ELEMENT1,
-                false));
-        addParam(element2 = ModeListOperations.createElementParam(currentMode(), PsitweaksSpellParams.ELEMENT2,
-                true));
-        addParam(element3 = ModeListOperations.createElementParam(currentMode(), PsitweaksSpellParams.ELEMENT3,
-                true));
-        addParam(list = ModeListOperations.createListParam(currentMode(), SpellParam.GENERIC_NAME_LIST, true));
+        addParam(element1 = currentAdapter().createElementParam(PsitweaksSpellParams.ELEMENT1, false));
+        addParam(element2 = currentAdapter().createElementParam(PsitweaksSpellParams.ELEMENT2, true));
+        addParam(element3 = currentAdapter().createElementParam(PsitweaksSpellParams.ELEMENT3, true));
+        addParam(list = currentAdapter().createListParam(SpellParam.GENERIC_NAME_LIST, true));
         restoreParamSides(savedSides);
     }
 

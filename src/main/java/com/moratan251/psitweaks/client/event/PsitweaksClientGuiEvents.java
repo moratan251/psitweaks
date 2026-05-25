@@ -18,6 +18,7 @@ public final class PsitweaksClientGuiEvents {
         eventBus.addListener(PsitweaksClientGuiEvents::onMouseButtonPressedPost);
         eventBus.addListener(PsitweaksClientGuiEvents::onMouseDraggedPre);
         eventBus.addListener(PsitweaksClientGuiEvents::onMouseButtonReleasedPre);
+        eventBus.addListener(PsitweaksClientGuiEvents::onMouseScrolledPre);
         eventBus.addListener(PsitweaksClientGuiEvents::onScreenClosing);
     }
 
@@ -30,7 +31,8 @@ public final class PsitweaksClientGuiEvents {
 
     private static void onKeyPressedPre(ScreenEvent.KeyPressed.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && StringConstantInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())) {
+                && (SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
+                || StringConstantInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode()))) {
             event.setCanceled(true);
         }
     }
@@ -72,6 +74,16 @@ public final class PsitweaksClientGuiEvents {
     private static void onMouseButtonReleasedPre(ScreenEvent.MouseButtonReleased.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
                 && StringConstantInputOverlay.handleMouseReleasedPre(screen, event.getButton())) {
+            event.setCanceled(true);
+        }
+    }
+
+    private static void onMouseScrolledPre(ScreenEvent.MouseScrolled.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen
+                && SpellPieceModeButtonOverlay.handleMouseScrolledPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getScrollDeltaY())) {
             event.setCanceled(true);
         }
     }

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.wrapper;
 
+import com.moratan251.psitweaks.api.PsitweaksListLike;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import net.minecraft.world.item.ItemStack;
 
-public final class SpellItemListWrapper implements Iterable<SpellItemValue> {
+public final class SpellItemListWrapper implements Iterable<SpellItemValue>, PsitweaksListLike {
     public static final SpellItemListWrapper EMPTY = new SpellItemListWrapper(List.of());
 
     private final List<SpellItemValue> list;

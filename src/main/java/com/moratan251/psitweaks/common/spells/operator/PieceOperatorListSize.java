@@ -1,14 +1,15 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
-import com.moratan251.psitweaks.common.spells.util.ModeListOperations;
-import java.util.Map;
+import com.moratan251.psitweaks.api.PsitweaksListAdapters;
+import com.moratan251.psitweaks.common.spells.param.ParamAnyList;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.api.spell.piece.PieceOperator;
 
-public class PieceOperatorListSize extends PieceOperatorModeListBase {
+public class PieceOperatorListSize extends PieceOperator {
     private SpellParam<?> list;
 
     public PieceOperatorListSize(Spell spell) {
@@ -16,9 +17,14 @@ public class PieceOperatorListSize extends PieceOperatorModeListBase {
     }
 
     @Override
+    public void initParams() {
+        addParam(list = new ParamAnyList(SpellParam.GENERIC_NAME_LIST, SpellParam.GRAY, false));
+    }
+
+    @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Object source = getNotNullParamValue(context, typed(list));
-        return ModeListOperations.size(currentMode(), source);
+        return (double) PsitweaksListAdapters.size(source);
     }
 
     @Override
@@ -31,10 +37,8 @@ public class PieceOperatorListSize extends PieceOperatorModeListBase {
         return Component.translatable("psi.datatype.number");
     }
 
-    @Override
-    protected void rebuildParams(Map<String, SpellParam.Side> savedSides) {
-        clearModeParams();
-        addParam(list = ModeListOperations.createListParam(currentMode(), SpellParam.GENERIC_NAME_LIST, false));
-        restoreParamSides(savedSides);
+    @SuppressWarnings("unchecked")
+    private static <T> SpellParam<T> typed(SpellParam<?> param) {
+        return (SpellParam<T>) param;
     }
 }

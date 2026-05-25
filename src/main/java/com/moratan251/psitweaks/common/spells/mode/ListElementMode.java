@@ -1,45 +1,51 @@
 package com.moratan251.psitweaks.common.spells.mode;
 
+import com.moratan251.psitweaks.api.PsitweaksModeOption;
+import com.moratan251.psitweaks.api.PsitweaksModeOptions;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public enum ListElementMode {
-    STRING("string", "S", "psitweaks.datatype.string", "psitweaks.datatype.string_list"),
-    NUMBER("number", "N", "psi.datatype.number", "psitweaks.datatype.number_list"),
-    VECTOR("vector", "V", "psi.datatype.vector3", "psitweaks.datatype.vector_list"),
-    ENTITY("entity", "E", "psi.datatype.entity", "psi.datatype.entity_list_wrapper"),
-    ITEM("item", "I", "psitweaks.datatype.item", "psitweaks.datatype.item_list");
+    STRING(PsitweaksModeOptions.STRING),
+    NUMBER(PsitweaksModeOptions.NUMBER),
+    VECTOR(PsitweaksModeOptions.VECTOR),
+    ENTITY(PsitweaksModeOptions.ENTITY),
+    ITEM(PsitweaksModeOptions.ITEM);
 
-    private final String id;
-    private final String buttonLabel;
-    private final String elementTranslationKey;
-    private final String listTranslationKey;
+    private final PsitweaksModeOption option;
 
-    ListElementMode(String id, String buttonLabel, String elementTranslationKey, String listTranslationKey) {
-        this.id = id;
-        this.buttonLabel = buttonLabel;
-        this.elementTranslationKey = elementTranslationKey;
-        this.listTranslationKey = listTranslationKey;
+    ListElementMode(PsitweaksModeOption option) {
+        this.option = option;
     }
 
     public String id() {
-        return id;
+        return option.serializedId();
     }
 
     public String buttonLabel() {
-        return buttonLabel;
+        return option.buttonLabel();
     }
 
     public String elementTranslationKey() {
-        return elementTranslationKey;
+        return option.elementTranslationKey();
     }
 
     public String listTranslationKey() {
-        return listTranslationKey;
+        return option.listTranslationKey();
+    }
+
+    public PsitweaksModeOption option() {
+        return option;
     }
 
     public ListElementMode next() {
         ListElementMode[] values = values();
         return values[(ordinal() + 1) % values.length];
+    }
+
+    public static List<PsitweaksModeOption> options() {
+        return Arrays.stream(values()).map(ListElementMode::option).toList();
     }
 
     public static ListElementMode byId(String id) {
@@ -49,10 +55,27 @@ public enum ListElementMode {
 
         String normalized = id.toLowerCase(Locale.ROOT);
         for (ListElementMode mode : values()) {
-            if (mode.id.equals(normalized)) {
+            if (mode.id().equals(normalized)) {
                 return mode;
             }
         }
-        return STRING;
+        return fromOption(PsitweaksModeOptions.byId(id).orElse(null), STRING);
+    }
+
+    public static ListElementMode fromOption(PsitweaksModeOption option) {
+        return fromOption(option, null);
+    }
+
+    public static ListElementMode fromOption(PsitweaksModeOption option, ListElementMode fallback) {
+        if (option == null) {
+            return fallback;
+        }
+
+        for (ListElementMode mode : values()) {
+            if (mode.option.id().equals(option.id())) {
+                return mode;
+            }
+        }
+        return fallback;
     }
 }

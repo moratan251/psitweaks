@@ -1,10 +1,14 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.moratan251.psitweaks.api.PsitweaksListAdapter;
+import com.moratan251.psitweaks.api.PsitweaksListAdapters;
+import com.moratan251.psitweaks.api.PsitweaksModeOption;
+import com.moratan251.psitweaks.api.PsitweaksModeOptions;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
-import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +19,7 @@ import vazkii.psi.api.spell.piece.PieceOperator;
 public abstract class PieceOperatorModeListBase extends PieceOperator implements ModeConfigurableSpellPiece {
     private static final String TAG_MODE = "psitweaksMode";
 
-    private ListElementMode mode = ListElementMode.STRING;
+    private PsitweaksModeOption mode = PsitweaksModeOptions.STRING;
 
     protected PieceOperatorModeListBase(Spell spell) {
         super(spell);
@@ -27,14 +31,19 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
     }
 
     @Override
-    public final ListElementMode getElementMode() {
+    public final List<PsitweaksModeOption> getAvailableModeOptions() {
+        return PsitweaksListAdapters.modeOptions();
+    }
+
+    @Override
+    public final PsitweaksModeOption getModeOption() {
         return currentMode();
     }
 
     @Override
-    public final void setElementMode(ListElementMode mode) {
-        ListElementMode nextMode = mode == null ? ListElementMode.STRING : mode;
-        if (nextMode == currentMode()) {
+    public final void setModeOption(PsitweaksModeOption mode) {
+        PsitweaksModeOption nextMode = normalizeModeOption(mode);
+        if (sameMode(nextMode, currentMode())) {
             return;
         }
 
@@ -50,7 +59,7 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
 
     @Override
     public void readFromNBT(CompoundTag tag) {
-        mode = ListElementMode.byId(tag.getString(TAG_MODE));
+        mode = normalizeModeOption(PsitweaksModeOptions.byId(tag.getString(TAG_MODE)).orElse(null));
         rebuildParams(null);
         super.readFromNBT(tag);
     }
@@ -58,11 +67,21 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
     @Override
     public void writeToNBT(CompoundTag tag) {
         super.writeToNBT(tag);
-        tag.putString(TAG_MODE, currentMode().id());
+        tag.putString(TAG_MODE, currentMode().serializedId());
     }
 
-    protected final ListElementMode currentMode() {
-        return mode == null ? ListElementMode.STRING : mode;
+    protected final PsitweaksModeOption currentMode() {
+        return normalizeModeOption(mode);
+    }
+
+    protected final PsitweaksListAdapter<Object> currentAdapter() {
+        return PsitweaksListAdapters.findModeAdapter(currentMode()).orElseThrow(
+                () -> new IllegalStateException("No PsiTweaks list adapter registered for mode " + currentMode().id())
+        );
+    }
+
+    protected final Class<?> currentListType() {
+        return PsitweaksListAdapters.listType(currentMode()).orElse(Object.class);
     }
 
     protected abstract void rebuildParams(Map<String, SpellParam.Side> savedSides);
@@ -94,5 +113,9 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
         Map<String, SpellParam.Side> savedSides = new LinkedHashMap<>();
         paramSides.forEach((param, side) -> savedSides.put(param.name, side));
         return savedSides;
+    }
+
+    private static boolean sameMode(PsitweaksModeOption left, PsitweaksModeOption right) {
+        return left != null && right != null && left.id().equals(right.id());
     }
 }

@@ -1,11 +1,12 @@
 package com.moratan251.psitweaks.common.spells.wrapper;
 
+import com.moratan251.psitweaks.api.PsitweaksListLike;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public final class NumberListWrapper implements Iterable<Double> {
+public final class NumberListWrapper implements Iterable<Double>, PsitweaksListLike {
     public static final NumberListWrapper EMPTY = new NumberListWrapper(List.of());
 
     private final List<Double> list;

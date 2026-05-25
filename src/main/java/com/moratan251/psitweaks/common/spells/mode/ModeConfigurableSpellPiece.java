@@ -1,41 +1,31 @@
 package com.moratan251.psitweaks.common.spells.mode;
 
-public interface ModeConfigurableSpellPiece {
-    ListElementMode getElementMode();
+import com.moratan251.psitweaks.api.PsitweaksModeOption;
+import com.moratan251.psitweaks.api.PsitweaksModeConfigurable;
+import java.util.Objects;
 
-    void setElementMode(ListElementMode mode);
+public interface ModeConfigurableSpellPiece extends PsitweaksModeConfigurable {
+    default ListElementMode getElementMode() {
+        return ListElementMode.fromOption(getModeOption(), ListElementMode.STRING);
+    }
+
+    default void setElementMode(ListElementMode mode) {
+        setModeOption((mode == null ? ListElementMode.STRING : mode).option());
+    }
 
     default ListElementMode[] getAvailableElementModes() {
-        return ListElementMode.values();
+        return getAvailableModeOptions().stream()
+                .map(ListElementMode::fromOption)
+                .filter(Objects::nonNull)
+                .toArray(ListElementMode[]::new);
     }
 
     default ListElementMode normalizeElementMode(ListElementMode mode) {
-        ListElementMode[] modes = getAvailableElementModes();
-        if (modes == null || modes.length == 0) {
-            return ListElementMode.STRING;
-        }
-
-        for (ListElementMode availableMode : modes) {
-            if (availableMode == mode) {
-                return mode;
-            }
-        }
-        return modes[0];
+        return ListElementMode.fromOption(normalizeModeOption(mode == null ? null : mode.option()),
+                ListElementMode.STRING);
     }
 
     default void cycleElementMode() {
-        ListElementMode[] modes = getAvailableElementModes();
-        if (modes == null || modes.length == 0) {
-            return;
-        }
-
-        ListElementMode currentMode = getElementMode();
-        for (int i = 0; i < modes.length; i++) {
-            if (modes[i] == currentMode) {
-                setElementMode(modes[(i + 1) % modes.length]);
-                return;
-            }
-        }
-        setElementMode(modes[0]);
+        cycleModeOption();
     }
 }

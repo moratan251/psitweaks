@@ -129,7 +129,7 @@ public final class ModeListOperations {
         };
     }
 
-    private static StringListWrapper addStrings(StringListWrapper source, List<?> elements) {
+    public static StringListWrapper addStrings(StringListWrapper source, List<?> elements) {
         List<String> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof String value) {
@@ -139,7 +139,7 @@ public final class ModeListOperations {
         return StringListWrapper.make(result);
     }
 
-    private static NumberListWrapper addNumbers(NumberListWrapper source, List<?> elements) {
+    public static NumberListWrapper addNumbers(NumberListWrapper source, List<?> elements) {
         List<Double> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof Number value) {
@@ -152,7 +152,7 @@ public final class ModeListOperations {
         return NumberListWrapper.make(result);
     }
 
-    private static VectorListWrapper addVectors(VectorListWrapper source, List<?> elements) {
+    public static VectorListWrapper addVectors(VectorListWrapper source, List<?> elements) {
         List<Vector3> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof Vector3 value) {
@@ -162,7 +162,7 @@ public final class ModeListOperations {
         return VectorListWrapper.make(result);
     }
 
-    private static EntityListWrapper addEntities(EntityListWrapper source, List<?> elements) {
+    public static EntityListWrapper addEntities(EntityListWrapper source, List<?> elements) {
         EntityListWrapper result = source;
         for (Object element : elements) {
             if (element instanceof Entity value) {
@@ -172,7 +172,7 @@ public final class ModeListOperations {
         return result;
     }
 
-    private static SpellItemListWrapper addItems(SpellItemListWrapper source, List<?> elements) {
+    public static SpellItemListWrapper addItems(SpellItemListWrapper source, List<?> elements) {
         List<SpellItemValue> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof SpellItemValue value && !value.isEmpty()) {
@@ -182,7 +182,7 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
-    private static StringListWrapper removeStrings(StringListWrapper source, List<?> elements) {
+    public static StringListWrapper removeStrings(StringListWrapper source, List<?> elements) {
         List<String> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof String value) {
@@ -192,7 +192,7 @@ public final class ModeListOperations {
         return StringListWrapper.make(result);
     }
 
-    private static NumberListWrapper removeNumbers(NumberListWrapper source, List<?> elements) {
+    public static NumberListWrapper removeNumbers(NumberListWrapper source, List<?> elements) {
         List<Double> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof Number value) {
@@ -205,7 +205,7 @@ public final class ModeListOperations {
         return NumberListWrapper.make(result);
     }
 
-    private static VectorListWrapper removeVectors(VectorListWrapper source, List<?> elements) {
+    public static VectorListWrapper removeVectors(VectorListWrapper source, List<?> elements) {
         List<Vector3> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof Vector3 value) {
@@ -215,7 +215,7 @@ public final class ModeListOperations {
         return VectorListWrapper.make(result);
     }
 
-    private static EntityListWrapper removeEntities(EntityListWrapper source, List<?> elements) {
+    public static EntityListWrapper removeEntities(EntityListWrapper source, List<?> elements) {
         EntityListWrapper result = source;
         for (Object element : elements) {
             if (element instanceof Entity value) {
@@ -225,7 +225,7 @@ public final class ModeListOperations {
         return result;
     }
 
-    private static SpellItemListWrapper removeItems(SpellItemListWrapper source, List<?> elements) {
+    public static SpellItemListWrapper removeItems(SpellItemListWrapper source, List<?> elements) {
         List<SpellItemValue> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
             if (element instanceof SpellItemValue value) {
@@ -235,7 +235,7 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
-    private static StringListWrapper excludeStrings(StringListWrapper left, StringListWrapper right) {
+    public static StringListWrapper excludeStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>();
         for (String value : left) {
             if (!right.asList().contains(value)) {
@@ -245,7 +245,7 @@ public final class ModeListOperations {
         return StringListWrapper.make(result);
     }
 
-    private static NumberListWrapper excludeNumbers(NumberListWrapper left, NumberListWrapper right) {
+    public static NumberListWrapper excludeNumbers(NumberListWrapper left, NumberListWrapper right) {
         List<Double> result = new ArrayList<>();
         for (Double value : left) {
             if (!right.asList().contains(value)) {
@@ -255,7 +255,7 @@ public final class ModeListOperations {
         return NumberListWrapper.make(result);
     }
 
-    private static VectorListWrapper excludeVectors(VectorListWrapper left, VectorListWrapper right) {
+    public static VectorListWrapper excludeVectors(VectorListWrapper left, VectorListWrapper right) {
         List<Vector3> result = new ArrayList<>();
         List<Vector3> rightValues = right.asList();
         for (Vector3 value : left) {
@@ -266,7 +266,7 @@ public final class ModeListOperations {
         return VectorListWrapper.make(result);
     }
 
-    private static SpellItemListWrapper excludeItems(SpellItemListWrapper left, SpellItemListWrapper right) {
+    public static SpellItemListWrapper excludeItems(SpellItemListWrapper left, SpellItemListWrapper right) {
         List<SpellItemValue> result = new ArrayList<>();
         List<SpellItemValue> rightValues = right.asList();
         for (SpellItemValue value : left) {
@@ -277,7 +277,7 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
-    private static StringListWrapper intersectStrings(StringListWrapper left, StringListWrapper right) {
+    public static StringListWrapper intersectStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>();
         for (String value : left) {
             if (right.asList().contains(value)) {
@@ -287,7 +287,7 @@ public final class ModeListOperations {
         return StringListWrapper.make(result);
     }
 
-    private static NumberListWrapper intersectNumbers(NumberListWrapper left, NumberListWrapper right) {
+    public static NumberListWrapper intersectNumbers(NumberListWrapper left, NumberListWrapper right) {
         List<Double> result = new ArrayList<>();
         for (Double value : left) {
             if (right.asList().contains(value)) {
@@ -297,7 +297,7 @@ public final class ModeListOperations {
         return NumberListWrapper.make(result);
     }
 
-    private static VectorListWrapper intersectVectors(VectorListWrapper left, VectorListWrapper right) {
+    public static VectorListWrapper intersectVectors(VectorListWrapper left, VectorListWrapper right) {
         List<Vector3> result = new ArrayList<>();
         List<Vector3> rightValues = right.asList();
         for (Vector3 value : left) {
@@ -308,7 +308,7 @@ public final class ModeListOperations {
         return VectorListWrapper.make(result);
     }
 
-    private static SpellItemListWrapper intersectItems(SpellItemListWrapper left, SpellItemListWrapper right) {
+    public static SpellItemListWrapper intersectItems(SpellItemListWrapper left, SpellItemListWrapper right) {
         List<SpellItemValue> result = new ArrayList<>();
         List<SpellItemValue> rightValues = right.asList();
         for (SpellItemValue value : left) {
@@ -319,25 +319,25 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
-    private static StringListWrapper concatenateStrings(StringListWrapper left, StringListWrapper right) {
+    public static StringListWrapper concatenateStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
         return StringListWrapper.make(result);
     }
 
-    private static NumberListWrapper concatenateNumbers(NumberListWrapper left, NumberListWrapper right) {
+    public static NumberListWrapper concatenateNumbers(NumberListWrapper left, NumberListWrapper right) {
         List<Double> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
         return NumberListWrapper.make(result);
     }
 
-    private static VectorListWrapper concatenateVectors(VectorListWrapper left, VectorListWrapper right) {
+    public static VectorListWrapper concatenateVectors(VectorListWrapper left, VectorListWrapper right) {
         List<Vector3> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
         return VectorListWrapper.make(result);
     }
 
-    private static SpellItemListWrapper concatenateItems(SpellItemListWrapper left, SpellItemListWrapper right) {
+    public static SpellItemListWrapper concatenateItems(SpellItemListWrapper left, SpellItemListWrapper right) {
         List<SpellItemValue> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
         return SpellItemListWrapper.make(result);

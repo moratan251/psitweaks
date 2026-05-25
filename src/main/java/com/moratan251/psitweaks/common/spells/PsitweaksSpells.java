@@ -120,8 +120,16 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_to_string_list", PieceOperatorListToStringList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorEntityTypeId>> SELECTOR_ENTITY_TYPE_ID =
             registerPiece("selector_entity_type_id", PieceSelectorEntityTypeId.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlock>> SELECTOR_BLOCK =
+            registerPiece("selector_block", PieceSelectorBlock.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlockId>> SELECTOR_BLOCK_ID =
             registerPiece("selector_block_id", PieceSelectorBlockId.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockId>> OPERATOR_BLOCK_ID =
+            registerPiece("operator_block_id", PieceOperatorBlockId.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockHasTag>> OPERATOR_BLOCK_HAS_TAG =
+            registerPiece("operator_block_has_tag", PieceOperatorBlockHasTag.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockPosition>> OPERATOR_BLOCK_POSITION =
+            registerPiece("operator_block_position", PieceOperatorBlockPosition.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorOnlinePlayers>> SELECTOR_ONLINE_PLAYERS =
             registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItem>> SELECTOR_HELD_ITEM =
@@ -283,6 +291,14 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> ITEM =
             ADVANCEMENT_GROUPS.register("item", () -> List.of(
                     PieceSelectorHeldItem.class
+            ));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
+            ADVANCEMENT_GROUPS.register("block", () -> List.of(
+                    PieceSelectorBlock.class,
+                    PieceSelectorBlockId.class,
+                    PieceOperatorBlockId.class,
+                    PieceOperatorBlockHasTag.class,
+                    PieceOperatorBlockPosition.class
             ));
 
     private PsitweaksSpells() {

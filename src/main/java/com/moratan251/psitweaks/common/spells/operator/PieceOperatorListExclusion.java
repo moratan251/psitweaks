@@ -1,6 +1,5 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
-import com.moratan251.psitweaks.common.spells.util.ModeListOperations;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
@@ -20,12 +19,12 @@ public class PieceOperatorListExclusion extends PieceOperatorModeListBase {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Object left = getNotNullParamValue(context, typed(list1));
         Object right = getNotNullParamValue(context, typed(list2));
-        return ModeListOperations.exclusion(currentMode(), left, right);
+        return currentAdapter().exclusion(left, right);
     }
 
     @Override
     public Class<?> getEvaluationType() {
-        return ModeListOperations.listType(currentMode());
+        return currentListType();
     }
 
     @Override
@@ -36,8 +35,8 @@ public class PieceOperatorListExclusion extends PieceOperatorModeListBase {
     @Override
     protected void rebuildParams(Map<String, SpellParam.Side> savedSides) {
         clearModeParams();
-        addParam(list1 = ModeListOperations.createListParam(currentMode(), SpellParam.GENERIC_NAME_LIST1, false));
-        addParam(list2 = ModeListOperations.createListParam(currentMode(), SpellParam.GENERIC_NAME_LIST2, false));
+        addParam(list1 = currentAdapter().createListParam(SpellParam.GENERIC_NAME_LIST1, false));
+        addParam(list2 = currentAdapter().createListParam(SpellParam.GENERIC_NAME_LIST2, false));
         restoreParamSides(savedSides);
     }
 }

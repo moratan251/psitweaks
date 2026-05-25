@@ -12,6 +12,7 @@ public final class PsitweaksSpellParams {
     public static final String ELEMENT2 = PREFIX + "element2";
     public static final String ELEMENT3 = PREFIX + "element3";
     public static final String ITEM = PREFIX + "item";
+    public static final String TAG = PREFIX + "tag";
 
     public static final int STRING_COLOR = 0xE0A030;
     public static final int STRING_LIST_COLOR = 0xD2D22A;
@@ -19,6 +20,7 @@ public final class PsitweaksSpellParams {
     public static final int VECTOR_LIST_COLOR = 0x4FA8E1;
     public static final int ITEM_COLOR = 0xD8B45C;
     public static final int ITEM_LIST_COLOR = 0xE2C66A;
+    public static final int BLOCK_COLOR = 0x7CA85A;
 
     private PsitweaksSpellParams() {
     }

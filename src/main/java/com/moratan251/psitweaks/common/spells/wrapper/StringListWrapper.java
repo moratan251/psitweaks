@@ -1,12 +1,13 @@
 package com.moratan251.psitweaks.common.spells.wrapper;
 
+import com.moratan251.psitweaks.api.PsitweaksListLike;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public final class StringListWrapper implements Iterable<String> {
+public final class StringListWrapper implements Iterable<String>, PsitweaksListLike {
     public static final StringListWrapper EMPTY = new StringListWrapper(List.of());
 
     private final List<String> list;

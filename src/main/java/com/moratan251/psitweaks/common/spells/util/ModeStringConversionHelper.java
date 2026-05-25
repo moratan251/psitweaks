@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.util;
 
+import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
@@ -44,6 +45,9 @@ public final class ModeStringConversionHelper {
         }
         if (value instanceof SpellItemValue item) {
             return itemToRegistryId(item);
+        }
+        if (value instanceof BlockValue block) {
+            return blockToRegistryId(block);
         }
         if (value instanceof Vector3 vector) {
             return debugString(vector);
@@ -120,6 +124,10 @@ public final class ModeStringConversionHelper {
             return "";
         }
         return BuiltInRegistries.ITEM.getKey(item.copyStack().getItem()).toString();
+    }
+
+    private static String blockToRegistryId(BlockValue block) {
+        return block == null ? "" : block.blockId().toString();
     }
 
     private static String debugString(Object value) {

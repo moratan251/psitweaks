@@ -2,9 +2,11 @@ package com.moratan251.psitweaks.client.spells;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.Material;
+import vazkii.psi.api.ClientPsiAPI;
 import org.joml.Matrix4f;
 import vazkii.psi.api.spell.SpellPiece;
 
@@ -22,6 +24,15 @@ public final class ModeOverlayRenderer {
             int light,
             ListElementMode mode
     ) {
+        drawModeOverlay(poseStack, bufferSource, light, mode.option());
+    }
+
+    public static void drawModeOverlay(
+            PoseStack poseStack,
+            MultiBufferSource bufferSource,
+            int light,
+            PsitweaksModeOption mode
+    ) {
         Material material = materialFor(mode);
         VertexConsumer buffer = material.buffer(bufferSource, location -> SpellPiece.getLayer());
         Matrix4f matrix = poseStack.last().pose();
@@ -34,13 +45,11 @@ public final class ModeOverlayRenderer {
         buffer.addVertex(matrix, LEFT, TOP, 0.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0.0F, 0.0F).setLight(light);
     }
 
-    private static Material materialFor(ListElementMode mode) {
-        return switch (mode) {
-            case ENTITY -> PsitweaksClientSpells.MODE_ENTITY.get();
-            case ITEM -> PsitweaksClientSpells.MODE_ITEM.get();
-            case NUMBER -> PsitweaksClientSpells.MODE_NUMBER.get();
-            case STRING -> PsitweaksClientSpells.MODE_STRING.get();
-            case VECTOR -> PsitweaksClientSpells.MODE_VECTOR.get();
-        };
+    private static Material materialFor(PsitweaksModeOption mode) {
+        if (mode == null) {
+            return PsitweaksClientSpells.MODE_STRING.get();
+        }
+        return ClientPsiAPI.SPELL_PIECE_MATERIAL_REGISTRY.getOptional(mode.overlayMaterialId())
+                .orElse(PsitweaksClientSpells.MODE_STRING.get());
     }
 }
