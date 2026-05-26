@@ -1,14 +1,18 @@
 package com.moratan251.psitweaks.common.spells.util;
 
+import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
+import com.moratan251.psitweaks.common.spells.param.ParamBlockListWrapper;
+import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
 import com.moratan251.psitweaks.common.spells.param.ParamNumberListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamSpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamVectorListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
@@ -36,6 +40,7 @@ public final class ModeListOperations {
             case VECTOR -> new ParamVectorListWrapper(name, PsitweaksSpellParams.VECTOR_LIST_COLOR, canDisable, false);
             case ENTITY -> new ParamEntityListWrapper(name, SpellParam.BLUE, canDisable, false);
             case ITEM -> new ParamSpellItemListWrapper(name, PsitweaksSpellParams.ITEM_LIST_COLOR, canDisable, false);
+            case BLOCK -> new ParamBlockListWrapper(name, PsitweaksSpellParams.BLOCK_LIST_COLOR, canDisable, false);
         };
     }
 
@@ -46,6 +51,7 @@ public final class ModeListOperations {
             case VECTOR -> new ParamVector(name, SpellParam.GREEN, canDisable, false);
             case ENTITY -> new ParamEntity(name, SpellParam.GREEN, canDisable, false);
             case ITEM -> new ParamSpellItemValue(name, PsitweaksSpellParams.ITEM_COLOR, canDisable, false);
+            case BLOCK -> new ParamBlockValue(name, PsitweaksSpellParams.BLOCK_COLOR, canDisable, false);
         };
     }
 
@@ -56,6 +62,7 @@ public final class ModeListOperations {
             case VECTOR -> VectorListWrapper.EMPTY;
             case ENTITY -> EntityListWrapper.EMPTY;
             case ITEM -> SpellItemListWrapper.EMPTY;
+            case BLOCK -> BlockListWrapper.EMPTY;
         };
     }
 
@@ -66,6 +73,7 @@ public final class ModeListOperations {
             case VECTOR -> VectorListWrapper.class;
             case ENTITY -> EntityListWrapper.class;
             case ITEM -> SpellItemListWrapper.class;
+            case BLOCK -> BlockListWrapper.class;
         };
     }
 
@@ -76,6 +84,7 @@ public final class ModeListOperations {
             case VECTOR -> addVectors((VectorListWrapper) source, elements);
             case ENTITY -> addEntities((EntityListWrapper) source, elements);
             case ITEM -> addItems((SpellItemListWrapper) source, elements);
+            case BLOCK -> addBlocks((BlockListWrapper) source, elements);
         };
     }
 
@@ -86,6 +95,7 @@ public final class ModeListOperations {
             case VECTOR -> removeVectors((VectorListWrapper) source, elements);
             case ENTITY -> removeEntities((EntityListWrapper) source, elements);
             case ITEM -> removeItems((SpellItemListWrapper) source, elements);
+            case BLOCK -> removeBlocks((BlockListWrapper) source, elements);
         };
     }
 
@@ -96,6 +106,7 @@ public final class ModeListOperations {
             case VECTOR -> ((VectorListWrapper) source).size();
             case ENTITY -> ((EntityListWrapper) source).size();
             case ITEM -> ((SpellItemListWrapper) source).size();
+            case BLOCK -> ((BlockListWrapper) source).size();
         };
     }
 
@@ -106,6 +117,7 @@ public final class ModeListOperations {
             case VECTOR -> excludeVectors((VectorListWrapper) left, (VectorListWrapper) right);
             case ENTITY -> EntityListWrapper.exclusion((EntityListWrapper) left, (EntityListWrapper) right);
             case ITEM -> excludeItems((SpellItemListWrapper) left, (SpellItemListWrapper) right);
+            case BLOCK -> excludeBlocks((BlockListWrapper) left, (BlockListWrapper) right);
         };
     }
 
@@ -116,6 +128,7 @@ public final class ModeListOperations {
             case VECTOR -> intersectVectors((VectorListWrapper) left, (VectorListWrapper) right);
             case ENTITY -> EntityListWrapper.intersection((EntityListWrapper) left, (EntityListWrapper) right);
             case ITEM -> intersectItems((SpellItemListWrapper) left, (SpellItemListWrapper) right);
+            case BLOCK -> intersectBlocks((BlockListWrapper) left, (BlockListWrapper) right);
         };
     }
 
@@ -126,6 +139,7 @@ public final class ModeListOperations {
             case VECTOR -> concatenateVectors((VectorListWrapper) left, (VectorListWrapper) right);
             case ENTITY -> EntityListWrapper.union((EntityListWrapper) left, (EntityListWrapper) right);
             case ITEM -> concatenateItems((SpellItemListWrapper) left, (SpellItemListWrapper) right);
+            case BLOCK -> concatenateBlocks((BlockListWrapper) left, (BlockListWrapper) right);
         };
     }
 
@@ -182,6 +196,16 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
+    public static BlockListWrapper addBlocks(BlockListWrapper source, List<?> elements) {
+        List<BlockValue> result = new ArrayList<>(source.asList());
+        for (Object element : elements) {
+            if (element instanceof BlockValue value) {
+                result.add(value);
+            }
+        }
+        return BlockListWrapper.make(result);
+    }
+
     public static StringListWrapper removeStrings(StringListWrapper source, List<?> elements) {
         List<String> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
@@ -235,6 +259,16 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
+    public static BlockListWrapper removeBlocks(BlockListWrapper source, List<?> elements) {
+        List<BlockValue> result = new ArrayList<>(source.asList());
+        for (Object element : elements) {
+            if (element instanceof BlockValue value) {
+                removeEquivalentBlock(result, value);
+            }
+        }
+        return BlockListWrapper.make(result);
+    }
+
     public static StringListWrapper excludeStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>();
         for (String value : left) {
@@ -275,6 +309,17 @@ public final class ModeListOperations {
             }
         }
         return SpellItemListWrapper.make(result);
+    }
+
+    public static BlockListWrapper excludeBlocks(BlockListWrapper left, BlockListWrapper right) {
+        List<BlockValue> result = new ArrayList<>();
+        List<BlockValue> rightValues = right.asList();
+        for (BlockValue value : left) {
+            if (!containsEquivalentBlock(rightValues, value)) {
+                result.add(value);
+            }
+        }
+        return BlockListWrapper.make(result);
     }
 
     public static StringListWrapper intersectStrings(StringListWrapper left, StringListWrapper right) {
@@ -319,6 +364,17 @@ public final class ModeListOperations {
         return SpellItemListWrapper.make(result);
     }
 
+    public static BlockListWrapper intersectBlocks(BlockListWrapper left, BlockListWrapper right) {
+        List<BlockValue> result = new ArrayList<>();
+        List<BlockValue> rightValues = right.asList();
+        for (BlockValue value : left) {
+            if (containsEquivalentBlock(rightValues, value)) {
+                result.add(value);
+            }
+        }
+        return BlockListWrapper.make(result);
+    }
+
     public static StringListWrapper concatenateStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
@@ -341,6 +397,12 @@ public final class ModeListOperations {
         List<SpellItemValue> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
         return SpellItemListWrapper.make(result);
+    }
+
+    public static BlockListWrapper concatenateBlocks(BlockListWrapper left, BlockListWrapper right) {
+        List<BlockValue> result = new ArrayList<>(left.asList());
+        result.addAll(right.asList());
+        return BlockListWrapper.make(result);
     }
 
     private static boolean removeEquivalentItem(List<SpellItemValue> values, SpellItemValue target) {
@@ -367,5 +429,24 @@ public final class ModeListOperations {
             return left.source().equals(right.source());
         }
         return ItemStack.matches(left.copyStack(), right.copyStack());
+    }
+
+    private static boolean removeEquivalentBlock(List<BlockValue> values, BlockValue target) {
+        for (int i = 0; i < values.size(); i++) {
+            if (BlockListWrapper.equivalent(values.get(i), target)) {
+                values.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containsEquivalentBlock(List<BlockValue> values, BlockValue target) {
+        for (BlockValue value : values) {
+            if (BlockListWrapper.equivalent(value, target)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

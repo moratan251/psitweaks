@@ -12,7 +12,8 @@ public enum ListElementMode {
     NUMBER(PsitweaksModeOptions.NUMBER),
     VECTOR(PsitweaksModeOptions.VECTOR),
     ENTITY(PsitweaksModeOptions.ENTITY),
-    ITEM(PsitweaksModeOptions.ITEM);
+    ITEM(PsitweaksModeOptions.ITEM),
+    BLOCK(PsitweaksModeOptions.BLOCK);
 
     private final PsitweaksModeOption option;
 

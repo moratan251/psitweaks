@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.util;
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
+import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
@@ -28,6 +29,7 @@ public final class ModeStringConversionHelper {
         return switch (mode) {
             case ENTITY -> entityToRegistryId((Entity) value);
             case ITEM -> itemToRegistryId((SpellItemValue) value);
+            case BLOCK -> blockToRegistryId((BlockValue) value);
             case VECTOR, NUMBER, STRING -> debugString(value);
         };
     }
@@ -61,6 +63,9 @@ public final class ModeStringConversionHelper {
         if (value instanceof SpellItemListWrapper list) {
             return joinConverted(list, ModeStringConversionHelper::itemToRegistryId);
         }
+        if (value instanceof BlockListWrapper list) {
+            return joinConverted(list, ModeStringConversionHelper::blockToRegistryId);
+        }
         if (value instanceof VectorListWrapper list) {
             return joinConverted(list, vector -> debugString(vector));
         }
@@ -82,6 +87,7 @@ public final class ModeStringConversionHelper {
         return switch (mode) {
             case ENTITY -> entitiesToStringList((EntityListWrapper) value);
             case ITEM -> itemsToStringList((SpellItemListWrapper) value);
+            case BLOCK -> blocksToStringList((BlockListWrapper) value);
             case VECTOR -> vectorsToStringList((VectorListWrapper) value);
             case NUMBER -> numbersToStringList((NumberListWrapper) value);
             case STRING -> (StringListWrapper) value;
@@ -98,6 +104,9 @@ public final class ModeStringConversionHelper {
         }
         if (value instanceof SpellItemListWrapper list) {
             return itemsToStringList(list);
+        }
+        if (value instanceof BlockListWrapper list) {
+            return blocksToStringList(list);
         }
         if (value instanceof VectorListWrapper list) {
             return vectorsToStringList(list);
@@ -158,6 +167,14 @@ public final class ModeStringConversionHelper {
         List<String> result = new ArrayList<>();
         for (SpellItemValue item : source) {
             result.add(itemToRegistryId(item));
+        }
+        return StringListWrapper.make(result);
+    }
+
+    private static StringListWrapper blocksToStringList(BlockListWrapper source) {
+        List<String> result = new ArrayList<>();
+        for (BlockValue block : source) {
+            result.add(blockToRegistryId(block));
         }
         return StringListWrapper.make(result);
     }

@@ -21,6 +21,7 @@ public final class PsitweaksSpellParams {
     public static final int ITEM_COLOR = 0xD8B45C;
     public static final int ITEM_LIST_COLOR = 0xE2C66A;
     public static final int BLOCK_COLOR = 0x7CA85A;
+    public static final int BLOCK_LIST_COLOR = 0x91B85D;
 
     private PsitweaksSpellParams() {
     }

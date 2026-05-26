@@ -34,6 +34,9 @@ public final class PsitweaksModeOptions {
     public static final PsitweaksModeOption ITEM = registerBuiltin(
             "item", "I", "psitweaks.datatype.item", "psitweaks.datatype.item_list", 40,
             PsitweaksValueKind.CONTEXTUAL);
+    public static final PsitweaksModeOption BLOCK = registerBuiltin(
+            "block", "B", "psitweaks.datatype.block", "psitweaks.datatype.block_list", 50,
+            PsitweaksValueKind.CONTEXTUAL);
 
     private PsitweaksModeOptions() {
     }

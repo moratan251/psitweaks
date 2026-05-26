@@ -175,6 +175,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/entity");
     public static final DeferredHolder<Material, Material> MODE_ITEM =
             registerPieceMaterial("mode/item");
+    public static final DeferredHolder<Material, Material> MODE_BLOCK =
+            registerPieceMaterial("mode/block");
 
     private PsitweaksClientSpells() {
     }

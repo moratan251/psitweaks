@@ -23,7 +23,7 @@ public final class ModeStringParsingHelper {
         return switch (mode) {
             case NUMBER -> StringSpellHelper.parseFiniteDouble(value).orElse(0D);
             case VECTOR -> parseVector(value).orElseGet(() -> Vector3.zero.copy());
-            case STRING, ENTITY, ITEM -> value;
+            case STRING, ENTITY, ITEM, BLOCK -> value;
         };
     }
 
@@ -31,7 +31,7 @@ public final class ModeStringParsingHelper {
         return switch (mode) {
             case NUMBER -> numbersFromStringList(source);
             case VECTOR -> vectorsFromStringList(source);
-            case STRING, ENTITY, ITEM -> source;
+            case STRING, ENTITY, ITEM, BLOCK -> source;
         };
     }
 

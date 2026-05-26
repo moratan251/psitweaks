@@ -32,7 +32,7 @@ public class PieceOperatorFromString extends PieceOperatorModeConversionBase {
             case STRING -> String.class;
             case NUMBER -> Double.class;
             case VECTOR -> Vector3.class;
-            case ENTITY, ITEM -> Object.class;
+            case ENTITY, ITEM, BLOCK -> Object.class;
         };
     }
 

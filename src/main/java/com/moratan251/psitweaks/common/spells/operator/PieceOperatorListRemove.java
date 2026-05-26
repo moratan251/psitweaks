@@ -52,7 +52,7 @@ public class PieceOperatorListRemove extends PieceOperatorModeListBase {
         if (first == null) {
             throw new SpellRuntimeException("psi.spellerror.nulltarget");
         }
-        values.add(first);
+        values.add(currentAdapter().coerceElement(context, first));
         addOptionalElement(context, values, element2);
         addOptionalElement(context, values, element3);
         return values;
@@ -62,7 +62,7 @@ public class PieceOperatorListRemove extends PieceOperatorModeListBase {
             throws SpellRuntimeException {
         Object value = getParamValue(context, typed(param));
         if (value != null) {
-            values.add(value);
+            values.add(currentAdapter().coerceElement(context, value));
         }
     }
 }

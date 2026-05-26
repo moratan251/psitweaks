@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.util;
 
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
@@ -49,6 +50,9 @@ public final class ComparisonValueHelper {
         if (left instanceof SpellItemListWrapper leftList && right instanceof SpellItemListWrapper rightList) {
             return itemListEquals(leftList.asList(), rightList.asList());
         }
+        if (left instanceof BlockListWrapper leftList && right instanceof BlockListWrapper rightList) {
+            return blockListEquals(leftList.asList(), rightList.asList());
+        }
         if (left instanceof EntityListWrapper leftList && right instanceof EntityListWrapper rightList) {
             return entityListEquals(leftList, rightList);
         }
@@ -74,6 +78,18 @@ public final class ComparisonValueHelper {
         }
         for (int i = 0; i < left.size(); i++) {
             if (!itemEquals(left.get(i), right.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean blockListEquals(List<BlockValue> left, List<BlockValue> right) {
+        if (left.size() != right.size()) {
+            return false;
+        }
+        for (int i = 0; i < left.size(); i++) {
+            if (!BlockListWrapper.equivalent(left.get(i), right.get(i))) {
                 return false;
             }
         }

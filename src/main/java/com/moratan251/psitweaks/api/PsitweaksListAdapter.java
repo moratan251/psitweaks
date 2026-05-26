@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.api;
 
 import java.util.List;
+import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
  * Adapter used by Psitweaks spell pieces to read and transform custom list-like
@@ -33,6 +35,10 @@ public interface PsitweaksListAdapter<T> {
 
     default Object emptyElement() {
         return null;
+    }
+
+    default Object coerceElement(SpellContext context, Object value) throws SpellRuntimeException {
+        return value;
     }
 
     default Object get(T list, int index) {
