@@ -32,11 +32,13 @@ public class PieceSelectorIndexedElement extends PieceOperatorModeListBase {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         int index = getNotNullParamValue(context, number).intValue();
         Object source = getNotNullParamValue(context, typed(list));
-        if (index < 0 || index >= currentAdapter().size(source)) {
+        int size = currentAdapter().size(source);
+        int normalizedIndex = normalizeIndex(index, size);
+        if (normalizedIndex < 0 || normalizedIndex >= size) {
             throw new SpellRuntimeException("psi.spellerror.out_of_bounds");
         }
 
-        return currentAdapter().get(source, index);
+        return currentAdapter().get(source, normalizedIndex);
     }
 
     @Override
@@ -55,5 +57,9 @@ public class PieceSelectorIndexedElement extends PieceOperatorModeListBase {
         addParam(list = currentAdapter().createListParam(SpellParam.GENERIC_NAME_LIST, false));
         addParam(number = new ParamNumber("psi.spellparam.number", SpellParam.RED, false, false));
         restoreParamSides(savedSides);
+    }
+
+    private static int normalizeIndex(int index, int size) {
+        return index < 0 ? size + index : index;
     }
 }
