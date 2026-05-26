@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
 import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.piece.PieceOperator;
 
 public class PieceOperatorBlockPosition extends PieceOperator {
-    private SpellParam<BlockValue> target;
+    private SpellParam<?> target;
 
     public PieceOperatorBlockPosition(Spell spell) {
         super(spell);
@@ -26,7 +27,7 @@ public class PieceOperatorBlockPosition extends PieceOperator {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        BlockValue block = getNotNullParamValue(context, target);
+        BlockValue block = BlockValueHelper.getBlockValue(this, context, target);
         return block.positionVector();
     }
 

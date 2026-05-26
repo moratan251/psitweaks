@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
 import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
@@ -14,7 +15,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.piece.PieceOperator;
 
 public class PieceOperatorBlockHasTag extends PieceOperator {
-    private SpellParam<BlockValue> target;
+    private SpellParam<?> target;
     private SpellParam<String> tag;
 
     public PieceOperatorBlockHasTag(Spell spell) {
@@ -30,7 +31,7 @@ public class PieceOperatorBlockHasTag extends PieceOperator {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        BlockValue block = getNotNullParamValue(context, target);
+        BlockValue block = BlockValueHelper.getBlockValue(this, context, target);
         String tagText = getNotNullParamValue(context, tag);
         ResourceLocation tagId = parseTagId(tagText);
         return StringSpellHelper.bool(block.hasTag(tagId));

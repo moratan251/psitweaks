@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.ModeStringParsingHelper;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.internal.Vector3;
@@ -13,11 +14,6 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 public class PieceOperatorFromString extends PieceOperatorModeConversionBase {
-    private static final ListElementMode[] PARSE_MODES = {
-            ListElementMode.NUMBER,
-            ListElementMode.VECTOR
-    };
-
     private SpellParam<String> string;
 
     public PieceOperatorFromString(Spell spell) {
@@ -33,9 +29,10 @@ public class PieceOperatorFromString extends PieceOperatorModeConversionBase {
     @Override
     public Class<?> getEvaluationType() {
         return switch (currentMode()) {
+            case STRING -> String.class;
             case NUMBER -> Double.class;
             case VECTOR -> Vector3.class;
-            case STRING, ENTITY, ITEM -> Object.class;
+            case ENTITY, ITEM -> Object.class;
         };
     }
 
@@ -45,8 +42,8 @@ public class PieceOperatorFromString extends PieceOperatorModeConversionBase {
     }
 
     @Override
-    protected ListElementMode[] availableElementModes() {
-        return PARSE_MODES;
+    protected List<ListElementMode> availableElementModes() {
+        return ListElementMode.plainModes();
     }
 
     @Override

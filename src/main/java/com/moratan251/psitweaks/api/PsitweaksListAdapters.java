@@ -99,6 +99,10 @@ public final class PsitweaksListAdapters {
         return List.copyOf(options);
     }
 
+    public static synchronized List<PsitweaksModeOption> modeOptions(PsitweaksValueKind valueKind) {
+        return PsitweaksModeOptions.filterByKind(modeOptions(), valueKind);
+    }
+
     public static synchronized Optional<PsitweaksListAdapter<Object>> findModeAdapter(PsitweaksModeOption option) {
         if (option == null) {
             return Optional.empty();

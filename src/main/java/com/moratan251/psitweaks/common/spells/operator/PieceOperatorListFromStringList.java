@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
 import com.moratan251.psitweaks.common.spells.util.ModeListOperations;
 import com.moratan251.psitweaks.common.spells.util.ModeStringParsingHelper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
@@ -14,11 +15,6 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 public class PieceOperatorListFromStringList extends PieceOperatorModeConversionBase {
-    private static final ListElementMode[] PARSE_MODES = {
-            ListElementMode.NUMBER,
-            ListElementMode.VECTOR
-    };
-
     private SpellParam<StringListWrapper> list;
 
     public PieceOperatorListFromStringList(Spell spell) {
@@ -42,8 +38,8 @@ public class PieceOperatorListFromStringList extends PieceOperatorModeConversion
     }
 
     @Override
-    protected ListElementMode[] availableElementModes() {
-        return PARSE_MODES;
+    protected List<ListElementMode> availableElementModes() {
+        return ListElementMode.plainModes();
     }
 
     @Override

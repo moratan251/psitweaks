@@ -5,6 +5,7 @@ import com.moratan251.psitweaks.api.PsitweaksListAdapter;
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
 import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.api.PsitweaksModeOptions;
+import com.moratan251.psitweaks.api.PsitweaksValueKind;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import java.util.LinkedHashMap;
@@ -32,7 +33,8 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
 
     @Override
     public final List<PsitweaksModeOption> getAvailableModeOptions() {
-        return PsitweaksListAdapters.modeOptions();
+        PsitweaksValueKind valueKind = modeOptionKindFilter();
+        return valueKind == null ? PsitweaksListAdapters.modeOptions() : PsitweaksListAdapters.modeOptions(valueKind);
     }
 
     @Override
@@ -82,6 +84,10 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
 
     protected final Class<?> currentListType() {
         return PsitweaksListAdapters.listType(currentMode()).orElse(Object.class);
+    }
+
+    protected PsitweaksValueKind modeOptionKindFilter() {
+        return null;
     }
 
     protected abstract void rebuildParams(Map<String, SpellParam.Side> savedSides);

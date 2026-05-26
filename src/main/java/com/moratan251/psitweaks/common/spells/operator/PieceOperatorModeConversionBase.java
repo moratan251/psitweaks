@@ -5,7 +5,6 @@ import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,14 +16,8 @@ import vazkii.psi.api.spell.piece.PieceOperator;
 
 public abstract class PieceOperatorModeConversionBase extends PieceOperator implements ModeConfigurableSpellPiece {
     private static final String TAG_MODE = "psitweaksMode";
-    private static final ListElementMode[] CONVERSION_MODES = {
-            ListElementMode.ENTITY,
-            ListElementMode.ITEM,
-            ListElementMode.VECTOR,
-            ListElementMode.NUMBER
-    };
 
-    private ListElementMode mode = ListElementMode.ENTITY;
+    private ListElementMode mode = ListElementMode.STRING;
 
     protected PieceOperatorModeConversionBase(Spell spell) {
         super(spell);
@@ -37,7 +30,7 @@ public abstract class PieceOperatorModeConversionBase extends PieceOperator impl
 
     @Override
     public final List<PsitweaksModeOption> getAvailableModeOptions() {
-        return Arrays.stream(availableElementModes()).map(ListElementMode::option).toList();
+        return availableElementModes().stream().map(ListElementMode::option).toList();
     }
 
     @Override
@@ -79,8 +72,8 @@ public abstract class PieceOperatorModeConversionBase extends PieceOperator impl
         return normalizeElementMode(mode);
     }
 
-    protected ListElementMode[] availableElementModes() {
-        return CONVERSION_MODES;
+    protected List<ListElementMode> availableElementModes() {
+        return ListElementMode.modes();
     }
 
     protected abstract void rebuildParams(Map<String, SpellParam.Side> savedSides);

@@ -20,15 +20,20 @@ public final class PsitweaksModeOptions {
     private static int nextRegistrationIndex;
 
     public static final PsitweaksModeOption STRING = registerBuiltin(
-            "string", "S", "psitweaks.datatype.string", "psitweaks.datatype.string_list", 0);
+            "string", "S", "psitweaks.datatype.string", "psitweaks.datatype.string_list", 0,
+            PsitweaksValueKind.PLAIN);
     public static final PsitweaksModeOption NUMBER = registerBuiltin(
-            "number", "N", "psi.datatype.number", "psitweaks.datatype.number_list", 10);
+            "number", "N", "psi.datatype.number", "psitweaks.datatype.number_list", 10,
+            PsitweaksValueKind.PLAIN);
     public static final PsitweaksModeOption VECTOR = registerBuiltin(
-            "vector", "V", "psi.datatype.vector3", "psitweaks.datatype.vector_list", 20);
+            "vector", "V", "psi.datatype.vector3", "psitweaks.datatype.vector_list", 20,
+            PsitweaksValueKind.PLAIN);
     public static final PsitweaksModeOption ENTITY = registerBuiltin(
-            "entity", "E", "psi.datatype.entity", "psi.datatype.entity_list_wrapper", 30);
+            "entity", "E", "psi.datatype.entity", "psi.datatype.entity_list_wrapper", 30,
+            PsitweaksValueKind.CONTEXTUAL);
     public static final PsitweaksModeOption ITEM = registerBuiltin(
-            "item", "I", "psitweaks.datatype.item", "psitweaks.datatype.item_list", 40);
+            "item", "I", "psitweaks.datatype.item", "psitweaks.datatype.item_list", 40,
+            PsitweaksValueKind.CONTEXTUAL);
 
     private PsitweaksModeOptions() {
     }
@@ -82,16 +87,37 @@ public final class PsitweaksModeOptions {
         return List.copyOf(result);
     }
 
+    public static synchronized List<PsitweaksModeOption> snapshot(PsitweaksValueKind valueKind) {
+        return filterByKind(snapshot(), valueKind);
+    }
+
+    public static List<PsitweaksModeOption> filterByKind(
+            List<PsitweaksModeOption> options,
+            PsitweaksValueKind valueKind
+    ) {
+        Objects.requireNonNull(options, "options");
+        Objects.requireNonNull(valueKind, "valueKind");
+
+        List<PsitweaksModeOption> result = new ArrayList<>();
+        for (PsitweaksModeOption option : options) {
+            if (option.valueKind() == valueKind) {
+                result.add(option);
+            }
+        }
+        return List.copyOf(result);
+    }
+
     private static PsitweaksModeOption registerBuiltin(
             String id,
             String buttonLabel,
             String elementTranslationKey,
             String listTranslationKey,
-            int sortOrder
+            int sortOrder,
+            PsitweaksValueKind valueKind
     ) {
         ResourceLocation location = ResourceLocation.fromNamespaceAndPath(BUILTIN_NAMESPACE, id);
         return register(new PsitweaksModeOption(location, id, buttonLabel, elementTranslationKey, listTranslationKey,
-                sortOrder));
+                sortOrder, valueKind));
     }
 
     private record RegisteredOption(PsitweaksModeOption option, int registrationIndex) {

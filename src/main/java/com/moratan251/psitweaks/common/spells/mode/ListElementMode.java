@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.mode;
 
 import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.api.PsitweaksModeOptions;
+import com.moratan251.psitweaks.api.PsitweaksValueKind;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +40,10 @@ public enum ListElementMode {
         return option;
     }
 
+    public PsitweaksValueKind valueKind() {
+        return option.valueKind();
+    }
+
     public ListElementMode next() {
         ListElementMode[] values = values();
         return values[(ordinal() + 1) % values.length];
@@ -46,6 +51,24 @@ public enum ListElementMode {
 
     public static List<PsitweaksModeOption> options() {
         return Arrays.stream(values()).map(ListElementMode::option).toList();
+    }
+
+    public static List<ListElementMode> modes() {
+        return Arrays.stream(values()).toList();
+    }
+
+    public static List<ListElementMode> modes(PsitweaksValueKind valueKind) {
+        return Arrays.stream(values())
+                .filter(mode -> mode.valueKind() == valueKind)
+                .toList();
+    }
+
+    public static List<ListElementMode> plainModes() {
+        return modes(PsitweaksValueKind.PLAIN);
+    }
+
+    public static List<ListElementMode> contextualModes() {
+        return modes(PsitweaksValueKind.CONTEXTUAL);
     }
 
     public static ListElementMode byId(String id) {

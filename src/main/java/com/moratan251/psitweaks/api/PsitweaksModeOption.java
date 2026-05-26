@@ -13,7 +13,8 @@ public record PsitweaksModeOption(
         String elementTranslationKey,
         String listTranslationKey,
         int sortOrder,
-        ResourceLocation overlayMaterialId
+        ResourceLocation overlayMaterialId,
+        PsitweaksValueKind valueKind
 ) {
     public PsitweaksModeOption(
             ResourceLocation id,
@@ -23,7 +24,19 @@ public record PsitweaksModeOption(
             int sortOrder
     ) {
         this(id, id.toString(), buttonLabel, elementTranslationKey, listTranslationKey, sortOrder,
-                defaultOverlayMaterialId(id));
+                defaultOverlayMaterialId(id), PsitweaksValueKind.CONTEXTUAL);
+    }
+
+    public PsitweaksModeOption(
+            ResourceLocation id,
+            String buttonLabel,
+            String elementTranslationKey,
+            String listTranslationKey,
+            int sortOrder,
+            PsitweaksValueKind valueKind
+    ) {
+        this(id, id.toString(), buttonLabel, elementTranslationKey, listTranslationKey, sortOrder,
+                defaultOverlayMaterialId(id), valueKind);
     }
 
     public PsitweaksModeOption(
@@ -34,7 +47,21 @@ public record PsitweaksModeOption(
             int sortOrder,
             ResourceLocation overlayMaterialId
     ) {
-        this(id, id.toString(), buttonLabel, elementTranslationKey, listTranslationKey, sortOrder, overlayMaterialId);
+        this(id, id.toString(), buttonLabel, elementTranslationKey, listTranslationKey, sortOrder, overlayMaterialId,
+                PsitweaksValueKind.CONTEXTUAL);
+    }
+
+    public PsitweaksModeOption(
+            ResourceLocation id,
+            String buttonLabel,
+            String elementTranslationKey,
+            String listTranslationKey,
+            int sortOrder,
+            ResourceLocation overlayMaterialId,
+            PsitweaksValueKind valueKind
+    ) {
+        this(id, id.toString(), buttonLabel, elementTranslationKey, listTranslationKey, sortOrder, overlayMaterialId,
+                valueKind);
     }
 
     public PsitweaksModeOption(
@@ -46,7 +73,33 @@ public record PsitweaksModeOption(
             int sortOrder
     ) {
         this(id, serializedId, buttonLabel, elementTranslationKey, listTranslationKey, sortOrder,
-                defaultOverlayMaterialId(id));
+                defaultOverlayMaterialId(id), PsitweaksValueKind.CONTEXTUAL);
+    }
+
+    public PsitweaksModeOption(
+            ResourceLocation id,
+            String serializedId,
+            String buttonLabel,
+            String elementTranslationKey,
+            String listTranslationKey,
+            int sortOrder,
+            PsitweaksValueKind valueKind
+    ) {
+        this(id, serializedId, buttonLabel, elementTranslationKey, listTranslationKey, sortOrder,
+                defaultOverlayMaterialId(id), valueKind);
+    }
+
+    public PsitweaksModeOption(
+            ResourceLocation id,
+            String serializedId,
+            String buttonLabel,
+            String elementTranslationKey,
+            String listTranslationKey,
+            int sortOrder,
+            ResourceLocation overlayMaterialId
+    ) {
+        this(id, serializedId, buttonLabel, elementTranslationKey, listTranslationKey, sortOrder, overlayMaterialId,
+                PsitweaksValueKind.CONTEXTUAL);
     }
 
     public PsitweaksModeOption {
@@ -56,6 +109,7 @@ public record PsitweaksModeOption(
         elementTranslationKey = requireText(elementTranslationKey, "elementTranslationKey");
         listTranslationKey = requireText(listTranslationKey, "listTranslationKey");
         overlayMaterialId = Objects.requireNonNull(overlayMaterialId, "overlayMaterialId");
+        valueKind = Objects.requireNonNull(valueKind, "valueKind");
     }
 
     private static ResourceLocation defaultOverlayMaterialId(ResourceLocation id) {

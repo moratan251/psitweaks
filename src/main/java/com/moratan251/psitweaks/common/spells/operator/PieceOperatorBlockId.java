@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
 import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
@@ -12,7 +13,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.piece.PieceOperator;
 
 public class PieceOperatorBlockId extends PieceOperator {
-    private SpellParam<BlockValue> target;
+    private SpellParam<?> target;
 
     public PieceOperatorBlockId(Spell spell) {
         super(spell);
@@ -26,7 +27,7 @@ public class PieceOperatorBlockId extends PieceOperator {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        BlockValue block = getNotNullParamValue(context, target);
+        BlockValue block = BlockValueHelper.getBlockValue(this, context, target);
         return StringSpellHelper.clamp(block.blockId().toString());
     }
 
