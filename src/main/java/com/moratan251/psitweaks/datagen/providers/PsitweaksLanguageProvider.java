@@ -157,6 +157,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "文字列2";
             default -> "String 2";
         });
+        root.addProperty("psitweaks.spellparam.string3", switch (locale) {
+            case "ja_jp" -> "文字列3";
+            default -> "String 3";
+        });
         root.addProperty("psitweaks.spellparam.value1", switch (locale) {
             case "ja_jp" -> "値1";
             default -> "Value 1";
@@ -935,6 +939,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target entity's top-level NBT keys as a String List. The entity id is not included.", "取得子: NBTキー", "対象 Entity のNBTトップレベルキーを String List として出力します。エンティティIDは含みません。");
         addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target entity's top-level NBT value matching the String key. Missing keys output an empty string.", "取得子: NBT値", "対象 Entity のNBTトップレベルから String キーに一致する値を出力します。一致しない場合は空文字列です。");
         addSpellPiece(root, "operator_string_partial_match", "Operator: Partial Match", "Outputs 1 if String 1 contains String 2, otherwise outputs 0.", "演算子: 部分一致", "文字列1が文字列2を含むなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "operator_string_concat", "Operator: String Concat", "String 1 + String 2 + String 3", "演算子: 文字列結合", "文字列1 + 文字列2 + 文字列3");
         addSpellPiece(root, "operator_player_name", "Operator: Player Name", "Outputs the player name if the Entity is a player, otherwise outputs an empty string.", "演算子: プレイヤーネーム", "Entity がプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。");
         addSpellPiece(root, "operator_entity_list_search", "Operator: Entity List Search", "Keeps only entities whose registry ID matches the string.", "演算子: エンティティリスト検索", "文字列とエンティティIDが一致するエンティティだけを残します。");
         addSpellPiece(root, "operator_entity_list_exclude", "Operator: Entity List Exclude", "Removes entities whose registry ID matches the string.", "演算子: エンティティリスト除外", "文字列とエンティティIDが一致するエンティティを除外します。");
@@ -1021,6 +1026,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_nbt_keys", "Outputs the target Entity's top-level NBT keys as a String List. The entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルキーを String List として出力します. エンティティIDは専用の取得子があるため意図的に含めません.");
         addBookPage(root, "selector_nbt_value", "Outputs the target Entity's top-level NBT value matching the String key as SNBT text. Missing keys and the omitted id key output an empty String.", "対象 Entity のNBTトップレベルから Stringキーに完全一致する値をSNBT文字列として出力します. キーが存在しない場合や省略対象のidキーは空文字列になります.");
         addBookPage(root, "operator_string_partial_match", "Checks whether String 1 contains String 2. The comparison is case-sensitive and outputs 1 when String 2 is found, otherwise 0.", "文字列1が文字列2を含むか判定します. 比較は大文字小文字を区別し, 文字列2が見つかるなら1, そうでなければ0を出力します.");
+        addBookPage(root, "operator_string_concat", "Concatenates String 1, String 2, and optional String 3 in that order. If String 3 is not connected, it is treated as an empty string.", "文字列1, 文字列2, 任意の文字列3をこの順に結合します. 文字列3が未接続の場合は空文字列として扱います.");
         addBookPage(root, "operator_player_name", "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.", "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.");
         addBookPage(root, "operator_entity_list_search", "Filters an Entity List by registry ID. It returns a new Entity List containing only entities whose type ID exactly matches the String input, such as minecraft:zombie.", "Entity List をエンティティ種別のレジストリIDで絞り込みます. String入力と完全一致するエンティティだけを含む新しい Entity List を返します. 例: minecraft:zombie.");
         addBookPage(root, "operator_entity_list_exclude", "Filters an Entity List by registry ID. It returns a new Entity List with entities whose type ID exactly matches the String input removed.", "Entity List からエンティティ種別のレジストリIDが String入力と完全一致するエンティティを除外し, 新しい Entity List を返します.");
