@@ -929,8 +929,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_block_has_tag", "Operator: Block Has Tag", "Outputs 1 if the Block value has the given block tag, otherwise 0.", "演算子: ブロックタグ判定", "Block 値が指定したブロックタグを持つなら1、そうでなければ0を出力します。");
         addSpellPiece(root, "operator_block_position", "Operator: Block Position", "Outputs the saved position of a Block value as a plain Vector.", "演算子: ブロック座標", "Block 値に保存された座標を通常の Vector として出力します。");
         addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
-        addSpellPiece(root, "selector_held_item", "Selector: Held Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
-        addSpellPiece(root, "selector_held_items", "Selector: Held Items", "Outputs the target entity's carried items as an Item List.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを Item List として取得します。");
+        addSpellPiece(root, "selector_held_item", "Selector: Main-Hand Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
+        addSpellPiece(root, "selector_held_items", "Selector: Carried Items", "Outputs the target entity's carried items as an Item List.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを Item List として取得します。");
         addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as an Item List.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを Item List として取得します。");
         addSpellPiece(root, "selector_indexed_element", "Selector: Indexed Element", "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.", "取得子: インデックス要素", "選択中の List モードから0始まりのインデックスにある要素を取得します。負のインデックスは末尾から数えます。");
         addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target entity's top-level NBT as key:value strings. The entity id is not included.", "取得子: NBT", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します。エンティティIDは含みません。");
