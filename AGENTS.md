@@ -1,24 +1,25 @@
 # AGENTS.md
 
-このファイルは、`1.21.1` ブランチまたはローカル worktree `1.21.1-worktree/` でAIを起動した場合の案内用です。
-このブランチでは、このディレクトリをリポジトリルートとして扱います。
+Use this file when an agent starts inside the `1.21.1` branch or local worktree `1.21.1-worktree/`.
 
-## 最初に読むもの
+## Read First
 
-1. この `AGENTS.md`
-2. ローカル親ディレクトリに共通ガイドがある場合は `../AGENTS.md`
-3. 移植元を確認する場合は `../1.20.1/`
+1. This `AGENTS.md`
+2. `../AGENTS.md`
+3. `../docs/README.md`
+4. `../docs/1.21.1/development-guidelines.md`
+5. Add `../docs/1.21.1/architecture.md`, `repository-structure.md`, `porting-decisions.md`, `memory-leak-checklist.md`, or `glossary.md` only when relevant.
 
-## このディレクトリの役割
+## Role
 
-- NeoForge 1.21.1 版の移植先です。
-- `../1.20.1/` を移植元として参照します。
-- ローカル共通作業記録は `../.steering/` に作成・更新します。
-- ローカルAIスキルは `../.agents/skills/` を参照します。
+- This is the primary NeoForge 1.21.1 development worktree.
+- Treat this dir as the Git/project root for 1.21.1 work.
+- Use `../1.20.1/` only as legacy Forge reference or when explicitly porting/backporting.
+- Store shared task state in `../.steering/`; use skills from `../.agents/skills/`.
 
-## 作業時の注意
+## Notes
 
-- Gradle コマンドはこの worktree ディレクトリで実行します。
-- 実装後の最低検証は `.\gradlew compileJava` です。
-- datagen 対象を変更した場合は `.\gradlew runData` も実行します。
-- Forge 1.20.1 由来の実装をそのままコピーせず、NeoForge 1.21.1 のAPI差分を確認して移植します。
+- Run Gradle commands in this worktree.
+- Minimum verification after implementation: `.\gradlew compileJava`.
+- Run `.\gradlew runData` for datagen changes.
+- Do not copy Forge 1.20.1 code blindly; verify NeoForge 1.21.1 API differences first.

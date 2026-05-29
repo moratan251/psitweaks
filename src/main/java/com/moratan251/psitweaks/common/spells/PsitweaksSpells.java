@@ -118,12 +118,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_to_string", PieceOperatorToString.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListToStringList>> OPERATOR_LIST_TO_STRING_LIST =
             registerPiece("operator_list_to_string_list", PieceOperatorListToStringList.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorEntityTypeId>> SELECTOR_ENTITY_TYPE_ID =
-            registerPiece("selector_entity_type_id", PieceSelectorEntityTypeId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlock>> SELECTOR_BLOCK =
             registerPiece("selector_block", PieceSelectorBlock.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlockId>> SELECTOR_BLOCK_ID =
-            registerPiece("selector_block_id", PieceSelectorBlockId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockId>> OPERATOR_BLOCK_ID =
             registerPiece("operator_block_id", PieceOperatorBlockId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockHasTag>> OPERATOR_BLOCK_HAS_TAG =
@@ -269,8 +265,6 @@ public final class PsitweaksSpells {
                     PieceOperatorListFromStringList.class,
                     PieceOperatorToString.class,
                     PieceOperatorListToStringList.class,
-                    PieceSelectorEntityTypeId.class,
-                    PieceSelectorBlockId.class,
                     PieceSelectorOnlinePlayers.class,
                     PieceSelectorHeldItems.class,
                     PieceSelectorInternalItems.class,
@@ -298,7 +292,6 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
             ADVANCEMENT_GROUPS.register("block", () -> List.of(
                     PieceSelectorBlock.class,
-                    PieceSelectorBlockId.class,
                     PieceOperatorBlockId.class,
                     PieceOperatorBlockHasTag.class,
                     PieceOperatorBlockPosition.class
