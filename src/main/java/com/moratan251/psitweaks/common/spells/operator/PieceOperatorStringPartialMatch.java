@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.operator;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -27,7 +28,7 @@ public class PieceOperatorStringPartialMatch extends PieceOperator {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         String first = getNotNullParamValue(context, string1);
         String second = getNotNullParamValue(context, string2);
-        return StringSpellHelper.bool(first.contains(second));
+        return StringSpellHelper.bool(WildcardStringMatcher.compilePartial(second).matches(first));
     }
 
     @Override

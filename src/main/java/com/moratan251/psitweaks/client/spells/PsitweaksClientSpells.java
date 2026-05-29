@@ -145,10 +145,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_string_concat");
     public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =
             registerPieceMaterial("operator_player_name");
-    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_SEARCH =
-            registerPieceMaterial("operator_entity_list_search");
-    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_LIST_EXCLUDE =
-            registerPieceMaterial("operator_entity_list_exclude");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SEARCH =
+            registerPieceMaterial("operator_list_search");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SEARCH_EXCLUDE =
+            registerPieceMaterial("operator_list_search_exclude");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
             registerPieceMaterial("operator_random_element", "operator_random_string");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =

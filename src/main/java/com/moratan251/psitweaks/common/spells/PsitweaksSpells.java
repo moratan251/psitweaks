@@ -148,10 +148,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_string_concat", PieceOperatorStringConcat.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorPlayerName>> OPERATOR_PLAYER_NAME =
             registerPiece("operator_player_name", PieceOperatorPlayerName.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListSearch>> OPERATOR_ENTITY_LIST_SEARCH =
-            registerPiece("operator_entity_list_search", PieceOperatorEntityListSearch.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEntityListExclude>> OPERATOR_ENTITY_LIST_EXCLUDE =
-            registerPiece("operator_entity_list_exclude", PieceOperatorEntityListExclude.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSearch>> OPERATOR_LIST_SEARCH =
+            registerPiece("operator_list_search", PieceOperatorListSearch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSearchExclude>> OPERATOR_LIST_SEARCH_EXCLUDE =
+            registerPiece("operator_list_search_exclude", PieceOperatorListSearchExclude.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRandomElement>> OPERATOR_RANDOM_ELEMENT =
             registerPiece("operator_random_element", PieceOperatorRandomElement.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListAdd>> OPERATOR_LIST_ADD =
@@ -275,8 +275,8 @@ public final class PsitweaksSpells {
                     PieceOperatorStringPartialMatch.class,
                     PieceOperatorStringConcat.class,
                     PieceOperatorPlayerName.class,
-                    PieceOperatorEntityListSearch.class,
-                    PieceOperatorEntityListExclude.class,
+                    PieceOperatorListSearch.class,
+                    PieceOperatorListSearchExclude.class,
                     PieceOperatorRandomElement.class,
                     PieceOperatorListAdd.class,
                     PieceOperatorListRemove.class,
