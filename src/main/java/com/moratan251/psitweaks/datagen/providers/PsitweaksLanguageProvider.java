@@ -48,12 +48,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
         addDeathMessages(root);
         addChemical(root, "infuse_psigem", "Psigem", "サイジェム");
-        addChemical(root, "infuse_ebony", "Ebony", "黒檀");
-        addChemical(root, "infuse_ivory", "Ivory", "白象牙");
+        addChemical(root, "infuse_ebony", "Ebony", "エボニー");
+        addChemical(root, "infuse_ivory", "Ivory", "アイボリー");
         addChemical(root, "infuse_chaotic_factor", "Chaotic Factor", "混沌因子");
         addChemical(root, "infuse_psionic_echo", "Psionic Echo", "サイオニックエコー");
-        addChemical(root, "infuse_hypostasis", "Hypostasis", "ヒュポスタシス");
-        addChemical(root, "gas_psionic_echo", "Psionic Echo", "サイオニックエコー");
+        addChemical(root, "infuse_hypostasis", "Hypostasis Gem", "ヒュポスタシスジェム");
+        addChemical(root, "gas_psionic_echo", "Psionic Echo Gas", "気化サイオニックエコー");
         addChemical(root, "gas_peo_fuel", "ΨE-O Fuel", "ΨE-O 燃料");
         addChemical(root, "dirty_antinite", "Dirty Antinite Slurry", "汚れたアンティナイトの懸濁液");
         addChemical(root, "clean_antinite", "Clean Antinite Slurry", "純粋なアンティナイトの懸濁液");
@@ -94,7 +94,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Enter a value between %s and %s";
         });
         root.addProperty("psitweaks.spellparam.spellgram", switch (locale) {
-            case "ja_jp" -> "SpellGram";
+            case "ja_jp" -> "魔法式";
             default -> "SpellGram";
         });
         root.addProperty("psitweaks.datatype.string", switch (locale) {
@@ -188,6 +188,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellparam.tag", switch (locale) {
             case "ja_jp" -> "タグ";
             default -> "Tag";
+        });
+        root.addProperty("psitweaks.spellparam.label", switch (locale) {
+            case "ja_jp" -> "ラベル";
+            default -> "Label";
+        });
+        root.addProperty("psitweaks.spellerror.no_jump_anchor", switch (locale) {
+            case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
+            default -> "No matching Jump Anchor found ahead";
         });
         root.addProperty("psitweaks.gui.string_constant_input.empty", switch (locale) {
             case "ja_jp" -> "空文字列";
@@ -909,6 +917,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Spell Gram Circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
         addSpellPiece(root, "trick_set_spellgram_follow_target", "Trick: Set SpellGram Follow Target", "Sets the follow target entity for a SpellGram object", "作動式: 魔法式追従", "魔法式オブジェクトの追従対象エンティティを設定する");
         addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります");
+        addSpellPiece(root, "trick_jump", "Trick: Jump", "If the target number's absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.", "作動式: ジャンプ", "対象数値の絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。");
+        addSpellPiece(root, "trick_switch", "Trick: Switch", "Jumps forward to the next Jump Anchor with the same constant label as the input String. If no matching anchor exists, execution continues.", "作動式: スイッチ", "入力Stringと同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。一致するアンカーがない場合はそのまま次へ進みます。");
+        addSpellPiece(root, "jump_anchor", "Jump Anchor", "A no-op marker used as the destination for Trick: Jump and Trick: Switch. It can take an optional constant label.", "ジャンプアンカー", "作動式: ジャンプと作動式: スイッチの到達点になる、何もしない目印です。任意の定数ラベルを指定できます。");
         addSpellPiece(root, "trick_material_mutation", "Trick: Material Mutation", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.", "作動式: 物質変成", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
         addSpellPiece(root, "trick_physical_propulsion", "Trick: Physical Propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "作動式: 物理推進", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与える");
         addSpellPiece(root, "operator_tan", "Operator: Tangent", "tan(A)", "演算子: タンジェント", "tan(A)");
@@ -930,15 +941,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_block_position", "Operator: Block Position", "Outputs the saved position of a Block value as a plain Vector.", "演算子: ブロック座標", "Block 値に保存された座標を通常の Vector として出力します。");
         addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
         addSpellPiece(root, "selector_held_item", "Selector: Main-Hand Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
+        addSpellPiece(root, "selector_selected_slot_item", "Selector: Selected Slot Item", "Gets the item in the caster's selected target slot.", "取得子: 選択スロットアイテム", "術者の選択対象スロットにあるアイテムを取得します。");
         addSpellPiece(root, "selector_held_items", "Selector: Carried Items", "Outputs the target entity's carried items as an Item List.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを Item List として取得します。");
         addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as an Item List.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを Item List として取得します。");
         addSpellPiece(root, "selector_indexed_element", "Selector: Indexed Element", "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.", "取得子: インデックス要素", "選択中の List モードから0始まりのインデックスにある要素を取得します。負のインデックスは末尾から数えます。");
-        addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target entity's top-level NBT as key:value strings. The entity id is not included.", "取得子: NBT", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します。エンティティIDは含みません。");
-        addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target entity's top-level NBT keys as a String List. The entity id is not included.", "取得子: NBTキー", "対象 Entity のNBTトップレベルキーを String List として出力します。エンティティIDは含みません。");
-        addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target entity's top-level NBT value matching the String key. Missing keys output an empty string.", "取得子: NBT値", "対象 Entity のNBTトップレベルから String キーに一致する値を出力します。一致しない場合は空文字列です。");
-        addSpellPiece(root, "operator_string_partial_match", "Operator: Partial Match", "Outputs 1 if String 1 contains text matching String 2's wildcard pattern, otherwise outputs 0.", "演算子: 部分一致", "文字列1が文字列2のワイルドカードパターンに一致する文字列を含むなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the selected target's top-level NBT as key:value strings. Entity mode omits the entity id.", "取得子: NBT", "選択モードの対象のNBTトップレベルを key:value 形式の String List として出力します。Entity モードではエンティティIDを含みません。");
+        addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the selected target's top-level NBT keys as a String List. Entity mode omits the entity id.", "取得子: NBTキー", "選択モードの対象のNBTトップレベルキーを String List として出力します。Entity モードではエンティティIDを含みません。");
+        addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the selected target's top-level NBT value matching the String key. Missing keys output an empty string.", "取得子: NBT値", "選択モードの対象のNBTトップレベルから String キーに一致する値を出力します。一致しない場合は空文字列です。");
+        addSpellPiece(root, "operator_string_partial_match", "Operator: Partial Match", "Outputs 1 if searching String 1 with String 2 finds matching text, otherwise outputs 0.", "演算子: 部分一致", "文字列1が文字列2での検索にマッチする文字列を含むなら1、そうでなければ0を出力します。");
         addSpellPiece(root, "operator_string_concat", "Operator: String Concat", "String 1 + String 2 + String 3", "演算子: 文字列結合", "文字列1 + 文字列2 + 文字列3");
-        addSpellPiece(root, "operator_player_name", "Operator: Player Name", "Outputs the player name if the Entity is a player, otherwise outputs an empty string.", "演算子: プレイヤーネーム", "Entity がプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。");
+        addSpellPiece(root, "operator_player_name", "Operator: Player Name", "Outputs the player name if the Entity is a player, otherwise outputs an empty string.", "演算子: プレイヤーネーム", "Entityがプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。");
         addSpellPiece(root, "operator_list_search", "Operator: List Search", "Keeps only elements whose string form matches the wildcard.", "演算子: リスト検索", "文字列化した値がワイルドカードに一致する要素だけを残します。");
         addSpellPiece(root, "operator_list_search_exclude", "Operator: List Search Exclude", "Removes elements whose string form matches the wildcard.", "演算子: リスト検索除外", "文字列化した値がワイルドカードに一致する要素を除外します。");
         addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the selected List mode.", "演算子: ランダム要素", "選択中の List モードからランダムに1要素を出力します。");
@@ -990,6 +1002,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control.", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いています.");
         addBookPage(root, "trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object. For example, by setting the Fire Circle to follow the caster, it will continue to follow the caster and keep burning surrounding enemies.", "魔法式オブジェクトの追従対象エンティティを設定します. 例えば、ファイアサークルの追従対象を術者に設定することで、術者に追従し続け周囲の敵を燃やし続けます.");
         addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
+        addBookPage(root, "trick_jump", "When the target number's absolute value is less than 1, jumps forward to the next Jump Anchor with the same label. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. Put a Number constant of 0 into the target to use it as an unconditional forward jump. It cannot jump to Jump Anchors behind it.", "対象数値の絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 対象にNumber定数の0を入れると無条件の前方ジャンプとして使えます. 後方のジャンプアンカーには飛ぶことができません.");
+        addBookPage(root, "trick_switch", "Evaluates the input String and jumps forward to the next Jump Anchor whose constant label is equal to it. If no matching anchor exists ahead, it does not error and simply continues to the next spell piece, so place the default branch immediately after the Switch. It cannot jump to Jump Anchors behind it.", "入力Stringを評価し, それと等しい定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします. 前方に一致するアンカーがない場合はエラーにならず, そのまま次のスペルピースへ進むため, default相当の処理はスイッチの直後に置いてください.  後方のジャンプアンカーには飛ぶことができません.");
+        addBookPage(root, "jump_anchor", "A marker used as the destination for Trick: Jump and Trick: Switch. This spell piece itself does nothing. You can input a constant String as its label.", "作動式: ジャンプと作動式: スイッチの到達点になる目印です.  このスペルピース自体は何もしません. 定数文字列をラベルとして入力することができます.");
         addBookPage(root, "trick_radiation_injection", "Applies Mekanism radiation exposure to the target.", "対象へMekanismの放射線被ばくを付与します. ");
         addBookPage(root, "trick_radiation_filter", "Applies a radiation protection effect to the target, protecting them from radiation.", "対象に放射線防護効果を付与し、放射線の影響から身を守ります.");
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
@@ -1015,13 +1030,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_block_position", "Outputs the saved Block position as a plain Vector. Use this when a spell should intentionally drop Block metadata and keep only coordinates.", "Block に保存された座標を通常の Vector として出力します. Block のメタデータを意図的に捨て, 座標だけを残したい場合に使います.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
         addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.");
+        addBookPage(root, "selector_selected_slot_item", "Outputs the ItemStack in the caster's selected target slot as an Item value. The slot is resolved by Psi's target slot context, so Trick: Change Slot and Trick: Switch Target Slot affect it. Empty slots output an empty Item.", "術者の選択対象スロットにある ItemStack を Item 型として出力します. スロットは Psi の target slot context で解決されるため, 作動式: スロット変更 や 作動式: ターゲットスロット切替 の影響を受けます. 空スロットは空の Item を出力します.");
         addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List.", "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を出力します.");
         addBookPage(root, "selector_internal_items", "Outputs items from the target block's internal inventory as an Item List. Item handlers and containers are read slot by slot. Blocks without readable inventories output an empty Item List.", "対象ブロックの内部インベントリを Item List として出力します. ItemHandler と Container をスロット単位で読み取ります. 読み取り可能なインベントリがない場合は空の Item List を出力します.");
         addBookPage(root, "selector_indexed_element", "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end: -1 returns the last element, -2 returns the element before it. Available modes come from Psitweaks list adapters. Out-of-range indexes produce the same out-of-bounds spell error as Psi's Indexed Element.", "選択中の List モードから, 0始まりのインデックスにある要素を出力します. 負のインデックスは末尾から数え, -1 は末尾要素, -2 はその1つ前の要素を返します. 利用可能なモードは Psitweaks の list adapter から追加されます. 範囲外のインデックスは Psi 本体の Indexed Element と同じ範囲外エラーになります.");
-        addBookPage(root, "selector_nbt", "Outputs the target Entity's top-level NBT as key:value strings in a String List. Values use SNBT text, and the entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルを key:value 形式の String List として出力します. 値はSNBT文字列で, エンティティIDは専用の取得子があるため意図的に含めません.");
-        addBookPage(root, "selector_nbt_keys", "Outputs the target Entity's top-level NBT keys as a String List. The entity id is intentionally omitted because entity type IDs have a dedicated selector.", "対象 Entity のNBTトップレベルキーを String List として出力します. エンティティIDは専用の取得子があるため意図的に含めません.");
-        addBookPage(root, "selector_nbt_value", "Outputs the target Entity's top-level NBT value matching the String key as SNBT text. Missing keys and the omitted id key output an empty String.", "対象 Entity のNBTトップレベルから Stringキーに完全一致する値をSNBT文字列として出力します. キーが存在しない場合や省略対象のidキーは空文字列になります.");
-        addBookPage(root, "operator_string_partial_match", "Checks whether String 1 contains text matching String 2's wildcard pattern. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Escape wildcard characters with a backslash. Without wildcards, this behaves like a normal contains check. Matching is case-sensitive.", "文字列1が文字列2のワイルドカードパターンに一致する文字列を含むか判定します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカード文字はバックスラッシュでエスケープできます. ワイルドカードなしでは通常の contains と同じ挙動です. 比較は大文字小文字を区別します.");
+        addBookPage(root, "selector_nbt", "Outputs the selected target's top-level NBT as key:value strings in a String List. Use the mode button to choose Entity, Item, Block, or another supported contextual target. Block mode reads BlockEntity NBT; blocks without a BlockEntity output an empty list. Values use SNBT text. Entity mode intentionally omits the entity id because entity type IDs have a dedicated selector.", "選択モードの対象のNBTトップレベルを key:value 形式の String List として出力します. モードボタンで Entity, Item, Block, または対応する別の contextual target を選択します. Block モードでは BlockEntity のNBTを読み取り, BlockEntity がないブロックは空リストになります. 値はSNBT文字列です. Entity モードではエンティティIDは専用の取得子があるため意図的に含めません.");
+        addBookPage(root, "selector_nbt_keys", "Outputs the selected target's top-level NBT keys as a String List. Use the mode button to choose Entity, Item, Block, or another supported contextual target. Block mode reads BlockEntity NBT; blocks without a BlockEntity output an empty list. Entity mode intentionally omits the entity id because entity type IDs have a dedicated selector.", "選択モードの対象のNBTトップレベルキーを String List として出力します. モードボタンで Entity, Item, Block, または対応する別の contextual target を選択します. Block モードでは BlockEntity のNBTを読み取り, BlockEntity がないブロックは空リストになります. Entity モードではエンティティIDは専用の取得子があるため意図的に含めません.");
+        addBookPage(root, "selector_nbt_value", "Outputs the selected target's top-level NBT value matching the String key as SNBT text. Use the mode button to choose Entity, Item, Block, or another supported contextual target. Block mode reads BlockEntity NBT. Missing keys, blocks without a BlockEntity, and the omitted Entity id key output an empty String.", "選択モードの対象のNBTトップレベルから Stringキーに完全一致する値をSNBT文字列として出力します. モードボタンで Entity, Item, Block, または対応する別の contextual target を選択します. Block モードでは BlockEntity のNBTを読み取ります. キーが存在しない場合, BlockEntity がないブロック, 省略対象の Entity のidキーは空文字列になります.");
+        addBookPage(root, "operator_string_partial_match", "Searches String 1 with String 2 and checks whether it contains matching text. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Escape wildcard characters with a backslash. Matching is case-sensitive.", "文字列1を文字列2で検索してマッチする文字列を含むか判定します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカード文字はバックスラッシュでエスケープできます. 比較は大文字小文字を区別します.");
         addBookPage(root, "operator_string_concat", "Concatenates String 1, String 2, and optional String 3 in that order. If String 3 is not connected, it is treated as an empty string.", "文字列1, 文字列2, 任意の文字列3をこの順に結合します. 文字列3が未接続の場合は空文字列として扱います.");
         addBookPage(root, "operator_player_name", "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.", "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.");
         addBookPage(root, "operator_list_search", "Filters the selected List mode by comparing the String input with each element converted by Operator: To String. Entity, Item, and Block values compare by registry ID. The String input accepts wildcards: * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.", "選択中の List モードを, 各要素を 演算子: 文字列へ変換 と同じ規則で文字列化した値で絞り込みます. Entity, Item, Block はレジストリIDで比較します. String入力ではワイルドカードを利用でき, * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.");

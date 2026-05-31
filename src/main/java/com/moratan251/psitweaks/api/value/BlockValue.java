@@ -2,17 +2,21 @@ package com.moratan251.psitweaks.api.value;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.api.spell.SpellContext;
 
 public class BlockValue extends Vector3 implements ContextualValue {
     private final BlockPos blockPos;
@@ -71,6 +75,24 @@ public class BlockValue extends Vector3 implements ContextualValue {
 
     public Vector3 positionVector() {
         return new Vector3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
+    @Override
+    public Optional<CompoundTag> getNbt(SpellContext context) {
+        if (context == null || context.focalPoint == null) {
+            return Optional.empty();
+        }
+
+        Level level = context.focalPoint.level();
+        if (!dimension.equals(level.dimension())) {
+            return Optional.empty();
+        }
+
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(blockEntity.saveWithoutMetadata(level.registryAccess()));
     }
 
     @Override

@@ -74,6 +74,12 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_set_spellgram_follow_target");
     public static final DeferredHolder<Material, Material> TRICK_DIE_FLEX =
             registerPieceMaterial("trick_die_flex");
+    public static final DeferredHolder<Material, Material> TRICK_JUMP =
+            registerPieceMaterial("trick_jump");
+    public static final DeferredHolder<Material, Material> TRICK_SWITCH =
+            registerPieceMaterial("trick_switch");
+    public static final DeferredHolder<Material, Material> JUMP_ANCHOR =
+            registerPieceMaterial("jump_anchor");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =
             registerPieceMaterial("trick_radiation_injection");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_FILTER =
@@ -127,6 +133,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_online_players");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEM =
             registerPieceMaterial("selector_held_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_SELECTED_SLOT_ITEM =
+            registerPieceMaterial("selector_selected_slot_item");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
             registerPieceMaterial("selector_held_items");
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =

@@ -14,6 +14,7 @@ public final class PsitweaksSpellParams {
     public static final String ELEMENT3 = PREFIX + "element3";
     public static final String ITEM = PREFIX + "item";
     public static final String TAG = PREFIX + "tag";
+    public static final String LABEL = PREFIX + "label";
 
     public static final int STRING_COLOR = 0xE0A030;
     public static final int STRING_LIST_COLOR = 0xD2D22A;

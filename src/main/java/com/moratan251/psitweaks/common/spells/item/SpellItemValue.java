@@ -4,7 +4,10 @@ import com.moratan251.psitweaks.api.value.ContextualValue;
 import java.util.Locale;
 import java.util.Optional;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import vazkii.psi.api.spell.SpellContext;
 
 public record SpellItemValue(ItemStack snapshot, Optional<ItemSourceRef> source) implements ContextualValue {
     public static final SpellItemValue EMPTY = new SpellItemValue(ItemStack.EMPTY, Optional.empty());
@@ -33,6 +36,19 @@ public record SpellItemValue(ItemStack snapshot, Optional<ItemSourceRef> source)
 
     public boolean isEmpty() {
         return snapshot.isEmpty();
+    }
+
+    @Override
+    public Optional<CompoundTag> getNbt(SpellContext context) {
+        if (context == null || context.focalPoint == null || snapshot.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Tag tag = snapshot.saveOptional(context.focalPoint.level().registryAccess());
+        if (tag instanceof CompoundTag compound && !compound.isEmpty()) {
+            return Optional.of(compound);
+        }
+        return Optional.empty();
     }
 
     @Override

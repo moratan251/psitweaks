@@ -77,6 +77,12 @@ public final class PsitweaksSpells {
             registerPiece("trick_set_spellgram_follow_target", PieceTrickSetSpellGramFollowTarget.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickDieFlex>> TRICK_DIE_FLEX =
             registerPiece("trick_die_flex", PieceTrickDieFlex.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickJump>> TRICK_JUMP =
+            registerPiece("trick_jump", PieceTrickJump.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSwitch>> TRICK_SWITCH =
+            registerPiece("trick_switch", PieceTrickSwitch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceJumpAnchor>> JUMP_ANCHOR =
+            registerPiece("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationInjection>> TRICK_RADIATION_INJECTION =
             registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationFilter>> TRICK_RADIATION_FILTER =
@@ -130,6 +136,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItem>> SELECTOR_HELD_ITEM =
             registerPiece("selector_held_item", PieceSelectorHeldItem.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorSelectedSlotItem>> SELECTOR_SELECTED_SLOT_ITEM =
+            registerPiece("selector_selected_slot_item", PieceSelectorSelectedSlotItem.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItems>> SELECTOR_HELD_ITEMS =
             registerPiece("selector_held_items", PieceSelectorHeldItems.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorInternalItems>> SELECTOR_INTERNAL_ITEMS =
@@ -227,6 +235,12 @@ public final class PsitweaksSpells {
             registerGroup("trick_set_spellgram_follow_target", PieceTrickSetSpellGramFollowTarget.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> DIE_FLEX =
             registerGroup("trick_die_flex", PieceTrickDieFlex.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP =
+            registerGroup("trick_jump", PieceTrickJump.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SWITCH =
+            registerGroup("trick_switch", PieceTrickSwitch.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP_ANCHOR_GROUP =
+            registerGroup("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_INJECTION =
             registerGroup("trick_radiation_injection", PieceTrickRadiationInjection.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_FILTER =
@@ -287,7 +301,8 @@ public final class PsitweaksSpells {
             ));
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> ITEM =
             ADVANCEMENT_GROUPS.register("item", () -> List.of(
-                    PieceSelectorHeldItem.class
+                    PieceSelectorHeldItem.class,
+                    PieceSelectorSelectedSlotItem.class
             ));
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
             ADVANCEMENT_GROUPS.register("block", () -> List.of(
