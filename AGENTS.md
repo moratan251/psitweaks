@@ -17,6 +17,15 @@ Use this file when an agent starts inside the `1.21.1` branch or local worktree 
 - Use `../1.20.1/` only as legacy Forge reference or when explicitly porting/backporting.
 - Store shared task state in `../.steering/`; use skills from `../.agents/skills/`.
 
+## Local Rules
+
+- This is the default implementation target for new Psitweaks work.
+- Keep `../1.20.1/` as reference only unless the user asks for cross-version work.
+- Use NeoForge 1.21.1 patterns: `RegisterCapabilitiesEvent`, data components, payload handlers, and strict client-only isolation.
+- For optional compat, keep integrations isolated under `common/compat` or equivalent guarded paths, and make missing mods safe.
+- For provider-backed resources, edit the provider/source first and regenerate with `.\gradlew runData`.
+- For static state, reload listeners, caches, capabilities, or client session state, check `../docs/1.21.1/memory-leak-checklist.md`.
+
 ## Notes
 
 - Run Gradle commands in this worktree.
