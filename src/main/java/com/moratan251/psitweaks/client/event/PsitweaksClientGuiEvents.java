@@ -80,10 +80,14 @@ public final class PsitweaksClientGuiEvents {
 
     private static void onMouseScrolledPre(ScreenEvent.MouseScrolled.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && SpellPieceModeButtonOverlay.handleMouseScrolledPre(screen,
+                && (SpellPieceModeButtonOverlay.handleMouseScrolledPre(screen,
                         event.getMouseX(),
                         event.getMouseY(),
-                        event.getScrollDeltaY())) {
+                        event.getScrollDeltaY())
+                || StringConstantInputOverlay.handleMouseScrolledPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getScrollDeltaY()))) {
             event.setCanceled(true);
         }
     }

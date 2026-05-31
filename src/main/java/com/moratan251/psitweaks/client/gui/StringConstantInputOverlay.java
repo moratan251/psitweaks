@@ -52,6 +52,8 @@ public final class StringConstantInputOverlay {
     private static int lastClickY = -1;
     private static long lastClickTime = 0L;
     private static boolean draggingSelection = false;
+    private static int scrollLineOffset = 0;
+    private static boolean scrollFollowsCursor = true;
 
     private StringConstantInputOverlay() {
     }
@@ -99,6 +101,7 @@ public final class StringConstantInputOverlay {
             activeCursorPosition = clampCursor(piece, cursorPositionForClick(font, piece, layout, mouseX, mouseY));
             selectionAnchor = activeCursorPosition;
             draggingSelection = true;
+            scrollFollowsCursor = false;
             piece.moveCursorTo(activeCursorPosition);
         }
         return true;
@@ -118,6 +121,7 @@ public final class StringConstantInputOverlay {
         PanelLayout layout = layoutFor(screen);
         Font font = Minecraft.getInstance().font;
         activeCursorPosition = clampCursor(piece, cursorPositionForClick(font, piece, layout, mouseX, mouseY));
+        scrollFollowsCursor = false;
         piece.moveCursorTo(activeCursorPosition);
         return true;
     }
@@ -194,6 +198,27 @@ public final class StringConstantInputOverlay {
         return handleEditingKey(screen, piece, keyCode, scanCode);
     }
 
+    public static boolean handleMouseScrolledPre(GuiProgrammer screen, double mouseX, double mouseY, double scrollDeltaY) {
+        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        if (piece == null) {
+            return false;
+        }
+
+        PanelLayout layout = layoutFor(screen);
+        if (!layout.contains(mouseX, mouseY)) {
+            return false;
+        }
+
+        if (scrollDeltaY != 0.0D && !piece.getValue().isEmpty()) {
+            Font font = Minecraft.getInstance().font;
+            List<TextLine> lines = splitLines(font, piece.getValue(), layout.textWidth());
+            scrollLineOffset = clampScrollLineOffset(lines,
+                    scrollLineOffset + (scrollDeltaY > 0.0D ? -1 : 1));
+            scrollFollowsCursor = false;
+        }
+        return true;
+    }
+
     public static void handleMousePressedPost(GuiProgrammer screen, double mouseX, double mouseY, int button) {
         if (button != 0) {
             return;
@@ -237,6 +262,8 @@ public final class StringConstantInputOverlay {
         activeCursorPosition = -1;
         clearSelection();
         draggingSelection = false;
+        scrollLineOffset = 0;
+        scrollFollowsCursor = true;
     }
 
     private static void activate(PieceConstantString piece, int x, int y) {
@@ -245,6 +272,8 @@ public final class StringConstantInputOverlay {
         activeCursorPosition = piece.getValue().length();
         clearSelection();
         draggingSelection = false;
+        scrollLineOffset = 0;
+        scrollFollowsCursor = true;
         piece.setCursorEditing(true);
         piece.moveCursorTo(activeCursorPosition);
     }
@@ -333,13 +362,14 @@ public final class StringConstantInputOverlay {
         guiGraphics.drawString(font, count, layout.x + layout.width - 8 - font.width(count), layout.y + 7, COUNT_COLOR, false);
 
         if (value.isEmpty()) {
+            scrollLineOffset = 0;
             Component emptyText = Component.translatable("psitweaks.gui.string_constant_input.empty");
             guiGraphics.drawString(font, emptyText, layout.textX(), layout.textY(), MUTED_TEXT_COLOR, false);
             drawCursor(screen, guiGraphics, layout.textX(), layout.textY());
         } else {
             List<TextLine> lines = splitLines(font, value, layout.textWidth());
             int cursorLine = cursorLine(lines, piece.getCursorPosition());
-            int firstLine = firstVisibleLine(lines, cursorLine);
+            int firstLine = visibleFirstLine(lines, cursorLine);
             int textY = layout.textY();
             for (int i = firstLine; i < Math.min(lines.size(), firstLine + MAX_LINES); i++) {
                 TextLine line = lines.get(i);
@@ -445,8 +475,8 @@ public final class StringConstantInputOverlay {
         }
 
         List<TextLine> lines = splitLines(font, value, layout.textWidth());
-        int cursorLine = cursorLine(lines, piece.getCursorPosition());
-        int firstLine = firstVisibleLine(lines, cursorLine);
+        int firstLine = clampScrollLineOffset(lines, scrollLineOffset);
+        scrollLineOffset = firstLine;
         int visibleLine = Math.max(0, Math.min(MAX_LINES - 1, (int) ((mouseY - layout.textY()) / font.lineHeight)));
         int lineIndex = Math.max(0, Math.min(lines.size() - 1, firstLine + visibleLine));
         TextLine line = lines.get(lineIndex);
@@ -691,6 +721,7 @@ public final class StringConstantInputOverlay {
 
     private static void rememberCursor(PieceConstantString piece) {
         activeCursorPosition = piece.getCursorPosition();
+        scrollFollowsCursor = true;
     }
 
     private static int clampCursor(PieceConstantString piece, int cursorPosition) {
@@ -717,6 +748,7 @@ public final class StringConstantInputOverlay {
         activeCursorPosition = piece.getValue().length();
         piece.moveCursorTo(activeCursorPosition);
         selectionAnchor = activeCursorPosition == 0 ? -1 : 0;
+        scrollFollowsCursor = true;
     }
 
     private static void copySelection(PieceConstantString piece) {
@@ -820,9 +852,28 @@ public final class StringConstantInputOverlay {
         return Math.max(0, lines.size() - 1);
     }
 
-    private static int firstVisibleLine(List<TextLine> lines, int cursorLine) {
+    private static int visibleFirstLine(List<TextLine> lines, int cursorLine) {
+        int firstLine = clampScrollLineOffset(lines, scrollLineOffset);
+        if (scrollFollowsCursor) {
+            firstLine = firstVisibleLineForCursor(lines, cursorLine, firstLine);
+        }
+        scrollLineOffset = firstLine;
+        return firstLine;
+    }
+
+    private static int firstVisibleLineForCursor(List<TextLine> lines, int cursorLine, int firstLine) {
+        if (cursorLine < firstLine) {
+            return cursorLine;
+        }
+        if (cursorLine >= firstLine + MAX_LINES) {
+            return cursorLine - MAX_LINES + 1;
+        }
+        return clampScrollLineOffset(lines, firstLine);
+    }
+
+    private static int clampScrollLineOffset(List<TextLine> lines, int firstLine) {
         int maxFirstLine = Math.max(0, lines.size() - MAX_LINES);
-        return Math.max(0, Math.min(maxFirstLine, cursorLine - MAX_LINES + 1));
+        return Math.max(0, Math.min(maxFirstLine, firstLine));
     }
 
     private record GridPosition(int x, int y) {

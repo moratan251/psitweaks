@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.advancements.critereon.NbtPredicate;
+import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -48,13 +50,54 @@ final class NbtTargetHelper {
         return keys;
     }
 
-    static String stringValue(TargetData data, String key) {
-        if (data.omitEntityId() && ID_TAG.equals(key)) {
+    static String stringValue(TargetData data, String query) {
+        String path = query == null ? "" : query.trim();
+        if (path.isEmpty()) {
             return "";
         }
 
-        Tag value = data.tag().get(key);
-        return value == null ? "" : StringSpellHelper.sanitize(value.toString());
+        if (data.omitEntityId() && isRootEntityIdPath(path)) {
+            return "";
+        }
+
+        Tag directValue = data.tag().get(path);
+        if (directValue != null) {
+            return stringify(directValue);
+        }
+
+        try {
+            return stringify(NbtPathArgument.NbtPath.of(path).get(data.tag()));
+        } catch (CommandSyntaxException ignored) {
+            return "";
+        }
+    }
+
+    private static String stringify(List<Tag> values) {
+        if (values.isEmpty()) {
+            return "";
+        }
+
+        if (values.size() == 1) {
+            return stringify(values.get(0));
+        }
+
+        StringBuilder builder = new StringBuilder("[");
+        for (int i = 0; i < values.size(); i++) {
+            if (i > 0) {
+                builder.append(',');
+            }
+            builder.append(values.get(i));
+        }
+        builder.append(']');
+        return StringSpellHelper.sanitize(builder.toString());
+    }
+
+    private static String stringify(Tag value) {
+        return StringSpellHelper.sanitize(value.toString());
+    }
+
+    private static boolean isRootEntityIdPath(String path) {
+        return ID_TAG.equals(path) || ("\"" + ID_TAG + "\"").equals(path);
     }
 
     record TargetData(CompoundTag tag, boolean omitEntityId) {
