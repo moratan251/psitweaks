@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 
-public class BlockValue extends Vector3 implements ContextualValue {
+public class BlockValue implements ContextualValue {
     private final BlockPos blockPos;
     private final ResourceKey<Level> dimension;
     private final BlockState state;
@@ -26,7 +26,6 @@ public class BlockValue extends Vector3 implements ContextualValue {
     private final Set<ResourceLocation> tagIds;
 
     public BlockValue(ResourceKey<Level> dimension, BlockPos blockPos, BlockState state) {
-        super(blockPos.getX(), blockPos.getY(), blockPos.getZ());
         this.dimension = Objects.requireNonNull(dimension, "dimension");
         this.blockPos = Objects.requireNonNull(blockPos, "blockPos").immutable();
         this.state = Objects.requireNonNull(state, "state");
@@ -73,6 +72,11 @@ public class BlockValue extends Vector3 implements ContextualValue {
         return tagId != null && tagIds.contains(tagId);
     }
 
+    @Override
+    public Set<ResourceLocation> getTagIds(SpellContext context) {
+        return tagIds;
+    }
+
     public Vector3 positionVector() {
         return new Vector3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
@@ -93,11 +97,6 @@ public class BlockValue extends Vector3 implements ContextualValue {
             return Optional.empty();
         }
         return Optional.of(blockEntity.saveWithoutMetadata(level.registryAccess()));
-    }
-
-    @Override
-    public Vector3 copy() {
-        return new Vector3(x, y, z);
     }
 
     @Override

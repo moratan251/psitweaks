@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.api;
 
 import com.moratan251.psitweaks.api.value.ContextualValue;
+import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.PlainMemoryValue;
 import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.common.spells.util.ModeStringParsingHelper;
@@ -136,12 +137,16 @@ public final class PsitweaksPlainValues {
     /**
      * Resolves the plain value type accepted by a spell output class.
      *
-     * <p>Contextual values that also extend {@link Vector3} are deliberately not
+     * <p>Block values are accepted as their saved position vector. Other
+     * contextual values that also extend {@link Vector3} are deliberately not
      * treated as plain vectors.</p>
      */
     public static Optional<PlainValueType<?>> findByClass(Class<?> type) {
         if (type == null) {
             return Optional.empty();
+        }
+        if (BlockValue.class.isAssignableFrom(type)) {
+            return Optional.of(VECTOR);
         }
 
         for (PlainValueType<?> plainType : snapshot()) {
@@ -158,19 +163,21 @@ public final class PsitweaksPlainValues {
     /**
      * Resolves the plain value type for a runtime spell value.
      *
-     * <p>Contextual values are excluded so that snapshots such as Block values
-     * do not get stored as ordinary vectors.</p>
+     * <p>Block values are accepted as their saved position vector. Other
+     * contextual values are excluded so that contextual data is not stored as
+     * ordinary vectors by accident.</p>
      */
     public static Optional<PlainValueType<?>> findByValue(Object value) {
         if (value == null) {
             return Optional.empty();
         }
+        Object plainValue = normalizeForPlainValue(value);
 
         for (PlainValueType<?> plainType : snapshot()) {
-            if (isContextualVectorValue(plainType, value)) {
+            if (isContextualVectorValue(plainType, plainValue)) {
                 continue;
             }
-            if (plainType.acceptsValue(value)) {
+            if (plainType.acceptsValue(plainValue)) {
                 return Optional.of(plainType);
             }
         }
@@ -181,9 +188,10 @@ public final class PsitweaksPlainValues {
      * Wraps a runtime value in its registered plain memory representation.
      */
     public static PlainMemoryValue<?> memoryValue(Object value) throws SpellRuntimeException {
-        PlainValueType<?> type = findByValue(value)
+        Object plainValue = normalizeForPlainValue(value);
+        PlainValueType<?> type = findByValue(plainValue)
                 .orElseThrow(() -> new SpellRuntimeException(ERROR_TYPE_MISMATCH));
-        return memoryValue(type, value);
+        return memoryValue(type, plainValue);
     }
 
     /**
@@ -267,6 +275,13 @@ public final class PsitweaksPlainValues {
             return Optional.empty();
         }
         return Optional.of(new Vector3(compound.getDouble("x"), compound.getDouble("y"), compound.getDouble("z")));
+    }
+
+    private static Object normalizeForPlainValue(Object value) {
+        if (value instanceof BlockValue block) {
+            return block.positionVector();
+        }
+        return value;
     }
 
     private static boolean isContextualVectorType(PlainValueType<?> plainType, Class<?> type) {

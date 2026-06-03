@@ -133,8 +133,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_block_state");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_ENTRIES =
             registerPieceMaterial("operator_block_state_entries");
-    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_HAS_TAG =
-            registerPieceMaterial("operator_block_has_tag");
+    public static final DeferredHolder<Material, Material> OPERATOR_TAG_LIST =
+            registerPieceMaterial("operator_tag_list");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_POSITION =
             registerPieceMaterial("operator_block_position");
     public static final DeferredHolder<Material, Material> SELECTOR_ONLINE_PLAYERS =

@@ -1,13 +1,14 @@
 package com.moratan251.psitweaks.common.spells.param;
 
-import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.api.value.ContextualValue;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellPiece;
 
-public class ParamNumberOrVector extends SpellParam<Object> {
-    public ParamNumberOrVector(String name, int color, boolean canDisable) {
+public class SpellParamContextualValue extends SpellParam<Object> {
+    public SpellParamContextualValue(String name, int color, boolean canDisable) {
         super(name, color, canDisable);
     }
 
@@ -18,14 +19,14 @@ public class ParamNumberOrVector extends SpellParam<Object> {
 
     @Override
     public Component getRequiredTypeString() {
-        return Component.translatable("psitweaks.datatype.number_or_vector");
+        return Component.translatable("psitweaks.datatype.contextual_value");
     }
 
     @Override
     public boolean canAccept(SpellPiece piece) {
         Class<?> type = piece.getEvaluationType();
-        return type != null && (Number.class.isAssignableFrom(type)
-                || Vector3.class.isAssignableFrom(type)
-                || BlockValue.class.isAssignableFrom(type));
+        return type != null && (ContextualValue.class.isAssignableFrom(type)
+                || Entity.class.isAssignableFrom(type)
+                || Vector3.class.isAssignableFrom(type));
     }
 }

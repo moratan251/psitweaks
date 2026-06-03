@@ -11,6 +11,8 @@
     "RadiationUtilMixin",
     "SpellContextRangeMixin",
     "SpellGridOptionalCompatMixin",
+    "SpellParamBlockVectorCompatMixin",
+    "SpellPieceParamConversionMixin",
     "SpellPieceOptionalCompatMixin",
     "SpellHelpersRangeLimitMixin"
   ],
