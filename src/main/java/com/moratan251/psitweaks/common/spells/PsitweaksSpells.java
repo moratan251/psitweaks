@@ -37,6 +37,10 @@ public final class PsitweaksSpells {
             registerPiece("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorStoredEntity>> SELECTOR_STORED_ENTITY =
             registerPiece("selector_stored_entity", PieceSelectorStoredEntity.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickStoreValue>> TRICK_STORE_VALUE =
+            registerPiece("trick_store_value", PieceTrickStoreValue.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorStoredValue>> SELECTOR_STORED_VALUE =
+            registerPiece("selector_stored_value", PieceSelectorStoredValue.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNearbySpellGram>> SELECTOR_NEARBY_SPELLGRAM =
             registerPiece("selector_nearby_spellgram", PieceSelectorNearbySpellGram.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickDispel>> TRICK_DISPEL =
@@ -197,6 +201,10 @@ public final class PsitweaksSpells {
             registerGroup("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORED_ENTITY =
             registerGroup("selector_stored_entity", PieceSelectorStoredEntity.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORE_VALUE =
+            registerGroup("trick_store_value", PieceTrickStoreValue.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORED_VALUE =
+            registerGroup("selector_stored_value", PieceSelectorStoredValue.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> NEARBY_SPELLGRAM =
             registerGroup("selector_nearby_spellgram", PieceSelectorNearbySpellGram.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> DISPEL =

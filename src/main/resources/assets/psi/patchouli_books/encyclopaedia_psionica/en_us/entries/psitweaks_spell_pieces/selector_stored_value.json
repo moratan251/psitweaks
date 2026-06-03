@@ -1,0 +1,12 @@
+{
+  "name": "psitweaks.spellpiece.selector_stored_value",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/selector_stored_value.png",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "psi:cad_assembly_psimetal",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_stored_value"
+    }
+  ]
+}

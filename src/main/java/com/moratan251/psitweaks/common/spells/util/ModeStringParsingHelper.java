@@ -51,7 +51,7 @@ public final class ModeStringParsingHelper {
         return VectorListWrapper.make(result);
     }
 
-    private static Optional<Vector3> parseVector(String input) {
+    public static Optional<Vector3> parseVector(String input) {
         if (input == null) {
             return Optional.empty();
         }

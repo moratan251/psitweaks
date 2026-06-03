@@ -137,6 +137,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Number / Vector";
             default -> "Number / Vector";
         });
+        root.addProperty("psitweaks.datatype.plain_value", switch (locale) {
+            case "ja_jp" -> "Plain Value";
+            default -> "Plain Value";
+        });
         root.addProperty("psitweaks.gui.spell_piece_mode", switch (locale) {
             case "ja_jp" -> "モード: %s";
             default -> "Mode: %s";
@@ -196,6 +200,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellerror.no_jump_anchor", switch (locale) {
             case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
             default -> "No matching Jump Anchor found ahead";
+        });
+        root.addProperty("psitweaks.spellerror.plain_memory_type", switch (locale) {
+            case "ja_jp" -> "保存された値を選択中の型として読み取れません";
+            default -> "Stored value cannot be read as the selected type";
+        });
+        root.addProperty("psitweaks.spellerror.plain_memory_parse", switch (locale) {
+            case "ja_jp" -> "保存された文字列を選択中の型へ変換できません";
+            default -> "Stored string cannot be converted to the selected type";
         });
         root.addProperty("psitweaks.gui.string_constant_input.empty", switch (locale) {
             case "ja_jp" -> "空文字列";
@@ -893,8 +905,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_melt_block", "Trick: Block Melt", "Melt the block at the target position into its hotter form", "作動式: ブロック溶解", "指定座標のブロックを溶解して高温の状態に変化させる");
         addSpellPiece(root, "trick_break_fortune", "Trick: Break Block (Fortune)", "Break a block with Fortune applied", "作動式: ブロック破壊(幸運)", "幸運付きでブロックを破壊する");
         addSpellPiece(root, "trick_break_silk", "Trick: Break Block (Silk Touch)", "Break a block with Silk Touch applied", "作動式: ブロック破壊(シルクタッチ)", "シルクタッチ付きでブロックを破壊する");
-        addSpellPiece(root, "trick_store_entity", "Trick: Store Entity", "Store the entity's UUID in the CAD memory", "作動式: エンティティ保存", "CADのメモリにエンティティのUUIDを保存する");
+        addSpellPiece(root, "trick_store_entity", "Trick: Store Entity", "Store the entity's UUID string in the CAD memory", "作動式: エンティティ保存", "エンティティのUUIDをStringとしてCADメモリに保存する");
         addSpellPiece(root, "selector_stored_entity", "Selector: Stored Entity", "Retrieve entities from the UUID stored in the CAD memory", "取得子: 保存されたエンティティ", "CADのメモリに保存されたUUIDからエンティティを取得する");
+        addSpellPiece(root, "trick_store_value", "Trick: Store Value", "Store a Plain Value in CAD memory", "作動式: 値を保存", "Plain ValueをCADメモリに保存する");
+        addSpellPiece(root, "selector_stored_value", "Selector: Stored Value", "Retrieve a Plain Value from CAD memory", "取得子: 保存された値", "CADメモリに保存されたPlain Valueを取得する");
         addSpellPiece(root, "selector_nearby_spellgram", "Selector: Nearby SpellGram Object", "Retrieve SpellGram objects around the specified position", "取得子: 近くの魔法式オブジェクト", "指定座標の周囲にある魔法式オブジェクトを取得する");
         addSpellPiece(root, "trick_dispel", "Trick: Dispel", "Remove effects from target entity", "作動式: 解呪", "対象からエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_beneficial", "Trick: Dispel Beneficial", "Remove beneficial effects from target entity", "作動式: 良性解呪", "対象から有益なエフェクトを除去する");
@@ -983,8 +997,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_melt_block", "Melts the target block one step: ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma blocks; magma blocks become lava.", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります.");
         addBookPage(root, "trick_break_fortune", "Breaks the target block with Fortune.", "対象ブロックを幸運付きで破壊します.");
         addBookPage(root, "trick_break_silk", "Breaks the target block with Silk Touch.", "対象ブロックをシルクタッチ付きで破壊します.");
-        addBookPage(root, "trick_store_entity", "Stores the target entity's UUID in CAD memory.", "対象エンティティのUUIDをCADメモリに保存します.");
+        addBookPage(root, "trick_store_entity", "Stores the target entity's UUID as a String value in CAD memory.", "対象エンティティのUUIDをString値としてCADメモリに保存します.");
         addBookPage(root, "selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.", "CADメモリに保存されたUUIDからエンティティを取得します. ");
+        addBookPage(root, "trick_store_value", "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot.", "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます.");
+        addBookPage(root, "selector_stored_value", "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.", "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.");
         addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
         addBookPage(root, "trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects.", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です.");
         addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");

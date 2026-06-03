@@ -6,6 +6,7 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
+    "ItemCADPlainMemoryMixin",
     "PieceTrickMassExodusMixin",
     "RadiationUtilMixin",
     "SpellContextRangeMixin",

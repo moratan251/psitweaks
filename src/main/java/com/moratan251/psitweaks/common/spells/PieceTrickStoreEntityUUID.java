@@ -1,11 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
-
-import net.minecraft.nbt.CompoundTag;
+import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import vazkii.psi.api.PsiAPI;
-import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.spell.*;
 import vazkii.psi.api.spell.param.ParamEntity;
 import vazkii.psi.api.spell.param.ParamNumber;
@@ -37,42 +33,20 @@ public class PieceTrickStoreEntityUUID extends PieceTrick {
     }
 
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        int key = this.getParamValue(context, this.number).intValue();
+        int internalSlot = CadPlainMemory.internalSlot(this.getParamValue(context, this.number));
         Entity target = this.getParamValue(context, this.target);
         context.verifyEntity(target);
 
-        if (this.target == null) {
+        if (target == null) {
             throw new SpellRuntimeException("psi.spellerror.nulltarget");
         }
 
-
-        ItemStack cadStack = PsiAPI.getPlayerCAD(context.caster);
-
-
-        if (cadStack != null && cadStack.getItem() instanceof ICAD) {
-            ICAD cad = (ICAD)cadStack.getItem();
-
-            int size = cad.getMemorySize(cadStack);
-            if (key >= 0 && key < size) {
-
-                CompoundTag tag = SpellItemDataUtils.getCustomData(cadStack);
-                CompoundTag map = tag.getCompound("psitweaks_entity_map");
-
-                map.putString(String.valueOf(key), target.getUUID().toString());
-                tag.put("psitweaks_entity_map", map);
-
-                SpellItemDataUtils.updateCustomData(cadStack, updatedTag -> updatedTag.put("psitweaks_entity_map", map.copy()));
-
-            } else {
-                throw new SpellRuntimeException("psi.spellerror.memoryoutofbounds");
-            }
-
-        } else {
-            throw new SpellRuntimeException("psi.spellerror.nocad");
+        if (CadPlainMemory.isSlotLocked(context, internalSlot)) {
+            return null;
         }
 
-
-
+        CadPlainMemory.store(context, internalSlot, target.getUUID().toString());
+        CadPlainMemory.markSlotLocked(context, internalSlot);
         return null;
     }
 }

@@ -34,6 +34,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_store_entity");
     public static final DeferredHolder<Material, Material> SELECTOR_STORED_ENTITY =
             registerPieceMaterial("selector_stored_entity");
+    public static final DeferredHolder<Material, Material> TRICK_STORE_VALUE =
+            registerPieceMaterial("trick_store_value");
+    public static final DeferredHolder<Material, Material> SELECTOR_STORED_VALUE =
+            registerPieceMaterial("selector_stored_value");
     public static final DeferredHolder<Material, Material> SELECTOR_NEARBY_SPELLGRAM =
             registerPieceMaterial("selector_nearby_spellgram");
     public static final DeferredHolder<Material, Material> TRICK_DISPEL =
