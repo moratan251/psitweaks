@@ -915,7 +915,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_break_silk", "Trick: Break Block (Silk Touch)", "Break a block with Silk Touch applied", "作動式: ブロック破壊(シルクタッチ)", "シルクタッチ付きでブロックを破壊する");
         addSpellPiece(root, "trick_store_entity", "Trick: Store Entity", "Store the entity's UUID string in the CAD memory", "作動式: エンティティ保存", "エンティティのUUIDをStringとしてCADメモリに保存する");
         addSpellPiece(root, "selector_stored_entity", "Selector: Stored Entity", "Retrieve entities from the UUID stored in the CAD memory", "取得子: 保存されたエンティティ", "CADのメモリに保存されたUUIDからエンティティを取得する");
-        addSpellPiece(root, "trick_store_value", "Trick: Store Value", "Store a Plain Value in CAD memory", "作動式: 値を保存", "Plain ValueをCADメモリに保存する");
+        addSpellPiece(root, "trick_store_value", "Trick: Store Value", "Store a Plain Value (Number, Vector, String ... ) in CAD memory", "作動式: 値を保存", "Plain Value (Number, Vector, String ... )をCADメモリに保存する");
         addSpellPiece(root, "selector_stored_value", "Selector: Stored Value", "Retrieve a Plain Value from CAD memory", "取得子: 保存された値", "CADメモリに保存されたPlain Valueを取得する");
         addSpellPiece(root, "selector_nearby_spellgram", "Selector: Nearby SpellGram Object", "Retrieve SpellGram objects around the specified position", "取得子: 近くの魔法式オブジェクト", "指定座標の周囲にある魔法式オブジェクトを取得する");
         addSpellPiece(root, "trick_dispel", "Trick: Dispel", "Remove effects from target entity", "作動式: 解呪", "対象からエフェクトを除去する");
@@ -951,7 +951,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_tanh", "Operator: Hyperbolic Tangent", "tanh(A)", "演算子: ハイパボリックタンジェント", "tanh(A)");
         addSpellPiece(root, "operator_greater_than", "Operator: Greater Than", "Outputs 1 if Value 1 is greater than Value 2, otherwise 0. Number and Vector inputs are accepted.", "演算子: ～より大きい", "値1が値2より大きいなら1、そうでなければ0を出力します。Number と Vector を入力できます。");
         addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0. Number and Vector inputs are accepted.", "演算子: ～以上", "値1が値2以上なら1、そうでなければ0を出力します。Number と Vector を入力できます。");
-        addSpellPiece(root, "operator_equal", "Operator: Equal", "Outputs 1 if Value 1 equals Value 2, otherwise 0. Block values compare by dimension, position, and block state.", "演算子: 等しい", "値1と値2が等しいなら1、そうでなければ0を出力します。Block 値はディメンション、座標、ブロック状態で比較します。");
+        addSpellPiece(root, "operator_equal", "Operator: Equal", "Outputs 1 if Value 1 equals Value 2, otherwise 0.", "演算子: 等しい", "値1と値2が等しいなら1、そうでなければ0を出力します。");
         addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1000 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大1000文字です。");
         addSpellPiece(root, "operator_from_string", "Operator: From String", "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.", "演算子: 文字列から変換", "選択中のモードに応じて String をそのまま返すか、Number または Vector に変換します。");
         addSpellPiece(root, "operator_list_from_string_list", "Operator: From String List", "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.", "演算子: 文字列リストから変換", "選択中のモードに応じて String List をそのまま返すか、Number List または Vector List に変換します。");
