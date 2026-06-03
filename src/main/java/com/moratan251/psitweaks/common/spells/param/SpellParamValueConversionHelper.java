@@ -25,7 +25,6 @@ public final class SpellParamValueConversionHelper {
 
     private static boolean acceptsPlainVector(SpellParam<?> param) {
         return param instanceof ParamVector
-                || param instanceof ParamNumberOrVector
                 || param instanceof SpellParamPlainValue;
     }
 

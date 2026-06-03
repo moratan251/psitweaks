@@ -26,3 +26,7 @@ run
 AGENTS.md
 CLAUDE.md
 docs
+.steering
+
+#etc
+.cache

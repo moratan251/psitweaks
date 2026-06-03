@@ -137,10 +137,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Any List";
             default -> "Any List";
         });
-        root.addProperty("psitweaks.datatype.number_or_vector", switch (locale) {
-            case "ja_jp" -> "Number / Vector";
-            default -> "Number / Vector";
-        });
         root.addProperty("psitweaks.datatype.plain_value", switch (locale) {
             case "ja_jp" -> "Plain Value";
             default -> "Plain Value";
@@ -949,10 +945,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_sinh", "Operator: Hyperbolic Sine", "sinh(A)", "演算子: ハイパボリックサイン", "sinh(A)");
         addSpellPiece(root, "operator_cosh", "Operator: Hyperbolic Cosine", "cosh(A)", "演算子: ハイパボリックコサイン", "cosh(A)");
         addSpellPiece(root, "operator_tanh", "Operator: Hyperbolic Tangent", "tanh(A)", "演算子: ハイパボリックタンジェント", "tanh(A)");
-        addSpellPiece(root, "operator_greater_than", "Operator: Greater Than", "Outputs 1 if Value 1 is greater than Value 2, otherwise 0. Number and Vector inputs are accepted.", "演算子: ～より大きい", "値1が値2より大きいなら1、そうでなければ0を出力します。Number と Vector を入力できます。");
-        addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0. Number and Vector inputs are accepted.", "演算子: ～以上", "値1が値2以上なら1、そうでなければ0を出力します。Number と Vector を入力できます。");
+        addSpellPiece(root, "operator_greater_than", "Operator: Greater Than", "Outputs 1 if Value 1 is greater than Value 2, otherwise 0. Number inputs are accepted.", "演算子: ～より大きい", "値1が値2より大きいなら1、そうでなければ0を出力します。Number を入力できます。");
+        addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0. Number inputs are accepted.", "演算子: ～以上", "値1が値2以上なら1、そうでなければ0を出力します。Number を入力できます。");
         addSpellPiece(root, "operator_equal", "Operator: Equal", "Outputs 1 if Value 1 equals Value 2, otherwise 0.", "演算子: 等しい", "値1と値2が等しいなら1、そうでなければ0を出力します。");
-        addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1000 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大1000文字です。");
+        addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 8192 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大8192文字です。");
         addSpellPiece(root, "operator_from_string", "Operator: From String", "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.", "演算子: 文字列から変換", "選択中のモードに応じて String をそのまま返すか、Number または Vector に変換します。");
         addSpellPiece(root, "operator_list_from_string_list", "Operator: From String List", "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.", "演算子: 文字列リストから変換", "選択中のモードに応じて String List をそのまま返すか、Number List または Vector List に変換します。");
         addSpellPiece(root, "operator_to_string", "Operator: To String", "Converts an Any input into a String. Entity, Item, and Block values output registry IDs.", "演算子: 文字列へ変換", "Any 入力を String に変換します。Entity、Item、Block はレジストリIDを出力します。");
@@ -1045,10 +1041,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_sinh", "Returns the hyperbolic sine of the target number.", "対象数値のハイパボリックサインを返します. ");
         addBookPage(root, "operator_cosh", "Returns the hyperbolic cosine of the target number.", "対象数値のハイパボリックコサインを返します.");
         addBookPage(root, "operator_tanh", "Returns the hyperbolic tangent of the target number.", "対象数値のハイパボリックタンジェントを返します.");
-        addBookPage(root, "operator_greater_than", "Compares Value 1 and Value 2. It outputs 1 when Value 1 is greater than Value 2, otherwise 0. Each input accepts either a Number or a Vector; Vector inputs are compared by magnitude.", "値1と値2を比較します. 値1が値2より大きいなら1, そうでなければ0を出力します. 各入力は Number または Vector を受け付け, Vector は大きさに変換して比較します.");
-        addBookPage(root, "operator_greater_than_or_equal", "Compares Value 1 and Value 2. It outputs 1 when Value 1 is greater than or equal to Value 2, otherwise 0. Each input accepts either a Number or a Vector; Vector inputs are compared by magnitude.", "値1と値2を比較します. 値1が値2以上なら1, そうでなければ0を出力します. 各入力は Number または Vector を受け付け, Vector は大きさに変換して比較します.");
+        addBookPage(root, "operator_greater_than", "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than Value 2, otherwise 0.", "値1と値2を Number として比較します. 値1が値2より大きいなら1, そうでなければ0を出力します.");
+        addBookPage(root, "operator_greater_than_or_equal", "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than or equal to Value 2, otherwise 0.", "値1と値2を Number として比較します. 値1が値2以上なら1, そうでなければ0を出力します.");
         addBookPage(root, "operator_equal", "Compares Value 1 and Value 2 as Any inputs. It outputs 1 when both values are equal, otherwise 0. Numbers compare by numeric value, Vectors compare by coordinates, Item values compare their item data and source, and Block values compare dimension, position, and block state. A Block compared with a Vector uses coordinate comparison.", "値1と値2を Any 入力として比較します. 2つの値が等しいなら1, そうでなければ0を出力します. Number は数値, Vector は座標, Item はアイテムデータと source, Block はディメンション, 座標, ブロック状態を比較します. Block と Vector の比較は座標比較です.");
-        addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1000 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大1000文字です.");
+        addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 8192 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大8192文字です.");
         addBookPage(root, "operator_from_string", "Converts the String input for the selected Plain mode. String mode returns the input as-is. Number mode parses finite numeric text and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails. Left-click the spell piece to select the mode.", "選択中の Plain モードに応じて String 入力を変換します. String モードは入力をそのまま返します. Number モードは有限の数値文字列を解析し, 無効な入力では0を出力します. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) を受け付けます. Vector は大文字小文字を区別せず, 解析失敗時はゼロベクトルを出力します. スペルピースを左クリックでモードを選択できます.");
         addBookPage(root, "operator_list_from_string_list", "Converts a String List for the selected Plain mode. String mode returns the input list as-is. Number mode parses each entry as finite numeric text, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries. Left-click the spell piece to select the mode.", "選択中の Plain モードに応じて String List を変換します. String モードは入力リストをそのまま返します. Number モードは各要素を有限の数値文字列として解析し, 無効な要素は0になります. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) に一致する要素のみ変換し, 無効な要素は無視します. Vector は大文字小文字を区別しません. スペルピースを左クリックでモードを選択できます.");
         addBookPage(root, "operator_to_string", "Converts an Any input into a String. Entity, Item, and Block values output registry IDs, Number and Vector values use the same text form shown by Trick: Debug, and String values are returned as-is. List values convert each element by the same rules and join them with commas.", "Any 入力を String に変換します. Entity, Item, Block はレジストリIDを出力し, Number と Vector は 作動式: デバッグ と同じ文字列表現を使い, String はそのまま返します. List は各要素を同じ規則で変換し, コンマ区切りで結合します.");
