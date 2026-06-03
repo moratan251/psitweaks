@@ -129,6 +129,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_block");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_ID =
             registerPieceMaterial("operator_block_id");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE =
+            registerPieceMaterial("operator_block_state");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_ENTRIES =
+            registerPieceMaterial("operator_block_state_entries");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_HAS_TAG =
             registerPieceMaterial("operator_block_has_tag");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_POSITION =
@@ -157,6 +161,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_string_partial_match");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_CONCAT =
             registerPieceMaterial("operator_string_concat");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_SPLIT =
+            registerPieceMaterial("operator_string_split");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_JOIN =
+            registerPieceMaterial("operator_string_list_join");
     public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =
             registerPieceMaterial("operator_player_name");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_SEARCH =

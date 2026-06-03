@@ -132,6 +132,10 @@ public final class PsitweaksSpells {
             registerPiece("selector_block", PieceSelectorBlock.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockId>> OPERATOR_BLOCK_ID =
             registerPiece("operator_block_id", PieceOperatorBlockId.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockState>> OPERATOR_BLOCK_STATE =
+            registerPiece("operator_block_state", PieceOperatorBlockState.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateEntries>> OPERATOR_BLOCK_STATE_ENTRIES =
+            registerPiece("operator_block_state_entries", PieceOperatorBlockStateEntries.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockHasTag>> OPERATOR_BLOCK_HAS_TAG =
             registerPiece("operator_block_has_tag", PieceOperatorBlockHasTag.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockPosition>> OPERATOR_BLOCK_POSITION =
@@ -160,6 +164,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_string_partial_match", PieceOperatorStringPartialMatch.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringConcat>> OPERATOR_STRING_CONCAT =
             registerPiece("operator_string_concat", PieceOperatorStringConcat.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringSplit>> OPERATOR_STRING_SPLIT =
+            registerPiece("operator_string_split", PieceOperatorStringSplit.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringListJoin>> OPERATOR_STRING_LIST_JOIN =
+            registerPiece("operator_string_list_join", PieceOperatorStringListJoin.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorPlayerName>> OPERATOR_PLAYER_NAME =
             registerPiece("operator_player_name", PieceOperatorPlayerName.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSearch>> OPERATOR_LIST_SEARCH =
@@ -298,6 +306,8 @@ public final class PsitweaksSpells {
                     PieceSelectorNbtValue.class,
                     PieceOperatorStringPartialMatch.class,
                     PieceOperatorStringConcat.class,
+                    PieceOperatorStringSplit.class,
+                    PieceOperatorStringListJoin.class,
                     PieceOperatorPlayerName.class,
                     PieceOperatorListSearch.class,
                     PieceOperatorListSearchExclude.class,
@@ -319,6 +329,8 @@ public final class PsitweaksSpells {
             ADVANCEMENT_GROUPS.register("block", () -> List.of(
                     PieceSelectorBlock.class,
                     PieceOperatorBlockId.class,
+                    PieceOperatorBlockState.class,
+                    PieceOperatorBlockStateEntries.class,
                     PieceOperatorBlockHasTag.class,
                     PieceOperatorBlockPosition.class
             ));
