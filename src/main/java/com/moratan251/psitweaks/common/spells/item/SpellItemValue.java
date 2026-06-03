@@ -3,9 +3,13 @@ package com.moratan251.psitweaks.common.spells.item;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.spell.SpellContext;
 
@@ -49,6 +53,17 @@ public record SpellItemValue(ItemStack snapshot, Optional<ItemSourceRef> source)
             return Optional.of(compound);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Set<ResourceLocation> getTagIds(SpellContext context) {
+        if (snapshot.isEmpty()) {
+            return Set.of();
+        }
+
+        return snapshot.getItem().builtInRegistryHolder().tags()
+                .map(TagKey::location)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

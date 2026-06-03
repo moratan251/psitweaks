@@ -121,6 +121,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Block";
             default -> "Block";
         });
+        root.addProperty("psitweaks.datatype.contextual_value", switch (locale) {
+            case "ja_jp" -> "Contextual Value";
+            default -> "Contextual Value";
+        });
         root.addProperty("psitweaks.datatype.block_list", switch (locale) {
             case "ja_jp" -> "Block List";
             default -> "Block List";
@@ -957,7 +961,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_block_id", "Operator: Block ID", "Outputs the registry ID of a Block value. Example: minecraft:stone", "演算子: ブロックID", "Block 値のレジストリIDを文字列として出力します。例: minecraft:stone");
         addSpellPiece(root, "operator_block_state", "Operator: Block State", "Outputs the saved block state of a Block value as a String. Example: minecraft:oak_stairs[facing=north]", "演算子: ブロックステート", "Block 値に保存されたブロックステートを文字列として出力します。例: minecraft:oak_stairs[facing=north]");
         addSpellPiece(root, "operator_block_state_entries", "Operator: Block State Entries", "Outputs the saved block state properties of a Block value as a String List.", "演算子: ブロックステート項目", "Block 値に保存されたブロックステートのプロパティ項目を String List として出力します。");
-        addSpellPiece(root, "operator_block_has_tag", "Operator: Block Has Tag", "Outputs 1 if the Block value has the given block tag, otherwise 0.", "演算子: ブロックタグ判定", "Block 値が指定したブロックタグを持つなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "operator_tag_list", "Operator: Tag List", "Outputs registry tags for the target Entity, Item, Block, or other contextual value as a String List.", "演算子: タグリスト", "対象の Entity、Item、Block などのレジストリタグを String List として出力します。");
         addSpellPiece(root, "operator_block_position", "Operator: Block Position", "Outputs the saved position of a Block value as a plain Vector.", "演算子: ブロック座標", "Block 値に保存された座標を通常の Vector として出力します。");
         addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
         addSpellPiece(root, "selector_held_item", "Selector: Main-Hand Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
@@ -1053,7 +1057,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_block_id", "Outputs the registry ID stored in a Block value as a String, such as minecraft:stone. The ID comes from the Block snapshot and does not change if the world changes later.", "Block 値に保存されたレジストリIDを String として出力します. 例: minecraft:stone. ID は Block のスナップショットから取得され, 後からワールドが変化しても変わりません.");
         addBookPage(root, "operator_block_state", "Outputs the block state saved in a Block value as a String, using Minecraft's command-style form such as minecraft:oak_stairs[facing=north,half=bottom]. The value comes from the Block snapshot and does not change if the world changes later.", "Block 値に保存されたブロックステートを String として出力します. 出力は minecraft:oak_stairs[facing=north,half=bottom] のような Minecraft のコマンド風表記です. 値は Block のスナップショットから取得され, 後からワールドが変化しても変わりません.");
         addBookPage(root, "operator_block_state_entries", "Outputs the properties saved in a Block value's block state as a String List. Each entry uses property:value form, such as facing:north or waterlogged:false. Blocks with no state properties output an empty String List.", "Block 値に保存されたブロックステートのプロパティを String List として出力します. 各要素は facing:north や waterlogged:false のような property:value 形式です. state property を持たないブロックは空の String List を出力します.");
-        addBookPage(root, "operator_block_has_tag", "Checks whether a Block value had the given block tag when it was snapshotted. Both #minecraft:logs and minecraft:logs forms are accepted. Invalid tag IDs output 0.", "Block 値がスナップショット時点で指定ブロックタグを持っていたか判定します. #minecraft:logs と minecraft:logs の両方を受け付けます. 無効なタグIDは0を出力します.");
+        addBookPage(root, "operator_tag_list", "Outputs registry tags from an Entity, Item, Block, or supported contextual value as a String List. Entries use namespace:path form without #. Entity inputs return EntityType tags, not scoreboard tags.", "Entity, Item, Block, または対応する contextual value からレジストリタグを String List として出力します. 各要素は # を付けない namespace:path 形式です. Entity 入力は EntityType のタグを返し, スコアボードタグは含みません.");
         addBookPage(root, "operator_block_position", "Outputs the saved Block position as a plain Vector. Use this when a spell should intentionally drop Block metadata and keep only coordinates.", "Block に保存された座標を通常の Vector として出力します. Block のメタデータを意図的に捨て, 座標だけを残したい場合に使います.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
         addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.");

@@ -73,6 +73,11 @@ public class BlockValue extends Vector3 implements ContextualValue {
         return tagId != null && tagIds.contains(tagId);
     }
 
+    @Override
+    public Set<ResourceLocation> getTagIds(SpellContext context) {
+        return tagIds;
+    }
+
     public Vector3 positionVector() {
         return new Vector3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
