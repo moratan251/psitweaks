@@ -4,7 +4,6 @@ import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.PlainMemoryValue;
 import com.moratan251.psitweaks.api.value.PlainValueType;
-import com.moratan251.psitweaks.common.spells.util.ModeStringParsingHelper;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,7 +81,7 @@ public final class PsitweaksPlainValues {
             PsitweaksPlainValues::serializeVector,
             PsitweaksPlainValues::deserializeVector,
             value -> StringSpellHelper.sanitize(String.valueOf(value)),
-            ModeStringParsingHelper::parseVector
+            StringSpellHelper::parseVector
     ));
 
     private PsitweaksPlainValues() {

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -41,6 +42,31 @@ public interface PsitweaksListAdapter<T> {
         return value;
     }
 
+    default Object elementFromString(String value) {
+        throw unsupported("elementFromString");
+    }
+
+    default Object listFromStrings(Iterable<String> values) {
+        List<Object> elements = new ArrayList<>();
+        for (String value : values) {
+            elements.add(elementFromString(value));
+        }
+        return add(castList(emptyList()), elements);
+    }
+
+    default String elementToString(Object value) {
+        return value == null ? "" : String.valueOf(value);
+    }
+
+    default List<String> listToStrings(T list) {
+        List<String> result = new ArrayList<>();
+        int size = size(list);
+        for (int i = 0; i < size; i++) {
+            result.add(elementToString(get(list, i)));
+        }
+        return List.copyOf(result);
+    }
+
     default Object get(T list, int index) {
         throw unsupported("get");
     }
@@ -63,6 +89,11 @@ public interface PsitweaksListAdapter<T> {
 
     default Object concatenation(T left, T right) {
         throw unsupported("concatenation");
+    }
+
+    @SuppressWarnings("unchecked")
+    private T castList(Object list) {
+        return (T) list;
     }
 
     private UnsupportedOperationException unsupported(String operation) {

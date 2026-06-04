@@ -131,6 +131,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_block_id");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE =
             registerPieceMaterial("operator_block_state");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_VALUE =
+            registerPieceMaterial("operator_block_state_value");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_ENTRIES =
             registerPieceMaterial("operator_block_state_entries");
     public static final DeferredHolder<Material, Material> OPERATOR_TAG_LIST =
@@ -145,6 +147,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_selected_slot_item");
     public static final DeferredHolder<Material, Material> OPERATOR_ITEM_COUNT =
             registerPieceMaterial("operator_item_count");
+    public static final DeferredHolder<Material, Material> OPERATOR_ITEM_TOTAL_COUNT =
+            registerPieceMaterial("operator_item_total_count");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
             registerPieceMaterial("selector_held_items");
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =

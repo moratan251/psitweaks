@@ -3,7 +3,6 @@ package com.moratan251.psitweaks.client.spells;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moratan251.psitweaks.api.PsitweaksModeOption;
-import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.Material;
 import vazkii.psi.api.ClientPsiAPI;
@@ -16,15 +15,6 @@ public final class ModeOverlayRenderer {
     private static final float SIZE = 16.0F;
 
     private ModeOverlayRenderer() {
-    }
-
-    public static void drawModeOverlay(
-            PoseStack poseStack,
-            MultiBufferSource bufferSource,
-            int light,
-            ListElementMode mode
-    ) {
-        drawModeOverlay(poseStack, bufferSource, light, mode.option());
     }
 
     public static void drawModeOverlay(

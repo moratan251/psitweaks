@@ -1,12 +1,9 @@
 package com.moratan251.psitweaks.common.spells.operator;
 
+import com.moratan251.psitweaks.api.PsitweaksValueKind;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
-import com.moratan251.psitweaks.common.spells.mode.ListElementMode;
 import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
-import com.moratan251.psitweaks.common.spells.util.ModeListOperations;
-import com.moratan251.psitweaks.common.spells.util.ModeStringParsingHelper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
-import java.util.List;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
@@ -24,12 +21,12 @@ public class PieceOperatorListFromStringList extends PieceOperatorModeConversion
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         StringListWrapper source = getNotNullParamValue(context, list);
-        return ModeStringParsingHelper.listFromStringList(currentMode(), source);
+        return currentAdapter().listFromStrings(source);
     }
 
     @Override
     public Class<?> getEvaluationType() {
-        return ModeListOperations.listType(currentMode());
+        return currentListType();
     }
 
     @Override
@@ -38,8 +35,8 @@ public class PieceOperatorListFromStringList extends PieceOperatorModeConversion
     }
 
     @Override
-    protected List<ListElementMode> availableElementModes() {
-        return ListElementMode.plainModes();
+    protected PsitweaksValueKind modeOptionKindFilter() {
+        return PsitweaksValueKind.PLAIN;
     }
 
     @Override

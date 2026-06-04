@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
+import vazkii.psi.api.spell.SpellParam;
 
 /**
  * Registry for list-like spell value adapters.
@@ -80,6 +81,29 @@ public final class PsitweaksListAdapters {
         return Optional.of(cast(bestMatches.get(0).adapter()));
     }
 
+    public static synchronized Optional<PsitweaksListAdapter<Object>> findElementAdapter(Class<?> elementType) {
+        Objects.requireNonNull(elementType, "elementType");
+
+        List<ResolvedAdapter> bestMatches = new ArrayList<>();
+        for (PsitweaksListAdapter<?> adapter : ADAPTERS.values()) {
+            Class<?> adapterElementType = adapter.elementType();
+            if (adapterElementType == null || adapterElementType == Object.class
+                    || !adapterElementType.isAssignableFrom(elementType)) {
+                continue;
+            }
+
+            addMostSpecific(bestMatches, new ResolvedAdapter(adapterElementType, adapter));
+        }
+
+        if (bestMatches.isEmpty()) {
+            return Optional.empty();
+        }
+        if (bestMatches.size() > 1) {
+            throw ambiguous(elementType, bestMatches);
+        }
+        return Optional.of(cast(bestMatches.get(0).adapter()));
+    }
+
     public static int size(Object list) {
         Objects.requireNonNull(list, "list");
         PsitweaksListAdapter<Object> adapter = findAdapter(list.getClass()).orElseThrow(
@@ -122,6 +146,42 @@ public final class PsitweaksListAdapters {
             return Optional.empty();
         }
         return Optional.ofNullable(MODE_LIST_TYPES.get(option.id()));
+    }
+
+    public static synchronized Optional<Class<?>> elementType(PsitweaksModeOption option) {
+        return findModeAdapter(option).map(PsitweaksListAdapter::elementType);
+    }
+
+    public static SpellParam<?> createListParam(PsitweaksModeOption option, String name, boolean canDisable) {
+        return findModeAdapter(option).orElseThrow(() -> noModeAdapter(option)).createListParam(name, canDisable);
+    }
+
+    public static SpellParam<?> createElementParam(PsitweaksModeOption option, String name, boolean canDisable) {
+        return findModeAdapter(option).orElseThrow(() -> noModeAdapter(option)).createElementParam(name, canDisable);
+    }
+
+    public static Object emptyList(PsitweaksModeOption option) {
+        return findModeAdapter(option).orElseThrow(() -> noModeAdapter(option)).emptyList();
+    }
+
+    public static Object emptyElement(PsitweaksModeOption option) {
+        return findModeAdapter(option).orElseThrow(() -> noModeAdapter(option)).emptyElement();
+    }
+
+    public static Object elementFromString(PsitweaksModeOption option, String value) {
+        return findModeAdapter(option).orElseThrow(() -> noModeAdapter(option)).elementFromString(value);
+    }
+
+    public static Object listFromStrings(PsitweaksModeOption option, Iterable<String> values) {
+        return findModeAdapter(option).orElseThrow(() -> noModeAdapter(option)).listFromStrings(values);
+    }
+
+    public static List<String> listToStrings(Object list) {
+        Objects.requireNonNull(list, "list");
+        PsitweaksListAdapter<Object> adapter = findAdapter(list.getClass()).orElseThrow(
+                () -> new IllegalStateException("No PsiTweaks list adapter registered for " + list.getClass().getName())
+        );
+        return adapter.listToStrings(list);
     }
 
     public static synchronized Map<Class<?>, PsitweaksListAdapter<?>> snapshot() {
@@ -172,6 +232,11 @@ public final class PsitweaksListAdapters {
             message.append(matches.get(i).type().getName());
         }
         return new IllegalStateException(message.toString());
+    }
+
+    private static IllegalStateException noModeAdapter(PsitweaksModeOption option) {
+        return new IllegalStateException("No PsiTweaks list adapter registered for mode "
+                + (option == null ? "<null>" : option.id()));
     }
 
     private static void warnAmbiguousOnce(Class<?> listType, IllegalStateException exception) {

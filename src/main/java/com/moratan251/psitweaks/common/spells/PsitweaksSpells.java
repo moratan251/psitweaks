@@ -134,6 +134,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_block_id", PieceOperatorBlockId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockState>> OPERATOR_BLOCK_STATE =
             registerPiece("operator_block_state", PieceOperatorBlockState.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateValue>> OPERATOR_BLOCK_STATE_VALUE =
+            registerPiece("operator_block_state_value", PieceOperatorBlockStateValue.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateEntries>> OPERATOR_BLOCK_STATE_ENTRIES =
             registerPiece("operator_block_state_entries", PieceOperatorBlockStateEntries.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorTagList>> OPERATOR_TAG_LIST =
@@ -148,6 +150,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_selected_slot_item", PieceSelectorSelectedSlotItem.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorItemCount>> OPERATOR_ITEM_COUNT =
             registerPiece("operator_item_count", PieceOperatorItemCount.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorItemTotalCount>> OPERATOR_ITEM_TOTAL_COUNT =
+            registerPiece("operator_item_total_count", PieceOperatorItemTotalCount.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItems>> SELECTOR_HELD_ITEMS =
             registerPiece("selector_held_items", PieceSelectorHeldItems.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorInternalItems>> SELECTOR_INTERNAL_ITEMS =
@@ -324,13 +328,15 @@ public final class PsitweaksSpells {
             ADVANCEMENT_GROUPS.register("item", () -> List.of(
                     PieceSelectorHeldItem.class,
                     PieceSelectorSelectedSlotItem.class,
-                    PieceOperatorItemCount.class
+                    PieceOperatorItemCount.class,
+                    PieceOperatorItemTotalCount.class
             ));
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
             ADVANCEMENT_GROUPS.register("block", () -> List.of(
                     PieceSelectorBlock.class,
                     PieceOperatorBlockId.class,
                     PieceOperatorBlockState.class,
+                    PieceOperatorBlockStateValue.class,
                     PieceOperatorBlockStateEntries.class,
                     PieceOperatorBlockPosition.class
             ));
