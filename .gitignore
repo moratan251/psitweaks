@@ -29,4 +29,4 @@ docs
 .steering
 
 #etc
-.cache
+src/generated/resources/.cache

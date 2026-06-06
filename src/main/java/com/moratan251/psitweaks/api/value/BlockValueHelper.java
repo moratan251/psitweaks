@@ -45,7 +45,7 @@ public final class BlockValueHelper {
     }
 
     public static BlockValue snapshotVector(SpellContext context, Vector3 vector) throws SpellRuntimeException {
-        if (vector == null || vector.isZero()) {
+        if (vector == null) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         }
         if (!context.isInRadius(vector)) {

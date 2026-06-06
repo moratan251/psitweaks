@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.internal.Vector3;
@@ -481,24 +480,6 @@ public final class PsitweaksListAdapterRegistration {
         return VectorListWrapper.make(result);
     }
 
-    private static String entityToRegistryId(Entity entity) {
-        if (entity == null) {
-            return "";
-        }
-        return BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-    }
-
-    private static String itemToRegistryId(SpellItemValue item) {
-        if (item == null) {
-            return "";
-        }
-        return BuiltInRegistries.ITEM.getKey(item.copyStack().getItem()).toString();
-    }
-
-    private static String blockToRegistryId(BlockValue block) {
-        return block == null ? "" : block.blockId().toString();
-    }
-
     private static String debugString(Object value) {
         return StringSpellHelper.sanitize(String.valueOf(value));
     }
@@ -630,15 +611,6 @@ public final class PsitweaksListAdapterRegistration {
         public String elementToString(Object value) {
             if (value == null) {
                 return "";
-            }
-            if (modeOption.id().equals(PsitweaksModeOptions.ENTITY.id()) && value instanceof Entity entity) {
-                return entityToRegistryId(entity);
-            }
-            if (modeOption.id().equals(PsitweaksModeOptions.ITEM.id()) && value instanceof SpellItemValue item) {
-                return itemToRegistryId(item);
-            }
-            if (modeOption.id().equals(PsitweaksModeOptions.BLOCK.id()) && value instanceof BlockValue block) {
-                return blockToRegistryId(block);
             }
             return debugString(value);
         }
