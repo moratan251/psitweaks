@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.client.gui;
 
-import com.moratan251.psitweaks.common.spells.PieceConstantString;
+import com.moratan251.psitweaks.common.spells.spellpiece.constant.PieceConstantString;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

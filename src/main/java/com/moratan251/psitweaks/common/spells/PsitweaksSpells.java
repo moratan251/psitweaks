@@ -2,7 +2,11 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
-import com.moratan251.psitweaks.common.spells.operator.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.etc.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
 import java.util.Collection;
 import java.util.List;
 import net.neoforged.bus.api.IEventBus;
@@ -134,8 +138,6 @@ public final class PsitweaksSpells {
             registerPiece("operator_get_id_list", PieceOperatorGetIdList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlock>> SELECTOR_BLOCK =
             registerPiece("selector_block", PieceSelectorBlock.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockId>> OPERATOR_BLOCK_ID =
-            registerPiece("operator_block_id", PieceOperatorBlockId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockState>> OPERATOR_BLOCK_STATE =
             registerPiece("operator_block_state", PieceOperatorBlockState.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateValue>> OPERATOR_BLOCK_STATE_VALUE =
@@ -340,7 +342,6 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
             ADVANCEMENT_GROUPS.register("block", () -> List.of(
                     PieceSelectorBlock.class,
-                    PieceOperatorBlockId.class,
                     PieceOperatorBlockState.class,
                     PieceOperatorBlockStateValue.class,
                     PieceOperatorBlockStateEntries.class,

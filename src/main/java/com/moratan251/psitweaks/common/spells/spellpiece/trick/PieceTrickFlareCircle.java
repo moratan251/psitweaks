@@ -1,0 +1,160 @@
+package com.moratan251.psitweaks.common.spells.spellpiece.trick;
+
+import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.api.spell.EnumSpellStat;
+import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellCompilationException;
+import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellMetadata;
+import vazkii.psi.api.spell.SpellParam;
+import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.api.spell.StatLabel;
+import vazkii.psi.api.spell.param.ParamNumber;
+import vazkii.psi.api.spell.param.ParamVector;
+import vazkii.psi.api.spell.piece.PieceTrick;
+
+import java.util.UUID;
+
+public class PieceTrickFlareCircle extends PieceTrick {
+
+    // バランス調整用の定数群（後からこのブロックを触るだけで調整できる）
+    private static final double MIN_POWER = 0.5D;
+    private static final float BASE_DAMAGE = 2.0F;
+    private static final float DAMAGE_PER_POWER = 2.0F;
+    private static final float FIXED_RADIUS = 8.0F;
+    // RenderSpellCircle側の見た目半径は「2 * horizontalScale」なので 8.0 半径に合わせて 4.0 を使う
+    private static final float FIXED_VISUAL_SCALE = FIXED_RADIUS * 0.5F;
+    private static final int LIFETIME_TICKS = 60 * 20; // 20秒
+    private static final int DAMAGE_INTERVAL_TICKS = 10;
+    private static final double POTENCY_BASE = 200.0D;
+    private static final double POTENCY_PER_POWER = 100.0D;
+    private static final double COST_BASE = 2000.0D;
+    private static final double COST_PER_POWER = 1200.0D;
+
+    private SpellParam<Vector3> position;
+    private SpellParam<Number> power;
+
+    public PieceTrickFlareCircle(Spell spell) {
+        super(spell);
+        setStatLabel(EnumSpellStat.POTENCY,
+                new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
+        setStatLabel(EnumSpellStat.COST,
+                new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(COST_PER_POWER).add(COST_BASE).floor());
+    }
+
+    @Override
+    public void initParams() {
+        addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, false, false));
+        addParam(power = new ParamNumber("psi.spellparam.power", SpellParam.RED, false, true));
+    }
+
+    @Override
+    public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
+        super.addToMetadata(meta);
+
+        Double powerVal = getParamEvaluation(power);
+        if (powerVal == null || powerVal <= 0.0D) {
+            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
+        }
+
+        powerVal = Math.max(MIN_POWER, powerVal);
+        meta.addStat(EnumSpellStat.POTENCY, (int) (POTENCY_BASE + powerVal * POTENCY_PER_POWER));
+        meta.addStat(EnumSpellStat.COST, (int) (COST_BASE + powerVal * COST_PER_POWER));
+    }
+
+    @Override
+    public Object execute(SpellContext context) throws SpellRuntimeException {
+        Vector3 positionVal = getParamValue(context, position);
+        double powerVal = getParamValue(context, power).doubleValue();
+
+        if (positionVal == null) {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
+        }
+        if (powerVal <= 0.0D) {
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
+        }
+        if (!context.isInRadius(positionVal)) {
+            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
+        }
+        if (context.caster == null || !(context.caster.level() instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+
+        double clampedPower = Math.max(MIN_POWER, powerVal);
+        float radius = FIXED_RADIUS;
+        float baseDamage = calculateDamage(clampedPower);
+        float visualScale = FIXED_VISUAL_SCALE;
+        int lifetimeTicks = LIFETIME_TICKS;
+
+        double spellPowerMultiplier = PsitweaksConfig.COMMON.flareCircleDamageMultiplier.get();
+        double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
+        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
+        float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
+
+        removeExistingFlareCircleByCaster(serverLevel, context.caster.getUUID());
+
+        Vec3 effectPosition = SableRangeCompat.projectForEffect(serverLevel, positionVal);
+        EntityFlareCircle flareCircle = new EntityFlareCircle(serverLevel);
+        flareCircle.setPos(effectPosition.x, effectPosition.y + 0.01D, effectPosition.z);
+        flareCircle.setCaster(context.caster);
+        flareCircle.setSafeToPlayers(SpellSafetyUtils.hasSafeToPlayers(context));
+        flareCircle.setVisualScale(visualScale);
+        flareCircle.setLifetimeTicks(lifetimeTicks);
+        flareCircle.configureAreaDamage(radius, finalDamage, DAMAGE_INTERVAL_TICKS);
+
+        serverLevel.addFreshEntity(flareCircle);
+
+        Vec3 center = flareCircle.position();
+        serverLevel.playSound(
+                null,
+                center.x,
+                center.y,
+                center.z,
+                SoundEvents.BLAZE_SHOOT,
+                SoundSource.PLAYERS,
+                0.8F,
+                0.9F
+        );
+        serverLevel.sendParticles(
+                ParticleTypes.FLAME,
+                center.x,
+                center.y + 0.05D,
+                center.z,
+                18,
+                radius * 0.35D,
+                0.08D,
+                radius * 0.35D,
+                0.01D
+        );
+
+        return null;
+    }
+
+    private static void removeExistingFlareCircleByCaster(ServerLevel castingLevel, UUID casterUuid) {
+        for (ServerLevel level : castingLevel.getServer().getAllLevels()) {
+            for (Entity entity : level.getAllEntities()) {
+                if (entity instanceof EntityFlareCircle circle
+                        && !circle.isRemoved()
+                        && casterUuid.equals(circle.getCasterUuid())) {
+                    circle.destroyBySpell();
+                }
+            }
+        }
+    }
+
+    private static float calculateDamage(double powerVal) {
+        return BASE_DAMAGE + (float) (powerVal * DAMAGE_PER_POWER);
+    }
+}
