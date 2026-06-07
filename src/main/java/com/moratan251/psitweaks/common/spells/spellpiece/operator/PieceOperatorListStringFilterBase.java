@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.api.PsitweaksListAdapter;
+import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -33,7 +35,7 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         int size = adapter.size(source);
         for (int i = 0; i < size; i++) {
             Object value = adapter.get(source, i);
-            boolean matches = matcher.matches(ModeStringConversionHelper.anyToString(value));
+            boolean matches = matcher.matches(searchText(context, value));
             if (shouldKeep(matches)) {
                 result.add(value);
             }
@@ -59,6 +61,13 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         addParam(string = new ParamString(PsitweaksSpellParams.STRING, PsitweaksSpellParams.STRING_COLOR, false,
                 false));
         restoreParamSides(savedSides);
+    }
+
+    private static String searchText(SpellContext context, Object value) throws SpellRuntimeException {
+        if (value instanceof Entity || value instanceof ContextualValue) {
+            return RegistryIdTargetHelper.getRegistryId(context, value);
+        }
+        return ModeStringConversionHelper.anyToString(value);
     }
 
     protected abstract boolean shouldKeep(boolean matches);

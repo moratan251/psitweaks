@@ -29,4 +29,5 @@ docs
 .steering
 
 #etc
-src/generated/resources/.cache
+src/generated/resources/.cache/*
+.cache
