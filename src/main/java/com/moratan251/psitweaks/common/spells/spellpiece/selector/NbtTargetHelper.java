@@ -16,8 +16,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 final class NbtTargetHelper {
-    private static final String ID_TAG = "id";
-    private static final TargetData EMPTY = new TargetData(new CompoundTag(), false);
+    private static final TargetData EMPTY = new TargetData(new CompoundTag());
 
     private NbtTargetHelper() {
     }
@@ -25,11 +24,11 @@ final class NbtTargetHelper {
     static Optional<TargetData> getNbt(SpellContext context, Object target) throws SpellRuntimeException {
         if (target instanceof Entity entity) {
             context.verifyEntity(entity);
-            return Optional.of(new TargetData(NbtPredicate.getEntityTagToCompare(entity), true));
+            return Optional.of(new TargetData(NbtPredicate.getEntityTagToCompare(entity)));
         }
 
         if (target instanceof ContextualValue contextualValue) {
-            return contextualValue.getNbt(context).map(tag -> new TargetData(tag, false));
+            return contextualValue.getNbt(context).map(TargetData::new);
         }
 
         return Optional.empty();
@@ -42,9 +41,7 @@ final class NbtTargetHelper {
     static List<String> sortedKeys(TargetData data) {
         List<String> keys = new ArrayList<>();
         for (String key : data.tag().getAllKeys()) {
-            if (!data.omitEntityId() || !ID_TAG.equals(key)) {
-                keys.add(key);
-            }
+            keys.add(key);
         }
         Collections.sort(keys);
         return keys;
@@ -53,10 +50,6 @@ final class NbtTargetHelper {
     static String stringValue(TargetData data, String query) {
         String path = query == null ? "" : query.trim();
         if (path.isEmpty()) {
-            return "";
-        }
-
-        if (data.omitEntityId() && isRootEntityIdPath(path)) {
             return "";
         }
 
@@ -96,10 +89,6 @@ final class NbtTargetHelper {
         return StringSpellHelper.sanitize(value.toString());
     }
 
-    private static boolean isRootEntityIdPath(String path) {
-        return ID_TAG.equals(path) || ("\"" + ID_TAG + "\"").equals(path);
-    }
-
-    record TargetData(CompoundTag tag, boolean omitEntityId) {
+    record TargetData(CompoundTag tag) {
     }
 }
