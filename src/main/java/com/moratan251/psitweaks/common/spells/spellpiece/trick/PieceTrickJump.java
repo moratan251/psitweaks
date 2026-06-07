@@ -32,7 +32,7 @@ public class PieceTrickJump extends PieceTrick {
 
     @Override
     public void initParams() {
-        this.addParam(this.target = new ParamNumber("psi.spellparam.target", SpellParam.BLUE, false, false));
+        this.addParam(this.target = new ParamNumber("psi.spellparam.target", SpellParam.BLUE, true, false));
         this.addParam(this.label = new ParamConstantString(PsitweaksSpellParams.LABEL,
                 PsitweaksSpellParams.STRING_COLOR, true));
     }
@@ -48,8 +48,8 @@ public class PieceTrickJump extends PieceTrick {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        double targetValue = this.getNotNullParamValue(context, this.target).doubleValue();
-        if (Math.abs(targetValue) >= JUMP_THRESHOLD) {
+        Number targetValue = this.getParamValue(context, this.target);
+        if (targetValue != null && Math.abs(targetValue.doubleValue()) >= JUMP_THRESHOLD) {
             return null;
         }
 
