@@ -42,6 +42,13 @@ public final class ItemListValueHelper {
         return SpellItemListWrapper.make(result);
     }
 
+    public static SpellItemValue fromEntityContainerSlot(Entity entity, Container container, int slot) {
+        if (entity == null || container == null || slot < 0 || slot >= container.getContainerSize()) {
+            return SpellItemValue.EMPTY;
+        }
+        return sourced(container.getItem(slot), new EntityInventorySlotSource(entity.getUUID(), entity.getId(), slot));
+    }
+
     public static SpellItemListWrapper fromEntityItemHandler(Entity entity, IItemHandler handler) {
         if (entity == null || handler == null) {
             return SpellItemListWrapper.EMPTY;
@@ -52,6 +59,13 @@ public final class ItemListValueHelper {
             add(result, handler.getStackInSlot(i), new EntityInventorySlotSource(entity.getUUID(), entity.getId(), i));
         }
         return SpellItemListWrapper.make(result);
+    }
+
+    public static SpellItemValue fromEntityItemHandlerSlot(Entity entity, IItemHandler handler, int slot) {
+        if (entity == null || handler == null || slot < 0 || slot >= handler.getSlots()) {
+            return SpellItemValue.EMPTY;
+        }
+        return sourced(handler.getStackInSlot(slot), new EntityInventorySlotSource(entity.getUUID(), entity.getId(), slot));
     }
 
     public static SpellItemListWrapper fromLivingEquipment(LivingEntity living) {
@@ -80,6 +94,13 @@ public final class ItemListValueHelper {
         return SpellItemListWrapper.make(result);
     }
 
+    public static SpellItemValue fromBlockContainerSlot(Level level, BlockPos pos, Container container, int slot) {
+        if (level == null || pos == null || container == null || slot < 0 || slot >= container.getContainerSize()) {
+            return SpellItemValue.EMPTY;
+        }
+        return sourced(container.getItem(slot), new BlockInventorySlotSource(level.dimension(), pos.immutable(), slot));
+    }
+
     public static SpellItemListWrapper fromBlockItemHandler(Level level, BlockPos pos, IItemHandler handler) {
         if (level == null || pos == null || handler == null) {
             return SpellItemListWrapper.EMPTY;
@@ -92,10 +113,24 @@ public final class ItemListValueHelper {
         return SpellItemListWrapper.make(result);
     }
 
+    public static SpellItemValue fromBlockItemHandlerSlot(Level level, BlockPos pos, IItemHandler handler, int slot) {
+        if (level == null || pos == null || handler == null || slot < 0 || slot >= handler.getSlots()) {
+            return SpellItemValue.EMPTY;
+        }
+        return sourced(handler.getStackInSlot(slot), new BlockInventorySlotSource(level.dimension(), pos.immutable(), slot));
+    }
+
     private static void add(List<SpellItemValue> values, ItemStack stack, ItemSourceRef source) {
         if (stack == null || stack.isEmpty()) {
             return;
         }
         values.add(SpellItemValue.sourced(stack, source));
+    }
+
+    private static SpellItemValue sourced(ItemStack stack, ItemSourceRef source) {
+        if (stack == null || stack.isEmpty()) {
+            return SpellItemValue.EMPTY;
+        }
+        return SpellItemValue.sourced(stack, source);
     }
 }

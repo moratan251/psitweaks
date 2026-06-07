@@ -147,8 +147,14 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_held_item");
     public static final DeferredHolder<Material, Material> SELECTOR_SELECTED_SLOT_ITEM =
             registerPieceMaterial("selector_selected_slot_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_ENTITY_SLOT_ITEM =
+            registerPieceMaterial("selector_entity_slot_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_SLOT_ITEM =
+            registerPieceMaterial("selector_internal_slot_item");
     public static final DeferredHolder<Material, Material> OPERATOR_ITEM_COUNT =
             registerPieceMaterial("operator_item_count");
+    public static final DeferredHolder<Material, Material> OPERATOR_ITEM_SLOT =
+            registerPieceMaterial("operator_item_slot");
     public static final DeferredHolder<Material, Material> OPERATOR_ITEM_TOTAL_COUNT =
             registerPieceMaterial("operator_item_total_count");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
