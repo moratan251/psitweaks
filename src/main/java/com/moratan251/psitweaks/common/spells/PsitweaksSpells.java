@@ -136,6 +136,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_get_id", PieceOperatorGetId.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorGetIdList>> OPERATOR_GET_ID_LIST =
             registerPiece("operator_get_id_list", PieceOperatorGetIdList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorDisplayName>> SELECTOR_DISPLAY_NAME =
+            registerPiece("selector_display_name", PieceSelectorDisplayName.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorDisplayNameList>> SELECTOR_DISPLAY_NAME_LIST =
+            registerPiece("selector_display_name_list", PieceSelectorDisplayNameList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlock>> SELECTOR_BLOCK =
             registerPiece("selector_block", PieceSelectorBlock.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockState>> OPERATOR_BLOCK_STATE =
@@ -315,6 +319,8 @@ public final class PsitweaksSpells {
                     PieceOperatorListToStringList.class,
                     PieceOperatorGetId.class,
                     PieceOperatorGetIdList.class,
+                    PieceSelectorDisplayName.class,
+                    PieceSelectorDisplayNameList.class,
                     PieceSelectorOnlinePlayers.class,
                     PieceSelectorHeldItems.class,
                     PieceSelectorInternalItems.class,

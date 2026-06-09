@@ -129,6 +129,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_get_id");
     public static final DeferredHolder<Material, Material> OPERATOR_GET_ID_LIST =
             registerPieceMaterial("operator_get_id_list");
+    public static final DeferredHolder<Material, Material> SELECTOR_DISPLAY_NAME =
+            registerPieceMaterial("selector_display_name");
+    public static final DeferredHolder<Material, Material> SELECTOR_DISPLAY_NAME_LIST =
+            registerPieceMaterial("selector_display_name_list");
     public static final DeferredHolder<Material, Material> SELECTOR_BLOCK =
             registerPieceMaterial("selector_block");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE =

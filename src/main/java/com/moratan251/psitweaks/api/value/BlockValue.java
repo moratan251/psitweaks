@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -22,6 +23,7 @@ public class BlockValue implements ContextualValue {
     private final BlockPos blockPos;
     private final ResourceKey<Level> dimension;
     private final BlockState state;
+    private final Component displayName;
     private final ResourceLocation blockId;
     private final Set<ResourceLocation> tagIds;
 
@@ -29,6 +31,7 @@ public class BlockValue implements ContextualValue {
         this.dimension = Objects.requireNonNull(dimension, "dimension");
         this.blockPos = Objects.requireNonNull(blockPos, "blockPos").immutable();
         this.state = Objects.requireNonNull(state, "state");
+        this.displayName = state.getBlock().getName();
         this.blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         this.tagIds = state.getTags()
                 .map(TagKey::location)
@@ -58,6 +61,14 @@ public class BlockValue implements ContextualValue {
 
     public Block block() {
         return state.getBlock();
+    }
+
+    public Component displayName() {
+        return displayName.copy();
+    }
+
+    public String displayNameString() {
+        return displayName.getString();
     }
 
     public ResourceLocation blockId() {
@@ -101,7 +112,7 @@ public class BlockValue implements ContextualValue {
 
     @Override
     public String toString() {
-        return "Block[id=\"" + blockId + "\", pos=" + blockPos.toShortString()
+        return "Block[name=\"" + displayNameString() + "\", id=\"" + blockId + "\", pos=" + blockPos.toShortString()
                 + ", dimension=" + dimension.location() + ", tags=" + tagIds.size() + "]";
     }
 }
