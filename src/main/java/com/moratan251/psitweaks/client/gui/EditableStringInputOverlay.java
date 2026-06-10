@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.client.gui;
 
-import com.moratan251.psitweaks.common.spells.spellpiece.constant.PieceConstantString;
+import com.moratan251.psitweaks.common.spells.spellpiece.EditableStringSpellPiece;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,7 +15,7 @@ import vazkii.psi.client.gui.GuiProgrammer;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class StringConstantInputOverlay {
+public final class EditableStringInputOverlay {
     private static final int PANEL_WIDTH = 320;
     private static final int PANEL_HEIGHT = 122;
     private static final int MARGIN = 8;
@@ -55,11 +55,11 @@ public final class StringConstantInputOverlay {
     private static int scrollLineOffset = 0;
     private static boolean scrollFollowsCursor = true;
 
-    private StringConstantInputOverlay() {
+    private EditableStringInputOverlay() {
     }
 
     public static void render(GuiProgrammer screen, GuiGraphics guiGraphics) {
-        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
             return;
         }
@@ -77,7 +77,7 @@ public final class StringConstantInputOverlay {
     }
 
     public static boolean handleMousePressedPre(GuiProgrammer screen, double mouseX, double mouseY, int button) {
-        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
             return false;
         }
@@ -112,7 +112,7 @@ public final class StringConstantInputOverlay {
             return false;
         }
 
-        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
             draggingSelection = false;
             return false;
@@ -139,7 +139,7 @@ public final class StringConstantInputOverlay {
     }
 
     public static boolean handleCharacterTypedPre(GuiProgrammer screen, char codePoint, int modifiers) {
-        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
             return false;
         }
@@ -151,7 +151,7 @@ public final class StringConstantInputOverlay {
     }
 
     public static boolean handleKeyPressedPre(GuiProgrammer screen, int keyCode, int scanCode) {
-        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
             return false;
         }
@@ -199,7 +199,7 @@ public final class StringConstantInputOverlay {
     }
 
     public static boolean handleMouseScrolledPre(GuiProgrammer screen, double mouseX, double mouseY, double scrollDeltaY) {
-        PieceConstantString piece = getActiveSelectedStringConstant(screen);
+        EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
             return false;
         }
@@ -229,7 +229,7 @@ public final class StringConstantInputOverlay {
             return;
         }
 
-        PieceConstantString piece = getStringConstant(screen, position.x, position.y);
+        EditableStringSpellPiece piece = getStringConstant(screen, position.x, position.y);
         if (piece == null) {
             deactivate(screen);
             lastClickX = -1;
@@ -253,7 +253,7 @@ public final class StringConstantInputOverlay {
     }
 
     public static void deactivate(GuiProgrammer screen) {
-        PieceConstantString piece = getStringConstant(screen, activeX, activeY);
+        EditableStringSpellPiece piece = getStringConstant(screen, activeX, activeY);
         if (piece != null) {
             piece.setCursorEditing(false);
         }
@@ -266,7 +266,7 @@ public final class StringConstantInputOverlay {
         scrollFollowsCursor = true;
     }
 
-    private static void activate(PieceConstantString piece, int x, int y) {
+    private static void activate(EditableStringSpellPiece piece, int x, int y) {
         activeX = x;
         activeY = y;
         activeCursorPosition = piece.getValue().length();
@@ -278,13 +278,13 @@ public final class StringConstantInputOverlay {
         piece.moveCursorTo(activeCursorPosition);
     }
 
-    private static PieceConstantString getActiveSelectedStringConstant(GuiProgrammer screen) {
+    private static EditableStringSpellPiece getActiveSelectedStringConstant(GuiProgrammer screen) {
         if (activeX != GuiProgrammer.selectedX || activeY != GuiProgrammer.selectedY) {
             deactivate(screen);
             return null;
         }
 
-        PieceConstantString piece = getStringConstant(screen, activeX, activeY);
+        EditableStringSpellPiece piece = getStringConstant(screen, activeX, activeY);
         if (piece == null) {
             deactivate(screen);
         } else {
@@ -293,13 +293,13 @@ public final class StringConstantInputOverlay {
         return piece;
     }
 
-    private static PieceConstantString getStringConstant(GuiProgrammer screen, int x, int y) {
+    private static EditableStringSpellPiece getStringConstant(GuiProgrammer screen, int x, int y) {
         if (screen.spell == null || !SpellGrid.exists(x, y)) {
             return null;
         }
 
         SpellPiece piece = screen.spell.grid.gridData[x][y];
-        if (piece instanceof PieceConstantString stringPiece) {
+        if (piece instanceof EditableStringSpellPiece stringPiece) {
             return stringPiece;
         }
         return null;
@@ -351,12 +351,12 @@ public final class StringConstantInputOverlay {
             GuiProgrammer screen,
             GuiGraphics guiGraphics,
             Font font,
-            PieceConstantString piece,
+            EditableStringSpellPiece piece,
             PanelLayout layout
     ) {
         String value = piece.getValue();
         Component title = Component.translatable(piece.getUnlocalizedName());
-        String count = value.length() + "/" + StringSpellHelper.MAX_STRING_LENGTH;
+        String count = value.length() + "/" + StringSpellHelper.MAX_CONSTANT_STRING_LENGTH;
 
         guiGraphics.drawString(font, title, layout.x + 8, layout.y + 7, TEXT_COLOR, false);
         guiGraphics.drawString(font, count, layout.x + layout.width - 8 - font.width(count), layout.y + 7, COUNT_COLOR, false);
@@ -464,7 +464,7 @@ public final class StringConstantInputOverlay {
 
     private static int cursorPositionForClick(
             Font font,
-            PieceConstantString piece,
+            EditableStringSpellPiece piece,
             PanelLayout layout,
             double mouseX,
             double mouseY
@@ -494,7 +494,7 @@ public final class StringConstantInputOverlay {
 
     private static void moveCursorVertically(
             GuiProgrammer screen,
-            PieceConstantString piece,
+            EditableStringSpellPiece piece,
             int direction,
             boolean selecting
     ) {
@@ -515,7 +515,7 @@ public final class StringConstantInputOverlay {
     }
 
     private static void moveCursorHorizontally(
-            PieceConstantString piece,
+            EditableStringSpellPiece piece,
             int keyCode,
             boolean selecting,
             boolean movingByWord
@@ -582,7 +582,7 @@ public final class StringConstantInputOverlay {
                 || character == '/';
     }
 
-    private static void moveCursorTo(PieceConstantString piece, int cursorPosition, boolean selecting) {
+    private static void moveCursorTo(EditableStringSpellPiece piece, int cursorPosition, boolean selecting) {
         int previousCursor = piece.getCursorPosition();
         if (selecting) {
             if (selectionAnchor < 0) {
@@ -601,7 +601,7 @@ public final class StringConstantInputOverlay {
 
     private static boolean replaceSelectionOrInsert(
             GuiProgrammer screen,
-            PieceConstantString piece,
+            EditableStringSpellPiece piece,
             String input,
             boolean consumeWhenUnchanged
     ) {
@@ -623,7 +623,7 @@ public final class StringConstantInputOverlay {
         return true;
     }
 
-    private static boolean deleteSelection(GuiProgrammer screen, PieceConstantString piece) {
+    private static boolean deleteSelection(GuiProgrammer screen, EditableStringSpellPiece piece) {
         if (!hasSelection()) {
             return false;
         }
@@ -642,7 +642,7 @@ public final class StringConstantInputOverlay {
         return true;
     }
 
-    private static void handleActionButton(GuiProgrammer screen, PieceConstantString piece, ActionButton actionButton) {
+    private static void handleActionButton(GuiProgrammer screen, EditableStringSpellPiece piece, ActionButton actionButton) {
         switch (actionButton) {
             case COPY_ALL -> copyAllText(piece);
             case CLEAR_ALL -> replaceAllText(screen, piece, "");
@@ -650,16 +650,16 @@ public final class StringConstantInputOverlay {
         }
     }
 
-    private static void copyAllText(PieceConstantString piece) {
+    private static void copyAllText(EditableStringSpellPiece piece) {
         Minecraft.getInstance().keyboardHandler.setClipboard(piece.getValue());
     }
 
-    private static void replaceAllText(GuiProgrammer screen, PieceConstantString piece, String input) {
+    private static void replaceAllText(GuiProgrammer screen, EditableStringSpellPiece piece, String input) {
         if (screen.isSpectator()) {
             return;
         }
 
-        String sanitized = StringSpellHelper.sanitize(input);
+        String sanitized = StringSpellHelper.sanitize(input, StringSpellHelper.MAX_CONSTANT_STRING_LENGTH);
         if (piece.getValue().equals(sanitized)) {
             piece.moveCursorTo(sanitized.length());
             rememberCursor(piece);
@@ -674,7 +674,7 @@ public final class StringConstantInputOverlay {
         clearSelection();
     }
 
-    private static boolean handleEditingKey(GuiProgrammer screen, PieceConstantString piece, int keyCode, int scanCode) {
+    private static boolean handleEditingKey(GuiProgrammer screen, EditableStringSpellPiece piece, int keyCode, int scanCode) {
         if (screen.isSpectator()) {
             return isContentEditingKey(keyCode);
         }
@@ -704,7 +704,7 @@ public final class StringConstantInputOverlay {
                 || Screen.isPaste(keyCode);
     }
 
-    private static void applyActiveCursor(PieceConstantString piece) {
+    private static void applyActiveCursor(EditableStringSpellPiece piece) {
         if (activeCursorPosition < 0) {
             activeCursorPosition = piece.getValue().length();
         }
@@ -719,12 +719,12 @@ public final class StringConstantInputOverlay {
         activeCursorPosition = clamped;
     }
 
-    private static void rememberCursor(PieceConstantString piece) {
+    private static void rememberCursor(EditableStringSpellPiece piece) {
         activeCursorPosition = piece.getCursorPosition();
         scrollFollowsCursor = true;
     }
 
-    private static int clampCursor(PieceConstantString piece, int cursorPosition) {
+    private static int clampCursor(EditableStringSpellPiece piece, int cursorPosition) {
         return Math.max(0, Math.min(cursorPosition, piece.getValue().length()));
     }
 
@@ -744,14 +744,14 @@ public final class StringConstantInputOverlay {
         selectionAnchor = -1;
     }
 
-    private static void selectAll(PieceConstantString piece) {
+    private static void selectAll(EditableStringSpellPiece piece) {
         activeCursorPosition = piece.getValue().length();
         piece.moveCursorTo(activeCursorPosition);
         selectionAnchor = activeCursorPosition == 0 ? -1 : 0;
         scrollFollowsCursor = true;
     }
 
-    private static void copySelection(PieceConstantString piece) {
+    private static void copySelection(EditableStringSpellPiece piece) {
         if (hasSelection()) {
             Minecraft.getInstance().keyboardHandler.setClipboard(
                     piece.getValue().substring(selectionStart(), selectionEnd())
@@ -759,7 +759,7 @@ public final class StringConstantInputOverlay {
         }
     }
 
-    private static void cutSelection(GuiProgrammer screen, PieceConstantString piece) {
+    private static void cutSelection(GuiProgrammer screen, EditableStringSpellPiece piece) {
         copySelection(piece);
         if (!screen.isSpectator()) {
             deleteSelection(screen, piece);

@@ -26,14 +26,14 @@ import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
-final class DisplayNameTargetHelper {
+public final class DisplayNameTargetHelper {
     private static final String ENGLISH = "en_us";
     private static final Map<LangResourceKey, Map<String, String>> TRANSLATIONS = new ConcurrentHashMap<>();
 
     private DisplayNameTargetHelper() {
     }
 
-    static String getDisplayName(SpellContext context, Object target) throws SpellRuntimeException {
+    public static String getDisplayName(SpellContext context, Object target) throws SpellRuntimeException {
         if (target instanceof Entity entity) {
             context.verifyEntity(entity);
             return entityName(context, entity);

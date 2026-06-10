@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.client.event;
 
-import com.moratan251.psitweaks.client.gui.StringConstantInputOverlay;
+import com.moratan251.psitweaks.client.gui.EditableStringInputOverlay;
 import com.moratan251.psitweaks.client.gui.SpellPieceModeButtonOverlay;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -25,21 +25,21 @@ public final class PsitweaksClientGuiEvents {
     private static void onScreenRenderPost(ScreenEvent.Render.Post event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellPieceModeButtonOverlay.render(screen, event.getGuiGraphics(), event.getMouseX(), event.getMouseY());
-            StringConstantInputOverlay.render(screen, event.getGuiGraphics());
+            EditableStringInputOverlay.render(screen, event.getGuiGraphics());
         }
     }
 
     private static void onKeyPressedPre(ScreenEvent.KeyPressed.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
                 && (SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
-                || StringConstantInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode()))) {
+                || EditableStringInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode()))) {
             event.setCanceled(true);
         }
     }
 
     private static void onCharacterTypedPre(ScreenEvent.CharacterTyped.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && StringConstantInputOverlay.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers())) {
+                && EditableStringInputOverlay.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers())) {
             event.setCanceled(true);
         }
     }
@@ -50,20 +50,20 @@ public final class PsitweaksClientGuiEvents {
                         event.getMouseX(),
                         event.getMouseY(),
                         event.getButton())
-                || StringConstantInputOverlay.handleMousePressedPre(screen, event.getMouseX(), event.getMouseY(), event.getButton()))) {
+                || EditableStringInputOverlay.handleMousePressedPre(screen, event.getMouseX(), event.getMouseY(), event.getButton()))) {
             event.setCanceled(true);
         }
     }
 
     private static void onMouseButtonPressedPost(ScreenEvent.MouseButtonPressed.Post event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
-            StringConstantInputOverlay.handleMousePressedPost(screen, event.getMouseX(), event.getMouseY(), event.getButton());
+            EditableStringInputOverlay.handleMousePressedPost(screen, event.getMouseX(), event.getMouseY(), event.getButton());
         }
     }
 
     private static void onMouseDraggedPre(ScreenEvent.MouseDragged.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && StringConstantInputOverlay.handleMouseDraggedPre(screen,
+                && EditableStringInputOverlay.handleMouseDraggedPre(screen,
                         event.getMouseX(),
                         event.getMouseY(),
                         event.getMouseButton())) {
@@ -73,7 +73,7 @@ public final class PsitweaksClientGuiEvents {
 
     private static void onMouseButtonReleasedPre(ScreenEvent.MouseButtonReleased.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && StringConstantInputOverlay.handleMouseReleasedPre(screen, event.getButton())) {
+                && EditableStringInputOverlay.handleMouseReleasedPre(screen, event.getButton())) {
             event.setCanceled(true);
         }
     }
@@ -84,7 +84,7 @@ public final class PsitweaksClientGuiEvents {
                         event.getMouseX(),
                         event.getMouseY(),
                         event.getScrollDeltaY())
-                || StringConstantInputOverlay.handleMouseScrolledPre(screen,
+                || EditableStringInputOverlay.handleMouseScrolledPre(screen,
                         event.getMouseX(),
                         event.getMouseY(),
                         event.getScrollDeltaY()))) {
@@ -95,7 +95,7 @@ public final class PsitweaksClientGuiEvents {
     private static void onScreenClosing(ScreenEvent.Closing event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellPieceModeButtonOverlay.deactivate();
-            StringConstantInputOverlay.deactivate(screen);
+            EditableStringInputOverlay.deactivate(screen);
         }
     }
 }

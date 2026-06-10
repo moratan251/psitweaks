@@ -1,7 +1,11 @@
-package com.moratan251.psitweaks.common.spells.spellpiece.constant;
+package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.moratan251.psitweaks.api.value.ContextualValue;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.spellpiece.EditableStringSpellPiece;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.DisplayNameTargetHelper;
+import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -9,29 +13,57 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import org.lwjgl.glfw.GLFW;
-import vazkii.psi.api.spell.EnumPieceType;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
-import vazkii.psi.api.spell.SpellPiece;
+import vazkii.psi.api.spell.SpellParam;
+import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.api.spell.param.ParamAny;
+import vazkii.psi.api.spell.piece.PieceOperator;
 
-public class PieceConstantString extends SpellPiece implements EditableStringSpellPiece {
+public class PieceOperatorFormatString extends PieceOperator implements EditableStringSpellPiece {
     private static final String TAG_VALUE = "value";
     private static final int MAX_RENDER_WIDTH = 16;
     private static final int TEXT_COLOR = 0xFFFFFF;
     private static final int PACKED_LIGHT = 15728880;
 
+    private SpellParam<?> value1;
+    private SpellParam<?> value2;
+    private SpellParam<?> value3;
+
     private String value = "";
     private int cursorPosition = 0;
     private boolean cursorEditing = false;
 
-    public PieceConstantString(Spell spell) {
+    public PieceOperatorFormatString(Spell spell) {
         super(spell);
     }
 
     @Override
-    public EnumPieceType getPieceType() {
-        return EnumPieceType.CONSTANT;
+    public void initParams() {
+        addParam(value1 = new ParamAny(PsitweaksSpellParams.VALUE1, SpellParam.GRAY, true));
+        addParam(value2 = new ParamAny(PsitweaksSpellParams.VALUE2, SpellParam.GRAY, true));
+        addParam(value3 = new ParamAny(PsitweaksSpellParams.VALUE3, SpellParam.GRAY, true));
+    }
+
+    @Override
+    public Object execute(SpellContext context) throws SpellRuntimeException {
+        String result = value
+                .replace("{1}", formatArgument(context, getParamValue(context, typed(value1))))
+                .replace("{2}", formatArgument(context, getParamValue(context, typed(value2))))
+                .replace("{3}", formatArgument(context, getParamValue(context, typed(value3))));
+        return StringSpellHelper.sanitize(result);
+    }
+
+    private String formatArgument(SpellContext context, Object argument) throws SpellRuntimeException {
+        if (argument == null) {
+            return "";
+        }
+        if (argument instanceof Entity || argument instanceof ContextualValue) {
+            return DisplayNameTargetHelper.getDisplayName(context, argument);
+        }
+        return ModeStringConversionHelper.anyToString(argument);
     }
 
     @Override
@@ -42,16 +74,6 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
     @Override
     public Component getEvaluationTypeString() {
         return Component.translatable("psitweaks.datatype.string");
-    }
-
-    @Override
-    public Object evaluate() {
-        return value;
-    }
-
-    @Override
-    public Object execute(SpellContext context) {
-        return value;
     }
 
     @Override
@@ -199,24 +221,24 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
         cursorEditing = false;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public int getCursorPosition() {
         cursorPosition = Math.max(0, Math.min(cursorPosition, value.length()));
         return cursorPosition;
     }
 
+    @Override
     public void moveCursorTo(int position) {
         cursorEditing = true;
         cursorPosition = Math.max(0, Math.min(position, value.length()));
     }
 
-    public boolean insertLineBreak(boolean modify) {
-        return insertText("\n", modify, true);
-    }
-
+    @Override
     public boolean replaceRange(int start, int end, String input, boolean modify, boolean consumeWhenUnchanged) {
         int rangeStart = clampCursorPosition(Math.min(start, end));
         int rangeEnd = clampCursorPosition(Math.max(start, end));
@@ -242,6 +264,7 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
         return true;
     }
 
+    @Override
     public boolean deleteRange(int start, int end, boolean modify) {
         int rangeStart = clampCursorPosition(Math.min(start, end));
         int rangeEnd = clampCursorPosition(Math.max(start, end));
@@ -257,12 +280,14 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
         return true;
     }
 
+    @Override
     public void replaceValue(String input) {
         value = StringSpellHelper.sanitize(input, StringSpellHelper.MAX_CONSTANT_STRING_LENGTH);
         cursorEditing = true;
         cursorPosition = value.length();
     }
 
+    @Override
     public void setCursorEditing(boolean cursorEditing) {
         this.cursorEditing = cursorEditing;
         if (!cursorEditing) {
@@ -272,6 +297,7 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
         }
     }
 
+    @Override
     public boolean isCursorEditing() {
         return cursorEditing;
     }
@@ -294,5 +320,10 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
 
     private int clampCursorPosition(int position) {
         return Math.max(0, Math.min(position, value.length()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> SpellParam<T> typed(SpellParam<?> param) {
+        return (SpellParam<T>) param;
     }
 }

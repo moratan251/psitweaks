@@ -9,6 +9,8 @@ import vazkii.psi.api.internal.Vector3;
 
 public final class StringSpellHelper {
     public static final int MAX_STRING_LENGTH = 8192;
+    public static final int MAX_CONSTANT_STRING_LENGTH = 1024;
+    public static final int MAX_CAD_STORED_STRING_LENGTH = 128;
     private static final Pattern VECTOR_PATTERN = Pattern.compile(
             "^\\s*(?:(?i:vector)\\s*)?(\\[|\\()\\s*(.*?)\\s*(\\]|\\))\\s*$");
 
@@ -16,12 +18,19 @@ public final class StringSpellHelper {
     }
 
     public static String sanitize(String input) {
+        return sanitize(input, MAX_STRING_LENGTH);
+    }
+
+    public static String sanitize(String input, int maxLength) {
         if (input == null) {
             return "";
         }
+        if (maxLength <= 0) {
+            return "";
+        }
 
-        StringBuilder builder = new StringBuilder(Math.min(input.length(), MAX_STRING_LENGTH));
-        for (int i = 0; i < input.length() && builder.length() < MAX_STRING_LENGTH; i++) {
+        StringBuilder builder = new StringBuilder(Math.min(input.length(), maxLength));
+        for (int i = 0; i < input.length() && builder.length() < maxLength; i++) {
             char c = input.charAt(i);
             if (c == '\n') {
                 builder.append('\n');
@@ -39,10 +48,17 @@ public final class StringSpellHelper {
     }
 
     public static String clamp(String input) {
+        return clamp(input, MAX_STRING_LENGTH);
+    }
+
+    public static String clamp(String input, int maxLength) {
         if (input == null) {
             return "";
         }
-        return input.length() <= MAX_STRING_LENGTH ? input : input.substring(0, MAX_STRING_LENGTH);
+        if (maxLength <= 0) {
+            return "";
+        }
+        return input.length() <= maxLength ? input : input.substring(0, maxLength);
     }
 
     public static double bool(boolean value) {

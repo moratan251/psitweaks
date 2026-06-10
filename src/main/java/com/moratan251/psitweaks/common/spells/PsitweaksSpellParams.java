@@ -9,6 +9,7 @@ public final class PsitweaksSpellParams {
     public static final String STRING3 = PREFIX + "string3";
     public static final String VALUE1 = PREFIX + "value1";
     public static final String VALUE2 = PREFIX + "value2";
+    public static final String VALUE3 = PREFIX + "value3";
     public static final String ELEMENT1 = PREFIX + "element1";
     public static final String ELEMENT2 = PREFIX + "element2";
     public static final String ELEMENT3 = PREFIX + "element3";

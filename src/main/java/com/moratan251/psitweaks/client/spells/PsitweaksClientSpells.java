@@ -117,10 +117,16 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_equal");
     public static final DeferredHolder<Material, Material> CONSTANT_STRING =
             registerPieceMaterial("constant_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_FORMAT_STRING =
+            registerPieceMaterial("operator_format_string");
     public static final DeferredHolder<Material, Material> OPERATOR_FROM_STRING =
             registerPieceMaterial("operator_from_string", "operator_from_string");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_FROM_STRING_LIST =
             registerPieceMaterial("operator_list_from_string_list", "operator_list_from_string_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_LIST_TO_VECTOR =
+            registerPieceMaterial("operator_number_list_to_vector");
+    public static final DeferredHolder<Material, Material> OPERATOR_VECTOR_TO_NUMBER_LIST =
+            registerPieceMaterial("operator_vector_to_number_list");
     public static final DeferredHolder<Material, Material> OPERATOR_TO_STRING =
             registerPieceMaterial("operator_to_string", "operator_to_string");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_TO_STRING_LIST =

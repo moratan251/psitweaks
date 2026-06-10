@@ -124,10 +124,16 @@ public final class PsitweaksSpells {
             registerPiece("operator_equal", PieceOperatorEqual.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceConstantString>> CONSTANT_STRING =
             registerPiece("constant_string", PieceConstantString.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorFormatString>> OPERATOR_FORMAT_STRING =
+            registerPiece("operator_format_string", PieceOperatorFormatString.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorFromString>> OPERATOR_FROM_STRING =
             registerPiece("operator_from_string", PieceOperatorFromString.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListFromStringList>> OPERATOR_LIST_FROM_STRING_LIST =
             registerPiece("operator_list_from_string_list", PieceOperatorListFromStringList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorNumberListToVector>> OPERATOR_NUMBER_LIST_TO_VECTOR =
+            registerPiece("operator_number_list_to_vector", PieceOperatorNumberListToVector.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorVectorToNumberList>> OPERATOR_VECTOR_TO_NUMBER_LIST =
+            registerPiece("operator_vector_to_number_list", PieceOperatorVectorToNumberList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorToString>> OPERATOR_TO_STRING =
             registerPiece("operator_to_string", PieceOperatorToString.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListToStringList>> OPERATOR_LIST_TO_STRING_LIST =
@@ -313,8 +319,11 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STRING =
             ADVANCEMENT_GROUPS.register("string", () -> List.of(
                     PieceConstantString.class,
+                    PieceOperatorFormatString.class,
                     PieceOperatorFromString.class,
                     PieceOperatorListFromStringList.class,
+                    PieceOperatorNumberListToVector.class,
+                    PieceOperatorVectorToNumberList.class,
                     PieceOperatorToString.class,
                     PieceOperatorListToStringList.class,
                     PieceOperatorGetId.class,

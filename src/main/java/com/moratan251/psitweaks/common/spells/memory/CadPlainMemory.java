@@ -3,10 +3,13 @@ package com.moratan251.psitweaks.common.spells.memory;
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.value.PlainMemoryValue;
 import com.moratan251.psitweaks.api.value.PlainValueType;
+import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import java.util.Optional;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import vazkii.psi.api.PsiAPI;
@@ -16,6 +19,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 public final class CadPlainMemory {
+    private static final String WARNING_STRING_TRUNCATED = "psitweaks.spellwarning.cad_memory_string_truncated";
     private static final String TAG_MEMORY = "psitweaks_plain_memory";
     private static final String TAG_LEGACY_ENTITY_MAP = "psitweaks_entity_map";
     private static final String SLOT_LOCKED_PREFIX = "psi:SlotLocked";
@@ -41,7 +45,8 @@ public final class CadPlainMemory {
         CadAccess cadAccess = cadAccess(context);
         validateSlot(cadAccess.cad(), cadAccess.stack(), internalSlot);
 
-        PlainMemoryValue<?> memoryValue = PsitweaksPlainValues.memoryValue(value);
+        PlainMemoryValue<?> memoryValue = PsitweaksPlainValues.memoryValue(
+                truncateStringForCadMemory(context, internalSlot, value));
         store(cadAccess.stack(), cadAccess.cad(), internalSlot, memoryValue);
     }
 
@@ -129,6 +134,37 @@ public final class CadPlainMemory {
         int size = cad.getMemorySize(cadStack);
         if (internalSlot < 0 || internalSlot >= size) {
             throw new SpellRuntimeException("psi.spellerror.memoryoutofbounds");
+        }
+    }
+
+    private static Object truncateStringForCadMemory(SpellContext context, int internalSlot, Object value) {
+        if (!(value instanceof String string)) {
+            return value;
+        }
+
+        String sanitized = StringSpellHelper.sanitize(string);
+        if (sanitized.length() <= StringSpellHelper.MAX_CAD_STORED_STRING_LENGTH) {
+            return sanitized;
+        }
+
+        String truncated = StringSpellHelper.sanitize(sanitized, StringSpellHelper.MAX_CAD_STORED_STRING_LENGTH);
+        notifyStringTruncated(context, internalSlot, sanitized.length(), truncated.length());
+        return truncated;
+    }
+
+    private static void notifyStringTruncated(
+            SpellContext context,
+            int internalSlot,
+            int originalLength,
+            int truncatedLength
+    ) {
+        if (context != null && context.caster != null) {
+            context.caster.sendSystemMessage(Component.translatable(
+                    WARNING_STRING_TRUNCATED,
+                    internalSlot + 1,
+                    originalLength,
+                    truncatedLength
+            ).withStyle(ChatFormatting.YELLOW));
         }
     }
 
