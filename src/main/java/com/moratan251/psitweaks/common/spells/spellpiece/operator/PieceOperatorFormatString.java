@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.param.SpellParamContextualValueList;
 import com.moratan251.psitweaks.common.spells.spellpiece.EditableStringSpellPiece;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.DisplayNameTargetHelper;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
@@ -59,6 +60,9 @@ public class PieceOperatorFormatString extends PieceOperator implements Editable
     private String formatArgument(SpellContext context, Object argument) throws SpellRuntimeException {
         if (argument == null) {
             return "";
+        }
+        if (SpellParamContextualValueList.canAcceptListType(argument.getClass())) {
+            return String.join(",", DisplayNameTargetHelper.getDisplayNames(context, argument));
         }
         if (argument instanceof Entity || argument instanceof ContextualValue) {
             return DisplayNameTargetHelper.getDisplayName(context, argument);

@@ -1,5 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
+import com.moratan251.psitweaks.api.PsitweaksListAdapter;
+import com.moratan251.psitweaks.api.PsitweaksListAdapters;
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.api.value.ContextualValue;
@@ -9,8 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,6 +58,22 @@ public final class DisplayNameTargetHelper {
             return "";
         }
         return "";
+    }
+
+    public static List<String> getDisplayNames(SpellContext context, Object source) throws SpellRuntimeException {
+        if (source == null) {
+            return List.of();
+        }
+
+        PsitweaksListAdapter<Object> adapter = PsitweaksListAdapters.findAdapter(source.getClass()).orElseThrow(
+                () -> new SpellRuntimeException(SpellRuntimeException.NULL_TARGET)
+        );
+        List<String> result = new ArrayList<>();
+        int size = adapter.size(source);
+        for (int i = 0; i < size; i++) {
+            result.add(getDisplayName(context, adapter.get(source, i)));
+        }
+        return List.copyOf(result);
     }
 
     private static String entityName(SpellContext context, Entity entity) {
