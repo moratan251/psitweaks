@@ -199,6 +199,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_add");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE =
             registerPieceMaterial("operator_list_remove");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE_INDICES =
+            registerPieceMaterial("operator_list_remove_indices");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_INSERT =
+            registerPieceMaterial("operator_list_insert");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_SIZE =
             registerPieceMaterial("operator_list_size");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_EXCLUSION =

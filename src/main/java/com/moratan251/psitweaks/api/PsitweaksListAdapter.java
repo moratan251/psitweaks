@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.api;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
@@ -77,6 +79,32 @@ public interface PsitweaksListAdapter<T> {
 
     default Object remove(T list, List<?> elements) {
         throw unsupported("remove");
+    }
+
+    default Object removeIndices(T list, List<Integer> indices) {
+        Set<Integer> removed = new HashSet<>(indices);
+        List<Object> result = new ArrayList<>();
+        int size = size(list);
+        for (int i = 0; i < size; i++) {
+            if (!removed.contains(i)) {
+                result.add(get(list, i));
+            }
+        }
+        return add(castList(emptyList()), result);
+    }
+
+    default Object insert(T list, int index, Object element) {
+        int size = size(list);
+        List<Object> result = new ArrayList<>(size + 1);
+        for (int i = 0; i <= size; i++) {
+            if (i == index) {
+                result.add(element);
+            }
+            if (i < size) {
+                result.add(get(list, i));
+            }
+        }
+        return add(castList(emptyList()), result);
     }
 
     default Object exclusion(T left, T right) {

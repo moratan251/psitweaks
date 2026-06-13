@@ -206,6 +206,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_add", PieceOperatorListAdd.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListRemove>> OPERATOR_LIST_REMOVE =
             registerPiece("operator_list_remove", PieceOperatorListRemove.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListRemoveIndices>> OPERATOR_LIST_REMOVE_INDICES =
+            registerPiece("operator_list_remove_indices", PieceOperatorListRemoveIndices.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListInsert>> OPERATOR_LIST_INSERT =
+            registerPiece("operator_list_insert", PieceOperatorListInsert.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSize>> OPERATOR_LIST_SIZE =
             registerPiece("operator_list_size", PieceOperatorListSize.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListExclusion>> OPERATOR_LIST_EXCLUSION =
@@ -348,6 +352,8 @@ public final class PsitweaksSpells {
                     PieceOperatorRandomElement.class,
                     PieceOperatorListAdd.class,
                     PieceOperatorListRemove.class,
+                    PieceOperatorListRemoveIndices.class,
+                    PieceOperatorListInsert.class,
                     PieceOperatorListSize.class,
                     PieceOperatorListExclusion.class,
                     PieceOperatorListIntersection.class,

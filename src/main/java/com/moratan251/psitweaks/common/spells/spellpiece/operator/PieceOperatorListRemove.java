@@ -13,7 +13,6 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 public class PieceOperatorListRemove extends PieceOperatorModeListBase {
     private SpellParam<?> element1;
     private SpellParam<?> element2;
-    private SpellParam<?> element3;
     private SpellParam<?> list;
 
     public PieceOperatorListRemove(Spell spell) {
@@ -41,20 +40,18 @@ public class PieceOperatorListRemove extends PieceOperatorModeListBase {
         clearModeParams();
         addParam(element1 = currentAdapter().createElementParam(PsitweaksSpellParams.ELEMENT1, false));
         addParam(element2 = currentAdapter().createElementParam(PsitweaksSpellParams.ELEMENT2, true));
-        addParam(element3 = currentAdapter().createElementParam(PsitweaksSpellParams.ELEMENT3, true));
         addParam(list = currentAdapter().createListParam(SpellParam.GENERIC_NAME_LIST, false));
         restoreParamSides(savedSides);
     }
 
     private List<Object> elementValues(SpellContext context) throws SpellRuntimeException {
-        List<Object> values = new ArrayList<>(3);
+        List<Object> values = new ArrayList<>(2);
         Object first = getParamValue(context, typed(element1));
         if (first == null) {
             throw new SpellRuntimeException("psi.spellerror.nulltarget");
         }
         values.add(currentAdapter().coerceElement(context, first));
         addOptionalElement(context, values, element2);
-        addOptionalElement(context, values, element3);
         return values;
     }
 

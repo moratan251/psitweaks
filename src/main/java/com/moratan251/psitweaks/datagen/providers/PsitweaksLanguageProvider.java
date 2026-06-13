@@ -193,6 +193,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "要素3";
             default -> "Element 3";
         });
+        root.addProperty("psitweaks.spellparam.number_a", switch (locale) {
+            case "ja_jp" -> "数値A";
+            default -> "Number A";
+        });
+        root.addProperty("psitweaks.spellparam.number_b", switch (locale) {
+            case "ja_jp" -> "数値B";
+            default -> "Number B";
+        });
         root.addProperty("psitweaks.spellparam.item", switch (locale) {
             case "ja_jp" -> "Item";
             default -> "Item";
@@ -992,7 +1000,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_item_total_count", "Operator: Item Total Count", "Outputs the total count of matching items in an Item List.", "演算子: アイテム合計個数", "Item List 内の指定 ID と一致するアイテムの合計個数を Number として出力します。");
         addSpellPiece(root, "selector_held_items", "Selector: Carried Items", "Outputs the target entity's carried items as an Item List.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを Item List として取得します。");
         addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as an Item List.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを Item List として取得します。");
-        addSpellPiece(root, "selector_indexed_element", "Selector: Indexed Element", "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.", "取得子: インデックス要素", "選択中の List モードから0始まりのインデックスにある要素を取得します。負のインデックスは末尾から数えます。");
+        addSpellPiece(root, "selector_indexed_element", "Selector: Indexed Element (PT)", "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.", "取得子: インデックス要素 (PT)", "選択中の List モードから0始まりのインデックスにある要素を取得します。負のインデックスは末尾から数えます。");
         addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target Contextual Value's top-level NBT as key:value strings.", "取得子: NBT", "対象 Contextual Value のNBTトップレベルを key:value 形式の String List として出力します。");
         addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target Contextual Value's top-level NBT keys as a String List.", "取得子: NBTキー", "対象 Contextual Value のNBTトップレベルキーを String List として出力します。");
         addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target Contextual Value's NBT value matching the String key or NBT path. Missing paths output an empty string.", "取得子: NBT値", "対象 Contextual Value のNBTから String キーまたはNBTパスに一致する値を出力します。一致しない場合は空文字列です。");
@@ -1004,12 +1012,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_list_search", "Operator: List Search", "Keeps only the input List elements whose string form matches the input search string.", "演算子: リスト検索", "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするもののみを残します。");
         addSpellPiece(root, "operator_list_search_exclude", "Operator: List Search Exclude", "Removes the input List elements whose string form matches the input search string.", "演算子: リスト検索除外", "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするものを除外します。");
         addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the input List.", "演算子: ランダム要素", "入力した List からランダムに1要素を出力します。");
-        addSpellPiece(root, "operator_list_add", "Operator: List Add", "Adds up to three elements to the input List.", "演算子: リスト追加", "入力した List に最大3つの要素を追加します。");
-        addSpellPiece(root, "operator_list_remove", "Operator: List Remove", "Removes up to three elements from the input List.", "演算子: リスト削除", "入力した List から最大3つの要素を削除します。");
-        addSpellPiece(root, "operator_list_size", "Operator: List Size", "Outputs the number of elements in the input List.", "演算子: リストサイズ", "入力した任意の List の要素数を出力します。");
-        addSpellPiece(root, "operator_list_exclusion", "Operator: List Exclusion", "Removes the elements in List 2 from the input List 1.", "演算子: リスト除外", "入力したリスト1からリスト2に含まれる要素を除外します。");
-        addSpellPiece(root, "operator_list_intersection", "Operator: List Intersection", "Outputs the elements shared by the two input Lists.", "演算子: リスト共通部分", "入力した2つの List に共通する要素を出力します。");
-        addSpellPiece(root, "operator_list_concatenation", "Operator: List Concatenation", "Combines the two input Lists.", "演算子: リスト結合", "入力した2つの List を結合します。");
+        addSpellPiece(root, "operator_list_add", "Operator: Add To List (PT)", "Adds up to three elements to the input List.", "リストへ追加 (PT)", "入力した List に最大3つの要素を追加します。");
+        addSpellPiece(root, "operator_list_remove", "Operator: Remove From List (PT)", "Removes up to two elements from the input List.", "リストから削除 (PT)", "入力した List から最大2つの要素を削除します。");
+        addSpellPiece(root, "operator_list_remove_indices", "Operator: Remove Indexed Elements", "Removes the elements at Number A and optional Number B from the input List.", "演算子: インデックス要素削除", "入力した List から数値Aと任意の数値Bに対応するインデックスの要素を削除します。");
+        addSpellPiece(root, "operator_list_insert", "Operator: List Insert", "Inserts the input element at the specified index in the input List.", "演算子: リストに挿入", "入力した List の指定インデックスへ要素を挿入します。");
+        addSpellPiece(root, "operator_list_size", "Operator: List Size (PT)", "Outputs the number of elements in the input List.", "演算子: リストサイズ (PT)", "入力した任意の List の要素数を出力します。");
+        addSpellPiece(root, "operator_list_exclusion", "Operator: List Exclusion (PT)", "Removes the elements in List 2 from the input List 1.", "演算子: リスト除外 (PT)", "入力したリスト1からリスト2に含まれる要素を除外します。");
+        addSpellPiece(root, "operator_list_intersection", "Operator: List Intersection (PT)", "Outputs the elements shared by the two input Lists.", "演算子: リスト共通部分 (PT)", "入力した2つの List に共通する要素を出力します。");
+        addSpellPiece(root, "operator_list_concatenation", "Operator: List Concatenation (PT)", "Combines the two input Lists.", "演算子: リスト結合 (PT)", "入力した2つの List を結合します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -1112,7 +1122,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_list_search_exclude", "Filters the selected List mode by removing elements whose search text matches the input wildcard. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.", "選択中の List モードから, 検索用文字列が入力ワイルドカードに一致する要素を除外します. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.");
         addBookPage(root, "operator_random_element", "Returns one random element from the input List.", "入力された List から要素を1つランダムに返します.");
         addBookPage(root, "operator_list_add", "Adds up to three input elements to the input List.", "入力された List に最大3つの入力要素を追加します.");
-        addBookPage(root, "operator_list_remove", "Removes up to three input elements from the input List.", "入力された List から最大3つの入力要素を削除します.");
+        addBookPage(root, "operator_list_remove", "Removes up to two input elements from the input List.", "入力された List から最大2つの入力要素を削除します.");
+        addBookPage(root, "operator_list_remove_indices", "Removes the elements at Number A and optional Number B from the selected List mode. Negative indexes count from the end, so -1 removes the last element. Both indexes are resolved against the original List, and duplicate indexes remove only one element. An out-of-range index raises an out-of-bounds spell error.", "選択中の List モードから数値Aと任意の数値Bに対応するインデックスの要素を削除します. 負数は末尾から数え, -1 は末尾要素を削除します. どちらのインデックスも元の List を基準に解決し, 同じインデックスの場合は1要素だけ削除します. 範囲外はインデックス範囲外エラーになります.");
+        addBookPage(root, "operator_list_insert", "Inserts the input element before the specified index in the selected List mode. Index 0 inserts at the beginning and -1 inserts before the last element. Like Python list.insert, indexes above the List size insert at the end, while indexes below the negative range insert at the beginning.", "選択中の List モードの指定インデックス直前へ入力要素を挿入します. 0 は先頭へ, -1 は末尾要素の直前へ挿入します. Python の list.insert と同様, List サイズより大きいインデックスは末尾へ, 負方向の範囲を超えたインデックスは先頭へ挿入します.");
         addBookPage(root, "operator_list_size", "Outputs the number of elements in any input List.", "入力された任意の List 入力に含まれる要素数を出力します.");
         addBookPage(root, "operator_list_exclusion", "Returns a new List by removing elements from List 1 when they are also present in List 2.", "入力したList 1 の要素のうち、List 2 にも含まれる要素を除外して新しいリストとして返します.");
         addBookPage(root, "operator_list_intersection", "Returns a new List containing elements that are present in both input Lists.", "入力した2つのリストでどちらにも含まれる要素を新しいリストとして返します.");

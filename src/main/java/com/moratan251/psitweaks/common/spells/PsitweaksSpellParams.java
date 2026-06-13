@@ -13,6 +13,8 @@ public final class PsitweaksSpellParams {
     public static final String ELEMENT1 = PREFIX + "element1";
     public static final String ELEMENT2 = PREFIX + "element2";
     public static final String ELEMENT3 = PREFIX + "element3";
+    public static final String NUMBER_A = PREFIX + "number_a";
+    public static final String NUMBER_B = PREFIX + "number_b";
     public static final String ITEM = PREFIX + "item";
     public static final String TAG = PREFIX + "tag";
     public static final String LABEL = PREFIX + "label";
