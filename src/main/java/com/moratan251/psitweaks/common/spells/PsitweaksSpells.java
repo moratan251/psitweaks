@@ -192,6 +192,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_string_concat", PieceOperatorStringConcat.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringSplit>> OPERATOR_STRING_SPLIT =
             registerPiece("operator_string_split", PieceOperatorStringSplit.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringSlice>> OPERATOR_STRING_SLICE =
+            registerPiece("operator_string_slice", PieceOperatorStringSlice.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringListJoin>> OPERATOR_STRING_LIST_JOIN =
             registerPiece("operator_string_list_join", PieceOperatorStringListJoin.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorPlayerName>> OPERATOR_PLAYER_NAME =
@@ -210,6 +212,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_remove_indices", PieceOperatorListRemoveIndices.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListInsert>> OPERATOR_LIST_INSERT =
             registerPiece("operator_list_insert", PieceOperatorListInsert.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSlice>> OPERATOR_LIST_SLICE =
+            registerPiece("operator_list_slice", PieceOperatorListSlice.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSize>> OPERATOR_LIST_SIZE =
             registerPiece("operator_list_size", PieceOperatorListSize.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListExclusion>> OPERATOR_LIST_EXCLUSION =
@@ -345,6 +349,7 @@ public final class PsitweaksSpells {
                     PieceOperatorStringPartialMatch.class,
                     PieceOperatorStringConcat.class,
                     PieceOperatorStringSplit.class,
+                    PieceOperatorStringSlice.class,
                     PieceOperatorStringListJoin.class,
                     PieceOperatorPlayerName.class,
                     PieceOperatorListSearch.class,
@@ -354,6 +359,7 @@ public final class PsitweaksSpells {
                     PieceOperatorListRemove.class,
                     PieceOperatorListRemoveIndices.class,
                     PieceOperatorListInsert.class,
+                    PieceOperatorListSlice.class,
                     PieceOperatorListSize.class,
                     PieceOperatorListExclusion.class,
                     PieceOperatorListIntersection.class,

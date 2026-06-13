@@ -107,6 +107,14 @@ public interface PsitweaksListAdapter<T> {
         return add(castList(emptyList()), result);
     }
 
+    default Object slice(T list, int fromIndex, int toIndex) {
+        List<Object> result = new ArrayList<>(Math.max(0, toIndex - fromIndex));
+        for (int i = fromIndex; i < toIndex; i++) {
+            result.add(get(list, i));
+        }
+        return add(castList(emptyList()), result);
+    }
+
     default Object exclusion(T left, T right) {
         throw unsupported("exclusion");
     }

@@ -185,6 +185,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_string_concat");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_SPLIT =
             registerPieceMaterial("operator_string_split");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_SLICE =
+            registerPieceMaterial("operator_string_slice");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_JOIN =
             registerPieceMaterial("operator_string_list_join");
     public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =
@@ -203,6 +205,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_remove_indices");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_INSERT =
             registerPieceMaterial("operator_list_insert");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SLICE =
+            registerPieceMaterial("operator_list_slice");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_SIZE =
             registerPieceMaterial("operator_list_size");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_EXCLUSION =
