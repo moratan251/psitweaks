@@ -12,7 +12,9 @@ import vazkii.psi.api.spell.SpellGrid;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.client.gui.GuiProgrammer;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public final class EditableStringInputOverlay {
@@ -33,6 +35,8 @@ public final class EditableStringInputOverlay {
     private static final int ACTION_BUTTON_HEIGHT = 14;
     private static final int ACTION_BUTTON_GAP = 4;
     private static final int ACTION_BUTTON_BOTTOM_OFFSET = 28;
+    private static final int MAX_EDIT_HISTORY = 100;
+    private static final long EDIT_GROUP_TIMEOUT_MS = 2_000L;
 
     private static final int OUTER_COLOR = 0xF0100018;
     private static final int BORDER_COLOR = 0xFF7F1ED4;
@@ -54,6 +58,9 @@ public final class EditableStringInputOverlay {
     private static boolean draggingSelection = false;
     private static int scrollLineOffset = 0;
     private static boolean scrollFollowsCursor = true;
+    private static final Deque<EditSnapshot> undoHistory = new ArrayDeque<>();
+    private static final Deque<EditSnapshot> redoHistory = new ArrayDeque<>();
+    private static EditGroup activeEditGroup;
 
     private EditableStringInputOverlay() {
     }
@@ -82,6 +89,7 @@ public final class EditableStringInputOverlay {
             return false;
         }
 
+        endEditGroup();
         PanelLayout layout = layoutFor(screen);
         if (!layout.contains(mouseX, mouseY)) {
             return false;
@@ -145,7 +153,7 @@ public final class EditableStringInputOverlay {
         }
 
         if (!screen.isSpectator()) {
-            replaceSelectionOrInsert(screen, piece, String.valueOf(codePoint), false);
+            replaceSelectionOrInsert(screen, piece, String.valueOf(codePoint), false, EditKind.TYPING);
         }
         return true;
     }
@@ -156,7 +164,22 @@ public final class EditableStringInputOverlay {
             return false;
         }
 
+        if (isUndoShortcut(keyCode)) {
+            if (!screen.isSpectator()) {
+                undo(screen, piece);
+            }
+            return true;
+        }
+
+        if (isRedoShortcut(keyCode)) {
+            if (!screen.isSpectator()) {
+                redo(screen, piece);
+            }
+            return true;
+        }
+
         if (Screen.isSelectAll(keyCode)) {
+            endEditGroup();
             selectAll(piece);
             return true;
         }
@@ -167,13 +190,14 @@ public final class EditableStringInputOverlay {
         }
 
         if (Screen.isCut(keyCode)) {
+            endEditGroup();
             cutSelection(screen, piece);
             return true;
         }
 
         if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
             if (Screen.hasShiftDown()) {
-                replaceSelectionOrInsert(screen, piece, "\n", true);
+                replaceSelectionOrInsert(screen, piece, "\n", true, EditKind.STANDALONE);
             } else {
                 deactivate(screen);
             }
@@ -181,11 +205,13 @@ public final class EditableStringInputOverlay {
         }
 
         if (keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_DOWN) {
+            endEditGroup();
             moveCursorVertically(screen, piece, keyCode == GLFW.GLFW_KEY_UP ? -1 : 1, Screen.hasShiftDown());
             return true;
         }
 
         if (isHorizontalCursorKey(keyCode)) {
+            endEditGroup();
             moveCursorHorizontally(
                     piece,
                     keyCode,
@@ -229,6 +255,7 @@ public final class EditableStringInputOverlay {
             return;
         }
 
+        endEditGroup();
         EditableStringSpellPiece piece = getStringConstant(screen, position.x, position.y);
         if (piece == null) {
             deactivate(screen);
@@ -264,6 +291,7 @@ public final class EditableStringInputOverlay {
         draggingSelection = false;
         scrollLineOffset = 0;
         scrollFollowsCursor = true;
+        resetEditHistory();
     }
 
     private static void activate(EditableStringSpellPiece piece, int x, int y) {
@@ -274,6 +302,7 @@ public final class EditableStringInputOverlay {
         draggingSelection = false;
         scrollLineOffset = 0;
         scrollFollowsCursor = true;
+        resetEditHistory();
         piece.setCursorEditing(true);
         piece.moveCursorTo(activeCursorPosition);
     }
@@ -603,14 +632,24 @@ public final class EditableStringInputOverlay {
             GuiProgrammer screen,
             EditableStringSpellPiece piece,
             String input,
-            boolean consumeWhenUnchanged
+            boolean consumeWhenUnchanged,
+            EditKind requestedEditKind
     ) {
         if (screen.isSpectator()) {
             return true;
         }
 
-        int start = hasSelection() ? selectionStart() : piece.getCursorPosition();
-        int end = hasSelection() ? selectionEnd() : piece.getCursorPosition();
+        boolean replacingSelection = hasSelection();
+        boolean groupableTyping = requestedEditKind == EditKind.TYPING
+                && !replacingSelection
+                && input.length() == 1;
+        if (!groupableTyping) {
+            endEditGroup();
+        }
+
+        int start = replacingSelection ? selectionStart() : piece.getCursorPosition();
+        int end = replacingSelection ? selectionEnd() : piece.getCursorPosition();
+        EditSnapshot before = snapshot(piece);
         if (!piece.replaceRange(start, end, input, false, consumeWhenUnchanged)) {
             return consumeWhenUnchanged;
         }
@@ -620,6 +659,11 @@ public final class EditableStringInputOverlay {
         screen.onSpellChanged(false);
         rememberCursor(piece);
         clearSelection();
+        if (groupableTyping) {
+            recordGroupedEdit(before, piece, EditKind.TYPING, characterGroup(input.charAt(0)));
+        } else {
+            recordStandaloneEdit(before, piece);
+        }
         return true;
     }
 
@@ -628,8 +672,10 @@ public final class EditableStringInputOverlay {
             return false;
         }
 
+        endEditGroup();
         int start = selectionStart();
         int end = selectionEnd();
+        EditSnapshot before = snapshot(piece);
         if (!piece.deleteRange(start, end, false)) {
             return false;
         }
@@ -639,6 +685,7 @@ public final class EditableStringInputOverlay {
         screen.onSpellChanged(false);
         rememberCursor(piece);
         clearSelection();
+        recordStandaloneEdit(before, piece);
         return true;
     }
 
@@ -659,6 +706,7 @@ public final class EditableStringInputOverlay {
             return;
         }
 
+        endEditGroup();
         String sanitized = StringSpellHelper.sanitize(input, StringSpellHelper.MAX_CONSTANT_STRING_LENGTH);
         if (piece.getValue().equals(sanitized)) {
             piece.moveCursorTo(sanitized.length());
@@ -667,11 +715,13 @@ public final class EditableStringInputOverlay {
             return;
         }
 
+        EditSnapshot before = snapshot(piece);
         screen.pushState(true);
         piece.replaceValue(input);
         screen.onSpellChanged(false);
         rememberCursor(piece);
         clearSelection();
+        recordStandaloneEdit(before, piece);
     }
 
     private static boolean handleEditingKey(GuiProgrammer screen, EditableStringSpellPiece piece, int keyCode, int scanCode) {
@@ -680,7 +730,13 @@ public final class EditableStringInputOverlay {
         }
 
         if (Screen.isPaste(keyCode)) {
-            return replaceSelectionOrInsert(screen, piece, Minecraft.getInstance().keyboardHandler.getClipboard(), true);
+            return replaceSelectionOrInsert(
+                    screen,
+                    piece,
+                    Minecraft.getInstance().keyboardHandler.getClipboard(),
+                    true,
+                    EditKind.STANDALONE
+            );
         }
 
         if ((keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE) && hasSelection()) {
@@ -691,11 +747,155 @@ public final class EditableStringInputOverlay {
             return false;
         }
 
+        EditSnapshot before = snapshot(piece);
         screen.pushState(true);
         piece.onKeyPressed(keyCode, scanCode, true);
         screen.onSpellChanged(false);
         rememberCursor(piece);
+        recordGroupedEdit(
+                before,
+                piece,
+                keyCode == GLFW.GLFW_KEY_BACKSPACE ? EditKind.BACKSPACE : EditKind.DELETE,
+                CharacterGroup.NONE
+        );
         return true;
+    }
+
+    private static boolean isUndoShortcut(int keyCode) {
+        return keyCode == GLFW.GLFW_KEY_Z && Screen.hasControlDown();
+    }
+
+    private static boolean isRedoShortcut(int keyCode) {
+        return keyCode == GLFW.GLFW_KEY_Y && Screen.hasControlDown();
+    }
+
+    private static void undo(GuiProgrammer screen, EditableStringSpellPiece piece) {
+        endEditGroup();
+        if (undoHistory.isEmpty()) {
+            return;
+        }
+
+        EditSnapshot current = snapshot(piece);
+        EditSnapshot target = undoHistory.removeLast();
+        addHistoryEntry(redoHistory, current);
+        applyHistorySnapshot(screen, piece, target);
+    }
+
+    private static void redo(GuiProgrammer screen, EditableStringSpellPiece piece) {
+        endEditGroup();
+        if (redoHistory.isEmpty()) {
+            return;
+        }
+
+        EditSnapshot current = snapshot(piece);
+        EditSnapshot target = redoHistory.removeLast();
+        addHistoryEntry(undoHistory, current);
+        applyHistorySnapshot(screen, piece, target);
+    }
+
+    private static void applyHistorySnapshot(
+            GuiProgrammer screen,
+            EditableStringSpellPiece piece,
+            EditSnapshot snapshot
+    ) {
+        screen.pushState(true);
+        piece.replaceValue(snapshot.value);
+        piece.moveCursorTo(snapshot.cursorPosition);
+        activeCursorPosition = piece.getCursorPosition();
+        selectionAnchor = snapshot.selectionAnchor < 0
+                ? -1
+                : Math.max(0, Math.min(snapshot.selectionAnchor, piece.getValue().length()));
+        if (selectionAnchor == activeCursorPosition) {
+            clearSelection();
+        }
+        draggingSelection = false;
+        scrollFollowsCursor = true;
+        screen.onSpellChanged(false);
+    }
+
+    private static EditSnapshot snapshot(EditableStringSpellPiece piece) {
+        String value = piece.getValue();
+        int cursorPosition = Math.max(0, Math.min(piece.getCursorPosition(), value.length()));
+        int anchor = selectionAnchor < 0
+                ? -1
+                : Math.max(0, Math.min(selectionAnchor, value.length()));
+        if (anchor == cursorPosition) {
+            anchor = -1;
+        }
+        return new EditSnapshot(value, cursorPosition, anchor);
+    }
+
+    private static void recordGroupedEdit(
+            EditSnapshot before,
+            EditableStringSpellPiece piece,
+            EditKind editKind,
+            CharacterGroup characterGroup
+    ) {
+        if (before.value.equals(piece.getValue())) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        if (!continuesEditGroup(before, editKind, characterGroup, now)) {
+            addHistoryEntry(undoHistory, before);
+        }
+        redoHistory.clear();
+        activeEditGroup = new EditGroup(editKind, characterGroup, piece.getCursorPosition(), now);
+    }
+
+    private static void recordStandaloneEdit(EditSnapshot before, EditableStringSpellPiece piece) {
+        endEditGroup();
+        if (before.value.equals(piece.getValue())) {
+            return;
+        }
+
+        addHistoryEntry(undoHistory, before);
+        redoHistory.clear();
+    }
+
+    private static boolean continuesEditGroup(
+            EditSnapshot before,
+            EditKind editKind,
+            CharacterGroup characterGroup,
+            long now
+    ) {
+        if (activeEditGroup == null || before.selectionAnchor >= 0) {
+            return false;
+        }
+
+        long elapsed = now - activeEditGroup.lastEditTime;
+        return elapsed >= 0L
+                && elapsed <= EDIT_GROUP_TIMEOUT_MS
+                && activeEditGroup.editKind == editKind
+                && activeEditGroup.characterGroup == characterGroup
+                && activeEditGroup.nextCursorPosition == before.cursorPosition;
+    }
+
+    private static CharacterGroup characterGroup(char character) {
+        if (Character.isLetterOrDigit(character)) {
+            return CharacterGroup.WORD;
+        }
+        if (Character.isWhitespace(character)) {
+            return CharacterGroup.WHITESPACE;
+        }
+        return CharacterGroup.SYMBOL;
+    }
+
+    private static void endEditGroup() {
+        activeEditGroup = null;
+    }
+
+    private static void addHistoryEntry(Deque<EditSnapshot> history, EditSnapshot snapshot) {
+        history.addLast(snapshot);
+        while (history.size() > MAX_EDIT_HISTORY) {
+            history.removeFirst();
+        }
+    }
+
+    private static void resetEditHistory() {
+        undoHistory.clear();
+        redoHistory.clear();
+        endEditGroup();
     }
 
     private static boolean isContentEditingKey(int keyCode) {
@@ -880,6 +1080,31 @@ public final class EditableStringInputOverlay {
     }
 
     private record TextLine(int start, int end, String text) {
+    }
+
+    private record EditSnapshot(String value, int cursorPosition, int selectionAnchor) {
+    }
+
+    private record EditGroup(
+            EditKind editKind,
+            CharacterGroup characterGroup,
+            int nextCursorPosition,
+            long lastEditTime
+    ) {
+    }
+
+    private enum EditKind {
+        TYPING,
+        BACKSPACE,
+        DELETE,
+        STANDALONE
+    }
+
+    private enum CharacterGroup {
+        WORD,
+        WHITESPACE,
+        SYMBOL,
+        NONE
     }
 
     private enum ActionButton {
