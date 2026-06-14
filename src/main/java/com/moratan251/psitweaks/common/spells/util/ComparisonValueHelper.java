@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.wrapper.EntityListWrapper;
 
@@ -36,7 +35,7 @@ public final class ComparisonValueHelper {
             return leftVector.equals(rightVector);
         }
         if (left instanceof SpellItemValue leftItem && right instanceof SpellItemValue rightItem) {
-            return itemEquals(leftItem, rightItem);
+            return SpellItemValue.equivalent(leftItem, rightItem);
         }
         if (left instanceof StringListWrapper leftList && right instanceof StringListWrapper rightList) {
             return leftList.asList().equals(rightList.asList());
@@ -59,13 +58,6 @@ public final class ComparisonValueHelper {
         return Objects.equals(left, right);
     }
 
-    private static boolean itemEquals(SpellItemValue left, SpellItemValue right) {
-        if (left.isEmpty() || right.isEmpty()) {
-            return left.isEmpty() && right.isEmpty();
-        }
-        return left.source().equals(right.source()) && ItemStack.matches(left.copyStack(), right.copyStack());
-    }
-
     private static boolean blockEquals(BlockValue left, BlockValue right) {
         return Objects.equals(left.dimension(), right.dimension())
                 && Objects.equals(left.blockPos(), right.blockPos())
@@ -77,7 +69,7 @@ public final class ComparisonValueHelper {
             return false;
         }
         for (int i = 0; i < left.size(); i++) {
-            if (!itemEquals(left.get(i), right.get(i))) {
+            if (!SpellItemValue.equivalent(left.get(i), right.get(i))) {
                 return false;
             }
         }

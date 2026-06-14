@@ -6,19 +6,12 @@ import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +25,6 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 
 public final class DisplayNameTargetHelper {
     private static final String ENGLISH = "en_us";
-    private static final Map<LangResourceKey, Map<String, String>> TRANSLATIONS = new ConcurrentHashMap<>();
 
     private DisplayNameTargetHelper() {
     }
@@ -193,30 +185,7 @@ public final class DisplayNameTargetHelper {
     }
 
     private static String translation(String namespace, String language, String key) {
-        LangResourceKey resourceKey = new LangResourceKey(namespace, language);
-        return TRANSLATIONS.computeIfAbsent(resourceKey, DisplayNameTargetHelper::loadTranslations).get(key);
-    }
-
-    private static Map<String, String> loadTranslations(LangResourceKey key) {
-        String path = "assets/" + key.namespace() + "/lang/" + key.language() + ".json";
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null) {
-            classLoader = DisplayNameTargetHelper.class.getClassLoader();
-        }
-
-        Map<String, String> translations = new HashMap<>();
-        try {
-            Enumeration<URL> resources = classLoader.getResources(path);
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                try (InputStream stream = resource.openStream()) {
-                    Language.loadFromJson(stream, translations::put);
-                } catch (IOException ignored) {
-                }
-            }
-        } catch (IOException ignored) {
-        }
-        return translations.isEmpty() ? Map.of() : Map.copyOf(translations);
+        return DisplayNameTranslationRepository.getTranslation(namespace, language, key);
     }
 
     private static String languageCode(SpellContext context) {
@@ -250,6 +219,4 @@ public final class DisplayNameTargetHelper {
         };
     }
 
-    private record LangResourceKey(String namespace, String language) {
-    }
 }

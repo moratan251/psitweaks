@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.world.item.ItemStack;
 
 public final class SpellItemListWrapper implements Iterable<SpellItemValue>, PsitweaksListLike {
     public static final SpellItemListWrapper EMPTY = new SpellItemListWrapper(List.of());
@@ -60,17 +59,10 @@ public final class SpellItemListWrapper implements Iterable<SpellItemValue>, Psi
 
     private static boolean containsEquivalent(List<SpellItemValue> values, SpellItemValue candidate) {
         for (SpellItemValue value : values) {
-            if (isEquivalent(value, candidate)) {
+            if (SpellItemValue.equivalent(value, candidate)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static boolean isEquivalent(SpellItemValue left, SpellItemValue right) {
-        if (left.source().isPresent() || right.source().isPresent()) {
-            return left.source().equals(right.source());
-        }
-        return ItemStack.matches(left.copyStack(), right.copyStack());
     }
 }

@@ -44,6 +44,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
+import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismDataMapProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
@@ -123,8 +124,11 @@ public class Psitweaks {
             PsitweaksClientSpells.register(modEventBus);
             PsitweaksClientModels.register(modEventBus);
             MaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
+            DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
             PsitweaksClientGuiEvents.register(NeoForge.EVENT_BUS);
+        } else {
+            DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
 
         PsitweaksMekanismBlocks.register(modEventBus);

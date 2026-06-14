@@ -262,6 +262,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Paste";
         });
         addPsitweaksCategoryBook(root);
+        addProgrammingConceptsBook(root);
         addMachineTranslations(root);
         addSpellUnlockMessages(root);
         addCadDisassembler(root);
@@ -704,6 +705,66 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_cad_and_gear.3", switch (locale) {
             case "ja_jp" -> "$(thing)PsiTweaks$(0) はCAD素材として, $(l:components/psitweaks_alloy_psion)サイオニック合金$(/l), $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の5系統を追加します.$(p)サイオニック合金CADは効率が非常に優れる一方で, 規模は非常に小さいCADです. 他のCAD素体は, 後半の素材ほど効率と規模が相応に強化されています.";
             default -> "$(thing)PsiTweaks$(0) adds five CAD material lines: $(l:components/psitweaks_alloy_psion)Psionic Alloy$(/l), $(l:components/psitweaks_chaotic_psimetal)Chaotic Psimetal$(/l), $(l:components/psitweaks_flashmetal)Flashmetal$(/l), $(l:components/psitweaks_heavy_psimetal)Heavy Psimetal$(/l), and $(l:components/psitweaks_psycheonic_metal_ingot)Psycheonic Metal$(/l).$(p)Psionic Alloy CADs have excellent Efficiency but very small Potency. The other CAD assemblies improve in Efficiency and Potency as their materials move into later progression.";
+        });
+    }
+
+    private void addProgrammingConceptsBook(JsonObject root) {
+        addLocalized(root, "psi.book.entry.psitweaks_programming_types",
+                "Types Added by PsiTweaks",
+                "PsiTweaks 追加の型");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.0",
+                "$(thing)PsiTweaks$(0) adds new value types to Psi spell programming. The main additions are String, Block, and Item.$(p)These types allow spells to work with text, block information, and item information.",
+                "$(thing)PsiTweaks$(0) は, Psi のスペルプログラミングに新しい型を追加します. 主な追加型は String, Block, Item です.$(p)これらの型を使うことで, 文字列, ブロック情報, アイテム情報をスペル内で扱えるようになります.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.1",
+                "String is the type used for text. It can hold IDs, names, NBT paths, search conditions, and messages for display.$(p)For example, a spell can obtain a block or item ID as a String and test whether it matches a particular ID.",
+                "String 型は文字列を扱うための型です. ID, 名前, NBTパス, 検索条件, 表示用メッセージなどをスペル内で扱うために使用します.$(p)例えば, ブロックやアイテムのIDを String として取得し, 特定のIDと一致するかを調べることができます.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.2",
+                "Block represents a block in the world. It provides information such as position, dimension, block state, registry ID, tags, and display name.$(p)A Vector represents coordinates, while a Block represents information about the block at those coordinates.",
+                "Block 型はワールド上のブロックを扱うための型です. ブロックの座標, ディメンション, ブロック状態, レジストリID, タグ, 表示名などの情報を扱えます.$(p)Vector が「座標」を表すのに対し, Block は「その座標に存在するブロックの情報」を表します.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.3",
+                "Because both relate to positions, many inputs convert Block and Vector automatically.$(p)A Block connected to a Vector input uses its position. A Vector connected to a Block input reads the block at that position when the spell runs.$(p)Any inputs, such as Operator: To String, preserve the original type.",
+                "Block と Vector はどちらも座標に関係するため, 多くの入力で自動変換されます.$(p)Block を Vector 入力へ接続すると座標として扱われます. Vector を Block 入力へ接続すると, 実行時にその座標のブロックを読み取ります.$(p)演算子: 文字列へ変換 などの Any 入力では, 元の型がそのまま扱われます.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.4",
+                "Item represents an ItemStack. It is used to inspect item type, stack count, NBT, display name, and similar data.$(p)Item values can be obtained from held items, selected inventory slots, or inventories inside blocks.",
+                "Item 型は ItemStack を扱うための型です. アイテムの種類, 個数, NBT, 表示名などを調べるために使用します.$(p)Item 型は, 手に持っているアイテム, 指定スロットのアイテム, ブロック内部のインベントリにあるアイテムなどから取得できます.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.5",
+                "PsiTweaks divides values into Plain Values and Contextual Values.$(p)Plain Values do not depend on world state, such as Number, Vector, and String.$(p)Contextual Values depend on a world or target context, such as Entity, Block, and Item.",
+                "PsiTweaks の値は Plain Value と Contextual Value に分けられます.$(p)Plain Value はワールドの状態に依存しない値で, Number, Vector, String などが該当します.$(p)Contextual Value はワールドや対象に依存する値で, Entity, Block, Item などが該当します.");
+
+        addLocalized(root, "psi.book.entry.psitweaks_lists",
+                "About Lists",
+                "List について");
+        addLocalized(root, "psi.book.page.psitweaks_lists.0",
+                "Psi often uses Entity List. PsiTweaks also allows lists of values other than Entity.$(p)The main additional list types are String List, Number List, Vector List, Item List, and Block List.",
+                "Psi では Entity List がよく使われますが, PsiTweaks では Entity 以外のリストも扱えるようになります.$(p)追加される主なリストには, String List, Number List, Vector List, Item List, Block List があります.");
+        addLocalized(root, "psi.book.page.psitweaks_lists.1",
+                "A List groups multiple values of the same type.$(p)For example, multiple strings can be handled as a String List, while multiple items can be handled as an Item List.$(p)This makes searching, filtering, comparing, and counting multiple targets easier within a spell.",
+                "List は同じ種類の値を複数まとめて扱うための型です.$(p)例えば, 複数の文字列を String List として扱ったり, 複数のアイテムを Item List として扱ったりできます.$(p)これにより, 複数対象の検索, 抽出, 比較, 集計などをスペル内で行いやすくなります.");
+        addLocalized(root, "psi.book.page.psitweaks_lists.2",
+                "PsiTweaks adds operators for working with Lists.$(p)They can retrieve elements or list size, add, remove, insert, slice, search, exclude, intersect, and concatenate values.$(p)List operations make it easier to build spells that process several targets together.",
+                "PsiTweaks には List を操作するための演算子が追加されています.$(p)要素の取得, 要素数の取得, 追加, 削除, 挿入, 切り取り, 検索, 除外, 交差, 結合などを行えます.$(p)List 操作を使うことで, 複数の対象をまとめて処理するスペルを作りやすくなります.");
+
+        addLocalized(root, "psi.book.entry.psitweaks_mode_selection",
+                "Mode-Selectable Spell Pieces",
+                "モード選択スペルピース");
+        addLocalized(root, "psi.book.page.psitweaks_mode_selection.0",
+                "Some PsiTweaks spell pieces support mode selection.$(p)A mode-selectable spell piece can switch the type it handles without changing to a different piece.",
+                "一部の PsiTweaks のスペルピースには, モード選択機能があります.$(p)モード選択に対応したスペルピースは, 同じピースでも扱う型を切り替えることができます.");
+        addLocalized(root, "psi.book.page.psitweaks_mode_selection.1",
+                "For example, List operators can switch between String List, Number List, Vector List, Item List, and Block List.$(p)The selected mode changes the input and output types of operations such as Add to List and List Concatenation.",
+                "例えば List 操作系のスペルピースでは, String List, Number List, Vector List, Item List, Block List などをモードで切り替えて使用します.$(p)同じ「リストへ追加」や「リスト結合」でも, 選択しているモードによって入力と出力の型が変わります.");
+        addLocalized(root, "psi.book.page.psitweaks_mode_selection.2",
+                "To choose a mode, left-click the spell piece in the Spell Programmer.$(p)The current mode appears on the piece and in its tooltip. If a connection fails, check that the piece mode matches the type of the connected value.",
+                "モードは Spell Programmer 上で対象のピースを左クリックして選択します.$(p)現在のモードはピース上の表示やツールチップで確認できます. 接続できない場合は, ピースのモードと接続先の型が一致しているか確認してください.");
+        addLocalized(root, "psi.book.page.psitweaks_mode_selection.3",
+                "A mode-selectable spell piece can have a different meaning in each mode even though its icon is unchanged.$(p)This matters especially for Lists, because values such as String List and Item List behave differently. Check the current mode before connecting the piece.",
+                "モード選択スペルピースでは, 同じ見た目のピースでもモードによって意味が変わります.$(p)特に List 系では, String List と Item List のように扱う値の性質が大きく異なります. スペルを組むときは, 現在のモードを確認してから接続してください.");
+    }
+
+    private void addLocalized(JsonObject root, String key, String enUs, String jaJp) {
+        root.addProperty(key, switch (locale) {
+            case "ja_jp" -> jaJp;
+            default -> enUs;
         });
     }
 

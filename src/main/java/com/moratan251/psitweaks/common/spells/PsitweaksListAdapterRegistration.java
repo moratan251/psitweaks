@@ -27,7 +27,6 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -413,7 +412,7 @@ public final class PsitweaksListAdapterRegistration {
 
     private static boolean removeEquivalentItem(List<SpellItemValue> values, SpellItemValue target) {
         for (int i = 0; i < values.size(); i++) {
-            if (isEquivalentItem(values.get(i), target)) {
+            if (SpellItemValue.equivalent(values.get(i), target)) {
                 values.remove(i);
                 return true;
             }
@@ -423,18 +422,11 @@ public final class PsitweaksListAdapterRegistration {
 
     private static boolean containsEquivalentItem(List<SpellItemValue> values, SpellItemValue target) {
         for (SpellItemValue value : values) {
-            if (isEquivalentItem(value, target)) {
+            if (SpellItemValue.equivalent(value, target)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static boolean isEquivalentItem(SpellItemValue left, SpellItemValue right) {
-        if (left.source().isPresent() || right.source().isPresent()) {
-            return left.source().equals(right.source());
-        }
-        return ItemStack.matches(left.copyStack(), right.copyStack());
     }
 
     private static boolean removeEquivalentBlock(List<BlockValue> values, BlockValue target) {

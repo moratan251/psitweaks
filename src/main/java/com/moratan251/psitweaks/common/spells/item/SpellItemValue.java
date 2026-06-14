@@ -42,6 +42,23 @@ public record SpellItemValue(ItemStack snapshot, Optional<ItemSourceRef> source)
         return snapshot.isEmpty();
     }
 
+    /**
+     * Compares Item values using the spell-level contract shared by operators and list operations.
+     */
+    public static boolean equivalent(SpellItemValue left, SpellItemValue right) {
+        if (left == right) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.isEmpty() || right.isEmpty()) {
+            return left.isEmpty() && right.isEmpty();
+        }
+        return left.source().equals(right.source())
+                && ItemStack.matches(left.snapshot, right.snapshot);
+    }
+
     @Override
     public Optional<CompoundTag> getNbt(SpellContext context) {
         if (context == null || context.focalPoint == null || snapshot.isEmpty()) {

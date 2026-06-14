@@ -1,0 +1,25 @@
+{
+  "name": "psi.book.entry.psitweaks_mode_selection",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:textures/spell/operator_list_add.png",
+  "sortnum": -10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_mode_selection.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_mode_selection.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_mode_selection.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_mode_selection.3"
+    }
+  ]
+}
+
