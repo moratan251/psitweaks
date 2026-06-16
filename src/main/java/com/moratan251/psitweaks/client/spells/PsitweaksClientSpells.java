@@ -195,6 +195,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_string_length");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_REPLACE =
             registerPieceMaterial("operator_string_replace");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_TRIM =
+            registerPieceMaterial("operator_string_trim");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_JOIN =
             registerPieceMaterial("operator_string_list_join");
     public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =

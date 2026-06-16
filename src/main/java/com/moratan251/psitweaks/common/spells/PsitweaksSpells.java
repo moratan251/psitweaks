@@ -202,6 +202,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_string_length", PieceOperatorStringLength.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringReplace>> OPERATOR_STRING_REPLACE =
             registerPiece("operator_string_replace", PieceOperatorStringReplace.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringTrim>> OPERATOR_STRING_TRIM =
+            registerPiece("operator_string_trim", PieceOperatorStringTrim.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringListJoin>> OPERATOR_STRING_LIST_JOIN =
             registerPiece("operator_string_list_join", PieceOperatorStringListJoin.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorPlayerName>> OPERATOR_PLAYER_NAME =
@@ -362,6 +364,7 @@ public final class PsitweaksSpells {
                     PieceOperatorStringSlice.class,
                     PieceOperatorStringLength.class,
                     PieceOperatorStringReplace.class,
+                    PieceOperatorStringTrim.class,
                     PieceOperatorStringListJoin.class,
                     PieceOperatorPlayerName.class,
                     PieceOperatorListSearch.class,
