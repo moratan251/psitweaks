@@ -172,7 +172,7 @@ public final class PsitweaksClientSpells {
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =
             registerPieceMaterial("selector_internal_items");
     public static final DeferredHolder<Material, Material> SELECTOR_INDEXED_ELEMENT =
-            registerPieceMaterial("selector_indexed_element", "psi", "operator_list_index");
+            registerPieceMaterial("selector_indexed_element", "operator_list_index");
     public static final DeferredHolder<Material, Material> SELECTOR_NBT =
             registerPieceMaterial("selector_nbt");
     public static final DeferredHolder<Material, Material> SELECTOR_NBT_KEYS =
@@ -206,7 +206,7 @@ public final class PsitweaksClientSpells {
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_SEARCH_EXCLUDE =
             registerPieceMaterial("operator_list_search_exclude");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
-            registerPieceMaterial("operator_random_element", "operator_random_string");
+            registerPieceMaterial("operator_random_element");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =
             registerPieceMaterial("operator_list_add");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE =
