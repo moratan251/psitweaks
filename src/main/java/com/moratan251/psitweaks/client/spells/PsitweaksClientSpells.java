@@ -181,6 +181,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_nbt_value");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_PARTIAL_MATCH =
             registerPieceMaterial("operator_string_partial_match");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_STARTS_WITH =
+            registerPieceMaterial("operator_string_starts_with");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_ENDS_WITH =
+            registerPieceMaterial("operator_string_ends_with");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_CONCAT =
             registerPieceMaterial("operator_string_concat");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_SPLIT =

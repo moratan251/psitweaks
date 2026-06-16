@@ -188,6 +188,10 @@ public final class PsitweaksSpells {
             registerPiece("selector_nbt_value", PieceSelectorNbtValue.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringPartialMatch>> OPERATOR_STRING_PARTIAL_MATCH =
             registerPiece("operator_string_partial_match", PieceOperatorStringPartialMatch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringStartsWith>> OPERATOR_STRING_STARTS_WITH =
+            registerPiece("operator_string_starts_with", PieceOperatorStringStartsWith.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringEndsWith>> OPERATOR_STRING_ENDS_WITH =
+            registerPiece("operator_string_ends_with", PieceOperatorStringEndsWith.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringConcat>> OPERATOR_STRING_CONCAT =
             registerPiece("operator_string_concat", PieceOperatorStringConcat.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringSplit>> OPERATOR_STRING_SPLIT =
@@ -351,6 +355,8 @@ public final class PsitweaksSpells {
                     PieceSelectorNbtValue.class,
                     PieceOperatorTagList.class,
                     PieceOperatorStringPartialMatch.class,
+                    PieceOperatorStringStartsWith.class,
+                    PieceOperatorStringEndsWith.class,
                     PieceOperatorStringConcat.class,
                     PieceOperatorStringSplit.class,
                     PieceOperatorStringSlice.class,
