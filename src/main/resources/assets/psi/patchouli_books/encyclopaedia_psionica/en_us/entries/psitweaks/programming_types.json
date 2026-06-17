@@ -1,0 +1,33 @@
+{
+  "name": "psi.book.entry.psitweaks_programming_types",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:textures/spell/selector_block.png",
+  "sortnum": -30,
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_programming_types.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_programming_types.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_programming_types.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_programming_types.3"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_programming_types.4"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_programming_types.5"
+    }
+  ]
+}
+

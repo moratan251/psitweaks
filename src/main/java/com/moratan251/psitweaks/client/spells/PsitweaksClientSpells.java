@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.client.spells;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -33,6 +34,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_store_entity");
     public static final DeferredHolder<Material, Material> SELECTOR_STORED_ENTITY =
             registerPieceMaterial("selector_stored_entity");
+    public static final DeferredHolder<Material, Material> TRICK_STORE_VALUE =
+            registerPieceMaterial("trick_store_value");
+    public static final DeferredHolder<Material, Material> SELECTOR_STORED_VALUE =
+            registerPieceMaterial("selector_stored_value");
     public static final DeferredHolder<Material, Material> SELECTOR_NEARBY_SPELLGRAM =
             registerPieceMaterial("selector_nearby_spellgram");
     public static final DeferredHolder<Material, Material> TRICK_DISPEL =
@@ -73,6 +78,12 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_set_spellgram_follow_target");
     public static final DeferredHolder<Material, Material> TRICK_DIE_FLEX =
             registerPieceMaterial("trick_die_flex");
+    public static final DeferredHolder<Material, Material> TRICK_JUMP =
+            registerPieceMaterial("trick_jump");
+    public static final DeferredHolder<Material, Material> TRICK_SWITCH =
+            registerPieceMaterial("trick_switch");
+    public static final DeferredHolder<Material, Material> JUMP_ANCHOR =
+            registerPieceMaterial("jump_anchor");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =
             registerPieceMaterial("trick_radiation_injection");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_FILTER =
@@ -98,6 +109,134 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_cosh");
     public static final DeferredHolder<Material, Material> OPERATOR_TANH =
             registerPieceMaterial("operator_tanh");
+    public static final DeferredHolder<Material, Material> OPERATOR_GREATER_THAN =
+            registerPieceMaterial("operator_greater_than");
+    public static final DeferredHolder<Material, Material> OPERATOR_GREATER_THAN_OR_EQUAL =
+            registerPieceMaterial("operator_greater_than_or_equal");
+    public static final DeferredHolder<Material, Material> OPERATOR_EQUAL =
+            registerPieceMaterial("operator_equal");
+    public static final DeferredHolder<Material, Material> CONSTANT_STRING =
+            registerPieceMaterial("constant_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_FORMAT_STRING =
+            registerPieceMaterial("operator_format_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_FROM_STRING =
+            registerPieceMaterial("operator_from_string", "operator_from_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_FROM_STRING_LIST =
+            registerPieceMaterial("operator_list_from_string_list", "operator_list_from_string_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_LIST_TO_VECTOR =
+            registerPieceMaterial("operator_number_list_to_vector");
+    public static final DeferredHolder<Material, Material> OPERATOR_VECTOR_TO_NUMBER_LIST =
+            registerPieceMaterial("operator_vector_to_number_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_TO_STRING =
+            registerPieceMaterial("operator_to_string", "operator_to_string");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_TO_STRING_LIST =
+            registerPieceMaterial("operator_list_to_string_list", "operator_list_to_string_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_GET_ID =
+            registerPieceMaterial("operator_get_id");
+    public static final DeferredHolder<Material, Material> OPERATOR_GET_ID_LIST =
+            registerPieceMaterial("operator_get_id_list");
+    public static final DeferredHolder<Material, Material> SELECTOR_DISPLAY_NAME =
+            registerPieceMaterial("selector_display_name");
+    public static final DeferredHolder<Material, Material> SELECTOR_DISPLAY_NAME_LIST =
+            registerPieceMaterial("selector_display_name_list");
+    public static final DeferredHolder<Material, Material> SELECTOR_BLOCK =
+            registerPieceMaterial("selector_block");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE =
+            registerPieceMaterial("operator_block_state");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_VALUE =
+            registerPieceMaterial("operator_block_state_value");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_ENTRIES =
+            registerPieceMaterial("operator_block_state_entries");
+    public static final DeferredHolder<Material, Material> OPERATOR_TAG_LIST =
+            registerPieceMaterial("operator_tag_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_POSITION =
+            registerPieceMaterial("operator_block_position");
+    public static final DeferredHolder<Material, Material> SELECTOR_ONLINE_PLAYERS =
+            registerPieceMaterial("selector_online_players");
+    public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEM =
+            registerPieceMaterial("selector_held_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_SELECTED_SLOT_ITEM =
+            registerPieceMaterial("selector_selected_slot_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_ENTITY_SLOT_ITEM =
+            registerPieceMaterial("selector_entity_slot_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_SLOT_ITEM =
+            registerPieceMaterial("selector_internal_slot_item");
+    public static final DeferredHolder<Material, Material> OPERATOR_ITEM_COUNT =
+            registerPieceMaterial("operator_item_count");
+    public static final DeferredHolder<Material, Material> OPERATOR_ITEM_SLOT =
+            registerPieceMaterial("operator_item_slot");
+    public static final DeferredHolder<Material, Material> OPERATOR_ITEM_TOTAL_COUNT =
+            registerPieceMaterial("operator_item_total_count");
+    public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
+            registerPieceMaterial("selector_held_items");
+    public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =
+            registerPieceMaterial("selector_internal_items");
+    public static final DeferredHolder<Material, Material> SELECTOR_INDEXED_ELEMENT =
+            registerPieceMaterial("selector_indexed_element", "operator_list_index");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT =
+            registerPieceMaterial("selector_nbt");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT_KEYS =
+            registerPieceMaterial("selector_nbt_keys");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT_VALUE =
+            registerPieceMaterial("selector_nbt_value");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_PARTIAL_MATCH =
+            registerPieceMaterial("operator_string_partial_match");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_STARTS_WITH =
+            registerPieceMaterial("operator_string_starts_with");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_ENDS_WITH =
+            registerPieceMaterial("operator_string_ends_with");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_CONCAT =
+            registerPieceMaterial("operator_string_concat");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_SPLIT =
+            registerPieceMaterial("operator_string_split");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_SLICE =
+            registerPieceMaterial("operator_string_slice");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LENGTH =
+            registerPieceMaterial("operator_string_length");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_REPLACE =
+            registerPieceMaterial("operator_string_replace");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_TRIM =
+            registerPieceMaterial("operator_string_trim");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRING_LIST_JOIN =
+            registerPieceMaterial("operator_string_list_join");
+    public static final DeferredHolder<Material, Material> OPERATOR_PLAYER_NAME =
+            registerPieceMaterial("operator_player_name");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SEARCH =
+            registerPieceMaterial("operator_list_search");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SEARCH_EXCLUDE =
+            registerPieceMaterial("operator_list_search_exclude");
+    public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
+            registerPieceMaterial("operator_random_element");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =
+            registerPieceMaterial("operator_list_add");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE =
+            registerPieceMaterial("operator_list_remove");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE_INDICES =
+            registerPieceMaterial("operator_list_remove_indices");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_INSERT =
+            registerPieceMaterial("operator_list_insert");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SLICE =
+            registerPieceMaterial("operator_list_slice");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SIZE =
+            registerPieceMaterial("operator_list_size");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_EXCLUSION =
+            registerPieceMaterial("operator_list_exclusion");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_INTERSECTION =
+            registerPieceMaterial("operator_list_intersection");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_CONCATENATION =
+            registerPieceMaterial("operator_list_concatenation");
+    public static final DeferredHolder<Material, Material> MODE_STRING =
+            registerPieceMaterial("mode/string");
+    public static final DeferredHolder<Material, Material> MODE_NUMBER =
+            registerPieceMaterial("mode/number");
+    public static final DeferredHolder<Material, Material> MODE_VECTOR =
+            registerPieceMaterial("mode/vector");
+    public static final DeferredHolder<Material, Material> MODE_ENTITY =
+            registerPieceMaterial("mode/entity");
+    public static final DeferredHolder<Material, Material> MODE_ITEM =
+            registerPieceMaterial("mode/item");
+    public static final DeferredHolder<Material, Material> MODE_BLOCK =
+            registerPieceMaterial("mode/block");
 
     private PsitweaksClientSpells() {
     }
@@ -107,7 +246,18 @@ public final class PsitweaksClientSpells {
     }
 
     private static DeferredHolder<Material, Material> registerPieceMaterial(String id) {
+        return registerPieceMaterial(id, id);
+    }
+
+    private static DeferredHolder<Material, Material> registerPieceMaterial(String id, String textureId) {
         return SPELL_PIECE_MATERIALS.register(id,
-                () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/" + id)));
+                () -> new Material(InventoryMenu.BLOCK_ATLAS, Psitweaks.location("spell/" + textureId)));
+    }
+
+    private static DeferredHolder<Material, Material> registerPieceMaterial(String id, String textureNamespace,
+            String textureId) {
+        return SPELL_PIECE_MATERIALS.register(id,
+                () -> new Material(InventoryMenu.BLOCK_ATLAS,
+                        ResourceLocation.fromNamespaceAndPath(textureNamespace, "spell/" + textureId)));
     }
 }

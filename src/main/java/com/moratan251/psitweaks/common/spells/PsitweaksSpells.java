@@ -2,7 +2,11 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
-import com.moratan251.psitweaks.common.spells.operator.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.etc.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
 import java.util.Collection;
 import java.util.List;
 import net.neoforged.bus.api.IEventBus;
@@ -37,6 +41,10 @@ public final class PsitweaksSpells {
             registerPiece("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorStoredEntity>> SELECTOR_STORED_ENTITY =
             registerPiece("selector_stored_entity", PieceSelectorStoredEntity.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickStoreValue>> TRICK_STORE_VALUE =
+            registerPiece("trick_store_value", PieceTrickStoreValue.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorStoredValue>> SELECTOR_STORED_VALUE =
+            registerPiece("selector_stored_value", PieceSelectorStoredValue.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNearbySpellGram>> SELECTOR_NEARBY_SPELLGRAM =
             registerPiece("selector_nearby_spellgram", PieceSelectorNearbySpellGram.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickDispel>> TRICK_DISPEL =
@@ -77,6 +85,12 @@ public final class PsitweaksSpells {
             registerPiece("trick_set_spellgram_follow_target", PieceTrickSetSpellGramFollowTarget.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickDieFlex>> TRICK_DIE_FLEX =
             registerPiece("trick_die_flex", PieceTrickDieFlex.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickJump>> TRICK_JUMP =
+            registerPiece("trick_jump", PieceTrickJump.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSwitch>> TRICK_SWITCH =
+            registerPiece("trick_switch", PieceTrickSwitch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceJumpAnchor>> JUMP_ANCHOR =
+            registerPiece("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationInjection>> TRICK_RADIATION_INJECTION =
             registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationFilter>> TRICK_RADIATION_FILTER =
@@ -102,6 +116,122 @@ public final class PsitweaksSpells {
             registerPiece("operator_cosh", PieceOperatorCosh.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorTanh>> OPERATOR_TANH =
             registerPiece("operator_tanh", PieceOperatorTanh.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorGreaterThan>> OPERATOR_GREATER_THAN =
+            registerPiece("operator_greater_than", PieceOperatorGreaterThan.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorGreaterThanOrEqual>> OPERATOR_GREATER_THAN_OR_EQUAL =
+            registerPiece("operator_greater_than_or_equal", PieceOperatorGreaterThanOrEqual.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorEqual>> OPERATOR_EQUAL =
+            registerPiece("operator_equal", PieceOperatorEqual.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceConstantString>> CONSTANT_STRING =
+            registerPiece("constant_string", PieceConstantString.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorFormatString>> OPERATOR_FORMAT_STRING =
+            registerPiece("operator_format_string", PieceOperatorFormatString.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorFromString>> OPERATOR_FROM_STRING =
+            registerPiece("operator_from_string", PieceOperatorFromString.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListFromStringList>> OPERATOR_LIST_FROM_STRING_LIST =
+            registerPiece("operator_list_from_string_list", PieceOperatorListFromStringList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorNumberListToVector>> OPERATOR_NUMBER_LIST_TO_VECTOR =
+            registerPiece("operator_number_list_to_vector", PieceOperatorNumberListToVector.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorVectorToNumberList>> OPERATOR_VECTOR_TO_NUMBER_LIST =
+            registerPiece("operator_vector_to_number_list", PieceOperatorVectorToNumberList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorToString>> OPERATOR_TO_STRING =
+            registerPiece("operator_to_string", PieceOperatorToString.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListToStringList>> OPERATOR_LIST_TO_STRING_LIST =
+            registerPiece("operator_list_to_string_list", PieceOperatorListToStringList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorGetId>> OPERATOR_GET_ID =
+            registerPiece("operator_get_id", PieceOperatorGetId.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorGetIdList>> OPERATOR_GET_ID_LIST =
+            registerPiece("operator_get_id_list", PieceOperatorGetIdList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorDisplayName>> SELECTOR_DISPLAY_NAME =
+            registerPiece("selector_display_name", PieceSelectorDisplayName.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorDisplayNameList>> SELECTOR_DISPLAY_NAME_LIST =
+            registerPiece("selector_display_name_list", PieceSelectorDisplayNameList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlock>> SELECTOR_BLOCK =
+            registerPiece("selector_block", PieceSelectorBlock.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockState>> OPERATOR_BLOCK_STATE =
+            registerPiece("operator_block_state", PieceOperatorBlockState.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateValue>> OPERATOR_BLOCK_STATE_VALUE =
+            registerPiece("operator_block_state_value", PieceOperatorBlockStateValue.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateEntries>> OPERATOR_BLOCK_STATE_ENTRIES =
+            registerPiece("operator_block_state_entries", PieceOperatorBlockStateEntries.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorTagList>> OPERATOR_TAG_LIST =
+            registerPiece("operator_tag_list", PieceOperatorTagList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockPosition>> OPERATOR_BLOCK_POSITION =
+            registerPiece("operator_block_position", PieceOperatorBlockPosition.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorOnlinePlayers>> SELECTOR_ONLINE_PLAYERS =
+            registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItem>> SELECTOR_HELD_ITEM =
+            registerPiece("selector_held_item", PieceSelectorHeldItem.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorSelectedSlotItem>> SELECTOR_SELECTED_SLOT_ITEM =
+            registerPiece("selector_selected_slot_item", PieceSelectorSelectedSlotItem.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorEntitySlotItem>> SELECTOR_ENTITY_SLOT_ITEM =
+            registerPiece("selector_entity_slot_item", PieceSelectorEntitySlotItem.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorInternalSlotItem>> SELECTOR_INTERNAL_SLOT_ITEM =
+            registerPiece("selector_internal_slot_item", PieceSelectorInternalSlotItem.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorItemCount>> OPERATOR_ITEM_COUNT =
+            registerPiece("operator_item_count", PieceOperatorItemCount.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorItemSlot>> OPERATOR_ITEM_SLOT =
+            registerPiece("operator_item_slot", PieceOperatorItemSlot.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorItemTotalCount>> OPERATOR_ITEM_TOTAL_COUNT =
+            registerPiece("operator_item_total_count", PieceOperatorItemTotalCount.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItems>> SELECTOR_HELD_ITEMS =
+            registerPiece("selector_held_items", PieceSelectorHeldItems.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorInternalItems>> SELECTOR_INTERNAL_ITEMS =
+            registerPiece("selector_internal_items", PieceSelectorInternalItems.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorIndexedElement>> SELECTOR_INDEXED_ELEMENT =
+            registerPiece("selector_indexed_element", PieceSelectorIndexedElement.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNbt>> SELECTOR_NBT =
+            registerPiece("selector_nbt", PieceSelectorNbt.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNbtKeys>> SELECTOR_NBT_KEYS =
+            registerPiece("selector_nbt_keys", PieceSelectorNbtKeys.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorNbtValue>> SELECTOR_NBT_VALUE =
+            registerPiece("selector_nbt_value", PieceSelectorNbtValue.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringPartialMatch>> OPERATOR_STRING_PARTIAL_MATCH =
+            registerPiece("operator_string_partial_match", PieceOperatorStringPartialMatch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringStartsWith>> OPERATOR_STRING_STARTS_WITH =
+            registerPiece("operator_string_starts_with", PieceOperatorStringStartsWith.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringEndsWith>> OPERATOR_STRING_ENDS_WITH =
+            registerPiece("operator_string_ends_with", PieceOperatorStringEndsWith.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringConcat>> OPERATOR_STRING_CONCAT =
+            registerPiece("operator_string_concat", PieceOperatorStringConcat.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringSplit>> OPERATOR_STRING_SPLIT =
+            registerPiece("operator_string_split", PieceOperatorStringSplit.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringSlice>> OPERATOR_STRING_SLICE =
+            registerPiece("operator_string_slice", PieceOperatorStringSlice.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringLength>> OPERATOR_STRING_LENGTH =
+            registerPiece("operator_string_length", PieceOperatorStringLength.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringReplace>> OPERATOR_STRING_REPLACE =
+            registerPiece("operator_string_replace", PieceOperatorStringReplace.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringTrim>> OPERATOR_STRING_TRIM =
+            registerPiece("operator_string_trim", PieceOperatorStringTrim.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStringListJoin>> OPERATOR_STRING_LIST_JOIN =
+            registerPiece("operator_string_list_join", PieceOperatorStringListJoin.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorPlayerName>> OPERATOR_PLAYER_NAME =
+            registerPiece("operator_player_name", PieceOperatorPlayerName.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSearch>> OPERATOR_LIST_SEARCH =
+            registerPiece("operator_list_search", PieceOperatorListSearch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSearchExclude>> OPERATOR_LIST_SEARCH_EXCLUDE =
+            registerPiece("operator_list_search_exclude", PieceOperatorListSearchExclude.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRandomElement>> OPERATOR_RANDOM_ELEMENT =
+            registerPiece("operator_random_element", PieceOperatorRandomElement.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListAdd>> OPERATOR_LIST_ADD =
+            registerPiece("operator_list_add", PieceOperatorListAdd.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListRemove>> OPERATOR_LIST_REMOVE =
+            registerPiece("operator_list_remove", PieceOperatorListRemove.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListRemoveIndices>> OPERATOR_LIST_REMOVE_INDICES =
+            registerPiece("operator_list_remove_indices", PieceOperatorListRemoveIndices.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListInsert>> OPERATOR_LIST_INSERT =
+            registerPiece("operator_list_insert", PieceOperatorListInsert.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSlice>> OPERATOR_LIST_SLICE =
+            registerPiece("operator_list_slice", PieceOperatorListSlice.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListSize>> OPERATOR_LIST_SIZE =
+            registerPiece("operator_list_size", PieceOperatorListSize.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListExclusion>> OPERATOR_LIST_EXCLUSION =
+            registerPiece("operator_list_exclusion", PieceOperatorListExclusion.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListIntersection>> OPERATOR_LIST_INTERSECTION =
+            registerPiece("operator_list_intersection", PieceOperatorListIntersection.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListConcatenation>> OPERATOR_LIST_CONCATENATION =
+            registerPiece("operator_list_concatenation", PieceOperatorListConcatenation.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -123,6 +253,10 @@ public final class PsitweaksSpells {
             registerGroup("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORED_ENTITY =
             registerGroup("selector_stored_entity", PieceSelectorStoredEntity.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORE_VALUE =
+            registerGroup("trick_store_value", PieceTrickStoreValue.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORED_VALUE =
+            registerGroup("selector_stored_value", PieceSelectorStoredValue.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> NEARBY_SPELLGRAM =
             registerGroup("selector_nearby_spellgram", PieceSelectorNearbySpellGram.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> DISPEL =
@@ -163,6 +297,12 @@ public final class PsitweaksSpells {
             registerGroup("trick_set_spellgram_follow_target", PieceTrickSetSpellGramFollowTarget.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> DIE_FLEX =
             registerGroup("trick_die_flex", PieceTrickDieFlex.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP =
+            registerGroup("trick_jump", PieceTrickJump.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SWITCH =
+            registerGroup("trick_switch", PieceTrickSwitch.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP_ANCHOR_GROUP =
+            registerGroup("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_INJECTION =
             registerGroup("trick_radiation_injection", PieceTrickRadiationInjection.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_FILTER =
@@ -188,6 +328,76 @@ public final class PsitweaksSpells {
             registerGroup("operator_cosh", PieceOperatorCosh.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> TANH =
             registerGroup("operator_tanh", PieceOperatorTanh.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> GREATER_THAN =
+            registerGroup("operator_greater_than", PieceOperatorGreaterThan.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> GREATER_THAN_OR_EQUAL =
+            registerGroup("operator_greater_than_or_equal", PieceOperatorGreaterThanOrEqual.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EQUAL =
+            registerGroup("operator_equal", PieceOperatorEqual.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STRING =
+            ADVANCEMENT_GROUPS.register("string", () -> List.of(
+                    PieceConstantString.class,
+                    PieceOperatorFormatString.class,
+                    PieceOperatorFromString.class,
+                    PieceOperatorListFromStringList.class,
+                    PieceOperatorNumberListToVector.class,
+                    PieceOperatorVectorToNumberList.class,
+                    PieceOperatorToString.class,
+                    PieceOperatorListToStringList.class,
+                    PieceOperatorGetId.class,
+                    PieceOperatorGetIdList.class,
+                    PieceSelectorDisplayName.class,
+                    PieceSelectorDisplayNameList.class,
+                    PieceSelectorOnlinePlayers.class,
+                    PieceSelectorHeldItems.class,
+                    PieceSelectorInternalItems.class,
+                    PieceSelectorIndexedElement.class,
+                    PieceSelectorNbt.class,
+                    PieceSelectorNbtKeys.class,
+                    PieceSelectorNbtValue.class,
+                    PieceOperatorTagList.class,
+                    PieceOperatorStringPartialMatch.class,
+                    PieceOperatorStringStartsWith.class,
+                    PieceOperatorStringEndsWith.class,
+                    PieceOperatorStringConcat.class,
+                    PieceOperatorStringSplit.class,
+                    PieceOperatorStringSlice.class,
+                    PieceOperatorStringLength.class,
+                    PieceOperatorStringReplace.class,
+                    PieceOperatorStringTrim.class,
+                    PieceOperatorStringListJoin.class,
+                    PieceOperatorPlayerName.class,
+                    PieceOperatorListSearch.class,
+                    PieceOperatorListSearchExclude.class,
+                    PieceOperatorRandomElement.class,
+                    PieceOperatorListAdd.class,
+                    PieceOperatorListRemove.class,
+                    PieceOperatorListRemoveIndices.class,
+                    PieceOperatorListInsert.class,
+                    PieceOperatorListSlice.class,
+                    PieceOperatorListSize.class,
+                    PieceOperatorListExclusion.class,
+                    PieceOperatorListIntersection.class,
+                    PieceOperatorListConcatenation.class
+            ));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> ITEM =
+            ADVANCEMENT_GROUPS.register("item", () -> List.of(
+                    PieceSelectorHeldItem.class,
+                    PieceSelectorSelectedSlotItem.class,
+                    PieceSelectorEntitySlotItem.class,
+                    PieceSelectorInternalSlotItem.class,
+                    PieceOperatorItemCount.class,
+                    PieceOperatorItemSlot.class,
+                    PieceOperatorItemTotalCount.class
+            ));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
+            ADVANCEMENT_GROUPS.register("block", () -> List.of(
+                    PieceSelectorBlock.class,
+                    PieceOperatorBlockState.class,
+                    PieceOperatorBlockStateValue.class,
+                    PieceOperatorBlockStateEntries.class,
+                    PieceOperatorBlockPosition.class
+            ));
 
     private PsitweaksSpells() {
     }

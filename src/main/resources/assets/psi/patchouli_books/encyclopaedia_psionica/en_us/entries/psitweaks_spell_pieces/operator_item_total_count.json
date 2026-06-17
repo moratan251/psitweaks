@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_item_total_count",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_item_total_count.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_item_total_count"
+    }
+  ]
+}

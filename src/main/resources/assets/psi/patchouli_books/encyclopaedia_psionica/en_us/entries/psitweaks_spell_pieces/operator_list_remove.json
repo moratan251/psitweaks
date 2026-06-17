@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_list_remove",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_list_remove.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_list_remove"
+    }
+  ]
+}

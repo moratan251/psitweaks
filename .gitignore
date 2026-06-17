@@ -19,3 +19,15 @@ hs_err_pid*
 
 # Common working directory
 run
+
+#for AI
+.codex
+.claude
+AGENTS.md
+CLAUDE.md
+docs
+.steering
+
+#etc
+src/generated/resources/.cache/*
+.cache

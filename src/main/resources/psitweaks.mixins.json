@@ -6,10 +6,13 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
+    "ItemCADPlainMemoryMixin",
     "PieceTrickMassExodusMixin",
     "RadiationUtilMixin",
     "SpellContextRangeMixin",
     "SpellGridOptionalCompatMixin",
+    "SpellParamBlockVectorCompatMixin",
+    "SpellPieceParamConversionMixin",
     "SpellPieceOptionalCompatMixin",
     "SpellHelpersRangeLimitMixin"
   ],

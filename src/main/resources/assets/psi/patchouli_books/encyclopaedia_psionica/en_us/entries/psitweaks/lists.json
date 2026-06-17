@@ -1,0 +1,21 @@
+{
+  "name": "psi.book.entry.psitweaks_lists",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:textures/spell/operator_list_size.png",
+  "sortnum": -20,
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_lists.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_lists.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_lists.2"
+    }
+  ]
+}
+

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
+import com.moratan251.psitweaks.client.event.PsitweaksClientGuiEvents;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiPortableCADAssembler;
@@ -41,7 +42,9 @@ import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
+import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
+import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismDataMapProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
@@ -110,6 +113,7 @@ public class Psitweaks {
         PsitweaksAttributes.register(modEventBus);
         PsitweaksTabs.register(modEventBus);
         PsitweaksSpells.register(modEventBus);
+        PsitweaksListAdapterRegistration.registerBuiltins();
         PsitweaksEntities.register(modEventBus);
         PsitweaksBlockEntityTypes.register(modEventBus);
         PsitweaksRecipeTypes.register(modEventBus);
@@ -120,7 +124,11 @@ public class Psitweaks {
             PsitweaksClientSpells.register(modEventBus);
             PsitweaksClientModels.register(modEventBus);
             MaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
+            DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
+            PsitweaksClientGuiEvents.register(NeoForge.EVENT_BUS);
+        } else {
+            DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
 
         PsitweaksMekanismBlocks.register(modEventBus);

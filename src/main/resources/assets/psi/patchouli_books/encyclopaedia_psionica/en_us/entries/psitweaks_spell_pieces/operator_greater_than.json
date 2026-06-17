@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_greater_than",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_greater_than.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_greater_than"
+    }
+  ]
+}

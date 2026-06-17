@@ -138,6 +138,7 @@ dependencies {
     runtimeOnly "curse.maven:neat-238372:7774002"
     runtimeOnly "curse.maven:untranslated-items-401770:5574485"
     runtimeOnly "curse.maven:jade-324717:7545219"
+    runtimeOnly "curse.maven:worldedit-225608:5830452"
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
