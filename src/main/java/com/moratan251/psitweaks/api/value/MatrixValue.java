@@ -153,9 +153,6 @@ public final class MatrixValue {
         StringBuilder builder = new StringBuilder();
         builder.append("Matrix[");
         for (int r = 0; r < rows; r++) {
-            if (r > 0) {
-                builder.append(",");
-            }
             builder.append("[");
             for (int c = 0; c < cols; c++) {
                 if (c > 0) {
@@ -164,6 +161,9 @@ public final class MatrixValue {
                 builder.append(values[r * cols + c]);
             }
             builder.append("]");
+            if (r < rows - 1) {
+                builder.append(",\n");
+            }
         }
         builder.append("]");
         return builder.toString();
