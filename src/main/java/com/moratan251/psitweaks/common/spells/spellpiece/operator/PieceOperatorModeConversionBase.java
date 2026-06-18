@@ -5,7 +5,9 @@ import com.moratan251.psitweaks.api.PsitweaksListAdapter;
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
 import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.api.PsitweaksModeOptions;
+import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.PsitweaksValueKind;
+import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import java.util.LinkedHashMap;
@@ -33,6 +35,10 @@ public abstract class PieceOperatorModeConversionBase extends PieceOperator impl
 
     @Override
     public final List<PsitweaksModeOption> getAvailableModeOptions() {
+        return availableModeOptions();
+    }
+
+    protected List<PsitweaksModeOption> availableModeOptions() {
         PsitweaksValueKind valueKind = modeOptionKindFilter();
         return valueKind == null ? PsitweaksListAdapters.modeOptions() : PsitweaksListAdapters.modeOptions(valueKind);
     }
@@ -84,6 +90,12 @@ public abstract class PieceOperatorModeConversionBase extends PieceOperator impl
 
     protected final Class<?> currentListType() {
         return PsitweaksListAdapters.listType(currentMode()).orElse(Object.class);
+    }
+
+    protected final PlainValueType<?> currentPlainType() {
+        return PsitweaksPlainValues.byMode(currentMode()).orElseThrow(
+                () -> new IllegalStateException("No PsiTweaks plain value type registered for mode " + currentMode().id())
+        );
     }
 
     protected PsitweaksValueKind modeOptionKindFilter() {

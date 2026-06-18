@@ -231,6 +231,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/number");
     public static final DeferredHolder<Material, Material> MODE_VECTOR =
             registerPieceMaterial("mode/vector");
+    public static final DeferredHolder<Material, Material> MODE_MATRIX =
+            registerPieceMaterial("mode/matrix");
     public static final DeferredHolder<Material, Material> MODE_ENTITY =
             registerPieceMaterial("mode/entity");
     public static final DeferredHolder<Material, Material> MODE_ITEM =

@@ -113,6 +113,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Vector List";
             default -> "Vector List";
         });
+        root.addProperty("psitweaks.datatype.matrix", switch (locale) {
+            case "ja_jp" -> "Matrix";
+            default -> "Matrix";
+        });
+        root.addProperty("psitweaks.datatype.matrix_list", switch (locale) {
+            case "ja_jp" -> "Matrix List";
+            default -> "Matrix List";
+        });
         root.addProperty("psitweaks.datatype.item", switch (locale) {
             case "ja_jp" -> "Item";
             default -> "Item";

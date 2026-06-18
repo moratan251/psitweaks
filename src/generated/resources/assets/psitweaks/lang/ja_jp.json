@@ -458,6 +458,8 @@
   "psitweaks.datatype.contextual_value_list": "Contextual Value List",
   "psitweaks.datatype.item": "Item",
   "psitweaks.datatype.item_list": "Item List",
+  "psitweaks.datatype.matrix": "Matrix",
+  "psitweaks.datatype.matrix_list": "Matrix List",
   "psitweaks.datatype.number_list": "Number List",
   "psitweaks.datatype.plain_value": "Plain Value",
   "psitweaks.datatype.string": "String",

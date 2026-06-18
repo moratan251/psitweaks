@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.api;
 
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.api.value.PlainMemoryValue;
 import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
@@ -23,7 +24,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
  * CAD memory without carrying world context.
  *
  * <p>Plain values are intentionally narrower than {@link ContextualValue}. The
- * built-in types are String, Number, and Vector; addons may register additional
+ * built-in types are String, Number, Vector, and Matrix; addons may register additional
  * {@link PlainValueType} instances when they need their own self-contained value
  * type to participate in storage, mode buttons, and string conversions.</p>
  */
@@ -82,6 +83,20 @@ public final class PsitweaksPlainValues {
             PsitweaksPlainValues::deserializeVector,
             value -> StringSpellHelper.sanitize(String.valueOf(value)),
             StringSpellHelper::parseVector
+    ));
+
+    /**
+     * Built-in Matrix plain value type.
+     */
+    public static final PlainValueType<MatrixValue> MATRIX = register(new PlainValueType<>(
+            ResourceLocation.fromNamespaceAndPath(PsitweaksModeOptions.BUILTIN_NAMESPACE, "matrix"),
+            MatrixValue.class,
+            PsitweaksModeOptions.MATRIX,
+            value -> new MatrixValue(value.rows(), value.cols(), value.valuesCopy()),
+            value -> value.serialize(),
+            tag -> tag instanceof CompoundTag compound ? MatrixValue.deserialize(compound) : Optional.empty(),
+            value -> StringSpellHelper.sanitize(value.toSpellString()),
+            MatrixValue::parse
     ));
 
     private PsitweaksPlainValues() {
@@ -241,6 +256,9 @@ public final class PsitweaksPlainValues {
         }
         if (type.id().equals(VECTOR.id())) {
             return Vector3.zero.copy();
+        }
+        if (type.id().equals(MATRIX.id())) {
+            return new MatrixValue(1, 1, new double[]{0D});
         }
         throw new SpellRuntimeException(ERROR_TYPE_MISMATCH);
     }

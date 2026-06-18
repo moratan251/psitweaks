@@ -28,6 +28,9 @@ public final class PsitweaksModeOptions {
     public static final PsitweaksModeOption VECTOR = registerBuiltin(
             "vector", "V", "psi.datatype.vector3", "psitweaks.datatype.vector_list", 20,
             PsitweaksValueKind.PLAIN);
+    public static final PsitweaksModeOption MATRIX = registerBuiltin(
+            "matrix", "M", "psitweaks.datatype.matrix", "psitweaks.datatype.matrix_list", 25,
+            PsitweaksValueKind.PLAIN);
     public static final PsitweaksModeOption ENTITY = registerBuiltin(
             "entity", "E", "psi.datatype.entity", "psi.datatype.entity_list_wrapper", 30,
             PsitweaksValueKind.CONTEXTUAL);
