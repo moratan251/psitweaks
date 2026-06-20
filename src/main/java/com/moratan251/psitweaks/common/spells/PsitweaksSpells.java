@@ -232,6 +232,50 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_intersection", PieceOperatorListIntersection.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorListConcatenation>> OPERATOR_LIST_CONCATENATION =
             registerPiece("operator_list_concatenation", PieceOperatorListConcatenation.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixAdd>> OPERATOR_MATRIX_ADD =
+            registerPiece("operator_matrix_add", PieceOperatorMatrixAdd.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixSubtract>> OPERATOR_MATRIX_SUBTRACT =
+            registerPiece("operator_matrix_subtract", PieceOperatorMatrixSubtract.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixMultiply>> OPERATOR_MATRIX_MULTIPLY =
+            registerPiece("operator_matrix_multiply", PieceOperatorMatrixMultiply.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixScalarMultiply>> OPERATOR_MATRIX_SCALAR_MULTIPLY =
+            registerPiece("operator_matrix_scalar_multiply", PieceOperatorMatrixScalarMultiply.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixTranspose>> OPERATOR_MATRIX_TRANSPOSE =
+            registerPiece("operator_matrix_transpose", PieceOperatorMatrixTranspose.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixDeterminant>> OPERATOR_MATRIX_DETERMINANT =
+            registerPiece("operator_matrix_determinant", PieceOperatorMatrixDeterminant.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixInverse>> OPERATOR_MATRIX_INVERSE =
+            registerPiece("operator_matrix_inverse", PieceOperatorMatrixInverse.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixExtractRow>> OPERATOR_MATRIX_EXTRACT_ROW =
+            registerPiece("operator_matrix_extract_row", PieceOperatorMatrixExtractRow.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixExtractColumn>> OPERATOR_MATRIX_EXTRACT_COLUMN =
+            registerPiece("operator_matrix_extract_column", PieceOperatorMatrixExtractColumn.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixElement>> OPERATOR_MATRIX_ELEMENT =
+            registerPiece("operator_matrix_element", PieceOperatorMatrixElement.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixRowCount>> OPERATOR_MATRIX_ROW_COUNT =
+            registerPiece("operator_matrix_row_count", PieceOperatorMatrixRowCount.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixColumnCount>> OPERATOR_MATRIX_COLUMN_COUNT =
+            registerPiece("operator_matrix_column_count", PieceOperatorMatrixColumnCount.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixMultiplyVector>> OPERATOR_MATRIX_MULTIPLY_VECTOR =
+            registerPiece("operator_matrix_multiply_vector", PieceOperatorMatrixMultiplyVector.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixColumnFromList>> OPERATOR_MATRIX_COLUMN_FROM_LIST =
+            registerPiece("operator_matrix_column_from_list", PieceOperatorMatrixColumnFromList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixFlatten>> OPERATOR_MATRIX_FLATTEN =
+            registerPiece("operator_matrix_flatten", PieceOperatorMatrixFlatten.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixIdentity>> OPERATOR_MATRIX_IDENTITY =
+            registerPiece("operator_matrix_identity", PieceOperatorMatrixIdentity.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixZero>> OPERATOR_MATRIX_ZERO =
+            registerPiece("operator_matrix_zero", PieceOperatorMatrixZero.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixDiagonal>> OPERATOR_MATRIX_DIAGONAL =
+            registerPiece("operator_matrix_diagonal", PieceOperatorMatrixDiagonal.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixReplaceColumn>> OPERATOR_MATRIX_REPLACE_COLUMN =
+            registerPiece("operator_matrix_replace_column", PieceOperatorMatrixReplaceColumn.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixReplaceRow>> OPERATOR_MATRIX_REPLACE_ROW =
+            registerPiece("operator_matrix_replace_row", PieceOperatorMatrixReplaceRow.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixTransformPosition>> OPERATOR_MATRIX_TRANSFORM_POSITION =
+            registerPiece("operator_matrix_transform_position", PieceOperatorMatrixTransformPosition.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixTransformDirection>> OPERATOR_MATRIX_TRANSFORM_DIRECTION =
+            registerPiece("operator_matrix_transform_direction", PieceOperatorMatrixTransformDirection.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -397,6 +441,31 @@ public final class PsitweaksSpells {
                     PieceOperatorBlockStateValue.class,
                     PieceOperatorBlockStateEntries.class,
                     PieceOperatorBlockPosition.class
+            ));
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MATRIX =
+            ADVANCEMENT_GROUPS.register("matrix", () -> List.of(
+                    PieceOperatorMatrixAdd.class,
+                    PieceOperatorMatrixSubtract.class,
+                    PieceOperatorMatrixMultiply.class,
+                    PieceOperatorMatrixScalarMultiply.class,
+                    PieceOperatorMatrixTranspose.class,
+                    PieceOperatorMatrixDeterminant.class,
+                    PieceOperatorMatrixInverse.class,
+                    PieceOperatorMatrixExtractRow.class,
+                    PieceOperatorMatrixExtractColumn.class,
+                    PieceOperatorMatrixElement.class,
+                    PieceOperatorMatrixRowCount.class,
+                    PieceOperatorMatrixColumnCount.class,
+                    PieceOperatorMatrixMultiplyVector.class,
+                    PieceOperatorMatrixColumnFromList.class,
+                    PieceOperatorMatrixFlatten.class,
+                    PieceOperatorMatrixIdentity.class,
+                    PieceOperatorMatrixZero.class,
+                    PieceOperatorMatrixDiagonal.class,
+                    PieceOperatorMatrixReplaceColumn.class,
+                    PieceOperatorMatrixReplaceRow.class,
+                    PieceOperatorMatrixTransformPosition.class,
+                    PieceOperatorMatrixTransformDirection.class
             ));
 
     private PsitweaksSpells() {

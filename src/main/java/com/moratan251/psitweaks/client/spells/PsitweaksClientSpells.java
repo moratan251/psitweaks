@@ -225,6 +225,50 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_intersection");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_CONCATENATION =
             registerPieceMaterial("operator_list_concatenation");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ADD =
+            registerPieceMaterial("operator_matrix_add");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_SUBTRACT =
+            registerPieceMaterial("operator_matrix_subtract");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_MULTIPLY =
+            registerPieceMaterial("operator_matrix_multiply");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_SCALAR_MULTIPLY =
+            registerPieceMaterial("operator_matrix_scalar_multiply");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSPOSE =
+            registerPieceMaterial("operator_matrix_transpose");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_DETERMINANT =
+            registerPieceMaterial("operator_matrix_determinant");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_INVERSE =
+            registerPieceMaterial("operator_matrix_inverse");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_EXTRACT_ROW =
+            registerPieceMaterial("operator_matrix_extract_row");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_EXTRACT_COLUMN =
+            registerPieceMaterial("operator_matrix_extract_column");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ELEMENT =
+            registerPieceMaterial("operator_matrix_element");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ROW_COUNT =
+            registerPieceMaterial("operator_matrix_row_count");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_COLUMN_COUNT =
+            registerPieceMaterial("operator_matrix_column_count");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_MULTIPLY_VECTOR =
+            registerPieceMaterial("operator_matrix_multiply_vector");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_COLUMN_FROM_LIST =
+            registerPieceMaterial("operator_matrix_column_from_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_FLATTEN =
+            registerPieceMaterial("operator_matrix_flatten");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_IDENTITY =
+            registerPieceMaterial("operator_matrix_identity");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ZERO =
+            registerPieceMaterial("operator_matrix_zero");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_DIAGONAL =
+            registerPieceMaterial("operator_matrix_diagonal");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_COLUMN =
+            registerPieceMaterial("operator_matrix_replace_column");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_ROW =
+            registerPieceMaterial("operator_matrix_replace_row");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_POSITION =
+            registerPieceMaterial("operator_matrix_transform_position");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_DIRECTION =
+            registerPieceMaterial("operator_matrix_transform_direction");
     public static final DeferredHolder<Material, Material> MODE_STRING =
             registerPieceMaterial("mode/string");
     public static final DeferredHolder<Material, Material> MODE_NUMBER =

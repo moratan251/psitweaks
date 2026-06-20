@@ -113,6 +113,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Vector List";
             default -> "Vector List";
         });
+        root.addProperty("psitweaks.datatype.vector_or_number_list", switch (locale) {
+            case "ja_jp" -> "Vector/Number List";
+            default -> "Vector/Number List";
+        });
         root.addProperty("psitweaks.datatype.matrix", switch (locale) {
             case "ja_jp" -> "Matrix";
             default -> "Matrix";
@@ -209,6 +213,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "数値B";
             default -> "Number B";
         });
+        root.addProperty("psitweaks.spellparam.matrix1", switch (locale) {
+            case "ja_jp" -> "行列1";
+            default -> "Matrix 1";
+        });
+        root.addProperty("psitweaks.spellparam.matrix2", switch (locale) {
+            case "ja_jp" -> "行列2";
+            default -> "Matrix 2";
+        });
+        root.addProperty("psitweaks.spellparam.matrix3", switch (locale) {
+            case "ja_jp" -> "行列3";
+            default -> "Matrix 3";
+        });
+        root.addProperty("psitweaks.spellparam.vector_or_number_list", switch (locale) {
+            case "ja_jp" -> "数列";
+            default -> "Array";
+        });
         root.addProperty("psitweaks.spellparam.item", switch (locale) {
             case "ja_jp" -> "Item";
             default -> "Item";
@@ -240,6 +260,38 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellerror.expected_three_numbers", switch (locale) {
             case "ja_jp" -> "Number List の要素数は3である必要があります";
             default -> "Number List must contain exactly 3 elements";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_incompatible_sizes", switch (locale) {
+            case "ja_jp" -> "行列のサイズが整合しません";
+            default -> "Matrix dimensions are incompatible";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_not_square", switch (locale) {
+            case "ja_jp" -> "行列は正方行列である必要があります";
+            default -> "Matrix must be square";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_singular", switch (locale) {
+            case "ja_jp" -> "行列が特異であり逆行列を求められません";
+            default -> "Matrix is singular and cannot be inverted";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_out_of_bounds", switch (locale) {
+            case "ja_jp" -> "行列のインデックスが範囲外です";
+            default -> "Matrix index is out of bounds";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_too_large", switch (locale) {
+            case "ja_jp" -> "行列またはリストが最大サイズ4を超えています";
+            default -> "Matrix or list exceeds the maximum size of 4";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_invalid_dimension", switch (locale) {
+            case "ja_jp" -> "行列の次元は1〜4である必要があります";
+            default -> "Matrix dimension must be between 1 and 4";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_invalid_transform", switch (locale) {
+            case "ja_jp" -> "変換行列は3×3または4×4である必要があります";
+            default -> "Transform matrix must be 3x3 or 4x4";
+        });
+        root.addProperty("psitweaks.spellerror.matrix_zero_w", switch (locale) {
+            case "ja_jp" -> "変換後のw成分が0です";
+            default -> "Transformed w component is zero";
         });
         root.addProperty("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
             case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
@@ -1096,6 +1148,28 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_list_exclusion", "Operator: List Exclusion (PT)", "Removes the elements in List 2 from the input List 1.", "演算子: リスト除外 (PT)", "入力したリスト1からリスト2に含まれる要素を除外します。");
         addSpellPiece(root, "operator_list_intersection", "Operator: List Intersection (PT)", "Outputs the elements shared by the two input Lists.", "演算子: リスト共通部分 (PT)", "入力した2つの List に共通する要素を出力します。");
         addSpellPiece(root, "operator_list_concatenation", "Operator: List Concatenation (PT)", "Combines the two input Lists.", "演算子: リスト結合 (PT)", "入力した2つの List を結合します。");
+        addSpellPiece(root, "operator_matrix_add", "Operator: Matrix Add", "Adds two or three matrices of the same size.", "演算子: 行列加算", "同じサイズの行列を2つまたは3つ加算します。");
+        addSpellPiece(root, "operator_matrix_subtract", "Operator: Matrix Subtract", "Subtracts two or three matrices of the same size.", "演算子: 行列減算", "同じサイズの行列を2つまたは3つ減算します。");
+        addSpellPiece(root, "operator_matrix_multiply", "Operator: Matrix Multiply", "Multiplies matrices with compatible dimensions.", "演算子: 行列積", "次元が整合する行列を乗算します。");
+        addSpellPiece(root, "operator_matrix_scalar_multiply", "Operator: Matrix Scalar Multiply", "Multiplies a matrix by a number.", "演算子: 行列スカラー倍", "行列を数値でスカラー倍します。");
+        addSpellPiece(root, "operator_matrix_transpose", "Operator: Matrix Transpose", "Transposes a matrix.", "演算子: 行列転置", "行列を転置します。");
+        addSpellPiece(root, "operator_matrix_determinant", "Operator: Matrix Determinant", "Computes the determinant of a square matrix.", "演算子: 行列式", "正方行列の行列式を求めます。");
+        addSpellPiece(root, "operator_matrix_inverse", "Operator: Matrix Inverse", "Computes the inverse of a square matrix.", "演算子: 逆行列", "正方行列の逆行列を求めます。");
+        addSpellPiece(root, "operator_matrix_extract_row", "Operator: Matrix Extract Row", "Returns the specified row as a Number List.", "演算子: 行抽出", "指定した行を Number List として返します。");
+        addSpellPiece(root, "operator_matrix_extract_column", "Operator: Matrix Extract Column", "Returns the specified column as a Number List.", "演算子: 列抽出", "指定した列を Number List として返します。");
+        addSpellPiece(root, "operator_matrix_element", "Operator: Matrix Element", "Returns the element at (row, column).", "演算子: 行列要素", "(行, 列) の要素を返します。");
+        addSpellPiece(root, "operator_matrix_row_count", "Operator: Matrix Row Count", "Returns the number of rows.", "演算子: 行数", "行列の行数を返します。");
+        addSpellPiece(root, "operator_matrix_column_count", "Operator: Matrix Column Count", "Returns the number of columns.", "演算子: 列数", "行列の列数を返します。");
+        addSpellPiece(root, "operator_matrix_multiply_vector", "Operator: Matrix Multiply Vector", "Multiplies a matrix by a column vector or Number List.", "演算子: 行列×ベクトル", "行列に列ベクトルまたは Number List を乗算します。");
+        addSpellPiece(root, "operator_matrix_column_from_list", "Operator: Column Matrix From List", "Converts a Number List or Vector into a column matrix.", "演算子: 数値リスト→列行列", "Number List または Vector を列行列に変換します。");
+        addSpellPiece(root, "operator_matrix_flatten", "Operator: Matrix Flatten", "Flattens a matrix into a Number List in row-major order.", "演算子: 行列平坦化", "行列を行優先の Number List に平坦化します。");
+        addSpellPiece(root, "operator_matrix_identity", "Operator: Identity Matrix", "Creates an identity matrix of the given size.", "演算子: 単位行列", "指定次数の単位行列を作ります。");
+        addSpellPiece(root, "operator_matrix_zero", "Operator: Zero Matrix", "Creates a zero matrix with the given dimensions.", "演算子: ゼロ行列", "指定サイズのゼロ行列を作ります。");
+        addSpellPiece(root, "operator_matrix_diagonal", "Operator: Diagonal Matrix", "Creates a diagonal matrix from a Number List or Vector.", "演算子: 対角行列", "Number List または Vector から対角行列を作ります。");
+        addSpellPiece(root, "operator_matrix_replace_column", "Operator: Matrix Replace Column", "Replaces a column, expanding the matrix with zeros as needed.", "演算子: 列置換", "列を置換し、必要に応じてゼロで拡張します。");
+        addSpellPiece(root, "operator_matrix_replace_row", "Operator: Matrix Replace Row", "Replaces a row, expanding the matrix with zeros as needed.", "演算子: 行置換", "行を置換し、必要に応じてゼロで拡張します。");
+        addSpellPiece(root, "operator_matrix_transform_position", "Operator: Matrix Transform Position", "Transforms a position vector with a 3x3 or 4x4 matrix.", "演算子: 行列で座標変換", "3×3 または 4×4 行列で位置ベクトルを変換します。");
+        addSpellPiece(root, "operator_matrix_transform_direction", "Operator: Matrix Transform Direction", "Transforms a direction vector with a 3x3 or 4x4 matrix.", "演算子: 行列で方向変換", "3×3 または 4×4 行列で方向ベクトルを変換します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -1212,6 +1286,28 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_list_exclusion", "Returns a new List by removing elements from List 1 when they are also present in List 2.", "入力したList 1 の要素のうち、List 2 にも含まれる要素を除外して新しいリストとして返します.");
         addBookPage(root, "operator_list_intersection", "Returns a new List containing elements that are present in both input Lists.", "入力した2つのリストでどちらにも含まれる要素を新しいリストとして返します.");
         addBookPage(root, "operator_list_concatenation", "Combines the two input Lists. For Contextual Value Lists, duplicate elements are removed.", "入力された2つのリストを結合します. Contextual Value List の場合、重複した要素は削除されます.");
+        addBookPage(root, "operator_matrix_add", "Adds matrices of the same size. The optional third matrix is added after the second.", "同じサイズの行列を加算します. 任意の第3行列は第2行列の後に加算されます.");
+        addBookPage(root, "operator_matrix_subtract", "Subtracts matrices of the same size. The optional third matrix is subtracted after the second.", "同じサイズの行列を減算します. 任意の第3行列は第2行列の後に減算されます.");
+        addBookPage(root, "operator_matrix_multiply", "Multiplies matrices from left to right. The columns of each matrix must match the rows of the next.", "左から右へ行列を乗算します. 各行列の列数が次の行列の行数と一致する必要があります.");
+        addBookPage(root, "operator_matrix_scalar_multiply", "Multiplies every element of the matrix by the input number.", "行列のすべての要素を入力数値で乗算します.");
+        addBookPage(root, "operator_matrix_transpose", "Swaps rows and columns of the matrix.", "行列の行と列を入れ替えます.");
+        addBookPage(root, "operator_matrix_determinant", "Computes the determinant. The matrix must be square.", "行列式を求めます. 行列は正方行列である必要があります.");
+        addBookPage(root, "operator_matrix_inverse", "Computes the inverse matrix. The matrix must be square and have a non-zero determinant.", "逆行列を求めます. 行列は正方かつ行列式が0でない必要があります.");
+        addBookPage(root, "operator_matrix_extract_row", "Returns the row at the zero-based index as a Number List.", "0始まりのインデックスで指定した行を Number List として返します.");
+        addBookPage(root, "operator_matrix_extract_column", "Returns the column at the zero-based index as a Number List.", "0始まりのインデックスで指定した列を Number List として返します.");
+        addBookPage(root, "operator_matrix_element", "Returns the element at (row, column) using zero-based indexes.", "0始まりのインデックスで (行, 列) の要素を返します.");
+        addBookPage(root, "operator_matrix_row_count", "Returns the number of rows as a Number.", "行数を Number として返します.");
+        addBookPage(root, "operator_matrix_column_count", "Returns the number of columns as a Number.", "列数を Number として返します.");
+        addBookPage(root, "operator_matrix_multiply_vector", "Treats the Vector or Number List as a column vector and multiplies it by the matrix on the left.", "Vector または Number List を列ベクトルとして扱い、左側の行列を掛けます.");
+        addBookPage(root, "operator_matrix_column_from_list", "Converts a Number List or Vector into a column matrix. The input must contain 1 to 4 elements.", "Number List または Vector を列行列に変換します. 入力は1〜4要素である必要があります.");
+        addBookPage(root, "operator_matrix_flatten", "Flattens the matrix into a Number List in row-major order.", "行列を行優先の順序で Number List に平坦化します.");
+        addBookPage(root, "operator_matrix_identity", "Creates an identity matrix of the given size. The size must be 1 to 4.", "指定した次数の単位行列を作ります. 次数は1〜4である必要があります.");
+        addBookPage(root, "operator_matrix_zero", "Creates a zero matrix. If the second size is omitted, a square matrix is returned.", "ゼロ行列を作ります. 第2のサイズを省略すると正方行列を返します.");
+        addBookPage(root, "operator_matrix_diagonal", "Creates a diagonal matrix from a Number List or Vector. The input must contain 1 to 4 elements.", "Number List または Vector から対角行列を作ります. 入力は1〜4要素である必要があります.");
+        addBookPage(root, "operator_matrix_replace_column", "Replaces the specified column with a Number List or Vector. Missing rows are filled with zero, and specifying a column beyond the current size expands the matrix with zeros.", "指定列を Number List または Vector で置換します. 足りない行は0で埋められ、現在のサイズを超える列を指定するとゼロで拡張されます.");
+        addBookPage(root, "operator_matrix_replace_row", "Replaces the specified row with a Number List or Vector. Missing columns are filled with zero, and specifying a row beyond the current size expands the matrix with zeros.", "指定行を Number List または Vector で置換します. 足りない列は0で埋められ、現在のサイズを超える行を指定するとゼロで拡張されます.");
+        addBookPage(root, "operator_matrix_transform_position", "Transforms a position vector with a 3x3 or 4x4 matrix. For 4x4 matrices, the vector is treated as a homogeneous point [x,y,z,1] and the result is divided by w.", "3×3 または 4×4 行列で位置ベクトルを変換します. 4×4 行列では [x,y,z,1] の同次座標として扱い、結果を w で割ります.");
+        addBookPage(root, "operator_matrix_transform_direction", "Transforms a direction vector with a 3x3 or 4x4 matrix. For 4x4 matrices, the vector is treated as a homogeneous direction [x,y,z,0], so translation is ignored.", "3×3 または 4×4 行列で方向ベクトルを変換します. 4×4 行列では [x,y,z,0] の同次方向として扱うため、平行移動は無視されます.");
     }
 
     private void addCadDisassembler(JsonObject root) {
