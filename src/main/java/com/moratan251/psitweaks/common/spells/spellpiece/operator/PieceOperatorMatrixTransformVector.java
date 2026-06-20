@@ -12,11 +12,11 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceOperator;
 
-public class PieceOperatorMatrixTransformDirection extends PieceOperator {
+public class PieceOperatorMatrixTransformVector extends PieceOperator {
     private SpellParam<MatrixValue> matrix;
     private SpellParam<Vector3> vector;
 
-    public PieceOperatorMatrixTransformDirection(Spell spell) {
+    public PieceOperatorMatrixTransformVector(Spell spell) {
         super(spell);
     }
 
@@ -30,7 +30,7 @@ public class PieceOperatorMatrixTransformDirection extends PieceOperator {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         MatrixValue mat = getNotNullParamValue(context, matrix);
         Vector3 vec = getNotNullParamValue(context, vector);
-        return MatrixOperations.transformDirection(mat, vec);
+        return MatrixOperations.transformVector(mat, vec);
     }
 
     @Override

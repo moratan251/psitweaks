@@ -272,10 +272,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_replace_column", PieceOperatorMatrixReplaceColumn.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixReplaceRow>> OPERATOR_MATRIX_REPLACE_ROW =
             registerPiece("operator_matrix_replace_row", PieceOperatorMatrixReplaceRow.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixTransformPosition>> OPERATOR_MATRIX_TRANSFORM_POSITION =
-            registerPiece("operator_matrix_transform_position", PieceOperatorMatrixTransformPosition.class);
-    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixTransformDirection>> OPERATOR_MATRIX_TRANSFORM_DIRECTION =
-            registerPiece("operator_matrix_transform_direction", PieceOperatorMatrixTransformDirection.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixTransformVector>> OPERATOR_MATRIX_TRANSFORM_VECTOR =
+            registerPiece("operator_matrix_transform_vector", PieceOperatorMatrixTransformVector.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixLinearPart>> OPERATOR_MATRIX_LINEAR_PART =
+            registerPiece("operator_matrix_linear_part", PieceOperatorMatrixLinearPart.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -464,8 +464,8 @@ public final class PsitweaksSpells {
                     PieceOperatorMatrixDiagonal.class,
                     PieceOperatorMatrixReplaceColumn.class,
                     PieceOperatorMatrixReplaceRow.class,
-                    PieceOperatorMatrixTransformPosition.class,
-                    PieceOperatorMatrixTransformDirection.class
+                    PieceOperatorMatrixTransformVector.class,
+                    PieceOperatorMatrixLinearPart.class
             ));
 
     private PsitweaksSpells() {

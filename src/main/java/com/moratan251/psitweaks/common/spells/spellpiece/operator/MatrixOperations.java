@@ -344,7 +344,7 @@ public final class MatrixOperations {
         return new MatrixValue(newRows, newCols, result);
     }
 
-    public static Vector3 transformPosition(MatrixValue matrix, Vector3 vector) throws SpellRuntimeException {
+    public static Vector3 transformVector(MatrixValue matrix, Vector3 vector) throws SpellRuntimeException {
         requireTransformSize(matrix);
         if (matrix.rows() == 3) {
             double[] result = multiplyColumnVector(matrix, new double[]{vector.x, vector.y, vector.z});
@@ -356,16 +356,6 @@ public final class MatrixOperations {
             throw new SpellRuntimeException(ERROR_ZERO_W);
         }
         return new Vector3(result[0] / w, result[1] / w, result[2] / w);
-    }
-
-    public static Vector3 transformDirection(MatrixValue matrix, Vector3 vector) throws SpellRuntimeException {
-        requireTransformSize(matrix);
-        if (matrix.rows() == 3) {
-            double[] result = multiplyColumnVector(matrix, new double[]{vector.x, vector.y, vector.z});
-            return new Vector3(result[0], result[1], result[2]);
-        }
-        double[] result = multiplyColumnVector(matrix, new double[]{vector.x, vector.y, vector.z, 0});
-        return new Vector3(result[0], result[1], result[2]);
     }
 
     private static double[] multiplyColumnVector(MatrixValue matrix, double[] vector) {
@@ -416,6 +406,19 @@ public final class MatrixOperations {
         if (matrix.rows() != matrix.cols() || (matrix.rows() != 3 && matrix.rows() != 4)) {
             throw new SpellRuntimeException(ERROR_INVALID_TRANSFORM);
         }
+    }
+
+    public static MatrixValue linearPart(MatrixValue matrix) throws SpellRuntimeException {
+        if (matrix.rows() < 3 || matrix.cols() < 3) {
+            throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+        }
+        double[] values = new double[9];
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                values[r * 3 + c] = matrix.get(r, c);
+            }
+        }
+        return new MatrixValue(3, 3, values);
     }
 
     private static void validateDimension(int dimension) throws SpellRuntimeException {

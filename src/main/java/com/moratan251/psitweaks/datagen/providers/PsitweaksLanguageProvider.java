@@ -1168,8 +1168,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_diagonal", "Operator: Diagonal Matrix", "Creates a diagonal matrix from a Number List or Vector.", "演算子: 対角行列", "Number List または Vector から対角行列を作ります。");
         addSpellPiece(root, "operator_matrix_replace_column", "Operator: Matrix Replace Column", "Replaces a column, expanding the matrix with zeros as needed.", "演算子: 列置換", "列を置換し、必要に応じてゼロで拡張します。");
         addSpellPiece(root, "operator_matrix_replace_row", "Operator: Matrix Replace Row", "Replaces a row, expanding the matrix with zeros as needed.", "演算子: 行置換", "行を置換し、必要に応じてゼロで拡張します。");
-        addSpellPiece(root, "operator_matrix_transform_position", "Operator: Matrix Transform Position", "Transforms a position vector with a 3x3 or 4x4 matrix.", "演算子: 行列で座標変換", "3×3 または 4×4 行列で位置ベクトルを変換します。");
-        addSpellPiece(root, "operator_matrix_transform_direction", "Operator: Matrix Transform Direction", "Transforms a direction vector with a 3x3 or 4x4 matrix.", "演算子: 行列で方向変換", "3×3 または 4×4 行列で方向ベクトルを変換します。");
+        addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトルを変換します。");
+        addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -1306,8 +1306,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_diagonal", "Creates a diagonal matrix from a Number List or Vector. The input must contain 1 to 4 elements.", "Number List または Vector から対角行列を作ります. 入力は1〜4要素である必要があります.");
         addBookPage(root, "operator_matrix_replace_column", "Replaces the specified column with a Number List or Vector. Missing rows are filled with zero, and specifying a column beyond the current size expands the matrix with zeros.", "指定列を Number List または Vector で置換します. 足りない行は0で埋められ、現在のサイズを超える列を指定するとゼロで拡張されます.");
         addBookPage(root, "operator_matrix_replace_row", "Replaces the specified row with a Number List or Vector. Missing columns are filled with zero, and specifying a row beyond the current size expands the matrix with zeros.", "指定行を Number List または Vector で置換します. 足りない列は0で埋められ、現在のサイズを超える行を指定するとゼロで拡張されます.");
-        addBookPage(root, "operator_matrix_transform_position", "Transforms a position vector with a 3x3 or 4x4 matrix. For 4x4 matrices, the vector is treated as a homogeneous point [x,y,z,1] and the result is divided by w.", "3×3 または 4×4 行列で位置ベクトルを変換します. 4×4 行列では [x,y,z,1] の同次座標として扱い、結果を w で割ります.");
-        addBookPage(root, "operator_matrix_transform_direction", "Transforms a direction vector with a 3x3 or 4x4 matrix. For 4x4 matrices, the vector is treated as a homogeneous direction [x,y,z,0], so translation is ignored.", "3×3 または 4×4 行列で方向ベクトルを変換します. 4×4 行列では [x,y,z,0] の同次方向として扱うため、平行移動は無視されます.");
+        addBookPage(root, "operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
+        addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
     }
 
     private void addCadDisassembler(JsonObject root) {

@@ -1,7 +1,7 @@
 {
   "name": "psitweaks.spellpiece.operator_random_element",
   "category": "psi:psitweaks_spell_pieces",
-  "icon": "psitweaks:textures/spell/operator_random_string.png",
+  "icon": "psitweaks:textures/spell/operator_random_element.png",
   "pages": [
     {
       "type": "text",

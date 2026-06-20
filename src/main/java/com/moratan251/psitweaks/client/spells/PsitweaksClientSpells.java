@@ -265,10 +265,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_replace_column");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_ROW =
             registerPieceMaterial("operator_matrix_replace_row");
-    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_POSITION =
-            registerPieceMaterial("operator_matrix_transform_position");
-    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_DIRECTION =
-            registerPieceMaterial("operator_matrix_transform_direction");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =
+            registerPieceMaterial("operator_matrix_transform_vector");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =
+            registerPieceMaterial("operator_matrix_linear_part");
     public static final DeferredHolder<Material, Material> MODE_STRING =
             registerPieceMaterial("mode/string");
     public static final DeferredHolder<Material, Material> MODE_NUMBER =
