@@ -265,6 +265,12 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_replace_column");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_ROW =
             registerPieceMaterial("operator_matrix_replace_row");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_ELEMENT =
+            registerPieceMaterial("operator_matrix_replace_element");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_DELETE_ROW =
+            registerPieceMaterial("operator_matrix_delete_row");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_DELETE_COLUMN =
+            registerPieceMaterial("operator_matrix_delete_column");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =
             registerPieceMaterial("operator_matrix_transform_vector");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =

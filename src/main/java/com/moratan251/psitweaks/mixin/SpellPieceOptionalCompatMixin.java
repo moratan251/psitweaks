@@ -12,7 +12,7 @@ import vazkii.psi.api.spell.SpellPiece;
 @Mixin(value = SpellPiece.class, remap = false)
 public abstract class SpellPieceOptionalCompatMixin {
     @Inject(method = "createFromNBT", at = @At("HEAD"), cancellable = true)
-    private static void psitweaks$markMissingPhysicalPropulsionForRemoval(Spell spell, CompoundTag cmp, CallbackInfoReturnable<SpellPiece> cir) {
+    private static void psitweaks$handleOptionalSpellPieceCompat(Spell spell, CompoundTag cmp, CallbackInfoReturnable<SpellPiece> cir) {
         if (OptionalSpellPieceCompat.shouldRemoveMissingPhysicalPropulsion(cmp)) {
             cir.setReturnValue(OptionalSpellPieceCompat.createRemovalMarker(spell));
         }

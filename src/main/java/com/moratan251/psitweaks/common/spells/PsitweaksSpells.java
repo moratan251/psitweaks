@@ -276,6 +276,12 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_transform_vector", PieceOperatorMatrixTransformVector.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixLinearPart>> OPERATOR_MATRIX_LINEAR_PART =
             registerPiece("operator_matrix_linear_part", PieceOperatorMatrixLinearPart.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixReplaceElement>> OPERATOR_MATRIX_REPLACE_ELEMENT =
+            registerPiece("operator_matrix_replace_element", PieceOperatorMatrixReplaceElement.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixDeleteRow>> OPERATOR_MATRIX_DELETE_ROW =
+            registerPiece("operator_matrix_delete_row", PieceOperatorMatrixDeleteRow.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixDeleteColumn>> OPERATOR_MATRIX_DELETE_COLUMN =
+            registerPiece("operator_matrix_delete_column", PieceOperatorMatrixDeleteColumn.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -464,6 +470,9 @@ public final class PsitweaksSpells {
                     PieceOperatorMatrixDiagonal.class,
                     PieceOperatorMatrixReplaceColumn.class,
                     PieceOperatorMatrixReplaceRow.class,
+                    PieceOperatorMatrixReplaceElement.class,
+                    PieceOperatorMatrixDeleteRow.class,
+                    PieceOperatorMatrixDeleteColumn.class,
                     PieceOperatorMatrixTransformVector.class,
                     PieceOperatorMatrixLinearPart.class
             ));

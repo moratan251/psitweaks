@@ -344,6 +344,64 @@ public final class MatrixOperations {
         return new MatrixValue(newRows, newCols, result);
     }
 
+    public static MatrixValue replaceElement(MatrixValue matrix, NumberListWrapper indices, double value) throws SpellRuntimeException {
+        if (indices.size() != 2) {
+            throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+        }
+        int row = indices.get(0).intValue();
+        int col = indices.get(1).intValue();
+        if (row < 0 || row >= matrix.rows() || col < 0 || col >= matrix.cols()) {
+            throw new SpellRuntimeException(ERROR_OUT_OF_BOUNDS);
+        }
+        double[] values = matrix.valuesCopy();
+        values[row * matrix.cols() + col] = value;
+        return new MatrixValue(matrix.rows(), matrix.cols(), values);
+    }
+
+    public static MatrixValue deleteRow(MatrixValue matrix, int row) throws SpellRuntimeException {
+        if (row < 0 || row >= matrix.rows()) {
+            throw new SpellRuntimeException(ERROR_OUT_OF_BOUNDS);
+        }
+        if (matrix.rows() <= 1) {
+            throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+        }
+        int newRows = matrix.rows() - 1;
+        int cols = matrix.cols();
+        double[] values = new double[newRows * cols];
+        int target = 0;
+        for (int r = 0; r < matrix.rows(); r++) {
+            if (r == row) {
+                continue;
+            }
+            System.arraycopy(matrix.valuesCopy(), r * cols, values, target * cols, cols);
+            target++;
+        }
+        return new MatrixValue(newRows, cols, values);
+    }
+
+    public static MatrixValue deleteColumn(MatrixValue matrix, int col) throws SpellRuntimeException {
+        if (col < 0 || col >= matrix.cols()) {
+            throw new SpellRuntimeException(ERROR_OUT_OF_BOUNDS);
+        }
+        if (matrix.cols() <= 1) {
+            throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+        }
+        int rows = matrix.rows();
+        int newCols = matrix.cols() - 1;
+        double[] values = new double[rows * newCols];
+        for (int r = 0; r < rows; r++) {
+            int target = 0;
+            for (int c = 0; c < matrix.cols(); c++) {
+                if (c == col) {
+                    continue;
+                }
+                values[r * newCols + target] = matrix.get(r, c);
+                target++;
+            }
+        }
+        return new MatrixValue(rows, newCols, values);
+    }
+
     public static Vector3 transformVector(MatrixValue matrix, Vector3 vector) throws SpellRuntimeException {
         requireTransformSize(matrix);
         if (matrix.rows() == 3) {

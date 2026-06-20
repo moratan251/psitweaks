@@ -229,6 +229,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "数列";
             default -> "Array";
         });
+        root.addProperty("psitweaks.spellparam.indices", switch (locale) {
+            case "ja_jp" -> "成分";
+            default -> "Indices";
+        });
         root.addProperty("psitweaks.spellparam.item", switch (locale) {
             case "ja_jp" -> "Item";
             default -> "Item";
@@ -773,8 +777,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Types Added by PsiTweaks",
                 "PsiTweaks 追加の型");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.0",
-                "$(thing)PsiTweaks$(0) adds new value types to Psi spell programming. The main additions are String, Block, and Item.$(p)These types allow spells to work with text, block information, and item information.",
-                "$(thing)PsiTweaks$(0) は, Psi のスペルプログラミングに新しい型を追加します. 主な追加型は String, Block, Item です.$(p)これらの型を使うことで, 文字列, ブロック情報, アイテム情報をスペル内で扱えるようになります.");
+                "$(thing)PsiTweaks$(0) adds new value types to Psi spell programming. The main additions are String, Block, Item, and Matrix.$(p)These types allow spells to work with text, block information, item information, and numerical grids.",
+                "$(thing)PsiTweaks$(0) は, Psi のスペルプログラミングに新しい型を追加します. 主な追加型は String, Block, Item, Matrix です.$(p)これらの型を使うことで, 文字列, ブロック情報, アイテム情報, 数値の格子をスペル内で扱えるようになります.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.1",
                 "String is the type used for text. It can hold IDs, names, NBT paths, search conditions, and messages for display.$(p)For example, a spell can obtain a block or item ID as a String and test whether it matches a particular ID.$(p)String values are limited to 8192 characters at runtime. Note that Constant: String pieces can only store 1024 characters inside the spell, because the value is saved with the spell itself.",
                 "String 型は文字列を扱うための型です. ID, 名前, NBTパス, 検索条件, 表示用メッセージなどをスペル内で扱うために使用します.$(p)例えば, ブロックやアイテムのIDを String として取得し, 特定のIDと一致するかを調べることができます.$(p)実行時の String 値は 8192 文字までに制限されています. なお, 定数子: 文字列 は術式に値を保存するため, 1つのピースあたり最大1024文字までしか入力できません.");
@@ -790,6 +794,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLocalized(root, "psi.book.page.psitweaks_programming_types.5",
                 "PsiTweaks divides values into Plain Values and Contextual Values.$(p)Plain Values do not depend on world state, such as Number, Vector, and String.$(p)Contextual Values depend on a world or target context, such as Entity, Block, and Item.",
                 "PsiTweaks の値は Plain Value と Contextual Value に分けられます.$(p)Plain Value はワールドの状態に依存しない値で, Number, Vector, String などが該当します.$(p)Contextual Value はワールドや対象に依存する値で, Entity, Block, Item などが該当します.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.6",
+                "Matrix is a Plain Value type that represents a two-dimensional grid of numbers. It can be stored in CAD memory and converted to a String, just like Number or Vector.$(p)Matrices support sizes from 1×1 up to 4×4. The dedicated matrix operators allow you to build matrices from Number Lists or Vectors, add and multiply matrices, extract rows and columns, compute transposes, determinants, and inverses, and transform vectors with 3×3 or 4×4 matrices.",
+                "Matrix 型は数値の2次元配列（行列）を表す Plain Value 型です. Number や Vector と同様に, CAD メモリへの保存や文字列への変換が可能です.$(p)1×1 から 4×4 までのサイズに対応しています. 専用の行列演算子を使うと, Number List や Vector から行列を作ったり, 行列の加算や乗算, 行や列の取り出し, 転置・行列式・逆行列の計算, 3×3 や 4×4 行列によるベクトル変換などが行えます.");
 
         addLocalized(root, "psi.book.entry.psitweaks_lists",
                 "About Lists",
@@ -1168,6 +1175,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_diagonal", "Operator: Diagonal Matrix", "Creates a diagonal matrix from a Number List or Vector.", "演算子: 対角行列", "Number List または Vector から対角行列を作ります。");
         addSpellPiece(root, "operator_matrix_replace_column", "Operator: Matrix Replace Column", "Replaces a column, expanding the matrix with zeros as needed.", "演算子: 列置換", "列を置換し、必要に応じてゼロで拡張します。");
         addSpellPiece(root, "operator_matrix_replace_row", "Operator: Matrix Replace Row", "Replaces a row, expanding the matrix with zeros as needed.", "演算子: 行置換", "行を置換し、必要に応じてゼロで拡張します。");
+        addSpellPiece(root, "operator_matrix_replace_element", "Operator: Matrix Replace Element", "Replaces the element at the zero-based [row, column] indices with the input number.", "演算子: 行列要素置換", "0始まりの [行, 列] で指定した成分を入力数値で置換します。");
+        addSpellPiece(root, "operator_matrix_delete_row", "Operator: Matrix Delete Row", "Deletes the specified row from the matrix and shifts the remaining rows up.", "演算子: 行削除", "指定した行を行列から削除し、残りの行を詰めます。");
+        addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し、残りの列を詰めます。");
         addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトルを変換します。");
         addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します。");
     }
@@ -1306,6 +1316,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_diagonal", "Creates a diagonal matrix from a Number List or Vector. The input must contain 1 to 4 elements.", "Number List または Vector から対角行列を作ります. 入力は1〜4要素である必要があります.");
         addBookPage(root, "operator_matrix_replace_column", "Replaces the specified column with a Number List or Vector. Missing rows are filled with zero, and specifying a column beyond the current size expands the matrix with zeros.", "指定列を Number List または Vector で置換します. 足りない行は0で埋められ、現在のサイズを超える列を指定するとゼロで拡張されます.");
         addBookPage(root, "operator_matrix_replace_row", "Replaces the specified row with a Number List or Vector. Missing columns are filled with zero, and specifying a row beyond the current size expands the matrix with zeros.", "指定行を Number List または Vector で置換します. 足りない列は0で埋められ、現在のサイズを超える行を指定するとゼロで拡張されます.");
+        addBookPage(root, "operator_matrix_replace_element", "Replaces the element at the zero-based [row, column] indices with the input number. The indices list must contain exactly two numbers.", "0始まりの [行, 列] で指定した成分を入力数値で置換します. 成分指定用のリストは必ず2つの数値を含む必要があります.");
+        addBookPage(root, "operator_matrix_delete_row", "Deletes the row at the zero-based index from the matrix. The matrix must have at least 2 rows so that the result is not empty.", "0始まりのインデックスで指定した行を行列から削除します. 結果が空にならないよう、元の行列は2行以上である必要があります.");
+        addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう、元の行列は2列以上である必要があります.");
         addBookPage(root, "operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
         addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
     }
