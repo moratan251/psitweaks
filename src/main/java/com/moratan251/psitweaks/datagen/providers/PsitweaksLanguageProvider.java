@@ -229,6 +229,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "数列";
             default -> "Array";
         });
+        root.addProperty("psitweaks.spellparam.size", switch (locale) {
+            case "ja_jp" -> "サイズ";
+            default -> "Size";
+        });
+        root.addProperty("psitweaks.spellparam.positions", switch (locale) {
+            case "ja_jp" -> "位置リスト";
+            default -> "Positions";
+        });
         root.addProperty("psitweaks.spellparam.indices", switch (locale) {
             case "ja_jp" -> "成分";
             default -> "Indices";
@@ -296,6 +304,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellerror.matrix_zero_w", switch (locale) {
             case "ja_jp" -> "変換後のw成分が0です";
             default -> "Transformed w component is zero";
+        });
+        root.addProperty("psitweaks.spellerror.region_invalid_matrix", switch (locale) {
+            case "ja_jp" -> "領域演算には3×4または4×4の行列が必要です";
+            default -> "Region operations require a 3x4 or 4x4 matrix";
+        });
+        root.addProperty("psitweaks.spellerror.region_degenerate_edges", switch (locale) {
+            case "ja_jp" -> "3つの辺ベクトルが退化しています";
+            default -> "The three edge vectors are degenerate";
+        });
+        root.addProperty("psitweaks.spellerror.region_too_large", switch (locale) {
+            case "ja_jp" -> "領域に含まれるブロックが多すぎます";
+            default -> "The region contains too many blocks";
         });
         root.addProperty("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
             case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
@@ -1113,11 +1133,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_display_name", "Selector: Display Name", "Outputs the localized display name of a Contextual Value.", "取得子: 表示名", "Contextual Value の表示名を術者の言語に応じた String として出力します。");
         addSpellPiece(root, "selector_display_name_list", "Selector: Display Name List", "Outputs localized display names from a Contextual Value List as a String List.", "取得子: 表示名リスト", "Contextual Value List の各要素の表示名を術者の言語に応じた String List として出力します。");
         addSpellPiece(root, "selector_block", "Selector: Block", "Returns the block at the given position as a Block value.", "取得子: ブロック", "指定座標にあるブロックを Block 型として返します。");
+        addSpellPiece(root, "selector_block_list", "Selector: Block List", "Gets the blocks at the positions in a Vector List as a Block List.", "取得子: ブロックリスト", "Vector List の座標にあるブロックを Block List として取得します。");
         addSpellPiece(root, "operator_block_state", "Operator: Block State", "Outputs the saved block state of a Block value as a String. Example: minecraft:oak_stairs[facing=north]", "演算子: ブロックステート", "Block 値に保存されたブロックステートを文字列として出力します。例: minecraft:oak_stairs[facing=north]");
         addSpellPiece(root, "operator_block_state_value", "Operator: Block State Value", "Outputs one saved block state property value from a Block value.", "演算子: ブロックステート値", "Block 値に保存されたブロックステートから指定したプロパティ値を String として出力します。");
         addSpellPiece(root, "operator_block_state_entries", "Operator: Block State Entries", "Outputs the saved block state properties of a Block value as a String List.", "演算子: ブロックステート項目", "Block 値に保存されたブロックステートのプロパティ項目を String List として出力します。");
         addSpellPiece(root, "operator_tag_list", "Operator: Tag List", "Outputs the registry tags of the target Contextual Value (Entity, Item, Block, etc.) as a String List.", "演算子: タグリスト", "対象の Contextual Value(Entity、Item、Block など)のレジストリタグを String List として出力します。");
         addSpellPiece(root, "operator_block_position", "Operator: Block Position", "Outputs the saved position of a Block value as a plain Vector.", "演算子: ブロック座標", "Block 値に保存された座標を通常の Vector として出力します。");
+        addSpellPiece(root, "operator_block_position_list", "Operator: Block Position List", "Gets the positions of the blocks in a Block List as a Vector List.", "演算子: ブロック位置リスト", "Block List のブロックの座標を Vector List として取得します。");
         addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
         addSpellPiece(root, "selector_held_item", "Selector: Main-Hand Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
         addSpellPiece(root, "selector_selected_slot_item", "Selector: Selected Slot Item", "Gets the item currently selected by this spell.", "取得子: 選択スロットアイテム", "この術式で選択しているアイテムを取得します。");
@@ -1178,8 +1200,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_replace_element", "Operator: Matrix Replace Element", "Replaces the element at the zero-based [row, column] indices with the input number.", "演算子: 行列要素置換", "0始まりの [行, 列] で指定した成分を入力数値で置換します。");
         addSpellPiece(root, "operator_matrix_delete_row", "Operator: Matrix Delete Row", "Deletes the specified row from the matrix and shifts the remaining rows up.", "演算子: 行削除", "指定した行を行列から削除し、残りの行を詰めます。");
         addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し、残りの列を詰めます。");
+        addSpellPiece(root, "operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and signed size. Whole-number sizes select that many blocks per axis.", "演算子: 直方体領域", "中心位置と符号付きサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸で含めるブロック数になります。");
+        addSpellPiece(root, "operator_region_vector_list", "Operator: Region Vector List", "Returns block position vectors inside a matrix-defined region.", "演算子: 領域ベクトルリスト化", "行列で定義された領域内のブロック座標を Vector List として返します。");
         addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトルを変換します。");
         addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します。");
+        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. The maximum block count must be a positive integer constant.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。破壊数の上限には正の整数定数を入力する必要があります。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -1254,11 +1279,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_display_name", "Outputs the display name of a Contextual Value as a String in the caster's current language. Players and custom-named entities keep their visible names; other entities use their EntityType name, Items use their hover name, and Blocks use their block name. If the caster language cannot be read, English is used. Missing translations fall back to English, then to the translation key itself.", "Contextual Value の表示名を, 術者の現在言語に応じた String として出力します. プレイヤーやカスタム名付き Entity は表示されている名前を返し, 通常の Entity は EntityType の名前, Item は hover name, Block はブロック名を返します. 術者の言語を取得できない場合は English を使います. 翻訳がない場合は English, それもなければ翻訳キーそのものを返します.");
         addBookPage(root, "selector_display_name_list", "Outputs display names from a Contextual Value List as a String List while preserving input order. Entity List, Item List, and Block List are supported. Vector List input is converted to Block List by reading the blocks at those world coordinates. Each element uses the same language fallback as Selector: Display Name.", "Contextual Value List から各要素の表示名を String List として出力し, 入力順を維持します. Entity List, Item List, Block List に対応します. Vector List 入力はそのワールド座標のブロックを読む Block List として変換されます. 各要素は 取得子: 表示名 と同じ言語 fallback を使います.");
         addBookPage(root, "selector_block", "Outputs the block at the target position as a Block value. Block is a read-only snapshot containing the saved position, dimension, block state, registry ID, and block tags. Spell pieces that require a Block can also accept a Vector through automatic conversion, so use this when you want to explicitly keep the value as a Block, such as when showing Block information with Trick: Debug.", "対象座標にあるブロックを Block 型として出力します. Block は保存座標, ディメンション, ブロック状態, レジストリID, ブロックタグを持つ読み取り用スナップショットです. Block 型を必要とするスペルピースにも Vector型 が自動変換されそのまま接続できますが, 作動式: デバッグ に Block としての情報を表示させたい場合など Block型 であることを明示的に示したい場合に用います.");
+        addBookPage(root, "selector_block_list", "Gets the blocks at the positions in a Vector List as a Block List. Use this when you want to handle positions as blocks, such as when searching a list by block type.", "Vector List の座標にあるブロックを Block List として取得します. ブロックの種類でリストを検索したいなど, 座標をブロックとして扱いたい場合に使います.");
         addBookPage(root, "operator_block_state", "Outputs the block state saved in a Block value as a String, using Minecraft's command-style form such as minecraft:oak_stairs[facing=north,half=bottom]. The value comes from the Block snapshot and does not change if the world changes later.", "Block 値に保存されたブロックステートを String として出力します. 出力は minecraft:oak_stairs[facing=north,half=bottom] のような Minecraft のコマンド風表記です. 値は Block のスナップショットから取得され, 後からワールドが変化しても変わりません.");
         addBookPage(root, "operator_block_state_value", "Outputs one property value from the block state saved in a Block value. Use the String input to name a property such as facing or waterlogged. If the property does not exist, it outputs an empty String.", "Block 値に保存されたブロックステートから指定 property の値を1つ出力します. String 入力には facing や waterlogged などの property 名を指定します. property が存在しない場合は空の String を出力します.");
         addBookPage(root, "operator_block_state_entries", "Outputs the properties saved in a Block value's block state as a String List. Each entry uses property:value form, such as facing:north or waterlogged:false. Blocks with no state properties output an empty String List.", "Block 値に保存されたブロックステートのプロパティを String List として出力します. 各要素は facing:north や waterlogged:false のような property:value 形式です. state property を持たないブロックは空の String List を出力します.");
         addBookPage(root, "operator_tag_list", "Outputs registry tags from a Contextual Value as a String List. Entries use namespace:path form without #. Entity inputs return EntityType tags, not scoreboard tags.", "Contextual Value からレジストリタグを String List として出力します. 各要素は # を付けない namespace:path 形式です. Entity 入力は EntityType のタグを返し, スコアボードタグは含みません.");
         addBookPage(root, "operator_block_position", "Outputs the position saved in a Block as a plain Vector. A Block can usually be connected directly to spell pieces that require a Vector, but use this when a Vector value is explicitly needed, such as when checking coordinates with Trick: Debug.", "Block に保存された座標を通常の Vector として出力します. 基本的に Vector を必要とするスペルピースには Block 型をそのまま接続できますが、作動式: デバッグ に接続して座標を確認する際など Vector型 が明示的に必要な場合に使います.");
+        addBookPage(root, "operator_block_position_list", "Gets the positions saved in a Block List as a Vector List.", "Block List に保存された座標を Vector List として取得します.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
         addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.");
         addBookPage(root, "selector_selected_slot_item", "Outputs the ItemStack in the slot selected by the spell as an Item value. This is the same slot used by Psi pieces such as Trick: Place Block, and is affected by Trick: Switch Target Slot. Empty slots output an empty Item.", "術式で選択しているスロットにある ItemStack を Item 型として出力します. スロットは Psi の 作動式: ブロック設置 などで扱うものと同じであり, 作動式: 指定スロット切替 の影響を受けます. 空スロットは空の Item を出力します.");
@@ -1319,8 +1346,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_replace_element", "Replaces the element at the zero-based [row, column] indices with the input number. The indices list must contain exactly two numbers.", "0始まりの [行, 列] で指定した成分を入力数値で置換します. 成分指定用のリストは必ず2つの数値を含む必要があります.");
         addBookPage(root, "operator_matrix_delete_row", "Deletes the row at the zero-based index from the matrix. The matrix must have at least 2 rows so that the result is not empty.", "0始まりのインデックスで指定した行を行列から削除します. 結果が空にならないよう、元の行列は2行以上である必要があります.");
         addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう、元の行列は2列以上である必要があります.");
+        addBookPage(root, "operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as signed block counts: odd counts are centered on the input position, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分は符号付きブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します.");
+        addBookPage(root, "operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された3次元の平行六面体内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
         addBookPage(root, "operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
         addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
+        addBookPage(root, "trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List. Vectors are treated as block coordinates, duplicate block positions are ignored after their first occurrence, and the remaining order is preserved. The maximum block count input must be a positive integer constant. Only positions that can be processed up to the configured maximum are range-checked and broken. Dropped items are gathered at the caster's position. The processed positions must fit within the shared internal limit.", "Vector List の座標にあるブロックを破壊します. Vector はブロック座標として扱われ、重複したブロック座標は最初の1回だけ使われ、残りの順序は維持されます. 破壊数の上限入力は正の整数定数である必要があります. 設定した最大数まで実際に処理される座標だけが範囲チェックと破壊の対象になります. ドロップアイテムは術者の位置に集められます. 処理対象は共通の内部上限内に収まる必要があります.");
     }
 
     private void addCadDisassembler(JsonObject root) {

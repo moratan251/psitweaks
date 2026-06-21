@@ -19,6 +19,8 @@ public final class PsitweaksSpellParams {
     public static final String MATRIX2 = PREFIX + "matrix2";
     public static final String MATRIX3 = PREFIX + "matrix3";
     public static final String VECTOR_OR_NUMBER_LIST = PREFIX + "vector_or_number_list";
+    public static final String SIZE = PREFIX + "size";
+    public static final String POSITIONS = PREFIX + "positions";
     public static final String INDICES = PREFIX + "indices";
     public static final String ITEM = PREFIX + "item";
     public static final String TAG = PREFIX + "tag";

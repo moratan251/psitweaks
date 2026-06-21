@@ -94,6 +94,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_guillotine");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
+    public static final DeferredHolder<Material, Material> TRICK_MASS_BLOCK_BREAK =
+            registerPieceMaterial("trick_mass_block_break");
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerPieceMaterial("trick_physical_propulsion");
@@ -141,6 +143,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_display_name_list");
     public static final DeferredHolder<Material, Material> SELECTOR_BLOCK =
             registerPieceMaterial("selector_block");
+    public static final DeferredHolder<Material, Material> SELECTOR_BLOCK_LIST =
+            registerPieceMaterial("selector_block_list");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE =
             registerPieceMaterial("operator_block_state");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_STATE_VALUE =
@@ -151,6 +155,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_tag_list");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_POSITION =
             registerPieceMaterial("operator_block_position");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_POSITION_LIST =
+            registerPieceMaterial("operator_block_position_list");
     public static final DeferredHolder<Material, Material> SELECTOR_ONLINE_PLAYERS =
             registerPieceMaterial("selector_online_players");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEM =
@@ -271,6 +277,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_delete_row");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_DELETE_COLUMN =
             registerPieceMaterial("operator_matrix_delete_column");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_CUBOID_REGION =
+            registerPieceMaterial("operator_matrix_cuboid_region");
+    public static final DeferredHolder<Material, Material> OPERATOR_REGION_VECTOR_LIST =
+            registerPieceMaterial("operator_region_vector_list");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =
             registerPieceMaterial("operator_matrix_transform_vector");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =

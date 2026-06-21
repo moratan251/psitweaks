@@ -148,6 +148,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_display_name_list", PieceSelectorDisplayNameList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlock>> SELECTOR_BLOCK =
             registerPiece("selector_block", PieceSelectorBlock.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorBlockList>> SELECTOR_BLOCK_LIST =
+            registerPiece("selector_block_list", PieceSelectorBlockList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockState>> OPERATOR_BLOCK_STATE =
             registerPiece("operator_block_state", PieceOperatorBlockState.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockStateValue>> OPERATOR_BLOCK_STATE_VALUE =
@@ -158,6 +160,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_tag_list", PieceOperatorTagList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockPosition>> OPERATOR_BLOCK_POSITION =
             registerPiece("operator_block_position", PieceOperatorBlockPosition.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorBlockPositionList>> OPERATOR_BLOCK_POSITION_LIST =
+            registerPiece("operator_block_position_list", PieceOperatorBlockPositionList.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorOnlinePlayers>> SELECTOR_ONLINE_PLAYERS =
             registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorHeldItem>> SELECTOR_HELD_ITEM =
@@ -282,6 +286,12 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_delete_row", PieceOperatorMatrixDeleteRow.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixDeleteColumn>> OPERATOR_MATRIX_DELETE_COLUMN =
             registerPiece("operator_matrix_delete_column", PieceOperatorMatrixDeleteColumn.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorMatrixCuboidRegion>> OPERATOR_MATRIX_CUBOID_REGION =
+            registerPiece("operator_matrix_cuboid_region", PieceOperatorMatrixCuboidRegion.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRegionVectorList>> OPERATOR_REGION_VECTOR_LIST =
+            registerPiece("operator_region_vector_list", PieceOperatorRegionVectorList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMassBlockBreak>> TRICK_MASS_BLOCK_BREAK =
+            registerPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -363,6 +373,8 @@ public final class PsitweaksSpells {
             registerGroup("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MATERIAL_MUTATION =
             registerGroup("trick_material_mutation", PieceTrickMaterialMutation.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MASS_BLOCK_BREAK =
+            registerGroup("trick_mass_block_break", PieceTrickMassBlockBreak.class);
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerGroup("trick_physical_propulsion", PieceTrickPhysicalPropulsion.class);
@@ -443,10 +455,12 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLOCK =
             ADVANCEMENT_GROUPS.register("block", () -> List.of(
                     PieceSelectorBlock.class,
+                    PieceSelectorBlockList.class,
                     PieceOperatorBlockState.class,
                     PieceOperatorBlockStateValue.class,
                     PieceOperatorBlockStateEntries.class,
-                    PieceOperatorBlockPosition.class
+                    PieceOperatorBlockPosition.class,
+                    PieceOperatorBlockPositionList.class
             ));
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MATRIX =
             ADVANCEMENT_GROUPS.register("matrix", () -> List.of(
@@ -474,7 +488,9 @@ public final class PsitweaksSpells {
                     PieceOperatorMatrixDeleteRow.class,
                     PieceOperatorMatrixDeleteColumn.class,
                     PieceOperatorMatrixTransformVector.class,
-                    PieceOperatorMatrixLinearPart.class
+                    PieceOperatorMatrixLinearPart.class,
+                    PieceOperatorMatrixCuboidRegion.class,
+                    PieceOperatorRegionVectorList.class
             ));
 
     private PsitweaksSpells() {
