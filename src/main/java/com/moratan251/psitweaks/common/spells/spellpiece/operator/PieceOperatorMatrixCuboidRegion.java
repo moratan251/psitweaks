@@ -42,7 +42,7 @@ public class PieceOperatorMatrixCuboidRegion extends PieceOperator {
                 0.0, 0.0, z.edge, z.start,
                 0.0, 0.0, 0.0, 1.0
         };
-        return new MatrixValue(4, 4, values);
+        return MatrixOperations.checkedMatrix(4, 4, values);
     }
 
     @Override

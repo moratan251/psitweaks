@@ -293,6 +293,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "変換行列は3×3または4×4である必要があります";
             default -> "Transform matrix must be 3x3 or 4x4";
         });
+        root.addProperty("psitweaks.spellerror.matrix_non_finite_result", switch (locale) {
+            case "ja_jp" -> "行列演算の結果が有限値ではありません";
+            default -> "Matrix operation produced a non-finite result";
+        });
         root.addProperty("psitweaks.spellerror.matrix_zero_w", switch (locale) {
             case "ja_jp" -> "変換後のw成分が0です";
             default -> "Transformed w component is zero";
@@ -1342,7 +1346,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された3次元の平行六面体内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
         addBookPage(root, "operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
         addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
-        addBookPage(root, "trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List. Vectors are treated as block coordinates, duplicate block positions are ignored after their first occurrence, and the remaining order is preserved. The maximum block count input must be a positive integer constant. Only positions that can be processed up to the configured maximum are range-checked and broken. Dropped items are gathered at the caster's position. The processed positions must fit within the shared internal limit.", "Vector List の座標にあるブロックを破壊します. Vector はブロック座標として扱われ、重複したブロック座標は最初の1回だけ使われ、残りの順序は維持されます. 破壊数の上限入力は正の整数定数である必要があります. 設定した最大数まで実際に処理される座標だけが範囲チェックと破壊の対象になります. ドロップアイテムは術者の位置に集められます. 処理対象は共通の内部上限内に収まる必要があります.");
+        addBookPage(root, "trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List. Vectors are treated as block coordinates, duplicate block positions are ignored after their first occurrence, and the remaining order is preserved. The maximum block count input must be a positive integer constant. Only positions that can be processed up to the configured maximum are range-checked and broken. Dropped items are merged and gathered at the caster's position. The processed positions must fit within the shared internal limit.", "Vector List の座標にあるブロックを破壊します. Vector はブロック座標として扱われ、重複したブロック座標は最初の1回だけ使われ、残りの順序は維持されます. 破壊数の上限入力は正の整数定数である必要があります. 設定した最大数まで実際に処理される座標だけが範囲チェックと破壊の対象になります. ドロップアイテムはまとめられて術者の位置に集められます. 処理対象は共通の内部上限内に収まる必要があります.");
     }
 
     private void addCadDisassembler(JsonObject root) {

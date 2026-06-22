@@ -19,9 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
@@ -32,7 +31,9 @@ public final class MassBlockBreakHelper {
     public static final String ERROR_DEGENERATE_EDGES = "psitweaks.spellerror.region_degenerate_edges";
     public static final String ERROR_REGION_TOO_LARGE = "psitweaks.spellerror.region_too_large";
     public static final int MAX_REGION_BLOCKS = 4096;
+    public static final int MAX_SCAN_CANDIDATES = 65536;
 
+    private static final int MAX_AXIS_SCAN = MAX_SCAN_CANDIDATES;
     private static final double EPSILON = 1e-12;
 
     private MassBlockBreakHelper() {
@@ -53,14 +54,16 @@ public final class MassBlockBreakHelper {
 
         List<BlockState> brokenStates = new ArrayList<>();
         List<BlockPos> brokenPositions = new ArrayList<>();
+        List<ItemStack> drops = new ArrayList<>();
         for (BreakTarget target : targets) {
             BlockState state = serverLevel.getBlockState(target.pos());
-            if (breakBlock(serverLevel, player, target.pos())) {
+            if (breakBlock(serverLevel, player, target.pos(), drops)) {
                 brokenStates.add(state);
                 brokenPositions.add(target.pos());
             }
         }
 
+        spawnCollectedDrops(serverLevel, player, drops);
         spawnRandomBlockParticles(serverLevel, brokenPositions, brokenStates, 10);
     }
 
@@ -124,6 +127,7 @@ public final class MassBlockBreakHelper {
             double v = (i & 2) != 0 ? 1 : 0;
             double w = (i & 4) != 0 ? 1 : 0;
             vertices[i] = add(start, add(scale(edge0, u), add(scale(edge1, v), scale(edge2, w))));
+            validateFiniteVector(vertices[i]);
         }
 
         return new Region(start, inverseMatrix, vertices);
@@ -145,18 +149,13 @@ public final class MassBlockBreakHelper {
             maxZ = Math.max(maxZ, vertex.z);
         }
 
-        int minBX = (int) Math.floor(minX);
-        int minBY = (int) Math.floor(minY);
-        int minBZ = (int) Math.floor(minZ);
-        int maxBX = (int) Math.ceil(maxX);
-        int maxBY = (int) Math.ceil(maxY);
-        int maxBZ = (int) Math.ceil(maxZ);
+        ScanBounds bounds = createScanBounds(minX, minY, minZ, maxX, maxY, maxZ);
 
         List<Target> targets = new ArrayList<>();
         MatrixValue inverseMatrix = region.inverseMatrix();
-        for (int x = minBX; x <= maxBX; x++) {
-            for (int y = minBY; y <= maxBY; y++) {
-                for (int z = minBZ; z <= maxBZ; z++) {
+        for (long x = bounds.minX(); x <= bounds.maxX(); x++) {
+            for (long y = bounds.minY(); y <= bounds.maxY(); y++) {
+                for (long z = bounds.minZ(); z <= bounds.maxZ(); z++) {
                     double dx = x - region.start().x;
                     double dy = y - region.start().y;
                     double dz = z - region.start().z;
@@ -164,7 +163,7 @@ public final class MassBlockBreakHelper {
                     double v = inverseMatrix.get(1, 0) * dx + inverseMatrix.get(1, 1) * dy + inverseMatrix.get(1, 2) * dz;
                     double w = inverseMatrix.get(2, 0) * dx + inverseMatrix.get(2, 1) * dy + inverseMatrix.get(2, 2) * dz;
                     if (u >= -EPSILON && u <= 1 + EPSILON && v >= -EPSILON && v <= 1 + EPSILON && w >= -EPSILON && w <= 1 + EPSILON) {
-                        targets.add(new Target(new BlockPos(x, y, z), u, v, w));
+                        targets.add(new Target(new BlockPos((int) x, (int) y, (int) z), u, v, w));
                         if (targets.size() > MAX_REGION_BLOCKS) {
                             throw new SpellRuntimeException(ERROR_REGION_TOO_LARGE);
                         }
@@ -177,6 +176,55 @@ public final class MassBlockBreakHelper {
                 .thenComparingDouble(Target::v)
                 .thenComparingDouble(Target::w));
         return targets;
+    }
+
+    private static ScanBounds createScanBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) throws SpellRuntimeException {
+        int minBX = floorToBlock(minX);
+        int minBY = floorToBlock(minY);
+        int minBZ = floorToBlock(minZ);
+        int maxBX = ceilToBlock(maxX);
+        int maxBY = ceilToBlock(maxY);
+        int maxBZ = ceilToBlock(maxZ);
+
+        long sizeX = (long) maxBX - minBX + 1;
+        long sizeY = (long) maxBY - minBY + 1;
+        long sizeZ = (long) maxBZ - minBZ + 1;
+        if (sizeX <= 0 || sizeY <= 0 || sizeZ <= 0
+                || sizeX > MAX_AXIS_SCAN || sizeY > MAX_AXIS_SCAN || sizeZ > MAX_AXIS_SCAN) {
+            throw new SpellRuntimeException(ERROR_REGION_TOO_LARGE);
+        }
+
+        long sizeXY = checkedScanProduct(sizeX, sizeY);
+        checkedScanProduct(sizeXY, sizeZ);
+        return new ScanBounds(minBX, minBY, minBZ, maxBX, maxBY, maxBZ);
+    }
+
+    private static long checkedScanProduct(long a, long b) throws SpellRuntimeException {
+        if (a > MAX_SCAN_CANDIDATES / b) {
+            throw new SpellRuntimeException(ERROR_REGION_TOO_LARGE);
+        }
+        return a * b;
+    }
+
+    private static int floorToBlock(double value) throws SpellRuntimeException {
+        return blockCoordinate(Math.floor(value));
+    }
+
+    private static int ceilToBlock(double value) throws SpellRuntimeException {
+        return blockCoordinate(Math.ceil(value));
+    }
+
+    private static int blockCoordinate(double value) throws SpellRuntimeException {
+        if (!Double.isFinite(value) || value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+            throw new SpellRuntimeException(ERROR_REGION_TOO_LARGE);
+        }
+        return (int) value;
+    }
+
+    private static void validateFiniteVector(Vector3 vector) throws SpellRuntimeException {
+        if (!Double.isFinite(vector.x) || !Double.isFinite(vector.y) || !Double.isFinite(vector.z)) {
+            throw new SpellRuntimeException(ERROR_REGION_TOO_LARGE);
+        }
     }
 
     private static void spawnRandomBlockParticles(ServerLevel level, List<BlockPos> positions, List<BlockState> states, int count) {
@@ -196,7 +244,7 @@ public final class MassBlockBreakHelper {
         }
     }
 
-    private static boolean breakBlock(ServerLevel level, ServerPlayer player, BlockPos pos) {
+    private static boolean breakBlock(ServerLevel level, ServerPlayer player, BlockPos pos, List<ItemStack> drops) {
         if (!level.hasChunkAt(pos)) {
             return false;
         }
@@ -211,21 +259,50 @@ public final class MassBlockBreakHelper {
             return false;
         }
 
-        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, state, player);
-        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
-            return false;
+        ItemStack tool = player.getMainHandItem();
+        if (tool.isEmpty()) {
+            tool = PsiAPI.getPlayerCAD(player);
+        }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        List<ItemStack> blockDrops = Block.getDrops(state, level, pos, blockEntity, player, tool);
+        for (ItemStack drop : blockDrops) {
+            mergeDrop(drops, drop);
+        }
+        level.removeBlock(pos, false);
+        state.spawnAfterBreak(level, pos, tool, true);
+        return true;
+    }
+
+    private static void mergeDrop(List<ItemStack> drops, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return;
         }
 
-        ItemStack tool = PsiAPI.getPlayerCAD(player);
-        List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos), player, tool);
+        int remaining = stack.getCount();
+        for (ItemStack existing : drops) {
+            if (ItemStack.isSameItemSameComponents(existing, stack) && existing.getCount() < existing.getMaxStackSize()) {
+                int moved = Math.min(remaining, existing.getMaxStackSize() - existing.getCount());
+                existing.grow(moved);
+                remaining -= moved;
+                if (remaining <= 0) {
+                    return;
+                }
+            }
+        }
+
+        while (remaining > 0) {
+            int count = Math.min(remaining, stack.getMaxStackSize());
+            drops.add(stack.copyWithCount(count));
+            remaining -= count;
+        }
+    }
+
+    private static void spawnCollectedDrops(ServerLevel level, ServerPlayer player, List<ItemStack> drops) {
         for (ItemStack drop : drops) {
-            ItemEntity item = new ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), drop);
+            ItemEntity item = new ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), drop.copy());
             item.setPickUpDelay(10);
             level.addFreshEntity(item);
         }
-
-        level.removeBlock(pos, false);
-        return true;
     }
 
     private static boolean isUnbreakable(BlockState state) {
@@ -256,6 +333,9 @@ public final class MassBlockBreakHelper {
     }
 
     private record Region(Vector3 start, MatrixValue inverseMatrix, Vector3[] vertices) {
+    }
+
+    private record ScanBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
     }
 
     private record Target(BlockPos pos, double u, double v, double w) {

@@ -16,6 +16,7 @@ public final class MatrixOperations {
     public static final String ERROR_INVALID_DIMENSION = "psitweaks.spellerror.matrix_invalid_dimension";
     public static final String ERROR_INVALID_TRANSFORM = "psitweaks.spellerror.matrix_invalid_transform";
     public static final String ERROR_ZERO_W = "psitweaks.spellerror.matrix_zero_w";
+    public static final String ERROR_NON_FINITE_RESULT = "psitweaks.spellerror.matrix_non_finite_result";
 
     private static final double EPSILON = 1e-12;
 
@@ -50,7 +51,7 @@ public final class MatrixOperations {
                 }
             }
         }
-        return new MatrixValue(rows, cols, values);
+        return checkedMatrix(rows, cols, values);
     }
 
     public static MatrixValue subtract(MatrixValue a, MatrixValue b) throws SpellRuntimeException {
@@ -74,7 +75,7 @@ public final class MatrixOperations {
                 }
             }
         }
-        return new MatrixValue(rows, cols, values);
+        return checkedMatrix(rows, cols, values);
     }
 
     public static MatrixValue multiply(MatrixValue a, MatrixValue b) throws SpellRuntimeException {
@@ -94,7 +95,7 @@ public final class MatrixOperations {
                 values[r * cols + c] = sum;
             }
         }
-        return new MatrixValue(rows, cols, values);
+        return checkedMatrix(rows, cols, values);
     }
 
     public static MatrixValue multiply(MatrixValue a, MatrixValue b, MatrixValue c) throws SpellRuntimeException {
@@ -105,17 +106,18 @@ public final class MatrixOperations {
         return result;
     }
 
-    public static MatrixValue scalarMultiply(double scalar, MatrixValue matrix) {
+    public static MatrixValue scalarMultiply(double scalar, MatrixValue matrix) throws SpellRuntimeException {
+        checkedNumber(scalar);
         int rows = matrix.rows();
         int cols = matrix.cols();
         double[] values = matrix.valuesCopy();
         for (int i = 0; i < values.length; i++) {
             values[i] *= scalar;
         }
-        return new MatrixValue(rows, cols, values);
+        return checkedMatrix(rows, cols, values);
     }
 
-    public static MatrixValue transpose(MatrixValue matrix) {
+    public static MatrixValue transpose(MatrixValue matrix) throws SpellRuntimeException {
         int rows = matrix.rows();
         int cols = matrix.cols();
         double[] values = new double[rows * cols];
@@ -124,24 +126,25 @@ public final class MatrixOperations {
                 values[c * rows + r] = matrix.get(r, c);
             }
         }
-        return new MatrixValue(cols, rows, values);
+        return checkedMatrix(cols, rows, values);
     }
 
     public static double determinant(MatrixValue matrix) throws SpellRuntimeException {
         requireSquare(matrix);
         int n = matrix.rows();
         if (n == 1) {
-            return matrix.get(0, 0);
+            return checkedNumber(matrix.get(0, 0));
         }
         if (n == 2) {
-            return matrix.get(0, 0) * matrix.get(1, 1) - matrix.get(0, 1) * matrix.get(1, 0);
+            return checkedNumber(matrix.get(0, 0) * matrix.get(1, 1) - matrix.get(0, 1) * matrix.get(1, 0));
         }
         double det = 0;
         for (int c = 0; c < n; c++) {
             double sign = (c % 2 == 0) ? 1 : -1;
-            det += sign * matrix.get(0, c) * determinant(subMatrix(matrix, 0, c));
+            double term = checkedNumber(sign * matrix.get(0, c) * determinant(subMatrix(matrix, 0, c)));
+            det = checkedNumber(det + term);
         }
-        return det;
+        return checkedNumber(det);
     }
 
     public static MatrixValue inverse(MatrixValue matrix) throws SpellRuntimeException {
@@ -197,7 +200,7 @@ public final class MatrixOperations {
         for (int r = 0; r < n; r++) {
             System.arraycopy(augmented[r], n, values, r * n, n);
         }
-        return new MatrixValue(n, n, values);
+        return checkedMatrix(n, n, values);
     }
 
     public static NumberListWrapper extractRow(MatrixValue matrix, int row) throws SpellRuntimeException {
@@ -239,7 +242,7 @@ public final class MatrixOperations {
             for (int c = 0; c < matrix.cols(); c++) {
                 sum += matrix.get(r, c) * vector.get(c);
             }
-            values.add(sum);
+            values.add(checkedNumber(sum));
         }
         return NumberListWrapper.make(values);
     }
@@ -252,7 +255,7 @@ public final class MatrixOperations {
         for (int i = 0; i < list.size(); i++) {
             values[i] = list.get(i);
         }
-        return new MatrixValue(list.size(), 1, values);
+        return checkedMatrix(list.size(), 1, values);
     }
 
     public static NumberListWrapper flatten(MatrixValue matrix) {
@@ -271,13 +274,13 @@ public final class MatrixOperations {
         for (int i = 0; i < size; i++) {
             values[i * size + i] = 1;
         }
-        return new MatrixValue(size, size, values);
+        return checkedMatrix(size, size, values);
     }
 
     public static MatrixValue zero(int rows, int cols) throws SpellRuntimeException {
         validateDimension(rows);
         validateDimension(cols);
-        return new MatrixValue(rows, cols, new double[rows * cols]);
+        return checkedMatrix(rows, cols, new double[rows * cols]);
     }
 
     public static MatrixValue diagonal(NumberListWrapper values) throws SpellRuntimeException {
@@ -289,7 +292,7 @@ public final class MatrixOperations {
         for (int i = 0; i < n; i++) {
             result[i * n + i] = values.get(i);
         }
-        return new MatrixValue(n, n, result);
+        return checkedMatrix(n, n, result);
     }
 
     public static MatrixValue replaceColumn(MatrixValue matrix, int col, NumberListWrapper values) throws SpellRuntimeException {
@@ -314,7 +317,7 @@ public final class MatrixOperations {
         for (int r = 0; r < values.size(); r++) {
             result[r * newCols + col] = values.get(r);
         }
-        return new MatrixValue(newRows, newCols, result);
+        return checkedMatrix(newRows, newCols, result);
     }
 
     public static MatrixValue replaceRow(MatrixValue matrix, int row, NumberListWrapper values) throws SpellRuntimeException {
@@ -341,7 +344,7 @@ public final class MatrixOperations {
         for (int c = 0; c < values.size(); c++) {
             result[row * newCols + c] = values.get(c);
         }
-        return new MatrixValue(newRows, newCols, result);
+        return checkedMatrix(newRows, newCols, result);
     }
 
     public static MatrixValue replaceElement(MatrixValue matrix, NumberListWrapper indices, double value) throws SpellRuntimeException {
@@ -354,8 +357,8 @@ public final class MatrixOperations {
             throw new SpellRuntimeException(ERROR_OUT_OF_BOUNDS);
         }
         double[] values = matrix.valuesCopy();
-        values[row * matrix.cols() + col] = value;
-        return new MatrixValue(matrix.rows(), matrix.cols(), values);
+        values[row * matrix.cols() + col] = checkedNumber(value);
+        return checkedMatrix(matrix.rows(), matrix.cols(), values);
     }
 
     public static MatrixValue deleteRow(MatrixValue matrix, int row) throws SpellRuntimeException {
@@ -376,7 +379,7 @@ public final class MatrixOperations {
             System.arraycopy(matrix.valuesCopy(), r * cols, values, target * cols, cols);
             target++;
         }
-        return new MatrixValue(newRows, cols, values);
+        return checkedMatrix(newRows, cols, values);
     }
 
     public static MatrixValue deleteColumn(MatrixValue matrix, int col) throws SpellRuntimeException {
@@ -399,24 +402,24 @@ public final class MatrixOperations {
                 target++;
             }
         }
-        return new MatrixValue(rows, newCols, values);
+        return checkedMatrix(rows, newCols, values);
     }
 
     public static Vector3 transformVector(MatrixValue matrix, Vector3 vector) throws SpellRuntimeException {
         requireTransformSize(matrix);
         if (matrix.rows() == 3) {
             double[] result = multiplyColumnVector(matrix, new double[]{vector.x, vector.y, vector.z});
-            return new Vector3(result[0], result[1], result[2]);
+            return checkedVector(result[0], result[1], result[2]);
         }
         double[] result = multiplyColumnVector(matrix, new double[]{vector.x, vector.y, vector.z, 1});
-        double w = result[3];
+        double w = checkedNumber(result[3]);
         if (Math.abs(w) < EPSILON) {
             throw new SpellRuntimeException(ERROR_ZERO_W);
         }
-        return new Vector3(result[0] / w, result[1] / w, result[2] / w);
+        return checkedVector(result[0] / w, result[1] / w, result[2] / w);
     }
 
-    private static double[] multiplyColumnVector(MatrixValue matrix, double[] vector) {
+    private static double[] multiplyColumnVector(MatrixValue matrix, double[] vector) throws SpellRuntimeException {
         int rows = matrix.rows();
         int cols = matrix.cols();
         double[] result = new double[rows];
@@ -425,7 +428,7 @@ public final class MatrixOperations {
             for (int c = 0; c < cols; c++) {
                 sum += matrix.get(r, c) * vector[c];
             }
-            result[r] = sum;
+            result[r] = checkedNumber(sum);
         }
         return result;
     }
@@ -476,7 +479,25 @@ public final class MatrixOperations {
                 values[r * 3 + c] = matrix.get(r, c);
             }
         }
-        return new MatrixValue(3, 3, values);
+        return checkedMatrix(3, 3, values);
+    }
+
+    static MatrixValue checkedMatrix(int rows, int cols, double[] values) throws SpellRuntimeException {
+        for (double value : values) {
+            checkedNumber(value);
+        }
+        return new MatrixValue(rows, cols, values);
+    }
+
+    private static double checkedNumber(double value) throws SpellRuntimeException {
+        if (!Double.isFinite(value)) {
+            throw new SpellRuntimeException(ERROR_NON_FINITE_RESULT);
+        }
+        return value;
+    }
+
+    private static Vector3 checkedVector(double x, double y, double z) throws SpellRuntimeException {
+        return new Vector3(checkedNumber(x), checkedNumber(y), checkedNumber(z));
     }
 
     private static void validateDimension(int dimension) throws SpellRuntimeException {
