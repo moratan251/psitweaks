@@ -205,14 +205,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "要素3";
             default -> "Element 3";
         });
-        root.addProperty("psitweaks.spellparam.number_a", switch (locale) {
-            case "ja_jp" -> "数値A";
-            default -> "Number A";
-        });
-        root.addProperty("psitweaks.spellparam.number_b", switch (locale) {
-            case "ja_jp" -> "数値B";
-            default -> "Number B";
-        });
         root.addProperty("psitweaks.spellparam.matrix1", switch (locale) {
             case "ja_jp" -> "行列1";
             default -> "Matrix 1";
@@ -225,6 +217,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "行列3";
             default -> "Matrix 3";
         });
+        root.addProperty("psitweaks.spellparam.matrix", switch (locale) {
+            case "ja_jp" -> "行列";
+            default -> "Matrix";
+        });
         root.addProperty("psitweaks.spellparam.vector_or_number_list", switch (locale) {
             case "ja_jp" -> "数列";
             default -> "Array";
@@ -232,10 +228,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellparam.size", switch (locale) {
             case "ja_jp" -> "サイズ";
             default -> "Size";
-        });
-        root.addProperty("psitweaks.spellparam.positions", switch (locale) {
-            case "ja_jp" -> "位置リスト";
-            default -> "Positions";
         });
         root.addProperty("psitweaks.spellparam.indices", switch (locale) {
             case "ja_jp" -> "成分";

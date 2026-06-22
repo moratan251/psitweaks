@@ -26,8 +26,8 @@ public class PieceOperatorStringSlice extends PieceOperator {
                 PsitweaksSpellParams.STRING_COLOR,
                 false,
                 false));
-        addParam(numberA = new ParamNumber(PsitweaksSpellParams.NUMBER_A, SpellParam.RED, true, false));
-        addParam(numberB = new ParamNumber(PsitweaksSpellParams.NUMBER_B, SpellParam.RED, true, false));
+        addParam(numberA = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER1, SpellParam.RED, true, false));
+        addParam(numberB = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER2, SpellParam.RED, true, false));
     }
 
     @Override

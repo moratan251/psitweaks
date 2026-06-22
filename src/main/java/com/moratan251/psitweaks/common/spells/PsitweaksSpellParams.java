@@ -13,14 +13,12 @@ public final class PsitweaksSpellParams {
     public static final String ELEMENT1 = PREFIX + "element1";
     public static final String ELEMENT2 = PREFIX + "element2";
     public static final String ELEMENT3 = PREFIX + "element3";
-    public static final String NUMBER_A = PREFIX + "number_a";
-    public static final String NUMBER_B = PREFIX + "number_b";
     public static final String MATRIX1 = PREFIX + "matrix1";
     public static final String MATRIX2 = PREFIX + "matrix2";
     public static final String MATRIX3 = PREFIX + "matrix3";
+    public static final String MATRIX = PREFIX + "matrix";
     public static final String VECTOR_OR_NUMBER_LIST = PREFIX + "vector_or_number_list";
     public static final String SIZE = PREFIX + "size";
-    public static final String POSITIONS = PREFIX + "positions";
     public static final String INDICES = PREFIX + "indices";
     public static final String ITEM = PREFIX + "item";
     public static final String TAG = PREFIX + "tag";

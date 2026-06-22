@@ -22,7 +22,7 @@ public class PieceOperatorMatrixTransformVector extends PieceOperator {
 
     @Override
     public void initParams() {
-        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX1, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
         addParam(vector = new ParamVector(SpellParam.GENERIC_NAME_TARGET, SpellParam.GREEN, false, false));
     }
 

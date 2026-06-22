@@ -1,6 +1,5 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
@@ -43,8 +42,8 @@ public class PieceOperatorListSlice extends PieceOperatorModeListBase {
     protected void rebuildParams(Map<String, SpellParam.Side> savedSides) {
         clearModeParams();
         addParam(list = currentAdapter().createListParam(SpellParam.GENERIC_NAME_LIST, false));
-        addParam(numberA = new ParamNumber(PsitweaksSpellParams.NUMBER_A, SpellParam.RED, true, false));
-        addParam(numberB = new ParamNumber(PsitweaksSpellParams.NUMBER_B, SpellParam.RED, true, false));
+        addParam(numberA = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER1, SpellParam.RED, true, false));
+        addParam(numberB = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER2, SpellParam.RED, true, false));
         restoreParamSides(savedSides);
     }
 

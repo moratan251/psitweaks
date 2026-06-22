@@ -32,7 +32,7 @@ public class PieceTrickMassBlockBreak extends PieceTrick {
 
     @Override
     public void initParams() {
-        addParam(positions = new ParamVectorListWrapper(PsitweaksSpellParams.POSITIONS, PsitweaksSpellParams.VECTOR_LIST_COLOR, false, false));
+        addParam(positions = new ParamVectorListWrapper(SpellParam.GENERIC_NAME_LIST, PsitweaksSpellParams.VECTOR_LIST_COLOR, false, false));
         addParam(maxBlocks = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER1, SpellParam.RED, false, true));
     }
 

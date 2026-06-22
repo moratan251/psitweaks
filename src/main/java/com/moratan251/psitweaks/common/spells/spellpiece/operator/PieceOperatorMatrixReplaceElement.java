@@ -24,7 +24,7 @@ public class PieceOperatorMatrixReplaceElement extends PieceOperator {
 
     @Override
     public void initParams() {
-        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX1, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
         addParam(indices = new ParamNumberListWrapper(PsitweaksSpellParams.INDICES, PsitweaksSpellParams.NUMBER_LIST_COLOR, false, false));
         addParam(value = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER1, SpellParam.PURPLE, false, false));
     }

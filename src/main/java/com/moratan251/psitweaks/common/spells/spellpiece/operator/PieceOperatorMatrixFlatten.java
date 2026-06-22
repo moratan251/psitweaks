@@ -20,7 +20,7 @@ public class PieceOperatorMatrixFlatten extends PieceOperator {
 
     @Override
     public void initParams() {
-        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX1, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
     }
 
     @Override

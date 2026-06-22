@@ -23,7 +23,7 @@ public class PieceOperatorMatrixMultiplyVector extends PieceOperator {
     @Override
     public void initParams() {
         addParam(vector = new ParamVectorOrNumberList(PsitweaksSpellParams.VECTOR_OR_NUMBER_LIST, PsitweaksSpellParams.NUMBER_LIST_COLOR, false));
-        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX1, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
     }
 
     @Override

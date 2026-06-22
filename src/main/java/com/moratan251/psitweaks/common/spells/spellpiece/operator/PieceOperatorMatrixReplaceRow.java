@@ -23,7 +23,7 @@ public class PieceOperatorMatrixReplaceRow extends PieceOperator {
 
     @Override
     public void initParams() {
-        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX1, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+        addParam(matrix = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
         addParam(row = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER1, SpellParam.PURPLE, false, false));
         addParam(values = new ParamVectorOrNumberList(PsitweaksSpellParams.VECTOR_OR_NUMBER_LIST, PsitweaksSpellParams.NUMBER_LIST_COLOR, false));
     }
