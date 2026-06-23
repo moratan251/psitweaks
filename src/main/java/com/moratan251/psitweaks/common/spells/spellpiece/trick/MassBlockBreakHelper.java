@@ -55,17 +55,48 @@ public final class MassBlockBreakHelper {
         }
 
         ItemStack tool = context.getHarvestTool().copy();
-        Predicate<BlockState> filter = state -> tool.isCorrectToolForDrops(state)
+        if (tool.isEmpty()) {
+            tool = PsiAPI.getPlayerCAD(player);
+        }
+        final ItemStack effectiveTool = tool;
+        Predicate<BlockState> filter = state -> effectiveTool.isCorrectToolForDrops(state)
                 || PieceTrickBreakBlock.canHarvest(ConfigHandler.COMMON.cadHarvestLevel.get(), state);
 
         List<BlockState> brokenStates = new ArrayList<>();
         List<BlockPos> brokenPositions = new ArrayList<>();
-        for (BreakTarget target : targets) {
-            BlockState state = serverLevel.getBlockState(target.pos());
-            if (breakBlock(serverLevel, player, target.pos(), tool, filter)) {
-                brokenStates.add(state);
-                brokenPositions.add(target.pos());
+
+        ItemStack original = player.getMainHandItem();
+        boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
+        try {
+            PieceTrickBreakBlock.doingHarvestCheck.set(true);
+            player.setItemInHand(InteractionHand.MAIN_HAND, effectiveTool);
+
+            for (BreakTarget target : targets) {
+                BlockPos pos = target.pos();
+                BlockState state = serverLevel.getBlockState(pos);
+
+                if (!serverLevel.hasChunkAt(pos)) {
+                    continue;
+                }
+                if (state.isAir() || state.getDestroySpeed(serverLevel, pos) == -1.0F || !filter.test(state)) {
+                    continue;
+                }
+                if (isUnbreakable(state)) {
+                    continue;
+                }
+                if (!serverLevel.mayInteract(player, pos)) {
+                    continue;
+                }
+
+                boolean destroyed = player.gameMode.destroyBlock(pos);
+                if (destroyed) {
+                    brokenStates.add(state);
+                    brokenPositions.add(pos);
+                }
             }
+        } finally {
+            PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
+            player.setItemInHand(InteractionHand.MAIN_HAND, original);
         }
 
         spawnRandomBlockParticles(serverLevel, brokenPositions, brokenStates, 10);
@@ -228,59 +259,6 @@ public final class MassBlockBreakHelper {
     private static void validateFiniteVector(Vector3 vector) throws SpellRuntimeException {
         if (!Double.isFinite(vector.x) || !Double.isFinite(vector.y) || !Double.isFinite(vector.z)) {
             throw new SpellRuntimeException(ERROR_REGION_TOO_LARGE);
-        }
-    }
-
-    /**
-     * Psi 本体の PieceTrickBreakBlock.removeBlockWithDrops と同じ構造。
-     * doingHarvestCheck を設定し、標準ブロック破壊イベント経路を通す。
-     */
-    private static boolean breakBlock(ServerLevel level, ServerPlayer player, BlockPos pos,
-                                      ItemStack tool, Predicate<BlockState> filter) {
-        if (tool.isEmpty()) {
-            tool = PsiAPI.getPlayerCAD(player);
-        }
-
-        if (!level.hasChunkAt(pos)) {
-            return false;
-        }
-
-        BlockState state = level.getBlockState(pos);
-        if (level.isClientSide || state.getDestroySpeed(level, pos) == -1.0F || !filter.test(state) || state.isAir()) {
-            return false;
-        }
-
-        if (isUnbreakable(state)) {
-            return false;
-        }
-
-        if (!level.mayInteract(player, pos)) {
-            return false;
-        }
-
-        ItemStack original = player.getMainHandItem();
-        boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
-        try {
-            PieceTrickBreakBlock.doingHarvestCheck.set(true);
-            player.setItemInHand(InteractionHand.MAIN_HAND, tool);
-
-            boolean destroyed = player.gameMode.destroyBlock(pos);
-
-            if (destroyed) {
-                player.connection.send(
-                        new ClientboundLevelEventPacket(
-                                LevelEvent.PARTICLES_DESTROY_BLOCK,
-                                pos,
-                                Block.getId(state),
-                                false
-                        )
-                );
-            }
-
-            return destroyed;
-        } finally {
-            PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
-            player.setItemInHand(InteractionHand.MAIN_HAND, original);
         }
     }
 
