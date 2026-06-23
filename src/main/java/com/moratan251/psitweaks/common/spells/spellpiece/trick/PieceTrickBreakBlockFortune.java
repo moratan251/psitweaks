@@ -3,20 +3,12 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
@@ -29,19 +21,20 @@ import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
+import vazkii.psi.common.core.handler.ConfigHandler;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 public class PieceTrickBreakBlockFortune extends PieceTrick {
+
+    private static final int MAX_FORTUNE_LEVEL = 100;
 
     SpellParam<Vector3> position;
     SpellParam<Number> fortuneLevel;
 
     public PieceTrickBreakBlockFortune(Spell spell) {
         super(spell);
-        // 幸運レベルに応じてコストが変動
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(150).add(new StatLabel("psi.spellparam.power", true).mul(100)));
         setStatLabel(EnumSpellStat.COST, new StatLabel(100).add(new StatLabel("psi.spellparam.power", true).mul(100)));
     }
@@ -57,13 +50,13 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
         super.addToMetadata(meta);
 
         Double fortuneVal = this.<Double>getParamEvaluation(fortuneLevel);
-        if (fortuneVal == null || fortuneVal < 1) {
+        if (fortuneVal == null || !isValidFortuneLevel(fortuneVal)) {
             throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
         }
 
         int fortune = fortuneVal.intValue();
-        meta.addStat(EnumSpellStat.POTENCY, 150 + fortune * 100);
-        meta.addStat(EnumSpellStat.COST, 100 + fortune * 100);
+        meta.addStat(EnumSpellStat.POTENCY, Math.addExact(150, Math.multiplyExact(fortune, 100)));
+        meta.addStat(EnumSpellStat.COST, Math.addExact(100, Math.multiplyExact(fortune, 100)));
     }
 
     @Override
@@ -77,71 +70,37 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
         if (!context.isInRadius(positionVal)) {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         }
+        if (fortuneVal == null || !isValidFortuneLevel(fortuneVal.doubleValue())) {
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
+        }
 
-        int fortune = Math.max(1, fortuneVal.intValue());
+        int fortune = fortuneVal.intValue();
         BlockPos pos = positionVal.toBlockPos();
-        Level world = context.focalPoint.getCommandSenderWorld();
+        Level level = context.focalPoint.getCommandSenderWorld();
 
-        // 幸運付きのダイヤモンドピッケルを作成
-        ItemStack fortuneTool = createFortuneTool(world, fortune);
+        ItemStack fortuneTool = createFortuneTool(context, fortune);
 
-        removeBlockWithDropsFortune(context, context.caster, world, fortuneTool, pos,
-                (state) -> fortuneTool.isCorrectToolForDrops(state) ||
-                        PieceTrickBreakBlock.canHarvest(4, state));
+        Predicate<BlockState> filter = state -> fortuneTool.isCorrectToolForDrops(state)
+                || PieceTrickBreakBlock.canHarvest(ConfigHandler.COMMON.cadHarvestLevel.get(), state);
+
+        PieceTrickBreakBlock.removeBlockWithDrops(context, context.caster, level, fortuneTool, pos, filter);
 
         return null;
     }
 
-    /**
-     * 幸運エンチャント付きのツールを作成
-     */
-    private ItemStack createFortuneTool(Level world, int level) {
-        ItemStack tool = new ItemStack(Items.NETHERITE_PICKAXE);
-        Holder<Enchantment> fortune = world.registryAccess()
+    private ItemStack createFortuneTool(SpellContext context, int level) throws SpellRuntimeException {
+        ItemStack tool = context.getHarvestTool().copy();
+        Holder<Enchantment> fortune = context.caster.level().registryAccess()
                 .registryOrThrow(Registries.ENCHANTMENT)
                 .getHolderOrThrow(Enchantments.FORTUNE);
         tool.enchant(fortune, level);
         return tool;
     }
 
-    /**
-     * 幸運でブロックを破壊してドロップを得る
-     */
-    public static void removeBlockWithDropsFortune(SpellContext context, Player player, Level world,
-                                                   ItemStack stack, BlockPos pos, Predicate<BlockState> filter) {
-
-        if (stack.isEmpty()) {
-            stack = PsiAPI.getPlayerCAD(player);
-        }
-
-        if (!world.hasChunkAt(pos)) {
-            return;
-        }
-
-        BlockState blockstate = world.getBlockState(pos);
-        boolean unminable = blockstate.getDestroySpeed(world, pos) == -1;
-
-        if (!world.isClientSide && !unminable && filter.test(blockstate) && !blockstate.isAir()) {
-            if (!world.mayInteract(player, pos)) {
-                return;
-            }
-
-            // ブロック破壊エフェクトを送信
-            ((ServerPlayer) player).connection.send(
-                    new ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, pos,
-                            Block.getId(blockstate), false));
-
-            // 幸運でドロップを取得
-            List<ItemStack> drops = Block.getDrops(blockstate, (ServerLevel) world, pos,
-                    world.getBlockEntity(pos), player, stack);
-
-            // ドロップをスポーン
-            for (ItemStack drop : drops) {
-                Block.popResource(world, pos, drop);
-            }
-
-            // ブロックを削除
-            world.removeBlock(pos, false);
-        }
+    private static boolean isValidFortuneLevel(double value) {
+        return Double.isFinite(value)
+                && value >= 1
+                && value == Math.rint(value)
+                && value <= MAX_FORTUNE_LEVEL;
     }
 }

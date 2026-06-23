@@ -9,22 +9,24 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.common.core.handler.ConfigHandler;
+import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 
 public final class MassBlockBreakHelper {
     public static final String ERROR_INVALID_MATRIX = "psitweaks.spellerror.region_invalid_matrix";
@@ -52,18 +54,20 @@ public final class MassBlockBreakHelper {
             }
         }
 
+        ItemStack tool = context.getHarvestTool().copy();
+        Predicate<BlockState> filter = state -> tool.isCorrectToolForDrops(state)
+                || PieceTrickBreakBlock.canHarvest(ConfigHandler.COMMON.cadHarvestLevel.get(), state);
+
         List<BlockState> brokenStates = new ArrayList<>();
         List<BlockPos> brokenPositions = new ArrayList<>();
-        List<ItemStack> drops = new ArrayList<>();
         for (BreakTarget target : targets) {
             BlockState state = serverLevel.getBlockState(target.pos());
-            if (breakBlock(serverLevel, player, target.pos(), drops)) {
+            if (breakBlock(serverLevel, player, target.pos(), tool, filter)) {
                 brokenStates.add(state);
                 brokenPositions.add(target.pos());
             }
         }
 
-        spawnCollectedDrops(serverLevel, player, drops);
         spawnRandomBlockParticles(serverLevel, brokenPositions, brokenStates, 10);
     }
 
@@ -227,6 +231,71 @@ public final class MassBlockBreakHelper {
         }
     }
 
+    /**
+     * Psi 本体の PieceTrickBreakBlock.removeBlockWithDrops と同じ構造。
+     * doingHarvestCheck を設定し、標準ブロック破壊イベント経路を通す。
+     */
+    private static boolean breakBlock(ServerLevel level, ServerPlayer player, BlockPos pos,
+                                      ItemStack tool, Predicate<BlockState> filter) {
+        if (tool.isEmpty()) {
+            tool = PsiAPI.getPlayerCAD(player);
+        }
+
+        if (!level.hasChunkAt(pos)) {
+            return false;
+        }
+
+        BlockState state = level.getBlockState(pos);
+        if (level.isClientSide || state.getDestroySpeed(level, pos) == -1.0F || !filter.test(state) || state.isAir()) {
+            return false;
+        }
+
+        if (isUnbreakable(state)) {
+            return false;
+        }
+
+        if (!level.mayInteract(player, pos)) {
+            return false;
+        }
+
+        ItemStack original = player.getMainHandItem();
+        boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
+        try {
+            PieceTrickBreakBlock.doingHarvestCheck.set(true);
+            player.setItemInHand(InteractionHand.MAIN_HAND, tool);
+
+            boolean destroyed = player.gameMode.destroyBlock(pos);
+
+            if (destroyed) {
+                player.connection.send(
+                        new ClientboundLevelEventPacket(
+                                LevelEvent.PARTICLES_DESTROY_BLOCK,
+                                pos,
+                                Block.getId(state),
+                                false
+                        )
+                );
+            }
+
+            return destroyed;
+        } finally {
+            PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
+            player.setItemInHand(InteractionHand.MAIN_HAND, original);
+        }
+    }
+
+    private static boolean isUnbreakable(BlockState state) {
+        return state.is(Blocks.BEDROCK)
+                || state.is(Blocks.COMMAND_BLOCK)
+                || state.is(Blocks.CHAIN_COMMAND_BLOCK)
+                || state.is(Blocks.REPEATING_COMMAND_BLOCK)
+                || state.is(Blocks.STRUCTURE_BLOCK)
+                || state.is(Blocks.JIGSAW)
+                || state.is(Blocks.END_PORTAL_FRAME)
+                || state.is(Blocks.BARRIER)
+                || state.is(Blocks.SPAWNER);
+    }
+
     private static void spawnRandomBlockParticles(ServerLevel level, List<BlockPos> positions, List<BlockState> states, int count) {
         int total = positions.size();
         if (total == 0) {
@@ -242,79 +311,6 @@ public final class MassBlockBreakHelper {
             int idx = indices.get(i);
             spawnParticleAt(level, positions.get(idx), states.get(idx));
         }
-    }
-
-    private static boolean breakBlock(ServerLevel level, ServerPlayer player, BlockPos pos, List<ItemStack> drops) {
-        if (!level.hasChunkAt(pos)) {
-            return false;
-        }
-        BlockState state = level.getBlockState(pos);
-        if (state.isAir() || state.getDestroySpeed(level, pos) == -1.0F) {
-            return false;
-        }
-        if (!level.mayInteract(player, pos)) {
-            return false;
-        }
-        if (isUnbreakable(state)) {
-            return false;
-        }
-
-        ItemStack tool = player.getMainHandItem();
-        if (tool.isEmpty()) {
-            tool = PsiAPI.getPlayerCAD(player);
-        }
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        List<ItemStack> blockDrops = Block.getDrops(state, level, pos, blockEntity, player, tool);
-        for (ItemStack drop : blockDrops) {
-            mergeDrop(drops, drop);
-        }
-        level.removeBlock(pos, false);
-        state.spawnAfterBreak(level, pos, tool, true);
-        return true;
-    }
-
-    private static void mergeDrop(List<ItemStack> drops, ItemStack stack) {
-        if (stack.isEmpty()) {
-            return;
-        }
-
-        int remaining = stack.getCount();
-        for (ItemStack existing : drops) {
-            if (ItemStack.isSameItemSameComponents(existing, stack) && existing.getCount() < existing.getMaxStackSize()) {
-                int moved = Math.min(remaining, existing.getMaxStackSize() - existing.getCount());
-                existing.grow(moved);
-                remaining -= moved;
-                if (remaining <= 0) {
-                    return;
-                }
-            }
-        }
-
-        while (remaining > 0) {
-            int count = Math.min(remaining, stack.getMaxStackSize());
-            drops.add(stack.copyWithCount(count));
-            remaining -= count;
-        }
-    }
-
-    private static void spawnCollectedDrops(ServerLevel level, ServerPlayer player, List<ItemStack> drops) {
-        for (ItemStack drop : drops) {
-            ItemEntity item = new ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), drop.copy());
-            item.setPickUpDelay(10);
-            level.addFreshEntity(item);
-        }
-    }
-
-    private static boolean isUnbreakable(BlockState state) {
-        return state.is(Blocks.BEDROCK)
-                || state.is(Blocks.COMMAND_BLOCK)
-                || state.is(Blocks.CHAIN_COMMAND_BLOCK)
-                || state.is(Blocks.REPEATING_COMMAND_BLOCK)
-                || state.is(Blocks.STRUCTURE_BLOCK)
-                || state.is(Blocks.JIGSAW)
-                || state.is(Blocks.END_PORTAL_FRAME)
-                || state.is(Blocks.BARRIER)
-                || state.is(Blocks.SPAWNER);
     }
 
     private static void spawnParticleAt(ServerLevel level, BlockPos pos, BlockState state) {
