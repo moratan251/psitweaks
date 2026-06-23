@@ -38,7 +38,13 @@ public final class MassBlockBreakHelper {
     private static final int MAX_AXIS_SCAN = MAX_SCAN_CANDIDATES;
     private static final double EPSILON = 1e-12;
 
+    private static final ThreadLocal<ServerPlayer> ACTIVE_BREAKER = new ThreadLocal<>();
+
     private MassBlockBreakHelper() {
+    }
+
+    public static ServerPlayer getActiveBreaker() {
+        return ACTIVE_BREAKER.get();
     }
 
     public static void breakBlocks(SpellContext context, Iterable<Vector3> positions, int maxBlocks) throws SpellRuntimeException {
@@ -67,7 +73,9 @@ public final class MassBlockBreakHelper {
 
         ItemStack original = player.getMainHandItem();
         boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
+        ServerPlayer previousBreaker = ACTIVE_BREAKER.get();
         try {
+            ACTIVE_BREAKER.set(player);
             PieceTrickBreakBlock.doingHarvestCheck.set(true);
             player.setItemInHand(InteractionHand.MAIN_HAND, effectiveTool);
 
@@ -96,6 +104,7 @@ public final class MassBlockBreakHelper {
             }
         } finally {
             PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
+            ACTIVE_BREAKER.set(previousBreaker);
             player.setItemInHand(InteractionHand.MAIN_HAND, original);
         }
 
