@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +36,7 @@ public final class MassBlockBreakHelper {
     public static final String ERROR_INVALID_MATRIX = "psitweaks.spellerror.region_invalid_matrix";
     public static final String ERROR_DEGENERATE_EDGES = "psitweaks.spellerror.region_degenerate_edges";
     public static final String ERROR_REGION_TOO_LARGE = "psitweaks.spellerror.region_too_large";
+    public static final String ERROR_TOO_MANY_PENDING_BLOCKS = "psitweaks.spellerror.mass_break_too_many_pending";
     public static final int MAX_REGION_BLOCKS = 4096;
     public static final int MAX_SCAN_CANDIDATES = 65536;
 
@@ -55,6 +55,19 @@ public final class MassBlockBreakHelper {
 
     public static MassBreakDrops getActiveDrops() {
         return ACTIVE_DROPS.get();
+    }
+
+    public static void runWithBreak(UUID breakerUuid, MassBreakDrops loot, Runnable action) {
+        UUID previousBreaker = ACTIVE_BREAKER.get();
+        MassBreakDrops previousDrops = ACTIVE_DROPS.get();
+        ACTIVE_BREAKER.set(breakerUuid);
+        ACTIVE_DROPS.set(loot);
+        try {
+            action.run();
+        } finally {
+            ACTIVE_BREAKER.set(previousBreaker);
+            ACTIVE_DROPS.set(previousDrops);
+        }
     }
 
     public static final class MassBreakDrops {
@@ -101,84 +114,33 @@ public final class MassBlockBreakHelper {
         Predicate<BlockState> filter = state -> effectiveTool.isCorrectToolForDrops(state)
                 || PieceTrickBreakBlock.canHarvest(ConfigHandler.COMMON.cadHarvestLevel.get(), state);
 
-        List<BlockState> brokenStates = new ArrayList<>();
-        List<BlockPos> brokenPositions = new ArrayList<>();
-
-        ItemStack original = player.getMainHandItem();
-        boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
-        UUID previousBreaker = ACTIVE_BREAKER.get();
-        MassBreakDrops previousDrops = ACTIVE_DROPS.get();
-        MassBreakDrops loot = new MassBreakDrops();
-        LOGGER.debug("[MassBlockBreakHelper] mass break start for {}", player.getName().getString());
-        try {
-            ACTIVE_BREAKER.set(player.getUUID());
-            ACTIVE_DROPS.set(loot);
-            PieceTrickBreakBlock.doingHarvestCheck.set(true);
-            player.setItemInHand(InteractionHand.MAIN_HAND, effectiveTool);
-
-            for (BreakTarget target : targets) {
-                BlockPos pos = target.pos();
-                BlockState state = serverLevel.getBlockState(pos);
-
-                if (!serverLevel.hasChunkAt(pos)) {
-                    continue;
-                }
-                if (state.isAir() || state.getDestroySpeed(serverLevel, pos) == -1.0F || !filter.test(state)) {
-                    continue;
-                }
-                if (isUnbreakable(state)) {
-                    continue;
-                }
-                if (!serverLevel.mayInteract(player, pos)) {
-                    continue;
-                }
-
-                boolean destroyed = player.gameMode.destroyBlock(pos);
-                if (destroyed) {
-                    brokenStates.add(state);
-                    brokenPositions.add(pos);
-                }
-            }
-        } finally {
-            PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
-            ACTIVE_BREAKER.set(previousBreaker);
-            ACTIVE_DROPS.set(previousDrops);
-            player.setItemInHand(InteractionHand.MAIN_HAND, original);
-        }
-
-        processAndGiveDrops(player, loot);
-        LOGGER.debug("[MassBlockBreakHelper] mass break end: broken={}, collectedDrops={}, experience={}",
-                brokenPositions.size(), loot.drops().size(), loot.experience());
-        spawnRandomBlockParticles(serverLevel, brokenPositions, brokenStates, 10);
-    }
-
-    private static void processAndGiveDrops(ServerPlayer player, MassBreakDrops loot) {
-        if (loot == null || loot.drops().isEmpty() && loot.experience() <= 0) {
-            return;
-        }
-
-        List<ItemStack> overflow = new ArrayList<>();
-        for (ItemStack stack : loot.drops()) {
-            player.getInventory().add(stack);
-            if (!stack.isEmpty()) {
-                overflow.add(stack);
+        Vector3 focalPoint = new Vector3(context.focalPoint.getX(), context.focalPoint.getY(), context.focalPoint.getZ());
+        double maxRadiusSq = 0.0;
+        List<BlockPos> targetPositions = new ArrayList<>(targets.size());
+        for (BreakTarget target : targets) {
+            BlockPos pos = target.pos();
+            targetPositions.add(pos);
+            double d2 = distanceSqToFocal(focalPoint, pos);
+            if (d2 > maxRadiusSq) {
+                maxRadiusSq = d2;
             }
         }
 
-        List<ItemStack> merged = mergeStacks(overflow);
-        for (ItemStack stack : merged) {
-            player.drop(stack, false);
-        }
-
-        if (loot.experience() > 0) {
-            player.giveExperiencePoints(loot.experience());
-        }
-
-        LOGGER.debug("[MassBlockBreakHelper] gave drops: overflowBeforeMerge={}, overflowAfterMerge={}, experience={}",
-                overflow.size(), merged.size(), loot.experience());
+        MassBlockBreakScheduler.schedule(player, serverLevel, focalPoint, maxRadiusSq, targetPositions, effectiveTool, filter);
     }
 
-    private static List<ItemStack> mergeStacks(List<ItemStack> stacks) {
+    private static double distanceSqToFocal(Vector3 focalPoint, BlockPos pos) {
+        double dx = pos.getX() + 0.5 - focalPoint.x;
+        double dy = pos.getY() + 0.5 - focalPoint.y;
+        double dz = pos.getZ() + 0.5 - focalPoint.z;
+        return dx * dx + dy * dy + dz * dz;
+    }
+
+    static boolean isInRadius(Vector3 focalPoint, double maxRadiusSq, BlockPos pos) {
+        return distanceSqToFocal(focalPoint, pos) <= maxRadiusSq + EPSILON;
+    }
+
+    static List<ItemStack> mergeStacks(List<ItemStack> stacks) {
         List<ItemStack> merged = new ArrayList<>();
         for (ItemStack stack : stacks) {
             if (stack.isEmpty()) {
@@ -368,7 +330,7 @@ public final class MassBlockBreakHelper {
         }
     }
 
-    private static boolean isUnbreakable(BlockState state) {
+    static boolean isUnbreakable(BlockState state) {
         return state.is(Blocks.BEDROCK)
                 || state.is(Blocks.COMMAND_BLOCK)
                 || state.is(Blocks.CHAIN_COMMAND_BLOCK)
@@ -380,7 +342,7 @@ public final class MassBlockBreakHelper {
                 || state.is(Blocks.SPAWNER);
     }
 
-    private static void spawnRandomBlockParticles(ServerLevel level, List<BlockPos> positions, List<BlockState> states, int count) {
+    static void spawnRandomBlockParticles(ServerLevel level, List<BlockPos> positions, List<BlockState> states, int count) {
         int total = positions.size();
         if (total == 0) {
             return;

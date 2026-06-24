@@ -507,6 +507,7 @@
   "psitweaks.gui.string_constant_input.read_only": "閲覧のみ",
   "psitweaks.spellerror.empty_delimiter": "区切り文字が空です",
   "psitweaks.spellerror.expected_three_numbers": "Number List の要素数は3である必要があります",
+  "psitweaks.spellerror.mass_break_too_many_pending": "保留中の一括破壊ブロック数が上限を超えています",
   "psitweaks.spellerror.matrix_incompatible_sizes": "行列のサイズが整合しません",
   "psitweaks.spellerror.matrix_invalid_dimension": "行列の次元は1〜4である必要があります",
   "psitweaks.spellerror.matrix_invalid_transform": "変換行列は3×3または4×4である必要があります",

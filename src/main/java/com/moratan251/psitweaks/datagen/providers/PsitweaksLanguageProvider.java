@@ -313,6 +313,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "領域に含まれるブロックが多すぎます";
             default -> "The region contains too many blocks";
         });
+        root.addProperty("psitweaks.spellerror.mass_break_too_many_pending", switch (locale) {
+            case "ja_jp" -> "保留中の一括破壊ブロック数が上限を超えています";
+            default -> "Too many pending mass-break blocks";
+        });
         root.addProperty("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
             case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
             default -> "String CAD memory value in slot %s was truncated from %s to %s characters";

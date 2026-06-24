@@ -465,6 +465,7 @@
   "psitweaks.gui.string_constant_input.read_only": "Read only",
   "psitweaks.spellerror.empty_delimiter": "Delimiter cannot be empty",
   "psitweaks.spellerror.expected_three_numbers": "Number List must contain exactly 3 elements",
+  "psitweaks.spellerror.mass_break_too_many_pending": "Too many pending mass-break blocks",
   "psitweaks.spellerror.matrix_incompatible_sizes": "Matrix dimensions are incompatible",
   "psitweaks.spellerror.matrix_invalid_dimension": "Matrix dimension must be between 1 and 4",
   "psitweaks.spellerror.matrix_invalid_transform": "Transform matrix must be 3x3 or 4x4",

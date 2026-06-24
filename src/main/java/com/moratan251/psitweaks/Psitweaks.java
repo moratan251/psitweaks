@@ -25,6 +25,7 @@ import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
@@ -70,6 +71,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -141,7 +143,10 @@ public class Psitweaks {
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(ArmorSpellDamageAttributeHandler::onItemAttributeModifier);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onBlockDrops);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakDropHandler::onEntityJoinLevel);
+        NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
+        NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
 
         // TODO(port): Re-enable client/server proxy handlers after proxy classes are ported.
         // proxyPsitweaks = dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks();
