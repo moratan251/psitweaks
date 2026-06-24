@@ -1,48 +1,42 @@
 package com.moratan251.psitweaks.common.handler;
 
-import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper;
-import net.minecraft.server.level.ServerPlayer;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.MassBreakDrops;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.level.BlockDropsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
-@EventBusSubscriber(modid = Psitweaks.MOD_ID)
 public final class MassBlockBreakDropHandler {
     private MassBlockBreakDropHandler() {
     }
 
     @SubscribeEvent
-    public static void onBlockDrops(BlockDropsEvent event) {
-        if (!(event.getBreaker() instanceof ServerPlayer player)) {
+    public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide()) {
             return;
         }
-        if (player != MassBlockBreakHelper.getActiveBreaker()) {
-            return;
-        }
-        if (player.level().isClientSide) {
+        if (MassBlockBreakHelper.getActiveBreaker() == null) {
             return;
         }
 
-        for (ItemEntity drop : event.getDrops()) {
-            ItemStack stack = drop.getItem();
-            if (stack.isEmpty()) {
-                continue;
-            }
+        MassBreakDrops loot = MassBlockBreakHelper.getActiveDrops();
+        if (loot == null) {
+            return;
+        }
 
-            player.getInventory().add(stack);
+        Entity entity = event.getEntity();
+        if (entity instanceof ItemEntity item) {
+            ItemStack stack = item.getItem();
             if (!stack.isEmpty()) {
-                player.drop(stack, false);
+                loot.addDrop(stack.copy());
             }
+            event.setCanceled(true);
+        } else if (entity instanceof ExperienceOrb orb) {
+            loot.addExperience(orb.getValue());
+            event.setCanceled(true);
         }
-
-        int experience = event.getDroppedExperience();
-        if (experience > 0) {
-            player.giveExperiencePoints(experience);
-        }
-
-        event.setCanceled(true);
     }
 }

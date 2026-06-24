@@ -23,6 +23,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
@@ -140,6 +141,7 @@ public class Psitweaks {
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(ArmorSpellDamageAttributeHandler::onItemAttributeModifier);
+        NeoForge.EVENT_BUS.addListener(MassBlockBreakDropHandler::onEntityJoinLevel);
 
         // TODO(port): Re-enable client/server proxy handlers after proxy classes are ported.
         // proxyPsitweaks = dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks();

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.MatrixOperations;
+import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
@@ -27,8 +29,11 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.core.handler.ConfigHandler;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
+import org.slf4j.Logger;
 
 public final class MassBlockBreakHelper {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     public static final String ERROR_INVALID_MATRIX = "psitweaks.spellerror.region_invalid_matrix";
     public static final String ERROR_DEGENERATE_EDGES = "psitweaks.spellerror.region_degenerate_edges";
     public static final String ERROR_REGION_TOO_LARGE = "psitweaks.spellerror.region_too_large";
@@ -38,13 +43,41 @@ public final class MassBlockBreakHelper {
     private static final int MAX_AXIS_SCAN = MAX_SCAN_CANDIDATES;
     private static final double EPSILON = 1e-12;
 
-    private static final ThreadLocal<ServerPlayer> ACTIVE_BREAKER = new ThreadLocal<>();
+    private static final ThreadLocal<UUID> ACTIVE_BREAKER = new ThreadLocal<>();
+    private static final ThreadLocal<MassBreakDrops> ACTIVE_DROPS = new ThreadLocal<>();
 
     private MassBlockBreakHelper() {
     }
 
-    public static ServerPlayer getActiveBreaker() {
+    public static UUID getActiveBreaker() {
         return ACTIVE_BREAKER.get();
+    }
+
+    public static MassBreakDrops getActiveDrops() {
+        return ACTIVE_DROPS.get();
+    }
+
+    public static final class MassBreakDrops {
+        private final List<ItemStack> drops = new ArrayList<>();
+        private int experience;
+
+        public void addDrop(ItemStack stack) {
+            if (stack != null && !stack.isEmpty()) {
+                drops.add(stack);
+            }
+        }
+
+        public void addExperience(int amount) {
+            experience += amount;
+        }
+
+        public List<ItemStack> drops() {
+            return drops;
+        }
+
+        public int experience() {
+            return experience;
+        }
     }
 
     public static void breakBlocks(SpellContext context, Iterable<Vector3> positions, int maxBlocks) throws SpellRuntimeException {
@@ -73,9 +106,13 @@ public final class MassBlockBreakHelper {
 
         ItemStack original = player.getMainHandItem();
         boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
-        ServerPlayer previousBreaker = ACTIVE_BREAKER.get();
+        UUID previousBreaker = ACTIVE_BREAKER.get();
+        MassBreakDrops previousDrops = ACTIVE_DROPS.get();
+        MassBreakDrops loot = new MassBreakDrops();
+        LOGGER.debug("[MassBlockBreakHelper] mass break start for {}", player.getName().getString());
         try {
-            ACTIVE_BREAKER.set(player);
+            ACTIVE_BREAKER.set(player.getUUID());
+            ACTIVE_DROPS.set(loot);
             PieceTrickBreakBlock.doingHarvestCheck.set(true);
             player.setItemInHand(InteractionHand.MAIN_HAND, effectiveTool);
 
@@ -105,10 +142,70 @@ public final class MassBlockBreakHelper {
         } finally {
             PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
             ACTIVE_BREAKER.set(previousBreaker);
+            ACTIVE_DROPS.set(previousDrops);
             player.setItemInHand(InteractionHand.MAIN_HAND, original);
         }
 
+        processAndGiveDrops(player, loot);
+        LOGGER.debug("[MassBlockBreakHelper] mass break end: broken={}, collectedDrops={}, experience={}",
+                brokenPositions.size(), loot.drops().size(), loot.experience());
         spawnRandomBlockParticles(serverLevel, brokenPositions, brokenStates, 10);
+    }
+
+    private static void processAndGiveDrops(ServerPlayer player, MassBreakDrops loot) {
+        if (loot == null || loot.drops().isEmpty() && loot.experience() <= 0) {
+            return;
+        }
+
+        List<ItemStack> overflow = new ArrayList<>();
+        for (ItemStack stack : loot.drops()) {
+            player.getInventory().add(stack);
+            if (!stack.isEmpty()) {
+                overflow.add(stack);
+            }
+        }
+
+        List<ItemStack> merged = mergeStacks(overflow);
+        for (ItemStack stack : merged) {
+            player.drop(stack, false);
+        }
+
+        if (loot.experience() > 0) {
+            player.giveExperiencePoints(loot.experience());
+        }
+
+        LOGGER.debug("[MassBlockBreakHelper] gave drops: overflowBeforeMerge={}, overflowAfterMerge={}, experience={}",
+                overflow.size(), merged.size(), loot.experience());
+    }
+
+    private static List<ItemStack> mergeStacks(List<ItemStack> stacks) {
+        List<ItemStack> merged = new ArrayList<>();
+        for (ItemStack stack : stacks) {
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            ItemStack remaining = stack.copy();
+            for (ItemStack target : merged) {
+                if (ItemStack.isSameItemSameComponents(target, remaining)) {
+                    int space = target.getMaxStackSize() - target.getCount();
+                    int transfer = Math.min(remaining.getCount(), space);
+                    if (transfer <= 0) {
+                        continue;
+                    }
+                    target.grow(transfer);
+                    remaining.shrink(transfer);
+                    if (remaining.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+
+            if (!remaining.isEmpty()) {
+                merged.add(remaining);
+            }
+        }
+        return merged;
     }
 
     private static List<BreakTarget> collectBreakTargets(Iterable<Vector3> positions, int maxBlocks) throws SpellRuntimeException {
