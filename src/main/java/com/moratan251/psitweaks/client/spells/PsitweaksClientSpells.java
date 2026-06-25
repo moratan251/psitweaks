@@ -281,6 +281,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_cuboid_region");
     public static final DeferredHolder<Material, Material> OPERATOR_REGION_VECTOR_LIST =
             registerPieceMaterial("operator_region_vector_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_INSIDE_REGION =
+            registerPieceMaterial("operator_inside_region");
+    public static final DeferredHolder<Material, Material> OPERATOR_OUTSIDE_REGION =
+            registerPieceMaterial("operator_outside_region");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =
             registerPieceMaterial("operator_matrix_transform_vector");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =

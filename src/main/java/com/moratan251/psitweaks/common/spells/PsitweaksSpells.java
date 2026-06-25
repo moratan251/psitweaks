@@ -290,6 +290,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_cuboid_region", PieceOperatorMatrixCuboidRegion.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorRegionVectorList>> OPERATOR_REGION_VECTOR_LIST =
             registerPiece("operator_region_vector_list", PieceOperatorRegionVectorList.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorInsideRegion>> OPERATOR_INSIDE_REGION =
+            registerPiece("operator_inside_region", PieceOperatorInsideRegion.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorOutsideRegion>> OPERATOR_OUTSIDE_REGION =
+            registerPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMassBlockBreak>> TRICK_MASS_BLOCK_BREAK =
             registerPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
 
@@ -490,7 +494,9 @@ public final class PsitweaksSpells {
                     PieceOperatorMatrixTransformVector.class,
                     PieceOperatorMatrixLinearPart.class,
                     PieceOperatorMatrixCuboidRegion.class,
-                    PieceOperatorRegionVectorList.class
+                    PieceOperatorRegionVectorList.class,
+                    PieceOperatorInsideRegion.class,
+                    PieceOperatorOutsideRegion.class
             ));
 
     private PsitweaksSpells() {
