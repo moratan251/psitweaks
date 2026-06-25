@@ -17,9 +17,9 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 
 public class PieceTrickMassBlockBreak extends PieceTrick {
     private static final int COST_BASE = 500;
-    private static final double COST_MULTIPLIER = 0.5;
+    private static final double COST_MULTIPLIER = 1;
     private static final int POTENCY_BASE = 300;
-    private static final double POTENCY_MULTIPLIER = 0.25;
+    private static final double POTENCY_MULTIPLIER = 2;
 
     private SpellParam<VectorListWrapper> positions;
     private SpellParam<Number> maxBlocks;
