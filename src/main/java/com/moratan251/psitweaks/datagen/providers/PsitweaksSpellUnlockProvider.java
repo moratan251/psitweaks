@@ -35,6 +35,7 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "active_air_mine", "trick_active_air_mine", "program_active_air_mine");
         spellUnlock(entries, "die_flex", "trick_die_flex", "program_die_flex");
         spellUnlock(entries, "material_mutation", "trick_material_mutation", "program_material_mutation");
+        spellUnlock(entries, "mass_block_break", "trick_mass_block_break", "program_mass_block_break");
 
         CompletableFuture<?>[] futures = entries.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))

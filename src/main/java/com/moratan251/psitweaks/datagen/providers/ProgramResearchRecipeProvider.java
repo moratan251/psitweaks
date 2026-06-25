@@ -121,6 +121,13 @@ public final class ProgramResearchRecipeProvider {
                 input(item("antinite_ingot"), 32),
                 input(item("psionic_echo"), 16)
         ), item("program_material_mutation"), 250_000_000, 24_000);
+
+        research(recipes, "program_mass_block_break", List.of(
+                input(item("program_blank"), 1),
+                input("psi:psigem", 16),
+                input(item("chaotic_psimetal"), 16),
+                input("minecraft:tnt", 16)
+        ), item("program_mass_block_break"), 10_000_000, 1_200);
     }
 
     private static void research(Map<ResourceLocation, JsonObject> recipes, String id, List<JsonObject> inputs,

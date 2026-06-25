@@ -200,6 +200,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_ACTIVE_AIR_MINE = registerProgram("program_active_air_mine", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DIE_FLEX = registerProgram("program_die_flex", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MATERIAL_MUTATION = registerProgram("program_material_mutation", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MASS_BLOCK_BREAK = registerProgram("program_mass_block_break", false);
     public static final DeferredItem<ItemPhilosophersStone> PHILOSOPHERS_STONE = ITEMS.register(
             "philosophers_stone",
             () -> new ItemPhilosophersStone(new Item.Properties().rarity(Rarity.RARE))

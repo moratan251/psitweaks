@@ -172,5 +172,6 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
         output.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
         output.accept(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get());
+        output.accept(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get());
     }
 }

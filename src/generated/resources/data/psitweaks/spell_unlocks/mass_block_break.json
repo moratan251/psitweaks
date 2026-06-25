@@ -1,0 +1,6 @@
+{
+  "command_id": "mass_block_break",
+  "piece": "psitweaks:trick_mass_block_break",
+  "unlock_item": "psitweaks:program_mass_block_break",
+  "unlock_tag": "psitweaks.unlock.trick_mass_block_break"
+}
