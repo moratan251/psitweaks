@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
@@ -43,30 +44,32 @@ public final class MassBlockBreakHelper {
     private static final int MAX_AXIS_SCAN = MAX_SCAN_CANDIDATES;
     private static final double EPSILON = 1e-12;
 
-    private static final ThreadLocal<UUID> ACTIVE_BREAKER = new ThreadLocal<>();
-    private static final ThreadLocal<MassBreakDrops> ACTIVE_DROPS = new ThreadLocal<>();
+    private static final ThreadLocal<ActiveBreakContext> ACTIVE_BREAK_CONTEXT = new ThreadLocal<>();
 
     private MassBlockBreakHelper() {
     }
 
-    public static UUID getActiveBreaker() {
-        return ACTIVE_BREAKER.get();
+    public static ActiveBreakContext getActiveBreakContext() {
+        return ACTIVE_BREAK_CONTEXT.get();
     }
 
-    public static MassBreakDrops getActiveDrops() {
-        return ACTIVE_DROPS.get();
-    }
-
-    public static void runWithBreak(UUID breakerUuid, MassBreakDrops loot, Runnable action) {
-        UUID previousBreaker = ACTIVE_BREAKER.get();
-        MassBreakDrops previousDrops = ACTIVE_DROPS.get();
-        ACTIVE_BREAKER.set(breakerUuid);
-        ACTIVE_DROPS.set(loot);
+    public static boolean withActiveBreak(UUID breakerUuid, ServerLevel level, BlockPos currentPos, MassBreakDrops drops, BooleanSupplier action) {
+        ActiveBreakContext previousContext = ACTIVE_BREAK_CONTEXT.get();
+        ACTIVE_BREAK_CONTEXT.set(new ActiveBreakContext(breakerUuid, level, currentPos, drops));
         try {
-            action.run();
+            return action.getAsBoolean();
         } finally {
-            ACTIVE_BREAKER.set(previousBreaker);
-            ACTIVE_DROPS.set(previousDrops);
+            if (previousContext == null) {
+                ACTIVE_BREAK_CONTEXT.remove();
+            } else {
+                ACTIVE_BREAK_CONTEXT.set(previousContext);
+            }
+        }
+    }
+
+    public record ActiveBreakContext(UUID breakerUuid, ServerLevel level, BlockPos currentPos, MassBreakDrops drops) {
+        public ActiveBreakContext {
+            currentPos = currentPos.immutable();
         }
     }
 

@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -119,48 +120,46 @@ public final class MassBlockBreakScheduler {
         long tickStart = System.nanoTime();
 
         Boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
-        MassBlockBreakHelper.runWithBreak(task.playerUuid, task.loot, () -> {
-            PieceTrickBreakBlock.doingHarvestCheck.set(true);
-            player.setItemInHand(InteractionHand.MAIN_HAND, task.effectiveTool);
-            try {
-                int checked = 0;
-                while (!task.positions.isEmpty() && System.nanoTime() < deadline) {
-                    BlockPos pos = task.positions.poll();
-                    BlockState state = task.level.getBlockState(pos);
+        PieceTrickBreakBlock.doingHarvestCheck.set(true);
+        player.setItemInHand(InteractionHand.MAIN_HAND, task.effectiveTool);
+        try {
+            int checked = 0;
+            while (!task.positions.isEmpty() && System.nanoTime() < deadline) {
+                BlockPos pos = task.positions.poll();
+                if (task.level.isOutsideBuildHeight(pos) || !task.level.hasChunkAt(pos)) {
+                    continue;
+                }
 
-                    if (!task.level.hasChunkAt(pos)) {
-                        continue;
-                    }
-                    if (state.isAir() || state.getDestroySpeed(task.level, pos) == -1.0F || !task.filter.test(state)) {
-                        continue;
-                    }
-                    if (MassBlockBreakHelper.isUnbreakable(state)) {
-                        continue;
-                    }
-                    if (!task.level.mayInteract(player, pos)) {
-                        continue;
-                    }
-                    if (!MassBlockBreakHelper.isInRadius(task.focalPoint, task.maxRadiusSq, pos)) {
-                        continue;
-                    }
+                BlockState state = task.level.getBlockState(pos);
+                if (state.isAir() || state.getDestroySpeed(task.level, pos) == -1.0F || !task.filter.test(state)) {
+                    continue;
+                }
+                if (MassBlockBreakHelper.isUnbreakable(state)) {
+                    continue;
+                }
+                if (!task.level.mayInteract(player, pos)) {
+                    continue;
+                }
+                if (!MassBlockBreakHelper.isInRadius(task.focalPoint, task.maxRadiusSq, pos)) {
+                    continue;
+                }
 
-                    if (player.gameMode.destroyBlock(pos)) {
-                        task.brokenPositions.add(pos);
-                        task.brokenStates.add(state);
-                    }
+                if (MassBlockBreakHelper.withActiveBreak(task.playerUuid, task.level, pos, task.loot, () -> player.gameMode.destroyBlock(pos))) {
+                    task.brokenPositions.add(pos);
+                    task.brokenStates.add(state);
+                }
 
-                    checked++;
-                    if ((checked & (CHECK_INTERVAL - 1)) == 0) {
-                        if (System.nanoTime() >= deadline) {
-                            break;
-                        }
+                checked++;
+                if ((checked & (CHECK_INTERVAL - 1)) == 0) {
+                    if (System.nanoTime() >= deadline) {
+                        break;
                     }
                 }
-            } finally {
-                player.setItemInHand(InteractionHand.MAIN_HAND, original);
-                PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
             }
-        });
+        } finally {
+            player.setItemInHand(InteractionHand.MAIN_HAND, original);
+            PieceTrickBreakBlock.doingHarvestCheck.set(previousHarvestCheck);
+        }
 
         task.totalBreakNs += System.nanoTime() - tickStart;
 
@@ -214,9 +213,7 @@ public final class MassBlockBreakScheduler {
             return false;
         }
 
-        if (task.loot.experience() > 0) {
-            player.giveExperiencePoints(task.loot.experience());
-        }
+        awardExperience(task.level, player.position(), task.loot.experience());
 
         task.mergedOverflowCount = merged.size();
         return true;
@@ -248,10 +245,12 @@ public final class MassBlockBreakScheduler {
             Block.popResource(task.level, dropPos, stack);
         }
 
-        if (task.loot.experience() > 0) {
-            task.level.addFreshEntity(new ExperienceOrb(task.level,
-                    dropPos.getX() + 0.5, dropPos.getY() + 0.5, dropPos.getZ() + 0.5,
-                    task.loot.experience()));
+        awardExperience(task.level, Vec3.atCenterOf(dropPos), task.loot.experience());
+    }
+
+    private static void awardExperience(ServerLevel level, Vec3 position, int experience) {
+        if (experience > 0) {
+            ExperienceOrb.award(level, position, experience);
         }
     }
 
