@@ -6,17 +6,21 @@ import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -74,25 +78,99 @@ public final class MassBlockBreakHelper {
     }
 
     public static final class MassBreakDrops {
-        private final List<ItemStack> drops = new ArrayList<>();
+        private final StackAccumulator drops = new StackAccumulator();
         private int experience;
 
         public void addDrop(ItemStack stack) {
-            if (stack != null && !stack.isEmpty()) {
-                drops.add(stack);
-            }
+            drops.add(stack);
         }
 
         public void addExperience(int amount) {
-            experience += amount;
+            if (amount <= 0) {
+                return;
+            }
+            long total = (long) experience + amount;
+            experience = total > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) total;
         }
 
-        public List<ItemStack> drops() {
-            return drops;
+        public List<DropEntry> dropEntries() {
+            return drops.entries();
         }
 
         public int experience() {
             return experience;
+        }
+    }
+
+    public static final class StackAccumulator {
+        private final Map<DropKey, DropEntry> entries = new LinkedHashMap<>();
+
+        public void add(ItemStack stack) {
+            if (stack != null) {
+                add(stack, stack.getCount());
+            }
+        }
+
+        public void add(ItemStack stack, long count) {
+            if (stack == null || stack.isEmpty() || count <= 0) {
+                return;
+            }
+
+            ItemStack template = stack.copyWithCount(1);
+            DropKey key = DropKey.from(template);
+            DropEntry entry = entries.get(key);
+            if (entry == null) {
+                entry = new DropEntry(template);
+                entries.put(key, entry);
+            }
+            entry.add(count);
+        }
+
+        public List<DropEntry> entries() {
+            return new ArrayList<>(entries.values());
+        }
+
+        public boolean isEmpty() {
+            return entries.isEmpty();
+        }
+    }
+
+    public static final class DropEntry {
+        private final ItemStack template;
+        private long count;
+
+        private DropEntry(ItemStack template) {
+            this.template = template;
+        }
+
+        private void add(long amount) {
+            if (amount > Integer.MAX_VALUE - count) {
+                count = Integer.MAX_VALUE;
+            } else {
+                count += amount;
+            }
+        }
+
+        public ItemStack template() {
+            return template;
+        }
+
+        public long count() {
+            return count;
+        }
+
+        public int maxStackSize() {
+            return Math.max(1, template.getMaxStackSize());
+        }
+
+        public ItemStack copyStack(int count) {
+            return template.copyWithCount(count);
+        }
+    }
+
+    private record DropKey(Item item, DataComponentMap components) {
+        static DropKey from(ItemStack stack) {
+            return new DropKey(stack.getItem(), stack.getComponents());
         }
     }
 
@@ -143,35 +221,6 @@ public final class MassBlockBreakHelper {
         return distanceSqToFocal(focalPoint, pos) <= maxRadiusSq + EPSILON;
     }
 
-    static List<ItemStack> mergeStacks(List<ItemStack> stacks) {
-        List<ItemStack> merged = new ArrayList<>();
-        for (ItemStack stack : stacks) {
-            if (stack.isEmpty()) {
-                continue;
-            }
-
-            ItemStack remaining = stack.copy();
-            for (ItemStack target : merged) {
-                if (ItemStack.isSameItemSameComponents(target, remaining)) {
-                    int space = target.getMaxStackSize() - target.getCount();
-                    int transfer = Math.min(remaining.getCount(), space);
-                    if (transfer <= 0) {
-                        continue;
-                    }
-                    target.grow(transfer);
-                    remaining.shrink(transfer);
-                    if (remaining.isEmpty()) {
-                        break;
-                    }
-                }
-            }
-
-            if (!remaining.isEmpty()) {
-                merged.add(remaining);
-            }
-        }
-        return merged;
-    }
 
     private static List<BreakTarget> collectBreakTargets(Iterable<Vector3> positions, int maxBlocks) throws SpellRuntimeException {
         if (positions == null) {

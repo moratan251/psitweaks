@@ -1,5 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.DropEntry;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.StackAccumulator;
 import com.mojang.logging.LogUtils;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -175,18 +177,33 @@ public final class MassBlockBreakScheduler {
             return true;
         }
 
-        List<ItemStack> drops = task.loot.drops();
+        List<DropEntry> drops = dropEntries(task);
+        int checked = 0;
         while (task.dropIndex < drops.size() && System.nanoTime() < deadline) {
-            ItemStack stack = drops.get(task.dropIndex++);
-            player.getInventory().add(stack);
-            if (!stack.isEmpty()) {
-                mergeInto(task.mergedOverflow, stack);
+            DropEntry entry = drops.get(task.dropIndex);
+            long remaining = entry.count() - task.dropEntryOffset;
+            if (remaining <= 0) {
+                task.dropIndex++;
+                task.dropEntryOffset = 0;
+                continue;
             }
 
-            if ((task.dropIndex & (CHECK_INTERVAL - 1)) == 0) {
-                if (System.nanoTime() >= deadline) {
-                    return false;
-                }
+            int stackCount = (int) Math.min(remaining, entry.maxStackSize());
+            ItemStack stack = entry.copyStack(stackCount);
+            task.dropEntryOffset += stackCount;
+
+            player.getInventory().add(stack);
+            if (!stack.isEmpty()) {
+                task.overflow.add(stack);
+            }
+            if (task.dropEntryOffset >= entry.count()) {
+                task.dropIndex++;
+                task.dropEntryOffset = 0;
+            }
+
+            checked++;
+            if ((checked & (CHECK_INTERVAL - 1)) == 0 && System.nanoTime() >= deadline) {
+                return false;
             }
         }
 
@@ -204,18 +221,37 @@ public final class MassBlockBreakScheduler {
             return true;
         }
 
-        List<ItemStack> merged = task.mergedOverflow;
-        while (task.mergedDropIndex < merged.size() && System.nanoTime() < deadline) {
-            player.drop(merged.get(task.mergedDropIndex++), false);
+        List<DropEntry> overflow = overflowEntries(task);
+        int checked = 0;
+        while (task.overflowDropIndex < overflow.size() && System.nanoTime() < deadline) {
+            DropEntry entry = overflow.get(task.overflowDropIndex);
+            long remaining = entry.count() - task.overflowEntryOffset;
+            if (remaining <= 0) {
+                task.overflowDropIndex++;
+                task.overflowEntryOffset = 0;
+                continue;
+            }
+
+            int stackCount = (int) Math.min(remaining, entry.maxStackSize());
+            player.drop(entry.copyStack(stackCount), false);
+            task.overflowEntryOffset += stackCount;
+            task.overflowStackCount++;
+            if (task.overflowEntryOffset >= entry.count()) {
+                task.overflowDropIndex++;
+                task.overflowEntryOffset = 0;
+            }
+
+            checked++;
+            if ((checked & (CHECK_INTERVAL - 1)) == 0 && System.nanoTime() >= deadline) {
+                return false;
+            }
         }
 
-        if (task.mergedDropIndex < merged.size()) {
+        if (task.overflowDropIndex < overflow.size()) {
             return false;
         }
 
         awardExperience(task.level, player.position(), task.loot.experience());
-
-        task.mergedOverflowCount = merged.size();
         return true;
     }
 
@@ -224,33 +260,60 @@ public final class MassBlockBreakScheduler {
             return;
         }
 
-        List<ItemStack> flush = new ArrayList<>();
+        StackAccumulator flush = new StackAccumulator();
         if (task.state == State.DROPPING) {
-            // Only drop overflow that has not already been spawned by player.drop().
-            flush.addAll(task.mergedOverflow.subList(task.mergedDropIndex, task.mergedOverflow.size()));
+            addRemaining(flush, overflowEntries(task), task.overflowDropIndex, task.overflowEntryOffset);
         } else {
-            flush.addAll(task.mergedOverflow);
-        }
-
-        List<ItemStack> drops = task.loot.drops();
-        for (int i = task.dropIndex; i < drops.size(); i++) {
-            ItemStack stack = drops.get(i);
-            if (!stack.isEmpty()) {
-                mergeInto(flush, stack.copy());
-            }
+            addRemaining(flush, task.overflow.entries(), 0, 0);
+            addRemaining(flush, dropEntries(task), task.dropIndex, task.dropEntryOffset);
         }
 
         BlockPos dropPos = task.focalPoint.toBlockPos();
-        for (ItemStack stack : flush) {
-            Block.popResource(task.level, dropPos, stack);
-        }
-
+        dropAt(task.level, dropPos, flush.entries());
         awardExperience(task.level, Vec3.atCenterOf(dropPos), task.loot.experience());
     }
 
     private static void awardExperience(ServerLevel level, Vec3 position, int experience) {
         if (experience > 0) {
             ExperienceOrb.award(level, position, experience);
+        }
+    }
+
+    private static List<DropEntry> dropEntries(PendingBreak task) {
+        if (task.dropEntries == null) {
+            task.dropEntries = task.loot.dropEntries();
+        }
+        return task.dropEntries;
+    }
+
+    private static List<DropEntry> overflowEntries(PendingBreak task) {
+        if (task.overflowEntries == null) {
+            task.overflowEntries = task.overflow.entries();
+        }
+        return task.overflowEntries;
+    }
+
+    private static void addRemaining(StackAccumulator target, List<DropEntry> entries, int startIndex, long firstOffset) {
+        for (int i = startIndex; i < entries.size(); i++) {
+            DropEntry entry = entries.get(i);
+            long count = entry.count();
+            if (i == startIndex) {
+                count -= firstOffset;
+            }
+            if (count > 0) {
+                target.add(entry.template(), count);
+            }
+        }
+    }
+
+    private static void dropAt(ServerLevel level, BlockPos pos, List<DropEntry> entries) {
+        for (DropEntry entry : entries) {
+            long remaining = entry.count();
+            while (remaining > 0) {
+                int stackCount = (int) Math.min(remaining, entry.maxStackSize());
+                Block.popResource(level, pos, entry.copyStack(stackCount));
+                remaining -= stackCount;
+            }
         }
     }
 
@@ -263,28 +326,6 @@ public final class MassBlockBreakScheduler {
         }
     }
 
-    private static void mergeInto(List<ItemStack> merged, ItemStack remaining) {
-        if (remaining.isEmpty()) {
-            return;
-        }
-        for (ItemStack target : merged) {
-            if (ItemStack.isSameItemSameComponents(target, remaining)) {
-                int space = target.getMaxStackSize() - target.getCount();
-                int transfer = Math.min(remaining.getCount(), space);
-                if (transfer <= 0) {
-                    continue;
-                }
-                target.grow(transfer);
-                remaining.shrink(transfer);
-                if (remaining.isEmpty()) {
-                    return;
-                }
-            }
-        }
-        if (!remaining.isEmpty()) {
-            merged.add(remaining);
-        }
-    }
 
     private static void finish(PendingBreak task) {
         ServerPlayer player = (ServerPlayer) task.level.getPlayerByUUID(task.playerUuid);
@@ -295,8 +336,8 @@ public final class MassBlockBreakScheduler {
         double breakMs = task.totalBreakNs / 1_000_000.0;
         double blocksPerMs = task.brokenPositions.isEmpty() ? 0.0
                 : task.brokenPositions.size() / Math.max(breakMs, 0.001);
-        LOGGER.info("[MassBlockBreakScheduler] finished for {}: blocks={}, breakTimeMs={}, blocksPerMs={}, overflowAfterMerge={}",
-                task.playerName, task.brokenPositions.size(), String.format("%.3f", breakMs), String.format("%.2f", blocksPerMs), task.mergedOverflowCount);
+        LOGGER.info("[MassBlockBreakScheduler] finished for {}: blocks={}, breakTimeMs={}, blocksPerMs={}, overflowStacks={}",
+                task.playerName, task.brokenPositions.size(), String.format("%.3f", breakMs), String.format("%.2f", blocksPerMs), task.overflowStackCount);
     }
 
     private enum State {
@@ -317,13 +358,17 @@ public final class MassBlockBreakScheduler {
         final MassBlockBreakHelper.MassBreakDrops loot = new MassBlockBreakHelper.MassBreakDrops();
         final List<BlockPos> brokenPositions = new ArrayList<>();
         final List<BlockState> brokenStates = new ArrayList<>();
-        final List<ItemStack> mergedOverflow = new ArrayList<>();
+        final StackAccumulator overflow = new StackAccumulator();
 
         State state = State.BREAKING;
+        List<DropEntry> dropEntries;
         int dropIndex = 0;
-        int mergedDropIndex = 0;
+        long dropEntryOffset = 0;
+        List<DropEntry> overflowEntries;
+        int overflowDropIndex = 0;
+        long overflowEntryOffset = 0;
         long totalBreakNs = 0;
-        int mergedOverflowCount = 0;
+        int overflowStackCount = 0;
         final int scheduledBlockCount;
 
         PendingBreak(Player player,
