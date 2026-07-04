@@ -1,5 +1,134 @@
 ## Changelog
 
+#### v0.10.0
+
+- Added value types available in spell programming
+  + Item
+  + Block
+    * Contains Vector information and can be auto-boxed to and unboxed from Vector
+  + String
+  + Matrix
+
+
+- Defined Contextual Value
+  * A collective term for complex in-game values such as Entity, Item, and Block.
+
+
+- Defined Plain Value
+  * A collective term for simple values such as String, Number, and Vector.
+
+
+- Added List support for types other than Entity
+
+
+- CAD memory can now store Plain Values
+  * In addition to Vectors that Psi itself can read and write, String, Number, and Matrix values can now be stored.
+
+
+- Added spell pieces
+  * Constant: String
+
+  * Operator: Block Position
+  * Operator: Block State
+  * Operator: Block State Entries
+  * Operator: Block State Value
+  * Operator: Equal
+  * Operator: Partial Match
+  * Operator: From String List
+  * Operator: From String
+  * Operator: To String List
+  * Operator: To String
+  * Operator: String Concatenation
+  * Operator: String Trim
+  * Operator: String Slice
+  * Operator: String Length
+  * Operator: String Replace
+  * Operator: Format String
+  * Operator: Starts With
+  * Operator: Ends With
+  * Operator: String List Join
+  * Operator: String Split
+  * Operator: Registry ID
+  * Operator: Registry ID List
+  * Operator: Greater Than
+  * Operator: Greater Than or Equal
+  * Operator: Item Count
+  * Operator: Item Total Count
+  * Operator: Add to List (PT)
+  * Operator: Remove from List (PT)
+  * Operator: List Concatenation (PT)
+  * Operator: List Exclusion (PT)
+  * Operator: List Intersection (PT)
+  * Operator: List Search
+  * Operator: List Search Exclude
+  * Operator: List Insert
+  * Operator: Remove Indices
+  * Operator: List Size
+  * Operator: Random Element
+  * Operator: Player Name
+  * Operator: Tag List
+  * Operator: Block State
+  * Operator: Block State Entries
+  * Operator: Block State Value
+  * Operator: Number List to Vector
+  * Operator: Vector to Number List
+  * Operator: Matrix Transform Vector
+  * Operator: Matrix Linear Part
+  * Operator: Matrix Replace Element
+  * Operator: Matrix Delete Row
+  * Operator: Matrix Delete Column
+  * Operator: Matrix Cuboid Region
+  * Operator: Region Vector List
+  * Operator: Block Position List
+  * Operator: Matrix Add
+  * Operator: Matrix Subtract
+  * Operator: Matrix Multiply
+  * Operator: Matrix Scalar Multiply
+  * Operator: Matrix Transpose
+  * Operator: Matrix Determinant
+  * Operator: Matrix Inverse
+  * Operator: Matrix Extract Row
+  * Operator: Matrix Extract Column
+  * Operator: Matrix Element
+  * Operator: Matrix Row Count
+  * Operator: Matrix Column Count
+  * Operator: Matrix Multiply Vector
+  * Operator: Column Matrix From List
+  * Operator: Matrix Flatten
+  * Operator: Identity Matrix
+  * Operator: Zero Matrix
+  * Operator: Diagonal Matrix
+  * Operator: Matrix Replace Column
+  * Operator: Matrix Replace Row
+  * Operator: Outside Region
+  * Operator: Inside Region
+
+  * Selector: Block
+  * Selector: Display Name
+  * Selector: Display Name List
+  * Selector: Held Item
+  * Selector: Held Items
+  * Selector: Internal Items
+  * Selector: Internal Slot Item
+  * Selector: Selected Slot Item
+  * Selector: Entity Slot Item
+  * Selector: Indexed Element (PT)
+  * Selector: NBT
+  * Selector: NBT Keys
+  * Selector: NBT Value
+  * Selector: Online Players
+  * Selector: Stored Value
+  * Selector: Block List
+
+  * Trick: Store Value
+  * Trick: Switch
+  * Trick: Jump
+  * Trick: Mass Block Break
+  * Jump Anchor
+
+
+- Fixed bugs in the block breaking process for Trick: Block Break (Fortune) and Trick: Block Break (Silk Touch)
+
 #### v0.9.5
 
 - Added spell pieces
