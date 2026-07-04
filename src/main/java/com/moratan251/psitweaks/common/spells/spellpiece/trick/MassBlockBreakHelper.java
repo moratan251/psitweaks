@@ -189,7 +189,7 @@ public final class MassBlockBreakHelper {
 
         ItemStack tool = context.getHarvestTool().copy();
         if (tool.isEmpty()) {
-            tool = PsiAPI.getPlayerCAD(player);
+            tool = PsiAPI.getPlayerCAD(player).copy();
         }
         final ItemStack effectiveTool = tool;
         Predicate<BlockState> filter = state -> effectiveTool.isCorrectToolForDrops(state)

@@ -12,12 +12,14 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -123,7 +125,6 @@ public final class MassBlockBreakScheduler {
 
         Boolean previousHarvestCheck = PieceTrickBreakBlock.doingHarvestCheck.get();
         PieceTrickBreakBlock.doingHarvestCheck.set(true);
-        player.setItemInHand(InteractionHand.MAIN_HAND, task.effectiveTool);
         try {
             int checked = 0;
             while (!task.positions.isEmpty() && System.nanoTime() < deadline) {
@@ -146,6 +147,7 @@ public final class MassBlockBreakScheduler {
                     continue;
                 }
 
+                player.setItemInHand(InteractionHand.MAIN_HAND, createBreakTool(task.effectiveTool));
                 if (MassBlockBreakHelper.withActiveBreak(task.playerUuid, task.level, pos, task.loot, () -> player.gameMode.destroyBlock(pos))) {
                     task.brokenPositions.add(pos);
                     task.brokenStates.add(state);
@@ -169,6 +171,14 @@ public final class MassBlockBreakScheduler {
             task.state = State.GIVING_DROPS;
         }
         return false;
+    }
+
+    private static ItemStack createBreakTool(ItemStack effectiveTool) {
+        ItemStack tool = effectiveTool.copy();
+        if (tool.isDamageableItem()) {
+            tool.set(DataComponents.UNBREAKABLE, new Unbreakable(false));
+        }
+        return tool;
     }
 
     private static boolean tickGivingDrops(PendingBreak task, long deadline) {
