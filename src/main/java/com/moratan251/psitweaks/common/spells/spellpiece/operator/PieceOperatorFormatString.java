@@ -1,8 +1,11 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.param.SpellParamContextualValueList;
 import com.moratan251.psitweaks.common.spells.spellpiece.EditableStringSpellPiece;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.DisplayNameTargetHelper;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
 import net.minecraft.client.Minecraft;
@@ -11,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import org.lwjgl.glfw.GLFW;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
@@ -19,7 +23,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.param.ParamAny;
 import vazkii.psi.api.spell.piece.PieceOperator;
 
-public class PieceOperatorFormatString extends PsitweaksPieceOperator implements EditableStringSpellPiece {
+public class PieceOperatorFormatString extends PieceOperator implements EditableStringSpellPiece {
     private static final String TAG_VALUE = "value";
     private static final int MAX_RENDER_WIDTH = 16;
     private static final int TEXT_COLOR = 0xFFFFFF;
@@ -54,6 +58,15 @@ public class PieceOperatorFormatString extends PsitweaksPieceOperator implements
     }
 
     private String formatArgument(SpellContext context, Object argument) throws SpellRuntimeException {
+        if (argument == null) {
+            return "";
+        }
+        if (SpellParamContextualValueList.canAcceptListType(argument.getClass())) {
+            return String.join(",", DisplayNameTargetHelper.getDisplayNames(context, argument));
+        }
+        if (argument instanceof Entity || argument instanceof ContextualValue) {
+            return DisplayNameTargetHelper.getDisplayName(context, argument);
+        }
         return ModeStringConversionHelper.anyToString(argument);
     }
 

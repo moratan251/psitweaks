@@ -4,12 +4,21 @@ import com.moratan251.psitweaks.api.PsitweaksListAdapter;
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
 import com.moratan251.psitweaks.api.PsitweaksModeOption;
 import com.moratan251.psitweaks.api.PsitweaksModeOptions;
+import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.api.value.BlockValueHelper;
+import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.param.ParamBlockListWrapper;
+import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
 import com.moratan251.psitweaks.common.spells.param.ParamNumberListWrapper;
+import com.moratan251.psitweaks.common.spells.param.ParamSpellItemListWrapper;
+import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamVectorListWrapper;
 import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.VectorListWrapper;
 import java.util.ArrayList;
@@ -103,6 +112,40 @@ public final class PsitweaksListAdapterRegistration {
                 (name, canDisable) -> new ParamEntityListWrapper(name, SpellParam.BLUE, canDisable, false),
                 (name, canDisable) -> new ParamEntity(name, SpellParam.GREEN, canDisable, false)
         ));
+        PsitweaksListAdapters.register(SpellItemListWrapper.class, new BuiltinListAdapter<>(
+                PsitweaksModeOptions.ITEM,
+                SpellItemValue.class,
+                () -> SpellItemListWrapper.EMPTY,
+                () -> SpellItemValue.EMPTY,
+                SpellItemListWrapper::size,
+                SpellItemListWrapper::get,
+                PsitweaksListAdapterRegistration::addItems,
+                PsitweaksListAdapterRegistration::removeItems,
+                PsitweaksListAdapterRegistration::excludeItems,
+                PsitweaksListAdapterRegistration::intersectItems,
+                PsitweaksListAdapterRegistration::concatenateItems,
+                (name, canDisable) -> new ParamSpellItemListWrapper(name, PsitweaksSpellParams.ITEM_LIST_COLOR,
+                        canDisable, false),
+                (name, canDisable) -> new ParamSpellItemValue(name, PsitweaksSpellParams.ITEM_COLOR, canDisable,
+                        false)
+        ));
+        PsitweaksListAdapters.register(BlockListWrapper.class, new BuiltinListAdapter<>(
+                PsitweaksModeOptions.BLOCK,
+                BlockValue.class,
+                () -> BlockListWrapper.EMPTY,
+                () -> null,
+                BlockListWrapper::size,
+                BlockListWrapper::get,
+                PsitweaksListAdapterRegistration::addBlocks,
+                PsitweaksListAdapterRegistration::removeBlocks,
+                PsitweaksListAdapterRegistration::excludeBlocks,
+                PsitweaksListAdapterRegistration::intersectBlocks,
+                PsitweaksListAdapterRegistration::concatenateBlocks,
+                (name, canDisable) -> new ParamBlockListWrapper(name, PsitweaksSpellParams.BLOCK_LIST_COLOR,
+                        canDisable, false),
+                (name, canDisable) -> new ParamBlockValue(name, PsitweaksSpellParams.BLOCK_COLOR, canDisable, false),
+                BlockValueHelper::coerce
+        ));
     }
 
     private static StringListWrapper addStrings(StringListWrapper source, List<?> elements) {
@@ -148,6 +191,26 @@ public final class PsitweaksListAdapterRegistration {
         return result;
     }
 
+    private static SpellItemListWrapper addItems(SpellItemListWrapper source, List<?> elements) {
+        List<SpellItemValue> result = new ArrayList<>(source.asList());
+        for (Object element : elements) {
+            if (element instanceof SpellItemValue value && !value.isEmpty()) {
+                result.add(value);
+            }
+        }
+        return SpellItemListWrapper.make(result);
+    }
+
+    private static BlockListWrapper addBlocks(BlockListWrapper source, List<?> elements) {
+        List<BlockValue> result = new ArrayList<>(source.asList());
+        for (Object element : elements) {
+            if (element instanceof BlockValue value) {
+                result.add(value);
+            }
+        }
+        return BlockListWrapper.make(result);
+    }
+
     private static StringListWrapper removeStrings(StringListWrapper source, List<?> elements) {
         List<String> result = new ArrayList<>(source.asList());
         for (Object element : elements) {
@@ -191,6 +254,26 @@ public final class PsitweaksListAdapterRegistration {
         return result;
     }
 
+    private static SpellItemListWrapper removeItems(SpellItemListWrapper source, List<?> elements) {
+        List<SpellItemValue> result = new ArrayList<>(source.asList());
+        for (Object element : elements) {
+            if (element instanceof SpellItemValue value) {
+                removeEquivalentItem(result, value);
+            }
+        }
+        return SpellItemListWrapper.make(result);
+    }
+
+    private static BlockListWrapper removeBlocks(BlockListWrapper source, List<?> elements) {
+        List<BlockValue> result = new ArrayList<>(source.asList());
+        for (Object element : elements) {
+            if (element instanceof BlockValue value) {
+                removeEquivalentBlock(result, value);
+            }
+        }
+        return BlockListWrapper.make(result);
+    }
+
     private static StringListWrapper excludeStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>();
         for (String value : left) {
@@ -220,6 +303,28 @@ public final class PsitweaksListAdapterRegistration {
             }
         }
         return VectorListWrapper.make(result);
+    }
+
+    private static SpellItemListWrapper excludeItems(SpellItemListWrapper left, SpellItemListWrapper right) {
+        List<SpellItemValue> result = new ArrayList<>();
+        List<SpellItemValue> rightValues = right.asList();
+        for (SpellItemValue value : left) {
+            if (!containsEquivalentItem(rightValues, value)) {
+                result.add(value);
+            }
+        }
+        return SpellItemListWrapper.make(result);
+    }
+
+    private static BlockListWrapper excludeBlocks(BlockListWrapper left, BlockListWrapper right) {
+        List<BlockValue> result = new ArrayList<>();
+        List<BlockValue> rightValues = right.asList();
+        for (BlockValue value : left) {
+            if (!containsEquivalentBlock(rightValues, value)) {
+                result.add(value);
+            }
+        }
+        return BlockListWrapper.make(result);
     }
 
     private static StringListWrapper intersectStrings(StringListWrapper left, StringListWrapper right) {
@@ -253,6 +358,28 @@ public final class PsitweaksListAdapterRegistration {
         return VectorListWrapper.make(result);
     }
 
+    private static SpellItemListWrapper intersectItems(SpellItemListWrapper left, SpellItemListWrapper right) {
+        List<SpellItemValue> result = new ArrayList<>();
+        List<SpellItemValue> rightValues = right.asList();
+        for (SpellItemValue value : left) {
+            if (containsEquivalentItem(rightValues, value)) {
+                result.add(value);
+            }
+        }
+        return SpellItemListWrapper.make(result);
+    }
+
+    private static BlockListWrapper intersectBlocks(BlockListWrapper left, BlockListWrapper right) {
+        List<BlockValue> result = new ArrayList<>();
+        List<BlockValue> rightValues = right.asList();
+        for (BlockValue value : left) {
+            if (containsEquivalentBlock(rightValues, value)) {
+                result.add(value);
+            }
+        }
+        return BlockListWrapper.make(result);
+    }
+
     private static StringListWrapper concatenateStrings(StringListWrapper left, StringListWrapper right) {
         List<String> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
@@ -269,6 +396,56 @@ public final class PsitweaksListAdapterRegistration {
         List<Vector3> result = new ArrayList<>(left.asList());
         result.addAll(right.asList());
         return VectorListWrapper.make(result);
+    }
+
+    private static SpellItemListWrapper concatenateItems(SpellItemListWrapper left, SpellItemListWrapper right) {
+        List<SpellItemValue> result = new ArrayList<>(left.asList());
+        result.addAll(right.asList());
+        return SpellItemListWrapper.make(result);
+    }
+
+    private static BlockListWrapper concatenateBlocks(BlockListWrapper left, BlockListWrapper right) {
+        List<BlockValue> result = new ArrayList<>(left.asList());
+        result.addAll(right.asList());
+        return BlockListWrapper.make(result);
+    }
+
+    private static boolean removeEquivalentItem(List<SpellItemValue> values, SpellItemValue target) {
+        for (int i = 0; i < values.size(); i++) {
+            if (SpellItemValue.equivalent(values.get(i), target)) {
+                values.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containsEquivalentItem(List<SpellItemValue> values, SpellItemValue target) {
+        for (SpellItemValue value : values) {
+            if (SpellItemValue.equivalent(value, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean removeEquivalentBlock(List<BlockValue> values, BlockValue target) {
+        for (int i = 0; i < values.size(); i++) {
+            if (BlockListWrapper.equivalent(values.get(i), target)) {
+                values.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containsEquivalentBlock(List<BlockValue> values, BlockValue target) {
+        for (BlockValue value : values) {
+            if (BlockListWrapper.equivalent(value, target)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static StringListWrapper stringsFromStrings(Iterable<String> values) {

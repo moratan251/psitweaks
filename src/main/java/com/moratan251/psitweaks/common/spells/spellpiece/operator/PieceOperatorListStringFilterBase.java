@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.api.PsitweaksListAdapter;
+import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -62,6 +64,9 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
     }
 
     private static String searchText(SpellContext context, Object value) throws SpellRuntimeException {
+        if (value instanceof Entity || value instanceof ContextualValue) {
+            return RegistryIdTargetHelper.getRegistryId(context, value);
+        }
         return ModeStringConversionHelper.anyToString(value);
     }
 

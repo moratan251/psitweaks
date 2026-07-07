@@ -559,6 +559,66 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f2\u3064\u306e\u30ea\u30b9\u30c8\u3092\u7d50\u5408\u3057\u307e\u3059. Contextual Value List \u306e\u5834\u5408\u3001\u91cd\u8907\u3057\u305f\u8981\u7d20\u306f\u524a\u9664\u3055\u308c\u307e\u3059.";
             default -> "Combines the two input Lists. For Contextual Value Lists, duplicate elements are removed.";
         });
+        add("psitweaks.spellpiece.selector_block", switch (locale) {
+            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u30d6\u30ed\u30c3\u30af";
+            default -> "Selector: Block";
+        });
+        add("psitweaks.spellpiece.selector_block.desc", switch (locale) {
+            case "ja_jp" -> "\u6307\u5b9a\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block \u578b\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059\u3002";
+            default -> "Returns the block at the given position as a Block value.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_block", switch (locale) {
+            case "ja_jp" -> "\u5bfe\u8c61\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block \u578b\u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. Block \u306f\u4fdd\u5b58\u5ea7\u6a19, \u30c7\u30a3\u30e1\u30f3\u30b7\u30e7\u30f3, \u30d6\u30ed\u30c3\u30af\u72b6\u614b, \u30ec\u30b8\u30b9\u30c8\u30eaID, \u30d6\u30ed\u30c3\u30af\u30bf\u30b0\u3092\u6301\u3064\u8aad\u307f\u53d6\u308a\u7528\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\u3067\u3059. Block \u578b\u3092\u5fc5\u8981\u3068\u3059\u308b\u30b9\u30da\u30eb\u30d4\u30fc\u30b9\u306b\u3082 Vector\u578b \u304c\u81ea\u52d5\u5909\u63db\u3055\u308c\u305d\u306e\u307e\u307e\u63a5\u7d9a\u3067\u304d\u307e\u3059\u304c, \u4f5c\u52d5\u5f0f: \u30c7\u30d0\u30c3\u30b0 \u306b Block \u3068\u3057\u3066\u306e\u60c5\u5831\u3092\u8868\u793a\u3055\u305b\u305f\u3044\u5834\u5408\u306a\u3069 Block\u578b \u3067\u3042\u308b\u3053\u3068\u3092\u660e\u793a\u7684\u306b\u793a\u3057\u305f\u3044\u5834\u5408\u306b\u7528\u3044\u307e\u3059.";
+            default -> "Outputs the block at the target position as a Block value. Block is a read-only snapshot containing the saved position, dimension, block state, registry ID, and block tags. Spell pieces that require a Block can also accept a Vector through automatic conversion, so use this when you want to explicitly keep the value as a Block, such as when showing Block information with Trick: Debug.";
+        });
+        add("psitweaks.spellpiece.selector_block_list", switch (locale) {
+            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u30d6\u30ed\u30c3\u30af\u30ea\u30b9\u30c8";
+            default -> "Selector: Block List";
+        });
+        add("psitweaks.spellpiece.selector_block_list.desc", switch (locale) {
+            case "ja_jp" -> "Vector List \u306e\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block List \u3068\u3057\u3066\u53d6\u5f97\u3057\u307e\u3059\u3002";
+            default -> "Gets the blocks at the positions in a Vector List as a Block List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_block_list", switch (locale) {
+            case "ja_jp" -> "Vector List \u306e\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block List \u3068\u3057\u3066\u53d6\u5f97\u3057\u307e\u3059. \u30d6\u30ed\u30c3\u30af\u306e\u7a2e\u985e\u3067\u30ea\u30b9\u30c8\u3092\u691c\u7d22\u3057\u305f\u3044\u306a\u3069, \u5ea7\u6a19\u3092\u30d6\u30ed\u30c3\u30af\u3068\u3057\u3066\u6271\u3044\u305f\u3044\u5834\u5408\u306b\u4f7f\u3044\u307e\u3059.";
+            default -> "Gets the blocks at the positions in a Vector List as a Block List. Use this when you want to handle positions as blocks, such as when searching a list by block type.";
+        });
+        add("psitweaks.spellpiece.selector_held_item", switch (locale) {
+            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u624b\u6301\u3061\u30a2\u30a4\u30c6\u30e0";
+            default -> "Selector: Main-Hand Item";
+        });
+        add("psitweaks.spellpiece.selector_held_item.desc", switch (locale) {
+            case "ja_jp" -> "\u5bfe\u8c61\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u306e\u30e1\u30a4\u30f3\u30cf\u30f3\u30c9\u306e\u30a2\u30a4\u30c6\u30e0\u3092\u53d6\u5f97\u3057\u307e\u3059\u3002";
+            default -> "Gets the target entity's main-hand item.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_held_item", switch (locale) {
+            case "ja_jp" -> "\u5bfe\u8c61 LivingEntity \u306e\u30e1\u30a4\u30f3\u30cf\u30f3\u30c9\u306e ItemStack \u3092 Item \u578b\u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. Item\u578b\u306f, \u30a2\u30a4\u30c6\u30e0\u306e\u7a2e\u985e, \u500b\u6570, \u8010\u4e45\u5024, \u540d\u524d\u306a\u3069\u3092\u6301\u3064\u8aad\u307f\u53d6\u308a\u7528\u306e\u5024\u3067\u3059. Psi \u306e \u53d6\u5f97\u5b50: \u8fd1\u304f\u306e\u30a2\u30a4\u30c6\u30e0 \u3067\u53d6\u5f97\u3067\u304d\u308b\u30c9\u30ed\u30c3\u30d7\u30a2\u30a4\u30c6\u30e0\u306f\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u3067\u3042\u308a, PsiTweaks\u3067\u8ffd\u52a0\u3055\u308c\u308bItem\u578b\u3068\u306f\u7570\u306a\u308b\u3053\u3068\u306b\u6ce8\u610f\u3057\u3066\u304f\u3060\u3055\u3044.";
+            default -> "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.";
+        });
+        add("psitweaks.spellpiece.selector_held_items", switch (locale) {
+            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u6240\u6301\u30a2\u30a4\u30c6\u30e0";
+            default -> "Selector: Carried Items";
+        });
+        add("psitweaks.spellpiece.selector_held_items.desc", switch (locale) {
+            case "ja_jp" -> "\u5bfe\u8c61 Entity \u306e\u6240\u6301\u30a2\u30a4\u30c6\u30e0\u3092 Item List \u3068\u3057\u3066\u53d6\u5f97\u3057\u307e\u3059\u3002";
+            default -> "Outputs the target entity's carried items as an Item List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_held_items", switch (locale) {
+            case "ja_jp" -> "\u5bfe\u8c61 Entity \u306e\u6240\u6301\u30a2\u30a4\u30c6\u30e0\u3092 Item List \u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. Player \u306f\u30a4\u30f3\u30d9\u30f3\u30c8\u30ea\u3092\u30b9\u30ed\u30c3\u30c8\u5358\u4f4d\u3067\u8aad\u307f\u53d6\u308a, \u305d\u306e\u4ed6\u306e Entity \u306f ItemHandler \u304c\u3042\u308c\u3070\u305d\u308c\u3092\u4f7f\u3044, \u306a\u3051\u308c\u3070\u624b\u6301\u3061\u3068\u9632\u5177\u30b9\u30ed\u30c3\u30c8\u3092\u8aad\u307f\u53d6\u308a\u307e\u3059. \u7a7a\u306e\u5834\u5408\u306f\u7a7a\u306e Item List \u3092\u51fa\u529b\u3057\u307e\u3059.";
+            default -> "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List.";
+        });
+        add("psitweaks.spellpiece.selector_indexed_element", switch (locale) {
+            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u8981\u7d20 (PT)";
+            default -> "Selector: Indexed Element (PT)";
+        });
+        add("psitweaks.spellpiece.selector_indexed_element.desc", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u304b\u30890\u59cb\u307e\u308a\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306b\u3042\u308b\u8981\u7d20\u3092\u53d6\u5f97\u3057\u307e\u3059\u3002\u8ca0\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048\u307e\u3059\u3002";
+            default -> "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_indexed_element", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u304b\u3089, 0\u59cb\u307e\u308a\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306b\u3042\u308b\u8981\u7d20\u3092\u51fa\u529b\u3057\u307e\u3059. \u8ca0\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, -1 \u306f\u672b\u5c3e\u8981\u7d20, -2 \u306f\u305d\u306e1\u3064\u524d\u306e\u8981\u7d20\u3092\u8fd4\u3057\u307e\u3059. \u7bc4\u56f2\u5916\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f Psi \u672c\u4f53\u306e Indexed Element \u3068\u540c\u3058\u7bc4\u56f2\u5916\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059.";
+            default -> "Outputs the element at a zero-based index from the input List. Negative indexes count back from the end: -1 returns the last element, and -2 returns the element before it. Out-of-range indexes produce the same out-of-bounds spell error as Psi's Indexed Element.";
+        });
     }
 
     private void addEnglishTranslations() {

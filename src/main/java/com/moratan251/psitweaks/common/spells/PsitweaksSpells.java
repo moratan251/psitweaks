@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.*;
 import vazkii.psi.api.spell.SpellPiece;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -167,6 +168,11 @@ public class PsitweaksSpells {
             registerSpellPiece("operator_list_exclusion", PieceOperatorListExclusion.class);
             registerSpellPiece("operator_list_intersection", PieceOperatorListIntersection.class);
             registerSpellPiece("operator_list_concatenation", PieceOperatorListConcatenation.class);
+            registerSpellPiece("selector_block", PieceSelectorBlock.class);
+            registerSpellPiece("selector_block_list", PieceSelectorBlockList.class);
+            registerSpellPiece("selector_held_item", PieceSelectorHeldItem.class);
+            registerSpellPiece("selector_held_items", PieceSelectorHeldItems.class);
+            registerSpellPiece("selector_indexed_element", PieceSelectorIndexedElement.class);
 
 
         });
