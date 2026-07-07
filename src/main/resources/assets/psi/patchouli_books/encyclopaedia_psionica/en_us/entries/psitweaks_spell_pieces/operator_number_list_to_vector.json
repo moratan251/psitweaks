@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_number_list_to_vector",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_number_list_to_vector.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_number_list_to_vector"
+    }
+  ]
+}

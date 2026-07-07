@@ -25,6 +25,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 //import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
 import com.moratan251.psitweaks.common.proxy.ServerProxyPsitweaks;
+import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
@@ -79,6 +80,8 @@ public class Psitweaks {
     @SuppressWarnings("removal")
     public Psitweaks(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
+
+        PsitweaksListAdapterRegistration.registerBuiltins();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PsitweaksConfig.COMMON_SPEC, "psitweaks-common.toml");
 

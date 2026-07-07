@@ -19,6 +19,546 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> addJapaneseTranslations();
             default -> throw new IllegalStateException("Unsupported locale: " + locale);
         }
+        addBackportedStringTranslations();
+    }
+
+    private void addBackportedStringTranslations() {
+        add("psitweaks.datatype.string", switch (locale) {
+            case "ja_jp" -> "String";
+            default -> "String";
+        });
+        add("psitweaks.datatype.string_list", switch (locale) {
+            case "ja_jp" -> "String List";
+            default -> "String List";
+        });
+        add("psitweaks.datatype.number_list", switch (locale) {
+            case "ja_jp" -> "Number List";
+            default -> "Number List";
+        });
+        add("psitweaks.datatype.vector_list", switch (locale) {
+            case "ja_jp" -> "Vector List";
+            default -> "Vector List";
+        });
+        add("psitweaks.datatype.vector_or_number_list", switch (locale) {
+            case "ja_jp" -> "Vector/Number List";
+            default -> "Vector/Number List";
+        });
+        add("psitweaks.datatype.any_list", switch (locale) {
+            case "ja_jp" -> "Any List";
+            default -> "Any List";
+        });
+        add("psitweaks.datatype.plain_value", switch (locale) {
+            case "ja_jp" -> "Plain Value";
+            default -> "Plain Value";
+        });
+        add("psitweaks.datatype.matrix", switch (locale) {
+            case "ja_jp" -> "Matrix";
+            default -> "Matrix";
+        });
+        add("psitweaks.datatype.matrix_list", switch (locale) {
+            case "ja_jp" -> "Matrix List";
+            default -> "Matrix List";
+        });
+        add("psitweaks.datatype.item", switch (locale) {
+            case "ja_jp" -> "Item";
+            default -> "Item";
+        });
+        add("psitweaks.datatype.item_list", switch (locale) {
+            case "ja_jp" -> "Item List";
+            default -> "Item List";
+        });
+        add("psitweaks.datatype.block", switch (locale) {
+            case "ja_jp" -> "Block";
+            default -> "Block";
+        });
+        add("psitweaks.datatype.block_list", switch (locale) {
+            case "ja_jp" -> "Block List";
+            default -> "Block List";
+        });
+        add("psitweaks.datatype.contextual_value", switch (locale) {
+            case "ja_jp" -> "Contextual Value";
+            default -> "Contextual Value";
+        });
+        add("psitweaks.datatype.contextual_value_list", switch (locale) {
+            case "ja_jp" -> "Contextual Value List";
+            default -> "Contextual Value List";
+        });
+        add("psitweaks.gui.spell_piece_mode", switch (locale) {
+            case "ja_jp" -> "\u30e2\u30fc\u30c9: %s";
+            default -> "Mode: %s";
+        });
+        add("psitweaks.gui.spell_piece_mode.title", switch (locale) {
+            case "ja_jp" -> "\u30e2\u30fc\u30c9\u9078\u629e";
+            default -> "Mode Select";
+        });
+        add("psitweaks.gui.string_constant_input.empty", switch (locale) {
+            case "ja_jp" -> "\u7a7a\u6587\u5b57\u5217";
+            default -> "Empty string";
+        });
+        add("psitweaks.gui.string_constant_input.hint", switch (locale) {
+            case "ja_jp" -> "Shift+Enter\u6539\u884c / Enter\u9589";
+            default -> "Shift+Enter newline / Enter closes";
+        });
+        add("psitweaks.gui.string_constant_input.read_only", switch (locale) {
+            case "ja_jp" -> "\u95b2\u89a7\u306e\u307f";
+            default -> "Read only";
+        });
+        add("psitweaks.gui.string_constant_input.button.copy_all", switch (locale) {
+            case "ja_jp" -> "\u5168\u30b3\u30d4\u30fc";
+            default -> "Copy All";
+        });
+        add("psitweaks.gui.string_constant_input.button.clear_all", switch (locale) {
+            case "ja_jp" -> "\u5168\u524a\u9664";
+            default -> "Clear";
+        });
+        add("psitweaks.gui.string_constant_input.button.replace_all", switch (locale) {
+            case "ja_jp" -> "\u8cbc\u4ed8";
+            default -> "Paste";
+        });
+        add("psitweaks.spellparam.string", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u5217";
+            default -> "String";
+        });
+        add("psitweaks.spellparam.string1", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171";
+            default -> "String 1";
+        });
+        add("psitweaks.spellparam.string2", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52172";
+            default -> "String 2";
+        });
+        add("psitweaks.spellparam.string3", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52173";
+            default -> "String 3";
+        });
+        add("psitweaks.spellparam.value1", switch (locale) {
+            case "ja_jp" -> "\u50241";
+            default -> "Value 1";
+        });
+        add("psitweaks.spellparam.value2", switch (locale) {
+            case "ja_jp" -> "\u50242";
+            default -> "Value 2";
+        });
+        add("psitweaks.spellparam.value3", switch (locale) {
+            case "ja_jp" -> "\u50243";
+            default -> "Value 3";
+        });
+        add("psitweaks.spellparam.element1", switch (locale) {
+            case "ja_jp" -> "\u8981\u7d201";
+            default -> "Element 1";
+        });
+        add("psitweaks.spellparam.element2", switch (locale) {
+            case "ja_jp" -> "\u8981\u7d202";
+            default -> "Element 2";
+        });
+        add("psitweaks.spellparam.element3", switch (locale) {
+            case "ja_jp" -> "\u8981\u7d203";
+            default -> "Element 3";
+        });
+        add("psitweaks.spellparam.vector_or_number_list", switch (locale) {
+            case "ja_jp" -> "\u6570\u5217";
+            default -> "Array";
+        });
+        add("psitweaks.spellparam.size", switch (locale) {
+            case "ja_jp" -> "\u30b5\u30a4\u30ba";
+            default -> "Size";
+        });
+        add("psitweaks.spellparam.indices", switch (locale) {
+            case "ja_jp" -> "\u6210\u5206";
+            default -> "Indices";
+        });
+        add("psitweaks.spellerror.plain_memory_type", switch (locale) {
+            case "ja_jp" -> "\u4fdd\u5b58\u3055\u308c\u305f\u5024\u3092\u9078\u629e\u4e2d\u306e\u578b\u3068\u3057\u3066\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093";
+            default -> "Stored value cannot be read as the selected type";
+        });
+        add("psitweaks.spellerror.plain_memory_parse", switch (locale) {
+            case "ja_jp" -> "\u4fdd\u5b58\u3055\u308c\u305f\u6587\u5b57\u5217\u3092\u9078\u629e\u4e2d\u306e\u578b\u3078\u5909\u63db\u3067\u304d\u307e\u305b\u3093";
+            default -> "Stored string cannot be converted to the selected type";
+        });
+        add("psitweaks.spellerror.empty_delimiter", switch (locale) {
+            case "ja_jp" -> "\u533a\u5207\u308a\u6587\u5b57\u304c\u7a7a\u3067\u3059";
+            default -> "Delimiter cannot be empty";
+        });
+        add("psitweaks.spellerror.expected_three_numbers", switch (locale) {
+            case "ja_jp" -> "Number List \u306e\u8981\u7d20\u6570\u306f3\u3067\u3042\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059";
+            default -> "Number List must contain exactly 3 elements";
+        });
+        add("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
+            case "ja_jp" -> "CAD\u30e1\u30e2\u30ea\u30b9\u30ed\u30c3\u30c8%s\u306eString\u306f%s\u6587\u5b57\u304b\u3089%s\u6587\u5b57\u306b\u5207\u308a\u6368\u3066\u3089\u308c\u307e\u3057\u305f";
+            default -> "String CAD memory value in slot %s was truncated from %s to %s characters";
+        });
+        add("psitweaks.spellpiece.constant_string", switch (locale) {
+            case "ja_jp" -> "\u5b9a\u6570\u5b50: \u6587\u5b57\u5217";
+            default -> "Constant: String";
+        });
+        add("psitweaks.spellpiece.constant_string.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3092\u305d\u306e\u307e\u307e\u51fa\u529b\u3057\u307e\u3059\u3002\u6700\u59271024\u6587\u5b57\u3067\u3059\u3002";
+            default -> "Outputs the entered string. Limited to 1024 characters.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.constant_string", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3092String\u5024\u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. \u5024\u306f\u8853\u5f0f\u306b\u4fdd\u5b58\u3055\u308c, \u6700\u59271024\u6587\u5b57\u3067\u3059.";
+            default -> "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1024 characters.";
+        });
+        add("psitweaks.spellpiece.operator_format_string", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30d5\u30a9\u30fc\u30de\u30c3\u30c8\u6587\u5b57\u5217";
+            default -> "Operator: Format String";
+        });
+        add("psitweaks.spellpiece.operator_format_string.desc", switch (locale) {
+            case "ja_jp" -> "\u30c6\u30ad\u30b9\u30c8\u30a6\u30a3\u30f3\u30c9\u30a6\u3067\u5165\u529b\u3055\u308c\u305f\u6587\u5b57\u5217\u3092\u8fd4\u3057\u307e\u3059\u3002 \u4efb\u610f\u306e\u5165\u529b\u3055\u308c\u305f\u5024\u306f\u30c6\u30ad\u30b9\u30c8\u4e2d\u306e{1}, {2}, {3}\u3078\u57cb\u3081\u8fbc\u307e\u308c\u307e\u3059\u3002";
+            default -> "Returns the string entered in the text window. Optional input values are embedded into {1}, {2}, and {3} in the text.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_format_string", switch (locale) {
+            case "ja_jp" -> "\u4fdd\u5b58\u3057\u305f\u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u4e2d\u306e {1}, {2}, {3} \u3092\u6700\u59273\u3064\u306e\u4efb\u610f Any \u5165\u529b\u3067\u7f6e\u63db\u3057\u3066 String \u3092\u51fa\u529b\u3057\u307e\u3059. \u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u306f \u5b9a\u6570\u5b50: \u6587\u5b57\u5217 \u3068\u540c\u3058\u5165\u529b\u30a6\u30a3\u30f3\u30c9\u30a6\u3067\u7de8\u96c6\u3057, \u6700\u59271024\u6587\u5b57\u3067\u3059. \u672a\u63a5\u7d9a\u306e\u5165\u529b\u306f\u7a7a\u6587\u5b57\u306b\u306a\u308a\u307e\u3059. Entity, Item, Block \u306a\u3069\u306e Contextual Value \u306f \u53d6\u5f97\u5b50: \u8868\u793a\u540d \u3068\u540c\u3058\u73fe\u5728\u8a00\u8a9e\u8868\u793a\u540d\u3092\u4f7f\u3044\u307e\u3059. Contextual Value List \u306f \u53d6\u5f97\u5b50: \u8868\u793a\u540d\u30ea\u30b9\u30c8 \u3068\u540c\u3058\u73fe\u5728\u8a00\u8a9e\u8868\u793a\u540d\u3078\u5909\u63db\u3057, \u30b3\u30f3\u30de\u533a\u5207\u308a\u3067\u57cb\u3081\u8fbc\u307f\u307e\u3059. \u305d\u308c\u4ee5\u5916\u306e\u5024\u306f\u901a\u5e38\u306e String \u5909\u63db\u3092\u4f7f\u3044\u307e\u3059. \u6700\u7d42\u51fa\u529b\u306f\u5b9f\u884c\u6642 String \u4e0a\u9650\u3067\u5236\u9650\u3055\u308c\u307e\u3059.";
+            default -> "Outputs a String by replacing {1}, {2}, and {3} in the saved template with up to three optional Any inputs. The template uses the same input window as Constant: String and is limited to 1024 characters. Unconnected inputs become empty text. Contextual Values such as Entity, Item, and Block use the same localized display name as Selector: Display Name. Contextual Value Lists use the same localized names as Selector: Display Name List and are joined with commas. Other values use the normal String conversion. The final output is capped by the runtime String limit.";
+        });
+        add("psitweaks.spellpiece.operator_from_string", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u304b\u3089\u5909\u63db";
+            default -> "Operator: From String";
+        });
+        add("psitweaks.spellpiece.operator_from_string.desc", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e\u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String \u3092\u305d\u306e\u307e\u307e\u8fd4\u3059\u304b\u3001Number \u307e\u305f\u306f Vector \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            default -> "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_from_string", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e Plain \u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String \u5165\u529b\u3092\u5909\u63db\u3057\u307e\u3059. String \u30e2\u30fc\u30c9\u306f\u5165\u529b\u3092\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. Number \u30e2\u30fc\u30c9\u306f\u6709\u9650\u306e\u6570\u5024\u6587\u5b57\u5217\u3092\u89e3\u6790\u3057, \u7121\u52b9\u306a\u5165\u529b\u3067\u306f0\u3092\u51fa\u529b\u3057\u307e\u3059. Vector \u30e2\u30fc\u30c9\u306f Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) \u3092\u53d7\u3051\u4ed8\u3051\u307e\u3059. Vector \u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u305b\u305a, \u89e3\u6790\u5931\u6557\u6642\u306f\u30bc\u30ed\u30d9\u30af\u30c8\u30eb\u3092\u51fa\u529b\u3057\u307e\u3059. \u30b9\u30da\u30eb\u30d4\u30fc\u30b9\u3092\u5de6\u30af\u30ea\u30c3\u30af\u3067\u30e2\u30fc\u30c9\u3092\u9078\u629e\u3067\u304d\u307e\u3059.";
+            default -> "Converts the String input for the selected Plain mode. String mode returns the input as-is. Number mode parses finite numeric text and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails. Left-click the spell piece to select the mode.";
+        });
+        add("psitweaks.spellpiece.operator_list_from_string_list", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30ea\u30b9\u30c8\u304b\u3089\u5909\u63db";
+            default -> "Operator: From String List";
+        });
+        add("psitweaks.spellpiece.operator_list_from_string_list.desc", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e\u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String List \u3092\u305d\u306e\u307e\u307e\u8fd4\u3059\u304b\u3001Number List \u307e\u305f\u306f Vector List \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            default -> "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_from_string_list", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e Plain \u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String List \u3092\u5909\u63db\u3057\u307e\u3059. String \u30e2\u30fc\u30c9\u306f\u5165\u529b\u30ea\u30b9\u30c8\u3092\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. Number \u30e2\u30fc\u30c9\u306f\u5404\u8981\u7d20\u3092\u6709\u9650\u306e\u6570\u5024\u6587\u5b57\u5217\u3068\u3057\u3066\u89e3\u6790\u3057, \u7121\u52b9\u306a\u8981\u7d20\u306f0\u306b\u306a\u308a\u307e\u3059. Vector \u30e2\u30fc\u30c9\u306f Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) \u306b\u4e00\u81f4\u3059\u308b\u8981\u7d20\u306e\u307f\u5909\u63db\u3057, \u7121\u52b9\u306a\u8981\u7d20\u306f\u7121\u8996\u3057\u307e\u3059. Vector \u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u305b\u3093. \u30b9\u30da\u30eb\u30d4\u30fc\u30b9\u3092\u5de6\u30af\u30ea\u30c3\u30af\u3067\u30e2\u30fc\u30c9\u3092\u9078\u629e\u3067\u304d\u307e\u3059.";
+            default -> "Converts a String List for the selected Plain mode. String mode returns the input list as-is. Number mode parses each entry as finite numeric text, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries. Left-click the spell piece to select the mode.";
+        });
+        add("psitweaks.spellpiece.operator_number_list_to_vector", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6570\u5024\u30ea\u30b9\u30c8\u2192\u30d9\u30af\u30c8\u30eb";
+            default -> "Operator: Number List to Vector";
+        });
+        add("psitweaks.spellpiece.operator_number_list_to_vector.desc", switch (locale) {
+            case "ja_jp" -> "\u8981\u7d20\u65703\u306e Number List \u3092 Vector \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            default -> "Converts a Number List with exactly three elements into a Vector.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_number_list_to_vector", switch (locale) {
+            case "ja_jp" -> "\u8981\u7d20\u65703\u306e Number List \u3092 Vector \u306b\u5909\u63db\u3057\u307e\u3059. \u30ea\u30b9\u30c8\u306e\u9806\u5e8f\u306f X, Y, Z \u3067\u3059. \u8981\u7d20\u6570\u304c3\u3067\u306f\u306a\u3044\u5834\u5408\u306f\u5b9f\u884c\u6642\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059.";
+            default -> "Converts a Number List with exactly three elements into a Vector. The list order is X, Y, Z. If the list does not contain exactly three elements, the spell raises a runtime error.";
+        });
+        add("psitweaks.spellpiece.operator_vector_to_number_list", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30d9\u30af\u30c8\u30eb\u2192\u6570\u5024\u30ea\u30b9\u30c8";
+            default -> "Operator: Vector to Number List";
+        });
+        add("psitweaks.spellpiece.operator_vector_to_number_list.desc", switch (locale) {
+            case "ja_jp" -> "Vector \u3092\u8981\u7d20\u65703\u306e Number List \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            default -> "Converts a Vector into a three-element Number List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_vector_to_number_list", switch (locale) {
+            case "ja_jp" -> "Vector \u3092 X, Y, Z \u306e\u9806\u30673\u8981\u7d20\u306e Number List \u306b\u5909\u63db\u3057\u307e\u3059.";
+            default -> "Converts a Vector into a Number List with three elements in X, Y, Z order.";
+        });
+        add("psitweaks.spellpiece.operator_to_string", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u3078\u5909\u63db";
+            default -> "Operator: To String";
+        });
+        add("psitweaks.spellpiece.operator_to_string.desc", switch (locale) {
+            case "ja_jp" -> "Any \u5165\u529b\u3092\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e String \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            default -> "Converts an Any input into a debug-display String.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_to_string", switch (locale) {
+            case "ja_jp" -> "Any \u5165\u529b\u3092 \u4f5c\u52d5\u5f0f: \u30c7\u30d0\u30c3\u30b0 \u3068\u540c\u3058\u8868\u793a\u5411\u3051\u306e\u6587\u5b57\u5217\u8868\u73fe\u3067 String \u306b\u5909\u63db\u3057\u307e\u3059. Entity, Item, Block \u306a\u3069\u306e Contextual Value \u3082\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u306f\u306a\u304f\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e\u6587\u5b57\u5217\u306b\u306a\u308a\u307e\u3059. String \u306f\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. List \u306f\u5404\u8981\u7d20\u3092\u540c\u3058\u898f\u5247\u3067\u5909\u63db\u3057, \u30b3\u30f3\u30de\u533a\u5207\u308a\u3067\u7d50\u5408\u3057\u307e\u3059.";
+            default -> "Converts an Any input into a String using the same display-oriented text form as Trick: Debug. Contextual values such as Entity, Item, and Block therefore use their debug display text rather than registry IDs. String values are returned as-is. List values convert each element by the same rules and join them with commas.";
+        });
+        add("psitweaks.spellpiece.operator_list_to_string_list", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30ea\u30b9\u30c8\u3078\u5909\u63db";
+            default -> "Operator: To String List";
+        });
+        add("psitweaks.spellpiece.operator_list_to_string_list.desc", switch (locale) {
+            case "ja_jp" -> "Any \u5165\u529b\u3092\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e String List \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            default -> "Converts an Any input into a debug-display String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_to_string_list", switch (locale) {
+            case "ja_jp" -> "Any \u5165\u529b\u3092 \u4f5c\u52d5\u5f0f: \u30c7\u30d0\u30c3\u30b0 \u3068\u540c\u3058\u8868\u793a\u5411\u3051\u306e\u6587\u5b57\u5217\u8868\u73fe\u3067 String List \u306b\u5909\u63db\u3057\u307e\u3059. Entity, Item, Block \u306a\u3069\u306e Contextual Value \u3082\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u306f\u306a\u304f\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e\u6587\u5b57\u5217\u306b\u306a\u308a\u307e\u3059. Block List \u3092\u542b\u3080 List \u306f\u5165\u529b\u9806\u3092\u7dad\u6301\u3057\u3066\u5404\u8981\u7d20\u3092\u540c\u3058\u898f\u5247\u3067\u5909\u63db\u3057\u307e\u3059. List \u4ee5\u5916\u306f1\u8981\u7d20\u306e String List \u306b\u306a\u308a\u307e\u3059.";
+            default -> "Converts an Any input into a String List using the same display-oriented text form as Trick: Debug. Contextual values such as Entity, Item, and Block therefore use their debug display text rather than registry IDs. List inputs, including Block List, convert each element by the same rules while preserving order. Non-list inputs become a one-element String List.";
+        });
+        add("psitweaks.spellpiece.operator_string_partial_match", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u90e8\u5206\u4e00\u81f4";
+            default -> "Operator: Partial Match";
+        });
+        add("psitweaks.spellpiece.operator_string_partial_match.desc", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u306e\u691c\u7d22\u306b\u30de\u30c3\u30c1\u3059\u308b\u6587\u5b57\u5217\u3092\u542b\u3080\u306a\u30891\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059\u3002\u6587\u5b57\u52172\u3067\u306f\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u3092\u4f7f\u3048\u307e\u3059: * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059\u3002";
+            default -> "Outputs 1 if searching String 1 with String 2 finds matching text, otherwise outputs 0. String 2 accepts wildcards: * matches any text, ? matches one character, and [abc] matches one listed character.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_partial_match", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u3092\u6587\u5b57\u52172\u3067\u691c\u7d22\u3057\u3066\u30de\u30c3\u30c1\u3059\u308b\u6587\u5b57\u5217\u3092\u542b\u3080\u304b\u5224\u5b9a\u3057\u307e\u3059. * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059. \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u6587\u5b57\u306f\u30d0\u30c3\u30af\u30b9\u30e9\u30c3\u30b7\u30e5\u3067\u30a8\u30b9\u30b1\u30fc\u30d7\u3067\u304d\u307e\u3059. \u6bd4\u8f03\u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u3059.";
+            default -> "Searches String 1 with String 2 and checks whether it contains matching text. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Escape wildcard characters with a backslash. Matching is case-sensitive.";
+        });
+        add("psitweaks.spellpiece.operator_string_starts_with", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u5148\u982d\u4e00\u81f4";
+            default -> "Operator: String Starts With";
+        });
+        add("psitweaks.spellpiece.operator_string_starts_with.desc", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u59cb\u307e\u308b\u306a\u30891\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Outputs 1 if String 1 starts with String 2, otherwise outputs 0.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_starts_with", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u59cb\u307e\u308b\u306a\u30891, \u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059. \u6bd4\u8f03\u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u3059.";
+            default -> "Outputs 1 if String 1 starts with String 2, otherwise outputs 0. The comparison is case-sensitive.";
+        });
+        add("psitweaks.spellpiece.operator_string_ends_with", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u672b\u5c3e\u4e00\u81f4";
+            default -> "Operator: String Ends With";
+        });
+        add("psitweaks.spellpiece.operator_string_ends_with.desc", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u7d42\u308f\u308b\u306a\u30891\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Outputs 1 if String 1 ends with String 2, otherwise outputs 0.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_ends_with", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u7d42\u308f\u308b\u306a\u30891, \u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059. \u6bd4\u8f03\u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u3059.";
+            default -> "Outputs 1 if String 1 ends with String 2, otherwise outputs 0. The comparison is case-sensitive.";
+        });
+        add("psitweaks.spellpiece.operator_string_concat", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u7d50\u5408";
+            default -> "Operator: String Concat";
+        });
+        add("psitweaks.spellpiece.operator_string_concat.desc", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171 + \u6587\u5b57\u52172 + \u6587\u5b57\u52173";
+            default -> "String 1 + String 2 + String 3";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_concat", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171, \u6587\u5b57\u52172, \u4efb\u610f\u306e\u6587\u5b57\u52173\u3092\u3053\u306e\u9806\u306b\u7d50\u5408\u3057\u307e\u3059. ";
+            default -> "Concatenates String 1, String 2, and optional String 3 in that order.";
+        });
+        add("psitweaks.spellpiece.operator_string_split", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u5206\u5272";
+            default -> "Operator: String Split";
+        });
+        add("psitweaks.spellpiece.operator_string_split.desc", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u3092\u6587\u5b57\u52172\u306e\u30ea\u30c6\u30e9\u30eb\u533a\u5207\u308a\u6587\u5b57\u3067\u5206\u5272\u3057\u3001String List \u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Splits String 1 with String 2 as a literal delimiter and outputs a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_split", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u3092\u6587\u5b57\u52172\u306e\u533a\u5207\u308a\u6587\u5b57\u3067\u5206\u5272\u3057, String List \u3092\u51fa\u529b\u3057\u307e\u3059. \u6587\u5b57\u52172\u304c\u672a\u63a5\u7d9a\u306e\u5834\u5408\u306f\u30ab\u30f3\u30de\u3092\u4f7f\u3044\u307e\u3059. \u7a7a\u8981\u7d20\u306f\u4fdd\u6301\u3055\u308c\u307e\u3059.";
+            default -> "Splits String 1 with String 2 as the delimiter and outputs a String List. If String 2 is not connected, a comma is used. Empty fields are preserved.";
+        });
+        add("psitweaks.spellpiece.operator_string_slice", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30b9\u30e9\u30a4\u30b9";
+            default -> "Operator: String Slice";
+        });
+        add("psitweaks.spellpiece.operator_string_slice.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u6587\u5b57\u3092 \u6570\u5024A:\u6570\u5024B \u3067\u30b9\u30e9\u30a4\u30b9\u3057\u305f\u65b0\u3057\u3044 \u6587\u5b57\u5217 \u3092\u8fd4\u3057\u307e\u3059\u3002";
+            default -> "Slices the input String from Number A to Number B and returns a new String.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_slice", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u6587\u5b57\u5217\u306e\u6587\u5b57\u6570\u3092\u6307\u5b9a\u3057\u3066\u7bc4\u56f2\u3092\u5207\u308a\u51fa\u3057\u3066\u65b0\u3057\u3044\u6587\u5b57\u5217\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059. A\u307e\u305f\u306fB\u304c\u672a\u63a5\u7d9a\u306a\u3089\u5148\u982d\u307e\u305f\u306f\u672b\u5c3e\u3092\u4f7f\u3044\u307e\u3059. \u8ca0\u6570\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, \u7bc4\u56f2\u5916\u306f\u6709\u52b9\u7bc4\u56f2\u306b\u53ce\u3081, \u7d42\u4e86\u4f4d\u7f6e\u304c\u958b\u59cb\u4f4d\u7f6e\u4ee5\u4e0b\u306a\u3089\u7a7a\u6587\u5b57\u5217\u3092\u8fd4\u3057\u307e\u3059. \u5c0f\u6570\u90e8\u5206\u306f0\u65b9\u5411\u3078\u5207\u308a\u6368\u3066\u307e\u3059.";
+            default -> "Returns a selected range of characters from the input String as a new String. If A or B is not connected, the beginning or end is used. Negative numbers count from the end, out-of-range values are clamped to the valid range, and an end position at or before the start returns an empty String. Decimal values are truncated toward zero.";
+        });
+        add("psitweaks.spellpiece.operator_string_length", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u9577";
+            default -> "Operator: String Length";
+        });
+        add("psitweaks.spellpiece.operator_string_length.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u6587\u5b57\u6570\u3092 Number \u3068\u3057\u3066\u8fd4\u3057\u307e\u3059\u3002";
+            default -> "Returns the number of characters in the input String as a Number.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_length", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f String \u306e\u6587\u5b57\u6570\u3092 Number \u3068\u3057\u3066\u8fd4\u3057\u307e\u3059. ";
+            default -> "Returns the number of characters in the input String.";
+        });
+        add("psitweaks.spellpiece.operator_string_replace", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u7f6e\u63db";
+            default -> "Operator: String Replace";
+        });
+        add("psitweaks.spellpiece.operator_string_replace.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u52171\u306e\u3046\u3061\u3001\u6587\u5b57\u52172\u3068\u4e00\u81f4\u3059\u308b\u90e8\u5206\u3092\u3001\u6307\u5b9a\u3057\u305f\u6587\u5b57\u52173\u3078\u7f6e\u63db\u3059\u308b\u3002";
+            default -> "Replaces parts of String 1 matching String 2 with String 3.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_replace", switch (locale) {
+            case "ja_jp" -> "\u6587\u5b57\u52171\u306e\u3046\u3061, \u6587\u5b57\u52172\u3068\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u3066\u30ea\u30c6\u30e9\u30eb\u4e00\u81f4\u3059\u308b\u3059\u3079\u3066\u306e\u90e8\u5206\u3092\u6587\u5b57\u52173\u3078\u7f6e\u63db\u3057\u307e\u3059. \u6587\u5b57\u52172\u306f\u5b8c\u5168\u4e00\u81f4\u306e\u307f\u5224\u5b9a\u3057\u307e\u3059. \u6587\u5b57\u52172\u304c\u7a7a\u306e\u5834\u5408\u306f\u6587\u5b57\u52171\u3092\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. \u7d50\u679c\u306f\u5b9f\u884c\u6642\u306eString\u6587\u5b57\u6570\u4e0a\u9650\u306b\u5f93\u3044\u307e\u3059.";
+            default -> "Replaces every literal, case-sensitive occurrence of String 2 in String 1 with String 3. String 2 is evaluated only as an exact match. If String 2 is empty, String 1 is returned unchanged. The result is limited by the runtime String length limit.";
+        });
+        add("psitweaks.spellpiece.operator_string_trim", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30c8\u30ea\u30e0";
+            default -> "Operator: String Trim";
+        });
+        add("psitweaks.spellpiece.operator_string_trim.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u524d\u5f8c\u306e\u7a7a\u767d\u3092\u53d6\u308a\u9664\u304d\u307e\u3059\u3002";
+            default -> "Removes leading and trailing whitespace from the input String.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_trim", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u5148\u982d\u3068\u672b\u5c3e\u306b\u3042\u308b\u7a7a\u767d\uff08\u30b9\u30da\u30fc\u30b9, \u30bf\u30d6, \u6539\u884c\u306a\u3069\uff09\u3092\u524a\u9664\u3057\u307e\u3059. \u6587\u5b57\u5217\u306e\u9014\u4e2d\u306b\u3042\u308b\u7a7a\u767d\u306f\u6b8b\u308a\u307e\u3059.";
+            default -> "Removes whitespace characters (such as spaces, tabs, and line breaks) from the beginning and end of the input String. Whitespace inside the String is preserved.";
+        });
+        add("psitweaks.spellpiece.operator_string_list_join", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30ea\u30b9\u30c8\u7d50\u5408";
+            default -> "Operator: String List Join";
+        });
+        add("psitweaks.spellpiece.operator_string_list_join.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u30ea\u30b9\u30c8\u3092\u6587\u5b57\u52172\u3067\u7d50\u5408\u3057\u3001String \u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Joins the input String List with String 2 and outputs a String.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_string_list_join", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u30ea\u30b9\u30c8\u3092\u6587\u5b57\u52172\u3067\u7d50\u5408\u3057, String \u3092\u51fa\u529b\u3057\u307e\u3059. \u6587\u5b57\u52172\u304c\u672a\u63a5\u7d9a\u306e\u5834\u5408\u306f\u30ab\u30f3\u30de\u3092\u4f7f\u3044\u307e\u3059. \u7a7a\u306e\u533a\u5207\u308a\u6587\u5b57\u306f\u8a31\u53ef\u3055\u308c, \u8981\u7d20\u3092\u76f4\u63a5\u9023\u7d50\u3057\u307e\u3059.";
+            default -> "Joins the input String List with String 2 and outputs a String. If String 2 is not connected, a comma is used. Empty delimiters are allowed and concatenate the elements directly.";
+        });
+        add("psitweaks.spellpiece.operator_player_name", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30d7\u30ec\u30a4\u30e4\u30fc\u30cd\u30fc\u30e0";
+            default -> "Operator: Player Name";
+        });
+        add("psitweaks.spellpiece.operator_player_name.desc", switch (locale) {
+            case "ja_jp" -> "Entity\u304c\u30d7\u30ec\u30a4\u30e4\u30fc\u306a\u3089\u30d7\u30ec\u30a4\u30e4\u30fc\u540d\u3092\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u3070\u7a7a\u6587\u5b57\u5217\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Outputs the player name if the Entity is a player, otherwise outputs an empty string.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_player_name", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b Entity \u304c\u30d7\u30ec\u30a4\u30e4\u30fc\u306a\u3089\u30d7\u30ec\u30a4\u30e4\u30fc\u540d\u3092\u51fa\u529b\u3057\u307e\u3059. \u30d7\u30ec\u30a4\u30e4\u30fc\u3067\u306a\u3044 Entity \u306f\u7a7a\u6587\u5b57\u5217\u306b\u306a\u308a\u307e\u3059.";
+            default -> "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.";
+        });
+        add("psitweaks.spellpiece.operator_list_search", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u691c\u7d22";
+            default -> "Operator: List Search";
+        });
+        add("psitweaks.spellpiece.operator_list_search.desc", switch (locale) {
+            case "ja_jp" -> "\u30ea\u30b9\u30c8\u306e\u8981\u7d20\u3092\u6587\u5b57\u5217\u5316\u3057\u305f\u3082\u306e\u306e\u3046\u3061\u3001\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3067\u691c\u7d22\u3057\u3066\u30de\u30c3\u30c1\u3059\u308b\u3082\u306e\u306e\u307f\u3092\u6b8b\u3057\u307e\u3059\u3002";
+            default -> "Keeps only the input List elements whose string form matches the input search string.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_search", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u3092, \u5404\u8981\u7d20\u306e\u691c\u7d22\u7528\u6587\u5b57\u5217\u3067\u7d5e\u308a\u8fbc\u307f\u307e\u3059. Entity \u3068 Item/Block \u306a\u3069\u306e Contextual Value \u306f\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u6bd4\u8f03\u3057\u307e\u3059. \u305d\u308c\u4ee5\u5916\u306e\u5024\u306f \u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u3078\u5909\u63db \u3068\u540c\u3058\u6587\u5b57\u5217\u3067\u6bd4\u8f03\u3057\u307e\u3059. String\u5165\u529b\u3067\u306f\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u3092\u5229\u7528\u3067\u304d, * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059. \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u306a\u3057\u3067\u306f\u5b8c\u5168\u4e00\u81f4\u3067\u3059.";
+            default -> "Filters the selected List mode by comparing the String input with each element's search text. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. The String input accepts wildcards: * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.";
+        });
+        add("psitweaks.spellpiece.operator_list_search_exclude", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u691c\u7d22\u9664\u5916";
+            default -> "Operator: List Search Exclude";
+        });
+        add("psitweaks.spellpiece.operator_list_search_exclude.desc", switch (locale) {
+            case "ja_jp" -> "\u30ea\u30b9\u30c8\u306e\u8981\u7d20\u3092\u6587\u5b57\u5217\u5316\u3057\u305f\u3082\u306e\u306e\u3046\u3061\u3001\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3067\u691c\u7d22\u3057\u3066\u30de\u30c3\u30c1\u3059\u308b\u3082\u306e\u3092\u9664\u5916\u3057\u307e\u3059\u3002";
+            default -> "Removes the input List elements whose string form matches the input search string.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_search_exclude", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u304b\u3089, \u691c\u7d22\u7528\u6587\u5b57\u5217\u304c\u5165\u529b\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u306b\u4e00\u81f4\u3059\u308b\u8981\u7d20\u3092\u9664\u5916\u3057\u307e\u3059. Entity \u3068 Item/Block \u306a\u3069\u306e Contextual Value \u306f\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u6bd4\u8f03\u3057\u307e\u3059. \u305d\u308c\u4ee5\u5916\u306e\u5024\u306f \u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u3078\u5909\u63db \u3068\u540c\u3058\u6587\u5b57\u5217\u3067\u6bd4\u8f03\u3057\u307e\u3059. * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059. \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u306a\u3057\u3067\u306f\u5b8c\u5168\u4e00\u81f4\u3067\u3059.";
+            default -> "Filters the selected List mode by removing elements whose search text matches the input wildcard. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.";
+        });
+        add("psitweaks.spellpiece.operator_random_element", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30e9\u30f3\u30c0\u30e0\u8981\u7d20";
+            default -> "Operator: Random Element";
+        });
+        add("psitweaks.spellpiece.operator_random_element.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u304b\u3089\u30e9\u30f3\u30c0\u30e0\u306b1\u8981\u7d20\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Outputs one random element from the input List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_random_element", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u304b\u3089\u8981\u7d20\u30921\u3064\u30e9\u30f3\u30c0\u30e0\u306b\u8fd4\u3057\u307e\u3059.";
+            default -> "Returns one random element from the input List.";
+        });
+        add("psitweaks.spellpiece.operator_list_add", switch (locale) {
+            case "ja_jp" -> "\u30ea\u30b9\u30c8\u3078\u8ffd\u52a0 (PT)";
+            default -> "Operator: Add To List (PT)";
+        });
+        add("psitweaks.spellpiece.operator_list_add.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u306b\u6700\u59273\u3064\u306e\u8981\u7d20\u3092\u8ffd\u52a0\u3057\u307e\u3059\u3002";
+            default -> "Adds up to three elements to the input List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_add", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u306b\u6700\u59273\u3064\u306e\u5165\u529b\u8981\u7d20\u3092\u8ffd\u52a0\u3057\u307e\u3059.";
+            default -> "Adds up to three input elements to the input List.";
+        });
+        add("psitweaks.spellpiece.operator_list_remove", switch (locale) {
+            case "ja_jp" -> "\u30ea\u30b9\u30c8\u304b\u3089\u524a\u9664 (PT)";
+            default -> "Operator: Remove From List (PT)";
+        });
+        add("psitweaks.spellpiece.operator_list_remove.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u304b\u3089\u6700\u59272\u3064\u306e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059\u3002";
+            default -> "Removes up to two elements from the input List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_remove", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u304b\u3089\u6700\u59272\u3064\u306e\u5165\u529b\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059.";
+            default -> "Removes up to two input elements from the input List.";
+        });
+        add("psitweaks.spellpiece.operator_list_remove_indices", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u8981\u7d20\u524a\u9664";
+            default -> "Operator: Remove Indexed Elements";
+        });
+        add("psitweaks.spellpiece.operator_list_remove_indices.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u304b\u3089\u6570\u5024A\u3068\u6570\u5024B\u306b\u5bfe\u5fdc\u3059\u308b\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059\u3002";
+            default -> "Removes the elements at Number A and Number B from the input List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_remove_indices", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u304b\u3089\u6570\u5024A\u3068\u6570\u5024B\u306b\u5bfe\u5fdc\u3059\u308b\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059. \u8ca0\u6570\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, -1 \u306f\u672b\u5c3e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059. \u3069\u3061\u3089\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u3082\u5143\u306e List \u3092\u57fa\u6e96\u306b\u89e3\u6c7a\u3057, \u540c\u3058\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306e\u5834\u5408\u306f1\u8981\u7d20\u3060\u3051\u524a\u9664\u3057\u307e\u3059. \u7bc4\u56f2\u5916\u306f\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u7bc4\u56f2\u5916\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059.";
+            default -> "Removes the elements at Number A and Number B from the selected List mode. Negative indexes count from the end, so -1 removes the last element. Both indexes are resolved against the original List, and duplicate indexes remove only one element. An out-of-range index raises an out-of-bounds spell error.";
+        });
+        add("psitweaks.spellpiece.operator_list_insert", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u306b\u633f\u5165";
+            default -> "Operator: List Insert";
+        });
+        add("psitweaks.spellpiece.operator_list_insert.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u306e\u6307\u5b9a\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u3078\u8981\u7d20\u3092\u633f\u5165\u3057\u307e\u3059\u3002";
+            default -> "Inserts the input element at the specified index in the input List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_insert", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u306e\u6307\u5b9a\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u76f4\u524d\u3078\u5165\u529b\u8981\u7d20\u3092\u633f\u5165\u3057\u307e\u3059. 0 \u306f\u5148\u982d\u3078, -1 \u306f\u672b\u5c3e\u8981\u7d20\u306e\u76f4\u524d\u3078\u633f\u5165\u3057\u307e\u3059. List \u30b5\u30a4\u30ba\u3088\u308a\u5927\u304d\u3044\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u672b\u5c3e\u3078, \u8ca0\u65b9\u5411\u306e\u7bc4\u56f2\u3092\u8d85\u3048\u305f\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u5148\u982d\u3078\u633f\u5165\u3057\u307e\u3059.";
+            default -> "Inserts the input element before the specified index in the selected List mode. Index 0 inserts at the beginning and -1 inserts before the last element. Indexes above the List size insert at the end, while indexes below the negative range insert at the beginning.";
+        });
+        add("psitweaks.spellpiece.operator_list_slice", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u30b9\u30e9\u30a4\u30b9";
+            default -> "Operator: List Slice";
+        });
+        add("psitweaks.spellpiece.operator_list_slice.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u306e\u8981\u7d20\u3092 \u6570\u5024A:\u6570\u5024B \u3067\u30b9\u30e9\u30a4\u30b9\u3057\u305f\u65b0\u3057\u3044 List \u3092\u8fd4\u3057\u307e\u3059\u3002";
+            default -> "Slices the input List from Number A to Number B and returns a new List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_slice", switch (locale) {
+            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9 \u306b\u5bfe\u3057\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u3092\u6307\u5b9a\u3057\u3066\u7bc4\u56f2\u3092\u5207\u308a\u51fa\u3057\u3066\u65b0\u3057\u3044 List \u3068\u3057\u3066\u8fd4\u3057\u307e\u3059. A \u3092\u7701\u7565\u3059\u308b\u3068\u5148\u982d\u304b\u3089, B \u3092\u7701\u7565\u3059\u308b\u3068\u672b\u5c3e\u307e\u3067\u304c\u5bfe\u8c61\u3067\u3059. \u8ca0\u6570\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, \u7bc4\u56f2\u5916\u306f\u6709\u52b9\u7bc4\u56f2\u3078\u4e38\u3081, \u7d42\u4e86\u4f4d\u7f6e\u304c\u958b\u59cb\u4f4d\u7f6e\u4ee5\u524d\u306a\u3089\u7a7a\u306e List \u3092\u8fd4\u3057\u307e\u3059. \u5c0f\u6570\u306f0\u65b9\u5411\u3078\u5207\u308a\u6368\u3066\u307e\u3059.";
+            default -> "Returns a selected range of elements from the selected List mode as a new List. If A is omitted, the range starts at the beginning; if B is omitted, it continues to the end. Negative numbers count from the end, out-of-range values are clamped to the valid range, and an end position at or before the start returns an empty List. Decimal values are truncated toward zero.";
+        });
+        add("psitweaks.spellpiece.operator_list_size", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u30b5\u30a4\u30ba (PT)";
+            default -> "Operator: List Size (PT)";
+        });
+        add("psitweaks.spellpiece.operator_list_size.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u4efb\u610f\u306e List \u306e\u8981\u7d20\u6570\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Outputs the number of elements in the input List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_size", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f\u4efb\u610f\u306e List \u5165\u529b\u306b\u542b\u307e\u308c\u308b\u8981\u7d20\u6570\u3092\u51fa\u529b\u3057\u307e\u3059.";
+            default -> "Outputs the number of elements in any input List.";
+        });
+        add("psitweaks.spellpiece.operator_list_exclusion", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u9664\u5916 (PT)";
+            default -> "Operator: List Exclusion (PT)";
+        });
+        add("psitweaks.spellpiece.operator_list_exclusion.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u30ea\u30b9\u30c81\u304b\u3089\u30ea\u30b9\u30c82\u306b\u542b\u307e\u308c\u308b\u8981\u7d20\u3092\u9664\u5916\u3057\u307e\u3059\u3002";
+            default -> "Removes the elements in List 2 from the input List 1.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_exclusion", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305fList 1 \u306e\u8981\u7d20\u306e\u3046\u3061\u3001List 2 \u306b\u3082\u542b\u307e\u308c\u308b\u8981\u7d20\u3092\u9664\u5916\u3057\u3066\u65b0\u3057\u3044\u30ea\u30b9\u30c8\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059.";
+            default -> "Returns a new List by removing elements from List 1 when they are also present in List 2.";
+        });
+        add("psitweaks.spellpiece.operator_list_intersection", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u5171\u901a\u90e8\u5206 (PT)";
+            default -> "Operator: List Intersection (PT)";
+        });
+        add("psitweaks.spellpiece.operator_list_intersection.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f2\u3064\u306e List \u306b\u5171\u901a\u3059\u308b\u8981\u7d20\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            default -> "Outputs the elements shared by the two input Lists.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_intersection", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f2\u3064\u306e\u30ea\u30b9\u30c8\u3067\u3069\u3061\u3089\u306b\u3082\u542b\u307e\u308c\u308b\u8981\u7d20\u3092\u65b0\u3057\u3044\u30ea\u30b9\u30c8\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059.";
+            default -> "Returns a new List containing elements that are present in both input Lists.";
+        });
+        add("psitweaks.spellpiece.operator_list_concatenation", switch (locale) {
+            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u7d50\u5408 (PT)";
+            default -> "Operator: List Concatenation (PT)";
+        });
+        add("psitweaks.spellpiece.operator_list_concatenation.desc", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3057\u305f2\u3064\u306e List \u3092\u7d50\u5408\u3057\u307e\u3059\u3002";
+            default -> "Combines the two input Lists.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_list_concatenation", switch (locale) {
+            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f2\u3064\u306e\u30ea\u30b9\u30c8\u3092\u7d50\u5408\u3057\u307e\u3059. Contextual Value List \u306e\u5834\u5408\u3001\u91cd\u8907\u3057\u305f\u8981\u7d20\u306f\u524a\u9664\u3055\u308c\u307e\u3059.";
+            default -> "Combines the two input Lists. For Contextual Value Lists, duplicate elements are removed.";
+        });
     }
 
     private void addEnglishTranslations() {

@@ -1,5 +1,8 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.*;
+import vazkii.psi.api.spell.SpellPiece;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -133,8 +136,44 @@ public class PsitweaksSpells {
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), PieceOperatorTanh.class);
             PsiAPI.addPieceToGroup(PieceOperatorTanh.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), false);
+            registerSpellPiece("constant_string", PieceConstantString.class);
+            registerSpellPiece("operator_format_string", PieceOperatorFormatString.class);
+            registerSpellPiece("operator_from_string", PieceOperatorFromString.class);
+            registerSpellPiece("operator_list_from_string_list", PieceOperatorListFromStringList.class);
+            registerSpellPiece("operator_number_list_to_vector", PieceOperatorNumberListToVector.class);
+            registerSpellPiece("operator_vector_to_number_list", PieceOperatorVectorToNumberList.class);
+            registerSpellPiece("operator_to_string", PieceOperatorToString.class);
+            registerSpellPiece("operator_list_to_string_list", PieceOperatorListToStringList.class);
+            registerSpellPiece("operator_string_partial_match", PieceOperatorStringPartialMatch.class);
+            registerSpellPiece("operator_string_starts_with", PieceOperatorStringStartsWith.class);
+            registerSpellPiece("operator_string_ends_with", PieceOperatorStringEndsWith.class);
+            registerSpellPiece("operator_string_concat", PieceOperatorStringConcat.class);
+            registerSpellPiece("operator_string_split", PieceOperatorStringSplit.class);
+            registerSpellPiece("operator_string_slice", PieceOperatorStringSlice.class);
+            registerSpellPiece("operator_string_length", PieceOperatorStringLength.class);
+            registerSpellPiece("operator_string_replace", PieceOperatorStringReplace.class);
+            registerSpellPiece("operator_string_trim", PieceOperatorStringTrim.class);
+            registerSpellPiece("operator_string_list_join", PieceOperatorStringListJoin.class);
+            registerSpellPiece("operator_player_name", PieceOperatorPlayerName.class);
+            registerSpellPiece("operator_list_search", PieceOperatorListSearch.class);
+            registerSpellPiece("operator_list_search_exclude", PieceOperatorListSearchExclude.class);
+            registerSpellPiece("operator_random_element", PieceOperatorRandomElement.class);
+            registerSpellPiece("operator_list_add", PieceOperatorListAdd.class);
+            registerSpellPiece("operator_list_remove", PieceOperatorListRemove.class);
+            registerSpellPiece("operator_list_remove_indices", PieceOperatorListRemoveIndices.class);
+            registerSpellPiece("operator_list_insert", PieceOperatorListInsert.class);
+            registerSpellPiece("operator_list_slice", PieceOperatorListSlice.class);
+            registerSpellPiece("operator_list_size", PieceOperatorListSize.class);
+            registerSpellPiece("operator_list_exclusion", PieceOperatorListExclusion.class);
+            registerSpellPiece("operator_list_intersection", PieceOperatorListIntersection.class);
+            registerSpellPiece("operator_list_concatenation", PieceOperatorListConcatenation.class);
 
 
         });
+    }
+    private static void registerSpellPiece(String id, Class<? extends SpellPiece> pieceClass) {
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath("psitweaks", id);
+        PsiAPI.registerSpellPieceAndTexture(location, pieceClass);
+        PsiAPI.addPieceToGroup(pieceClass, location, false);
     }
 }
