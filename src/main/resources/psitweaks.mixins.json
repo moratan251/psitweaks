@@ -10,6 +10,7 @@
     "GeneratorsBlockTypesMixin",
     "PlayerDataAttributeBonusesMixin",
     "RadiationManagerMixin",
+    "ItemCADPlainMemoryMixin",
     "isInRadiusMixin",
     "rangeLimitParamMixin"
   ],

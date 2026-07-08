@@ -84,539 +84,603 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Contextual Value List";
         });
         add("psitweaks.gui.spell_piece_mode", switch (locale) {
-            case "ja_jp" -> "\u30e2\u30fc\u30c9: %s";
+            case "ja_jp" -> "モード: %s";
             default -> "Mode: %s";
         });
         add("psitweaks.gui.spell_piece_mode.title", switch (locale) {
-            case "ja_jp" -> "\u30e2\u30fc\u30c9\u9078\u629e";
+            case "ja_jp" -> "モード選択";
             default -> "Mode Select";
         });
         add("psitweaks.gui.string_constant_input.empty", switch (locale) {
-            case "ja_jp" -> "\u7a7a\u6587\u5b57\u5217";
+            case "ja_jp" -> "空文字列";
             default -> "Empty string";
         });
         add("psitweaks.gui.string_constant_input.hint", switch (locale) {
-            case "ja_jp" -> "Shift+Enter\u6539\u884c / Enter\u9589";
+            case "ja_jp" -> "Shift+Enter改行 / Enter閉";
             default -> "Shift+Enter newline / Enter closes";
         });
         add("psitweaks.gui.string_constant_input.read_only", switch (locale) {
-            case "ja_jp" -> "\u95b2\u89a7\u306e\u307f";
+            case "ja_jp" -> "閲覧のみ";
             default -> "Read only";
         });
         add("psitweaks.gui.string_constant_input.button.copy_all", switch (locale) {
-            case "ja_jp" -> "\u5168\u30b3\u30d4\u30fc";
+            case "ja_jp" -> "全コピー";
             default -> "Copy All";
         });
         add("psitweaks.gui.string_constant_input.button.clear_all", switch (locale) {
-            case "ja_jp" -> "\u5168\u524a\u9664";
+            case "ja_jp" -> "全削除";
             default -> "Clear";
         });
         add("psitweaks.gui.string_constant_input.button.replace_all", switch (locale) {
-            case "ja_jp" -> "\u8cbc\u4ed8";
+            case "ja_jp" -> "貼付";
             default -> "Paste";
         });
         add("psitweaks.spellparam.string", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u5217";
+            case "ja_jp" -> "文字列";
             default -> "String";
         });
         add("psitweaks.spellparam.string1", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171";
+            case "ja_jp" -> "文字列1";
             default -> "String 1";
         });
         add("psitweaks.spellparam.string2", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52172";
+            case "ja_jp" -> "文字列2";
             default -> "String 2";
         });
         add("psitweaks.spellparam.string3", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52173";
+            case "ja_jp" -> "文字列3";
             default -> "String 3";
         });
         add("psitweaks.spellparam.value1", switch (locale) {
-            case "ja_jp" -> "\u50241";
+            case "ja_jp" -> "値1";
             default -> "Value 1";
         });
         add("psitweaks.spellparam.value2", switch (locale) {
-            case "ja_jp" -> "\u50242";
+            case "ja_jp" -> "値2";
             default -> "Value 2";
         });
         add("psitweaks.spellparam.value3", switch (locale) {
-            case "ja_jp" -> "\u50243";
+            case "ja_jp" -> "値3";
             default -> "Value 3";
         });
         add("psitweaks.spellparam.element1", switch (locale) {
-            case "ja_jp" -> "\u8981\u7d201";
+            case "ja_jp" -> "要素1";
             default -> "Element 1";
         });
         add("psitweaks.spellparam.element2", switch (locale) {
-            case "ja_jp" -> "\u8981\u7d202";
+            case "ja_jp" -> "要素2";
             default -> "Element 2";
         });
         add("psitweaks.spellparam.element3", switch (locale) {
-            case "ja_jp" -> "\u8981\u7d203";
+            case "ja_jp" -> "要素3";
             default -> "Element 3";
         });
         add("psitweaks.spellparam.vector_or_number_list", switch (locale) {
-            case "ja_jp" -> "\u6570\u5217";
+            case "ja_jp" -> "数列";
             default -> "Array";
         });
         add("psitweaks.spellparam.size", switch (locale) {
-            case "ja_jp" -> "\u30b5\u30a4\u30ba";
+            case "ja_jp" -> "サイズ";
             default -> "Size";
         });
         add("psitweaks.spellparam.indices", switch (locale) {
-            case "ja_jp" -> "\u6210\u5206";
+            case "ja_jp" -> "成分";
             default -> "Indices";
         });
         add("psitweaks.spellerror.plain_memory_type", switch (locale) {
-            case "ja_jp" -> "\u4fdd\u5b58\u3055\u308c\u305f\u5024\u3092\u9078\u629e\u4e2d\u306e\u578b\u3068\u3057\u3066\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093";
+            case "ja_jp" -> "保存された値を選択中の型として読み取れません";
             default -> "Stored value cannot be read as the selected type";
         });
         add("psitweaks.spellerror.plain_memory_parse", switch (locale) {
-            case "ja_jp" -> "\u4fdd\u5b58\u3055\u308c\u305f\u6587\u5b57\u5217\u3092\u9078\u629e\u4e2d\u306e\u578b\u3078\u5909\u63db\u3067\u304d\u307e\u305b\u3093";
+            case "ja_jp" -> "保存された文字列を選択中の型へ変換できません";
             default -> "Stored string cannot be converted to the selected type";
         });
         add("psitweaks.spellerror.empty_delimiter", switch (locale) {
-            case "ja_jp" -> "\u533a\u5207\u308a\u6587\u5b57\u304c\u7a7a\u3067\u3059";
+            case "ja_jp" -> "区切り文字が空です";
             default -> "Delimiter cannot be empty";
         });
         add("psitweaks.spellerror.expected_three_numbers", switch (locale) {
-            case "ja_jp" -> "Number List \u306e\u8981\u7d20\u6570\u306f3\u3067\u3042\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059";
+            case "ja_jp" -> "Number List の要素数は3である必要があります";
             default -> "Number List must contain exactly 3 elements";
         });
+        add("psitweaks.spellerror.no_jump_anchor", switch (locale) {
+            case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
+            default -> "No matching Jump Anchor found ahead";
+        });
+        add("psitweaks.spellpiece.trick_jump", switch (locale) {
+            case "ja_jp" -> "作動式: ジャンプ";
+            default -> "Trick: Jump";
+        });
+        add("psitweaks.spellpiece.trick_jump.desc", switch (locale) {
+            case "ja_jp" -> "対象数値が未入力、または絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。";
+            default -> "If the target number is unset or its absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.";
+        });
+        add("psitweaks.spellpiece.trick_switch", switch (locale) {
+            case "ja_jp" -> "作動式: スイッチ";
+            default -> "Trick: Switch";
+        });
+        add("psitweaks.spellpiece.trick_switch.desc", switch (locale) {
+            case "ja_jp" -> "入力Stringと同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。一致するアンカーがない場合はそのまま次へ進みます。";
+            default -> "Jumps forward to the next Jump Anchor with the same constant label as the input String. If no matching anchor exists, execution continues.";
+        });
+        add("psitweaks.spellpiece.jump_anchor", switch (locale) {
+            case "ja_jp" -> "ジャンプアンカー";
+            default -> "Jump Anchor";
+        });
+        add("psitweaks.spellpiece.jump_anchor.desc", switch (locale) {
+            case "ja_jp" -> "作動式: ジャンプと作動式: スイッチの到達点になる、何もしない目印です。任意の定数ラベルを指定できます。";
+            default -> "A no-op marker used as the destination for Trick: Jump and Trick: Switch. It can take an optional constant label.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.trick_jump", switch (locale) {
+            case "ja_jp" -> "対象数値が未入力、または絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 対象入力なしの場合は無条件の前方ジャンプとして動作します. 後方のジャンプアンカーには飛ぶことができません.";
+            default -> "Jumps forward to the next Jump Anchor with the same label when the target number is unset, or when its absolute value is less than 1. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. With no target input, it acts as an unconditional forward jump. It cannot jump to Jump Anchors behind it.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.trick_switch", switch (locale) {
+            case "ja_jp" -> "入力Stringを評価し, それと等しい定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします. 前方に一致するアンカーがない場合はエラーにならず, そのまま次のスペルピースへ進むため, default相当の処理はスイッチの直後に置いてください.  後方のジャンプアンカーには飛ぶことができません.";
+            default -> "Evaluates the input String and jumps forward to the next Jump Anchor whose constant label is equal to it. If no matching anchor exists ahead, it does not error and simply continues to the next spell piece, so place the default branch immediately after the Switch. It cannot jump to Jump Anchors behind it.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.jump_anchor", switch (locale) {
+            case "ja_jp" -> "作動式: ジャンプと作動式: スイッチの到達点になる目印です.  このスペルピース自体は何もしません. 定数文字列をラベルとして入力することができます.";
+            default -> "A marker used as the destination for Trick: Jump and Trick: Switch. This spell piece itself does nothing. You can input a constant String as its label.";
+        });
+        add("psitweaks.spellpiece.trick_store_value", switch (locale) {
+            case "ja_jp" -> "作動式: 値を保存";
+            default -> "Trick: Store Value";
+        });
+        add("psitweaks.spellpiece.trick_store_value.desc", switch (locale) {
+            case "ja_jp" -> "Plain Value (Number, Vector, String ... )をCADメモリに保存する。Stringは最大128文字まで保存します。";
+            default -> "Store a Plain Value (Number, Vector, String ... ) in CAD memory. Strings are stored up to 128 characters.";
+        });
+        add("psitweaks.spellpiece.selector_stored_value", switch (locale) {
+            case "ja_jp" -> "取得子: 保存された値";
+            default -> "Selector: Stored Value";
+        });
+        add("psitweaks.spellpiece.selector_stored_value.desc", switch (locale) {
+            case "ja_jp" -> "CADメモリに保存されたPlain Valueを取得する";
+            default -> "Retrieve a Plain Value from CAD memory";
+        });
+        add("psi.book.page.psitweaks_spellpiece.trick_store_value", switch (locale) {
+            case "ja_jp" -> "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます. 128文字を超えるStringは保存時に切り捨てられ, 術者のチャット欄に警告が表示されます.";
+            default -> "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot. String values longer than 128 characters are truncated when stored, and a warning is shown in the caster's chat.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_stored_value", switch (locale) {
+            case "ja_jp" -> "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.";
+            default -> "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.";
+        });
         add("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
-            case "ja_jp" -> "CAD\u30e1\u30e2\u30ea\u30b9\u30ed\u30c3\u30c8%s\u306eString\u306f%s\u6587\u5b57\u304b\u3089%s\u6587\u5b57\u306b\u5207\u308a\u6368\u3066\u3089\u308c\u307e\u3057\u305f";
+            case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
             default -> "String CAD memory value in slot %s was truncated from %s to %s characters";
         });
         add("psitweaks.spellpiece.constant_string", switch (locale) {
-            case "ja_jp" -> "\u5b9a\u6570\u5b50: \u6587\u5b57\u5217";
+            case "ja_jp" -> "定数子: 文字列";
             default -> "Constant: String";
         });
         add("psitweaks.spellpiece.constant_string.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3092\u305d\u306e\u307e\u307e\u51fa\u529b\u3057\u307e\u3059\u3002\u6700\u59271024\u6587\u5b57\u3067\u3059\u3002";
+            case "ja_jp" -> "入力した文字列をそのまま出力します。最大1024文字です。";
             default -> "Outputs the entered string. Limited to 1024 characters.";
         });
         add("psi.book.page.psitweaks_spellpiece.constant_string", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3092String\u5024\u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. \u5024\u306f\u8853\u5f0f\u306b\u4fdd\u5b58\u3055\u308c, \u6700\u59271024\u6587\u5b57\u3067\u3059.";
+            case "ja_jp" -> "入力した文字列をString値として出力します. 値は術式に保存され, 最大1024文字です.";
             default -> "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1024 characters.";
         });
         add("psitweaks.spellpiece.operator_format_string", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30d5\u30a9\u30fc\u30de\u30c3\u30c8\u6587\u5b57\u5217";
+            case "ja_jp" -> "演算子: フォーマット文字列";
             default -> "Operator: Format String";
         });
         add("psitweaks.spellpiece.operator_format_string.desc", switch (locale) {
-            case "ja_jp" -> "\u30c6\u30ad\u30b9\u30c8\u30a6\u30a3\u30f3\u30c9\u30a6\u3067\u5165\u529b\u3055\u308c\u305f\u6587\u5b57\u5217\u3092\u8fd4\u3057\u307e\u3059\u3002 \u4efb\u610f\u306e\u5165\u529b\u3055\u308c\u305f\u5024\u306f\u30c6\u30ad\u30b9\u30c8\u4e2d\u306e{1}, {2}, {3}\u3078\u57cb\u3081\u8fbc\u307e\u308c\u307e\u3059\u3002";
+            case "ja_jp" -> "テキストウィンドウで入力された文字列を返します。 任意の入力された値はテキスト中の{1}, {2}, {3}へ埋め込まれます。";
             default -> "Returns the string entered in the text window. Optional input values are embedded into {1}, {2}, and {3} in the text.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_format_string", switch (locale) {
-            case "ja_jp" -> "\u4fdd\u5b58\u3057\u305f\u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u4e2d\u306e {1}, {2}, {3} \u3092\u6700\u59273\u3064\u306e\u4efb\u610f Any \u5165\u529b\u3067\u7f6e\u63db\u3057\u3066 String \u3092\u51fa\u529b\u3057\u307e\u3059. \u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u306f \u5b9a\u6570\u5b50: \u6587\u5b57\u5217 \u3068\u540c\u3058\u5165\u529b\u30a6\u30a3\u30f3\u30c9\u30a6\u3067\u7de8\u96c6\u3057, \u6700\u59271024\u6587\u5b57\u3067\u3059. \u672a\u63a5\u7d9a\u306e\u5165\u529b\u306f\u7a7a\u6587\u5b57\u306b\u306a\u308a\u307e\u3059. Entity, Item, Block \u306a\u3069\u306e Contextual Value \u306f \u53d6\u5f97\u5b50: \u8868\u793a\u540d \u3068\u540c\u3058\u73fe\u5728\u8a00\u8a9e\u8868\u793a\u540d\u3092\u4f7f\u3044\u307e\u3059. Contextual Value List \u306f \u53d6\u5f97\u5b50: \u8868\u793a\u540d\u30ea\u30b9\u30c8 \u3068\u540c\u3058\u73fe\u5728\u8a00\u8a9e\u8868\u793a\u540d\u3078\u5909\u63db\u3057, \u30b3\u30f3\u30de\u533a\u5207\u308a\u3067\u57cb\u3081\u8fbc\u307f\u307e\u3059. \u305d\u308c\u4ee5\u5916\u306e\u5024\u306f\u901a\u5e38\u306e String \u5909\u63db\u3092\u4f7f\u3044\u307e\u3059. \u6700\u7d42\u51fa\u529b\u306f\u5b9f\u884c\u6642 String \u4e0a\u9650\u3067\u5236\u9650\u3055\u308c\u307e\u3059.";
+            case "ja_jp" -> "保存したテンプレート中の {1}, {2}, {3} を最大3つの任意 Any 入力で置換して String を出力します. テンプレートは 定数子: 文字列 と同じ入力ウィンドウで編集し, 最大1024文字です. 未接続の入力は空文字になります. Entity, Item, Block などの Contextual Value は 取得子: 表示名 と同じ現在言語表示名を使います. Contextual Value List は 取得子: 表示名リスト と同じ現在言語表示名へ変換し, コンマ区切りで埋め込みます. それ以外の値は通常の String 変換を使います. 最終出力は実行時 String 上限で制限されます.";
             default -> "Outputs a String by replacing {1}, {2}, and {3} in the saved template with up to three optional Any inputs. The template uses the same input window as Constant: String and is limited to 1024 characters. Unconnected inputs become empty text. Contextual Values such as Entity, Item, and Block use the same localized display name as Selector: Display Name. Contextual Value Lists use the same localized names as Selector: Display Name List and are joined with commas. Other values use the normal String conversion. The final output is capped by the runtime String limit.";
         });
         add("psitweaks.spellpiece.operator_from_string", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u304b\u3089\u5909\u63db";
+            case "ja_jp" -> "演算子: 文字列から変換";
             default -> "Operator: From String";
         });
         add("psitweaks.spellpiece.operator_from_string.desc", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e\u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String \u3092\u305d\u306e\u307e\u307e\u8fd4\u3059\u304b\u3001Number \u307e\u305f\u306f Vector \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "選択中のモードに応じて String をそのまま返すか、Number または Vector に変換します。";
             default -> "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_from_string", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e Plain \u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String \u5165\u529b\u3092\u5909\u63db\u3057\u307e\u3059. String \u30e2\u30fc\u30c9\u306f\u5165\u529b\u3092\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. Number \u30e2\u30fc\u30c9\u306f\u6709\u9650\u306e\u6570\u5024\u6587\u5b57\u5217\u3092\u89e3\u6790\u3057, \u7121\u52b9\u306a\u5165\u529b\u3067\u306f0\u3092\u51fa\u529b\u3057\u307e\u3059. Vector \u30e2\u30fc\u30c9\u306f Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) \u3092\u53d7\u3051\u4ed8\u3051\u307e\u3059. Vector \u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u305b\u305a, \u89e3\u6790\u5931\u6557\u6642\u306f\u30bc\u30ed\u30d9\u30af\u30c8\u30eb\u3092\u51fa\u529b\u3057\u307e\u3059. \u30b9\u30da\u30eb\u30d4\u30fc\u30b9\u3092\u5de6\u30af\u30ea\u30c3\u30af\u3067\u30e2\u30fc\u30c9\u3092\u9078\u629e\u3067\u304d\u307e\u3059.";
+            case "ja_jp" -> "選択中の Plain モードに応じて String 入力を変換します. String モードは入力をそのまま返します. Number モードは有限の数値文字列を解析し, 無効な入力では0を出力します. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) を受け付けます. Vector は大文字小文字を区別せず, 解析失敗時はゼロベクトルを出力します. スペルピースを左クリックでモードを選択できます.";
             default -> "Converts the String input for the selected Plain mode. String mode returns the input as-is. Number mode parses finite numeric text and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails. Left-click the spell piece to select the mode.";
         });
         add("psitweaks.spellpiece.operator_list_from_string_list", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30ea\u30b9\u30c8\u304b\u3089\u5909\u63db";
+            case "ja_jp" -> "演算子: 文字列リストから変換";
             default -> "Operator: From String List";
         });
         add("psitweaks.spellpiece.operator_list_from_string_list.desc", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e\u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String List \u3092\u305d\u306e\u307e\u307e\u8fd4\u3059\u304b\u3001Number List \u307e\u305f\u306f Vector List \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "選択中のモードに応じて String List をそのまま返すか、Number List または Vector List に変換します。";
             default -> "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_from_string_list", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e Plain \u30e2\u30fc\u30c9\u306b\u5fdc\u3058\u3066 String List \u3092\u5909\u63db\u3057\u307e\u3059. String \u30e2\u30fc\u30c9\u306f\u5165\u529b\u30ea\u30b9\u30c8\u3092\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. Number \u30e2\u30fc\u30c9\u306f\u5404\u8981\u7d20\u3092\u6709\u9650\u306e\u6570\u5024\u6587\u5b57\u5217\u3068\u3057\u3066\u89e3\u6790\u3057, \u7121\u52b9\u306a\u8981\u7d20\u306f0\u306b\u306a\u308a\u307e\u3059. Vector \u30e2\u30fc\u30c9\u306f Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) \u306b\u4e00\u81f4\u3059\u308b\u8981\u7d20\u306e\u307f\u5909\u63db\u3057, \u7121\u52b9\u306a\u8981\u7d20\u306f\u7121\u8996\u3057\u307e\u3059. Vector \u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u305b\u3093. \u30b9\u30da\u30eb\u30d4\u30fc\u30b9\u3092\u5de6\u30af\u30ea\u30c3\u30af\u3067\u30e2\u30fc\u30c9\u3092\u9078\u629e\u3067\u304d\u307e\u3059.";
+            case "ja_jp" -> "選択中の Plain モードに応じて String List を変換します. String モードは入力リストをそのまま返します. Number モードは各要素を有限の数値文字列として解析し, 無効な要素は0になります. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) に一致する要素のみ変換し, 無効な要素は無視します. Vector は大文字小文字を区別しません. スペルピースを左クリックでモードを選択できます.";
             default -> "Converts a String List for the selected Plain mode. String mode returns the input list as-is. Number mode parses each entry as finite numeric text, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries. Left-click the spell piece to select the mode.";
         });
         add("psitweaks.spellpiece.operator_number_list_to_vector", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6570\u5024\u30ea\u30b9\u30c8\u2192\u30d9\u30af\u30c8\u30eb";
+            case "ja_jp" -> "演算子: 数値リスト→ベクトル";
             default -> "Operator: Number List to Vector";
         });
         add("psitweaks.spellpiece.operator_number_list_to_vector.desc", switch (locale) {
-            case "ja_jp" -> "\u8981\u7d20\u65703\u306e Number List \u3092 Vector \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "要素数3の Number List を Vector に変換します。";
             default -> "Converts a Number List with exactly three elements into a Vector.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_number_list_to_vector", switch (locale) {
-            case "ja_jp" -> "\u8981\u7d20\u65703\u306e Number List \u3092 Vector \u306b\u5909\u63db\u3057\u307e\u3059. \u30ea\u30b9\u30c8\u306e\u9806\u5e8f\u306f X, Y, Z \u3067\u3059. \u8981\u7d20\u6570\u304c3\u3067\u306f\u306a\u3044\u5834\u5408\u306f\u5b9f\u884c\u6642\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059.";
+            case "ja_jp" -> "要素数3の Number List を Vector に変換します. リストの順序は X, Y, Z です. 要素数が3ではない場合は実行時エラーになります.";
             default -> "Converts a Number List with exactly three elements into a Vector. The list order is X, Y, Z. If the list does not contain exactly three elements, the spell raises a runtime error.";
         });
         add("psitweaks.spellpiece.operator_vector_to_number_list", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30d9\u30af\u30c8\u30eb\u2192\u6570\u5024\u30ea\u30b9\u30c8";
+            case "ja_jp" -> "演算子: ベクトル→数値リスト";
             default -> "Operator: Vector to Number List";
         });
         add("psitweaks.spellpiece.operator_vector_to_number_list.desc", switch (locale) {
-            case "ja_jp" -> "Vector \u3092\u8981\u7d20\u65703\u306e Number List \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "Vector を要素数3の Number List に変換します。";
             default -> "Converts a Vector into a three-element Number List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_vector_to_number_list", switch (locale) {
-            case "ja_jp" -> "Vector \u3092 X, Y, Z \u306e\u9806\u30673\u8981\u7d20\u306e Number List \u306b\u5909\u63db\u3057\u307e\u3059.";
+            case "ja_jp" -> "Vector を X, Y, Z の順で3要素の Number List に変換します.";
             default -> "Converts a Vector into a Number List with three elements in X, Y, Z order.";
         });
         add("psitweaks.spellpiece.operator_to_string", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u3078\u5909\u63db";
+            case "ja_jp" -> "演算子: 文字列へ変換";
             default -> "Operator: To String";
         });
         add("psitweaks.spellpiece.operator_to_string.desc", switch (locale) {
-            case "ja_jp" -> "Any \u5165\u529b\u3092\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e String \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "Any 入力をデバッグ表示相当の String に変換します。";
             default -> "Converts an Any input into a debug-display String.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_to_string", switch (locale) {
-            case "ja_jp" -> "Any \u5165\u529b\u3092 \u4f5c\u52d5\u5f0f: \u30c7\u30d0\u30c3\u30b0 \u3068\u540c\u3058\u8868\u793a\u5411\u3051\u306e\u6587\u5b57\u5217\u8868\u73fe\u3067 String \u306b\u5909\u63db\u3057\u307e\u3059. Entity, Item, Block \u306a\u3069\u306e Contextual Value \u3082\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u306f\u306a\u304f\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e\u6587\u5b57\u5217\u306b\u306a\u308a\u307e\u3059. String \u306f\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. List \u306f\u5404\u8981\u7d20\u3092\u540c\u3058\u898f\u5247\u3067\u5909\u63db\u3057, \u30b3\u30f3\u30de\u533a\u5207\u308a\u3067\u7d50\u5408\u3057\u307e\u3059.";
+            case "ja_jp" -> "Any 入力を 作動式: デバッグ と同じ表示向けの文字列表現で String に変換します. Entity, Item, Block などの Contextual Value もレジストリIDではなくデバッグ表示相当の文字列になります. String はそのまま返します. List は各要素を同じ規則で変換し, コンマ区切りで結合します.";
             default -> "Converts an Any input into a String using the same display-oriented text form as Trick: Debug. Contextual values such as Entity, Item, and Block therefore use their debug display text rather than registry IDs. String values are returned as-is. List values convert each element by the same rules and join them with commas.";
         });
         add("psitweaks.spellpiece.operator_list_to_string_list", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30ea\u30b9\u30c8\u3078\u5909\u63db";
+            case "ja_jp" -> "演算子: 文字列リストへ変換";
             default -> "Operator: To String List";
         });
         add("psitweaks.spellpiece.operator_list_to_string_list.desc", switch (locale) {
-            case "ja_jp" -> "Any \u5165\u529b\u3092\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e String List \u306b\u5909\u63db\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "Any 入力をデバッグ表示相当の String List に変換します。";
             default -> "Converts an Any input into a debug-display String List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_to_string_list", switch (locale) {
-            case "ja_jp" -> "Any \u5165\u529b\u3092 \u4f5c\u52d5\u5f0f: \u30c7\u30d0\u30c3\u30b0 \u3068\u540c\u3058\u8868\u793a\u5411\u3051\u306e\u6587\u5b57\u5217\u8868\u73fe\u3067 String List \u306b\u5909\u63db\u3057\u307e\u3059. Entity, Item, Block \u306a\u3069\u306e Contextual Value \u3082\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u306f\u306a\u304f\u30c7\u30d0\u30c3\u30b0\u8868\u793a\u76f8\u5f53\u306e\u6587\u5b57\u5217\u306b\u306a\u308a\u307e\u3059. Block List \u3092\u542b\u3080 List \u306f\u5165\u529b\u9806\u3092\u7dad\u6301\u3057\u3066\u5404\u8981\u7d20\u3092\u540c\u3058\u898f\u5247\u3067\u5909\u63db\u3057\u307e\u3059. List \u4ee5\u5916\u306f1\u8981\u7d20\u306e String List \u306b\u306a\u308a\u307e\u3059.";
+            case "ja_jp" -> "Any 入力を 作動式: デバッグ と同じ表示向けの文字列表現で String List に変換します. Entity, Item, Block などの Contextual Value もレジストリIDではなくデバッグ表示相当の文字列になります. Block List を含む List は入力順を維持して各要素を同じ規則で変換します. List 以外は1要素の String List になります.";
             default -> "Converts an Any input into a String List using the same display-oriented text form as Trick: Debug. Contextual values such as Entity, Item, and Block therefore use their debug display text rather than registry IDs. List inputs, including Block List, convert each element by the same rules while preserving order. Non-list inputs become a one-element String List.";
         });
         add("psitweaks.spellpiece.operator_string_partial_match", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u90e8\u5206\u4e00\u81f4";
+            case "ja_jp" -> "演算子: 部分一致";
             default -> "Operator: Partial Match";
         });
         add("psitweaks.spellpiece.operator_string_partial_match.desc", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u306e\u691c\u7d22\u306b\u30de\u30c3\u30c1\u3059\u308b\u6587\u5b57\u5217\u3092\u542b\u3080\u306a\u30891\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059\u3002\u6587\u5b57\u52172\u3067\u306f\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u3092\u4f7f\u3048\u307e\u3059: * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "文字列1が文字列2での検索にマッチする文字列を含むなら1、そうでなければ0を出力します。文字列2ではワイルドカードを使えます: * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します。";
             default -> "Outputs 1 if searching String 1 with String 2 finds matching text, otherwise outputs 0. String 2 accepts wildcards: * matches any text, ? matches one character, and [abc] matches one listed character.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_partial_match", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u3092\u6587\u5b57\u52172\u3067\u691c\u7d22\u3057\u3066\u30de\u30c3\u30c1\u3059\u308b\u6587\u5b57\u5217\u3092\u542b\u3080\u304b\u5224\u5b9a\u3057\u307e\u3059. * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059. \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u6587\u5b57\u306f\u30d0\u30c3\u30af\u30b9\u30e9\u30c3\u30b7\u30e5\u3067\u30a8\u30b9\u30b1\u30fc\u30d7\u3067\u304d\u307e\u3059. \u6bd4\u8f03\u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u3059.";
+            case "ja_jp" -> "文字列1を文字列2で検索してマッチする文字列を含むか判定します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカード文字はバックスラッシュでエスケープできます. 比較は大文字小文字を区別します.";
             default -> "Searches String 1 with String 2 and checks whether it contains matching text. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Escape wildcard characters with a backslash. Matching is case-sensitive.";
         });
         add("psitweaks.spellpiece.operator_string_starts_with", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u5148\u982d\u4e00\u81f4";
+            case "ja_jp" -> "演算子: 先頭一致";
             default -> "Operator: String Starts With";
         });
         add("psitweaks.spellpiece.operator_string_starts_with.desc", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u59cb\u307e\u308b\u306a\u30891\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "文字列1が文字列2で始まるなら1、そうでなければ0を出力します。";
             default -> "Outputs 1 if String 1 starts with String 2, otherwise outputs 0.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_starts_with", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u59cb\u307e\u308b\u306a\u30891, \u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059. \u6bd4\u8f03\u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u3059.";
+            case "ja_jp" -> "文字列1が文字列2で始まるなら1, そうでなければ0を出力します. 比較は大文字小文字を区別します.";
             default -> "Outputs 1 if String 1 starts with String 2, otherwise outputs 0. The comparison is case-sensitive.";
         });
         add("psitweaks.spellpiece.operator_string_ends_with", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u672b\u5c3e\u4e00\u81f4";
+            case "ja_jp" -> "演算子: 末尾一致";
             default -> "Operator: String Ends With";
         });
         add("psitweaks.spellpiece.operator_string_ends_with.desc", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u7d42\u308f\u308b\u306a\u30891\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "文字列1が文字列2で終わるなら1、そうでなければ0を出力します。";
             default -> "Outputs 1 if String 1 ends with String 2, otherwise outputs 0.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_ends_with", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u304c\u6587\u5b57\u52172\u3067\u7d42\u308f\u308b\u306a\u30891, \u305d\u3046\u3067\u306a\u3051\u308c\u30700\u3092\u51fa\u529b\u3057\u307e\u3059. \u6bd4\u8f03\u306f\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u307e\u3059.";
+            case "ja_jp" -> "文字列1が文字列2で終わるなら1, そうでなければ0を出力します. 比較は大文字小文字を区別します.";
             default -> "Outputs 1 if String 1 ends with String 2, otherwise outputs 0. The comparison is case-sensitive.";
         });
         add("psitweaks.spellpiece.operator_string_concat", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u7d50\u5408";
+            case "ja_jp" -> "演算子: 文字列結合";
             default -> "Operator: String Concat";
         });
         add("psitweaks.spellpiece.operator_string_concat.desc", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171 + \u6587\u5b57\u52172 + \u6587\u5b57\u52173";
+            case "ja_jp" -> "文字列1 + 文字列2 + 文字列3";
             default -> "String 1 + String 2 + String 3";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_concat", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171, \u6587\u5b57\u52172, \u4efb\u610f\u306e\u6587\u5b57\u52173\u3092\u3053\u306e\u9806\u306b\u7d50\u5408\u3057\u307e\u3059. ";
+            case "ja_jp" -> "文字列1, 文字列2, 任意の文字列3をこの順に結合します. ";
             default -> "Concatenates String 1, String 2, and optional String 3 in that order.";
         });
         add("psitweaks.spellpiece.operator_string_split", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u5206\u5272";
+            case "ja_jp" -> "演算子: 文字列分割";
             default -> "Operator: String Split";
         });
         add("psitweaks.spellpiece.operator_string_split.desc", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u3092\u6587\u5b57\u52172\u306e\u30ea\u30c6\u30e9\u30eb\u533a\u5207\u308a\u6587\u5b57\u3067\u5206\u5272\u3057\u3001String List \u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "文字列1を文字列2のリテラル区切り文字で分割し、String List を出力します。";
             default -> "Splits String 1 with String 2 as a literal delimiter and outputs a String List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_split", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u3092\u6587\u5b57\u52172\u306e\u533a\u5207\u308a\u6587\u5b57\u3067\u5206\u5272\u3057, String List \u3092\u51fa\u529b\u3057\u307e\u3059. \u6587\u5b57\u52172\u304c\u672a\u63a5\u7d9a\u306e\u5834\u5408\u306f\u30ab\u30f3\u30de\u3092\u4f7f\u3044\u307e\u3059. \u7a7a\u8981\u7d20\u306f\u4fdd\u6301\u3055\u308c\u307e\u3059.";
+            case "ja_jp" -> "文字列1を文字列2の区切り文字で分割し, String List を出力します. 文字列2が未接続の場合はカンマを使います. 空要素は保持されます.";
             default -> "Splits String 1 with String 2 as the delimiter and outputs a String List. If String 2 is not connected, a comma is used. Empty fields are preserved.";
         });
         add("psitweaks.spellpiece.operator_string_slice", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30b9\u30e9\u30a4\u30b9";
+            case "ja_jp" -> "演算子: 文字列スライス";
             default -> "Operator: String Slice";
         });
         add("psitweaks.spellpiece.operator_string_slice.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u6587\u5b57\u3092 \u6570\u5024A:\u6570\u5024B \u3067\u30b9\u30e9\u30a4\u30b9\u3057\u305f\u65b0\u3057\u3044 \u6587\u5b57\u5217 \u3092\u8fd4\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した文字列の文字を 数値A:数値B でスライスした新しい 文字列 を返します。";
             default -> "Slices the input String from Number A to Number B and returns a new String.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_slice", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u6587\u5b57\u5217\u306e\u6587\u5b57\u6570\u3092\u6307\u5b9a\u3057\u3066\u7bc4\u56f2\u3092\u5207\u308a\u51fa\u3057\u3066\u65b0\u3057\u3044\u6587\u5b57\u5217\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059. A\u307e\u305f\u306fB\u304c\u672a\u63a5\u7d9a\u306a\u3089\u5148\u982d\u307e\u305f\u306f\u672b\u5c3e\u3092\u4f7f\u3044\u307e\u3059. \u8ca0\u6570\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, \u7bc4\u56f2\u5916\u306f\u6709\u52b9\u7bc4\u56f2\u306b\u53ce\u3081, \u7d42\u4e86\u4f4d\u7f6e\u304c\u958b\u59cb\u4f4d\u7f6e\u4ee5\u4e0b\u306a\u3089\u7a7a\u6587\u5b57\u5217\u3092\u8fd4\u3057\u307e\u3059. \u5c0f\u6570\u90e8\u5206\u306f0\u65b9\u5411\u3078\u5207\u308a\u6368\u3066\u307e\u3059.";
+            case "ja_jp" -> "入力文字列の文字数を指定して範囲を切り出して新しい文字列として返します. AまたはBが未接続なら先頭または末尾を使います. 負数は末尾から数え, 範囲外は有効範囲に収め, 終了位置が開始位置以下なら空文字列を返します. 小数部分は0方向へ切り捨てます.";
             default -> "Returns a selected range of characters from the input String as a new String. If A or B is not connected, the beginning or end is used. Negative numbers count from the end, out-of-range values are clamped to the valid range, and an end position at or before the start returns an empty String. Decimal values are truncated toward zero.";
         });
         add("psitweaks.spellpiece.operator_string_length", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u9577";
+            case "ja_jp" -> "演算子: 文字列長";
             default -> "Operator: String Length";
         });
         add("psitweaks.spellpiece.operator_string_length.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u6587\u5b57\u6570\u3092 Number \u3068\u3057\u3066\u8fd4\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した文字列の文字数を Number として返します。";
             default -> "Returns the number of characters in the input String as a Number.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_length", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f String \u306e\u6587\u5b57\u6570\u3092 Number \u3068\u3057\u3066\u8fd4\u3057\u307e\u3059. ";
+            case "ja_jp" -> "入力した String の文字数を Number として返します. ";
             default -> "Returns the number of characters in the input String.";
         });
         add("psitweaks.spellpiece.operator_string_replace", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u7f6e\u63db";
+            case "ja_jp" -> "演算子: 文字列置換";
             default -> "Operator: String Replace";
         });
         add("psitweaks.spellpiece.operator_string_replace.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u52171\u306e\u3046\u3061\u3001\u6587\u5b57\u52172\u3068\u4e00\u81f4\u3059\u308b\u90e8\u5206\u3092\u3001\u6307\u5b9a\u3057\u305f\u6587\u5b57\u52173\u3078\u7f6e\u63db\u3059\u308b\u3002";
+            case "ja_jp" -> "入力した文字列1のうち、文字列2と一致する部分を、指定した文字列3へ置換する。";
             default -> "Replaces parts of String 1 matching String 2 with String 3.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_replace", switch (locale) {
-            case "ja_jp" -> "\u6587\u5b57\u52171\u306e\u3046\u3061, \u6587\u5b57\u52172\u3068\u5927\u6587\u5b57\u5c0f\u6587\u5b57\u3092\u533a\u5225\u3057\u3066\u30ea\u30c6\u30e9\u30eb\u4e00\u81f4\u3059\u308b\u3059\u3079\u3066\u306e\u90e8\u5206\u3092\u6587\u5b57\u52173\u3078\u7f6e\u63db\u3057\u307e\u3059. \u6587\u5b57\u52172\u306f\u5b8c\u5168\u4e00\u81f4\u306e\u307f\u5224\u5b9a\u3057\u307e\u3059. \u6587\u5b57\u52172\u304c\u7a7a\u306e\u5834\u5408\u306f\u6587\u5b57\u52171\u3092\u305d\u306e\u307e\u307e\u8fd4\u3057\u307e\u3059. \u7d50\u679c\u306f\u5b9f\u884c\u6642\u306eString\u6587\u5b57\u6570\u4e0a\u9650\u306b\u5f93\u3044\u307e\u3059.";
+            case "ja_jp" -> "文字列1のうち, 文字列2と大文字小文字を区別してリテラル一致するすべての部分を文字列3へ置換します. 文字列2は完全一致のみ判定します. 文字列2が空の場合は文字列1をそのまま返します. 結果は実行時のString文字数上限に従います.";
             default -> "Replaces every literal, case-sensitive occurrence of String 2 in String 1 with String 3. String 2 is evaluated only as an exact match. If String 2 is empty, String 1 is returned unchanged. The result is limited by the runtime String length limit.";
         });
         add("psitweaks.spellpiece.operator_string_trim", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30c8\u30ea\u30e0";
+            case "ja_jp" -> "演算子: 文字列トリム";
             default -> "Operator: String Trim";
         });
         add("psitweaks.spellpiece.operator_string_trim.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u524d\u5f8c\u306e\u7a7a\u767d\u3092\u53d6\u308a\u9664\u304d\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した文字列の前後の空白を取り除きます。";
             default -> "Removes leading and trailing whitespace from the input String.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_trim", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u306e\u5148\u982d\u3068\u672b\u5c3e\u306b\u3042\u308b\u7a7a\u767d\uff08\u30b9\u30da\u30fc\u30b9, \u30bf\u30d6, \u6539\u884c\u306a\u3069\uff09\u3092\u524a\u9664\u3057\u307e\u3059. \u6587\u5b57\u5217\u306e\u9014\u4e2d\u306b\u3042\u308b\u7a7a\u767d\u306f\u6b8b\u308a\u307e\u3059.";
+            case "ja_jp" -> "入力した文字列の先頭と末尾にある空白（スペース, タブ, 改行など）を削除します. 文字列の途中にある空白は残ります.";
             default -> "Removes whitespace characters (such as spaces, tabs, and line breaks) from the beginning and end of the input String. Whitespace inside the String is preserved.";
         });
         add("psitweaks.spellpiece.operator_string_list_join", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u30ea\u30b9\u30c8\u7d50\u5408";
+            case "ja_jp" -> "演算子: 文字列リスト結合";
             default -> "Operator: String List Join";
         });
         add("psitweaks.spellpiece.operator_string_list_join.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u30ea\u30b9\u30c8\u3092\u6587\u5b57\u52172\u3067\u7d50\u5408\u3057\u3001String \u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力リストを文字列2で結合し、String を出力します。";
             default -> "Joins the input String List with String 2 and outputs a String.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_list_join", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u30ea\u30b9\u30c8\u3092\u6587\u5b57\u52172\u3067\u7d50\u5408\u3057, String \u3092\u51fa\u529b\u3057\u307e\u3059. \u6587\u5b57\u52172\u304c\u672a\u63a5\u7d9a\u306e\u5834\u5408\u306f\u30ab\u30f3\u30de\u3092\u4f7f\u3044\u307e\u3059. \u7a7a\u306e\u533a\u5207\u308a\u6587\u5b57\u306f\u8a31\u53ef\u3055\u308c, \u8981\u7d20\u3092\u76f4\u63a5\u9023\u7d50\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力リストを文字列2で結合し, String を出力します. 文字列2が未接続の場合はカンマを使います. 空の区切り文字は許可され, 要素を直接連結します.";
             default -> "Joins the input String List with String 2 and outputs a String. If String 2 is not connected, a comma is used. Empty delimiters are allowed and concatenate the elements directly.";
         });
         add("psitweaks.spellpiece.operator_player_name", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30d7\u30ec\u30a4\u30e4\u30fc\u30cd\u30fc\u30e0";
+            case "ja_jp" -> "演算子: プレイヤーネーム";
             default -> "Operator: Player Name";
         });
         add("psitweaks.spellpiece.operator_player_name.desc", switch (locale) {
-            case "ja_jp" -> "Entity\u304c\u30d7\u30ec\u30a4\u30e4\u30fc\u306a\u3089\u30d7\u30ec\u30a4\u30e4\u30fc\u540d\u3092\u3001\u305d\u3046\u3067\u306a\u3051\u308c\u3070\u7a7a\u6587\u5b57\u5217\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "Entityがプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。";
             default -> "Outputs the player name if the Entity is a player, otherwise outputs an empty string.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_player_name", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b Entity \u304c\u30d7\u30ec\u30a4\u30e4\u30fc\u306a\u3089\u30d7\u30ec\u30a4\u30e4\u30fc\u540d\u3092\u51fa\u529b\u3057\u307e\u3059. \u30d7\u30ec\u30a4\u30e4\u30fc\u3067\u306a\u3044 Entity \u306f\u7a7a\u6587\u5b57\u5217\u306b\u306a\u308a\u307e\u3059.";
+            case "ja_jp" -> "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.";
             default -> "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.";
         });
         add("psitweaks.spellpiece.operator_list_search", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u691c\u7d22";
+            case "ja_jp" -> "演算子: リスト検索";
             default -> "Operator: List Search";
         });
         add("psitweaks.spellpiece.operator_list_search.desc", switch (locale) {
-            case "ja_jp" -> "\u30ea\u30b9\u30c8\u306e\u8981\u7d20\u3092\u6587\u5b57\u5217\u5316\u3057\u305f\u3082\u306e\u306e\u3046\u3061\u3001\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3067\u691c\u7d22\u3057\u3066\u30de\u30c3\u30c1\u3059\u308b\u3082\u306e\u306e\u307f\u3092\u6b8b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするもののみを残します。";
             default -> "Keeps only the input List elements whose string form matches the input search string.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_search", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u3092, \u5404\u8981\u7d20\u306e\u691c\u7d22\u7528\u6587\u5b57\u5217\u3067\u7d5e\u308a\u8fbc\u307f\u307e\u3059. Entity \u3068 Item/Block \u306a\u3069\u306e Contextual Value \u306f\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u6bd4\u8f03\u3057\u307e\u3059. \u305d\u308c\u4ee5\u5916\u306e\u5024\u306f \u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u3078\u5909\u63db \u3068\u540c\u3058\u6587\u5b57\u5217\u3067\u6bd4\u8f03\u3057\u307e\u3059. String\u5165\u529b\u3067\u306f\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u3092\u5229\u7528\u3067\u304d, * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059. \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u306a\u3057\u3067\u306f\u5b8c\u5168\u4e00\u81f4\u3067\u3059.";
+            case "ja_jp" -> "選択中の List モードを, 各要素の検索用文字列で絞り込みます. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. String入力ではワイルドカードを利用でき, * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.";
             default -> "Filters the selected List mode by comparing the String input with each element's search text. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. The String input accepts wildcards: * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.";
         });
         add("psitweaks.spellpiece.operator_list_search_exclude", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u691c\u7d22\u9664\u5916";
+            case "ja_jp" -> "演算子: リスト検索除外";
             default -> "Operator: List Search Exclude";
         });
         add("psitweaks.spellpiece.operator_list_search_exclude.desc", switch (locale) {
-            case "ja_jp" -> "\u30ea\u30b9\u30c8\u306e\u8981\u7d20\u3092\u6587\u5b57\u5217\u5316\u3057\u305f\u3082\u306e\u306e\u3046\u3061\u3001\u5165\u529b\u3057\u305f\u6587\u5b57\u5217\u3067\u691c\u7d22\u3057\u3066\u30de\u30c3\u30c1\u3059\u308b\u3082\u306e\u3092\u9664\u5916\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするものを除外します。";
             default -> "Removes the input List elements whose string form matches the input search string.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_search_exclude", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u304b\u3089, \u691c\u7d22\u7528\u6587\u5b57\u5217\u304c\u5165\u529b\u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u306b\u4e00\u81f4\u3059\u308b\u8981\u7d20\u3092\u9664\u5916\u3057\u307e\u3059. Entity \u3068 Item/Block \u306a\u3069\u306e Contextual Value \u306f\u30ec\u30b8\u30b9\u30c8\u30eaID\u3067\u6bd4\u8f03\u3057\u307e\u3059. \u305d\u308c\u4ee5\u5916\u306e\u5024\u306f \u6f14\u7b97\u5b50: \u6587\u5b57\u5217\u3078\u5909\u63db \u3068\u540c\u3058\u6587\u5b57\u5217\u3067\u6bd4\u8f03\u3057\u307e\u3059. * \u306f\u4efb\u610f\u306e\u6587\u5b57\u5217, ? \u306f\u4efb\u610f\u306e1\u6587\u5b57, [abc] \u306f a/b/c \u306e\u3044\u305a\u308c\u304b1\u6587\u5b57\u306b\u4e00\u81f4\u3057\u307e\u3059. \u30ef\u30a4\u30eb\u30c9\u30ab\u30fc\u30c9\u306a\u3057\u3067\u306f\u5b8c\u5168\u4e00\u81f4\u3067\u3059.";
+            case "ja_jp" -> "選択中の List モードから, 検索用文字列が入力ワイルドカードに一致する要素を除外します. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.";
             default -> "Filters the selected List mode by removing elements whose search text matches the input wildcard. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.";
         });
         add("psitweaks.spellpiece.operator_random_element", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30e9\u30f3\u30c0\u30e0\u8981\u7d20";
+            case "ja_jp" -> "演算子: ランダム要素";
             default -> "Operator: Random Element";
         });
         add("psitweaks.spellpiece.operator_random_element.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u304b\u3089\u30e9\u30f3\u30c0\u30e0\u306b1\u8981\u7d20\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した List からランダムに1要素を出力します。";
             default -> "Outputs one random element from the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_random_element", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u304b\u3089\u8981\u7d20\u30921\u3064\u30e9\u30f3\u30c0\u30e0\u306b\u8fd4\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力された List から要素を1つランダムに返します.";
             default -> "Returns one random element from the input List.";
         });
         add("psitweaks.spellpiece.operator_list_add", switch (locale) {
-            case "ja_jp" -> "\u30ea\u30b9\u30c8\u3078\u8ffd\u52a0 (PT)";
+            case "ja_jp" -> "リストへ追加 (PT)";
             default -> "Operator: Add To List (PT)";
         });
         add("psitweaks.spellpiece.operator_list_add.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u306b\u6700\u59273\u3064\u306e\u8981\u7d20\u3092\u8ffd\u52a0\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した List に最大3つの要素を追加します。";
             default -> "Adds up to three elements to the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_add", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u306b\u6700\u59273\u3064\u306e\u5165\u529b\u8981\u7d20\u3092\u8ffd\u52a0\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力された List に最大3つの入力要素を追加します.";
             default -> "Adds up to three input elements to the input List.";
         });
         add("psitweaks.spellpiece.operator_list_remove", switch (locale) {
-            case "ja_jp" -> "\u30ea\u30b9\u30c8\u304b\u3089\u524a\u9664 (PT)";
+            case "ja_jp" -> "リストから削除 (PT)";
             default -> "Operator: Remove From List (PT)";
         });
         add("psitweaks.spellpiece.operator_list_remove.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u304b\u3089\u6700\u59272\u3064\u306e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した List から最大2つの要素を削除します。";
             default -> "Removes up to two elements from the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_remove", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u304b\u3089\u6700\u59272\u3064\u306e\u5165\u529b\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力された List から最大2つの入力要素を削除します.";
             default -> "Removes up to two input elements from the input List.";
         });
         add("psitweaks.spellpiece.operator_list_remove_indices", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u8981\u7d20\u524a\u9664";
+            case "ja_jp" -> "演算子: インデックス要素削除";
             default -> "Operator: Remove Indexed Elements";
         });
         add("psitweaks.spellpiece.operator_list_remove_indices.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u304b\u3089\u6570\u5024A\u3068\u6570\u5024B\u306b\u5bfe\u5fdc\u3059\u308b\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した List から数値Aと数値Bに対応するインデックスの要素を削除します。";
             default -> "Removes the elements at Number A and Number B from the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_remove_indices", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u304b\u3089\u6570\u5024A\u3068\u6570\u5024B\u306b\u5bfe\u5fdc\u3059\u308b\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059. \u8ca0\u6570\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, -1 \u306f\u672b\u5c3e\u8981\u7d20\u3092\u524a\u9664\u3057\u307e\u3059. \u3069\u3061\u3089\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u3082\u5143\u306e List \u3092\u57fa\u6e96\u306b\u89e3\u6c7a\u3057, \u540c\u3058\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306e\u5834\u5408\u306f1\u8981\u7d20\u3060\u3051\u524a\u9664\u3057\u307e\u3059. \u7bc4\u56f2\u5916\u306f\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u7bc4\u56f2\u5916\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059.";
+            case "ja_jp" -> "選択中の List モードから数値Aと数値Bに対応するインデックスの要素を削除します. 負数は末尾から数え, -1 は末尾要素を削除します. どちらのインデックスも元の List を基準に解決し, 同じインデックスの場合は1要素だけ削除します. 範囲外はインデックス範囲外エラーになります.";
             default -> "Removes the elements at Number A and Number B from the selected List mode. Negative indexes count from the end, so -1 removes the last element. Both indexes are resolved against the original List, and duplicate indexes remove only one element. An out-of-range index raises an out-of-bounds spell error.";
         });
         add("psitweaks.spellpiece.operator_list_insert", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u306b\u633f\u5165";
+            case "ja_jp" -> "演算子: リストに挿入";
             default -> "Operator: List Insert";
         });
         add("psitweaks.spellpiece.operator_list_insert.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u306e\u6307\u5b9a\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u3078\u8981\u7d20\u3092\u633f\u5165\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した List の指定インデックスへ要素を挿入します。";
             default -> "Inserts the input element at the specified index in the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_insert", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u306e\u6307\u5b9a\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u76f4\u524d\u3078\u5165\u529b\u8981\u7d20\u3092\u633f\u5165\u3057\u307e\u3059. 0 \u306f\u5148\u982d\u3078, -1 \u306f\u672b\u5c3e\u8981\u7d20\u306e\u76f4\u524d\u3078\u633f\u5165\u3057\u307e\u3059. List \u30b5\u30a4\u30ba\u3088\u308a\u5927\u304d\u3044\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u672b\u5c3e\u3078, \u8ca0\u65b9\u5411\u306e\u7bc4\u56f2\u3092\u8d85\u3048\u305f\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u5148\u982d\u3078\u633f\u5165\u3057\u307e\u3059.";
+            case "ja_jp" -> "選択中の List モードの指定インデックス直前へ入力要素を挿入します. 0 は先頭へ, -1 は末尾要素の直前へ挿入します. List サイズより大きいインデックスは末尾へ, 負方向の範囲を超えたインデックスは先頭へ挿入します.";
             default -> "Inserts the input element before the specified index in the selected List mode. Index 0 inserts at the beginning and -1 inserts before the last element. Indexes above the List size insert at the end, while indexes below the negative range insert at the beginning.";
         });
         add("psitweaks.spellpiece.operator_list_slice", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u30b9\u30e9\u30a4\u30b9";
+            case "ja_jp" -> "演算子: リストスライス";
             default -> "Operator: List Slice";
         });
         add("psitweaks.spellpiece.operator_list_slice.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f List \u306e\u8981\u7d20\u3092 \u6570\u5024A:\u6570\u5024B \u3067\u30b9\u30e9\u30a4\u30b9\u3057\u305f\u65b0\u3057\u3044 List \u3092\u8fd4\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した List の要素を 数値A:数値B でスライスした新しい List を返します。";
             default -> "Slices the input List from Number A to Number B and returns a new List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_slice", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9 \u306b\u5bfe\u3057\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u3092\u6307\u5b9a\u3057\u3066\u7bc4\u56f2\u3092\u5207\u308a\u51fa\u3057\u3066\u65b0\u3057\u3044 List \u3068\u3057\u3066\u8fd4\u3057\u307e\u3059. A \u3092\u7701\u7565\u3059\u308b\u3068\u5148\u982d\u304b\u3089, B \u3092\u7701\u7565\u3059\u308b\u3068\u672b\u5c3e\u307e\u3067\u304c\u5bfe\u8c61\u3067\u3059. \u8ca0\u6570\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, \u7bc4\u56f2\u5916\u306f\u6709\u52b9\u7bc4\u56f2\u3078\u4e38\u3081, \u7d42\u4e86\u4f4d\u7f6e\u304c\u958b\u59cb\u4f4d\u7f6e\u4ee5\u524d\u306a\u3089\u7a7a\u306e List \u3092\u8fd4\u3057\u307e\u3059. \u5c0f\u6570\u306f0\u65b9\u5411\u3078\u5207\u308a\u6368\u3066\u307e\u3059.";
+            case "ja_jp" -> "選択中の List モード に対しインデックスを指定して範囲を切り出して新しい List として返します. A を省略すると先頭から, B を省略すると末尾までが対象です. 負数は末尾から数え, 範囲外は有効範囲へ丸め, 終了位置が開始位置以前なら空の List を返します. 小数は0方向へ切り捨てます.";
             default -> "Returns a selected range of elements from the selected List mode as a new List. If A is omitted, the range starts at the beginning; if B is omitted, it continues to the end. Negative numbers count from the end, out-of-range values are clamped to the valid range, and an end position at or before the start returns an empty List. Decimal values are truncated toward zero.";
         });
         add("psitweaks.spellpiece.operator_list_size", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u30b5\u30a4\u30ba (PT)";
+            case "ja_jp" -> "演算子: リストサイズ (PT)";
             default -> "Operator: List Size (PT)";
         });
         add("psitweaks.spellpiece.operator_list_size.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u4efb\u610f\u306e List \u306e\u8981\u7d20\u6570\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した任意の List の要素数を出力します。";
             default -> "Outputs the number of elements in the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_size", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f\u4efb\u610f\u306e List \u5165\u529b\u306b\u542b\u307e\u308c\u308b\u8981\u7d20\u6570\u3092\u51fa\u529b\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力された任意の List 入力に含まれる要素数を出力します.";
             default -> "Outputs the number of elements in any input List.";
         });
         add("psitweaks.spellpiece.operator_list_exclusion", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u9664\u5916 (PT)";
+            case "ja_jp" -> "演算子: リスト除外 (PT)";
             default -> "Operator: List Exclusion (PT)";
         });
         add("psitweaks.spellpiece.operator_list_exclusion.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f\u30ea\u30b9\u30c81\u304b\u3089\u30ea\u30b9\u30c82\u306b\u542b\u307e\u308c\u308b\u8981\u7d20\u3092\u9664\u5916\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力したリスト1からリスト2に含まれる要素を除外します。";
             default -> "Removes the elements in List 2 from the input List 1.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_exclusion", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305fList 1 \u306e\u8981\u7d20\u306e\u3046\u3061\u3001List 2 \u306b\u3082\u542b\u307e\u308c\u308b\u8981\u7d20\u3092\u9664\u5916\u3057\u3066\u65b0\u3057\u3044\u30ea\u30b9\u30c8\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力したList 1 の要素のうち、List 2 にも含まれる要素を除外して新しいリストとして返します.";
             default -> "Returns a new List by removing elements from List 1 when they are also present in List 2.";
         });
         add("psitweaks.spellpiece.operator_list_intersection", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u5171\u901a\u90e8\u5206 (PT)";
+            case "ja_jp" -> "演算子: リスト共通部分 (PT)";
             default -> "Operator: List Intersection (PT)";
         });
         add("psitweaks.spellpiece.operator_list_intersection.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f2\u3064\u306e List \u306b\u5171\u901a\u3059\u308b\u8981\u7d20\u3092\u51fa\u529b\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した2つの List に共通する要素を出力します。";
             default -> "Outputs the elements shared by the two input Lists.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_intersection", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f2\u3064\u306e\u30ea\u30b9\u30c8\u3067\u3069\u3061\u3089\u306b\u3082\u542b\u307e\u308c\u308b\u8981\u7d20\u3092\u65b0\u3057\u3044\u30ea\u30b9\u30c8\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059.";
+            case "ja_jp" -> "入力した2つのリストでどちらにも含まれる要素を新しいリストとして返します.";
             default -> "Returns a new List containing elements that are present in both input Lists.";
         });
         add("psitweaks.spellpiece.operator_list_concatenation", switch (locale) {
-            case "ja_jp" -> "\u6f14\u7b97\u5b50: \u30ea\u30b9\u30c8\u7d50\u5408 (PT)";
+            case "ja_jp" -> "演算子: リスト結合 (PT)";
             default -> "Operator: List Concatenation (PT)";
         });
         add("psitweaks.spellpiece.operator_list_concatenation.desc", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3057\u305f2\u3064\u306e List \u3092\u7d50\u5408\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "入力した2つの List を結合します。";
             default -> "Combines the two input Lists.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_concatenation", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f2\u3064\u306e\u30ea\u30b9\u30c8\u3092\u7d50\u5408\u3057\u307e\u3059. Contextual Value List \u306e\u5834\u5408\u3001\u91cd\u8907\u3057\u305f\u8981\u7d20\u306f\u524a\u9664\u3055\u308c\u307e\u3059.";
+            case "ja_jp" -> "入力された2つのリストを結合します. Contextual Value List の場合、重複した要素は削除されます.";
             default -> "Combines the two input Lists. For Contextual Value Lists, duplicate elements are removed.";
         });
         add("psitweaks.spellpiece.selector_block", switch (locale) {
-            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u30d6\u30ed\u30c3\u30af";
+            case "ja_jp" -> "取得子: ブロック";
             default -> "Selector: Block";
         });
         add("psitweaks.spellpiece.selector_block.desc", switch (locale) {
-            case "ja_jp" -> "\u6307\u5b9a\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block \u578b\u3068\u3057\u3066\u8fd4\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "指定座標にあるブロックを Block 型として返します。";
             default -> "Returns the block at the given position as a Block value.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_block", switch (locale) {
-            case "ja_jp" -> "\u5bfe\u8c61\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block \u578b\u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. Block \u306f\u4fdd\u5b58\u5ea7\u6a19, \u30c7\u30a3\u30e1\u30f3\u30b7\u30e7\u30f3, \u30d6\u30ed\u30c3\u30af\u72b6\u614b, \u30ec\u30b8\u30b9\u30c8\u30eaID, \u30d6\u30ed\u30c3\u30af\u30bf\u30b0\u3092\u6301\u3064\u8aad\u307f\u53d6\u308a\u7528\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\u3067\u3059. Block \u578b\u3092\u5fc5\u8981\u3068\u3059\u308b\u30b9\u30da\u30eb\u30d4\u30fc\u30b9\u306b\u3082 Vector\u578b \u304c\u81ea\u52d5\u5909\u63db\u3055\u308c\u305d\u306e\u307e\u307e\u63a5\u7d9a\u3067\u304d\u307e\u3059\u304c, \u4f5c\u52d5\u5f0f: \u30c7\u30d0\u30c3\u30b0 \u306b Block \u3068\u3057\u3066\u306e\u60c5\u5831\u3092\u8868\u793a\u3055\u305b\u305f\u3044\u5834\u5408\u306a\u3069 Block\u578b \u3067\u3042\u308b\u3053\u3068\u3092\u660e\u793a\u7684\u306b\u793a\u3057\u305f\u3044\u5834\u5408\u306b\u7528\u3044\u307e\u3059.";
+            case "ja_jp" -> "対象座標にあるブロックを Block 型として出力します. Block は保存座標, ディメンション, ブロック状態, レジストリID, ブロックタグを持つ読み取り用スナップショットです. Block 型を必要とするスペルピースにも Vector型 が自動変換されそのまま接続できますが, 作動式: デバッグ に Block としての情報を表示させたい場合など Block型 であることを明示的に示したい場合に用います.";
             default -> "Outputs the block at the target position as a Block value. Block is a read-only snapshot containing the saved position, dimension, block state, registry ID, and block tags. Spell pieces that require a Block can also accept a Vector through automatic conversion, so use this when you want to explicitly keep the value as a Block, such as when showing Block information with Trick: Debug.";
         });
         add("psitweaks.spellpiece.selector_block_list", switch (locale) {
-            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u30d6\u30ed\u30c3\u30af\u30ea\u30b9\u30c8";
+            case "ja_jp" -> "取得子: ブロックリスト";
             default -> "Selector: Block List";
         });
         add("psitweaks.spellpiece.selector_block_list.desc", switch (locale) {
-            case "ja_jp" -> "Vector List \u306e\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block List \u3068\u3057\u3066\u53d6\u5f97\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "Vector List の座標にあるブロックを Block List として取得します。";
             default -> "Gets the blocks at the positions in a Vector List as a Block List.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_block_list", switch (locale) {
-            case "ja_jp" -> "Vector List \u306e\u5ea7\u6a19\u306b\u3042\u308b\u30d6\u30ed\u30c3\u30af\u3092 Block List \u3068\u3057\u3066\u53d6\u5f97\u3057\u307e\u3059. \u30d6\u30ed\u30c3\u30af\u306e\u7a2e\u985e\u3067\u30ea\u30b9\u30c8\u3092\u691c\u7d22\u3057\u305f\u3044\u306a\u3069, \u5ea7\u6a19\u3092\u30d6\u30ed\u30c3\u30af\u3068\u3057\u3066\u6271\u3044\u305f\u3044\u5834\u5408\u306b\u4f7f\u3044\u307e\u3059.";
+            case "ja_jp" -> "Vector List の座標にあるブロックを Block List として取得します. ブロックの種類でリストを検索したいなど, 座標をブロックとして扱いたい場合に使います.";
             default -> "Gets the blocks at the positions in a Vector List as a Block List. Use this when you want to handle positions as blocks, such as when searching a list by block type.";
         });
         add("psitweaks.spellpiece.selector_held_item", switch (locale) {
-            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u624b\u6301\u3061\u30a2\u30a4\u30c6\u30e0";
+            case "ja_jp" -> "取得子: 手持ちアイテム";
             default -> "Selector: Main-Hand Item";
         });
         add("psitweaks.spellpiece.selector_held_item.desc", switch (locale) {
-            case "ja_jp" -> "\u5bfe\u8c61\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u306e\u30e1\u30a4\u30f3\u30cf\u30f3\u30c9\u306e\u30a2\u30a4\u30c6\u30e0\u3092\u53d6\u5f97\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "対象エンティティのメインハンドのアイテムを取得します。";
             default -> "Gets the target entity's main-hand item.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_held_item", switch (locale) {
-            case "ja_jp" -> "\u5bfe\u8c61 LivingEntity \u306e\u30e1\u30a4\u30f3\u30cf\u30f3\u30c9\u306e ItemStack \u3092 Item \u578b\u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. Item\u578b\u306f, \u30a2\u30a4\u30c6\u30e0\u306e\u7a2e\u985e, \u500b\u6570, \u8010\u4e45\u5024, \u540d\u524d\u306a\u3069\u3092\u6301\u3064\u8aad\u307f\u53d6\u308a\u7528\u306e\u5024\u3067\u3059. Psi \u306e \u53d6\u5f97\u5b50: \u8fd1\u304f\u306e\u30a2\u30a4\u30c6\u30e0 \u3067\u53d6\u5f97\u3067\u304d\u308b\u30c9\u30ed\u30c3\u30d7\u30a2\u30a4\u30c6\u30e0\u306f\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u3067\u3042\u308a, PsiTweaks\u3067\u8ffd\u52a0\u3055\u308c\u308bItem\u578b\u3068\u306f\u7570\u306a\u308b\u3053\u3068\u306b\u6ce8\u610f\u3057\u3066\u304f\u3060\u3055\u3044.";
+            case "ja_jp" -> "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.";
             default -> "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.";
         });
         add("psitweaks.spellpiece.selector_held_items", switch (locale) {
-            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u6240\u6301\u30a2\u30a4\u30c6\u30e0";
+            case "ja_jp" -> "取得子: 所持アイテム";
             default -> "Selector: Carried Items";
         });
         add("psitweaks.spellpiece.selector_held_items.desc", switch (locale) {
-            case "ja_jp" -> "\u5bfe\u8c61 Entity \u306e\u6240\u6301\u30a2\u30a4\u30c6\u30e0\u3092 Item List \u3068\u3057\u3066\u53d6\u5f97\u3057\u307e\u3059\u3002";
+            case "ja_jp" -> "対象 Entity の所持アイテムを Item List として取得します。";
             default -> "Outputs the target entity's carried items as an Item List.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_held_items", switch (locale) {
-            case "ja_jp" -> "\u5bfe\u8c61 Entity \u306e\u6240\u6301\u30a2\u30a4\u30c6\u30e0\u3092 Item List \u3068\u3057\u3066\u51fa\u529b\u3057\u307e\u3059. Player \u306f\u30a4\u30f3\u30d9\u30f3\u30c8\u30ea\u3092\u30b9\u30ed\u30c3\u30c8\u5358\u4f4d\u3067\u8aad\u307f\u53d6\u308a, \u305d\u306e\u4ed6\u306e Entity \u306f ItemHandler \u304c\u3042\u308c\u3070\u305d\u308c\u3092\u4f7f\u3044, \u306a\u3051\u308c\u3070\u624b\u6301\u3061\u3068\u9632\u5177\u30b9\u30ed\u30c3\u30c8\u3092\u8aad\u307f\u53d6\u308a\u307e\u3059. \u7a7a\u306e\u5834\u5408\u306f\u7a7a\u306e Item List \u3092\u51fa\u529b\u3057\u307e\u3059.";
+            case "ja_jp" -> "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を出力します.";
             default -> "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List.";
         });
         add("psitweaks.spellpiece.selector_indexed_element", switch (locale) {
-            case "ja_jp" -> "\u53d6\u5f97\u5b50: \u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u8981\u7d20 (PT)";
+            case "ja_jp" -> "取得子: インデックス要素 (PT)";
             default -> "Selector: Indexed Element (PT)";
         });
         add("psitweaks.spellpiece.selector_indexed_element.desc", switch (locale) {
-            case "ja_jp" -> "\u9078\u629e\u4e2d\u306e List \u30e2\u30fc\u30c9\u304b\u30890\u59cb\u307e\u308a\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306b\u3042\u308b\u8981\u7d20\u3092\u53d6\u5f97\u3057\u307e\u3059\u3002\u8ca0\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048\u307e\u3059\u3002";
+            case "ja_jp" -> "選択中の List モードから0始まりのインデックスにある要素を取得します。負のインデックスは末尾から数えます。";
             default -> "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_indexed_element", switch (locale) {
-            case "ja_jp" -> "\u5165\u529b\u3055\u308c\u305f List \u304b\u3089, 0\u59cb\u307e\u308a\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306b\u3042\u308b\u8981\u7d20\u3092\u51fa\u529b\u3057\u307e\u3059. \u8ca0\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f\u672b\u5c3e\u304b\u3089\u6570\u3048, -1 \u306f\u672b\u5c3e\u8981\u7d20, -2 \u306f\u305d\u306e1\u3064\u524d\u306e\u8981\u7d20\u3092\u8fd4\u3057\u307e\u3059. \u7bc4\u56f2\u5916\u306e\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u306f Psi \u672c\u4f53\u306e Indexed Element \u3068\u540c\u3058\u7bc4\u56f2\u5916\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059.";
+            case "ja_jp" -> "入力された List から, 0始まりのインデックスにある要素を出力します. 負のインデックスは末尾から数え, -1 は末尾要素, -2 はその1つ前の要素を返します. 範囲外のインデックスは Psi 本体の Indexed Element と同じ範囲外エラーになります.";
             default -> "Outputs the element at a zero-based index from the input List. Negative indexes count back from the end: -1 returns the last element, and -2 returns the element before it. Out-of-range indexes produce the same out-of-bounds spell error as Psi's Indexed Element.";
         });
     }

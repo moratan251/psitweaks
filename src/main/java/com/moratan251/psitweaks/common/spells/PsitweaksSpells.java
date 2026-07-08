@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.etc.*;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.*;
 import vazkii.psi.api.spell.SpellPiece;
@@ -137,6 +139,11 @@ public class PsitweaksSpells {
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), PieceOperatorTanh.class);
             PsiAPI.addPieceToGroup(PieceOperatorTanh.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), false);
+            registerSpellPiece("trick_jump", PieceTrickJump.class);
+            registerSpellPiece("trick_switch", PieceTrickSwitch.class);
+            registerSpellPiece("jump_anchor", PieceJumpAnchor.class);
+            registerSpellPiece("trick_store_value", PieceTrickStoreValue.class);
+            registerSpellPiece("selector_stored_value", PieceSelectorStoredValue.class);
             registerSpellPiece("constant_string", PieceConstantString.class);
             registerSpellPiece("operator_format_string", PieceOperatorFormatString.class);
             registerSpellPiece("operator_from_string", PieceOperatorFromString.class);

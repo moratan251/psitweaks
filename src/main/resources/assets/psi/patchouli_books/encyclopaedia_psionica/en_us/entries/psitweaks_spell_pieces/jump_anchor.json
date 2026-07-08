@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.jump_anchor",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/jump_anchor.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.jump_anchor"
+    }
+  ]
+}
