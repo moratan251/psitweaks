@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_tag_list",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_tag_list.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_tag_list"
+    }
+  ]
+}

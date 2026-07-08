@@ -179,6 +179,30 @@ public class PsitweaksSpells {
             registerSpellPiece("selector_block_list", PieceSelectorBlockList.class);
             registerSpellPiece("selector_held_item", PieceSelectorHeldItem.class);
             registerSpellPiece("selector_held_items", PieceSelectorHeldItems.class);
+            registerSpellPiece("operator_block_position", PieceOperatorBlockPosition.class);
+            registerSpellPiece("operator_block_position_list", PieceOperatorBlockPositionList.class);
+            registerSpellPiece("operator_block_state", PieceOperatorBlockState.class);
+            registerSpellPiece("operator_block_state_entries", PieceOperatorBlockStateEntries.class);
+            registerSpellPiece("operator_block_state_value", PieceOperatorBlockStateValue.class);
+            registerSpellPiece("operator_equal", PieceOperatorEqual.class);
+            registerSpellPiece("operator_greater_than", PieceOperatorGreaterThan.class);
+            registerSpellPiece("operator_greater_than_or_equal", PieceOperatorGreaterThanOrEqual.class);
+            registerSpellPiece("operator_get_id", PieceOperatorGetId.class);
+            registerSpellPiece("operator_get_id_list", PieceOperatorGetIdList.class);
+            registerSpellPiece("operator_tag_list", PieceOperatorTagList.class);
+            registerSpellPiece("operator_item_count", PieceOperatorItemCount.class);
+            registerSpellPiece("operator_item_total_count", PieceOperatorItemTotalCount.class);
+            registerSpellPiece("operator_item_slot", PieceOperatorItemSlot.class);
+            registerSpellPiece("selector_internal_items", PieceSelectorInternalItems.class);
+            registerSpellPiece("selector_internal_slot_item", PieceSelectorInternalSlotItem.class);
+            registerSpellPiece("selector_selected_slot_item", PieceSelectorSelectedSlotItem.class);
+            registerSpellPiece("selector_entity_slot_item", PieceSelectorEntitySlotItem.class);
+            registerSpellPiece("selector_display_name", PieceSelectorDisplayName.class);
+            registerSpellPiece("selector_display_name_list", PieceSelectorDisplayNameList.class);
+            registerSpellPiece("selector_nbt", PieceSelectorNbt.class);
+            registerSpellPiece("selector_nbt_keys", PieceSelectorNbtKeys.class);
+            registerSpellPiece("selector_nbt_value", PieceSelectorNbtValue.class);
+            registerSpellPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
             registerSpellPiece("selector_indexed_element", PieceSelectorIndexedElement.class);
 
 

@@ -247,6 +247,294 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.";
             default -> "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.";
         });
+        add("psitweaks.spellpiece.operator_block_position", switch (locale) {
+            case "ja_jp" -> "演算子: ブロック座標";
+            default -> "Operator: Block Position";
+        });
+        add("psitweaks.spellpiece.operator_block_position.desc", switch (locale) {
+            case "ja_jp" -> "Block 値に保存された座標を通常の Vector として出力します。";
+            default -> "Outputs the saved position of a Block value as a plain Vector.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_block_position", switch (locale) {
+            case "ja_jp" -> "Block に保存された座標を通常の Vector として出力します. 基本的に Vector を必要とするスペルピースには Block 型をそのまま接続できますが、作動式: デバッグ に接続して座標を確認する際など Vector型 が明示的に必要な場合に使います.";
+            default -> "Outputs the position saved in a Block as a plain Vector. A Block can usually be connected directly to spell pieces that require a Vector, but use this when a Vector value is explicitly needed, such as when checking coordinates with Trick: Debug.";
+        });
+        add("psitweaks.spellpiece.operator_block_position_list", switch (locale) {
+            case "ja_jp" -> "演算子: ブロック位置リスト";
+            default -> "Operator: Block Position List";
+        });
+        add("psitweaks.spellpiece.operator_block_position_list.desc", switch (locale) {
+            case "ja_jp" -> "Block List のブロックの座標を Vector List として取得します。";
+            default -> "Gets the positions of the blocks in a Block List as a Vector List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_block_position_list", switch (locale) {
+            case "ja_jp" -> "Block List に保存された座標を Vector List として取得します.";
+            default -> "Gets the positions saved in a Block List as a Vector List.";
+        });
+        add("psitweaks.spellpiece.operator_block_state", switch (locale) {
+            case "ja_jp" -> "演算子: ブロックステート";
+            default -> "Operator: Block State";
+        });
+        add("psitweaks.spellpiece.operator_block_state.desc", switch (locale) {
+            case "ja_jp" -> "Block 値に保存されたブロックステートを文字列として出力します。例: minecraft:oak_stairs[facing=north]";
+            default -> "Outputs the saved block state of a Block value as a String. Example: minecraft:oak_stairs[facing=north]";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_block_state", switch (locale) {
+            case "ja_jp" -> "Block 値に保存されたブロックステートを String として出力します. 出力は minecraft:oak_stairs[facing=north,half=bottom] のような Minecraft のコマンド風表記です. 値は Block のスナップショットから取得され, 後からワールドが変化しても変わりません.";
+            default -> "Outputs the block state saved in a Block value as a String, using Minecraft's command-style form such as minecraft:oak_stairs[facing=north,half=bottom]. The value comes from the Block snapshot and does not change if the world changes later.";
+        });
+        add("psitweaks.spellpiece.operator_block_state_entries", switch (locale) {
+            case "ja_jp" -> "演算子: ブロックステート項目";
+            default -> "Operator: Block State Entries";
+        });
+        add("psitweaks.spellpiece.operator_block_state_entries.desc", switch (locale) {
+            case "ja_jp" -> "Block 値に保存されたブロックステートのプロパティ項目を String List として出力します。";
+            default -> "Outputs the saved block state properties of a Block value as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_block_state_entries", switch (locale) {
+            case "ja_jp" -> "Block 値に保存されたブロックステートのプロパティを String List として出力します. 各要素は facing:north や waterlogged:false のような property:value 形式です. state property を持たないブロックは空の String List を出力します.";
+            default -> "Outputs the properties saved in a Block value's block state as a String List. Each entry uses property:value form, such as facing:north or waterlogged:false. Blocks with no state properties output an empty String List.";
+        });
+        add("psitweaks.spellpiece.operator_block_state_value", switch (locale) {
+            case "ja_jp" -> "演算子: ブロックステート値";
+            default -> "Operator: Block State Value";
+        });
+        add("psitweaks.spellpiece.operator_block_state_value.desc", switch (locale) {
+            case "ja_jp" -> "Block 値に保存されたブロックステートから指定したプロパティ値を String として出力します。";
+            default -> "Outputs one saved block state property value from a Block value.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_block_state_value", switch (locale) {
+            case "ja_jp" -> "Block 値に保存されたブロックステートから指定 property の値を1つ出力します. String 入力には facing や waterlogged などの property 名を指定します. property が存在しない場合は空の String を出力します.";
+            default -> "Outputs one property value from the block state saved in a Block value. Use the String input to name a property such as facing or waterlogged. If the property does not exist, it outputs an empty String.";
+        });
+        add("psitweaks.spellpiece.operator_equal", switch (locale) {
+            case "ja_jp" -> "演算子: 等しい";
+            default -> "Operator: Equal";
+        });
+        add("psitweaks.spellpiece.operator_equal.desc", switch (locale) {
+            case "ja_jp" -> "値1と値2が等しいなら1、そうでなければ0を出力します。";
+            default -> "Outputs 1 if Value 1 equals Value 2, otherwise 0.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_equal", switch (locale) {
+            case "ja_jp" -> "値1と値2を Any 入力として比較します. 2つの値が等しいなら1, そうでなければ0を出力します. Number は数値, Vector は座標, Item はアイテムデータと source, Block はディメンション, 座標, ブロック状態を比較します. Block と Vector の比較は座標比較です.";
+            default -> "Compares Value 1 and Value 2 as Any inputs. It outputs 1 when both values are equal, otherwise 0. Numbers compare by numeric value, Vectors compare by coordinates, Item values compare their item data and source, and Block values compare dimension, position, and block state. A Block compared with a Vector uses coordinate comparison.";
+        });
+        add("psitweaks.spellpiece.operator_greater_than", switch (locale) {
+            case "ja_jp" -> "演算子: ～より大きい";
+            default -> "Operator: Greater Than";
+        });
+        add("psitweaks.spellpiece.operator_greater_than.desc", switch (locale) {
+            case "ja_jp" -> "値1が値2より大きいなら1、そうでなければ0を出力します。Number を入力できます。";
+            default -> "Outputs 1 if Value 1 is greater than Value 2, otherwise 0. Number inputs are accepted.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_greater_than", switch (locale) {
+            case "ja_jp" -> "値1と値2を Number として比較します. 値1が値2より大きいなら1, そうでなければ0を出力します.";
+            default -> "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than Value 2, otherwise 0.";
+        });
+        add("psitweaks.spellpiece.operator_greater_than_or_equal", switch (locale) {
+            case "ja_jp" -> "演算子: ～以上";
+            default -> "Operator: Greater Than or Equal";
+        });
+        add("psitweaks.spellpiece.operator_greater_than_or_equal.desc", switch (locale) {
+            case "ja_jp" -> "値1が値2以上なら1、そうでなければ0を出力します。Number を入力できます。";
+            default -> "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0. Number inputs are accepted.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_greater_than_or_equal", switch (locale) {
+            case "ja_jp" -> "値1と値2を Number として比較します. 値1が値2以上なら1, そうでなければ0を出力します.";
+            default -> "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than or equal to Value 2, otherwise 0.";
+        });
+        add("psitweaks.spellpiece.operator_get_id", switch (locale) {
+            case "ja_jp" -> "演算子: レジストリID";
+            default -> "Operator: Registry ID";
+        });
+        add("psitweaks.spellpiece.operator_get_id.desc", switch (locale) {
+            case "ja_jp" -> "Contextual Value のレジストリIDを String として出力します。";
+            default -> "Outputs the registry ID of a Contextual Value.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_get_id", switch (locale) {
+            case "ja_jp" -> "Contextual Value のレジストリIDを String として出力します. Entity 入力は EntityType ID, Item 入力は Item ID, Block 入力は Block ID を出力します. 対応していない contextual value は空の String を出力します.";
+            default -> "Outputs the registry ID of a Contextual Value as a String. Entity inputs output the EntityType ID, Item inputs output the Item ID, and Block inputs output the Block ID. Unsupported contextual values output an empty String.";
+        });
+        add("psitweaks.spellpiece.operator_get_id_list", switch (locale) {
+            case "ja_jp" -> "演算子: レジストリIDリスト";
+            default -> "Operator: Registry ID List";
+        });
+        add("psitweaks.spellpiece.operator_get_id_list.desc", switch (locale) {
+            case "ja_jp" -> "Contextual Value List の各要素のレジストリIDを String List として出力します。";
+            default -> "Outputs registry IDs from a Contextual Value List as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_get_id_list", switch (locale) {
+            case "ja_jp" -> "Contextual Value List から各要素のレジストリIDを String List として出力します. Entity List, Item List, Block List は入力順を維持します. Vector List 入力はそのワールド座標のブロックを読む Block List として変換されます. 対応していない要素や空要素は空文字列になります.";
+            default -> "Outputs registry IDs from a Contextual Value List as a String List. Entity List, Item List, and Block List preserve their input order. Vector List input is converted to Block List by reading the blocks at those world coordinates. Unsupported or empty elements become empty strings.";
+        });
+        add("psitweaks.spellpiece.operator_tag_list", switch (locale) {
+            case "ja_jp" -> "演算子: タグリスト";
+            default -> "Operator: Tag List";
+        });
+        add("psitweaks.spellpiece.operator_tag_list.desc", switch (locale) {
+            case "ja_jp" -> "対象の Contextual Value(Entity、Item、Block など)のレジストリタグを String List として出力します。";
+            default -> "Outputs the registry tags of the target Contextual Value (Entity, Item, Block, etc.) as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_tag_list", switch (locale) {
+            case "ja_jp" -> "Contextual Value からレジストリタグを String List として出力します. 各要素は # を付けない namespace:path 形式です. Entity 入力は EntityType のタグを返し, スコアボードタグは含みません.";
+            default -> "Outputs registry tags from a Contextual Value as a String List. Entries use namespace:path form without #. Entity inputs return EntityType tags, not scoreboard tags.";
+        });
+        add("psitweaks.spellpiece.operator_item_count", switch (locale) {
+            case "ja_jp" -> "演算子: アイテム個数";
+            default -> "Operator: Item Count";
+        });
+        add("psitweaks.spellpiece.operator_item_count.desc", switch (locale) {
+            case "ja_jp" -> "Item 値のスタック個数を Number として出力します。空の Item は0を出力します。";
+            default -> "Outputs the stack count of an Item value.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_item_count", switch (locale) {
+            case "ja_jp" -> "Item 値のスタック個数を Number として出力します. 空の Item は0を出力します.";
+            default -> "Outputs the stack count of an Item value as a Number. Empty Item values output 0.";
+        });
+        add("psitweaks.spellpiece.operator_item_total_count", switch (locale) {
+            case "ja_jp" -> "演算子: アイテム合計個数";
+            default -> "Operator: Item Total Count";
+        });
+        add("psitweaks.spellpiece.operator_item_total_count.desc", switch (locale) {
+            case "ja_jp" -> "Item List 内の指定 ID と一致するアイテムの合計個数を Number として出力します。";
+            default -> "Outputs the total count of matching items in an Item List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_item_total_count", switch (locale) {
+            case "ja_jp" -> "Item List からスタック個数の合計を Number として出力します. String 入力が空または未接続ならすべての Item を数えます. それ以外の場合は String と registry ID が完全一致する Item だけを数えます. 無効な ID は何にも一致せず0を出力します.";
+            default -> "Outputs the total stack count from an Item List. If the String input is empty or not connected, all Items are counted. Otherwise only Items whose registry ID exactly matches the String are counted. Invalid IDs simply match nothing and output 0.";
+        });
+        add("psitweaks.spellpiece.operator_item_slot", switch (locale) {
+            case "ja_jp" -> "演算子: アイテムスロット";
+            default -> "Operator: Item Slot";
+        });
+        add("psitweaks.spellpiece.operator_item_slot.desc", switch (locale) {
+            case "ja_jp" -> "Item 値に保存された内部インベントリのスロット番号を Number として出力します。スロット番号を取得できない場合は-1です。";
+            default -> "Outputs the internal inventory slot number saved on an Item value. Outputs -1 if no slot number is available.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.operator_item_slot", switch (locale) {
+            case "ja_jp" -> "Item 値に保存された0始まりのインベントリスロット番号を出力します. Entity またはブロックのインベントリスロットから取得した Item は取得元のスロット番号を保持します. 空の Item, 手や防具から取得した Item, ドロップアイテムなど, インベントリスロット由来でない Item は -1 を出力します.";
+            default -> "Outputs the zero-based inventory slot number saved in an Item value. Items obtained from entity or block inventory slots retain this source slot. Items without an inventory-slot source, including empty Items, hand or equipment Items, and dropped item entities, output -1.";
+        });
+        add("psitweaks.spellpiece.selector_internal_items", switch (locale) {
+            case "ja_jp" -> "取得子: 内部アイテム";
+            default -> "Selector: Internal Items";
+        });
+        add("psitweaks.spellpiece.selector_internal_items.desc", switch (locale) {
+            case "ja_jp" -> "対象ブロックの内部インベントリを Item List として取得します。";
+            default -> "Outputs the target block's internal inventory as an Item List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_internal_items", switch (locale) {
+            case "ja_jp" -> "対象ブロックの内部インベントリを Item List として出力します. ItemHandler と Container をスロット単位で読み取ります. 読み取り可能なインベントリがない場合は空の Item List を出力します.";
+            default -> "Outputs items from the target block's internal inventory as an Item List. Item handlers and containers are read slot by slot. Blocks without readable inventories output an empty Item List.";
+        });
+        add("psitweaks.spellpiece.selector_internal_slot_item", switch (locale) {
+            case "ja_jp" -> "取得子: 内部スロットアイテム";
+            default -> "Selector: Internal Slot Item";
+        });
+        add("psitweaks.spellpiece.selector_internal_slot_item.desc", switch (locale) {
+            case "ja_jp" -> "指定ブロックの0始まり内部インベントリスロットにある Item を取得します。スロットを読めない場合は空の Item を出力します。";
+            default -> "Gets the item in a block's zero-based internal inventory slot. Outputs an empty Item if the slot cannot be read.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_internal_slot_item", switch (locale) {
+            case "ja_jp" -> "対象ブロックの0始まりの内部インベントリスロットにある Item を出力します. ItemHandler を優先して使用し, 利用できない場合は Container を使用します. 読み取り可能なインベントリがないブロック, 空スロット, 負の番号, 範囲外の番号は空の Item を出力します.";
+            default -> "Outputs the Item in the target block's zero-based internal inventory slot. Item handlers are used first, with Container as a fallback. Blocks without a readable inventory and empty, negative, or out-of-range slots output an empty Item.";
+        });
+        add("psitweaks.spellpiece.selector_selected_slot_item", switch (locale) {
+            case "ja_jp" -> "取得子: 選択スロットアイテム";
+            default -> "Selector: Selected Slot Item";
+        });
+        add("psitweaks.spellpiece.selector_selected_slot_item.desc", switch (locale) {
+            case "ja_jp" -> "この術式で選択しているアイテムを取得します。";
+            default -> "Gets the item currently selected by this spell.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_selected_slot_item", switch (locale) {
+            case "ja_jp" -> "術式で選択しているスロットにある ItemStack を Item 型として出力します. スロットは Psi の 作動式: ブロック設置 などで扱うものと同じであり, 作動式: 指定スロット切替 の影響を受けます. 空スロットは空の Item を出力します.";
+            default -> "Outputs the ItemStack in the slot selected by the spell as an Item value. This is the same slot used by Psi pieces such as Trick: Place Block, and is affected by Trick: Switch Target Slot. Empty slots output an empty Item.";
+        });
+        add("psitweaks.spellpiece.selector_entity_slot_item", switch (locale) {
+            case "ja_jp" -> "取得子: エンティティスロットアイテム";
+            default -> "Selector: Entity Slot Item";
+        });
+        add("psitweaks.spellpiece.selector_entity_slot_item.desc", switch (locale) {
+            case "ja_jp" -> "対象 Entity の0始まり内部インベントリスロットにある Item を取得します。スロットを読めない場合は空の Item を出力します。";
+            default -> "Gets the item in the target entity's zero-based internal inventory slot. Outputs an empty Item if the slot cannot be read.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_entity_slot_item", switch (locale) {
+            case "ja_jp" -> "対象 Entity の0始まりのインベントリスロットにある Item を出力します. Player はプレイヤーインベントリを使用し, その他の Entity は利用可能な ItemHandler を使用します. 読み取れないスロット, 空スロット, 負の番号, 範囲外の番号は空の Item を出力します.";
+            default -> "Outputs the Item in the target Entity's zero-based inventory slot. Players use their player inventory; other entities use their item handler when available. Unreadable, empty, negative, or out-of-range slots output an empty Item.";
+        });
+        add("psitweaks.spellpiece.selector_display_name", switch (locale) {
+            case "ja_jp" -> "取得子: 表示名";
+            default -> "Selector: Display Name";
+        });
+        add("psitweaks.spellpiece.selector_display_name.desc", switch (locale) {
+            case "ja_jp" -> "Contextual Value の表示名を術者の言語に応じた String として出力します。";
+            default -> "Outputs the localized display name of a Contextual Value.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_display_name", switch (locale) {
+            case "ja_jp" -> "Contextual Value の表示名を, 術者の現在言語に応じた String として出力します. プレイヤーやカスタム名付き Entity は表示されている名前を返し, 通常の Entity は EntityType の名前, Item は hover name, Block はブロック名を返します. 術者の言語を取得できない場合は English を使います. 翻訳がない場合は English, それもなければ翻訳キーそのものを返します.";
+            default -> "Outputs the display name of a Contextual Value as a String in the caster's current language. Players and custom-named entities keep their visible names; other entities use their EntityType name, Items use their hover name, and Blocks use their block name. If the caster language cannot be read, English is used. Missing translations fall back to English, then to the translation key itself.";
+        });
+        add("psitweaks.spellpiece.selector_display_name_list", switch (locale) {
+            case "ja_jp" -> "取得子: 表示名リスト";
+            default -> "Selector: Display Name List";
+        });
+        add("psitweaks.spellpiece.selector_display_name_list.desc", switch (locale) {
+            case "ja_jp" -> "Contextual Value List の各要素の表示名を術者の言語に応じた String List として出力します。";
+            default -> "Outputs localized display names from a Contextual Value List as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_display_name_list", switch (locale) {
+            case "ja_jp" -> "Contextual Value List から各要素の表示名を String List として出力し, 入力順を維持します. Entity List, Item List, Block List に対応します. Vector List 入力はそのワールド座標のブロックを読む Block List として変換されます. 各要素は 取得子: 表示名 と同じ言語 fallback を使います.";
+            default -> "Outputs display names from a Contextual Value List as a String List while preserving input order. Entity List, Item List, and Block List are supported. Vector List input is converted to Block List by reading the blocks at those world coordinates. Each element uses the same language fallback as Selector: Display Name.";
+        });
+        add("psitweaks.spellpiece.selector_nbt", switch (locale) {
+            case "ja_jp" -> "取得子: NBT";
+            default -> "Selector: NBT";
+        });
+        add("psitweaks.spellpiece.selector_nbt.desc", switch (locale) {
+            case "ja_jp" -> "対象 Contextual Value のNBTトップレベルを key:value 形式の String List として出力します。";
+            default -> "Outputs the target Contextual Value's top-level NBT as key:value strings.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_nbt", switch (locale) {
+            case "ja_jp" -> "対象 Contextual Value のNBTトップレベルを key:value 形式の String List として出力します. Entity 入力ではエンティティIDキーも他のトップレベルNBTキーと同様に含まれます. Block 入力は, Vector 入力から変換された Block も含めて BlockEntity のNBTを読み取り, BlockEntity がないブロックは空リストになります. 値はSNBT文字列です.";
+            default -> "Outputs the target Contextual Value's top-level NBT as key:value strings in a String List. Entity inputs include their entity id key like other top-level NBT keys. Block inputs, including Vector inputs converted to Block values, read BlockEntity NBT; blocks without a BlockEntity output an empty list. Values use SNBT text.";
+        });
+        add("psitweaks.spellpiece.selector_nbt_keys", switch (locale) {
+            case "ja_jp" -> "取得子: NBTキー";
+            default -> "Selector: NBT Keys";
+        });
+        add("psitweaks.spellpiece.selector_nbt_keys.desc", switch (locale) {
+            case "ja_jp" -> "対象 Contextual Value のNBTトップレベルキーを String List として出力します。";
+            default -> "Outputs the target Contextual Value's top-level NBT keys as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_nbt_keys", switch (locale) {
+            case "ja_jp" -> "対象 Contextual Value のNBTトップレベルキーを String List として出力します. Entity 入力ではエンティティIDキーも含まれます. Block 入力は, Vector 入力から変換された Block も含めて BlockEntity のNBTを読み取り, BlockEntity がないブロックは空リストになります.";
+            default -> "Outputs the target Contextual Value's top-level NBT keys as a String List. Entity inputs include the entity id key. Block inputs, including Vector inputs converted to Block values, read BlockEntity NBT; blocks without a BlockEntity output an empty list.";
+        });
+        add("psitweaks.spellpiece.selector_nbt_value", switch (locale) {
+            case "ja_jp" -> "取得子: NBT値";
+            default -> "Selector: NBT Value";
+        });
+        add("psitweaks.spellpiece.selector_nbt_value.desc", switch (locale) {
+            case "ja_jp" -> "対象 Contextual Value のNBTから String キーまたはNBTパスに一致する値を出力します。一致しない場合は空文字列です。";
+            default -> "Outputs the target Contextual Value's NBT value matching the String key or NBT path. Missing paths output an empty string.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_nbt_value", switch (locale) {
+            case "ja_jp" -> "対象 Contextual Value のNBTから StringキーまたはNBTパスに一致する値をSNBT文字列として出力します. Entity 入力のエンティティIDキーを含めて, トップレベルキーの完全一致を先に確認します. 深い値には Inventory[0].id や components.\"minecraft:custom_name\" のようなパスを指定できます. Block 入力は, Vector 入力から変換された Block も含めて BlockEntity のNBTを読み取ります. パスが存在しない場合, 不正なパス, BlockEntity がないブロックは空文字列になります.";
+            default -> "Outputs the target Contextual Value's NBT value matching the String key or NBT path as SNBT text. Top-level exact key matches are checked first, including the entity id key on Entity inputs. Use paths such as Inventory[0].id or components.\"minecraft:custom_name\" for nested values. Block inputs, including Vector inputs converted to Block values, read BlockEntity NBT. Missing paths, invalid paths, and blocks without a BlockEntity output an empty String.";
+        });
+        add("psitweaks.spellpiece.selector_online_players", switch (locale) {
+            case "ja_jp" -> "取得子: オンラインプレイヤー";
+            default -> "Selector: Online Players";
+        });
+        add("psitweaks.spellpiece.selector_online_players.desc", switch (locale) {
+            case "ja_jp" -> "ワールド内のオンラインプレイヤー名を String List として取得します。";
+            default -> "Outputs the names of online players in the world as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_online_players", switch (locale) {
+            case "ja_jp" -> "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.";
+            default -> "Outputs the names of all online players in the caster's current world as a String List.";
+        });
         add("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
             case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
             default -> "String CAD memory value in slot %s was truncated from %s to %s characters";

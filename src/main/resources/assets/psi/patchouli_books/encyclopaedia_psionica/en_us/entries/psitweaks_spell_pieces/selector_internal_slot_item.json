@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.selector_internal_slot_item",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/selector_internal_slot_item.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_internal_slot_item"
+    }
+  ]
+}
