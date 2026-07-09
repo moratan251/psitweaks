@@ -215,7 +215,10 @@ public class PsitweaksSpells {
             registerSpellPiece("operator_matrix_extract_column", PieceOperatorMatrixExtractColumn.class);
             registerSpellPiece("operator_matrix_replace_row", PieceOperatorMatrixReplaceRow.class);
             registerSpellPiece("operator_matrix_replace_column", PieceOperatorMatrixReplaceColumn.class);
+            registerSpellPiece("operator_matrix_transform_vector", PieceOperatorMatrixTransformVector.class);
             registerSpellPiece("operator_matrix_replace_element", PieceOperatorMatrixReplaceElement.class);
+            registerSpellPiece("operator_matrix_delete_row", PieceOperatorMatrixDeleteRow.class);
+            registerSpellPiece("operator_matrix_delete_column", PieceOperatorMatrixDeleteColumn.class);
             registerSpellPiece("operator_matrix_element", PieceOperatorMatrixElement.class);
             registerSpellPiece("operator_matrix_row_count", PieceOperatorMatrixRowCount.class);
             registerSpellPiece("operator_matrix_column_count", PieceOperatorMatrixColumnCount.class);
