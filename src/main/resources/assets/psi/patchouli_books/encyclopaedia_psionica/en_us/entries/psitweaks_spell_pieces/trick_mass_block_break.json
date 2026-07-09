@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_mass_block_break",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_mass_block_break.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_mass_block_break"
+    }
+  ]
+}

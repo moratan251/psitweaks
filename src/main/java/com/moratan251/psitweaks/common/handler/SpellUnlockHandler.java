@@ -74,7 +74,8 @@ public class SpellUnlockHandler {
             definition("guillotine", "trick_guillotine", "program_guillotine"),
             definition("active_air_mine", "trick_active_air_mine", "program_active_air_mine"),
             definition("die_flex", "trick_die_flex", "program_die_flex"),
-            definition("material_mutation", "trick_material_mutation", "program_material_mutation")
+            definition("material_mutation", "trick_material_mutation", "program_material_mutation"),
+            definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();

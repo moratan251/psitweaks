@@ -170,5 +170,13 @@ public final class ProgramResearchRecipeProvider {
                 .energy(250000000)
                 .time(24000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_material_mutation"));
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(ModItems.psigem, 16)
+                .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 16)
+                .requires(Items.TNT, 16)
+                .energy(10000000)
+                .time(1200)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_mass_block_break"));
     }
 }

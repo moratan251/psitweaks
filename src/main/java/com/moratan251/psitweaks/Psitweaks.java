@@ -10,6 +10,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksSlurries;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
+import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
@@ -26,6 +27,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksTabs;
 import com.moratan251.psitweaks.common.proxy.IProxyPsitweaks;
 import com.moratan251.psitweaks.common.proxy.ServerProxyPsitweaks;
 import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
@@ -49,6 +51,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.ModList;
@@ -116,6 +119,9 @@ public class Psitweaks {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onEntityJoinLevel);
+        MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
 
         // Register the item to a creative tab
         PsitweaksTabs.register(modEventBus);

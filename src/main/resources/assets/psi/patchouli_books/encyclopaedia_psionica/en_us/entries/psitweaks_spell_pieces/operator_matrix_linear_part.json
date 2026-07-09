@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_matrix_linear_part",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_matrix_linear_part.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_linear_part"
+    }
+  ]
+}

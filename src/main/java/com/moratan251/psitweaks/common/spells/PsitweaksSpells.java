@@ -204,6 +204,33 @@ public class PsitweaksSpells {
             registerSpellPiece("selector_nbt_value", PieceSelectorNbtValue.class);
             registerSpellPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
             registerSpellPiece("selector_indexed_element", PieceSelectorIndexedElement.class);
+            registerSpellPiece("operator_matrix_add", PieceOperatorMatrixAdd.class);
+            registerSpellPiece("operator_matrix_subtract", PieceOperatorMatrixSubtract.class);
+            registerSpellPiece("operator_matrix_multiply", PieceOperatorMatrixMultiply.class);
+            registerSpellPiece("operator_matrix_scalar_multiply", PieceOperatorMatrixScalarMultiply.class);
+            registerSpellPiece("operator_matrix_transpose", PieceOperatorMatrixTranspose.class);
+            registerSpellPiece("operator_matrix_determinant", PieceOperatorMatrixDeterminant.class);
+            registerSpellPiece("operator_matrix_inverse", PieceOperatorMatrixInverse.class);
+            registerSpellPiece("operator_matrix_extract_row", PieceOperatorMatrixExtractRow.class);
+            registerSpellPiece("operator_matrix_extract_column", PieceOperatorMatrixExtractColumn.class);
+            registerSpellPiece("operator_matrix_replace_row", PieceOperatorMatrixReplaceRow.class);
+            registerSpellPiece("operator_matrix_replace_column", PieceOperatorMatrixReplaceColumn.class);
+            registerSpellPiece("operator_matrix_replace_element", PieceOperatorMatrixReplaceElement.class);
+            registerSpellPiece("operator_matrix_element", PieceOperatorMatrixElement.class);
+            registerSpellPiece("operator_matrix_row_count", PieceOperatorMatrixRowCount.class);
+            registerSpellPiece("operator_matrix_column_count", PieceOperatorMatrixColumnCount.class);
+            registerSpellPiece("operator_matrix_multiply_vector", PieceOperatorMatrixMultiplyVector.class);
+            registerSpellPiece("operator_matrix_column_from_list", PieceOperatorMatrixColumnFromList.class);
+            registerSpellPiece("operator_matrix_flatten", PieceOperatorMatrixFlatten.class);
+            registerSpellPiece("operator_matrix_identity", PieceOperatorMatrixIdentity.class);
+            registerSpellPiece("operator_matrix_zero", PieceOperatorMatrixZero.class);
+            registerSpellPiece("operator_matrix_diagonal", PieceOperatorMatrixDiagonal.class);
+            registerSpellPiece("operator_matrix_linear_part", PieceOperatorMatrixLinearPart.class);
+            registerSpellPiece("operator_matrix_cuboid_region", PieceOperatorMatrixCuboidRegion.class);
+            registerSpellPiece("operator_region_vector_list", PieceOperatorRegionVectorList.class);
+            registerSpellPiece("operator_inside_region", PieceOperatorInsideRegion.class);
+            registerSpellPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
+            registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
 
 
         });

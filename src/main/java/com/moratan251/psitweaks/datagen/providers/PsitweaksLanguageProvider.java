@@ -20,6 +20,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> throw new IllegalStateException("Unsupported locale: " + locale);
         }
         addBackportedStringTranslations();
+        addBackportedMatrixTranslations();
     }
 
     private void addBackportedStringTranslations() {
@@ -2058,6 +2059,115 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("modifier.psitweaks.mind_crush.flavor", "略称: マイクラ");
         add("modifier.psitweaks.mind_crush.description", "攻撃時にレベル×5%の確率で対象のモブをNoAI状態にして行動不能にする。防具装備中は被弾時に攻撃者へ同様の効果を発動する");
         add("entity.minecraft.villager.psitweaks.spellcaster", "魔法師");
+    }
+
+    private void addBackportedMatrixTranslations() {
+        addBackportedMatrixTranslation("item.psitweaks.program_mass_block_break", "Program: Mass Block Break", "プログラム: 大規模ブロック破壊");
+        addBackportedMatrixTranslation("psitweaks.spellerror.mass_break_too_many_pending", "Too many pending mass-break blocks", "保留中の一括破壊ブロック数が上限を超えています");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_incompatible_sizes", "Matrix dimensions are incompatible", "行列のサイズが整合しません");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_invalid_dimension", "Matrix dimension must be between 1 and 4", "行列の次元は1〜4である必要があります");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_invalid_transform", "Transform matrix must be 3x3 or 4x4", "変換行列は3×3または4×4である必要があります");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_non_finite_result", "Matrix operation produced a non-finite result", "行列演算の結果が有限値ではありません");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_not_square", "Matrix must be square", "行列は正方行列である必要があります");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_out_of_bounds", "Matrix index is out of bounds", "行列のインデックスが範囲外です");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_singular", "Matrix is singular and cannot be inverted", "行列が特異であり逆行列を求められません");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_too_large", "Matrix or list exceeds the maximum size of 4", "行列またはリストが最大サイズ4を超えています");
+        addBackportedMatrixTranslation("psitweaks.spellerror.matrix_zero_w", "Transformed w component is zero", "変換後のw成分が0です");
+        addBackportedMatrixTranslation("psitweaks.spellerror.region_degenerate_edges", "The three edge vectors are degenerate", "3つの辺ベクトルが退化しています");
+        addBackportedMatrixTranslation("psitweaks.spellerror.region_invalid_matrix", "Region operations require a 3x4 or 4x4 matrix", "領域演算には3×4または4×4の行列が必要です");
+        addBackportedMatrixTranslation("psitweaks.spellerror.region_too_large", "The region contains too many blocks", "領域に含まれるブロックが多すぎます");
+        addBackportedMatrixTranslation("psitweaks.spellparam.matrix", "Matrix", "行列");
+        addBackportedMatrixTranslation("psitweaks.spellparam.matrix1", "Matrix 1", "行列1");
+        addBackportedMatrixTranslation("psitweaks.spellparam.matrix2", "Matrix 2", "行列2");
+        addBackportedMatrixTranslation("psitweaks.spellparam.matrix3", "Matrix 3", "行列3");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_add", "Operator: Matrix Add", "演算子: 行列加算");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_add.desc", "Adds two or three matrices of the same size.", "同じサイズの行列を2つまたは3つ加算します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_add", "Adds matrices of the same size. The optional third matrix is added after the second.", "同じサイズの行列を加算します. 任意の第3行列は第2行列の後に加算されます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_subtract", "Operator: Matrix Subtract", "演算子: 行列減算");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_subtract.desc", "Subtracts two or three matrices of the same size.", "同じサイズの行列を2つまたは3つ減算します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_subtract", "Subtracts matrices of the same size. The optional third matrix is subtracted after the second.", "同じサイズの行列を減算します. 任意の第3行列は第2行列の後に減算されます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_multiply", "Operator: Matrix Multiply", "演算子: 行列積");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_multiply.desc", "Multiplies matrices with compatible dimensions.", "次元が整合する行列を乗算します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_multiply", "Multiplies matrices from left to right. The columns of each matrix must match the rows of the next.", "左から右へ行列を乗算します. 各行列の列数が次の行列の行数と一致する必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_scalar_multiply", "Operator: Matrix Scalar Multiply", "演算子: 行列スカラー倍");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_scalar_multiply.desc", "Multiplies a matrix by a number.", "行列を数値でスカラー倍します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_scalar_multiply", "Multiplies every element of the matrix by the input number.", "行列のすべての要素を入力数値で乗算します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_transpose", "Operator: Matrix Transpose", "演算子: 行列転置");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_transpose.desc", "Transposes a matrix.", "行列を転置します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_transpose", "Swaps rows and columns of the matrix.", "行列の行と列を入れ替えます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_determinant", "Operator: Matrix Determinant", "演算子: 行列式");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_determinant.desc", "Computes the determinant of a square matrix.", "正方行列の行列式を求めます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_determinant", "Computes the determinant. The matrix must be square.", "行列式を求めます. 行列は正方行列である必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_inverse", "Operator: Matrix Inverse", "演算子: 逆行列");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_inverse.desc", "Computes the inverse of a square matrix.", "正方行列の逆行列を求めます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_inverse", "Computes the inverse matrix. The matrix must be square and have a non-zero determinant.", "逆行列を求めます. 行列は正方かつ行列式が0でない必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_extract_row", "Operator: Matrix Extract Row", "演算子: 行抽出");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_extract_row.desc", "Returns the specified row as a Number List.", "指定した行を Number List として返します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_extract_row", "Returns the row at the zero-based index as a Number List.", "0始まりのインデックスで指定した行を Number List として返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_extract_column", "Operator: Matrix Extract Column", "演算子: 列抽出");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_extract_column.desc", "Returns the specified column as a Number List.", "指定した列を Number List として返します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_extract_column", "Returns the column at the zero-based index as a Number List.", "0始まりのインデックスで指定した列を Number List として返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_replace_row", "Operator: Matrix Replace Row", "演算子: 行置換");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_replace_row.desc", "Replaces a row, expanding the matrix with zeros as needed.", "行を置換し、必要に応じてゼロで拡張します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_replace_row", "Replaces the specified row with a Number List or Vector. Missing columns are filled with zero, and specifying a row beyond the current size expands the matrix with zeros.", "指定行を Number List または Vector で置換します. 足りない列は0で埋められ、現在のサイズを超える行を指定するとゼロで拡張されます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_replace_column", "Operator: Matrix Replace Column", "演算子: 列置換");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_replace_column.desc", "Replaces a column, expanding the matrix with zeros as needed.", "列を置換し、必要に応じてゼロで拡張します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_replace_column", "Replaces the specified column with a Number List or Vector. Missing rows are filled with zero, and specifying a column beyond the current size expands the matrix with zeros.", "指定列を Number List または Vector で置換します. 足りない行は0で埋められ、現在のサイズを超える列を指定するとゼロで拡張されます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_replace_element", "Operator: Matrix Replace Element", "演算子: 行列要素置換");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_replace_element.desc", "Replaces the element at the zero-based [row, column] indices with the input number.", "0始まりの [行, 列] で指定した成分を入力数値で置換します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_replace_element", "Replaces the element at the zero-based [row, column] indices with the input number. The indices list must contain exactly two numbers.", "0始まりの [行, 列] で指定した成分を入力数値で置換します. 成分指定用のリストは必ず2つの数値を含む必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_element", "Operator: Matrix Element", "演算子: 行列要素");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_element.desc", "Returns the element at (row, column).", "(行, 列) の要素を返します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_element", "Returns the element at (row, column) using zero-based indexes.", "0始まりのインデックスで (行, 列) の要素を返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_row_count", "Operator: Matrix Row Count", "演算子: 行数");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_row_count.desc", "Returns the number of rows.", "行列の行数を返します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_row_count", "Returns the number of rows as a Number.", "行数を Number として返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_column_count", "Operator: Matrix Column Count", "演算子: 列数");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_column_count.desc", "Returns the number of columns.", "行列の列数を返します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_column_count", "Returns the number of columns as a Number.", "列数を Number として返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_multiply_vector", "Operator: Matrix Multiply Vector", "演算子: 行列×ベクトル");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_multiply_vector.desc", "Multiplies a matrix by a column vector or Number List.", "行列に列ベクトルまたは Number List を乗算します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_multiply_vector", "Treats the Vector or Number List as a column vector and multiplies it by the matrix on the left.", "Vector または Number List を列ベクトルとして扱い、左側の行列を掛けます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_column_from_list", "Operator: Column Matrix From List", "演算子: 数値リスト→列行列");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_column_from_list.desc", "Converts a Number List or Vector into a column matrix.", "Number List または Vector を列行列に変換します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_column_from_list", "Converts a Number List or Vector into a column matrix. The input must contain 1 to 4 elements.", "Number List または Vector を列行列に変換します. 入力は1〜4要素である必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_flatten", "Operator: Matrix Flatten", "演算子: 行列平坦化");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_flatten.desc", "Flattens a matrix into a Number List in row-major order.", "行列を行優先の Number List に平坦化します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_flatten", "Flattens the matrix into a Number List in row-major order.", "行列を行優先の順序で Number List に平坦化します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_identity", "Operator: Identity Matrix", "演算子: 単位行列");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_identity.desc", "Creates an identity matrix of the given size.", "指定次数の単位行列を作ります。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_identity", "Creates an identity matrix of the given size. The size must be 1 to 4.", "指定した次数の単位行列を作ります. 次数は1〜4である必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_zero", "Operator: Zero Matrix", "演算子: ゼロ行列");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_zero.desc", "Creates a zero matrix with the given dimensions.", "指定サイズのゼロ行列を作ります。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_zero", "Creates a zero matrix. If the second size is omitted, a square matrix is returned.", "ゼロ行列を作ります. 第2のサイズを省略すると正方行列を返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_diagonal", "Operator: Diagonal Matrix", "演算子: 対角行列");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_diagonal.desc", "Creates a diagonal matrix from a Number List or Vector.", "Number List または Vector から対角行列を作ります。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_diagonal", "Creates a diagonal matrix from a Number List or Vector. The input must contain 1 to 4 elements.", "Number List または Vector から対角行列を作ります. 入力は1〜4要素である必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_linear_part", "Operator: Matrix Linear Part", "演算子: 行列線形部分");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_linear_part.desc", "Extracts the top-left 3x3 submatrix.", "左上の 3×3 部分行列を取り出します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "演算子: 直方体領域");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_cuboid_region.desc", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis.", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts: odd counts are centered on the input position, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_region_vector_list", "Operator: Region Vector List", "演算子: 領域ベクトルリスト化");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_region_vector_list.desc", "Returns block position vectors inside a matrix-defined region.", "行列で定義された領域内のブロック座標を Vector List として返します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された平行六面体の内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_inside_region", "Operator: Inside Region", "演算子: 領域内");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_inside_region.desc", "Keeps only the entities in the input Entity List whose bounding box centers are inside the matrix-defined parallelepiped.", "入力した Entity List のうち、当たり判定の中心が行列で定義された平行六面体の内部にあるエンティティのみを残します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_inside_region", "Filters an Entity List and returns only the entities whose bounding box centers are inside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Entities exactly on the boundary are counted as inside.", "3×4 または 4×4 の行列で定義された平行六面体の内部に当たり判定の中心があるエンティティのみを残した Entity List を返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるエンティティも内部とみなします.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_outside_region", "Operator: Outside Region", "演算子: 領域外");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_outside_region.desc", "Keeps only the entities in the input Entity List whose bounding box centers are outside the matrix-defined parallelepiped.", "入力した Entity List のうち、当たり判定の中心が行列で定義された平行六面体の外部にあるエンティティのみを残します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_outside_region", "Filters an Entity List and returns only the entities whose bounding box centers are outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Entities exactly on the boundary are counted as inside, so they are excluded from the result.", "3×4 または 4×4 の行列で定義された平行六面体の外部に当たり判定の中心があるエンティティのみを残した Entity List を返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるエンティティは内部とみなすため、結果から除外されます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.trick_mass_block_break", "Trick: Mass Block Break", "作動式: 大規模ブロック破壊");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.trick_mass_block_break.desc", "Breaks blocks at the coordinates in a Vector List. Drops are intentionally collected into the caster's inventory first; only overflow is dropped.", "Vector List の座標にあるブロックを破壊します。ドロップは意図的に先に術者のインベントリへ回収され、入りきらない分だけドロップします。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List. Vectors are treated as block coordinates, duplicate block positions are ignored after their first occurrence, and the remaining order is preserved. The maximum block count input must be a positive integer constant. Only positions within the configured maximum are range-checked and broken. Dropped items are merged by item and data components, then intentionally collected into the caster's inventory first. Only overflow is dropped at the caster's position, or at the focal point if the task is interrupted. The processed positions must fit within the shared internal limit.", "Vector List の座標にあるブロックを破壊します. Vector はブロック座標として扱われ、重複したブロック座標は最初の1回だけ使われ、残りの順序は維持されます. 破壊数の上限入力は正の整数定数である必要があります. 設定した最大数まで実際に処理される座標だけが範囲チェックと破壊の対象になります. ドロップアイテムはアイテムとデータコンポーネントごとにまとめられ、意図的に先に術者のインベントリへ回収されます. 入りきらない分だけ術者の位置へ、タスクが中断された場合は焦点位置へドロップします. 処理対象は共通の内部上限内に収まる必要があります.");
+    }
+
+    private void addBackportedMatrixTranslation(String key, String enUs, String jaJp) {
+        add(key, switch (locale) {
+            case "ja_jp" -> jaJp;
+            default -> enUs;
+        });
     }
 }
 
