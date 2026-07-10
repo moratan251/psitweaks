@@ -1,13 +1,14 @@
 package com.moratan251.psitweaks.common.spells;
 
-import net.minecraft.nbt.CompoundTag;
+import com.moratan251.psitweaks.api.PsitweaksPlainValues;
+import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import vazkii.psi.api.PsiAPI;
-import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.param.ParamNumber;
@@ -34,39 +35,33 @@ public class PieceSelectorStoredEntity extends PieceSelector {
     }
 
     @Override
+    public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
+        super.addToMetadata(meta);
+        Double numberVal = (Double) getParamEvaluation(number);
+        if (numberVal != null && numberVal > 0D && numberVal == numberVal.intValue()) {
+            meta.addStat(EnumSpellStat.POTENCY, numberVal.intValue() * 6);
+        } else {
+            throw new SpellCompilationException("psi.spellerror.nonpositiveinteger", x, y);
+        }
+    }
+
+    @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        int key = this.getParamValue(context, this.number).intValue();
-
-        ItemStack cadStack = PsiAPI.getPlayerCAD(context.caster);
-        if (cadStack != null && cadStack.getItem() instanceof ICAD) {
-            ICAD cad = (ICAD)cadStack.getItem();
-
-            int size = cad.getMemorySize(cadStack);
-            if (key >= 0 && key < size) {
-
-                CompoundTag tag = cadStack.getOrCreateTag();
-                CompoundTag map = tag.getCompound("psitweaks_entity_map");
-
-                String uuidStr = map.getString(String.valueOf(key));
-                if (uuidStr.isEmpty()) return null;
-
-                try {
-                    UUID uuid = UUID.fromString(uuidStr);
-                    return ((ServerLevel) context.caster.level()).getEntity(uuid);
-                } catch (Exception e) {
-                    return null;
-                }
-
-
-
-            } else {
-                throw new SpellRuntimeException("psi.spellerror.memoryoutofbounds");
-            }
-
-        }else{
-            throw new SpellRuntimeException("psi.spellerror.nocad");
+        int internalSlot = CadPlainMemory.internalSlot(this.getParamValue(context, this.number));
+        if (CadPlainMemory.isSlotLocked(context, internalSlot)) {
+            throw new SpellRuntimeException("psi.spellerror.lockedmemory");
         }
 
+        String uuidStr = (String) CadPlainMemory.read(context, internalSlot, PsitweaksPlainValues.STRING);
+        if (uuidStr.isEmpty()) {
+            return null;
+        }
 
+        try {
+            UUID uuid = UUID.fromString(uuidStr);
+            return ((ServerLevel) context.caster.level()).getEntity(uuid);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

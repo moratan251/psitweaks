@@ -20,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -168,10 +167,9 @@ public final class MassBlockBreakHelper {
         }
     }
 
-    private record DropKey(Item item, CompoundTag tag) {
+    private record DropKey(CompoundTag serializedStack) {
         static DropKey from(ItemStack stack) {
-            CompoundTag tag = stack.hasTag() ? stack.getTag().copy() : new CompoundTag();
-            return new DropKey(stack.getItem(), tag);
+            return new DropKey(stack.save(new CompoundTag()));
         }
     }
 

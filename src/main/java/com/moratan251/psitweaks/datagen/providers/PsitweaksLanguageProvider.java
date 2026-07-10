@@ -1221,7 +1221,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_break_silk", "Trick: Break Block (Silk Touch)");
         add("psitweaks.spellpiece.trick_break_silk.desc", "Break a block with Silk Touch applied");
         add("psitweaks.spellpiece.trick_store_entity", "Trick: Store Entity");
-        add("psitweaks.spellpiece.trick_store_entity.desc", "Store the entity's UUID in the CAD memory");
+        add("psitweaks.spellpiece.trick_store_entity.desc", "Store the entity's UUID string in the CAD memory");
         add("psitweaks.spellpiece.selector_stored_entity", "Selector: Stored Entity");
         add("psitweaks.spellpiece.selector_stored_entity.desc", "Retrieve entities from the UUID stored in the CAD memory");
         add("psitweaks.spellpiece.selector_nearby_spellgram", "Selector: Nearby SpellGram Object");
@@ -1453,7 +1453,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_silk", "Breaks the target block with Silk Touch.");
-        add("psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID in CAD memory.");
+        add("psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID as a String value in CAD memory.");
         add("psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.");
         add("psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.");
         add("psi.book.page.psitweaks_spellpiece.trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects.");
@@ -1734,7 +1734,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_break_silk", "作動式: ブロック破壊(シルクタッチ)");
         add("psitweaks.spellpiece.trick_break_silk.desc", "シルクタッチ付きでブロックを破壊する");
         add("psitweaks.spellpiece.trick_store_entity", "作動式: エンティティ保存");
-        add("psitweaks.spellpiece.trick_store_entity.desc", "CADのメモリにエンティティのUUIDを保存する");
+        add("psitweaks.spellpiece.trick_store_entity.desc", "エンティティのUUIDをStringとしてCADメモリに保存する");
         add("psitweaks.spellpiece.selector_stored_entity", "取得子: 保存されたエンティティ");
         add("psitweaks.spellpiece.selector_stored_entity.desc", "CADのメモリに保存されたUUIDからエンティティを取得する");
         add("psitweaks.spellpiece.selector_nearby_spellgram", "取得子: 近くの魔法式オブジェクト");
@@ -1936,7 +1936,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します.");
         add("psi.book.page.psitweaks_spellpiece.trick_break_silk", "対象ブロックをシルクタッチ付きで破壊します.");
-        add("psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをCADメモリに保存します.");
+        add("psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをString値としてCADメモリに保存します.");
         add("psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. ");
         add("psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
         add("psi.book.page.psitweaks_spellpiece.trick_dispel", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です.");

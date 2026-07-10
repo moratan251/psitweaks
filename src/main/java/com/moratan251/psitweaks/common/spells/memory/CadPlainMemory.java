@@ -19,7 +19,6 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 public final class CadPlainMemory {
     private static final String WARNING_STRING_TRUNCATED = "psitweaks.spellwarning.cad_memory_string_truncated";
     private static final String TAG_MEMORY = "psitweaks_plain_memory";
-    private static final String TAG_LEGACY_ENTITY_MAP = "psitweaks_entity_map";
     private static final String SLOT_LOCKED_PREFIX = "psi:SlotLocked";
 
     private CadPlainMemory() {
@@ -103,7 +102,6 @@ public final class CadPlainMemory {
 
     private static void storeRaw(ItemStack cadStack, int internalSlot, PlainMemoryValue<?> value) {
         CompoundTag root = cadStack.getOrCreateTag();
-        root.remove(TAG_LEGACY_ENTITY_MAP);
         CompoundTag memory = root.getCompound(TAG_MEMORY);
         memory.put(slotKey(internalSlot), value.serialize());
         root.put(TAG_MEMORY, memory);
