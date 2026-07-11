@@ -51,6 +51,10 @@ public final class SpellPieceModeButtonOverlay {
         }
     }
 
+    public static boolean isActive(GuiProgrammer screen) {
+        return getSelectedConfigurablePiece(screen) != null && isMenuActiveForSelection();
+    }
+
     public static boolean handleMousePressedPre(GuiProgrammer screen, double mouseX, double mouseY, int button) {
         PsitweaksModeConfigurable piece = getSelectedConfigurablePiece(screen);
         if (button != 0) {
@@ -80,7 +84,7 @@ public final class SpellPieceModeButtonOverlay {
                 }
 
                 deactivate();
-                return false;
+                return true;
             }
         }
 
@@ -98,6 +102,7 @@ public final class SpellPieceModeButtonOverlay {
 
         if (isMenuActiveForSelection()) {
             deactivate();
+            return true;
         }
         return false;
     }

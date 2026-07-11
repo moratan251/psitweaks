@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client.event;
 
 import com.moratan251.psitweaks.client.gui.EditableStringInputOverlay;
+import com.moratan251.psitweaks.client.gui.ProgrammerOverlayInputGuard;
 import com.moratan251.psitweaks.client.gui.SpellPieceModeButtonOverlay;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -45,13 +46,21 @@ public final class PsitweaksClientGuiEvents {
     }
 
     private static void onMouseButtonPressedPre(ScreenEvent.MouseButtonPressed.Pre event) {
-        if (event.getScreen() instanceof GuiProgrammer screen
-                && (SpellPieceModeButtonOverlay.handleMousePressedPre(screen,
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            boolean blockedGesture = ProgrammerOverlayInputGuard.beginMouseGesture(screen, event.getButton());
+            boolean handled = SpellPieceModeButtonOverlay.handleMousePressedPre(screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getButton());
+            if (!handled) {
+                handled = EditableStringInputOverlay.handleMousePressedPre(screen,
                         event.getMouseX(),
                         event.getMouseY(),
-                        event.getButton())
-                || EditableStringInputOverlay.handleMousePressedPre(screen, event.getMouseX(), event.getMouseY(), event.getButton()))) {
-            event.setCanceled(true);
+                        event.getButton());
+            }
+            if (blockedGesture || handled) {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -62,19 +71,25 @@ public final class PsitweaksClientGuiEvents {
     }
 
     private static void onMouseDraggedPre(ScreenEvent.MouseDragged.Pre event) {
-        if (event.getScreen() instanceof GuiProgrammer screen
-                && EditableStringInputOverlay.handleMouseDraggedPre(screen,
-                        event.getMouseX(),
-                        event.getMouseY(),
-                        event.getMouseButton())) {
-            event.setCanceled(true);
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            boolean handled = EditableStringInputOverlay.handleMouseDraggedPre(screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getMouseButton());
+            if (ProgrammerOverlayInputGuard.isLeftGestureBlocked() || handled) {
+                event.setCanceled(true);
+            }
         }
     }
 
     private static void onMouseButtonReleasedPre(ScreenEvent.MouseButtonReleased.Pre event) {
-        if (event.getScreen() instanceof GuiProgrammer screen
-                && EditableStringInputOverlay.handleMouseReleasedPre(screen, event.getButton())) {
-            event.setCanceled(true);
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            boolean blockedGesture = ProgrammerOverlayInputGuard.isLeftGestureBlocked();
+            boolean handled = EditableStringInputOverlay.handleMouseReleasedPre(screen, event.getButton());
+            ProgrammerOverlayInputGuard.endMouseGesture(event.getButton());
+            if (blockedGesture || handled) {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -96,6 +111,7 @@ public final class PsitweaksClientGuiEvents {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellPieceModeButtonOverlay.deactivate();
             EditableStringInputOverlay.deactivate(screen);
+            ProgrammerOverlayInputGuard.reset();
         }
     }
 }

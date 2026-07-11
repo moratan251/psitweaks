@@ -124,6 +124,7 @@ dependencies {
     implementation "curse.maven:curios-309927:6529130"
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"
+    implementation "curse.maven:psionic-utilities-611991:8358809"
 
 //    implementation "curse.maven:create-328085:7963363"
 //    implementation "maven.modrinth:create-aeronautics:YhZLrAFC"
