@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 import vazkii.psi.api.spell.SpellGrid;
@@ -57,11 +58,16 @@ public final class SpellPieceModeButtonOverlay {
 
     public static boolean handleMousePressedPre(GuiProgrammer screen, double mouseX, double mouseY, int button) {
         PsitweaksModeConfigurable piece = getSelectedConfigurablePiece(screen);
+        boolean menuActive = piece != null && isMenuActiveForSelection();
         if (button != 0) {
             return false;
         }
 
-        if (piece != null && isMenuActiveForSelection()) {
+        if ((Screen.hasShiftDown() || Screen.hasControlDown()) && !menuActive) {
+            return false;
+        }
+
+        if (menuActive) {
             List<PsitweaksModeOption> modes = availableModes(piece);
             PanelLayout panel = panelLayoutFor(screen, modes.size());
             scrollOffset = clampScrollOffset(modes, scrollOffset);
@@ -85,6 +91,10 @@ public final class SpellPieceModeButtonOverlay {
 
                 deactivate();
                 return true;
+            }
+            if (Screen.hasControlDown()) {
+                deactivate();
+                return false;
             }
         }
 

@@ -23,6 +23,10 @@ public final class ProgrammerOverlayInputGuard {
         return leftGestureBlocked;
     }
 
+    public static void blockLeftGesture() {
+        leftGestureBlocked = true;
+    }
+
     public static void endMouseGesture(int button) {
         if (button == LEFT_MOUSE_BUTTON) {
             leftGestureBlocked = false;
