@@ -742,6 +742,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "$(thing)Psi: Tweaks And Additions$(0) を導入することによって QOL を改善するためのいくつかの調整が加えられます.$(p)ダメージを受けた際に Psi量 が減少しなくなり, 詠唱時の Psi回復クールタイムも撤廃されます.$(p)スペルプログラム画面では, 現在の設定言語に関わらず英語でスペルピースを検索することができます.";
             default -> "Installing $(thing)Psi: Tweaks And Additions$(0) applies several adjustments to improve QOL.$(p)Psi is no longer reduced when you take damage, and the Psi regeneration cooldown after casting is removed.$(p)In the Spell Programmer screen, spell pieces can be searched in English regardless of the current language setting.";
         });
+        root.addProperty("psi.book.page.psitweaks_changes.1", switch (locale) {
+            case "ja_jp" -> "$(p)スペルプログラム画面では, Shiftを押しながらグリッドを左ドラッグすると, 複数のスペルピースを範囲選択できます. 選択されたスペルピースは青くハイライトされ, コピーされる範囲は青い枠で示されます.$(p)Ctrlを押しながらスペルピースを左クリックすると, そのピースを選択に追加したり, 選択から外したりできます. 複数選択中は Ctrl+C でコピー, Ctrl+X で切り取り, Ctrl+V で貼り付けを行えます. 貼り付けは, Psiで現在選択されているセルをコピー範囲の左上として行われます.";
+            default -> "In the Spell Programmer screen, hold Shift and left-drag across the grid to select multiple spell pieces. Selected spell pieces are highlighted in blue, and the copied range is shown with a blue outline.$(p)Hold Ctrl and left-click a spell piece to add it to or remove it from the selection. While multiple pieces are selected, use Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste. Pasting uses the cell currently selected in Psi as the upper-left corner of the copied range.";
+        });
         root.addProperty("psi.book.entry.psitweaks_research", switch (locale) {
             case "ja_jp" -> "研究";
             default -> "Research";

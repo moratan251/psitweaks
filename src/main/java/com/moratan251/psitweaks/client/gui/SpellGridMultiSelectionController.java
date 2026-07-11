@@ -19,6 +19,9 @@ public final class SpellGridMultiSelectionController {
     private static final int CELL_SIZE = 18;
     private static final int HIGHLIGHT_FILL_COLOR = 0x604A90E2;
     private static final int HIGHLIGHT_BORDER_COLOR = 0xFF5CB3FF;
+    private static final int COPY_ORIGIN_COLOR = 0xFF9AD9FF;
+    private static final int COPY_ORIGIN_MARKER_LENGTH = 6;
+    private static final int COPY_ORIGIN_MARKER_THICKNESS = 2;
 
     private static int anchorX = -1;
     private static int anchorY = -1;
@@ -44,6 +47,7 @@ public final class SpellGridMultiSelectionController {
                 drawHighlight(guiGraphics, screen, position);
             }
         }
+        drawSelectionBounds(guiGraphics, screen, positions);
         guiGraphics.pose().popPose();
     }
 
@@ -342,6 +346,38 @@ public final class SpellGridMultiSelectionController {
 
     private static int clampToGrid(int coordinate) {
         return Math.max(0, Math.min(GRID_SIZE - 1, coordinate));
+    }
+
+    private static void drawSelectionBounds(
+            GuiGraphics guiGraphics,
+            GuiProgrammer screen,
+            Set<GridPosition> positions
+    ) {
+        int minX = GRID_SIZE;
+        int minY = GRID_SIZE;
+        int maxX = -1;
+        int maxY = -1;
+        for (GridPosition position : positions) {
+            minX = Math.min(minX, position.x);
+            minY = Math.min(minY, position.y);
+            maxX = Math.max(maxX, position.x);
+            maxY = Math.max(maxY, position.y);
+        }
+
+        int left = screen.gridLeft + minX * CELL_SIZE - 1;
+        int top = screen.gridTop + minY * CELL_SIZE - 1;
+        int right = screen.gridLeft + (maxX + 1) * CELL_SIZE - 1;
+        int bottom = screen.gridTop + (maxY + 1) * CELL_SIZE - 1;
+
+        guiGraphics.fill(left, top, right, top + 1, HIGHLIGHT_BORDER_COLOR);
+        guiGraphics.fill(left, bottom - 1, right, bottom, HIGHLIGHT_BORDER_COLOR);
+        guiGraphics.fill(left, top, left + 1, bottom, HIGHLIGHT_BORDER_COLOR);
+        guiGraphics.fill(right - 1, top, right, bottom, HIGHLIGHT_BORDER_COLOR);
+
+        guiGraphics.fill(left, top,
+                left + COPY_ORIGIN_MARKER_LENGTH, top + COPY_ORIGIN_MARKER_THICKNESS, COPY_ORIGIN_COLOR);
+        guiGraphics.fill(left, top,
+                left + COPY_ORIGIN_MARKER_THICKNESS, top + COPY_ORIGIN_MARKER_LENGTH, COPY_ORIGIN_COLOR);
     }
 
     private static void drawHighlight(GuiGraphics guiGraphics, GuiProgrammer screen, GridPosition position) {
