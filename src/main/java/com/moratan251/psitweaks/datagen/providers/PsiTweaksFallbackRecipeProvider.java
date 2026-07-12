@@ -32,10 +32,21 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         addCookingPair(recipes, "enriched_hypostasis", item("hypostasis_gem"), item("enriched_hypostasis"), 0.8D);
         addCookingPair(recipes, "flashmetal", item("unrefined_flashmetal"), item("flashmetal"), 1.0D);
 
-        add(recipes, "echo_sheet", shaped(
-                List.of("EEE"),
-                Map.of('E', ingredient(item("psionic_echo"))),
+        add(recipes, "echo_sheet", shapeless(
+                List.of(
+                        ingredient(item("echo_pellet")),
+                        ingredient(item("echo_pellet")),
+                        ingredient(item("echo_pellet"))
+                ),
                 item("echo_sheet"), 1));
+        add(recipes, "echo_pellet", shapeless(
+                List.of(
+                        ingredient("minecraft:paper"),
+                        ingredient("minecraft:paper"),
+                        ingredient("minecraft:paper"),
+                        ingredient(item("psionic_echo"))
+                ),
+                item("echo_pellet"), 3));
         add(recipes, "alloy_psion", shapeless(
                 List.of(
                         ingredient("minecraft:copper_block"),
@@ -72,6 +83,8 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 item("psionic_factor"), item("enriched_ivory"), item("psionic_factor_ivory")));
         add(recipes, "chaotic_factor", surrounding(
                 item("psionic_factor_ebony"), item("enriched_ivory"), item("chaotic_factor")));
+        add(recipes, "chaotic_factor_from_ivory", surrounding(
+                item("psionic_factor_ivory"), item("enriched_ebony"), item("chaotic_factor")));
         add(recipes, "chaotic_psimetal", shapeless(
                 List.of(
                         ingredient("psi:psimetal"),
@@ -123,7 +136,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 Map.of(
                         'C', ingredient(item("psionic_control_circuit")),
                         'F', ingredient(item("flashmetal")),
-                        'M', ingredient("minecraft:phantom_membrane")
+                        'M', ingredient("minecraft:paper")
                 ),
                 item("cad_assembly_flashmetal"), 1));
         add(recipes, "cad_assembly_heavy_psimetal_beta", shaped(

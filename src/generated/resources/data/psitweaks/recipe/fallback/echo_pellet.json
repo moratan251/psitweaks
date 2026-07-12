@@ -12,17 +12,20 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "psitweaks:echo_pellet"
+      "item": "minecraft:paper"
     },
     {
-      "item": "psitweaks:echo_pellet"
+      "item": "minecraft:paper"
     },
     {
-      "item": "psitweaks:echo_pellet"
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "psitweaks:psionic_echo"
     }
   ],
   "result": {
-    "count": 1,
-    "id": "psitweaks:echo_sheet"
+    "count": 3,
+    "id": "psitweaks:echo_pellet"
   }
 }

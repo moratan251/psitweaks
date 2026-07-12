@@ -12,22 +12,19 @@
   "category": "misc",
   "key": {
     "C": {
-      "item": "psitweaks:psionic_control_circuit"
+      "item": "psitweaks:psionic_factor_ivory"
     },
-    "F": {
-      "item": "psitweaks:flashmetal"
-    },
-    "M": {
-      "item": "minecraft:paper"
+    "O": {
+      "item": "psitweaks:enriched_ebony"
     }
   },
   "pattern": [
-    "MMM",
-    "FFF",
-    " CF"
+    "OOO",
+    "OCO",
+    "OOO"
   ],
   "result": {
     "count": 1,
-    "id": "psitweaks:cad_assembly_flashmetal"
+    "id": "psitweaks:chaotic_factor"
   }
 }
