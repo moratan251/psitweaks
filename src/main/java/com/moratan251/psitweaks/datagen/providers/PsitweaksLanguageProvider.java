@@ -758,6 +758,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.";
             default -> "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.";
         });
+        root.addProperty("psi.book.page.psitweaks_research.no_mekanism", switch (locale) {
+            case "ja_jp" -> "$(thing)Mekanism$(0) が導入されていない場合, 空白のプログラムと各スペルピースに対応する素材を作業台で不定形クラフトするとプログラムを作成できます.$(p)必要な素材はJEIのクラフトレシピで確認できます.";
+            default -> "When $(thing)Mekanism$(0) is not installed, craft a Blank Program together with the materials for the corresponding spell piece in any arrangement to create its program.$(p)Check JEI for each crafting recipe's required materials.";
+        });
         root.addProperty("psi.book.entry.psitweaks_magician", switch (locale) {
             case "ja_jp" -> "魔法師";
             default -> "Magician";

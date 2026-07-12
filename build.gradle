@@ -119,8 +119,12 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "curse.maven:psi-241665:7664607"
-    implementation "curse.maven:mekanism-268560:7904058"
-    implementation "curse.maven:mekanism-generators-268566:7904061"
+    compileOnly "curse.maven:mekanism-268560:7904058"
+    compileOnly "curse.maven:mekanism-generators-268566:7904061"
+    if (providers.gradleProperty("psitweaks.includeMekanismInRuns").orElse("true").get().toBoolean()) {
+        runtimeOnly "curse.maven:mekanism-268560:7904058"
+        runtimeOnly "curse.maven:mekanism-generators-268566:7904061"
+    }
     implementation "curse.maven:curios-309927:6529130"
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"

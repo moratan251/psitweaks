@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.moratan251.psitweaks.mixin",
+  "plugin": "com.moratan251.psitweaks.mixin.PsitweaksMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "DisableDamagePsiDeduction",

@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:heavy_core"
+    },
+    "C": {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    "H": {
+      "item": "psitweaks:cad_assembly_heavy_psimetal_alpha"
+    },
+    "P": {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "AHA",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:cad_assembly_psycheonic_metal"
+  }
+}

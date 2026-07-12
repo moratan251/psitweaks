@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
-import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.items.modules.ModulePhenomenonInterferenceEnhancementUnit;
 import com.moratan251.psitweaks.common.items.modules.ModulePsyonCapacityUnit;
 import com.moratan251.psitweaks.common.items.modules.ModulePsyonSupplyingUnit;
@@ -16,7 +16,7 @@ public final class PsitweaksModules {
             MODULES.registerInstanced(
                     "psyon_supplying_unit",
                     ModulePsyonSupplyingUnit::new,
-                    () -> PsitweaksItems.MODULE_PSYON_SUPPLYING.getDelegate(),
+                    () -> PsitweaksMekanismItems.MODULE_PSYON_SUPPLYING.getDelegate(),
                     builder -> builder.maxStackSize(8)
             );
 
@@ -24,7 +24,7 @@ public final class PsitweaksModules {
             MODULES.registerInstanced(
                     "psyon_capacity_unit",
                     ModulePsyonCapacityUnit::new,
-                    () -> PsitweaksItems.MODULE_PSYON_CAPACITY.getDelegate(),
+                    () -> PsitweaksMekanismItems.MODULE_PSYON_CAPACITY.getDelegate(),
                     builder -> builder.maxStackSize(8)
             );
 
@@ -32,7 +32,7 @@ public final class PsitweaksModules {
             MODULES.registerInstanced(
                     "phenomenon_interference_enhancement_unit",
                     ModulePhenomenonInterferenceEnhancementUnit::new,
-                    () -> PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.getDelegate(),
+                    () -> PsitweaksMekanismItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.getDelegate(),
                     builder -> builder.maxStackSize(8)
             );
 

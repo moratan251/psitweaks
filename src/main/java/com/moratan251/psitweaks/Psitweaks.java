@@ -19,6 +19,7 @@ import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnerg
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributeEvents;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
@@ -47,6 +48,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksFallbackRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismDataMapProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
@@ -111,38 +113,34 @@ public class Psitweaks {
         PsitweaksArmorMaterials.register(modEventBus);
         PsitweaksItems.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
-        PsitweaksChemicals.register(modEventBus);
         PsitweaksEffects.register(modEventBus);
         PsitweaksAttributes.register(modEventBus);
-        PsitweaksTabs.register(modEventBus);
         PsitweaksSpells.register(modEventBus);
         PsitweaksListAdapterRegistration.registerBuiltins();
         PsitweaksEntities.register(modEventBus);
         PsitweaksBlockEntityTypes.register(modEventBus);
         PsitweaksRecipeTypes.register(modEventBus);
         PsitweaksRecipeSerializers.register(modEventBus);
-        PsitweaksModules.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+        MekanismCompat.register(modEventBus);
+        PsitweaksTabs.register(modEventBus);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             PsitweaksClientSpells.register(modEventBus);
             PsitweaksClientModels.register(modEventBus);
             MaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
+            MekanismCompat.registerClient(modEventBus);
             PsitweaksClientGuiEvents.register(NeoForge.EVENT_BUS);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
 
-        PsitweaksMekanismBlocks.register(modEventBus);
-        PsitweaksMekanismTileEntityTypes.register(modEventBus);
-        PsitweaksMekanismContainerTypes.register(modEventBus);
         PsitweaksVillagers.register(modEventBus);
 
         modEventBus.addListener(this::registerProviders);
 
         NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.addListener(ArmorSpellDamageAttributeHandler::onItemAttributeModifier);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onBlockDrops);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onEntityJoinLevel);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
@@ -158,19 +156,10 @@ public class Psitweaks {
 
         event.enqueueWork(ComponentStats::registerAssemblyStats);
         event.enqueueWork(PsitweaksItems::registerCurioItems);
-        event.enqueueWork(PsitweaksMekanismGeneratorTweaks::registerGeneratorTweaks);
-        event.enqueueWork(this::enqueueIMC);
+        MekanismCompat.commonSetup(event);
 
         // TODO(port): Re-enable after NetworkHandler is ported.
         // NetworkHandler.registerMessages();
-    }
-
-    private void enqueueIMC() {
-        MekanismIMC.addMekaSuitBodyarmorModules(
-                PsitweaksModules.PSYON_SUPPLYING_UNIT,
-                PsitweaksModules.PSYON_CAPACITY_UNIT
-        );
-        MekanismIMC.addMekaSuitHelmetModules(PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT);
     }
 
     private void registerProviders(GatherDataEvent event) {
@@ -185,6 +174,7 @@ public class Psitweaks {
         generator.addProvider(event.includeServer(), new PsitweaksDamageTypeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksTagsProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiTweaksFallbackRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismDataMapProvider(packOutput));
         generator.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
@@ -203,9 +193,6 @@ public class Psitweaks {
         private static void register(IEventBus modEventBus) {
             modEventBus.addListener(ClientModEvents::onClientSetup);
             modEventBus.addListener(ClientModEvents::onRegisterMenuScreens);
-            modEventBus.addListener(ClientModEvents::onRegisterClientReloadListeners);
-            modEventBus.addListener(ClientModEvents::onRegisterClientExtensions);
-            modEventBus.addListener(ClientModEvents::onRegisterItemDecorations);
             modEventBus.addListener(ClientModEvents::onRegisterEntityRenderers);
         }
 
@@ -256,28 +243,6 @@ public class Psitweaks {
 
         public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
-            event.register(PsitweaksMekanismContainerTypes.SCULK_ERODER.get(), GuiSculkEroder::new);
-            event.register(PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER.get(), GuiProgramResearcher::new);
-            event.register(PsitweaksMekanismContainerTypes.MATERIAL_MUTATOR.get(), GuiMaterialMutator::new);
-            event.register(PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR.get(), GuiPsionicGenerator::new);
-            event.register(PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE.get(), GuiTranscendentEnergyCube::new);
-        }
-
-        public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-            event.registerReloadListener(RenderTranscendentEnergyCubeItem.RENDERER);
-        }
-
-        public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
-            event.registerItem(new IClientItemExtensions() {
-                @Override
-                public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                    return RenderTranscendentEnergyCubeItem.RENDERER;
-                }
-            }, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.asItem());
-        }
-
-        public static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
-            TransmitterTypeDecorator.registerDecorators(event, PsitweaksMekanismBlocks.TRANSCENDENT_CABLE);
         }
 
         public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {

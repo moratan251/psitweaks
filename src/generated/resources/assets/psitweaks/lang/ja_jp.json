@@ -318,6 +318,7 @@
   "psi.book.page.psitweaks_programming_types.6": "Matrix 型は数値の2次元配列（行列）を表す Plain Value 型です. Number や Vector と同様に, CAD メモリへの保存や文字列への変換が可能です.$(p)1×1 から 4×4 までのサイズに対応しています. 専用の行列演算子を使うと, Number List や Vector から行列を作ったり, 行列の加算や乗算, 行や列の取り出し, 転置・行列式・逆行列の計算, 3×3 や 4×4 行列によるベクトル変換などが行えます.",
   "psi.book.page.psitweaks_research.0": "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).",
   "psi.book.page.psitweaks_research.1": "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.",
+  "psi.book.page.psitweaks_research.no_mekanism": "$(thing)Mekanism$(0) が導入されていない場合, 空白のプログラムと各スペルピースに対応する素材を作業台で不定形クラフトするとプログラムを作成できます.$(p)必要な素材はJEIのクラフトレシピで確認できます.",
   "psi.book.page.psitweaks_spell_bullets.0": "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています.",
   "psi.book.page.psitweaks_spell_bullets.1": "術式弾の強化は前段階の術式弾を4つ必要とするため、非常に高コストです.",
   "psi.book.page.psitweaks_spell_bullets.2": "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります.",

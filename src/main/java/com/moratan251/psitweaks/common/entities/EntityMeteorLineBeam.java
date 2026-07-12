@@ -1,11 +1,11 @@
 package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import mekanism.common.registries.MekanismSounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -113,7 +113,7 @@ public class EntityMeteorLineBeam extends Entity {
         level().playSound(
                 null,
                 getX(), getY(), getZ(),
-                MekanismSounds.LASER.get(),
+                MekanismGameplayCompat.laserSound(),
                 SoundSource.PLAYERS,
                 0.7F,
                 1.6F

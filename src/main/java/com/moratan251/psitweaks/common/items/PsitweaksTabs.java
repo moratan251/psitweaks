@@ -2,8 +2,7 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
-import mekanism.common.util.StorageUtils;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -75,9 +74,6 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.MOVAL_SUIT_CHESTPLATE.get());
                         output.accept(PsitweaksItems.MOVAL_SUIT_LEGGINGS.get());
                         output.accept(PsitweaksItems.MOVAL_SUIT_BOOTS.get());
-                        output.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
-                        output.accept(PsitweaksItems.MODULE_PSYON_CAPACITY.get());
-                        output.accept(PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get());
                         acceptSpellBullets(output);
                         acceptProgramItems(output);
                         output.accept(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION.get());
@@ -91,13 +87,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.SECONDARY_CASTER.get());
                         output.accept(PsitweaksItems.PARALLEL_CASTER.get());
                         output.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
-                        output.accept(PsitweaksMekanismBlocks.SCULK_ERODER.get());
-                        output.accept(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.get());
-                        output.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get());
-                        output.accept(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get());
-                        output.accept(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.get());
-                        output.accept(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.get());
-                        output.accept(StorageUtils.getFilledEnergyVariant(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getItemHolder()));
+                        MekanismCompat.addCreativeTabContents(output);
                         output.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         output.accept(PsitweaksBlocks.ANTINITE_BLOCK.get());
                         output.accept(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());
@@ -165,9 +155,11 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_METEOR_LINE.get());
         output.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
         output.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
-        output.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
-        output.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
-        output.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
+        if (MekanismCompat.isMekanismLoaded()) {
+            output.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
+            output.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
+            output.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
+        }
         output.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
         output.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
         output.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());

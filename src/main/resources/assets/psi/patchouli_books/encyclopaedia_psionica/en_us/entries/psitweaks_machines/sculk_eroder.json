@@ -1,6 +1,7 @@
 {
   "name": "block.psitweaks.sculk_eroder",
   "category": "psi:psitweaks_machines",
+  "flag": "mod:mekanism",
   "icon": "psitweaks:sculk_eroder",
   "pages": [
     {

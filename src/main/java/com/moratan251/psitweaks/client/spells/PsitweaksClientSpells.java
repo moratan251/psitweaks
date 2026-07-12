@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -85,11 +86,11 @@ public final class PsitweaksClientSpells {
     public static final DeferredHolder<Material, Material> JUMP_ANCHOR =
             registerPieceMaterial("jump_anchor");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =
-            registerPieceMaterial("trick_radiation_injection");
+            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_radiation_injection") : null;
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_FILTER =
-            registerPieceMaterial("trick_radiation_filter");
+            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_radiation_filter") : null;
     public static final DeferredHolder<Material, Material> TRICK_CURE_RADIATION =
-            registerPieceMaterial("trick_cure_radiation");
+            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_cure_radiation") : null;
     public static final DeferredHolder<Material, Material> TRICK_GUILLOTINE =
             registerPieceMaterial("trick_guillotine");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =

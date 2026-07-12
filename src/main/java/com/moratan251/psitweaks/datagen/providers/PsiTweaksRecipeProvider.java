@@ -463,6 +463,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         addPhilosophersStoneRecipes(recipes);
         recipe(recipes, "program_duplication", specialCrafting("psitweaks:crafting_special_program_duplication"));
 
+        recipes.forEach(RecipeConditionHelper::addReferencedModConditions);
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
                 .toArray(CompletableFuture[]::new);

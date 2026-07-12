@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "F": {
+      "item": "psitweaks:flashmetal"
+    },
+    "M": {
+      "item": "minecraft:phantom_membrane"
+    }
+  },
+  "pattern": [
+    "MMM",
+    "FFF",
+    " CF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:cad_assembly_flashmetal"
+  }
+}

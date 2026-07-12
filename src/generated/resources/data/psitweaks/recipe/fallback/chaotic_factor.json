@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "psitweaks:psionic_factor_ebony"
+    },
+    "O": {
+      "item": "psitweaks:enriched_ivory"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "OCO",
+    "OOO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:chaotic_factor"
+  }
+}

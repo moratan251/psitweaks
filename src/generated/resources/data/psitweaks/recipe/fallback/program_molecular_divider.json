@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "minecraft:quartz_block"
+    },
+    {
+      "item": "minecraft:quartz_block"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_molecular_divider"
+  }
+}

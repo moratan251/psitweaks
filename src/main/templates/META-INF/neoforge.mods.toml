@@ -81,14 +81,14 @@ side = "BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "mekanism"
-type = "required"
+type = "optional"
 versionRange = "[10.7.19,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "mekanismgenerators"
-type = "required"
+type = "optional"
 versionRange = "[10.7.19,)"
 ordering = "AFTER"
 side = "BOTH"

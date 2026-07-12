@@ -1,6 +1,7 @@
 {
   "name": "block.psitweaks.psionic_generator",
   "category": "psi:psitweaks_machines",
+  "flag": "mod:mekanism",
   "icon": "psitweaks:psionic_generator",
   "pages": [
     {

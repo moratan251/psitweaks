@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
 import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.etc.*;
@@ -92,11 +93,11 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceJumpAnchor>> JUMP_ANCHOR =
             registerPiece("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationInjection>> TRICK_RADIATION_INJECTION =
-            registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class);
+            MekanismCompat.isMekanismLoaded() ? registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class) : null;
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationFilter>> TRICK_RADIATION_FILTER =
-            registerPiece("trick_radiation_filter", PieceTrickRadiationFilter.class);
+            MekanismCompat.isMekanismLoaded() ? registerPiece("trick_radiation_filter", PieceTrickRadiationFilter.class) : null;
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickCureRadiation>> TRICK_CURE_RADIATION =
-            registerPiece("trick_cure_radiation", PieceTrickCureRadiation.class);
+            MekanismCompat.isMekanismLoaded() ? registerPiece("trick_cure_radiation", PieceTrickCureRadiation.class) : null;
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickGuillotine>> TRICK_GUILLOTINE =
             registerPiece("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMaterialMutation>> TRICK_MATERIAL_MUTATION =
@@ -368,11 +369,11 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP_ANCHOR_GROUP =
             registerGroup("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_INJECTION =
-            registerGroup("trick_radiation_injection", PieceTrickRadiationInjection.class);
+            MekanismCompat.isMekanismLoaded() ? registerGroup("trick_radiation_injection", PieceTrickRadiationInjection.class) : null;
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_FILTER =
-            registerGroup("trick_radiation_filter", PieceTrickRadiationFilter.class);
+            MekanismCompat.isMekanismLoaded() ? registerGroup("trick_radiation_filter", PieceTrickRadiationFilter.class) : null;
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> CURE_RADIATION =
-            registerGroup("trick_cure_radiation", PieceTrickCureRadiation.class);
+            MekanismCompat.isMekanismLoaded() ? registerGroup("trick_cure_radiation", PieceTrickCureRadiation.class) : null;
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> GUILLOTINE =
             registerGroup("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MATERIAL_MUTATION =

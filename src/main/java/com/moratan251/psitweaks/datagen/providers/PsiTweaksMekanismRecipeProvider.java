@@ -417,7 +417,7 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
     }
 
     private static void recipe(Map<ResourceLocation, JsonObject> recipes, String id, JsonObject recipe) {
-        recipes.put(Psitweaks.location(id), recipe);
+        recipes.put(Psitweaks.location(id), RecipeConditionHelper.requireMod(recipe, "mekanism"));
     }
 
     private static String item(String path) {

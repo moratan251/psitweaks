@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.tile.machine;
 
 import com.moratan251.psitweaks.client.jei.PsitweaksMekanismJeiRecipeTypes;
-import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.List;
 import java.util.function.Predicate;
@@ -38,7 +38,7 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener, IContentsListener chemicalTankListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        Predicate<ChemicalStack> validInput = chemicalStack -> chemicalStack.is(MaterialMutationRecipeHandler.getPsionicEchoChemical());
+        Predicate<ChemicalStack> validInput = chemicalStack -> chemicalStack.is(MekanismMaterialMutationRecipeHandler.getPsionicEchoChemical());
         chemicalTank = BasicChemicalTank.createModern(
                 CHEMICAL_TANK_CAPACITY,
                 (chemicalStack, automationType) -> allowExtractingChemical() || automationType != AutomationType.EXTERNAL,
@@ -67,38 +67,38 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
 
     @Override
     public ItemStackChemicalToItemStackRecipe findFirstRecipe(ItemStack inputA, ChemicalStack inputB) {
-        MaterialMutationRecipeHandler.MachineRecipe recipe = MaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB);
+        MekanismMaterialMutationRecipeHandler.MachineRecipe recipe = MekanismMaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB);
         return recipe == null ? null : asMekanismRecipe(recipe);
     }
 
     @Override
     public boolean containsRecipeAB(ItemStack inputA, ChemicalStack inputB) {
         if (inputA.isEmpty()) {
-            return MaterialMutationRecipeHandler.containsMachineRecipeChemical(inputB);
+            return MekanismMaterialMutationRecipeHandler.containsMachineRecipeChemical(inputB);
         } else if (inputB.isEmpty()) {
             return true;
         }
-        return MaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB) != null;
+        return MekanismMaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB) != null;
     }
 
     @Override
     public boolean containsRecipeBA(ItemStack inputA, ChemicalStack inputB) {
         if (inputB.isEmpty()) {
-            return MaterialMutationRecipeHandler.containsMachineRecipeInput(inputA);
+            return MekanismMaterialMutationRecipeHandler.containsMachineRecipeInput(inputA);
         } else if (inputA.isEmpty()) {
             return true;
         }
-        return MaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB) != null;
+        return MekanismMaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB) != null;
     }
 
     @Override
     public boolean containsRecipeA(ItemStack input) {
-        return MaterialMutationRecipeHandler.containsMachineRecipeInput(input);
+        return MekanismMaterialMutationRecipeHandler.containsMachineRecipeInput(input);
     }
 
     @Override
     public boolean containsRecipeB(ChemicalStack input) {
-        return MaterialMutationRecipeHandler.containsMachineRecipeChemical(input);
+        return MekanismMaterialMutationRecipeHandler.containsMachineRecipeChemical(input);
     }
 
     @Override
@@ -111,22 +111,22 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
     }
 
     public static List<ItemStackChemicalToItemStackRecipe> getAllMutationMachineRecipes(Level level) {
-        return MaterialMutationRecipeHandler.getAllMachineRecipes().stream()
+        return MekanismMaterialMutationRecipeHandler.getAllMachineRecipes().stream()
                 .map(MaterialMutatorBlockEntity::asMekanismRecipe)
                 .map(recipe -> (ItemStackChemicalToItemStackRecipe) recipe)
                 .toList();
     }
 
     public static List<RecipeHolder<ItemStackChemicalToItemStackRecipe>> getAllMutationMachineRecipeHolders(Level level) {
-        return MaterialMutationRecipeHandler.getAllMachineRecipes().stream()
+        return MekanismMaterialMutationRecipeHandler.getAllMachineRecipes().stream()
                 .map(recipe -> new RecipeHolder<ItemStackChemicalToItemStackRecipe>(recipe.id(), asMekanismRecipe(recipe)))
                 .toList();
     }
 
-    private static TimedInjectingRecipe asMekanismRecipe(MaterialMutationRecipeHandler.MachineRecipe recipe) {
+    private static TimedInjectingRecipe asMekanismRecipe(MekanismMaterialMutationRecipeHandler.MachineRecipe recipe) {
         return new TimedInjectingRecipe(
                 IngredientCreatorAccess.item().from(recipe.input(), recipe.inputCount()),
-                IngredientCreatorAccess.chemicalStack().fromHolder(MaterialMutationRecipeHandler.getPsionicEchoChemicalHolder(), CHEMICAL_PER_CRAFT),
+                IngredientCreatorAccess.chemicalStack().fromHolder(MekanismMaterialMutationRecipeHandler.getPsionicEchoChemicalHolder(), CHEMICAL_PER_CRAFT),
                 recipe.output(),
                 false,
                 recipe.time()
