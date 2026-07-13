@@ -5,8 +5,8 @@
         "block": "minecraft:glowstone"
       },
       "output": {
-        "block": "minecraft:gold_block",
-        "count": 1
+        "count": 4,
+        "item": "minecraft:gold_nugget"
       }
     }
   ]

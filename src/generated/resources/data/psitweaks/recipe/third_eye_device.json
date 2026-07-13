@@ -9,13 +9,13 @@
   "category": "combat",
   "key": {
     "A": {
-      "item": "psitweaks:heavy_psimetal"
+      "item": "psitweaks:psycheonic_metal_ingot"
     },
     "B": {
-      "item": "mekanism:pellet_plutonium"
+      "item": "mekanism:teleportation_core"
     },
     "C": {
-      "item": "mekanism:teleportation_core"
+      "item": "mekanism:pellet_antimatter"
     }
   },
   "pattern": [

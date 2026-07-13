@@ -170,7 +170,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         add(recipes, "third_eye_device", shaped(
                 List.of("AIA", "ICI", "AIA"),
                 Map.of(
-                        'A', ingredient(item("heavy_psimetal")),
+                        'A', ingredient(item("psycheonic_metal_ingot")),
                         'C', ingredient("minecraft:end_crystal"),
                         'I', ingredient("minecraft:ender_eye")
                 ),

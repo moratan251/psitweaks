@@ -443,9 +443,9 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         recipe(recipes, "third_eye_device", shaped("combat",
                 List.of("ABA", "BCB", "ABA"),
                 Map.of(
-                        'A', ingredientItem(PsitweaksItems.HEAVY_PSIMETAL),
-                        'B', ingredientItem(MekanismItems.PLUTONIUM_PELLET),
-                        'C', ingredientItem(MekanismItems.TELEPORTATION_CORE)
+                        'A', ingredientItem(PsitweaksItems.PSYCHEONIC_METAL_INGOT),
+                        'B', ingredientItem(MekanismItems.TELEPORTATION_CORE),
+                        'C', ingredientItem(MekanismItems.ANTIMATTER_PELLET)
                 ),
                 item("third_eye_device"), 1));
         recipe(recipes, "sorcery_booster", shaped("tools",

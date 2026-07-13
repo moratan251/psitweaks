@@ -23,7 +23,6 @@ run
 #for AI
 .codex
 .claude
-AGENTS.md
 CLAUDE.md
 docs
 .steering

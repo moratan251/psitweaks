@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-12T02:16:31.2028607	PsiTweaks recipes
+// 1.21.1	2026-07-13T23:27:15.702057	PsiTweaks recipes
 fd2b8bc2c740f04d4e85e1fae1bc531fb3c58602 data/psitweaks/recipe/advanced_spell_bullet.json
 a63214713c27e8dfec94187e4d913e27433cf4da data/psitweaks/recipe/advanced_spell_bullet_charge.json
 bfbbe421447b945d42a215fd2dd2b8a96441808f data/psitweaks/recipe/advanced_spell_bullet_circle.json
@@ -131,7 +131,7 @@ c7f568bd480cd792a6b92ee903b85ecc0a74904c data/psitweaks/recipe/sublimated_spell_
 964ffad7aafab59c2393b5ce6310d6b1f3774382 data/psitweaks/recipe/sublimated_spell_bullet_loop.json
 3c9d33aa5082c97e2d0f385e0204a244a2958c85 data/psitweaks/recipe/sublimated_spell_bullet_mine.json
 f4a9ca0da4ccec2770eb5aab96465cc08175e884 data/psitweaks/recipe/sublimated_spell_bullet_projectile.json
-761d5f3eaf0fa057f293ffd250d903201c23c8f1 data/psitweaks/recipe/third_eye_device.json
+d10161ad2559c94d00e87d2ddb2f433c461b3e1e data/psitweaks/recipe/third_eye_device.json
 289bc991142fd60e5b191987e6ba776b36d1e308 data/psitweaks/recipe/transcendent_energy_cube.json
 2b854bc9c9728a72e37b4691ad797068f2f3f8d3 data/psitweaks/recipe/transcendent_spell_bullet.json
 5c8ecfbea14e937178979f32a8dacb093d142ed9 data/psitweaks/recipe/transcendent_spell_bullet_charge.json

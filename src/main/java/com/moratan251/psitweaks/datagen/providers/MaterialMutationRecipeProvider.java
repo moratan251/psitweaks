@@ -24,7 +24,7 @@ public class MaterialMutationRecipeProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput output) {
         Map<ResourceLocation, JsonObject> recipes = new LinkedHashMap<>();
 
-        addItemMutation(recipes, "netherite_scrap", "minecraft:gold_block", "minecraft:netherite_scrap", 4);
+        addItemMutation(recipes, "netherite_scrap", "minecraft:gold_block", "minecraft:netherite_scrap", 1);
         addItemMutation(recipes, "americium_pellet", "psitweaks:plutonium_block", "psitweaks:pellet_americium", 1);
         addItemMutation(recipes, "neptunium_pellet", "psitweaks:polonium_block", "psitweaks:pellet_neptunium", 1);
         addItemMutation(recipes, "hypostasis_gem", "psitweaks:antinite_block", "psitweaks:hypostasis_gem", 1);
@@ -38,8 +38,9 @@ public class MaterialMutationRecipeProvider implements DataProvider {
         addBlockMutation(recipes, "heat_generator", "minecraft:campfire", "mekanismgenerators:heat_generator", 1);
         addBlockMutation(recipes, "bio_generator", "minecraft:composter", "mekanismgenerators:bio_generator", 1);
         addBlockMutation(recipes, "mycelium", "minecraft:grass_block", "minecraft:mycelium", 1);
-        addBlockMutation(recipes, "diamond_block_1", "minecraft:coal_block", "minecraft:diamond_block", 1);
-        addBlockMutation(recipes, "gold_block", "minecraft:glowstone", "minecraft:gold_block", 1);
+        addItemMutation(recipes, "gold_nugget", "minecraft:glowstone", "minecraft:gold_nugget", 4);
+        addItemMutation(recipes, "prismarine_shard", "minecraft:bricks", "minecraft:prismarine_shard", 9);
+        addItemMutation(recipes, "prismarine_crystals", "minecraft:glass", "minecraft:prismarine_crystals", 4);
         addBlockMutation(recipes, "sponge", "minecraft:dried_kelp_block", "minecraft:sponge", 1);
         addBlockMutation(recipes, "honey_block", "minecraft:slime_block", "minecraft:honey_block", 1);
         addBlockMutation(recipes, "slime_block", "minecraft:honey_block", "minecraft:slime_block", 1);
