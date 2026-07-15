@@ -14,6 +14,8 @@ public class PsitweaksConfig {
 
         public final ModConfigSpec.DoubleValue globalSpellPowerMultiplier;
         public final ModConfigSpec.BooleanValue requireSpellUnlocks;
+        public final ModConfigSpec.BooleanValue disableDamagePsiDeduction;
+        public final ModConfigSpec.BooleanValue disableRegenCooldown;
         // `safeToPlayers` は server.properties の pvp 設定連動へ移行したため無効化。
         // public final ModConfigSpec.BooleanValue safeToPlayers;
         // 分子ディバイダー関連
@@ -149,6 +151,19 @@ public class PsitweaksConfig {
             builder.pop(); // guillotine カテゴリ終了
 
             builder.pop(); // spells カテゴリ終了
+
+            builder.comment("Psi Behavior Settings")
+                    .push("psi");
+
+            disableDamagePsiDeduction = builder
+                    .comment("Whether taking damage should not deduct Psi")
+                    .define("disableDamagePsiDeduction", true);
+
+            disableRegenCooldown = builder
+                    .comment("Whether Psi consumption should not apply a regeneration cooldown")
+                    .define("disableRegenCooldown", true);
+
+            builder.pop(); // psi
 
             builder.comment("Mekanism Integration Settings")
                     .push("mekanism");

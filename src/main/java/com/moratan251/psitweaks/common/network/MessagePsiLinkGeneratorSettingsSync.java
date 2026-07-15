@@ -2,14 +2,14 @@ package com.moratan251.psitweaks.common.network;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
-import net.minecraft.core.BlockPos;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record MessagePsiLinkGeneratorSettingsSync(BlockPos pos, int consumePsiPerTick, boolean linkActive) implements CustomPacketPayload {
+public record MessagePsiLinkGeneratorSettingsSync(int consumePsiPerTick, boolean linkActive) implements CustomPacketPayload {
     public static final Type<MessagePsiLinkGeneratorSettingsSync> TYPE =
             new Type<>(Psitweaks.location("psi_link_generator_settings_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, MessagePsiLinkGeneratorSettingsSync> STREAM_CODEC =
@@ -21,24 +21,25 @@ public record MessagePsiLinkGeneratorSettingsSync(BlockPos pos, int consumePsiPe
     }
 
     private void write(RegistryFriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
         buf.writeVarInt(consumePsiPerTick);
         buf.writeBoolean(linkActive);
     }
 
     private static MessagePsiLinkGeneratorSettingsSync read(RegistryFriendlyByteBuf buf) {
-        return new MessagePsiLinkGeneratorSettingsSync(buf.readBlockPos(), buf.readVarInt(), buf.readBoolean());
+        return new MessagePsiLinkGeneratorSettingsSync(buf.readVarInt(), buf.readBoolean());
     }
 
     public static void handle(MessagePsiLinkGeneratorSettingsSync message, IPayloadContext context) {
         context.enqueueWork(() -> {
-            BlockEntity blockEntity = context.player().level().getBlockEntity(message.pos);
-            if (blockEntity instanceof PsionicGeneratorBlockEntity generator) {
-                generator.ensureOwner(context.player());
-                if (generator.isOwnedBy(context.player())) {
-                    generator.applySettings(message.consumePsiPerTick, message.linkActive);
-                }
+            Player player = context.player();
+            if (!(player.containerMenu instanceof MekanismTileContainer<?> menu)
+                    || !(menu.getTileEntity() instanceof PsionicGeneratorBlockEntity generator)
+                    || !menu.stillValid(player)
+                    || !menu.canPlayerAccess(player)
+                    || !generator.isOwnedBy(player)) {
+                return;
             }
+            generator.applySettings(message.consumePsiPerTick, message.linkActive);
         });
     }
 }

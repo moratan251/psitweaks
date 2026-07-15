@@ -124,6 +124,6 @@ public class GuiPsionicGenerator extends GuiMekanismTile<PsionicGeneratorBlockEn
     }
 
     private void sendSettings(int consumePsiPerTick, boolean linkActive) {
-        PacketDistributor.sendToServer(new MessagePsiLinkGeneratorSettingsSync(tile.getBlockPos(), consumePsiPerTick, linkActive));
+        PacketDistributor.sendToServer(new MessagePsiLinkGeneratorSettingsSync(consumePsiPerTick, linkActive));
     }
 }

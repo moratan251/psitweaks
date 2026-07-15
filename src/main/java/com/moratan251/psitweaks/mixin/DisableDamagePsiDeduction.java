@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.mixin;
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -10,6 +11,8 @@ import vazkii.psi.common.core.handler.PlayerDataHandler;
 public abstract class DisableDamagePsiDeduction {
     @Inject(method = "damage(F)V", at = @At("HEAD"), cancellable = true)
     private void psitweaks$cancelDamagePsiDeduction(float amount, CallbackInfo ci) {
-        ci.cancel();
+        if (PsitweaksConfig.COMMON.disableDamagePsiDeduction.get()) {
+            ci.cancel();
+        }
     }
 }

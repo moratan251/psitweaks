@@ -9,7 +9,7 @@ public final class PsitweaksNetwork {
     }
 
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("1");
+        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("2");
         registrar.playToServer(
                 MessageAutoCasterCustomTickSync.TYPE,
                 MessageAutoCasterCustomTickSync.STREAM_CODEC,

@@ -166,12 +166,6 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
         setChanged();
     }
 
-    public void ensureOwner(Player player) {
-        if (player != null && getSecurity() != null && getSecurity().getOwnerUUID() == null) {
-            getSecurity().setOwnerUUID(player.getUUID());
-        }
-    }
-
     public boolean isLinkActive() {
         return linkActive;
     }
