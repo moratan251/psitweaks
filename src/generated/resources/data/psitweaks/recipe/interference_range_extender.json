@@ -9,25 +9,22 @@
   "category": "combat",
   "key": {
     "A": {
-      "item": "psitweaks:psycheonic_metal_ingot"
+      "item": "psitweaks:flashmetal"
     },
     "B": {
-      "item": "minecraft:heavy_core"
+      "item": "psitweaks:psionic_control_circuit"
     },
     "C": {
-      "item": "mekanism:pellet_antimatter"
-    },
-    "D": {
-      "item": "psitweaks:interference_range_extender"
+      "item": "mekanism:teleportation_core"
     }
   },
   "pattern": [
     "ABA",
-    "CDC",
+    "BCB",
     "ABA"
   ],
   "result": {
     "count": 1,
-    "id": "psitweaks:third_eye_device"
+    "id": "psitweaks:interference_range_extender"
   }
 }

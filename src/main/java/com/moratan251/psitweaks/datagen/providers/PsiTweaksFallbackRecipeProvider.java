@@ -112,6 +112,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 ),
                 item("psycheonic_metal_nugget"), 8));
 
+        addPhilosophersStoneFallbacks(recipes);
         addProgramFallbacks(recipes);
 
         add(recipes, "unrefined_flashmetal", shaped(
@@ -167,12 +168,21 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 ),
                 item("cad_assembly_psycheonic_metal"), 1));
 
+        add(recipes, "interference_range_extender", shaped(
+                List.of("ABA", "BCB", "ABA"),
+                Map.of(
+                        'A', ingredient(item("flashmetal")),
+                        'B', ingredient(item("psionic_control_circuit")),
+                        'C', ingredient("minecraft:ender_eye")
+                ),
+                item("interference_range_extender"), 1));
         add(recipes, "third_eye_device", shaped(
-                List.of("AIA", "ICI", "AIA"),
+                List.of("ABA", "CDC", "ABA"),
                 Map.of(
                         'A', ingredient(item("psycheonic_metal_ingot")),
-                        'C', ingredient("minecraft:end_crystal"),
-                        'I', ingredient("minecraft:ender_eye")
+                        'B', ingredient("minecraft:heavy_core"),
+                        'C', ingredient("minecraft:nether_star"),
+                        'D', ingredient(item("interference_range_extender"))
                 ),
                 item("third_eye_device"), 1));
 
@@ -243,6 +253,21 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         root.add("ingredients", ingredientsJson);
         root.add("result", result(result, count));
         return root;
+    }
+
+    private static void addPhilosophersStoneFallbacks(Map<ResourceLocation, JsonObject> recipes) {
+        add(recipes, "philosophers_stone/philosophers_stone_iron_to_gold", shapelessCounted(
+                List.of(
+                        counted(item("philosophers_stone"), 1),
+                        counted("minecraft:iron_ingot", 8)
+                ),
+                "minecraft:gold_ingot", 2));
+        add(recipes, "philosophers_stone/philosophers_stone_gold_to_iron", shapelessCounted(
+                List.of(
+                        counted(item("philosophers_stone"), 1),
+                        counted("minecraft:gold_ingot", 2)
+                ),
+                "minecraft:iron_ingot", 8));
     }
 
     private static void addProgramFallbacks(Map<ResourceLocation, JsonObject> recipes) {

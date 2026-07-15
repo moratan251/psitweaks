@@ -182,6 +182,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "curios", "magic_calculation_area",
                 item("auto_caster_tick"),
                 item("auto_caster_custom_tick"),
+                item("interference_range_extender"),
                 item("third_eye_device"),
                 item("sorcery_booster"));
 

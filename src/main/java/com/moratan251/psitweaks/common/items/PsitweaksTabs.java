@@ -68,6 +68,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
                         output.accept(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK.get());
                         output.accept(PsitweaksItems.FLASH_CHARM.get());
+                        output.accept(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER.get());
                         output.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
                         output.accept(PsitweaksItems.SORCERY_BOOSTER.get());
                         output.accept(PsitweaksItems.MOVAL_SUIT_HELMET.get());

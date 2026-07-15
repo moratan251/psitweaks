@@ -1409,6 +1409,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "装備者の盲目と暗闇を継続的に解除するCuriosチャームです.$(p)インベントリ内に持っているだけでも機能するため, ディープダークや視界妨害効果への対策になります.";
             default -> "A Curios charm that continually removes Blindness and Darkness from the wearer.$(p)It also works while carried in inventory, making it useful in the Deep Dark and against vision-disrupting effects.";
         });
+        root.addProperty("psi.book.page.psitweaks_item.interference_range_extender", switch (locale) {
+            case "ja_jp" -> "魔法演算領域スロットに装備し, Psi術式とレイキャストの有効射程を64ブロックへ拡張します.$(p)サードアイデバイスより作りやすい下位装備で, 両方を装備した場合はサードアイデバイスの効果が優先されます.";
+            default -> "Equips in the Magic Calculation Area slot and extends Psi spell and raycast range to 64 blocks.$(p)It is a lower-tier alternative to the Third-Eye Device; when both are equipped, the Third-Eye Device takes priority.";
+        });
         root.addProperty("psi.book.page.psitweaks_item.third_eye_device", switch (locale) {
             case "ja_jp" -> "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)通常のCAD射程を大きく超える位置を対象にできるため, 扱いには注意してください.";
             default -> "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully.";

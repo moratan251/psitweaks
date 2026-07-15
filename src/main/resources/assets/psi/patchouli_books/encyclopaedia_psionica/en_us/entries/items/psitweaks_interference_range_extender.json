@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.interference_range_extender",
+  "category": "psi:items",
+  "icon": "psitweaks:interference_range_extender",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.interference_range_extender",
+      "item": "psitweaks:interference_range_extender",
+      "link_recipe": true
+    }
+  ]
+}

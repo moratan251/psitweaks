@@ -440,12 +440,21 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'N', ingredientItem(Items.NETHER_WART)
                 ),
                 item("flash_charm"), 1));
-        recipe(recipes, "third_eye_device", shaped("combat",
+        recipe(recipes, "interference_range_extender", shaped("combat",
                 List.of("ABA", "BCB", "ABA"),
                 Map.of(
+                        'A', ingredientItem(PsitweaksItems.FLASHMETAL),
+                        'B', ingredientItem(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT),
+                        'C', ingredientItem(MekanismItems.TELEPORTATION_CORE)
+                ),
+                item("interference_range_extender"), 1));
+        recipe(recipes, "third_eye_device", shaped("combat",
+                List.of("ABA", "CDC", "ABA"),
+                Map.of(
                         'A', ingredientItem(PsitweaksItems.PSYCHEONIC_METAL_INGOT),
-                        'B', ingredientItem(MekanismItems.TELEPORTATION_CORE),
-                        'C', ingredientItem(MekanismItems.ANTIMATTER_PELLET)
+                        'B', ingredientItem(Items.HEAVY_CORE),
+                        'C', ingredientItem(MekanismItems.ANTIMATTER_PELLET),
+                        'D', ingredientItem(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER)
                 ),
                 item("third_eye_device"), 1));
         recipe(recipes, "sorcery_booster", shaped("tools",

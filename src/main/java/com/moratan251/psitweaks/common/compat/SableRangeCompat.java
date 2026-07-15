@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.internal.Vector3;
 
 public final class SableRangeCompat {
-    private static final double MAX_DISTANCE_SQUARED = 32.0D * 32.0D;
+    private static final double DEFAULT_MAX_DISTANCE = 32.0D;
     private static final Object INIT_LOCK = new Object();
     private static volatile Hooks hooks;
     private static volatile boolean disabled;
@@ -18,6 +18,10 @@ public final class SableRangeCompat {
     }
 
     public static Boolean isInRadius(Entity focalPoint, double x, double y, double z) {
+        return isInRadius(focalPoint, x, y, z, DEFAULT_MAX_DISTANCE);
+    }
+
+    public static Boolean isInRadius(Entity focalPoint, double x, double y, double z, double maxDistance) {
         if (focalPoint == null || disabled) {
             return null;
         }
@@ -42,7 +46,7 @@ public final class SableRangeCompat {
                     origin,
                     target
             )).doubleValue();
-            return distanceSquared <= MAX_DISTANCE_SQUARED;
+            return distanceSquared <= maxDistance * maxDistance;
         } catch (ReflectiveOperationException | LinkageError | ClassCastException e) {
             disabled = true;
             return null;
