@@ -1,5 +1,34 @@
 ## Changelog
 
+#### v0.10.1
+
+- Fixed an issue where connectors could be pulled by dragging while a Psitweaks text input window or similar screen was open when using Psionic Utilities
+
+
+- Added the ability to select multiple spell pieces with Shift + drag or Ctrl + click in the Spell Programmer screen, then copy, cut, and paste them
+
+
+- Changed the mod so that it can launch even when Mekanism and Mekanism Generators are not installed
+  + Without Mekanism, material recipes are simplified, and machine blocks that depend on Mekanism are not added.
+  + This change is primarily intended for modpack developers; installing Mekanism is strongly recommended for normal play.
+
+
+- Adjusted Material Mutation processing recipes
+
+
+- Made the Third-Eye Device crafting recipe more difficult
+
+
+- Added the Interference Range Extender
+  + A lower-tier device than the Third-Eye Device. Extends spell range and raycast range up to 64 blocks.
+
+
+- Added config options to control whether Psi consumption when taking damage and the Psi regeneration cooldown after consuming Psi are disabled
+
+
+- Implemented an in-game configuration screen
+
+
 #### v0.10.0
 
 - Added value types available in spell programming
