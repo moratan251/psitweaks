@@ -32,11 +32,13 @@ public class PsitweaksConfig {
 
         public Common(ModConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
+                    .translation("psitweaks.configuration.spells")
                     .push("spells"); // カテゴリ開始
 
             globalSpellPowerMultiplier = builder
                     .comment("Psitweaks攻撃スペル全体に適用する一律倍率",
                             "Global multiplier for all Psitweaks offensive spell damage")
+                    .translation("psitweaks.configuration.spells.global_spell_power_multiplier")
                     .defineInRange("globalSpellPowerMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             // safeToPlayers = builder
@@ -45,107 +47,127 @@ public class PsitweaksConfig {
             //         .define("safeToPlayers", false);
 
             builder.comment("Spell unlock requirements")
+                    .translation("psitweaks.configuration.spells.unlocks")
                     .push("unlocks");
 
             requireSpellUnlocks = builder
                     .comment("特定スペルの利用に解禁を要求するかどうか",
                             "Whether configured spells require unlock progression in Spell Programmer")
+                    .translation("psitweaks.configuration.spells.unlocks.require_spell_unlocks")
                     .define("requireSpellUnlocks", true);
 
             builder.pop(); // unlocks カテゴリ終了
 
             // --- 分子ディバイダー ---
             builder.comment("Molecular Divider Settings")
+                    .translation("psitweaks.configuration.spells.molecular_divider")
                     .push("molecular_divider");
 
             molecularDividerDamageMultiplier = builder
                     .comment("分子ディバイダーのダメージ倍率",
                             "Damage multiplier for Molecular Divider")
+                    .translation("psitweaks.configuration.spells.molecular_divider.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // molecular_divider カテゴリ終了
 
             // --- フォノンメーザー ---
             builder.comment("Phonon Maser Settings")
+                    .translation("psitweaks.configuration.spells.phonon_maser")
                     .push("phonon_maser");
 
             phononMaserDamageMultiplier = builder
                     .comment("フォノンメーザーのダメージ倍率", "Damage multiplier for Phonon Maser" )
+                    .translation("psitweaks.configuration.spells.phonon_maser.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // phonon_maser カテゴリ終了
 
             // --- アクアカッター ---
             builder.comment("Aqua Cutter Settings")
+                    .translation("psitweaks.configuration.spells.aqua_cutter")
                     .push("aqua_cutter");
 
             aquaCutterDamageMultiplier = builder
                     .comment("アクアカッターのダメージ倍率", "Damage multiplier for Aqua Cutter")
+                    .translation("psitweaks.configuration.spells.aqua_cutter.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // aqua_cutter カテゴリ終了
 
             // --- ブレイズボール ---
             builder.comment("Blaze Ball Settings")
+                    .translation("psitweaks.configuration.spells.blaze_ball")
                     .push("blaze_ball");
 
             blazeBallDamageMultiplier = builder
                     .comment("ブレイズボールのダメージ倍率", "Damage multiplier for Blaze Ball")
+                    .translation("psitweaks.configuration.spells.blaze_ball.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // blaze_ball カテゴリ終了
 
             // --- 能動空中機雷 ---
             builder.comment("Active Air Mine Settings")
+                    .translation("psitweaks.configuration.spells.active_air_mine")
                     .push("active_air_mine");
 
             activeAirMineDamageMultiplier = builder
                     .comment("作動式: 能動空中機雷 のダメージ倍率",
                             "Damage multiplier for Trick: Active Air Mine")
+                    .translation("psitweaks.configuration.spells.active_air_mine.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // active_air_mine カテゴリ終了
 
             // --- フレアサークル ---
             builder.comment("Flare Circle Settings")
+                    .translation("psitweaks.configuration.spells.flare_circle")
                     .push("flare_circle");
 
             flareCircleDamageMultiplier = builder
                     .comment("作動式: フレアサークル の威力倍率（与ダメージ倍率）",
                             "Power (damage) multiplier for Trick: Flare Circle")
+                    .translation("psitweaks.configuration.spells.flare_circle.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // flare_circle カテゴリ終了
 
             // --- アイスサークル ---
             builder.comment("Ice Circle Settings")
+                    .translation("psitweaks.configuration.spells.ice_circle")
                     .push("ice_circle");
 
             iceCircleDamageMultiplier = builder
                     .comment("作動式: アイスサークル の威力倍率（与ダメージ倍率）",
                             "Power (damage) multiplier for Trick: Ice Circle")
+                    .translation("psitweaks.configuration.spells.ice_circle.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // ice_circle カテゴリ終了
 
             // --- 放射線注入 ---
             builder.comment("Radiation Injection Settings")
+                    .translation("psitweaks.configuration.spells.radiation_injection")
                     .push("radiation_injection");
 
             radiationInjectionMultiplier = builder
                     .comment("作動式: 放射線注入 の被ばく量倍率",
                             "Radiation amount multiplier for Trick: Radiation Injection")
+                    .translation("psitweaks.configuration.spells.radiation_injection.radiation_multiplier")
                     .defineInRange("radiationMultiplier", 1.0, 0.0, 1000000.0);
 
             builder.pop(); // radiation_injection カテゴリ終了
 
             // --- ギロチン ---
             builder.comment("Guillotine Settings")
+                    .translation("psitweaks.configuration.spells.guillotine")
                     .push("guillotine");
 
             guillotineDamageMultiplier = builder
                     .comment("作動式: ギロチン のダメージ倍率",
                             "Damage multiplier for Trick: Guillotine")
+                    .translation("psitweaks.configuration.spells.guillotine.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // guillotine カテゴリ終了
@@ -153,19 +175,23 @@ public class PsitweaksConfig {
             builder.pop(); // spells カテゴリ終了
 
             builder.comment("Psi Behavior Settings")
+                    .translation("psitweaks.configuration.psi")
                     .push("psi");
 
             disableDamagePsiDeduction = builder
                     .comment("Whether taking damage should not deduct Psi")
+                    .translation("psitweaks.configuration.psi.disable_damage_psi_deduction")
                     .define("disableDamagePsiDeduction", true);
 
             disableRegenCooldown = builder
                     .comment("Whether Psi consumption should not apply a regeneration cooldown")
+                    .translation("psitweaks.configuration.psi.disable_regen_cooldown")
                     .define("disableRegenCooldown", true);
 
             builder.pop(); // psi
 
             builder.comment("Mekanism Integration Settings")
+                    .translation("psitweaks.configuration.mekanism")
                     .push("mekanism");
 
             gasBurningGeneratorEnergyCapacity = builder
@@ -173,6 +199,7 @@ public class PsitweaksConfig {
                             "-1に設定するとMekanismのデフォルト動作（HydrogenEnergyDensityを基準）を使用します。",
                             "Gas-Burning Generator internal energy capacity override in Joules.",
                             "Set to -1 to use Mekanism default behavior (HydrogenEnergyDensity based).")
+                    .translation("psitweaks.configuration.mekanism.gas_burning_generator_energy_capacity")
                     .defineInRange("gasBurningGeneratorEnergyCapacity", 2000000, -1L, Long.MAX_VALUE);
 
             builder.pop(); // mekanism カテゴリ終了

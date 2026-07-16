@@ -29,6 +29,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
     private JsonObject translations() {
         JsonObject root = new JsonObject();
 
+        addConfigTranslations(root);
         root.addProperty("creativetabs.psitweaks", "Psi: Tweaks and Additions");
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             root.addProperty("block.psitweaks." + block.id(), switch (locale) {
@@ -366,6 +367,79 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLegacyPatchouliBookTranslations(root);
 
         return root;
+    }
+
+    private void addConfigTranslations(JsonObject root) {
+        addConfigLabel(root, "psitweaks.configuration.title",
+                "Psi: Tweaks and Additions Configuration", "Psi: Tweaks and Additions 設定");
+        addConfigLabel(root, "psitweaks.configuration.section.psitweaks.common.toml",
+                "Common Configuration", "共通設定");
+        addConfigLabel(root, "psitweaks.configuration.section.psitweaks.common.toml.title",
+                "Common Configuration", "共通設定");
+
+        addConfigLabel(root, "psitweaks.configuration.spells", "Spell Settings", "スペル設定");
+        addConfigValue(root, "psitweaks.configuration.spells.global_spell_power_multiplier",
+                "Global Offensive Spell Multiplier", "攻撃術式の全体倍率",
+                "Multiplier applied to all offensive spells added by PsiTweaks.",
+                "PsiTweaksが追加する全攻撃術式に適用する倍率です。");
+        addConfigLabel(root, "psitweaks.configuration.spells.unlocks",
+                "Spell Unlock Settings", "スペル解禁設定");
+        addConfigValue(root, "psitweaks.configuration.spells.unlocks.require_spell_unlocks",
+                "Require Spell Unlocks", "スペル解禁を要求",
+                "Require configured spells to be unlocked before they can be used in the Spell Programmer.",
+                "対象スペルをスペルプログラマーで使用する前に、解禁を必要とするか設定します。");
+
+        addDamageMultiplierConfig(root, "molecular_divider", "Molecular Divider", "分子ディバイダー");
+        addDamageMultiplierConfig(root, "phonon_maser", "Phonon Maser", "フォノンメーザー");
+        addDamageMultiplierConfig(root, "aqua_cutter", "Aqua Cutter", "アクアカッター");
+        addDamageMultiplierConfig(root, "blaze_ball", "Blaze Ball", "ブレイズボール");
+        addDamageMultiplierConfig(root, "active_air_mine", "Active Air Mine", "能動空中機雷");
+        addDamageMultiplierConfig(root, "flare_circle", "Flare Circle", "フレアサークル");
+        addDamageMultiplierConfig(root, "ice_circle", "Ice Circle", "アイスサークル");
+        addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
+
+        addConfigLabel(root, "psitweaks.configuration.spells.radiation_injection",
+                "Radiation Injection", "放射線注入");
+        addConfigValue(root, "psitweaks.configuration.spells.radiation_injection.radiation_multiplier",
+                "Radiation Multiplier", "放射線量倍率",
+                "Multiplier applied to the radiation amount caused by Radiation Injection.",
+                "放射線注入による被ばく量に適用する倍率です。");
+
+        addConfigLabel(root, "psitweaks.configuration.psi", "Psi Behavior", "Psi基本挙動");
+        addConfigValue(root, "psitweaks.configuration.psi.disable_damage_psi_deduction",
+                "Disable Psi Loss on Damage", "被ダメージ時のPsi減少を無効化",
+                "Prevent taking damage from reducing Psi.", "ダメージを受けた際のPsi減少を無効にします。");
+        addConfigValue(root, "psitweaks.configuration.psi.disable_regen_cooldown",
+                "Disable Psi Regeneration Cooldown", "Psi回復クールダウンを無効化",
+                "Prevent Psi consumption from applying a regeneration cooldown.",
+                "Psiを消費した際の回復クールダウンを無効にします。");
+
+        addConfigLabel(root, "psitweaks.configuration.mekanism", "Mekanism Integration", "Mekanism連携");
+        addConfigValue(root, "psitweaks.configuration.mekanism.gas_burning_generator_energy_capacity",
+                "Gas-Burning Generator Energy Capacity", "ガス燃焼発電機の内部エネルギー容量",
+                "Override the internal energy capacity in Joules. Set to -1 to use Mekanism's default behavior.",
+                "内部エネルギー容量をJ単位で上書きします。-1にするとMekanismの標準挙動を使用します。");
+    }
+
+    private void addDamageMultiplierConfig(JsonObject root, String id, String enUsName, String jaJpName) {
+        String key = "psitweaks.configuration.spells." + id;
+        addConfigLabel(root, key, enUsName, jaJpName);
+        addConfigValue(root, key + ".damage_multiplier", "Damage Multiplier", "ダメージ倍率",
+                "Multiplier applied to " + enUsName + " damage.",
+                jaJpName + "のダメージに適用する倍率です。");
+    }
+
+    private void addConfigValue(JsonObject root, String key, String enUs, String jaJp,
+                                String enUsTooltip, String jaJpTooltip) {
+        addConfigLabel(root, key, enUs, jaJp);
+        addConfigLabel(root, key + ".tooltip", enUsTooltip, jaJpTooltip);
+    }
+
+    private void addConfigLabel(JsonObject root, String key, String enUs, String jaJp) {
+        root.addProperty(key, switch (locale) {
+            case "ja_jp" -> jaJp;
+            default -> enUs;
+        });
     }
 
     private void addLegacyPatchouliBookTranslations(JsonObject root) {

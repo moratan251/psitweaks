@@ -14,7 +14,7 @@ import vazkii.psi.api.spell.SpellParam;
 @Mixin(value = SpellHelpers.class, remap = false)
 public abstract class SpellHelpersRangeLimitMixin {
     private static final double INTERFERENCE_RAYCAST_RANGE = 64.0D;
-    private static final double THIRD_EYE_RAYCAST_RANGE = 512.0D;
+    private static final double THIRD_EYE_RAYCAST_RANGE = 256.0D;
 
     @ModifyVariable(method = "rangeLimitParam", at = @At("HEAD"), index = 3, argsOnly = true)
     private static double psitweaks$extendRangeLimit(
