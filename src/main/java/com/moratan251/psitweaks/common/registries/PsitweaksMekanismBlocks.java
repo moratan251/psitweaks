@@ -5,6 +5,7 @@ import com.moratan251.psitweaks.common.blocks.transmitter.BlockTranscendentCable
 import com.moratan251.psitweaks.common.items.block.ItemBlockTranscendentEnergyCube;
 import com.moratan251.psitweaks.common.items.block.ItemBlockTranscendentCable;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
@@ -22,6 +23,11 @@ public class PsitweaksMekanismBlocks {
     public static final BlockRegistryObject<BlockTile.BlockTileModel<TileEntitySculkEroder, BlockTypeTile<TileEntitySculkEroder>>, ItemBlockMachine> SCULK_ERODER =
             BLOCKS.register("sculk_eroder",
                     () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.SCULK_ERODER, properties -> properties),
+                    ItemBlockMachine::new);
+
+    public static final BlockRegistryObject<BlockTile.BlockTileModel<ProgramResearcherBlockEntity, BlockTypeTile<ProgramResearcherBlockEntity>>, ItemBlockMachine> PROGRAM_RESEARCHER =
+            BLOCKS.register("program_researcher",
+                    () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.PROGRAM_RESEARCHER, properties -> properties),
                     ItemBlockMachine::new);
 
     public static final BlockRegistryObject<BlockTile.BlockTileModel<TileEntityMaterialMutator, BlockTypeTile<TileEntityMaterialMutator>>, ItemBlockMachine> MATERIAL_MUTATOR =

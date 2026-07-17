@@ -11,7 +11,14 @@
       "type": "spotlight",
       "title": "block.psitweaks.program_researcher",
       "item": "psitweaks:program_researcher",
-      "text": "psi.book.page.psitweaks_research.1"
+      "text": "psi.book.page.psitweaks_research.1",
+      "flag": "mod:mekanism"
+    },
+    {
+      "type": "spotlight",
+      "item": "psitweaks:program_blank",
+      "text": "psi.book.page.psitweaks_research.no_mekanism",
+      "flag": "!mod:mekanism"
     }
   ]
 }

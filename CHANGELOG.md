@@ -32,6 +32,12 @@
 - Hardened Psi-Link Generator setting synchronization so only the valid, currently open owner menu can update the machine
 
 
+- (1.20.1) Changed the specifications of the Program Research Table to the Mekanism base (same design as 1.21.1)
+
+
+- (1.20.1) Made the Transcendent Spell Bullet crafting recipe more difficult
+
+
 #### v0.10.0
 
 - Added value types available in spell programming

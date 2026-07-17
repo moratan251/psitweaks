@@ -1,6 +1,7 @@
 {
   "name": "block.psitweaks.program_researcher",
   "category": "psi:psitweaks_machines",
+  "flag": "mod:mekanism",
   "icon": "psitweaks:program_researcher",
   "pages": [
     {

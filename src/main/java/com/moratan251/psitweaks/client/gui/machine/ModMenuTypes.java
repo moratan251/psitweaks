@@ -1,7 +1,6 @@
 package com.moratan251.psitweaks.client.gui.machine;
 
 import com.moratan251.psitweaks.common.menu.PortableCADAssemblerMenu;
-import com.moratan251.psitweaks.common.menu.ProgramResearcherMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -20,7 +19,4 @@ public class ModMenuTypes {
             MENUS.register("portable_cad_assembler",
                     () -> IForgeMenuType.create(PortableCADAssemblerMenu::fromNetwork));
 
-    public static final RegistryObject<MenuType<ProgramResearcherMenu>> PROGRAM_RESEARCHER =
-            MENUS.register("program_researcher",
-                    () -> IForgeMenuType.create(ProgramResearcherMenu::fromNetwork));
 }

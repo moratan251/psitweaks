@@ -152,7 +152,6 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get());
 
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
-                        pOutput.accept(PsitweaksBlocks.PROGRAM_RESEARCHER.get());
                         pOutput.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         pOutput.accept(PsitweaksBlocks.ANTINITE_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());

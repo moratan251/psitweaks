@@ -1,6 +1,9 @@
 package com.moratan251.psitweaks.client.jei;
 
+import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
+import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
+import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import java.util.List;
@@ -12,6 +15,7 @@ import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.world.level.Level;
 
@@ -30,6 +34,9 @@ final class MekanismJeiIntegration {
                 PsitweaksMekanismJeiRecipeTypes.MATERIAL_MUTATOR,
                 PsitweaksMekanismBlocks.MATERIAL_MUTATOR
         ));
+        registration.addRecipeCategories(new ProgramResearchJeiCategory(
+                registration.getJeiHelpers().getGuiHelper()
+        ));
     }
 
     static void registerRecipes(IRecipeRegistration registration, Level level) {
@@ -40,6 +47,11 @@ final class MekanismJeiIntegration {
         RecipeType<ItemStackGasToItemStackRecipe> mutationType = MekanismJEI.recipeType(PsitweaksMekanismJeiRecipeTypes.MATERIAL_MUTATOR);
         List<ItemStackGasToItemStackRecipe> mutationRecipes = level == null ? List.of() : TileEntityMaterialMutator.getAllMutationMachineRecipes(level);
         registration.addRecipes(mutationType, mutationRecipes);
+
+        List<ProgramResearchRecipe> programResearchRecipes = level == null
+                ? List.of()
+                : level.getRecipeManager().getAllRecipesFor(PsitweaksRecipeTypes.PROGRAM_RESEARCH.get());
+        registration.addRecipes(ProgramResearchJeiCategory.RECIPE_TYPE, programResearchRecipes);
     }
 
     static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
@@ -47,5 +59,20 @@ final class MekanismJeiIntegration {
         RecipeType<ItemStackGasToItemStackRecipe> mutationType = MekanismJEI.recipeType(PsitweaksMekanismJeiRecipeTypes.MATERIAL_MUTATOR);
         registration.addRecipeCatalyst(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(), sculkType);
         registration.addRecipeCatalyst(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock(), mutationType);
+        registration.addRecipeCatalyst(
+                PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock(),
+                ProgramResearchJeiCategory.RECIPE_TYPE
+        );
+    }
+
+    static void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addRecipeClickArea(
+                GuiProgramResearcher.class,
+                104,
+                38,
+                24,
+                17,
+                ProgramResearchJeiCategory.RECIPE_TYPE
+        );
     }
 }

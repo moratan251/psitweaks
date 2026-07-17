@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client;
 
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
+import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiPsionicGenerator;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
@@ -25,6 +26,7 @@ public class PsitweaksMekanismClient {
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.SCULK_ERODER, GuiSculkEroder::new);
+            ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER, GuiProgramResearcher::new);
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.MATERIAL_MUTATOR, GuiMaterialMutator::new);
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR, GuiPsionicGenerator::new);
             ClientRegistrationUtil.registerScreen(PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE, GuiTranscendentEnergyCube::new);

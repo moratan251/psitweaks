@@ -1136,6 +1136,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.psionic_generator", "Psi-Link Generator");
         add("container.psitweaks.transcendent_energy_cube", "Transcendent Energy Cube");
         add("description.psitweaks.sculk_eroder", "Corrodes stone, dirt, and sand type blocks into Sculk");
+        add("description.psitweaks.program_researcher", "Researches program items from materials and power");
         add("description.psitweaks.material_mutator", "Mutates items into different materials using Psionic Echo Gas");
         add("description.psitweaks.psionic_generator", "Consumes the owner's Psi and converts it into FE while linked");
         add("description.psitweaks.transcendent_universal_cable.transfer", "Transfer Capacity: %s/t");
@@ -1384,6 +1385,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.entry.psitweaks_research", "Research");
         add("psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed.");
         add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.");
+        add("psi.book.page.psitweaks_research.no_mekanism", "The Program Research Table requires $(thing)Mekanism$(0). Without Mekanism, program items can only be obtained through fallback crafting recipes or by duplicating an existing program.");
         add("psi.book.entry.psitweaks_magician", "Magician");
         add("psi.book.page.psitweaks_magician.0", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades.");
         add("psi.book.page.psitweaks_magician.1", "An unemployed villager can become a $(thing)Magician$(0) by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site.$(p)Place the assembler where a villager can reach it, just like other villager workstation blocks.");
@@ -1675,6 +1677,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.psionic_generator", "サイリンク発電機");
         add("container.psitweaks.transcendent_energy_cube", "超越エネルギーキューブ");
         add("description.psitweaks.sculk_eroder", "石・土・砂系のブロックをスカルクに加工します");
+        add("description.psitweaks.program_researcher", "素材と電力からプログラムアイテムを研究します");
         add("description.psitweaks.material_mutator", "サイオニックエコーを用いて物質変成を行います。");
         add("description.psitweaks.psionic_generator", "所有者の Psi を消費し、リンク中のみ FE に変換します");
         add("description.psitweaks.transcendent_universal_cable.transfer", "転送容量: %s/t");
@@ -1869,6 +1872,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.entry.psitweaks_research", "研究");
         add("psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).");
         add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.");
+        add("psi.book.page.psitweaks_research.no_mekanism", "プログラム研究台を利用するには $(thing)Mekanism$(0) が必要です. Mekanism未導入時は, 代替クラフトレシピまたは既存プログラムの複製によってプログラムアイテムを入手できます.");
         add("psi.book.entry.psitweaks_magician", "魔法師");
         add("psi.book.page.psitweaks_magician.0", "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. Psi機械を扱う村人であり, 魔法師向けの素材や強化装備と関係します.");
         add("psi.book.page.psitweaks_magician.1", "無職の村人は, $(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l) を職業ブロックとして取得すると $(thing)魔法師$(0) になります.$(p)ほかの村人作業台と同じように, 村人が到達できる場所にCAD組立機を置いてください.");

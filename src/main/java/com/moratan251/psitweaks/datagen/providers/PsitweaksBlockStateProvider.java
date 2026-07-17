@@ -22,7 +22,6 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         cubeAll(PsitweaksBlocks.CAD_DISASSEMBLER.get(), "cad_disassembler");
-        cubeAll(PsitweaksBlocks.PROGRAM_RESEARCHER.get(), "program_researcher");
         cubeAll(PsitweaksBlocks.ORE_ANTINITE.get(), "ore_antinite");
         cubeAll(PsitweaksBlocks.ANTINITE_BLOCK.get(), "antinite_block");
         cubeAll(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get(), "chaotic_psimetal_block");
@@ -34,6 +33,7 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         cubeAll(PsitweaksBlocks.SPELLMACHINERY_CASING.get(), "spellmachinery_casing");
 
         machine(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(), "sculk_eroder", "sculk_eroder");
+        machineSingleTexture(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock(), "program_researcher");
         machine(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock(), "material_mutator", "material_mutator");
         machine(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock(), "psionic_generator", "psi_link_generator");
         transcendentCable();
@@ -58,6 +58,32 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         ModelFile activeModel = models().getBuilder(name + "_active")
                 .parent(unchecked(modLoc("block/" + name)))
                 .texture("front", modLoc("block/" + textureBase + "/front_active"));
+
+        DirectionProperty facing = (DirectionProperty) block.getStateDefinition().getProperty("facing");
+        BooleanProperty active = (BooleanProperty) block.getStateDefinition().getProperty("active");
+        getVariantBuilder(block)
+                .partialState().with(facing, Direction.NORTH).with(active, false)
+                .modelForState().modelFile(model).addModel()
+                .partialState().with(facing, Direction.SOUTH).with(active, false)
+                .modelForState().modelFile(model).rotationY(180).addModel()
+                .partialState().with(facing, Direction.EAST).with(active, false)
+                .modelForState().modelFile(model).rotationY(90).addModel()
+                .partialState().with(facing, Direction.WEST).with(active, false)
+                .modelForState().modelFile(model).rotationY(270).addModel()
+                .partialState().with(facing, Direction.NORTH).with(active, true)
+                .modelForState().modelFile(activeModel).addModel()
+                .partialState().with(facing, Direction.SOUTH).with(active, true)
+                .modelForState().modelFile(activeModel).rotationY(180).addModel()
+                .partialState().with(facing, Direction.EAST).with(active, true)
+                .modelForState().modelFile(activeModel).rotationY(90).addModel()
+                .partialState().with(facing, Direction.WEST).with(active, true)
+                .modelForState().modelFile(activeModel).rotationY(270).addModel();
+        simpleBlockItem(block, model);
+    }
+
+    private void machineSingleTexture(Block block, String name) {
+        ModelFile model = models().cubeAll(name, modLoc("block/" + name));
+        ModelFile activeModel = models().cubeAll(name + "_active", modLoc("block/" + name));
 
         DirectionProperty facing = (DirectionProperty) block.getStateDefinition().getProperty("facing");
         BooleanProperty active = (BooleanProperty) block.getStateDefinition().getProperty("active");

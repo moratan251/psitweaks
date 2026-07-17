@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.client.jei;
 
 import com.moratan251.psitweaks.Psitweaks;
-import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -42,7 +42,7 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
     private final IDrawable arrowDrawable;
 
     public ProgramResearchJeiCategory(IGuiHelper guiHelper) {
-        this.icon = guiHelper.createDrawableItemStack(new ItemStack(PsitweaksBlocks.PROGRAM_RESEARCHER.get()));
+        this.icon = guiHelper.createDrawableItemStack(new ItemStack(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock()));
         this.slotDrawable = guiHelper.getSlotDrawable();
         this.outputSlotDrawable = guiHelper.getOutputSlot();
         this.arrowDrawable = guiHelper.getRecipeArrow();

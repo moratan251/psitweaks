@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-17T00:03:12.9026073	Recipes
+// 1.20.1	2026-07-17T23:40:48.3904851	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -110,7 +110,7 @@ bc7e91434ec4a37734b1c91f9f82fe9f07796789 data/psitweaks/advancements/recipes/mis
 24ddcb9a33ba975043de9b6d565a32cb59e80ece data/psitweaks/advancements/recipes/misc/polonium_pellet_from_block.json
 d02cad286e7c87ef13361de98ddad1d8f8d59610 data/psitweaks/advancements/recipes/misc/portable_cad_assembler.json
 0c6fd701ad983f3aa9295ddf1c59f285a4afc139 data/psitweaks/advancements/recipes/misc/program_blank.json
-af32cdb074341a8543942bd9a3f094bd67d44c5e data/psitweaks/advancements/recipes/misc/program_researcher.json
+be82e3d2d8eed5c69f7557e77fafe3ca456ed92f data/psitweaks/advancements/recipes/misc/program_researcher.json
 df442aba288733b4c2b92413ee64efd83ca96012 data/psitweaks/advancements/recipes/misc/psionic_control_circuit.json
 8d3af9050c6903212179acbd57101a0a4f1fabe7 data/psitweaks/advancements/recipes/misc/psionic_generator.json
 fa628c616391fcdc8cc80f178ce65aacee23a8c4 data/psitweaks/advancements/recipes/misc/psycheonic_metal_ingot.json
@@ -215,7 +215,7 @@ f7e15a19c38a7a610ab07e638dd5aa2788b0f85a data/psitweaks/recipes/polonium_block.j
 7a03bb93739c4b6286bc0fcbd20066a22519fad3 data/psitweaks/recipes/polonium_pellet_from_block.json
 3ee7489c69eff6e7d616f09bb263dd07dac16cc1 data/psitweaks/recipes/portable_cad_assembler.json
 b1c1a866bcd5e08c4897fe7e60486cbe6964be8c data/psitweaks/recipes/program_blank.json
-b03e9ee26711b368737d213d81d3f97bb0c70605 data/psitweaks/recipes/program_researcher.json
+4ad438efc46e7a4a0c2d79ffa6bb8fa6f9d4c2ab data/psitweaks/recipes/program_researcher.json
 64ffe7b39b96f050483b2dd7f46c729064514014 data/psitweaks/recipes/program_research/program_active_air_mine.json
 9a097e701166c15498265ff256bdf5ce0dbeaba5 data/psitweaks/recipes/program_research/program_cocytus.json
 ce9f57df53848dcd8a4dee1ed86538e41eda5ffd data/psitweaks/recipes/program_research/program_cure_radiation.json

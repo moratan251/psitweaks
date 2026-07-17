@@ -1,13 +1,9 @@
 package com.moratan251.psitweaks.client.jei;
 
 import com.moratan251.psitweaks.Psitweaks;
-import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
-import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
-import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
-import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -39,7 +35,6 @@ public class PsitweaksJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new ProgramResearchJeiCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new MaterialMutationJeiCategory(registration.getJeiHelpers().getGuiHelper()));
         if (MekanismCompat.isMekanismLoaded()) {
             MekanismJeiIntegration.registerCategories(registration);
@@ -49,10 +44,6 @@ public class PsitweaksJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         Level level = Minecraft.getInstance().level;
-        List<ProgramResearchRecipe> programResearchRecipes = level == null
-                ? List.of()
-                : level.getRecipeManager().getAllRecipesFor(PsitweaksRecipeTypes.PROGRAM_RESEARCH.get());
-        registration.addRecipes(ProgramResearchJeiCategory.RECIPE_TYPE, programResearchRecipes);
         registration.addRecipes(MaterialMutationJeiCategory.RECIPE_TYPE, getMaterialMutationJeiRecipes());
         if (MekanismCompat.isMekanismLoaded()) {
             MekanismJeiIntegration.registerRecipes(registration, level);
@@ -66,7 +57,6 @@ public class PsitweaksJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(PsitweaksBlocks.PROGRAM_RESEARCHER.get(), ProgramResearchJeiCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get(), MaterialMutationJeiCategory.RECIPE_TYPE);
         if (MekanismCompat.isMekanismLoaded()) {
             MekanismJeiIntegration.registerRecipeCatalysts(registration);
@@ -75,14 +65,9 @@ public class PsitweaksJeiPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(
-                GuiProgramResearcher.class,
-                104,
-                34,
-                24,
-                16,
-                ProgramResearchJeiCategory.RECIPE_TYPE
-        );
+        if (MekanismCompat.isMekanismLoaded()) {
+            MekanismJeiIntegration.registerGuiHandlers(registration);
+        }
     }
 
     private static List<MaterialMutationJeiRecipe> getMaterialMutationJeiRecipes() {

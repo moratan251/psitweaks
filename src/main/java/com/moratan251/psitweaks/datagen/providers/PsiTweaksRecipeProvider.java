@@ -61,7 +61,9 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
             JsonObject serialized = recipe.serializeRecipe();
             JsonObject advancement = recipe.serializeAdvancement();
             String serializedText = serialized + (advancement == null ? "" : advancement.toString());
-            String requiredMod = serializedText.contains("\"mekanismgenerators:")
+            String requiredMod = recipe.getId().getPath().equals("program_researcher")
+                    ? "mekanism"
+                    : serializedText.contains("\"mekanismgenerators:")
                     ? "mekanismgenerators"
                     : serializedText.contains("\"mekanism:") ? "mekanism" : null;
             if (requiredMod == null) {
@@ -617,7 +619,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -627,7 +629,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_LOOP.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -637,7 +639,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_MINE.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -647,7 +649,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_CHARGE.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -657,7 +659,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_GRENADE.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -667,7 +669,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_PROJECTILE.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -677,7 +679,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE.get())
                 .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('B', PsitweaksItems.AWAKENED_SPELL_BULLET_CIRCLE.get())
-                .define('C', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
@@ -707,7 +709,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_psimetal", has(ModItems.psimetal))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_disassembler"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksBlocks.PROGRAM_RESEARCHER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock())
                 .define('P', ModItems.psimetal)
                 .define('C', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
                 .define('G', ModItems.psigem)

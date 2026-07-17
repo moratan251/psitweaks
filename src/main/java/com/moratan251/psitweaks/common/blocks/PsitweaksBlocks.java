@@ -24,14 +24,6 @@ public class PsitweaksBlocks {
                     .sound(SoundType.METAL)
             ));
 
-    // プログラム研究台
-    public static final RegistryObject<Block> PROGRAM_RESEARCHER = registerBlock("program_researcher",
-            () -> new ProgramResearcherBlock(BlockBehaviour.Properties.of()
-                    .strength(5.0f, 15.0f)
-                    .sound(SoundType.METAL)
-                    .requiresCorrectToolForDrops()
-            ));
-
     public static final RegistryObject<Block> ORE_ANTINITE = registerBlock("ore_antinite",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(10.0f)

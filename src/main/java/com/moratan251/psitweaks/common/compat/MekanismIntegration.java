@@ -78,6 +78,7 @@ final class MekanismIntegration {
         output.accept(PsitweaksMekanismItems.MODULE_PSYON_CAPACITY.get());
         output.accept(PsitweaksMekanismItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get());
         output.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
+        output.accept(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock());
         output.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock());
         output.accept(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock());
         output.accept(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.getBlock());

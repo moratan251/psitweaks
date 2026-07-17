@@ -76,6 +76,11 @@ public class ProgramResearchRecipe implements Recipe<Container> {
         return createConsumptionPlan(inputInventory::getStackInSlot, slotCount);
     }
 
+    public @Nullable int[] createConsumptionPlan(Container inputInventory) {
+        int slotCount = Math.min(inputInventory.getContainerSize(), MAX_INPUT_SLOTS);
+        return createConsumptionPlan(inputInventory::getItem, slotCount);
+    }
+
     private @Nullable int[] createConsumptionPlan(IntFunction<ItemStack> stackProvider, int slotCount) {
         if (inputs.isEmpty() || slotCount <= 0) {
             return null;

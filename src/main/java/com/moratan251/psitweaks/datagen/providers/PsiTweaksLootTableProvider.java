@@ -40,7 +40,6 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
         dropSelf(futures, output, PsitweaksBlocks.CAD_DISASSEMBLER.get());
-        dropSelf(futures, output, PsitweaksBlocks.PROGRAM_RESEARCHER.get());
         save(futures, output, PsitweaksBlocks.ORE_ANTINITE.get(), oreDrop(PsitweaksBlocks.ORE_ANTINITE.get(), PsitweaksItems.RAW_ANTINITE.get()));
         dropSelf(futures, output, PsitweaksBlocks.ANTINITE_BLOCK.get());
         dropSelf(futures, output, PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());
@@ -54,6 +53,10 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         save(futures, output, PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(), machineDrop(
                 PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(),
                 nbtPaths("Items")
+        ));
+        save(futures, output, PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock(), machineDrop(
+                PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock(),
+                nbtPaths("Items", "progress", "max_progress")
         ));
         save(futures, output, PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock(), machineDrop(
                 PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock(),

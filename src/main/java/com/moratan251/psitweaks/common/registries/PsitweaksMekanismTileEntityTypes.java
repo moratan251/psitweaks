@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
@@ -18,6 +19,11 @@ public class PsitweaksMekanismTileEntityTypes {
 
     public static final TileEntityTypeRegistryObject<TileEntitySculkEroder> SCULK_ERODER =
             TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.SCULK_ERODER, TileEntitySculkEroder::new,
+                    (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
+                    (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
+
+    public static final TileEntityTypeRegistryObject<ProgramResearcherBlockEntity> PROGRAM_RESEARCHER =
+            TILE_ENTITY_TYPES.register(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER, ProgramResearcherBlockEntity::new,
                     (level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile),
                     (level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile));
 

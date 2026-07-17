@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.common.tile.machine.TileEntityMaterialMutator;
+import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityPsionicGenerator;
 import com.moratan251.psitweaks.common.tile.machine.TileEntitySculkEroder;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
@@ -8,6 +9,7 @@ import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergy
 import com.moratan251.psitweaks.common.tier.TranscendentEnergyCubeTier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.energy.IEnergyConversionHelper;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -29,9 +31,12 @@ import java.util.EnumSet;
 public class PsitweaksMekanismBlockTypes {
 
     private static final FloatingLong SCULK_ERODER_STORAGE = FloatingLong.createConst(20000);
+    private static final FloatingLong PROGRAM_RESEARCHER_STORAGE =
+            IEnergyConversionHelper.INSTANCE.feConversion().convertFrom(1_000_000L);
     private static final FloatingLong MATERIAL_MUTATOR_STORAGE = FloatingLong.createConst(4_000_000);
     private static final FloatingLong PSIONIC_GENERATOR_MAX_OUTPUT = FloatingLong.createConst(6_250);
     private static final ILangEntry DESCRIPTION_SCULK_ERODER = () -> "description.psitweaks.sculk_eroder";
+    private static final ILangEntry DESCRIPTION_PROGRAM_RESEARCHER = () -> "description.psitweaks.program_researcher";
     private static final ILangEntry DESCRIPTION_MATERIAL_MUTATOR = () -> "description.psitweaks.material_mutator";
     private static final ILangEntry DESCRIPTION_PSIONIC_GENERATOR = () -> "description.psitweaks.psionic_generator";
 
@@ -53,6 +58,23 @@ public class PsitweaksMekanismBlockTypes {
                     .withSound(MekanismSounds.ENRICHMENT_CHAMBER)
                     .withEnergyConfig(MekanismConfig.usage.enrichmentChamber, () -> SCULK_ERODER_STORAGE)
                     .withComputerSupport("sculkEroder")
+                    .build();
+
+    public static final BlockTypeTile<ProgramResearcherBlockEntity> PROGRAM_RESEARCHER =
+            BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.PROGRAM_RESEARCHER, DESCRIPTION_PROGRAM_RESEARCHER)
+                    .with(
+                            Attributes.ACTIVE_LIGHT,
+                            new AttributeStateFacing(),
+                            Attributes.INVENTORY,
+                            Attributes.SECURITY,
+                            Attributes.REDSTONE,
+                            Attributes.COMPARATOR,
+                            new AttributeUpgradeSupport(EnumSet.of(Upgrade.MUFFLING))
+                    )
+                    .withGui(() -> PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER)
+                    .withSound(MekanismSounds.ENRICHMENT_CHAMBER)
+                    .withEnergyConfig(() -> PROGRAM_RESEARCHER_STORAGE, () -> PROGRAM_RESEARCHER_STORAGE)
+                    .withComputerSupport("programResearcher")
                     .build();
 
     public static final BlockTypeTile<TileEntityMaterialMutator> MATERIAL_MUTATOR =
