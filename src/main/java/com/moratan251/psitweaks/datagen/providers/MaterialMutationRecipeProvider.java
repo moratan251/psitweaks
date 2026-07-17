@@ -39,7 +39,7 @@ public class MaterialMutationRecipeProvider implements DataProvider {
         addBlockMutation(recipes, "bio_generator", "minecraft:composter", "mekanismgenerators:bio_generator", 1);
         addBlockMutation(recipes, "mycelium", "minecraft:grass_block", "minecraft:mycelium", 1);
         addItemMutation(recipes, "gold_nugget", "minecraft:glowstone", "minecraft:gold_nugget", 4);
-        addItemMutation(recipes, "prismarine_shard", "minecraft:bricks", "minecraft:prismarine_shard", 9);
+        addItemMutation(recipes, "prismarine_shard", "minecraft:bricks", "minecraft:prismarine_shard", 4);
         addItemMutation(recipes, "prismarine_crystals", "minecraft:glass", "minecraft:prismarine_crystals", 4);
         addBlockMutation(recipes, "sponge", "minecraft:dried_kelp_block", "minecraft:sponge", 1);
         addBlockMutation(recipes, "honey_block", "minecraft:slime_block", "minecraft:honey_block", 1);

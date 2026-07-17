@@ -5,7 +5,7 @@
         "block": "minecraft:bricks"
       },
       "output": {
-        "count": 9,
+        "count": 4,
         "item": "minecraft:prismarine_shard"
       }
     }

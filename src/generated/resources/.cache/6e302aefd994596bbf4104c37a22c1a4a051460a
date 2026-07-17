@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-13T18:23:09.5971959	PsiTweaks Material Mutation Recipes
+// 1.21.1	2026-07-17T19:56:40.8623499	PsiTweaks Material Mutation Recipes
 3c5f2f9137eeefbd9877a6086cee8489c5dc67f0 data/psitweaks/recipes/material_mutation/machine/advanced_solar_generator.json
 9cc5b70c0638fd54ea96f963ec2dd4d058cca74b data/psitweaks/recipes/material_mutation/machine/americium_pellet.json
 40b7bf090bebb161764d1124b76b9e2df65be6b2 data/psitweaks/recipes/material_mutation/machine/bio_generator.json
@@ -14,7 +14,7 @@ a393d9e72241cc60b306c8bac0334c7400f03675 data/psitweaks/recipes/material_mutatio
 a73e4a447e12c0c28e5a4209ec0fbb9ae6264a27 data/psitweaks/recipes/material_mutation/machine/neptunium_pellet.json
 e35351620b7bfbb550a56d9399caf616f5804726 data/psitweaks/recipes/material_mutation/machine/netherite_scrap.json
 68b224c1011d8dcc88064ea378a494596379a055 data/psitweaks/recipes/material_mutation/machine/prismarine_crystals.json
-dc458a6a610fff652e3b68475d0ae2e87057df05 data/psitweaks/recipes/material_mutation/machine/prismarine_shard.json
+060160a374f5a19b9b09421bc06f53b64432b607 data/psitweaks/recipes/material_mutation/machine/prismarine_shard.json
 d4813baf6805f06af0b0df9b138ebebd98474b13 data/psitweaks/recipes/material_mutation/machine/sculk_sensor.json
 95c5cbc95bafccdc7b5a72a49ebf8bfaa914dc1e data/psitweaks/recipes/material_mutation/machine/slime_block.json
 21d8890de47f94b0137bf03e51fc4a31db7d3d83 data/psitweaks/recipes/material_mutation/machine/sponge.json
@@ -34,7 +34,7 @@ e496ed4dde381e2b9ff29a7f61fd87fb5fba525e data/psitweaks/recipes/material_mutatio
 dec26abb4d442a725f3d9b1ac221eafdefdb6153 data/psitweaks/recipes/material_mutation/trick/neptunium_pellet.json
 be9bc804c3fef97ca3d313b39d1ab7515453b05a data/psitweaks/recipes/material_mutation/trick/netherite_scrap.json
 2eb266e2f79bf34a6feec7daf3bfed7464bdf396 data/psitweaks/recipes/material_mutation/trick/prismarine_crystals.json
-2e67d77f792e8990a5eaa0d450a7cb7366995203 data/psitweaks/recipes/material_mutation/trick/prismarine_shard.json
+216665bdd71ff69d32f874b8703eaf2dadcb9cd8 data/psitweaks/recipes/material_mutation/trick/prismarine_shard.json
 2d733dc29afcba435ba6728231b5b9a7f2a50bc5 data/psitweaks/recipes/material_mutation/trick/sculk_sensor.json
 dcfdd9afa9ea5ec1b66b7fbc1258d2b286f5d49f data/psitweaks/recipes/material_mutation/trick/slime_block.json
 ec47cbc4966a422f3615f25c5a21d15a9f37d84f data/psitweaks/recipes/material_mutation/trick/sponge.json
