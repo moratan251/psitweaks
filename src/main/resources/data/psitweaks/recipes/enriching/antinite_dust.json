@@ -1,13 +1,26 @@
 {
-  "type": "mekanism:enriching",
-  "input": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "forge:raw_materials/antinite"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:enriching",
+        "input": {
+          "amount": 3,
+          "ingredient": {
+            "tag": "forge:raw_materials/antinite"
+          }
+        },
+        "output": {
+          "item": "psitweaks:antinite_dust",
+          "count": 4
+        }
+      }
     }
-  },
-  "output": {
-    "item": "psitweaks:antinite_dust",
-    "count": 4
-  }
+  ]
 }

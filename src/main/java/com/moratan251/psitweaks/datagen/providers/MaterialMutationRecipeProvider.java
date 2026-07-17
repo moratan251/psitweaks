@@ -30,7 +30,7 @@ public class MaterialMutationRecipeProvider implements DataProvider {
     private final PackOutput.PathProvider pathProvider;
 
     public MaterialMutationRecipeProvider(PackOutput packOutput) {
-        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.DATA_PACK, "recipes/material_mutation");
+        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.DATA_PACK, "material_mutation");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MaterialMutationRecipeProvider implements DataProvider {
     }
 
     private void addRecipes(BiConsumer<ResourceLocation, JsonObject> consumer) {
-        addItemMutation(consumer, "netherite_scrap", Blocks.GOLD_BLOCK, Items.NETHERITE_SCRAP, 4);
+        addItemMutation(consumer, "netherite_scrap", Blocks.GOLD_BLOCK, Items.NETHERITE_SCRAP, 1);
         addItemMutation(consumer, "americium_pellet", PsitweaksBlocks.PLUTONIUM_BLOCK.get(), PsitweaksItems.PELLET_AMERICIUM.get(), 1);
         addItemMutation(consumer, "neptunium_pellet", PsitweaksBlocks.POLONIUM_BLOCK.get(), PsitweaksItems.PELLET_NEPTUNIUM.get(), 1);
         addItemMutation(consumer, "hypostasis_gem", PsitweaksBlocks.ANTINITE_BLOCK.get(), PsitweaksItems.HYPOSTASIS_GEM.get(), 1);
@@ -67,8 +67,9 @@ public class MaterialMutationRecipeProvider implements DataProvider {
         addBlockMutation(consumer, "heat_generator", Blocks.CAMPFIRE, GeneratorsBlocks.HEAT_GENERATOR.getBlock(), 1);
         addBlockMutation(consumer, "bio_generator", Blocks.COMPOSTER, GeneratorsBlocks.BIO_GENERATOR.getBlock(), 1);
         addBlockMutation(consumer, "mycelium", Blocks.GRASS_BLOCK, Blocks.MYCELIUM, 1);
-        addBlockMutation(consumer, "diamond_block_1", Blocks.COAL_BLOCK, Blocks.DIAMOND_BLOCK, 1);
-        addBlockMutation(consumer, "gold_block", Blocks.GLOWSTONE, Blocks.GOLD_BLOCK, 1);
+        addItemMutation(consumer, "gold_nugget", Blocks.GLOWSTONE, Items.GOLD_NUGGET, 4);
+        addItemMutation(consumer, "prismarine_shard", Blocks.BRICKS, Items.PRISMARINE_SHARD, 4);
+        addItemMutation(consumer, "prismarine_crystals", Blocks.GLASS, Items.PRISMARINE_CRYSTALS, 4);
         addBlockMutation(consumer, "sponge", Blocks.DRIED_KELP_BLOCK, Blocks.SPONGE, 1);
         addBlockMutation(consumer, "honey_block", Blocks.SLIME_BLOCK, Blocks.HONEY_BLOCK, 1);
         addBlockMutation(consumer, "slime_block", Blocks.HONEY_BLOCK, Blocks.SLIME_BLOCK, 1);

@@ -1,9 +1,24 @@
 {
-  "type": "mekanism:enriching",
-  "input": {
-    "ingredient": { "item": "psitweaks:psionic_echo" }
-  },
-  "output": {
-    "item": "psitweaks:enriched_echo"
-  }
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:enriching",
+        "input": {
+          "ingredient": {
+            "item": "psitweaks:psionic_echo"
+          }
+        },
+        "output": {
+          "item": "psitweaks:enriched_echo"
+        }
+      }
+    }
+  ]
 }

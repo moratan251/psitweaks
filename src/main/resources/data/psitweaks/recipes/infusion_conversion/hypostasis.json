@@ -1,12 +1,25 @@
 {
-  "type": "mekanism:infusion_conversion",
-  "input": {
-    "ingredient": {
-      "item": "psitweaks:enriched_hypostasis"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:infusion_conversion",
+        "input": {
+          "ingredient": {
+            "item": "psitweaks:enriched_hypostasis"
+          }
+        },
+        "output": {
+          "infuse_type": "psitweaks:infuse_hypostasis",
+          "amount": 80
+        }
+      }
     }
-  },
-  "output": {
-    "infuse_type": "psitweaks:infuse_hypostasis",
-    "amount": 80
-  }
+  ]
 }

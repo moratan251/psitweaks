@@ -1,24 +1,37 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "A": {
-      "item": "mekanism:pellet_antimatter"
-    },
-    "D": {
-      "item": "mekanism:qio_drive_time_dilating"
-    },
-    "P": {
-      "item": "mekanism:pellet_polonium"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "A": {
+            "item": "mekanism:pellet_antimatter"
+          },
+          "D": {
+            "item": "mekanism:qio_drive_time_dilating"
+          },
+          "P": {
+            "item": "mekanism:pellet_polonium"
+          }
+        },
+        "pattern": [
+          "PDP",
+          "DAD",
+          "PDP"
+        ],
+        "result": {
+          "item": "mekanism:qio_drive_supermassive"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    "PDP",
-    "DAD",
-    "PDP"
-  ],
-  "result": {
-    "item": "mekanism:qio_drive_supermassive"
-  },
-  "show_notification": true
+  ]
 }

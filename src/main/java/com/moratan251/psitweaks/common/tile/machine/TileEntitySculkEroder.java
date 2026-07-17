@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.tile.machine;
 
 import com.moratan251.psitweaks.common.recipe.SculkEroderRecipe;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
-import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismRecipeTypes;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -44,7 +44,7 @@ public class TileEntitySculkEroder extends TileEntityElectricMachine {
         if (input.isEmpty() || level == null || !isBlockItem(input.getItem())) {
             return null;
         }
-        for (SculkEroderRecipe recipe : level.getRecipeManager().getAllRecipesFor(PsitweaksRecipeTypes.SCULK_ERODER.get())) {
+        for (SculkEroderRecipe recipe : level.getRecipeManager().getAllRecipesFor(PsitweaksMekanismRecipeTypes.SCULK_ERODER.get())) {
             if (recipe.matchesInput(input)) {
                 return recipe.asMekanismRecipe();
             }
@@ -53,7 +53,7 @@ public class TileEntitySculkEroder extends TileEntityElectricMachine {
     }
 
     public static List<ItemStackToItemStackRecipe> getAllSculkRecipes(Level level) {
-        return level.getRecipeManager().getAllRecipesFor(PsitweaksRecipeTypes.SCULK_ERODER.get()).stream()
+        return level.getRecipeManager().getAllRecipesFor(PsitweaksMekanismRecipeTypes.SCULK_ERODER.get()).stream()
                 .map(SculkEroderRecipe::asMekanismRecipe)
                 .toList();
     }

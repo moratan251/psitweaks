@@ -95,7 +95,6 @@ public class ProgramResearchRecipeBuilder {
         @Override
         public void serializeRecipeData(JsonObject json) {
             json.addProperty("type", "psitweaks:program_research");
-
             JsonArray inputArray = new JsonArray();
             for (RequiredInputData input : inputs) {
                 JsonObject inputObject = new JsonObject();

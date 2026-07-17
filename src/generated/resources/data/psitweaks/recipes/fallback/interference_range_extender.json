@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "psitweaks:flashmetal"
+    },
+    "B": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "C": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:interference_range_extender"
+  }
+}

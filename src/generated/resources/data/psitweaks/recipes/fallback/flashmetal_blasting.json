@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "psitweaks:unrefined_flashmetal"
+  },
+  "result": {
+    "count": 1,
+    "item": "psitweaks:flashmetal"
+  }
+}

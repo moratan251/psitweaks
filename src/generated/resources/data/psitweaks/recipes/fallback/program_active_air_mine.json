@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:tnt"
+    },
+    {
+      "item": "minecraft:tnt"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psi:psigem"
+    },
+    {
+      "item": "psi:psigem"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_active_air_mine"
+  }
+}

@@ -1,18 +1,31 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "building",
-  "key": {
-    "P": {
-      "item": "mekanism:pellet_polonium"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "building",
+        "key": {
+          "P": {
+            "item": "mekanism:pellet_polonium"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "PPP",
+          "PPP"
+        ],
+        "result": {
+          "item": "psitweaks:polonium_block"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    "PPP",
-    "PPP",
-    "PPP"
-  ],
-  "result": {
-    "item": "psitweaks:polonium_block"
-  },
-  "show_notification": true
+  ]
 }

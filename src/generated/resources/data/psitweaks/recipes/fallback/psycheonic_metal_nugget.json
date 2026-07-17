@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:enriched_hypostasis"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "psitweaks:psycheonic_metal_nugget"
+  }
+}

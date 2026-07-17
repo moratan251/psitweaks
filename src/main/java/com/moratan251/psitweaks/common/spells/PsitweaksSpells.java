@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.spells.spellpiece.constant.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.etc.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
@@ -110,20 +111,16 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_die_flex"), PieceTrickDieFlex.class);
             PsiAPI.addPieceToGroup(PieceTrickDieFlex.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_die_flex"), false);
 
-            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_injection"), PieceTrickRadiationInjection.class);
-            PsiAPI.addPieceToGroup(PieceTrickRadiationInjection.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_injection"), false);
+            if (MekanismCompat.isMekanismLoaded()) {
+                registerSpellPiece("trick_radiation_injection", PieceTrickRadiationInjection.class);
+                registerSpellPiece("trick_radiation_filter", PieceTrickRadiationFilter.class);
+                registerSpellPiece("trick_cure_radiation", PieceTrickCureRadiation.class);
+            }
 
-            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_filter"), PieceTrickRadiationFilter.class);
-            PsiAPI.addPieceToGroup(PieceTrickRadiationFilter.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_radiation_filter"), false);
-
-            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_cure_radiation"), PieceTrickCureRadiation.class);
-            PsiAPI.addPieceToGroup(PieceTrickCureRadiation.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_cure_radiation"), false);
+            registerSpellPiece("trick_material_mutation", PieceTrickMaterialMutation.class);
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_guillotine"), PieceTrickGuillotine.class);
             PsiAPI.addPieceToGroup(PieceTrickGuillotine.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_guillotine"), false);
-
-            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_material_mutation"), PieceTrickMaterialMutation.class);
-            PsiAPI.addPieceToGroup(PieceTrickMaterialMutation.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_material_mutation"), false);
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tan"), PieceOperatorTan.class);
             PsiAPI.addPieceToGroup(PieceOperatorTan.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tan"), false);

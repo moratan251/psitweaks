@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "minecraft:copper_block"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "psitweaks:enriched_psigem"
+    },
+    {
+      "item": "psitweaks:enriched_psigem"
+    },
+    {
+      "item": "psitweaks:enriched_psigem"
+    },
+    {
+      "item": "psitweaks:enriched_psigem"
+    },
+    {
+      "item": "psitweaks:enriched_psigem"
+    },
+    {
+      "item": "psitweaks:enriched_psigem"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "psitweaks:alloy_psion"
+  }
+}

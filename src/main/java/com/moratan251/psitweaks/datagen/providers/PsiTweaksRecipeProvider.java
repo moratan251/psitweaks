@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.datagen.providers;
 
+import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -18,10 +20,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vazkii.psi.common.block.base.ModBlocks;
 import vazkii.psi.common.item.base.ModItems;
 
@@ -50,7 +56,26 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
             ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "gems/diamond"));
 
     @Override
-    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> output) {
+        Consumer<FinishedRecipe> consumer = recipe -> {
+            JsonObject serialized = recipe.serializeRecipe();
+            JsonObject advancement = recipe.serializeAdvancement();
+            String serializedText = serialized + (advancement == null ? "" : advancement.toString());
+            String requiredMod = serializedText.contains("\"mekanismgenerators:")
+                    ? "mekanismgenerators"
+                    : serializedText.contains("\"mekanism:") ? "mekanism" : null;
+            if (requiredMod == null) {
+                output.accept(recipe);
+                return;
+            }
+            ConditionalRecipe.Builder conditionalRecipe = ConditionalRecipe.builder()
+                    .addCondition(new ModLoadedCondition(requiredMod))
+                    .addRecipe(recipe);
+            if (recipe.getAdvancementId() != null) {
+                conditionalRecipe.generateAdvancement(recipe.getAdvancementId());
+            }
+            conditionalRecipe.build(output, recipe.getId());
+        };
         // PsiGem を取得
         Item psiGem = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "psigem"));
         Item psimetal = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "psimetal"));
@@ -59,12 +84,12 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         Item spellBullet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "spell_bullet"));
         Item cadAssembler = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psi", "cad_assembler"));
         Item ultimateControlCircuit = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ultimate_control_circuit"));
-        Item plutoniumPellet = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "pellet_plutonium"));
         Item teleportationCore = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "teleportation_core"));
         Item osmiumIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_osmium"));
         Item tinIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_tin"));
         Item leadIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_lead"));
         Item uraniumIngot = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("mekanism", "ingot_uranium"));
+        Item interferenceRangeExtender = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("psitweaks", "interference_range_extender"));
 
 
 
@@ -276,14 +301,25 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
 
  */
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.THIRD_EYE_DEVICE.get())
-                .define('A', PsitweaksItems.HEAVY_PSIMETAL.get())
-                .define('B', plutoniumPellet)
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, interferenceRangeExtender)
+                .define('A', PsitweaksItems.FLASHMETAL.get())
+                .define('B', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
                 .define('C', teleportationCore)
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
-                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .unlockedBy("has_psionic_control_circuit", has(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "interference_range_extender"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.THIRD_EYE_DEVICE.get())
+                .define('A', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('B', PsitweaksItems.PELLET_AMERICIUM.get())
+                .define('C', MekanismItems.ANTIMATTER_PELLET)
+                .define('D', interferenceRangeExtender)
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("ABA")
+                .unlockedBy("has_interference_range_extender", has(interferenceRangeExtender))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "third_eye_device"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PsitweaksItems.SORCERY_BOOSTER.get())
@@ -1208,7 +1244,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst_block", has(Items.AMETHYST_BLOCK))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "amethyst_shard_from_block"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MODULE_PSYON_SUPPLYING.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismItems.MODULE_PSYON_SUPPLYING.get())
                 .define('A', PsitweaksItems.ALLOY_PSION.get())
                 .define('E', PsitweaksItems.CHAOTIC_FACTOR.get())
                 .define('M', MekanismItems.MODULE_BASE)
@@ -1219,7 +1255,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_module_base", has(MekanismItems.MODULE_BASE))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "module_psyon_supplying_unit"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MODULE_PSYON_CAPACITY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismItems.MODULE_PSYON_CAPACITY.get())
                 .define('A', PsitweaksItems.ALLOY_PSION.get())
                 .define('E', PsitweaksItems.ANTINITE_INGOT.get())
                 .define('M', MekanismItems.MODULE_BASE)
@@ -1230,7 +1266,7 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_module_base", has(MekanismItems.MODULE_BASE))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "module_psyon_capacity_unit"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksMekanismItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get())
                 .define('A', PsitweaksItems.ALLOY_HYPOSTASIS.get())
                 .define('E', PsitweaksItems.MAGICIANS_BRAIN.get())
                 .define('M', MekanismItems.MODULE_BASE)
@@ -1244,4 +1280,5 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
         PsiTweaksSmeltryRecipeProvider.addRecipes(consumer);
         ProgramResearchRecipeProvider.addRecipes(consumer);
     }
+
 }

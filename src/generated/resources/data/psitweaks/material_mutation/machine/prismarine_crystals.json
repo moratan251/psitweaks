@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:glass"
+  },
+  "output": {
+    "count": 4,
+    "item": "minecraft:prismarine_crystals"
+  },
+  "time": 200
+}

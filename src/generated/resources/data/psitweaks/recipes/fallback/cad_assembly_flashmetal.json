@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "psitweaks:psionic_control_circuit"
+    },
+    "F": {
+      "item": "psitweaks:flashmetal"
+    },
+    "M": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    "MMM",
+    "FFF",
+    " CF"
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:cad_assembly_flashmetal"
+  }
+}

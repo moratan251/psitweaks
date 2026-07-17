@@ -92,6 +92,22 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "モード選択";
             default -> "Mode Select";
         });
+        add("screen.psitweaks.configuration.title", switch (locale) {
+            case "ja_jp" -> "Psitweaks コンフィグ";
+            default -> "Psitweaks Configuration";
+        });
+        add("screen.psitweaks.configuration.disable_damage_psi_deduction", switch (locale) {
+            case "ja_jp" -> "被ダメージ時のPsi消費を無効化";
+            default -> "Disable Damage Psi Deduction";
+        });
+        add("screen.psitweaks.configuration.disable_regen_cooldown", switch (locale) {
+            case "ja_jp" -> "Psi回復クールダウンを無効化";
+            default -> "Disable Psi Regeneration Cooldown";
+        });
+        add("psi.book.page.psitweaks_changes.1", switch (locale) {
+            case "ja_jp" -> "$(p)スペルプログラム画面では, Shiftを押しながらグリッドを左ドラッグすると, 複数のスペルピースを範囲選択できます. 選択されたスペルピースは青くハイライトされ, コピーされる範囲は青い枠で示されます.$(p)Ctrlを押しながらスペルピースを左クリックすると, そのピースを選択に追加したり, 選択から外したりできます. 複数選択中は Ctrl+C でコピー, Ctrl+X で切り取り, Ctrl+V で貼り付けを行えます. 貼り付けは, Psiで現在選択されているセルをコピー範囲の左上として行われます.";
+            default -> "In the Spell Programmer screen, hold Shift and left-drag across the grid to select multiple spell pieces. Selected spell pieces are highlighted in blue, and the copied range is shown with a blue outline.$(p)Hold Ctrl and left-click a spell piece to add it to or remove it from the selection. While multiple pieces are selected, use Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste. Pasting uses the cell currently selected in Psi as the upper-left corner of the copied range.";
+        });
         add("psitweaks.gui.string_constant_input.empty", switch (locale) {
             case "ja_jp" -> "空文字列";
             default -> "Empty string";
@@ -1049,6 +1065,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.auto_caster_tick", "Auto Caster: tick");
         add("item.psitweaks.auto_caster_second", "Auto Caster: second");
         add("item.psitweaks.auto_caster_custom_tick", "Auto Caster: custom tick");
+        add("item.psitweaks.interference_range_extender", "Interference Range Extender");
         add("item.psitweaks.third_eye_device", "Third‐Eye Device");
         add("item.psitweaks.sorcery_booster", "Sorcery Booster");
         add("item.psitweaks.spell_magazine", "Spell Magazine");
@@ -1408,7 +1425,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_item.portable_cad_assembler", "A handheld CAD Assembler. Use it to open an assembler interface without placing the block, making it easy to adjust CAD parts or loaded spell bullets while away from base.");
         add("psi.book.page.psitweaks_item.sorcery_booster", "Equips in the Magic Calculation Area slot and increases spell damage by 30%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l), making it a combat-focused caster upgrade.");
         add("psi.book.page.psitweaks_item.flash_charm", "A Curios charm that continually removes Blindness and Darkness from the wearer.$(p)It also works while carried in inventory, making it useful in the Deep Dark and against vision-disrupting effects.");
-        add("psi.book.page.psitweaks_item.third_eye_device", "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully.");
+        add("psi.book.page.psitweaks_item.interference_range_extender", "Equips in the Magic Calculation Area slot and extends spell targeting and raycast range to 64 blocks.$(p)It is the lower-tier range option used to craft the Third-Eye Device.");
+        add("psi.book.page.psitweaks_item.third_eye_device", "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)Raycasts are limited to 256 blocks, so use it carefully.");
         add("psi.book.page.psitweaks_item.inline_casters.0", "Inline, Secondary, and Parallel Casters are handheld spellcasting tools with their own bullet sockets. They still require the caster to have a CAD, but the selected bullet is stored in the caster item itself.");
         add("psi.book.page.psitweaks_item.inline_casters.1", "The Inline Caster has one slot, the Secondary Caster has five, and the Parallel Caster has eleven.$(p)Use them when you want to carry many spell bullets without constantly changing the CAD.");
         add("psi.book.page.psitweaks_item.auto_casters.0", "Auto Casters can be equipped in Curios slots and automatically cast spells.$(p)With the Curios Controller, you can change their spell bullets in the same way as psimetal exosuit armor.");
@@ -1560,6 +1578,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.auto_caster_tick", "術式自動詠唱デバイス: tick");
         add("item.psitweaks.auto_caster_second", "術式自動詠唱デバイス: セカンド");
         add("item.psitweaks.auto_caster_custom_tick", "術式自動詠唱デバイス: カスタムtick");
+        add("item.psitweaks.interference_range_extender", "干渉距離延長デバイス");
         add("item.psitweaks.third_eye_device", "サードアイデバイス");
         add("item.psitweaks.sorcery_booster", "ソーサリーブースター");
         add("item.psitweaks.spell_magazine", "スペルマガジン");
@@ -1891,7 +1910,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_item.portable_cad_assembler", "手持ちで使えるCAD組立機です. ブロックを設置せずに組立機画面を開けるため, 拠点外でも簡単にCAD部品や装填済み術式弾を調整できます.");
         add("psi.book.page.psitweaks_item.sorcery_booster", "魔法演算領域スロットに装備し, 術式ダメージを30%増加させます.$(p)$(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使う, 戦闘向けの魔法師強化装備です.");
         add("psi.book.page.psitweaks_item.flash_charm", "装備者の盲目と暗闇を継続的に解除するCuriosチャームです.$(p)インベントリ内に持っているだけでも機能するため, ディープダークや視界妨害効果への対策になります.");
-        add("psi.book.page.psitweaks_item.third_eye_device", "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)通常のCAD射程を大きく超える位置を対象にできるため, 扱いには注意してください.");
+        add("psi.book.page.psitweaks_item.interference_range_extender", "魔法演算領域スロットに装備し, 術式の対象判定とレイキャスト射程を64ブロックまで延長します.$(p)サードアイデバイスの素材にもなる下位の射程延長装備です.");
+        add("psi.book.page.psitweaks_item.third_eye_device", "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)レイキャスト射程は256ブロックまで延長されます.");
         add("psi.book.page.psitweaks_item.inline_casters.0", "インライン, セカンダリ, パラレルキャスターは, 自身に術式弾スロットを持つ手持ち詠唱具です. 詠唱には通常通りCADが必要ですが, 選択中の術式弾はキャスター側に保存されます.");
         add("psi.book.page.psitweaks_item.inline_casters.1", "インラインキャスターは1スロット, セカンダリキャスターは5スロット, パラレルキャスターは11スロットです.$(p)CADを頻繁に差し替えず, 多数の術式弾を持ち替えたいときに使います.");
         add("psi.book.page.psitweaks_item.auto_casters.0", "術式自動詠唱デバイスは, Curiosスロットに装備可能であり, 自動で術式を詠唱する装備です. $(p) キュリオスコントローラを用いることで、サイメタル外装と同じ要領で術式弾を変更できます.");

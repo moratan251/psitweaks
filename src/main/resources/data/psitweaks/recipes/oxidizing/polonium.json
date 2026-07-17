@@ -1,12 +1,25 @@
 {
-  "type": "mekanism:oxidizing",
-  "input": {
-    "ingredient": {
-      "item": "mekanism:pellet_polonium"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:oxidizing",
+        "input": {
+          "ingredient": {
+            "item": "mekanism:pellet_polonium"
+          }
+        },
+        "output": {
+          "amount": 1000,
+          "gas": "mekanism:polonium"
+        }
+      }
     }
-  },
-  "output": {
-    "amount": 1000,
-    "gas": "mekanism:polonium"
-  }
+  ]
 }

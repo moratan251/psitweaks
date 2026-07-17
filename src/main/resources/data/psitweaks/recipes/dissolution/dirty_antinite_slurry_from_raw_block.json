@@ -1,17 +1,30 @@
 {
-  "type": "mekanism:dissolution",
-  "gasInput": {
-    "amount": 2,
-    "gas": "mekanism:sulfuric_acid"
-  },
-  "itemInput": {
-    "ingredient": {
-      "tag": "forge:storage_blocks/raw_antinite"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:dissolution",
+        "gasInput": {
+          "amount": 2,
+          "gas": "mekanism:sulfuric_acid"
+        },
+        "itemInput": {
+          "ingredient": {
+            "tag": "forge:storage_blocks/raw_antinite"
+          }
+        },
+        "output": {
+          "amount": 6000,
+          "chemicalType": "slurry",
+          "slurry": "psitweaks:dirty_antinite"
+        }
+      }
     }
-  },
-  "output": {
-    "amount": 6000,
-    "chemicalType": "slurry",
-    "slurry": "psitweaks:dirty_antinite"
-  }
+  ]
 }

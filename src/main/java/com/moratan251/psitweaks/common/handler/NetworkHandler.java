@@ -2,13 +2,13 @@ package com.moratan251.psitweaks.common.handler;
 
 import com.moratan251.psitweaks.client.gui.machine.MessageAutoCasterCustomTickSync;
 import com.moratan251.psitweaks.client.gui.machine.MessageFlashRingSync;
-import com.moratan251.psitweaks.client.gui.machine.MessagePsiLinkGeneratorSettingsSync;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class NetworkHandler {
-    public static final String PROTOCOL_VERSION = "1";
+    public static final String PROTOCOL_VERSION = "2";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.fromNamespaceAndPath("psitweaks", "main"),
             () -> PROTOCOL_VERSION,
@@ -34,12 +34,6 @@ public class NetworkHandler {
                 MessageAutoCasterCustomTickSync::handle
         );
 
-        CHANNEL.registerMessage(
-                id,
-                MessagePsiLinkGeneratorSettingsSync.class,
-                MessagePsiLinkGeneratorSettingsSync::encode,
-                MessagePsiLinkGeneratorSettingsSync::decode,
-                MessagePsiLinkGeneratorSettingsSync::handle
-        );
+        MekanismCompat.registerNetworkMessages(id);
     }
 }

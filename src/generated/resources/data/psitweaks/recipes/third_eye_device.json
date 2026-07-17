@@ -1,24 +1,40 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "key": {
-    "A": {
-      "item": "psitweaks:heavy_psimetal"
-    },
-    "B": {
-      "item": "mekanism:pellet_plutonium"
-    },
-    "C": {
-      "item": "mekanism:teleportation_core"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "equipment",
+        "key": {
+          "A": {
+            "item": "psitweaks:psycheonic_metal_ingot"
+          },
+          "B": {
+            "item": "psitweaks:pellet_americium"
+          },
+          "C": {
+            "item": "mekanism:pellet_antimatter"
+          },
+          "D": {
+            "item": "psitweaks:interference_range_extender"
+          }
+        },
+        "pattern": [
+          "ABA",
+          "CDC",
+          "ABA"
+        ],
+        "result": {
+          "item": "psitweaks:third_eye_device"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    "ABA",
-    "BCB",
-    "ABA"
-  ],
-  "result": {
-    "item": "psitweaks:third_eye_device"
-  },
-  "show_notification": true
+  ]
 }

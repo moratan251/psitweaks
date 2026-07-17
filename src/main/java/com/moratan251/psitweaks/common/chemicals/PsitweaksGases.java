@@ -8,9 +8,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PsitweaksGases {
 
     public static final GasDeferredRegister GASES = new GasDeferredRegister("psitweaks");

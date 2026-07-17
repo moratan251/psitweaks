@@ -1,22 +1,17 @@
 package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
+import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.renderer.EmptyRenderer;
 import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
-import mekanism.api.MekanismIMC;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
-import com.moratan251.psitweaks.common.chemicals.PsitweaksGases;
-import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
-import com.moratan251.psitweaks.common.chemicals.PsitweaksSlurries;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
@@ -30,9 +25,9 @@ import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
-import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.PsiTweaksFallbackRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksLanguageProvider;
@@ -89,6 +84,7 @@ public class Psitweaks {
 
         if (dist.isClient()) {
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
+            PsitweaksConfigScreenRegistration.register();
         } else if (dist.isDedicatedServer()) {
             DisplayNameTranslationRepository.registerServerReloadListeners(MinecraftForge.EVENT_BUS);
         }
@@ -103,18 +99,12 @@ public class Psitweaks {
         PsitweaksItems.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
         PsitweaksBlockEntityTypes.register(modEventBus);
-        PsitweaksMekanismBlocks.register(modEventBus);
-        PsitweaksMekanismTileEntityTypes.register(modEventBus);
-        PsitweaksMekanismContainerTypes.register(modEventBus);
+        MekanismCompat.register(modEventBus);
         ModMenuTypes.MENUS.register(modEventBus);
         PsitweaksRecipeTypes.register(modEventBus);
         PsitweaksRecipeSerializers.register(modEventBus);
         PsitweaksVillagers.register(modEventBus);
-        PsitweaksInfuseTypes.register(modEventBus);
-        PsitweaksGases.register(modEventBus);
-        PsitweaksSlurries.register(modEventBus);
         registerTConstructCompat(modEventBus);
-        PsitweaksModules.MODULES.register(modEventBus);
 
 
         // Register ourselves for server and other game events we are interested in
@@ -125,6 +115,10 @@ public class Psitweaks {
 
         // Register the item to a creative tab
         PsitweaksTabs.register(modEventBus);
+
+        if (dist.isClient()) {
+            MekanismCompat.registerClient(modEventBus);
+        }
 
         PsitweaksEffects.register(modEventBus);
         PsitweaksAttributes.register(modEventBus);
@@ -148,11 +142,7 @@ public class Psitweaks {
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        MekanismIMC.addMekaSuitBodyarmorModules(
-                PsitweaksModules.PSYON_SUPPLYING_UNIT,
-                PsitweaksModules.PSYON_CAPACITY_UNIT
-        );
-        MekanismIMC.addMekaSuitHelmetModules(PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT);
+        MekanismCompat.enqueueIMC();
     }
 
     private static void registerTConstructCompat(IEventBus modEventBus) {
@@ -247,6 +237,7 @@ public class Psitweaks {
         ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
         gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
+        gen.addProvider(event.includeServer(), new PsiTweaksFallbackRecipeProvider(packOutput));
         gen.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
         gen.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
         gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));

@@ -1,12 +1,25 @@
 {
-  "type": "mekanism:oxidizing",
-  "input": {
-    "ingredient": {
-      "item": "psitweaks:psionic_echo"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:oxidizing",
+        "input": {
+          "ingredient": {
+            "item": "psitweaks:psionic_echo"
+          }
+        },
+        "output": {
+          "amount": 1000,
+          "gas": "psitweaks:gas_psionic_echo"
+        }
+      }
     }
-  },
-  "output": {
-    "amount": 1000,
-    "gas": "psitweaks:gas_psionic_echo"
-  }
+  ]
 }

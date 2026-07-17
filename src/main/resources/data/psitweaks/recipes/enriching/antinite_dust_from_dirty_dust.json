@@ -1,11 +1,24 @@
 {
-  "type": "mekanism:enriching",
-  "input": {
-    "ingredient": {
-      "tag": "mekanism:dirty_dusts/antinite"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:enriching",
+        "input": {
+          "ingredient": {
+            "tag": "mekanism:dirty_dusts/antinite"
+          }
+        },
+        "output": {
+          "item": "psitweaks:antinite_dust"
+        }
+      }
     }
-  },
-  "output": {
-    "item": "psitweaks:antinite_dust"
-  }
+  ]
 }

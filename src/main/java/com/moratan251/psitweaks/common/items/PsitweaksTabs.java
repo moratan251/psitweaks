@@ -1,9 +1,7 @@
 package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
-import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
-import mekanism.common.util.StorageUtils;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -91,11 +89,9 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PARALLEL_CASTER.get());
 
 
+                        pOutput.accept(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER.get());
                         pOutput.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
                         pOutput.accept(PsitweaksItems.SORCERY_BOOSTER.get());
-                        pOutput.accept(PsitweaksItems.MODULE_PSYON_SUPPLYING.get());
-                        pOutput.accept(PsitweaksItems.MODULE_PSYON_CAPACITY.get());
-                        pOutput.accept(PsitweaksItems.MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get());
                         pOutput.accept(PsitweaksItems.ADVANCED_SPELL_BULLET_MINE.get());
@@ -144,9 +140,11 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_METEOR_LINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
-                        pOutput.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
+                        if (MekanismCompat.isMekanismLoaded()) {
+                            pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
+                            pOutput.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
+                            pOutput.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
+                        }
                         pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
@@ -164,16 +162,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksBlocks.POLONIUM_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.SPELLMACHINERY_CASING.get());
-                        pOutput.accept(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock());
-                        pOutput.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.getBlock());
-                        pOutput.accept(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.getBlock());
-                        pOutput.accept(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.getBlock());
-                        ItemStack emptyTranscendentEnergyCube = new ItemStack(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.getBlock());
-                        pOutput.accept(emptyTranscendentEnergyCube);
-                        pOutput.accept(StorageUtils.getFilledEnergyVariant(
-                                emptyTranscendentEnergyCube.copy(),
-                                TileEntityTranscendentEnergyCube.getStorage()
-                        ));
+                        MekanismCompat.addCreativeTabContents(pOutput);
 
 
                     })))

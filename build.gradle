@@ -99,8 +99,12 @@ dependencies {
     implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("curse.maven:jei-238222:6600311")
     implementation fg.deobf("curse.maven:just-enough-professions-jep-417645:4587024")
-    implementation fg.deobf("curse.maven:mekanism-268560:6552911")
-    implementation fg.deobf("curse.maven:mekanism-generators-268566:6552914")
+    compileOnly fg.deobf("curse.maven:mekanism-268560:6552911")
+    compileOnly fg.deobf("curse.maven:mekanism-generators-268566:6552914")
+    if (providers.gradleProperty("psitweaks.includeMekanismInRuns").orElse("true").get().toBoolean()) {
+        runtimeOnly fg.deobf("curse.maven:mekanism-268560:6552911")
+        runtimeOnly fg.deobf("curse.maven:mekanism-generators-268566:6552914")
+    }
     implementation fg.deobf("curse.maven:moffs-addonapi-dynload-1242459:7441442")
     implementation fg.deobf("curse.maven:psiex-1408745:7638676")
     implementation fg.deobf("curse.maven:mantle-74924:7563777")
@@ -115,7 +119,9 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:selene-499980:6933139")
     runtimeOnly fg.deobf("curse.maven:ticex-tinkers-construct-ex-1242469:7515155")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6271651")
-    runtimeOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
+    if (providers.gradleProperty("psitweaks.includeMekanismInRuns").orElse("true").get().toBoolean()) {
+        runtimeOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
+    }
     runtimeOnly fg.deobf("curse.maven:psionic-utilities-611991:6549076")
     // runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
     // runtimeOnly fg.deobf("curse.maven:ars-nouveau-401955:6688854")

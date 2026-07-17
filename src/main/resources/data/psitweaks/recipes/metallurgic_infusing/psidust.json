@@ -1,11 +1,28 @@
 {
-  "type": "mekanism:metallurgic_infusing",
-  "chemicalInput": {
-    "amount": 1,
-    "infuse_type": "psitweaks:infuse_psigem"
-  },
-  "itemInput": {
-    "ingredient": { "item": "minecraft:redstone" }
-  },
-  "output": { "item": "psi:psidust" }
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:metallurgic_infusing",
+        "chemicalInput": {
+          "amount": 1,
+          "infuse_type": "psitweaks:infuse_psigem"
+        },
+        "itemInput": {
+          "ingredient": {
+            "item": "minecraft:redstone"
+          }
+        },
+        "output": {
+          "item": "psi:psidust"
+        }
+      }
+    }
+  ]
 }

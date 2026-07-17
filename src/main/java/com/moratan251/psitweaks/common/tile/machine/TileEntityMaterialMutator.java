@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.tile.machine;
 
-import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.recipe.MaterialMutationInjectingRecipe;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import mekanism.api.AutomationType;
@@ -56,12 +56,12 @@ public class TileEntityMaterialMutator extends TileEntityAdvancedElectricMachine
 
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        return MaterialMutationRecipeHandler.findFirstMachineRecipe(itemInputHandler.getInput(), gasInputHandler.getInput());
+        return MekanismMaterialMutationRecipeHandler.findFirstMachineRecipe(itemInputHandler.getInput(), gasInputHandler.getInput());
     }
 
     @Override
     public ItemStackGasToItemStackRecipe findFirstRecipe(ItemStack inputA, GasStack inputB) {
-        return MaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB);
+        return MekanismMaterialMutationRecipeHandler.findFirstMachineRecipe(inputA, inputB);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TileEntityMaterialMutator extends TileEntityAdvancedElectricMachine
         } else if (inputB.isEmpty()) {
             return true;
         }
-        return MaterialMutationRecipeHandler.containsMachineRecipe(inputA, inputB.getType());
+        return MekanismMaterialMutationRecipeHandler.containsMachineRecipe(inputA, inputB.getType());
     }
 
     @Override
@@ -81,17 +81,17 @@ public class TileEntityMaterialMutator extends TileEntityAdvancedElectricMachine
         } else if (inputA.isEmpty()) {
             return true;
         }
-        return MaterialMutationRecipeHandler.containsMachineRecipe(inputA, inputB.getType());
+        return MekanismMaterialMutationRecipeHandler.containsMachineRecipe(inputA, inputB.getType());
     }
 
     @Override
     public boolean containsRecipeA(ItemStack input) {
-        return MaterialMutationRecipeHandler.containsMachineRecipeInput(input);
+        return MekanismMaterialMutationRecipeHandler.containsMachineRecipeInput(input);
     }
 
     @Override
     public boolean containsRecipeB(GasStack input) {
-        return MaterialMutationRecipeHandler.containsMachineRecipeGas(input);
+        return MekanismMaterialMutationRecipeHandler.containsMachineRecipeGas(input);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class TileEntityMaterialMutator extends TileEntityAdvancedElectricMachine
     }
 
     public static List<ItemStackGasToItemStackRecipe> getAllMutationMachineRecipes(Level level) {
-        return MaterialMutationRecipeHandler.getAllMachineRecipes();
+        return MekanismMaterialMutationRecipeHandler.getAllMachineRecipes();
     }
 
     private int getScaledRecipeTime(int recipeTime) {

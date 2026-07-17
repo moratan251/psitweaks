@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "minecraft:note_block"
+    },
+    {
+      "item": "minecraft:note_block"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_phonon_maser"
+  }
+}

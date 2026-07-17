@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "minecraft:bricks"
+      },
+      "output": {
+        "count": 4,
+        "item": "minecraft:prismarine_shard"
+      }
+    }
+  ]
+}

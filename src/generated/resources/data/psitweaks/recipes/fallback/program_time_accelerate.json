@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:powered_rail"
+    },
+    {
+      "item": "minecraft:powered_rail"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:clock"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_time_accelerate"
+  }
+}

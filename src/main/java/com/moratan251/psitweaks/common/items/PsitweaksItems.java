@@ -9,12 +9,9 @@ import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterSecond;
 import com.moratan251.psitweaks.common.items.curios.ItemAutoCasterTick;
 import com.moratan251.psitweaks.common.items.curios.ItemCuriosController;
 import com.moratan251.psitweaks.common.items.curios.ItemFlashCharm;
+import com.moratan251.psitweaks.common.items.curios.ItemInterferenceRangeExtender;
 import com.moratan251.psitweaks.common.items.curios.ItemSorceryBooster;
-//import com.moratan251.psitweaks.common.registries.PsitweaksModules;
-import com.moratan251.psitweaks.common.registries.PsitweaksModules;
-import mekanism.common.item.ItemModule;
-import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.registration.impl.ItemRegistryObject;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -71,9 +68,9 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_METEOR_LINE = ITEMS.register("program_meteor_line", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
-    public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = ITEMS.register("program_radiation_injection", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
-    public static final RegistryObject<Item> PROGRAM_RADIATION_FILTER = ITEMS.register("program_radiation_filter", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
-    public static final RegistryObject<Item> PROGRAM_CURE_RADIATION = ITEMS.register("program_cure_radiation", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = registerMekanismProgram("program_radiation_injection");
+    public static final RegistryObject<Item> PROGRAM_RADIATION_FILTER = registerMekanismProgram("program_radiation_filter");
+    public static final RegistryObject<Item> PROGRAM_CURE_RADIATION = registerMekanismProgram("program_cure_radiation");
     public static final RegistryObject<Item> PROGRAM_GUILLOTINE = ITEMS.register("program_guillotine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_ACTIVE_AIR_MINE = ITEMS.register("program_active_air_mine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_DIE_FLEX = ITEMS.register("program_die_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
@@ -136,6 +133,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> AUTO_CASTER_SECOND = ITEMS.register("auto_caster_second", () -> new ItemAutoCasterSecond(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_TICK = ITEMS.register("auto_caster_tick", () -> new ItemAutoCasterTick(new Item.Properties()));
     public static final RegistryObject<Item> AUTO_CASTER_CUSTOM_TICK = ITEMS.register("auto_caster_custom_tick", () -> new ItemAutoCasterCustomTick(new Item.Properties()));
+    public static final RegistryObject<Item> INTERFERENCE_RANGE_EXTENDER = ITEMS.register("interference_range_extender",
+            () -> new ItemInterferenceRangeExtender(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
     public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final RegistryObject<Item> SORCERY_BOOSTER = ITEMS.register("sorcery_booster", () -> new ItemSorceryBooster(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
     public static final RegistryObject<Item> FLASH_CHARM = ITEMS.register("flash_charm", () -> new ItemFlashCharm(new Item.Properties()));
@@ -191,15 +190,14 @@ public class PsitweaksItems {
 
 
 
-    public static final ItemDeferredRegister MODULES = new ItemDeferredRegister(Psitweaks.MOD_ID);
-    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_SUPPLYING = MODULES.registerModule(PsitweaksModules.PSYON_SUPPLYING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_PSYON_CAPACITY = MODULES.registerModule(PsitweaksModules.PSYON_CAPACITY_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_PHENOMENON_INTERFERENCE_ENHANCEMENT =
-            MODULES.registerModule(PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT);
-
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
-        MODULES.register(eventBus);
+    }
+
+    private static RegistryObject<Item> registerMekanismProgram(String id) {
+        return MekanismCompat.isMekanismLoaded()
+                ? ITEMS.register(id, () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false))
+                : null;
     }
 
 

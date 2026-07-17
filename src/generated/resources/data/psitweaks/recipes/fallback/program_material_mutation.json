@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "psitweaks:philosophers_stone"
+    },
+    {
+      "item": "minecraft:sculk_catalyst"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:chaotic_factor"
+    },
+    {
+      "item": "psitweaks:chaotic_factor"
+    },
+    {
+      "item": "psitweaks:psionic_echo"
+    },
+    {
+      "item": "psitweaks:psionic_echo"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_material_mutation"
+  }
+}

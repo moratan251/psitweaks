@@ -1,11 +1,28 @@
 {
-  "type": "mekanism:metallurgic_infusing",
-  "chemicalInput": {
-    "amount": 640,
-    "infuse_type": "psitweaks:infuse_ivory"
-  },
-  "itemInput": {
-    "ingredient": { "item": "psitweaks:psionic_factor_ebony" }
-  },
-  "output": { "item": "psitweaks:chaotic_factor" }
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:metallurgic_infusing",
+        "chemicalInput": {
+          "amount": 640,
+          "infuse_type": "psitweaks:infuse_ivory"
+        },
+        "itemInput": {
+          "ingredient": {
+            "item": "psitweaks:psionic_factor_ebony"
+          }
+        },
+        "output": {
+          "item": "psitweaks:chaotic_factor"
+        }
+      }
+    }
+  ]
 }

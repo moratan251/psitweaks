@@ -1,13 +1,25 @@
 {
-  "type": "mekanism:infusion_conversion",
-  "input": {
-    "ingredient": {
-      "item": "psitweaks:enriched_echo"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:infusion_conversion",
+        "input": {
+          "ingredient": {
+            "item": "psitweaks:enriched_echo"
+          }
+        },
+        "output": {
+          "infuse_type": "psitweaks:infuse_psionic_echo",
+          "amount": 80
+        }
+      }
     }
-  },
-  "output": {
-    "infuse_type": "psitweaks:infuse_psionic_echo",
-    "amount": 80
-  }
+  ]
 }
-

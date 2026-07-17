@@ -59,6 +59,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "hypostasis_control_circuit",
             "hypostasis_gem",
             "incomplete_heavy_psimetal_assembly",
+            "interference_range_extender",
             "jade",
             "magatama",
             "magicians_brain",

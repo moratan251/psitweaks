@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-09T11:42:16.5134721	Item Models: psitweaks
+// 1.20.1	2026-07-16T23:41:47.3764745	Item Models: psitweaks
 9be455b28f25dc7c439ae3a70c704949d5cfdbbc assets/psitweaks/models/item/advanced_spell_bullet.json
 65ce1cfdd3a5f75a916309b6710a6a7943340c9a assets/psitweaks/models/item/advanced_spell_bullet_active.json
 b869ae5a156c2b46ba5f2806a743b94e892f705a assets/psitweaks/models/item/advanced_spell_bullet_charge.json
@@ -65,6 +65,7 @@ e130d13e13386d22e5cdc8f721695d1d2c8d13cc assets/psitweaks/models/item/hypostasis
 735e94f1069b6160e96b6047d90b794d3db1f302 assets/psitweaks/models/item/hypostasis_gem.json
 acb6c78dc13af9525e26036a439e695470a1903a assets/psitweaks/models/item/incomplete_heavy_psimetal_assembly.json
 d121ce5e7e5b98b3376588f15e62eea898641b92 assets/psitweaks/models/item/inline_caster.json
+c31c2e457298adf2b462b2dd8796c28ea25db027 assets/psitweaks/models/item/interference_range_extender.json
 5ba4d69171cabf3fe34aa2d386714c9d9e84f89a assets/psitweaks/models/item/jade.json
 d223b521543ce4ac84bc1d4d63bd3a31f42e2978 assets/psitweaks/models/item/magatama.json
 298a132ca357f10030c780e97eadcbe7d1b39719 assets/psitweaks/models/item/magicians_brain.json

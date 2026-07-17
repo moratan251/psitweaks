@@ -1,36 +1,49 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "item": "psitweaks:philosophers_stone"
-    },
-    {
-      "item": "mekanism:block_charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "item": "minecraft:charcoal"
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "item": "psitweaks:philosophers_stone"
+          },
+          {
+            "item": "mekanism:block_charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          },
+          {
+            "item": "minecraft:charcoal"
+          }
+        ],
+        "result": {
+          "item": "minecraft:diamond"
+        }
+      }
     }
-  ],
-  "result": {
-    "item": "minecraft:diamond"
-  }
+  ]
 }

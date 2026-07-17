@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "I": {
+      "item": "psitweaks:incomplete_heavy_psimetal_assembly"
+    },
+    "P": {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    "S": {
+      "item": "psitweaks:echo_sheet"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "PIP",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:cad_assembly_heavy_psimetal_beta"
+  }
+}

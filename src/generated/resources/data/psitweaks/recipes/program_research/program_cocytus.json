@@ -1,40 +1,53 @@
 {
-  "type": "psitweaks:program_research",
-  "energy": 1500000000,
-  "inputs": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "count": 1,
-      "ingredient": {
-        "item": "psitweaks:program_blank"
-      }
-    },
-    {
-      "count": 8,
-      "ingredient": {
-        "item": "mekanism:pellet_antimatter"
-      }
-    },
-    {
-      "count": 64,
-      "ingredient": {
-        "item": "minecraft:blue_ice"
-      }
-    },
-    {
-      "count": 24,
-      "ingredient": {
-        "item": "minecraft:sculk_shrieker"
-      }
-    },
-    {
-      "count": 4,
-      "ingredient": {
-        "item": "minecraft:heart_of_the_sea"
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "psitweaks:program_research",
+        "energy": 1500000000,
+        "inputs": [
+          {
+            "count": 1,
+            "ingredient": {
+              "item": "psitweaks:program_blank"
+            }
+          },
+          {
+            "count": 8,
+            "ingredient": {
+              "item": "mekanism:pellet_antimatter"
+            }
+          },
+          {
+            "count": 64,
+            "ingredient": {
+              "item": "minecraft:blue_ice"
+            }
+          },
+          {
+            "count": 24,
+            "ingredient": {
+              "item": "minecraft:sculk_shrieker"
+            }
+          },
+          {
+            "count": 4,
+            "ingredient": {
+              "item": "minecraft:heart_of_the_sea"
+            }
+          }
+        ],
+        "output": {
+          "item": "psitweaks:program_cocytus"
+        },
+        "time": 108000
       }
     }
-  ],
-  "output": {
-    "item": "psitweaks:program_cocytus"
-  },
-  "time": 108000
+  ]
 }

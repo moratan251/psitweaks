@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "cookingtime": 200,
+  "experience": 0.3,
+  "ingredient": {
+    "item": "psi:psigem"
+  },
+  "result": {
+    "count": 1,
+    "item": "psitweaks:enriched_psigem"
+  }
+}

@@ -77,14 +77,14 @@ side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="mekanism"
-mandatory=true
+mandatory=false
 versionRange="[10.4.16,)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="mekanismgenerators"
-mandatory=true
+mandatory=false
 versionRange="[10.4.16,)"
 ordering="AFTER"
 side="BOTH"

@@ -1,11 +1,24 @@
 {
-  "type": "mekanism:crushing",
-  "input": {
-    "ingredient": {
-      "tag": "forge:ingots/antinite"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:crushing",
+        "input": {
+          "ingredient": {
+            "tag": "forge:ingots/antinite"
+          }
+        },
+        "output": {
+          "item": "psitweaks:antinite_dust"
+        }
+      }
     }
-  },
-  "output": {
-    "item": "psitweaks:antinite_dust"
-  }
+  ]
 }

@@ -1,46 +1,59 @@
 {
-  "type": "psitweaks:program_research",
-  "energy": 1500000000,
-  "inputs": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "count": 1,
-      "ingredient": {
-        "item": "psitweaks:program_blank"
-      }
-    },
-    {
-      "count": 24,
-      "ingredient": {
-        "item": "minecraft:nether_star"
-      }
-    },
-    {
-      "count": 16,
-      "ingredient": {
-        "item": "mekanism:pellet_antimatter"
-      }
-    },
-    {
-      "count": 48,
-      "ingredient": {
-        "item": "psitweaks:alloy_hypostasis"
-      }
-    },
-    {
-      "count": 64,
-      "ingredient": {
-        "item": "psitweaks:flashmetal"
-      }
-    },
-    {
-      "count": 64,
-      "ingredient": {
-        "item": "psitweaks:flashmetal"
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "psitweaks:program_research",
+        "energy": 1500000000,
+        "inputs": [
+          {
+            "count": 1,
+            "ingredient": {
+              "item": "psitweaks:program_blank"
+            }
+          },
+          {
+            "count": 24,
+            "ingredient": {
+              "item": "minecraft:nether_star"
+            }
+          },
+          {
+            "count": 16,
+            "ingredient": {
+              "item": "mekanism:pellet_antimatter"
+            }
+          },
+          {
+            "count": 48,
+            "ingredient": {
+              "item": "psitweaks:alloy_hypostasis"
+            }
+          },
+          {
+            "count": 64,
+            "ingredient": {
+              "item": "psitweaks:flashmetal"
+            }
+          },
+          {
+            "count": 64,
+            "ingredient": {
+              "item": "psitweaks:flashmetal"
+            }
+          }
+        ],
+        "output": {
+          "item": "psitweaks:program_meteor_line"
+        },
+        "time": 288000
       }
     }
-  ],
-  "output": {
-    "item": "psitweaks:program_meteor_line"
-  },
-  "time": 288000
+  ]
 }

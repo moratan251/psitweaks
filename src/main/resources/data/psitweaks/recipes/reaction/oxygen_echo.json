@@ -1,25 +1,38 @@
 {
-  "type": "mekanism:reaction",
-  "duration": 100,
-  "fluidInput": {
-    "amount": 200,
-    "tag": "forge:oxygen"
-  },
-  "gasInput": {
-    "amount": 100,
-    "gas": "psitweaks:gas_psionic_echo"
-  },
-  "gasOutput": {
-    "amount": 300,
-    "gas": "psitweaks:gas_peo_fuel"
-  },
-  "itemInput": {
-    "amount": 4,
-    "ingredient": {
-      "item": "mekanism:substrate"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:reaction",
+        "duration": 100,
+        "fluidInput": {
+          "amount": 200,
+          "tag": "forge:oxygen"
+        },
+        "gasInput": {
+          "amount": 100,
+          "gas": "psitweaks:gas_psionic_echo"
+        },
+        "gasOutput": {
+          "amount": 300,
+          "gas": "psitweaks:gas_peo_fuel"
+        },
+        "itemInput": {
+          "amount": 4,
+          "ingredient": {
+            "item": "mekanism:substrate"
+          }
+        },
+        "itemOutput": {
+          "item": "psitweaks:echo_pellet"
+        }
+      }
     }
-  },
-  "itemOutput": {
-    "item": "psitweaks:echo_pellet"
-  }
+  ]
 }

@@ -1,12 +1,9 @@
 package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
-import mekanism.api.lasers.ILaserReceptor;
-import mekanism.api.math.FloatingLong;
-import mekanism.common.registries.MekanismDamageTypes;
-import mekanism.common.registries.MekanismSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -190,7 +187,7 @@ public class EntityPhononMaserBeam extends Entity {
         level().playSound(
                 null,
                 this.getX(), this.getY(), this.getZ(),
-                MekanismSounds.LASER.get(),
+                MekanismCompat.laserSound(),
                 SoundSource.PLAYERS,
                 1.0F,
                 1.0F
@@ -217,7 +214,7 @@ public class EntityPhononMaserBeam extends Entity {
     private DamageSource createLaserDamageSource(@Nullable LivingEntity caster) {
         Holder<DamageType> laserDamageType = level().registryAccess()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow(MekanismDamageTypes.LASER.key());
+                .getHolderOrThrow(MekanismCompat.laserDamageType());
 
         return new DamageSource(laserDamageType, this, caster);
     }
@@ -305,10 +302,10 @@ public class EntityPhononMaserBeam extends Entity {
      */
     private void supplyEnergyToBlock(BlockPos hitBlockPos) {
         BlockEntity blockEntity = level().getBlockEntity(hitBlockPos);
-        if (blockEntity instanceof ILaserReceptor receptor) {
+        if (blockEntity != null) {
             // 1tick当たりのエネルギー
             long energyPerTick = (long) power * 2000000L;
-            receptor.receiveLaserEnergy(FloatingLong.create(energyPerTick));
+            MekanismCompat.supplyLaserEnergy(blockEntity, energyPerTick);
         }
     }
 

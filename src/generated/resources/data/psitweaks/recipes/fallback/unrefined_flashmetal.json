@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "G": {
+      "item": "minecraft:glowstone"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "AAA",
+    "GGG"
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:unrefined_flashmetal"
+  }
+}

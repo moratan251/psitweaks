@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:alloy_psion"
+    },
+    {
+      "item": "psitweaks:alloy_psion"
+    },
+    {
+      "item": "psitweaks:alloy_psion"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_supreme_infusion"
+  }
+}

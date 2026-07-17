@@ -1,16 +1,29 @@
 {
-  "type": "mekanism:purifying",
-  "chemicalInput": {
-    "amount": 1,
-    "gas": "mekanism:oxygen"
-  },
-  "itemInput": {
-    "ingredient": {
-      "tag": "forge:raw_materials/antinite"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:purifying",
+        "chemicalInput": {
+          "amount": 1,
+          "gas": "mekanism:oxygen"
+        },
+        "itemInput": {
+          "ingredient": {
+            "tag": "forge:raw_materials/antinite"
+          }
+        },
+        "output": {
+          "item": "psitweaks:clump_antinite",
+          "count": 2
+        }
+      }
     }
-  },
-  "output": {
-    "item": "psitweaks:clump_antinite",
-    "count": 2
-  }
+  ]
 }

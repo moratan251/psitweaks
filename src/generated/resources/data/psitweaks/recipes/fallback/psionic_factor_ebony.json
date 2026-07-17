@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "psitweaks:psionic_factor"
+    },
+    "O": {
+      "item": "psitweaks:enriched_ebony"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "OCO",
+    "OOO"
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:psionic_factor_ebony"
+  }
+}

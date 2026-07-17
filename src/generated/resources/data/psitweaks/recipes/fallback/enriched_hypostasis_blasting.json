@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "cookingtime": 100,
+  "experience": 0.8,
+  "ingredient": {
+    "item": "psitweaks:hypostasis_gem"
+  },
+  "result": {
+    "count": 1,
+    "item": "psitweaks:enriched_hypostasis"
+  }
+}

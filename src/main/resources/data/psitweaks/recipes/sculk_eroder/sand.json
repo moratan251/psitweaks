@@ -1,11 +1,24 @@
 {
-  "type": "psitweaks:sculk_eroder",
-  "input": {
-    "ingredient": {
-      "tag": "forge:sand"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "psitweaks:sculk_eroder",
+        "input": {
+          "ingredient": {
+            "tag": "forge:sand"
+          }
+        },
+        "output": {
+          "item": "minecraft:sculk"
+        }
+      }
     }
-  },
-  "output": {
-    "item": "minecraft:sculk"
-  }
+  ]
 }

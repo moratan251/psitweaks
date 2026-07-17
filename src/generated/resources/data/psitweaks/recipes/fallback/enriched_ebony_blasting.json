@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "cookingtime": 100,
+  "experience": 0.3,
+  "ingredient": {
+    "item": "psi:ebony_substance"
+  },
+  "result": {
+    "count": 1,
+    "item": "psitweaks:enriched_ebony"
+  }
+}

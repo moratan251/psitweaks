@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:echo_pellet"
+    },
+    {
+      "item": "psitweaks:echo_pellet"
+    },
+    {
+      "item": "psitweaks:echo_pellet"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:echo_sheet"
+  }
+}

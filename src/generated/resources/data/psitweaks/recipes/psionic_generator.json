@@ -1,27 +1,40 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "A": {
-      "item": "psi:psimetal"
-    },
-    "B": {
-      "item": "minecraft:ender_pearl"
-    },
-    "C": {
-      "item": "mekanism:basic_control_circuit"
-    },
-    "T": {
-      "item": "mekanism:energy_tablet"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "A": {
+            "item": "psi:psimetal"
+          },
+          "B": {
+            "item": "minecraft:ender_pearl"
+          },
+          "C": {
+            "item": "mekanism:basic_control_circuit"
+          },
+          "T": {
+            "item": "mekanism:energy_tablet"
+          }
+        },
+        "pattern": [
+          " B ",
+          "ACA",
+          "ATA"
+        ],
+        "result": {
+          "item": "psitweaks:psionic_generator"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    " B ",
-    "ACA",
-    "ATA"
-  ],
-  "result": {
-    "item": "psitweaks:psionic_generator"
-  },
-  "show_notification": true
+  ]
 }

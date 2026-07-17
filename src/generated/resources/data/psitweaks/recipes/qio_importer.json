@@ -1,30 +1,43 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "C": {
-      "item": "mekanism:ultimate_control_circuit"
-    },
-    "E": {
-      "tag": "forge:ender_pearls"
-    },
-    "L": {
-      "tag": "forge:ingots/lead"
-    },
-    "P": {
-      "item": "minecraft:sticky_piston"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "C": {
+            "item": "mekanism:ultimate_control_circuit"
+          },
+          "E": {
+            "tag": "forge:ender_pearls"
+          },
+          "L": {
+            "tag": "forge:ingots/lead"
+          },
+          "P": {
+            "item": "minecraft:sticky_piston"
+          },
+          "T": {
+            "item": "mekanism:teleportation_core"
+          }
+        },
+        "pattern": [
+          "LTL",
+          "ECE",
+          " P "
+        ],
+        "result": {
+          "item": "mekanism:qio_importer"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    "LTL",
-    "ECE",
-    " P "
-  ],
-  "result": {
-    "item": "mekanism:qio_importer"
-  },
-  "show_notification": true
+  ]
 }

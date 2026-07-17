@@ -1,6 +1,6 @@
-// 1.20.1	2026-04-29T03:08:28.8240361	Tags for minecraft:item mod id psitweaks
+// 1.20.1	2026-07-16T23:41:47.3754743	Tags for minecraft:item mod id psitweaks
 2b0972694544ef7efe860eb052a12b017ce5f26d data/curios/tags/items/charm.json
-7e80153c7d2b8c919a08fe579a58cef254708fc7 data/curios/tags/items/magic_calculation_area.json
+0f9f53fdaa3857ce1f6e1961bc5fa5309b95807a data/curios/tags/items/magic_calculation_area.json
 4647c6fadd20c8008ef6e8cbfd6a47891b9bb812 data/forge/tags/items/armors/boots.json
 9772e2a3f4567aa532caa79b7963f0b331ae28be data/forge/tags/items/armors/chestplates.json
 f4943f6be06ec1e893a863f5040eea89f66cfd22 data/forge/tags/items/armors/helmets.json

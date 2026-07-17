@@ -29,6 +29,9 @@
 - Implemented an in-game configuration screen
 
 
+- Hardened Psi-Link Generator setting synchronization so only the valid, currently open owner menu can update the machine
+
+
 #### v0.10.0
 
 - Added value types available in spell programming

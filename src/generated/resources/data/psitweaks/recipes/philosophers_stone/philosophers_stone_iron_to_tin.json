@@ -1,28 +1,41 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "item": "psitweaks:philosophers_stone"
-    },
-    {
-      "tag": "forge:ingots/iron"
-    },
-    {
-      "tag": "forge:ingots/iron"
-    },
-    {
-      "tag": "forge:ingots/iron"
-    },
-    {
-      "tag": "forge:ingots/iron"
-    },
-    {
-      "tag": "forge:ingots/iron"
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "item": "psitweaks:philosophers_stone"
+          },
+          {
+            "tag": "forge:ingots/iron"
+          },
+          {
+            "tag": "forge:ingots/iron"
+          },
+          {
+            "tag": "forge:ingots/iron"
+          },
+          {
+            "tag": "forge:ingots/iron"
+          },
+          {
+            "tag": "forge:ingots/iron"
+          }
+        ],
+        "result": {
+          "count": 5,
+          "item": "mekanism:ingot_tin"
+        }
+      }
     }
-  ],
-  "result": {
-    "count": 5,
-    "item": "mekanism:ingot_tin"
-  }
+  ]
 }

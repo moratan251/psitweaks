@@ -83,6 +83,10 @@ public final class EditableStringInputOverlay {
         guiGraphics.pose().popPose();
     }
 
+    public static boolean isActive(GuiProgrammer screen) {
+        return getActiveSelectedStringConstant(screen) != null;
+    }
+
     public static boolean handleMousePressedPre(GuiProgrammer screen, double mouseX, double mouseY, int button) {
         EditableStringSpellPiece piece = getActiveSelectedStringConstant(screen);
         if (piece == null) {
@@ -92,6 +96,12 @@ public final class EditableStringInputOverlay {
         endEditGroup();
         PanelLayout layout = layoutFor(screen);
         if (!layout.contains(mouseX, mouseY)) {
+            if (button == 0) {
+                deactivate(screen);
+                lastClickX = -1;
+                lastClickY = -1;
+                return true;
+            }
             return false;
         }
 

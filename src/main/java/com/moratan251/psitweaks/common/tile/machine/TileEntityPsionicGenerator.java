@@ -118,13 +118,13 @@ public class TileEntityPsionicGenerator extends TileEntityConfigurableMachine {
         }
 
         int consume = getConsumePsiPerTick();
-        if (ownerAvailablePsi < consume) {
+        if (ownerAvailablePsi < consume || energyContainer.getNeeded().isZero()) {
             setActive(false);
             return;
         }
 
-        FloatingLong generation = getGenerationRateJoules(consume);
-        if (energyContainer.getNeeded().isZero()) {
+        FloatingLong generation = getGenerationRateJoules(consume).min(energyContainer.getNeeded());
+        if (generation.isZero()) {
             setActive(false);
             return;
         }

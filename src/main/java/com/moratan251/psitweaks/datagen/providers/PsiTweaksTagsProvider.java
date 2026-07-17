@@ -116,6 +116,7 @@ public final class PsiTweaksTagsProvider {
                     "psitweaks:auto_caster_tick",
                     "psitweaks:auto_caster_second",
                     "psitweaks:auto_caster_custom_tick",
+                    "psitweaks:interference_range_extender",
                     "psitweaks:third_eye_device",
                     "psitweaks:sorcery_booster"
             ));

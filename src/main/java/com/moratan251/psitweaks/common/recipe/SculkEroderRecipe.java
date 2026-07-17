@@ -2,8 +2,8 @@ package com.moratan251.psitweaks.common.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.moratan251.psitweaks.common.registries.PsitweaksRecipeSerializers;
-import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismRecipeSerializers;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismRecipeTypes;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.impl.EnrichingIRecipe;
@@ -74,12 +74,12 @@ public class SculkEroderRecipe implements Recipe<Container> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return PsitweaksRecipeSerializers.SCULK_ERODER.get();
+        return PsitweaksMekanismRecipeSerializers.SCULK_ERODER.get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return PsitweaksRecipeTypes.SCULK_ERODER.get();
+        return PsitweaksMekanismRecipeTypes.SCULK_ERODER.get();
     }
 
     @Override

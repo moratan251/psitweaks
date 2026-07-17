@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:dragon_head"
+    },
+    {
+      "item": "minecraft:dragon_head"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_meteor_line"
+  }
+}

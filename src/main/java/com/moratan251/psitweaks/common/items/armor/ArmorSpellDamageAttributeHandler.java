@@ -14,13 +14,11 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = Psitweaks.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ArmorSpellDamageAttributeHandler {
     private static final String SPELL_DAMAGE_ATTRIBUTE_NAME = "psitweaks.armor_spell_damage";
     private static final String PSI_REGEN_ATTRIBUTE_NAME = "psitweaks.armor.psi_regen_bonus";

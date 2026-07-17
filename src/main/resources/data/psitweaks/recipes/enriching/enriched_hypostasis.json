@@ -1,9 +1,24 @@
 {
-  "type": "mekanism:enriching",
-  "input": {
-    "ingredient": { "item": "psitweaks:hypostasis_gem" }
-  },
-  "output": {
-    "item": "psitweaks:enriched_hypostasis"
-  }
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:enriching",
+        "input": {
+          "ingredient": {
+            "item": "psitweaks:hypostasis_gem"
+          }
+        },
+        "output": {
+          "item": "psitweaks:enriched_hypostasis"
+        }
+      }
+    }
+  ]
 }

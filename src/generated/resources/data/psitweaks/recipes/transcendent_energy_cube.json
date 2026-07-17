@@ -1,27 +1,40 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "A": {
-      "item": "psitweaks:alloy_hypostasis"
-    },
-    "C": {
-      "item": "mekanism:ultimate_energy_cube"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "N": {
-      "item": "psitweaks:pellet_neptunium"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "A": {
+            "item": "psitweaks:alloy_hypostasis"
+          },
+          "C": {
+            "item": "mekanism:ultimate_energy_cube"
+          },
+          "E": {
+            "item": "mekanism:energy_tablet"
+          },
+          "N": {
+            "item": "psitweaks:pellet_neptunium"
+          }
+        },
+        "pattern": [
+          "AEA",
+          "NCN",
+          "AEA"
+        ],
+        "result": {
+          "item": "psitweaks:transcendent_energy_cube"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    "AEA",
-    "NCN",
-    "AEA"
-  ],
-  "result": {
-    "item": "psitweaks:transcendent_energy_cube"
-  },
-  "show_notification": true
+  ]
 }

@@ -1,11 +1,24 @@
 {
-  "type": "mekanism:crushing",
-  "input": {
-    "ingredient": {
-      "tag": "mekanism:clumps/antinite"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:crushing",
+        "input": {
+          "ingredient": {
+            "tag": "mekanism:clumps/antinite"
+          }
+        },
+        "output": {
+          "item": "psitweaks:dirty_dust_antinite"
+        }
+      }
     }
-  },
-  "output": {
-    "item": "psitweaks:dirty_dust_antinite"
-  }
+  ]
 }
