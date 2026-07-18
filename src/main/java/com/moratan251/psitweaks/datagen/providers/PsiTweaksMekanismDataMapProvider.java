@@ -35,7 +35,7 @@ public class PsiTweaksMekanismDataMapProvider implements DataProvider {
     private static void addChemicalDataMaps(Map<ResourceLocation, JsonObject> dataMaps) {
         JsonObject fuelValues = new JsonObject();
         fuelValues.add(chemical("gas_peo_fuel"), chemicalFuel(240, 540_000L));
-        dataMaps.put(ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "chemical_attribute_fuel"), dataMap(fuelValues));
+        dataMaps.put(ResourceLocation.fromNamespaceAndPath("mekanism", "chemical_attribute_fuel"), dataMap(fuelValues));
 
         JsonObject solidTagValues = new JsonObject();
         solidTagValues.add(chemical("dirty_antinite"), chemicalSolidTag("c:ores/antinite"));

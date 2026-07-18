@@ -2,7 +2,7 @@
   "values": {
     "psitweaks:gas_peo_fuel": {
       "burn_time": 240,
-      "energy": 540000
+      "energy": 2250
     }
   }
 }
