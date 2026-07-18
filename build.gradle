@@ -87,6 +87,14 @@ repositories {
     maven { url "https://maven.blamejared.com" }
     maven { url "https://cursemaven.com" }
 
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+
 }
 
 dependencies {
@@ -105,10 +113,11 @@ dependencies {
         runtimeOnly fg.deobf("curse.maven:mekanism-268560:6552911")
         runtimeOnly fg.deobf("curse.maven:mekanism-generators-268566:6552914")
     }
-    implementation fg.deobf("curse.maven:moffs-addonapi-dynload-1242459:7441442")
-    implementation fg.deobf("curse.maven:psiex-1408745:7638676")
+    implementation fg.deobf("curse.maven:moffs-addonapi-dynload-1242459:8143523")
+    compileOnly fg.deobf("curse.maven:psiex-1408745:8164937")
     implementation fg.deobf("curse.maven:mantle-74924:7563777")
     implementation fg.deobf("curse.maven:tinkers-construct-74072:7449219")
+    implementation fg.deobf("maven.modrinth:gu7yAYhd:m0egtvtI")
 
 
 
@@ -117,7 +126,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:server-tab-info-291788:4594932")
     runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
     runtimeOnly fg.deobf("curse.maven:selene-499980:6933139")
-    runtimeOnly fg.deobf("curse.maven:ticex-tinkers-construct-ex-1242469:7515155")
+    runtimeOnly fg.deobf("curse.maven:ticex-tinkers-construct-ex-1242469:7913989")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6271651")
     if (providers.gradleProperty("psitweaks.includeMekanismInRuns").orElse("true").get().toBoolean()) {
         runtimeOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")

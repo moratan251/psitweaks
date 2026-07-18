@@ -35,7 +35,7 @@
 - (1.20.1) Changed the specifications of the Program Research Table to the Mekanism base (same design as 1.21.1)
 
 
-- (1.20.1) Made the Transcendent Spell Bullet crafting recipe more difficult
+- (1.20.1) Made the Transcendent Spell Bullet crafting recipe more difficult (same as 1.21.1)
 
 
 #### v0.10.0
