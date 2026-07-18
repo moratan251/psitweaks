@@ -9,8 +9,6 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
     private static final Map<String, String> OPTIONAL_TARGETS = Map.of(
-            "com.moratan251.psitweaks.mixin.GeneratorsBlockTypesMixin",
-            "mekanism.generators.common.registries.GeneratorsBlockTypes",
             "com.moratan251.psitweaks.mixin.RadiationManagerMixin",
             "mekanism.common.lib.radiation.RadiationManager"
     );

@@ -138,6 +138,7 @@ public class Psitweaks {
     private void commonSetup(final FMLCommonSetupEvent event) {
 
         NetworkHandler.registerMessages();
+        MekanismCompat.commonSetup(event);
 
     }
 

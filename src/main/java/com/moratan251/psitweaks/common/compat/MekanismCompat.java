@@ -8,6 +8,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public final class MekanismCompat {
     private static final String MEKANISM_MOD_ID = "mekanism";
@@ -27,6 +28,12 @@ public final class MekanismCompat {
     public static void register(IEventBus modEventBus) {
         if (isMekanismLoaded()) {
             MekanismIntegration.register(modEventBus);
+        }
+    }
+
+    public static void commonSetup(FMLCommonSetupEvent event) {
+        if (isMekanismLoaded()) {
+            MekanismIntegration.commonSetup(event);
         }
     }
 

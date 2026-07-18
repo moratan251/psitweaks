@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksInfuseTypes;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksSlurries;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
 import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 final class MekanismIntegration {
     private MekanismIntegration() {
@@ -48,6 +50,12 @@ final class MekanismIntegration {
         PsitweaksModules.MODULES.register(modEventBus);
         MinecraftForge.EVENT_BUS.addListener(ArmorSpellDamageAttributeHandler::onItemAttributeModifier);
         MinecraftForge.EVENT_BUS.addListener(MekanismMaterialMutationRecipeHandler::onAddReloadListener);
+    }
+
+    static void commonSetup(FMLCommonSetupEvent event) {
+        if (MekanismCompat.isGeneratorsLoaded()) {
+            event.enqueueWork(PsitweaksMekanismGeneratorTweaks::registerGeneratorTweaks);
+        }
     }
 
     static void enqueueIMC() {

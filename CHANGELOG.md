@@ -1,5 +1,14 @@
 ## Changelog
 
+
+#### v0.10.2
+
+- (1.20.1) Fixed an issue where capacity changes for gas-burning generators were not being applied correctly
+
+
+- (1.21.1) Fixed an issue where ΨE-O fuel was not functioning correctly
+
+
 #### v0.10.1
 
 - Fixed an issue where connectors could be pulled by dragging while a Psitweaks text input window or similar screen was open when using Psionic Utilities

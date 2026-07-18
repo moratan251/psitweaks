@@ -8,7 +8,6 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
-    "GeneratorsBlockTypesMixin",
     "PlayerDataAttributeBonusesMixin",
     "RadiationManagerMixin",
     "ItemCADPlainMemoryMixin",
