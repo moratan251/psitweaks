@@ -312,9 +312,19 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted("psi:psidust", 4),
                 counted("psi:psigem", 2)));
         addProgram(recipes, "program_die_flex", List.of(
-                counted("minecraft:comparator", 2),
-                counted("minecraft:redstone", 3),
-                counted("psi:psidust", 3)));
+                counted(item("psionic_control_circuit"), 3),
+                counted(item("flashmetal"), 3),
+                counted(item("chaotic_factor"), 2)));
+        addProgramUpgrade(recipes, "program_jump_flex", List.of(
+                counted(item("program_die_flex"), 1),
+                counted(item("echo_control_circuit"), 3),
+                counted(item("heavy_psimetal"), 3),
+                counted(item("antinite_ingot"), 2)));
+        addProgramUpgrade(recipes, "program_switch_flex", List.of(
+                counted(item("program_jump_flex"), 1),
+                counted(item("hypostasis_control_circuit"), 3),
+                counted(item("psycheonic_metal_ingot"), 3),
+                counted("minecraft:nether_star", 2)));
         addProgram(recipes, "program_material_mutation", List.of(
                 counted(item("philosophers_stone"), 1),
                 counted("minecraft:sculk_catalyst", 1),
@@ -333,6 +343,11 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         withBlankProgram.add(counted(item("program_blank"), 1));
         withBlankProgram.addAll(ingredients);
         add(recipes, program, shapelessCounted(withBlankProgram, item(program), 1));
+    }
+
+    private static void addProgramUpgrade(Map<ResourceLocation, JsonObject> recipes, String program,
+            List<CountedIngredient> ingredients) {
+        add(recipes, program, shapelessCounted(ingredients, item(program), 1));
     }
 
     private static CountedIngredient counted(String item, int count) {

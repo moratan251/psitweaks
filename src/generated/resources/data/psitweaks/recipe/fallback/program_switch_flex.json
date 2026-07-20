@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_jump_flex"
+    },
+    {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_switch_flex"
+  }
+}
