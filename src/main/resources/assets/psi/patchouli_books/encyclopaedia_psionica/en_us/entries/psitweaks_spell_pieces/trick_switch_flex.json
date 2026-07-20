@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_switch_flex",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_switch_flex.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_switch_flex"
+    }
+  ]
+}

@@ -81,8 +81,12 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_die_flex");
     public static final DeferredHolder<Material, Material> TRICK_JUMP =
             registerPieceMaterial("trick_jump");
+    public static final DeferredHolder<Material, Material> TRICK_JUMP_FLEX =
+            registerPieceMaterial("trick_jump_flex");
     public static final DeferredHolder<Material, Material> TRICK_SWITCH =
             registerPieceMaterial("trick_switch");
+    public static final DeferredHolder<Material, Material> TRICK_SWITCH_FLEX =
+            registerPieceMaterial("trick_switch_flex");
     public static final DeferredHolder<Material, Material> JUMP_ANCHOR =
             registerPieceMaterial("jump_anchor");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =

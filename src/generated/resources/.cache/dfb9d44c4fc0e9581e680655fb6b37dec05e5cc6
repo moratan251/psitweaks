@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-15T01:59:27.0411446	PsiTweaks item models
+// 1.21.1	2026-07-20T04:39:07.4010516	PsiTweaks item models
 9be455b28f25dc7c439ae3a70c704949d5cfdbbc assets/psitweaks/models/item/advanced_spell_bullet.json
 65ce1cfdd3a5f75a916309b6710a6a7943340c9a assets/psitweaks/models/item/advanced_spell_bullet_active.json
 b869ae5a156c2b46ba5f2806a743b94e892f705a assets/psitweaks/models/item/advanced_spell_bullet_charge.json
@@ -85,6 +85,7 @@ b0f8af788f3d43d188205ea21fee30d691060568 assets/psitweaks/models/item/program_co
 9e796c6bcba3bf70cf1fd228e99a2c45af497d20 assets/psitweaks/models/item/program_die_flex.json
 56f697fea07c708431f3116d0b7da49e73719f1e assets/psitweaks/models/item/program_flight.json
 a89b24fec0de6d85e5d4b7bceb09440ed038d549 assets/psitweaks/models/item/program_guillotine.json
+1b71d8ae0c8a5c301535fdffa7953526d8adde38 assets/psitweaks/models/item/program_jump_flex.json
 d8472232a4b4ebf17bc75a873f0e4eb3527a0080 assets/psitweaks/models/item/program_mass_block_break.json
 21aa92081a231a2f581d08301fc5860549ed43e2 assets/psitweaks/models/item/program_material_mutation.json
 d5c7eb030b93c820fbc235dcbd0d66713b8acd59 assets/psitweaks/models/item/program_meteor_line.json
@@ -93,6 +94,7 @@ c88e600afb6e6b103a01d33291adfd484a5f133e assets/psitweaks/models/item/program_ph
 01de766229dc31cf24fc9e7c0bf0b3ff3b0a90ef assets/psitweaks/models/item/program_radiation_filter.json
 31e48f213bc7ab23111ea200b51d26ea3a5e53e3 assets/psitweaks/models/item/program_radiation_injection.json
 f564b5715c5592c50fed49204394ed362e2480f4 assets/psitweaks/models/item/program_supreme_infusion.json
+25ae288052770a404b604240005023814c38e138 assets/psitweaks/models/item/program_switch_flex.json
 592811490950ebcbbd0d4b514eab7fc2ca32c0ed assets/psitweaks/models/item/program_time_accelerate.json
 3709b05b07afcd8b1732780619d648d2acf06788 assets/psitweaks/models/item/psimetal_bow.json
 43bb25456efb73dae324204d0572e394ddedc843 assets/psitweaks/models/item/psimetal_bow_pulling_0.json

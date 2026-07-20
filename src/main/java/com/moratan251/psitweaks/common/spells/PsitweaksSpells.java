@@ -88,8 +88,12 @@ public final class PsitweaksSpells {
             registerPiece("trick_die_flex", PieceTrickDieFlex.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickJump>> TRICK_JUMP =
             registerPiece("trick_jump", PieceTrickJump.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickJumpFlex>> TRICK_JUMP_FLEX =
+            registerPiece("trick_jump_flex", PieceTrickJumpFlex.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSwitch>> TRICK_SWITCH =
             registerPiece("trick_switch", PieceTrickSwitch.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSwitchFlex>> TRICK_SWITCH_FLEX =
+            registerPiece("trick_switch_flex", PieceTrickSwitchFlex.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceJumpAnchor>> JUMP_ANCHOR =
             registerPiece("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationInjection>> TRICK_RADIATION_INJECTION =
@@ -364,8 +368,12 @@ public final class PsitweaksSpells {
             registerGroup("trick_die_flex", PieceTrickDieFlex.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP =
             registerGroup("trick_jump", PieceTrickJump.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP_FLEX =
+            registerGroup("trick_jump_flex", PieceTrickJumpFlex.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SWITCH =
             registerGroup("trick_switch", PieceTrickSwitch.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SWITCH_FLEX =
+            registerGroup("trick_switch_flex", PieceTrickSwitchFlex.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP_ANCHOR_GROUP =
             registerGroup("jump_anchor", PieceJumpAnchor.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_INJECTION =

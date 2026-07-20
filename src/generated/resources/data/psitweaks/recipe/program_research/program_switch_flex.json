@@ -1,0 +1,35 @@
+{
+  "type": "psitweaks:program_research",
+  "energy": 500000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_jump_flex"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psitweaks:hypostasis_control_circuit"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psitweaks:psycheonic_metal_ingot"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psitweaks:pellet_americium"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_switch_flex"
+  },
+  "time": 90000
+}

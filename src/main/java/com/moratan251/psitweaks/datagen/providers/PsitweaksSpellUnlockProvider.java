@@ -34,6 +34,8 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "guillotine", "trick_guillotine", "program_guillotine");
         spellUnlock(entries, "active_air_mine", "trick_active_air_mine", "program_active_air_mine");
         spellUnlock(entries, "die_flex", "trick_die_flex", "program_die_flex");
+        spellUnlock(entries, "jump_flex", "trick_jump_flex", "program_jump_flex");
+        spellUnlock(entries, "switch_flex", "trick_switch_flex", "program_switch_flex");
         spellUnlock(entries, "material_mutation", "trick_material_mutation", "program_material_mutation");
         spellUnlock(entries, "mass_block_break", "trick_mass_block_break", "program_mass_block_break");
 

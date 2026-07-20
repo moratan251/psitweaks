@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "psitweaks:program_research",
+  "energy": 100000000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_die_flex"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psitweaks:echo_control_circuit"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psitweaks:heavy_psimetal"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "mekanism:pellet_polonium"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_jump_flex"
+  },
+  "time": 54000
+}

@@ -56,6 +56,8 @@ final class PsitweaksDatagenItems {
             item("program_guillotine", "Program: Guillotine", "プログラム: ギロチン", "program_trick_guillotine"),
             item("program_active_air_mine", "Program: Active Air Mine", "プログラム: 能動空中機雷", "program_trick_active_air_mine"),
             item("program_die_flex", "Program: Flexible Die", "プログラム: 柔軟停止", "program_trick_die_flex"),
+            item("program_jump_flex", "Program: Flexible Jump", "プログラム: 柔軟ジャンプ", "program_trick_jump_flex"),
+            item("program_switch_flex", "Program: Flexible Switch", "プログラム: 柔軟スイッチ", "program_trick_switch_flex"),
             item("program_material_mutation", "Program: Material Mutation", "プログラム: 物質変成", "program_trick_material_mutation"),
             item("program_mass_block_break", "Program: Mass Block Break", "プログラム: 大規模ブロック破壊", "program_trick_mass_block_break"),
             item("philosophers_stone", "Philosopher's Stone", "賢者の石"),

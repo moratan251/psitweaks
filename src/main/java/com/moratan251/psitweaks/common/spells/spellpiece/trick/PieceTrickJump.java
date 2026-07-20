@@ -54,10 +54,14 @@ public class PieceTrickJump extends PieceTrick {
         }
 
         String targetLabel = this.getConfiguredLabelRuntime();
-        if (!JumpAnchorHelper.jumpToMatchingAnchor(context, this, targetLabel)) {
+        if (!this.jumpToMatchingAnchor(context, targetLabel)) {
             throw new SpellRuntimeException(ERROR_NO_JUMP_ANCHOR);
         }
         return null;
+    }
+
+    protected boolean jumpToMatchingAnchor(SpellContext context, String targetLabel) throws SpellRuntimeException {
+        return JumpAnchorHelper.jumpToMatchingAnchor(context, this, targetLabel);
     }
 
     private String getConfiguredLabel() throws SpellCompilationException {
