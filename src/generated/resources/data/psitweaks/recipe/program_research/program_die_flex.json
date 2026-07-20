@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 6000000,
+  "energy_per_tick": 6000,
   "inputs": [
     {
       "count": 1,
@@ -9,21 +9,21 @@
       }
     },
     {
-      "count": 4,
+      "count": 16,
       "ingredient": {
-        "item": "minecraft:comparator"
+        "item": "psitweaks:psionic_control_circuit"
       }
     },
     {
       "count": 32,
       "ingredient": {
-        "item": "minecraft:redstone"
+        "item": "psitweaks:flashmetal"
       }
     },
     {
-      "count": 24,
+      "count": 32,
       "ingredient": {
-        "item": "psi:psidust"
+        "item": "psitweaks:chaotic_factor"
       }
     }
   ],

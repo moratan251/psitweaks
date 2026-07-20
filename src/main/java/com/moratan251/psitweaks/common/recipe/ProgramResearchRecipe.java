@@ -9,6 +9,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.HolderLookup;
@@ -30,13 +31,13 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
 
     private final List<RequiredInput> inputs;
     private final ItemStack output;
-    private final int energy;
+    private final long energyPerTick;
     private final int time;
 
-    public ProgramResearchRecipe(List<RequiredInput> inputs, ItemStack output, int energy, int time) {
+    public ProgramResearchRecipe(List<RequiredInput> inputs, ItemStack output, long energyPerTick, int time) {
         this.inputs = List.copyOf(inputs);
         this.output = output.copy();
-        this.energy = Math.max(0, energy);
+        this.energyPerTick = Math.max(0L, energyPerTick);
         this.time = Math.max(1, time);
     }
 
@@ -48,21 +49,12 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
         return output.copy();
     }
 
-    public int getEnergy() {
-        return energy;
+    public long getEnergyPerTick() {
+        return energyPerTick;
     }
 
     public int getTime() {
         return time;
-    }
-
-    public int getEnergyCostForTick(int progress) {
-        if (energy <= 0) {
-            return 0;
-        }
-        int base = energy / time;
-        int remainder = energy % time;
-        return progress < remainder ? base + 1 : base;
     }
 
     public @Nullable int[] createConsumptionPlan(IItemHandler inputInventory) {
@@ -246,9 +238,11 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
         private static final MapCodec<ProgramResearchRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RequiredInput.CODEC.listOf(1, MAX_INPUT_SLOTS).fieldOf("inputs").forGetter(ProgramResearchRecipe::getInputs),
                 ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
-                Codec.INT.optionalFieldOf("energy", 0).forGetter(ProgramResearchRecipe::getEnergy),
+                Codec.LONG.optionalFieldOf("energy_per_tick").forGetter(recipe -> Optional.of(recipe.energyPerTick)),
+                // Temporary read compatibility for legacy datapacks; omit the legacy key when encoding.
+                Codec.LONG.optionalFieldOf("energy").forGetter(recipe -> Optional.empty()),
                 Codec.INT.optionalFieldOf("time", 200).forGetter(ProgramResearchRecipe::getTime)
-        ).apply(instance, ProgramResearchRecipe::new));
+        ).apply(instance, Serializer::fromSerialized));
         private static final StreamCodec<RegistryFriendlyByteBuf, ProgramResearchRecipe> STREAM_CODEC =
                 StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
@@ -272,9 +266,9 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
                 inputs.add(new RequiredInput(ingredient, count, consume));
             }
             ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
-            int energy = Math.max(0, buf.readVarInt());
+            long energyPerTick = Math.max(0L, buf.readVarLong());
             int time = Math.max(1, buf.readVarInt());
-            return new ProgramResearchRecipe(inputs, output, energy, time);
+            return new ProgramResearchRecipe(inputs, output, energyPerTick, time);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buf, ProgramResearchRecipe recipe) {
@@ -285,8 +279,18 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
                 buf.writeBoolean(input.consume());
             }
             ItemStack.STREAM_CODEC.encode(buf, recipe.output);
-            buf.writeVarInt(recipe.energy);
+            buf.writeVarLong(recipe.energyPerTick);
             buf.writeVarInt(recipe.time);
+        }
+
+        private static ProgramResearchRecipe fromSerialized(List<RequiredInput> inputs, ItemStack output,
+                                                             Optional<Long> energyPerTick, Optional<Long> legacyEnergy,
+                                                             int time) {
+            int normalizedTime = Math.max(1, time);
+            long resolvedEnergyPerTick = energyPerTick
+                    .map(value -> Math.max(0L, value))
+                    .orElseGet(() -> Math.ceilDiv(Math.max(0L, legacyEnergy.orElse(0L)), normalizedTime));
+            return new ProgramResearchRecipe(inputs, output, resolvedEnergyPerTick, normalizedTime);
         }
     }
 }

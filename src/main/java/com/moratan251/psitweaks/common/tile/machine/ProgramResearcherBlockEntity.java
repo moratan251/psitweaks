@@ -129,7 +129,7 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
 
         boolean changed = validateActiveInputs(recipe);
         maxProgress = Math.max(1, recipe.getTime());
-        long energyCost = recipe.getEnergyCostForTick(progress);
+        long energyCost = recipe.getEnergyPerTick();
         currentEnergyCost = energyCost;
         if (energyContainer.getEnergy() < energyCost) {
             return sendUpdate || setActiveState(false);

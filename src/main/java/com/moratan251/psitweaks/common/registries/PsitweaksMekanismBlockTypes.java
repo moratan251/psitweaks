@@ -29,7 +29,7 @@ import vazkii.psi.client.fx.SparkleParticleData;
 
 public final class PsitweaksMekanismBlockTypes {
     private static final long SCULK_ERODER_STORAGE = 20_000L;
-    private static final long PROGRAM_RESEARCHER_STORAGE = 1_000_000L;
+    private static final long PROGRAM_RESEARCHER_STORAGE = 10_000_000L;
     private static final long MATERIAL_MUTATOR_STORAGE = 4_000_000L;
     private static final long PSIONIC_GENERATOR_MAX_OUTPUT = 6_250L;
     private static final ILangEntry DESCRIPTION_SCULK_ERODER = () -> "description.psitweaks.sculk_eroder";
