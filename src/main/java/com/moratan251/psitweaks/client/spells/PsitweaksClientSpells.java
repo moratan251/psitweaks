@@ -89,6 +89,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_switch_flex");
     public static final DeferredHolder<Material, Material> JUMP_ANCHOR =
             registerPieceMaterial("jump_anchor");
+    public static final DeferredHolder<Material, Material> SAFETY =
+            registerPieceMaterial("safety");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =
             MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_radiation_injection") : null;
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_FILTER =

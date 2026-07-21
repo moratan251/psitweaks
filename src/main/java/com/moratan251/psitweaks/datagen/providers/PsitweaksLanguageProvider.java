@@ -250,6 +250,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
             default -> "No matching Jump Anchor found ahead";
         });
+        root.addProperty("psitweaks.spellerror.safety_insufficient_psi", switch (locale) {
+            case "ja_jp" -> "安全装置が作動しました: Psiが不足しています";
+            default -> "Safety activated: not enough Psi";
+        });
         root.addProperty("psitweaks.spellerror.plain_memory_type", switch (locale) {
             case "ja_jp" -> "保存された値を選択中の型として読み取れません";
             default -> "Stored value cannot be read as the selected type";
@@ -1194,6 +1198,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_switch", "Trick: Switch", "Jumps forward to the next Jump Anchor with the same constant label as the input String. If no matching anchor exists, execution continues.", "作動式: スイッチ", "入力Stringと同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。一致するアンカーがない場合はそのまま次へ進みます。");
         addSpellPiece(root, "trick_switch_flex", "Trick: Flexible Switch", "Behaves like Trick: Switch and refunds the Psi cost of spell pieces skipped by the jump.", "作動式: 柔軟スイッチ", "作動式: スイッチと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。");
         addSpellPiece(root, "jump_anchor", "Jump Anchor", "A no-op marker used as the destination for Trick: Jump and Trick: Switch. It can take an optional constant label.", "ジャンプアンカー", "作動式: ジャンプと作動式: スイッチの到達点になる、何もしない目印です。任意の定数ラベルを指定できます。");
+        addSpellPiece(root, "safety", "Safety", "If the caster's current total Psi falls below the spell's actual Psi cost, the spell will fail before any Psi is consumed.", "安全装置", "術者の現在Psi量の合計が術式の実際のPsi消費量を下回る場合、Psiを消費する前に術式を不発にします。");
         addSpellPiece(root, "trick_material_mutation", "Trick: Material Mutation", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.", "作動式: 物質変成", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
         addSpellPiece(root, "trick_physical_propulsion", "Trick: Physical Propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "作動式: 物理推進", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与える");
         addSpellPiece(root, "operator_tan", "Operator: Tangent", "tan(A)", "演算子: タンジェント", "tan(A)");
@@ -1340,6 +1345,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_switch", "Evaluates the input String and jumps forward to the next Jump Anchor whose constant label is equal to it. If no matching anchor exists ahead, it does not error and simply continues to the next spell piece, so place the default branch immediately after the Switch. It cannot jump to Jump Anchors behind it.", "入力Stringを評価し, それと等しい定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします. 前方に一致するアンカーがない場合はエラーにならず, そのまま次のスペルピースへ進むため, default相当の処理はスイッチの直後に置いてください.  後方のジャンプアンカーには飛ぶことができません.");
         addBookPage(root, "trick_switch_flex", "Uses the same String label matching and forward-only destination rules as Trick: Switch, then refunds the Psi cost of the spell pieces actually skipped by the jump. If no matching anchor exists, execution continues and no Psi is refunded. Pieces retained as dependencies of later actions are not refunded. With high-frequency casting, the client-side Psi display may temporarily desync.", "作動式: スイッチと同じStringラベル照合と前方限定の移動規則で動作し, ジャンプによって実際にスキップしたスペルピースのPsiコストを返却します. 一致するアンカーがない場合はそのまま実行を続け, Psiを返却しません. 後続アクションの依存先として残るピースは返却対象になりません. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
         addBookPage(root, "jump_anchor", "A marker used as the destination for Trick: Jump and Trick: Switch. This spell piece itself does nothing. You can input a constant String as its label.", "作動式: ジャンプと作動式: スイッチの到達点になる目印です.  このスペルピース自体は何もしません. 定数文字列をラベルとして入力することができます.");
+        addBookPage(root, "safety", "It works effectively no matter where it is placed within the program. Immediately before Psi is consumed, it compares the spell’s actual Psi consumption with the total of the caster’s current Psi and the Psi in the CAD battery. If the caster’s Psi is insufficient, the spell is canceled without consuming any Psi.", "プログラム内のどこに配置しても効果を発揮します. Psi消費直前に、術式の実際のPsi消費量と、術者の現在PsiおよびCADバッテリー内Psiの合計を比較します. 術者のPsi量が不足している場合はPsiを消費せずに術式を中止します.");
         addBookPage(root, "trick_radiation_injection", "Applies Mekanism radiation exposure to the target.", "対象へMekanismの放射線被ばくを付与します. ");
         addBookPage(root, "trick_radiation_filter", "Applies a radiation protection effect to the target, protecting them from radiation.", "対象に放射線防護効果を付与し、放射線の影響から身を守ります.");
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");

@@ -96,6 +96,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_switch_flex", PieceTrickSwitchFlex.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceJumpAnchor>> JUMP_ANCHOR =
             registerPiece("jump_anchor", PieceJumpAnchor.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSafety>> SAFETY =
+            registerPiece("safety", PieceSafety.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationInjection>> TRICK_RADIATION_INJECTION =
             MekanismCompat.isMekanismLoaded() ? registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class) : null;
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickRadiationFilter>> TRICK_RADIATION_FILTER =
@@ -376,6 +378,8 @@ public final class PsitweaksSpells {
             registerGroup("trick_switch_flex", PieceTrickSwitchFlex.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> JUMP_ANCHOR_GROUP =
             registerGroup("jump_anchor", PieceJumpAnchor.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SAFETY_GROUP =
+            registerGroup("safety", PieceSafety.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_INJECTION =
             MekanismCompat.isMekanismLoaded() ? registerGroup("trick_radiation_injection", PieceTrickRadiationInjection.class) : null;
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> RADIATION_FILTER =
