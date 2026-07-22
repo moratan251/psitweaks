@@ -39,10 +39,17 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
                         output.accept(PsitweaksItems.PSIONIC_FACTOR_EBONY.get());
                         output.accept(PsitweaksItems.CHAOTIC_FACTOR.get());
+                        output.accept(PsitweaksItems.PSIMETAL_NUGGET.get());
+                        output.accept(PsitweaksItems.IVORY_PSIMETAL_NUGGET.get());
+                        output.accept(PsitweaksItems.EBONY_PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.CHAOTIC_PSIMETAL.get());
+                        output.accept(PsitweaksItems.CHAOTIC_PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.FLASHMETAL.get());
+                        output.accept(PsitweaksItems.FLASHMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.HEAVY_PSIMETAL.get());
+                        output.accept(PsitweaksItems.HEAVY_PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.ANTINITE_INGOT.get());
+                        output.accept(PsitweaksItems.ANTINITE_NUGGET.get());
                         output.accept(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get());
                         output.accept(PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get());
                         output.accept(PsitweaksItems.UNREFINED_FLASHMETAL.get());

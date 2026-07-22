@@ -152,6 +152,13 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         recipe(recipes, "psycheonic_metal_nugget_from_ingot", shapeless(
                 List.of(ingredientItem(PsitweaksItems.PSYCHEONIC_METAL_INGOT)),
                 item("psycheonic_metal_nugget"), 9));
+        addNuggetRecipes(recipes, "psimetal", "psimetal_nugget", "psi:psimetal");
+        addNuggetRecipes(recipes, "ivory_psimetal", "ivory_psimetal_nugget", "psi:ivory_psimetal");
+        addNuggetRecipes(recipes, "ebony_psimetal", "ebony_psimetal_nugget", "psi:ebony_psimetal");
+        addNuggetRecipes(recipes, "chaotic_psimetal", "chaotic_psimetal_nugget", item("chaotic_psimetal"));
+        addNuggetRecipes(recipes, "flashmetal", "flashmetal_nugget", item("flashmetal"));
+        addNuggetRecipes(recipes, "heavy_psimetal", "heavy_psimetal_nugget", item("heavy_psimetal"));
+        addNuggetRecipes(recipes, "antinite", "antinite_nugget", item("antinite_ingot"));
         recipe(recipes, "amethyst_shard_from_block", shapeless(
                 List.of(ingredientItem(Blocks.AMETHYST_BLOCK)),
                 "minecraft:amethyst_shard", 4));
@@ -486,6 +493,17 @@ public class PsiTweaksRecipeProvider implements DataProvider {
 
     private static void recipe(Map<ResourceLocation, JsonObject> recipes, String id, JsonObject recipe) {
         recipes.put(Psitweaks.location(id), recipe);
+    }
+
+    private static void addNuggetRecipes(Map<ResourceLocation, JsonObject> recipes, String materialId,
+                                         String nuggetId, String ingotId) {
+        recipe(recipes, materialId + "_from_nuggets", shaped(
+                List.of("NNN", "NNN", "NNN"),
+                Map.of('N', ingredientItemId(item(nuggetId))),
+                ingotId, 1));
+        recipe(recipes, materialId + "_nugget_from_ingot", shapeless(
+                List.of(ingredientItemId(ingotId)),
+                item(nuggetId), 9));
     }
 
     private static void addSpellBulletRecipes(Map<ResourceLocation, JsonObject> recipes) {

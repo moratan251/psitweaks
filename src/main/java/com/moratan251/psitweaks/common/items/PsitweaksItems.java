@@ -97,8 +97,24 @@ public final class PsitweaksItems {
             "chaotic_factor",
             new Item.Properties()
     );
+    public static final DeferredItem<Item> PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
+            "psimetal_nugget",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> IVORY_PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
+            "ivory_psimetal_nugget",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> EBONY_PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
+            "ebony_psimetal_nugget",
+            new Item.Properties()
+    );
     public static final DeferredItem<Item> CHAOTIC_PSIMETAL = ITEMS.registerSimpleItem(
             "chaotic_psimetal",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> CHAOTIC_PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
+            "chaotic_psimetal_nugget",
             new Item.Properties()
     );
     public static final DeferredItem<Item> UNREFINED_FLASHMETAL = ITEMS.registerSimpleItem(
@@ -109,8 +125,16 @@ public final class PsitweaksItems {
             "flashmetal",
             new Item.Properties()
     );
+    public static final DeferredItem<Item> FLASHMETAL_NUGGET = ITEMS.registerSimpleItem(
+            "flashmetal_nugget",
+            new Item.Properties()
+    );
     public static final DeferredItem<Item> HEAVY_PSIMETAL = ITEMS.registerSimpleItem(
             "heavy_psimetal",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> HEAVY_PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
+            "heavy_psimetal_nugget",
             new Item.Properties()
     );
     public static final DeferredItem<Item> RAW_ANTINITE = ITEMS.registerSimpleItem(
@@ -139,6 +163,10 @@ public final class PsitweaksItems {
     );
     public static final DeferredItem<Item> ANTINITE_INGOT = ITEMS.registerSimpleItem(
             "antinite_ingot",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> ANTINITE_NUGGET = ITEMS.registerSimpleItem(
+            "antinite_nugget",
             new Item.Properties()
     );
     public static final DeferredItem<Item> PSYCHEONIC_METAL_INGOT = ITEMS.registerSimpleItem(

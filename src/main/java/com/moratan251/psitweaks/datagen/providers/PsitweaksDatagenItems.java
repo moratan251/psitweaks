@@ -4,6 +4,13 @@ import java.util.List;
 
 final class PsitweaksDatagenItems {
     private static final List<GeneratedItem> ITEMS = List.of(
+            item("psimetal_nugget", "Psimetal Nugget", "\u30b5\u30a4\u30e1\u30bf\u30eb\u30ca\u30b2\u30c3\u30c8"),
+            item("ivory_psimetal_nugget", "Ivory Psimetal Nugget", "\u30a2\u30a4\u30dc\u30ea\u30fc\u30b5\u30a4\u30e1\u30bf\u30eb\u30ca\u30b2\u30c3\u30c8"),
+            item("ebony_psimetal_nugget", "Ebony Psimetal Nugget", "\u30a8\u30dc\u30cb\u30fc\u30b5\u30a4\u30e1\u30bf\u30eb\u30ca\u30b2\u30c3\u30c8"),
+            item("chaotic_psimetal_nugget", "Chaotic Psimetal Nugget", "\u30ab\u30aa\u30c6\u30a3\u30c3\u30af\u30b5\u30a4\u30e1\u30bf\u30eb\u30ca\u30b2\u30c3\u30c8"),
+            item("flashmetal_nugget", "Flashmetal Nugget", "\u30d5\u30e9\u30c3\u30b7\u30e5\u30e1\u30bf\u30eb\u30ca\u30b2\u30c3\u30c8"),
+            item("heavy_psimetal_nugget", "Heavy Psimetal Nugget", "\u30d8\u30d3\u30fc\u30b5\u30a4\u30e1\u30bf\u30eb\u30ca\u30b2\u30c3\u30c8"),
+            item("antinite_nugget", "Antinite Nugget", "\u30a2\u30f3\u30c6\u30a3\u30ca\u30a4\u30c8\u30ca\u30b2\u30c3\u30c8"),
             item("alloy_psion", "Psionic Alloy", "サイオニック合金"),
             item("alloy_psionic_echo", "Echo Alloy", "感応合金"),
             item("alloy_hypostasis", "Hypostasis Alloy", "位格合金"),

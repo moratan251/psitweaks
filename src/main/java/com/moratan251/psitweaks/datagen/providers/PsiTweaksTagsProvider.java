@@ -140,7 +140,22 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "ingots/flashmetal", item("flashmetal"));
         tag(tags, "c", "ingots/heavy_psimetal", item("heavy_psimetal"));
         tag(tags, "c", "ingots/psycheonic_metal", item("psycheonic_metal_ingot"));
-        tag(tags, "c", "nuggets", tagRef("c:nuggets/psycheonic_metal"));
+        tag(tags, "c", "nuggets",
+                tagRef("c:nuggets/psimetal"),
+                tagRef("c:nuggets/ivory_psimetal"),
+                tagRef("c:nuggets/ebony_psimetal"),
+                tagRef("c:nuggets/chaotic_psimetal"),
+                tagRef("c:nuggets/flashmetal"),
+                tagRef("c:nuggets/heavy_psimetal"),
+                tagRef("c:nuggets/antinite"),
+                tagRef("c:nuggets/psycheonic_metal"));
+        tag(tags, "c", "nuggets/psimetal", item("psimetal_nugget"));
+        tag(tags, "c", "nuggets/ivory_psimetal", item("ivory_psimetal_nugget"));
+        tag(tags, "c", "nuggets/ebony_psimetal", item("ebony_psimetal_nugget"));
+        tag(tags, "c", "nuggets/chaotic_psimetal", item("chaotic_psimetal_nugget"));
+        tag(tags, "c", "nuggets/flashmetal", item("flashmetal_nugget"));
+        tag(tags, "c", "nuggets/heavy_psimetal", item("heavy_psimetal_nugget"));
+        tag(tags, "c", "nuggets/antinite", item("antinite_nugget"));
         tag(tags, "c", "nuggets/psycheonic_metal", item("psycheonic_metal_nugget"));
         tag(tags, "c", "ores", tagRef("c:ores/antinite"));
         tag(tags, "c", "ores/antinite", item("ore_antinite"));

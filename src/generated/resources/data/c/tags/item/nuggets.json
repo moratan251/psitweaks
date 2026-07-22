@@ -1,5 +1,12 @@
 {
   "values": [
+    "#c:nuggets/psimetal",
+    "#c:nuggets/ivory_psimetal",
+    "#c:nuggets/ebony_psimetal",
+    "#c:nuggets/chaotic_psimetal",
+    "#c:nuggets/flashmetal",
+    "#c:nuggets/heavy_psimetal",
+    "#c:nuggets/antinite",
     "#c:nuggets/psycheonic_metal"
   ]
 }

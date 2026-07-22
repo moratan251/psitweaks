@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psi:ebony_psimetal"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "psitweaks:ebony_psimetal_nugget"
+  }
+}
