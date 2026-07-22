@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-06T00:37:46.2334534	PsiTweaks block loot tables
+// 1.21.1	2026-07-23T01:20:52.0021261	PsiTweaks block loot tables
 edbd08a69bd4c03a48386192e341436b02b304cc data/psitweaks/loot_table/blocks/antinite_block.json
 6cb1572d8368a8ff16a54cdfc9cd84752d617810 data/psitweaks/loot_table/blocks/cad_disassembler.json
 43fa73f6d2911179262f55259277037b66160c5c data/psitweaks/loot_table/blocks/chaotic_psimetal_block.json
@@ -10,6 +10,8 @@ f955f00ccf989f2ca182a04bf40a4c7681d41188 data/psitweaks/loot_table/blocks/ore_an
 72b34f554219c540bc5060f0bd39b06858ba8482 data/psitweaks/loot_table/blocks/polonium_block.json
 4e5cef444b803f6dee56e869817b1a431bcba2e4 data/psitweaks/loot_table/blocks/program_researcher.json
 79cea1a30c2ada066d90b58df8fca003a2b1e3f5 data/psitweaks/loot_table/blocks/psionic_generator.json
+7e36c6739c2a3308c8efccac0f55951a7baee8bf data/psitweaks/loot_table/blocks/psycheonic_metal_block.json
+5c0c70f4496d77de8e3bca5b37ec4c5d48be880b data/psitweaks/loot_table/blocks/psycheonic_metal_crux.json
 1a0d7ab1522c91db53a5da0a8be61f2c32bfe350 data/psitweaks/loot_table/blocks/raw_antinite_block.json
 9c666379231d89bd00b4aefad45e7a8cb3b43b3e data/psitweaks/loot_table/blocks/sculk_eroder.json
 d63b206e17f37cae1610b529fa8f66e52bf99e34 data/psitweaks/loot_table/blocks/spellmachinery_casing.json

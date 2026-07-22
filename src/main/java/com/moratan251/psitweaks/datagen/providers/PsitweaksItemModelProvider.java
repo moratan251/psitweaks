@@ -54,7 +54,10 @@ public class PsitweaksItemModelProvider implements DataProvider {
         root.addProperty("parent", item.parent());
         if (item.texture() != null) {
             JsonObject textures = new JsonObject();
-            textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "item/" + item.texture()).toString());
+            String texturePath = item.texture().startsWith("block/")
+                    ? item.texture()
+                    : "item/" + item.texture();
+            textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, texturePath).toString());
             root.add("textures", textures);
         }
         if (item.activeModel()) {

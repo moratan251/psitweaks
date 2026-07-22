@@ -101,10 +101,12 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());
                         output.accept(PsitweaksBlocks.FLASHMETAL_BLOCK.get());
                         output.accept(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get());
+                        output.accept(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get());
                         output.accept(PsitweaksBlocks.PLUTONIUM_BLOCK.get());
                         output.accept(PsitweaksBlocks.POLONIUM_BLOCK.get());
                         output.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());
                         output.accept(PsitweaksBlocks.SPELLMACHINERY_CASING.get());
+                        output.accept(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX_ITEM.get());
                     })
                     .build()
     );

@@ -1,11 +1,13 @@
 package com.moratan251.psitweaks.common.blocks;
 
 import com.moratan251.psitweaks.Psitweaks;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -81,6 +83,23 @@ public final class PsitweaksBlocks {
                     .strength(8.0F)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
+    );
+    public static final DeferredBlock<Block> PSYCHEONIC_METAL_BLOCK = registerSimpleBlock(
+            "psycheonic_metal_block",
+            BlockBehaviour.Properties.of()
+                    .strength(10.0F)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+    );
+    public static final DeferredBlock<Block> PSYCHEONIC_METAL_CRUX = BLOCKS.register(
+            "psycheonic_metal_crux",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .sound(SoundType.STONE)
+                    .strength(5.0F, 10.0F))
+    );
+    public static final DeferredItem<BlockItem> PSYCHEONIC_METAL_CRUX_ITEM = BLOCK_ITEMS.register(
+            "psycheonic_metal_crux",
+            () -> new BlockItem(PSYCHEONIC_METAL_CRUX.get(), new Item.Properties())
     );
 
     private PsitweaksBlocks() {

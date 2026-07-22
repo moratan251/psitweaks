@@ -52,6 +52,7 @@ import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksFallbackRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.MysticalAgricultureModelProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismDataMapProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksLootTableProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismRecipeProvider;
@@ -79,6 +80,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -172,6 +174,10 @@ public class Psitweaks {
 
         generator.addProvider(event.includeClient(), new PsitweaksBlockStateProvider(packOutput));
         generator.addProvider(event.includeClient(), new PsitweaksItemModelProvider(packOutput));
+        if (event.includeClient() && ModList.get().isLoaded("mysticalagriculture")) {
+            generator.addProvider(true, new MysticalAgricultureModelProvider(
+                    packOutput, ModList.get().isLoaded("mysticalagradditions")));
+        }
         generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));
         generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
         generator.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));

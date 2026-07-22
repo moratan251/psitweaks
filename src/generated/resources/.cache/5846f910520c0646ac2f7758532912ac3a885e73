@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-06T00:56:02.2438405	PsiTweaks block states and models
+// 1.21.1	2026-07-23T01:20:52.0001313	PsiTweaks block states and models
 7b358be415c4e4c4ad576f8ad3a7726f773e3234 assets/psitweaks/blockstates/antinite_block.json
 f53b293bec50205ba0ccea724cd730ee3ca67767 assets/psitweaks/blockstates/cad_disassembler.json
 38e534e3e554cc654190cdc06dbeaa34c1590479 assets/psitweaks/blockstates/chaotic_psimetal_block.json
@@ -10,6 +10,8 @@ f53b293bec50205ba0ccea724cd730ee3ca67767 assets/psitweaks/blockstates/cad_disass
 68be41cfde3619893b00362d479798d18170c30d assets/psitweaks/blockstates/polonium_block.json
 2fac38e93ac6771e9df136eea7306d5c61971726 assets/psitweaks/blockstates/program_researcher.json
 c0a1acc87d5560924dbff591678c6fe3f428f79f assets/psitweaks/blockstates/psionic_generator.json
+c9bb0d3c0b5d431c545bd9177bc61980611b8706 assets/psitweaks/blockstates/psycheonic_metal_block.json
+ded4c4d5275976878f006b13022f9aadfbc65ed7 assets/psitweaks/blockstates/psycheonic_metal_crux.json
 68da06d9ad67bf97af51db3f110fef8fbd9dd158 assets/psitweaks/blockstates/raw_antinite_block.json
 fdf2edafb6cf240b6ff34e35a679478866f97052 assets/psitweaks/blockstates/sculk_eroder.json
 2bb4391fe3b3e822535add075add2443bb1fbeff assets/psitweaks/blockstates/spellmachinery_casing.json
@@ -30,6 +32,8 @@ ac6de567a35a2c662a4947b4c4b4eaf32b8b3fa9 assets/psitweaks/models/block/program_r
 ac6de567a35a2c662a4947b4c4b4eaf32b8b3fa9 assets/psitweaks/models/block/program_researcher_active.json
 fc911db909ded26f237569dca9b7e0e85bfe0eb0 assets/psitweaks/models/block/psionic_generator.json
 f4bc3b8ab9d67de286a80d9985a104b845f91491 assets/psitweaks/models/block/psionic_generator_active.json
+ada7cfe3305aa90c4cd943b205226c4876384a80 assets/psitweaks/models/block/psycheonic_metal_block.json
+e9c84ee34ac55a917f2597a1e9600f9388d93469 assets/psitweaks/models/block/psycheonic_metal_crux.json
 a0512084d618832a9dcc3580be6aef00ad78be80 assets/psitweaks/models/block/raw_antinite_block.json
 e035ec2e05a13b0541a7e62eb296b84cb00ad3c0 assets/psitweaks/models/block/sculk_eroder.json
 9d18d069ad002972a80b41f60832b48bc9d1bec6 assets/psitweaks/models/block/sculk_eroder_active.json
@@ -46,6 +50,8 @@ df9d2483cade9f155ec8d3a90f877e272808af0a assets/psitweaks/models/item/material_m
 6ca1a30f22e709059e1213d819813e847a8bfdb2 assets/psitweaks/models/item/polonium_block.json
 9e9ec45f90631ebe5525e59105043dd169fc0cf4 assets/psitweaks/models/item/program_researcher.json
 600cbf92d739db2c58b534a488a7a37f4b71a4c5 assets/psitweaks/models/item/psionic_generator.json
+3fb6b7a8e17f46c1345f9455359d2d2380cdc86c assets/psitweaks/models/item/psycheonic_metal_block.json
+834a60b926abe86c720bc80e59dd67c657afc423 assets/psitweaks/models/item/psycheonic_metal_crux.json
 ba867fa0c2eab384fa564491f69cee7f4514212e assets/psitweaks/models/item/raw_antinite_block.json
 c18b409f858a064a37b5f072b573c00cb3fbee01 assets/psitweaks/models/item/sculk_eroder.json
 5e9e6b29a84fe8ebe3792a52faaa74db9882b6f1 assets/psitweaks/models/item/spellmachinery_casing.json

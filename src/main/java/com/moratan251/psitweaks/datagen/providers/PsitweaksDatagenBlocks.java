@@ -19,7 +19,9 @@ final class PsitweaksDatagenBlocks {
             block("plutonium_block", "Plutonium Block", "プルトニウムブロック"),
             block("polonium_block", "Polonium Block", "ポロニウムブロック"),
             block("raw_antinite_block", "Raw Antinite Block", "アンティナイトの原石ブロック"),
-            block("spellmachinery_casing", "Spellmachinery Casing", "魔導機構ケーシング")
+            block("spellmachinery_casing", "Spellmachinery Casing", "魔導機構ケーシング"),
+            block("psycheonic_metal_block", "Psycheonic Metal Block", "プシオニックメタルブロック", "psycheonicmetal_block"),
+            block("psycheonic_metal_crux", "Psycheonic Metal Crux", "プシオニックメタルの核", "pycheonicmetal_crux")
     );
 
     private PsitweaksDatagenBlocks() {

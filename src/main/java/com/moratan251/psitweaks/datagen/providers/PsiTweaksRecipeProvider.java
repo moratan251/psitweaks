@@ -380,6 +380,13 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         recipe(recipes, "heavy_psimetal_from_block", shapeless(
                 List.of(ingredientItem(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK)),
                 item("heavy_psimetal"), 9));
+        recipe(recipes, "psycheonic_metal_block", shaped("building",
+                List.of("III", "III", "III"),
+                Map.of('I', ingredientItem(PsitweaksItems.PSYCHEONIC_METAL_INGOT)),
+                block("psycheonic_metal_block"), 1));
+        recipe(recipes, "psycheonic_metal_ingot_from_block", shapeless(
+                List.of(ingredientItem(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK)),
+                item("psycheonic_metal_ingot"), 9));
         recipe(recipes, "plutonium_block", shaped("building",
                 List.of("PPP", "PPP", "PPP"),
                 Map.of('P', ingredientItem(MekanismItems.PLUTONIUM_PELLET)),
@@ -477,6 +484,8 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         addSculkEroderRecipes(recipes);
         ProgramResearchRecipeProvider.addRecipes(recipes);
         addPhilosophersStoneRecipes(recipes);
+        addMysticalAgricultureRecipes(recipes);
+        addMysticalAgradditionsRecipes(recipes);
         recipe(recipes, "program_duplication", specialCrafting("psitweaks:crafting_special_program_duplication"));
 
         recipes.forEach(RecipeConditionHelper::addReferencedModConditions);
@@ -641,6 +650,57 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 List.of(ingredientItem(PsitweaksItems.PHILOSOPHERS_STONE), ingredientItem(Items.QUARTZ), ingredientItem(Items.QUARTZ),
                         ingredientItem(Items.QUARTZ), ingredientItem(Items.QUARTZ), ingredientItem(Items.QUARTZ)),
                 "minecraft:coal", 5));
+    }
+
+    private static void addMysticalAgricultureRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        addMysticalAgricultureEssenceRecipe(recipes, "psidust", List.of("EEE", "E E", "EEE"), "psi:psidust", 6);
+        addMysticalAgricultureEssenceRecipe(recipes, "psimetal", List.of("EEE", "E E", "EEE"), "psi:psimetal", 4);
+        addMysticalAgricultureEssenceRecipe(recipes, "ebony_psimetal", List.of("EEE", "E E", "EEE"), "psi:ebony_psimetal", 4);
+        addMysticalAgricultureEssenceRecipe(recipes, "ivory_psimetal", List.of("EEE", "E E", "EEE"), "psi:ivory_psimetal", 4);
+        addMysticalAgricultureEssenceRecipe(recipes, "psigem", List.of("EEE", "EEE", "EEE"), "psi:psigem", 1);
+        addMysticalAgricultureEssenceRecipe(recipes, "chaotic_psimetal", List.of("EEE", "EEE", "EEE"), item("chaotic_psimetal"), 1);
+        addMysticalAgricultureEssenceRecipe(recipes, "flashmetal", List.of("EEE", "EEE", "EEE"), item("flashmetal"), 1);
+        addMysticalAgricultureEssenceRecipe(recipes, "heavy_psimetal", List.of("EEE", "EEE", "EEE"), item("heavy_psimetal"), 1);
+        addMysticalAgricultureEssenceRecipe(recipes, "antinite", List.of("EEE", "EEE", "EEE"), item("antinite_ingot"), 1);
+    }
+
+    private static void addMysticalAgradditionsRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        JsonObject essenceRecipe = shaped(
+                List.of("EEE", "EEE", "EEE"),
+                Map.of('E', ingredientItemId("mysticalagriculture:psycheonic_metal_essence")),
+                item("psycheonic_metal_ingot"),
+                1
+        );
+        RecipeConditionHelper.requireMod(essenceRecipe, "mysticalagradditions");
+        recipe(recipes, "mystical_agradditions/essence/psycheonic_metal", essenceRecipe);
+
+        JsonObject cruxRecipe = shaped(
+                List.of("ABA", "BCB", "ABA"),
+                Map.of(
+                        'A', ingredientItemId("mysticalagradditions:insanium_essence"),
+                        'B', ingredientItemId(item("psycheonic_metal_ingot")),
+                        'C', ingredientItemId("minecraft:diamond_block")
+                ),
+                item("psycheonic_metal_crux"),
+                1
+        );
+        RecipeConditionHelper.requireMod(cruxRecipe, "mysticalagradditions");
+        recipe(recipes, "mystical_agradditions/psycheonic_metal_crux", cruxRecipe);
+    }
+
+    private static void addMysticalAgricultureEssenceRecipe(Map<ResourceLocation, JsonObject> recipes,
+                                                              String crop,
+                                                              List<String> pattern,
+                                                              String result,
+                                                              int count) {
+        JsonObject recipe = shaped(
+                pattern,
+                Map.of('E', ingredientItemId("mysticalagriculture:" + crop + "_essence")),
+                result,
+                count
+        );
+        RecipeConditionHelper.requireMod(recipe, "mysticalagriculture");
+        recipe(recipes, "mystical_agriculture/essence/" + crop, recipe);
     }
 
     private static JsonObject shaped(List<String> pattern, Map<Character, JsonObject> keys, String result, int count) {

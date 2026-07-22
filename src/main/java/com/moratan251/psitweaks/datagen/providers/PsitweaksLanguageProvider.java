@@ -31,6 +31,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addConfigTranslations(root);
         root.addProperty("creativetabs.psitweaks", "Psi: Tweaks and Additions");
+        addMysticalAgricultureTranslations(root);
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             root.addProperty("block.psitweaks." + block.id(), switch (locale) {
                 case "ja_jp" -> block.jaJp();
@@ -371,6 +372,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLegacyPatchouliBookTranslations(root);
 
         return root;
+    }
+
+    private void addMysticalAgricultureTranslations(JsonObject root) {
+        String[][] crops = {
+                {"psidust", "Psidust", "サイダスト"},
+                {"psimetal", "Psimetal", "サイメタル"},
+                {"ebony_psimetal", "Ebony Psimetal", "エボニーサイメタル"},
+                {"ivory_psimetal", "Ivory Psimetal", "アイボリーサイメタル"},
+                {"psigem", "Psigem", "サイジェム"},
+                {"chaotic_psimetal", "Chaotic Psimetal", "カオティックサイメタル"},
+                {"flashmetal", "Flashmetal", "フラッシュメタル"},
+                {"heavy_psimetal", "Heavy Psimetal", "ヘビーサイメタル"},
+                {"psycheonic_metal", "Psycheonic Metal", "プシオニックメタル"},
+                {"antinite", "Antinite", "アンティナイト"}
+        };
+        for (String[] crop : crops) {
+            root.addProperty("crop.psitweaks." + crop[0], locale.equals("ja_jp") ? crop[2] : crop[1]);
+        }
     }
 
     private void addConfigTranslations(JsonObject root) {

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:psycheonic_metal_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "psitweaks:psycheonic_metal_ingot"
+  }
+}
