@@ -17,11 +17,11 @@
     {
       "count": 32,
       "ingredient": {
-        "item": "psitweaks:psycheonic_metal_ingot"
+        "item": "psitweaks:heavy_psimetal"
       }
     },
     {
-      "count": 16,
+      "count": 8,
       "ingredient": {
         "item": "psitweaks:pellet_americium"
       }

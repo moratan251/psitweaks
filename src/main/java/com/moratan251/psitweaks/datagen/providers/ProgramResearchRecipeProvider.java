@@ -110,22 +110,22 @@ public final class ProgramResearchRecipeProvider {
         research(recipes, "program_die_flex", List.of(
                 input(item("program_blank"), 1),
                 input(item("psionic_control_circuit"), 16),
-                input(item("flashmetal"), 32),
-                input(item("chaotic_factor"), 32)
+                input(item("chaotic_psimetal"), 16),
+                input(item("chaotic_factor"), 16)
         ), item("program_die_flex"), 6_000L, 600);
 
         research(recipes, "program_jump_flex", List.of(
                 input(item("program_die_flex"), 1),
                 input(item("echo_control_circuit"), 16),
-                input(item("heavy_psimetal"), 32),
-                input("mekanism:pellet_polonium", 16)
+                input(item("flashmetal"), 24),
+                input("mekanism:pellet_polonium", 4)
         ), item("program_jump_flex"), 100_000L, 54_000);
 
         research(recipes, "program_switch_flex", List.of(
                 input(item("program_jump_flex"), 1),
                 input(item("hypostasis_control_circuit"), 16),
-                input(item("psycheonic_metal_ingot"), 32),
-                input(item("pellet_americium"), 16)
+                input(item("heavy_psimetal"), 32),
+                input(item("pellet_americium"), 8)
         ), item("program_switch_flex"), 500_000L, 90_000);
 
         research(recipes, "program_material_mutation", List.of(

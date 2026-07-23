@@ -21,13 +21,13 @@
       }
     },
     {
-      "count": 32,
+      "count": 24,
       "ingredient": {
-        "item": "psitweaks:heavy_psimetal"
+        "item": "psitweaks:flashmetal"
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
         "item": "mekanism:pellet_polonium"
       }

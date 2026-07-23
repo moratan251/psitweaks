@@ -15,13 +15,13 @@
       }
     },
     {
-      "count": 32,
+      "count": 16,
       "ingredient": {
-        "item": "psitweaks:flashmetal"
+        "item": "psitweaks:chaotic_psimetal"
       }
     },
     {
-      "count": 32,
+      "count": 16,
       "ingredient": {
         "item": "psitweaks:chaotic_factor"
       }
