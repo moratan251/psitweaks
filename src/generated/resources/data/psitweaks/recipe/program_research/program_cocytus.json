@@ -37,6 +37,12 @@
       "ingredient": {
         "item": "minecraft:heart_of_the_sea"
       }
+    },
+    {
+      "count": 64,
+      "ingredient": {
+        "item": "psitweaks:psycheonic_metal"
+      }
     }
   ],
   "output": {

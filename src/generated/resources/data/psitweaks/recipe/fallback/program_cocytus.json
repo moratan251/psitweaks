@@ -15,7 +15,10 @@
       "item": "psitweaks:program_blank"
     },
     {
-      "item": "minecraft:blue_ice"
+      "item": "psitweaks:psycheonic_metal"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal"
     },
     {
       "item": "minecraft:blue_ice"
@@ -31,9 +34,6 @@
     },
     {
       "item": "minecraft:nether_star"
-    },
-    {
-      "item": "minecraft:sculk_shrieker"
     },
     {
       "item": "minecraft:sculk_shrieker"
