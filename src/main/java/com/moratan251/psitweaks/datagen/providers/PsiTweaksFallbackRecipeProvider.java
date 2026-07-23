@@ -272,9 +272,10 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
 
     private static void addProgramFallbacks(Map<ResourceLocation, JsonObject> recipes) {
         addProgram(recipes, "program_cocytus", List.of(
-                counted("minecraft:blue_ice", 3),
+                counted(item("psycheonic_metal"), 2),
+                counted("minecraft:blue_ice", 2),
                 counted("minecraft:nether_star", 3),
-                counted("minecraft:sculk_shrieker", 2)));
+                counted("minecraft:sculk_shrieker", 1)));
         addProgram(recipes, "program_phonon_maser", List.of(
                 counted("minecraft:amethyst_shard", 2),
                 counted(item("flashmetal"), 4),
@@ -289,7 +290,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted("minecraft:feather", 2),
                 counted(item("chaotic_factor"), 2)));
         addProgram(recipes, "program_meteor_line", List.of(
-                counted(item("flashmetal"), 4),
+                counted(item("psycheonic_metal"), 4),
                 counted("minecraft:nether_star", 2),
                 counted("minecraft:dragon_head", 2)));
         addProgram(recipes, "program_supreme_infusion", List.of(

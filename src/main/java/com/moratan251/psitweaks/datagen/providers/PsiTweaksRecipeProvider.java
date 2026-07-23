@@ -653,23 +653,23 @@ public class PsiTweaksRecipeProvider implements DataProvider {
     }
 
     private static void addMysticalAgricultureRecipes(Map<ResourceLocation, JsonObject> recipes) {
-        addMysticalAgricultureEssenceRecipe(recipes, "psidust", List.of("EEE", "E E", "EEE"), "psi:psidust", 6);
+        addMysticalAgricultureEssenceRecipe(recipes, "psidust", List.of("EEE", "E E", "EEE"), "psi:psidust", 12);
         addMysticalAgricultureEssenceRecipe(recipes, "psimetal", List.of("EEE", "E E", "EEE"), "psi:psimetal", 4);
         addMysticalAgricultureEssenceRecipe(recipes, "ebony_psimetal", List.of("EEE", "E E", "EEE"), "psi:ebony_psimetal", 4);
         addMysticalAgricultureEssenceRecipe(recipes, "ivory_psimetal", List.of("EEE", "E E", "EEE"), "psi:ivory_psimetal", 4);
         addMysticalAgricultureEssenceRecipe(recipes, "psigem", List.of("EEE", "EEE", "EEE"), "psi:psigem", 1);
-        addMysticalAgricultureEssenceRecipe(recipes, "chaotic_psimetal", List.of("EEE", "EEE", "EEE"), item("chaotic_psimetal"), 1);
-        addMysticalAgricultureEssenceRecipe(recipes, "flashmetal", List.of("EEE", "EEE", "EEE"), item("flashmetal"), 1);
-        addMysticalAgricultureEssenceRecipe(recipes, "heavy_psimetal", List.of("EEE", "EEE", "EEE"), item("heavy_psimetal"), 1);
-        addMysticalAgricultureEssenceRecipe(recipes, "antinite", List.of("EEE", "EEE", "EEE"), item("antinite_ingot"), 1);
+        addMysticalAgricultureEssenceRecipe(recipes, "chaotic_psimetal", List.of("EEE", "E E", "EEE"), item("chaotic_psimetal"), 2);
+        addMysticalAgricultureEssenceRecipe(recipes, "flashmetal", List.of("EEE", "E E", "EEE"), item("flashmetal_nugget"), 12);
+        addMysticalAgricultureEssenceRecipe(recipes, "heavy_psimetal", List.of("EEE", "E E", "EEE"), item("heavy_psimetal_nugget"), 6);
+        addMysticalAgricultureEssenceRecipe(recipes, "antinite", List.of("EEE", "E E", "EEE"), item("antinite_ingot"), 1);
     }
 
     private static void addMysticalAgradditionsRecipes(Map<ResourceLocation, JsonObject> recipes) {
         JsonObject essenceRecipe = shaped(
                 List.of("EEE", "EEE", "EEE"),
                 Map.of('E', ingredientItemId("mysticalagriculture:psycheonic_metal_essence")),
-                item("psycheonic_metal_ingot"),
-                1
+                item("psycheonic_metal_nugget"),
+                3
         );
         RecipeConditionHelper.requireMod(essenceRecipe, "mysticalagradditions");
         recipe(recipes, "mystical_agradditions/essence/psycheonic_metal", essenceRecipe);

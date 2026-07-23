@@ -14,7 +14,7 @@
   },
   "pattern": [
     "EEE",
-    "EEE",
+    "E E",
     "EEE"
   ],
   "result": {

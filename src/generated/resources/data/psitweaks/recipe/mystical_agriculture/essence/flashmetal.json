@@ -14,11 +14,11 @@
   },
   "pattern": [
     "EEE",
-    "EEE",
+    "E E",
     "EEE"
   ],
   "result": {
-    "count": 1,
-    "id": "psitweaks:flashmetal"
+    "count": 12,
+    "id": "psitweaks:flashmetal_nugget"
   }
 }

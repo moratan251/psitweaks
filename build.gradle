@@ -132,6 +132,7 @@ dependencies {
     implementation "curse.maven:mystical-agriculture-246640:8344249"
     implementation "curse.maven:cucumber-272335:8035802"
     implementation "curse.maven:mystical-agradditions-256247:7802027"
+    runtimeOnly "curse.maven:productivebees-377897:8022994"
 
 
 //    implementation "curse.maven:create-328085:7963363"
