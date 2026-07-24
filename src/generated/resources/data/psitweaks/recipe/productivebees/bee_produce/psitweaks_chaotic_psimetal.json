@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:advanced_beehive",
+  "ingredient": "psitweaks:psitweaks_chaotic_psimetal",
+  "results": [
+    {
+      "item": {
+        "type": "productivebees:component",
+        "components": {
+          "productivebees:bee_type": "psitweaks:psitweaks_chaotic_psimetal"
+        },
+        "items": "productivebees:configurable_honeycomb"
+      }
+    },
+    {
+      "chance": 0.05,
+      "item": {
+        "tag": "c:pollens"
+      }
+    }
+  ]
+}

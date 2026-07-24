@@ -32,7 +32,8 @@ public final class ProductiveBeesDataProvider implements DataProvider {
                     "#CCBF61", "#81772D", "psitweaks:antinite_block"),
             bee("psitweaks_hypostasis_gem", "Hypostasis Gem Bee", "ヒュポスタシスジェムのミツバチ",
                     "#FFB7F8", "#AE475C", "psitweaks:hypostasis_gem_block"),
-            bee("psitweaks_psycheonic_metal", "Psycheonic Metal Bee", "プシオニックメタルのミツバチ",
+            beeWithoutSelfBreeding("psitweaks_psycheonic_metal",
+                    "Psycheonic Metal Bee", "プシオニックメタルのミツバチ",
                     "#7ED8E6", "#2D7681", "psitweaks:psycheonic_metal_block"));
 
     private static final List<BeeBreedingRecipe> BEE_BREEDING_RECIPES = List.of(
@@ -55,17 +56,30 @@ public final class ProductiveBeesDataProvider implements DataProvider {
                     "psitweaks:psitweaks_heavy_psimetal"),
             breeding("psitweaks_antinite",
                     "productivebees:ender", "psitweaks:psitweaks_flashmetal",
-                    "psitweaks:psitweaks_antinite"),
-            breeding("psitweaks_psycheonic_metal",
-                    "psitweaks:psitweaks_hypostasis_gem", "psitweaks:psitweaks_heavy_psimetal",
-                    "psitweaks:psitweaks_psycheonic_metal"));
+                    "psitweaks:psitweaks_antinite"));
 
     private static final List<BeeConversionRecipe> BEE_CONVERSION_RECIPES = List.of(
             conversion("psi_psidust",
                     "productivebees:redstone", "psitweaks:psi_psidust", "psi:psidust"),
             conversion("psitweaks_hypostasis_gem",
                     "psitweaks:psitweaks_antinite", "psitweaks:psitweaks_hypostasis_gem",
-                    "psitweaks:hypostasis_gem"));
+                    "psitweaks:hypostasis_gem"),
+            conversion("psitweaks_psycheonic_metal",
+                    "psitweaks:psitweaks_heavy_psimetal", "psitweaks:psitweaks_psycheonic_metal",
+                    "psitweaks:psycheonic_metal_block"));
+
+    private static final List<CentrifugeRecipe> CENTRIFUGE_RECIPES = List.of(
+            centrifuge("psi_psidust", "psi:psidust", 1, 2, 0.5D),
+            centrifuge("psi_psimetal", "psi:psimetal", 1, 1, 0.4D),
+            centrifuge("psi_psigem", "psi:psigem", 1, 1, 0.2D),
+            centrifuge("psi_ebony_psimetal", "psi:ebony_psimetal", 1, 1, 0.35D),
+            centrifuge("psi_ivory_psimetal", "psi:ivory_psimetal", 1, 1, 0.35D),
+            centrifuge("psitweaks_chaotic_psimetal", "psitweaks:chaotic_psimetal", 1, 1, 0.2D),
+            centrifuge("psitweaks_flashmetal", "psitweaks:flashmetal_nugget", 4, 6, 0.5D),
+            centrifuge("psitweaks_heavy_psimetal", "psitweaks:heavy_psimetal_nugget", 3, 4, 0.3D),
+            centrifuge("psitweaks_antinite", "psitweaks:antinite_nugget", 2, 3, 0.2D),
+            centrifuge("psitweaks_hypostasis_gem", "psitweaks:hypostasis_gem", 1, 1, 0.03D),
+            centrifuge("psitweaks_psycheonic_metal", "psitweaks:psycheonic_metal_nugget", 1, 1, 0.1D));
 
     private final PackOutput.PathProvider beePathProvider;
     private final PackOutput.PathProvider recipePathProvider;
@@ -98,12 +112,26 @@ public final class ProductiveBeesDataProvider implements DataProvider {
                     recipePathProvider.json(Psitweaks.location(
                             "productivebees/bee_conversion/" + recipe.id()))));
         }
+        for (GeneratedBee bee : BEES) {
+            futures.add(DataProvider.saveStable(
+                    output,
+                    advancedBeehiveRecipe(bee),
+                    recipePathProvider.json(Psitweaks.location(
+                            "productivebees/bee_produce/" + bee.id()))));
+        }
+        for (CentrifugeRecipe recipe : CENTRIFUGE_RECIPES) {
+            futures.add(DataProvider.saveStable(
+                    output,
+                    centrifugeRecipe(recipe),
+                    recipePathProvider.json(Psitweaks.location(
+                            "productivebees/centrifuge/" + recipe.beeId()))));
+        }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @Override
     public String getName() {
-        return "PsiTweaks Productive Bees definitions";
+        return "PsiTweaks Productive Bees data";
     }
 
     static List<GeneratedBee> bees() {
@@ -116,12 +144,21 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         root.addProperty("secondaryColor", bee.secondaryColor());
         root.addProperty("createComb", true);
         root.addProperty("flowerTag", bee.flowerTag());
+        if (!bee.selfBreed()) {
+            root.addProperty("selfbreed", false);
+        }
         return root;
     }
 
     private static GeneratedBee bee(String id, String enUs, String jaJp,
                                     String primaryColor, String secondaryColor, String flowerBlock) {
-        return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock);
+        return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, true);
+    }
+
+    private static GeneratedBee beeWithoutSelfBreeding(String id, String enUs, String jaJp,
+                                                       String primaryColor, String secondaryColor,
+                                                       String flowerBlock) {
+        return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, false);
     }
 
     private static JsonObject breedingRecipe(BeeBreedingRecipe recipe) {
@@ -144,6 +181,66 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         root.add("item", item);
         root.add("neoforge:conditions", modLoadedConditions(recipe.requiredMods()));
         return root;
+    }
+
+    private static JsonObject advancedBeehiveRecipe(GeneratedBee bee) {
+        JsonObject root = new JsonObject();
+        root.addProperty("type", "productivebees:advanced_beehive");
+        root.addProperty("ingredient", bee.resourceId());
+
+        JsonArray results = new JsonArray();
+        JsonObject honeycombResult = new JsonObject();
+        honeycombResult.add("item", configurableHoneycomb(bee.resourceId()));
+        results.add(honeycombResult);
+
+        JsonObject pollenResult = new JsonObject();
+        JsonObject pollen = new JsonObject();
+        pollen.addProperty("tag", "c:pollens");
+        pollenResult.add("item", pollen);
+        pollenResult.addProperty("chance", 0.05D);
+        results.add(pollenResult);
+
+        root.add("results", results);
+        root.add("neoforge:conditions", modLoadedConditions(List.of()));
+        return root;
+    }
+
+    private static JsonObject centrifugeRecipe(CentrifugeRecipe recipe) {
+        JsonObject root = new JsonObject();
+        root.addProperty("type", "productivebees:centrifuge");
+        root.add("ingredient", configurableHoneycomb(beeResourceId(recipe.beeId())));
+
+        JsonArray outputs = new JsonArray();
+        JsonObject materialOutput = new JsonObject();
+        JsonObject material = new JsonObject();
+        material.addProperty("item", recipe.outputItem());
+        materialOutput.add("item", material);
+        if (recipe.min() != 1 || recipe.max() != 1) {
+            materialOutput.addProperty("min", recipe.min());
+            materialOutput.addProperty("max", recipe.max());
+        }
+        materialOutput.addProperty("chance", recipe.chance());
+        outputs.add(materialOutput);
+
+        JsonObject waxOutput = new JsonObject();
+        JsonObject wax = new JsonObject();
+        wax.addProperty("item", "productivebees:wax");
+        waxOutput.add("item", wax);
+        outputs.add(waxOutput);
+
+        root.add("outputs", outputs);
+        root.add("neoforge:conditions", modLoadedConditions(List.of()));
+        return root;
+    }
+
+    private static JsonObject configurableHoneycomb(String beeType) {
+        JsonObject ingredient = new JsonObject();
+        ingredient.addProperty("type", "productivebees:component");
+        JsonObject components = new JsonObject();
+        components.addProperty("productivebees:bee_type", beeType);
+        ingredient.add("components", components);
+        ingredient.addProperty("items", "productivebees:configurable_honeycomb");
+        return ingredient;
     }
 
     private static JsonArray modLoadedConditions(List<String> additionalMods) {
@@ -172,10 +269,24 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         return new BeeConversionRecipe(id, source, result, item, List.of(requiredMods));
     }
 
+    private static CentrifugeRecipe centrifuge(String beeId, String outputItem,
+                                               int min, int max, double chance) {
+        return new CentrifugeRecipe(beeId, outputItem, min, max, chance);
+    }
+
+    private static String beeResourceId(String beeId) {
+        return "psitweaks:" + beeId;
+    }
+
     record GeneratedBee(String id, String enUs, String jaJp,
-                        String primaryColor, String secondaryColor, String flowerBlock) {
+                        String primaryColor, String secondaryColor, String flowerBlock,
+                        boolean selfBreed) {
         String flowerTag() {
             return "psitweaks:productivebees/flowers/" + id;
+        }
+
+        String resourceId() {
+            return beeResourceId(id);
         }
     }
 
@@ -185,5 +296,8 @@ public final class ProductiveBeesDataProvider implements DataProvider {
 
     private record BeeConversionRecipe(String id, String source, String result, String item,
                                        List<String> requiredMods) {
+    }
+
+    private record CentrifugeRecipe(String beeId, String outputItem, int min, int max, double chance) {
     }
 }

@@ -2,5 +2,6 @@
   "createComb": true,
   "flowerTag": "psitweaks:productivebees/flowers/psitweaks_psycheonic_metal",
   "primaryColor": "#7ED8E6",
-  "secondaryColor": "#2D7681"
+  "secondaryColor": "#2D7681",
+  "selfbreed": false
 }
