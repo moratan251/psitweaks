@@ -4,18 +4,11 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.world.item.ItemStack;
-import vazkii.psi.api.PsiAPI;
-import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.spell.CompiledSpell;
 import vazkii.psi.api.spell.EnumSpellStat;
-import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellMetadata;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
-import vazkii.psi.common.item.ItemCAD;
-import vazkii.psi.common.item.ItemCircleSpellBullet;
 
 public final class SpellPsiRefundHelper {
     private SpellPsiRefundHelper() {
@@ -57,14 +50,9 @@ public final class SpellPsiRefundHelper {
             return;
         }
 
-        ItemStack cad = PsiAPI.getPlayerCAD(context.caster);
-        ItemStack spellContainer = getCastingSpellContainer(context, cad);
-        int refundCost = ItemCAD.getRealCost(cad, spellContainer, remainingRawCost);
-        if (isCircleSpellBullet(spellContainer)) {
-            refundCost /= 20;
-        }
-        if (refundCost > 0) {
-            PlayerDataHandler.get(context.caster).deductPsi(-refundCost, 0, true, true);
+        SpellPsiRefundLedger ledger = SpellPsiRefundLedger.get(context);
+        if (ledger != null) {
+            ledger.refundRawCost(context.caster, remainingRawCost);
         }
     }
 
@@ -89,31 +77,5 @@ public final class SpellPsiRefundHelper {
         }
 
         return Math.max((int) total, 0);
-    }
-
-    private static ItemStack getCastingSpellContainer(SpellContext context, ItemStack cad) {
-        ItemStack spellContainer = ItemStack.EMPTY;
-
-        // Prefer the tool-selected spell container (e.g. exosuit/tools).
-        if (context.tool != null && !context.tool.isEmpty() && ISocketable.isSocketable(context.tool)) {
-            spellContainer = ISocketable.socketable(context.tool).getSelectedBullet();
-        }
-
-        // Flash Ring is not socketable and may not be treated as "container" by Psi.
-        if (spellContainer.isEmpty() && context.tool != null && !context.tool.isEmpty()
-                && ISpellAcceptor.isAcceptor(context.tool)) {
-            spellContainer = context.tool;
-        }
-
-        // Fallback to the CAD's selected bullet.
-        if (spellContainer.isEmpty() && !cad.isEmpty() && ISocketable.isSocketable(cad)) {
-            spellContainer = ISocketable.socketable(cad).getSelectedBullet();
-        }
-
-        return spellContainer;
-    }
-
-    private static boolean isCircleSpellBullet(ItemStack spellContainer) {
-        return !spellContainer.isEmpty() && spellContainer.getItem() instanceof ItemCircleSpellBullet;
     }
 }
