@@ -91,6 +91,13 @@ public final class PsitweaksBlocks {
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
     );
+    public static final DeferredBlock<Block> HYPOSTASIS_GEM_BLOCK = registerSimpleBlock(
+            "hypostasis_gem_block",
+            BlockBehaviour.Properties.of()
+                    .strength(5.0F)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+    );
     public static final DeferredBlock<Block> PSYCHEONIC_METAL_CRUX = BLOCKS.register(
             "psycheonic_metal_crux",
             () -> new Block(BlockBehaviour.Properties.of()

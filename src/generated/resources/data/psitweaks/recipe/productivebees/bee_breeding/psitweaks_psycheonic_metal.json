@@ -1,0 +1,12 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:bee_breeding",
+  "offspring": "psitweaks:psitweaks_psycheonic_metal",
+  "parent1": "psitweaks:psitweaks_hypostasis_gem",
+  "parent2": "psitweaks:psitweaks_heavy_psimetal"
+}

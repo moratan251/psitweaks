@@ -1,9 +1,10 @@
-// 1.21.1	2026-07-23T01:20:52.0001313	PsiTweaks block states and models
+// 1.21.1	2026-07-24T16:04:16.8984377	PsiTweaks block states and models
 7b358be415c4e4c4ad576f8ad3a7726f773e3234 assets/psitweaks/blockstates/antinite_block.json
 f53b293bec50205ba0ccea724cd730ee3ca67767 assets/psitweaks/blockstates/cad_disassembler.json
 38e534e3e554cc654190cdc06dbeaa34c1590479 assets/psitweaks/blockstates/chaotic_psimetal_block.json
 6744f983cf33e2bac6ada9f786406739d4b3a08f assets/psitweaks/blockstates/flashmetal_block.json
 4ddb7b4c00ec6aaf4ea4ea83188fe8643506894e assets/psitweaks/blockstates/heavy_psimetal_block.json
+9a38bf870fa5af906cefd481b039323d7da37709 assets/psitweaks/blockstates/hypostasis_gem_block.json
 7c4132debf948ff9c06a6cd2b58d0d4f3e503db3 assets/psitweaks/blockstates/material_mutator.json
 4628596098a5ba9c6aab421f3db155f881068dc8 assets/psitweaks/blockstates/ore_antinite.json
 54de423663754ed3130c33430804f34a3e3afea8 assets/psitweaks/blockstates/plutonium_block.json
@@ -23,6 +24,7 @@ ad8d963a98d0de39611f64a55f4f7d51938b3301 assets/psitweaks/blockstates/transcende
 37182c5f77edb584161603374f6cafac166e4c99 assets/psitweaks/models/block/energy_cube/transcendent.json
 d97f8ad4ba8344303c5fc3cb027452d9577a5626 assets/psitweaks/models/block/flashmetal_block.json
 920d6296b381e5c8296237dbd57f2441590f063c assets/psitweaks/models/block/heavy_psimetal_block.json
+1f04d0b5db979d94b4c0a44ffacd8fd692b39841 assets/psitweaks/models/block/hypostasis_gem_block.json
 09bde0518748cdacf72ab531e523b65eaf6587bb assets/psitweaks/models/block/material_mutator.json
 4f3fd4cd123dbf0cad22a9f2b3e7f5287c6524b2 assets/psitweaks/models/block/material_mutator_active.json
 25d071ef63e2d84f8b690dbfa1a6caf13bb4ec5e assets/psitweaks/models/block/ore_antinite.json
@@ -44,6 +46,7 @@ f39ab46408013bd2f81e5d07c886e979e6ff951e assets/psitweaks/models/item/antinite_b
 b296c5784f51278151a8969a85212ce1716ec160 assets/psitweaks/models/item/chaotic_psimetal_block.json
 fb22561baf451b83b4bdb5d93b1c9ddf71c7da96 assets/psitweaks/models/item/flashmetal_block.json
 d44fe0c951c76b602ddb03fe33cda0f919a9a894 assets/psitweaks/models/item/heavy_psimetal_block.json
+2b7df99a174ad6c9eed7a59565c4541cdbe0f029 assets/psitweaks/models/item/hypostasis_gem_block.json
 df9d2483cade9f155ec8d3a90f877e272808af0a assets/psitweaks/models/item/material_mutator.json
 5fb3271dee3527b5aff04c96b6e49d5ce35e9d72 assets/psitweaks/models/item/ore_antinite.json
 126b0a578280e7cb5f852a63da4f31ba34dae410 assets/psitweaks/models/item/plutonium_block.json

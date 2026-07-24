@@ -44,6 +44,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 default -> item.enUs();
             });
         }
+        for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
+            root.addProperty("entity.productivebees." + bee.id() + "_bee", switch (locale) {
+                case "ja_jp" -> bee.jaJp();
+                default -> bee.enUs();
+            });
+        }
         root.addProperty("entity.minecraft.villager.psitweaks.spellcaster", switch (locale) {
             case "ja_jp" -> "魔法師";
             default -> "Magician";

@@ -21,6 +21,7 @@ final class PsitweaksDatagenBlocks {
             block("raw_antinite_block", "Raw Antinite Block", "アンティナイトの原石ブロック"),
             block("spellmachinery_casing", "Spellmachinery Casing", "魔導機構ケーシング"),
             block("psycheonic_metal_block", "Psycheonic Metal Block", "プシオニックメタルブロック", "psycheonicmetal_block"),
+            block("hypostasis_gem_block", "Hypostasis Gem Block", "ヒュポスタシスジェムブロック", "hypostasis_gem_block"),
             block("psycheonic_metal_crux", "Psycheonic Metal Crux", "プシオニックメタルの核", "pycheonicmetal_crux")
     );
 

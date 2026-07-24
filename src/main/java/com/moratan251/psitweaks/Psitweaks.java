@@ -59,6 +59,7 @@ import com.moratan251.psitweaks.datagen.providers.PsiTweaksMekanismRecipeProvide
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksTagsProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksWorldgenProvider;
+import com.moratan251.psitweaks.datagen.providers.ProductiveBeesDataProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksDamageTypeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
@@ -183,6 +184,7 @@ public class Psitweaks {
         generator.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsitweaksDamageTypeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksTagsProvider(packOutput));
+        generator.addProvider(event.includeServer(), new ProductiveBeesDataProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksFallbackRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismRecipeProvider(packOutput));

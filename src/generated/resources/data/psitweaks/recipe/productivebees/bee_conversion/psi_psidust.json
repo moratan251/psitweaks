@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:bee_conversion",
+  "item": {
+    "item": "psi:psidust"
+  },
+  "result": "psitweaks:psi_psidust",
+  "source": "productivebees:redstone"
+}

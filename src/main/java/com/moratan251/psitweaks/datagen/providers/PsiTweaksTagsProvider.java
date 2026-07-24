@@ -56,6 +56,10 @@ public class PsiTweaksTagsProvider implements DataProvider {
     }
 
     private static void addBlockTags(Map<ResourceLocation, JsonObject> tags) {
+        for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
+            tag(tags, "psitweaks", "productivebees/flowers/" + bee.id(), bee.flowerBlock());
+        }
+
         tag(tags, "minecraft", "mineable/pickaxe",
                 block("cad_disassembler"),
                 block("program_researcher"),
@@ -72,11 +76,13 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 block("raw_antinite_block"),
                 block("spellmachinery_casing"),
                 block("psycheonic_metal_block"),
+                block("hypostasis_gem_block"),
                 block("psycheonic_metal_crux"));
         tag(tags, "minecraft", "needs_stone_tool", block("psycheonic_metal_crux"));
         tag(tags, "minecraft", "needs_diamond_tool",
                 block("heavy_psimetal_block"),
-                block("psycheonic_metal_block"));
+                block("psycheonic_metal_block"),
+                block("hypostasis_gem_block"));
         tag(tags, "minecraft", "needs_iron_tool",
                 block("program_researcher"),
                 block("sculk_eroder"),
@@ -100,6 +106,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 tagRef("c:storage_blocks/flashmetal"),
                 tagRef("c:storage_blocks/heavy_psimetal"),
                 tagRef("c:storage_blocks/psycheonic_metal"),
+                tagRef("c:storage_blocks/hypostasis_gem"),
                 tagRef("c:storage_blocks/plutonium"),
                 tagRef("c:storage_blocks/polonium"),
                 tagRef("c:storage_blocks/raw_antinite"));
@@ -108,6 +115,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/flashmetal", block("flashmetal_block"));
         tag(tags, "c", "storage_blocks/heavy_psimetal", block("heavy_psimetal_block"));
         tag(tags, "c", "storage_blocks/psycheonic_metal", block("psycheonic_metal_block"));
+        tag(tags, "c", "storage_blocks/hypostasis_gem", block("hypostasis_gem_block"));
         tag(tags, "c", "storage_blocks/plutonium", block("plutonium_block"));
         tag(tags, "c", "storage_blocks/polonium", block("polonium_block"));
         tag(tags, "c", "storage_blocks/raw_antinite", block("raw_antinite_block"));
@@ -174,6 +182,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 tagRef("c:storage_blocks/flashmetal"),
                 tagRef("c:storage_blocks/heavy_psimetal"),
                 tagRef("c:storage_blocks/psycheonic_metal"),
+                tagRef("c:storage_blocks/hypostasis_gem"),
                 tagRef("c:storage_blocks/plutonium"),
                 tagRef("c:storage_blocks/polonium"),
                 tagRef("c:storage_blocks/raw_antinite"));
@@ -182,6 +191,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/flashmetal", item("flashmetal_block"));
         tag(tags, "c", "storage_blocks/heavy_psimetal", item("heavy_psimetal_block"));
         tag(tags, "c", "storage_blocks/psycheonic_metal", item("psycheonic_metal_block"));
+        tag(tags, "c", "storage_blocks/hypostasis_gem", item("hypostasis_gem_block"));
         tag(tags, "c", "storage_blocks/plutonium", item("plutonium_block"));
         tag(tags, "c", "storage_blocks/polonium", item("polonium_block"));
         tag(tags, "c", "storage_blocks/raw_antinite", item("raw_antinite_block"));

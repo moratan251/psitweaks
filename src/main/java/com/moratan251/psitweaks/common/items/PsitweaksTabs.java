@@ -102,6 +102,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksBlocks.FLASHMETAL_BLOCK.get());
                         output.accept(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get());
                         output.accept(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get());
+                        output.accept(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get());
                         output.accept(PsitweaksBlocks.PLUTONIUM_BLOCK.get());
                         output.accept(PsitweaksBlocks.POLONIUM_BLOCK.get());
                         output.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());

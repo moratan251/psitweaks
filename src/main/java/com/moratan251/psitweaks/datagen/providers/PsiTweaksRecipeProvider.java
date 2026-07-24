@@ -387,6 +387,13 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         recipe(recipes, "psycheonic_metal_ingot_from_block", shapeless(
                 List.of(ingredientItem(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK)),
                 item("psycheonic_metal_ingot"), 9));
+        recipe(recipes, "hypostasis_gem_block", shaped("building",
+                List.of("GGG", "GGG", "GGG"),
+                Map.of('G', ingredientItem(PsitweaksItems.HYPOSTASIS_GEM)),
+                block("hypostasis_gem_block"), 1));
+        recipe(recipes, "hypostasis_gem_from_block", shapeless(
+                List.of(ingredientItem(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK)),
+                item("hypostasis_gem"), 9));
         recipe(recipes, "plutonium_block", shaped("building",
                 List.of("PPP", "PPP", "PPP"),
                 Map.of('P', ingredientItem(MekanismItems.PLUTONIUM_PELLET)),

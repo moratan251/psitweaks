@@ -1,0 +1,12 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:bee_breeding",
+  "offspring": "psitweaks:psitweaks_antinite",
+  "parent1": "productivebees:ender",
+  "parent2": "psitweaks:psitweaks_flashmetal"
+}

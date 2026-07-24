@@ -18,7 +18,7 @@ public final class ProgramResearchRecipeProvider {
                 input("minecraft:blue_ice", 64),
                 input("minecraft:sculk_shrieker", 24),
                 input("minecraft:heart_of_the_sea", 4),
-                input(item("psycheonic_metal"), 64)
+                input(item("psycheonic_metal_ingot"), 64)
         ), item("program_cocytus"), 1_500_000L, 108_000);
 
         research(recipes, "program_time_accelerate", List.of(
@@ -50,8 +50,8 @@ public final class ProgramResearchRecipeProvider {
                 input("minecraft:nether_star", 24),
                 input("mekanism:pellet_antimatter", 16),
                 input(item("alloy_hypostasis"), 48),
-                input(item("psycheonic_metal"), 64),
-                input(item("psycheonic_metal"), 64)
+                input(item("psycheonic_metal_ingot"), 64),
+                input(item("psycheonic_metal_ingot"), 64)
         ), item("program_meteor_line"), 1_500_000L, 288_000);
 
         research(recipes, "program_supreme_infusion", List.of(

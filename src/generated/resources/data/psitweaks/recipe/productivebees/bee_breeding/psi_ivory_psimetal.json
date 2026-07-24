@@ -1,0 +1,12 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:bee_breeding",
+  "offspring": "psitweaks:psi_ivory_psimetal",
+  "parent1": "psitweaks:psi_psimetal",
+  "parent2": "productivebees:crystalline"
+}

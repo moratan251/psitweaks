@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:bee_conversion",
+  "item": {
+    "item": "psitweaks:hypostasis_gem"
+  },
+  "result": "psitweaks:psitweaks_hypostasis_gem",
+  "source": "psitweaks:psitweaks_antinite"
+}
