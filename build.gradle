@@ -132,7 +132,7 @@ dependencies {
     implementation "curse.maven:mystical-agriculture-246640:8344249"
     implementation "curse.maven:cucumber-272335:8035802"
     implementation "curse.maven:mystical-agradditions-256247:7802027"
-    implementation "curse.maven:productivebees-377897:8022994"
+
 
     testImplementation platform("org.junit:junit-bom:5.11.4")
     testImplementation "org.junit.jupiter:junit-jupiter"
@@ -151,6 +151,7 @@ dependencies {
     runtimeOnly "curse.maven:untranslated-items-401770:5574485"
     runtimeOnly "curse.maven:jade-324717:7545219"
     runtimeOnly "curse.maven:worldedit-225608:5830452"
+    runtimeOnly "curse.maven:productivebees-377897:8022994"
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
