@@ -2,15 +2,21 @@ package com.moratan251.psitweaks.datagen.providers;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 public class PsiTweaksTagsProvider implements DataProvider {
     private final PackOutput.PathProvider blockPathProvider;
@@ -57,49 +63,49 @@ public class PsiTweaksTagsProvider implements DataProvider {
 
     private static void addBlockTags(Map<ResourceLocation, JsonObject> tags) {
         for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
-            tag(tags, "psitweaks", "productivebees/flowers/" + bee.id(), bee.flowerBlock());
+            tag(tags, "psitweaks", "productivebees/flowers/" + bee.id(), block(bee.flowerBlock()));
         }
 
         tag(tags, "minecraft", "mineable/pickaxe",
-                block("cad_disassembler"),
-                block("program_researcher"),
-                block("sculk_eroder"),
-                block("material_mutator"),
-                block("psionic_generator"),
-                block("ore_antinite"),
-                block("antinite_block"),
-                block("chaotic_psimetal_block"),
-                block("flashmetal_block"),
-                block("heavy_psimetal_block"),
-                block("plutonium_block"),
-                block("polonium_block"),
-                block("raw_antinite_block"),
-                block("spellmachinery_casing"),
-                block("psycheonic_metal_block"),
-                block("hypostasis_gem_block"),
-                block("psycheonic_metal_crux"));
-        tag(tags, "minecraft", "needs_stone_tool", block("psycheonic_metal_crux"));
+                block(PsitweaksBlocks.CAD_DISASSEMBLER.get()),
+                block(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.get()),
+                block(PsitweaksMekanismBlocks.SCULK_ERODER.get()),
+                block(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get()),
+                block(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get()),
+                block(PsitweaksBlocks.ORE_ANTINITE.get()),
+                block(PsitweaksBlocks.ANTINITE_BLOCK.get()),
+                block(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()),
+                block(PsitweaksBlocks.FLASHMETAL_BLOCK.get()),
+                block(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()),
+                block(PsitweaksBlocks.PLUTONIUM_BLOCK.get()),
+                block(PsitweaksBlocks.POLONIUM_BLOCK.get()),
+                block(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()),
+                block(PsitweaksBlocks.SPELLMACHINERY_CASING.get()),
+                block(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()),
+                block(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()),
+                block(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get()));
+        tag(tags, "minecraft", "needs_stone_tool", block(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get()));
         tag(tags, "minecraft", "needs_diamond_tool",
-                block("heavy_psimetal_block"),
-                block("psycheonic_metal_block"),
-                block("hypostasis_gem_block"));
+                block(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()),
+                block(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()),
+                block(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()));
         tag(tags, "minecraft", "needs_iron_tool",
-                block("program_researcher"),
-                block("sculk_eroder"),
-                block("material_mutator"),
-                block("psionic_generator"),
-                block("chaotic_psimetal_block"),
-                block("flashmetal_block"),
-                block("plutonium_block"),
-                block("polonium_block"),
-                block("spellmachinery_casing"));
+                block(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.get()),
+                block(PsitweaksMekanismBlocks.SCULK_ERODER.get()),
+                block(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get()),
+                block(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get()),
+                block(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()),
+                block(PsitweaksBlocks.FLASHMETAL_BLOCK.get()),
+                block(PsitweaksBlocks.PLUTONIUM_BLOCK.get()),
+                block(PsitweaksBlocks.POLONIUM_BLOCK.get()),
+                block(PsitweaksBlocks.SPELLMACHINERY_CASING.get()));
         tag(tags, "neoforge", "needs_netherite_tool",
-                block("ore_antinite"),
-                block("antinite_block"),
-                block("raw_antinite_block"));
+                block(PsitweaksBlocks.ORE_ANTINITE.get()),
+                block(PsitweaksBlocks.ANTINITE_BLOCK.get()),
+                block(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()));
 
         tag(tags, "c", "ores", tagRef("c:ores/antinite"));
-        tag(tags, "c", "ores/antinite", block("ore_antinite"));
+        tag(tags, "c", "ores/antinite", block(PsitweaksBlocks.ORE_ANTINITE.get()));
         tag(tags, "c", "storage_blocks",
                 tagRef("c:storage_blocks/antinite"),
                 tagRef("c:storage_blocks/chaotic_psimetal"),
@@ -110,15 +116,15 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 tagRef("c:storage_blocks/plutonium"),
                 tagRef("c:storage_blocks/polonium"),
                 tagRef("c:storage_blocks/raw_antinite"));
-        tag(tags, "c", "storage_blocks/antinite", block("antinite_block"));
-        tag(tags, "c", "storage_blocks/chaotic_psimetal", block("chaotic_psimetal_block"));
-        tag(tags, "c", "storage_blocks/flashmetal", block("flashmetal_block"));
-        tag(tags, "c", "storage_blocks/heavy_psimetal", block("heavy_psimetal_block"));
-        tag(tags, "c", "storage_blocks/psycheonic_metal", block("psycheonic_metal_block"));
-        tag(tags, "c", "storage_blocks/hypostasis_gem", block("hypostasis_gem_block"));
-        tag(tags, "c", "storage_blocks/plutonium", block("plutonium_block"));
-        tag(tags, "c", "storage_blocks/polonium", block("polonium_block"));
-        tag(tags, "c", "storage_blocks/raw_antinite", block("raw_antinite_block"));
+        tag(tags, "c", "storage_blocks/antinite", block(PsitweaksBlocks.ANTINITE_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/chaotic_psimetal", block(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/flashmetal", block(PsitweaksBlocks.FLASHMETAL_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/heavy_psimetal", block(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/psycheonic_metal", block(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/hypostasis_gem", block(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/plutonium", block(PsitweaksBlocks.PLUTONIUM_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/polonium", block(PsitweaksBlocks.POLONIUM_BLOCK.get()));
+        tag(tags, "c", "storage_blocks/raw_antinite", block(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()));
     }
 
     private static void addChemicalTags(Map<ResourceLocation, JsonObject> tags) {
@@ -140,21 +146,21 @@ public class PsiTweaksTagsProvider implements DataProvider {
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {
-        tag(tags, "c", "alloys", item("alloy_psion"), item("alloy_psionic_echo"), item("alloy_hypostasis"));
-        tag(tags, "c", "circuits", item("psionic_control_circuit"), item("echo_control_circuit"), item("hypostasis_control_circuit"));
+        tag(tags, "c", "alloys", item(PsitweaksItems.ALLOY_PSION), item(PsitweaksItems.ALLOY_PSIONIC_ECHO), item(PsitweaksItems.ALLOY_HYPOSTASIS));
+        tag(tags, "c", "circuits", item(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT), item(PsitweaksItems.ECHO_CONTROL_CIRCUIT), item(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT));
         tag(tags, "c", "dusts", tagRef("c:dusts/antinite"));
-        tag(tags, "c", "dusts/antinite", item("antinite_dust"));
+        tag(tags, "c", "dusts/antinite", item(PsitweaksItems.ANTINITE_DUST));
         tag(tags, "c", "ingots",
                 tagRef("c:ingots/antinite"),
                 tagRef("c:ingots/chaotic_psimetal"),
                 tagRef("c:ingots/flashmetal"),
                 tagRef("c:ingots/heavy_psimetal"),
                 tagRef("c:ingots/psycheonic_metal"));
-        tag(tags, "c", "ingots/antinite", item("antinite_ingot"));
-        tag(tags, "c", "ingots/chaotic_psimetal", item("chaotic_psimetal"));
-        tag(tags, "c", "ingots/flashmetal", item("flashmetal"));
-        tag(tags, "c", "ingots/heavy_psimetal", item("heavy_psimetal"));
-        tag(tags, "c", "ingots/psycheonic_metal", item("psycheonic_metal_ingot"));
+        tag(tags, "c", "ingots/antinite", item(PsitweaksItems.ANTINITE_INGOT));
+        tag(tags, "c", "ingots/chaotic_psimetal", item(PsitweaksItems.CHAOTIC_PSIMETAL));
+        tag(tags, "c", "ingots/flashmetal", item(PsitweaksItems.FLASHMETAL));
+        tag(tags, "c", "ingots/heavy_psimetal", item(PsitweaksItems.HEAVY_PSIMETAL));
+        tag(tags, "c", "ingots/psycheonic_metal", item(PsitweaksItems.PSYCHEONIC_METAL_INGOT));
         tag(tags, "c", "nuggets",
                 tagRef("c:nuggets/psimetal"),
                 tagRef("c:nuggets/ivory_psimetal"),
@@ -164,18 +170,18 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 tagRef("c:nuggets/heavy_psimetal"),
                 tagRef("c:nuggets/antinite"),
                 tagRef("c:nuggets/psycheonic_metal"));
-        tag(tags, "c", "nuggets/psimetal", item("psimetal_nugget"));
-        tag(tags, "c", "nuggets/ivory_psimetal", item("ivory_psimetal_nugget"));
-        tag(tags, "c", "nuggets/ebony_psimetal", item("ebony_psimetal_nugget"));
-        tag(tags, "c", "nuggets/chaotic_psimetal", item("chaotic_psimetal_nugget"));
-        tag(tags, "c", "nuggets/flashmetal", item("flashmetal_nugget"));
-        tag(tags, "c", "nuggets/heavy_psimetal", item("heavy_psimetal_nugget"));
-        tag(tags, "c", "nuggets/antinite", item("antinite_nugget"));
-        tag(tags, "c", "nuggets/psycheonic_metal", item("psycheonic_metal_nugget"));
+        tag(tags, "c", "nuggets/psimetal", item(PsitweaksItems.PSIMETAL_NUGGET));
+        tag(tags, "c", "nuggets/ivory_psimetal", item(PsitweaksItems.IVORY_PSIMETAL_NUGGET));
+        tag(tags, "c", "nuggets/ebony_psimetal", item(PsitweaksItems.EBONY_PSIMETAL_NUGGET));
+        tag(tags, "c", "nuggets/chaotic_psimetal", item(PsitweaksItems.CHAOTIC_PSIMETAL_NUGGET));
+        tag(tags, "c", "nuggets/flashmetal", item(PsitweaksItems.FLASHMETAL_NUGGET));
+        tag(tags, "c", "nuggets/heavy_psimetal", item(PsitweaksItems.HEAVY_PSIMETAL_NUGGET));
+        tag(tags, "c", "nuggets/antinite", item(PsitweaksItems.ANTINITE_NUGGET));
+        tag(tags, "c", "nuggets/psycheonic_metal", item(PsitweaksItems.PSYCHEONIC_METAL_NUGGET));
         tag(tags, "c", "ores", tagRef("c:ores/antinite"));
-        tag(tags, "c", "ores/antinite", item("ore_antinite"));
+        tag(tags, "c", "ores/antinite", item(PsitweaksBlocks.ORE_ANTINITE));
         tag(tags, "c", "raw_materials", tagRef("c:raw_materials/antinite"));
-        tag(tags, "c", "raw_materials/antinite", item("raw_antinite"));
+        tag(tags, "c", "raw_materials/antinite", item(PsitweaksItems.RAW_ANTINITE));
         tag(tags, "c", "storage_blocks",
                 tagRef("c:storage_blocks/antinite"),
                 tagRef("c:storage_blocks/chaotic_psimetal"),
@@ -186,15 +192,15 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 tagRef("c:storage_blocks/plutonium"),
                 tagRef("c:storage_blocks/polonium"),
                 tagRef("c:storage_blocks/raw_antinite"));
-        tag(tags, "c", "storage_blocks/antinite", item("antinite_block"));
-        tag(tags, "c", "storage_blocks/chaotic_psimetal", item("chaotic_psimetal_block"));
-        tag(tags, "c", "storage_blocks/flashmetal", item("flashmetal_block"));
-        tag(tags, "c", "storage_blocks/heavy_psimetal", item("heavy_psimetal_block"));
-        tag(tags, "c", "storage_blocks/psycheonic_metal", item("psycheonic_metal_block"));
-        tag(tags, "c", "storage_blocks/hypostasis_gem", item("hypostasis_gem_block"));
-        tag(tags, "c", "storage_blocks/plutonium", item("plutonium_block"));
-        tag(tags, "c", "storage_blocks/polonium", item("polonium_block"));
-        tag(tags, "c", "storage_blocks/raw_antinite", item("raw_antinite_block"));
+        tag(tags, "c", "storage_blocks/antinite", item(PsitweaksBlocks.ANTINITE_BLOCK));
+        tag(tags, "c", "storage_blocks/chaotic_psimetal", item(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK));
+        tag(tags, "c", "storage_blocks/flashmetal", item(PsitweaksBlocks.FLASHMETAL_BLOCK));
+        tag(tags, "c", "storage_blocks/heavy_psimetal", item(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK));
+        tag(tags, "c", "storage_blocks/psycheonic_metal", item(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK));
+        tag(tags, "c", "storage_blocks/hypostasis_gem", item(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK));
+        tag(tags, "c", "storage_blocks/plutonium", item(PsitweaksBlocks.PLUTONIUM_BLOCK));
+        tag(tags, "c", "storage_blocks/polonium", item(PsitweaksBlocks.POLONIUM_BLOCK));
+        tag(tags, "c", "storage_blocks/raw_antinite", item(PsitweaksBlocks.RAW_ANTINITE_BLOCK));
 
 //        tag(tags, "minecraft", "dirt",
 //                "minecraft:dirt",
@@ -203,47 +209,47 @@ public class PsiTweaksTagsProvider implements DataProvider {
 //                "minecraft:grass_block",
 //                "minecraft:podzol",
 //                "minecraft:mycelium");
-        tag(tags, "minecraft", "head_armor", item("moval_suit_helmet"));
-        tag(tags, "minecraft", "chest_armor", item("moval_suit_chestplate"));
-        tag(tags, "minecraft", "leg_armor", item("moval_suit_leggings"));
-        tag(tags, "minecraft", "foot_armor", item("moval_suit_boots"));
-        tag(tags, "minecraft", "enchantable/head_armor", item("moval_suit_helmet"));
-        tag(tags, "minecraft", "enchantable/chest_armor", item("moval_suit_chestplate"));
-        tag(tags, "minecraft", "enchantable/leg_armor", item("moval_suit_leggings"));
-        tag(tags, "minecraft", "enchantable/foot_armor", item("moval_suit_boots"));
-        tag(tags, "minecraft", "enchantable/bow", item("psimetal_bow"));
-        tag(tags, "curios", "charm", item("flash_charm"));
+        tag(tags, "minecraft", "head_armor", item(PsitweaksItems.MOVAL_SUIT_HELMET));
+        tag(tags, "minecraft", "chest_armor", item(PsitweaksItems.MOVAL_SUIT_CHESTPLATE));
+        tag(tags, "minecraft", "leg_armor", item(PsitweaksItems.MOVAL_SUIT_LEGGINGS));
+        tag(tags, "minecraft", "foot_armor", item(PsitweaksItems.MOVAL_SUIT_BOOTS));
+        tag(tags, "minecraft", "enchantable/head_armor", item(PsitweaksItems.MOVAL_SUIT_HELMET));
+        tag(tags, "minecraft", "enchantable/chest_armor", item(PsitweaksItems.MOVAL_SUIT_CHESTPLATE));
+        tag(tags, "minecraft", "enchantable/leg_armor", item(PsitweaksItems.MOVAL_SUIT_LEGGINGS));
+        tag(tags, "minecraft", "enchantable/foot_armor", item(PsitweaksItems.MOVAL_SUIT_BOOTS));
+        tag(tags, "minecraft", "enchantable/bow", item(PsitweaksItems.PSIMETAL_BOW));
+        tag(tags, "curios", "charm", item(PsitweaksItems.FLASH_CHARM));
         tag(tags, "curios", "magic_calculation_area",
-                item("auto_caster_tick"),
-                item("auto_caster_custom_tick"),
-                item("interference_range_extender"),
-                item("third_eye_device"),
-                item("sorcery_booster"));
+                item(PsitweaksItems.AUTO_CASTER_TICK),
+                item(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK),
+                item(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER),
+                item(PsitweaksItems.THIRD_EYE_DEVICE),
+                item(PsitweaksItems.SORCERY_BOOSTER));
 
         tag(tags, "psi", "assemblies",
-                item("cad_assembly_alloy_psion"),
-                item("cad_assembly_chaotic_psimetal"),
-                item("cad_assembly_flashmetal"),
-                item("cad_assembly_heavy_psimetal_alpha"),
-                item("cad_assembly_heavy_psimetal_beta"),
-                item("cad_assembly_psycheonic_metal"));
+                item(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION),
+                item(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL),
+                item(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL),
+                item(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA),
+                item(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA),
+                item(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL));
         tag(tags, "psi", "components",
-                item("cad_assembly_alloy_psion"),
-                item("cad_assembly_chaotic_psimetal"),
-                item("cad_assembly_flashmetal"),
-                item("cad_assembly_heavy_psimetal_alpha"),
-                item("cad_assembly_heavy_psimetal_beta"),
-                item("cad_assembly_psycheonic_metal"));
+                item(PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION),
+                item(PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL),
+                item(PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL),
+                item(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA),
+                item(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA),
+                item(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL));
 
-        tag(tags, "mekanism", "alloys", item("alloy_psion"), item("alloy_psionic_echo"), item("alloy_hypostasis"));
+        tag(tags, "mekanism", "alloys", item(PsitweaksItems.ALLOY_PSION), item(PsitweaksItems.ALLOY_PSIONIC_ECHO), item(PsitweaksItems.ALLOY_HYPOSTASIS));
         tag(tags, "mekanism", "clumps", tagRef("mekanism:clumps/antinite"));
-        tag(tags, "mekanism", "clumps/antinite", item("clump_antinite"));
+        tag(tags, "mekanism", "clumps/antinite", item(PsitweaksItems.CLUMP_ANTINITE));
         tag(tags, "mekanism", "crystals", tagRef("mekanism:crystals/antinite"));
-        tag(tags, "mekanism", "crystals/antinite", item("crystal_antinite"));
+        tag(tags, "mekanism", "crystals/antinite", item(PsitweaksItems.CRYSTAL_ANTINITE));
         tag(tags, "mekanism", "dirty_dusts", tagRef("mekanism:dirty_dusts/antinite"));
-        tag(tags, "mekanism", "dirty_dusts/antinite", item("dirty_dust_antinite"));
+        tag(tags, "mekanism", "dirty_dusts/antinite", item(PsitweaksItems.DIRTY_DUST_ANTINITE));
         tag(tags, "mekanism", "shards", tagRef("mekanism:shards/antinite"));
-        tag(tags, "mekanism", "shards/antinite", item("shard_antinite"));
+        tag(tags, "mekanism", "shards/antinite", item(PsitweaksItems.SHARD_ANTINITE));
     }
 
     private static void addPoiTypeTags(Map<ResourceLocation, JsonObject> tags) {
@@ -265,12 +271,12 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tags.put(ResourceLocation.fromNamespaceAndPath(namespace, path), root);
     }
 
-    private static String block(String path) {
-        return "psitweaks:" + path;
+    private static String block(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block).toString();
     }
 
-    private static String item(String path) {
-        return "psitweaks:" + path;
+    private static String item(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
     }
 
     private static String chemical(String path) {

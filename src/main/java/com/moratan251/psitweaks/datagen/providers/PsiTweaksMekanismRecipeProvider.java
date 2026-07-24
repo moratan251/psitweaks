@@ -2,13 +2,19 @@ package com.moratan251.psitweaks.datagen.providers;
 
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import mekanism.common.registries.MekanismItems;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import vazkii.psi.common.item.base.ModItems;
 
 public class PsiTweaksMekanismRecipeProvider implements DataProvider {
     private final PackOutput.PathProvider pathProvider;
@@ -40,28 +46,28 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
 
     private static void addChemicalSupportRecipes(Map<ResourceLocation, JsonObject> recipes) {
         recipe(recipes, "chemical_conversion/psigem", chemicalConversion(
-                itemInput(item("enriched_psigem")), chemical("infuse_psigem"), 80));
+                itemInput(PsitweaksItems.ENRICHED_PSIGEM), chemical("infuse_psigem"), 80));
         recipe(recipes, "chemical_conversion/ebony", chemicalConversion(
-                itemInput(item("enriched_ebony")), chemical("infuse_ebony"), 80));
+                itemInput(PsitweaksItems.ENRICHED_EBONY), chemical("infuse_ebony"), 80));
         recipe(recipes, "chemical_conversion/ivory", chemicalConversion(
-                itemInput(item("enriched_ivory")), chemical("infuse_ivory"), 80));
+                itemInput(PsitweaksItems.ENRICHED_IVORY), chemical("infuse_ivory"), 80));
         recipe(recipes, "chemical_conversion/chaotic_factor", chemicalConversion(
-                itemInput(item("chaotic_factor")), chemical("infuse_chaotic_factor"), 80));
+                itemInput(PsitweaksItems.CHAOTIC_FACTOR), chemical("infuse_chaotic_factor"), 80));
         recipe(recipes, "chemical_conversion/psionic_echo", chemicalConversion(
-                itemInput(item("enriched_echo")), chemical("infuse_psionic_echo"), 80));
+                itemInput(PsitweaksItems.ENRICHED_ECHO), chemical("infuse_psionic_echo"), 80));
         recipe(recipes, "chemical_conversion/hypostasis", chemicalConversion(
-                itemInput(item("enriched_hypostasis")), chemical("infuse_hypostasis"), 80));
+                itemInput(PsitweaksItems.ENRICHED_HYPOSTASIS), chemical("infuse_hypostasis"), 80));
 
         recipe(recipes, "oxidizing/psionic_echo", itemToChemical(
                 "mekanism:oxidizing",
-                itemInput(item("psionic_echo")),
+                itemInput(PsitweaksItems.PSIONIC_ECHO),
                 chemical("gas_psionic_echo"), 1_000));
         recipe(recipes, "reaction/oxygen_echo", reaction(
                 fluidTagInput("c:oxygen", 200),
                 chemicalInput(chemical("gas_psionic_echo"), 100),
-                itemInput("mekanism:substrate", 4),
+                itemInput(MekanismItems.SUBSTRATE, 4),
                 chemicalOutput(chemical("gas_peo_fuel"), 300),
-                itemOutput(item("echo_pellet"), 1),
+                itemOutput(PsitweaksItems.ECHO_PELLET, 1),
                 100));
         recipe(recipes, "washing/clean_antinite_slurry", washing(
                 fluidTagInput("minecraft:water", 5),
@@ -81,175 +87,175 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
                 chemical("dirty_antinite"), 2_000));
         recipe(recipes, "crystallizing/antinite_crystal_from_slurry", crystallizing(
                 chemicalInput(chemical("clean_antinite"), 200),
-                item("crystal_antinite"), 1));
+                PsitweaksItems.CRYSTAL_ANTINITE, 1));
     }
 
     private static void addPsiAlternativeRecipes(Map<ResourceLocation, JsonObject> recipes) {
         recipe(recipes, "metallurgic_infusing/psidust", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psigem"), 1),
-                itemInput("minecraft:redstone"),
-                "psi:psidust", 1));
+                itemInput(Items.REDSTONE),
+                ModItems.psidust.get(), 1));
         recipe(recipes, "metallurgic_infusing/psigem", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psigem"), 1),
-                itemInput("minecraft:diamond"),
-                "psi:psigem", 1));
+                itemInput(Items.DIAMOND),
+                ModItems.psigem.get(), 1));
         recipe(recipes, "metallurgic_infusing/psimetal", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psigem"), 1),
-                itemInput("minecraft:gold_ingot"),
-                "psi:psimetal", 1));
+                itemInput(Items.GOLD_INGOT),
+                ModItems.psimetal.get(), 1));
         recipe(recipes, "metallurgic_infusing/ebony_substance", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ebony"), 10),
                 tagInput("minecraft:coals"),
-                "psi:ebony_substance", 1));
+                ModItems.ebonySubstance.get(), 1));
         recipe(recipes, "metallurgic_infusing/ivory_substance", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ivory"), 10),
-                itemInput("minecraft:quartz"),
-                "psi:ivory_substance", 1));
+                itemInput(Items.QUARTZ),
+                ModItems.ivorySubstance.get(), 1));
         recipe(recipes, "metallurgic_infusing/ebony_psimetal", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ebony"), 320),
-                itemInput("psi:psimetal"),
-                "psi:ebony_psimetal", 1));
+                itemInput(ModItems.psimetal.get()),
+                ModItems.ebonyPsimetal.get(), 1));
         recipe(recipes, "metallurgic_infusing/ivory_psimetal", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ivory"), 320),
-                itemInput("psi:psimetal"),
-                "psi:ivory_psimetal", 1));
+                itemInput(ModItems.psimetal.get()),
+                ModItems.ivoryPsimetal.get(), 1));
 
         recipe(recipes, "combining/echo_shard", combining(
-                itemInput("minecraft:amethyst_shard"),
-                itemInput("minecraft:sculk", 8),
-                "minecraft:echo_shard", 1));
+                itemInput(Items.AMETHYST_SHARD),
+                itemInput(Items.SCULK, 8),
+                Items.ECHO_SHARD, 1));
         recipe(recipes, "reaction/amethyst", reaction(
                 fluidTagInput("minecraft:water", 100),
                 chemicalInput(chemical("gas_psionic_echo"), 50),
-                itemInput("minecraft:amethyst_shard"),
-                itemOutput("minecraft:amethyst_shard", 2),
+                itemInput(Items.AMETHYST_SHARD),
+                itemOutput(Items.AMETHYST_SHARD, 2),
                 800));
     }
 
     private static void addEnrichingRecipes(Map<ResourceLocation, JsonObject> recipes) {
         recipe(recipes, "enriching/enriched_psigem", itemToItem(
-                "mekanism:enriching", itemInput("psi:psigem"), item("enriched_psigem"), 1));
+                "mekanism:enriching", itemInput(ModItems.psigem.get()), PsitweaksItems.ENRICHED_PSIGEM, 1));
         recipe(recipes, "enriching/enriched_ebony", itemToItem(
-                "mekanism:enriching", itemInput("psi:ebony_substance"), item("enriched_ebony"), 1));
+                "mekanism:enriching", itemInput(ModItems.ebonySubstance.get()), PsitweaksItems.ENRICHED_EBONY, 1));
         recipe(recipes, "enriching/enriched_ivory", itemToItem(
-                "mekanism:enriching", itemInput("psi:ivory_substance"), item("enriched_ivory"), 1));
+                "mekanism:enriching", itemInput(ModItems.ivorySubstance.get()), PsitweaksItems.ENRICHED_IVORY, 1));
         recipe(recipes, "enriching/enriched_echo", itemToItem(
-                "mekanism:enriching", itemInput(item("psionic_echo")), item("enriched_echo"), 1));
+                "mekanism:enriching", itemInput(PsitweaksItems.PSIONIC_ECHO), PsitweaksItems.ENRICHED_ECHO, 1));
         recipe(recipes, "enriching/enriched_hypostasis", itemToItem(
-                "mekanism:enriching", itemInput(item("hypostasis_gem")), item("enriched_hypostasis"), 1));
+                "mekanism:enriching", itemInput(PsitweaksItems.HYPOSTASIS_GEM), PsitweaksItems.ENRICHED_HYPOSTASIS, 1));
         recipe(recipes, "enriching/flashmetal", itemToItem(
-                "mekanism:enriching", itemInput(item("unrefined_flashmetal")), item("flashmetal"), 1));
+                "mekanism:enriching", itemInput(PsitweaksItems.UNREFINED_FLASHMETAL), PsitweaksItems.FLASHMETAL, 1));
         recipe(recipes, "enriching/echo_sheet", itemToItem(
-                "mekanism:enriching", itemInput(item("echo_pellet"), 3), item("echo_sheet"), 1));
+                "mekanism:enriching", itemInput(PsitweaksItems.ECHO_PELLET, 3), PsitweaksItems.ECHO_SHEET, 1));
     }
 
     private static void addOreProcessingRecipes(Map<ResourceLocation, JsonObject> recipes) {
         recipe(recipes, "crushing/antinite_dust_from_ingot", itemToItem(
-                "mekanism:crushing", tagInput("c:ingots/antinite"), item("antinite_dust"), 1));
+                "mekanism:crushing", tagInput("c:ingots/antinite"), PsitweaksItems.ANTINITE_DUST, 1));
         recipe(recipes, "crushing/dirty_dust_antinite_from_clump", itemToItem(
-                "mekanism:crushing", tagInput("mekanism:clumps/antinite"), item("dirty_dust_antinite"), 1));
+                "mekanism:crushing", tagInput("mekanism:clumps/antinite"), PsitweaksItems.DIRTY_DUST_ANTINITE, 1));
 
         recipe(recipes, "enriching/antinite_dust_from_dirty_dust", itemToItem(
-                "mekanism:enriching", tagInput("mekanism:dirty_dusts/antinite"), item("antinite_dust"), 1));
+                "mekanism:enriching", tagInput("mekanism:dirty_dusts/antinite"), PsitweaksItems.ANTINITE_DUST, 1));
         recipe(recipes, "enriching/antinite_dust_from_ore", itemToItem(
-                "mekanism:enriching", tagInput("c:ores/antinite"), item("antinite_dust"), 2));
+                "mekanism:enriching", tagInput("c:ores/antinite"), PsitweaksItems.ANTINITE_DUST, 2));
         recipe(recipes, "enriching/antinite_dust_from_raw_block", itemToItem(
-                "mekanism:enriching", tagInput("c:storage_blocks/raw_antinite"), item("antinite_dust"), 12));
+                "mekanism:enriching", tagInput("c:storage_blocks/raw_antinite"), PsitweaksItems.ANTINITE_DUST, 12));
         recipe(recipes, "enriching/antinite_dust", itemToItem(
-                "mekanism:enriching", tagInput("c:raw_materials/antinite", 3), item("antinite_dust"), 4));
+                "mekanism:enriching", tagInput("c:raw_materials/antinite", 3), PsitweaksItems.ANTINITE_DUST, 4));
 
         recipe(recipes, "injecting/antinite_shard_from_crystal", itemChemicalToItem(
                 "mekanism:injecting",
                 chemicalInput("mekanism:hydrogen_chloride", 1),
                 tagInput("mekanism:crystals/antinite"),
-                item("shard_antinite"), 1, true));
+                PsitweaksItems.SHARD_ANTINITE, 1, true));
         recipe(recipes, "injecting/antinite_shard_from_ore", itemChemicalToItem(
                 "mekanism:injecting",
                 chemicalInput("mekanism:hydrogen_chloride", 1),
                 tagInput("c:ores/antinite"),
-                item("shard_antinite"), 4, true));
+                PsitweaksItems.SHARD_ANTINITE, 4, true));
         recipe(recipes, "injecting/antinite_shard_from_raw_block", itemChemicalToItem(
                 "mekanism:injecting",
                 chemicalInput("mekanism:hydrogen_chloride", 2),
                 tagInput("c:storage_blocks/raw_antinite"),
-                item("shard_antinite"), 24, true));
+                PsitweaksItems.SHARD_ANTINITE, 24, true));
         recipe(recipes, "injecting/antinite_shard_from_raw_ore", itemChemicalToItem(
                 "mekanism:injecting",
                 chemicalInput("mekanism:hydrogen_chloride", 1),
                 tagInput("c:raw_materials/antinite", 3),
-                item("shard_antinite"), 8, true));
+                PsitweaksItems.SHARD_ANTINITE, 8, true));
 
         recipe(recipes, "purifying/antinite_clump_from_ore", itemChemicalToItem(
                 "mekanism:purifying",
                 chemicalInput("mekanism:oxygen", 1),
                 tagInput("c:ores/antinite"),
-                item("clump_antinite"), 3, true));
+                PsitweaksItems.CLUMP_ANTINITE, 3, true));
         recipe(recipes, "purifying/antinite_clump_from_raw_block", itemChemicalToItem(
                 "mekanism:purifying",
                 chemicalInput("mekanism:oxygen", 2),
                 tagInput("c:storage_blocks/raw_antinite"),
-                item("clump_antinite"), 18, true));
+                PsitweaksItems.CLUMP_ANTINITE, 18, true));
         recipe(recipes, "purifying/antinite_clump_from_raw_ore", itemChemicalToItem(
                 "mekanism:purifying",
                 chemicalInput("mekanism:oxygen", 1),
                 tagInput("c:raw_materials/antinite"),
-                item("clump_antinite"), 2, true));
+                PsitweaksItems.CLUMP_ANTINITE, 2, true));
         recipe(recipes, "purifying/antinite_clump_from_shard", itemChemicalToItem(
                 "mekanism:purifying",
                 chemicalInput("mekanism:oxygen", 1),
                 tagInput("mekanism:shards/antinite"),
-                item("clump_antinite"), 1, true));
+                PsitweaksItems.CLUMP_ANTINITE, 1, true));
     }
 
     private static void addMetallurgicInfusingRecipes(Map<ResourceLocation, JsonObject> recipes) {
         recipe(recipes, "metallurgic_infusing/alloy_psion", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psigem"), 40),
-                itemInput("mekanism:alloy_atomic"),
-                item("alloy_psion"), 1));
+                itemInput(MekanismItems.ATOMIC_ALLOY),
+                PsitweaksItems.ALLOY_PSION, 1));
         recipe(recipes, "metallurgic_infusing/alloy_psionic_echo", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psionic_echo"), 40),
-                itemInput(item("alloy_psion")),
-                item("alloy_psionic_echo"), 1));
+                itemInput(PsitweaksItems.ALLOY_PSION),
+                PsitweaksItems.ALLOY_PSIONIC_ECHO, 1));
         recipe(recipes, "metallurgic_infusing/alloy_hypostasis", metallurgicInfusing(
                 chemicalInput(chemical("infuse_hypostasis"), 40),
-                itemInput(item("alloy_psionic_echo")),
-                item("alloy_hypostasis"), 1));
+                itemInput(PsitweaksItems.ALLOY_PSIONIC_ECHO),
+                PsitweaksItems.ALLOY_HYPOSTASIS, 1));
         recipe(recipes, "metallurgic_infusing/psionic_echo", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psionic_echo"), 1),
-                itemInput("minecraft:echo_shard"),
-                item("psionic_echo"), 1));
+                itemInput(Items.ECHO_SHARD),
+                PsitweaksItems.PSIONIC_ECHO, 1));
         recipe(recipes, "metallurgic_infusing/psionic_factor", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psigem"), 80),
-                itemInput("minecraft:ender_pearl"),
-                item("psionic_factor"), 1));
+                itemInput(Items.ENDER_PEARL),
+                PsitweaksItems.PSIONIC_FACTOR, 1));
         recipe(recipes, "metallurgic_infusing/psionic_factor_ebony", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ebony"), 640),
-                itemInput(item("psionic_factor")),
-                item("psionic_factor_ebony"), 1));
+                itemInput(PsitweaksItems.PSIONIC_FACTOR),
+                PsitweaksItems.PSIONIC_FACTOR_EBONY, 1));
         recipe(recipes, "metallurgic_infusing/psionic_factor_ivory", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ivory"), 640),
-                itemInput(item("psionic_factor")),
-                item("psionic_factor_ivory"), 1));
+                itemInput(PsitweaksItems.PSIONIC_FACTOR),
+                PsitweaksItems.PSIONIC_FACTOR_IVORY, 1));
         recipe(recipes, "metallurgic_infusing/chaotic_factor_0", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ivory"), 640),
-                itemInput(item("psionic_factor_ebony")),
-                item("chaotic_factor"), 1));
+                itemInput(PsitweaksItems.PSIONIC_FACTOR_EBONY),
+                PsitweaksItems.CHAOTIC_FACTOR, 1));
         recipe(recipes, "metallurgic_infusing/chaotic_factor_1", metallurgicInfusing(
                 chemicalInput(chemical("infuse_ebony"), 640),
-                itemInput(item("psionic_factor_ivory")),
-                item("chaotic_factor"), 1));
+                itemInput(PsitweaksItems.PSIONIC_FACTOR_IVORY),
+                PsitweaksItems.CHAOTIC_FACTOR, 1));
         recipe(recipes, "metallurgic_infusing/chaotic_psimetal", metallurgicInfusing(
                 chemicalInput(chemical("infuse_chaotic_factor"), 40),
-                itemInput("psi:psimetal"),
-                item("chaotic_psimetal"), 1));
+                itemInput(ModItems.psimetal.get()),
+                PsitweaksItems.CHAOTIC_PSIMETAL, 1));
         recipe(recipes, "metallurgic_infusing/heavy_psimetal_scrap", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psionic_echo"), 10),
-                itemInput("minecraft:netherite_scrap"),
-                item("heavy_psimetal_scrap"), 1));
+                itemInput(Items.NETHERITE_SCRAP),
+                PsitweaksItems.HEAVY_PSIMETAL_SCRAP, 1));
         recipe(recipes, "metallurgic_infusing/psycheonic_metal_nugget", metallurgicInfusing(
                 chemicalInput(chemical("infuse_hypostasis"), 10),
-                itemInput(item("heavy_psimetal")),
-                item("psycheonic_metal_nugget"), 1));
+                itemInput(PsitweaksItems.HEAVY_PSIMETAL),
+                PsitweaksItems.PSYCHEONIC_METAL_NUGGET, 1));
     }
 
     private static JsonObject itemToItem(String type, JsonObject input, String output, int count) {
@@ -260,6 +266,10 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         root.add("output", itemOutput(output, count));
 
         return root;
+    }
+
+    private static JsonObject itemToItem(String type, JsonObject input, ItemLike output, int count) {
+        return itemToItem(type, input, itemId(output), count);
     }
 
     private static JsonObject itemChemicalToItem(String type, JsonObject chemicalInput, JsonObject itemInput,
@@ -275,7 +285,17 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         return root;
     }
 
+    private static JsonObject itemChemicalToItem(String type, JsonObject chemicalInput, JsonObject itemInput,
+                                                 ItemLike output, int count, boolean perTickUsage) {
+        return itemChemicalToItem(type, chemicalInput, itemInput, itemId(output), count, perTickUsage);
+    }
+
     private static JsonObject metallurgicInfusing(JsonObject chemicalInput, JsonObject itemInput, String output, int count) {
+        return itemChemicalToItem("mekanism:metallurgic_infusing", chemicalInput, itemInput, output, count, false);
+    }
+
+    private static JsonObject metallurgicInfusing(JsonObject chemicalInput, JsonObject itemInput, ItemLike output,
+                                                  int count) {
         return itemChemicalToItem("mekanism:metallurgic_infusing", chemicalInput, itemInput, output, count, false);
     }
 
@@ -303,6 +323,10 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         return root;
     }
 
+    private static JsonObject crystallizing(JsonObject input, ItemLike output, int count) {
+        return crystallizing(input, itemId(output), count);
+    }
+
     private static JsonObject combining(JsonObject mainInput, JsonObject extraInput, String output, int count) {
         JsonObject root = new JsonObject();
 
@@ -312,6 +336,10 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         root.add("output", itemOutput(output, count));
 
         return root;
+    }
+
+    private static JsonObject combining(JsonObject mainInput, JsonObject extraInput, ItemLike output, int count) {
+        return combining(mainInput, extraInput, itemId(output), count);
     }
 
     private static JsonObject dissolution(JsonObject chemicalInput, JsonObject itemInput, String outputChemical, long amount) {
@@ -370,11 +398,19 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         return itemInput(item, 1);
     }
 
+    private static JsonObject itemInput(ItemLike item) {
+        return itemInput(itemId(item), 1);
+    }
+
     private static JsonObject itemInput(String item, int count) {
         JsonObject input = new JsonObject();
         input.addProperty("count", count);
         input.addProperty("item", item);
         return input;
+    }
+
+    private static JsonObject itemInput(ItemLike item, int count) {
+        return itemInput(itemId(item), count);
     }
 
     private static JsonObject tagInput(String tag) {
@@ -416,12 +452,16 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         return output;
     }
 
+    private static JsonObject itemOutput(ItemLike item, int count) {
+        return itemOutput(itemId(item), count);
+    }
+
     private static void recipe(Map<ResourceLocation, JsonObject> recipes, String id, JsonObject recipe) {
         recipes.put(Psitweaks.location(id), RecipeConditionHelper.requireMod(recipe, "mekanism"));
     }
 
-    private static String item(String path) {
-        return Psitweaks.MOD_ID + ":" + path;
+    private static String itemId(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
     }
 
     private static String chemical(String path) {

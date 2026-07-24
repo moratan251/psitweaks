@@ -3,38 +3,45 @@ package com.moratan251.psitweaks.datagen.providers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import vazkii.psi.common.block.base.ModBlocks;
+import vazkii.psi.common.item.base.ModItems;
 
 public final class ProductiveBeesDataProvider implements DataProvider {
     private static final List<GeneratedBee> BEES = List.of(
             bee("psi_psidust", "Psidust Bee", "サイダストのミツバチ",
-                    "#DADCFB", "#AF98FF", "psi:psidust_block"),
+                    "#DADCFB", "#AF98FF", ModBlocks.psidustBlock.get()),
             bee("psi_psimetal", "Psimetal Bee", "サイメタルのミツバチ",
-                    "#C0C2FF", "#8C92D8", "psi:psimetal_block"),
+                    "#C0C2FF", "#8C92D8", ModBlocks.psimetalBlock.get()),
             bee("psi_psigem", "Psigem Bee", "サイジェムのミツバチ",
-                    "#6855B4", "#E0E8FE", "psi:psigem_block"),
+                    "#6855B4", "#E0E8FE", ModBlocks.psigemBlock.get()),
             bee("psi_ebony_psimetal", "Ebony Psimetal Bee", "エボニーサイメタルのミツバチ",
-                    "#202020", "#5A5050", "psi:ebony_psimetal_block"),
+                    "#202020", "#5A5050", ModBlocks.psimetalEbony.get()),
             bee("psi_ivory_psimetal", "Ivory Psimetal Bee", "アイボリーサイメタルのミツバチ",
-                    "#F6F6E9", "#C2C1A2", "psi:ivory_psimetal_block"),
+                    "#F6F6E9", "#C2C1A2", ModBlocks.psimetalIvory.get()),
             bee("psitweaks_chaotic_psimetal", "Chaotic Psimetal Bee", "カオティックサイメタルのミツバチ",
-                    "#7F7F7F", "#0F0A0A", "psitweaks:chaotic_psimetal_block"),
+                    "#7F7F7F", "#0F0A0A", PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()),
             bee("psitweaks_flashmetal", "Flashmetal Bee", "フラッシュメタルのミツバチ",
-                    "#FFE86D", "#7570BF", "psitweaks:flashmetal_block"),
+                    "#FFE86D", "#7570BF", PsitweaksBlocks.FLASHMETAL_BLOCK.get()),
             bee("psitweaks_heavy_psimetal", "Heavy Psimetal Bee", "ヘビーサイメタルのミツバチ",
-                    "#294C73", "#5F89B7", "psitweaks:heavy_psimetal_block"),
+                    "#294C73", "#5F89B7", PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()),
             bee("psitweaks_antinite", "Antinite Bee", "アンティナイトのミツバチ",
-                    "#CCBF61", "#81772D", "psitweaks:antinite_block"),
+                    "#CCBF61", "#81772D", PsitweaksBlocks.ANTINITE_BLOCK.get()),
             bee("psitweaks_hypostasis_gem", "Hypostasis Gem Bee", "ヒュポスタシスジェムのミツバチ",
-                    "#FFB7F8", "#AE475C", "psitweaks:hypostasis_gem_block"),
+                    "#FFB7F8", "#AE475C", PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()),
             beeWithoutSelfBreeding("psitweaks_psycheonic_metal",
                     "Psycheonic Metal Bee", "プシオニックメタルのミツバチ",
-                    "#7ED8E6", "#2D7681", "psitweaks:psycheonic_metal_block"));
+                    "#7ED8E6", "#2D7681", PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()));
 
     private static final List<BeeBreedingRecipe> BEE_BREEDING_RECIPES = List.of(
             breeding("psi_psimetal",
@@ -60,26 +67,26 @@ public final class ProductiveBeesDataProvider implements DataProvider {
 
     private static final List<BeeConversionRecipe> BEE_CONVERSION_RECIPES = List.of(
             conversion("psi_psidust",
-                    "productivebees:redstone", "psitweaks:psi_psidust", "psi:psidust"),
+                    "productivebees:redstone", "psitweaks:psi_psidust", ModItems.psidust.get()),
             conversion("psitweaks_hypostasis_gem",
                     "psitweaks:psitweaks_antinite", "psitweaks:psitweaks_hypostasis_gem",
-                    "psitweaks:hypostasis_gem"),
+                    PsitweaksItems.HYPOSTASIS_GEM),
             conversion("psitweaks_psycheonic_metal",
                     "psitweaks:psitweaks_heavy_psimetal", "psitweaks:psitweaks_psycheonic_metal",
-                    "psitweaks:psycheonic_metal_block"));
+                    PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK));
 
     private static final List<CentrifugeRecipe> CENTRIFUGE_RECIPES = List.of(
-            centrifuge("psi_psidust", "psi:psidust", 1, 2, 0.5D),
-            centrifuge("psi_psimetal", "psi:psimetal", 1, 1, 0.4D),
-            centrifuge("psi_psigem", "psi:psigem", 1, 1, 0.2D),
-            centrifuge("psi_ebony_psimetal", "psi:ebony_psimetal", 1, 1, 0.35D),
-            centrifuge("psi_ivory_psimetal", "psi:ivory_psimetal", 1, 1, 0.35D),
-            centrifuge("psitweaks_chaotic_psimetal", "psitweaks:chaotic_psimetal", 1, 1, 0.2D),
-            centrifuge("psitweaks_flashmetal", "psitweaks:flashmetal_nugget", 4, 6, 0.5D),
-            centrifuge("psitweaks_heavy_psimetal", "psitweaks:heavy_psimetal_nugget", 3, 4, 0.3D),
-            centrifuge("psitweaks_antinite", "psitweaks:antinite_nugget", 2, 3, 0.2D),
-            centrifuge("psitweaks_hypostasis_gem", "psitweaks:hypostasis_gem", 1, 1, 0.03D),
-            centrifuge("psitweaks_psycheonic_metal", "psitweaks:psycheonic_metal_nugget", 1, 1, 0.1D));
+            centrifuge("psi_psidust", ModItems.psidust.get(), 1, 2, 0.5D),
+            centrifuge("psi_psimetal", ModItems.psimetal.get(), 1, 1, 0.4D),
+            centrifuge("psi_psigem", ModItems.psigem.get(), 1, 1, 0.2D),
+            centrifuge("psi_ebony_psimetal", ModItems.ebonyPsimetal.get(), 1, 1, 0.35D),
+            centrifuge("psi_ivory_psimetal", ModItems.ivoryPsimetal.get(), 1, 1, 0.35D),
+            centrifuge("psitweaks_chaotic_psimetal", PsitweaksItems.CHAOTIC_PSIMETAL, 1, 1, 0.2D),
+            centrifuge("psitweaks_flashmetal", PsitweaksItems.FLASHMETAL_NUGGET, 4, 6, 0.5D),
+            centrifuge("psitweaks_heavy_psimetal", PsitweaksItems.HEAVY_PSIMETAL_NUGGET, 3, 4, 0.3D),
+            centrifuge("psitweaks_antinite", PsitweaksItems.ANTINITE_NUGGET, 2, 3, 0.2D),
+            centrifuge("psitweaks_hypostasis_gem", PsitweaksItems.HYPOSTASIS_GEM, 1, 1, 0.03D),
+            centrifuge("psitweaks_psycheonic_metal", PsitweaksItems.PSYCHEONIC_METAL_NUGGET, 1, 1, 0.1D));
 
     private final PackOutput.PathProvider beePathProvider;
     private final PackOutput.PathProvider recipePathProvider;
@@ -151,13 +158,13 @@ public final class ProductiveBeesDataProvider implements DataProvider {
     }
 
     private static GeneratedBee bee(String id, String enUs, String jaJp,
-                                    String primaryColor, String secondaryColor, String flowerBlock) {
+                                    String primaryColor, String secondaryColor, Block flowerBlock) {
         return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, true);
     }
 
     private static GeneratedBee beeWithoutSelfBreeding(String id, String enUs, String jaJp,
                                                        String primaryColor, String secondaryColor,
-                                                       String flowerBlock) {
+                                                       Block flowerBlock) {
         return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, false);
     }
 
@@ -177,7 +184,7 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         root.addProperty("source", recipe.source());
         root.addProperty("result", recipe.result());
         JsonObject item = new JsonObject();
-        item.addProperty("item", recipe.item());
+        item.addProperty("item", itemId(recipe.item()));
         root.add("item", item);
         root.add("neoforge:conditions", modLoadedConditions(recipe.requiredMods()));
         return root;
@@ -213,7 +220,7 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         JsonArray outputs = new JsonArray();
         JsonObject materialOutput = new JsonObject();
         JsonObject material = new JsonObject();
-        material.addProperty("item", recipe.outputItem());
+        material.addProperty("item", itemId(recipe.outputItem()));
         materialOutput.add("item", material);
         if (recipe.min() != 1 || recipe.max() != 1) {
             materialOutput.addProperty("min", recipe.min());
@@ -264,14 +271,18 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         return new BeeBreedingRecipe(id, parent1, parent2, offspring, List.of(requiredMods));
     }
 
-    private static BeeConversionRecipe conversion(String id, String source, String result, String item,
-                                                  String... requiredMods) {
+    private static BeeConversionRecipe conversion(String id, String source, String result, ItemLike item,
+                                                   String... requiredMods) {
         return new BeeConversionRecipe(id, source, result, item, List.of(requiredMods));
     }
 
-    private static CentrifugeRecipe centrifuge(String beeId, String outputItem,
+    private static CentrifugeRecipe centrifuge(String beeId, ItemLike outputItem,
                                                int min, int max, double chance) {
         return new CentrifugeRecipe(beeId, outputItem, min, max, chance);
+    }
+
+    private static String itemId(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
     }
 
     private static String beeResourceId(String beeId) {
@@ -279,7 +290,7 @@ public final class ProductiveBeesDataProvider implements DataProvider {
     }
 
     record GeneratedBee(String id, String enUs, String jaJp,
-                        String primaryColor, String secondaryColor, String flowerBlock,
+                        String primaryColor, String secondaryColor, Block flowerBlock,
                         boolean selfBreed) {
         String flowerTag() {
             return "psitweaks:productivebees/flowers/" + id;
@@ -294,10 +305,10 @@ public final class ProductiveBeesDataProvider implements DataProvider {
                                      List<String> requiredMods) {
     }
 
-    private record BeeConversionRecipe(String id, String source, String result, String item,
+    private record BeeConversionRecipe(String id, String source, String result, ItemLike item,
                                        List<String> requiredMods) {
     }
 
-    private record CentrifugeRecipe(String beeId, String outputItem, int min, int max, double chance) {
+    private record CentrifugeRecipe(String beeId, ItemLike outputItem, int min, int max, double chance) {
     }
 }

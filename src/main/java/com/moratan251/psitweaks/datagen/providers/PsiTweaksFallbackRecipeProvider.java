@@ -3,14 +3,19 @@ package com.moratan251.psitweaks.datagen.providers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import vazkii.psi.common.item.base.ModItems;
 
 public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
     private static final String MEKANISM = "mekanism";
@@ -25,92 +30,92 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput output) {
         Map<ResourceLocation, JsonObject> recipes = new LinkedHashMap<>();
 
-        addCookingPair(recipes, "enriched_psigem", "psi:psigem", item("enriched_psigem"), 0.3D);
-        addCookingPair(recipes, "enriched_ebony", "psi:ebony_substance", item("enriched_ebony"), 0.3D);
-        addCookingPair(recipes, "enriched_ivory", "psi:ivory_substance", item("enriched_ivory"), 0.3D);
-        addCookingPair(recipes, "enriched_echo", item("psionic_echo"), item("enriched_echo"), 0.6D);
-        addCookingPair(recipes, "enriched_hypostasis", item("hypostasis_gem"), item("enriched_hypostasis"), 0.8D);
-        addCookingPair(recipes, "flashmetal", item("unrefined_flashmetal"), item("flashmetal"), 1.0D);
+        addCookingPair(recipes, "enriched_psigem", ModItems.psigem.get(), PsitweaksItems.ENRICHED_PSIGEM, 0.3D);
+        addCookingPair(recipes, "enriched_ebony", ModItems.ebonySubstance.get(), PsitweaksItems.ENRICHED_EBONY, 0.3D);
+        addCookingPair(recipes, "enriched_ivory", ModItems.ivorySubstance.get(), PsitweaksItems.ENRICHED_IVORY, 0.3D);
+        addCookingPair(recipes, "enriched_echo", PsitweaksItems.PSIONIC_ECHO, PsitweaksItems.ENRICHED_ECHO, 0.6D);
+        addCookingPair(recipes, "enriched_hypostasis", PsitweaksItems.HYPOSTASIS_GEM, PsitweaksItems.ENRICHED_HYPOSTASIS, 0.8D);
+        addCookingPair(recipes, "flashmetal", PsitweaksItems.UNREFINED_FLASHMETAL, PsitweaksItems.FLASHMETAL, 1.0D);
 
         add(recipes, "echo_sheet", shapeless(
                 List.of(
-                        ingredient(item("echo_pellet")),
-                        ingredient(item("echo_pellet")),
-                        ingredient(item("echo_pellet"))
+                        ingredient(PsitweaksItems.ECHO_PELLET),
+                        ingredient(PsitweaksItems.ECHO_PELLET),
+                        ingredient(PsitweaksItems.ECHO_PELLET)
                 ),
-                item("echo_sheet"), 1));
+                PsitweaksItems.ECHO_SHEET, 1));
         add(recipes, "echo_pellet", shapeless(
                 List.of(
-                        ingredient("minecraft:paper"),
-                        ingredient("minecraft:paper"),
-                        ingredient("minecraft:paper"),
-                        ingredient(item("psionic_echo"))
+                        ingredient(Items.PAPER),
+                        ingredient(Items.PAPER),
+                        ingredient(Items.PAPER),
+                        ingredient(PsitweaksItems.PSIONIC_ECHO)
                 ),
-                item("echo_pellet"), 3));
+                PsitweaksItems.ECHO_PELLET, 3));
         add(recipes, "alloy_psion", shapeless(
                 List.of(
-                        ingredient("minecraft:copper_block"),
-                        ingredient("minecraft:redstone"),
-                        ingredient("minecraft:obsidian"),
-                        ingredient(item("enriched_psigem")),
-                        ingredient(item("enriched_psigem")),
-                        ingredient(item("enriched_psigem")),
-                        ingredient(item("enriched_psigem")),
-                        ingredient(item("enriched_psigem")),
-                        ingredient(item("enriched_psigem"))
+                        ingredient(Items.COPPER_BLOCK),
+                        ingredient(Items.REDSTONE),
+                        ingredient(Items.OBSIDIAN),
+                        ingredient(PsitweaksItems.ENRICHED_PSIGEM),
+                        ingredient(PsitweaksItems.ENRICHED_PSIGEM),
+                        ingredient(PsitweaksItems.ENRICHED_PSIGEM),
+                        ingredient(PsitweaksItems.ENRICHED_PSIGEM),
+                        ingredient(PsitweaksItems.ENRICHED_PSIGEM),
+                        ingredient(PsitweaksItems.ENRICHED_PSIGEM)
                 ),
-                item("alloy_psion"), 8));
+                PsitweaksItems.ALLOY_PSION, 8));
         add(recipes, "alloy_psionic_echo", shapeless(
                 List.of(
-                        ingredient(item("alloy_psion")),
-                        ingredient(item("alloy_psion")),
-                        ingredient(item("enriched_echo"))
+                        ingredient(PsitweaksItems.ALLOY_PSION),
+                        ingredient(PsitweaksItems.ALLOY_PSION),
+                        ingredient(PsitweaksItems.ENRICHED_ECHO)
                 ),
-                item("alloy_psionic_echo"), 2));
+                PsitweaksItems.ALLOY_PSIONIC_ECHO, 2));
         add(recipes, "alloy_hypostasis", shapeless(
                 List.of(
-                        ingredient(item("alloy_psionic_echo")),
-                        ingredient(item("alloy_psionic_echo")),
-                        ingredient(item("enriched_hypostasis"))
+                        ingredient(PsitweaksItems.ALLOY_PSIONIC_ECHO),
+                        ingredient(PsitweaksItems.ALLOY_PSIONIC_ECHO),
+                        ingredient(PsitweaksItems.ENRICHED_HYPOSTASIS)
                 ),
-                item("alloy_hypostasis"), 2));
+                PsitweaksItems.ALLOY_HYPOSTASIS, 2));
         add(recipes, "psionic_factor", shapeless(
-                List.of(ingredient("minecraft:ender_pearl"), ingredient(item("enriched_psigem"))),
-                item("psionic_factor"), 1));
+                List.of(ingredient(Items.ENDER_PEARL), ingredient(PsitweaksItems.ENRICHED_PSIGEM)),
+                PsitweaksItems.PSIONIC_FACTOR, 1));
         add(recipes, "psionic_factor_ebony", surrounding(
-                item("psionic_factor"), item("enriched_ebony"), item("psionic_factor_ebony")));
+                PsitweaksItems.PSIONIC_FACTOR, PsitweaksItems.ENRICHED_EBONY, PsitweaksItems.PSIONIC_FACTOR_EBONY));
         add(recipes, "psionic_factor_ivory", surrounding(
-                item("psionic_factor"), item("enriched_ivory"), item("psionic_factor_ivory")));
+                PsitweaksItems.PSIONIC_FACTOR, PsitweaksItems.ENRICHED_IVORY, PsitweaksItems.PSIONIC_FACTOR_IVORY));
         add(recipes, "chaotic_factor", surrounding(
-                item("psionic_factor_ebony"), item("enriched_ivory"), item("chaotic_factor")));
+                PsitweaksItems.PSIONIC_FACTOR_EBONY, PsitweaksItems.ENRICHED_IVORY, PsitweaksItems.CHAOTIC_FACTOR));
         add(recipes, "chaotic_factor_from_ivory", surrounding(
-                item("psionic_factor_ivory"), item("enriched_ebony"), item("chaotic_factor")));
+                PsitweaksItems.PSIONIC_FACTOR_IVORY, PsitweaksItems.ENRICHED_EBONY, PsitweaksItems.CHAOTIC_FACTOR));
         add(recipes, "chaotic_psimetal", shapeless(
                 List.of(
-                        ingredient("psi:psimetal"),
-                        ingredient("psi:psimetal"),
-                        ingredient(item("chaotic_factor"))
+                        ingredient(ModItems.psimetal.get()),
+                        ingredient(ModItems.psimetal.get()),
+                        ingredient(PsitweaksItems.CHAOTIC_FACTOR)
                 ),
-                item("chaotic_psimetal"), 1));
+                PsitweaksItems.CHAOTIC_PSIMETAL, 1));
         add(recipes, "heavy_psimetal_scrap", shapeless(
                 List.of(
-                        ingredient(item("enriched_echo")),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap"),
-                        ingredient("minecraft:netherite_scrap")
+                        ingredient(PsitweaksItems.ENRICHED_ECHO),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP),
+                        ingredient(Items.NETHERITE_SCRAP)
                 ),
-                item("heavy_psimetal_scrap"), 8));
+                PsitweaksItems.HEAVY_PSIMETAL_SCRAP, 8));
         add(recipes, "psycheonic_metal_nugget", shapelessCounted(
                 List.of(
-                        counted(item("heavy_psimetal"), 8),
-                        counted(item("enriched_hypostasis"), 1)
+                        counted(PsitweaksItems.HEAVY_PSIMETAL, 8),
+                        counted(PsitweaksItems.ENRICHED_HYPOSTASIS, 1)
                 ),
-                item("psycheonic_metal_nugget"), 8));
+                PsitweaksItems.PSYCHEONIC_METAL_NUGGET, 8));
 
         addPhilosophersStoneFallbacks(recipes);
         addProgramFallbacks(recipes);
@@ -118,73 +123,73 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         add(recipes, "unrefined_flashmetal", shaped(
                 List.of("GGG", "AAA", "GGG"),
                 Map.of(
-                        'A', ingredient(item("chaotic_psimetal")),
-                        'G', ingredient("minecraft:glowstone")
+                        'A', ingredient(PsitweaksItems.CHAOTIC_PSIMETAL),
+                        'G', ingredient(Items.GLOWSTONE)
                 ),
-                item("unrefined_flashmetal"), 1));
+                PsitweaksItems.UNREFINED_FLASHMETAL, 1));
         add(recipes, "psionic_control_circuit", shaped(
                 List.of("ROR", "AGA", "RDR"),
                 Map.of(
-                        'A', ingredient(item("alloy_psion")),
-                        'D', ingredient("minecraft:diamond"),
-                        'G', ingredient("minecraft:gold_ingot"),
-                        'O', ingredient("minecraft:obsidian"),
-                        'R', ingredient("minecraft:redstone")
+                        'A', ingredient(PsitweaksItems.ALLOY_PSION),
+                        'D', ingredient(Items.DIAMOND),
+                        'G', ingredient(Items.GOLD_INGOT),
+                        'O', ingredient(Items.OBSIDIAN),
+                        'R', ingredient(Items.REDSTONE)
                 ),
-                item("psionic_control_circuit"), 1));
+                PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 1));
         add(recipes, "cad_assembly_flashmetal", shaped(
                 List.of("MMM", "FFF", " CF"),
                 Map.of(
-                        'C', ingredient(item("psionic_control_circuit")),
-                        'F', ingredient(item("flashmetal")),
-                        'M', ingredient("minecraft:paper")
+                        'C', ingredient(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT),
+                        'F', ingredient(PsitweaksItems.FLASHMETAL),
+                        'M', ingredient(Items.PAPER)
                 ),
-                item("cad_assembly_flashmetal"), 1));
+                PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL, 1));
         add(recipes, "cad_assembly_heavy_psimetal_beta", shaped(
                 List.of("SCS", "PIP", "SCS"),
                 Map.of(
-                        'C', ingredient(item("echo_control_circuit")),
-                        'I', ingredient(item("incomplete_heavy_psimetal_assembly")),
-                        'P', ingredient("minecraft:heart_of_the_sea"),
-                        'S', ingredient(item("echo_sheet"))
+                        'C', ingredient(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'I', ingredient(PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY),
+                        'P', ingredient(Items.HEART_OF_THE_SEA),
+                        'S', ingredient(PsitweaksItems.ECHO_SHEET)
                 ),
-                item("cad_assembly_heavy_psimetal_beta"), 1));
+                PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA, 1));
         add(recipes, "cad_assembly_psycheonic_metal_from_alpha", shaped(
                 List.of("PCP", "AHA", "PCP"),
                 Map.of(
-                        'A', ingredient("minecraft:heavy_core"),
-                        'C', ingredient(item("hypostasis_control_circuit")),
-                        'H', ingredient(item("cad_assembly_heavy_psimetal_alpha")),
-                        'P', ingredient(item("psycheonic_metal_ingot"))
+                        'A', ingredient(Items.HEAVY_CORE),
+                        'C', ingredient(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT),
+                        'H', ingredient(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA),
+                        'P', ingredient(PsitweaksItems.PSYCHEONIC_METAL_INGOT)
                 ),
-                item("cad_assembly_psycheonic_metal"), 1));
+                PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL, 1));
         add(recipes, "cad_assembly_psycheonic_metal_from_beta", shaped(
                 List.of("PCP", "AHA", "PCP"),
                 Map.of(
-                        'A', ingredient("minecraft:heavy_core"),
-                        'C', ingredient(item("hypostasis_control_circuit")),
-                        'H', ingredient(item("cad_assembly_heavy_psimetal_beta")),
-                        'P', ingredient(item("psycheonic_metal_ingot"))
+                        'A', ingredient(Items.HEAVY_CORE),
+                        'C', ingredient(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT),
+                        'H', ingredient(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA),
+                        'P', ingredient(PsitweaksItems.PSYCHEONIC_METAL_INGOT)
                 ),
-                item("cad_assembly_psycheonic_metal"), 1));
+                PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL, 1));
 
         add(recipes, "interference_range_extender", shaped(
                 List.of("ABA", "BCB", "ABA"),
                 Map.of(
-                        'A', ingredient(item("flashmetal")),
-                        'B', ingredient(item("psionic_control_circuit")),
-                        'C', ingredient("minecraft:ender_eye")
+                        'A', ingredient(PsitweaksItems.FLASHMETAL),
+                        'B', ingredient(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT),
+                        'C', ingredient(Items.ENDER_EYE)
                 ),
-                item("interference_range_extender"), 1));
+                PsitweaksItems.INTERFERENCE_RANGE_EXTENDER, 1));
         add(recipes, "third_eye_device", shaped(
                 List.of("ABA", "CDC", "ABA"),
                 Map.of(
-                        'A', ingredient(item("psycheonic_metal_ingot")),
-                        'B', ingredient("minecraft:heavy_core"),
-                        'C', ingredient("minecraft:nether_star"),
-                        'D', ingredient(item("interference_range_extender"))
+                        'A', ingredient(PsitweaksItems.PSYCHEONIC_METAL_INGOT),
+                        'B', ingredient(Items.HEAVY_CORE),
+                        'C', ingredient(Items.NETHER_STAR),
+                        'D', ingredient(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER)
                 ),
-                item("third_eye_device"), 1));
+                PsitweaksItems.THIRD_EYE_DEVICE, 1));
 
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
@@ -197,15 +202,15 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         return "PsiTweaks recipes without Mekanism";
     }
 
-    private static void addCookingPair(Map<ResourceLocation, JsonObject> recipes, String id, String input,
-            String result, double experience) {
+    private static void addCookingPair(Map<ResourceLocation, JsonObject> recipes, String id, ItemLike input,
+            ItemLike result, double experience) {
         add(recipes, id + "_smelting", cooking(
                 "minecraft:smelting", ingredient(input), result, experience, 200));
         add(recipes, id + "_blasting", cooking(
                 "minecraft:blasting", ingredient(input), result, experience, 100));
     }
 
-    private static JsonObject surrounding(String center, String outer, String result) {
+    private static JsonObject surrounding(ItemLike center, ItemLike outer, ItemLike result) {
         return shaped(
                 List.of("OOO", "OCO", "OOO"),
                 Map.of(
@@ -215,7 +220,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 result, 1);
     }
 
-    private static JsonObject shaped(List<String> pattern, Map<Character, JsonObject> keys, String result, int count) {
+    private static JsonObject shaped(List<String> pattern, Map<Character, JsonObject> keys, ItemLike result, int count) {
         JsonObject root = new JsonObject();
         JsonArray patternJson = new JsonArray();
         JsonObject keyJson = new JsonObject();
@@ -229,7 +234,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject shapeless(List<JsonObject> ingredients, String result, int count) {
+    private static JsonObject shapeless(List<JsonObject> ingredients, ItemLike result, int count) {
         JsonObject root = new JsonObject();
         JsonArray ingredientsJson = new JsonArray();
         root.addProperty("type", "minecraft:crafting_shapeless");
@@ -240,7 +245,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject shapelessCounted(List<CountedIngredient> ingredients, String result, int count) {
+    private static JsonObject shapelessCounted(List<CountedIngredient> ingredients, ItemLike result, int count) {
         JsonObject root = new JsonObject();
         JsonArray ingredientsJson = new JsonArray();
         root.addProperty("type", "minecraft:crafting_shapeless");
@@ -258,107 +263,107 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
     private static void addPhilosophersStoneFallbacks(Map<ResourceLocation, JsonObject> recipes) {
         add(recipes, "philosophers_stone/philosophers_stone_iron_to_gold", shapelessCounted(
                 List.of(
-                        counted(item("philosophers_stone"), 1),
-                        counted("minecraft:iron_ingot", 8)
+                        counted(PsitweaksItems.PHILOSOPHERS_STONE, 1),
+                        counted(Items.IRON_INGOT, 8)
                 ),
-                "minecraft:gold_ingot", 2));
+                Items.GOLD_INGOT, 2));
         add(recipes, "philosophers_stone/philosophers_stone_gold_to_iron", shapelessCounted(
                 List.of(
-                        counted(item("philosophers_stone"), 1),
-                        counted("minecraft:gold_ingot", 2)
+                        counted(PsitweaksItems.PHILOSOPHERS_STONE, 1),
+                        counted(Items.GOLD_INGOT, 2)
                 ),
-                "minecraft:iron_ingot", 8));
+                Items.IRON_INGOT, 8));
     }
 
     private static void addProgramFallbacks(Map<ResourceLocation, JsonObject> recipes) {
-        addProgram(recipes, "program_cocytus", List.of(
-                counted(item("psycheonic_metal"), 2),
-                counted("minecraft:blue_ice", 2),
-                counted("minecraft:nether_star", 3),
-                counted("minecraft:sculk_shrieker", 1)));
-        addProgram(recipes, "program_phonon_maser", List.of(
-                counted("minecraft:amethyst_shard", 2),
-                counted(item("flashmetal"), 4),
-                counted("minecraft:note_block", 2)));
-        addProgram(recipes, "program_time_accelerate", List.of(
-                counted("minecraft:redstone_block", 2),
-                counted("minecraft:powered_rail", 2),
-                counted("minecraft:clock", 4)));
-        addProgram(recipes, "program_flight", List.of(
-                counted("minecraft:phantom_membrane", 2),
-                counted("minecraft:nether_wart", 2),
-                counted("minecraft:feather", 2),
-                counted(item("chaotic_factor"), 2)));
-        addProgram(recipes, "program_meteor_line", List.of(
-                counted(item("psycheonic_metal"), 4),
-                counted("minecraft:nether_star", 2),
-                counted("minecraft:dragon_head", 2)));
-        addProgram(recipes, "program_supreme_infusion", List.of(
-                counted("minecraft:amethyst_block", 2),
-                counted(item("flashmetal"), 2),
-                counted(item("alloy_psion"), 3),
-                counted("minecraft:netherite_ingot", 1)));
-        addProgram(recipes, "program_molecular_divider", List.of(
-                counted(item("echo_control_circuit"), 4),
-                counted("minecraft:quartz_block", 2),
-                counted(item("heavy_psimetal"), 2)));
-        addProgram(recipes, "program_guillotine", List.of(
-                counted("minecraft:wither_skeleton_skull", 1),
-                counted("minecraft:anvil", 3),
-                counted("psi:psimetal_sword", 1),
-                counted("minecraft:bone", 2),
-                counted("minecraft:rotten_flesh", 1)));
-        addProgram(recipes, "program_active_air_mine", List.of(
-                counted("minecraft:tnt", 2),
-                counted("psi:psidust", 4),
-                counted("psi:psigem", 2)));
-        addProgram(recipes, "program_die_flex", List.of(
-                counted(item("psionic_control_circuit"), 3),
-                counted(item("flashmetal"), 3),
-                counted(item("chaotic_factor"), 2)));
-        addProgramUpgrade(recipes, "program_jump_flex", List.of(
-                counted(item("program_die_flex"), 1),
-                counted(item("echo_control_circuit"), 3),
-                counted(item("heavy_psimetal"), 3),
-                counted(item("antinite_ingot"), 2)));
-        addProgramUpgrade(recipes, "program_switch_flex", List.of(
-                counted(item("program_jump_flex"), 1),
-                counted(item("hypostasis_control_circuit"), 3),
-                counted(item("psycheonic_metal_ingot"), 3),
-                counted("minecraft:nether_star", 2)));
-        addProgram(recipes, "program_material_mutation", List.of(
-                counted(item("philosophers_stone"), 1),
-                counted("minecraft:sculk_catalyst", 1),
-                counted(item("antinite_ingot"), 2),
-                counted(item("chaotic_factor"), 2),
-                counted(item("psionic_echo"), 2)));
-        addProgram(recipes, "program_mass_block_break", List.of(
-                counted("minecraft:tnt", 4),
-                counted("psi:psigem", 2),
-                counted(item("chaotic_psimetal"), 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_COCYTUS, List.of(
+                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
+                counted(Items.BLUE_ICE, 2),
+                counted(Items.NETHER_STAR, 3),
+                counted(Items.SCULK_SHRIEKER, 1)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_PHONON_MASER, List.of(
+                counted(Items.AMETHYST_SHARD, 2),
+                counted(PsitweaksItems.FLASHMETAL, 4),
+                counted(Items.NOTE_BLOCK, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_TIME_ACCELERATE, List.of(
+                counted(Items.REDSTONE_BLOCK, 2),
+                counted(Items.POWERED_RAIL, 2),
+                counted(Items.CLOCK, 4)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_FLIGHT, List.of(
+                counted(Items.PHANTOM_MEMBRANE, 2),
+                counted(Items.NETHER_WART, 2),
+                counted(Items.FEATHER, 2),
+                counted(PsitweaksItems.CHAOTIC_FACTOR, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_METEOR_LINE, List.of(
+                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 4),
+                counted(Items.NETHER_STAR, 2),
+                counted(Items.DRAGON_HEAD, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_SUPREME_INFUSION, List.of(
+                counted(Items.AMETHYST_BLOCK, 2),
+                counted(PsitweaksItems.FLASHMETAL, 2),
+                counted(PsitweaksItems.ALLOY_PSION, 3),
+                counted(Items.NETHERITE_INGOT, 1)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER, List.of(
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 4),
+                counted(Items.QUARTZ_BLOCK, 2),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_GUILLOTINE, List.of(
+                counted(Items.WITHER_SKELETON_SKULL, 1),
+                counted(Items.ANVIL, 3),
+                counted(ModItems.psimetalSword.get(), 1),
+                counted(Items.BONE, 2),
+                counted(Items.ROTTEN_FLESH, 1)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE, List.of(
+                counted(Items.TNT, 2),
+                counted(ModItems.psidust.get(), 4),
+                counted(ModItems.psigem.get(), 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_DIE_FLEX, List.of(
+                counted(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 3),
+                counted(PsitweaksItems.FLASHMETAL, 3),
+                counted(PsitweaksItems.CHAOTIC_FACTOR, 2)));
+        addProgramUpgrade(recipes, PsitweaksItems.PROGRAM_JUMP_FLEX, List.of(
+                counted(PsitweaksItems.PROGRAM_DIE_FLEX, 1),
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 3),
+                counted(PsitweaksItems.ANTINITE_INGOT, 2)));
+        addProgramUpgrade(recipes, PsitweaksItems.PROGRAM_SWITCH_FLEX, List.of(
+                counted(PsitweaksItems.PROGRAM_JUMP_FLEX, 1),
+                counted(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 3),
+                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 3),
+                counted(Items.NETHER_STAR, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_MATERIAL_MUTATION, List.of(
+                counted(PsitweaksItems.PHILOSOPHERS_STONE, 1),
+                counted(Items.SCULK_CATALYST, 1),
+                counted(PsitweaksItems.ANTINITE_INGOT, 2),
+                counted(PsitweaksItems.CHAOTIC_FACTOR, 2),
+                counted(PsitweaksItems.PSIONIC_ECHO, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK, List.of(
+                counted(Items.TNT, 4),
+                counted(ModItems.psigem.get(), 2),
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
     }
 
-    private static void addProgram(Map<ResourceLocation, JsonObject> recipes, String program,
+    private static void addProgram(Map<ResourceLocation, JsonObject> recipes, ItemLike program,
             List<CountedIngredient> ingredients) {
         List<CountedIngredient> withBlankProgram = new java.util.ArrayList<>();
-        withBlankProgram.add(counted(item("program_blank"), 1));
+        withBlankProgram.add(counted(PsitweaksItems.PROGRAM_BLANK, 1));
         withBlankProgram.addAll(ingredients);
-        add(recipes, program, shapelessCounted(withBlankProgram, item(program), 1));
+        add(recipes, itemPath(program), shapelessCounted(withBlankProgram, program, 1));
     }
 
-    private static void addProgramUpgrade(Map<ResourceLocation, JsonObject> recipes, String program,
+    private static void addProgramUpgrade(Map<ResourceLocation, JsonObject> recipes, ItemLike program,
             List<CountedIngredient> ingredients) {
-        add(recipes, program, shapelessCounted(ingredients, item(program), 1));
+        add(recipes, itemPath(program), shapelessCounted(ingredients, program, 1));
     }
 
-    private static CountedIngredient counted(String item, int count) {
+    private static CountedIngredient counted(ItemLike item, int count) {
         return new CountedIngredient(item, count);
     }
 
-    private record CountedIngredient(String item, int count) {
+    private record CountedIngredient(ItemLike item, int count) {
     }
 
-    private static JsonObject cooking(String type, JsonObject ingredient, String result, double experience,
+    private static JsonObject cooking(String type, JsonObject ingredient, ItemLike result, double experience,
             int cookingTime) {
         JsonObject root = new JsonObject();
         root.addProperty("type", type);
@@ -370,16 +375,16 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject ingredient(String item) {
+    private static JsonObject ingredient(ItemLike item) {
         JsonObject ingredient = new JsonObject();
-        ingredient.addProperty("item", item);
+        ingredient.addProperty("item", itemId(item));
         return ingredient;
     }
 
-    private static JsonObject result(String item, int count) {
+    private static JsonObject result(ItemLike item, int count) {
         JsonObject result = new JsonObject();
         result.addProperty("count", count);
-        result.addProperty("id", item);
+        result.addProperty("id", itemId(item));
         return result;
     }
 
@@ -390,7 +395,11 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         );
     }
 
-    private static String item(String path) {
-        return Psitweaks.MOD_ID + ":" + path;
+    private static String itemId(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
+    }
+
+    private static String itemPath(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
     }
 }

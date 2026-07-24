@@ -3,13 +3,16 @@ package com.moratan251.psitweaks.datagen.providers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 public class PsiTweaksLootTableProvider implements DataProvider {
     private final PackOutput.PathProvider pathProvider;
@@ -24,7 +27,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
 
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             JsonObject lootTable = switch (block.id()) {
-                case "ore_antinite" -> oreDrop(block.id(), item("raw_antinite"));
+                case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
                 default -> dropSelf(block.id());
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));
@@ -55,7 +58,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         return table;
     }
 
-    private static JsonObject oreDrop(String blockId, String itemId) {
+    private static JsonObject oreDrop(String blockId, ItemLike item) {
         JsonObject table = blockTable(blockId);
         JsonObject pool = pool();
         JsonArray entries = new JsonArray();
@@ -64,7 +67,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
 
         alternatives.addProperty("type", "minecraft:alternatives");
         children.add(silkTouchEntry(blockId));
-        children.add(fortuneEntry(itemId));
+        children.add(fortuneEntry(item));
         alternatives.add("children", children);
         entries.add(alternatives);
         pool.add("entries", entries);
@@ -121,8 +124,8 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         return entry;
     }
 
-    private static JsonObject fortuneEntry(String itemId) {
-        JsonObject entry = itemEntry(itemId);
+    private static JsonObject fortuneEntry(ItemLike item) {
+        JsonObject entry = itemEntry(item);
         JsonArray functions = new JsonArray();
         JsonObject applyBonus = new JsonObject();
         JsonObject explosionDecay = new JsonObject();
@@ -147,11 +150,11 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         return entry;
     }
 
-    private static String block(String path) {
-        return Psitweaks.MOD_ID + ":" + path;
+    private static JsonObject itemEntry(ItemLike item) {
+        return itemEntry(BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
     }
 
-    private static String item(String path) {
+    private static String block(String path) {
         return Psitweaks.MOD_ID + ":" + path;
     }
 }
