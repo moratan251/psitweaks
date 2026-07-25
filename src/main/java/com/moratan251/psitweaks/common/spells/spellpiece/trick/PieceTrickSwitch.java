@@ -39,8 +39,12 @@ public class PieceTrickSwitch extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         String targetLabel = StringSpellHelper.sanitize(this.getRequiredLabel(context));
-        JumpAnchorHelper.jumpToMatchingAnchor(context, this, targetLabel);
+        this.jumpToMatchingAnchor(context, targetLabel);
         return null;
+    }
+
+    protected boolean jumpToMatchingAnchor(SpellContext context, String targetLabel) throws SpellRuntimeException {
+        return JumpAnchorHelper.jumpToMatchingAnchor(context, this, targetLabel);
     }
 
     private String getRequiredLabel(SpellContext context) throws SpellRuntimeException {

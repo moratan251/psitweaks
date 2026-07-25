@@ -145,7 +145,7 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
 
         validateActiveInputs(recipe);
         maxProgress = Math.max(1, recipe.getTime());
-        FloatingLong energyCost = feToJoules(recipe.getEnergyCostForTick(progress));
+        FloatingLong energyCost = feToJoules(recipe.getEnergyPerTick());
         currentEnergyCost = energyCost;
         if (energyContainer.getEnergy().smallerThan(energyCost)) {
             setActive(false);

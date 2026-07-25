@@ -35,14 +35,15 @@ public class ProgramResearchRecipe implements Recipe<Container> {
     private final ResourceLocation id;
     private final List<RequiredInput> inputs;
     private final ItemStack output;
-    private final int energy;
+    private final long energyPerTick;
     private final int time;
 
-    public ProgramResearchRecipe(ResourceLocation id, List<RequiredInput> inputs, ItemStack output, int energy, int time) {
+    public ProgramResearchRecipe(ResourceLocation id, List<RequiredInput> inputs, ItemStack output,
+                                 long energyPerTick, int time) {
         this.id = id;
         this.inputs = List.copyOf(inputs);
         this.output = output.copy();
-        this.energy = energy;
+        this.energyPerTick = energyPerTick;
         this.time = time;
     }
 
@@ -54,21 +55,12 @@ public class ProgramResearchRecipe implements Recipe<Container> {
         return output.copy();
     }
 
-    public int getEnergy() {
-        return energy;
+    public long getEnergyPerTick() {
+        return energyPerTick;
     }
 
     public int getTime() {
         return time;
-    }
-
-    public int getEnergyCostForTick(int progress) {
-        if (energy <= 0 || time <= 0) {
-            return 0;
-        }
-        int base = energy / time;
-        int remainder = energy % time;
-        return progress < remainder ? base + 1 : base;
     }
 
     public @Nullable int[] createConsumptionPlan(IItemHandler inputInventory) {
@@ -293,17 +285,26 @@ public class ProgramResearchRecipe implements Recipe<Container> {
                 throw new IllegalArgumentException("Program research output cannot be empty: " + recipeId);
             }
 
-            int energy = GsonHelper.getAsInt(json, "energy", 0);
-            if (energy < 0) {
-                throw new IllegalArgumentException("Program research energy must be >= 0: " + recipeId);
-            }
-
             int time = GsonHelper.getAsInt(json, "time", 200);
             if (time < 1) {
                 throw new IllegalArgumentException("Program research time must be >= 1: " + recipeId);
             }
 
-            return new ProgramResearchRecipe(recipeId, inputs, output, energy, time);
+            long energyPerTick;
+            if (GsonHelper.isValidNode(json, "energy_per_tick")) {
+                energyPerTick = GsonHelper.getAsLong(json, "energy_per_tick");
+            } else {
+                long legacyEnergy = GsonHelper.getAsLong(json, "energy", 0L);
+                if (legacyEnergy < 0) {
+                    throw new IllegalArgumentException("Program research legacy energy must be >= 0: " + recipeId);
+                }
+                energyPerTick = legacyEnergy == 0 ? 0 : 1 + (legacyEnergy - 1) / time;
+            }
+            if (energyPerTick < 0) {
+                throw new IllegalArgumentException("Program research energy_per_tick must be >= 0: " + recipeId);
+            }
+
+            return new ProgramResearchRecipe(recipeId, inputs, output, energyPerTick, time);
         }
 
         @Override
@@ -317,9 +318,9 @@ public class ProgramResearchRecipe implements Recipe<Container> {
                 inputs.add(new RequiredInput(ingredient, count, consume));
             }
             ItemStack output = buffer.readItem();
-            int energy = Math.max(0, buffer.readVarInt());
+            long energyPerTick = Math.max(0L, buffer.readVarLong());
             int time = Math.max(1, buffer.readVarInt());
-            return new ProgramResearchRecipe(recipeId, inputs, output, energy, time);
+            return new ProgramResearchRecipe(recipeId, inputs, output, energyPerTick, time);
         }
 
         @Override
@@ -331,7 +332,7 @@ public class ProgramResearchRecipe implements Recipe<Container> {
                 buffer.writeBoolean(input.consume());
             }
             buffer.writeItem(recipe.output);
-            buffer.writeVarInt(recipe.energy);
+            buffer.writeVarLong(recipe.energyPerTick);
             buffer.writeVarInt(recipe.time);
         }
     }

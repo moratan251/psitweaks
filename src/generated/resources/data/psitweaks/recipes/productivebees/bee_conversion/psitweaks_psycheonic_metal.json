@@ -1,0 +1,14 @@
+{
+  "type": "productivebees:bee_conversion",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "item": {
+    "item": "psitweaks:psycheonic_metal_block"
+  },
+  "result": "psitweaks:psitweaks_psycheonic_metal",
+  "source": "psitweaks:psitweaks_heavy_psimetal"
+}

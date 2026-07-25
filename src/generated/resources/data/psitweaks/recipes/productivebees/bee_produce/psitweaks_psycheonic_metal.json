@@ -1,0 +1,29 @@
+{
+  "type": "productivebees:advanced_beehive",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "ingredient": "psitweaks:psitweaks_psycheonic_metal",
+  "results": [
+    {
+      "item": {
+        "type": "forge:nbt",
+        "item": "productivebees:configurable_honeycomb",
+        "nbt": {
+          "EntityTag": {
+            "type": "psitweaks:psitweaks_psycheonic_metal"
+          }
+        }
+      }
+    },
+    {
+      "chance": 5,
+      "item": {
+        "tag": "forge:pollen"
+      }
+    }
+  ]
+}

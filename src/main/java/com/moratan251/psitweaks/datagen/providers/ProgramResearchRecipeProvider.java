@@ -39,7 +39,8 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.BLUE_ICE, 64)
                 .requires(Items.SCULK_SHRIEKER, 24)
                 .requires(Items.HEART_OF_THE_SEA, 4)
-                .energy(1_500_000_000)
+                .requires(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get(), 64)
+                .energyPerTick(1_500_000L)
                 .time(108_000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_cocytus"));
 
@@ -49,7 +50,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.REDSTONE_BLOCK, 8)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 8)
                 .requires(Items.POWERED_RAIL, 32)
-                .energy(10000000)
+                .energyPerTick(10_000L)
                 .time(1200)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_time_accelerate"));
 
@@ -59,7 +60,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.FEATHER, 32)
                 .requires(PsitweaksItems.CHAOTIC_FACTOR.get(), 8)
                 .requires(Items.NETHER_WART, 4)
-                .energy(10000000)
+                .energyPerTick(10_000L)
                 .time(600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_flight"));
 
@@ -69,7 +70,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.AMETHYST_SHARD, 12)
                 .requires(PsitweaksItems.FLASHMETAL.get(), 8)
                 .requires(Items.NOTE_BLOCK, 48)
-                .energy(40000000)
+                .energyPerTick(40_000L)
                 .time(2400)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_phonon_maser"));
 
@@ -78,9 +79,9 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.NETHER_STAR, 24)
                 .requires(MekanismItems.ANTIMATTER_PELLET, 16)
                 .requires(PsitweaksItems.ALLOY_HYPOSTASIS.get(), 48)
-                .requires(PsitweaksItems.FLASHMETAL.get(), 64)
-                .requires(PsitweaksItems.FLASHMETAL.get(), 64)
-                .energy(1_500_000_000)
+                .requires(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get(), 64)
+                .requires(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get(), 64)
+                .energyPerTick(1_500_000L)
                 .time(288_000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_meteor_line"));
 
@@ -90,7 +91,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(PsitweaksItems.FLASHMETAL.get(), 8)
                 .requires(PsitweaksItems.ALLOY_PSION.get(), 24)
                 .requires(Items.AMETHYST_BLOCK, 16)
-                .energy(40000000)
+                .energyPerTick(40_000L)
                 .time(2400)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_supreme_infusion"));
 
@@ -100,7 +101,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.QUARTZ, 48)
                 .requires(PsitweaksItems.HEAVY_PSIMETAL.get(), 8)
                 .requires(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get(), 3)
-                .energy(80000000)
+                .energyPerTick(80_000L)
                 .time(6000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_molecular_divider"));
 
@@ -109,7 +110,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(uraniumIngot, 16)
                 .requires(leadIngot, 8)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 8)
-                .energy(60000000)
+                .energyPerTick(60_000L)
                 .time(3600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_radiation_injection"));
 
@@ -118,7 +119,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(leadIngot, 16)
                 .requires(MekanismItems.FLUORITE_DUST, 16)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 8)
-                .energy(60000000)
+                .energyPerTick(60_000L)
                 .time(3600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_radiation_filter"));
 
@@ -127,7 +128,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.GOLDEN_APPLE, 8)
                 .requires(leadIngot, 16)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 8)
-                .energy(60000000)
+                .energyPerTick(60_000L)
                 .time(3600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_cure_radiation"));
 
@@ -138,7 +139,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.ROTTEN_FLESH, 24)
                 .requires(Items.BONE, 16)
                 .requires(ModItems.psimetalSword, 1)
-                .energy(50000000)
+                .energyPerTick(50_000L)
                 .time(3000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_guillotine"));
 
@@ -147,18 +148,36 @@ public final class ProgramResearchRecipeProvider {
                 .requires(Items.TNT, 8)
                 .requires(ModItems.psidust, 16)
                 .requires(ModItems.psigem, 2)
-                .energy(4000000)
+                .energyPerTick(4_000L)
                 .time(400)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_active_air_mine"));
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_DIE_FLEX.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
-                .requires(Items.COMPARATOR, 4)
-                .requires(Items.REDSTONE, 32)
-                .requires(ModItems.psidust, 24)
-                .energy(6000000)
+                .requires(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get(), 16)
+                .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 16)
+                .requires(PsitweaksItems.CHAOTIC_FACTOR.get(), 16)
+                .energyPerTick(6_000L)
                 .time(600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_die_flex"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_JUMP_FLEX.get())
+                .requires(PsitweaksItems.PROGRAM_DIE_FLEX.get(), 1)
+                .requires(PsitweaksItems.ECHO_CONTROL_CIRCUIT.get(), 16)
+                .requires(PsitweaksItems.FLASHMETAL.get(), 24)
+                .requires(MekanismItems.POLONIUM_PELLET, 4)
+                .energyPerTick(100_000L)
+                .time(54_000)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_jump_flex"));
+
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_SWITCH_FLEX.get())
+                .requires(PsitweaksItems.PROGRAM_JUMP_FLEX.get(), 1)
+                .requires(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get(), 16)
+                .requires(PsitweaksItems.HEAVY_PSIMETAL.get(), 32)
+                .requires(PsitweaksItems.PELLET_AMERICIUM.get(), 8)
+                .energyPerTick(500_000L)
+                .time(90_000)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_switch_flex"));
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
@@ -167,7 +186,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(PsitweaksItems.CHAOTIC_FACTOR.get(), 16)
                 .requires(PsitweaksItems.ANTINITE_INGOT.get(), 32)
                 .requires(PsitweaksItems.PSIONIC_ECHO.get(), 16)
-                .energy(250000000)
+                .energyPerTick(250_000L)
                 .time(24000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_material_mutation"));
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get())
@@ -175,7 +194,7 @@ public final class ProgramResearchRecipeProvider {
                 .requires(ModItems.psigem, 16)
                 .requires(PsitweaksItems.CHAOTIC_PSIMETAL.get(), 16)
                 .requires(Items.TNT, 16)
-                .energy(10000000)
+                .energyPerTick(10_000L)
                 .time(1200)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_mass_block_break"));
     }

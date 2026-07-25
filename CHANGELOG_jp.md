@@ -24,6 +24,7 @@
   + ヘビーサイメタルナゲット 
   + アンティナイトナゲット
   + プシオニックメタルブロック
+  + ヒュポスタシスジェムブロック
 
 
 - Mystical Agriculture、Mystical Agradditions、Productive Bees 連携要素を追加

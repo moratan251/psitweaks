@@ -1,0 +1,31 @@
+{
+  "type": "productivebees:centrifuge",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "ingredient": {
+    "type": "forge:nbt",
+    "item": "productivebees:configurable_honeycomb",
+    "nbt": {
+      "EntityTag": {
+        "type": "psitweaks:psitweaks_chaotic_psimetal"
+      }
+    }
+  },
+  "outputs": [
+    {
+      "chance": 20,
+      "item": {
+        "item": "psitweaks:chaotic_psimetal"
+      }
+    },
+    {
+      "item": {
+        "tag": "forge:wax"
+      }
+    }
+  ]
+}

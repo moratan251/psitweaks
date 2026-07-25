@@ -1,0 +1,29 @@
+{
+  "type": "productivebees:advanced_beehive",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "ingredient": "psitweaks:psitweaks_hypostasis_gem",
+  "results": [
+    {
+      "item": {
+        "type": "forge:nbt",
+        "item": "productivebees:configurable_honeycomb",
+        "nbt": {
+          "EntityTag": {
+            "type": "psitweaks:psitweaks_hypostasis_gem"
+          }
+        }
+      }
+    },
+    {
+      "chance": 5,
+      "item": {
+        "tag": "forge:pollen"
+      }
+    }
+  ]
+}

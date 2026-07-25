@@ -50,11 +50,18 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
                         pOutput.accept(PsitweaksItems.PSIONIC_FACTOR_EBONY.get());
                         pOutput.accept(PsitweaksItems.CHAOTIC_FACTOR.get());
+                        pOutput.accept(PsitweaksItems.PSIMETAL_NUGGET.get());
+                        pOutput.accept(PsitweaksItems.IVORY_PSIMETAL_NUGGET.get());
+                        pOutput.accept(PsitweaksItems.EBONY_PSIMETAL_NUGGET.get());
 
                         pOutput.accept(PsitweaksItems.CHAOTIC_PSIMETAL.get());
+                        pOutput.accept(PsitweaksItems.CHAOTIC_PSIMETAL_NUGGET.get());
                         pOutput.accept(PsitweaksItems.FLASHMETAL.get());
+                        pOutput.accept(PsitweaksItems.FLASHMETAL_NUGGET.get());
                         pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL.get());
+                        pOutput.accept(PsitweaksItems.HEAVY_PSIMETAL_NUGGET.get());
                         pOutput.accept(PsitweaksItems.ANTINITE_INGOT.get());
+                        pOutput.accept(PsitweaksItems.ANTINITE_NUGGET.get());
                         pOutput.accept(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get());
                         pOutput.accept(PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get());
 
@@ -148,6 +155,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_GUILLOTINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_DIE_FLEX.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_JUMP_FLEX.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_SWITCH_FLEX.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get());
 
@@ -157,6 +166,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.FLASHMETAL_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get());
+                        pOutput.accept(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get());
+                        pOutput.accept(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.PLUTONIUM_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.POLONIUM_BLOCK.get());
                         pOutput.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());

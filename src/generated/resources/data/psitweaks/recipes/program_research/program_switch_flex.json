@@ -1,0 +1,34 @@
+{
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 500000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_jump_flex"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psitweaks:hypostasis_control_circuit"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psitweaks:heavy_psimetal"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:pellet_americium"
+      }
+    }
+  ],
+  "output": {
+    "item": "psitweaks:program_switch_flex"
+  },
+  "time": 90000
+}

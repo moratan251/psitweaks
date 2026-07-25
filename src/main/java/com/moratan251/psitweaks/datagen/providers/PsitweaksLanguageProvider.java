@@ -21,6 +21,12 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         }
         addBackportedStringTranslations();
         addBackportedMatrixTranslations();
+        for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
+            add("entity.productivebees." + bee.id() + "_bee", switch (locale) {
+                case "ja_jp" -> bee.jaJp();
+                default -> bee.enUs();
+            });
+        }
     }
 
     private void addBackportedStringTranslations() {
@@ -204,6 +210,10 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
             default -> "No matching Jump Anchor found ahead";
         });
+        add("psitweaks.spellerror.safety_insufficient_psi", switch (locale) {
+            case "ja_jp" -> "安全装置が作動しました: Psiが不足しています";
+            default -> "Safety activated: not enough Psi";
+        });
         add("psitweaks.spellpiece.trick_jump", switch (locale) {
             case "ja_jp" -> "作動式: ジャンプ";
             default -> "Trick: Jump";
@@ -211,6 +221,14 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_jump.desc", switch (locale) {
             case "ja_jp" -> "対象数値が未入力、または絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。";
             default -> "If the target number is unset or its absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.";
+        });
+        add("psitweaks.spellpiece.trick_jump_flex", switch (locale) {
+            case "ja_jp" -> "作動式: 柔軟ジャンプ";
+            default -> "Trick: Flexible Jump";
+        });
+        add("psitweaks.spellpiece.trick_jump_flex.desc", switch (locale) {
+            case "ja_jp" -> "作動式: ジャンプと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。";
+            default -> "Behaves like Trick: Jump and refunds the Psi cost of spell pieces skipped by the jump.";
         });
         add("psitweaks.spellpiece.trick_switch", switch (locale) {
             case "ja_jp" -> "作動式: スイッチ";
@@ -220,6 +238,14 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "入力Stringと同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。一致するアンカーがない場合はそのまま次へ進みます。";
             default -> "Jumps forward to the next Jump Anchor with the same constant label as the input String. If no matching anchor exists, execution continues.";
         });
+        add("psitweaks.spellpiece.trick_switch_flex", switch (locale) {
+            case "ja_jp" -> "作動式: 柔軟スイッチ";
+            default -> "Trick: Flexible Switch";
+        });
+        add("psitweaks.spellpiece.trick_switch_flex.desc", switch (locale) {
+            case "ja_jp" -> "作動式: スイッチと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。";
+            default -> "Behaves like Trick: Switch and refunds the Psi cost of spell pieces skipped by the jump.";
+        });
         add("psitweaks.spellpiece.jump_anchor", switch (locale) {
             case "ja_jp" -> "ジャンプアンカー";
             default -> "Jump Anchor";
@@ -228,17 +254,45 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "作動式: ジャンプと作動式: スイッチの到達点になる、何もしない目印です。任意の定数ラベルを指定できます。";
             default -> "A no-op marker used as the destination for Trick: Jump and Trick: Switch. It can take an optional constant label.";
         });
+        add("psitweaks.spellpiece.safety", switch (locale) {
+            case "ja_jp" -> "安全装置";
+            default -> "Safety";
+        });
+        add("psitweaks.spellpiece.safety.desc", switch (locale) {
+            case "ja_jp" -> "術者の現在Psi量の合計が術式の実際のPsi消費量を下回る場合、Psiを消費する前に術式を不発にします。";
+            default -> "If the caster's current total Psi falls below the spell's actual Psi cost, the spell will fail before any Psi is consumed.";
+        });
         add("psi.book.page.psitweaks_spellpiece.trick_jump", switch (locale) {
             case "ja_jp" -> "対象数値が未入力、または絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 対象入力なしの場合は無条件の前方ジャンプとして動作します. 後方のジャンプアンカーには飛ぶことができません.";
             default -> "Jumps forward to the next Jump Anchor with the same label when the target number is unset, or when its absolute value is less than 1. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. With no target input, it acts as an unconditional forward jump. It cannot jump to Jump Anchors behind it.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.trick_jump_flex", switch (locale) {
+            case "ja_jp" -> "作動式: ジャンプと同じ条件でジャンプアンカーまでジャンプし, ジャンプによって実際にスキップしたスペルピースのPsiコストを返却します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.";
+            default -> "Uses the same conditions as Trick: Jump to jump to a Jump Anchor, then refunds the Psi cost of the spell pieces actually skipped by the jump. With high-frequency casting, the client-side Psi display may temporarily desync.";
         });
         add("psi.book.page.psitweaks_spellpiece.trick_switch", switch (locale) {
             case "ja_jp" -> "入力Stringを評価し, それと等しい定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします. 前方に一致するアンカーがない場合はエラーにならず, そのまま次のスペルピースへ進むため, default相当の処理はスイッチの直後に置いてください.  後方のジャンプアンカーには飛ぶことができません.";
             default -> "Evaluates the input String and jumps forward to the next Jump Anchor whose constant label is equal to it. If no matching anchor exists ahead, it does not error and simply continues to the next spell piece, so place the default branch immediately after the Switch. It cannot jump to Jump Anchors behind it.";
         });
+        add("psi.book.page.psitweaks_spellpiece.trick_switch_flex", switch (locale) {
+            case "ja_jp" -> "作動式: スイッチと同じ条件でジャンプアンカーまでジャンプし, ジャンプによって実際にスキップしたスペルピースのPsiコストを返却します. 一致するアンカーがない場合はそのまま実行を続け, Psiを返却しません. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.";
+            default -> "Uses the same conditions as Trick: Switch to jump to a Jump Anchor, then refunds the Psi cost of the spell pieces actually skipped by the jump. If no matching anchor exists, execution continues and no Psi is refunded. With high-frequency casting, the client-side Psi display may temporarily desync.";
+        });
         add("psi.book.page.psitweaks_spellpiece.jump_anchor", switch (locale) {
             case "ja_jp" -> "作動式: ジャンプと作動式: スイッチの到達点になる目印です.  このスペルピース自体は何もしません. 定数文字列をラベルとして入力することができます.";
             default -> "A marker used as the destination for Trick: Jump and Trick: Switch. This spell piece itself does nothing. You can input a constant String as its label.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.safety", switch (locale) {
+            case "ja_jp" -> "プログラム内のどこに配置しても効果を発揮します. Psi消費直前に、術式の実際のPsi消費量と、術者の現在PsiおよびCADバッテリー内Psiの合計を比較します. 術者のPsi量が不足している場合はPsiを消費せずに術式を中止します.";
+            default -> "It works effectively no matter where it is placed within the program. Immediately before Psi is consumed, it compares the spell’s actual Psi consumption with the total of the caster’s current Psi and the Psi in the CAD battery. If the caster’s Psi is insufficient, the spell is canceled without consuming any Psi.";
+        });
+        add("item.psitweaks.program_jump_flex", switch (locale) {
+            case "ja_jp" -> "プログラム: 柔軟ジャンプ";
+            default -> "Program: Flexible Jump";
+        });
+        add("item.psitweaks.program_switch_flex", switch (locale) {
+            case "ja_jp" -> "プログラム: 柔軟スイッチ";
+            default -> "Program: Flexible Switch";
         });
         add("psitweaks.spellpiece.trick_store_value", switch (locale) {
             case "ja_jp" -> "作動式: 値を保存";
@@ -1041,10 +1095,16 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.psionic_factor_ivory", "Ivory Psionic Factor");
         add("item.psitweaks.psionic_factor_ebony", "Ebony Psionic Factor");
         add("item.psitweaks.chaotic_factor", "Chaotic Factor");
+        add("item.psitweaks.psimetal_nugget", "Psimetal Nugget");
+        add("item.psitweaks.ivory_psimetal_nugget", "Ivory Psimetal Nugget");
+        add("item.psitweaks.ebony_psimetal_nugget", "Ebony Psimetal Nugget");
         add("item.psitweaks.chaotic_psimetal", "Chaotic Psimetal Ingot");
+        add("item.psitweaks.chaotic_psimetal_nugget", "Chaotic Psimetal Nugget");
         add("item.psitweaks.flashmetal", "Flashmetal Ingot");
+        add("item.psitweaks.flashmetal_nugget", "Flashmetal Nugget");
         add("item.psitweaks.unrefined_flashmetal", " Unrefined Flashmetal");
         add("item.psitweaks.heavy_psimetal", "Heavy Psimetal Ingot");
+        add("item.psitweaks.heavy_psimetal_nugget", "Heavy Psimetal Nugget");
         add("item.psitweaks.raw_antinite", "Raw Antinite");
         add("item.psitweaks.shard_antinite", "Antinite Shard");
         add("item.psitweaks.crystal_antinite", "Antinite Crystal");
@@ -1052,6 +1112,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.dirty_dust_antinite", "Dirty Antinite Dust");
         add("item.psitweaks.antinite_dust", "Antinite Dust");
         add("item.psitweaks.antinite_ingot", "Antinite Ingot");
+        add("item.psitweaks.antinite_nugget", "Antinite Nugget");
         add("item.psitweaks.psycheonic_metal_ingot", "Psycheonic Metal Ingot");
         add("item.psitweaks.psycheonic_metal_nugget", "Psycheonic Metal Nugget");
         add("item.psitweaks.cad_assembly_alloy_psion", "Psionic Alloy CAD Assembly");
@@ -1121,6 +1182,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("block.psitweaks.polonium_block", "Polonium Block");
         add("block.psitweaks.raw_antinite_block", "Raw Antinite Block");
         add("block.psitweaks.spellmachinery_casing", "Spellmachinery Casing");
+        add("block.psitweaks.psycheonic_metal_block", "Psycheonic Metal Block");
+        add("block.psitweaks.hypostasis_gem_block", "Hypostasis Gem Block");
         add("block.psitweaks.sculk_eroder", "Sculk Eroder");
         add("block.psitweaks.material_mutator", "Material Mutator");
         add("block.psitweaks.psionic_generator", "Psi-Link Generator");
@@ -1129,7 +1192,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.program_researcher", "Program Research Table");
         add("jei.psitweaks.program_research", "Program Research");
         add("jei.psitweaks.material_mutation", "Material Mutation");
-        add("jei.psitweaks.program_research.energy", "Energy: %s FE");
+        add("jei.psitweaks.program_research.energy", "Energy usage: %s FE/t");
         add("jei.psitweaks.program_research.time", "Time: %s min %s sec");
         add("container.psitweaks.sculk_eroder", "Sculk Eroder");
         add("container.psitweaks.material_mutator", "Material Mutator");
@@ -1384,7 +1447,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_changes.0", "Installing $(thing)Psi: Tweaks And Additions$(0) applies several adjustments to improve QOL.$(p)Psi is no longer reduced when you take damage, and the Psi regeneration cooldown after casting is removed.$(p)In the Spell Programmer screen, spell pieces can be searched in English regardless of the current language setting.");
         add("psi.book.entry.psitweaks_research", "Research");
         add("psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed.");
-        add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy cost, and processing time.");
+        add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy usage per tick, and processing time.");
         add("psi.book.page.psitweaks_research.no_mekanism", "The Program Research Table requires $(thing)Mekanism$(0). Without Mekanism, program items can only be obtained through fallback crafting recipes or by duplicating an existing program.");
         add("psi.book.entry.psitweaks_magician", "Magician");
         add("psi.book.page.psitweaks_magician.0", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades.");
@@ -1405,7 +1468,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_machines.1", "These machines are the main entry points for research, mutation, Sculk processing, and Psi-to-energy conversion.");
         add("psi.book.page.psitweaks_machines.2", "The $(l:psitweaks_machines/psionic_generator)$(o)$(item)Psi-Link Generator$(0)$(/l) links to its owner. When enabled, loaded, and the owner is online, it consumes that player's Psi and produces energy for the machine's buffer.$(p)The rate is set in the GUI. More Psi per tick means more power, but it also drains the owner faster.");
         add("psi.book.page.psitweaks_machine.cad_disassembler", "A workbench for disassembling CADs and recovering their parts. Sneak-right-click it with a CAD to break the CAD into its installed components and loaded spell bullets.$(p)Use it when replacing CAD bodies or salvaging parts from old setups.");
-        add("psi.book.page.psitweaks_machine.program_researcher", "A powered research table for producing PsiTweaks program items. Put the required ingredients in the input slots and supply FE; completed research outputs the program item.$(p)JEI shows each research recipe's energy cost and time.");
+        add("psi.book.page.psitweaks_machine.program_researcher", "A powered research table for producing PsiTweaks program items. Put the required ingredients in the input slots and supply FE; completed research outputs the program item.$(p)JEI shows each research recipe's energy usage per tick and time.");
         add("psi.book.page.psitweaks_machine.sculk_eroder", "A machine that corrodes stone, dirt, sand, and related block items into Sculk outputs.$(p)Use it when you need Sculk materials without relying on natural spread.");
         add("psi.book.page.psitweaks_machine.material_mutator", "A Mekanism injecting-style machine that performs material mutation with $(item)Psionic Echo Gas$(0) and energy.$(p)It automates mutations that can also be produced by $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)Trick: Material Mutation$(0)$(/l), such as $(l:components/psitweaks_jade)Jade$(/l) and $(l:components/psitweaks_hypostasis_gem)Hypostasis Gems$(/l).");
         add("psi.book.page.psitweaks_machine.psionic_generator", "A generator that links to its owner and converts that player's Psi into energy while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Higher consumption gives higher output and drains the owner faster.");
@@ -1556,10 +1619,16 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.psionic_factor_ivory", "偏陽サイオニック因子");
         add("item.psitweaks.psionic_factor_ebony", "偏陰サイオニック因子");
         add("item.psitweaks.chaotic_factor", "カオティック因子");
+        add("item.psitweaks.psimetal_nugget", "サイメタルナゲット");
+        add("item.psitweaks.ivory_psimetal_nugget", "アイボリーサイメタルナゲット");
+        add("item.psitweaks.ebony_psimetal_nugget", "エボニーサイメタルナゲット");
         add("item.psitweaks.chaotic_psimetal", "カオティックサイメタルインゴット");
+        add("item.psitweaks.chaotic_psimetal_nugget", "カオティックサイメタルナゲット");
         add("item.psitweaks.flashmetal", "フラッシュメタルインゴット");
+        add("item.psitweaks.flashmetal_nugget", "フラッシュメタルナゲット");
         add("item.psitweaks.unrefined_flashmetal", "未精製フラッシュメタル");
         add("item.psitweaks.heavy_psimetal", "ヘビーサイメタルインゴット");
+        add("item.psitweaks.heavy_psimetal_nugget", "ヘビーサイメタルナゲット");
         add("item.psitweaks.raw_antinite", "アンティナイトの原石");
         add("item.psitweaks.shard_antinite", "アンティナイトの欠片");
         add("item.psitweaks.crystal_antinite", "アンティナイトの結晶");
@@ -1567,6 +1636,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.dirty_dust_antinite", "汚れたアンティナイトの粉");
         add("item.psitweaks.antinite_dust", "アンティナイトの粉");
         add("item.psitweaks.antinite_ingot", "アンティナイトインゴット");
+        add("item.psitweaks.antinite_nugget", "アンティナイトナゲット");
         add("item.psitweaks.psycheonic_metal_ingot", "プシオニックメタルインゴット");
         add("item.psitweaks.psycheonic_metal_nugget", "プシオニックメタルナゲット");
         add("item.psitweaks.cad_assembly_alloy_psion", "サイオニック合金のCAD素体");
@@ -1636,6 +1706,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("block.psitweaks.polonium_block", "ポロニウムブロック");
         add("block.psitweaks.raw_antinite_block", "アンティナイトの原石ブロック");
         add("block.psitweaks.spellmachinery_casing", "魔導機構ケーシング");
+        add("block.psitweaks.psycheonic_metal_block", "プシオニックメタルブロック");
+        add("block.psitweaks.hypostasis_gem_block", "ヒュポスタシスジェムブロック");
         add("block.psitweaks.sculk_eroder", "スカルク侵食室");
         add("block.psitweaks.material_mutator", "物質変成機");
         add("block.psitweaks.psionic_generator", "サイリンク発電機");
@@ -1644,7 +1716,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.program_researcher", "プログラム研究台");
         add("jei.psitweaks.program_research", "プログラム研究");
         add("jei.psitweaks.material_mutation", "物質変成");
-        add("jei.psitweaks.program_research.energy", "消費電力: %s FE");
+        add("jei.psitweaks.program_research.energy", "消費電力: %s FE/t");
         add("jei.psitweaks.program_research.time", "研究時間: %s分 %s秒");
         add("message.psitweaks.cad_disassembler.unsupported_tic_cad", "このTiCCADは安全に分解できませんでした");
         add("message.psitweaks.global_traveler.linked", "Global Travelerを座標 (%s, %s, %s) のインベントリにリンクしました");
@@ -1871,7 +1943,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_changes.0", "$(thing)Psi: Tweaks And Additions$(0) を導入することによって QOL を改善するためのいくつかの調整が加えられます.$(p)ダメージを受けた際に Psi量 が減少しなくなり, 詠唱時の Psi回復クールタイムも撤廃されます.$(p)スペルプログラム画面では, 現在の設定言語に関わらず英語でスペルピースを検索することができます.");
         add("psi.book.entry.psitweaks_research", "研究");
         add("psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません).");
-        add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, 消費電力, 処理時間は JEI で確認できます.");
+        add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, tickあたりの消費電力, 処理時間は JEI で確認できます.");
         add("psi.book.page.psitweaks_research.no_mekanism", "プログラム研究台を利用するには $(thing)Mekanism$(0) が必要です. Mekanism未導入時は, 代替クラフトレシピまたは既存プログラムの複製によってプログラムアイテムを入手できます.");
         add("psi.book.entry.psitweaks_magician", "魔法師");
         add("psi.book.page.psitweaks_magician.0", "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. Psi機械を扱う村人であり, 魔法師向けの素材や強化装備と関係します.");
@@ -1892,7 +1964,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_machines.1", "これらの機械は, 研究, 物質変成, スカルク処理, Psiからエネルギーへの変換の入口になります.");
         add("psi.book.page.psitweaks_machines.2", "$(l:psitweaks_machines/psionic_generator)$(o)$(item)サイリンク発電機$(0)$(/l) は所有者にリンクします. 有効化され, チャンクが読み込まれ, 所有者がオンラインのとき, そのプレイヤーのPsiを消費して内部バッファへエネルギーを生成します.$(p)発電レートはGUIで設定できます. tickあたりのPsi消費を増やすほど出力も増えますが, 所有者のPsiも速く減ります.");
         add("psi.book.page.psitweaks_machine.cad_disassembler", "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.$(p)CAD素体を交換するときや, 古い構成から部品を回収したいときに使います.");
-        add("psi.book.page.psitweaks_machine.program_researcher", "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究の消費電力と時間はJEIで確認できます.");
+        add("psi.book.page.psitweaks_machine.program_researcher", "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究のtickあたりの消費電力と時間はJEIで確認できます.");
         add("psi.book.page.psitweaks_machine.sculk_eroder", "石, 土, 砂系などのブロックアイテムをスカルク系の出力へ侵食加工する機械です.$(p)自然なスカルク伝播に頼らず, スカルク素材を得たいときに使います.");
         add("psi.book.page.psitweaks_machine.material_mutator", "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます.");
         add("psi.book.page.psitweaks_machine.psionic_generator", "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.");

@@ -1,0 +1,14 @@
+{
+  "type": "productivebees:bee_breeding",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "offspring": [
+    "psitweaks:psi_ebony_psimetal"
+  ],
+  "parent1": "psitweaks:psi_psimetal",
+  "parent2": "productivebees:coal"
+}

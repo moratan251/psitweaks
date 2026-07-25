@@ -1,0 +1,47 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "psitweaks:program_research",
+        "energy_per_tick": 100000,
+        "inputs": [
+          {
+            "count": 1,
+            "ingredient": {
+              "item": "psitweaks:program_die_flex"
+            }
+          },
+          {
+            "count": 16,
+            "ingredient": {
+              "item": "psitweaks:echo_control_circuit"
+            }
+          },
+          {
+            "count": 24,
+            "ingredient": {
+              "item": "psitweaks:flashmetal"
+            }
+          },
+          {
+            "count": 4,
+            "ingredient": {
+              "item": "mekanism:pellet_polonium"
+            }
+          }
+        ],
+        "output": {
+          "item": "psitweaks:program_jump_flex"
+        },
+        "time": 54000
+      }
+    }
+  ]
+}

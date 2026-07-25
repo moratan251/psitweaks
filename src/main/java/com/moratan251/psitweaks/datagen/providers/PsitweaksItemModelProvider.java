@@ -39,6 +39,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "cad_assembly_psycheonic_metal",
             "chaotic_factor",
             "chaotic_psimetal",
+            "chaotic_psimetal_nugget",
             "clump_antinite",
             "crystal_antinite",
             "curios_controller",
@@ -54,12 +55,15 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "flash_charm",
             "flash_ring_active",
             "flashmetal",
+            "flashmetal_nugget",
             "heavy_psimetal",
+            "heavy_psimetal_nugget",
             "heavy_psimetal_scrap",
             "hypostasis_control_circuit",
             "hypostasis_gem",
             "incomplete_heavy_psimetal_assembly",
             "interference_range_extender",
+            "ivory_psimetal_nugget",
             "jade",
             "magatama",
             "magicians_brain",
@@ -82,6 +86,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "program_die_flex",
             "program_flight",
             "program_guillotine",
+            "program_jump_flex",
             "program_material_mutation",
             "program_mass_block_break",
             "program_meteor_line",
@@ -90,12 +95,14 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "program_radiation_filter",
             "program_radiation_injection",
             "program_supreme_infusion",
+            "program_switch_flex",
             "program_time_accelerate",
             "psionic_control_circuit",
             "psionic_echo",
             "psionic_factor",
             "psionic_factor_ebony",
             "psionic_factor_ivory",
+            "psimetal_nugget",
             "psycheonic_metal_ingot",
             "psycheonic_metal_nugget",
             "raw_antinite",
@@ -124,7 +131,9 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "transcendent_spell_bullet_loop_active",
             "transcendent_spell_bullet_mine_active",
             "transcendent_spell_bullet_projectile_active",
-            "unrefined_flashmetal"
+            "unrefined_flashmetal",
+            "antinite_nugget",
+            "ebony_psimetal_nugget"
     };
 
     private static final String[] ACTIVE_ITEMS = {
@@ -237,6 +246,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             case "program_die_flex" -> modLoc("item/program_trick_die_flex");
             case "program_flight" -> modLoc("item/program__trick_flight");
             case "program_guillotine" -> modLoc("item/program_trick_guillotine");
+            case "program_jump_flex" -> modLoc("item/program_trick_jump_flex");
             case "program_material_mutation" -> modLoc("item/program_trick_material_mutation");
             case "program_mass_block_break" -> modLoc("item/program_trick_mass_block_break");
             case "program_meteor_line" -> modLoc("item/program_trick_meteor_line");
@@ -245,6 +255,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             case "program_radiation_filter" -> modLoc("item/program_trick_radiation_filter");
             case "program_radiation_injection" -> modLoc("item/program_trick_radiation_injection");
             case "program_supreme_infusion" -> modLoc("item/program_trick_supreme_infusion");
+            case "program_switch_flex" -> modLoc("item/program_trick_switch_flex");
             case "program_time_accelerate" -> modLoc("item/program_trick_time_accelerate");
             case "psycheonic_metal_ingot" -> modLoc("item/psycheonic_metal");
             case "psycheonic_metal_nugget" -> modLoc("item/psycheonic_nugget");

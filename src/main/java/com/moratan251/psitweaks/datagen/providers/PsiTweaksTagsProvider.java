@@ -34,6 +34,11 @@ public final class PsiTweaksTagsProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
+            for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
+                add(blockTag("psitweaks", "productivebees/flowers/" + bee.id()),
+                        entries(bee.flowerBlockId()));
+            }
+
             add(blockTag("forge", "needs_netherite_tool"), entries(
                     "psitweaks:ore_antinite",
                     "psitweaks:antinite_block",
@@ -46,6 +51,8 @@ public final class PsiTweaksTagsProvider {
                     "#forge:storage_blocks/chaotic_psimetal",
                     "#forge:storage_blocks/flashmetal",
                     "#forge:storage_blocks/heavy_psimetal",
+                    "#forge:storage_blocks/psycheonic_metal",
+                    "#forge:storage_blocks/hypostasis_gem",
                     "#forge:storage_blocks/plutonium",
                     "#forge:storage_blocks/polonium",
                     "#forge:storage_blocks/raw_antinite"
@@ -54,6 +61,8 @@ public final class PsiTweaksTagsProvider {
             add(blockTag("forge", "storage_blocks/chaotic_psimetal"), entries("psitweaks:chaotic_psimetal_block"));
             add(blockTag("forge", "storage_blocks/flashmetal"), entries("psitweaks:flashmetal_block"));
             add(blockTag("forge", "storage_blocks/heavy_psimetal"), entries("psitweaks:heavy_psimetal_block"));
+            add(blockTag("forge", "storage_blocks/psycheonic_metal"), entries("psitweaks:psycheonic_metal_block"));
+            add(blockTag("forge", "storage_blocks/hypostasis_gem"), entries("psitweaks:hypostasis_gem_block"));
             add(blockTag("forge", "storage_blocks/plutonium"), entries("psitweaks:plutonium_block"));
             add(blockTag("forge", "storage_blocks/polonium"), entries("psitweaks:polonium_block"));
             add(blockTag("forge", "storage_blocks/psimetal"), entries("psi:psimetal_block"));
@@ -79,6 +88,8 @@ public final class PsiTweaksTagsProvider {
                     "psitweaks:chaotic_psimetal_block",
                     "psitweaks:flashmetal_block",
                     "psitweaks:heavy_psimetal_block",
+                    "psitweaks:psycheonic_metal_block",
+                    "psitweaks:hypostasis_gem_block",
                     "psitweaks:plutonium_block",
                     "psitweaks:polonium_block",
                     "psitweaks:raw_antinite_block",
@@ -87,7 +98,11 @@ public final class PsiTweaksTagsProvider {
                     "psitweaks:material_mutator",
                     "psitweaks:psionic_generator"
             ));
-            add(BlockTags.NEEDS_DIAMOND_TOOL, entries("psitweaks:heavy_psimetal_block"));
+            add(BlockTags.NEEDS_DIAMOND_TOOL, entries(
+                    "psitweaks:heavy_psimetal_block",
+                    "psitweaks:psycheonic_metal_block",
+                    "psitweaks:hypostasis_gem_block"
+            ));
             add(BlockTags.NEEDS_IRON_TOOL, entries(
                     "psitweaks:chaotic_psimetal_block",
                     "psitweaks:flashmetal_block",
@@ -146,6 +161,23 @@ public final class PsiTweaksTagsProvider {
             add(itemTag("forge", "ingots/flashmetal"), entries("psitweaks:flashmetal"));
             add(itemTag("forge", "ingots/heavy_psimetal"), entries("psitweaks:heavy_psimetal"));
             add(itemTag("forge", "ingots/psycheonic_metal"), entries("psitweaks:psycheonic_metal_ingot"));
+            add(itemTag("forge", "nuggets"), entries(
+                    "#forge:nuggets/psimetal",
+                    "#forge:nuggets/ivory_psimetal",
+                    "#forge:nuggets/ebony_psimetal",
+                    "#forge:nuggets/chaotic_psimetal",
+                    "#forge:nuggets/flashmetal",
+                    "#forge:nuggets/heavy_psimetal",
+                    "#forge:nuggets/antinite",
+                    "#forge:nuggets/psycheonic_metal"
+            ));
+            add(itemTag("forge", "nuggets/psimetal"), entries("psitweaks:psimetal_nugget"));
+            add(itemTag("forge", "nuggets/ivory_psimetal"), entries("psitweaks:ivory_psimetal_nugget"));
+            add(itemTag("forge", "nuggets/ebony_psimetal"), entries("psitweaks:ebony_psimetal_nugget"));
+            add(itemTag("forge", "nuggets/chaotic_psimetal"), entries("psitweaks:chaotic_psimetal_nugget"));
+            add(itemTag("forge", "nuggets/flashmetal"), entries("psitweaks:flashmetal_nugget"));
+            add(itemTag("forge", "nuggets/heavy_psimetal"), entries("psitweaks:heavy_psimetal_nugget"));
+            add(itemTag("forge", "nuggets/antinite"), entries("psitweaks:antinite_nugget"));
             add(itemTag("forge", "nuggets/psycheonic_metal"), entries("psitweaks:psycheonic_metal_nugget"));
             add(itemTag("forge", "ores"), entries("#forge:ores/antinite"));
             add(itemTag("forge", "ores/antinite"), entries("psitweaks:ore_antinite"));
@@ -156,6 +188,8 @@ public final class PsiTweaksTagsProvider {
                     "#forge:storage_blocks/chaotic_psimetal",
                     "#forge:storage_blocks/flashmetal",
                     "#forge:storage_blocks/heavy_psimetal",
+                    "#forge:storage_blocks/psycheonic_metal",
+                    "#forge:storage_blocks/hypostasis_gem",
                     "#forge:storage_blocks/plutonium",
                     "#forge:storage_blocks/polonium",
                     "#forge:storage_blocks/raw_antinite"
@@ -164,6 +198,8 @@ public final class PsiTweaksTagsProvider {
             add(itemTag("forge", "storage_blocks/chaotic_psimetal"), entries("psitweaks:chaotic_psimetal_block"));
             add(itemTag("forge", "storage_blocks/flashmetal"), entries("psitweaks:flashmetal_block"));
             add(itemTag("forge", "storage_blocks/heavy_psimetal"), entries("psitweaks:heavy_psimetal_block"));
+            add(itemTag("forge", "storage_blocks/psycheonic_metal"), entries("psitweaks:psycheonic_metal_block"));
+            add(itemTag("forge", "storage_blocks/hypostasis_gem"), entries("psitweaks:hypostasis_gem_block"));
             add(itemTag("forge", "storage_blocks/plutonium"), entries("psitweaks:plutonium_block"));
             add(itemTag("forge", "storage_blocks/polonium"), entries("psitweaks:polonium_block"));
             add(itemTag("forge", "storage_blocks/psimetal"), entries("psi:psimetal_block"));

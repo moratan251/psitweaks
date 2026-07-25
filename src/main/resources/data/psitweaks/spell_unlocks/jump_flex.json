@@ -1,0 +1,6 @@
+{
+  "command_id": "jump_flex",
+  "piece": "psitweaks:trick_jump_flex",
+  "unlock_item": "psitweaks:program_jump_flex",
+  "unlock_tag": "psitweaks.unlock.trick_jump_flex"
+}

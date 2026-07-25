@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy": 10000000,
+  "energy_per_tick": 10000,
   "inputs": [
     {
       "count": 1,

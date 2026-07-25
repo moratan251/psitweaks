@@ -1,0 +1,6 @@
+{
+  "command_id": "switch_flex",
+  "piece": "psitweaks:trick_switch_flex",
+  "unlock_item": "psitweaks:program_switch_flex",
+  "unlock_tag": "psitweaks.unlock.trick_switch_flex"
+}

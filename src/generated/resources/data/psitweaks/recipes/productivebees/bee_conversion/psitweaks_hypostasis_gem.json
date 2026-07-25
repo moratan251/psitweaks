@@ -1,0 +1,14 @@
+{
+  "type": "productivebees:bee_conversion",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "item": {
+    "item": "psitweaks:hypostasis_gem"
+  },
+  "result": "psitweaks:psitweaks_hypostasis_gem",
+  "source": "psitweaks:psitweaks_antinite"
+}

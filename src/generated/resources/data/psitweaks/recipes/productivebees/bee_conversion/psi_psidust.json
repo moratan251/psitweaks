@@ -1,0 +1,14 @@
+{
+  "type": "productivebees:bee_conversion",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "item": {
+    "item": "psi:psidust"
+  },
+  "result": "psitweaks:psi_psidust",
+  "source": "productivebees:redstone"
+}

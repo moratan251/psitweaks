@@ -103,7 +103,7 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
         int seconds = totalSeconds % 60;
         graphics.drawString(
                 font,
-                Component.translatable("jei.psitweaks.program_research.energy", recipe.getEnergy()),
+                Component.translatable("jei.psitweaks.program_research.energy", recipe.getEnergyPerTick()),
                 8,
                 68,
                 0x202020,

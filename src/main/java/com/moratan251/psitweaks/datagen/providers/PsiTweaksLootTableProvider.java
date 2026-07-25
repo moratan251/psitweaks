@@ -49,6 +49,8 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         dropSelf(futures, output, PsitweaksBlocks.POLONIUM_BLOCK.get());
         dropSelf(futures, output, PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());
         dropSelf(futures, output, PsitweaksBlocks.SPELLMACHINERY_CASING.get());
+        dropSelf(futures, output, PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get());
+        dropSelf(futures, output, PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get());
 
         save(futures, output, PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(), machineDrop(
                 PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(),

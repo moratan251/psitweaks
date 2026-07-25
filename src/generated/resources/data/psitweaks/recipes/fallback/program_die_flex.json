@@ -15,28 +15,28 @@
       "item": "psitweaks:program_blank"
     },
     {
-      "item": "minecraft:comparator"
+      "item": "psitweaks:psionic_control_circuit"
     },
     {
-      "item": "minecraft:comparator"
+      "item": "psitweaks:psionic_control_circuit"
     },
     {
-      "item": "minecraft:redstone"
+      "item": "psitweaks:psionic_control_circuit"
     },
     {
-      "item": "minecraft:redstone"
+      "item": "psitweaks:flashmetal"
     },
     {
-      "item": "minecraft:redstone"
+      "item": "psitweaks:flashmetal"
     },
     {
-      "item": "psi:psidust"
+      "item": "psitweaks:flashmetal"
     },
     {
-      "item": "psi:psidust"
+      "item": "psitweaks:chaotic_factor"
     },
     {
-      "item": "psi:psidust"
+      "item": "psitweaks:chaotic_factor"
     }
   ],
   "result": {

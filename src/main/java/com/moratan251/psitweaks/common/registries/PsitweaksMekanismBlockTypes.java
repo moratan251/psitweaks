@@ -32,7 +32,7 @@ public class PsitweaksMekanismBlockTypes {
 
     private static final FloatingLong SCULK_ERODER_STORAGE = FloatingLong.createConst(20000);
     private static final FloatingLong PROGRAM_RESEARCHER_STORAGE =
-            IEnergyConversionHelper.INSTANCE.feConversion().convertFrom(1_000_000L);
+            IEnergyConversionHelper.INSTANCE.feConversion().convertFrom(10_000_000L);
     private static final FloatingLong MATERIAL_MUTATOR_STORAGE = FloatingLong.createConst(4_000_000);
     private static final FloatingLong PSIONIC_GENERATOR_MAX_OUTPUT = FloatingLong.createConst(6_250);
     private static final ILangEntry DESCRIPTION_SCULK_ERODER = () -> "description.psitweaks.sculk_eroder";

@@ -22,7 +22,7 @@ public class ProgramResearchRecipeBuilder {
 
     private final ItemStack result;
     private final List<RequiredInputData> inputs = new ArrayList<>();
-    private int energy = 0;
+    private long energyPerTick = 0;
     private int time = 200;
 
     private ProgramResearchRecipeBuilder(ItemStack result) {
@@ -60,11 +60,11 @@ public class ProgramResearchRecipeBuilder {
         return this;
     }
 
-    public ProgramResearchRecipeBuilder energy(int energy) {
-        if (energy < 0) {
-            throw new IllegalArgumentException("Program research energy must be >= 0");
+    public ProgramResearchRecipeBuilder energyPerTick(long energyPerTick) {
+        if (energyPerTick < 0) {
+            throw new IllegalArgumentException("Program research energy_per_tick must be >= 0");
         }
-        this.energy = energy;
+        this.energyPerTick = energyPerTick;
         return this;
     }
 
@@ -83,13 +83,13 @@ public class ProgramResearchRecipeBuilder {
         if (result.isEmpty()) {
             throw new IllegalStateException("Program research recipe output cannot be empty: " + recipeId);
         }
-        consumer.accept(new Result(recipeId, result, List.copyOf(inputs), energy, time));
+        consumer.accept(new Result(recipeId, result, List.copyOf(inputs), energyPerTick, time));
     }
 
     private record RequiredInputData(Ingredient ingredient, int count, boolean consume) {
     }
 
-    private record Result(ResourceLocation id, ItemStack result, List<RequiredInputData> inputs, int energy,
+    private record Result(ResourceLocation id, ItemStack result, List<RequiredInputData> inputs, long energyPerTick,
                           int time) implements FinishedRecipe {
 
         @Override
@@ -119,7 +119,7 @@ public class ProgramResearchRecipeBuilder {
             }
             json.add("output", outputObject);
 
-            json.addProperty("energy", energy);
+            json.addProperty("energy_per_tick", energyPerTick);
             json.addProperty("time", time);
         }
 

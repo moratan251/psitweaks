@@ -1035,6 +1035,22 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_hypostasis_control_circuit", has(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "spellmachinery_casing"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get())
+                .define('I', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psycheonic_metal_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get())
+                .define('G', PsitweaksItems.HYPOSTASIS_GEM.get())
+                .pattern("GGG")
+                .pattern("GGG")
+                .pattern("GGG")
+                .unlockedBy("has_hypostasis_gem", has(PsitweaksItems.HYPOSTASIS_GEM.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "hypostasis_gem_block"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .define('N', PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get())
                 .pattern("NNN")
@@ -1082,6 +1098,24 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .requires(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
                 .unlockedBy("has_psycheonic_metal_ingot", has(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psycheonic_metal_nugget_from_ingot"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.PSYCHEONIC_METAL_INGOT.get(), 9)
+                .requires(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get())
+                .unlockedBy("has_psycheonic_metal_block", has(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psycheonic_metal_ingot_from_block"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PsitweaksItems.HYPOSTASIS_GEM.get(), 9)
+                .requires(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get())
+                .unlockedBy("has_hypostasis_gem_block", has(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "hypostasis_gem_from_block"));
+
+        addNuggetRecipes(consumer, "psimetal", PsitweaksItems.PSIMETAL_NUGGET.get(), psimetal);
+        addNuggetRecipes(consumer, "ivory_psimetal", PsitweaksItems.IVORY_PSIMETAL_NUGGET.get(), ivoryPsimetal);
+        addNuggetRecipes(consumer, "ebony_psimetal", PsitweaksItems.EBONY_PSIMETAL_NUGGET.get(), ebonyPsimetal);
+        addNuggetRecipes(consumer, "chaotic_psimetal", PsitweaksItems.CHAOTIC_PSIMETAL_NUGGET.get(), PsitweaksItems.CHAOTIC_PSIMETAL.get());
+        addNuggetRecipes(consumer, "flashmetal", PsitweaksItems.FLASHMETAL_NUGGET.get(), PsitweaksItems.FLASHMETAL.get());
+        addNuggetRecipes(consumer, "heavy_psimetal", PsitweaksItems.HEAVY_PSIMETAL_NUGGET.get(), PsitweaksItems.HEAVY_PSIMETAL.get());
+        addNuggetRecipes(consumer, "antinite", PsitweaksItems.ANTINITE_NUGGET.get(), PsitweaksItems.ANTINITE_INGOT.get());
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.IRON_INGOT, 2)
                 .requires(PsitweaksItems.PHILOSOPHERS_STONE.get())
@@ -1281,6 +1315,21 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
 
         PsiTweaksSmeltryRecipeProvider.addRecipes(consumer);
         ProgramResearchRecipeProvider.addRecipes(consumer);
+    }
+
+    private static void addNuggetRecipes(Consumer<FinishedRecipe> output, String materialId, Item nugget, Item ingot) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ingot)
+                .define('N', nugget)
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .unlockedBy("has_" + materialId + "_nugget", has(nugget))
+                .save(output, ResourceLocation.fromNamespaceAndPath("psitweaks", materialId + "_from_nuggets"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
+                .requires(ingot)
+                .unlockedBy("has_" + materialId + "_ingot", has(ingot))
+                .save(output, ResourceLocation.fromNamespaceAndPath("psitweaks", materialId + "_nugget_from_ingot"));
     }
 
 }

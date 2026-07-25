@@ -1,0 +1,14 @@
+{
+  "type": "productivebees:bee_breeding",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "offspring": [
+    "psitweaks:psitweaks_heavy_psimetal"
+  ],
+  "parent1": "psitweaks:psitweaks_flashmetal",
+  "parent2": "productivebees:netherite"
+}

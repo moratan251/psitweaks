@@ -10,7 +10,7 @@
       ],
       "recipe": {
         "type": "psitweaks:program_research",
-        "energy": 1500000000,
+        "energy_per_tick": 1500000,
         "inputs": [
           {
             "count": 1,
@@ -40,6 +40,12 @@
             "count": 4,
             "ingredient": {
               "item": "minecraft:heart_of_the_sea"
+            }
+          },
+          {
+            "count": 64,
+            "ingredient": {
+              "item": "psitweaks:psycheonic_metal_ingot"
             }
           }
         ],

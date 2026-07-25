@@ -137,8 +137,11 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), PieceOperatorTanh.class);
             PsiAPI.addPieceToGroup(PieceOperatorTanh.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "operator_tanh"), false);
             registerSpellPiece("trick_jump", PieceTrickJump.class);
+            registerSpellPiece("trick_jump_flex", PieceTrickJumpFlex.class);
             registerSpellPiece("trick_switch", PieceTrickSwitch.class);
+            registerSpellPiece("trick_switch_flex", PieceTrickSwitchFlex.class);
             registerSpellPiece("jump_anchor", PieceJumpAnchor.class);
+            registerSpellPiece("safety", PieceSafety.class);
             registerSpellPiece("trick_store_value", PieceTrickStoreValue.class);
             registerSpellPiece("selector_stored_value", PieceSelectorStoredValue.class);
             registerSpellPiece("constant_string", PieceConstantString.class);

@@ -87,6 +87,20 @@ public class PsitweaksBlocks {
                     .requiresCorrectToolForDrops()
             ));
 
+    public static final RegistryObject<Block> PSYCHEONIC_METAL_BLOCK = registerBlock("psycheonic_metal_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(10.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
+    public static final RegistryObject<Block> HYPOSTASIS_GEM_BLOCK = registerBlock("hypostasis_gem_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5.0f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()
+            ));
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

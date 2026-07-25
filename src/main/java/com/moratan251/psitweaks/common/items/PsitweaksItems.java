@@ -74,6 +74,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_GUILLOTINE = ITEMS.register("program_guillotine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_ACTIVE_AIR_MINE = ITEMS.register("program_active_air_mine", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_DIE_FLEX = ITEMS.register("program_die_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_JUMP_FLEX = ITEMS.register("program_jump_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_SWITCH_FLEX = ITEMS.register("program_switch_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MATERIAL_MUTATION = ITEMS.register("program_material_mutation", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MASS_BLOCK_BREAK = ITEMS.register("program_mass_block_break", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
@@ -90,10 +92,16 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PSIONIC_FACTOR_IVORY = ITEMS.register("psionic_factor_ivory", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> PSIONIC_FACTOR_EBONY = ITEMS.register("psionic_factor_ebony", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CHAOTIC_FACTOR = ITEMS.register("chaotic_factor", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PSIMETAL_NUGGET = ITEMS.register("psimetal_nugget", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> IVORY_PSIMETAL_NUGGET = ITEMS.register("ivory_psimetal_nugget", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> EBONY_PSIMETAL_NUGGET = ITEMS.register("ebony_psimetal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CHAOTIC_PSIMETAL = ITEMS.register("chaotic_psimetal", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHAOTIC_PSIMETAL_NUGGET = ITEMS.register("chaotic_psimetal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> UNREFINED_FLASHMETAL = ITEMS.register("unrefined_flashmetal", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FLASHMETAL = ITEMS.register("flashmetal", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> FLASHMETAL_NUGGET = ITEMS.register("flashmetal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> HEAVY_PSIMETAL = ITEMS.register("heavy_psimetal", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> HEAVY_PSIMETAL_NUGGET = ITEMS.register("heavy_psimetal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> RAW_ANTINITE = ITEMS.register("raw_antinite", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SHARD_ANTINITE = ITEMS.register("shard_antinite", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CRYSTAL_ANTINITE = ITEMS.register("crystal_antinite", () -> new Item(new Item.Properties()));
@@ -101,6 +109,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> DIRTY_DUST_ANTINITE = ITEMS.register("dirty_dust_antinite", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ANTINITE_DUST = ITEMS.register("antinite_dust", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ANTINITE_INGOT = ITEMS.register("antinite_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANTINITE_NUGGET = ITEMS.register("antinite_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> PSYCHEONIC_METAL_INGOT = ITEMS.register("psycheonic_metal_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> PSYCHEONIC_METAL_NUGGET = ITEMS.register("psycheonic_metal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ENRICHED_HYPOSTASIS = ITEMS.register("enriched_hypostasis", () -> new Item(new Item.Properties()));

@@ -31,6 +31,8 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         cubeAll(PsitweaksBlocks.POLONIUM_BLOCK.get(), "polonium_block");
         cubeAll(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get(), "raw_antinite_block");
         cubeAll(PsitweaksBlocks.SPELLMACHINERY_CASING.get(), "spellmachinery_casing");
+        cubeAll(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get(), "psycheonic_metal_block");
+        cubeAll(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get(), "hypostasis_gem_block");
 
         machine(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(), "sculk_eroder", "sculk_eroder");
         machineSingleTexture(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.getBlock(), "program_researcher");
@@ -181,6 +183,7 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
     private net.minecraft.resources.ResourceLocation blockTexture(String name) {
         return switch (name) {
             case "ore_antinite" -> modLoc("block/antinite_ore");
+            case "psycheonic_metal_block" -> modLoc("block/psycheonicmetal_block");
             default -> modLoc("block/" + name);
         };
     }

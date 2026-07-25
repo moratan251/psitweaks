@@ -1,15 +1,7 @@
 package com.moratan251.psitweaks.common.spells;
 
-import java.lang.reflect.Method;
-
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
-import vazkii.psi.api.PsiAPI;
-import vazkii.psi.api.cad.ISocketable;
-import vazkii.psi.api.spell.CompiledSpell;
+import com.moratan251.psitweaks.common.spells.util.SpellPsiRefundHelper;
 import vazkii.psi.api.spell.EnumSpellStat;
-import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
@@ -19,15 +11,9 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
-import vazkii.psi.common.item.ItemCAD;
-import vazkii.psi.common.item.ItemCircleSpellBullet;
 
 public class PieceTrickDieFlex extends PieceTrick {
     private static final double STOP_THRESHOLD = 1.0D;
-    private static final String TCONSTRUCT_MOD_ID = "tconstruct";
-    private static final String CASTING_ASSIST_EVENT_HANDLER_CLASS = "com.moratan251.psitweaks.compat.tconstruct.CastingAssistEventHandler";
-    private static final String ADJUST_COST_FOR_PLAYER_METHOD = "adjustCostForPlayer";
 
     private SpellParam<Number> target;
 
@@ -50,101 +36,9 @@ public class PieceTrickDieFlex extends PieceTrick {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         double timeVal = this.getNonnullParamValue(context, this.target).doubleValue();
         if (Math.abs(timeVal) < STOP_THRESHOLD) {
-            refundRemainingPsi(context);
+            SpellPsiRefundHelper.refundRemainingActions(context);
             context.stopped = true;
         }
         return null;
-    }
-
-    private void refundRemainingPsi(SpellContext context) {
-        if (context.caster == null || context.actions == null || context.actions.isEmpty()) {
-            return;
-        }
-
-        int remainingRawCost = calculateRemainingRawCost(context);
-        if (remainingRawCost <= 0) {
-            return;
-        }
-
-        ItemStack cad = PsiAPI.getPlayerCAD(context.caster);
-        ItemStack spellContainer = getCastingSpellContainer(context, cad);
-        int refundCost = ItemCAD.getRealCost(cad, spellContainer, remainingRawCost);
-        if (isCircleSpellBullet(spellContainer)) {
-            refundCost /= 20;
-        }
-        refundCost = applyOptionalCastingAssistAdjustment(context, refundCost);
-        if (refundCost <= 0) {
-            return;
-        }
-
-        PlayerDataHandler.get(context.caster).deductPsi(-refundCost, 0, true, true);
-    }
-
-    private int applyOptionalCastingAssistAdjustment(SpellContext context, int refundCost) {
-        if (refundCost <= 0 || context.caster == null || !ModList.get().isLoaded(TCONSTRUCT_MOD_ID)) {
-            return refundCost;
-        }
-
-        try {
-            Class<?> handlerClass = Class.forName(CASTING_ASSIST_EVENT_HANDLER_CLASS);
-            Method method = handlerClass.getMethod(ADJUST_COST_FOR_PLAYER_METHOD, Player.class, int.class);
-            Object adjustedCost = method.invoke(null, context.caster, refundCost);
-            if (adjustedCost instanceof Integer cost) {
-                return Math.max(0, cost);
-            }
-        } catch (ReflectiveOperationException ignored) {
-            return refundCost;
-        }
-
-        return refundCost;
-    }
-
-    private ItemStack getCastingSpellContainer(SpellContext context, ItemStack cad) {
-        ItemStack spellContainer = ItemStack.EMPTY;
-
-        // Prefer the tool-selected spell container (e.g. exosuit/tools).
-        if (context.tool != null && !context.tool.isEmpty() && ISocketable.isSocketable(context.tool)) {
-            spellContainer = ISocketable.socketable(context.tool).getSelectedBullet();
-        }
-
-        // Flash Ring is not socketable and may not be treated as "container" by Psi
-        if (spellContainer.isEmpty() && context.tool != null && !context.tool.isEmpty() && ISpellAcceptor.isAcceptor(context.tool)) {
-            spellContainer = context.tool;
-        }
-
-        // Fallback to CAD selected bullet.
-        if (spellContainer.isEmpty() && !cad.isEmpty() && ISocketable.isSocketable(cad)) {
-            spellContainer = ISocketable.socketable(cad).getSelectedBullet();
-        }
-
-        return spellContainer;
-    }
-
-    private boolean isCircleSpellBullet(ItemStack spellContainer) {
-        return !spellContainer.isEmpty() && spellContainer.getItem() instanceof ItemCircleSpellBullet;
-    }
-
-    private int calculateRemainingRawCost(SpellContext context) {
-        long total = 0L;
-
-        for (CompiledSpell.Action action : context.actions) {
-            SpellMetadata pieceMetadata = new SpellMetadata();
-            try {
-                action.piece.addToMetadata(pieceMetadata);
-            } catch (SpellCompilationException ignored) {
-                continue;
-            }
-
-            int pieceCost = pieceMetadata.getStat(EnumSpellStat.COST);
-            total += pieceCost;
-            if (total >= Integer.MAX_VALUE) {
-                return Integer.MAX_VALUE;
-            }
-            if (total <= Integer.MIN_VALUE) {
-                return Integer.MIN_VALUE;
-            }
-        }
-
-        return Math.max((int) total, 0);
     }
 }

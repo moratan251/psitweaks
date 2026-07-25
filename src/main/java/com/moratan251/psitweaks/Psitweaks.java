@@ -9,6 +9,8 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
+import com.moratan251.psitweaks.common.handler.SafetySpellCastHandler;
+import com.moratan251.psitweaks.common.handler.SpellPsiRefundCaptureHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
@@ -26,6 +28,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakSch
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.ProductiveBeesDataProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksFallbackRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
@@ -110,6 +113,8 @@ public class Psitweaks {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onEntityJoinLevel);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, SafetySpellCastHandler::onPreSpellCast);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, SpellPsiRefundCaptureHandler::onPreSpellCast);
         MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
 
@@ -240,6 +245,7 @@ public class Psitweaks {
         gen.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
         gen.addProvider(event.includeServer(), new PsiTweaksFallbackRecipeProvider(packOutput));
         gen.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
+        gen.addProvider(event.includeServer(), new ProductiveBeesDataProvider(packOutput));
         gen.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
         gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "en_us"));
         gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));

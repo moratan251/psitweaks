@@ -10,7 +10,7 @@
       ],
       "recipe": {
         "type": "psitweaks:program_research",
-        "energy": 40000000,
+        "energy_per_tick": 40000,
         "inputs": [
           {
             "count": 1,
