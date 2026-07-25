@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mysticalagriculture"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "E": {
+            "item": "mysticalagriculture:psidust_essence"
+          }
+        },
+        "pattern": [
+          "EEE",
+          "E E",
+          "EEE"
+        ],
+        "result": {
+          "count": 12,
+          "item": "psi:psidust"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

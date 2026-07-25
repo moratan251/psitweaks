@@ -32,6 +32,7 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         cubeAll(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get(), "raw_antinite_block");
         cubeAll(PsitweaksBlocks.SPELLMACHINERY_CASING.get(), "spellmachinery_casing");
         cubeAll(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get(), "psycheonic_metal_block");
+        cubeAll(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get(), "psycheonic_metal_crux");
         cubeAll(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get(), "hypostasis_gem_block");
 
         machine(PsitweaksMekanismBlocks.SCULK_ERODER.getBlock(), "sculk_eroder", "sculk_eroder");
@@ -184,6 +185,7 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
         return switch (name) {
             case "ore_antinite" -> modLoc("block/antinite_ore");
             case "psycheonic_metal_block" -> modLoc("block/psycheonicmetal_block");
+            case "psycheonic_metal_crux" -> modLoc("block/pycheonicmetal_crux");
             default -> modLoc("block/" + name);
         };
     }

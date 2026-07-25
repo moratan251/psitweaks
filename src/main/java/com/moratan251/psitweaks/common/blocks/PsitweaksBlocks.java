@@ -94,6 +94,12 @@ public class PsitweaksBlocks {
                     .requiresCorrectToolForDrops()
             ));
 
+    public static final RegistryObject<Block> PSYCHEONIC_METAL_CRUX = registerBlock("psycheonic_metal_crux",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5.0f, 10.0f)
+                    .sound(SoundType.STONE)
+            ));
+
     public static final RegistryObject<Block> HYPOSTASIS_GEM_BLOCK = registerBlock("hypostasis_gem_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(5.0f)

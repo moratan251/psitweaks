@@ -28,6 +28,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakSch
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
+import com.moratan251.psitweaks.datagen.providers.MysticalAgricultureModelProvider;
 import com.moratan251.psitweaks.datagen.providers.ProductiveBeesDataProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksFallbackRecipeProvider;
@@ -251,6 +252,12 @@ public class Psitweaks {
         gen.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
         gen.addProvider(event.includeClient(), new PsitweaksItemModelProvider(packOutput, fileHelper));
         gen.addProvider(event.includeClient(), new PsitweaksBlockStateProvider(packOutput, fileHelper));
+        if (event.includeClient() && ModList.get().isLoaded("mysticalagriculture")) {
+            gen.addProvider(true, new MysticalAgricultureModelProvider(
+                    packOutput,
+                    ModList.get().isLoaded("mysticalagradditions")
+            ));
+        }
         PsiTweaksTagsProvider.Blocks blockTags = new PsiTweaksTagsProvider.Blocks(packOutput, event.getLookupProvider(), fileHelper);
         gen.addProvider(event.includeServer(), blockTags);
         gen.addProvider(event.includeServer(), new PsiTweaksTagsProvider.Items(packOutput, event.getLookupProvider(), blockTags.contentsGetter(), fileHelper));

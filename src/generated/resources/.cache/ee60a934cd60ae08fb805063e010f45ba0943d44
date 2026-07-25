@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-25T13:53:06.5947636	Tags for minecraft:block mod id psitweaks
+// 1.20.1	2026-07-25T23:58:42.9845691	Tags for minecraft:block mod id psitweaks
 c5affe723fcbf6c8bf68162b13189c5f210f37f0 data/forge/tags/blocks/needs_netherite_tool.json
 f8b96087df3a69e65f5ab7b59affd10b8fc2b0b4 data/forge/tags/blocks/ores.json
 39774d70224c5befc396600acda04217838272fe data/forge/tags/blocks/ores/antinite.json
@@ -13,9 +13,10 @@ f14e71405611eedad9ec082ae90de319ec156129 data/forge/tags/blocks/storage_blocks/p
 03ec443df283c8c570e54a693c22e7fc2ac2ec42 data/forge/tags/blocks/storage_blocks/psimetal.json
 6ebdbe7037db5115698f6b78a0f4dfbbabf094b3 data/forge/tags/blocks/storage_blocks/psycheonic_metal.json
 d7096d425f2c3a70d69b3225cb4012f8e0ce2998 data/forge/tags/blocks/storage_blocks/raw_antinite.json
-0a4fd8f35662f9ba574e8b082437ec74ae545227 data/minecraft/tags/blocks/mineable/pickaxe.json
+1c7557b4008fbe4fa716ab8792d8bed66f3d04d9 data/minecraft/tags/blocks/mineable/pickaxe.json
 cd434124a7ba58e2dc250839dc0b267b7e0aadf7 data/minecraft/tags/blocks/needs_diamond_tool.json
 ad75f7bce216e548880390ee50eec3d9fba331b2 data/minecraft/tags/blocks/needs_iron_tool.json
+3b46cea5cf1c942aa7a0caf39c2d39345218c56d data/minecraft/tags/blocks/needs_stone_tool.json
 be15197d98dabaef0ecaa3da52049363d8417137 data/psitweaks/tags/blocks/productivebees/flowers/psitweaks_antinite.json
 9d611d16018c456f480b88dd97df207d55cb7e8e data/psitweaks/tags/blocks/productivebees/flowers/psitweaks_chaotic_psimetal.json
 8964fb44585ed8c1b3aa747767c1ed8641a4bcf7 data/psitweaks/tags/blocks/productivebees/flowers/psitweaks_flashmetal.json

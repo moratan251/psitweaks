@@ -1,0 +1,37 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mysticalagradditions"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "A": {
+            "item": "mysticalagradditions:insanium_essence"
+          },
+          "B": {
+            "item": "psitweaks:psycheonic_metal_ingot"
+          },
+          "C": {
+            "item": "minecraft:diamond_block"
+          }
+        },
+        "pattern": [
+          "ABA",
+          "BCB",
+          "ABA"
+        ],
+        "result": {
+          "item": "psitweaks:psycheonic_metal_crux"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

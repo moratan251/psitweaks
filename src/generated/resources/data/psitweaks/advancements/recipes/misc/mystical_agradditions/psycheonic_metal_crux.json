@@ -1,0 +1,47 @@
+{
+  "advancements": [
+    {
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "criteria": {
+          "has_insanium_essence": {
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "mysticalagradditions:insanium_essence"
+                  ]
+                }
+              ]
+            },
+            "trigger": "minecraft:inventory_changed"
+          },
+          "has_the_recipe": {
+            "conditions": {
+              "recipe": "psitweaks:mystical_agradditions/psycheonic_metal_crux"
+            },
+            "trigger": "minecraft:recipe_unlocked"
+          }
+        },
+        "requirements": [
+          [
+            "has_insanium_essence",
+            "has_the_recipe"
+          ]
+        ],
+        "rewards": {
+          "recipes": [
+            "psitweaks:mystical_agradditions/psycheonic_metal_crux"
+          ]
+        },
+        "sends_telemetry_event": false
+      },
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mysticalagradditions"
+        }
+      ]
+    }
+  ]
+}

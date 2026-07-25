@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mysticalagriculture"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "E": {
+            "item": "mysticalagriculture:ivory_psimetal_essence"
+          }
+        },
+        "pattern": [
+          "EEE",
+          "E E",
+          "EEE"
+        ],
+        "result": {
+          "count": 4,
+          "item": "psi:ivory_psimetal"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

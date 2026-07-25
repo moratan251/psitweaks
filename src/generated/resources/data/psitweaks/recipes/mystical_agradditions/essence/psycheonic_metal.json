@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mysticalagradditions"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "E": {
+            "item": "mysticalagriculture:psycheonic_metal_essence"
+          }
+        },
+        "pattern": [
+          "EEE",
+          "EEE",
+          "EEE"
+        ],
+        "result": {
+          "count": 3,
+          "item": "psitweaks:psycheonic_metal_nugget"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

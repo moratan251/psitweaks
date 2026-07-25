@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mysticalagriculture"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "E": {
+            "item": "mysticalagriculture:ebony_psimetal_essence"
+          }
+        },
+        "pattern": [
+          "EEE",
+          "E E",
+          "EEE"
+        ],
+        "result": {
+          "count": 4,
+          "item": "psi:ebony_psimetal"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

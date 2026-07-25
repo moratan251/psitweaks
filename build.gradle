@@ -118,8 +118,20 @@ dependencies {
     implementation fg.deobf("curse.maven:mantle-74924:7563777")
     implementation fg.deobf("curse.maven:tinkers-construct-74072:7449219")
     implementation fg.deobf("maven.modrinth:gu7yAYhd:m0egtvtI")
-
-
+    compileOnly fg.deobf("curse.maven:cucumber-272335:7180783")
+    compileOnly fg.deobf("curse.maven:mystical-agriculture-246640:8034376")
+    compileOnly fg.deobf("curse.maven:mystical-agradditions-256247:7180729")
+    def includeMysticalAgricultureInRuns = providers.gradleProperty("psitweaks.includeMysticalAgricultureInRuns")
+            .orElse("true").get().toBoolean()
+    def includeMysticalAgradditionsInRuns = providers.gradleProperty("psitweaks.includeMysticalAgradditionsInRuns")
+            .orElse("true").get().toBoolean()
+    if (includeMysticalAgricultureInRuns) {
+        runtimeOnly fg.deobf("curse.maven:cucumber-272335:7180783")
+        runtimeOnly fg.deobf("curse.maven:mystical-agriculture-246640:8034376")
+        if (includeMysticalAgradditionsInRuns) {
+            runtimeOnly fg.deobf("curse.maven:mystical-agradditions-256247:7180729")
+        }
+    }
 
     runtimeOnly fg.deobf("curse.maven:untranslated-items-401770:4711897")
     runtimeOnly fg.deobf("curse.maven:borderless-378979:4575494")

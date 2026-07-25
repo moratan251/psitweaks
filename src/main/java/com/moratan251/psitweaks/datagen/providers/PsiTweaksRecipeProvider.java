@@ -61,7 +61,12 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
             JsonObject serialized = recipe.serializeRecipe();
             JsonObject advancement = recipe.serializeAdvancement();
             String serializedText = serialized + (advancement == null ? "" : advancement.toString());
-            String requiredMod = recipe.getId().getPath().equals("program_researcher")
+            String recipePath = recipe.getId().getPath();
+            String requiredMod = recipePath.startsWith("mystical_agradditions/")
+                    ? "mysticalagradditions"
+                    : recipePath.startsWith("mystical_agriculture/")
+                    ? "mysticalagriculture"
+                    : recipePath.equals("program_researcher")
                     ? "mekanism"
                     : serializedText.contains("\"mekanismgenerators:")
                     ? "mekanismgenerators"
@@ -1313,8 +1318,79 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_module_base", has(MekanismItems.MODULE_BASE))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "module_phenomenon_interference_enhancement_unit"));
 
+        addMysticalAgricultureRecipes(consumer);
+        addMysticalAgradditionsRecipes(consumer);
         PsiTweaksSmeltryRecipeProvider.addRecipes(consumer);
         ProgramResearchRecipeProvider.addRecipes(consumer);
+    }
+
+    private static void addMysticalAgricultureRecipes(Consumer<FinishedRecipe> output) {
+        addMysticalAgricultureEssenceRecipe(output, "psidust", false,
+                externalItem("psi", "psidust"), 12);
+        addMysticalAgricultureEssenceRecipe(output, "psimetal", false,
+                externalItem("psi", "psimetal"), 4);
+        addMysticalAgricultureEssenceRecipe(output, "ebony_psimetal", false,
+                externalItem("psi", "ebony_psimetal"), 4);
+        addMysticalAgricultureEssenceRecipe(output, "ivory_psimetal", false,
+                externalItem("psi", "ivory_psimetal"), 4);
+        addMysticalAgricultureEssenceRecipe(output, "psigem", true,
+                externalItem("psi", "psigem"), 1);
+        addMysticalAgricultureEssenceRecipe(output, "chaotic_psimetal", false,
+                PsitweaksItems.CHAOTIC_PSIMETAL.get(), 2);
+        addMysticalAgricultureEssenceRecipe(output, "flashmetal", false,
+                PsitweaksItems.FLASHMETAL_NUGGET.get(), 12);
+        addMysticalAgricultureEssenceRecipe(output, "heavy_psimetal", false,
+                PsitweaksItems.HEAVY_PSIMETAL_NUGGET.get(), 6);
+        addMysticalAgricultureEssenceRecipe(output, "antinite", false,
+                PsitweaksItems.ANTINITE_INGOT.get(), 1);
+    }
+
+    private static void addMysticalAgradditionsRecipes(Consumer<FinishedRecipe> output) {
+        Item psycheonicEssence = externalItem("mysticalagriculture", "psycheonic_metal_essence");
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PSYCHEONIC_METAL_NUGGET.get(), 3)
+                .define('E', psycheonicEssence)
+                .pattern("EEE")
+                .pattern("EEE")
+                .pattern("EEE")
+                .unlockedBy("has_psycheonic_metal_essence", has(psycheonicEssence))
+                .save(output, ResourceLocation.fromNamespaceAndPath(
+                        "psitweaks", "mystical_agradditions/essence/psycheonic_metal"));
+
+        Item insaniumEssence = externalItem("mysticalagradditions", "insanium_essence");
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get())
+                .define('A', insaniumEssence)
+                .define('B', PsitweaksItems.PSYCHEONIC_METAL_INGOT.get())
+                .define('C', Blocks.DIAMOND_BLOCK)
+                .pattern("ABA")
+                .pattern("BCB")
+                .pattern("ABA")
+                .unlockedBy("has_insanium_essence", has(insaniumEssence))
+                .save(output, ResourceLocation.fromNamespaceAndPath(
+                        "psitweaks", "mystical_agradditions/psycheonic_metal_crux"));
+    }
+
+    private static void addMysticalAgricultureEssenceRecipe(Consumer<FinishedRecipe> output,
+                                                             String crop,
+                                                             boolean filled,
+                                                             Item result,
+                                                             int count) {
+        Item essence = externalItem("mysticalagriculture", crop + "_essence");
+        ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result, count)
+                .define('E', essence)
+                .pattern("EEE")
+                .pattern(filled ? "EEE" : "E E")
+                .pattern("EEE")
+                .unlockedBy("has_" + crop + "_essence", has(essence));
+        builder.save(output, ResourceLocation.fromNamespaceAndPath(
+                "psitweaks", "mystical_agriculture/essence/" + crop));
+    }
+
+    private static Item externalItem(String namespace, String path) {
+        Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(namespace, path));
+        if (item == null || item == Items.AIR) {
+            throw new IllegalStateException("Missing required datagen item: " + namespace + ":" + path);
+        }
+        return item;
     }
 
     private static void addNuggetRecipes(Consumer<FinishedRecipe> output, String materialId, Item nugget, Item ingot) {

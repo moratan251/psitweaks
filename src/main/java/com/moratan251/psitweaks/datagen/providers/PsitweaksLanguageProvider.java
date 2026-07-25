@@ -21,11 +21,34 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         }
         addBackportedStringTranslations();
         addBackportedMatrixTranslations();
+        addMysticalAgricultureTranslations();
         for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
             add("entity.productivebees." + bee.id() + "_bee", switch (locale) {
                 case "ja_jp" -> bee.jaJp();
                 default -> bee.enUs();
             });
+        }
+    }
+
+    private void addMysticalAgricultureTranslations() {
+        add("block.psitweaks.psycheonic_metal_crux", switch (locale) {
+            case "ja_jp" -> "プシオニックメタルの核";
+            default -> "Psycheonic Metal Crux";
+        });
+        String[][] crops = {
+                {"psidust", "Psidust", "サイダスト"},
+                {"psimetal", "Psimetal", "サイメタル"},
+                {"ebony_psimetal", "Ebony Psimetal", "エボニーサイメタル"},
+                {"ivory_psimetal", "Ivory Psimetal", "アイボリーサイメタル"},
+                {"psigem", "Psigem", "サイジェム"},
+                {"chaotic_psimetal", "Chaotic Psimetal", "カオティックサイメタル"},
+                {"flashmetal", "Flashmetal", "フラッシュメタル"},
+                {"heavy_psimetal", "Heavy Psimetal", "ヘビーサイメタル"},
+                {"psycheonic_metal", "Psycheonic Metal", "プシオニックメタル"},
+                {"antinite", "Antinite", "アンティナイト"}
+        };
+        for (String[] crop : crops) {
+            add("crop.psitweaks." + crop[0], locale.equals("ja_jp") ? crop[2] : crop[1]);
         }
     }
 

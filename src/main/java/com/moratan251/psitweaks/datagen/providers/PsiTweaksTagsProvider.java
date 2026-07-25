@@ -89,6 +89,7 @@ public final class PsiTweaksTagsProvider {
                     "psitweaks:flashmetal_block",
                     "psitweaks:heavy_psimetal_block",
                     "psitweaks:psycheonic_metal_block",
+                    "psitweaks:psycheonic_metal_crux",
                     "psitweaks:hypostasis_gem_block",
                     "psitweaks:plutonium_block",
                     "psitweaks:polonium_block",
@@ -102,6 +103,9 @@ public final class PsiTweaksTagsProvider {
                     "psitweaks:heavy_psimetal_block",
                     "psitweaks:psycheonic_metal_block",
                     "psitweaks:hypostasis_gem_block"
+            ));
+            add(BlockTags.NEEDS_STONE_TOOL, entries(
+                    "psitweaks:psycheonic_metal_crux"
             ));
             add(BlockTags.NEEDS_IRON_TOOL, entries(
                     "psitweaks:chaotic_psimetal_block",
