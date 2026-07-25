@@ -1,4 +1,7 @@
 {
+  "attributes": {
+    "endurance": "endurance.strong"
+  },
   "createComb": true,
   "flowerTag": "psitweaks:productivebees/flowers/psitweaks_heavy_psimetal",
   "primaryColor": "#294C73",

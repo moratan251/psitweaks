@@ -1,4 +1,7 @@
 {
+  "attributes": {
+    "temper": "temper.aggressive"
+  },
   "createComb": true,
   "flowerTag": "psitweaks:productivebees/flowers/psitweaks_antinite",
   "primaryColor": "#CCBF61",

@@ -1,4 +1,7 @@
 {
+  "attributes": {
+    "productivity": "productivity.very_high"
+  },
   "createComb": true,
   "flowerTag": "psitweaks:productivebees/flowers/psitweaks_psycheonic_metal",
   "primaryColor": "#7ED8E6",

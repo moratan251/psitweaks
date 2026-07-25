@@ -1,4 +1,7 @@
 {
+  "attributes": {
+    "behavior": "behavior.metaturnal"
+  },
   "createComb": true,
   "flowerTag": "psitweaks:productivebees/flowers/psitweaks_chaotic_psimetal",
   "primaryColor": "#7F7F7F",

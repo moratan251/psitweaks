@@ -26,22 +26,28 @@ public final class ProductiveBeesDataProvider implements DataProvider {
             bee("psi_psigem", "Psigem Bee", "サイジェムのミツバチ",
                     "#6855B4", "#E0E8FE", ModBlocks.psigemBlock.get()),
             bee("psi_ebony_psimetal", "Ebony Psimetal Bee", "エボニーサイメタルのミツバチ",
-                    "#202020", "#5A5050", ModBlocks.psimetalEbony.get()),
+                    "#202020", "#5A5050", ModBlocks.psimetalEbony.get(),
+                    attribute("behavior", "behavior.nocturnal")),
             bee("psi_ivory_psimetal", "Ivory Psimetal Bee", "アイボリーサイメタルのミツバチ",
                     "#F6F6E9", "#C2C1A2", ModBlocks.psimetalIvory.get()),
             bee("psitweaks_chaotic_psimetal", "Chaotic Psimetal Bee", "カオティックサイメタルのミツバチ",
-                    "#7F7F7F", "#0F0A0A", PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()),
+                    "#7F7F7F", "#0F0A0A", PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get(),
+                    attribute("behavior", "behavior.metaturnal")),
             bee("psitweaks_flashmetal", "Flashmetal Bee", "フラッシュメタルのミツバチ",
-                    "#FFE86D", "#7570BF", PsitweaksBlocks.FLASHMETAL_BLOCK.get()),
+                    "#FFE86D", "#7570BF", PsitweaksBlocks.FLASHMETAL_BLOCK.get(),
+                    attribute("behavior", "behavior.nocturnal")),
             bee("psitweaks_heavy_psimetal", "Heavy Psimetal Bee", "ヘビーサイメタルのミツバチ",
-                    "#294C73", "#5F89B7", PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()),
+                    "#294C73", "#5F89B7", PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get(),
+                    attribute("endurance", "endurance.strong")),
             bee("psitweaks_antinite", "Antinite Bee", "アンティナイトのミツバチ",
-                    "#CCBF61", "#81772D", PsitweaksBlocks.ANTINITE_BLOCK.get()),
+                    "#CCBF61", "#81772D", PsitweaksBlocks.ANTINITE_BLOCK.get(),
+                    attribute("temper", "temper.aggressive")),
             bee("psitweaks_hypostasis_gem", "Hypostasis Gem Bee", "ヒュポスタシスジェムのミツバチ",
                     "#FFB7F8", "#AE475C", PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()),
             beeWithoutSelfBreeding("psitweaks_psycheonic_metal",
                     "Psycheonic Metal Bee", "プシオニックメタルのミツバチ",
-                    "#7ED8E6", "#2D7681", PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()));
+                    "#7ED8E6", "#2D7681", PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get(),
+                    attribute("productivity", "productivity.very_high")));
 
     private static final List<BeeBreedingRecipe> BEE_BREEDING_RECIPES = List.of(
             breeding("psi_psimetal",
@@ -151,6 +157,12 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         root.addProperty("secondaryColor", bee.secondaryColor());
         root.addProperty("createComb", true);
         root.addProperty("flowerTag", bee.flowerTag());
+        if (!bee.attributes().isEmpty()) {
+            JsonObject attributes = new JsonObject();
+            bee.attributes().forEach(attribute ->
+                    attributes.addProperty(attribute.name(), attribute.value()));
+            root.add("attributes", attributes);
+        }
         if (!bee.selfBreed()) {
             root.addProperty("selfbreed", false);
         }
@@ -158,14 +170,21 @@ public final class ProductiveBeesDataProvider implements DataProvider {
     }
 
     private static GeneratedBee bee(String id, String enUs, String jaJp,
-                                    String primaryColor, String secondaryColor, Block flowerBlock) {
-        return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, true);
+                                    String primaryColor, String secondaryColor, Block flowerBlock,
+                                    BeeAttribute... attributes) {
+        return new GeneratedBee(
+                id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, true, List.of(attributes));
     }
 
     private static GeneratedBee beeWithoutSelfBreeding(String id, String enUs, String jaJp,
                                                        String primaryColor, String secondaryColor,
-                                                       Block flowerBlock) {
-        return new GeneratedBee(id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, false);
+                                                       Block flowerBlock, BeeAttribute... attributes) {
+        return new GeneratedBee(
+                id, enUs, jaJp, primaryColor, secondaryColor, flowerBlock, false, List.of(attributes));
+    }
+
+    private static BeeAttribute attribute(String name, String value) {
+        return new BeeAttribute(name, value);
     }
 
     private static JsonObject breedingRecipe(BeeBreedingRecipe recipe) {
@@ -291,7 +310,7 @@ public final class ProductiveBeesDataProvider implements DataProvider {
 
     record GeneratedBee(String id, String enUs, String jaJp,
                         String primaryColor, String secondaryColor, Block flowerBlock,
-                        boolean selfBreed) {
+                        boolean selfBreed, List<BeeAttribute> attributes) {
         String flowerTag() {
             return "psitweaks:productivebees/flowers/" + id;
         }
@@ -299,6 +318,9 @@ public final class ProductiveBeesDataProvider implements DataProvider {
         String resourceId() {
             return beeResourceId(id);
         }
+    }
+
+    private record BeeAttribute(String name, String value) {
     }
 
     private record BeeBreedingRecipe(String id, String parent1, String parent2, String offspring,

@@ -1,4 +1,7 @@
 {
+  "attributes": {
+    "behavior": "behavior.nocturnal"
+  },
   "createComb": true,
   "flowerTag": "psitweaks:productivebees/flowers/psitweaks_flashmetal",
   "primaryColor": "#FFE86D",
