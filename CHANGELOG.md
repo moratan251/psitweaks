@@ -1,6 +1,40 @@
 ## Changelog
 
 
+#### v0.10.3
+
+- Added spell pieces
+  + Safety
+  + Trick: Flexible Jump
+  + Trick: Flexible Switch
+
+
+- Adjusted the power consumption of the Program Research Table
+  + Changed it to use power consumption per tick instead of total power consumption as the basis
+
+
+- Made the research recipes for Trick: Flexible Die, Trick: Cocytus, and Trick: Meteor Line more difficult
+
+
+- Added material items
+  + Psimetal Nugget
+  + Ivory Psimetal Nugget
+  + Ebony Psimetal Nugget
+  + Chaotic Psimetal Nugget
+  + Flashmetal Nugget
+  + Heavy Psimetal Nugget
+  + Antinite Nugget
+  + Psycheonic Metal Block
+  + Hypostasis Gem Block
+
+
+- Added integrations with Mystical Agriculture, Mystical Agradditions, and Productive Bees
+  + Enabled crafting of Psi and PsiTweaks materials
+
+
+- Improved Psi refund handling for Trick: Flexible Die
+
+
 #### v0.10.2
 
 - (1.20.1) Fixed an issue where capacity changes for gas-burning generators were not being applied correctly
