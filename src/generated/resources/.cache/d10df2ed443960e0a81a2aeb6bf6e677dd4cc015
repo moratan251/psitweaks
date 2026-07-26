@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-24T16:30:06.7368447	PsiTweaks recipes
+// 1.21.1	2026-07-26T23:23:18.835552	PsiTweaks recipes
 fd2b8bc2c740f04d4e85e1fae1bc531fb3c58602 data/psitweaks/recipe/advanced_spell_bullet.json
 a63214713c27e8dfec94187e4d913e27433cf4da data/psitweaks/recipe/advanced_spell_bullet_charge.json
 bfbbe421447b945d42a215fd2dd2b8a96441808f data/psitweaks/recipe/advanced_spell_bullet_circle.json
@@ -115,7 +115,7 @@ db15d2d7d47404679d7e848987f2ca3ee98d7b60 data/psitweaks/recipe/program_research/
 8204ad9b674ab4af493d88f4898a67097536d9ad data/psitweaks/recipe/program_research/program_cocytus.json
 19b0e8f7b897517b6e44602c1e011e7ceb08df7d data/psitweaks/recipe/program_research/program_cure_radiation.json
 497668d66069c80d985b0741721a6a1b6eb35590 data/psitweaks/recipe/program_research/program_die_flex.json
-7e2f15f958e8d5c7076f0edc2ef0ca81da9a4cd6 data/psitweaks/recipe/program_research/program_flight.json
+e0431d074c59904ec9b38c7ce1a30d1636598565 data/psitweaks/recipe/program_research/program_flight.json
 6e4a4296f8aebf95dd6435548563414e5450c007 data/psitweaks/recipe/program_research/program_guillotine.json
 9ee483c987d9b87af026bc6dd592ad6ae0f0d40c data/psitweaks/recipe/program_research/program_jump_flex.json
 640aee26a20d614179018c2c328d183e9cd83954 data/psitweaks/recipe/program_research/program_mass_block_break.json

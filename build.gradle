@@ -153,6 +153,9 @@ dependencies {
     runtimeOnly "curse.maven:worldedit-225608:5830452"
     runtimeOnly "curse.maven:productivebees-377897:8022994"
 
+    //runtimeOnly "curse.maven:moffs-addonapi-dynload-1242459:8290849"
+    //runtimeOnly "curse.maven:psiex-1408745:8499563"
+
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"

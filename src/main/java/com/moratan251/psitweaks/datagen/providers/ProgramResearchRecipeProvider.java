@@ -36,10 +36,10 @@ public final class ProgramResearchRecipeProvider {
 
         research(recipes, "program_flight", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                input(Items.PHANTOM_MEMBRANE, 2),
+                input(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP, 16),
+                input(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP, 1),
                 input(Items.FEATHER, 32),
-                input(PsitweaksItems.CHAOTIC_FACTOR, 8),
-                input(Items.NETHER_WART, 4)
+                input(PsitweaksItems.CHAOTIC_FACTOR, 8)
         ), PsitweaksItems.PROGRAM_FLIGHT, 10_000L, 600);
 
         research(recipes, "program_phonon_maser", List.of(

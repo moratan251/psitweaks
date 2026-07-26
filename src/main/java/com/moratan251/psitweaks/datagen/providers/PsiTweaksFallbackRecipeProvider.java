@@ -290,10 +290,10 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.POWERED_RAIL, 2),
                 counted(Items.CLOCK, 4)));
         addProgram(recipes, PsitweaksItems.PROGRAM_FLIGHT, List.of(
-                counted(Items.PHANTOM_MEMBRANE, 2),
-                counted(Items.NETHER_WART, 2),
+                counted(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP, 4),
+                counted(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP, 1),
                 counted(Items.FEATHER, 2),
-                counted(PsitweaksItems.CHAOTIC_FACTOR, 2)));
+                counted(PsitweaksItems.CHAOTIC_FACTOR, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_METEOR_LINE, List.of(
                 counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 4),
                 counted(Items.NETHER_STAR, 2),

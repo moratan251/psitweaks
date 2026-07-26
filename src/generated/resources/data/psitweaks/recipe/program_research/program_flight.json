@@ -9,9 +9,15 @@
       }
     },
     {
-      "count": 2,
+      "count": 16,
       "ingredient": {
-        "item": "minecraft:phantom_membrane"
+        "item": "psitweaks:advanced_spell_bullet_loop"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:sublimated_spell_bullet_loop"
       }
     },
     {
@@ -24,12 +30,6 @@
       "count": 8,
       "ingredient": {
         "item": "psitweaks:chaotic_factor"
-      }
-    },
-    {
-      "count": 4,
-      "ingredient": {
-        "item": "minecraft:nether_wart"
       }
     }
   ],

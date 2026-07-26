@@ -1,22 +1,28 @@
 package com.moratan251.psitweaks.common.handler;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.effects.FlightPsiCostProfile;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import java.util.Objects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 @EventBusSubscriber(modid = Psitweaks.MOD_ID)
 public final class EffectHandler {
     private EffectHandler() {
+    }
+
+    @SubscribeEvent
+    public static void onMobEffectAdded(MobEffectEvent.Added event) {
+        if (!event.getEntity().level().isClientSide
+                && event.getEffectInstance().is(PsitweaksEffects.FLIGHT)) {
+            FlightPsiCostProfile.clear(event.getEntity());
+        }
     }
 
     @SubscribeEvent
@@ -54,40 +60,5 @@ public final class EffectHandler {
         }
 
         event.setNewDamage(Math.max(0.0F, damage));
-    }
-
-    @SubscribeEvent
-    public static void onFlightEffectRemoved(MobEffectEvent.Remove event) {
-        if (event.getEffect().is(PsitweaksEffects.FLIGHT)) {
-            disableSurvivalFlight(event.getEntity());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onFlightEffectExpired(MobEffectEvent.Expired event) {
-        MobEffectInstance effect = event.getEffectInstance();
-        if (effect != null && effect.getEffect().is(PsitweaksEffects.FLIGHT)) {
-            disableSurvivalFlight(event.getEntity());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerChangeGameMode(PlayerEvent.PlayerChangeGameModeEvent event) {
-        Player player = event.getEntity();
-        GameType oldGameMode = event.getCurrentGameMode();
-        GameType newGameMode = event.getNewGameMode();
-        if ((oldGameMode == GameType.CREATIVE || oldGameMode == GameType.SPECTATOR)
-                && (newGameMode == GameType.ADVENTURE || newGameMode == GameType.SURVIVAL)
-                && player.hasEffect(PsitweaksEffects.FLIGHT)) {
-            player.getAbilities().flying = true;
-        }
-    }
-
-    private static void disableSurvivalFlight(LivingEntity entity) {
-        if (entity instanceof Player player && !player.level().isClientSide && !player.isCreative() && !player.isSpectator()) {
-            player.getAbilities().mayfly = false;
-            player.getAbilities().flying = false;
-            player.onUpdateAbilities();
-        }
     }
 }
