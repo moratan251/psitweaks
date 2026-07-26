@@ -285,10 +285,10 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted("minecraft:powered_rail", 2),
                 counted("minecraft:clock", 4)));
         addProgram(recipes, "program_flight", List.of(
-                counted("minecraft:phantom_membrane", 2),
-                counted("minecraft:nether_wart", 2),
+                counted(item("advanced_spell_bullet_loop"), 4),
+                counted(item("sublimated_spell_bullet_loop"), 1),
                 counted("minecraft:feather", 2),
-                counted(item("chaotic_factor"), 2)));
+                counted(item("chaotic_factor"), 1)));
         addProgram(recipes, "program_meteor_line", List.of(
                 counted(item("psycheonic_metal_ingot"), 4),
                 counted("minecraft:nether_star", 2),

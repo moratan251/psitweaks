@@ -56,10 +56,10 @@ public final class ProgramResearchRecipeProvider {
 
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_FLIGHT.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
-                .requires(Items.PHANTOM_MEMBRANE, 2)
+                .requires(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP.get(), 16)
+                .requires(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP.get(), 1)
                 .requires(Items.FEATHER, 32)
                 .requires(PsitweaksItems.CHAOTIC_FACTOR.get(), 8)
-                .requires(Items.NETHER_WART, 4)
                 .energyPerTick(10_000L)
                 .time(600)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_flight"));
