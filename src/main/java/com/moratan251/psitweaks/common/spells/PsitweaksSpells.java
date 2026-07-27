@@ -199,6 +199,7 @@ public class PsitweaksSpells {
             registerSpellPiece("selector_entity_slot_item", PieceSelectorEntitySlotItem.class);
             registerSpellPiece("selector_display_name", PieceSelectorDisplayName.class);
             registerSpellPiece("selector_display_name_list", PieceSelectorDisplayNameList.class);
+            registerSpellPiece("selector_effect_list", PieceSelectorEffectList.class);
             registerSpellPiece("selector_nbt", PieceSelectorNbt.class);
             registerSpellPiece("selector_nbt_keys", PieceSelectorNbtKeys.class);
             registerSpellPiece("selector_nbt_value", PieceSelectorNbtValue.class);

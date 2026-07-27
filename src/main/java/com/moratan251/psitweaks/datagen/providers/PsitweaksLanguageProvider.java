@@ -581,6 +581,18 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "Contextual Value List から各要素の表示名を String List として出力し, 入力順を維持します. Entity List, Item List, Block List に対応します. Vector List 入力はそのワールド座標のブロックを読む Block List として変換されます. 各要素は 取得子: 表示名 と同じ言語 fallback を使います.";
             default -> "Outputs display names from a Contextual Value List as a String List while preserving input order. Entity List, Item List, and Block List are supported. Vector List input is converted to Block List by reading the blocks at those world coordinates. Each element uses the same language fallback as Selector: Display Name.";
         });
+        add("psitweaks.spellpiece.selector_effect_list", switch (locale) {
+            case "ja_jp" -> "取得子: エフェクトリスト";
+            default -> "Selector: Effect List";
+        });
+        add("psitweaks.spellpiece.selector_effect_list.desc", switch (locale) {
+            case "ja_jp" -> "対象 Entity に付与されているエフェクトのレジストリ ID を String List として出力します。";
+            default -> "Outputs the target Entity's active Mob Effect registry IDs as a String List.";
+        });
+        add("psi.book.page.psitweaks_spellpiece.selector_effect_list", switch (locale) {
+            case "ja_jp" -> "対象 Entity に付与されている各 Mob Effect のレジストリ ID を, namespace を含む String List として出力します（例: minecraft:speed）. LivingEntity ではない Entity と, 有効なエフェクトがない LivingEntity は空の String List を出力します.";
+            default -> "Outputs the registry ID of each active Mob Effect on the target Entity as a String List, including the namespace (for example, minecraft:speed). Non-living entities and living entities without active effects output an empty String List.";
+        });
         add("psitweaks.spellpiece.selector_nbt", switch (locale) {
             case "ja_jp" -> "取得子: NBT";
             default -> "Selector: NBT";
