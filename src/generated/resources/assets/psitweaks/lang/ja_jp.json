@@ -141,6 +141,8 @@
   "gui.psitweaks.psionic_generator.summary_psi": "Psi: %1$s/%2$s",
   "gui.psitweaks.psionic_generator.summary_status": "%1$s / %2$s",
   "gui.psitweaks.psionic_generator.toggle": "切替",
+  "gui.psitweaks.spell_programmer.bookmarks.show": "ブックマーク (Ctrl + クリック) したピースのみ表示",
+  "gui.psitweaks.spell_programmer.bookmarks.show_all": "すべてのピースを表示",
   "infuse_type.psitweaks.infuse_chaotic_factor": "混沌",
   "infuse_type.psitweaks.infuse_ebony": "エボニー",
   "infuse_type.psitweaks.infuse_hypostasis": "ヒュポスタシスジェム",

@@ -12,7 +12,7 @@ import vazkii.psi.client.gui.GuiProgrammer;
 public abstract class GuiProgrammerOverlayInputMixin {
     @Inject(method = "mouseMoved", at = @At("HEAD"), cancellable = true)
     private void psitweaks$blockOverlayMouseGesture(double mouseX, double mouseY, CallbackInfo callback) {
-        if (Screen.hasShiftDown() || ProgrammerOverlayInputGuard.isLeftGestureBlocked()) {
+        if (Screen.hasShiftDown() || ProgrammerOverlayInputGuard.isProgrammerMouseMovedSuppressed()) {
             callback.cancel();
         }
     }

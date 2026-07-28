@@ -10,7 +10,9 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
     private static final Map<String, String> OPTIONAL_TARGETS = Map.of(
             "com.moratan251.psitweaks.mixin.RadiationManagerMixin",
-            "mekanism.common.lib.radiation.RadiationManager"
+            "mekanism.common.lib.radiation.RadiationManager",
+            "com.moratan251.psitweaks.mixin.client.PsionicUtilitiesProgrammerMixin",
+            "gdavid.psionicutilities.PsionicUtilities"
     );
 
     @Override

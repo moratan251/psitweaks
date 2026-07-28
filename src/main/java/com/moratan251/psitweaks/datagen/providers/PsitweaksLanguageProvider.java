@@ -121,6 +121,14 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "モード選択";
             default -> "Mode Select";
         });
+        add("gui.psitweaks.spell_programmer.bookmarks.show", switch (locale) {
+            case "ja_jp" -> "ブックマーク (Ctrl + クリック) したピースのみ表示";
+            default -> "Show only spell pieces bookmarked with Ctrl + click";
+        });
+        add("gui.psitweaks.spell_programmer.bookmarks.show_all", switch (locale) {
+            case "ja_jp" -> "すべてのピースを表示";
+            default -> "Show all spell pieces";
+        });
         add("screen.psitweaks.configuration.title", switch (locale) {
             case "ja_jp" -> "Psitweaks コンフィグ";
             default -> "Psitweaks Configuration";

@@ -28,6 +28,7 @@ public final class SpellGridMultiSelectionController {
     private static int currentX = -1;
     private static int currentY = -1;
     private static boolean dragging;
+    private static GridPosition pendingControlClick;
     private static Set<GridPosition> selectedPositions = Set.of();
     private static List<ClipboardEntry> clipboard = List.of();
 
@@ -52,7 +53,12 @@ public final class SpellGridMultiSelectionController {
     }
 
     public static void prepareMousePressed(int button) {
-        if (button == LEFT_MOUSE_BUTTON && !Screen.hasShiftDown() && !Screen.hasControlDown()) {
+        if (button != LEFT_MOUSE_BUTTON) {
+            return;
+        }
+
+        pendingControlClick = null;
+        if (!Screen.hasShiftDown() && !Screen.hasControlDown()) {
             clearSelection();
         }
     }
@@ -90,7 +96,8 @@ public final class SpellGridMultiSelectionController {
             dragging = true;
             selectedPositions = Set.of();
         } else {
-            toggleSelection(screen, position);
+            pendingControlClick = position;
+            return false;
         }
         return true;
     }
@@ -101,6 +108,14 @@ public final class SpellGridMultiSelectionController {
             double mouseY,
             int button
     ) {
+        if (button == LEFT_MOUSE_BUTTON && pendingControlClick != null) {
+            GridPosition position = gridPositionAt(screen, mouseX, mouseY);
+            if (!pendingControlClick.equals(position)) {
+                clearSelection();
+            }
+            return false;
+        }
+
         if (button != LEFT_MOUSE_BUTTON || !dragging) {
             return false;
         }
@@ -117,6 +132,19 @@ public final class SpellGridMultiSelectionController {
             double mouseY,
             int button
     ) {
+        if (button == LEFT_MOUSE_BUTTON && pendingControlClick != null) {
+            GridPosition pressedPosition = pendingControlClick;
+            pendingControlClick = null;
+            GridPosition releasedPosition = gridPositionAt(screen, mouseX, mouseY);
+            if (pressedPosition.equals(releasedPosition)) {
+                toggleSelection(screen, pressedPosition);
+                return true;
+            }
+
+            clearSelection();
+            return false;
+        }
+
         if (button != LEFT_MOUSE_BUTTON || !dragging) {
             return false;
         }
@@ -191,6 +219,7 @@ public final class SpellGridMultiSelectionController {
         currentX = -1;
         currentY = -1;
         dragging = false;
+        pendingControlClick = null;
         selectedPositions = Set.of();
     }
 

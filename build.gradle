@@ -146,7 +146,9 @@ dependencies {
     if (providers.gradleProperty("psitweaks.includeMekanismInRuns").orElse("true").get().toBoolean()) {
         runtimeOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
     }
-    runtimeOnly fg.deobf("curse.maven:psionic-utilities-611991:6549076")
+    if (providers.gradleProperty("psitweaks.includePsionicUtilitiesInRuns").orElse("true").get().toBoolean()) {
+        runtimeOnly fg.deobf("curse.maven:psionic-utilities-611991:6549076")
+    }
     // runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
     // runtimeOnly fg.deobf("curse.maven:ars-nouveau-401955:6688854")
     // runtimeOnly fg.deobf("curse.maven:emi-580555:6420945")

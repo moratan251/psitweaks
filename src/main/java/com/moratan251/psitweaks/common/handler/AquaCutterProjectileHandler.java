@@ -51,9 +51,7 @@ public class AquaCutterProjectileHandler {
             }
 
             Entity owner = projectile.getOwner();
-            DamageSource source = owner instanceof LivingEntity livingOwner
-                    ? livingOwner.damageSources().indirectMagic(projectile, livingOwner)
-                    : projectile.damageSources().magic();
+            DamageSource source = projectile.damageSources().thrown(projectile, owner);
             target.hurt(source, damage);
 
             playSplashEffect(projectile,

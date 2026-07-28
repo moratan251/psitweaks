@@ -119,6 +119,8 @@
   "gui.psitweaks.psionic_generator.summary_psi": "Psi: %1$s/%2$s",
   "gui.psitweaks.psionic_generator.summary_status": "%1$s / %2$s",
   "gui.psitweaks.psionic_generator.toggle": "Toggle",
+  "gui.psitweaks.spell_programmer.bookmarks.show": "Show only spell pieces bookmarked with Ctrl + click",
+  "gui.psitweaks.spell_programmer.bookmarks.show_all": "Show all spell pieces",
   "infuse_type.psitweaks.infuse_chaotic_factor": "Chaos",
   "infuse_type.psitweaks.infuse_ebony": "Ebony",
   "infuse_type.psitweaks.infuse_hypostasis": "Hypostasis Gem",

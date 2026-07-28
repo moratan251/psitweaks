@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.proxy.ClientProxyPsitweaks;
+import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.renderer.EmptyRenderer;
 import com.moratan251.psitweaks.client.gui.machine.ModMenuTypes;
@@ -87,6 +88,11 @@ public class Psitweaks {
         PsitweaksListAdapterRegistration.registerBuiltins();
 
         if (dist.isClient()) {
+            ModLoadingContext.get().registerConfig(
+                    ModConfig.Type.CLIENT,
+                    PsitweaksClientConfig.CLIENT_SPEC,
+                    "psitweaks-client.toml"
+            );
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             PsitweaksConfigScreenRegistration.register();
         } else if (dist.isDedicatedServer()) {
