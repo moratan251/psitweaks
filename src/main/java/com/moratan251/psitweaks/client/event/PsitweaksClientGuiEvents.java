@@ -55,7 +55,11 @@ public final class PsitweaksClientGuiEvents {
 
     private static void onMouseButtonPressedPre(ScreenEvent.MouseButtonPressed.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
-            boolean blockedGesture = ProgrammerOverlayInputGuard.beginMouseGesture(screen, event.getButton());
+            boolean blockedGesture = ProgrammerOverlayInputGuard.beginMouseGesture(
+                    screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getButton());
             SpellGridMultiSelectionController.prepareMousePressed(event.getButton());
             boolean handled = handlePieceBookmarkClick(screen,
                     event.getMouseX(),
