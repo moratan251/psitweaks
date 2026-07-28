@@ -1,11 +1,14 @@
 package com.moratan251.psitweaks.client.gui;
 
+import net.neoforged.fml.ModList;
 import vazkii.psi.client.gui.GuiProgrammer;
 
 public final class ProgrammerOverlayInputGuard {
     private static final int LEFT_MOUSE_BUTTON = 0;
+    private static final String PSIONIC_UTILITIES_MOD_ID = "psionicutilities";
 
     private static boolean leftGestureBlocked;
+    private static boolean programmerMouseMovedSuppressed;
 
     private ProgrammerOverlayInputGuard() {
     }
@@ -15,7 +18,9 @@ public final class ProgrammerOverlayInputGuard {
             return false;
         }
 
-        leftGestureBlocked = isOverlayActive(screen);
+        leftGestureBlocked = isPsitweaksOverlayActive(screen);
+        programmerMouseMovedSuppressed = leftGestureBlocked
+                || (ModList.get().isLoaded(PSIONIC_UTILITIES_MOD_ID) && isPsiPanelActive(screen));
         return leftGestureBlocked;
     }
 
@@ -23,22 +28,34 @@ public final class ProgrammerOverlayInputGuard {
         return leftGestureBlocked;
     }
 
+    public static boolean isProgrammerMouseMovedSuppressed() {
+        return programmerMouseMovedSuppressed;
+    }
+
     public static void blockLeftGesture() {
         leftGestureBlocked = true;
+        programmerMouseMovedSuppressed = true;
     }
 
     public static void endMouseGesture(int button) {
         if (button == LEFT_MOUSE_BUTTON) {
             leftGestureBlocked = false;
+            programmerMouseMovedSuppressed = false;
         }
     }
 
     public static void reset() {
         leftGestureBlocked = false;
+        programmerMouseMovedSuppressed = false;
     }
 
-    private static boolean isOverlayActive(GuiProgrammer screen) {
+    private static boolean isPsitweaksOverlayActive(GuiProgrammer screen) {
         return SpellPieceModeButtonOverlay.isActive(screen)
                 || EditableStringInputOverlay.isActive(screen);
+    }
+
+    private static boolean isPsiPanelActive(GuiProgrammer screen) {
+        return (screen.panelWidget != null && screen.panelWidget.panelEnabled)
+                || (screen.configWidget != null && screen.configWidget.configEnabled);
     }
 }
