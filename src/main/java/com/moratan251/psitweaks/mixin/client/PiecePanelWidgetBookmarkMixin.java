@@ -2,7 +2,6 @@ package com.moratan251.psitweaks.mixin.client;
 
 import com.moratan251.psitweaks.client.gui.PieceBookmarkButton;
 import com.moratan251.psitweaks.client.gui.PieceBookmarkManager;
-import com.moratan251.psitweaks.client.gui.PiecePanelWidgetBookmarkExtension;
 import com.moratan251.psitweaks.client.gui.ProgrammerOverlayInputGuard;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mixin(value = PiecePanelWidget.class, remap = false)
-public abstract class PiecePanelWidgetBookmarkMixin implements PiecePanelWidgetBookmarkExtension {
+public abstract class PiecePanelWidgetBookmarkMixin {
     @Unique
     private static final int PSITWEAKS$PANEL_WIDTH = 100;
     @Unique
@@ -112,11 +111,6 @@ public abstract class PiecePanelWidgetBookmarkMixin implements PiecePanelWidgetB
             psitweaks$bookmarkButton.visible = false;
             psitweaks$bookmarkButton.active = false;
         }
-    }
-
-    @Override
-    public boolean psitweaks$isBookmarkMode() {
-        return psitweaks$bookmarkMode;
     }
 
     @Unique

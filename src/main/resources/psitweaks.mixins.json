@@ -18,6 +18,7 @@
     "SpellHelpersRangeLimitMixin"
   ],
   "client": [
+    "client.GuiButtonSpellPieceBookmarkMixin",
     "client.GuiProgrammerOverlayInputMixin",
     "client.PiecePanelWidgetBookmarkMixin",
     "client.PiecePanelWidgetEnglishSearchMixin"

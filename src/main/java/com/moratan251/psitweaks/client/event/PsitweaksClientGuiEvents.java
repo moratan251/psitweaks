@@ -3,7 +3,6 @@ package com.moratan251.psitweaks.client.event;
 import com.moratan251.psitweaks.client.gui.ClientGuiSounds;
 import com.moratan251.psitweaks.client.gui.EditableStringInputOverlay;
 import com.moratan251.psitweaks.client.gui.PieceBookmarkManager;
-import com.moratan251.psitweaks.client.gui.PiecePanelWidgetBookmarkExtension;
 import com.moratan251.psitweaks.client.gui.ProgrammerOverlayInputGuard;
 import com.moratan251.psitweaks.client.gui.SpellGridMultiSelectionController;
 import com.moratan251.psitweaks.client.gui.SpellPieceModeButtonOverlay;
@@ -105,8 +104,6 @@ public final class PsitweaksClientGuiEvents {
             return false;
         }
 
-        PiecePanelWidgetBookmarkExtension extension =
-                (PiecePanelWidgetBookmarkExtension) screen.panelWidget;
         for (GuiButtonSpellPiece pieceButton : screen.panelWidget.visibleButtons) {
             if (!pieceButton.visible
                     || !pieceButton.active
@@ -114,14 +111,8 @@ public final class PsitweaksClientGuiEvents {
                 continue;
             }
 
-            if (extension.psitweaks$isBookmarkMode()) {
-                PieceBookmarkManager.remove(pieceButton.getPiece());
-            } else {
-                PieceBookmarkManager.add(pieceButton.getPiece());
-            }
-
+            PieceBookmarkManager.toggle(pieceButton.getPiece());
             ClientGuiSounds.playClick();
-            screen.panelWidget.updatePanelButtons();
             ProgrammerOverlayInputGuard.blockLeftGesture();
             return true;
         }
