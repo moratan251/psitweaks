@@ -122,6 +122,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> HYPOSTASIS_GEM = ITEMS.register("hypostasis_gem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> MAGICIANS_BRAIN = ITEMS.register("magicians_brain", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> AQUA_CUTTER_PROJECTILE = ITEMS.register("aqua_cutter_projectile",
+            () -> new Item(new Item.Properties()));
 
 
 

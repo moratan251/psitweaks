@@ -12,8 +12,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -54,17 +56,25 @@ public class AquaCutterProjectileHandler {
                     : projectile.damageSources().magic();
             target.hurt(source, damage);
 
-            if (projectile.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(ParticleTypes.SPLASH,
-                        target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(),
-                        12, 0.25, 0.25, 0.25, 0.05);
-            }
-
-            projectile.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.GENERIC_SPLASH, SoundSource.PLAYERS, 0.8F, 1.1F);
+            playSplashEffect(projectile,
+                    target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ());
+        } else if (hitResult instanceof BlockHitResult blockHitResult) {
+            Vec3 impactPosition = blockHitResult.getLocation();
+            playSplashEffect(projectile, impactPosition.x, impactPosition.y, impactPosition.z);
         }
 
         projectile.discard();
         event.setImpactResult(ProjectileImpactEvent.ImpactResult.DEFAULT);
+    }
+
+    private static void playSplashEffect(Projectile projectile, double x, double y, double z) {
+        if (projectile.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.SPLASH,
+                    x, y, z,
+                    12, 0.25, 0.25, 0.25, 0.05);
+        }
+
+        projectile.level().playSound(null, x, y, z,
+                SoundEvents.GENERIC_SPLASH, SoundSource.PLAYERS, 0.8F, 1.1F);
     }
 }

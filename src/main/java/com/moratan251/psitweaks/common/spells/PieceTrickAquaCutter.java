@@ -2,15 +2,13 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.entities.EntityAquaCutterProjectile;
 import com.moratan251.psitweaks.common.handler.AquaCutterProjectileHandler;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -75,8 +73,7 @@ public class PieceTrickAquaCutter extends PieceTrick {
         float finalDamage = (float) (damage * perSpellDamageMul * globalDamageMul * spellDamageFactor);
         float velocity = 1.8F + (float) (powerVal * 0.3);
 
-        Snowball projectile = new Snowball(level, context.caster);
-        projectile.setItem(new ItemStack(Items.PRISMARINE_SHARD));
+        EntityAquaCutterProjectile projectile = new EntityAquaCutterProjectile(level, context.caster);
         Vec3 look = context.caster.getLookAngle();
         projectile.setPos(context.caster.getX(), context.caster.getEyeY() - 0.1, context.caster.getZ());
         projectile.shoot(look.x, look.y, look.z, velocity, 0.0F);
