@@ -51,6 +51,14 @@ public class PsitweaksEntities {
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":molecular_divider"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityAquaCutterProjectile>> AQUA_CUTTER_PROJECTILE =
+            ENTITY_TYPES.register("aqua_cutter_projectile",
+                    () -> EntityType.Builder.<EntityAquaCutterProjectile>of(EntityAquaCutterProjectile::new, MobCategory.MISC)
+                            .sized(0.3125f, 0.3125f)
+                            .clientTrackingRange(64)
+                            .updateInterval(10)
+                            .build(Psitweaks.MOD_ID + ":aqua_cutter_projectile"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<EntityBlazeBall>> BLAZE_BALL =
             ENTITY_TYPES.register("blaze_ball",
                     () -> EntityType.Builder.<EntityBlazeBall>of(EntityBlazeBall::new, MobCategory.MISC)

@@ -213,6 +213,10 @@ public final class PsitweaksItems {
             "magicians_brain",
             new Item.Properties().rarity(Rarity.UNCOMMON)
     );
+    public static final DeferredItem<Item> AQUA_CUTTER_PROJECTILE = ITEMS.registerSimpleItem(
+            "aqua_cutter_projectile",
+            new Item.Properties()
+    );
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BLANK = registerProgram("program_blank", true);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_COCYTUS = registerProgram("program_cocytus", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_TIME_ACCELERATE = registerProgram("program_time_accelerate", false);
