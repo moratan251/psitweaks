@@ -87,6 +87,8 @@
   "gui.psitweaks.psionic_generator.summary_psi": "Psi: %1$s/%2$s",
   "gui.psitweaks.psionic_generator.summary_status": "%1$s / %2$s",
   "gui.psitweaks.psionic_generator.toggle": "切替",
+  "gui.psitweaks.spell_programmer.bookmarks.show": "ブックマーク (Ctrl + クリック) したピースのみ表示",
+  "gui.psitweaks.spell_programmer.bookmarks.show_all": "すべてのピースを表示",
   "item.psitweaks.advanced_spell_bullet": "改良術式弾",
   "item.psitweaks.advanced_spell_bullet_charge": "チャージ型改良術式弾",
   "item.psitweaks.advanced_spell_bullet_circle": "円形改良術式弾",

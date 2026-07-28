@@ -1,12 +1,17 @@
 package com.moratan251.psitweaks.client.event;
 
+import com.moratan251.psitweaks.client.gui.ClientGuiSounds;
 import com.moratan251.psitweaks.client.gui.EditableStringInputOverlay;
+import com.moratan251.psitweaks.client.gui.PieceBookmarkManager;
+import com.moratan251.psitweaks.client.gui.PiecePanelWidgetBookmarkExtension;
 import com.moratan251.psitweaks.client.gui.ProgrammerOverlayInputGuard;
 import com.moratan251.psitweaks.client.gui.SpellGridMultiSelectionController;
 import com.moratan251.psitweaks.client.gui.SpellPieceModeButtonOverlay;
+import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import vazkii.psi.client.gui.GuiProgrammer;
+import vazkii.psi.client.gui.button.GuiButtonSpellPiece;
 
 public final class PsitweaksClientGuiEvents {
     private PsitweaksClientGuiEvents() {
@@ -52,10 +57,16 @@ public final class PsitweaksClientGuiEvents {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             boolean blockedGesture = ProgrammerOverlayInputGuard.beginMouseGesture(screen, event.getButton());
             SpellGridMultiSelectionController.prepareMousePressed(event.getButton());
-            boolean handled = SpellPieceModeButtonOverlay.handleMousePressedPre(screen,
+            boolean handled = handlePieceBookmarkClick(screen,
                     event.getMouseX(),
                     event.getMouseY(),
                     event.getButton());
+            if (!handled) {
+                handled = SpellPieceModeButtonOverlay.handleMousePressedPre(screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getButton());
+            }
             if (!handled) {
                 handled = EditableStringInputOverlay.handleMousePressedPre(screen,
                         event.getMouseX(),
@@ -75,6 +86,42 @@ public final class PsitweaksClientGuiEvents {
                 event.setCanceled(true);
             }
         }
+    }
+
+    private static boolean handlePieceBookmarkClick(
+            GuiProgrammer screen,
+            double mouseX,
+            double mouseY,
+            int button
+    ) {
+        if (button != 0
+                || !Screen.hasControlDown()
+                || screen.panelWidget == null
+                || !screen.panelWidget.panelEnabled) {
+            return false;
+        }
+
+        PiecePanelWidgetBookmarkExtension extension =
+                (PiecePanelWidgetBookmarkExtension) screen.panelWidget;
+        for (GuiButtonSpellPiece pieceButton : screen.panelWidget.visibleButtons) {
+            if (!pieceButton.visible
+                    || !pieceButton.active
+                    || !pieceButton.isMouseOver(mouseX, mouseY)) {
+                continue;
+            }
+
+            if (extension.psitweaks$isBookmarkMode()) {
+                PieceBookmarkManager.remove(pieceButton.getPiece());
+            } else {
+                PieceBookmarkManager.add(pieceButton.getPiece());
+            }
+
+            ClientGuiSounds.playClick();
+            screen.panelWidget.updatePanelButtons();
+            ProgrammerOverlayInputGuard.blockLeftGesture();
+            return true;
+        }
+        return false;
     }
 
     private static void onMouseButtonPressedPost(ScreenEvent.MouseButtonPressed.Post event) {

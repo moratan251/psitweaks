@@ -19,6 +19,7 @@
   ],
   "client": [
     "client.GuiProgrammerOverlayInputMixin",
+    "client.PiecePanelWidgetBookmarkMixin",
     "client.PiecePanelWidgetEnglishSearchMixin"
   ],
   "injectors": {

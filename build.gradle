@@ -31,9 +31,20 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+sourceSets {
+    withoutPsitweaks
+}
+
+configurations {
+    withoutPsitweaksImplementation.extendsFrom implementation
+    withoutPsitweaksRuntimeOnly.extendsFrom runtimeOnly
+}
+
 neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
+
+    addModdingDependenciesTo(sourceSets.withoutPsitweaks)
 
     parchment {
         mappingsVersion = project.parchment_mappings_version
@@ -60,6 +71,13 @@ neoForge {
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        clientWithoutPsitweaks {
+            client()
+            sourceSet = sourceSets.withoutPsitweaks
+            loadedMods = []
+            gameDirectory = project.file('run/without-psitweaks')
         }
 
         server {

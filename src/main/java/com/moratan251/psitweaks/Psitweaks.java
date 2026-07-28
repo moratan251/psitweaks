@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks;
 
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
+import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
 import com.moratan251.psitweaks.client.event.PsitweaksClientGuiEvents;
@@ -133,6 +134,11 @@ public class Psitweaks {
         MekanismCompat.register(modEventBus);
         PsitweaksTabs.register(modEventBus);
         if (FMLEnvironment.dist == Dist.CLIENT) {
+            modContainer.registerConfig(
+                    ModConfig.Type.CLIENT,
+                    PsitweaksClientConfig.CLIENT_SPEC,
+                    "psitweaks-client.toml"
+            );
             PsitweaksConfigScreenRegistration.register(modContainer);
             PsitweaksClientSpells.register(modEventBus);
             PsitweaksClientModels.register(modEventBus);

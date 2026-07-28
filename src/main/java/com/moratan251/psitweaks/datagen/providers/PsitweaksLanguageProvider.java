@@ -85,6 +85,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "適用";
             default -> "Apply";
         });
+        root.addProperty("gui.psitweaks.spell_programmer.bookmarks.show", switch (locale) {
+            case "ja_jp" -> "ブックマーク (Ctrl + クリック) したピースのみ表示";
+            default -> "Show only spell pieces bookmarked with Ctrl + click";
+        });
+        root.addProperty("gui.psitweaks.spell_programmer.bookmarks.show_all", switch (locale) {
+            case "ja_jp" -> "すべてのピースを表示";
+            default -> "Show all spell pieces";
+        });
         root.addProperty("screen.psitweaks.auto_caster_custom_tick", switch (locale) {
             case "ja_jp" -> "オートキャスター設定";
             default -> "Auto Caster Settings";
