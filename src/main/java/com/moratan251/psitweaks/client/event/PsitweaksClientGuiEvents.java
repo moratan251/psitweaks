@@ -131,6 +131,13 @@ public final class PsitweaksClientGuiEvents {
     private static void onMouseButtonPressedPost(ScreenEvent.MouseButtonPressed.Post event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             EditableStringInputOverlay.handleMousePressedPost(screen, event.getMouseX(), event.getMouseY(), event.getButton());
+            if (event.getButton() == 0
+                    && ProgrammerOverlayInputGuard.isProgrammerMouseMovedSuppressed()) {
+                ProgrammerOverlayInputGuard.resetPsionicUtilitiesConnectorStart(screen);
+            }
+            if (event.getButton() == 0) {
+                ProgrammerOverlayInputGuard.beginPsionicUtilitiesDragHistory(screen);
+            }
         }
     }
 
@@ -154,6 +161,9 @@ public final class PsitweaksClientGuiEvents {
 
     private static void onMouseButtonReleasedPre(ScreenEvent.MouseButtonReleased.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
+            if (event.getButton() == 0) {
+                ProgrammerOverlayInputGuard.finishPsionicUtilitiesDragHistory(screen);
+            }
             boolean blockedGesture = ProgrammerOverlayInputGuard.isLeftGestureBlocked();
             boolean handled = EditableStringInputOverlay.handleMouseReleasedPre(screen, event.getButton());
             if (!handled) {

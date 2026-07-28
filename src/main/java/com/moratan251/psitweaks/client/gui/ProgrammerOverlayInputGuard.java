@@ -25,7 +25,7 @@ public final class ProgrammerOverlayInputGuard {
 
         leftGestureBlocked = isPsitweaksOverlayActive(screen);
         programmerMouseMovedSuppressed = leftGestureBlocked
-                || (ModList.get().isLoaded(PSIONIC_UTILITIES_MOD_ID)
+                || (isPsionicUtilitiesLoaded()
                 && isMouseOverPsiPanel(screen, mouseX, mouseY));
         return leftGestureBlocked;
     }
@@ -36,6 +36,27 @@ public final class ProgrammerOverlayInputGuard {
 
     public static boolean isProgrammerMouseMovedSuppressed() {
         return programmerMouseMovedSuppressed;
+    }
+
+    public static void resetPsionicUtilitiesConnectorStart(GuiProgrammer screen) {
+        if (isPsionicUtilitiesLoaded()
+                && screen instanceof PsionicUtilitiesProgrammerExtension extension) {
+            extension.psitweaks$resetPsionicUtilitiesConnectorStart();
+        }
+    }
+
+    public static void beginPsionicUtilitiesDragHistory(GuiProgrammer screen) {
+        if (isPsionicUtilitiesLoaded()
+                && screen instanceof PsionicUtilitiesProgrammerExtension extension) {
+            extension.psitweaks$beginPsionicUtilitiesDragHistory();
+        }
+    }
+
+    public static void finishPsionicUtilitiesDragHistory(GuiProgrammer screen) {
+        if (isPsionicUtilitiesLoaded()
+                && screen instanceof PsionicUtilitiesProgrammerExtension extension) {
+            extension.psitweaks$finishPsionicUtilitiesDragHistory();
+        }
     }
 
     public static void blockLeftGesture() {
@@ -67,5 +88,9 @@ public final class ProgrammerOverlayInputGuard {
                 || (screen.configWidget != null
                 && screen.configWidget.configEnabled
                 && screen.configWidget.isMouseOver(mouseX, mouseY));
+    }
+
+    private static boolean isPsionicUtilitiesLoaded() {
+        return ModList.get().isLoaded(PSIONIC_UTILITIES_MOD_ID);
     }
 }

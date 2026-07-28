@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.mixin.client;
 import com.moratan251.psitweaks.client.gui.PieceBookmarkButton;
 import com.moratan251.psitweaks.client.gui.PieceBookmarkManager;
 import com.moratan251.psitweaks.client.gui.PiecePanelWidgetBookmarkExtension;
+import com.moratan251.psitweaks.client.gui.ProgrammerOverlayInputGuard;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -100,6 +101,7 @@ public abstract class PiecePanelWidgetBookmarkMixin implements PiecePanelWidgetB
 
     @Inject(method = "openPanel", at = @At("RETURN"))
     private void psitweaks$openBookmarkRow(CallbackInfo callback) {
+        ProgrammerOverlayInputGuard.resetPsionicUtilitiesConnectorStart(parent);
         psitweaks$extendPanel();
         psitweaks$syncBookmarkButton();
     }
