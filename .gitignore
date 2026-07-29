@@ -30,3 +30,4 @@ docs
 #etc
 src/generated/resources/.cache/*
 .cache
+bin
