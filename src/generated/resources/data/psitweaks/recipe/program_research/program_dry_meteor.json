@@ -1,0 +1,35 @@
+{
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 15000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:packed_ice"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psi:psidust"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "minecraft:bone"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_dry_meteor"
+  },
+  "time": 1200
+}

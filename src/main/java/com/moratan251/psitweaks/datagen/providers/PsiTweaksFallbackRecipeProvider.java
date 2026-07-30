@@ -298,6 +298,10 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 4),
                 counted(Items.NETHER_STAR, 2),
                 counted(Items.DRAGON_HEAD, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_DRY_METEOR, List.of(
+                counted(Items.PACKED_ICE, 3),
+                counted(ModItems.psidust.get(), 3),
+                counted(Items.BONE, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_SUPREME_INFUSION, List.of(
                 counted(Items.AMETHYST_BLOCK, 2),
                 counted(PsitweaksItems.FLASHMETAL, 2),

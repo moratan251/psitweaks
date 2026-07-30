@@ -3,9 +3,11 @@ package com.moratan251.psitweaks.common.handler;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.effects.FlightPsiCostProfile;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
+import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import java.util.Objects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -27,6 +29,11 @@ public final class EffectHandler {
 
     @SubscribeEvent
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+        if (event.getSource().is(PsitweaksDamageTypes.CARBON_POISONING)) {
+            event.setInvulnerabilityTicks(0);
+            return;
+        }
+
         LivingEntity entity = event.getEntity();
         if (entity.hasEffect(PsitweaksEffects.PARADE)) {
             MobEffectInstance effect = entity.getEffect(PsitweaksEffects.PARADE);
@@ -42,6 +49,10 @@ public final class EffectHandler {
 
     @SubscribeEvent
     public static void onLivingDamage(LivingDamageEvent.Pre event) {
+        if (event.getSource().is(PsitweaksDamageTypes.CARBON_POISONING)) {
+            return;
+        }
+
         LivingEntity entity = event.getEntity();
         float damage = event.getNewDamage();
         if (entity.hasEffect(PsitweaksEffects.BARRIER)) {
@@ -60,5 +71,15 @@ public final class EffectHandler {
         }
 
         event.setNewDamage(Math.max(0.0F, damage));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void keepCarbonPoisoningDamageNonLethal(LivingDamageEvent.Pre event) {
+        if (!event.getSource().is(PsitweaksDamageTypes.CARBON_POISONING)) {
+            return;
+        }
+
+        float maximumDamage = Math.max(0.0F, event.getEntity().getHealth() - 1.0F);
+        event.setNewDamage(Math.min(event.getNewDamage(), maximumDamage));
     }
 }

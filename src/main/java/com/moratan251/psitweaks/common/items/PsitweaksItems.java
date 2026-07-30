@@ -217,12 +217,17 @@ public final class PsitweaksItems {
             "aqua_cutter_projectile",
             new Item.Properties()
     );
+    public static final DeferredItem<Item> DRY_ICE_PROJECTILE = ITEMS.registerSimpleItem(
+            "dry_ice_projectile",
+            new Item.Properties()
+    );
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BLANK = registerProgram("program_blank", true);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_COCYTUS = registerProgram("program_cocytus", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_TIME_ACCELERATE = registerProgram("program_time_accelerate", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_FLIGHT = registerProgram("program_flight", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PHONON_MASER = registerProgram("program_phonon_maser", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_METEOR_LINE = registerProgram("program_meteor_line", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DRY_METEOR = registerProgram("program_dry_meteor", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_SUPREME_INFUSION = registerProgram("program_supreme_infusion", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MOLECULAR_DIVIDER = registerProgram("program_molecular_divider", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_RADIATION_INJECTION =

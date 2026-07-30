@@ -2,7 +2,8 @@
 	"format_version": "1.21.11",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "psitweaks:models/dry_ice"
+		"0": "psitweaks:item/dry_ice",
+		"particle": "#0"
 	},
 	"elements": [
 		{

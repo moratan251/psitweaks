@@ -74,6 +74,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_break_silk", PieceTrickBreakBlockSilk.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickAquaCutter>> TRICK_AQUA_CUTTER =
             registerPiece("trick_aqua_cutter", PieceTrickAquaCutter.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickDryMeteor>> TRICK_DRY_METEOR =
+            registerPiece("trick_dry_meteor", PieceTrickDryMeteor.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickBlazeBall>> TRICK_BLAZE_BALL =
             registerPiece("trick_blaze_ball", PieceTrickBlazeBall.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickActiveAirMine>> TRICK_ACTIVE_AIR_MINE =
@@ -358,6 +360,8 @@ public final class PsitweaksSpells {
             registerGroup("trick_break_silk", PieceTrickBreakBlockSilk.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> AQUA_CUTTER =
             registerGroup("trick_aqua_cutter", PieceTrickAquaCutter.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> DRY_METEOR =
+            registerGroup("trick_dry_meteor", PieceTrickDryMeteor.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> BLAZE_BALL =
             registerGroup("trick_blaze_ball", PieceTrickBlazeBall.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> ACTIVE_AIR_MINE =

@@ -67,6 +67,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_break_silk");
     public static final DeferredHolder<Material, Material> TRICK_AQUA_CUTTER =
             registerPieceMaterial("trick_aqua_cutter");
+    public static final DeferredHolder<Material, Material> TRICK_DRY_METEOR =
+            registerPieceMaterial("trick_dry_meteor");
     public static final DeferredHolder<Material, Material> TRICK_BLAZE_BALL =
             registerPieceMaterial("trick_blaze_ball");
     public static final DeferredHolder<Material, Material> TRICK_ACTIVE_AIR_MINE =

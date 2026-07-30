@@ -164,6 +164,7 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_FLIGHT.get());
         output.accept(PsitweaksItems.PROGRAM_PHONON_MASER.get());
         output.accept(PsitweaksItems.PROGRAM_METEOR_LINE.get());
+        output.accept(PsitweaksItems.PROGRAM_DRY_METEOR.get());
         output.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
         output.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
         if (MekanismCompat.isMekanismLoaded()) {

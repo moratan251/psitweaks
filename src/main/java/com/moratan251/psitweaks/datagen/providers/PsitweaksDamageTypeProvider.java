@@ -37,6 +37,9 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
 
     private static void addDamageTypes(Map<ResourceLocation, JsonObject> damageTypes) {
         damageTypes.put(PsitweaksDamageTypes.METEOR_LINE.location(), damageType("psitweaks.meteor_line", "never", 0.0F));
+        damageTypes.put(PsitweaksDamageTypes.DRY_METEOR.location(), freezingDamageType());
+        damageTypes.put(PsitweaksDamageTypes.CARBON_POISONING.location(),
+                damageType("psitweaks.carbon_poisoning", "never", 0.0F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {
@@ -44,6 +47,12 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
         root.addProperty("exhaustion", exhaustion);
         root.addProperty("message_id", messageId);
         root.addProperty("scaling", scaling);
+        return root;
+    }
+
+    private static JsonObject freezingDamageType() {
+        JsonObject root = damageType("freeze", "never", 0.0F);
+        root.addProperty("effects", "freezing");
         return root;
     }
 }

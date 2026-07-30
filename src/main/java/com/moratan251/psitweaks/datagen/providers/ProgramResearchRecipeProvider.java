@@ -59,6 +59,13 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 64)
         ), PsitweaksItems.PROGRAM_METEOR_LINE, 1_500_000L, 288_000);
 
+        research(recipes, "program_dry_meteor", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.PACKED_ICE, 16),
+                input(ModItems.psidust.get(), 32),
+                input(Items.BONE, 16)
+        ), PsitweaksItems.PROGRAM_DRY_METEOR, 15_000L, 1_200);
+
         research(recipes, "program_supreme_infusion", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(Items.NETHERITE_INGOT, 1),

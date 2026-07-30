@@ -135,14 +135,17 @@ public class PsiTweaksTagsProvider implements DataProvider {
 
     private static void addDamageTypeTags(Map<ResourceLocation, JsonObject> tags) {
         String meteorLine = damageType("meteor_line");
+        String dryMeteor = damageType("dry_meteor");
+        String carbonPoisoning = damageType("carbon_poisoning");
         tag(tags, "minecraft", "bypasses_armor", meteorLine);
-        tag(tags, "minecraft", "bypasses_cooldown", meteorLine);
+        tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning);
         tag(tags, "minecraft", "bypasses_effects", meteorLine);
         tag(tags, "minecraft", "bypasses_enchantments", meteorLine);
         tag(tags, "minecraft", "bypasses_invulnerability", meteorLine);
         tag(tags, "minecraft", "bypasses_resistance", meteorLine);
         tag(tags, "minecraft", "bypasses_shield", meteorLine);
-        tag(tags, "minecraft", "no_knockback", meteorLine);
+        tag(tags, "minecraft", "is_freezing", dryMeteor);
+        tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning);
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {

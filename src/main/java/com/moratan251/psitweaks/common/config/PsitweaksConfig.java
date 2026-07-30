@@ -22,6 +22,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue molecularDividerDamageMultiplier;
         public final ModConfigSpec.DoubleValue phononMaserDamageMultiplier;
         public final ModConfigSpec.DoubleValue aquaCutterDamageMultiplier;
+        public final ModConfigSpec.DoubleValue dryMeteorDamageMultiplier;
         public final ModConfigSpec.DoubleValue blazeBallDamageMultiplier;
         public final ModConfigSpec.DoubleValue activeAirMineDamageMultiplier;
         public final ModConfigSpec.DoubleValue flareCircleDamageMultiplier;
@@ -94,6 +95,18 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // aqua_cutter カテゴリ終了
+
+            // --- ドライミーティア ---
+            builder.comment("Dry Meteor Settings")
+                    .translation("psitweaks.configuration.spells.dry_meteor")
+                    .push("dry_meteor");
+
+            dryMeteorDamageMultiplier = builder
+                    .comment("ドライミーティアのダメージ倍率", "Damage multiplier for Dry Meteor")
+                    .translation("psitweaks.configuration.spells.dry_meteor.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // dry_meteor カテゴリ終了
 
             // --- ブレイズボール ---
             builder.comment("Blaze Ball Settings")

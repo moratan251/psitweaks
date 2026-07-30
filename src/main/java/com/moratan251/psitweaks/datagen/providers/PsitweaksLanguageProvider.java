@@ -44,6 +44,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 default -> item.enUs();
             });
         }
+        root.addProperty("item.psitweaks.dry_ice_projectile", switch (locale) {
+            case "ja_jp" -> "ドライアイスの飛翔体";
+            default -> "Dry Ice Projectile";
+        });
         for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
             root.addProperty("entity.productivebees." + bee.id() + "_bee", switch (locale) {
                 case "ja_jp" -> bee.jaJp();
@@ -380,6 +384,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addEffect(root, "barrier", "Barrier", "障壁");
         addEffect(root, "hardening", "Hardening", "硬化");
         addEffect(root, "radiation_filter", "Radiation Filter", "放射線フィルタ");
+        addEffect(root, "carbon_poisoning", "Carbon Poisoning", "炭素中毒");
 
         addSpellPieces(root);
         addSpellPiecesBook(root);
@@ -429,6 +434,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "molecular_divider", "Molecular Divider", "分子ディバイダー");
         addDamageMultiplierConfig(root, "phonon_maser", "Phonon Maser", "フォノンメーザー");
         addDamageMultiplierConfig(root, "aqua_cutter", "Aqua Cutter", "アクアカッター");
+        addDamageMultiplierConfig(root, "dry_meteor", "Dry Meteor", "ドライミーティア");
         addDamageMultiplierConfig(root, "blaze_ball", "Blaze Ball", "ブレイズボール");
         addDamageMultiplierConfig(root, "active_air_mine", "Active Air Mine", "能動空中機雷");
         addDamageMultiplierConfig(root, "flare_circle", "Flare Circle", "フレアサークル");
@@ -501,6 +507,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.meteor_line.item", switch (locale) {
             case "ja_jp" -> "%1$sは光に透過された";
             default -> "%1$s was permeated by light";
+        });
+        root.addProperty("death.attack.psitweaks.carbon_poisoning", switch (locale) {
+            case "ja_jp" -> "%1$sは炭素中毒に屈した";
+            default -> "%1$s succumbed to carbon poisoning";
         });
     }
 
@@ -1216,6 +1226,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_supreme_infusion", "Trick: Supreme Infusion", "Infuse Echo Shards into Psionic Echoes", "作動式: 超位注入", "残響の欠片に注入してサイオニックエコーにします");
         addSpellPiece(root, "trick_molecular_divider", "Trick: Molecular Divider", "divide the living creatures within the area", "作動式: 分子ディバイダー", "三点で作られた平面で生物を切断する");
         addSpellPiece(root, "trick_aqua_cutter", "Trick: Aqua Cutter", "Launches a water blade projectile that damages on hit", "作動式: アクアカッター", "水刃の発射体を前方に放ち、命中した対象にダメージを与える");
+        addSpellPiece(root, "trick_dry_meteor", "Trick: Dry Meteor", "Launches dry ice forward and deals freezing damage on hit", "作動式: ドライミーティア", "ドライアイスを前方に射出し、命中した対象に凍結属性ダメージを与える");
         addSpellPiece(root, "trick_blaze_ball", "Trick: Blaze Ball", "Launches a fireball forward that deals fire damage on hit", "作動式: ブレイズボール", "前方へ火の玉を発射し、命中した対象へ炎属性ダメージを与える");
         addSpellPiece(root, "trick_radiation_injection", "Trick: Radiation Injection", "Applies radiation exposure to the target", "作動式: 放射線注入", "対象を被ばくさせる");
         addSpellPiece(root, "trick_radiation_filter", "Trick: Radiation Filter", "Applies a radiation filter effect to the target", "作動式: 放射線フィルタ", "対象に放射線防護効果を付与する");
@@ -1368,6 +1379,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points. It is a high-power area attack trick.", "三点で定義した平面で生物を切断します. 高威力の範囲攻撃術式です.");
         addBookPage(root, "trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick.", "前方へ水刃の発射体を放つ序盤用の攻撃術式です.");
+        addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range. This is an area attack detonated at a chosen location.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます. 場所を指定して起爆する範囲攻撃です.");
         addBookPage(root, "trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds.", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けます.");
