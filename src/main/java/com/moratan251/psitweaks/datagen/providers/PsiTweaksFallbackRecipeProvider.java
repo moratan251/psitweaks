@@ -293,6 +293,10 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(item("psycheonic_metal_ingot"), 4),
                 counted("minecraft:nether_star", 2),
                 counted("minecraft:dragon_head", 2)));
+        addProgram(recipes, "program_dry_meteor", List.of(
+                counted("minecraft:packed_ice", 3),
+                counted("psi:psidust", 3),
+                counted("minecraft:bone", 2)));
         addProgram(recipes, "program_supreme_infusion", List.of(
                 counted("minecraft:amethyst_block", 2),
                 counted(item("flashmetal"), 2),

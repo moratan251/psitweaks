@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-26T23:24:04.7989047	PsiTweaks recipes without Mekanism
+// 1.20.1	2026-07-31T01:57:53.3909298	PsiTweaks recipes without Mekanism
 4d2a5e5b493ca9620d6c752949e875d7aebcd798 data/psitweaks/recipes/fallback/alloy_hypostasis.json
 ef32838c4669d10b540d8701fb9178de52766d6f data/psitweaks/recipes/fallback/alloy_psion.json
 33dc3af50a9ba99c0d6a66d2b163874806608e9b data/psitweaks/recipes/fallback/alloy_psionic_echo.json
@@ -30,6 +30,7 @@ b7851e84967fb4e5ad465353171abc25104a1b62 data/psitweaks/recipes/fallback/philoso
 2d2ad4ef383047bd4a2507154e5b292db0b79038 data/psitweaks/recipes/fallback/program_active_air_mine.json
 8748fd2935dc06f9763a671cd9a221946e367c2c data/psitweaks/recipes/fallback/program_cocytus.json
 cab6146ff1c6042985ca28d90ff87fd277f38cf4 data/psitweaks/recipes/fallback/program_die_flex.json
+553f44a3d3539bcdee6f5f593a1c77dbd0709d65 data/psitweaks/recipes/fallback/program_dry_meteor.json
 2406d093d72a8b7108b36d0d30640e32e66c4189 data/psitweaks/recipes/fallback/program_flight.json
 f407f38b7a690e0bdbbf7b529bb4ee154ef0e9ec data/psitweaks/recipes/fallback/program_guillotine.json
 deca39fd653cfb7a5e2041992fe44a905c6fcc31 data/psitweaks/recipes/fallback/program_jump_flex.json

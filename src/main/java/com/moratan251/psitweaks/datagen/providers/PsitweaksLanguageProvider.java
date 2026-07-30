@@ -21,6 +21,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         }
         addBackportedStringTranslations();
         addBackportedMatrixTranslations();
+        addDryMeteorTranslations();
         addMysticalAgricultureTranslations();
         for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
             add("entity.productivebees." + bee.id() + "_bee", switch (locale) {
@@ -28,6 +29,32 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
                 default -> bee.enUs();
             });
         }
+    }
+
+    private void addDryMeteorTranslations() {
+        boolean japanese = "ja_jp".equals(locale);
+        add("item.psitweaks.dry_ice_projectile", japanese ? "ドライアイスの飛翔体" : "Dry Ice Projectile");
+        add("item.psitweaks.program_dry_meteor", japanese ? "プログラム: ドライミーティア" : "Program: Dry Meteor");
+        add("effect.psitweaks.carbon_poisoning", japanese ? "炭素中毒" : "Carbon Poisoning");
+        add("death.attack.psitweaks.carbon_poisoning",
+                japanese ? "%1$sは炭素中毒に屈した" : "%1$s succumbed to carbon poisoning");
+        add("psitweaks.spellpiece.trick_dry_meteor",
+                japanese ? "作動式: ドライミーティア" : "Trick: Dry Meteor");
+        add("psitweaks.spellpiece.trick_dry_meteor.desc",
+                japanese
+                        ? "ドライアイスを前方に射出し、命中した対象に凍結属性ダメージを与える"
+                        : "Launches dry ice forward and deals freezing damage on hit");
+        add("psi.book.page.psitweaks_spellpiece.trick_dry_meteor",
+                japanese
+                        ? "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます."
+                        : "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.");
+        add("psitweaks.configuration.spells.dry_meteor", japanese ? "ドライミーティア" : "Dry Meteor");
+        add("psitweaks.configuration.spells.dry_meteor.damage_multiplier",
+                japanese ? "ダメージ倍率" : "Damage Multiplier");
+        add("psitweaks.configuration.spells.dry_meteor.damage_multiplier.tooltip",
+                japanese
+                        ? "ドライミーティアのダメージに適用する倍率です。"
+                        : "Multiplier applied to Dry Meteor damage.");
     }
 
     private void addMysticalAgricultureTranslations() {

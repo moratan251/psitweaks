@@ -26,6 +26,9 @@ public class PsitweaksEffects {
     public static final RegistryObject<MobEffect> RADIATION_FILTER =
             EFFECTS.register("radiation_filter", EffectRadiationFilter::new);
 
+    public static final RegistryObject<MobEffect> CARBON_POISONING =
+            EFFECTS.register("carbon_poisoning", EffectCarbonPoisoning::new);
+
 
 
     public static void register(IEventBus eventBus) {

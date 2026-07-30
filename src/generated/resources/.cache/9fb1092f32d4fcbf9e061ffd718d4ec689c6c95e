@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-26T23:24:04.8019048	Recipes
+// 1.20.1	2026-07-31T01:57:53.3974324	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -274,6 +274,7 @@ b1c1a866bcd5e08c4897fe7e60486cbe6964be8c data/psitweaks/recipes/program_blank.js
 c883125acd948a9b5767d74ad114b54a6d9ed5ac data/psitweaks/recipes/program_research/program_cocytus.json
 f9ec4b37107eb7517ab9ea552f565ae81bf3f4ee data/psitweaks/recipes/program_research/program_cure_radiation.json
 8b0e6e2b30a6d2ba00f602ff05564eef198cc083 data/psitweaks/recipes/program_research/program_die_flex.json
+c44bf29335ecd895d7d45b9ecb2b9ff23d020d7b data/psitweaks/recipes/program_research/program_dry_meteor.json
 5432ea6d4da7927012e223750b622b91789ab28b data/psitweaks/recipes/program_research/program_flight.json
 1d16ab559880fbcf089f038f6a1be7f94cfcaed8 data/psitweaks/recipes/program_research/program_guillotine.json
 e1d2b3e7c36544d7db3a8390e9a4fc1ac1618485 data/psitweaks/recipes/program_research/program_jump_flex.json

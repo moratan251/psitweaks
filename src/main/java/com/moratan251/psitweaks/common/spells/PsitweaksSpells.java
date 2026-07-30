@@ -78,6 +78,9 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_meteor_line"), PieceTrickMeteorLine.class);
             PsiAPI.addPieceToGroup(PieceTrickMeteorLine.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_meteor_line"), false);
 
+            PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dry_meteor"), PieceTrickDryMeteor.class);
+            PsiAPI.addPieceToGroup(PieceTrickDryMeteor.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_dry_meteor"), false);
+
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_supreme_infusion"), PieceTrickSupremeInfusion.class);
             PsiAPI.addPieceToGroup(PieceTrickSupremeInfusion.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_supreme_infusion"), false);
 

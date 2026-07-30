@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:packed_ice"
+    },
+    {
+      "item": "minecraft:packed_ice"
+    },
+    {
+      "item": "minecraft:packed_ice"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:program_dry_meteor"
+  }
+}

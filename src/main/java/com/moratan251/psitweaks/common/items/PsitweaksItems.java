@@ -66,6 +66,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_FLIGHT = ITEMS.register("program_flight", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_PHONON_MASER = ITEMS.register("program_phonon_maser", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_METEOR_LINE = ITEMS.register("program_meteor_line", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_DRY_METEOR = ITEMS.register("program_dry_meteor", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_SUPREME_INFUSION = ITEMS.register("program_supreme_infusion", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MOLECULAR_DIVIDER = ITEMS.register("program_molecular_divider", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_RADIATION_INJECTION = registerMekanismProgram("program_radiation_injection");
@@ -123,6 +124,8 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> MAGICIANS_BRAIN = ITEMS.register("magicians_brain", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> AQUA_CUTTER_PROJECTILE = ITEMS.register("aqua_cutter_projectile",
+            () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> DRY_ICE_PROJECTILE = ITEMS.register("dry_ice_projectile",
             () -> new Item(new Item.Properties()));
 
 

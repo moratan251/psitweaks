@@ -10,6 +10,12 @@ public final class PsitweaksDamageTypes {
     public static final ResourceKey<DamageType> METEOR_LINE =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("meteor_line"));
 
+    public static final ResourceKey<DamageType> DRY_METEOR =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("dry_meteor"));
+
+    public static final ResourceKey<DamageType> CARBON_POISONING =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("carbon_poisoning"));
+
     private PsitweaksDamageTypes() {
     }
 }

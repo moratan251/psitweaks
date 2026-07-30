@@ -59,6 +59,14 @@ public class PsitweaksEntities {
                             .updateInterval(10)
                             .build(Psitweaks.MOD_ID + ":aqua_cutter_projectile"));
 
+    public static final RegistryObject<EntityType<EntityDryIceProjectile>> DRY_ICE_PROJECTILE =
+            ENTITY_TYPES.register("dry_ice_projectile",
+                    () -> EntityType.Builder.<EntityDryIceProjectile>of(EntityDryIceProjectile::new, MobCategory.MISC)
+                            .sized(0.5f, 0.5f)
+                            .clientTrackingRange(64)
+                            .updateInterval(10)
+                            .build(Psitweaks.MOD_ID + ":dry_ice_projectile"));
+
     public static final RegistryObject<EntityType<EntityBlazeBall>> BLAZE_BALL =
             ENTITY_TYPES.register("blaze_ball",
                     () -> EntityType.Builder.<EntityBlazeBall>of(EntityBlazeBall::new, MobCategory.MISC)

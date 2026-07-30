@@ -85,6 +85,15 @@ public final class ProgramResearchRecipeProvider {
                 .time(288_000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_meteor_line"));
 
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_DRY_METEOR.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(Items.PACKED_ICE, 16)
+                .requires(ModItems.psidust, 32)
+                .requires(Items.BONE, 16)
+                .energyPerTick(15_000L)
+                .time(1200)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_dry_meteor"));
+
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
                 .requires(Items.NETHERITE_INGOT, 1)

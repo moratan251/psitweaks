@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-25T02:10:17.5961238	Item Models: psitweaks
+// 1.20.1	2026-07-31T01:57:53.3929297	Item Models: psitweaks
 9be455b28f25dc7c439ae3a70c704949d5cfdbbc assets/psitweaks/models/item/advanced_spell_bullet.json
 65ce1cfdd3a5f75a916309b6710a6a7943340c9a assets/psitweaks/models/item/advanced_spell_bullet_active.json
 b869ae5a156c2b46ba5f2806a743b94e892f705a assets/psitweaks/models/item/advanced_spell_bullet_charge.json
@@ -93,6 +93,7 @@ efcac9d4582f9c75daa7682486d97573170b3d5f assets/psitweaks/models/item/program_ac
 b0f8af788f3d43d188205ea21fee30d691060568 assets/psitweaks/models/item/program_cocytus.json
 5da3df73006eff9cf61218064c4b043debcb5b94 assets/psitweaks/models/item/program_cure_radiation.json
 9e796c6bcba3bf70cf1fd228e99a2c45af497d20 assets/psitweaks/models/item/program_die_flex.json
+d839710cb8c4bbd0a7a8be24a41f6468d441733d assets/psitweaks/models/item/program_dry_meteor.json
 56f697fea07c708431f3116d0b7da49e73719f1e assets/psitweaks/models/item/program_flight.json
 a89b24fec0de6d85e5d4b7bceb09440ed038d549 assets/psitweaks/models/item/program_guillotine.json
 1b71d8ae0c8a5c301535fdffa7953526d8adde38 assets/psitweaks/models/item/program_jump_flex.json
