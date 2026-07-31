@@ -1,6 +1,38 @@
 ## Changelog
 
 
+#### v0.10.4
+
+- (1.21.1) Changed the behavior of Trick: Flight
+  + It now continuously consumes Psi during creative flight in exchange for a lower activation cost
+
+
+- Adjusted the Program: Flight recipe
+
+
+- Added spell pieces
+  + Selector: Effect List
+  + Trick: Dry Meteor
+
+
+- Added the Carbon Poisoning status effect
+  + It is applied by attacks from Trick: Dry Meteor
+
+
+- Adjusted Trick: Aqua Cutter
+  + Improved its appearance
+  + Changed its damage type from magic to physical (`minecraft:thrown`)
+
+
+- Added a spell-piece bookmarking feature
+
+
+- Adjusted Psionic Utilities integration
+  + Fixed an issue where moving Psionic Utilities pieces with Ctrl + drag was unavailable because its controls conflicted with Psitweaks' functionality
+  + Prevented Psionic Utilities' drag-based connector creation from being triggered over piece-selection windows and similar screens
+  + Made drag-based connector creation and piece movement in Psionic Utilities undoable with Ctrl + Z
+
+
 #### v0.10.3
 
 - Added spell pieces
