@@ -31,8 +31,8 @@ public class EntityDryIceProjectile extends ThrowableItemProjectile {
     private static final int MAX_LIFETIME_TICKS = 60;
     private static final int CARBON_POISONING_DURATION_TICKS = 200;
     private static final int BLOCK_FRAGMENT_PARTICLE_COUNT = 36;
-    private static final int ENTITY_SNOW_PARTICLE_COUNT = 48;
-    private static final int ENTITY_WHITE_SMOKE_PARTICLE_COUNT = 72;
+    private static final int ENTITY_SNOW_PARTICLE_COUNT = 24;
+    private static final int ENTITY_WHITE_SMOKE_PARTICLE_COUNT = 24;
 
     private float damage = 14.0F;
     private boolean safeToPlayers;
