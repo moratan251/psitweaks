@@ -300,6 +300,26 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_transform_vector");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =
             registerPieceMaterial("operator_matrix_linear_part");
+    public static final DeferredHolder<Material, Material> OPERATOR_WEAK_RAYCAST =
+            registerPieceMaterial("operator_weak_raycast");
+    public static final DeferredHolder<Material, Material> OPERATOR_WEAK_RAYCAST_AXIS =
+            registerPieceMaterial("operator_weak_raycast_axis");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRONG_RAYCAST =
+            registerPieceMaterial("operator_strong_raycast");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRONG_RAYCAST_AXIS =
+            registerPieceMaterial("operator_strong_raycast_axis");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_RAYCAST =
+            registerPieceMaterial("macro_caster_raycast");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_RAYCAST_AXIS =
+            registerPieceMaterial("macro_caster_raycast_axis");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_STRONG_RAYCAST =
+            registerPieceMaterial("macro_caster_strong_raycast");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_STRONG_RAYCAST_AXIS =
+            registerPieceMaterial("macro_caster_strong_raycast_axis");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_WEAK_RAYCAST =
+            registerPieceMaterial("macro_caster_weak_raycast");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_WEAK_RAYCAST_AXIS =
+            registerPieceMaterial("macro_caster_weak_raycast_axis");
     public static final DeferredHolder<Material, Material> MODE_STRING =
             registerPieceMaterial("mode/string");
     public static final DeferredHolder<Material, Material> MODE_NUMBER =

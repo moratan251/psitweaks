@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.macro_caster_strong_raycast",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/macro_caster_strong_raycast.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.macro_caster_strong_raycast"
+    }
+  ]
+}

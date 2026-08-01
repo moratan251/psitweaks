@@ -305,6 +305,26 @@ public final class PsitweaksSpells {
             registerPiece("operator_inside_region", PieceOperatorInsideRegion.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorOutsideRegion>> OPERATOR_OUTSIDE_REGION =
             registerPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorWeakRaycast>> OPERATOR_WEAK_RAYCAST =
+            registerPiece("operator_weak_raycast", PieceOperatorWeakRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorWeakRaycastAxis>> OPERATOR_WEAK_RAYCAST_AXIS =
+            registerPiece("operator_weak_raycast_axis", PieceOperatorWeakRaycastAxis.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStrongRaycast>> OPERATOR_STRONG_RAYCAST =
+            registerPiece("operator_strong_raycast", PieceOperatorStrongRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorStrongRaycastAxis>> OPERATOR_STRONG_RAYCAST_AXIS =
+            registerPiece("operator_strong_raycast_axis", PieceOperatorStrongRaycastAxis.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceMacroCasterRaycast>> MACRO_CASTER_RAYCAST =
+            registerPiece("macro_caster_raycast", PieceMacroCasterRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceMacroCasterAxisRaycast>> MACRO_CASTER_RAYCAST_AXIS =
+            registerPiece("macro_caster_raycast_axis", PieceMacroCasterAxisRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceMacroCasterStrongRaycast>> MACRO_CASTER_STRONG_RAYCAST =
+            registerPiece("macro_caster_strong_raycast", PieceMacroCasterStrongRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceMacroCasterStrongAxisRaycast>> MACRO_CASTER_STRONG_RAYCAST_AXIS =
+            registerPiece("macro_caster_strong_raycast_axis", PieceMacroCasterStrongAxisRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceMacroCasterWeakRaycast>> MACRO_CASTER_WEAK_RAYCAST =
+            registerPiece("macro_caster_weak_raycast", PieceMacroCasterWeakRaycast.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceMacroCasterWeakAxisRaycast>> MACRO_CASTER_WEAK_RAYCAST_AXIS =
+            registerPiece("macro_caster_weak_raycast_axis", PieceMacroCasterWeakAxisRaycast.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMassBlockBreak>> TRICK_MASS_BLOCK_BREAK =
             registerPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
 
@@ -398,6 +418,26 @@ public final class PsitweaksSpells {
             registerGroup("trick_material_mutation", PieceTrickMaterialMutation.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MASS_BLOCK_BREAK =
             registerGroup("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_WEAK_RAYCAST_GROUP =
+            registerGroup("operator_weak_raycast", PieceOperatorWeakRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_WEAK_RAYCAST_AXIS_GROUP =
+            registerGroup("operator_weak_raycast_axis", PieceOperatorWeakRaycastAxis.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_STRONG_RAYCAST_GROUP =
+            registerGroup("operator_strong_raycast", PieceOperatorStrongRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_STRONG_RAYCAST_AXIS_GROUP =
+            registerGroup("operator_strong_raycast_axis", PieceOperatorStrongRaycastAxis.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MACRO_CASTER_RAYCAST_GROUP =
+            registerGroup("macro_caster_raycast", PieceMacroCasterRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MACRO_CASTER_RAYCAST_AXIS_GROUP =
+            registerGroup("macro_caster_raycast_axis", PieceMacroCasterAxisRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MACRO_CASTER_STRONG_RAYCAST_GROUP =
+            registerGroup("macro_caster_strong_raycast", PieceMacroCasterStrongRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MACRO_CASTER_STRONG_RAYCAST_AXIS_GROUP =
+            registerGroup("macro_caster_strong_raycast_axis", PieceMacroCasterStrongAxisRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MACRO_CASTER_WEAK_RAYCAST_GROUP =
+            registerGroup("macro_caster_weak_raycast", PieceMacroCasterWeakRaycast.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MACRO_CASTER_WEAK_RAYCAST_AXIS_GROUP =
+            registerGroup("macro_caster_weak_raycast_axis", PieceMacroCasterWeakAxisRaycast.class);
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerGroup("trick_physical_propulsion", PieceTrickPhysicalPropulsion.class);
