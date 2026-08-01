@@ -14,9 +14,13 @@ This mod makes use of source code and concepts from the following projects:
   License: MIT License
   Source: https://github.com/Dudblockman/Psipherals
 
+- Random PSIdeas (by kamefrede123)
+  License: MIT License
+  Source: https://github.com/Kamefrede/rpsideas
+
 This mod is inspired by the terminology and concepts of the following projects.
 No source code or assets from these projects are redistributed in Psitweaks.
 
 - PlusTiC Reforged (by queengooborg)
 
-- Random PSIdeas (by kamefrede123)
+

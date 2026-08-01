@@ -63,6 +63,9 @@ When Mekanism is not installed, Mekanism-specific machines and modules are not a
 
 *   Create Aeronautics / Sable (1.21.1)
 *   Tinkers' Construct (1.20.1)
+*   Mystical Agriculture
+*   Mystical Agradditions
+*   Productive Bees
 
 Please note that some features may differ depending on the Minecraft version and the other mods installed.
 
