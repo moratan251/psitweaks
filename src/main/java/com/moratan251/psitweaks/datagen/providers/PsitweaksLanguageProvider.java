@@ -261,6 +261,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "タグ";
             default -> "Tag";
         });
+        root.addProperty("psitweaks.spellparam.leftright", switch (locale) {
+            case "ja_jp" -> "左右";
+            default -> "Left/Right";
+        });
+        root.addProperty("psitweaks.spellparam.forwardbackward", switch (locale) {
+            case "ja_jp" -> "前後";
+            default -> "Forward/Backward";
+        });
+        root.addProperty("psitweaks.spellparam.updown", switch (locale) {
+            case "ja_jp" -> "上下";
+            default -> "Up/Down";
+        });
         root.addProperty("psitweaks.spellparam.label", switch (locale) {
             case "ja_jp" -> "ラベル";
             default -> "Label";
@@ -1350,6 +1362,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "macro_caster_weak_raycast_axis", "Macro: Caster Raycast Direction (Weak)", "Like Macro: Caster Raycast Direction, but it also hits fluids such as water and lava.", "マクロ: 術者レイキャスト方向 (弱)", "マクロ: 術者レイキャスト方向と同じですが、水や溶岩などの流体にも命中します。");
         addSpellPiece(root, "macro_caster_strong_raycast", "Macro: Caster Raycast (Strong)", "Like Macro: Caster Raycast, but blocks without a collision shape are ignored.", "マクロ: 術者レイキャスト (強)", "マクロ: 術者レイキャストと同じですが、当たり判定のないブロックを無視します。");
         addSpellPiece(root, "macro_caster_strong_raycast_axis", "Macro: Caster Raycast Direction (Strong)", "Like Macro: Caster Raycast Direction, but blocks without a collision shape and fluids are ignored.", "マクロ: 術者レイキャスト方向 (強)", "マクロ: 術者レイキャスト方向と同じですが、当たり判定のないブロックと流体を無視します。");
+        addSpellPiece(root, "macro_caster_axial_offset", "Macro: Caster Axial Offset", "Offsets a position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Positive values move right, forward, and up. Pitch is ignored. Use the (3D) variant to follow the pitch as well.", "マクロ: 術者方角平行移動", "術者の水平方向の向きを基準に、位置を左右・前後・上下へ平行移動します。正の値で右・前・上へ移動します。視線の上下成分は無視されます。視線の上下にも追随させたい場合は (3D) 版を使用します。");
+        addSpellPiece(root, "macro_caster_axial_rotation", "Macro: Caster Axial Rotation", "Rotates a direction vector from the caster's view frame (X = right, Y = up, Z = forward) into world space. Facing is rounded to the nearest horizontal cardinal direction. Pitch is ignored. Use the (3D) variant to follow the pitch as well.", "マクロ: 術者方角回転", "方向ベクトルを術者の視点座標(X=右、Y=上、Z=前)からワールド座標へ回転します。向きは最も近い水平4方角に丸められ、視線の上下成分は無視されます。視線の上下にも追随させたい場合は (3D) 版を使用します。");
+        addSpellPiece(root, "macro_caster_axial_offset_3d", "Macro: Caster Axial Offset (3D)", "Like Macro: Caster Axial Offset, but the facing also follows the pitch. When looking straight up or down, forward points vertically and the offset plane becomes horizontal.", "マクロ: 術者方角平行移動 (3D)", "マクロ: 術者方角平行移動と同じですが、視線の上下も基準に含みます。真上や真下を向いた時は前後が垂直になり、オフセット平面が水平になります。");
+        addSpellPiece(root, "macro_caster_axial_rotation_3d", "Macro: Caster Axial Rotation (3D)", "Like Macro: Caster Axial Rotation, but the facing also follows the pitch (X = right, Y = view-up, Z = forward), including when looking straight up or down.", "マクロ: 術者方角回転 (3D)", "マクロ: 術者方角回転と同じですが、視線の上下も基準に含みます。X=右、Y=視点上、Z=前で、真上や真下を向いた時も視点に追随します。");
         addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. Drops are intentionally collected into the caster's inventory first; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。ドロップは意図的に先に術者のインベントリへ回収され、入りきらない分だけドロップします。");
     }
 
@@ -1513,6 +1529,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "macro_caster_weak_raycast_axis", "Raycasts from the caster's position in the look direction and returns the normal direction of the face of the hit block or fluid.", "術者の位置から視線方向へレイキャストし、命中したブロックや流体の面の法線方向を返します.");
         addBookPage(root, "macro_caster_strong_raycast", "Raycasts from the caster's position in the look direction and returns the coordinates of the hit block with a collision shape.", "術者の位置から視線方向へレイキャストし、命中した当たり判定のあるブロックの座標を返します.");
         addBookPage(root, "macro_caster_strong_raycast_axis", "Raycasts from the caster's position in the look direction and returns the normal direction of the face of the hit block with a collision shape.", "術者の位置から視線方向へレイキャストし、命中した当たり判定のあるブロックの面の法線方向を返します.");
+        addBookPage(root, "macro_caster_axial_offset", "Moves the given position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Facing is rounded to the nearest horizontal cardinal direction, and pitch is ignored. Positive Left/Right moves to the caster's right, positive Forward/Backward moves forward, and positive Up/Down moves upward; negative values move in the opposite directions. Unconnected parameters are treated as 0.", "指定した位置を、術者の水平方向の向きを基準に左右・前後・上下へ平行移動します. 向きは最も近い水平4方角へ丸められ、視線の上下成分は無視されます. 左右の正の値は術者の右へ、前後の正の値は前へ、上下の正の値は上へ移動し、負の値は逆方向です. 未接続のパラメータは 0 として扱われます.");
+        addBookPage(root, "macro_caster_axial_rotation", "Rotates the given direction vector from the caster's view frame into world space. The X component is treated as right, Y as up, and Z as forward relative to the caster's horizontal facing, which is rounded to the nearest cardinal direction; pitch is ignored. For example, (0, 0, 1) returns the caster's facing direction and (1, 0, 0) returns the direction to the caster's right. The vector's magnitude is preserved.", "指定した方向ベクトルを術者の視点座標からワールド座標へ回転します. X成分を右、Y成分を上、Z成分を前として、最も近い水平4方角へ丸めた術者の向きを基準に変換します. 視線の上下成分は無視されます. 例えば (0, 0, 1) は術者の正面方向、(1, 0, 0) は術者の右方向を返します. ベクトルの大きさは保存されます.");
+        addBookPage(root, "macro_caster_axial_offset_3d", "Like Macro: Caster Axial Offset, but the facing is rounded to the nearest of the six axis directions, including straight up and down. When looking straight up or down, forward points vertically and the Up/Down axis becomes horizontal, so offsets form a horizontal plane. This is useful for effects like 3x3 area mining, where the mined plane should become the floor or ceiling when looking up or down.", "マクロ: 術者方角平行移動と同じですが、向きは真上・真下を含む6方角の最も近い方向へ丸められます. 真上や真下を向いた時は前後が垂直になり、上下の軸が水平になるため、オフセット平面が水平に張られます. 上や下を向いた時に掘削平面を床や天井にしたい 3×3 範囲破壊などに有用です.");
+        addBookPage(root, "macro_caster_axial_rotation_3d", "Like Macro: Caster Axial Rotation, but the facing is rounded to the nearest of the six axis directions, including straight up and down. The X component is treated as right, Y as view-up, and Z as forward. When looking straight up or down, Z points vertically and Y becomes horizontal, matching the orientation of the view.", "マクロ: 術者方角回転と同じですが、向きは真上・真下を含む6方角の最も近い方向へ丸められます. X成分を右、Y成分を視点上、Z成分を前として変換します. 真上や真下を向いた時はZが垂直、Yが水平になり、視点の向きに一致します.");
         addBookPage(root, "trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List. Vectors are treated as block coordinates, duplicate block positions are ignored after their first occurrence, and the remaining order is preserved. The maximum block count input must be a positive integer constant. Only positions within the configured maximum are range-checked and broken. Dropped items are merged by item and data components, then intentionally collected into the caster's inventory first. Only overflow is dropped at the caster's position, or at the focal point if the task is interrupted. The processed positions must fit within the shared internal limit.", "Vector List の座標にあるブロックを破壊します. Vector はブロック座標として扱われ、重複したブロック座標は最初の1回だけ使われ、残りの順序は維持されます. 破壊数の上限入力は正の整数定数である必要があります. 設定した最大数まで実際に処理される座標だけが範囲チェックと破壊の対象になります. ドロップアイテムはアイテムとデータコンポーネントごとにまとめられ、意図的に先に術者のインベントリへ回収されます. 入りきらない分だけ術者の位置へ、タスクが中断された場合は焦点位置へドロップします. 処理対象は共通の内部上限内に収まる必要があります.");
     }
 

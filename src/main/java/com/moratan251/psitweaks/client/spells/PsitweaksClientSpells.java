@@ -320,6 +320,14 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("macro_caster_weak_raycast");
     public static final DeferredHolder<Material, Material> MACRO_CASTER_WEAK_RAYCAST_AXIS =
             registerPieceMaterial("macro_caster_weak_raycast_axis");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_AXIAL_OFFSET =
+            registerPieceMaterial("macro_caster_axial_offset");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_AXIAL_ROTATION =
+            registerPieceMaterial("macro_caster_axial_rotation");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_AXIAL_OFFSET_3D =
+            registerPieceMaterial("macro_caster_axial_offset_3d");
+    public static final DeferredHolder<Material, Material> MACRO_CASTER_AXIAL_ROTATION_3D =
+            registerPieceMaterial("macro_caster_axial_rotation_3d");
     public static final DeferredHolder<Material, Material> MODE_STRING =
             registerPieceMaterial("mode/string");
     public static final DeferredHolder<Material, Material> MODE_NUMBER =

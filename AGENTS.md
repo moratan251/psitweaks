@@ -14,7 +14,7 @@ Use this file when an agent starts inside `1.21.1-worktree/`. The workspace-leve
 - This is the main Minecraft 1.21.1 / NeoForge development worktree.
 - Use `../1.20.1/` only for an explicit 1.20.1 fix, backport, or porting reference.
 - Store task state in `../.steering/`; never create a worktree-local `.steering/`.
-- Use shared skills from `../.agents/skills/`.
+- Use shared skills from `../.agents/skills/`; for spell piece work, use `psitweaks-spell-piece`.
 
 ## Local Rules
 
@@ -28,7 +28,7 @@ Use this file when an agent starts inside `1.21.1-worktree/`. The workspace-leve
 
 ## Verification
 
-- Run Gradle commands in this directory.
+- Run Gradle commands in this directory (`.\gradlew` in PowerShell, `./gradlew` in bash).
 - Minimum implementation verification: `.\gradlew compileJava`.
 - Datagen changes: `.\gradlew runData`, followed by a generated-resource diff review.
 - Visible/client changes: `.\gradlew runClient` when practical.
