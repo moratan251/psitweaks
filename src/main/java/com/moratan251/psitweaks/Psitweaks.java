@@ -28,6 +28,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
 import com.moratan251.psitweaks.common.handler.FlightPsiCostCaptureHandler;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
@@ -162,6 +163,8 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SafetySpellCastHandler::onPreSpellCast);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SpellPsiRefundCaptureHandler::onPreSpellCast);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, FlightPsiCostCaptureHandler::onPreSpellCast);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, DimensionalCrystalDropHandler::onPreSpellCast);
+        NeoForge.EVENT_BUS.addListener(DimensionalCrystalDropHandler::onSpellCast);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
 

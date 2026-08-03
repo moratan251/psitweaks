@@ -230,6 +230,10 @@ public final class PsitweaksItems {
             "pellet_americium",
             new Item.Properties().rarity(Rarity.RARE)
     );
+    public static final DeferredItem<Item> DIMENSIONAL_CRYSTAL = ITEMS.registerSimpleItem(
+            "dimensional_crystal",
+            new Item.Properties()
+    );
     public static final DeferredItem<Item> HYPOSTASIS_GEM = ITEMS.registerSimpleItem(
             "hypostasis_gem",
             new Item.Properties()

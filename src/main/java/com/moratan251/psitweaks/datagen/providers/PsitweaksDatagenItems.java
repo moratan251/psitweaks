@@ -54,6 +54,7 @@ final class PsitweaksDatagenItems {
             item("pellet_neptunium", "Neptunium Pellet", "ネプツニウムペレット"),
             item("pellet_americium", "Americium Pellet", "アメリシウムペレット"),
             item("hypostasis_gem", "Hypostasis Gem", "ヒュポスタシスジェム"),
+            item("dimensional_crystal", "Dimensional Crystal", "次元の結晶"),
             item("echo_sheet", "HDΨE Sheet", "HDΨEシート"),
             item("magicians_brain", "Magician's Brain", "魔法師の脳"),
             item("program_blank", "Blank Program", "空白のプログラム"),

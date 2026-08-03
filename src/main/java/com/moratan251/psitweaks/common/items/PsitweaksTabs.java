@@ -69,6 +69,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.ECHO_PELLET.get());
                         output.accept(PsitweaksItems.PELLET_NEPTUNIUM.get());
                         output.accept(PsitweaksItems.PELLET_AMERICIUM.get());
+                        output.accept(PsitweaksItems.DIMENSIONAL_CRYSTAL.get());
                         output.accept(PsitweaksItems.HYPOSTASIS_GEM.get());
                         output.accept(PsitweaksItems.JADE.get());
                         output.accept(PsitweaksItems.MAGATAMA.get());
