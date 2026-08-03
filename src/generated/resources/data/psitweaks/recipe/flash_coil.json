@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:flashmetal_nugget"
+    },
+    "B": {
+      "item": "psitweaks:chaotic_psimetal"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:flash_coil"
+  }
+}

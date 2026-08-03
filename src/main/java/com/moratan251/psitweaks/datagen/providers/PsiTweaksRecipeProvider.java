@@ -64,6 +64,36 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'J', ingredientItem(PsitweaksItems.JADE)
                 ),
                 PsitweaksItems.MAGATAMA, 1));
+        recipe(recipes, "hardened_capsule", shaped(
+                List.of("ABA", "B B", "ABA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL),
+                        'B', ingredientItem(Items.SHULKER_SHELL)
+                ),
+                PsitweaksItems.HARDENED_CAPSULE, 1));
+        recipe(recipes, "flash_coil", shaped(
+                List.of("AAA", "ABA", "AAA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.FLASHMETAL_NUGGET),
+                        'B', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL)
+                ),
+                PsitweaksItems.FLASH_COIL, 1));
+        recipe(recipes, "flash_chip", shaped(
+                List.of("AAA", "BBB", "AAA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.FLASH_COIL),
+                        'B', ingredientItem(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT)
+                ),
+                PsitweaksItems.FLASH_CHIP, 1));
+        recipe(recipes, "nano_reactor", shaped(
+                List.of("ABA", "CDC", "ABA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.FLASH_CHIP),
+                        'B', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'C', ingredientItem(PsitweaksItems.HEAVY_PSIMETAL),
+                        'D', ingredientItem(PsitweaksItems.HARDENED_CAPSULE)
+                ),
+                PsitweaksItems.NANO_REACTOR, 1));
         recipe(recipes, "psionic_echo", trickCrafting(
                 ingredientItem(Items.ECHO_SHARD),
                 PsitweaksItems.PSIONIC_ECHO,

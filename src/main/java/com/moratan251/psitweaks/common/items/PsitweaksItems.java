@@ -98,6 +98,34 @@ public final class PsitweaksItems {
             "chaotic_factor",
             new Item.Properties()
     );
+    public static final DeferredItem<Item> QUANTUM_PSIONIC_FACTOR = ITEMS.registerSimpleItem(
+            "quantum_psionic_factor",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> HARDENED_CAPSULE = ITEMS.registerSimpleItem(
+            "hardened_capsule",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> FLASH_COIL = ITEMS.registerSimpleItem(
+            "flash_coil",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> FLASH_CHIP = ITEMS.registerSimpleItem(
+            "flash_chip",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> NANO_REACTOR = ITEMS.registerSimpleItem(
+            "nano_reactor",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> STRING_A = ITEMS.registerSimpleItem(
+            "string_a",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> INFUSED_ANTINITE_PLATE = ITEMS.registerSimpleItem(
+            "infused_antinite_plate",
+            new Item.Properties()
+    );
     public static final DeferredItem<Item> PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
             "psimetal_nugget",
             new Item.Properties()

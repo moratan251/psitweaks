@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:flash_chip"
+    },
+    "B": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "C": {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    "D": {
+      "item": "psitweaks:hardened_capsule"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:nano_reactor"
+  }
+}

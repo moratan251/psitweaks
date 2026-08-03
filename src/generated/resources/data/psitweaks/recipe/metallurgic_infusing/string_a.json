@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 160,
+    "chemical": "psitweaks:infuse_quantum"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:string"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:string_a"
+  },
+  "per_tick_usage": false
+}

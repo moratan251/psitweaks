@@ -82,6 +82,24 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         add(recipes, "psionic_factor", shapeless(
                 List.of(ingredient(Items.ENDER_PEARL), ingredient(PsitweaksItems.ENRICHED_PSIGEM)),
                 PsitweaksItems.PSIONIC_FACTOR, 1));
+        add(recipes, "quantum_psionic_factor", shapelessCounted(
+                List.of(
+                        counted(PsitweaksItems.PSIONIC_FACTOR, 1),
+                        counted(Items.ENDER_EYE, 8)
+                ),
+                PsitweaksItems.QUANTUM_PSIONIC_FACTOR, 1));
+        add(recipes, "string_a", shapelessCounted(
+                List.of(
+                        counted(Items.STRING, 1),
+                        counted(PsitweaksItems.QUANTUM_PSIONIC_FACTOR, 2)
+                ),
+                PsitweaksItems.STRING_A, 1));
+        add(recipes, "infused_antinite_plate", shapelessCounted(
+                List.of(
+                        counted(PsitweaksItems.ANTINITE_INGOT, 6),
+                        counted(PsitweaksItems.QUANTUM_PSIONIC_FACTOR, 1)
+                ),
+                PsitweaksItems.INFUSED_ANTINITE_PLATE, 2));
         add(recipes, "psionic_factor_ebony", surrounding(
                 PsitweaksItems.PSIONIC_FACTOR, PsitweaksItems.ENRICHED_EBONY, PsitweaksItems.PSIONIC_FACTOR_EBONY));
         add(recipes, "psionic_factor_ivory", surrounding(
