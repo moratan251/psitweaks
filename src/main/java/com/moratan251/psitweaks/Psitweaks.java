@@ -174,6 +174,7 @@ public class Psitweaks {
         LOGGER.info("PsiTweaks common setup");
 
         event.enqueueWork(ComponentStats::registerAssemblyStats);
+        event.enqueueWork(ComponentStats::registerCoreStats);
         event.enqueueWork(PsitweaksItems::registerCurioItems);
         MekanismCompat.commonSetup(event);
 

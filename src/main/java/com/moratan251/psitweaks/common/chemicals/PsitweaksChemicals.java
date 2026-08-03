@@ -17,6 +17,7 @@ public final class PsitweaksChemicals {
     public static final DeferredChemical<Chemical> INFUSE_CHAOTIC_FACTOR = CHEMICALS.registerInfuse("infuse_chaotic_factor", 0x7F7F7F);
     public static final DeferredChemical<Chemical> INFUSE_PSIONIC_ECHO = CHEMICALS.registerInfuse("infuse_psionic_echo", 0x15044B);
     public static final DeferredChemical<Chemical> INFUSE_HYPOSTASIS = CHEMICALS.registerInfuse("infuse_hypostasis", 0xFFB0B0);
+    public static final DeferredChemical<Chemical> INFUSE_QUANTUM = CHEMICALS.registerInfuse("infuse_quantum", 0x44FFAA);
 
     public static final DeferredChemical<Chemical> GAS_PSIONIC_ECHO = CHEMICALS.register(
             "gas_psionic_echo",

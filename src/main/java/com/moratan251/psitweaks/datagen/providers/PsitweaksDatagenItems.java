@@ -127,6 +127,8 @@ final class PsitweaksDatagenItems {
             item("cad_assembly_heavy_psimetal_alpha", "Heavy Psimetal CAD Assembly α", "ヘビーサイメタルのCAD素体 α型"),
             item("cad_assembly_heavy_psimetal_beta", "Heavy Psimetal CAD Assembly β", "ヘビーサイメタルのCAD素体 β型"),
             item("cad_assembly_psycheonic_metal", "Psycheonic Metal CAD Assembly", "プシオニックメタルのCAD素体", "cad_assembly_psycheonicmetal"),
+            item("cad_core_absorptive", "Absorptive CAD Core", "吸収性CADコア"),
+            item("cad_core_ultraclocked", "Ultraclocked CAD Core", "ウルトラクロックCADコア"),
             item("incomplete_heavy_psimetal_assembly", "Incomplete Heavy Psimetal CAD Assembly", "未完成ヘビーサイメタルCAD素体"),
             modelItem("inline_caster", "Inline Caster", "インラインキャスター", "psi:item/cad_inline_1"),
             modelItem("secondary_caster", "Secondary Caster", "セカンダリキャスター", "psi:item/cad_inline_2"),

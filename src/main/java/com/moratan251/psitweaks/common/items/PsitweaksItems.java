@@ -29,6 +29,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.psi.common.item.component.ItemCADAssembly;
+import vazkii.psi.common.item.component.ItemCADCore;
 
 public final class PsitweaksItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Psitweaks.MOD_ID);
@@ -472,6 +473,14 @@ public final class PsitweaksItems {
             "cad_assembly_psycheonic_metal",
             Rarity.EPIC,
             "cad_psycheonicmetal"
+    );
+    public static final DeferredItem<ItemCADCore> CAD_CORE_ABSORPTIVE = ITEMS.register(
+            "cad_core_absorptive",
+            () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemCADCore> CAD_CORE_ULTRACLOCKED = ITEMS.register(
+            "cad_core_ultraclocked",
+            () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE))
     );
     public static final DeferredItem<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.registerSimpleItem(
             "incomplete_heavy_psimetal_assembly",

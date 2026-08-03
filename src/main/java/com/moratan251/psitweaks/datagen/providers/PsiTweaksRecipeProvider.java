@@ -128,6 +128,23 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'P', ingredientItem(PsitweaksItems.PSYCHEONIC_METAL_INGOT)
                 ),
                 PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL, 1));
+        recipe(recipes, "cad_core_absorptive", shaped("equipment",
+                List.of(" C ", "ABA", " C "),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.FLASHMETAL),
+                        'B', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'C', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL)
+                ),
+                PsitweaksItems.CAD_CORE_ABSORPTIVE, 1));
+        recipe(recipes, "cad_core_ultraclocked", shaped("equipment",
+                List.of("DCD", "ABA", "DCD"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.FLASHMETAL),
+                        'B', ingredientItem(PsitweaksItems.ANTINITE_INGOT),
+                        'C', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL),
+                        'D', ingredientItem(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT)
+                ),
+                PsitweaksItems.CAD_CORE_ULTRACLOCKED, 1));
         recipe(recipes, "unrefined_flashmetal", shaped(
                 List.of("BBB", "AAA", "BBB"),
                 Map.of(

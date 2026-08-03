@@ -7,7 +7,7 @@ Use this file when an agent starts inside `1.21.1-worktree/`. The workspace-leve
 1. `../AGENTS.md`
 2. `../docs/README.md`
 3. `../docs/1.21.1/development-guidelines.md`
-4. Add `architecture.md`, `repository-structure.md`, `porting-decisions.md`, `memory-leak-checklist.md`, or `glossary.md` from `../docs/1.21.1/` only when relevant.
+4. Add `architecture.md`, `repository-structure.md`, `porting-decisions.md`, or `memory-leak-checklist.md` from `../docs/1.21.1/`, or the shared `../docs/glossary.md` / `../docs/worldview.md`, only when relevant.
 
 ## Role
 

@@ -17,8 +17,18 @@ public final class ComponentStats {
         addAssemblyStats(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get(), 175, 1500);
     }
 
+    public static void registerCoreStats() {
+        addCoreStats(PsitweaksItems.CAD_CORE_ABSORPTIVE.get(), 10, 46);
+        addCoreStats(PsitweaksItems.CAD_CORE_ULTRACLOCKED.get(), 9, 54);
+    }
+
     private static void addAssemblyStats(ItemCADComponent assembly, int efficiency, int potency) {
         ItemCADComponent.addStatToStack(assembly, EnumCADStat.EFFICIENCY, efficiency);
         ItemCADComponent.addStatToStack(assembly, EnumCADStat.POTENCY, potency);
+    }
+
+    private static void addCoreStats(ItemCADComponent core, int projection, int complexity) {
+        ItemCADComponent.addStatToStack(core, EnumCADStat.PROJECTION, projection);
+        ItemCADComponent.addStatToStack(core, EnumCADStat.COMPLEXITY, complexity);
     }
 }

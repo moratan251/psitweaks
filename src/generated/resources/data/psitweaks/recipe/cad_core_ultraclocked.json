@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:flashmetal"
+    },
+    "B": {
+      "item": "psitweaks:antinite_ingot"
+    },
+    "C": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "D": {
+      "item": "psitweaks:psionic_control_circuit"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "ABA",
+    "DCD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:cad_core_ultraclocked"
+  }
+}
