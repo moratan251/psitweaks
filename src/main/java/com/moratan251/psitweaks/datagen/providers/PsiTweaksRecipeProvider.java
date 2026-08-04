@@ -94,6 +94,22 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'D', ingredientItem(PsitweaksItems.HARDENED_CAPSULE)
                 ),
                 PsitweaksItems.NANO_REACTOR, 1));
+        recipe(recipes, "unfathomable_component", shaped(
+                List.of("ABA", "CDC", "ABA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.GRAVITIZED_PLATE),
+                        'B', ingredientItem(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT),
+                        'C', ingredientItem(PsitweaksItems.NANO_REACTOR),
+                        'D', ingredientItem(MekanismItems.ANTIMATTER_PELLET)
+                ),
+                PsitweaksItems.UNFATHOMABLE_COMPONENT, 1));
+        recipe(recipes, "superstring", shaped(
+                List.of("AAA", "BBB", "AAA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.WAVE_FRAGMENT),
+                        'B', ingredientItem(PsitweaksItems.STRING_A)
+                ),
+                PsitweaksItems.SUPERSTRING, 1));
         recipe(recipes, "psionic_echo", trickCrafting(
                 ingredientItem(Items.ECHO_SHARD),
                 PsitweaksItems.PSIONIC_ECHO,
@@ -303,6 +319,14 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'S', ingredientItem(Items.STRING)
                 ),
                 PsitweaksItems.PSIMETAL_BOW, 1));
+        recipe(recipes, "gravstringer", shaped("combat",
+                List.of(" AB", "C B", " AB"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.GRAVITIZED_PLATE),
+                        'B', ingredientItem(PsitweaksItems.SUPERSTRING),
+                        'C', ingredientItem(PsitweaksItems.UNFATHOMABLE_COMPONENT)
+                ),
+                PsitweaksItems.GRAVSTRINGER, 1));
         recipe(recipes, "auto_caster_tick", shaped("combat",
                 List.of("ECE", "EFE", "EEE"),
                 Map.of(

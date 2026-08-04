@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:gravitized_plate"
+    },
+    "B": {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    "C": {
+      "item": "psitweaks:nano_reactor"
+    },
+    "D": {
+      "item": "mekanism:pellet_antimatter"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:unfathomable_component"
+  }
+}

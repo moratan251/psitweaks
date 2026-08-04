@@ -130,6 +130,26 @@ public final class PsitweaksItems {
             "quantized_plate",
             new Item.Properties()
     );
+    public static final DeferredItem<Item> GRAVITIZED_PLATE = ITEMS.registerSimpleItem(
+            "gravitized_plate",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> UNFATHOMABLE_COMPONENT = ITEMS.registerSimpleItem(
+            "unfathomable_component",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> PHOTON_GLITTER = ITEMS.registerSimpleItem(
+            "photon_glitter",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> WAVE_FRAGMENT = ITEMS.registerSimpleItem(
+            "wave_fragment",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> SUPERSTRING = ITEMS.registerSimpleItem(
+            "superstring",
+            new Item.Properties()
+    );
     public static final DeferredItem<Item> PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
             "psimetal_nugget",
             new Item.Properties()
@@ -287,6 +307,10 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsimetalBow> PSIMETAL_BOW = ITEMS.register(
             "psimetal_bow",
             () -> new ItemPsimetalBow(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemGravstringer> GRAVSTRINGER = ITEMS.register(
+            "gravstringer",
+            () -> new ItemGravstringer(new Item.Properties().rarity(Rarity.EPIC))
     );
     public static final DeferredItem<ItemCuriosController> CURIOS_CONTROLLER = ITEMS.register(
             "curios_controller",

@@ -233,7 +233,8 @@ public class Psitweaks {
             LOGGER.info("PsiTweaks client setup");
 
             event.enqueueWork(() -> {
-                registerPsimetalBowProperties();
+                registerBowProperties(PsitweaksItems.PSIMETAL_BOW);
+                registerBowProperties(PsitweaksItems.GRAVSTRINGER);
                 registerActiveSpellProperties(
                         PsitweaksItems.ADVANCED_SPELL_BULLET,
                         PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,
@@ -301,11 +302,11 @@ public class Psitweaks {
             return ISpellAcceptor.hasSpell(stack) ? 1.0F : 0.0F;
         }
 
-        private static void registerPsimetalBowProperties() {
-            ItemProperties.register(PsitweaksItems.PSIMETAL_BOW.get(), ResourceLocation.withDefaultNamespace("pulling"),
+        private static void registerBowProperties(DeferredItem<? extends Item> item) {
+            ItemProperties.register(item.get(), ResourceLocation.withDefaultNamespace("pulling"),
                     (stack, level, entity, seed) -> entity != null && entity.isUsingItem()
                             && entity.getUseItem() == stack ? 1.0F : 0.0F);
-            ItemProperties.register(PsitweaksItems.PSIMETAL_BOW.get(), ResourceLocation.withDefaultNamespace("pull"),
+            ItemProperties.register(item.get(), ResourceLocation.withDefaultNamespace("pull"),
                     (stack, level, entity, seed) -> {
                         if (entity == null || entity.getUseItem() != stack) {
                             return 0.0F;

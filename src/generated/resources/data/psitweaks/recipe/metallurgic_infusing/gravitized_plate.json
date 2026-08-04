@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 40,
+    "chemical": "psitweaks:infuse_graviton"
+  },
+  "item_input": {
+    "count": 3,
+    "item": "psitweaks:psycheonic_metal_ingot"
+  },
+  "output": {
+    "count": 1,
+    "id": "psitweaks:gravitized_plate"
+  },
+  "per_tick_usage": false
+}

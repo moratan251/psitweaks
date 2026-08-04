@@ -39,6 +39,8 @@ public class MaterialMutationRecipeProvider implements DataProvider {
         addItemMutation(recipes, "hypostasis_gem", PsitweaksBlocks.ANTINITE_BLOCK.get(),
                 PsitweaksItems.HYPOSTASIS_GEM, 1);
         addItemMutation(recipes, "jade", Blocks.EMERALD_BLOCK, PsitweaksItems.JADE, 9);
+        addItemMutation(recipes, "photon_glitter", PsitweaksBlocks.FLASHMETAL_BLOCK.get(),
+                PsitweaksItems.PHOTON_GLITTER, 1);
         addBlockMutation(recipes, "sculk_sensor", Blocks.NOTE_BLOCK, Blocks.SCULK_SENSOR, 1);
         addBlockMutation(recipes, "crying_obsidian", Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, 1);
         addItemMutation(recipes, "ender_pearl", Blocks.CRYING_OBSIDIAN, Items.ENDER_PEARL, 1);

@@ -100,6 +100,18 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         counted(PsitweaksItems.QUANTUM_FACTOR, 1)
                 ),
                 PsitweaksItems.QUANTIZED_PLATE, 2));
+        add(recipes, "gravitized_plate", shapelessCounted(
+                List.of(
+                        counted(PsitweaksItems.GRAVITON_FACTOR, 1),
+                        counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 6)
+                ),
+                PsitweaksItems.GRAVITIZED_PLATE, 2));
+        add(recipes, "wave_fragment", shapelessCounted(
+                List.of(
+                        counted(PsitweaksItems.PHOTON_GLITTER, 8),
+                        counted(Items.NETHER_STAR, 1)
+                ),
+                PsitweaksItems.WAVE_FRAGMENT, 1));
         add(recipes, "psionic_factor_ebony", surrounding(
                 PsitweaksItems.PSIONIC_FACTOR, PsitweaksItems.ENRICHED_EBONY, PsitweaksItems.PSIONIC_FACTOR_EBONY));
         add(recipes, "psionic_factor_ivory", surrounding(

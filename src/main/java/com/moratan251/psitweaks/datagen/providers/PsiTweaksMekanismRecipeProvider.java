@@ -32,6 +32,7 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         addEnrichingRecipes(recipes);
         addOreProcessingRecipes(recipes);
         addMetallurgicInfusingRecipes(recipes);
+        addNucleosynthesizingRecipes(recipes);
 
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
@@ -272,6 +273,17 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
                 chemicalInput(chemical("infuse_quantum"), 40),
                 itemInput(PsitweaksItems.ANTINITE_INGOT, 3),
                 PsitweaksItems.QUANTIZED_PLATE, 1));
+        recipe(recipes, "metallurgic_infusing/gravitized_plate", metallurgicInfusing(
+                chemicalInput(chemical("infuse_graviton"), 40),
+                itemInput(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 3),
+                PsitweaksItems.GRAVITIZED_PLATE, 1));
+    }
+
+    private static void addNucleosynthesizingRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        recipe(recipes, "nucleosynthesizing/wave_fragment", nucleosynthesizing(
+                chemicalInput("mekanism:antimatter", 10),
+                itemInput(PsitweaksItems.PHOTON_GLITTER),
+                PsitweaksItems.WAVE_FRAGMENT, 1, 2_500));
     }
 
     private static JsonObject itemToItem(String type, JsonObject input, String output, int count) {
@@ -313,6 +325,20 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
     private static JsonObject metallurgicInfusing(JsonObject chemicalInput, JsonObject itemInput, ItemLike output,
                                                   int count) {
         return itemChemicalToItem("mekanism:metallurgic_infusing", chemicalInput, itemInput, output, count, false);
+    }
+
+    private static JsonObject nucleosynthesizing(JsonObject chemicalInput, JsonObject itemInput, ItemLike output,
+                                                 int count, int duration) {
+        JsonObject root = new JsonObject();
+
+        root.addProperty("type", "mekanism:nucleosynthesizing");
+        root.add("chemical_input", chemicalInput);
+        root.addProperty("duration", duration);
+        root.add("item_input", itemInput);
+        root.add("output", itemOutput(output, count));
+        root.addProperty("per_tick_usage", false);
+
+        return root;
     }
 
     private static JsonObject chemicalConversion(JsonObject input, String outputChemical, long amount) {

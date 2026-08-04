@@ -47,6 +47,11 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.NANO_REACTOR.get());
                         output.accept(PsitweaksItems.STRING_A.get());
                         output.accept(PsitweaksItems.QUANTIZED_PLATE.get());
+                        output.accept(PsitweaksItems.GRAVITIZED_PLATE.get());
+                        output.accept(PsitweaksItems.UNFATHOMABLE_COMPONENT.get());
+                        output.accept(PsitweaksItems.PHOTON_GLITTER.get());
+                        output.accept(PsitweaksItems.WAVE_FRAGMENT.get());
+                        output.accept(PsitweaksItems.SUPERSTRING.get());
                         output.accept(PsitweaksItems.PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.IVORY_PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.EBONY_PSIMETAL_NUGGET.get());
@@ -80,6 +85,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.SPELL_MAGAZINE.get());
                         output.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
                         output.accept(PsitweaksItems.PSIMETAL_BOW.get());
+                        output.accept(PsitweaksItems.GRAVSTRINGER.get());
                         output.accept(PsitweaksItems.CURIOS_CONTROLLER.get());
                         output.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
                         output.accept(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK.get());

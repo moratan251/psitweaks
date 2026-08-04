@@ -220,7 +220,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "minecraft", "enchantable/chest_armor", item(PsitweaksItems.MOVAL_SUIT_CHESTPLATE));
         tag(tags, "minecraft", "enchantable/leg_armor", item(PsitweaksItems.MOVAL_SUIT_LEGGINGS));
         tag(tags, "minecraft", "enchantable/foot_armor", item(PsitweaksItems.MOVAL_SUIT_BOOTS));
-        tag(tags, "minecraft", "enchantable/bow", item(PsitweaksItems.PSIMETAL_BOW));
+        tag(tags, "minecraft", "enchantable/bow", item(PsitweaksItems.PSIMETAL_BOW), item(PsitweaksItems.GRAVSTRINGER));
         tag(tags, "curios", "charm", item(PsitweaksItems.FLASH_CHARM));
         tag(tags, "curios", "magic_calculation_area",
                 item(PsitweaksItems.AUTO_CASTER_TICK),

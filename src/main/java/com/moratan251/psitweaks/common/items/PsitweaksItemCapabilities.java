@@ -25,6 +25,7 @@ public final class PsitweaksItemCapabilities {
         registerAutoCasters(event);
         registerSpellMagazine(event);
         registerPsimetalBow(event);
+        registerGravstringer(event);
         registerSpellBullets(event);
     }
 
@@ -142,6 +143,29 @@ public final class PsitweaksItemCapabilities {
                 PsiAPI.SOCKETABLE_CAPABILITY,
                 (stack, context) -> new ToolSocketable(stack, ItemPsimetalBow.SLOT_COUNT),
                 PsitweaksItems.PSIMETAL_BOW.get()
+        );
+    }
+
+    private static void registerGravstringer(RegisterCapabilitiesEvent event) {
+        event.registerItem(
+                Capabilities.ItemHandler.ITEM,
+                (stack, context) -> ItemInlineCasterBase.createBulletHandler(stack, ItemGravstringer.SLOT_COUNT),
+                PsitweaksItems.GRAVSTRINGER.get()
+        );
+        event.registerItem(
+                PsiAPI.PSI_BAR_DISPLAY_CAPABILITY,
+                (stack, context) -> new ToolSocketable(stack, ItemGravstringer.SLOT_COUNT),
+                PsitweaksItems.GRAVSTRINGER.get()
+        );
+        event.registerItem(
+                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                (stack, context) -> new ToolSocketable(stack, ItemGravstringer.SLOT_COUNT),
+                PsitweaksItems.GRAVSTRINGER.get()
+        );
+        event.registerItem(
+                PsiAPI.SOCKETABLE_CAPABILITY,
+                (stack, context) -> new ToolSocketable(stack, ItemGravstringer.SLOT_COUNT),
+                PsitweaksItems.GRAVSTRINGER.get()
         );
     }
 
