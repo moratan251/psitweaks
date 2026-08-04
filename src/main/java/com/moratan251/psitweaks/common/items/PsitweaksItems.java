@@ -150,6 +150,14 @@ public final class PsitweaksItems {
             "superstring",
             new Item.Properties()
     );
+    public static final DeferredItem<Item> QUANTIZE_ARROWHEAD = ITEMS.registerSimpleItem(
+            "quantize_arrowhead",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> TUNNELER = ITEMS.registerSimpleItem(
+            "tunneler",
+            new Item.Properties()
+    );
     public static final DeferredItem<Item> PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
             "psimetal_nugget",
             new Item.Properties()

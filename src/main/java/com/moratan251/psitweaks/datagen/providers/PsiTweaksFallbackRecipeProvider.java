@@ -112,6 +112,20 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         counted(Items.NETHER_STAR, 1)
                 ),
                 PsitweaksItems.WAVE_FRAGMENT, 1));
+        add(recipes, "quantize_arrowhead", shapelessCounted(
+                List.of(
+                        counted(PsitweaksItems.QUANTUM_FACTOR, 1),
+                        counted(PsitweaksItems.HEAVY_PSIMETAL, 2)
+                ),
+                PsitweaksItems.QUANTIZE_ARROWHEAD, 64));
+        add(recipes, "tunneler", shaped(
+                List.of("A", "B", "C"),
+                Map.of(
+                        'A', ingredient(PsitweaksItems.QUANTIZE_ARROWHEAD),
+                        'B', ingredient(Items.BLAZE_ROD),
+                        'C', ingredient(Items.FEATHER)
+                ),
+                PsitweaksItems.TUNNELER, 1));
         add(recipes, "psionic_factor_ebony", surrounding(
                 PsitweaksItems.PSIONIC_FACTOR, PsitweaksItems.ENRICHED_EBONY, PsitweaksItems.PSIONIC_FACTOR_EBONY));
         add(recipes, "psionic_factor_ivory", surrounding(

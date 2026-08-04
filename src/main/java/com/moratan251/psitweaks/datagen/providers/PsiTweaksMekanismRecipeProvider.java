@@ -273,6 +273,10 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
                 chemicalInput(chemical("infuse_quantum"), 40),
                 itemInput(PsitweaksItems.ANTINITE_INGOT, 3),
                 PsitweaksItems.QUANTIZED_PLATE, 1));
+        recipe(recipes, "metallurgic_infusing/quantize_arrowhead", metallurgicInfusing(
+                chemicalInput(chemical("infuse_quantum"), 5),
+                itemInput(PsitweaksItems.HEAVY_PSIMETAL_NUGGET),
+                PsitweaksItems.QUANTIZE_ARROWHEAD, 4));
         recipe(recipes, "metallurgic_infusing/gravitized_plate", metallurgicInfusing(
                 chemicalInput(chemical("infuse_graviton"), 40),
                 itemInput(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 3),

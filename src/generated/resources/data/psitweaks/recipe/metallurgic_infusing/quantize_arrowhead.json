@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 5,
+    "chemical": "psitweaks:infuse_quantum"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "psitweaks:heavy_psimetal_nugget"
+  },
+  "output": {
+    "count": 4,
+    "id": "psitweaks:quantize_arrowhead"
+  },
+  "per_tick_usage": false
+}

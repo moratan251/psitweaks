@@ -10,10 +10,13 @@ package com.moratan251.psitweaks.common.items;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ISocketable;
@@ -30,13 +34,66 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.entity.EntitySpellProjectile;
 import vazkii.psi.common.item.ItemCAD;
-import vazkii.psi.common.item.tool.IPsimetalTool;
 
-public class ItemGravstringer extends BowItem implements IPsimetalTool {
-    public static final int SLOT_COUNT = 3;
+public class ItemGravstringer extends BowItem {
+    public static final int SLOT_COUNT = 11;
+    public static final int FULL_DRAW_TICKS = 4;
+    private static final double ARROW_BASE_DAMAGE = 12.0;
 
     public ItemGravstringer(Item.Properties properties) {
-        super(properties.durability(768));
+        super(properties);
+    }
+
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+        if (!(entityLiving instanceof Player player)) {
+            return;
+        }
+
+        ItemStack projectile = player.getProjectile(stack);
+        if (projectile.isEmpty()) {
+            return;
+        }
+
+        int charge = this.getUseDuration(stack, entityLiving) - timeLeft;
+        charge = EventHooks.onArrowLoose(stack, level, player, charge, true);
+        if (charge < 0) {
+            return;
+        }
+
+        float power = powerForCharge(charge);
+        if ((double) power < 0.1) {
+            return;
+        }
+
+        List<ItemStack> projectiles = draw(stack, projectile, player);
+        if (level instanceof ServerLevel serverLevel && !projectiles.isEmpty()) {
+            this.shoot(serverLevel, player, player.getUsedItemHand(), stack, projectiles, power * 3.0F, 1.0F, power == 1.0F, null);
+        }
+
+        level.playSound(
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.ARROW_SHOOT,
+                SoundSource.PLAYERS,
+                1.0F,
+                1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + power * 0.5F
+        );
+        player.awardStat(Stats.ITEM_USED.get(this));
+    }
+
+    private static float powerForCharge(int charge) {
+        float power = (float) charge / FULL_DRAW_TICKS;
+        power = (power * power + power * 2.0F) / 3.0F;
+        return Math.min(power, 1.0F);
+    }
+
+    @Override
+    public AbstractArrow customArrow(AbstractArrow arrow, ItemStack projectileStack, ItemStack weaponStack) {
+        arrow.setBaseDamage(ARROW_BASE_DAMAGE);
+        return super.customArrow(arrow, projectileStack, weaponStack);
     }
 
     @Override
@@ -63,18 +120,8 @@ public class ItemGravstringer extends BowItem implements IPsimetalTool {
     }
 
     @Override
-    public void setDamage(ItemStack stack, int damage) {
-        super.setDamage(stack, damage > stack.getMaxDamage() ? stack.getDamageValue() : damage);
-    }
-
-    @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
-        IPsimetalTool.regen(stack, entity);
     }
 
     @Override

@@ -41,6 +41,7 @@ import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.items.armor.PsitweaksArmorMaterials;
+import com.moratan251.psitweaks.common.items.ItemGravstringer;
 import com.moratan251.psitweaks.common.items.PsitweaksItemCapabilities;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
@@ -82,6 +83,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -233,8 +235,8 @@ public class Psitweaks {
             LOGGER.info("PsiTweaks client setup");
 
             event.enqueueWork(() -> {
-                registerBowProperties(PsitweaksItems.PSIMETAL_BOW);
-                registerBowProperties(PsitweaksItems.GRAVSTRINGER);
+                registerBowProperties(PsitweaksItems.PSIMETAL_BOW, BowItem.MAX_DRAW_DURATION);
+                registerBowProperties(PsitweaksItems.GRAVSTRINGER, ItemGravstringer.FULL_DRAW_TICKS);
                 registerActiveSpellProperties(
                         PsitweaksItems.ADVANCED_SPELL_BULLET,
                         PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,
@@ -302,7 +304,7 @@ public class Psitweaks {
             return ISpellAcceptor.hasSpell(stack) ? 1.0F : 0.0F;
         }
 
-        private static void registerBowProperties(DeferredItem<? extends Item> item) {
+        private static void registerBowProperties(DeferredItem<? extends Item> item, float fullDrawTicks) {
             ItemProperties.register(item.get(), ResourceLocation.withDefaultNamespace("pulling"),
                     (stack, level, entity, seed) -> entity != null && entity.isUsingItem()
                             && entity.getUseItem() == stack ? 1.0F : 0.0F);
@@ -311,7 +313,7 @@ public class Psitweaks {
                         if (entity == null || entity.getUseItem() != stack) {
                             return 0.0F;
                         }
-                        return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
+                        return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / fullDrawTicks;
                     });
         }
     }

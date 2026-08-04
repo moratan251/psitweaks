@@ -110,6 +110,14 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'B', ingredientItem(PsitweaksItems.STRING_A)
                 ),
                 PsitweaksItems.SUPERSTRING, 1));
+        recipe(recipes, "tunneler", shaped(
+                List.of("A", "B", "C"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.QUANTIZE_ARROWHEAD),
+                        'B', ingredientItem(MekanismItems.HDPE_STICK),
+                        'C', ingredientItem(Items.FEATHER)
+                ),
+                PsitweaksItems.TUNNELER, 1));
         recipe(recipes, "psionic_echo", trickCrafting(
                 ingredientItem(Items.ECHO_SHARD),
                 PsitweaksItems.PSIONIC_ECHO,

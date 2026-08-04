@@ -40,6 +40,8 @@ final class PsitweaksDatagenItems {
             item("photon_glitter", "Photon Glitter", "フォトングリッター"),
             item("wave_fragment", "Wave Fragment", "波動の断片"),
             item("superstring", "Superstring", "超ひも"),
+            item("quantize_arrowhead", "Quantized Arrowhead", "量子矢じり"),
+            item("tunneler", "Tunneler", "トンネラー"),
             item("chaotic_psimetal", "Chaotic Psimetal Ingot", "カオティックサイメタルインゴット"),
             item("unrefined_flashmetal", " Unrefined Flashmetal", "未精製フラッシュメタル"),
             item("flashmetal", "Flashmetal Ingot", "フラッシュメタルインゴット"),

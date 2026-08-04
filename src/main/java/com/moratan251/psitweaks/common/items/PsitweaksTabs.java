@@ -52,6 +52,8 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.PHOTON_GLITTER.get());
                         output.accept(PsitweaksItems.WAVE_FRAGMENT.get());
                         output.accept(PsitweaksItems.SUPERSTRING.get());
+                        output.accept(PsitweaksItems.QUANTIZE_ARROWHEAD.get());
+                        output.accept(PsitweaksItems.TUNNELER.get());
                         output.accept(PsitweaksItems.PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.IVORY_PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.EBONY_PSIMETAL_NUGGET.get());
