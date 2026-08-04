@@ -19,6 +19,7 @@ import com.moratan251.psitweaks.client.renderer.IceCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
+import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributeEvents;
@@ -291,6 +292,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.BLAZE_BALL.get(), context -> new ThrownItemRenderer<>(context, 0.75F, true));
             event.registerEntityRenderer(PsitweaksEntities.FLARE_CIRCLE.get(), FlareCircleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(), IceCircleRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
         }
 
         @SafeVarargs

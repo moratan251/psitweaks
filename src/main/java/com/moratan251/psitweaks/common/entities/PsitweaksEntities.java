@@ -94,6 +94,15 @@ public class PsitweaksEntities {
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":ice_circle"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
+            ENTITY_TYPES.register("tunneler_arrow",
+                    () -> EntityType.Builder.<EntityTunnelerArrow>of(EntityTunnelerArrow::new, MobCategory.MISC)
+                            .sized(0.5f, 0.5f)
+                            .eyeHeight(0.13f)
+                            .clientTrackingRange(4)
+                            .updateInterval(20)
+                            .build(Psitweaks.MOD_ID + ":tunneler_arrow"));
+
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);
     }

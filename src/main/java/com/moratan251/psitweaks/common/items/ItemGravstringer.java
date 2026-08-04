@@ -8,6 +8,7 @@ package com.moratan251.psitweaks.common.items;
  */
 
 import java.util.List;
+import java.util.function.Predicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -88,6 +89,11 @@ public class ItemGravstringer extends BowItem {
         float power = (float) charge / FULL_DRAW_TICKS;
         power = (power * power + power * 2.0F) / 3.0F;
         return Math.min(power, 1.0F);
+    }
+
+    @Override
+    public Predicate<ItemStack> getAllSupportedProjectiles() {
+        return ARROW_ONLY.or(stack -> stack.is(PsitweaksItems.TUNNELER.get()));
     }
 
     @Override

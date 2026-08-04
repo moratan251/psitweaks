@@ -154,9 +154,9 @@ public final class PsitweaksItems {
             "quantize_arrowhead",
             new Item.Properties()
     );
-    public static final DeferredItem<Item> TUNNELER = ITEMS.registerSimpleItem(
+    public static final DeferredItem<ItemTunneler> TUNNELER = ITEMS.register(
             "tunneler",
-            new Item.Properties()
+            () -> new ItemTunneler(new Item.Properties())
     );
     public static final DeferredItem<Item> PSIMETAL_NUGGET = ITEMS.registerSimpleItem(
             "psimetal_nugget",
