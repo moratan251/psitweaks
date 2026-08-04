@@ -8,10 +8,10 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "item": "psitweaks:quantum_factor"
+    "item": "psitweaks:graviton_factor"
   },
   "output": {
     "amount": 80,
-    "id": "psitweaks:infuse_quantum"
+    "id": "psitweaks:infuse_graviton"
   }
 }

@@ -39,13 +39,14 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.PSIONIC_FACTOR_IVORY.get());
                         output.accept(PsitweaksItems.PSIONIC_FACTOR_EBONY.get());
                         output.accept(PsitweaksItems.CHAOTIC_FACTOR.get());
-                        output.accept(PsitweaksItems.QUANTUM_PSIONIC_FACTOR.get());
+                        output.accept(PsitweaksItems.QUANTUM_FACTOR.get());
+                        output.accept(PsitweaksItems.GRAVITON_FACTOR.get());
                         output.accept(PsitweaksItems.HARDENED_CAPSULE.get());
                         output.accept(PsitweaksItems.FLASH_COIL.get());
                         output.accept(PsitweaksItems.FLASH_CHIP.get());
                         output.accept(PsitweaksItems.NANO_REACTOR.get());
                         output.accept(PsitweaksItems.STRING_A.get());
-                        output.accept(PsitweaksItems.INFUSED_ANTINITE_PLATE.get());
+                        output.accept(PsitweaksItems.QUANTIZED_PLATE.get());
                         output.accept(PsitweaksItems.PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.IVORY_PSIMETAL_NUGGET.get());
                         output.accept(PsitweaksItems.EBONY_PSIMETAL_NUGGET.get());

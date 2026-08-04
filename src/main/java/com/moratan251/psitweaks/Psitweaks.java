@@ -20,6 +20,7 @@ import com.moratan251.psitweaks.client.renderer.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
+import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributeEvents;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
@@ -29,6 +30,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
+import com.moratan251.psitweaks.common.handler.FallConversionHandler;
 import com.moratan251.psitweaks.common.handler.FlightPsiCostCaptureHandler;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
@@ -126,6 +128,7 @@ public class Psitweaks {
         PsitweaksBlocks.register(modEventBus);
         PsitweaksEffects.register(modEventBus);
         PsitweaksAttributes.register(modEventBus);
+        PsitweaksAttachments.register(modEventBus);
         PsitweaksSpells.register(modEventBus);
         PsitweaksListAdapterRegistration.registerBuiltins();
         PsitweaksEntities.register(modEventBus);
@@ -167,6 +170,8 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.addListener(DimensionalCrystalDropHandler::onSpellCast);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityJoinLevel);
+        NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityTick);
 
         // TODO(port): Re-enable client/server proxy handlers after proxy classes are ported.
         // proxyPsitweaks = dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks();

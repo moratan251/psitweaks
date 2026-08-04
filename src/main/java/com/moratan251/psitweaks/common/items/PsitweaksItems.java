@@ -98,8 +98,12 @@ public final class PsitweaksItems {
             "chaotic_factor",
             new Item.Properties()
     );
-    public static final DeferredItem<Item> QUANTUM_PSIONIC_FACTOR = ITEMS.registerSimpleItem(
-            "quantum_psionic_factor",
+    public static final DeferredItem<Item> QUANTUM_FACTOR = ITEMS.registerSimpleItem(
+            "quantum_factor",
+            new Item.Properties()
+    );
+    public static final DeferredItem<Item> GRAVITON_FACTOR = ITEMS.registerSimpleItem(
+            "graviton_factor",
             new Item.Properties()
     );
     public static final DeferredItem<Item> HARDENED_CAPSULE = ITEMS.registerSimpleItem(
@@ -122,8 +126,8 @@ public final class PsitweaksItems {
             "string_a",
             new Item.Properties()
     );
-    public static final DeferredItem<Item> INFUSED_ANTINITE_PLATE = ITEMS.registerSimpleItem(
-            "infused_antinite_plate",
+    public static final DeferredItem<Item> QUANTIZED_PLATE = ITEMS.registerSimpleItem(
+            "quantized_plate",
             new Item.Properties()
     );
     public static final DeferredItem<Item> PSIMETAL_NUGGET = ITEMS.registerSimpleItem(

@@ -66,6 +66,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addChemical(root, "infuse_psionic_echo", "Psionic Echo", "サイオニックエコー");
         addChemical(root, "infuse_hypostasis", "Hypostasis Gem", "ヒュポスタシスジェム");
         addChemical(root, "infuse_quantum", "Quantum", "量子");
+        addChemical(root, "infuse_graviton", "Graviton", "重力子");
         addChemical(root, "gas_psionic_echo", "Psionic Echo Gas", "気化サイオニックエコー");
         addChemical(root, "gas_peo_fuel", "ΨE-O Fuel", "ΨE-O 燃料");
         addChemical(root, "dirty_antinite", "Dirty Antinite Slurry", "汚れたアンティナイトの懸濁液");

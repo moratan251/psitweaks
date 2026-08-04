@@ -58,7 +58,9 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
         recipe(recipes, "chemical_conversion/hypostasis", chemicalConversion(
                 itemInput(PsitweaksItems.ENRICHED_HYPOSTASIS), chemical("infuse_hypostasis"), 80));
         recipe(recipes, "chemical_conversion/quantum", chemicalConversion(
-                itemInput(PsitweaksItems.QUANTUM_PSIONIC_FACTOR), chemical("infuse_quantum"), 80));
+                itemInput(PsitweaksItems.QUANTUM_FACTOR), chemical("infuse_quantum"), 80));
+        recipe(recipes, "chemical_conversion/graviton", chemicalConversion(
+                itemInput(PsitweaksItems.GRAVITON_FACTOR), chemical("infuse_graviton"), 80));
 
         recipe(recipes, "oxidizing/psionic_echo", itemToChemical(
                 "mekanism:oxidizing",
@@ -126,10 +128,10 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
                 itemInput(Items.AMETHYST_SHARD),
                 itemInput(Items.SCULK, 8),
                 Items.ECHO_SHARD, 1));
-        recipe(recipes, "combining/quantum_psionic_factor", combining(
+        recipe(recipes, "combining/quantum_factor", combining(
                 itemInput(PsitweaksItems.PSIONIC_FACTOR),
                 itemInput(MekanismItems.TELEPORTATION_CORE, 8),
-                PsitweaksItems.QUANTUM_PSIONIC_FACTOR, 1));
+                PsitweaksItems.QUANTUM_FACTOR, 1));
         recipe(recipes, "reaction/amethyst", reaction(
                 fluidTagInput("minecraft:water", 100),
                 chemicalInput(chemical("gas_psionic_echo"), 50),
@@ -266,10 +268,10 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
                 chemicalInput(chemical("infuse_quantum"), 160),
                 itemInput(Items.STRING),
                 PsitweaksItems.STRING_A, 1));
-        recipe(recipes, "metallurgic_infusing/infused_antinite_plate", metallurgicInfusing(
+        recipe(recipes, "metallurgic_infusing/quantized_plate", metallurgicInfusing(
                 chemicalInput(chemical("infuse_quantum"), 40),
                 itemInput(PsitweaksItems.ANTINITE_INGOT, 3),
-                PsitweaksItems.INFUSED_ANTINITE_PLATE, 1));
+                PsitweaksItems.QUANTIZED_PLATE, 1));
     }
 
     private static JsonObject itemToItem(String type, JsonObject input, String output, int count) {

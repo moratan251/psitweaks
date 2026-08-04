@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "psitweaks:item/infused_antinite_plate"
+    "layer0": "psitweaks:item/graviton_factor"
   }
 }
