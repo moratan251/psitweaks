@@ -40,6 +40,8 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
         damageTypes.put(PsitweaksDamageTypes.DRY_METEOR.location(), freezingDamageType());
         damageTypes.put(PsitweaksDamageTypes.CARBON_POISONING.location(),
                 damageType("psitweaks.carbon_poisoning", "never", 0.0F));
+        damageTypes.put(PsitweaksDamageTypes.TUNNELER.location(),
+                damageType("psitweaks.tunneler", "when_caused_by_living_non_player", 0.1F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {

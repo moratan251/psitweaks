@@ -22,6 +22,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
     private final PackOutput.PathProvider blockPathProvider;
     private final PackOutput.PathProvider chemicalPathProvider;
     private final PackOutput.PathProvider damageTypePathProvider;
+    private final PackOutput.PathProvider entityTypePathProvider;
     private final PackOutput.PathProvider itemPathProvider;
     private final PackOutput.PathProvider poiTypePathProvider;
 
@@ -29,6 +30,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         this.blockPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/block");
         this.chemicalPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/mekanism/chemical");
         this.damageTypePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/damage_type");
+        this.entityTypePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/entity_type");
         this.itemPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/item");
         this.poiTypePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "tags/point_of_interest_type");
     }
@@ -38,6 +40,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         Map<ResourceLocation, JsonObject> blockTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> chemicalTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> damageTypeTags = new LinkedHashMap<>();
+        Map<ResourceLocation, JsonObject> entityTypeTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> itemTags = new LinkedHashMap<>();
         Map<ResourceLocation, JsonObject> poiTypeTags = new LinkedHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
@@ -45,11 +48,13 @@ public class PsiTweaksTagsProvider implements DataProvider {
         addBlockTags(blockTags);
         addChemicalTags(chemicalTags);
         addDamageTypeTags(damageTypeTags);
+        addEntityTypeTags(entityTypeTags);
         addItemTags(itemTags);
         addPoiTypeTags(poiTypeTags);
         saveTags(futures, output, blockPathProvider, blockTags);
         saveTags(futures, output, chemicalPathProvider, chemicalTags);
         saveTags(futures, output, damageTypePathProvider, damageTypeTags);
+        saveTags(futures, output, entityTypePathProvider, entityTypeTags);
         saveTags(futures, output, itemPathProvider, itemTags);
         saveTags(futures, output, poiTypePathProvider, poiTypeTags);
 
@@ -137,15 +142,20 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String meteorLine = damageType("meteor_line");
         String dryMeteor = damageType("dry_meteor");
         String carbonPoisoning = damageType("carbon_poisoning");
-        tag(tags, "minecraft", "bypasses_armor", meteorLine);
-        tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning);
-        tag(tags, "minecraft", "bypasses_effects", meteorLine);
-        tag(tags, "minecraft", "bypasses_enchantments", meteorLine);
+        String tunneler = damageType("tunneler");
+        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler);
+        tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler);
+        tag(tags, "minecraft", "bypasses_effects", meteorLine, tunneler);
+        tag(tags, "minecraft", "bypasses_enchantments", meteorLine, tunneler);
         tag(tags, "minecraft", "bypasses_invulnerability", meteorLine);
         tag(tags, "minecraft", "bypasses_resistance", meteorLine);
-        tag(tags, "minecraft", "bypasses_shield", meteorLine);
+        tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler);
         tag(tags, "minecraft", "is_freezing", dryMeteor);
         tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning);
+    }
+
+    private static void addEntityTypeTags(Map<ResourceLocation, JsonObject> tags) {
+        tag(tags, "minecraft", "arrows", "psitweaks:tunneler_arrow");
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {

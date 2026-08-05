@@ -38,6 +38,9 @@ public class PsitweaksItemModelProvider implements DataProvider {
         futures.add(DataProvider.saveStable(output, bowPullingModel("gravstringer_pulling_0"), pathProvider.json(Psitweaks.location("gravstringer_pulling_0"))));
         futures.add(DataProvider.saveStable(output, bowPullingModel("gravstringer_pulling_1"), pathProvider.json(Psitweaks.location("gravstringer_pulling_1"))));
         futures.add(DataProvider.saveStable(output, bowPullingModel("gravstringer_pulling_2"), pathProvider.json(Psitweaks.location("gravstringer_pulling_2"))));
+        futures.add(DataProvider.saveStable(output, bowPullingModel("gravstringer_pulling_0_tunneler"), pathProvider.json(Psitweaks.location("gravstringer_pulling_0_tunneler"))));
+        futures.add(DataProvider.saveStable(output, bowPullingModel("gravstringer_pulling_1_tunneler"), pathProvider.json(Psitweaks.location("gravstringer_pulling_1_tunneler"))));
+        futures.add(DataProvider.saveStable(output, bowPullingModel("gravstringer_pulling_2_tunneler"), pathProvider.json(Psitweaks.location("gravstringer_pulling_2_tunneler"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -89,9 +92,30 @@ public class PsitweaksItemModelProvider implements DataProvider {
         overrides.add(bowOverride(1.0F, null, item.id() + "_pulling_0"));
         overrides.add(bowOverride(1.0F, 0.65F, item.id() + "_pulling_1"));
         overrides.add(bowOverride(1.0F, 0.9F, item.id() + "_pulling_2"));
+        if ("gravstringer".equals(item.id())) {
+            // 通常オーバーライドの後に置くことで、トンネラー装填時はこちらが優先される
+            overrides.add(tunnelerBowOverride(null, "gravstringer_pulling_0_tunneler"));
+            overrides.add(tunnelerBowOverride(0.65F, "gravstringer_pulling_1_tunneler"));
+            overrides.add(tunnelerBowOverride(0.9F, "gravstringer_pulling_2_tunneler"));
+        }
         root.add("overrides", overrides);
 
         return root;
+    }
+
+    private static JsonObject tunnelerBowOverride(Float pull, String model) {
+        JsonObject override = new JsonObject();
+        JsonObject predicate = new JsonObject();
+
+        predicate.addProperty(Psitweaks.location("tunneler_loaded").toString(), 1.0F);
+        predicate.addProperty(ResourceLocation.withDefaultNamespace("pulling").toString(), 1.0F);
+        if (pull != null) {
+            predicate.addProperty(ResourceLocation.withDefaultNamespace("pull").toString(), pull);
+        }
+        override.add("predicate", predicate);
+        override.addProperty("model", Psitweaks.location("item/" + model).toString());
+
+        return override;
     }
 
     private static JsonObject bowPullingModel(String id) {

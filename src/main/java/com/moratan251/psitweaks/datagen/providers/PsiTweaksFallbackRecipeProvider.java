@@ -111,7 +111,16 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         counted(PsitweaksItems.PHOTON_GLITTER, 8),
                         counted(Items.NETHER_STAR, 1)
                 ),
-                PsitweaksItems.WAVE_FRAGMENT, 1));
+                PsitweaksItems.WAVE_FRAGMENT, 8));
+        add(recipes, "unfathomable_component", shaped(
+                List.of("ABA", "CDC", "ABA"),
+                Map.of(
+                        'A', ingredient(PsitweaksItems.GRAVITIZED_PLATE),
+                        'B', ingredient(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT),
+                        'C', ingredient(PsitweaksItems.NANO_REACTOR),
+                        'D', ingredient(Items.NETHER_STAR)
+                ),
+                PsitweaksItems.UNFATHOMABLE_COMPONENT, 1));
         add(recipes, "quantize_arrowhead", shapelessCounted(
                 List.of(
                         counted(PsitweaksItems.QUANTUM_FACTOR, 1),
@@ -125,7 +134,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         'B', ingredient(Items.BLAZE_ROD),
                         'C', ingredient(Items.FEATHER)
                 ),
-                PsitweaksItems.TUNNELER, 1));
+                PsitweaksItems.TUNNELER, 3));
         add(recipes, "psionic_factor_ebony", surrounding(
                 PsitweaksItems.PSIONIC_FACTOR, PsitweaksItems.ENRICHED_EBONY, PsitweaksItems.PSIONIC_FACTOR_EBONY));
         add(recipes, "psionic_factor_ivory", surrounding(
@@ -140,7 +149,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         ingredient(ModItems.psimetal.get()),
                         ingredient(PsitweaksItems.CHAOTIC_FACTOR)
                 ),
-                PsitweaksItems.CHAOTIC_PSIMETAL, 1));
+                PsitweaksItems.CHAOTIC_PSIMETAL, 2));
         add(recipes, "heavy_psimetal_scrap", shapeless(
                 List.of(
                         ingredient(PsitweaksItems.ENRICHED_ECHO),

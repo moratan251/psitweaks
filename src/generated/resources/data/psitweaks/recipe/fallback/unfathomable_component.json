@@ -12,22 +12,25 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "psitweaks:quantize_arrowhead"
+      "item": "psitweaks:gravitized_plate"
     },
     "B": {
-      "item": "minecraft:blaze_rod"
+      "item": "psitweaks:hypostasis_control_circuit"
     },
     "C": {
-      "item": "minecraft:feather"
+      "item": "psitweaks:nano_reactor"
+    },
+    "D": {
+      "item": "minecraft:nether_star"
     }
   },
   "pattern": [
-    "A",
-    "B",
-    "C"
+    "ABA",
+    "CDC",
+    "ABA"
   ],
   "result": {
-    "count": 3,
-    "id": "psitweaks:tunneler"
+    "count": 1,
+    "id": "psitweaks:unfathomable_component"
   }
 }

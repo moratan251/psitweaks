@@ -19,7 +19,11 @@ public class ItemTunneler extends ArrowItem {
 
     @Override
     public AbstractArrow createArrow(Level level, ItemStack ammo, LivingEntity shooter, @Nullable ItemStack weapon) {
-        return new EntityTunnelerArrow(level, shooter, ammo.copyWithCount(1), weapon);
+        EntityTunnelerArrow arrow = new EntityTunnelerArrow(level, shooter, ammo.copyWithCount(1), weapon);
+        if (weapon != null && weapon.getItem() instanceof ItemGravstringer) {
+            arrow.setMode(ItemGravstringer.getArrowMode(weapon));
+        }
+        return arrow;
     }
 
     @Override

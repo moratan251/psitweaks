@@ -84,6 +84,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -238,6 +239,9 @@ public class Psitweaks {
             event.enqueueWork(() -> {
                 registerBowProperties(PsitweaksItems.PSIMETAL_BOW, BowItem.MAX_DRAW_DURATION);
                 registerBowProperties(PsitweaksItems.GRAVSTRINGER, ItemGravstringer.FULL_DRAW_TICKS);
+                ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(), Psitweaks.location("tunneler_loaded"),
+                        (stack, level, entity, seed) -> entity instanceof Player player
+                                && player.getProjectile(stack).is(PsitweaksItems.TUNNELER.get()) ? 1.0F : 0.0F);
                 registerActiveSpellProperties(
                         PsitweaksItems.ADVANCED_SPELL_BULLET,
                         PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,

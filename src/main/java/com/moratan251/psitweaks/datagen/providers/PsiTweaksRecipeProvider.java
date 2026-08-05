@@ -117,7 +117,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'B', ingredientItem(MekanismItems.HDPE_STICK),
                         'C', ingredientItem(Items.FEATHER)
                 ),
-                PsitweaksItems.TUNNELER, 1));
+                PsitweaksItems.TUNNELER, 3));
         recipe(recipes, "psionic_echo", trickCrafting(
                 ingredientItem(Items.ECHO_SHARD),
                 PsitweaksItems.PSIONIC_ECHO,

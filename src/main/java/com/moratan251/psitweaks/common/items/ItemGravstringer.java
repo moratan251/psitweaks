@@ -9,12 +9,17 @@ package com.moratan251.psitweaks.common.items;
 
 import java.util.List;
 import java.util.function.Predicate;
+import com.moratan251.psitweaks.common.entities.EntityTunnelerArrow;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -23,8 +28,9 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
@@ -40,9 +46,59 @@ public class ItemGravstringer extends BowItem {
     public static final int SLOT_COUNT = 11;
     public static final int FULL_DRAW_TICKS = 4;
     private static final double ARROW_BASE_DAMAGE = 12.0;
+    private static final String TAG_ARROW_MODE = "arrow_mode";
+
+    /** 扇状に発射する左右の矢の角度オフセット(rad) */
+    private static final float FAN_ANGLE = 0.174F;
+
+    /** 扇状に発射する左右の矢の、射線に垂直なスポーン位置オフセット(ブロック) */
+    private static final double FAN_LATERAL_OFFSET = 0.75;
 
     public ItemGravstringer(Item.Properties properties) {
         super(properties);
+    }
+
+    /** このグラヴストリンガーから発射されるトンネラーの飛翔モード（{@link EntityTunnelerArrow} の MODE_* 定数） */
+    public static int getArrowMode(ItemStack stack) {
+        int mode = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getInt(TAG_ARROW_MODE);
+        return Mth.clamp(mode, EntityTunnelerArrow.MODE_NORMAL, EntityTunnelerArrow.MODE_HYBRID);
+    }
+
+    @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
+        // スニーク左クリックでトンネラーの飛翔モードを切り替える（通常→低速→ハイブリッド）
+        if (entity instanceof Player player && player.isShiftKeyDown() && !player.level().isClientSide) {
+            int mode = switch (getArrowMode(stack)) {
+                case EntityTunnelerArrow.MODE_NORMAL -> EntityTunnelerArrow.MODE_SLOW;
+                case EntityTunnelerArrow.MODE_SLOW -> EntityTunnelerArrow.MODE_HYBRID;
+                default -> EntityTunnelerArrow.MODE_NORMAL;
+            };
+            CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(TAG_ARROW_MODE, mode));
+            player.displayClientMessage(Component.translatable("item.psitweaks.gravstringer.mode." + modeKey(mode)), true);
+        }
+        return false;
+    }
+
+    /** モードに対応する翻訳キー suffix（normal / slow / inertialess / hybrid） */
+    private static String modeKey(int mode) {
+        return switch (mode) {
+            case EntityTunnelerArrow.MODE_SLOW -> "slow";
+            case EntityTunnelerArrow.MODE_INERTIALESS -> "inertialess";
+            case EntityTunnelerArrow.MODE_HYBRID -> "hybrid";
+            default -> "normal";
+        };
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
+        // スニーク左クリックはモード切替専用とし、mobへの攻撃をキャンセルする
+        return player.isShiftKeyDown();
+    }
+
+    @Override
+    public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
+        // スニーク左クリックはモード切替専用とし、ブロック破壊をキャンセルする
+        return !player.isShiftKeyDown();
     }
 
     @Override
@@ -106,22 +162,50 @@ public class ItemGravstringer extends BowItem {
     protected void shoot(ServerLevel level, LivingEntity shooter, InteractionHand hand, ItemStack weapon,
                          List<ItemStack> projectileItems, float velocity, float inaccuracy, boolean isCrit,
                          @Nullable LivingEntity target) {
-        float spread = EnchantmentHelper.processProjectileSpread(level, weapon, shooter, 0.0F);
-        float projectileCount = projectileItems.size();
-        float centeredIndex = (projectileCount - 1.0F) / 2.0F;
+        int arrowMode = getArrowMode(weapon);
+        float yawRad = shooter.getYRot() * (float) (Math.PI / 180.0);
 
-        for (int index = 0; index < projectileItems.size(); index++) {
-            ItemStack projectileItem = projectileItems.get(index);
+        // トンネラーは1回の射撃で3本を扇状に発射する（弾薬消費は1本分）。
+        // 通常/低速モードは3本ともそのモード、ハイブリッドモードは中央=通常・左右=低速
+        for (ItemStack projectileItem : projectileItems) {
             if (projectileItem.isEmpty()) {
                 continue;
             }
 
-            float offset = index - centeredIndex;
-            Projectile projectile = createProjectile(level, shooter, weapon, projectileItem, isCrit);
-            shootProjectile(shooter, projectile, index, velocity, inaccuracy, offset * spread, target);
-            attachSpellToProjectile(level, shooter, weapon, projectile);
-            level.addFreshEntity(projectile);
-            weapon.hurtAndBreak(getDurabilityUse(projectileItem), shooter, LivingEntity.getSlotForHand(hand));
+            // 扇状3本発射はトンネラーのみ。それ以外の矢は通常通り1本だけ発射する
+            if (!projectileItem.is(PsitweaksItems.TUNNELER.get())) {
+                Projectile projectile = createProjectile(level, shooter, weapon, projectileItem, isCrit);
+                shootProjectile(shooter, projectile, 0, velocity, inaccuracy, 0.0F, target);
+                attachSpellToProjectile(level, shooter, weapon, projectile);
+                level.addFreshEntity(projectile);
+                weapon.hurtAndBreak(getDurabilityUse(projectileItem), shooter, LivingEntity.getSlotForHand(hand));
+                continue;
+            }
+
+            for (int i = -1; i <= 1; i++) {
+                Projectile projectile = createProjectile(level, shooter, weapon, projectileItem, isCrit);
+                if (projectile instanceof EntityTunnelerArrow tunneler) {
+                    int mode = arrowMode == EntityTunnelerArrow.MODE_HYBRID
+                            ? (i == 0 ? EntityTunnelerArrow.MODE_NORMAL : EntityTunnelerArrow.MODE_SLOW)
+                            : arrowMode;
+                    tunneler.setMode(mode);
+                }
+                // 低速の矢でも左右が見た目で分かれるよう、左右の矢は射線の垂直方向にずらして発射する
+                if (i != 0) {
+                    double offset = i * FAN_LATERAL_OFFSET;
+                    projectile.setPos(
+                            projectile.getX() - Mth.cos(yawRad) * offset,
+                            projectile.getY(),
+                            projectile.getZ() - Mth.sin(yawRad) * offset
+                    );
+                }
+                shootProjectile(shooter, projectile, i + 1, velocity, inaccuracy, i * FAN_ANGLE, target);
+                if (i == 0) {
+                    attachSpellToProjectile(level, shooter, weapon, projectile);
+                }
+                level.addFreshEntity(projectile);
+                weapon.hurtAndBreak(getDurabilityUse(projectileItem), shooter, LivingEntity.getSlotForHand(hand));
+            }
         }
     }
 
@@ -134,6 +218,8 @@ public class ItemGravstringer extends BowItem {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         Component componentName = ISocketable.getSocketedItemName(stack, "psimisc.none");
         tooltip.add(Component.translatable("psimisc.spell_selected", componentName));
+        tooltip.add(Component.translatable("item.psitweaks.gravstringer.current_mode",
+                Component.translatable("item.psitweaks.gravstringer.mode." + modeKey(getArrowMode(stack)))));
     }
 
     private static void attachSpellToProjectile(ServerLevel level, LivingEntity shooter, ItemStack bowStack, Projectile projectile) {

@@ -59,6 +59,26 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Magician";
         });
         addDeathMessages(root);
+        root.addProperty("item.psitweaks.gravstringer.mode.normal", switch (locale) {
+            case "ja_jp" -> "通常モード";
+            default -> "Normal Mode";
+        });
+        root.addProperty("item.psitweaks.gravstringer.mode.slow", switch (locale) {
+            case "ja_jp" -> "低速モード";
+            default -> "Slow Mode";
+        });
+        root.addProperty("item.psitweaks.gravstringer.mode.inertialess", switch (locale) {
+            case "ja_jp" -> "無慣性モード";
+            default -> "Inertialess Mode";
+        });
+        root.addProperty("item.psitweaks.gravstringer.mode.hybrid", switch (locale) {
+            case "ja_jp" -> "ハイブリッドモード";
+            default -> "Hybrid Mode";
+        });
+        root.addProperty("item.psitweaks.gravstringer.current_mode", switch (locale) {
+            case "ja_jp" -> "モード: %s";
+            default -> "Mode: %s";
+        });
         addChemical(root, "infuse_psigem", "Psigem", "サイジェム");
         addChemical(root, "infuse_ebony", "Ebony", "エボニー");
         addChemical(root, "infuse_ivory", "Ivory", "アイボリー");
@@ -529,6 +549,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.carbon_poisoning", switch (locale) {
             case "ja_jp" -> "%1$sは炭素中毒に屈した";
             default -> "%1$s succumbed to carbon poisoning";
+        });
+        root.addProperty("death.attack.psitweaks.tunneler", switch (locale) {
+            case "ja_jp" -> "%1$sは撃ち抜かれた";
+            default -> "%1$s was shot through";
+        });
+        root.addProperty("death.attack.psitweaks.tunneler.player", switch (locale) {
+            case "ja_jp" -> "%1$sは撃ち抜かれた";
+            default -> "%1$s was shot through";
+        });
+        root.addProperty("death.attack.psitweaks.tunneler.item", switch (locale) {
+            case "ja_jp" -> "%1$sは撃ち抜かれた";
+            default -> "%1$s was shot through";
         });
     }
 
