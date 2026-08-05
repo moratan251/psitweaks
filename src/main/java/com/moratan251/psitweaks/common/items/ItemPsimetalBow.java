@@ -21,18 +21,13 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.network.chat.Component;
+import com.moratan251.psitweaks.common.handler.BowSpellProjectileHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ISocketable;
-import vazkii.psi.api.spell.SpellContext;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
-import vazkii.psi.common.entity.EntitySpellProjectile;
-import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.tool.IPsimetalTool;
 
 import javax.annotation.Nonnull;
@@ -94,26 +89,7 @@ public class ItemPsimetalBow extends BowItem implements IPsimetalTool {
                             arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
 
-                        // --- Psi の SpellCasting 部分ここに移植 ---
-                        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
-                        ItemStack playerCad = PsiAPI.getPlayerCAD(player);
-
-                        if (!playerCad.isEmpty()) {
-                            ISocketable sockets = ISocketable.socketable(stack);
-                            ItemStack bullet = sockets.getSelectedBullet();
-                            ItemCAD.cast(player.level(), player, data, bullet, playerCad, 5, 10, 0.05F, (SpellContext context) -> {
-                                context.tool = stack;
-                            });
-
-                            float radiusVal = 0.2f;
-                            AABB region = new AABB(player.getX() - radiusVal, player.getY() + player.getEyeHeight() - radiusVal, player.getZ() - radiusVal, player.getX() + radiusVal, player.getY() + player.getEyeHeight() + radiusVal, player.getZ() + radiusVal);
-
-                            List<EntitySpellProjectile> spells = player.level().getEntitiesOfClass(EntitySpellProjectile.class, region, (e) -> ((e != null) && (e.context.caster == player) && (e.tickCount <= 1)));
-                            for (EntitySpellProjectile spell : spells) {
-                                spell.startRiding(arrow, true);
-                            }
-
-                        }
+                        BowSpellProjectileHandler.attachSpell(level, player, stack, arrow);
 
 
                         level.addFreshEntity(arrow);
