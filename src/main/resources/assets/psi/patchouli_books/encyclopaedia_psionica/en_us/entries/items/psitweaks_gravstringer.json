@@ -1,0 +1,23 @@
+{
+  "name": "item.psitweaks.gravstringer",
+  "category": "psi:items",
+  "icon": "psitweaks:gravstringer",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.gravstringer.0",
+      "item": "psitweaks:gravstringer",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_item.gravstringer.1"
+    },
+    {
+      "type": "crafting_multi",
+      "recipes": [
+        "psitweaks:gravstringer"
+      ]
+    }
+  ]
+}
