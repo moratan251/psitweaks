@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-17T19:56:14.0163064	PsiTweaks Material Mutation Recipes
+// 1.20.1	2026-08-05T00:46:00.4561313	PsiTweaks Material Mutation Recipes
 3c5f2f9137eeefbd9877a6086cee8489c5dc67f0 data/psitweaks/material_mutation/machine/advanced_solar_generator.json
 9cc5b70c0638fd54ea96f963ec2dd4d058cca74b data/psitweaks/material_mutation/machine/americium_pellet.json
 40b7bf090bebb161764d1124b76b9e2df65be6b2 data/psitweaks/material_mutation/machine/bio_generator.json
@@ -13,6 +13,7 @@ a393d9e72241cc60b306c8bac0334c7400f03675 data/psitweaks/material_mutation/machin
 33bcffba65fb23af7264fba614d6df6e123a5e96 data/psitweaks/material_mutation/machine/mycelium.json
 a73e4a447e12c0c28e5a4209ec0fbb9ae6264a27 data/psitweaks/material_mutation/machine/neptunium_pellet.json
 e35351620b7bfbb550a56d9399caf616f5804726 data/psitweaks/material_mutation/machine/netherite_scrap.json
+d6849a872a76f56c97782842cecf74bf68b35a4d data/psitweaks/material_mutation/machine/photon_glitter.json
 68b224c1011d8dcc88064ea378a494596379a055 data/psitweaks/material_mutation/machine/prismarine_crystals.json
 060160a374f5a19b9b09421bc06f53b64432b607 data/psitweaks/material_mutation/machine/prismarine_shard.json
 d4813baf6805f06af0b0df9b138ebebd98474b13 data/psitweaks/material_mutation/machine/sculk_sensor.json
@@ -33,6 +34,7 @@ a2cd59dcc82f0d10d2f9c42eb73eee40c1024090 data/psitweaks/material_mutation/trick/
 e496ed4dde381e2b9ff29a7f61fd87fb5fba525e data/psitweaks/material_mutation/trick/mycelium.json
 dec26abb4d442a725f3d9b1ac221eafdefdb6153 data/psitweaks/material_mutation/trick/neptunium_pellet.json
 be9bc804c3fef97ca3d313b39d1ab7515453b05a data/psitweaks/material_mutation/trick/netherite_scrap.json
+02ef3947fe75e0c9c61a6380b0c6d0ba52d85b2e data/psitweaks/material_mutation/trick/photon_glitter.json
 2eb266e2f79bf34a6feec7daf3bfed7464bdf396 data/psitweaks/material_mutation/trick/prismarine_crystals.json
 216665bdd71ff69d32f874b8703eaf2dadcb9cd8 data/psitweaks/material_mutation/trick/prismarine_shard.json
 2d733dc29afcba435ba6728231b5b9a7f2a50bc5 data/psitweaks/material_mutation/trick/sculk_sensor.json

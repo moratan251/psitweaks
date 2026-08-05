@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "psitweaks:gravitized_plate"
+    },
+    "B": {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    "C": {
+      "item": "psitweaks:nano_reactor"
+    },
+    "D": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "item": "psitweaks:unfathomable_component"
+  }
+}

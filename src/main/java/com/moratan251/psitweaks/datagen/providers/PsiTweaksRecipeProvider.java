@@ -796,6 +796,74 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_jade", has(PsitweaksItems.JADE.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "magatama"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.HARDENED_CAPSULE.get())
+                .define('A', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('B', Items.SHULKER_SHELL)
+                .pattern("ABA")
+                .pattern("B B")
+                .pattern("ABA")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "hardened_capsule"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.FLASH_COIL.get())
+                .define('A', PsitweaksItems.FLASHMETAL_NUGGET.get())
+                .define('B', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .unlockedBy("has_flashmetal_nugget", has(PsitweaksItems.FLASHMETAL_NUGGET.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flash_coil"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.FLASH_CHIP.get())
+                .define('A', PsitweaksItems.FLASH_COIL.get())
+                .define('B', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("AAA")
+                .pattern("BBB")
+                .pattern("AAA")
+                .unlockedBy("has_flash_coil", has(PsitweaksItems.FLASH_COIL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flash_chip"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.NANO_REACTOR.get())
+                .define('A', PsitweaksItems.FLASH_CHIP.get())
+                .define('B', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.HEAVY_PSIMETAL.get())
+                .define('D', PsitweaksItems.HARDENED_CAPSULE.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("ABA")
+                .unlockedBy("has_flash_chip", has(PsitweaksItems.FLASH_CHIP.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "nano_reactor"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.UNFATHOMABLE_COMPONENT.get())
+                .define('A', PsitweaksItems.GRAVITIZED_PLATE.get())
+                .define('B', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.NANO_REACTOR.get())
+                .define('D', MekanismItems.ANTIMATTER_PELLET)
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("ABA")
+                .unlockedBy("has_gravitized_plate", has(PsitweaksItems.GRAVITIZED_PLATE.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "unfathomable_component"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.SUPERSTRING.get())
+                .define('A', PsitweaksItems.WAVE_FRAGMENT.get())
+                .define('B', PsitweaksItems.STRING_A.get())
+                .pattern("AAA")
+                .pattern("BBB")
+                .pattern("AAA")
+                .unlockedBy("has_wave_fragment", has(PsitweaksItems.WAVE_FRAGMENT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "superstring"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.TUNNELER.get())
+                .define('A', PsitweaksItems.QUANTIZE_ARROWHEAD.get())
+                .define('B', MekanismItems.HDPE_STICK)
+                .define('C', Items.FEATHER)
+                .pattern("A")
+                .pattern("B")
+                .pattern("C")
+                .unlockedBy("has_quantize_arrowhead", has(PsitweaksItems.QUANTIZE_ARROWHEAD.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "tunneler"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY.get())
                 .define('I', PsitweaksItems.HEAVY_PSIMETAL.get())
                 .pattern("III")

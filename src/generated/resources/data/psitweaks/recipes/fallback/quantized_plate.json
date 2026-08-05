@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:quantum_factor"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "psitweaks:quantized_plate"
+  }
+}

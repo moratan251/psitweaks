@@ -1,0 +1,13 @@
+{
+  "mutations": [
+    {
+      "input": {
+        "block": "psitweaks:flashmetal_block"
+      },
+      "output": {
+        "count": 1,
+        "item": "psitweaks:photon_glitter"
+      }
+    }
+  ]
+}

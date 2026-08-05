@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:metallurgic_infusing",
+        "chemicalInput": {
+          "amount": 160,
+          "infuse_type": "psitweaks:infuse_quantum"
+        },
+        "itemInput": {
+          "ingredient": {
+            "item": "minecraft:string"
+          }
+        },
+        "output": {
+          "item": "psitweaks:string_a"
+        }
+      }
+    }
+  ]
+}

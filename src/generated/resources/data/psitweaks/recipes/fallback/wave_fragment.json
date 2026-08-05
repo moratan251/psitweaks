@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "psitweaks:photon_glitter"
+    },
+    {
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "psitweaks:wave_fragment"
+  }
+}

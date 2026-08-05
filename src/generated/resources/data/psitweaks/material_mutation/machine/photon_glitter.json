@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "psitweaks:flashmetal_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "psitweaks:photon_glitter"
+  },
+  "time": 200
+}

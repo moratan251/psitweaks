@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:nucleosynthesizing",
+        "duration": 2500,
+        "gasInput": {
+          "amount": 10,
+          "gas": "mekanism:antimatter"
+        },
+        "itemInput": {
+          "ingredient": {
+            "item": "psitweaks:photon_glitter"
+          }
+        },
+        "output": {
+          "item": "psitweaks:wave_fragment"
+        }
+      }
+    }
+  ]
+}

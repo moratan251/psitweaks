@@ -1,0 +1,37 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "A": {
+            "item": "psitweaks:quantize_arrowhead"
+          },
+          "B": {
+            "item": "mekanism:hdpe_stick"
+          },
+          "C": {
+            "item": "minecraft:feather"
+          }
+        },
+        "pattern": [
+          "A",
+          "B",
+          "C"
+        ],
+        "result": {
+          "item": "psitweaks:tunneler"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

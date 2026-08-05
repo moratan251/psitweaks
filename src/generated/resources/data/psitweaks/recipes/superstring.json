@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:wave_fragment"
+    },
+    "B": {
+      "item": "psitweaks:string_a"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BBB",
+    "AAA"
+  ],
+  "result": {
+    "item": "psitweaks:superstring"
+  },
+  "show_notification": true
+}

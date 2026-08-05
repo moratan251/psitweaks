@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:superstring"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wave_fragment": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:wave_fragment"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wave_fragment",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:superstring"
+    ]
+  },
+  "sends_telemetry_event": false
+}

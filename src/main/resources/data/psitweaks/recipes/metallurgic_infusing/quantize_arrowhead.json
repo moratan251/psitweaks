@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:metallurgic_infusing",
+        "chemicalInput": {
+          "amount": 5,
+          "infuse_type": "psitweaks:infuse_quantum"
+        },
+        "itemInput": {
+          "ingredient": {
+            "item": "psitweaks:heavy_psimetal_nugget"
+          }
+        },
+        "output": {
+          "count": 4,
+          "item": "psitweaks:quantize_arrowhead"
+        }
+      }
+    }
+  ]
+}

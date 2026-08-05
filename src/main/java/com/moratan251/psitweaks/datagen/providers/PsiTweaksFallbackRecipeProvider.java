@@ -77,6 +77,59 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         add(recipes, "psionic_factor", shapeless(
                 List.of(ingredient("minecraft:ender_pearl"), ingredient(item("enriched_psigem"))),
                 item("psionic_factor"), 1));
+        add(recipes, "quantum_factor", shapelessCounted(
+                List.of(
+                        counted(item("psionic_factor"), 1),
+                        counted("minecraft:ender_eye", 8)
+                ),
+                item("quantum_factor"), 1));
+        add(recipes, "string_a", shapelessCounted(
+                List.of(
+                        counted("minecraft:string", 1),
+                        counted(item("quantum_factor"), 2)
+                ),
+                item("string_a"), 1));
+        add(recipes, "quantized_plate", shapelessCounted(
+                List.of(
+                        counted(item("antinite_ingot"), 6),
+                        counted(item("quantum_factor"), 1)
+                ),
+                item("quantized_plate"), 2));
+        add(recipes, "gravitized_plate", shapelessCounted(
+                List.of(
+                        counted(item("graviton_factor"), 1),
+                        counted(item("psycheonic_metal_ingot"), 6)
+                ),
+                item("gravitized_plate"), 2));
+        add(recipes, "wave_fragment", shapelessCounted(
+                List.of(
+                        counted(item("photon_glitter"), 8),
+                        counted("minecraft:nether_star", 1)
+                ),
+                item("wave_fragment"), 8));
+        add(recipes, "unfathomable_component", shaped(
+                List.of("ABA", "CDC", "ABA"),
+                Map.of(
+                        'A', ingredient(item("gravitized_plate")),
+                        'B', ingredient(item("hypostasis_control_circuit")),
+                        'C', ingredient(item("nano_reactor")),
+                        'D', ingredient("minecraft:nether_star")
+                ),
+                item("unfathomable_component"), 1));
+        add(recipes, "quantize_arrowhead", shapelessCounted(
+                List.of(
+                        counted(item("quantum_factor"), 1),
+                        counted(item("heavy_psimetal"), 2)
+                ),
+                item("quantize_arrowhead"), 64));
+        add(recipes, "tunneler", shaped(
+                List.of("A", "B", "C"),
+                Map.of(
+                        'A', ingredient(item("quantize_arrowhead")),
+                        'B', ingredient("minecraft:blaze_rod"),
+                        'C', ingredient("minecraft:feather")
+                ),
+                item("tunneler"), 1));
         add(recipes, "psionic_factor_ebony", surrounding(
                 item("psionic_factor"), item("enriched_ebony"), item("psionic_factor_ebony")));
         add(recipes, "psionic_factor_ivory", surrounding(
@@ -91,7 +144,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         ingredient("psi:psimetal"),
                         ingredient(item("chaotic_factor"))
                 ),
-                item("chaotic_psimetal"), 1));
+                item("chaotic_psimetal"), 2));
         add(recipes, "heavy_psimetal_scrap", shapeless(
                 List.of(
                         ingredient(item("enriched_echo")),

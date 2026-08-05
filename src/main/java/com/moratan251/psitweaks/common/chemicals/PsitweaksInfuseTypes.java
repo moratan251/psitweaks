@@ -22,6 +22,10 @@ public class PsitweaksInfuseTypes {
             INFUSE_TYPES.register("infuse_psionic_echo", 0x15044b);
     public static final InfuseTypeRegistryObject<InfuseType> HYPOSTASIS =
             INFUSE_TYPES.register("infuse_hypostasis", 0xffb0b0);
+    public static final InfuseTypeRegistryObject<InfuseType> QUANTUM =
+            INFUSE_TYPES.register("infuse_quantum", 0x44ffaa);
+    public static final InfuseTypeRegistryObject<InfuseType> GRAVITON =
+            INFUSE_TYPES.register("infuse_graviton", 0x173623);
 
     public static void register(IEventBus eventBus) {
         INFUSE_TYPES.register(eventBus);

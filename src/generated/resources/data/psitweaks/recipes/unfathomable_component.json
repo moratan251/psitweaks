@@ -1,0 +1,40 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "A": {
+            "item": "psitweaks:gravitized_plate"
+          },
+          "B": {
+            "item": "psitweaks:hypostasis_control_circuit"
+          },
+          "C": {
+            "item": "psitweaks:nano_reactor"
+          },
+          "D": {
+            "item": "mekanism:pellet_antimatter"
+          }
+        },
+        "pattern": [
+          "ABA",
+          "CDC",
+          "ABA"
+        ],
+        "result": {
+          "item": "psitweaks:unfathomable_component"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

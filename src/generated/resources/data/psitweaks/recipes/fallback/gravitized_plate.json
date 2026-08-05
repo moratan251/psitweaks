@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "psitweaks:graviton_factor"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    },
+    {
+      "item": "psitweaks:psycheonic_metal_ingot"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "psitweaks:gravitized_plate"
+  }
+}
