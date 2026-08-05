@@ -10,6 +10,7 @@ package com.moratan251.psitweaks.common.items;
 import java.util.List;
 import java.util.function.Predicate;
 import com.moratan251.psitweaks.common.entities.EntityTunnelerArrow;
+import com.moratan251.psitweaks.common.handler.BowSpellProjectileHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -31,16 +32,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ISocketable;
-import vazkii.psi.api.spell.ISpellAcceptor;
-import vazkii.psi.api.spell.SpellContext;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
-import vazkii.psi.common.entity.EntitySpellProjectile;
-import vazkii.psi.common.item.ItemCAD;
 
 public class ItemGravstringer extends BowItem {
     public static final int SLOT_COUNT = 11;
@@ -176,7 +170,7 @@ public class ItemGravstringer extends BowItem {
             if (!projectileItem.is(PsitweaksItems.TUNNELER.get())) {
                 Projectile projectile = createProjectile(level, shooter, weapon, projectileItem, isCrit);
                 shootProjectile(shooter, projectile, 0, velocity, inaccuracy, 0.0F, target);
-                attachSpellToProjectile(level, shooter, weapon, projectile);
+                BowSpellProjectileHandler.attachSpell(level, shooter, weapon, projectile);
                 level.addFreshEntity(projectile);
                 weapon.hurtAndBreak(getDurabilityUse(projectileItem), shooter, LivingEntity.getSlotForHand(hand));
                 continue;
@@ -201,7 +195,7 @@ public class ItemGravstringer extends BowItem {
                 }
                 shootProjectile(shooter, projectile, i + 1, velocity, inaccuracy, i * FAN_ANGLE, target);
                 if (i == 0) {
-                    attachSpellToProjectile(level, shooter, weapon, projectile);
+                    BowSpellProjectileHandler.attachSpell(level, shooter, weapon, projectile);
                 }
                 level.addFreshEntity(projectile);
                 weapon.hurtAndBreak(getDurabilityUse(projectileItem), shooter, LivingEntity.getSlotForHand(hand));
@@ -222,36 +216,4 @@ public class ItemGravstringer extends BowItem {
                 Component.translatable("item.psitweaks.gravstringer.mode." + modeKey(getArrowMode(stack)))));
     }
 
-    private static void attachSpellToProjectile(ServerLevel level, LivingEntity shooter, ItemStack bowStack, Projectile projectile) {
-        if (!(shooter instanceof Player player) || !ISocketable.isSocketable(bowStack)) {
-            return;
-        }
-
-        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
-        ItemStack playerCad = PsiAPI.getPlayerCAD(player);
-        ItemStack bullet = ISocketable.socketable(bowStack).getSelectedBullet();
-        if (playerCad.isEmpty() || bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {
-            return;
-        }
-
-        ItemCAD.cast(level, player, data, bullet, playerCad, 5, 10, 0.05F, (SpellContext context) -> {
-            context.tool = bowStack;
-        });
-
-        float radius = 0.2F;
-        AABB region = new AABB(
-                player.getX() - radius,
-                player.getY() + player.getEyeHeight() - radius,
-                player.getZ() - radius,
-                player.getX() + radius,
-                player.getY() + player.getEyeHeight() + radius,
-                player.getZ() + radius
-        );
-
-        List<EntitySpellProjectile> spells = level.getEntitiesOfClass(EntitySpellProjectile.class, region,
-                spell -> spell != null && spell.context != null && spell.context.caster == player && spell.tickCount <= 1);
-        for (EntitySpellProjectile spell : spells) {
-            spell.startRiding(projectile, true);
-        }
-    }
 }
