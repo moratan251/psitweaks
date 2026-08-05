@@ -77,7 +77,7 @@ public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool,
     }
 
     public float getCastVolume() {
-        return 0.025F;
+        return 0F;
     }
 
     public int getCastCooldown(ItemStack stack) {

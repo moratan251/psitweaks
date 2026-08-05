@@ -296,6 +296,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_inside_region");
     public static final DeferredHolder<Material, Material> OPERATOR_OUTSIDE_REGION =
             registerPieceMaterial("operator_outside_region");
+    public static final DeferredHolder<Material, Material> OPERATOR_ALIVE =
+            registerPieceMaterial("operator_alive");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =
             registerPieceMaterial("operator_matrix_transform_vector");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =

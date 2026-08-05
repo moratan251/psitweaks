@@ -318,7 +318,7 @@ public final class PsitweaksItems {
     );
     public static final DeferredItem<ItemGravstringer> GRAVSTRINGER = ITEMS.register(
             "gravstringer",
-            () -> new ItemGravstringer(new Item.Properties().rarity(Rarity.EPIC))
+            () -> new ItemGravstringer(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1))
     );
     public static final DeferredItem<ItemCuriosController> CURIOS_CONTROLLER = ITEMS.register(
             "curios_controller",

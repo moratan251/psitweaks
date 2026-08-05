@@ -305,6 +305,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_inside_region", PieceOperatorInsideRegion.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorOutsideRegion>> OPERATOR_OUTSIDE_REGION =
             registerPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorAlive>> OPERATOR_ALIVE =
+            registerPiece("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorWeakRaycast>> OPERATOR_WEAK_RAYCAST =
             registerPiece("operator_weak_raycast", PieceOperatorWeakRaycast.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceOperatorWeakRaycastAxis>> OPERATOR_WEAK_RAYCAST_AXIS =
@@ -426,6 +428,8 @@ public final class PsitweaksSpells {
             registerGroup("trick_material_mutation", PieceTrickMaterialMutation.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MASS_BLOCK_BREAK =
             registerGroup("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_ALIVE_GROUP =
+            registerGroup("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_WEAK_RAYCAST_GROUP =
             registerGroup("operator_weak_raycast", PieceOperatorWeakRaycast.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_WEAK_RAYCAST_AXIS_GROUP =
