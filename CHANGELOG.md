@@ -8,11 +8,11 @@
 
 - Ported spell pieces from 1.12.2 Random PSIdeas
   + Macro: Caster Raycast
-  + Macro: Caster Raycast (Strong)
-  + Macro: Caster Raycast (Weak)
-  + Macro: Caster Raycast Direction
-  + Macro: Caster Raycast Direction (Strong)
-  + Macro: Caster Raycast Direction (Weak)
+  + Macro: Strong Caster Raycast
+  + Macro: Weak Caster Raycast
+  + Macro: Axis Caster Raycast
+  + Macro: Strong Axis Caster Raycast
+  + Macro: Weak Axis Caster Raycast
 
 - Added spell pieces
   + Macro: Caster Axial Offset
