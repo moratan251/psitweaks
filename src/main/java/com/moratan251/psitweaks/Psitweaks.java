@@ -12,6 +12,7 @@ import com.moratan251.psitweaks.common.handler.NetworkHandler;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
 import com.moratan251.psitweaks.common.handler.SafetySpellCastHandler;
 import com.moratan251.psitweaks.common.handler.SpellPsiRefundCaptureHandler;
+import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
@@ -122,6 +123,8 @@ public class Psitweaks {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onEntityJoinLevel);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, SafetySpellCastHandler::onPreSpellCast);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, SpellPsiRefundCaptureHandler::onPreSpellCast);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, DimensionalCrystalDropHandler::onPreSpellCast);
+        MinecraftForge.EVENT_BUS.addListener(DimensionalCrystalDropHandler::onSpellCast);
         MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
 

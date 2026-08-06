@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "psitweaks:item/gravstringer_pulling_1_tunneler"
+  }
+}

@@ -37,6 +37,8 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "cad_assembly_heavy_psimetal_alpha",
             "cad_assembly_heavy_psimetal_beta",
             "cad_assembly_psycheonic_metal",
+            "cad_core_absorptive",
+            "cad_core_ultraclocked",
             "chaotic_factor",
             "quantum_factor",
             "graviton_factor",
@@ -59,6 +61,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "crystal_antinite",
             "curios_controller",
             "dirty_dust_antinite",
+            "dimensional_crystal",
             "echo_control_circuit",
             "echo_pellet",
             "echo_sheet",
@@ -209,6 +212,14 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
         bowPulling("psimetal_bow_pulling_1");
         bowPulling("psimetal_bow_pulling_2");
 
+        gravstringerBow();
+        bowPulling("gravstringer_pulling_0");
+        bowPulling("gravstringer_pulling_1");
+        bowPulling("gravstringer_pulling_2");
+        bowPulling("gravstringer_pulling_0_tunneler");
+        bowPulling("gravstringer_pulling_1_tunneler");
+        bowPulling("gravstringer_pulling_2_tunneler");
+
         withExistingParent("inline_caster", ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_1"));
         withExistingParent("secondary_caster", ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_2"));
         withExistingParent("parallel_caster", ResourceLocation.fromNamespaceAndPath("psi", "item/cad_inline_3"));
@@ -250,6 +261,42 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
     private void bowPulling(String name) {
         withExistingParent(name, mcLoc("item/bow"))
                 .texture("layer0", modLoc("item/" + name));
+    }
+
+    private void gravstringerBow() {
+        withExistingParent("gravstringer", mcLoc("item/bow"))
+                .texture("layer0", modLoc("item/gravstringer"))
+                .override()
+                .predicate(mcLoc("pulling"), 1.0F)
+                .model(unchecked("item/gravstringer_pulling_0"))
+                .end()
+                .override()
+                .predicate(mcLoc("pulling"), 1.0F)
+                .predicate(mcLoc("pull"), 0.65F)
+                .model(unchecked("item/gravstringer_pulling_1"))
+                .end()
+                .override()
+                .predicate(mcLoc("pulling"), 1.0F)
+                .predicate(mcLoc("pull"), 0.9F)
+                .model(unchecked("item/gravstringer_pulling_2"))
+                .end()
+                .override()
+                .predicate(mcLoc("pulling"), 1.0F)
+                .predicate(modLoc("tunneler_loaded"), 1.0F)
+                .model(unchecked("item/gravstringer_pulling_0_tunneler"))
+                .end()
+                .override()
+                .predicate(mcLoc("pulling"), 1.0F)
+                .predicate(mcLoc("pull"), 0.65F)
+                .predicate(modLoc("tunneler_loaded"), 1.0F)
+                .model(unchecked("item/gravstringer_pulling_1_tunneler"))
+                .end()
+                .override()
+                .predicate(mcLoc("pulling"), 1.0F)
+                .predicate(mcLoc("pull"), 0.9F)
+                .predicate(modLoc("tunneler_loaded"), 1.0F)
+                .model(unchecked("item/gravstringer_pulling_2_tunneler"))
+                .end();
     }
 
     private ResourceLocation itemTexture(String name) {

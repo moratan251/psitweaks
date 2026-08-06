@@ -205,6 +205,37 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_alloy_psion", has(PsitweaksItems.ALLOY_PSION.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "psimetal_bow"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.GRAVSTRINGER.get())
+                .define('A', PsitweaksItems.GRAVITIZED_PLATE.get())
+                .define('B', PsitweaksItems.SUPERSTRING.get())
+                .define('C', PsitweaksItems.UNFATHOMABLE_COMPONENT.get())
+                .pattern(" AB")
+                .pattern("C B")
+                .pattern(" AB")
+                .unlockedBy("has_unfathomable_component", has(PsitweaksItems.UNFATHOMABLE_COMPONENT.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "gravstringer"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.CAD_CORE_ABSORPTIVE.get())
+                .define('A', PsitweaksItems.FLASHMETAL.get())
+                .define('B', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .pattern("ABA")
+                .pattern("CCC")
+                .pattern("ABA")
+                .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_core_absorptive"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.CAD_CORE_ULTRACLOCKED.get())
+                .define('A', PsitweaksItems.FLASHMETAL.get())
+                .define('B', PsitweaksItems.ANTINITE_INGOT.get())
+                .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('D', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
+                .pattern("DCD")
+                .pattern("ABA")
+                .pattern("DCD")
+                .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_core_ultraclocked"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.FLASH_RING.get())
                 .define('A', ebonyPsimetal)
                 .define('B', psiGem)

@@ -67,6 +67,14 @@ public class PsitweaksEntities {
                             .updateInterval(10)
                             .build(Psitweaks.MOD_ID + ":dry_ice_projectile"));
 
+    public static final RegistryObject<EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
+            ENTITY_TYPES.register("tunneler_arrow",
+                    () -> EntityType.Builder.<EntityTunnelerArrow>of(EntityTunnelerArrow::new, MobCategory.MISC)
+                            .sized(0.5F, 0.5F)
+                            .clientTrackingRange(4)
+                            .updateInterval(20)
+                            .build(Psitweaks.MOD_ID + ":tunneler_arrow"));
+
     public static final RegistryObject<EntityType<EntityBlazeBall>> BLAZE_BALL =
             ENTITY_TYPES.register("blaze_ball",
                     () -> EntityType.Builder.<EntityBlazeBall>of(EntityBlazeBall::new, MobCategory.MISC)

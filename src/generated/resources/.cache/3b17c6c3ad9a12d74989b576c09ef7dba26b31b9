@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-25T01:49:55.7687092	Tags for minecraft:item mod id psitweaks
+// 1.20.1	2026-08-06T21:30:23.797607	Tags for minecraft:item mod id psitweaks
 2b0972694544ef7efe860eb052a12b017ce5f26d data/curios/tags/items/charm.json
 0f9f53fdaa3857ce1f6e1961bc5fa5309b95807a data/curios/tags/items/magic_calculation_area.json
 4647c6fadd20c8008ef6e8cbfd6a47891b9bb812 data/forge/tags/items/armors/boots.json
@@ -38,7 +38,7 @@ f14e71405611eedad9ec082ae90de319ec156129 data/forge/tags/items/storage_blocks/pl
 03ec443df283c8c570e54a693c22e7fc2ac2ec42 data/forge/tags/items/storage_blocks/psimetal.json
 6ebdbe7037db5115698f6b78a0f4dfbbabf094b3 data/forge/tags/items/storage_blocks/psycheonic_metal.json
 d7096d425f2c3a70d69b3225cb4012f8e0ce2998 data/forge/tags/items/storage_blocks/raw_antinite.json
-c825e64155f573fb74dc9446c8b4106b9cf7fd58 data/forge/tags/items/tools/bows.json
+bdbbbdbd6e1dceced11c3eedb7e5ba86a3260536 data/forge/tags/items/tools/bows.json
 d7be4164eb6364bb8d8a36c706e570c3a9df8285 data/mekanism/tags/items/alloys.json
 05b9ad661c356fa77a2985565b6d421b7790411e data/mekanism/tags/items/clumps.json
 bb34f2d7e46f22c43151513710f1498675d804a8 data/mekanism/tags/items/clumps/antinite.json

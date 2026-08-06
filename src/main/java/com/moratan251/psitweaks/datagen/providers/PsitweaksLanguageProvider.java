@@ -21,6 +21,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         }
         addBackportedStringTranslations();
         addBackportedMatrixTranslations();
+        addBackportedSpellPiece15Translations();
+        addBackportedItemTranslations();
         addDryMeteorTranslations();
         addMysticalAgricultureTranslations();
         for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
@@ -29,6 +31,72 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
                 default -> bee.enUs();
             });
         }
+    }
+
+    private void addBackportedItemTranslations() {
+        boolean japanese = "ja_jp".equals(locale);
+        add("item.psitweaks.dimensional_crystal", japanese ? "次元の結晶" : "Dimensional Crystal");
+        add("item.psitweaks.gravstringer", japanese ? "グラヴストリンガー" : "Gravstringer");
+        add("item.psitweaks.cad_core_absorptive", japanese ? "吸収性CADコア" : "Absorptive CAD Core");
+        add("item.psitweaks.cad_core_ultraclocked", japanese ? "ウルトラクロックCADコア" : "Ultraclocked CAD Core");
+
+        add("item.psitweaks.gravstringer.mode.normal", japanese ? "通常モード" : "Normal Mode");
+        add("item.psitweaks.gravstringer.mode.slow", japanese ? "低速モード" : "Slow Mode");
+        add("item.psitweaks.gravstringer.mode.inertialess", japanese ? "無慣性モード" : "Inertialess Mode");
+        add("item.psitweaks.gravstringer.mode.hybrid", japanese ? "ハイブリッドモード" : "Hybrid Mode");
+        add("item.psitweaks.gravstringer.current_mode", japanese ? "モード: %s" : "Mode: %s");
+
+        add("death.attack.psitweaks.tunneler", japanese ? "%1$sは撃ち抜かれた" : "%1$s was shot through");
+        add("death.attack.psitweaks.tunneler.player", japanese ? "%1$sは撃ち抜かれた" : "%1$s was shot through");
+        add("death.attack.psitweaks.tunneler.item", japanese ? "%1$sは撃ち抜かれた" : "%1$s was shot through");
+
+        add("psi.book.page.psitweaks_material.dimensional_crystal", japanese
+                ? "(v0.10.5現在用途無し) 術式の詠唱時に, まれに $(item)次元の結晶$(0) が手に入ります. 確率は詠唱が消費した Psi の量に比例して上がります.$(p)クラフトでは作れません. 安定して集めたいなら, 日常的に魔法を使って生活する必要があります."
+                : "(No use as of v0.10.5) Occasionally, casting a spell yields a $(item)Dimensional Crystal$(0). The chance increases in proportion to the amount of Psi the cast consumes.$(p)It cannot be crafted. If you want to gather them steadily, you need to make spellcasting part of your daily life.");
+        add("psi.book.page.psitweaks_item.gravstringer.0", japanese
+                ? "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. $(item)グラヴィタイズドプレート$(0), $(item)超弦$(0), $(item)不可思議な機構$(0) で製作します. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出できます."
+                : "The $(item)Gravstringer$(0) is an upgraded version of the Psimetal Bow, crafted from $(item)Gravitized Plates$(0), $(item)Superstring$(0), and an $(item)Unfathomable Component$(0). Arrow damage and draw speed are greatly improved, it has no durability, and it provides 11 spell bullet sockets.$(p)It can fire its dedicated $(item)Tunneler$(0) ammunition.");
+        add("psi.book.page.psitweaks_item.gravstringer.1", japanese
+                ? "スニーク+左クリックで射撃モードを切り替えます. 射撃モードはトンネラーを射出する際のみ影響します.$(li)通常モード: 5秒間重力の影響を受けず直進する高速の矢を3本放ちます.$(li)低速モード: 非常に低速で重力の影響を受けない矢を3本発射します. 60秒で消滅します.$(li)ハイブリッドモード: 中央に通常, 左右に低速の矢を放ちます.$(p)詠唱した術式弾は中央の矢にのみ付与されます."
+                : "Sneak + left-click cycles the firing mode. Firing modes only apply when firing Tunnelers.$(li)Normal: fires 3 high-speed arrows that fly straight, unaffected by gravity for 5 seconds.$(li)Slow: fires 3 extremely slow arrows that are unaffected by gravity. They expire after 60 seconds.$(li)Hybrid: a volley with a Normal arrow in the center and Slow arrows on both sides.$(p)The cast spell bullet is applied only to the center arrow.");
+        add("psi.book.page.psitweaks_item.tunneler.0", japanese
+                ? "$(item)トンネラー$(0) は, $(item)グラヴストリンガー$(0) の専用弾です. ブロックを貫通し, 防御力や耐性を無効化します. 射手自身には命中しません.$(p)矢はmobに命中しても消滅せず貫通し, 同じmobには1秒のクールタイム後に再度命中します."
+                : "The $(item)Tunneler$(0) is the dedicated ammunition of the $(item)Gravstringer$(0). It pierces through blocks and nullifies armor and resistances. It never strikes its shooter.$(p)The arrow pierces through mobs instead of disappearing, striking the same target again after a 1-second cooldown.");
+    }
+
+    private void addBackportedSpellPiece15Translations() {
+        addBackportedSpellPiece15Translation("psitweaks.spellparam.leftright", "Left/Right", "左右");
+        addBackportedSpellPiece15Translation("psitweaks.spellparam.forwardbackward", "Forward/Backward", "前後");
+        addBackportedSpellPiece15Translation("psitweaks.spellparam.updown", "Up/Down", "上下");
+        addBackportedSpellPiece15Translation("psitweaks.spellparam.offset", "Offset", "オフセット");
+
+        addBackportedSpellPiece15Translation("operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。", "Filters the input Entity List and returns only LivingEntity instances that are currently alive. All other entities are removed.", "入力した Entity List をフィルターし、現在生存中の LivingEntity のみを返します. それ以外のエンティティは除外されます.");
+        addBackportedSpellPiece15Translation("operator_weak_raycast", "Operator: Vector Raycast (Weak)", "Raycasts from Position in the Ray direction and returns the coordinates of the hit block or fluid.", "演算子: ベクトルレイキャスト (弱)", "位置から Ray 方向へレイキャストし、命中したブロックまたは流体の座標を返します。", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Water and lava can stop the ray.", "位置から Ray 方向へレイキャストし、最初に命中したブロック座標を返します. 水や溶岩でも停止します.");
+        addBackportedSpellPiece15Translation("operator_weak_raycast_axis", "Operator: Vector Raycast Direction (Weak)", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "演算子: ベクトルレイキャスト方向 (弱)", "位置から Ray 方向へレイキャストし、最初に命中したブロックまたは流体の面の法線方向を返します。", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "位置から Ray 方向へレイキャストし、最初に命中したブロックまたは流体の面の法線方向を返します.");
+        addBackportedSpellPiece15Translation("operator_strong_raycast", "Operator: Vector Raycast (Strong)", "Raycasts from Position in the Ray direction, ignores blocks without a collision shape, and returns the coordinates of the hit block.", "演算子: ベクトルレイキャスト (強)", "位置から Ray 方向へレイキャストし、当たり判定のないブロックを無視して命中したブロックの座標を返します。", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Blocks without a collision shape are ignored.", "位置から Ray 方向へレイキャストし、最初に命中したブロック座標を返します. 当たり判定のないブロックを無視します.");
+        addBackportedSpellPiece15Translation("operator_strong_raycast_axis", "Operator: Vector Raycast Direction (Strong)", "Raycasts from Position in the Ray direction, ignores blocks without a collision shape, and returns the normal direction of the face of the hit block.", "演算子: ベクトルレイキャスト方向 (強)", "位置から Ray 方向へレイキャストし、当たり判定のないブロックを無視して命中したブロックの面の法線方向を返します。", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block with a collision shape hit.", "位置から Ray 方向へレイキャストし、最初に命中した当たり判定を持つブロックの面の法線方向を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_raycast", "Macro: Caster Raycast", "Raycasts from the caster's position in the look direction and returns the coordinates of the hit block.", "マクロ: 術者レイキャスト", "術者の位置から視線方向へレイキャストし、命中したブロックの座標を返します。", "Raycasts from the caster's position in the look direction and returns the coordinates of the hit block.", "術者の位置から視線方向へレイキャストし、命中したブロック座標を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_raycast_axis", "Macro: Caster Raycast Direction", "Raycasts from the caster's position in the look direction and returns the normal direction of the hit face.", "マクロ: 術者レイキャスト方向", "術者の位置から視線方向へレイキャストし、命中した面の法線方向を返します。", "Raycasts from the caster's position in the look direction and returns the normal direction of the hit face.", "術者の位置から視線方向へレイキャストし、命中した面の法線方向を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_weak_raycast", "Macro: Caster Raycast (Weak)", "Like Macro: Caster Raycast, but it also hits fluids such as water and lava.", "マクロ: 術者レイキャスト (弱)", "マクロ: 術者レイキャストと同じですが、水や溶岩などの流体にも命中します。", "Raycasts from the caster's position in the look direction and returns the coordinates of the hit block or fluid.", "術者の位置から視線方向へレイキャストし、命中したブロックや流体の座標を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_weak_raycast_axis", "Macro: Caster Raycast Direction (Weak)", "Like Macro: Caster Raycast Direction, but it also hits fluids such as water and lava.", "マクロ: 術者レイキャスト方向 (弱)", "マクロ: 術者レイキャスト方向と同じですが、水や溶岩などの流体にも命中します。", "Raycasts from the caster's position in the look direction and returns the normal direction of the face of the hit block or fluid.", "術者の位置から視線方向へレイキャストし、命中したブロックや流体の面の法線方向を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_strong_raycast", "Macro: Caster Raycast (Strong)", "Like Macro: Caster Raycast, but blocks without a collision shape are ignored.", "マクロ: 術者レイキャスト (強)", "マクロ: 術者レイキャストと同じですが、当たり判定のないブロックを無視します。", "Raycasts from the caster's position in the look direction and returns the coordinates of the hit block with a collision shape.", "術者の位置から視線方向へレイキャストし、命中した当たり判定のあるブロックの座標を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_strong_raycast_axis", "Macro: Caster Raycast Direction (Strong)", "Like Macro: Caster Raycast Direction, but blocks without a collision shape and fluids are ignored.", "マクロ: 術者レイキャスト方向 (強)", "マクロ: 術者レイキャスト方向と同じですが、当たり判定のないブロックと流体を無視します。", "Raycasts from the caster's position in the look direction and returns the normal direction of the face of the hit block with a collision shape.", "術者の位置から視線方向へレイキャストし、命中した当たり判定のあるブロックの面の法線方向を返します.");
+        addBackportedSpellPiece15Translation("macro_caster_axial_offset", "Macro: Caster Axial Offset", "Offsets a position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Positive values move right, forward, and up. Pitch is ignored.", "マクロ: 術者方角平行移動", "術者の水平方向の向きを基準に、位置を左右・前後・上下へ平行移動します。正の値で右・前・上へ移動します。視線の上下成分は無視されます。", "Moves the given position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Facing is rounded to the nearest horizontal cardinal direction, and pitch is ignored. Positive Left/Right moves to the caster's right, positive Forward/Backward moves forward, and positive Up/Down moves upward; negative values move in the opposite directions. Unconnected parameters are treated as 0. The mode button switches to vector input: a single vector whose components are distances in the caster's view frame (X = right, Y = up, Z = forward), equivalent to adding the result of Macro: Caster Axial Rotation to the position.", "指定した位置を、術者の水平方向の向きを基準に左右・前後・上下へ平行移動します. 向きは最も近い水平4方角へ丸められ、視線の上下成分は無視されます. 左右の正の値は術者の右へ、前後の正の値は前へ、上下の正の値は上へ移動し、負の値は逆方向です. 未接続のパラメータは 0 として扱われます. モードボタンでベクトル入力に切り替えると、視点座標(X=右、Y=上、Z=前)の距離を成分とするベクトル1つで指定できます. これは位置にマクロ: 術者方角回転の結果を加算するのと同等です.");
+        addBackportedSpellPiece15Translation("macro_caster_axial_rotation", "Macro: Caster Axial Rotation", "Rotates a direction vector from the caster's view frame (X = right, Y = up, Z = forward) into world space. Facing is rounded to the nearest horizontal cardinal direction. Pitch is ignored.", "マクロ: 術者方角回転", "方向ベクトルを術者の視点座標(X=右、Y=上、Z=前)からワールド座標へ回転します。向きは最も近い水平4方角に丸められ、視線の上下成分は無視されます。", "Rotates the given direction vector from the caster's view frame into world space. The X component is treated as right, Y as up, and Z as forward relative to the caster's horizontal facing, which is rounded to the nearest cardinal direction; pitch is ignored. For example, (0, 0, 1) returns the caster's facing direction and (1, 0, 0) returns the direction to the caster's right. The vector's magnitude is preserved.", "指定した方向ベクトルを術者の視点座標からワールド座標へ回転します. X成分を右、Y成分を上、Z成分を前として、最も近い水平4方角へ丸めた術者の向きを基準に変換します. 視線の上下成分は無視されます. 例えば (0, 0, 1) は術者の正面方向、(1, 0, 0) は術者の右方向を返します. ベクトルの大きさは保存されます.");
+        addBackportedSpellPiece15Translation("macro_caster_axial_offset_3d", "Macro: Caster Axial Offset (3D)", "Like Macro: Caster Axial Offset, but the facing also follows the pitch. When looking straight up or down, forward points vertically and the offset plane becomes horizontal.", "マクロ: 術者方角平行移動 (3D)", "マクロ: 術者方角平行移動と同じですが、視線の上下も基準に含みます。真上や真下を向いた時は前後が垂直になり、オフセット平面が水平になります。", "Like Macro: Caster Axial Offset, but the facing is rounded to the nearest of the six axis directions, including straight up and down. When looking straight up or down, forward points vertically and the Up/Down axis becomes horizontal, so offsets form a horizontal plane. This is useful for effects like 3x3 area mining, where the mined plane should become the floor or ceiling when looking up or down. The mode button switches to vector input: a single vector whose components are distances in the caster's view frame (X = right, Y = view-up, Z = forward), equivalent to adding the result of Macro: Caster Axial Rotation (3D) to the position.", "マクロ: 術者方角平行移動と同じですが、向きは真上・真下を含む6方角の最も近い方向へ丸められます. 真上や真下を向いた時は前後が垂直になり、上下の軸が水平になるため、オフセット平面が水平に張られます. 上や下を向いた時に掘削平面を床や天井にしたい 3×3 範囲破壊などに有用です. モードボタンでベクトル入力に切り替えると、視点座標(X=右、Y=視点上、Z=前)の距離を成分とするベクトル1つで指定できます. これは位置にマクロ: 術者方角回転 (3D) の結果を加算するのと同等です.");
+        addBackportedSpellPiece15Translation("macro_caster_axial_rotation_3d", "Macro: Caster Axial Rotation (3D)", "Like Macro: Caster Axial Rotation, but the facing also follows the pitch (X = right, Y = view-up, Z = forward), including when looking straight up or down.", "マクロ: 術者方角回転 (3D)", "マクロ: 術者方角回転と同じですが、視線の上下も基準に含みます。X=右、Y=視点上、Z=前で、真上や真下を向いた時も視点に追随します。", "Like Macro: Caster Axial Rotation, but the facing is rounded to the nearest of the six axis directions, including straight up and down. The X component is treated as right, Y as view-up, and Z as forward. When looking straight up or down, Z points vertically and Y becomes horizontal, matching the orientation of the view.", "マクロ: 術者方角回転と同じですが、向きは真上・真下を含む6方角の最も近い方向へ丸められます. X成分を右、Y成分を視点上、Z成分を前として変換します. 真上や真下を向いた時はZが垂直、Yが水平になり、視点の向きに一致します.");
+    }
+
+    private void addBackportedSpellPiece15Translation(String key, String enUs, String jaJp) {
+        add(key, "ja_jp".equals(locale) ? jaJp : enUs);
+    }
+
+    private void addBackportedSpellPiece15Translation(String id, String enName, String enDescription,
+                                                       String jaName, String jaDescription,
+                                                       String enBookPage, String jaBookPage) {
+        addBackportedSpellPiece15Translation("psitweaks.spellpiece." + id, enName, jaName);
+        addBackportedSpellPiece15Translation("psitweaks.spellpiece." + id + ".desc", enDescription, jaDescription);
+        addBackportedSpellPiece15Translation("psi.book.page.psitweaks_spellpiece." + id, enBookPage, jaBookPage);
     }
 
     private void addDryMeteorTranslations() {

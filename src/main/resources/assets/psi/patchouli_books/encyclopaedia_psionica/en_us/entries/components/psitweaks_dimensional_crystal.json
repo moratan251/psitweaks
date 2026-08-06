@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.dimensional_crystal",
+  "category": "psi:components",
+  "icon": "psitweaks:dimensional_crystal",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.dimensional_crystal",
+      "item": "psitweaks:dimensional_crystal",
+      "link_recipe": true
+    }
+  ]
+}

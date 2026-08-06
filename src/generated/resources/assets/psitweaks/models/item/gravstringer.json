@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:item/bow",
+  "overrides": [
+    {
+      "model": "psitweaks:item/gravstringer_pulling_0",
+      "predicate": {
+        "minecraft:pulling": 1.0
+      }
+    },
+    {
+      "model": "psitweaks:item/gravstringer_pulling_1",
+      "predicate": {
+        "minecraft:pull": 0.65,
+        "minecraft:pulling": 1.0
+      }
+    },
+    {
+      "model": "psitweaks:item/gravstringer_pulling_2",
+      "predicate": {
+        "minecraft:pull": 0.9,
+        "minecraft:pulling": 1.0
+      }
+    },
+    {
+      "model": "psitweaks:item/gravstringer_pulling_0_tunneler",
+      "predicate": {
+        "minecraft:pulling": 1.0,
+        "psitweaks:tunneler_loaded": 1.0
+      }
+    },
+    {
+      "model": "psitweaks:item/gravstringer_pulling_1_tunneler",
+      "predicate": {
+        "minecraft:pull": 0.65,
+        "minecraft:pulling": 1.0,
+        "psitweaks:tunneler_loaded": 1.0
+      }
+    },
+    {
+      "model": "psitweaks:item/gravstringer_pulling_2_tunneler",
+      "predicate": {
+        "minecraft:pull": 0.9,
+        "minecraft:pulling": 1.0,
+        "psitweaks:tunneler_loaded": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "psitweaks:item/gravstringer"
+  }
+}

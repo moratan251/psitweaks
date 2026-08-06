@@ -1,6 +1,63 @@
 ## Changelog
 
 
+#### v0.10.5
+
+- Added Russian translation (#1)
+
+
+- Ported spell pieces from 1.12.2 Random PSIdeas
+  + Macro: Caster Raycast
+  + Macro: Caster Raycast (Strong)
+  + Macro: Caster Raycast (Weak)
+  + Macro: Caster Raycast Direction
+  + Macro: Caster Raycast Direction (Strong)
+  + Macro: Caster Raycast Direction (Weak)
+
+- Added spell pieces
+  + Macro: Caster Axial Offset
+  + Macro: Caster Axial Offset (3D)
+  + Macro: Caster Axial Rotation
+  + Macro: Caster Axial Rotation (3D)
+  + Operator: Alive
+
+
+- Added CAD cores
+  + Absorptive CAD Core
+  + Ultraclocked CAD Core
+
+- Added material items (including items that currently have no use)
+  + Flash Coil
+  + Flash Chip
+  + Hardened Capsule
+  + Nano Reactor
+  + Unfathomable Component
+  + Quantized Plate
+  + Gravitized Plate
+  + String?
+  + Superstring
+  + Photon Glitter
+  + Wave Fragment
+  + Quantum Factor
+  + Graviton Factor
+  + Quantized Arrowhead
+
+- Added weapons
+  + Gravstringer
+    * A significantly enhanced version of the Psimetal Bow.
+  + Tunneler
+    * An arrow exclusive to the Gravstringer. It can pierce blocks and mobs, and ignores armor and invulnerability frames.
+
+- Fixed an issue where the output quantity of the Chaotic Psimetal crafting recipe was too low when Mekanism was not installed
+
+
+- Fixed an issue where casting a Projectile Spell Bullet with the Psimetal Bow did not cause it to fire correctly
+
+
+- (1.21.1) Fixed an issue where the Auto Caster played a sound every time it cast a spell
+
+
+
 #### v0.10.4
 
 - (1.21.1) Changed the behavior of Trick: Flight

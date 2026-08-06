@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:flashmetal"
+    },
+    "B": {
+      "item": "psitweaks:antinite_ingot"
+    },
+    "C": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "D": {
+      "item": "psitweaks:psionic_control_circuit"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "ABA",
+    "DCD"
+  ],
+  "result": {
+    "item": "psitweaks:cad_core_ultraclocked"
+  },
+  "show_notification": true
+}

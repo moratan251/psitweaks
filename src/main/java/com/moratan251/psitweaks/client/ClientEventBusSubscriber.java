@@ -29,6 +29,22 @@ public class ClientEventBusSubscriber {
                     (stack, world, entity, seed) ->
                             entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
             );
+
+            ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(),
+                    ResourceLocation.parse("pull"),
+                    (stack, world, entity, seed) -> {
+                        if (entity == null || entity.getUseItem() != stack) return 0.0F;
+                        return (stack.getUseDuration() - entity.getUseItemRemainingTicks())
+                                / (float) com.moratan251.psitweaks.common.items.ItemGravstringer.FULL_DRAW_TICKS;
+                    });
+            ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(),
+                    ResourceLocation.parse("pulling"),
+                    (stack, world, entity, seed) ->
+                            entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+            ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(),
+                    ResourceLocation.fromNamespaceAndPath("psitweaks", "tunneler_loaded"),
+                    (stack, world, entity, seed) -> entity instanceof net.minecraft.world.entity.player.Player player
+                            && player.getProjectile(stack).is(PsitweaksItems.TUNNELER.get()) ? 1.0F : 0.0F);
         });
     }
 }

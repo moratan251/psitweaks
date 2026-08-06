@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:gravitized_plate"
+    },
+    "B": {
+      "item": "psitweaks:superstring"
+    },
+    "C": {
+      "item": "psitweaks:unfathomable_component"
+    }
+  },
+  "pattern": [
+    " AB",
+    "C B",
+    " AB"
+  ],
+  "result": {
+    "item": "psitweaks:gravstringer"
+  },
+  "show_notification": true
+}

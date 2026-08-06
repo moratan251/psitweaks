@@ -237,6 +237,21 @@ public class PsitweaksSpells {
             registerSpellPiece("operator_region_vector_list", PieceOperatorRegionVectorList.class);
             registerSpellPiece("operator_inside_region", PieceOperatorInsideRegion.class);
             registerSpellPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
+            registerSpellPiece("operator_alive", PieceOperatorAlive.class);
+            registerSpellPiece("operator_weak_raycast", PieceOperatorWeakRaycast.class);
+            registerSpellPiece("operator_weak_raycast_axis", PieceOperatorWeakRaycastAxis.class);
+            registerSpellPiece("operator_strong_raycast", PieceOperatorStrongRaycast.class);
+            registerSpellPiece("operator_strong_raycast_axis", PieceOperatorStrongRaycastAxis.class);
+            registerSpellPiece("macro_caster_raycast", PieceMacroCasterRaycast.class);
+            registerSpellPiece("macro_caster_raycast_axis", PieceMacroCasterAxisRaycast.class);
+            registerSpellPiece("macro_caster_strong_raycast", PieceMacroCasterStrongRaycast.class);
+            registerSpellPiece("macro_caster_strong_raycast_axis", PieceMacroCasterStrongAxisRaycast.class);
+            registerSpellPiece("macro_caster_weak_raycast", PieceMacroCasterWeakRaycast.class);
+            registerSpellPiece("macro_caster_weak_raycast_axis", PieceMacroCasterWeakAxisRaycast.class);
+            registerSpellPiece("macro_caster_axial_offset", PieceMacroCasterAxialOffset.class);
+            registerSpellPiece("macro_caster_axial_rotation", PieceMacroCasterAxialRotation.class);
+            registerSpellPiece("macro_caster_axial_offset_3d", PieceMacroCasterAxialOffset3D.class);
+            registerSpellPiece("macro_caster_axial_rotation_3d", PieceMacroCasterAxialRotation3D.class);
             registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
 
 

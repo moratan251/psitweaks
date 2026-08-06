@@ -11,6 +11,7 @@ import com.moratan251.psitweaks.client.renderer.IceCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
+import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -35,6 +36,7 @@ public class ClientSetup {
         event.registerEntityRenderer(PsitweaksEntities.BLAZE_BALL.get(), context -> new ThrownItemRenderer<>(context, 0.75F, true));
         event.registerEntityRenderer(PsitweaksEntities.FLARE_CIRCLE.get(), FlareCircleRenderer::new);
         event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(), IceCircleRenderer::new);
+        event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
 
     }
 

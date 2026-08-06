@@ -1,0 +1,19 @@
+{
+  "name": "item.psitweaks.tunneler",
+  "category": "psi:items",
+  "icon": "psitweaks:tunneler",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.tunneler.0",
+      "item": "psitweaks:tunneler",
+      "link_recipe": true
+    },
+    {
+      "type": "crafting_multi",
+      "recipes": [
+        "psitweaks:tunneler"
+      ]
+    }
+  ]
+}

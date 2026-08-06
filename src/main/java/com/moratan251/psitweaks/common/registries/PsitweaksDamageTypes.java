@@ -16,6 +16,9 @@ public final class PsitweaksDamageTypes {
     public static final ResourceKey<DamageType> CARBON_POISONING =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("carbon_poisoning"));
 
+    public static final ResourceKey<DamageType> TUNNELER =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("tunneler"));
+
     private PsitweaksDamageTypes() {
     }
 }

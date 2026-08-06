@@ -21,6 +21,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import vazkii.psi.common.item.component.ItemCADAssembly;
+import vazkii.psi.common.item.component.ItemCADCore;
 
 
 public class PsitweaksItems {
@@ -51,6 +52,8 @@ public class PsitweaksItems {
 
     public static final RegistryObject<Item> PSIMETAL_BOW = ITEMS.register("psimetal_bow",
             () -> new ItemPsimetalBow(new Item.Properties()));
+    public static final RegistryObject<Item> GRAVSTRINGER = ITEMS.register("gravstringer",
+            () -> new ItemGravstringer(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
 
 
 
@@ -107,7 +110,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> WAVE_FRAGMENT = ITEMS.register("wave_fragment", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SUPERSTRING = ITEMS.register("superstring", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> QUANTIZE_ARROWHEAD = ITEMS.register("quantize_arrowhead", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> TUNNELER = ITEMS.register("tunneler", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> TUNNELER = ITEMS.register("tunneler", () -> new ItemTunneler(new Item.Properties()));
     public static final RegistryObject<Item> PSIMETAL_NUGGET = ITEMS.register("psimetal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> IVORY_PSIMETAL_NUGGET = ITEMS.register("ivory_psimetal_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> EBONY_PSIMETAL_NUGGET = ITEMS.register("ebony_psimetal_nugget", () -> new Item(new Item.Properties()));
@@ -135,6 +138,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> ECHO_PELLET = ITEMS.register("echo_pellet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> PELLET_NEPTUNIUM = ITEMS.register("pellet_neptunium", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> PELLET_AMERICIUM = ITEMS.register("pellet_americium", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> DIMENSIONAL_CRYSTAL = ITEMS.register("dimensional_crystal", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> HYPOSTASIS_GEM = ITEMS.register("hypostasis_gem", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_SHEET = ITEMS.register("echo_sheet", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> MAGICIANS_BRAIN = ITEMS.register("magicians_brain", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
@@ -152,6 +156,10 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA = ITEMS.register("cad_assembly_heavy_psimetal_alpha", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_heavy_psimetal_alpha"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA = ITEMS.register("cad_assembly_heavy_psimetal_beta", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.RARE),"cad_heavy_psimetal_beta"));
     public static final RegistryObject<Item> CAD_ASSEMBLY_PSYCHEONIC_METAL = ITEMS.register("cad_assembly_psycheonic_metal", () -> new ItemCADAssembly(new Item.Properties().rarity(Rarity.EPIC),"cad_psycheonicmetal"));
+    public static final RegistryObject<Item> CAD_CORE_ABSORPTIVE = ITEMS.register("cad_core_absorptive",
+            () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> CAD_CORE_ULTRACLOCKED = ITEMS.register("cad_core_ultraclocked",
+            () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.register("incomplete_heavy_psimetal_assembly", () -> new Item(new Item.Properties().stacksTo(1)));
 
     //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));

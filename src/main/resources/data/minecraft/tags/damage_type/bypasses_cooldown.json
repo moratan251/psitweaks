@@ -2,6 +2,7 @@
   "values": [
     "psitweaks:meteor_line",
     "psitweaks:dry_meteor",
-    "psitweaks:carbon_poisoning"
+    "psitweaks:carbon_poisoning",
+    "psitweaks:tunneler"
   ]
 }

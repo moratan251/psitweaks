@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:flashmetal"
+    },
+    "B": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "C": {
+      "item": "psitweaks:chaotic_psimetal"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CCC",
+    "ABA"
+  ],
+  "result": {
+    "item": "psitweaks:cad_core_absorptive"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_weak_raycast",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_weak_raycast.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_weak_raycast"
+    }
+  ]
+}

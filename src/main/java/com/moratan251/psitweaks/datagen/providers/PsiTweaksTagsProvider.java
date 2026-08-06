@@ -208,7 +208,10 @@ public final class PsiTweaksTagsProvider {
             add(itemTag("forge", "storage_blocks/polonium"), entries("psitweaks:polonium_block"));
             add(itemTag("forge", "storage_blocks/psimetal"), entries("psi:psimetal_block"));
             add(itemTag("forge", "storage_blocks/raw_antinite"), entries("psitweaks:raw_antinite_block"));
-            add(itemTag("forge", "tools/bows"), entries("psitweaks:psimetal_bow"));
+            add(itemTag("forge", "tools/bows"), entries(
+                    "psitweaks:psimetal_bow",
+                    "psitweaks:gravstringer"
+            ));
             add(itemTag("mekanism", "alloys"), entries(
                     "psitweaks:alloy_psion",
                     "psitweaks:alloy_psionic_echo",

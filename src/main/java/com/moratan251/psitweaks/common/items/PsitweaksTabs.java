@@ -25,6 +25,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.MOVAL_SUIT_BOOTS.get());
                         pOutput.accept(PsitweaksItems.MOVAL_SUIT_LEGGINGS_IVORY.get());
                         pOutput.accept(PsitweaksItems.PSIMETAL_BOW.get());
+                        pOutput.accept(PsitweaksItems.GRAVSTRINGER.get());
                         pOutput.accept(PsitweaksItems.CURIOS_CONTROLLER.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_SECOND.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
@@ -91,6 +92,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.ECHO_PELLET.get());
                         pOutput.accept(PsitweaksItems.PELLET_NEPTUNIUM.get());
                         pOutput.accept(PsitweaksItems.PELLET_AMERICIUM.get());
+                        pOutput.accept(PsitweaksItems.DIMENSIONAL_CRYSTAL.get());
                         pOutput.accept(PsitweaksItems.HYPOSTASIS_GEM.get());
                         pOutput.accept(PsitweaksItems.JADE.get());
                         pOutput.accept(PsitweaksItems.MAGATAMA.get());
@@ -104,6 +106,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA.get());
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get());
+                        pOutput.accept(PsitweaksItems.CAD_CORE_ABSORPTIVE.get());
+                        pOutput.accept(PsitweaksItems.CAD_CORE_ULTRACLOCKED.get());
                         pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
                         pOutput.accept(PsitweaksItems.SPELL_MAGAZINE.get());
                         pOutput.accept(PsitweaksItems.INLINE_CASTER.get());

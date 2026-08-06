@@ -21,6 +21,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.entity.EntitySpellProjectile;
 import vazkii.psi.common.item.ItemCAD;
+import vazkii.psi.common.item.ItemProjectileSpellBullet;
 
 @Mod.EventBusSubscriber(modid = Psitweaks.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class BowSpellProjectileHandler {
@@ -40,6 +41,7 @@ public final class BowSpellProjectileHandler {
         if (playerCad.isEmpty() || bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {
             return;
         }
+        boolean firesOnImpact = bullet.getItem() instanceof ItemProjectileSpellBullet;
 
         ItemCAD.cast(level, player, data, bullet, playerCad, 5, 10, 0.05F, (SpellContext context) -> {
             context.tool = bowStack;
@@ -61,7 +63,7 @@ public final class BowSpellProjectileHandler {
         for (EntitySpellProjectile spell : spells) {
             attached |= spell.startRiding(projectile, true);
         }
-        if (attached) {
+        if (attached && firesOnImpact) {
             projectile.getPersistentData().putBoolean(TAG_ATTACHED_SPELL, true);
         }
     }
