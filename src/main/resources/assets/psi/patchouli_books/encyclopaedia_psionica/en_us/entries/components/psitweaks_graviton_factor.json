@@ -1,0 +1,13 @@
+{
+  "name": "item.psitweaks.graviton_factor",
+  "category": "psi:components",
+  "icon": "psitweaks:graviton_factor",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_material.graviton_factor",
+      "item": "psitweaks:graviton_factor",
+      "link_recipe": true
+    }
+  ]
+}
