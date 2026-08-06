@@ -93,11 +93,11 @@ public class EntityTunnelerArrow extends AbstractArrow {
 
     @Override
     public void shootFromRotation(Entity shooter, float x, float y, float z, float velocity, float inaccuracy) {
-        if (this.getMode() != MODE_SLOW) {
+        if (this.getMode() != MODE_NORMAL && this.getMode() != MODE_SLOW) {
             super.shootFromRotation(shooter, x, y, z, velocity, inaccuracy);
             return;
         }
-        // 低速モードは射手の移動速度に引きずられないよう、慣性の加算（super内の shooter.getKnownMovement() 加算）を行わない
+        // 通常（高速）・低速モードは、super内の shooter.getKnownMovement() 加算を行わない。
         float yRot = y * (float) (Math.PI / 180.0);
         float xRot = x * (float) (Math.PI / 180.0);
         float f = -Mth.sin(yRot) * Mth.cos(xRot);

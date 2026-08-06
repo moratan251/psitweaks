@@ -32,6 +32,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 import vazkii.psi.api.cad.ISocketable;
@@ -42,8 +43,8 @@ public class ItemGravstringer extends BowItem {
     private static final double ARROW_BASE_DAMAGE = 12.0;
     private static final String TAG_ARROW_MODE = "arrow_mode";
 
-    /** 扇状に発射する左右の矢の角度オフセット(rad) */
-    private static final float FAN_ANGLE = 0.174F;
+    /** 扇状に発射する左右の矢の角度オフセット（度） */
+    private static final float FAN_ANGLE_DEGREES = 10.0F;
 
     /** 扇状に発射する左右の矢の、射線に垂直なスポーン位置オフセット(ブロック) */
     private static final double FAN_LATERAL_OFFSET = 0.75;
@@ -60,17 +61,22 @@ public class ItemGravstringer extends BowItem {
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
-        // スニーク左クリックでトンネラーの飛翔モードを切り替える（通常→低速→ハイブリッド）
-        if (entity instanceof Player player && player.isShiftKeyDown() && !player.level().isClientSide) {
-            int mode = switch (getArrowMode(stack)) {
-                case EntityTunnelerArrow.MODE_NORMAL -> EntityTunnelerArrow.MODE_SLOW;
-                case EntityTunnelerArrow.MODE_SLOW -> EntityTunnelerArrow.MODE_HYBRID;
-                default -> EntityTunnelerArrow.MODE_NORMAL;
-            };
-            CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(TAG_ARROW_MODE, mode));
-            player.displayClientMessage(Component.translatable("item.psitweaks.gravstringer.mode." + modeKey(mode)), true);
+        // ブロックへのクリックは GravstringerModeHandler が開始時に一度だけ処理する。
+        if (entity instanceof Player player && player.isShiftKeyDown() && !player.level().isClientSide
+                && player.pick(5.0, 0.0F, false).getType() != HitResult.Type.BLOCK) {
+            cycleArrowMode(stack, player);
         }
         return false;
+    }
+
+    public static void cycleArrowMode(ItemStack stack, Player player) {
+        int mode = switch (getArrowMode(stack)) {
+            case EntityTunnelerArrow.MODE_NORMAL -> EntityTunnelerArrow.MODE_SLOW;
+            case EntityTunnelerArrow.MODE_SLOW -> EntityTunnelerArrow.MODE_HYBRID;
+            default -> EntityTunnelerArrow.MODE_NORMAL;
+        };
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(TAG_ARROW_MODE, mode));
+        player.displayClientMessage(Component.translatable("item.psitweaks.gravstringer.mode." + modeKey(mode)), true);
     }
 
     /** モードに対応する翻訳キー suffix（normal / slow / inertialess / hybrid） */
@@ -193,7 +199,8 @@ public class ItemGravstringer extends BowItem {
                             projectile.getZ() - Mth.sin(yawRad) * offset
                     );
                 }
-                shootProjectile(shooter, projectile, i + 1, velocity, inaccuracy, i * FAN_ANGLE, target);
+                shootProjectile(shooter, projectile, i + 1, velocity, inaccuracy,
+                        i * FAN_ANGLE_DEGREES, target);
                 if (i == 0) {
                     BowSpellProjectileHandler.attachSpell(level, shooter, weapon, projectile);
                 }
