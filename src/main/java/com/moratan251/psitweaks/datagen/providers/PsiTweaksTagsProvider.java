@@ -82,7 +82,6 @@ public final class PsiTweaksTagsProvider {
                     "psi:lit_white_psimetal_plate",
                     "psi:programmer",
                     "psitweaks:cad_disassembler",
-                    "psitweaks:program_researcher",
                     "psitweaks:ore_antinite",
                     "psitweaks:antinite_block",
                     "psitweaks:chaotic_psimetal_block",
@@ -94,17 +93,19 @@ public final class PsiTweaksTagsProvider {
                     "psitweaks:plutonium_block",
                     "psitweaks:polonium_block",
                     "psitweaks:raw_antinite_block",
-                    "psitweaks:spellmachinery_casing",
+                    "psitweaks:spellmachinery_casing"
+            ));
+            addOptional(BlockTags.MINEABLE_WITH_PICKAXE, entries(
+                    "psitweaks:program_researcher",
                     "psitweaks:sculk_eroder",
                     "psitweaks:material_mutator",
-                    "psitweaks:psionic_generator"
+                    "psitweaks:psionic_generator",
+                    "psitweaks:transcendent_energy_cube"
             ));
             add(BlockTags.NEEDS_DIAMOND_TOOL, entries(
                     "psitweaks:heavy_psimetal_block",
                     "psitweaks:psycheonic_metal_block",
-                    "psitweaks:hypostasis_gem_block"
-            ));
-            add(BlockTags.NEEDS_STONE_TOOL, entries(
+                    "psitweaks:hypostasis_gem_block",
                     "psitweaks:psycheonic_metal_crux"
             ));
             add(BlockTags.NEEDS_IRON_TOOL, entries(
@@ -119,6 +120,13 @@ public final class PsiTweaksTagsProvider {
         private void add(TagKey<Block> tag, String[] values) {
             TagsProvider.TagAppender<Block> appender = tag(tag);
             addEntries(appender, Registries.BLOCK, values);
+        }
+
+        private void addOptional(TagKey<Block> tag, String[] values) {
+            TagsProvider.TagAppender<Block> appender = tag(tag);
+            for (String value : values) {
+                appender.addOptional(location(value));
+            }
         }
     }
 

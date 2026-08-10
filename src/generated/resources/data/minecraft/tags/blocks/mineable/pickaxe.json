@@ -13,7 +13,6 @@
     "psi:lit_white_psimetal_plate",
     "psi:programmer",
     "psitweaks:cad_disassembler",
-    "psitweaks:program_researcher",
     "psitweaks:ore_antinite",
     "psitweaks:antinite_block",
     "psitweaks:chaotic_psimetal_block",
@@ -26,8 +25,25 @@
     "psitweaks:polonium_block",
     "psitweaks:raw_antinite_block",
     "psitweaks:spellmachinery_casing",
-    "psitweaks:sculk_eroder",
-    "psitweaks:material_mutator",
-    "psitweaks:psionic_generator"
+    {
+      "id": "psitweaks:program_researcher",
+      "required": false
+    },
+    {
+      "id": "psitweaks:sculk_eroder",
+      "required": false
+    },
+    {
+      "id": "psitweaks:material_mutator",
+      "required": false
+    },
+    {
+      "id": "psitweaks:psionic_generator",
+      "required": false
+    },
+    {
+      "id": "psitweaks:transcendent_energy_cube",
+      "required": false
+    }
   ]
 }
