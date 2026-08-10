@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
@@ -10,7 +11,17 @@ public class PieceMacroFaceAxialOffset extends PieceMacroCasterAxialOffsetBase {
     }
 
     @Override
-    protected CasterAxialBasis getBasis(SpellContext context) throws SpellRuntimeException {
-        return CasterAxialBasis.ofTargetFace(context);
+    protected boolean isPositionOptional() {
+        return true;
+    }
+
+    @Override
+    public Object execute(SpellContext context) throws SpellRuntimeException {
+        CasterAxialBasis.TargetFace targetFace = CasterAxialBasis.targetFace(context);
+        Vector3 positionVal = getParamValue(context, position);
+        if (positionVal == null) {
+            positionVal = targetFace.blockPosition();
+        }
+        return executeWithBasis(context, positionVal, targetFace.basis());
     }
 }

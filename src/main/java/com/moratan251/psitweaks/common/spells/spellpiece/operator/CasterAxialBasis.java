@@ -14,6 +14,9 @@ import vazkii.psi.api.spell.SpellRuntimeException;
  */
 final class CasterAxialBasis {
 
+    record TargetFace(CasterAxialBasis basis, Vector3 blockPosition) {
+    }
+
     final Direction right;
     final Direction up;
     final Direction forward;
@@ -52,7 +55,7 @@ final class CasterAxialBasis {
      * 前はブロックの内側を向き、側面では上がワールド上方向になる。
      * 上下面では面内の回転を術者の水平向きから決める。
      */
-    static CasterAxialBasis ofTargetFace(SpellContext context) throws SpellRuntimeException {
+    static TargetFace targetFace(SpellContext context) throws SpellRuntimeException {
         Vector3 origin = Vector3.fromEntity(context.caster).add(0, context.caster.getEyeHeight(), 0);
         Vector3 look = new Vector3(context.caster.getLookAngle());
         BlockHitResult hit = RaycastHelper.raycast(
@@ -66,7 +69,8 @@ final class CasterAxialBasis {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         }
 
-        return ofFace(hit.getDirection(), Direction.fromYRot(context.caster.getYRot()));
+        CasterAxialBasis basis = ofFace(hit.getDirection(), Direction.fromYRot(context.caster.getYRot()));
+        return new TargetFace(basis, Vector3.fromBlockPos(hit.getBlockPos()));
     }
 
     static CasterAxialBasis ofFace(Direction faceNormal, Direction yawFacing) {

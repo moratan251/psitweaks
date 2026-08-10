@@ -11,6 +11,6 @@ public class PieceMacroFaceAxialRotation extends PieceMacroCasterAxialRotationBa
 
     @Override
     protected CasterAxialBasis getBasis(SpellContext context) throws SpellRuntimeException {
-        return CasterAxialBasis.ofTargetFace(context);
+        return CasterAxialBasis.targetFace(context).basis();
     }
 }

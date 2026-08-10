@@ -33,7 +33,7 @@ abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements 
     private final boolean includePitch;
     private PsitweaksModeOption mode = PsitweaksModeOptions.NUMBER;
 
-    private SpellParam<Vector3> position;
+    protected SpellParam<Vector3> position;
     private SpellParam<Number> leftRight;
     private SpellParam<Number> forwardBackward;
     private SpellParam<Number> upDown;
@@ -97,7 +97,12 @@ abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements 
     private void rebuildParams(Map<String, SpellParam.Side> savedSides) {
         params.clear();
         paramSides.clear();
-        addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, false, false));
+        addParam(position = new ParamVector(
+                SpellParam.GENERIC_NAME_POSITION,
+                SpellParam.BLUE,
+                isPositionOptional(),
+                false
+        ));
         if (isVectorMode()) {
             addParam(offset = new ParamVector(PsitweaksSpellParams.OFFSET, SpellParam.CYAN, true, false));
         } else {
@@ -139,7 +144,15 @@ abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements 
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         }
 
-        CasterAxialBasis basis = getBasis(context);
+        return executeWithBasis(context, positionVal, getBasis(context));
+    }
+
+    protected boolean isPositionOptional() {
+        return false;
+    }
+
+    protected Object executeWithBasis(SpellContext context, Vector3 positionVal, CasterAxialBasis basis)
+            throws SpellRuntimeException {
 
         if (isVectorMode()) {
             Vector3 offsetVal = getParamValue(context, offset);
