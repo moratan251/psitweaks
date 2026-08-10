@@ -14,6 +14,8 @@ import vazkii.psi.api.spell.SpellRuntimeException;
  */
 final class CasterAxialBasis {
 
+    private static final String TARGET_FACE_CONTEXT_KEY = "psitweaks:face_axial_target";
+
     record TargetFace(CasterAxialBasis basis, Vector3 blockPosition) {
     }
 
@@ -54,8 +56,14 @@ final class CasterAxialBasis {
      * 術者の通常レイキャストが命中した面を基準にする座標系。
      * 前はブロックの内側を向き、側面では上がワールド上方向になる。
      * 上下面では面内の回転を術者の水平向きから決める。
+     * 同じ術式実行中は最初の命中結果を平行移動・回転の両方で共有する。
      */
     static TargetFace targetFace(SpellContext context) throws SpellRuntimeException {
+        Object cachedTarget = context.customData.get(TARGET_FACE_CONTEXT_KEY);
+        if (cachedTarget instanceof TargetFace targetFace) {
+            return targetFace;
+        }
+
         Vector3 origin = Vector3.fromEntity(context.caster).add(0, context.caster.getEyeHeight(), 0);
         Vector3 look = new Vector3(context.caster.getLookAngle());
         BlockHitResult hit = RaycastHelper.raycast(
@@ -70,7 +78,9 @@ final class CasterAxialBasis {
         }
 
         CasterAxialBasis basis = ofFace(hit.getDirection(), Direction.fromYRot(context.caster.getYRot()));
-        return new TargetFace(basis, Vector3.fromBlockPos(hit.getBlockPos()));
+        TargetFace targetFace = new TargetFace(basis, Vector3.fromBlockPos(hit.getBlockPos()));
+        context.customData.put(TARGET_FACE_CONTEXT_KEY, targetFace);
+        return targetFace;
     }
 
     static CasterAxialBasis ofFace(Direction faceNormal, Direction yawFacing) {

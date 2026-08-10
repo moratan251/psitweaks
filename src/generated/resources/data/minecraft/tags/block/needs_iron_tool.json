@@ -1,13 +1,25 @@
 {
   "values": [
-    "psitweaks:program_researcher",
-    "psitweaks:sculk_eroder",
-    "psitweaks:material_mutator",
-    "psitweaks:psionic_generator",
     "psitweaks:chaotic_psimetal_block",
     "psitweaks:flashmetal_block",
     "psitweaks:plutonium_block",
     "psitweaks:polonium_block",
-    "psitweaks:spellmachinery_casing"
+    "psitweaks:spellmachinery_casing",
+    {
+      "id": "psitweaks:program_researcher",
+      "required": false
+    },
+    {
+      "id": "psitweaks:sculk_eroder",
+      "required": false
+    },
+    {
+      "id": "psitweaks:material_mutator",
+      "required": false
+    },
+    {
+      "id": "psitweaks:psionic_generator",
+      "required": false
+    }
   ]
 }

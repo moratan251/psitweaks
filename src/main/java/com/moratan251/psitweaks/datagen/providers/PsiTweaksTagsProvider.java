@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
-import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,12 +70,8 @@ public class PsiTweaksTagsProvider implements DataProvider {
             tag(tags, "psitweaks", "productivebees/flowers/" + bee.id(), block(bee.flowerBlock()));
         }
 
-        tag(tags, "minecraft", "mineable/pickaxe",
+        tagWithOptional(tags, "minecraft", "mineable/pickaxe", entries(
                 block(PsitweaksBlocks.CAD_DISASSEMBLER.get()),
-                block(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.get()),
-                block(PsitweaksMekanismBlocks.SCULK_ERODER.get()),
-                block(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get()),
-                block(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get()),
                 block(PsitweaksBlocks.ORE_ANTINITE.get()),
                 block(PsitweaksBlocks.ANTINITE_BLOCK.get()),
                 block(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()),
@@ -88,22 +83,27 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 block(PsitweaksBlocks.SPELLMACHINERY_CASING.get()),
                 block(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()),
                 block(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()),
-                block(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get()));
-        tag(tags, "minecraft", "needs_stone_tool", block(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get()));
+                block(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get())),
+                "psitweaks:program_researcher",
+                "psitweaks:sculk_eroder",
+                "psitweaks:material_mutator",
+                "psitweaks:psionic_generator",
+                "psitweaks:transcendent_energy_cube");
         tag(tags, "minecraft", "needs_diamond_tool",
                 block(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()),
                 block(PsitweaksBlocks.PSYCHEONIC_METAL_BLOCK.get()),
-                block(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()));
-        tag(tags, "minecraft", "needs_iron_tool",
-                block(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER.get()),
-                block(PsitweaksMekanismBlocks.SCULK_ERODER.get()),
-                block(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get()),
-                block(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get()),
+                block(PsitweaksBlocks.HYPOSTASIS_GEM_BLOCK.get()),
+                block(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX.get()));
+        tagWithOptional(tags, "minecraft", "needs_iron_tool", entries(
                 block(PsitweaksBlocks.CHAOTIC_PSIMETAL_BLOCK.get()),
                 block(PsitweaksBlocks.FLASHMETAL_BLOCK.get()),
                 block(PsitweaksBlocks.PLUTONIUM_BLOCK.get()),
                 block(PsitweaksBlocks.POLONIUM_BLOCK.get()),
-                block(PsitweaksBlocks.SPELLMACHINERY_CASING.get()));
+                block(PsitweaksBlocks.SPELLMACHINERY_CASING.get())),
+                "psitweaks:program_researcher",
+                "psitweaks:sculk_eroder",
+                "psitweaks:material_mutator",
+                "psitweaks:psionic_generator");
         tag(tags, "neoforge", "needs_netherite_tool",
                 block(PsitweaksBlocks.ORE_ANTINITE.get()),
                 block(PsitweaksBlocks.ANTINITE_BLOCK.get()),
@@ -275,13 +275,28 @@ public class PsiTweaksTagsProvider implements DataProvider {
     }
 
     private static void tag(Map<ResourceLocation, JsonObject> tags, String namespace, String path, String... values) {
+        tagWithOptional(tags, namespace, path, values);
+    }
+
+    private static void tagWithOptional(Map<ResourceLocation, JsonObject> tags, String namespace, String path,
+                                        String[] requiredValues, String... optionalValues) {
         JsonObject root = new JsonObject();
         JsonArray jsonValues = new JsonArray();
-        for (String value : values) {
+        for (String value : requiredValues) {
             jsonValues.add(value);
+        }
+        for (String value : optionalValues) {
+            JsonObject optionalValue = new JsonObject();
+            optionalValue.addProperty("id", value);
+            optionalValue.addProperty("required", false);
+            jsonValues.add(optionalValue);
         }
         root.add("values", jsonValues);
         tags.put(ResourceLocation.fromNamespaceAndPath(namespace, path), root);
+    }
+
+    private static String[] entries(String... values) {
+        return values;
     }
 
     private static String block(Block block) {

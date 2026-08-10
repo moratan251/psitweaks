@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.macro_face_axial_offset"
+      "text": "psi.book.page.psitweaks_spellpiece.macro_face_axial_offset.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.macro_face_axial_offset.1"
     }
   ]
 }
