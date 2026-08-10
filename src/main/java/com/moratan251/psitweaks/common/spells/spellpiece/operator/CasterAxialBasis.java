@@ -2,7 +2,12 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
  * 術者の向きを軸方向に丸めた基準座標系(右・上・前)。
@@ -39,6 +44,44 @@ final class CasterAxialBasis {
         Direction up = forward.getAxis().isVertical()
                 ? (forward == Direction.DOWN ? yawFacing : yawFacing.getOpposite())
                 : Direction.UP;
+        return new CasterAxialBasis(right, up, forward);
+    }
+
+    /**
+     * 術者の通常レイキャストが命中した面を基準にする座標系。
+     * 前はブロックの内側を向き、側面では上がワールド上方向になる。
+     * 上下面では面内の回転を術者の水平向きから決める。
+     */
+    static CasterAxialBasis ofTargetFace(SpellContext context) throws SpellRuntimeException {
+        Vector3 origin = Vector3.fromEntity(context.caster).add(0, context.caster.getEyeHeight(), 0);
+        Vector3 look = new Vector3(context.caster.getLookAngle());
+        BlockHitResult hit = RaycastHelper.raycast(
+                context.caster,
+                origin,
+                look,
+                SpellContext.MAX_DISTANCE,
+                RaycastHelper.Mode.NORMAL
+        );
+        if (hit.getType() == HitResult.Type.MISS) {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
+        }
+
+        return ofFace(hit.getDirection(), Direction.fromYRot(context.caster.getYRot()));
+    }
+
+    static CasterAxialBasis ofFace(Direction faceNormal, Direction yawFacing) {
+        Direction forward = faceNormal.getOpposite();
+        if (!forward.getAxis().isVertical()) {
+            return new CasterAxialBasis(
+                    forward.getClockWise(Direction.Axis.Y),
+                    Direction.UP,
+                    forward
+            );
+        }
+
+        Direction horizontalFacing = yawFacing.getAxis().isHorizontal() ? yawFacing : Direction.SOUTH;
+        Direction right = horizontalFacing.getClockWise(Direction.Axis.Y);
+        Direction up = forward == Direction.DOWN ? horizontalFacing : horizontalFacing.getOpposite();
         return new CasterAxialBasis(right, up, forward);
     }
 }

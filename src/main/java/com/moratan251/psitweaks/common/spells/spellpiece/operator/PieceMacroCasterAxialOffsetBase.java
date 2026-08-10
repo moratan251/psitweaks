@@ -139,9 +139,7 @@ abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements 
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         }
 
-        CasterAxialBasis basis = includePitch
-                ? CasterAxialBasis.of3D(context.caster)
-                : CasterAxialBasis.of2D(context.caster);
+        CasterAxialBasis basis = getBasis(context);
 
         if (isVectorMode()) {
             Vector3 offsetVal = getParamValue(context, offset);
@@ -159,6 +157,12 @@ abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements 
         Vector3 result = positionVal.copy();
         addBasisOffset(result, basis, leftRightVal, forwardBackwardVal, upDownVal);
         return result;
+    }
+
+    protected CasterAxialBasis getBasis(SpellContext context) throws SpellRuntimeException {
+        return includePitch
+                ? CasterAxialBasis.of3D(context.caster)
+                : CasterAxialBasis.of2D(context.caster);
     }
 
     private static void addBasisOffset(Vector3 result, CasterAxialBasis basis, double leftRight, double forwardBackward, double upDown) {

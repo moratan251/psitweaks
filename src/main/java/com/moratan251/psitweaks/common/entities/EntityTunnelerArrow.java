@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities;
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import java.util.HashMap;
@@ -43,9 +44,6 @@ public class EntityTunnelerArrow extends AbstractArrow {
 
     /** デスポーンに必要な射手からの距離の二乗(64ブロック) */
     private static final double DESPAWN_DISTANCE_SQR = 64.0 * 64.0;
-
-    /** ダメージの下限値。速度が低下してもこの値を下回らない */
-    private static final double MIN_DAMAGE = 36.0;
 
     /** 飛翔モード: 通常 */
     public static final int MODE_NORMAL = 0;
@@ -280,7 +278,8 @@ public class EntityTunnelerArrow extends AbstractArrow {
             baseDamage = EnchantmentHelper.modifyDamage(serverLevel, this.getWeaponItem(), entity, damageSource, (float) baseDamage);
         }
 
-        int damage = Mth.ceil(Mth.clamp(velocity * baseDamage, MIN_DAMAGE, 2.147483647E9));
+        double minimumDamage = PsitweaksConfig.COMMON.tunnelerMinimumDamage.get();
+        int damage = Mth.ceil(Mth.clamp(velocity * baseDamage, minimumDamage, Integer.MAX_VALUE));
         if (this.isCritArrow()) {
             long bonus = (long) this.random.nextInt(damage / 2 + 2);
             damage = (int) Math.min(bonus + (long) damage, 2147483647L);

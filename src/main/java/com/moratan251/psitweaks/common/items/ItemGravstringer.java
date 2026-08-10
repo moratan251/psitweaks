@@ -9,6 +9,7 @@ package com.moratan251.psitweaks.common.items;
 
 import java.util.List;
 import java.util.function.Predicate;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityTunnelerArrow;
 import com.moratan251.psitweaks.common.handler.BowSpellProjectileHandler;
 import net.minecraft.core.BlockPos;
@@ -40,7 +41,6 @@ import vazkii.psi.api.cad.ISocketable;
 public class ItemGravstringer extends BowItem {
     public static final int SLOT_COUNT = 11;
     public static final int FULL_DRAW_TICKS = 4;
-    private static final double ARROW_BASE_DAMAGE = 12.0;
     private static final String TAG_ARROW_MODE = "arrow_mode";
 
     /** 扇状に発射する左右の矢の角度オフセット（度） */
@@ -154,7 +154,7 @@ public class ItemGravstringer extends BowItem {
 
     @Override
     public AbstractArrow customArrow(AbstractArrow arrow, ItemStack projectileStack, ItemStack weaponStack) {
-        arrow.setBaseDamage(ARROW_BASE_DAMAGE);
+        arrow.setBaseDamage(PsitweaksConfig.COMMON.gravstringerBaseDamage.get());
         return super.customArrow(arrow, projectileStack, weaponStack);
     }
 
