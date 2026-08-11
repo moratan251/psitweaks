@@ -3,22 +3,19 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "psitweaks:flashmetal"
+      "item": "psitweaks:echo_control_circuit"
     },
     "B": {
-      "item": "psitweaks:antinite_ingot"
+      "item": "psitweaks:flashmetal"
     },
     "C": {
-      "item": "psitweaks:chaotic_psimetal"
-    },
-    "D": {
-      "item": "psitweaks:psionic_control_circuit"
+      "item": "psi:cad_core_hyperclocked"
     }
   },
   "pattern": [
-    "DCD",
-    "ABA",
-    "DCD"
+    " A ",
+    "BCB",
+    " A "
   ],
   "result": {
     "item": "psitweaks:cad_core_ultraclocked"

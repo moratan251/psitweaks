@@ -1,4 +1,4 @@
-// 1.20.1	2026-08-06T21:30:23.8016072	Recipes
+// 1.20.1	2026-08-11T16:57:06.0578629	Recipes
 439332da446f7276b66f59403440d78fc84f3a64 data/psitweaks/advancements/recipes/building_blocks/antinite_block.json
 1849ad524ffe6cb05b1936d8a8979a5502776dfa data/psitweaks/advancements/recipes/building_blocks/chaotic_psimetal_block.json
 9c9f0421f127af9ac51ffb732024d51988aceb8b data/psitweaks/advancements/recipes/building_blocks/flashmetal_block.json
@@ -198,8 +198,8 @@ f6006a447e04e213c6b91713088b4d59f5b47d41 data/psitweaks/recipes/cad_assembly_cha
 b1b8c2f8db57f74bfd028d481ed96db355421f05 data/psitweaks/recipes/cad_assembly_heavy_psimetal_beta.json
 244beff2e7c1769006d82c3611daf17fea6f9995 data/psitweaks/recipes/cad_assembly_psycheonic_metal_from_alpha.json
 c2052e6cc68aa2a20253e7a8bcca87f5cfbf9d08 data/psitweaks/recipes/cad_assembly_psycheonic_metal_from_beta.json
-d649b38012230cfdbbde48d2a5639f2a21618528 data/psitweaks/recipes/cad_core_absorptive.json
-83dae4be6f0e3fbe9cbe73895285ba541e599b02 data/psitweaks/recipes/cad_core_ultraclocked.json
+f0bff8ee287f838aea32850d22213980a476dbbe data/psitweaks/recipes/cad_core_absorptive.json
+da35ec6d7d2bf835c4b6a329cd9057be6aad47e6 data/psitweaks/recipes/cad_core_ultraclocked.json
 10df79a4e69c99bb0e6705cb1458bedb799d4de3 data/psitweaks/recipes/cad_disassembler.json
 6a10ad9776b97b467ac434c165c204282906c1dd data/psitweaks/recipes/chaotic_psimetal_block.json
 4b1842899b1b675b3de6b29fa6a803da569bd91e data/psitweaks/recipes/chaotic_psimetal_from_block.json

@@ -216,23 +216,22 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "gravstringer"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.CAD_CORE_ABSORPTIVE.get())
-                .define('A', PsitweaksItems.FLASHMETAL.get())
-                .define('B', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
-                .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
-                .pattern("ABA")
-                .pattern("CCC")
-                .pattern("ABA")
+                .define('A', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('B', PsitweaksItems.FLASHMETAL.get())
+                .define('C', ModItems.cadCoreRadiative)
+                .pattern(" A ")
+                .pattern("BCB")
+                .pattern(" A ")
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_core_absorptive"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.CAD_CORE_ULTRACLOCKED.get())
-                .define('A', PsitweaksItems.FLASHMETAL.get())
-                .define('B', PsitweaksItems.ANTINITE_INGOT.get())
-                .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
-                .define('D', PsitweaksItems.PSIONIC_CONTROL_CIRCUIT.get())
-                .pattern("DCD")
-                .pattern("ABA")
-                .pattern("DCD")
+                .define('A', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('B', PsitweaksItems.FLASHMETAL.get())
+                .define('C', ModItems.cadCoreHyperClocked)
+                .pattern(" A ")
+                .pattern("BCB")
+                .pattern(" A ")
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_core_ultraclocked"));
 
