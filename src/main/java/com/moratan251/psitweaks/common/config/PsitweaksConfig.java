@@ -9,6 +9,8 @@ public class PsitweaksConfig {
     // COMMON CONFIG（サーバー・クライアント両方で使用）
     // ===========================================
     public static class Common {
+        private static final double MAX_PROJECTILE_DAMAGE = Integer.MAX_VALUE;
+
         public final ForgeConfigSpec.DoubleValue globalSpellPowerMultiplier;
         public final ForgeConfigSpec.BooleanValue requireSpellUnlocks;
         public final ForgeConfigSpec.BooleanValue disableDamagePsiDeduction;
@@ -26,6 +28,8 @@ public class PsitweaksConfig {
         public final ForgeConfigSpec.DoubleValue iceCircleDamageMultiplier;
         public final ForgeConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ForgeConfigSpec.DoubleValue guillotineDamageMultiplier;
+        public final ForgeConfigSpec.DoubleValue gravstringerBaseDamage;
+        public final ForgeConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ForgeConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
         public final ForgeConfigSpec.LongValue psionicGeneratorEnergyCapacity;
 
@@ -161,6 +165,35 @@ public class PsitweaksConfig {
             builder.pop(); // guillotine カテゴリ終了
 
             builder.pop(); // spells カテゴリ終了
+
+            builder.comment("Item Settings")
+                    .translation("psitweaks.configuration.items")
+                    .push("items");
+
+            builder.comment("Gravstringer Settings")
+                    .translation("psitweaks.configuration.items.gravstringer")
+                    .push("gravstringer");
+
+            gravstringerBaseDamage = builder
+                    .comment("グラヴストリンガーが矢に設定する基礎ダメージ",
+                            "Base damage assigned to arrows fired by the Gravstringer")
+                    .translation("psitweaks.configuration.items.gravstringer.base_damage")
+                    .defineInRange("baseDamage", 12.0, 0.0, MAX_PROJECTILE_DAMAGE);
+
+            builder.pop(); // gravstringer
+
+            builder.comment("Tunneler Settings")
+                    .translation("psitweaks.configuration.items.tunneler")
+                    .push("tunneler");
+
+            tunnelerMinimumDamage = builder
+                    .comment("トンネラーの最低ダメージ",
+                            "Minimum damage dealt by the Tunneler")
+                    .translation("psitweaks.configuration.items.tunneler.minimum_damage")
+                    .defineInRange("minimumDamage", 36.0, 0.0, MAX_PROJECTILE_DAMAGE);
+
+            builder.pop(); // tunneler
+            builder.pop(); // items
 
             builder.comment("Psi Behavior Settings")
                     .push("psi");

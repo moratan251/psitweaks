@@ -23,6 +23,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         addBackportedMatrixTranslations();
         addBackportedSpellPiece15Translations();
         addBackportedItemTranslations();
+        addItemConfigTranslations();
         addDryMeteorTranslations();
         addMysticalAgricultureTranslations();
         for (ProductiveBeesDataProvider.GeneratedBee bee : ProductiveBeesDataProvider.bees()) {
@@ -46,9 +47,9 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("item.psitweaks.gravstringer.mode.hybrid", japanese ? "ハイブリッドモード" : "Hybrid Mode");
         add("item.psitweaks.gravstringer.current_mode", japanese ? "モード: %s" : "Mode: %s");
 
-        add("death.attack.psitweaks.tunneler", japanese ? "%1$sは撃ち抜かれた" : "%1$s was shot through");
-        add("death.attack.psitweaks.tunneler.player", japanese ? "%1$sは撃ち抜かれた" : "%1$s was shot through");
-        add("death.attack.psitweaks.tunneler.item", japanese ? "%1$sは撃ち抜かれた" : "%1$s was shot through");
+        add("death.attack.psitweaks.tunneler", japanese ? "%1$sはトンネル効果を体感した" : "%1$s experienced the tunneling effect");
+        add("death.attack.psitweaks.tunneler.player", japanese ? "%1$sは%2$sにトンネル効果を体感させられた" : "%1$s was made to experience the tunneling effect by %2$s");
+        add("death.attack.psitweaks.tunneler.item", japanese ? "%1$sはトンネル効果を体感した" : "%1$s experienced the tunneling effect");
 
         add("psi.book.page.psitweaks_material.dimensional_crystal", japanese
                 ? "(v0.10.5現在用途無し) 術式の詠唱時に, まれに $(item)次元の結晶$(0) が手に入ります. 確率は詠唱が消費した Psi の量に比例して上がります.$(p)クラフトでは作れません. 安定して集めたいなら, 日常的に魔法を使って生活する必要があります."
@@ -62,6 +63,21 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_item.tunneler.0", japanese
                 ? "$(item)トンネラー$(0) は, $(item)グラヴストリンガー$(0) の専用弾です. ブロックを貫通し, 防御力や耐性を無効化します. 射手自身には命中しません.$(p)矢はmobに命中しても消滅せず貫通し, 同じmobには1秒のクールタイム後に再度命中します."
                 : "The $(item)Tunneler$(0) is the dedicated ammunition of the $(item)Gravstringer$(0). It pierces through blocks and nullifies armor and resistances. It never strikes its shooter.$(p)The arrow pierces through mobs instead of disappearing, striking the same target again after a 1-second cooldown.");
+    }
+
+    private void addItemConfigTranslations() {
+        boolean japanese = "ja_jp".equals(locale);
+        add("psitweaks.configuration.items", japanese ? "アイテム設定" : "Item Settings");
+        add("psitweaks.configuration.items.gravstringer", japanese ? "グラヴストリンガー" : "Gravstringer");
+        add("psitweaks.configuration.items.gravstringer.base_damage", japanese ? "基礎ダメージ" : "Base Damage");
+        add("psitweaks.configuration.items.gravstringer.base_damage.tooltip", japanese
+                ? "グラヴストリンガーが発射する矢に設定する基礎ダメージです。"
+                : "Base damage assigned to arrows fired by the Gravstringer.");
+        add("psitweaks.configuration.items.tunneler", japanese ? "トンネラー" : "Tunneler");
+        add("psitweaks.configuration.items.tunneler.minimum_damage", japanese ? "最低ダメージ" : "Minimum Damage");
+        add("psitweaks.configuration.items.tunneler.minimum_damage.tooltip", japanese
+                ? "トンネラーがエンティティへ命中した際に与える最低ダメージです。"
+                : "Minimum damage dealt when a Tunneler hits an entity.");
     }
 
     private void addBackportedSpellPiece15Translations() {

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities;
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import java.util.HashMap;
@@ -35,7 +36,6 @@ public class EntityTunnelerArrow extends AbstractArrow {
     private static final int REHIT_COOLDOWN_TICKS = 20;
     private static final int DESPAWN_TICKS = 200;
     private static final double DESPAWN_DISTANCE_SQR = 64.0D * 64.0D;
-    private static final double MIN_DAMAGE = 36.0D;
     private static final float SLOW_SPEED_FACTOR = 0.01F;
     private static final int SLOW_DESPAWN_TICKS = 1200;
     private static final float INERTIALESS_SPEED_FACTOR = 0.15F;
@@ -226,7 +226,8 @@ public class EntityTunnelerArrow extends AbstractArrow {
         }
         lastHitTicks.put(target.getId(), tickCount);
 
-        int damage = Mth.ceil(Mth.clamp(getDeltaMovement().length() * getBaseDamage(), MIN_DAMAGE,
+        double minimumDamage = PsitweaksConfig.COMMON.tunnelerMinimumDamage.get();
+        int damage = Mth.ceil(Mth.clamp(getDeltaMovement().length() * getBaseDamage(), minimumDamage,
                 Integer.MAX_VALUE));
         if (isCritArrow()) {
             long bonus = random.nextInt(damage / 2 + 2);

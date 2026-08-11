@@ -7,6 +7,7 @@ package com.moratan251.psitweaks.common.items;
  * Original author: Dudblockman
  */
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityTunnelerArrow;
 import com.moratan251.psitweaks.common.handler.BowSpellProjectileHandler;
 import java.util.List;
@@ -42,7 +43,6 @@ import vazkii.psi.api.cad.ISocketable;
 public class ItemGravstringer extends BowItem {
     public static final int SLOT_COUNT = 11;
     public static final int FULL_DRAW_TICKS = 4;
-    private static final double ARROW_BASE_DAMAGE = 12.0D;
     private static final String TAG_ARROW_MODE = "arrow_mode";
     private static final float FAN_ANGLE_DEGREES = 10.0F;
     private static final double FAN_LATERAL_OFFSET = 0.75D;
@@ -177,7 +177,7 @@ public class ItemGravstringer extends BowItem {
                                       ArrowItem arrowItem, float power, boolean infiniteAmmo) {
         AbstractArrow arrow = arrowItem.createArrow(level, ammo, player);
         arrow = customArrow(arrow);
-        arrow.setBaseDamage(ARROW_BASE_DAMAGE);
+        arrow.setBaseDamage(PsitweaksConfig.COMMON.gravstringerBaseDamage.get());
         arrow.setCritArrow(power == 1.0F);
 
         int powerLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, bow);
