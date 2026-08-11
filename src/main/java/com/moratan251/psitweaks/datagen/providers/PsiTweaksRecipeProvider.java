@@ -183,20 +183,19 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 ),
                 PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL, 1));
         recipe(recipes, "cad_core_absorptive", shaped("equipment",
-                List.of(" C ", "ABA", " C "),
+                List.of(" A ", "BCB", " A "),
                 Map.of(
-                        'A', ingredientItem(PsitweaksItems.FLASHMETAL),
-                        'B', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
-                        'C', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL)
+                        'A', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'B', ingredientItem(PsitweaksItems.FLASHMETAL),
+                        'C', ingredientItem(ModItems.cadCoreRadiative.get())
                 ),
                 PsitweaksItems.CAD_CORE_ABSORPTIVE, 1));
         recipe(recipes, "cad_core_ultraclocked", shaped("equipment",
-                List.of("DCD", "ABA", "DCD"),
+                List.of(" A ", "BCB", " A "),
                 Map.of(
-                        'A', ingredientItem(PsitweaksItems.FLASHMETAL),
-                        'B', ingredientItem(PsitweaksItems.ANTINITE_INGOT),
-                        'C', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL),
-                        'D', ingredientItem(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT)
+                        'A', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'B', ingredientItem(PsitweaksItems.FLASHMETAL),
+                        'C', ingredientItem(ModItems.cadCoreHyperClocked.get())
                 ),
                 PsitweaksItems.CAD_CORE_ULTRACLOCKED, 1));
         recipe(recipes, "unrefined_flashmetal", shaped(
