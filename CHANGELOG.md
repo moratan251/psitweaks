@@ -1,6 +1,27 @@
 ## Changelog
 
 
+#### v0.10.6
+
+- Made the attack damage of the Gravstringer and Tunneler configurable
+
+
+- Added spell pieces
+  + Macro: Face Axial Offset
+  + Macro: Face Axial Rotation
+
+
+- Fixed an issue where the `minecraft:mineable/pickaxe` tag was broken when Mekanism was not installed
+
+
+- Fixed an issue where the mining tag for the Transcendent Energy Cube was not set
+
+
+- Changed the mining tier of the Psycheonic Metal Crux to Diamond
+
+
+- Changed the crafting recipes for the Ultraclocked CAD Core and Absorptive CAD Core
+
 #### v0.10.5
 
 - Added Russian translation (#1)
