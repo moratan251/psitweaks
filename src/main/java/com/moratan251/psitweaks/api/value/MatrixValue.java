@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.api.value;
 
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

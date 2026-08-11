@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.api;
 
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

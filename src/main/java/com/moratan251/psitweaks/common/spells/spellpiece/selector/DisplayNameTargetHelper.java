@@ -7,7 +7,7 @@ import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

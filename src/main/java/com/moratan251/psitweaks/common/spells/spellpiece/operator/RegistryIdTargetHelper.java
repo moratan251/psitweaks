@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.SpellContext;

@@ -2,8 +2,8 @@ package com.moratan251.psitweaks.common.spells.param;
 
 import com.moratan251.psitweaks.api.PsitweaksListAdapter;
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
-import com.moratan251.psitweaks.api.PsitweaksModeOption;
-import com.moratan251.psitweaks.api.PsitweaksValueKind;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import java.util.Optional;
 import net.minecraft.network.chat.Component;

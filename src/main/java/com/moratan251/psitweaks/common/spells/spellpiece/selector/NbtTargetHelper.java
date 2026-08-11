@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.moratan251.psitweaks.api.value.ContextualValue;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

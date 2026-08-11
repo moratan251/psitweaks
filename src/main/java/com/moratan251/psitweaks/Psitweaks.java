@@ -4,7 +4,6 @@ import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
-import com.moratan251.psitweaks.client.event.PsitweaksClientGuiEvents;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiPortableCADAssembler;
@@ -155,7 +154,6 @@ public class Psitweaks {
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
             MekanismCompat.registerClient(modEventBus);
-            PsitweaksClientGuiEvents.register(NeoForge.EVENT_BUS);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }

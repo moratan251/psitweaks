@@ -111,14 +111,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "適用";
             default -> "Apply";
         });
-        root.addProperty("gui.psitweaks.spell_programmer.bookmarks.show", switch (locale) {
-            case "ja_jp" -> "ブックマーク (Ctrl + クリック) したピースのみ表示";
-            default -> "Show only spell pieces bookmarked with Ctrl + click";
-        });
-        root.addProperty("gui.psitweaks.spell_programmer.bookmarks.show_all", switch (locale) {
-            case "ja_jp" -> "すべてのピースを表示";
-            default -> "Show all spell pieces";
-        });
         root.addProperty("screen.psitweaks.auto_caster_custom_tick", switch (locale) {
             case "ja_jp" -> "オートキャスター設定";
             default -> "Auto Caster Settings";
@@ -198,14 +190,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.datatype.plain_value", switch (locale) {
             case "ja_jp" -> "Plain Value";
             default -> "Plain Value";
-        });
-        root.addProperty("psitweaks.gui.spell_piece_mode", switch (locale) {
-            case "ja_jp" -> "モード: %s";
-            default -> "Mode: %s";
-        });
-        root.addProperty("psitweaks.gui.spell_piece_mode.title", switch (locale) {
-            case "ja_jp" -> "モード選択";
-            default -> "Mode Select";
         });
         root.addProperty("psitweaks.spellparam.string", switch (locale) {
             case "ja_jp" -> "文字列";
@@ -382,30 +366,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
             case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
             default -> "String CAD memory value in slot %s was truncated from %s to %s characters";
-        });
-        root.addProperty("psitweaks.gui.string_constant_input.empty", switch (locale) {
-            case "ja_jp" -> "空文字列";
-            default -> "Empty string";
-        });
-        root.addProperty("psitweaks.gui.string_constant_input.hint", switch (locale) {
-            case "ja_jp" -> "Shift+Enter改行 / Enter閉";
-            default -> "Shift+Enter newline / Enter closes";
-        });
-        root.addProperty("psitweaks.gui.string_constant_input.read_only", switch (locale) {
-            case "ja_jp" -> "閲覧のみ";
-            default -> "Read only";
-        });
-        root.addProperty("psitweaks.gui.string_constant_input.button.copy_all", switch (locale) {
-            case "ja_jp" -> "全コピー";
-            default -> "Copy All";
-        });
-        root.addProperty("psitweaks.gui.string_constant_input.button.clear_all", switch (locale) {
-            case "ja_jp" -> "全削除";
-            default -> "Clear";
-        });
-        root.addProperty("psitweaks.gui.string_constant_input.button.replace_all", switch (locale) {
-            case "ja_jp" -> "貼付";
-            default -> "Paste";
         });
         addPsitweaksCategoryBook(root);
         addProgrammingConceptsBook(root);

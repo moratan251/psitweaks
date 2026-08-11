@@ -1,13 +1,13 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import com.moratan251.psitweaks.api.PsitweaksModeOption;
-import com.moratan251.psitweaks.api.PsitweaksModeOptions;
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
-import com.moratan251.psitweaks.api.PsitweaksValueKind;
 import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.network.chat.Component;

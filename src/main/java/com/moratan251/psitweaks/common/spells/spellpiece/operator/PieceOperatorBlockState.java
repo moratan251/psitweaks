@@ -4,7 +4,7 @@ import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;

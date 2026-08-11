@@ -5,7 +5,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.etc.JumpAnchorHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 
 import com.moratan251.psitweaks.common.spells.param.ParamString;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
