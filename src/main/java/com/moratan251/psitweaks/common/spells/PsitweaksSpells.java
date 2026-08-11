@@ -252,6 +252,8 @@ public class PsitweaksSpells {
             registerSpellPiece("macro_caster_axial_rotation", PieceMacroCasterAxialRotation.class);
             registerSpellPiece("macro_caster_axial_offset_3d", PieceMacroCasterAxialOffset3D.class);
             registerSpellPiece("macro_caster_axial_rotation_3d", PieceMacroCasterAxialRotation3D.class);
+            registerSpellPiece("macro_face_axial_offset", PieceMacroFaceAxialOffset.class);
+            registerSpellPiece("macro_face_axial_rotation", PieceMacroFaceAxialRotation.class);
             registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
 
 

@@ -2,12 +2,22 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
  * 術者の向きを軸方向に丸めた基準座標系（右・上・前）。
  */
 final class CasterAxialBasis {
+    private static final String TARGET_FACE_CONTEXT_KEY = "psitweaks:face_axial_target";
+
+    record TargetFace(CasterAxialBasis basis, Vector3 blockPosition) {
+    }
+
     final Direction right;
     final Direction up;
     final Direction forward;
@@ -31,6 +41,53 @@ final class CasterAxialBasis {
         Direction up = forward.getAxis().isVertical()
                 ? (forward == Direction.DOWN ? yawFacing : yawFacing.getOpposite())
                 : Direction.UP;
+        return new CasterAxialBasis(right, up, forward);
+    }
+
+    /**
+     * 術者の通常レイキャストが命中した面を基準にする座標系。
+     * 前はブロックの内側を向き、側面では上がワールド上方向になる。
+     * 上下面では面内の回転を術者の水平向きから決める。
+     * 同じ術式実行中は最初の命中結果を平行移動・回転の両方で共有する。
+     */
+    static TargetFace targetFace(SpellContext context) throws SpellRuntimeException {
+        Object cachedTarget = context.customData.get(TARGET_FACE_CONTEXT_KEY);
+        if (cachedTarget instanceof TargetFace targetFace) {
+            return targetFace;
+        }
+
+        Vector3 origin = Vector3.fromEntity(context.caster).add(0, context.caster.getEyeHeight(), 0);
+        Vector3 look = new Vector3(context.caster.getLookAngle());
+        BlockHitResult hit = RaycastHelper.raycast(
+                context.caster,
+                origin,
+                look,
+                SpellContext.MAX_DISTANCE,
+                RaycastHelper.Mode.NORMAL
+        );
+        if (hit.getType() == HitResult.Type.MISS) {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
+        }
+
+        CasterAxialBasis basis = ofFace(hit.getDirection(), Direction.fromYRot(context.caster.getYRot()));
+        TargetFace targetFace = new TargetFace(basis, Vector3.fromBlockPos(hit.getBlockPos()));
+        context.customData.put(TARGET_FACE_CONTEXT_KEY, targetFace);
+        return targetFace;
+    }
+
+    static CasterAxialBasis ofFace(Direction faceNormal, Direction yawFacing) {
+        Direction forward = faceNormal.getOpposite();
+        if (!forward.getAxis().isVertical()) {
+            return new CasterAxialBasis(
+                    forward.getClockWise(Direction.Axis.Y),
+                    Direction.UP,
+                    forward
+            );
+        }
+
+        Direction horizontalFacing = yawFacing.getAxis().isHorizontal() ? yawFacing : Direction.SOUTH;
+        Direction right = horizontalFacing.getClockWise(Direction.Axis.Y);
+        Direction up = forward == Direction.DOWN ? horizontalFacing : horizontalFacing.getOpposite();
         return new CasterAxialBasis(right, up, forward);
     }
 }

@@ -40,9 +40,7 @@ abstract class PieceMacroCasterAxialRotationBase extends PieceOperator {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         }
 
-        CasterAxialBasis basis = includePitch
-                ? CasterAxialBasis.of3D(context.caster)
-                : CasterAxialBasis.of2D(context.caster);
+        CasterAxialBasis basis = getBasis(context);
 
         Vector3 result = new Vector3(0, 0, 0);
         if (directionValue.x != 0) {
@@ -55,6 +53,12 @@ abstract class PieceMacroCasterAxialRotationBase extends PieceOperator {
             result.add(Vector3.fromDirection(basis.forward).multiply(directionValue.z));
         }
         return result;
+    }
+
+    protected CasterAxialBasis getBasis(SpellContext context) throws SpellRuntimeException {
+        return includePitch
+                ? CasterAxialBasis.of3D(context.caster)
+                : CasterAxialBasis.of2D(context.caster);
     }
 
     @Override
