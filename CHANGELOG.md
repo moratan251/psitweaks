@@ -11,7 +11,7 @@
   + Macro: Face Axial Rotation
 
 
-- Fixed an issue where the `minecraft:mineable/pickaxe` tag was broken when Mekanism was not installed
+- Fixed an issue where the `minecraft:mineable/pickaxe` tag was broken when Mekanism was not installed (#2)
 
 
 - Fixed an issue where the mining tag for the Transcendent Energy Cube was not set
