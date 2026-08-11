@@ -565,16 +565,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "%1$s succumbed to carbon poisoning";
         });
         root.addProperty("death.attack.psitweaks.tunneler", switch (locale) {
-            case "ja_jp" -> "%1$sは撃ち抜かれた";
-            default -> "%1$s was shot through";
+            case "ja_jp" -> "%1$sはトンネル効果を体感した";
+            default -> "%1$s experienced the tunneling effect";
         });
         root.addProperty("death.attack.psitweaks.tunneler.player", switch (locale) {
-            case "ja_jp" -> "%1$sは撃ち抜かれた";
-            default -> "%1$s was shot through";
+            case "ja_jp" -> "%1$sは%2$sにトンネル効果を体感させられた";
+            default -> "%1$s was made to experience the tunneling effect by %2$s";
         });
         root.addProperty("death.attack.psitweaks.tunneler.item", switch (locale) {
-            case "ja_jp" -> "%1$sは撃ち抜かれた";
-            default -> "%1$s was shot through";
+            case "ja_jp" -> "%1$sはトンネル効果を体感した";
+            default -> "%1$s experienced the tunneling effect";
         });
     }
 
