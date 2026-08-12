@@ -224,6 +224,8 @@ file('psitweaks-qol/gradle.properties').withInputStream {
     qolModVersion = qolProps.getProperty('mod_version')
 }
 def qolNestedJarPath = "META-INF/jarjar/psitweaks_qol-${qolModVersion}.jar"
+def buildSlimJar = providers.gradleProperty("psitweaks.buildSlimJar")
+        .orElse("false").get().toBoolean()
 
 tasks.named('jarJar').configure {
     // The QoL-containing jar is the primary distributable, so do not append
@@ -259,6 +261,7 @@ tasks.named('processResources', ProcessResources).configure {
 
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
+    enabled = buildSlimJar
     // Keep the non-jarJar artifact available without colliding with the
     // classifier-free distributable produced by jarJar.
     archiveClassifier.set('slim')
@@ -277,6 +280,12 @@ tasks.named('jar', Jar).configure {
 
     // This is the preferred method to reobfuscate your jar file
     finalizedBy 'reobfJar'
+}
+
+// The slim jar is an opt-in artifact. Disable its reobfuscation task together
+// with jar so a normal build only creates the QoL-containing distributable.
+tasks.matching { it.name == 'reobfJar' }.configureEach {
+    enabled = buildSlimJar
 }
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
