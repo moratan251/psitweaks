@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.api.value;
 
-import com.moratan251.psitweaks.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;

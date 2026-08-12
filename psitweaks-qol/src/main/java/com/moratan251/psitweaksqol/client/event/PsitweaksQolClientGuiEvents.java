@@ -1,0 +1,201 @@
+package com.moratan251.psitweaksqol.client.event;
+
+import com.moratan251.psitweaksqol.PsitweaksQol;
+import com.moratan251.psitweaksqol.client.gui.ClientGuiSounds;
+import com.moratan251.psitweaksqol.client.gui.EditableStringInputOverlay;
+import com.moratan251.psitweaksqol.client.gui.PieceBookmarkManager;
+import com.moratan251.psitweaksqol.client.gui.ProgrammerOverlayInputGuard;
+import com.moratan251.psitweaksqol.client.gui.SpellGridMultiSelectionController;
+import com.moratan251.psitweaksqol.client.gui.SpellPieceModeButtonOverlay;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import vazkii.psi.client.gui.GuiProgrammer;
+import vazkii.psi.client.gui.button.GuiButtonSpellPiece;
+
+@Mod.EventBusSubscriber(modid = PsitweaksQol.MOD_ID, value = Dist.CLIENT)
+public final class PsitweaksQolClientGuiEvents {
+    private PsitweaksQolClientGuiEvents() {
+    }
+
+    @SubscribeEvent
+    public static void onScreenRenderPost(ScreenEvent.Render.Post event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            SpellGridMultiSelectionController.render(screen, event.getGuiGraphics());
+            SpellPieceModeButtonOverlay.render(screen, event.getGuiGraphics(), event.getMouseX(), event.getMouseY());
+            EditableStringInputOverlay.render(screen, event.getGuiGraphics());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onKeyPressedPre(ScreenEvent.KeyPressed.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen
+                && (SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
+                || EditableStringInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())
+                || SpellGridMultiSelectionController.handleKeyPressedPre(screen, event.getKeyCode()))) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCharacterTypedPre(ScreenEvent.CharacterTyped.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen
+                && EditableStringInputOverlay.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMouseButtonPressedPre(ScreenEvent.MouseButtonPressed.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            boolean blockedGesture = ProgrammerOverlayInputGuard.beginMouseGesture(
+                    screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getButton()
+            );
+            SpellGridMultiSelectionController.prepareMousePressed(event.getButton());
+            boolean handled = handlePieceBookmarkClick(
+                    screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getButton()
+            );
+            if (!handled) {
+                handled = SpellPieceModeButtonOverlay.handleMousePressedPre(
+                        screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton()
+                );
+            }
+            if (!handled) {
+                handled = EditableStringInputOverlay.handleMousePressedPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton());
+            }
+            if (!handled) {
+                handled = SpellGridMultiSelectionController.handleMousePressedPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton());
+                if (handled) {
+                    SpellGridMultiSelectionController.blockCurrentLeftGesture();
+                }
+            }
+            if (blockedGesture || handled) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    private static boolean handlePieceBookmarkClick(
+            GuiProgrammer screen,
+            double mouseX,
+            double mouseY,
+            int button
+    ) {
+        if (button != 0
+                || !Screen.hasControlDown()
+                || screen.panelWidget == null
+                || !screen.panelWidget.panelEnabled) {
+            return false;
+        }
+
+        for (GuiButtonSpellPiece pieceButton : screen.panelWidget.visibleButtons) {
+            if (!pieceButton.visible
+                    || !pieceButton.active
+                    || !pieceButton.isMouseOver(mouseX, mouseY)) {
+                continue;
+            }
+
+            PieceBookmarkManager.toggle(pieceButton.getPiece());
+            ClientGuiSounds.playClick();
+            ProgrammerOverlayInputGuard.blockLeftGesture();
+            return true;
+        }
+        return false;
+    }
+
+    @SubscribeEvent
+    public static void onMouseButtonPressedPost(ScreenEvent.MouseButtonPressed.Post event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            EditableStringInputOverlay.handleMousePressedPost(screen, event.getMouseX(), event.getMouseY(), event.getButton());
+            if (event.getButton() == 0
+                    && ProgrammerOverlayInputGuard.isProgrammerMouseMovedSuppressed()) {
+                ProgrammerOverlayInputGuard.resetPsionicUtilitiesConnectorStart(screen);
+            }
+            if (event.getButton() == 0) {
+                ProgrammerOverlayInputGuard.beginPsionicUtilitiesDragHistory(screen);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMouseDraggedPre(ScreenEvent.MouseDragged.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            boolean handled = EditableStringInputOverlay.handleMouseDraggedPre(screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getMouseButton());
+            if (!handled) {
+                handled = SpellGridMultiSelectionController.handleMouseDraggedPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getMouseButton());
+            }
+            if (ProgrammerOverlayInputGuard.isLeftGestureBlocked() || handled) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMouseButtonReleasedPre(ScreenEvent.MouseButtonReleased.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            if (event.getButton() == 0) {
+                ProgrammerOverlayInputGuard.finishPsionicUtilitiesDragHistory(screen);
+            }
+            boolean blockedGesture = ProgrammerOverlayInputGuard.isLeftGestureBlocked();
+            boolean handled = EditableStringInputOverlay.handleMouseReleasedPre(screen, event.getButton());
+            if (!handled) {
+                handled = SpellGridMultiSelectionController.handleMouseReleasedPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton());
+            }
+            ProgrammerOverlayInputGuard.endMouseGesture(event.getButton());
+            if (blockedGesture || handled) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMouseScrolledPre(ScreenEvent.MouseScrolled.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen
+                && (SpellPieceModeButtonOverlay.handleMouseScrolledPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getScrollDelta())
+                || EditableStringInputOverlay.handleMouseScrolledPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getScrollDelta()))) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onScreenClosing(ScreenEvent.Closing event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            SpellPieceModeButtonOverlay.deactivate();
+            EditableStringInputOverlay.deactivate(screen);
+            SpellGridMultiSelectionController.resetScreenState();
+            ProgrammerOverlayInputGuard.reset();
+        }
+    }
+}

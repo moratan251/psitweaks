@@ -1,8 +1,8 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.constant;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.moratan251.psitweaks.common.spells.spellpiece.EditableStringSpellPiece;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.EditableStringSpellPiece;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;

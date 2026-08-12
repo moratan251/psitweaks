@@ -1,0 +1,12 @@
+{
+  "gui.psitweaks_qol.spell_programmer.bookmarks.show": "Show only spell pieces bookmarked with Ctrl + click",
+  "gui.psitweaks_qol.spell_programmer.bookmarks.show_all": "Show all spell pieces",
+  "psitweaks_qol.gui.spell_piece_mode": "Mode: %s",
+  "psitweaks_qol.gui.spell_piece_mode.title": "Mode Select",
+  "psitweaks_qol.gui.string_constant_input.button.clear_all": "Clear",
+  "psitweaks_qol.gui.string_constant_input.button.copy_all": "Copy All",
+  "psitweaks_qol.gui.string_constant_input.button.replace_all": "Paste",
+  "psitweaks_qol.gui.string_constant_input.empty": "Empty string",
+  "psitweaks_qol.gui.string_constant_input.hint": "Shift+Enter newline / Enter closes",
+  "psitweaks_qol.gui.string_constant_input.read_only": "Read only"
+}

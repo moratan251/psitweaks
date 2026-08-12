@@ -238,22 +238,6 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             case "ja_jp" -> "Contextual Value List";
             default -> "Contextual Value List";
         });
-        add("psitweaks.gui.spell_piece_mode", switch (locale) {
-            case "ja_jp" -> "モード: %s";
-            default -> "Mode: %s";
-        });
-        add("psitweaks.gui.spell_piece_mode.title", switch (locale) {
-            case "ja_jp" -> "モード選択";
-            default -> "Mode Select";
-        });
-        add("gui.psitweaks.spell_programmer.bookmarks.show", switch (locale) {
-            case "ja_jp" -> "ブックマーク (Ctrl + クリック) したピースのみ表示";
-            default -> "Show only spell pieces bookmarked with Ctrl + click";
-        });
-        add("gui.psitweaks.spell_programmer.bookmarks.show_all", switch (locale) {
-            case "ja_jp" -> "すべてのピースを表示";
-            default -> "Show all spell pieces";
-        });
         add("screen.psitweaks.configuration.title", switch (locale) {
             case "ja_jp" -> "Psitweaks コンフィグ";
             default -> "Psitweaks Configuration";
@@ -269,30 +253,6 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_changes.1", switch (locale) {
             case "ja_jp" -> "$(p)スペルプログラム画面では, Shiftを押しながらグリッドを左ドラッグすると, 複数のスペルピースを範囲選択できます. 選択されたスペルピースは青くハイライトされ, コピーされる範囲は青い枠で示されます.$(p)Ctrlを押しながらスペルピースを左クリックすると, そのピースを選択に追加したり, 選択から外したりできます. 複数選択中は Ctrl+C でコピー, Ctrl+X で切り取り, Ctrl+V で貼り付けを行えます. 貼り付けは, Psiで現在選択されているセルをコピー範囲の左上として行われます.";
             default -> "In the Spell Programmer screen, hold Shift and left-drag across the grid to select multiple spell pieces. Selected spell pieces are highlighted in blue, and the copied range is shown with a blue outline.$(p)Hold Ctrl and left-click a spell piece to add it to or remove it from the selection. While multiple pieces are selected, use Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste. Pasting uses the cell currently selected in Psi as the upper-left corner of the copied range.";
-        });
-        add("psitweaks.gui.string_constant_input.empty", switch (locale) {
-            case "ja_jp" -> "空文字列";
-            default -> "Empty string";
-        });
-        add("psitweaks.gui.string_constant_input.hint", switch (locale) {
-            case "ja_jp" -> "Shift+Enter改行 / Enter閉";
-            default -> "Shift+Enter newline / Enter closes";
-        });
-        add("psitweaks.gui.string_constant_input.read_only", switch (locale) {
-            case "ja_jp" -> "閲覧のみ";
-            default -> "Read only";
-        });
-        add("psitweaks.gui.string_constant_input.button.copy_all", switch (locale) {
-            case "ja_jp" -> "全コピー";
-            default -> "Copy All";
-        });
-        add("psitweaks.gui.string_constant_input.button.clear_all", switch (locale) {
-            case "ja_jp" -> "全削除";
-            default -> "Clear";
-        });
-        add("psitweaks.gui.string_constant_input.button.replace_all", switch (locale) {
-            case "ja_jp" -> "貼付";
-            default -> "Paste";
         });
         add("psitweaks.spellparam.string", switch (locale) {
             case "ja_jp" -> "文字列";

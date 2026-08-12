@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.util;
 
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.regex.Pattern;
 
 public final class WildcardStringMatcher {

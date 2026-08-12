@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.util;
 
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.List;
 import java.util.StringJoiner;
 

@@ -5,7 +5,7 @@ import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamBlockValue;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.Map.Entry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.Property;

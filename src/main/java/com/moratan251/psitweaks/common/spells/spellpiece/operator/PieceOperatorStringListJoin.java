@@ -3,7 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import java.util.StringJoiner;
 import net.minecraft.network.chat.Component;

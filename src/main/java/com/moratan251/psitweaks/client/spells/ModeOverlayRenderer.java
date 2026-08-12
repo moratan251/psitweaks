@@ -3,7 +3,7 @@ package com.moratan251.psitweaks.client.spells;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moratan251.psitweaks.Psitweaks;
-import com.moratan251.psitweaks.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;

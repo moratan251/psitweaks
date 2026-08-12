@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.spells.wrapper;
 
 import com.moratan251.psitweaks.api.PsitweaksListLike;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;

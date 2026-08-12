@@ -103,6 +103,12 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     def isRunDataInvocation = gradle.startParameter.taskNames.any { it.toLowerCase().contains("rundata") }
     implementation fg.deobf("curse.maven:psi-241665:6472034")
+    implementation "com.moratan251:psitweaks-qol"
+    jarJar("com.moratan251:psitweaks-qol:[1.20.1-1.0.0,)") {
+        // Composite-build project dependencies pull in their whole transitive tree
+        // (including Minecraft/Forge libraries); only the qol jar itself may be bundled.
+        transitive = false
+    }
     implementation fg.deobf("curse.maven:patchouli-306770:4892162")
     implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("curse.maven:jei-238222:6600311")
@@ -201,6 +207,34 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
+// Enable the JarJar task so the psitweaks_qol nested jar is bundled into the
+// distribution jar, and reobfuscate the combined jar.
+jarJar.enable()
+
+// ForgeGradle 6 reobfuscates only the outer jar; JarJar nested jars are bundled
+// as-is, which would ship psitweaks_qol in dev (Mojang) mappings and crash on the
+// SRG production runtime. Reobfuscate the qol jar with its own reobfJar task and
+// swap it into the combined jar. (reobfJar replaces the qol jar in place; the qol
+// jar task is invalidated by that change and regenerates the dev jar on the next
+// build, so the composite dev classpath is unaffected.)
+def qolModVersion = null
+file('psitweaks-qol/gradle.properties').withInputStream {
+    def qolProps = new Properties()
+    qolProps.load(it)
+    qolModVersion = qolProps.getProperty('mod_version')
+}
+def qolNestedJarPath = "META-INF/jarjar/psitweaks_qol-${qolModVersion}.jar"
+
+tasks.named('jarJar').configure {
+    dependsOn gradle.includedBuild('psitweaks-qol').task(':reobfJar')
+    doLast {
+        ant.zip(destfile: archiveFile.get().asFile, update: true) {
+            zipfileset(file: file("psitweaks-qol/build/libs/psitweaks_qol-${qolModVersion}.jar"), fullpath: qolNestedJarPath)
+        }
+    }
+    finalizedBy 'reobfJarJar'
+}
+
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 // When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
@@ -248,7 +282,9 @@ tasks.named('jar', Jar).configure {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact jar
+            // Publish the combined JarJar jar (with the psitweaks_qol nested jar),
+            // not the plain jar which no longer contains the QoL features.
+            artifact tasks.named('jarJar')
         }
     }
     repositories {

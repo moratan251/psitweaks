@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import com.moratan251.psitweaks.api.PsitweaksValueKind;
+import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamStringListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;

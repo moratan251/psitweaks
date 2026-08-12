@@ -1,9 +1,9 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.moratan251.psitweaks.api.PsitweaksModeOption;
-import com.moratan251.psitweaks.api.PsitweaksModeConfigurable;
-import com.moratan251.psitweaks.api.PsitweaksModeOptions;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;

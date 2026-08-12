@@ -1,0 +1,10 @@
+{
+  "psitweaks_qol.gui.spell_piece_mode": "Режим: %s",
+  "psitweaks_qol.gui.spell_piece_mode.title": "Выбор режима",
+  "psitweaks_qol.gui.string_constant_input.button.clear_all": "Очистить",
+  "psitweaks_qol.gui.string_constant_input.button.copy_all": "Копировать всё",
+  "psitweaks_qol.gui.string_constant_input.button.replace_all": "Вставить",
+  "psitweaks_qol.gui.string_constant_input.empty": "Пустая строка",
+  "psitweaks_qol.gui.string_constant_input.hint": "Shift+Enter — новая строка / Enter — закрыть",
+  "psitweaks_qol.gui.string_constant_input.read_only": "Только для чтения"
+}

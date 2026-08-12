@@ -13,12 +13,5 @@
     "ItemCADPlainMemoryMixin",
     "isInRadiusMixin",
     "rangeLimitParamMixin"
-  ],
-  "client": [
-    "client.GuiButtonSpellPieceBookmarkMixin",
-    "client.GuiProgrammerOverlayInputMixin",
-    "client.PiecePanelWidgetBookmarkMixin",
-    "client.PsionicUtilitiesProgrammerMixin",
-    "client.PiecePanelWidgetEnglishSearchMixin"
   ]
 }

@@ -3,7 +3,7 @@ package com.moratan251.psitweaks.common.spells.memory;
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.value.PlainMemoryValue;
 import com.moratan251.psitweaks.api.value.PlainValueType;
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;

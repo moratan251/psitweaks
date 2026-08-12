@@ -1,6 +1,9 @@
 package com.moratan251.psitweaks.api;
 
 import com.mojang.logging.LogUtils;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

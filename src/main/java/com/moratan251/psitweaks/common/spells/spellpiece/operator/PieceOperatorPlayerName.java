@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import com.moratan251.psitweaks.common.spells.util.StringSpellHelper;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
