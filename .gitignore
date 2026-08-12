@@ -31,3 +31,4 @@ docs
 src/generated/resources/.cache/*
 .cache
 bin
+tmp
