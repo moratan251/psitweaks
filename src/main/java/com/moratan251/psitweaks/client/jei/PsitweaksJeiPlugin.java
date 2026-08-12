@@ -32,7 +32,10 @@ public class PsitweaksJeiPlugin implements IModPlugin {
         if (MekanismCompat.isMekanismLoaded()) {
             PsitweaksMekanismJeiPlugin.registerCategories(registration);
         }
-        registration.addRecipeCategories(new MaterialMutationJeiCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(
+                new MaterialMutationJeiCategory(registration.getJeiHelpers().getGuiHelper()),
+                new GravitonFactorJeiCategory(registration.getJeiHelpers().getGuiHelper())
+        );
     }
 
     @Override
@@ -41,6 +44,13 @@ public class PsitweaksJeiPlugin implements IModPlugin {
             PsitweaksMekanismJeiPlugin.registerRecipes(registration);
         }
         registration.addRecipes(MaterialMutationJeiCategory.RECIPE_TYPE, getMaterialMutationJeiRecipes());
+        registration.addRecipes(
+                GravitonFactorJeiCategory.RECIPE_TYPE,
+                List.of(new GravitonFactorJeiRecipe(
+                        new ItemStack(PsitweaksItems.QUANTUM_FACTOR.get()),
+                        new ItemStack(PsitweaksItems.GRAVITON_FACTOR.get())
+                ))
+        );
     }
 
     @Override

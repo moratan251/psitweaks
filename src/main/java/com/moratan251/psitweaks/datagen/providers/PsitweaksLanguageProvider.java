@@ -1073,6 +1073,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "物質変成";
             default -> "Material Mutation";
         });
+        root.addProperty("jei.psitweaks.graviton_factor_acquisition", switch (locale) {
+            case "ja_jp" -> "グラヴィトン因子の入手方法";
+            default -> "Obtaining Graviton Factor";
+        });
+        root.addProperty("jei.psitweaks.graviton_factor_acquisition.fall", switch (locale) {
+            case "ja_jp" -> "アイテム状態で380ブロック落下";
+            default -> "Fall 380 blocks as an item";
+        });
         root.addProperty("jei.psitweaks.program_research.energy", switch (locale) {
             case "ja_jp" -> "消費電力: %s FE/t";
             default -> "Energy usage: %s FE/t";

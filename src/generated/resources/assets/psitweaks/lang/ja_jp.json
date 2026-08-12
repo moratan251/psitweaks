@@ -246,6 +246,8 @@
   "item.psitweaks.unfathomable_component": "不可思議な機構",
   "item.psitweaks.unrefined_flashmetal": "未精製フラッシュメタル",
   "item.psitweaks.wave_fragment": "波動の断片",
+  "jei.psitweaks.graviton_factor_acquisition": "グラヴィトン因子の入手方法",
+  "jei.psitweaks.graviton_factor_acquisition.fall": "アイテム状態で380ブロック落下",
   "jei.psitweaks.material_mutation": "物質変成",
   "jei.psitweaks.program_research": "プログラム研究",
   "jei.psitweaks.program_research.energy": "消費電力: %s FE/t",
