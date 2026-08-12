@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.moratan251.psitweaksqol.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [
+    "client.PsionicUtilitiesProgrammerMixin"
+  ],
+  "injectors": { "defaultRequire": 1 },
+  "overwrites": { "requireAnnotations": true }
+}

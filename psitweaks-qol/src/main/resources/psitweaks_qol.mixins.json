@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.moratan251.psitweaksqol.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [
+    "client.GuiButtonSpellPieceBookmarkMixin",
+    "client.GuiProgrammerOverlayInputMixin",
+    "client.PiecePanelWidgetBookmarkMixin",
+    "client.PiecePanelWidgetEnglishSearchMixin"
+  ],
+  "injectors": { "defaultRequire": 1 },
+  "overwrites": { "requireAnnotations": true }
+}
