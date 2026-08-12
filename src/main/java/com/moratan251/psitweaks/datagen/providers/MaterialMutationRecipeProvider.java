@@ -24,7 +24,7 @@ public class MaterialMutationRecipeProvider implements DataProvider {
     private final PackOutput.PathProvider pathProvider;
 
     public MaterialMutationRecipeProvider(PackOutput output) {
-        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipes/material_mutation");
+        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "material_mutation");
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 public final class MaterialMutationRecipeHandler {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new GsonBuilder().create();
-    private static final String TRICK_RECIPE_DIRECTORY = "recipes/material_mutation/trick";
+    private static final String TRICK_RECIPE_DIRECTORY = "material_mutation/trick";
     private static final TrickRecipeReloadListener TRICK_RELOAD_LISTENER = new TrickRecipeReloadListener();
 
     private static volatile Map<Block, ItemStack> trickRecipesByInputBlock = Map.of();

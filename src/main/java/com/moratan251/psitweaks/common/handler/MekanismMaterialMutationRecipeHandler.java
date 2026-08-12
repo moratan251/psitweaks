@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 public final class MekanismMaterialMutationRecipeHandler {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new GsonBuilder().create();
-    private static final String MACHINE_RECIPE_DIRECTORY = "recipes/material_mutation/machine";
+    private static final String MACHINE_RECIPE_DIRECTORY = "material_mutation/machine";
     private static final MachineRecipeReloadListener RELOAD_LISTENER = new MachineRecipeReloadListener();
     private static volatile Map<Item, MachineRecipe> recipesByInputItem = Map.of();
 
