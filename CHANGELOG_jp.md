@@ -1,5 +1,15 @@
 ## Changelog
 
+#### v0.10.7
+
+- (1.21.1) Potions Master との競合回避のため material_mutator のレシピ配置ディレクトリを変更
+
+
+- Psitweaks: QoL へのクライアント専用機能分離
+  + これに伴いピースのブックマークが一度リセットされます
+  + Psitweaks: QoLは Psi: Tweaks And Additions に含まれているためユーザー側で別途導入する必要はありません。
+
+
 #### v0.10.6
 
 - グラヴストリンガー及びトンネラーの攻撃力をコンフィグで調整可能に

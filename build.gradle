@@ -226,6 +226,9 @@ file('psitweaks-qol/gradle.properties').withInputStream {
 def qolNestedJarPath = "META-INF/jarjar/psitweaks_qol-${qolModVersion}.jar"
 
 tasks.named('jarJar').configure {
+    // The QoL-containing jar is the primary distributable, so do not append
+    // ForgeGradle's default "all" classifier.
+    archiveClassifier.set('')
     dependsOn gradle.includedBuild('psitweaks-qol').task(':reobfJar')
     doLast {
         ant.zip(destfile: archiveFile.get().asFile, update: true) {
@@ -256,6 +259,9 @@ tasks.named('processResources', ProcessResources).configure {
 
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
+    // Keep the non-jarJar artifact available without colliding with the
+    // classifier-free distributable produced by jarJar.
+    archiveClassifier.set('slim')
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,

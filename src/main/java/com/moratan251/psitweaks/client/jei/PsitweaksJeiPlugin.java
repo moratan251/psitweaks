@@ -35,7 +35,10 @@ public class PsitweaksJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new MaterialMutationJeiCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(
+                new MaterialMutationJeiCategory(registration.getJeiHelpers().getGuiHelper()),
+                new GravitonFactorJeiCategory(registration.getJeiHelpers().getGuiHelper())
+        );
         if (MekanismCompat.isMekanismLoaded()) {
             MekanismJeiIntegration.registerCategories(registration);
         }
@@ -45,6 +48,13 @@ public class PsitweaksJeiPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         Level level = Minecraft.getInstance().level;
         registration.addRecipes(MaterialMutationJeiCategory.RECIPE_TYPE, getMaterialMutationJeiRecipes());
+        registration.addRecipes(
+                GravitonFactorJeiCategory.RECIPE_TYPE,
+                List.of(new GravitonFactorJeiRecipe(
+                        new ItemStack(PsitweaksItems.QUANTUM_FACTOR.get()),
+                        new ItemStack(PsitweaksItems.GRAVITON_FACTOR.get())
+                ))
+        );
         if (MekanismCompat.isMekanismLoaded()) {
             MekanismJeiIntegration.registerRecipes(registration, level);
         }
