@@ -63,6 +63,11 @@ public class GravitonFactorJeiCategory implements IRecipeCategory<GravitonFactor
     }
 
     @Override
+    public boolean needsRecipeBorder() {
+        return false;
+    }
+
+    @Override
     public IDrawable getIcon() {
         return icon;
     }

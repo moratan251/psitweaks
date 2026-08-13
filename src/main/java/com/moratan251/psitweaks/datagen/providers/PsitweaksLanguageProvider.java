@@ -283,6 +283,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "オフセット";
             default -> "Offset";
         });
+        root.addProperty("psitweaks.spellparam.max", switch (locale) {
+            case "ja_jp" -> "最大";
+            default -> "Max";
+        });
         root.addProperty("psitweaks.spellparam.label", switch (locale) {
             case "ja_jp" -> "ラベル";
             default -> "Label";
@@ -1074,8 +1078,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Material Mutation";
         });
         root.addProperty("jei.psitweaks.graviton_factor_acquisition", switch (locale) {
-            case "ja_jp" -> "グラヴィトン因子の入手方法";
-            default -> "Obtaining Graviton Factor";
+            case "ja_jp" -> "落下変換";
+            default -> "Fall Conversion";
         });
         root.addProperty("jei.psitweaks.graviton_factor_acquisition.fall", switch (locale) {
             case "ja_jp" -> "アイテム状態で380ブロック落下";
@@ -1281,6 +1285,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "safety", "Safety", "If the caster's current total Psi falls below the spell's actual Psi cost, the spell will fail before any Psi is consumed.", "安全装置", "術者の現在Psi量の合計が術式の実際のPsi消費量を下回る場合、Psiを消費する前に術式を不発にします。");
         addSpellPiece(root, "trick_material_mutation", "Trick: Material Mutation", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.", "作動式: 物質変成", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
         addSpellPiece(root, "trick_physical_propulsion", "Trick: Physical Propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "作動式: 物理推進", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与える");
+        addSpellPiece(root, "trick_pull_item", "Trick: Pull Item", "Moves an item from the block at the input position through the input face into the caster's inventory.", "作動式: アイテム引き出し", "入力位置にあるブロックに対して、入力方向からアイテムを術者のインベントリに移動させます");
+        addSpellPiece(root, "trick_send_item", "Trick: Send Item", "Moves the specified item from the caster's inventory into the block at the input position through the input face.", "作動式: アイテム転送", "入力位置にあるブロックに対して、入力方向から指定アイテムを術者のインベントリから移動させます");
         addSpellPiece(root, "operator_tan", "Operator: Tangent", "tan(A)", "演算子: タンジェント", "tan(A)");
         addSpellPiece(root, "operator_atan", "Operator: Arc Tangent", "atan(A)", "演算子: アークタンジェント", "atan(A)");
         addSpellPiece(root, "operator_sinh", "Operator: Hyperbolic Sine", "sinh(A)", "演算子: ハイパボリックサイン", "sinh(A)");

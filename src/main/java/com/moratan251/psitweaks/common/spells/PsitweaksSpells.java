@@ -110,6 +110,10 @@ public final class PsitweaksSpells {
             registerPiece("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMaterialMutation>> TRICK_MATERIAL_MUTATION =
             registerPiece("trick_material_mutation", PieceTrickMaterialMutation.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickPullItem>> TRICK_PULL_ITEM =
+            registerPiece("trick_pull_item", PieceTrickPullItem.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickSendItem>> TRICK_SEND_ITEM =
+            registerPiece("trick_send_item", PieceTrickSendItem.class);
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerPiece("trick_physical_propulsion", PieceTrickPhysicalPropulsion.class);
@@ -430,6 +434,10 @@ public final class PsitweaksSpells {
             registerGroup("trick_guillotine", PieceTrickGuillotine.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MATERIAL_MUTATION =
             registerGroup("trick_material_mutation", PieceTrickMaterialMutation.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> PULL_ITEM =
+            registerGroup("trick_pull_item", PieceTrickPullItem.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> SEND_ITEM =
+            registerGroup("trick_send_item", PieceTrickSendItem.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MASS_BLOCK_BREAK =
             registerGroup("trick_mass_block_break", PieceTrickMassBlockBreak.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_ALIVE_GROUP =

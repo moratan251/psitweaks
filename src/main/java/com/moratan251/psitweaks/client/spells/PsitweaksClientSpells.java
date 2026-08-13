@@ -103,6 +103,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_guillotine");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
+    public static final DeferredHolder<Material, Material> TRICK_PULL_ITEM =
+            registerPieceMaterial("trick_pull_item");
+    public static final DeferredHolder<Material, Material> TRICK_SEND_ITEM =
+            registerPieceMaterial("trick_send_item");
     public static final DeferredHolder<Material, Material> TRICK_MASS_BLOCK_BREAK =
             registerPieceMaterial("trick_mass_block_break");
     static {
