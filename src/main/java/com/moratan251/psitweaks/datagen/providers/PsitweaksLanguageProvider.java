@@ -103,6 +103,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "装填済み術式弾: %s/%s";
             default -> "Loaded spell bullets: %s/%s";
         });
+        root.addProperty("tooltip.psitweaks.cad_battery_reactive.bonus", switch (locale) {
+            case "ja_jp" -> "CAD所持時: Psi再生速度 +10";
+            default -> "While your CAD: +10 Psi Regen";
+        });
+        root.addProperty("tooltip.psitweaks.cad_battery_quantum.bonus", switch (locale) {
+            case "ja_jp" -> "CAD所持時: 最大Psi +1500";
+            default -> "While your CAD: +1500 Max Psi";
+        });
         root.addProperty("tooltip.psitweaks.auto_caster_custom_tick.interval", switch (locale) {
             case "ja_jp" -> "詠唱間隔: %s tick";
             default -> "Cast interval: %s ticks";

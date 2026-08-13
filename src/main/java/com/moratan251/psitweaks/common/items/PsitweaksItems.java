@@ -29,6 +29,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.psi.common.item.component.ItemCADAssembly;
+import vazkii.psi.common.item.component.ItemCADBattery;
 import vazkii.psi.common.item.component.ItemCADCore;
 
 public final class PsitweaksItems {
@@ -549,6 +550,14 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemCADCore> CAD_CORE_ULTRACLOCKED = ITEMS.register(
             "cad_core_ultraclocked",
             () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemCADBattery> CAD_BATTERY_REACTIVE = ITEMS.register(
+            "cad_battery_reactive",
+            () -> new ItemCADBattery(new Item.Properties().rarity(Rarity.RARE))
+    );
+    public static final DeferredItem<ItemCADBattery> CAD_BATTERY_QUANTUM = ITEMS.register(
+            "cad_battery_quantum",
+            () -> new ItemCADBattery(new Item.Properties().rarity(Rarity.RARE))
     );
     public static final DeferredItem<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.registerSimpleItem(
             "incomplete_heavy_psimetal_assembly",

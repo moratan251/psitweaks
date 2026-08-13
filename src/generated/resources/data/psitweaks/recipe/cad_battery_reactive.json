@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    "B": {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    "C": {
+      "item": "psi:cad_battery_ultradense"
+    },
+    "D": {
+      "item": "psitweaks:nano_reactor"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "DCD",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:cad_battery_reactive"
+  }
+}

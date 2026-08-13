@@ -122,6 +122,8 @@
   "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "Heavy Psimetal CAD Assembly α",
   "item.psitweaks.cad_assembly_heavy_psimetal_beta": "Heavy Psimetal CAD Assembly β",
   "item.psitweaks.cad_assembly_psycheonic_metal": "Psycheonic Metal CAD Assembly",
+  "item.psitweaks.cad_battery_quantum": "Quantum CAD Battery",
+  "item.psitweaks.cad_battery_reactive": "Reactive CAD Battery",
   "item.psitweaks.cad_core_absorptive": "Absorptive CAD Core",
   "item.psitweaks.cad_core_ultraclocked": "Ultraclocked CAD Core",
   "item.psitweaks.chaotic_factor": "Chaotic Factor",
@@ -984,5 +986,7 @@
   "screen.psitweaks.auto_caster_custom_tick.invalid": "Enter a value between %s and %s",
   "screen.psitweaks.auto_caster_custom_tick.range": "Range: %s - %s",
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "Cast interval: %s ticks",
+  "tooltip.psitweaks.cad_battery_quantum.bonus": "While your CAD: +1500 Max Psi",
+  "tooltip.psitweaks.cad_battery_reactive.bonus": "While your CAD: +10 Psi Regen",
   "tooltip.psitweaks.spell_magazine.bullets": "Loaded spell bullets: %s/%s"
 }

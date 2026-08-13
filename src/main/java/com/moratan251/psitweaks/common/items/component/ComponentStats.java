@@ -22,6 +22,11 @@ public final class ComponentStats {
         addCoreStats(PsitweaksItems.CAD_CORE_ULTRACLOCKED.get(), 9, 54);
     }
 
+    public static void registerBatteryStats() {
+        ItemCADComponent.addStatToStack(PsitweaksItems.CAD_BATTERY_REACTIVE.get(), EnumCADStat.OVERFLOW, 1000);
+        ItemCADComponent.addStatToStack(PsitweaksItems.CAD_BATTERY_QUANTUM.get(), EnumCADStat.OVERFLOW, 1500);
+    }
+
     private static void addAssemblyStats(ItemCADComponent assembly, int efficiency, int potency) {
         ItemCADComponent.addStatToStack(assembly, EnumCADStat.EFFICIENCY, efficiency);
         ItemCADComponent.addStatToStack(assembly, EnumCADStat.POTENCY, potency);

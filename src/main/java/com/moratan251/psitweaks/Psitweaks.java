@@ -38,6 +38,7 @@ import com.moratan251.psitweaks.common.handler.SafetySpellCastHandler;
 import com.moratan251.psitweaks.common.handler.SpellPsiRefundCaptureHandler;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
+import com.moratan251.psitweaks.common.items.component.CadBatteryAttributeHandler;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.items.armor.PsitweaksArmorMaterials;
@@ -174,6 +175,8 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityJoinLevel);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityTick);
+        NeoForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onItemTooltip);
 
         // TODO(port): Re-enable client/server proxy handlers after proxy classes are ported.
         // proxyPsitweaks = dist.isClient() ? new ClientProxyPsitweaks() : new ServerProxyPsitweaks();
@@ -185,6 +188,7 @@ public class Psitweaks {
 
         event.enqueueWork(ComponentStats::registerAssemblyStats);
         event.enqueueWork(ComponentStats::registerCoreStats);
+        event.enqueueWork(ComponentStats::registerBatteryStats);
         event.enqueueWork(PsitweaksItems::registerCurioItems);
         MekanismCompat.commonSetup(event);
 

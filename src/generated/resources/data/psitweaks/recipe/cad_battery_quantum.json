@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psitweaks:quantized_plate"
+    },
+    "B": {
+      "item": "psitweaks:hypostasis_control_circuit"
+    },
+    "C": {
+      "item": "psi:cad_battery_ultradense"
+    },
+    "D": {
+      "item": "psitweaks:string_a"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "DCD",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:cad_battery_quantum"
+  }
+}

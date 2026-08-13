@@ -198,6 +198,24 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'C', ingredientItem(ModItems.cadCoreHyperClocked.get())
                 ),
                 PsitweaksItems.CAD_CORE_ULTRACLOCKED, 1));
+        recipe(recipes, "cad_battery_reactive", shaped("equipment",
+                List.of("ABA", "DCD", "ABA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.HEAVY_PSIMETAL),
+                        'B', ingredientItem(PsitweaksItems.ECHO_CONTROL_CIRCUIT),
+                        'C', ingredientItem(ModItems.cadBatteryUltradense.get()),
+                        'D', ingredientItem(PsitweaksItems.NANO_REACTOR)
+                ),
+                PsitweaksItems.CAD_BATTERY_REACTIVE, 1));
+        recipe(recipes, "cad_battery_quantum", shaped("equipment",
+                List.of("ABA", "DCD", "ABA"),
+                Map.of(
+                        'A', ingredientItem(PsitweaksItems.QUANTIZED_PLATE),
+                        'B', ingredientItem(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT),
+                        'C', ingredientItem(ModItems.cadBatteryUltradense.get()),
+                        'D', ingredientItem(PsitweaksItems.STRING_A)
+                ),
+                PsitweaksItems.CAD_BATTERY_QUANTUM, 1));
         recipe(recipes, "unrefined_flashmetal", shaped(
                 List.of("BBB", "AAA", "BBB"),
                 Map.of(

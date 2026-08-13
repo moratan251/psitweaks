@@ -122,6 +122,8 @@
   "item.psitweaks.cad_assembly_heavy_psimetal_alpha": "ヘビーサイメタルのCAD素体 α型",
   "item.psitweaks.cad_assembly_heavy_psimetal_beta": "ヘビーサイメタルのCAD素体 β型",
   "item.psitweaks.cad_assembly_psycheonic_metal": "プシオニックメタルのCAD素体",
+  "item.psitweaks.cad_battery_quantum": "量子CADバッテリー",
+  "item.psitweaks.cad_battery_reactive": "反応式CADバッテリー",
   "item.psitweaks.cad_core_absorptive": "吸収性CADコア",
   "item.psitweaks.cad_core_ultraclocked": "ウルトラクロックCADコア",
   "item.psitweaks.chaotic_factor": "カオティック因子",
@@ -1026,5 +1028,7 @@
   "screen.psitweaks.auto_caster_custom_tick.invalid": "%s から %s の間で入力してください",
   "screen.psitweaks.auto_caster_custom_tick.range": "設定可能範囲: %s - %s",
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔: %s tick",
+  "tooltip.psitweaks.cad_battery_quantum.bonus": "CAD所持時: 最大Psi +1500",
+  "tooltip.psitweaks.cad_battery_reactive.bonus": "CAD所持時: Psi再生速度 +10",
   "tooltip.psitweaks.spell_magazine.bullets": "装填済み術式弾: %s/%s"
 }
