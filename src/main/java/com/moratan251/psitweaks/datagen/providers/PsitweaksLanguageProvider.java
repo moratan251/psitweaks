@@ -1335,7 +1335,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.program_researcher", "Program Research Table");
         add("jei.psitweaks.program_research", "Program Research");
         add("jei.psitweaks.material_mutation", "Material Mutation");
-        add("jei.psitweaks.graviton_factor_acquisition", "Obtaining Graviton Factor");
+        add("jei.psitweaks.graviton_factor_acquisition", "Fall Conversion");
         add("jei.psitweaks.graviton_factor_acquisition.fall", "Fall 380 blocks as an item");
         add("jei.psitweaks.program_research.energy", "Energy usage: %s FE/t");
         add("jei.psitweaks.program_research.time", "Time: %s min %s sec");
@@ -1879,7 +1879,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("container.psitweaks.program_researcher", "プログラム研究台");
         add("jei.psitweaks.program_research", "プログラム研究");
         add("jei.psitweaks.material_mutation", "物質変成");
-        add("jei.psitweaks.graviton_factor_acquisition", "グラヴィトン因子の入手方法");
+        add("jei.psitweaks.graviton_factor_acquisition", "落下変換");
         add("jei.psitweaks.graviton_factor_acquisition.fall", "アイテム状態で380ブロック落下");
         add("jei.psitweaks.program_research.energy", "消費電力: %s FE/t");
         add("jei.psitweaks.program_research.time", "研究時間: %s分 %s秒");
