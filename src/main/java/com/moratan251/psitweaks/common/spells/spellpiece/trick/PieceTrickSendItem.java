@@ -17,7 +17,7 @@ public class PieceTrickSendItem extends PieceTrickItemTransferBase {
     }
 
     @Override
-    protected void transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter, int limit)
+    protected boolean transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter, int limit)
             throws SpellRuntimeException {
         Inventory inventory = context.caster.getInventory();
         for (int slot = 0; slot < inventory.items.size(); slot++) {
@@ -31,8 +31,9 @@ public class PieceTrickSendItem extends PieceTrickItemTransferBase {
             int moved = amount - remainder.getCount();
             if (moved > 0) {
                 stack.shrink(moved);
-                return;
+                return true;
             }
         }
+        return false;
     }
 }

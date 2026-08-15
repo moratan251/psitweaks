@@ -171,6 +171,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Item";
             default -> "Item";
         });
+        root.addProperty("psitweaks.datatype.item_strict", switch (locale) {
+            case "ja_jp" -> "Item (Strict)";
+            default -> "Item (Strict)";
+        });
         root.addProperty("psitweaks.datatype.block", switch (locale) {
             case "ja_jp" -> "Block";
             default -> "Block";
@@ -302,6 +306,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellerror.no_jump_anchor", switch (locale) {
             case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
             default -> "No matching Jump Anchor found ahead";
+        });
+        root.addProperty("psitweaks.spellerror.nullitem", switch (locale) {
+            case "ja_jp" -> "エラー: 魔法の対象となるアイテムは存在しません。";
+            default -> "Error: The target item of the spell does not exist.";
+        });
+        root.addProperty("psitweaks.spellerror.accessdenyed", switch (locale) {
+            case "ja_jp" -> "エラー: 保護されたブロックにアクセスを試みました。";
+            default -> "Error: Attempted to access a protected block.";
         });
         root.addProperty("psitweaks.spellerror.safety_insufficient_psi", switch (locale) {
             case "ja_jp" -> "安全装置が作動しました: Psiが不足しています";
@@ -1440,6 +1452,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
         addBookPage(root, "trick_cocytus", "Permanently freezes the mind of the target mob. Rather than merely dealing damage, this very powerful control trick prevents action.", "対象モブの精神を永久に凍結させます. 単なるダメージではなく行動を封じる, 非常に強力な制御術式です.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです.");
+        addBookPage(root, "trick_pull_item", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast; if the caster's inventory cannot hold it all, only what fits is moved. In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. The optional Max input caps the number of items moved. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. 任意入力の最大で移動数に上限を設けられます. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
+        addBookPage(root, "trick_send_item", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved. The filter modes and the optional Max input behave like Trick: Pull Item. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます. フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様です. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
         addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration. It is a powerful offensive trick.", "超音波振動による高威力の熱線を放ちます. 攻撃用の強力な術式です.");
         addBookPage(root, "trick_meteor_line", "Creates a beam from the specified position in the direction of the Ray vector, dealing special and lethally massive damage to living beings along its path.", "指定位置からRayベクトル方向へ光線を生み出し、経路上の生物に特殊かつ致死的な大ダメージを与えます。");

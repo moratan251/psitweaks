@@ -40,6 +40,12 @@ public final class PsitweaksModeOptions {
     public static final PsitweaksModeOption BLOCK = registerBuiltin(
             "block", "B", "psitweaks.datatype.block", "psitweaks.datatype.block_list", 50,
             PsitweaksValueKind.CONTEXTUAL);
+    // 比較バリアントのモード。リストアダプタは登録しない(Operator のモードサイクルに混入させないため)
+    public static final PsitweaksModeOption ITEM_STRICT = register(new PsitweaksModeOption(
+            ResourceLocation.fromNamespaceAndPath(BUILTIN_NAMESPACE, "item_strict"), "item_strict", "I*",
+            "psitweaks.datatype.item_strict", "psitweaks.datatype.item_list", 45,
+            ResourceLocation.fromNamespaceAndPath(BUILTIN_NAMESPACE, "mode/item_s"),
+            PsitweaksValueKind.CONTEXTUAL));
 
     private PsitweaksModeOptions() {
     }

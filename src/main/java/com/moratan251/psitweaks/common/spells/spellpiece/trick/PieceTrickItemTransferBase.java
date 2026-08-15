@@ -21,13 +21,20 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
@@ -47,7 +54,10 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConfigurableSpellPiece {
 
     private static final String TAG_MODE = "psitweaksMode";
-    private static final List<PsitweaksModeOption> MODES = List.of(PsitweaksModeOptions.STRING, PsitweaksModeOptions.ITEM);
+    private static final String ERROR_NULL_ITEM = "psitweaks.spellerror.nullitem";
+    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.accessdenyed";
+    private static final List<PsitweaksModeOption> MODES = List.of(PsitweaksModeOptions.STRING,
+            PsitweaksModeOptions.ITEM, PsitweaksModeOptions.ITEM_STRICT);
 
     private static final int POTENCY = 50;
     private static final int COST = 100;
@@ -112,7 +122,12 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
     }
 
     private boolean isItemMode() {
-        return getModeOption().id().equals(PsitweaksModeOptions.ITEM.id());
+        ResourceLocation id = getModeOption().id();
+        return id.equals(PsitweaksModeOptions.ITEM.id()) || id.equals(PsitweaksModeOptions.ITEM_STRICT.id());
+    }
+
+    private boolean isItemStrictMode() {
+        return getModeOption().id().equals(PsitweaksModeOptions.ITEM_STRICT.id());
     }
 
     private void rebuildParams(Map<String, SpellParam.Side> savedSides) {
@@ -176,27 +191,33 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
             return null;
         }
 
-        // 最大は正の整数のみ受け付ける。不正な値は空振り
+        // 最大は正の整数のみ受け付ける
         int limit = resolveLimit(context);
         if (limit == 0) {
-            return null;
+            throw new SpellRuntimeException(ERROR_NULL_ITEM);
         }
 
         BlockPos pos = positionVal.toBlockPos();
         if (!level.isLoaded(pos)) {
-            return null;
+            throw new SpellRuntimeException(ERROR_NULL_ITEM);
         }
         if (!level.mayInteract(context.caster, pos)) {
-            return null;
+            throw new SpellRuntimeException(ERROR_ACCESS_DENIED);
         }
 
         Direction facing = Direction.getNearest(directionVal.x, directionVal.y, directionVal.z);
+        // FTB Chunks などの保護Modがチェスト操作を捕捉できるよう、右クリック相当のイベントで問い合わせる
+        if (isProtectedFromInteraction(context.caster, pos, facing)) {
+            throw new SpellRuntimeException(ERROR_ACCESS_DENIED);
+        }
         IItemHandler handler = getBlockItemHandler(level, pos, facing);
         if (handler == null) {
-            return null;
+            throw new SpellRuntimeException(ERROR_NULL_ITEM);
         }
 
-        transfer(context, handler, buildFilter(context), limit);
+        if (!transfer(context, handler, buildFilter(context), limit)) {
+            throw new SpellRuntimeException(ERROR_NULL_ITEM);
+        }
         return null;
     }
 
@@ -216,11 +237,31 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
         return null;
     }
 
+    /**
+     * Asks protection mods whether the caster may interact with the block's inventory by
+     * posting a right-click equivalent event. Canceled or block-use denied means protected.
+     */
+    private static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false);
+        PlayerInteractEvent.RightClickBlock event = NeoForge.EVENT_BUS.post(
+                new PlayerInteractEvent.RightClickBlock(caster, InteractionHand.MAIN_HAND, pos, hit));
+        return event.isCanceled() || event.getUseBlock() == TriState.FALSE;
+    }
+
     private Predicate<ItemStack> buildFilter(SpellContext context) throws SpellRuntimeException {
         if (isItemMode()) {
             SpellItemValue itemVal = getParamValue(context, item);
-            if (itemVal == null || itemVal.isEmpty()) {
+            if (itemVal == null) {
                 return stack -> true;
+            }
+            // 接続済みだが Item[empty] の場合は対象アイテム不在としてエラー
+            if (itemVal.isEmpty()) {
+                throw new SpellRuntimeException(ERROR_NULL_ITEM);
+            }
+            if (isItemStrictMode()) {
+                // アイテム種 + Data Component(エンチャント・耐久値・カスタム名等)の一致。個数は無視
+                ItemStack target = itemVal.snapshot();
+                return stack -> ItemStack.isSameItemSameComponents(stack, target);
             }
             Item target = itemVal.snapshot().getItem();
             return stack -> stack.getItem() == target;
@@ -256,8 +297,10 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
 
     /**
      * Moves up to one matching stack. {@code limit} is the max count or -1 when unspecified.
+     *
+     * @return true if at least one item was moved
      */
-    protected abstract void transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter,
+    protected abstract boolean transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter,
             int limit) throws SpellRuntimeException;
 
     protected static int transferAmount(ItemStack stack, int limit) {

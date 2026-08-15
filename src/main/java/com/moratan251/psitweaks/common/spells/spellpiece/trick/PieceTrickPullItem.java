@@ -16,7 +16,7 @@ public class PieceTrickPullItem extends PieceTrickItemTransferBase {
     }
 
     @Override
-    protected void transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter, int limit)
+    protected boolean transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter, int limit)
             throws SpellRuntimeException {
         // Inventory.add はクリエイティブでは失敗時にスタックを消去する仕様のため、
         // IItemHandler 経由のシミュレート→コミットで正確に移動量を確定する
@@ -40,7 +40,8 @@ public class PieceTrickPullItem extends PieceTrickItemTransferBase {
 
             ItemStack taken = handler.extractItem(slot, moved, false);
             ItemHandlerHelper.insertItem(playerHandler, taken, false);
-            return;
+            return true;
         }
+        return false;
     }
 }
