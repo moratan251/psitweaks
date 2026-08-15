@@ -121,6 +121,8 @@ public class PsitweaksSpells {
             }
 
             registerSpellPiece("trick_material_mutation", PieceTrickMaterialMutation.class);
+            registerSpellPiece("trick_pull_item", PieceTrickPullItem.class);
+            registerSpellPiece("trick_send_item", PieceTrickSendItem.class);
 
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_guillotine"), PieceTrickGuillotine.class);
             PsiAPI.addPieceToGroup(PieceTrickGuillotine.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_guillotine"), false);

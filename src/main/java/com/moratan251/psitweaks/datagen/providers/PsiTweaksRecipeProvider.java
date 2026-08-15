@@ -235,6 +235,28 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_core_ultraclocked"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.CAD_BATTERY_REACTIVE.get())
+                .define('A', PsitweaksItems.HEAVY_PSIMETAL.get())
+                .define('B', PsitweaksItems.ECHO_CONTROL_CIRCUIT.get())
+                .define('C', ModItems.cadBatteryUltradense)
+                .define('D', PsitweaksItems.NANO_REACTOR.get())
+                .pattern("ABA")
+                .pattern("DCD")
+                .pattern("ABA")
+                .unlockedBy("has_cad_battery_ultradense", has(ModItems.cadBatteryUltradense))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_battery_reactive"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.CAD_BATTERY_QUANTUM.get())
+                .define('A', PsitweaksItems.QUANTIZED_PLATE.get())
+                .define('B', PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get())
+                .define('C', ModItems.cadBatteryUltradense)
+                .define('D', PsitweaksItems.STRING_A.get())
+                .pattern("ABA")
+                .pattern("DCD")
+                .pattern("ABA")
+                .unlockedBy("has_cad_battery_ultradense", has(ModItems.cadBatteryUltradense))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "cad_battery_quantum"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PsitweaksItems.FLASH_RING.get())
                 .define('A', ebonyPsimetal)
                 .define('B', psiGem)

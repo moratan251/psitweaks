@@ -20,6 +20,7 @@ public class ComponentStats {
         event.enqueueWork(() -> {
             registerAssemblyStats();
             registerCoreStats();
+            registerBatteryStats();
         });
     }
 
@@ -104,6 +105,11 @@ public class ComponentStats {
         ItemCADComponent.addStatToStack(PsitweaksItems.CAD_CORE_ABSORPTIVE.get(), EnumCADStat.COMPLEXITY, 46);
         ItemCADComponent.addStatToStack(PsitweaksItems.CAD_CORE_ULTRACLOCKED.get(), EnumCADStat.PROJECTION, 9);
         ItemCADComponent.addStatToStack(PsitweaksItems.CAD_CORE_ULTRACLOCKED.get(), EnumCADStat.COMPLEXITY, 54);
+    }
+
+    private static void registerBatteryStats() {
+        ItemCADComponent.addStatToStack(PsitweaksItems.CAD_BATTERY_REACTIVE.get(), EnumCADStat.OVERFLOW, 1000);
+        ItemCADComponent.addStatToStack(PsitweaksItems.CAD_BATTERY_QUANTUM.get(), EnumCADStat.OVERFLOW, 1500);
     }
 
     // 他の registerXXXStats は同様にここへ

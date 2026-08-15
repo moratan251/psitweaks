@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.handler.SafetySpellCastHandler;
 import com.moratan251.psitweaks.common.handler.SpellPsiRefundCaptureHandler;
 import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.items.component.CadBatteryAttributeHandler;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
@@ -127,6 +128,8 @@ public class Psitweaks {
         MinecraftForge.EVENT_BUS.addListener(DimensionalCrystalDropHandler::onSpellCast);
         MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
+        MinecraftForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onPlayerTick);
+        MinecraftForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onItemTooltip);
 
         // Register the item to a creative tab
         PsitweaksTabs.register(modEventBus);

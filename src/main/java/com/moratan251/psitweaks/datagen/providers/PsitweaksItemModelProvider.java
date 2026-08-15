@@ -37,6 +37,8 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "cad_assembly_heavy_psimetal_alpha",
             "cad_assembly_heavy_psimetal_beta",
             "cad_assembly_psycheonic_metal",
+            "cad_battery_quantum",
+            "cad_battery_reactive",
             "cad_core_absorptive",
             "cad_core_ultraclocked",
             "chaotic_factor",

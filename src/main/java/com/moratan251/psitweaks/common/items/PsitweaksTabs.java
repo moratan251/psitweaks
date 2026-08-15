@@ -108,6 +108,8 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL.get());
                         pOutput.accept(PsitweaksItems.CAD_CORE_ABSORPTIVE.get());
                         pOutput.accept(PsitweaksItems.CAD_CORE_ULTRACLOCKED.get());
+                        pOutput.accept(PsitweaksItems.CAD_BATTERY_REACTIVE.get());
+                        pOutput.accept(PsitweaksItems.CAD_BATTERY_QUANTUM.get());
                         pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
                         pOutput.accept(PsitweaksItems.SPELL_MAGAZINE.get());
                         pOutput.accept(PsitweaksItems.INLINE_CASTER.get());

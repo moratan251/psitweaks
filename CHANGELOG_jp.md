@@ -12,7 +12,7 @@
   + 作動式: アイテム引き出し
 
 
-- (1.21.1) Potions Master との競合回避のため material_mutator のレシピ配置ディレクトリを変更
+- (1.21.1) Potions Master との競合回避のため material_mutator のレシピ配置ディレクトリを変更 (#3)
 
 
 - グラヴィトン因子のJEI説明を追加

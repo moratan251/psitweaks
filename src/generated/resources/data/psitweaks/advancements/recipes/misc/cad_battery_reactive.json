@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cad_battery_ultradense": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psi:cad_battery_ultradense"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "psitweaks:cad_battery_reactive"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_cad_battery_ultradense",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "psitweaks:cad_battery_reactive"
+    ]
+  },
+  "sends_telemetry_event": false
+}

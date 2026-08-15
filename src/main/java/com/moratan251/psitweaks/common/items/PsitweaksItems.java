@@ -21,6 +21,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import vazkii.psi.common.item.component.ItemCADAssembly;
+import vazkii.psi.common.item.component.ItemCADBattery;
 import vazkii.psi.common.item.component.ItemCADCore;
 
 
@@ -160,6 +161,10 @@ public class PsitweaksItems {
             () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> CAD_CORE_ULTRACLOCKED = ITEMS.register("cad_core_ultraclocked",
             () -> new ItemCADCore(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> CAD_BATTERY_REACTIVE = ITEMS.register("cad_battery_reactive",
+            () -> new ItemCADBattery(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> CAD_BATTERY_QUANTUM = ITEMS.register("cad_battery_quantum",
+            () -> new ItemCADBattery(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> INCOMPLETE_HEAVY_PSIMETAL_ASSEMBLY = ITEMS.register("incomplete_heavy_psimetal_assembly", () -> new Item(new Item.Properties().stacksTo(1)));
 
     //public static final RegistryObject<Item> CAD_ASSEMBLY_ALLOY_PSION = ITEMS.register("cad_assembly_alloy_psion", () -> new ItemCADAssemblyPsitweaks(new Item.Properties().rarity(Rarity.RARE),"cad_alloy_psion"));
