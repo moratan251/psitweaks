@@ -1,6 +1,28 @@
 ## Changelog
 
 
+#### v0.10.7
+
+- Added CAD batteries
+  + Quantum CAD Battery
+  + Reactive CAD Battery
+
+
+- Added spell pieces
+  + Trick: Send Item
+  + Trick: Pull Item
+
+
+- (1.21.1) Changed the `material_mutator` recipe directory to avoid conflicts with Potions Master (#3)
+
+
+- Added a JEI description for the Graviton Factor
+
+
+- Moved client-only features to Psitweaks: QoL
+  + As a result, spell-piece bookmarks are reset once
+  + Psitweaks: QoL is included in Psi: Tweaks and Additions, so users do not need to install it separately.
+
 #### v0.10.6
 
 - Made the attack damage of the Gravstringer and Tunneler configurable
