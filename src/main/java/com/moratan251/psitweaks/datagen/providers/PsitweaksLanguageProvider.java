@@ -89,6 +89,36 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         addBackportedSpellPiece15Translation("psitweaks.spellparam.forwardbackward", "Forward/Backward", "前後");
         addBackportedSpellPiece15Translation("psitweaks.spellparam.updown", "Up/Down", "上下");
         addBackportedSpellPiece15Translation("psitweaks.spellparam.offset", "Offset", "オフセット");
+        addBackportedSpellPiece15Translation("block.psitweaks.conjuredpulsar", "Conjured Pulsar", "魔法パルサーブロック");
+        addBackportedSpellPiece15Translation("block.psitweaks.conjuredpulsarlight", "Conjured Pulsar Light", "魔法パルサー光源");
+
+        addBackportedSpellPiece15Translation(
+                "trick_pulsar",
+                "Trick: Conjure Pulsar",
+                "Conjures a redstone emitting block in the given position",
+                "作動式: 魔法パルサーブロック生成",
+                "指定位置にレッドストーン信号を発するブロックを生成します。",
+                "Generates a magical Pulsar block at Position. The block emits a redstone signal with strength 15 in every direction and glows in the color of the caster's CAD. If Time is positive, it disappears after that many ticks; if Time is omitted or zero or less, it remains until broken.",
+                "位置に魔法パルサーブロックを生成します. ブロックは全方向へ強度15のレッドストーン信号を出力し, 術者のCADの色で輝きます. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります."
+        );
+        addBackportedSpellPiece15Translation(
+                "trick_pulsar_sequence",
+                "Trick: Conjure Pulsar Sequence",
+                "Conjures a sequence of redstone emitting blocks",
+                "作動式: 魔法パルサーブロック生成(列)",
+                "レッドストーン信号を発するブロックを連続して生成します。",
+                "Constructs solid Pulsars in a straight line from Position in the direction of Target. The number generated is limited by the lesser of the length of the Target vector and Max. Each Pulsar emits a redstone signal with strength 15. If Time is positive, they disappear after that many ticks; if Time is omitted or zero or less, they remain until broken.",
+                "位置を始点として, 対象の方向へ固体のパルサーを直線状に構築します. 生成数は対象ベクトルの長さと最大数の小さい方までです. 各パルサーは強度15のレッドストーン信号を出力します. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります."
+        );
+        addBackportedSpellPiece15Translation(
+                "trick_pulsar_light",
+                "Trick: Conjure Pulsar Light",
+                "Conjures a redstone emitting light in the given position",
+                "作動式: 魔法パルサー光源生成",
+                "指定位置にレッドストーン信号を発する光を生成します。",
+                "Generates a non-solid Pulsar light at Position. The light emits a redstone signal with strength 15 in every direction. Its color reflects the color of the caster's CAD. If Time is positive, it disappears after that many ticks; if Time is omitted or zero or less, it remains until broken.",
+                "位置に非固体のパルサー光源を生成します.  光源は全方向へ強度15のレッドストーン信号を出力します. 光源色は術者のCADの色を反映します. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります."
+        );
 
         addBackportedSpellPiece15Translation("operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。", "Filters the input Entity List and returns only LivingEntity instances that are currently alive. All other entities are removed.", "入力した Entity List をフィルターし、現在生存中の LivingEntity のみを返します. それ以外のエンティティは除外されます.");
         addBackportedSpellPiece15Translation("operator_weak_raycast", "Operator: Vector Weak Raycast", "Raycasts from Position in the Ray direction and returns the coordinates of the hit block or fluid.", "演算子: ベクトルレイキャスト (弱)", "位置から Ray 方向へレイキャストし、命中したブロックまたは流体の座標を返します。", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Water and lava can stop the ray.", "位置から Ray 方向へレイキャストし、最初に命中したブロック座標を返します. 水や溶岩でも停止します.");

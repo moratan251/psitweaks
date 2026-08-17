@@ -3,8 +3,10 @@ package com.moratan251.psitweaks.common.blocks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -16,6 +18,15 @@ public class PsitweaksBlocks {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "psitweaks");
     public static final DeferredRegister<Item> BLOCK_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "psitweaks");
+
+    public static final RegistryObject<ConjuredPulsarBlock> CONJURED_PULSAR = BLOCKS.register(
+            "conjuredpulsar",
+            () -> new ConjuredPulsarBlock(conjuredPulsarProperties(), true, false)
+    );
+    public static final RegistryObject<ConjuredPulsarBlock> CONJURED_PULSAR_LIGHT = BLOCKS.register(
+            "conjuredpulsarlight",
+            () -> new ConjuredPulsarBlock(conjuredPulsarProperties(), false, true)
+    );
 
     // CAD分解台
     public static final RegistryObject<Block> CAD_DISASSEMBLER = registerBlock("cad_disassembler",
@@ -115,6 +126,20 @@ public class PsitweaksBlocks {
 
     private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block) {
         BLOCK_ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    }
+
+    private static BlockBehaviour.Properties conjuredPulsarProperties() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.NONE)
+                .instrument(NoteBlockInstrument.HAT)
+                .strength(0.3F)
+                .sound(SoundType.GLASS)
+                .noOcclusion()
+                .lightLevel(state -> state.getValue(ConjuredPulsarBlock.LIGHT) ? 15 : 0)
+                .isValidSpawn((state, level, pos, entityType) -> false)
+                .isRedstoneConductor((state, level, pos) -> false)
+                .isSuffocating((state, level, pos) -> false)
+                .isViewBlocking((state, level, pos) -> false);
     }
 
     public static void register(IEventBus eventBus) {

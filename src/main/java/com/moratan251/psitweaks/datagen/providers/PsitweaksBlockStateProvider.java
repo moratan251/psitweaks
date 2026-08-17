@@ -21,6 +21,8 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        conjuredPulsar(PsitweaksBlocks.CONJURED_PULSAR.get(), "conjuredpulsar");
+        conjuredPulsar(PsitweaksBlocks.CONJURED_PULSAR_LIGHT.get(), "conjuredpulsarlight");
         cubeAll(PsitweaksBlocks.CAD_DISASSEMBLER.get(), "cad_disassembler");
         cubeAll(PsitweaksBlocks.ORE_ANTINITE.get(), "ore_antinite");
         cubeAll(PsitweaksBlocks.ANTINITE_BLOCK.get(), "antinite_block");
@@ -46,6 +48,13 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
     private void cubeAll(Block block, String name) {
         ModelFile model = models().cubeAll(name, blockTexture(name));
         simpleBlockWithItem(block, model);
+    }
+
+    private void conjuredPulsar(Block block, String name) {
+        ModelFile model = models().getBuilder(name)
+                .parent(unchecked(mcLoc("block/block")))
+                .texture("particle", modLoc("block/" + name));
+        simpleBlock(block, model);
     }
 
     private void machine(Block block, String name, String textureBase) {
