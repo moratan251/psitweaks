@@ -38,6 +38,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 default -> block.enUs();
             });
         }
+        root.addProperty("block.psitweaks.conjuredpulsar", switch (locale) {
+            case "ja_jp" -> "魔法パルサーブロック";
+            default -> "Conjured Pulsar";
+        });
+        root.addProperty("block.psitweaks.conjuredpulsarlight", switch (locale) {
+            case "ja_jp" -> "魔法パルサー光源";
+            default -> "Conjured Pulsar Light";
+        });
         for (PsitweaksDatagenItems.GeneratedItem item : PsitweaksDatagenItems.items()) {
             root.addProperty("item.psitweaks." + item.id(), switch (locale) {
                 case "ja_jp" -> item.jaJp();
@@ -661,7 +669,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact."},
-            {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Be careful: dropped items and similar entities can still be erased."},
+            {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast."},
             {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively."},
             {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "Freezes the target block one stage. Water becomes ice, ice becomes packed ice, packed ice becomes blue ice, lava becomes magma block, and magma block becomes obsidian."},
@@ -803,7 +811,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います."},
-            {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムなどは消滅するので注意してください."},
+            {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません."},
             {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けます."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です."},
             {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります."},
@@ -1268,6 +1276,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_interact_block", "Trick: Block Interact", "Right-click with the off-hand item on the target block", "作動式: ブロック作用", "座標のブロックに、オフハンドのアイテムで右クリックの動作を行う");
         addSpellPiece(root, "trick_freeze_block", "Trick: Block Freeze", "Freeze the block at the target position into its next colder form", "作動式: ブロック凍結", "指定座標のブロックを次の凍結段階に変化させる");
         addSpellPiece(root, "trick_melt_block", "Trick: Block Melt", "Melt the block at the target position into its hotter form", "作動式: ブロック溶解", "指定座標のブロックを溶解して高温の状態に変化させる");
+        addSpellPiece(root, "trick_pulsar", "Trick: Conjure Pulsar", "Conjures a redstone emitting block in the given position", "作動式: 魔法パルサーブロック生成", "指定位置にレッドストーン信号を発するブロックを生成します。");
+        addSpellPiece(root, "trick_pulsar_sequence", "Trick: Conjure Pulsar Sequence", "Conjures a sequence of redstone emitting blocks", "作動式: 魔法パルサーブロック生成(列)", "レッドストーン信号を発するブロックを連続して生成します。");
+        addSpellPiece(root, "trick_pulsar_light", "Trick: Conjure Pulsar Light", "Conjures a redstone emitting light in the given position", "作動式: 魔法パルサー光源生成", "指定位置にレッドストーン信号を発する光を生成します。");
         addSpellPiece(root, "trick_break_fortune", "Trick: Break Block (Fortune)", "Break a block with Fortune applied", "作動式: ブロック破壊(幸運)", "幸運付きでブロックを破壊する");
         addSpellPiece(root, "trick_break_silk", "Trick: Break Block (Silk Touch)", "Break a block with Silk Touch applied", "作動式: ブロック破壊(シルクタッチ)", "シルクタッチ付きでブロックを破壊する");
         addSpellPiece(root, "trick_store_entity", "Trick: Store Entity", "Store the entity's UUID string in the CAD memory", "作動式: エンティティ保存", "エンティティのUUIDをStringとしてCADメモリに保存する");
@@ -1432,7 +1443,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Spell pieces added by PsiTweaks. Many are offensive, industrial, or utility-focused, and some require research depending on the config.";
         });
 
-        addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Be careful: dropped items and similar entities can still be erased.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムなどは消滅するので注意してください.");
+        addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
         addBookPage(root, "trick_barrier", "Applies a barrier effect that reduces incoming damage. It reduces damage taken by (level * 4).", "被ダメージを軽減する障壁効果を付与します.(レベル * 4)だけ被ダメージを減少させます.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance.", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します.");
@@ -1440,6 +1451,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
         addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");
         addBookPage(root, "trick_melt_block", "Melts the target block one step: ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma blocks; magma blocks become lava.", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります.");
+        addBookPage(root, "trick_pulsar", "Generates a magical Pulsar block at Position. The block emits a redstone signal with strength 15 in every direction and glows in the color of the caster's CAD. If Time is positive, it disappears after that many ticks; if Time is omitted or zero or less, it remains until broken.", "位置に魔法パルサーブロックを生成します. ブロックは全方向へ強度15のレッドストーン信号を出力し, 術者のCADの色で輝きます. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります.");
+        addBookPage(root, "trick_pulsar_sequence", "Constructs solid Pulsars in a straight line from Position in the direction of Target. The number generated is limited by the lesser of the length of the Target vector and Max. Each Pulsar emits a redstone signal with strength 15. If Time is positive, they disappear after that many ticks; if Time is omitted or zero or less, they remain until broken.", "位置を始点として, 対象の方向へ固体のパルサーを直線状に構築します. 生成数は対象ベクトルの長さと最大数の小さい方までです. 各パルサーは強度15のレッドストーン信号を出力します. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります.");
+        addBookPage(root, "trick_pulsar_light", "Generates a non-solid Pulsar light at Position. The light emits a redstone signal with strength 15 in every direction. Its color reflects the color of the caster's CAD. If Time is positive, it disappears after that many ticks; if Time is omitted or zero or less, it remains until broken.", "位置に非固体のパルサー光源を生成します.  光源は全方向へ強度15のレッドストーン信号を出力します. 光源色は術者のCADの色を反映します. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります.");
         addBookPage(root, "trick_break_fortune", "Breaks the target block with Fortune.", "対象ブロックを幸運付きで破壊します.");
         addBookPage(root, "trick_break_silk", "Breaks the target block with Silk Touch.", "対象ブロックをシルクタッチ付きで破壊します.");
         addBookPage(root, "trick_store_entity", "Stores the target entity's UUID as a String value in CAD memory.", "対象エンティティのUUIDをString値としてCADメモリに保存します.");

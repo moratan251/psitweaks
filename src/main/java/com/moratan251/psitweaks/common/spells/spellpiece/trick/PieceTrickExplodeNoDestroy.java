@@ -1,6 +1,11 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,6 +18,13 @@ import vazkii.psi.common.spell.trick.PieceTrickExplode;
 
 
 public class PieceTrickExplodeNoDestroy extends PieceTrick {
+    private static final ExplosionDamageCalculator ITEM_SAFE_DAMAGE_CALCULATOR = new ExplosionDamageCalculator() {
+        @Override
+        public boolean shouldDamageEntity(Explosion explosion, Entity entity) {
+            return !(entity instanceof ItemEntity) && !(entity instanceof ExperienceOrb);
+        }
+    };
+
     SpellParam<Vector3> position;
     SpellParam<Number> power;
 
@@ -48,7 +60,7 @@ public class PieceTrickExplodeNoDestroy extends PieceTrick {
             throw new SpellRuntimeException("psi.spellerror.outsideradius");
         } else {
             BlockPos pos = positionVal.toBlockPos();
-            context.focalPoint.getCommandSenderWorld().explode(context.focalPoint, positionVal.x, positionVal.y, positionVal.z, (float)powerVal, Level.ExplosionInteraction.NONE);
+            context.focalPoint.getCommandSenderWorld().explode(context.focalPoint, null, ITEM_SAFE_DAMAGE_CALCULATOR, positionVal.x, positionVal.y, positionVal.z, (float)powerVal, false, Level.ExplosionInteraction.NONE);
             return null;
         }
     }

@@ -38,6 +38,12 @@ public final class PsitweaksSpells {
             registerPiece("trick_freeze_block", PieceTrickFreezeBlock.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMeltBlock>> TRICK_MELT_BLOCK =
             registerPiece("trick_melt_block", PieceTrickMeltBlock.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickConjurePulsar>> TRICK_PULSAR =
+            registerPiece("trick_pulsar", PieceTrickConjurePulsar.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickConjurePulsarSequence>> TRICK_PULSAR_SEQUENCE =
+            registerPiece("trick_pulsar_sequence", PieceTrickConjurePulsarSequence.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickConjurePulsarLight>> TRICK_PULSAR_LIGHT =
+            registerPiece("trick_pulsar_light", PieceTrickConjurePulsarLight.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickStoreEntityUUID>> TRICK_STORE_ENTITY =
             registerPiece("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceSelectorStoredEntity>> SELECTOR_STORED_ENTITY =
@@ -362,6 +368,11 @@ public final class PsitweaksSpells {
             registerGroup("trick_freeze_block", PieceTrickFreezeBlock.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MELT_BLOCK =
             registerGroup("trick_melt_block", PieceTrickMeltBlock.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> PULSAR =
+            registerGroup("trick_pulsar",
+                    PieceTrickConjurePulsar.class,
+                    PieceTrickConjurePulsarSequence.class,
+                    PieceTrickConjurePulsarLight.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORE_ENTITY =
             registerGroup("trick_store_entity", PieceTrickStoreEntityUUID.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> STORED_ENTITY =
@@ -602,9 +613,10 @@ public final class PsitweaksSpells {
         return SPELL_PIECES.register(id, () -> pieceClass);
     }
 
+    @SafeVarargs
     private static DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> registerGroup(
-            String id, Class<? extends SpellPiece> pieceClass) {
-        return ADVANCEMENT_GROUPS.register(id, () -> List.of(pieceClass));
+            String id, Class<? extends SpellPiece>... pieceClasses) {
+        return ADVANCEMENT_GROUPS.register(id, () -> List.of(pieceClasses));
     }
 
     public static void register(IEventBus eventBus) {

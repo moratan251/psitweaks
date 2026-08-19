@@ -26,6 +26,9 @@ public class PsitweaksBlockStateProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput output) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
+        addConjuredPulsarAssets(output, futures, "conjuredpulsar");
+        addConjuredPulsarAssets(output, futures, "conjuredpulsarlight");
+
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             if ("transcendent_universal_cable".equals(block.id())) {
                 ResourceLocation id = Psitweaks.location(block.id());
@@ -65,6 +68,13 @@ public class PsitweaksBlockStateProvider implements DataProvider {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
+    private void addConjuredPulsarAssets(CachedOutput output, List<CompletableFuture<?>> futures, String id) {
+        ResourceLocation blockId = Psitweaks.location(id);
+        ResourceLocation modelId = Psitweaks.location("block/" + id);
+        futures.add(DataProvider.saveStable(output, simpleBlockState(modelId), blockStatePathProvider.json(blockId)));
+        futures.add(DataProvider.saveStable(output, conjuredPulsarModel(id), blockModelPathProvider.json(blockId)));
+    }
+
     @Override
     public String getName() {
         return "PsiTweaks block states and models";
@@ -94,6 +104,16 @@ public class PsitweaksBlockStateProvider implements DataProvider {
         textures.addProperty("all", Psitweaks.location("block/" + texture).toString());
         root.add("textures", textures);
 
+        return root;
+    }
+
+    private static JsonObject conjuredPulsarModel(String texture) {
+        JsonObject root = new JsonObject();
+        JsonObject textures = new JsonObject();
+
+        root.addProperty("parent", "minecraft:block/block");
+        textures.addProperty("particle", Psitweaks.location("block/" + texture).toString());
+        root.add("textures", textures);
         return root;
     }
 

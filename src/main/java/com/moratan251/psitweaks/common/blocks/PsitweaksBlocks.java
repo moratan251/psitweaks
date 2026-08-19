@@ -6,6 +6,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -14,6 +16,15 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class PsitweaksBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Psitweaks.MOD_ID);
     public static final DeferredRegister.Items BLOCK_ITEMS = DeferredRegister.createItems(Psitweaks.MOD_ID);
+
+    public static final DeferredBlock<ConjuredPulsarBlock> CONJURED_PULSAR = BLOCKS.register(
+            "conjuredpulsar",
+            () -> new ConjuredPulsarBlock(conjuredPulsarProperties(), true, false)
+    );
+    public static final DeferredBlock<ConjuredPulsarBlock> CONJURED_PULSAR_LIGHT = BLOCKS.register(
+            "conjuredpulsarlight",
+            () -> new ConjuredPulsarBlock(conjuredPulsarProperties(), false, true)
+    );
 
     public static final DeferredBlock<Block> CAD_DISASSEMBLER = registerSimpleBlock(
             "cad_disassembler",
@@ -121,6 +132,21 @@ public final class PsitweaksBlocks {
         DeferredBlock<Block> block = BLOCKS.registerSimpleBlock(name, properties);
         BLOCK_ITEMS.registerSimpleBlockItem(block, new Item.Properties());
         return block;
+    }
+
+    private static BlockBehaviour.Properties conjuredPulsarProperties() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.NONE)
+                .instrument(NoteBlockInstrument.HAT)
+                .strength(0.3F)
+                .sound(SoundType.GLASS)
+                .noOcclusion()
+                .noLootTable()
+                .lightLevel(state -> state.getValue(ConjuredPulsarBlock.LIGHT) ? 15 : 0)
+                .isValidSpawn((state, level, pos, entityType) -> false)
+                .isRedstoneConductor((state, level, pos) -> false)
+                .isSuffocating((state, level, pos) -> false)
+                .isViewBlocking((state, level, pos) -> false);
     }
 
 }
