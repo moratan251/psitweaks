@@ -1,9 +1,10 @@
 package com.moratan251.psitweaks.client.jei;
 
+import com.moratan251.psitweaks.client.gui.IdeaStorageCraftingTransferPlanner;
 import com.moratan251.psitweaks.common.menu.IdeaStorageMenu;
 import com.moratan251.psitweaks.common.menu.ModMenuTypes;
+import com.moratan251.psitweaks.common.network.MessageIdeaStorageFillCrafting;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import mezz.jei.api.constants.RecipeTypes;
@@ -14,23 +15,16 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * イデアストレージのクラフトウィンドウへのレシピ転送(JEI)。
- * 転送元はプレイヤーインベントリ(スロット0..35)のみ。ストレージからの直接引き出しは行わない。
- * 実際の移動はスロットクリックのシミュレート(handleInventoryMouseClick)で行う。
- */
+/** プレイヤーインベントリとイデアストレージを材料源にするJEI作業台レシピ転送。 */
 public class IdeaStorageJeiRecipeTransferHandler
         implements IRecipeTransferHandler<IdeaStorageMenu, RecipeHolder<CraftingRecipe>> {
     private final IRecipeTransferHandlerHelper helper;
@@ -57,112 +51,38 @@ public class IdeaStorageJeiRecipeTransferHandler
     @Override
     public @Nullable IRecipeTransferError transferRecipe(IdeaStorageMenu container, RecipeHolder<CraftingRecipe> recipe,
             IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
-        // クラフトウィンドウが閉じている時は転送しない
         if (!container.isCraftOpen()) {
             return null;
         }
         List<IRecipeSlotView> inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-        // 3x3 マトリクス分だけ扱う(スロット36..44 に対応)
-        int craftSlotCount = IdeaStorageMenu.CRAFT_RESULT_SLOT - IdeaStorageMenu.CRAFT_MATRIX_START;
-        int inputCount = Math.min(inputSlots.size(), craftSlotCount);
-        // 供給元スロット(0..35)の割り当て計画。-1 は未割り当て
-        int[] sources = new int[inputCount];
-        Arrays.fill(sources, -1);
-        boolean[] reserved = new boolean[IdeaStorageMenu.CRAFT_MATRIX_START];
-        List<IRecipeSlotView> missing = new ArrayList<>();
-        for (int i = 0; i < inputCount; i++) {
-            IRecipeSlotView slotView = inputSlots.get(i);
-            if (slotView.isEmpty()) {
-                continue;
-            }
-            ItemStack current = container.getSlot(IdeaStorageMenu.CRAFT_MATRIX_START + i).getItem();
-            if (!current.isEmpty() && matches(current, slotView)) {
-                // 既に同じ材料が置かれている
-                continue;
-            }
-            int source = findSourceSlot(container, slotView, reserved);
-            if (source >= 0) {
-                sources[i] = source;
-            } else {
-                missing.add(slotView);
-            }
+        if (inputSlots.size() > MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT) {
+            return helper.createInternalError();
         }
-        if (!doTransfer) {
+
+        List<List<ItemStack>> candidates = new ArrayList<>(inputSlots.size());
+        for (IRecipeSlotView inputSlot : inputSlots) {
+            candidates.add(inputSlot.isEmpty()
+                    ? List.of()
+                    : inputSlot.getItemStacks()
+                            .filter(stack -> !stack.isEmpty())
+                            .map(stack -> stack.copyWithCount(1))
+                            .toList());
+        }
+        IdeaStorageCraftingTransferPlanner.Plan plan =
+                IdeaStorageCraftingTransferPlanner.plan(container, candidates);
+        if (!plan.complete()) {
+            List<IRecipeSlotView> missing = plan.missingSlots().stream()
+                    .filter(index -> index >= 0 && index < inputSlots.size())
+                    .map(inputSlots::get)
+                    .toList();
             return missing.isEmpty()
-                    ? null
+                    ? helper.createInternalError()
                     : helper.createUserErrorForMissingSlots(
                             Component.translatable("gui.psitweaks.idea_storage.transfer_missing"), missing);
         }
-        MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
-        if (gameMode == null) {
-            return helper.createInternalError();
-        }
-        for (int i = 0; i < inputCount; i++) {
-            int source = sources[i];
-            if (source < 0) {
-                continue;
-            }
-            int craftSlotIndex = IdeaStorageMenu.CRAFT_MATRIX_START + i;
-            // 別のアイテムが残っているマスは先に shift クリックでインベントリへ退避する
-            Slot craftSlot = container.getSlot(craftSlotIndex);
-            if (!craftSlot.getItem().isEmpty() && !matches(craftSlot.getItem(), inputSlots.get(i))) {
-                gameMode.handleInventoryMouseClick(container.containerId, craftSlotIndex, 0, ClickType.QUICK_MOVE, player);
-            }
-            if (!container.getSlot(craftSlotIndex).getItem().isEmpty()) {
-                // 退避しきれなかった(インベントリ満杯等)場合はそのマスを諦める
-                continue;
-            }
-            // 拾う → マトリクスに1個置く → 残りを元のスロットへ戻す
-            gameMode.handleInventoryMouseClick(container.containerId, source, 0, ClickType.PICKUP, player);
-            gameMode.handleInventoryMouseClick(container.containerId, craftSlotIndex, 1, ClickType.PICKUP, player);
-            gameMode.handleInventoryMouseClick(container.containerId, source, 0, ClickType.PICKUP, player);
+        if (doTransfer) {
+            PacketDistributor.sendToServer(new MessageIdeaStorageFillCrafting(plan.templates()));
         }
         return null;
-    }
-
-    /** スロットのスタックがレシピスロットのいずれかの候補と一致するか(コンポーネント一致を優先)。 */
-    private static boolean matches(ItemStack stack, IRecipeSlotView slotView) {
-        return slotView.getItemStacks().anyMatch(candidate ->
-                ItemStack.isSameItemSameComponents(stack, candidate) || ItemStack.isSameItem(stack, candidate));
-    }
-
-    /**
-     * プレイヤーインベントリ(スロット0..35)から供給元を探す。
-     * コンポーネント完全一致を優先し、無ければアイテム一致に緩和する。見つかったスロットは予約済みにする。
-     */
-    private static int findSourceSlot(IdeaStorageMenu container, IRecipeSlotView slotView, boolean[] reserved) {
-        int looseMatch = -1;
-        for (int i = 0; i < IdeaStorageMenu.CRAFT_MATRIX_START; i++) {
-            if (reserved[i]) {
-                continue;
-            }
-            ItemStack stack = container.getSlot(i).getItem();
-            if (stack.isEmpty()) {
-                continue;
-            }
-            List<ItemStack> candidates = slotView.getItemStacks().toList();
-            boolean exact = false;
-            boolean sameItem = false;
-            for (ItemStack candidate : candidates) {
-                if (ItemStack.isSameItemSameComponents(stack, candidate)) {
-                    exact = true;
-                    break;
-                }
-                if (ItemStack.isSameItem(stack, candidate)) {
-                    sameItem = true;
-                }
-            }
-            if (exact) {
-                reserved[i] = true;
-                return i;
-            }
-            if (sameItem && looseMatch < 0) {
-                looseMatch = i;
-            }
-        }
-        if (looseMatch >= 0) {
-            reserved[looseMatch] = true;
-        }
-        return looseMatch;
     }
 }

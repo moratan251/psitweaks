@@ -86,6 +86,7 @@
   "entity.productivebees.psitweaks_hypostasis_gem_bee": "ヒュポスタシスジェムのミツバチ",
   "entity.productivebees.psitweaks_psycheonic_metal_bee": "プシオニックメタルのミツバチ",
   "gui.psitweaks.apply": "適用",
+  "gui.psitweaks.idea_storage.craft_clear": "クラフトグリッドをストレージへ戻す",
   "gui.psitweaks.idea_storage.craft_window": "作業台を開く",
   "gui.psitweaks.idea_storage.load_failed": "ストレージデータを読み込めません(新しい形式のデータです)",
   "gui.psitweaks.idea_storage.rows_add": "表示行数を増やす",

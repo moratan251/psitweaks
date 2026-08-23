@@ -86,6 +86,7 @@
   "entity.productivebees.psitweaks_hypostasis_gem_bee": "Hypostasis Gem Bee",
   "entity.productivebees.psitweaks_psycheonic_metal_bee": "Psycheonic Metal Bee",
   "gui.psitweaks.apply": "Apply",
+  "gui.psitweaks.idea_storage.craft_clear": "Return Crafting Grid to Storage",
   "gui.psitweaks.idea_storage.craft_window": "Open Crafting Table",
   "gui.psitweaks.idea_storage.load_failed": "Storage data could not be loaded (newer data format)",
   "gui.psitweaks.idea_storage.rows_add": "Increase Grid Rows",

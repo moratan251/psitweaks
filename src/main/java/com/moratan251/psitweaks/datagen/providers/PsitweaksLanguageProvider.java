@@ -1103,6 +1103,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "作業台を開く";
             default -> "Open Crafting Table";
         });
+        root.addProperty("gui.psitweaks.idea_storage.craft_clear", switch (locale) {
+            case "ja_jp" -> "クラフトグリッドをストレージへ戻す";
+            default -> "Return Crafting Grid to Storage";
+        });
         root.addProperty("gui.psitweaks.idea_storage.rows_add", switch (locale) {
             case "ja_jp" -> "表示行数を増やす";
             default -> "Increase Grid Rows";

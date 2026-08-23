@@ -9,7 +9,7 @@ public final class PsitweaksNetwork {
     }
 
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("5");
+        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("6");
         registrar.playToClient(
                 MessageFlightPsiCastEffect.TYPE,
                 MessageFlightPsiCastEffect.STREAM_CODEC,
@@ -49,6 +49,16 @@ public final class PsitweaksNetwork {
                 MessageIdeaStorageCraftToggle.TYPE,
                 MessageIdeaStorageCraftToggle.STREAM_CODEC,
                 MessageIdeaStorageCraftToggle::handle
+        );
+        registrar.playToServer(
+                MessageIdeaStorageFillCrafting.TYPE,
+                MessageIdeaStorageFillCrafting.STREAM_CODEC,
+                MessageIdeaStorageFillCrafting::handle
+        );
+        registrar.playToServer(
+                MessageIdeaStorageClearCrafting.TYPE,
+                MessageIdeaStorageClearCrafting.STREAM_CODEC,
+                MessageIdeaStorageClearCrafting::handle
         );
     }
 }

@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client.gui;
 
 import com.moratan251.psitweaks.common.menu.IdeaStorageMenu;
+import com.moratan251.psitweaks.common.network.MessageIdeaStorageClearCrafting;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageCraftToggle;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageDeposit;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageExtract;
@@ -59,6 +60,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private static final int ROWS_ADD_BUTTON_Y = 54;
     private static final int ROWS_REMOVE_BUTTON_Y = 74;
     private static final int SORT_BUTTON_Y = 94;
+    private static final int CRAFT_CLEAR_BUTTON_Y = 114;
 
     private List<MessageIdeaStorageSync.Entry> entries = List.of();
     private boolean loadFailed;
@@ -116,6 +118,10 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                     button.setTooltip(Tooltip.create(sortTooltip(mode)));
                 });
         addRenderableWidget(sortButton);
+        addRenderableWidget(new SideButton(this.leftPos + SIDE_BUTTON_X, this.topPos + CRAFT_CLEAR_BUTTON_Y,
+                Component.empty(), () -> new ItemStack(Items.ENDER_CHEST),
+                Component.translatable("gui.psitweaks.idea_storage.craft_clear"),
+                button -> PacketDistributor.sendToServer(new MessageIdeaStorageClearCrafting())));
 
         // 行数変更による開き直し直後は、退避してあったカーソル位置を復元する
         IdeaStorageClientHandler.restoreMousePositionIfStashed();
@@ -142,7 +148,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     /** JEI/EMI の占有領域(exclusion area)通知用。左端サイドボタン列の矩形(画面絶対座標)。 */
     public Rect2i getSideButtonArea() {
         return new Rect2i(this.leftPos + SIDE_BUTTON_X, this.topPos + CRAFT_BUTTON_Y,
-                SIDE_BUTTON_WIDTH, SORT_BUTTON_Y + SIDE_BUTTON_HEIGHT - CRAFT_BUTTON_Y);
+                SIDE_BUTTON_WIDTH, CRAFT_CLEAR_BUTTON_Y + SIDE_BUTTON_HEIGHT - CRAFT_BUTTON_Y);
     }
 
     /** 行数変更要求。サーバーが Menu を閉じて新しい行数で開き直すため、ここでは送信のみ。 */
@@ -170,6 +176,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
 
     public void applySnapshot(List<MessageIdeaStorageSync.Entry> newEntries, boolean loadFailed) {
         this.entries = newEntries;
+        this.menu.applyClientStorageEntries(newEntries);
         this.loadFailed = loadFailed;
         clampScroll();
     }
