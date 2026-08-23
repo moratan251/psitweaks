@@ -9,7 +9,7 @@ public final class PsitweaksNetwork {
     }
 
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("3");
+        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("5");
         registrar.playToClient(
                 MessageFlightPsiCastEffect.TYPE,
                 MessageFlightPsiCastEffect.STREAM_CODEC,
@@ -24,6 +24,31 @@ public final class PsitweaksNetwork {
                 MessagePsiLinkGeneratorSettingsSync.TYPE,
                 MessagePsiLinkGeneratorSettingsSync.STREAM_CODEC,
                 MessagePsiLinkGeneratorSettingsSync::handle
+        );
+        registrar.playToClient(
+                MessageIdeaStorageSync.TYPE,
+                MessageIdeaStorageSync.STREAM_CODEC,
+                MessageIdeaStorageSync::handle
+        );
+        registrar.playToServer(
+                MessageIdeaStorageExtract.TYPE,
+                MessageIdeaStorageExtract.STREAM_CODEC,
+                MessageIdeaStorageExtract::handle
+        );
+        registrar.playToServer(
+                MessageIdeaStorageDeposit.TYPE,
+                MessageIdeaStorageDeposit.STREAM_CODEC,
+                MessageIdeaStorageDeposit::handle
+        );
+        registrar.playToServer(
+                MessageIdeaStorageResize.TYPE,
+                MessageIdeaStorageResize.STREAM_CODEC,
+                MessageIdeaStorageResize::handle
+        );
+        registrar.playToServer(
+                MessageIdeaStorageCraftToggle.TYPE,
+                MessageIdeaStorageCraftToggle.STREAM_CODEC,
+                MessageIdeaStorageCraftToggle::handle
         );
     }
 }

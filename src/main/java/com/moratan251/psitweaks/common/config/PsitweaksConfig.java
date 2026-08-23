@@ -33,6 +33,10 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ModConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
+        // イデアストレージ関連
+        public final ModConfigSpec.IntValue ideaStorageMaxItemTypes;
+        public final ModConfigSpec.IntValue ideaStorageItemStacksPerType;
+        public final ModConfigSpec.LongValue ideaStorageMaxTotalItems;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
@@ -248,6 +252,30 @@ public class PsitweaksConfig {
                     .defineInRange("gasBurningGeneratorEnergyCapacity", 2000000, -1L, Long.MAX_VALUE);
 
             builder.pop(); // mekanism カテゴリ終了
+
+            builder.comment("Ideaspace Storage Settings")
+                    .translation("psitweaks.configuration.idea_storage")
+                    .push("ideaStorage");
+
+            ideaStorageMaxItemTypes = builder
+                    .comment("イデアストレージに格納できるアイテムの最大種類数",
+                            "Maximum number of distinct item types per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_item_types")
+                    .defineInRange("maxItemTypes", 256, 1, 100_000);
+
+            ideaStorageItemStacksPerType = builder
+                    .comment("アイテム1種類あたりの上限(最大スタック数に掛ける係数)",
+                            "Per-type item limit as a multiplier of the item's max stack size")
+                    .translation("psitweaks.configuration.idea_storage.item_stacks_per_type")
+                    .defineInRange("itemStacksPerType", 16_384, 1, Integer.MAX_VALUE);
+
+            ideaStorageMaxTotalItems = builder
+                    .comment("イデアストレージに格納できるアイテムの総量上限",
+                            "Maximum total item count per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_total_items")
+                    .defineInRange("maxTotalItems", 16_777_216L, 1L, Long.MAX_VALUE);
+
+            builder.pop(); // ideaStorage カテゴリ終了
         }
     }
 

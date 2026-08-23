@@ -176,6 +176,9 @@ dependencies {
     runtimeOnly "curse.maven:jade-324717:7545219"
     runtimeOnly "curse.maven:worldedit-225608:5830452"
     runtimeOnly "curse.maven:productivebees-377897:8022994"
+    runtimeOnly "curse.maven:rhino-416294:8218748"
+    runtimeOnly "curse.maven:jupiter-1072905:7738312"
+    runtimeOnly "curse.maven:pendulum-1562526:8654865"
     //runtimeOnly "curse.maven:craft-config-1530219:8300316"
     //runtimeOnly "curse.maven:bettertabinfo-1420609:8443022"
 

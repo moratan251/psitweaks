@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.client.jei;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.client.gui.IdeaStorageScreen;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
@@ -9,10 +10,14 @@ import java.util.Map;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -66,6 +71,22 @@ public class PsitweaksJeiPlugin implements IModPlugin {
         if (MekanismCompat.isMekanismLoaded()) {
             PsitweaksMekanismJeiPlugin.registerGuiHandlers(registration);
         }
+        // クラフトウィンドウが画面左外に出るため、開いている間はパネルとサイドボタン列を占有領域として通知する
+        registration.addGuiContainerHandler(IdeaStorageScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(IdeaStorageScreen screen) {
+                if (!screen.getMenu().isCraftOpen()) {
+                    return List.of();
+                }
+                return List.of(screen.getCraftPanelArea(), screen.getSideButtonArea());
+            }
+        });
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        registration.addRecipeTransferHandler(
+                new IdeaStorageJeiRecipeTransferHandler(registration.getTransferHelper()), RecipeTypes.CRAFTING);
     }
 
     private static List<MaterialMutationJeiRecipe> getMaterialMutationJeiRecipes() {

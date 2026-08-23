@@ -351,6 +351,8 @@ public final class PsitweaksSpells {
             registerPiece("macro_face_axial_rotation", PieceMacroFaceAxialRotation.class);
     public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickMassBlockBreak>> TRICK_MASS_BLOCK_BREAK =
             registerPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+    public static final DeferredHolder<Class<? extends SpellPiece>, Class<PieceTrickIdeaStorageView>> TRICK_IDEA_STORAGE_VIEW =
+            registerPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class);
 
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> EXPLODE_NO_DESTROY =
             registerGroup("trick_explode_no_destroy", PieceTrickExplodeNoDestroy.class);
@@ -451,6 +453,8 @@ public final class PsitweaksSpells {
             registerGroup("trick_send_item", PieceTrickSendItem.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> MASS_BLOCK_BREAK =
             registerGroup("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+    public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> IDEA_STORAGE =
+            registerGroup("idea_storage", PieceTrickIdeaStorageView.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_ALIVE_GROUP =
             registerGroup("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<Collection<Class<? extends SpellPiece>>, Collection<Class<? extends SpellPiece>>> OPERATOR_WEAK_RAYCAST_GROUP =

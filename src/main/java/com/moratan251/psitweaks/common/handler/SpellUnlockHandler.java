@@ -74,14 +74,17 @@ public final class SpellUnlockHandler {
             definition("jump_flex", "trick_jump_flex", "program_jump_flex"),
             definition("switch_flex", "trick_switch_flex", "program_switch_flex"),
             definition("material_mutation", "trick_material_mutation", "program_material_mutation"),
-            definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break")
+            definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break"),
+            // イデアストレージ系ピースは共通の unlock_tag を共有し、1つのプログラムで全ピースを解禁する
+            definition("idea_storage", "trick_idea_storage_view", "program_idea_storage",
+                    Psitweaks.MOD_ID + ".unlock.idea_storage")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();
 
     private static volatile List<SpellUnlockDefinition> SPELL_UNLOCKS = List.of();
     private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_PIECE = Map.of();
-    private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_ITEM = Map.of();
+    private static volatile Map<ResourceLocation, List<SpellUnlockDefinition>> UNLOCK_BY_ITEM = Map.of();
     private static final String UNLOCKS_DATA_KEY = Psitweaks.MOD_ID + ".spell_unlocks";
 
     static {
@@ -92,11 +95,15 @@ public final class SpellUnlockHandler {
     }
 
     private static SpellUnlockDefinition definition(String commandId, String piecePath, String itemPath) {
+        return definition(commandId, piecePath, itemPath, Psitweaks.MOD_ID + ".unlock." + piecePath);
+    }
+
+    private static SpellUnlockDefinition definition(String commandId, String piecePath, String itemPath, String unlockTag) {
         return new SpellUnlockDefinition(
                 commandId,
                 Psitweaks.location(piecePath),
                 Psitweaks.location(itemPath),
-                Psitweaks.MOD_ID + ".unlock." + piecePath
+                unlockTag
         );
     }
 
@@ -191,8 +198,8 @@ public final class SpellUnlockHandler {
 
     @SubscribeEvent
     public static void onRightClickUnlockItem(PlayerInteractEvent.RightClickItem event) {
-        SpellUnlockDefinition definition = getUnlockDefinitionByItem(event.getItemStack());
-        if (definition == null) {
+        List<SpellUnlockDefinition> definitions = getUnlockDefinitionsByItem(event.getItemStack());
+        if (definitions.isEmpty()) {
             return;
         }
 
@@ -206,7 +213,11 @@ public final class SpellUnlockHandler {
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
 
-        boolean unlocked = setSpellUnlocked(serverPlayer, definition, true);
+        boolean unlocked = false;
+        for (SpellUnlockDefinition definition : definitions) {
+            unlocked |= setSpellUnlocked(serverPlayer, definition, true);
+        }
+        SpellUnlockDefinition displayDefinition = definitions.get(0);
         if (unlocked) {
             serverPlayer.level().playSound(
                     null,
@@ -219,21 +230,20 @@ public final class SpellUnlockHandler {
                     1.0F
             );
             serverPlayer.displayClientMessage(
-                    Component.translatable("message.psitweaks.spell_unlock.unlocked", definition.spellNameComponent()),
+                    Component.translatable("message.psitweaks.spell_unlock.unlocked", displayDefinition.spellNameComponent()),
                     true
             );
         } else {
             serverPlayer.displayClientMessage(
-                    Component.translatable("message.psitweaks.spell_unlock.already", definition.spellNameComponent()),
+                    Component.translatable("message.psitweaks.spell_unlock.already", displayDefinition.spellNameComponent()),
                     true
             );
         }
     }
 
-    @Nullable
-    private static SpellUnlockDefinition getUnlockDefinitionByItem(ItemStack stack) {
+    private static List<SpellUnlockDefinition> getUnlockDefinitionsByItem(ItemStack stack) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        return UNLOCK_BY_ITEM.get(itemId);
+        return UNLOCK_BY_ITEM.getOrDefault(itemId, List.of());
     }
 
     private static int setSpellUnlock(CommandSourceStack source, Collection<ServerPlayer> targets, SpellUnlockDefinition definition, boolean unlocked) {
@@ -406,7 +416,7 @@ public final class SpellUnlockHandler {
     private static void applyDefinitions(List<SpellUnlockDefinition> definitions) {
         Map<String, SpellUnlockDefinition> byCommand = new LinkedHashMap<>();
         Map<ResourceLocation, SpellUnlockDefinition> byPiece = new LinkedHashMap<>();
-        Map<ResourceLocation, SpellUnlockDefinition> byItem = new LinkedHashMap<>();
+        Map<ResourceLocation, List<SpellUnlockDefinition>> byItem = new LinkedHashMap<>();
         List<SpellUnlockDefinition> ordered = new ArrayList<>();
 
         for (SpellUnlockDefinition original : definitions) {
@@ -435,14 +445,11 @@ public final class SpellUnlockHandler {
                 LOGGER.warn("Skipping duplicate spell unlock piece id '{}'.", definition.pieceId());
                 continue;
             }
-            if (byItem.containsKey(definition.unlockItemId())) {
-                LOGGER.warn("Skipping duplicate spell unlock item id '{}'.", definition.unlockItemId());
-                continue;
-            }
 
             byCommand.put(commandId, definition);
             byPiece.put(definition.pieceId(), definition);
-            byItem.put(definition.unlockItemId(), definition);
+            // 同じ unlock_item を共有する定義を許容する(共通 unlock_tag で複数ピースを解禁するため)
+            byItem.computeIfAbsent(definition.unlockItemId(), key -> new ArrayList<>()).add(definition);
             ordered.add(definition);
         }
 
@@ -451,9 +458,12 @@ public final class SpellUnlockHandler {
             return;
         }
 
+        Map<ResourceLocation, List<SpellUnlockDefinition>> byItemImmutable = new LinkedHashMap<>();
+        byItem.forEach((item, defs) -> byItemImmutable.put(item, List.copyOf(defs)));
+
         SPELL_UNLOCKS = List.copyOf(ordered);
         UNLOCK_BY_PIECE = Map.copyOf(byPiece);
-        UNLOCK_BY_ITEM = Map.copyOf(byItem);
+        UNLOCK_BY_ITEM = Map.copyOf(byItemImmutable);
     }
 
     @Nullable

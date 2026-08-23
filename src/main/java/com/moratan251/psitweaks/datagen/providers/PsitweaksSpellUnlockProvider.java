@@ -42,6 +42,8 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "switch_flex", "trick_switch_flex", PsitweaksItems.PROGRAM_SWITCH_FLEX);
         spellUnlock(entries, "material_mutation", "trick_material_mutation", PsitweaksItems.PROGRAM_MATERIAL_MUTATION);
         spellUnlock(entries, "mass_block_break", "trick_mass_block_break", PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK);
+        spellUnlock(entries, "idea_storage", "trick_idea_storage_view", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+                Psitweaks.MOD_ID + ".unlock.idea_storage");
 
         CompletableFuture<?>[] futures = entries.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
@@ -56,12 +58,17 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
 
     private static void spellUnlock(Map<ResourceLocation, JsonObject> entries, String commandId, String piecePath,
                                     ItemLike unlockItem) {
+        spellUnlock(entries, commandId, piecePath, unlockItem, Psitweaks.MOD_ID + ".unlock." + piecePath);
+    }
+
+    private static void spellUnlock(Map<ResourceLocation, JsonObject> entries, String commandId, String piecePath,
+                                    ItemLike unlockItem, String unlockTag) {
         JsonObject root = new JsonObject();
 
         root.addProperty("command_id", commandId);
         root.addProperty("piece", Psitweaks.location(piecePath).toString());
         root.addProperty("unlock_item", BuiltInRegistries.ITEM.getKey(unlockItem.asItem()).toString());
-        root.addProperty("unlock_tag", Psitweaks.MOD_ID + ".unlock." + piecePath);
+        root.addProperty("unlock_tag", unlockTag);
         entries.put(Psitweaks.location(commandId), root);
     }
 }

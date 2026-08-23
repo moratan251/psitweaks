@@ -506,6 +506,20 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Gas-Burning Generator Energy Capacity", "ガス燃焼発電機の内部エネルギー容量",
                 "Override the internal energy capacity in Joules. Set to -1 to use Mekanism's default behavior.",
                 "内部エネルギー容量をJ単位で上書きします。-1にするとMekanismの標準挙動を使用します。");
+
+        addConfigLabel(root, "psitweaks.configuration.idea_storage", "Ideaspace Storage", "イデアストレージ");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_item_types",
+                "Max Item Types", "アイテム最大種類数",
+                "Maximum number of distinct item types per player in the Ideaspace Storage.",
+                "イデアストレージに格納できるアイテムの最大種類数です。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.item_stacks_per_type",
+                "Item Stacks per Type", "1種類あたりのスタック数係数",
+                "Per-type item limit as a multiplier of the item's max stack size.",
+                "アイテム1種類あたりの上限を、最大スタック数に掛ける係数として設定します。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_total_items",
+                "Max Total Items", "アイテム総量上限",
+                "Maximum total item count per player in the Ideaspace Storage.",
+                "イデアストレージに格納できるアイテムの総量上限です。");
     }
 
     private void addDamageMultiplierConfig(JsonObject root, String id, String enUsName, String jaJpName) {
@@ -1073,6 +1087,54 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "超越エネルギーキューブ";
             default -> "Transcendent Energy Cube";
         });
+        root.addProperty("container.psitweaks.idea_storage", switch (locale) {
+            case "ja_jp" -> "イデアストレージ";
+            default -> "Ideaspace Storage";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.search", switch (locale) {
+            case "ja_jp" -> "検索...";
+            default -> "Search...";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.load_failed", switch (locale) {
+            case "ja_jp" -> "ストレージデータを読み込めません(新しい形式のデータです)";
+            default -> "Storage data could not be loaded (newer data format)";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.craft_window", switch (locale) {
+            case "ja_jp" -> "作業台を開く";
+            default -> "Open Crafting Table";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.rows_add", switch (locale) {
+            case "ja_jp" -> "表示行数を増やす";
+            default -> "Increase Grid Rows";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.rows_remove", switch (locale) {
+            case "ja_jp" -> "表示行数を減らす";
+            default -> "Decrease Grid Rows";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.sort", switch (locale) {
+            case "ja_jp" -> "ソート: %s";
+            default -> "Sort: %s";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.sort.port", switch (locale) {
+            case "ja_jp" -> "ポート番号順";
+            default -> "Port Number";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.sort.item_id", switch (locale) {
+            case "ja_jp" -> "アイテムID順";
+            default -> "Item ID";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.sort.mod_id", switch (locale) {
+            case "ja_jp" -> "Mod ID順";
+            default -> "Mod ID";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.sort.count", switch (locale) {
+            case "ja_jp" -> "個数順";
+            default -> "Item Count";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.transfer_missing", switch (locale) {
+            case "ja_jp" -> "材料が足りません";
+            default -> "Not enough ingredients";
+        });
         root.addProperty("description.psitweaks.program_researcher", switch (locale) {
             case "ja_jp" -> "素材と電力からプログラムアイテムを研究します";
             default -> "Researches program items from materials and power";
@@ -1431,6 +1493,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "macro_face_axial_offset", "Macro: Face Axial Offset", "Offsets a position along axes aligned to the block face under the caster's crosshair. If Position is omitted, the hit block is used. Positive values move screen-right, into the block, and screen-up.", "マクロ: 面基準平行移動", "術者の視線が命中したブロック面を基準に、位置を左右・前後・上下へ平行移動します。位置を省略した場合は命中ブロックを使います。正の値で画面右・ブロック内側・画面上へ移動します。");
         addSpellPiece(root, "macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを、術者の視線が命中したブロック面の方向を基準として回転させます。");
         addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. Drops are intentionally collected into the caster's inventory first; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。ドロップは意図的に先に術者のインベントリへ回収され、入りきらない分だけドロップします。");
+        addSpellPiece(root, "trick_idea_storage_view", "Trick: View Ideaspace Storage", "Opens a GUI to view and manage your Ideaspace Storage. Only works when cast by a player.", "作動式: イデアストレージ閲覧", "自分のイデアストレージを閲覧・出し入れするGUIを開きます。プレイヤーの詠唱時のみ有効です。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {

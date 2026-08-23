@@ -155,6 +155,15 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.CHAOTIC_PSIMETAL, 16),
                 input(Items.TNT, 16)
         ), PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK, 10_000L, 1_200);
+
+        research(recipes, "program_idea_storage", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(PsitweaksItems.QUANTIZED_PLATE, 16),
+                input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 8),
+                inputId(mekanism("quantum_entangloporter"), 2),
+                input(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2),
+                input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2)
+        ), PsitweaksItems.PROGRAM_IDEA_STORAGE, 750_000L, 36_000);
     }
 
     private static void research(Map<ResourceLocation, JsonObject> recipes, String id, List<JsonObject> inputs,

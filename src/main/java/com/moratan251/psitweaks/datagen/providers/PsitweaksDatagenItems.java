@@ -84,6 +84,7 @@ final class PsitweaksDatagenItems {
             item("program_switch_flex", "Program: Flexible Switch", "プログラム: 柔軟スイッチ", "program_trick_switch_flex"),
             item("program_material_mutation", "Program: Material Mutation", "プログラム: 物質変成", "program_trick_material_mutation"),
             item("program_mass_block_break", "Program: Mass Block Break", "プログラム: 大規模ブロック破壊", "program_trick_mass_block_break"),
+            item("program_idea_storage", "Program: Ideaspace Storage", "プログラム: イデアストレージ", "program_trick_idea_storage"),
             item("philosophers_stone", "Philosopher's Stone", "賢者の石"),
             item("spell_magazine", "Spell Magazine", "スペルマガジン", "spell_magazine_huge"),
             item("portable_cad_assembler", "Portable CAD Assembler", "携帯型CAD組立機"),

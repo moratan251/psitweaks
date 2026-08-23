@@ -115,6 +115,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_send_item");
     public static final DeferredHolder<Material, Material> TRICK_MASS_BLOCK_BREAK =
             registerPieceMaterial("trick_mass_block_break");
+    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_VIEW =
+            registerPieceMaterial("trick_idea_storage_view");
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerPieceMaterial("trick_physical_propulsion");
