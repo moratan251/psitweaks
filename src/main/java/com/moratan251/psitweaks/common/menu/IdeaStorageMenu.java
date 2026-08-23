@@ -74,6 +74,8 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private final ResultContainer craftResult = new ResultContainer();
     private boolean craftOpen;
     private long lastSyncedVersion = -1L;
+    private int craftingMutationDepth;
+    private boolean craftingResultDirty;
     private List<MessageIdeaStorageSync.Entry> clientStorageEntries = List.of();
 
     public static IdeaStorageMenu fromNetwork(int windowId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -213,43 +215,74 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
-    /** 結果スロットのshiftクリック1回分。連続実行はAbstractContainerMenuの標準QUICK_MOVEループが行う。 */
+    /** 結果スロットのshiftクリックをサーバー内で完成品約1スタック分まとめて処理する。 */
     private ItemStack quickMoveCraftResult(Player player, Slot resultSlot) {
-        ItemStack result = resultSlot.getItem();
-        ItemStack original = result.copy();
+        if (!(player instanceof ServerPlayer)) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack expectedResult = resultSlot.getItem().copy();
+        if (expectedResult.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        int maxCrafts = IdeaStorageCraftingLimits.calculateShiftCraftLimit(
+                expectedResult.getCount(), expectedResult.getMaxStackSize());
         PlayerMainInvWrapper inventory = new PlayerMainInvWrapper(player.getInventory());
-        if (!ItemHandlerHelper.insertItem(inventory, original, true).isEmpty()) {
-            return ItemStack.EMPTY;
+
+        beginCraftingMutation();
+        try {
+            for (int crafted = 0; crafted < maxCrafts; crafted++) {
+                ItemStack result = resultSlot.getItem();
+                if (!ItemStack.matches(expectedResult, result)) {
+                    break;
+                }
+                ItemStack original = result.copy();
+                if (!ItemHandlerHelper.insertItem(inventory, original, true).isEmpty()
+                        || !this.moveItemStackTo(result, 0, CRAFT_MATRIX_START, true)) {
+                    break;
+                }
+                resultSlot.onQuickCraft(result, original);
+                if (result.isEmpty()) {
+                    resultSlot.setByPlayer(ItemStack.EMPTY);
+                } else {
+                    resultSlot.setChanged();
+                }
+                if (result.getCount() == original.getCount()) {
+                    break;
+                }
+                resultSlot.onTake(player, result);
+                if (craftingResultDirty) {
+                    refreshCraftingResult(false);
+                }
+            }
+        } finally {
+            endCraftingMutation();
         }
-        if (!this.moveItemStackTo(result, 0, CRAFT_MATRIX_START, true)) {
-            return ItemStack.EMPTY;
-        }
-        resultSlot.onQuickCraft(result, original);
-        if (result.isEmpty()) {
-            resultSlot.setByPlayer(ItemStack.EMPTY);
-        } else {
-            resultSlot.setChanged();
-        }
-        if (result.getCount() == original.getCount()) {
-            return ItemStack.EMPTY;
-        }
-        resultSlot.onTake(player, result);
-        return original;
+        // バニラのQUICK_MOVEループは使わず、この1回の呼び出しだけで完結させる。
+        return ItemStack.EMPTY;
     }
 
-    /** マトリクス変更時の結果はサーバーだけで確定し、結果スロットを明示同期する。 */
+    /** マトリクス変更時の結果はサーバーだけで確定し、クラフト中の途中状態は同期しない。 */
     @Override
     public void slotsChanged(Container container) {
         if (container == craftMatrix) {
-            refreshCraftingResult();
+            if (craftingMutationDepth > 0) {
+                craftingResultDirty = true;
+            } else {
+                refreshCraftingResult(true);
+            }
         } else {
             super.slotsChanged(container);
         }
     }
 
     private void refreshCraftingResult() {
+        refreshCraftingResult(true);
+    }
+
+    private void refreshCraftingResult(boolean synchronizeResultSlot) {
         Level level = player.level();
         if (level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
+            craftingResultDirty = false;
             return;
         }
         CraftingInput input = craftMatrix.asCraftInput();
@@ -267,9 +300,27 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             }
         }
         craftResult.setItem(0, result);
-        setRemoteSlot(CRAFT_RESULT_SLOT, result);
-        serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(
-                containerId, incrementStateId(), CRAFT_RESULT_SLOT, result));
+        craftingResultDirty = false;
+        if (synchronizeResultSlot) {
+            setRemoteSlot(CRAFT_RESULT_SLOT, result);
+            serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(
+                    containerId, incrementStateId(), CRAFT_RESULT_SLOT, result));
+        }
+    }
+
+    private void beginCraftingMutation() {
+        craftingMutationDepth++;
+    }
+
+    private void endCraftingMutation() {
+        if (craftingMutationDepth <= 0) {
+            throw new IllegalStateException("Crafting mutation depth underflow");
+        }
+        craftingMutationDepth--;
+        if (craftingMutationDepth == 0 && craftingResultDirty) {
+            // ServerboundContainerClick処理後の標準broadcastChangesに最終差分だけ同期させる。
+            refreshCraftingResult(false);
+        }
     }
 
     @Override
@@ -670,53 +721,58 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
 
         @Override
         public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
-            checkTakeAchievements(stack);
-            CraftingInput.Positioned positioned = craftMatrix.asPositionedCraftInput();
-            CraftingInput input = positioned.input();
-            int left = positioned.left();
-            int top = positioned.top();
-            net.neoforged.neoforge.common.CommonHooks.setCraftingPlayer(player);
-            NonNullList<ItemStack> remaining;
+            beginCraftingMutation();
             try {
-                remaining = player.level().getRecipeManager()
-                        .getRemainingItemsFor(RecipeType.CRAFTING, input, player.level());
-            } finally {
-                net.neoforged.neoforge.common.CommonHooks.setCraftingPlayer(null);
-            }
+                checkTakeAchievements(stack);
+                CraftingInput.Positioned positioned = craftMatrix.asPositionedCraftInput();
+                CraftingInput input = positioned.input();
+                int left = positioned.left();
+                int top = positioned.top();
+                net.neoforged.neoforge.common.CommonHooks.setCraftingPlayer(player);
+                NonNullList<ItemStack> remaining;
+                try {
+                    remaining = player.level().getRecipeManager()
+                            .getRemainingItemsFor(RecipeType.CRAFTING, input, player.level());
+                } finally {
+                    net.neoforged.neoforge.common.CommonHooks.setCraftingPlayer(null);
+                }
 
-            List<ItemStack> consumedTemplates = new ArrayList<>(craftMatrix.getContainerSize());
-            NonNullList<ItemStack> unhandledRemainders =
-                    NonNullList.withSize(craftMatrix.getContainerSize(), ItemStack.EMPTY);
-            for (int i = 0; i < craftMatrix.getContainerSize(); i++) {
-                consumedTemplates.add(ItemStack.EMPTY);
-            }
+                List<ItemStack> consumedTemplates = new ArrayList<>(craftMatrix.getContainerSize());
+                NonNullList<ItemStack> unhandledRemainders =
+                        NonNullList.withSize(craftMatrix.getContainerSize(), ItemStack.EMPTY);
+                for (int i = 0; i < craftMatrix.getContainerSize(); i++) {
+                    consumedTemplates.add(ItemStack.EMPTY);
+                }
 
-            for (int row = 0; row < input.height(); row++) {
-                for (int column = 0; column < input.width(); column++) {
-                    int craftSlot = column + left + (row + top) * craftMatrix.getWidth();
-                    ItemStack slotStack = craftMatrix.getItem(craftSlot);
-                    if (!slotStack.isEmpty()) {
-                        consumedTemplates.set(craftSlot, slotStack.copyWithCount(1));
-                        craftMatrix.removeItem(craftSlot, 1);
-                        slotStack = craftMatrix.getItem(craftSlot);
-                    }
+                for (int row = 0; row < input.height(); row++) {
+                    for (int column = 0; column < input.width(); column++) {
+                        int craftSlot = column + left + (row + top) * craftMatrix.getWidth();
+                        ItemStack slotStack = craftMatrix.getItem(craftSlot);
+                        if (!slotStack.isEmpty()) {
+                            consumedTemplates.set(craftSlot, slotStack.copyWithCount(1));
+                            craftMatrix.removeItem(craftSlot, 1);
+                            slotStack = craftMatrix.getItem(craftSlot);
+                        }
 
-                    ItemStack remainder = remaining.get(column + row * input.width());
-                    if (remainder.isEmpty() || storeCraftingRemainder(remainder)) {
-                        continue;
-                    }
-                    unhandledRemainders.set(craftSlot, remainder.copy());
-                    if (slotStack.isEmpty()) {
-                        craftMatrix.setItem(craftSlot, remainder);
-                    } else if (ItemStack.isSameItemSameComponents(slotStack, remainder)) {
-                        remainder.grow(slotStack.getCount());
-                        craftMatrix.setItem(craftSlot, remainder);
-                    } else if (!player.getInventory().add(remainder)) {
-                        player.drop(remainder, false);
+                        ItemStack remainder = remaining.get(column + row * input.width());
+                        if (remainder.isEmpty() || storeCraftingRemainder(remainder)) {
+                            continue;
+                        }
+                        unhandledRemainders.set(craftSlot, remainder.copy());
+                        if (slotStack.isEmpty()) {
+                            craftMatrix.setItem(craftSlot, remainder);
+                        } else if (ItemStack.isSameItemSameComponents(slotStack, remainder)) {
+                            remainder.grow(slotStack.getCount());
+                            craftMatrix.setItem(craftSlot, remainder);
+                        } else if (!player.getInventory().add(remainder)) {
+                            player.drop(remainder, false);
+                        }
                     }
                 }
+                refillCraftMatrixFromStorage(consumedTemplates, unhandledRemainders);
+            } finally {
+                endCraftingMutation();
             }
-            refillCraftMatrixFromStorage(consumedTemplates, unhandledRemainders);
         }
     }
 
