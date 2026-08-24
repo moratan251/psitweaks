@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHan
 import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
@@ -80,14 +81,15 @@ final class MekanismIntegration {
 
     @Nullable
     static IdeaStorageChemicalTransfer planIdeaStorageChemicalTransfer(
-            PlayerIdeaStorage storage, ItemStack container, @Nullable ResourceLocation targetChemicalId) {
+            PlayerIdeaStorage storage, ItemStack container, @Nullable ResourceLocation targetChemicalId,
+            IdeaStorageTransferDirection direction) {
         ItemStack working = container.copyWithCount(1);
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(working);
         if (handler == null) {
             return null;
         }
 
-        if (targetChemicalId != null) {
+        if (direction.allowsIntoContainer() && targetChemicalId != null) {
             var target = MekanismAPI.CHEMICAL_REGISTRY.getHolder(targetChemicalId)
                     .filter(holder -> !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY));
             long available = storage.simulateExtractChemical(targetChemicalId, Long.MAX_VALUE);
@@ -105,6 +107,9 @@ final class MekanismIntegration {
             }
         }
 
+        if (!direction.allowsIntoStorage()) {
+            return null;
+        }
         for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
             ChemicalStack contained = handler.getChemicalInTank(tank);
             if (contained.isEmpty()) {

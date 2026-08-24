@@ -7,7 +7,10 @@ import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageTransferContents;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageContainerTransferBatch;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageDefaults;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -83,6 +87,9 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private final ResultContainer craftResult = new ResultContainer();
     private boolean craftOpen;
     private long lastSyncedVersion = -1L;
+    private int lastSyncedMaxItemTypes = -1;
+    private int lastSyncedMaxFluidTypes = -1;
+    private int lastSyncedMaxChemicalTypes = -1;
     private int craftingMutationDepth;
     private boolean craftingResultDirty;
     private List<MessageIdeaStorageSync.Entry> clientStorageEntries = List.of();
@@ -377,10 +384,15 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        if (player instanceof ServerPlayer serverPlayer
-                && storage != null
-                && storage.getVersion() != lastSyncedVersion) {
+        if (player instanceof ServerPlayer serverPlayer && storage != null
+                && (storage.getVersion() != lastSyncedVersion
+                || storage.maxItemTypes() != lastSyncedMaxItemTypes
+                || storage.maxFluidTypes() != lastSyncedMaxFluidTypes
+                || storage.maxChemicalTypes() != lastSyncedMaxChemicalTypes)) {
             lastSyncedVersion = storage.getVersion();
+            lastSyncedMaxItemTypes = storage.maxItemTypes();
+            lastSyncedMaxFluidTypes = storage.maxFluidTypes();
+            lastSyncedMaxChemicalTypes = storage.maxChemicalTypes();
             PacketDistributor.sendToPlayer(serverPlayer, createSyncMessage());
         }
     }
@@ -401,6 +413,9 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             }
         }
         return new MessageIdeaStorageSync(entries, fluidEntries, chemicalEntries,
+                storage == null ? 0 : storage.maxItemTypes(),
+                storage == null ? 0 : storage.maxFluidTypes(),
+                storage == null ? 0 : storage.maxChemicalTypes(),
                 storage != null && storage.isLoadFailed());
     }
 
@@ -676,9 +691,40 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
     }
 
+    /** 保存済み空バケツ1個と対象Fluid 1 Bを原子的に消費し、完成バケツをカーソルへ置く。 */
+    public void handleFillStoredBucket(FluidStack targetTemplate) {
+        if (storage == null || storage.isLoadFailed() || !this.getCarried().isEmpty()
+                || targetTemplate == null || targetTemplate.isEmpty()) {
+            return;
+        }
+
+        ItemStack emptyBucket = new ItemStack(Items.BUCKET);
+        Optional<ItemResourceKey> bucketKey = ItemResourceKey.of(emptyBucket);
+        Optional<FluidResourceKey> targetKey = FluidResourceKey.of(targetTemplate);
+        if (bucketKey.isEmpty() || targetKey.isEmpty()
+                || storage.simulateExtract(bucketKey.get(), 1L) != 1L
+                || storage.simulateExtractFluid(targetKey.get(), IdeaStorageDefaults.RAW_UNITS_PER_BUCKET)
+                != IdeaStorageDefaults.RAW_UNITS_PER_BUCKET) {
+            return;
+        }
+
+        FluidContainerTransfer transfer = planFluidContainerTransfer(
+                emptyBucket, targetTemplate, IdeaStorageTransferDirection.INTO_CONTAINER);
+        if (transfer == null || transfer.intoStorage()
+                || transfer.amount() != IdeaStorageDefaults.RAW_UNITS_PER_BUCKET
+                || transfer.resultContainer().isEmpty()
+                || transfer.resultContainer().is(Items.BUCKET)) {
+            return;
+        }
+
+        if (storage.extractItemAndFluid(bucketKey.get(), 1L, transfer.key(), transfer.amount())) {
+            this.setCarried(transfer.resultContainer().copyWithCount(1));
+        }
+    }
+
     /** 右クリックされた容器とFluid/Chemicalカテゴリ間をsimulation先行で転送する。 */
     public void handleTransferContents(ServerPlayer serverPlayer, int targetKind, FluidStack fluidTemplate,
-                                       @Nullable ResourceLocation chemicalId) {
+                                       @Nullable ResourceLocation chemicalId, boolean bulk) {
         if (storage == null || storage.isLoadFailed()) {
             return;
         }
@@ -686,35 +732,83 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         if (carried.isEmpty()) {
             return;
         }
-
         if (targetKind == MessageIdeaStorageTransferContents.TARGET_FLUID) {
-            FluidContainerTransfer transfer = planFluidContainerTransfer(carried, fluidTemplate);
-            if (commitFluidContainerTransfer(serverPlayer, carried, transfer)) {
+            FluidContainerTransfer transfer = planFluidContainerTransfer(
+                    carried, fluidTemplate, IdeaStorageTransferDirection.EITHER);
+            if (transfer != null && commitFluidContainerTransfer(serverPlayer, carried, transfer)) {
+                continueFluidContainerTransfer(serverPlayer, fluidTemplate, transfer, bulk);
                 return;
             }
-            commitChemicalContainerTransfer(serverPlayer, carried,
-                    MekanismCompat.planIdeaStorageChemicalTransfer(storage, carried, null));
+            IdeaStorageChemicalTransfer chemicalTransfer = MekanismCompat.planIdeaStorageChemicalTransfer(
+                    storage, carried, null, IdeaStorageTransferDirection.EITHER);
+            if (chemicalTransfer != null
+                    && commitChemicalContainerTransfer(serverPlayer, carried, chemicalTransfer)) {
+                continueChemicalContainerTransfer(serverPlayer, null, chemicalTransfer, bulk);
+            }
             return;
         }
         if (targetKind == MessageIdeaStorageTransferContents.TARGET_CHEMICAL && chemicalId != null) {
             IdeaStorageChemicalTransfer transfer =
-                    MekanismCompat.planIdeaStorageChemicalTransfer(storage, carried, chemicalId);
-            if (commitChemicalContainerTransfer(serverPlayer, carried, transfer)) {
+                    MekanismCompat.planIdeaStorageChemicalTransfer(
+                            storage, carried, chemicalId, IdeaStorageTransferDirection.EITHER);
+            if (transfer != null && commitChemicalContainerTransfer(serverPlayer, carried, transfer)) {
+                continueChemicalContainerTransfer(serverPlayer, chemicalId, transfer, bulk);
                 return;
             }
-            commitFluidContainerTransfer(serverPlayer, carried, planFluidContainerTransfer(carried, FluidStack.EMPTY));
+            FluidContainerTransfer fluidTransfer =
+                    planFluidContainerTransfer(carried, FluidStack.EMPTY, IdeaStorageTransferDirection.EITHER);
+            if (fluidTransfer != null && commitFluidContainerTransfer(serverPlayer, carried, fluidTransfer)) {
+                continueFluidContainerTransfer(serverPlayer, FluidStack.EMPTY, fluidTransfer, bulk);
+            }
             return;
         }
 
-        if (!commitFluidContainerTransfer(serverPlayer, carried,
-                planFluidContainerTransfer(carried, FluidStack.EMPTY))) {
-            commitChemicalContainerTransfer(serverPlayer, carried,
-                    MekanismCompat.planIdeaStorageChemicalTransfer(storage, carried, null));
+        FluidContainerTransfer fluidTransfer = planFluidContainerTransfer(
+                carried, FluidStack.EMPTY, IdeaStorageTransferDirection.EITHER);
+        if (fluidTransfer != null && commitFluidContainerTransfer(serverPlayer, carried, fluidTransfer)) {
+            continueFluidContainerTransfer(serverPlayer, FluidStack.EMPTY, fluidTransfer, bulk);
+            return;
+        }
+        IdeaStorageChemicalTransfer chemicalTransfer =
+                MekanismCompat.planIdeaStorageChemicalTransfer(
+                        storage, carried, null, IdeaStorageTransferDirection.EITHER);
+        if (chemicalTransfer != null
+                && commitChemicalContainerTransfer(serverPlayer, carried, chemicalTransfer)) {
+            continueChemicalContainerTransfer(serverPlayer, null, chemicalTransfer, bulk);
         }
     }
 
+    private void continueFluidContainerTransfer(ServerPlayer player, FluidStack targetTemplate,
+                                                FluidContainerTransfer firstTransfer, boolean bulk) {
+        IdeaStorageContainerTransferBatch.continueAfterFirst(bulk, () -> {
+            ItemStack carried = this.getCarried();
+            if (carried.isEmpty()) {
+                return false;
+            }
+            FluidContainerTransfer next = planFluidContainerTransfer(
+                    carried, targetTemplate, IdeaStorageTransferDirection.fixed(firstTransfer.intoStorage()));
+            return commitFluidContainerTransfer(player, carried, next);
+        });
+    }
+
+    private void continueChemicalContainerTransfer(ServerPlayer player,
+                                                   @Nullable ResourceLocation targetChemicalId,
+                                                   IdeaStorageChemicalTransfer firstTransfer, boolean bulk) {
+        IdeaStorageContainerTransferBatch.continueAfterFirst(bulk, () -> {
+            ItemStack carried = this.getCarried();
+            if (carried.isEmpty()) {
+                return false;
+            }
+            IdeaStorageChemicalTransfer next = MekanismCompat.planIdeaStorageChemicalTransfer(
+                    storage, carried, targetChemicalId,
+                    IdeaStorageTransferDirection.fixed(firstTransfer.intoStorage()));
+            return commitChemicalContainerTransfer(player, carried, next);
+        });
+    }
+
     @Nullable
-    private FluidContainerTransfer planFluidContainerTransfer(ItemStack container, FluidStack targetTemplate) {
+    private FluidContainerTransfer planFluidContainerTransfer(ItemStack container, FluidStack targetTemplate,
+                                                              IdeaStorageTransferDirection direction) {
         ItemStack working = container.copyWithCount(1);
         IFluidHandlerItem handler = Capabilities.FluidHandler.ITEM.getCapability(working, null);
         if (handler == null) {
@@ -722,7 +816,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         }
 
         Optional<FluidResourceKey> targetKey = FluidResourceKey.of(targetTemplate);
-        if (targetKey.isPresent()) {
+        if (direction.allowsIntoContainer() && targetKey.isPresent()) {
             long available = storage.simulateExtractFluid(targetKey.get(), Integer.MAX_VALUE);
             if (available > 0) {
                 FluidStack offered = targetTemplate.copyWithAmount((int) available);
@@ -736,6 +830,9 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             }
         }
 
+        if (!direction.allowsIntoStorage()) {
+            return null;
+        }
         for (int tank = 0; tank < handler.getTanks(); tank++) {
             FluidStack contained = handler.getFluidInTank(tank);
             if (contained.isEmpty()) {

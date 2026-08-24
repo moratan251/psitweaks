@@ -26,9 +26,6 @@ public final class PlayerIdeaStorage {
     private final Map<ItemResourceKey, Long> items = new LinkedHashMap<>();
     private final Map<FluidResourceKey, Long> fluids = new LinkedHashMap<>();
     private final Map<ResourceLocation, Long> chemicals = new LinkedHashMap<>();
-    private long totalItems;
-    private long totalFluid;
-    private long totalChemical;
     private long version;
     private boolean loadFailed;
     private int gridRows = GRID_ROWS_DEFAULT;
@@ -50,7 +47,7 @@ public final class PlayerIdeaStorage {
         ItemResourceKey key = keyOptional.get();
         boolean existing = items.containsKey(key);
         return IdeaStorageCapacity.simulateInsert(loadFailed, existing, items.size(), maxItemTypes(),
-                items.getOrDefault(key, 0L), totalItems, perTypeLimit(key), maxTotalItems(), amount);
+                items.getOrDefault(key, 0L), perTypeLimit(key), amount);
     }
 
     public long insert(ItemStack template, long amount) {
@@ -60,7 +57,6 @@ public final class PlayerIdeaStorage {
         }
         ItemResourceKey key = ItemResourceKey.of(template).orElseThrow();
         items.put(key, Math.addExact(items.getOrDefault(key, 0L), accepted));
-        totalItems = Math.addExact(totalItems, accepted);
         markChanged();
         return accepted;
     }
@@ -83,7 +79,6 @@ public final class PlayerIdeaStorage {
         } else {
             items.put(key, next);
         }
-        totalItems -= extracted;
         markChanged();
         return extracted;
     }
@@ -99,7 +94,7 @@ public final class PlayerIdeaStorage {
         FluidResourceKey key = keyOptional.get();
         boolean existing = fluids.containsKey(key);
         return IdeaStorageCapacity.simulateInsert(loadFailed, existing, fluids.size(), maxFluidTypes(),
-                fluids.getOrDefault(key, 0L), totalFluid, maxFluidPerType(), maxTotalFluid(), amount);
+                fluids.getOrDefault(key, 0L), maxFluidPerType(), amount);
     }
 
     public long insertFluid(FluidStack template, long amount) {
@@ -109,7 +104,6 @@ public final class PlayerIdeaStorage {
         }
         FluidResourceKey key = FluidResourceKey.of(template).orElseThrow();
         fluids.put(key, Math.addExact(fluids.getOrDefault(key, 0L), accepted));
-        totalFluid = Math.addExact(totalFluid, accepted);
         markChanged();
         return accepted;
     }
@@ -132,9 +126,33 @@ public final class PlayerIdeaStorage {
         } else {
             fluids.put(key, next);
         }
-        totalFluid -= extracted;
         markChanged();
         return extracted;
+    }
+
+    /** ItemとFluidを1回の検証・変更として減算する。途中状態やrollback不能を発生させない。 */
+    public boolean extractItemAndFluid(ItemResourceKey itemKey, long itemAmount,
+                                       FluidResourceKey fluidKey, long fluidAmount) {
+        if (simulateExtract(itemKey, itemAmount) != itemAmount
+                || simulateExtractFluid(fluidKey, fluidAmount) != fluidAmount) {
+            return false;
+        }
+
+        long nextItemAmount = items.get(itemKey) - itemAmount;
+        if (nextItemAmount == 0) {
+            items.remove(itemKey);
+        } else {
+            items.put(itemKey, nextItemAmount);
+        }
+
+        long nextFluidAmount = fluids.get(fluidKey) - fluidAmount;
+        if (nextFluidAmount == 0) {
+            fluids.remove(fluidKey);
+        } else {
+            fluids.put(fluidKey, nextFluidAmount);
+        }
+        markChanged();
+        return true;
     }
 
     public long simulateInsertChemical(ResourceLocation chemicalId, long amount) {
@@ -143,8 +161,7 @@ public final class PlayerIdeaStorage {
         }
         boolean existing = chemicals.containsKey(chemicalId);
         return IdeaStorageCapacity.simulateInsert(loadFailed, existing, chemicals.size(), maxChemicalTypes(),
-                chemicals.getOrDefault(chemicalId, 0L), totalChemical,
-                maxChemicalPerType(), maxTotalChemical(), amount);
+                chemicals.getOrDefault(chemicalId, 0L), maxChemicalPerType(), amount);
     }
 
     public long insertChemical(ResourceLocation chemicalId, long amount) {
@@ -153,7 +170,6 @@ public final class PlayerIdeaStorage {
             return 0;
         }
         chemicals.put(chemicalId, Math.addExact(chemicals.getOrDefault(chemicalId, 0L), accepted));
-        totalChemical = Math.addExact(totalChemical, accepted);
         markChanged();
         return accepted;
     }
@@ -176,7 +192,6 @@ public final class PlayerIdeaStorage {
         } else {
             chemicals.put(chemicalId, next);
         }
-        totalChemical -= extracted;
         markChanged();
         return extracted;
     }
@@ -189,21 +204,18 @@ public final class PlayerIdeaStorage {
         long existing = items.getOrDefault(key, 0L);
         long merged = mergeLoadedAmount("item", key, existing, count);
         items.put(key, merged);
-        totalItems = replaceLoadedTotal("item", totalItems, existing, merged);
     }
 
     void loadFluidEntry(FluidResourceKey key, long amount) {
         long existing = fluids.getOrDefault(key, 0L);
         long merged = mergeLoadedAmount("fluid", key, existing, amount);
         fluids.put(key, merged);
-        totalFluid = replaceLoadedTotal("fluid", totalFluid, existing, merged);
     }
 
     void loadChemicalEntry(ResourceLocation chemicalId, long amount) {
         long existing = chemicals.getOrDefault(chemicalId, 0L);
         long merged = mergeLoadedAmount("chemical", chemicalId, existing, amount);
         chemicals.put(chemicalId, merged);
-        totalChemical = replaceLoadedTotal("chemical", totalChemical, existing, merged);
     }
 
     private static long mergeLoadedAmount(String category, Object key, long existing, long amount) {
@@ -213,15 +225,6 @@ public final class PlayerIdeaStorage {
             LOGGER.warn("Idea storage {} entry overflow while merging duplicate keys for {}; keeping the larger amount.",
                     category, key);
             return Math.max(existing, amount);
-        }
-    }
-
-    private static long replaceLoadedTotal(String category, long total, long existing, long merged) {
-        try {
-            return Math.addExact(total - existing, merged);
-        } catch (ArithmeticException overflow) {
-            LOGGER.warn("Idea storage {} total overflow while loading; clamping to Long.MAX_VALUE.", category);
-            return Long.MAX_VALUE;
         }
     }
 
@@ -246,24 +249,12 @@ public final class PlayerIdeaStorage {
         return items.size();
     }
 
-    public long totalItems() {
-        return totalItems;
-    }
-
     public int fluidTypeCount() {
         return fluids.size();
     }
 
-    public long totalFluid() {
-        return totalFluid;
-    }
-
     public int chemicalTypeCount() {
         return chemicals.size();
-    }
-
-    public long totalChemical() {
-        return totalChemical;
     }
 
     public long getVersion() {
@@ -307,10 +298,6 @@ public final class PlayerIdeaStorage {
         return PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.get();
     }
 
-    public long maxTotalItems() {
-        return PsitweaksConfig.COMMON.ideaStorageMaxTotalItems.get();
-    }
-
     public long perTypeLimit(ItemResourceKey key) {
         return key.getMaxStackSize() * (long) itemStacksPerType();
     }
@@ -323,10 +310,6 @@ public final class PlayerIdeaStorage {
         return PsitweaksConfig.COMMON.ideaStorageMaxFluidPerType.get();
     }
 
-    public long maxTotalFluid() {
-        return PsitweaksConfig.COMMON.ideaStorageMaxTotalFluid.get();
-    }
-
     public int maxChemicalTypes() {
         return PsitweaksConfig.COMMON.ideaStorageMaxChemicalTypes.get();
     }
@@ -335,7 +318,4 @@ public final class PlayerIdeaStorage {
         return PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.get();
     }
 
-    public long maxTotalChemical() {
-        return PsitweaksConfig.COMMON.ideaStorageMaxTotalChemical.get();
-    }
 }

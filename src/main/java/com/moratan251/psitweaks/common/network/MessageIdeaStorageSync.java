@@ -18,6 +18,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  */
 public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluidEntries,
                                      List<ChemicalEntry> chemicalEntries,
+                                     int maxItemTypes, int maxFluidTypes, int maxChemicalTypes,
                                      boolean loadFailed) implements CustomPacketPayload {
     public static final Type<MessageIdeaStorageSync> TYPE =
             new Type<>(Psitweaks.location("idea_storage_sync"));
@@ -54,6 +55,9 @@ public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluid
             buf.writeResourceLocation(entry.chemicalId());
             buf.writeLong(entry.amount());
         }
+        buf.writeVarInt(maxItemTypes);
+        buf.writeVarInt(maxFluidTypes);
+        buf.writeVarInt(maxChemicalTypes);
         buf.writeBoolean(loadFailed);
     }
 
@@ -79,8 +83,12 @@ public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluid
             long amount = buf.readLong();
             chemicalEntries.add(new ChemicalEntry(chemicalId, amount));
         }
+        int maxItemTypes = buf.readVarInt();
+        int maxFluidTypes = buf.readVarInt();
+        int maxChemicalTypes = buf.readVarInt();
         return new MessageIdeaStorageSync(List.copyOf(entries), List.copyOf(fluidEntries),
-                List.copyOf(chemicalEntries), buf.readBoolean());
+                List.copyOf(chemicalEntries), maxItemTypes, maxFluidTypes, maxChemicalTypes,
+                buf.readBoolean());
     }
 
     public static void handle(MessageIdeaStorageSync message, IPayloadContext context) {

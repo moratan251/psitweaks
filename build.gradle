@@ -149,7 +149,7 @@ dependencies {
     implementation "curse.maven:curios-309927:6529130"
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"
-    implementation "curse.maven:emi-580555:8081408"
+    compileOnly "curse.maven:emi-580555:8081408"
     runtimeOnly "curse.maven:psionic-utilities-611991:8358809"
     implementation "com.moratan251:psitweaks-qol"
     jarJar "com.moratan251:psitweaks-qol"

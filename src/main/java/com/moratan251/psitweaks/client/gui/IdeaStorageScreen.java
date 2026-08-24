@@ -6,13 +6,16 @@ import com.moratan251.psitweaks.common.network.MessageIdeaStorageClearCrafting;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageCraftToggle;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageDeposit;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageExtract;
+import com.moratan251.psitweaks.common.network.MessageIdeaStorageFillBucket;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageResize;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageTransferContents;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -30,8 +33,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -59,6 +64,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private static final int COLOR_ERROR = 0xFFAA0000;
     private static final int COLOR_ARROW = 0xFF555555;
     private static final int CELL = 18;
+    private static final float COUNT_SCALE = 0.75F;
     private static final int MIN_HANDLE_HEIGHT = 12;
     private static final int SIDE_BUTTON_WIDTH = 18;
     private static final int SIDE_BUTTON_HEIGHT = 18;
@@ -67,15 +73,24 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private static final int ROWS_ADD_BUTTON_Y = 54;
     private static final int ROWS_REMOVE_BUTTON_Y = 74;
     private static final int SORT_BUTTON_Y = 94;
-    private static final int CRAFT_CLEAR_BUTTON_Y = 114;
+    private static final int INFO_BUTTON_Y = 114;
+    private static final int CRAFT_CLEAR_BUTTON_SIZE = 12;
 
     private List<IdeaStorageDisplayEntry> entries = List.of();
     private boolean loadFailed;
+    private int itemTypeCount;
+    private int fluidTypeCount;
+    private int chemicalTypeCount;
+    private int maxItemTypes;
+    private int maxFluidTypes;
+    private int maxChemicalTypes;
     private String filter = "";
     private int firstRow;
     private boolean draggingScrollBar;
     @Nullable
     private EditBox searchBox;
+    @Nullable
+    private Button craftClearButton;
 
     public IdeaStorageScreen(IdeaStorageMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -125,10 +140,17 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                     button.setTooltip(Tooltip.create(sortTooltip(mode)));
                 });
         addRenderableWidget(sortButton);
-        addRenderableWidget(new SideButton(this.leftPos + SIDE_BUTTON_X, this.topPos + CRAFT_CLEAR_BUTTON_Y,
-                Component.empty(), () -> new ItemStack(Items.ENDER_CHEST),
-                Component.translatable("gui.psitweaks.idea_storage.craft_clear"),
-                button -> PacketDistributor.sendToServer(new MessageIdeaStorageClearCrafting())));
+        SideButton infoButton = new SideButton(this.leftPos + SIDE_BUTTON_X, this.topPos + INFO_BUTTON_Y,
+                Component.literal("i"), null, null, button -> {
+                });
+        infoButton.active = false;
+        addRenderableWidget(infoButton);
+        craftClearButton = addRenderableWidget(new CraftClearButton(
+                this.leftPos + IdeaStorageMenu.CRAFT_PANEL_X + IdeaStorageMenu.CRAFT_PANEL_WIDTH
+                        - CRAFT_CLEAR_BUTTON_SIZE - 3,
+                this.topPos + IdeaStorageMenu.CRAFT_PANEL_Y + 3));
+        craftClearButton.visible = this.menu.isCraftOpen();
+        craftClearButton.active = this.menu.isCraftOpen();
 
         // 行数変更による開き直し直後は、退避してあったカーソル位置を復元する
         IdeaStorageClientHandler.restoreMousePositionIfStashed();
@@ -143,6 +165,10 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private void toggleCraftWindow() {
         boolean next = !this.menu.isCraftOpen();
         this.menu.setCraftOpen(next);
+        if (craftClearButton != null) {
+            craftClearButton.visible = next;
+            craftClearButton.active = next;
+        }
         PacketDistributor.sendToServer(new MessageIdeaStorageCraftToggle(next));
     }
 
@@ -155,7 +181,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     /** JEI/EMI の占有領域(exclusion area)通知用。左端サイドボタン列の矩形(画面絶対座標)。 */
     public Rect2i getSideButtonArea() {
         return new Rect2i(this.leftPos + SIDE_BUTTON_X, this.topPos + CRAFT_BUTTON_Y,
-                SIDE_BUTTON_WIDTH, CRAFT_CLEAR_BUTTON_Y + SIDE_BUTTON_HEIGHT - CRAFT_BUTTON_Y);
+                SIDE_BUTTON_WIDTH, INFO_BUTTON_Y + SIDE_BUTTON_HEIGHT - CRAFT_BUTTON_Y);
     }
 
     /** 行数変更要求。サーバーが Menu を閉じて新しい行数で開き直すため、ここでは送信のみ。 */
@@ -189,6 +215,12 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         message.chemicalEntries().stream().map(IdeaStorageDisplayEntry::chemical).forEach(displayEntries::add);
         this.entries = List.copyOf(displayEntries);
         this.menu.applyClientStorageEntries(message.entries());
+        this.itemTypeCount = message.entries().size();
+        this.fluidTypeCount = message.fluidEntries().size();
+        this.chemicalTypeCount = message.chemicalEntries().size();
+        this.maxItemTypes = message.maxItemTypes();
+        this.maxFluidTypes = message.maxFluidTypes();
+        this.maxChemicalTypes = message.maxChemicalTypes();
         this.loadFailed = message.loadFailed();
         clampScroll();
     }
@@ -274,7 +306,11 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             int y = gridTop + (cellIndex / IdeaStorageMenu.GRID_COLUMNS) * CELL;
             IdeaStorageDisplayEntry entry = visible.get(i);
             renderEntry(guiGraphics, entry, x + 1, y + 1);
-            drawCount(guiGraphics, entry.amount(), x + 1, y + 1);
+            drawCount(guiGraphics, entry, x + 1, y + 1);
+        }
+        EntryCell hovered = entryCellAt(mouseX, mouseY);
+        if (hovered != null) {
+            renderSlotHighlight(guiGraphics, hovered.x() + 1, hovered.y() + 1, 0);
         }
     }
 
@@ -366,28 +402,19 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         guiGraphics.fill(trackX + IdeaStorageMenu.SCROLLBAR_WIDTH - 2, handleY, trackX + IdeaStorageMenu.SCROLLBAR_WIDTH - 1, handleY + handleHeight, COLOR_SCROLL_HANDLE_DARK);
     }
 
-    private void drawCount(GuiGraphics guiGraphics, long count, int x, int y) {
-        if (count <= 1) {
+    private void drawCount(GuiGraphics guiGraphics, IdeaStorageDisplayEntry entry, int x, int y) {
+        BigDecimal displayAmount = entry.amountInDisplayUnits();
+        if (displayAmount.compareTo(BigDecimal.ONE) == 0) {
             return;
         }
-        String text = formatCount(count);
+        String text = IdeaStorageAmountFormatter.formatGrid(entry.amount(), entry.displayAmountScale());
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 300.0F);
-        guiGraphics.pose().scale(0.5F, 0.5F, 1.0F);
-        int drawX = (x + CELL - 1) * 2 - this.font.width(text);
-        int drawY = (y + CELL - 1) * 2 - 9;
+        guiGraphics.pose().scale(COUNT_SCALE, COUNT_SCALE, 1.0F);
+        int drawX = Math.round((x + CELL - 1) / COUNT_SCALE) - this.font.width(text);
+        int drawY = Math.round((y + CELL - 1) / COUNT_SCALE) - 9;
         guiGraphics.drawString(this.font, text, drawX, drawY, 0xFFFFFFFF, true);
         guiGraphics.pose().popPose();
-    }
-
-    private static String formatCount(long count) {
-        if (count < 1_000L) {
-            return Long.toString(count);
-        }
-        if (count < 1_000_000L) {
-            return count / 1_000L + "k";
-        }
-        return count / 1_000_000L + "M";
     }
 
     @Override
@@ -409,25 +436,73 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.renderTooltip(guiGraphics, mouseX, mouseY);
+        if (isOverInfoButton(mouseX, mouseY)) {
+            guiGraphics.renderComponentTooltip(this.font, List.of(
+                    Component.translatable("gui.psitweaks.idea_storage.info.item_types",
+                            itemTypeCount, maxItemTypes),
+                    Component.translatable("gui.psitweaks.idea_storage.info.fluid_types",
+                            fluidTypeCount, maxFluidTypes),
+                    Component.translatable("gui.psitweaks.idea_storage.info.chemical_types",
+                            chemicalTypeCount, maxChemicalTypes)
+            ), mouseX, mouseY);
+        }
         IdeaStorageDisplayEntry hovered = entryAt(mouseX, mouseY);
         if (hovered != null && this.menu.getCarried().isEmpty()) {
             if (hovered.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
-                guiGraphics.renderTooltip(this.font, hovered.itemTemplate(), mouseX, mouseY);
+                renderItemEntryTooltip(guiGraphics, hovered, mouseX, mouseY);
             } else {
                 String amountKey = hovered.kind() == IdeaStorageDisplayEntry.Kind.FLUID
                         ? "gui.psitweaks.idea_storage.fluid_amount"
                         : "gui.psitweaks.idea_storage.chemical_amount";
                 guiGraphics.renderComponentTooltip(this.font, List.of(
                         hovered.displayName(),
-                        Component.translatable(amountKey, hovered.amount()),
+                        Component.translatable(amountKey, IdeaStorageAmountFormatter.formatExact(
+                                hovered.amount(), hovered.displayAmountScale())),
                         Component.literal(hovered.resourceId().toString()).withStyle(ChatFormatting.DARK_GRAY)
                 ), mouseX, mouseY);
             }
         }
     }
 
+    private void renderItemEntryTooltip(GuiGraphics guiGraphics, IdeaStorageDisplayEntry entry,
+                                        int mouseX, int mouseY) {
+        ItemStack stack = entry.itemTemplate();
+        Item.TooltipContext context = this.minecraft.level == null
+                ? Item.TooltipContext.EMPTY
+                : Item.TooltipContext.of(this.minecraft.level);
+        TooltipFlag flag = this.minecraft.options.advancedItemTooltips
+                ? TooltipFlag.ADVANCED
+                : TooltipFlag.NORMAL;
+        List<Component> lines = new ArrayList<>(stack.getTooltipLines(context, this.minecraft.player, flag));
+        Component amountLine = Component.translatable("gui.psitweaks.idea_storage.item_amount",
+                IdeaStorageAmountFormatter.formatExact(entry.amount(), entry.displayAmountScale()))
+                .withStyle(ChatFormatting.GRAY);
+        String resourceId = entry.resourceId().toString();
+        int idLine = -1;
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).getString().equals(resourceId)) {
+                idLine = i;
+                break;
+            }
+        }
+        if (idLine >= 0) {
+            lines.add(idLine, amountLine);
+        } else {
+            lines.add(amountLine);
+            lines.add(Component.literal(resourceId).withStyle(ChatFormatting.DARK_GRAY));
+        }
+        guiGraphics.renderTooltip(this.font, lines, stack.getTooltipImage(), stack, mouseX, mouseY);
+    }
+
     @Nullable
     private IdeaStorageDisplayEntry entryAt(int mouseX, int mouseY) {
+        EntryCell cell = entryCellAt(mouseX, mouseY);
+        return cell == null ? null : cell.entry();
+    }
+
+    @Nullable
+    private EntryCell entryCellAt(int mouseX, int mouseY) {
         if (loadFailed) {
             return null;
         }
@@ -445,7 +520,22 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         }
         int index = (firstRow + row) * IdeaStorageMenu.GRID_COLUMNS + col;
         List<IdeaStorageDisplayEntry> visible = filteredEntries();
-        return index < visible.size() ? visible.get(index) : null;
+        if (index >= visible.size()) {
+            return null;
+        }
+        return new EntryCell(visible.get(index),
+                this.leftPos + IdeaStorageMenu.GRID_X + col * CELL,
+                this.topPos + IdeaStorageMenu.GRID_Y + row * CELL);
+    }
+
+    /** JEI/EMIのRecipe/Usageキー対象として公開する仮想Itemエントリ。 */
+    public Optional<StorageItemReference> getStorageItemUnderMouse(double mouseX, double mouseY) {
+        EntryCell cell = entryCellAt((int) mouseX, (int) mouseY);
+        if (cell == null || cell.entry().kind() != IdeaStorageDisplayEntry.Kind.ITEM) {
+            return Optional.empty();
+        }
+        return Optional.of(new StorageItemReference(cell.entry().itemTemplate().copyWithCount(1),
+                new Rect2i(cell.x() + 1, cell.y() + 1, 16, 16)));
     }
 
     private boolean isOverGrid(int mouseX, int mouseY) {
@@ -453,6 +543,12 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         int relY = mouseY - (this.topPos + IdeaStorageMenu.GRID_Y);
         return relX >= 0 && relX < IdeaStorageMenu.GRID_COLUMNS * CELL
                 && relY >= 0 && relY < gridRows() * CELL;
+    }
+
+    private boolean isOverInfoButton(int mouseX, int mouseY) {
+        int relX = mouseX - (this.leftPos + SIDE_BUTTON_X);
+        int relY = mouseY - (this.topPos + INFO_BUTTON_Y);
+        return relX >= 0 && relX < SIDE_BUTTON_WIDTH && relY >= 0 && relY < SIDE_BUTTON_HEIGHT;
     }
 
     private boolean isOverScrollBar(int mouseX, int mouseY) {
@@ -486,13 +582,16 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             return true;
         }
         if (isOverGrid(mx, my)) {
+            if (searchBox != null) {
+                searchBox.setFocused(false);
+            }
             ItemStack carried = this.menu.getCarried();
             if (!carried.isEmpty()) {
                 if (!loadFailed) {
                     if (button == 0) {
                         PacketDistributor.sendToServer(new MessageIdeaStorageDeposit(carried.copyWithCount(1)));
                     } else if (button == 1) {
-                        PacketDistributor.sendToServer(contentTransferMessage(entryAt(mx, my)));
+                        PacketDistributor.sendToServer(contentTransferMessage(entryAt(mx, my), hasShiftDown()));
                     } else {
                         return super.mouseClicked(mouseX, mouseY, button);
                     }
@@ -500,6 +599,11 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                 return true;
             }
             IdeaStorageDisplayEntry entry = entryAt(mx, my);
+            if (entry != null && !loadFailed
+                    && entry.kind() == IdeaStorageDisplayEntry.Kind.FLUID && button == 0) {
+                PacketDistributor.sendToServer(new MessageIdeaStorageFillBucket(entry.fluidTemplate()));
+                return true;
+            }
             if (entry != null && !loadFailed && entry.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
                 int mode = switch (button) {
                     case 0 -> hasShiftDown()
@@ -521,14 +625,14 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     }
 
     private static MessageIdeaStorageTransferContents contentTransferMessage(
-            @Nullable IdeaStorageDisplayEntry target) {
+            @Nullable IdeaStorageDisplayEntry target, boolean bulk) {
         if (target == null || target.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
-            return MessageIdeaStorageTransferContents.emptyTarget();
+            return MessageIdeaStorageTransferContents.emptyTarget(bulk);
         }
         if (target.kind() == IdeaStorageDisplayEntry.Kind.FLUID) {
-            return MessageIdeaStorageTransferContents.fluidTarget(target.fluidTemplate());
+            return MessageIdeaStorageTransferContents.fluidTarget(target.fluidTemplate(), bulk);
         }
-        return MessageIdeaStorageTransferContents.chemicalTarget(target.chemicalId());
+        return MessageIdeaStorageTransferContents.chemicalTarget(target.chemicalId(), bulk);
     }
 
     @Override
@@ -584,10 +688,12 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         private final Supplier<ItemStack> icon;
 
         SideButton(int x, int y, Component text, @Nullable Supplier<ItemStack> icon,
-                   Component tooltip, OnPress onPress) {
+                   @Nullable Component tooltip, OnPress onPress) {
             super(x, y, SIDE_BUTTON_WIDTH, SIDE_BUTTON_HEIGHT, text, onPress, DEFAULT_NARRATION);
             this.icon = icon;
-            setTooltip(Tooltip.create(tooltip));
+            if (tooltip != null) {
+                setTooltip(Tooltip.create(tooltip));
+            }
         }
 
         @Override
@@ -611,5 +717,33 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                         x + this.width / 2, y + (this.height - 8) / 2, COLOR_TEXT);
             }
         }
+    }
+
+    private class CraftClearButton extends Button {
+        CraftClearButton(int x, int y) {
+            super(x, y, CRAFT_CLEAR_BUTTON_SIZE, CRAFT_CLEAR_BUTTON_SIZE, Component.literal("×"),
+                    button -> PacketDistributor.sendToServer(new MessageIdeaStorageClearCrafting()),
+                    DEFAULT_NARRATION);
+            setTooltip(Tooltip.create(Component.translatable("gui.psitweaks.idea_storage.craft_clear")));
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            int x = getX();
+            int y = getY();
+            guiGraphics.fill(x, y, x + this.width, y + this.height, COLOR_BACKGROUND);
+            guiGraphics.fill(x, y, x + this.width, y + 1, COLOR_FRAME_OUTER);
+            guiGraphics.fill(x, y + this.height - 1, x + this.width, y + this.height, COLOR_FRAME_OUTER);
+            guiGraphics.fill(x, y, x + 1, y + this.height, COLOR_FRAME_OUTER);
+            guiGraphics.fill(x + this.width - 1, y, x + this.width, y + this.height, COLOR_FRAME_OUTER);
+            guiGraphics.drawCenteredString(IdeaStorageScreen.this.font, getMessage(),
+                    x + this.width / 2, y + 2, COLOR_TEXT);
+        }
+    }
+
+    private record EntryCell(IdeaStorageDisplayEntry entry, int x, int y) {
+    }
+
+    public record StorageItemReference(ItemStack stack, Rect2i area) {
     }
 }

@@ -9,30 +9,28 @@ class IdeaStorageCapacityTest {
     @Test
     void acceptsSixtyFourthTypeAndRejectsSixtyFifthType() {
         assertEquals(1, IdeaStorageCapacity.simulateInsert(false, false, 63, 64,
-                0, 63, 100, 1_000, 1));
+                0, 100, 1));
         assertEquals(0, IdeaStorageCapacity.simulateInsert(false, false, 64, 64,
-                0, 64, 100, 1_000, 1));
+                0, 100, 1));
     }
 
     @Test
     void existingTypeCanGrowAtTypeLimit() {
         assertEquals(5, IdeaStorageCapacity.simulateInsert(false, true, 64, 64,
-                10, 640, 100, 1_000, 5));
+                10, 100, 5));
     }
 
     @Test
-    void clampsIndependentlyToPerTypeAndTotalCapacity() {
+    void clampsOnlyToPerTypeCapacity() {
         assertEquals(3, IdeaStorageCapacity.simulateInsert(false, true, 1, 64,
-                97, 100, 100, 1_000, 50));
-        assertEquals(4, IdeaStorageCapacity.simulateInsert(false, true, 1, 64,
-                10, 996, 100, 1_000, 50));
+                97, 100, 50));
+        assertEquals(50, IdeaStorageCapacity.simulateInsert(false, true, 64, 64,
+                10, 100, 50));
     }
 
     @Test
-    void rejectsInsertWhileCategoryIsOverCapacity() {
+    void rejectsInsertWhileEntryIsOverPerTypeCapacity() {
         assertEquals(0, IdeaStorageCapacity.simulateInsert(false, true, 1, 64,
-                101, 101, 100, 1_000, 1));
-        assertEquals(0, IdeaStorageCapacity.simulateInsert(false, true, 1, 64,
-                10, 1_001, 100, 1_000, 1));
+                101, 100, 1));
     }
 }

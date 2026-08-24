@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client.gui;
 
 import com.moratan251.psitweaks.client.compat.IdeaStorageChemicalClientCompat;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
+import java.math.BigDecimal;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -45,5 +46,15 @@ public record IdeaStorageDisplayEntry(Kind kind, ItemStack itemTemplate, FluidSt
             case FLUID -> BuiltInRegistries.FLUID.getKey(fluidTemplate.getFluid());
             case CHEMICAL -> chemicalId;
         };
+    }
+
+    public int displayAmountScale() {
+        return kind == Kind.ITEM
+                ? IdeaStorageAmountFormatter.ITEM_SCALE
+                : IdeaStorageAmountFormatter.BUCKET_SCALE;
+    }
+
+    public BigDecimal amountInDisplayUnits() {
+        return IdeaStorageAmountFormatter.asDisplayAmount(amount, displayAmountScale());
     }
 }

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 /** カーソル上の容器とFluid/Chemicalストレージ間の右クリック転送要求。 */
 public record MessageIdeaStorageTransferContents(int targetKind, FluidStack fluidTemplate,
-                                                 @Nullable ResourceLocation chemicalId)
+                                                 @Nullable ResourceLocation chemicalId, boolean bulk)
         implements CustomPacketPayload {
     public static final int TARGET_NONE = 0;
     public static final int TARGET_FLUID = 1;
@@ -38,16 +38,16 @@ public record MessageIdeaStorageTransferContents(int targetKind, FluidStack flui
         }
     }
 
-    public static MessageIdeaStorageTransferContents emptyTarget() {
-        return new MessageIdeaStorageTransferContents(TARGET_NONE, FluidStack.EMPTY, null);
+    public static MessageIdeaStorageTransferContents emptyTarget(boolean bulk) {
+        return new MessageIdeaStorageTransferContents(TARGET_NONE, FluidStack.EMPTY, null, bulk);
     }
 
-    public static MessageIdeaStorageTransferContents fluidTarget(FluidStack template) {
-        return new MessageIdeaStorageTransferContents(TARGET_FLUID, template.copyWithAmount(1), null);
+    public static MessageIdeaStorageTransferContents fluidTarget(FluidStack template, boolean bulk) {
+        return new MessageIdeaStorageTransferContents(TARGET_FLUID, template.copyWithAmount(1), null, bulk);
     }
 
-    public static MessageIdeaStorageTransferContents chemicalTarget(ResourceLocation chemicalId) {
-        return new MessageIdeaStorageTransferContents(TARGET_CHEMICAL, FluidStack.EMPTY, chemicalId);
+    public static MessageIdeaStorageTransferContents chemicalTarget(ResourceLocation chemicalId, boolean bulk) {
+        return new MessageIdeaStorageTransferContents(TARGET_CHEMICAL, FluidStack.EMPTY, chemicalId, bulk);
     }
 
     @Override
@@ -62,15 +62,19 @@ public record MessageIdeaStorageTransferContents(int targetKind, FluidStack flui
         } else if (targetKind == TARGET_CHEMICAL && chemicalId != null) {
             buf.writeResourceLocation(chemicalId);
         }
+        buf.writeBoolean(bulk);
     }
 
     private static MessageIdeaStorageTransferContents read(RegistryFriendlyByteBuf buf) {
         int targetKind = buf.readVarInt();
-        return switch (targetKind) {
-            case TARGET_FLUID -> fluidTarget(FluidStack.STREAM_CODEC.decode(buf));
-            case TARGET_CHEMICAL -> chemicalTarget(buf.readResourceLocation());
-            default -> emptyTarget();
-        };
+        FluidStack fluidTemplate = targetKind == TARGET_FLUID
+                ? FluidStack.STREAM_CODEC.decode(buf)
+                : FluidStack.EMPTY;
+        ResourceLocation chemicalId = targetKind == TARGET_CHEMICAL
+                ? buf.readResourceLocation()
+                : null;
+        boolean bulk = buf.readBoolean();
+        return new MessageIdeaStorageTransferContents(targetKind, fluidTemplate, chemicalId, bulk);
     }
 
     public static void handle(MessageIdeaStorageTransferContents message, IPayloadContext context) {
@@ -79,7 +83,7 @@ public record MessageIdeaStorageTransferContents(int targetKind, FluidStack flui
                     && serverPlayer.containerMenu instanceof IdeaStorageMenu menu
                     && menu.ownerUuid().equals(serverPlayer.getUUID())) {
                 menu.handleTransferContents(serverPlayer, message.targetKind,
-                        message.fluidTemplate, message.chemicalId);
+                        message.fluidTemplate, message.chemicalId, message.bulk);
             }
         });
     }

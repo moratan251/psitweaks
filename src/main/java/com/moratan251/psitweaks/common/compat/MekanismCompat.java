@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.compat;
 
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -51,9 +52,11 @@ public final class MekanismCompat {
 
     @Nullable
     public static IdeaStorageChemicalTransfer planIdeaStorageChemicalTransfer(
-            PlayerIdeaStorage storage, ItemStack container, @Nullable ResourceLocation targetChemicalId) {
+            PlayerIdeaStorage storage, ItemStack container, @Nullable ResourceLocation targetChemicalId,
+            IdeaStorageTransferDirection direction) {
         return isMekanismLoaded()
-                ? MekanismIntegration.planIdeaStorageChemicalTransfer(storage, container, targetChemicalId)
+                ? MekanismIntegration.planIdeaStorageChemicalTransfer(
+                        storage, container, targetChemicalId, direction)
                 : null;
     }
 }

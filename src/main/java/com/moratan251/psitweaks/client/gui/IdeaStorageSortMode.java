@@ -17,7 +17,7 @@ public enum IdeaStorageSortMode {
             Comparator.comparing((IdeaStorageDisplayEntry entry) -> entry.resourceId().getNamespace())
                     .thenComparing(entry -> entry.resourceId().toString())),
     COUNT("count", new ItemStack(Items.HOPPER),
-            Comparator.comparingLong(IdeaStorageDisplayEntry::amount).reversed());
+            Comparator.comparing(IdeaStorageDisplayEntry::amountInDisplayUnits).reversed());
 
     private final String id;
     private final ItemStack icon;

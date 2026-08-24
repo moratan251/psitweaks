@@ -118,6 +118,11 @@ public class MaterialMutatorBlockEntity extends TileEntityAdvancedElectricMachin
     }
 
     public static List<RecipeHolder<ItemStackChemicalToItemStackRecipe>> getAllMutationMachineRecipeHolders(Level level) {
+        return getAllMutationMachineRecipeHolders();
+    }
+
+    /** Client recipe viewers do not need a Level because these entries come from the reload listener. */
+    public static List<RecipeHolder<ItemStackChemicalToItemStackRecipe>> getAllMutationMachineRecipeHolders() {
         return MekanismMaterialMutationRecipeHandler.getAllMachineRecipes().stream()
                 .map(recipe -> new RecipeHolder<ItemStackChemicalToItemStackRecipe>(recipe.id(), asMekanismRecipe(recipe)))
                 .toList();

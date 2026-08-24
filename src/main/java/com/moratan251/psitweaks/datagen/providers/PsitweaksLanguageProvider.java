@@ -516,34 +516,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Item Stacks per Type", "1種類あたりのスタック数係数",
                 "Per-type item limit as a multiplier of the item's max stack size.",
                 "アイテム1種類あたりの上限を、最大スタック数に掛ける係数として設定します。");
-        addConfigValue(root, "psitweaks.configuration.idea_storage.max_total_items",
-                "Max Total Items", "アイテム総量上限",
-                "Maximum total item count per player in the Ideaspace Storage.",
-                "イデアストレージに格納できるアイテムの総量上限です。");
         addConfigValue(root, "psitweaks.configuration.idea_storage.max_fluid_types",
                 "Max Fluid Types", "液体最大種類数",
                 "Maximum number of distinct fluid types per player in the Ideaspace Storage.",
                 "イデアストレージに格納できる液体の最大種類数です。");
         addConfigValue(root, "psitweaks.configuration.idea_storage.max_fluid_per_type",
                 "Max Fluid per Type", "液体1種類あたりの上限",
-                "Maximum amount stored per fluid type in mB.",
-                "液体1種類あたりに格納できる上限をmB単位で設定します。");
-        addConfigValue(root, "psitweaks.configuration.idea_storage.max_total_fluid",
-                "Max Total Fluid", "液体総量上限",
-                "Maximum total fluid amount per player in mB.",
-                "イデアストレージに格納できる液体の総量上限をmB単位で設定します。");
+                "Maximum amount stored per fluid type. The config value uses internal mB units; the default is 1,048,576 B.",
+                "液体1種類あたりに格納できる上限です。コンフィグ値は内部mB単位で、既定値は1,048,576 Bです。");
         addConfigValue(root, "psitweaks.configuration.idea_storage.max_chemical_types",
                 "Max Chemical Types", "Chemical最大種類数",
                 "Maximum number of distinct chemical types per player in the Ideaspace Storage.",
                 "イデアストレージに格納できるChemicalの最大種類数です。");
         addConfigValue(root, "psitweaks.configuration.idea_storage.max_chemical_per_type",
                 "Max Chemical per Type", "Chemical 1種類あたりの上限",
-                "Maximum amount stored per chemical type.",
-                "Chemical 1種類あたりに格納できる上限です。");
-        addConfigValue(root, "psitweaks.configuration.idea_storage.max_total_chemical",
-                "Max Total Chemical", "Chemical総量上限",
-                "Maximum total chemical amount per player.",
-                "イデアストレージに格納できるChemicalの総量上限です。");
+                "Maximum amount stored per chemical type. The config value uses internal API units; the default is 33,554,432 B.",
+                "Chemical 1種類あたりに格納できる上限です。コンフィグ値は内部API単位で、既定値は33,554,432 Bです。");
     }
 
     private void addDamageMultiplierConfig(JsonObject root, String id, String enUsName, String jaJpName) {
@@ -1159,13 +1147,29 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "保管量順";
             default -> "Stored Amount";
         });
+        root.addProperty("gui.psitweaks.idea_storage.info.item_types", switch (locale) {
+            case "ja_jp" -> "アイテム: %s/%s 種類";
+            default -> "Items: %s/%s types";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.info.fluid_types", switch (locale) {
+            case "ja_jp" -> "液体: %s/%s 種類";
+            default -> "Fluids: %s/%s types";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.info.chemical_types", switch (locale) {
+            case "ja_jp" -> "化学物質: %s/%s 種類";
+            default -> "Chemicals: %s/%s types";
+        });
         root.addProperty("gui.psitweaks.idea_storage.fluid_amount", switch (locale) {
-            case "ja_jp" -> "%s mB";
-            default -> "%s mB";
+            case "ja_jp" -> "%s B";
+            default -> "%s B";
         });
         root.addProperty("gui.psitweaks.idea_storage.chemical_amount", switch (locale) {
-            case "ja_jp" -> "%s 単位";
-            default -> "%s units";
+            case "ja_jp" -> "%s B";
+            default -> "%s B";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.item_amount", switch (locale) {
+            case "ja_jp" -> "%s 個";
+            default -> "%s items";
         });
         root.addProperty("gui.psitweaks.idea_storage.transfer_missing", switch (locale) {
             case "ja_jp" -> "材料が足りません";
