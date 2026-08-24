@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.client.gui;
 
+import com.moratan251.psitweaks.client.compat.IdeaStorageChemicalClientCompat;
 import com.moratan251.psitweaks.common.menu.IdeaStorageMenu;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageClearCrafting;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageCraftToggle;
@@ -7,6 +8,7 @@ import com.moratan251.psitweaks.common.network.MessageIdeaStorageDeposit;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageExtract;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageResize;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
+import com.moratan251.psitweaks.common.network.MessageIdeaStorageTransferContents;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +21,19 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +69,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private static final int SORT_BUTTON_Y = 94;
     private static final int CRAFT_CLEAR_BUTTON_Y = 114;
 
-    private List<MessageIdeaStorageSync.Entry> entries = List.of();
+    private List<IdeaStorageDisplayEntry> entries = List.of();
     private boolean loadFailed;
     private String filter = "";
     private int firstRow;
@@ -174,24 +181,29 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         super.removed();
     }
 
-    public void applySnapshot(List<MessageIdeaStorageSync.Entry> newEntries, boolean loadFailed) {
-        this.entries = newEntries;
-        this.menu.applyClientStorageEntries(newEntries);
-        this.loadFailed = loadFailed;
+    public void applySnapshot(MessageIdeaStorageSync message) {
+        List<IdeaStorageDisplayEntry> displayEntries = new ArrayList<>(
+                message.entries().size() + message.fluidEntries().size() + message.chemicalEntries().size());
+        message.entries().stream().map(IdeaStorageDisplayEntry::item).forEach(displayEntries::add);
+        message.fluidEntries().stream().map(IdeaStorageDisplayEntry::fluid).forEach(displayEntries::add);
+        message.chemicalEntries().stream().map(IdeaStorageDisplayEntry::chemical).forEach(displayEntries::add);
+        this.entries = List.copyOf(displayEntries);
+        this.menu.applyClientStorageEntries(message.entries());
+        this.loadFailed = message.loadFailed();
         clampScroll();
     }
 
     /** フィルタ適用後、現在のソートモードで並べ替えた表示リストを返す(PORT は元順のまま)。 */
-    private List<MessageIdeaStorageSync.Entry> filteredEntries() {
-        List<MessageIdeaStorageSync.Entry> filtered;
+    private List<IdeaStorageDisplayEntry> filteredEntries() {
+        List<IdeaStorageDisplayEntry> filtered;
         if (filter.isEmpty()) {
             filtered = entries;
         } else {
             String needle = filter.toLowerCase(Locale.ROOT);
             filtered = new ArrayList<>();
-            for (MessageIdeaStorageSync.Entry entry : entries) {
-                String name = entry.template().getHoverName().getString().toLowerCase(Locale.ROOT);
-                String id = BuiltInRegistries.ITEM.getKey(entry.template().getItem()).toString();
+            for (IdeaStorageDisplayEntry entry : entries) {
+                String name = entry.displayName().getString().toLowerCase(Locale.ROOT);
+                String id = entry.resourceId().toString();
                 if (name.contains(needle) || id.contains(needle)) {
                     filtered.add(entry);
                 }
@@ -202,7 +214,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             return filtered;
         }
         // entries は不変リストの場合があるため、ソートはコピーに対して行う
-        List<MessageIdeaStorageSync.Entry> sorted = new ArrayList<>(filtered);
+        List<IdeaStorageDisplayEntry> sorted = new ArrayList<>(filtered);
         sorted.sort(mode.comparator());
         return sorted;
     }
@@ -253,17 +265,50 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             return;
         }
 
-        List<MessageIdeaStorageSync.Entry> visible = filteredEntries();
+        List<IdeaStorageDisplayEntry> visible = filteredEntries();
         int start = firstRow * IdeaStorageMenu.GRID_COLUMNS;
         int end = Math.min(visible.size(), start + IdeaStorageMenu.GRID_COLUMNS * gridRows());
         for (int i = start; i < end; i++) {
             int cellIndex = i - start;
             int x = gridLeft + (cellIndex % IdeaStorageMenu.GRID_COLUMNS) * CELL;
             int y = gridTop + (cellIndex / IdeaStorageMenu.GRID_COLUMNS) * CELL;
-            MessageIdeaStorageSync.Entry entry = visible.get(i);
-            guiGraphics.renderItem(entry.template(), x + 1, y + 1);
-            drawCount(guiGraphics, entry.count(), x + 1, y + 1);
+            IdeaStorageDisplayEntry entry = visible.get(i);
+            renderEntry(guiGraphics, entry, x + 1, y + 1);
+            drawCount(guiGraphics, entry.amount(), x + 1, y + 1);
         }
+    }
+
+    private static void renderEntry(GuiGraphics guiGraphics, IdeaStorageDisplayEntry entry, int x, int y) {
+        switch (entry.kind()) {
+            case ITEM -> guiGraphics.renderItem(entry.itemTemplate(), x, y);
+            case FLUID -> renderFluid(guiGraphics, entry.fluidTemplate(), x, y);
+            case CHEMICAL -> {
+                if (!IdeaStorageChemicalClientCompat.render(guiGraphics, entry.chemicalId(), x, y)) {
+                    guiGraphics.fill(x + 1, y + 1, x + 15, y + 15, 0xFF6A3D8F);
+                }
+            }
+        }
+    }
+
+    private static void renderFluid(GuiGraphics guiGraphics, FluidStack fluid, int x, int y) {
+        IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid.getFluid());
+        ResourceLocation stillTexture = extensions.getStillTexture(fluid);
+        if (stillTexture == null) {
+            guiGraphics.fill(x + 1, y + 1, x + 15, y + 15, 0xFF3A78B8);
+            return;
+        }
+        TextureAtlasSprite sprite = Minecraft.getInstance()
+                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(stillTexture);
+        int color = extensions.getTintColor(fluid);
+        guiGraphics.setColor(
+                ((color >> 16) & 0xFF) / 255.0F,
+                ((color >> 8) & 0xFF) / 255.0F,
+                (color & 0xFF) / 255.0F,
+                ((color >>> 24) & 0xFF) / 255.0F
+        );
+        guiGraphics.blit(x, y, 300, 16, 16, sprite);
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     /** バニラコンテナ風のフレーム(明るいグレー背景 + ベベル枠)。 */
@@ -364,15 +409,25 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        MessageIdeaStorageSync.Entry hovered = entryAt(mouseX, mouseY);
+        IdeaStorageDisplayEntry hovered = entryAt(mouseX, mouseY);
         if (hovered != null && this.menu.getCarried().isEmpty()) {
-            // 独自ツールチップではなく、そのアイテムの通常のツールチップをそのまま表示する
-            guiGraphics.renderTooltip(this.font, hovered.template(), mouseX, mouseY);
+            if (hovered.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
+                guiGraphics.renderTooltip(this.font, hovered.itemTemplate(), mouseX, mouseY);
+            } else {
+                String amountKey = hovered.kind() == IdeaStorageDisplayEntry.Kind.FLUID
+                        ? "gui.psitweaks.idea_storage.fluid_amount"
+                        : "gui.psitweaks.idea_storage.chemical_amount";
+                guiGraphics.renderComponentTooltip(this.font, List.of(
+                        hovered.displayName(),
+                        Component.translatable(amountKey, hovered.amount()),
+                        Component.literal(hovered.resourceId().toString()).withStyle(ChatFormatting.DARK_GRAY)
+                ), mouseX, mouseY);
+            }
         }
     }
 
     @Nullable
-    private MessageIdeaStorageSync.Entry entryAt(int mouseX, int mouseY) {
+    private IdeaStorageDisplayEntry entryAt(int mouseX, int mouseY) {
         if (loadFailed) {
             return null;
         }
@@ -389,7 +444,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             return null;
         }
         int index = (firstRow + row) * IdeaStorageMenu.GRID_COLUMNS + col;
-        List<MessageIdeaStorageSync.Entry> visible = filteredEntries();
+        List<IdeaStorageDisplayEntry> visible = filteredEntries();
         return index < visible.size() ? visible.get(index) : null;
     }
 
@@ -434,12 +489,18 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             ItemStack carried = this.menu.getCarried();
             if (!carried.isEmpty()) {
                 if (!loadFailed) {
-                    PacketDistributor.sendToServer(new MessageIdeaStorageDeposit(carried.copyWithCount(1)));
+                    if (button == 0) {
+                        PacketDistributor.sendToServer(new MessageIdeaStorageDeposit(carried.copyWithCount(1)));
+                    } else if (button == 1) {
+                        PacketDistributor.sendToServer(contentTransferMessage(entryAt(mx, my)));
+                    } else {
+                        return super.mouseClicked(mouseX, mouseY, button);
+                    }
                 }
                 return true;
             }
-            MessageIdeaStorageSync.Entry entry = entryAt(mx, my);
-            if (entry != null && !loadFailed) {
+            IdeaStorageDisplayEntry entry = entryAt(mx, my);
+            if (entry != null && !loadFailed && entry.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
                 int mode = switch (button) {
                     case 0 -> hasShiftDown()
                             ? MessageIdeaStorageExtract.MODE_INVENTORY_STACK
@@ -452,11 +513,22 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                 if (mode == 0) {
                     return super.mouseClicked(mouseX, mouseY, button);
                 }
-                PacketDistributor.sendToServer(new MessageIdeaStorageExtract(entry.template(), mode));
+                PacketDistributor.sendToServer(new MessageIdeaStorageExtract(entry.itemTemplate(), mode));
                 return true;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private static MessageIdeaStorageTransferContents contentTransferMessage(
+            @Nullable IdeaStorageDisplayEntry target) {
+        if (target == null || target.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
+            return MessageIdeaStorageTransferContents.emptyTarget();
+        }
+        if (target.kind() == IdeaStorageDisplayEntry.Kind.FLUID) {
+            return MessageIdeaStorageTransferContents.fluidTarget(target.fluidTemplate());
+        }
+        return MessageIdeaStorageTransferContents.chemicalTarget(target.chemicalId());
     }
 
     @Override

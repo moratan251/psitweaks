@@ -10,7 +10,14 @@ import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHan
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import mekanism.client.render.item.TransmitterTypeDecorator;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.client.render.MekanismRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
@@ -56,5 +63,33 @@ public final class MekanismClientIntegration {
 
     private static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         TransmitterTypeDecorator.registerDecorators(event, PsitweaksMekanismBlocks.TRANSCENDENT_CABLE);
+    }
+
+    public static Component ideaStorageChemicalName(ResourceLocation chemicalId) {
+        return MekanismAPI.CHEMICAL_REGISTRY.getHolder(chemicalId)
+                .filter(holder -> !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
+                .<Component>map(holder -> holder.value().getTextComponent())
+                .orElseGet(() -> Component.literal(chemicalId.toString()));
+    }
+
+    public static boolean renderIdeaStorageChemical(GuiGraphics guiGraphics, ResourceLocation chemicalId,
+                                                     int x, int y) {
+        var chemical = MekanismAPI.CHEMICAL_REGISTRY.getHolder(chemicalId)
+                .filter(holder -> !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY));
+        if (chemical.isEmpty()) {
+            return false;
+        }
+        ChemicalStack stack = new ChemicalStack(chemical.get(), 1);
+        TextureAtlasSprite sprite = MekanismRenderer.getChemicalTexture(stack);
+        int color = MekanismRenderer.getColorARGB(stack, 1.0F);
+        guiGraphics.setColor(
+                ((color >> 16) & 0xFF) / 255.0F,
+                ((color >> 8) & 0xFF) / 255.0F,
+                (color & 0xFF) / 255.0F,
+                ((color >>> 24) & 0xFF) / 255.0F
+        );
+        guiGraphics.blit(x, y, 300, 16, 16, sprite);
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        return true;
     }
 }

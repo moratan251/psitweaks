@@ -28,7 +28,7 @@ public final class IdeaStorageClientHandler {
 
     public static void handleSync(MessageIdeaStorageSync message) {
         if (Minecraft.getInstance().screen instanceof IdeaStorageScreen screen) {
-            screen.applySnapshot(message.entries(), message.loadFailed());
+            screen.applySnapshot(message);
         }
     }
 

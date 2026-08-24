@@ -1,9 +1,14 @@
 package com.moratan251.psitweaks.common.compat;
 
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer;
+import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import org.jetbrains.annotations.Nullable;
 
 public final class MekanismCompat {
     private static final String MEKANISM_MOD_ID = "mekanism";
@@ -42,5 +47,13 @@ public final class MekanismCompat {
         if (isMekanismLoaded()) {
             MekanismIntegration.addCreativeTabContents(output);
         }
+    }
+
+    @Nullable
+    public static IdeaStorageChemicalTransfer planIdeaStorageChemicalTransfer(
+            PlayerIdeaStorage storage, ItemStack container, @Nullable ResourceLocation targetChemicalId) {
+        return isMekanismLoaded()
+                ? MekanismIntegration.planIdeaStorageChemicalTransfer(storage, container, targetChemicalId)
+                : null;
     }
 }

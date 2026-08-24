@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.slf4j.Logger;
 
@@ -18,12 +19,16 @@ import org.slf4j.Logger;
  */
 public final class IdeaStorageSavedData extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final int CURRENT_DATA_VERSION = 1;
+    public static final int CURRENT_DATA_VERSION = 2;
 
     private static final String TAG_DATA_VERSION = "DataVersion";
     private static final String TAG_GRID_ROWS = "gridRows";
     private static final String TAG_ITEMS = "Items";
     private static final String TAG_ITEM = "item";
+    private static final String TAG_FLUIDS = "Fluids";
+    private static final String TAG_FLUID = "fluid";
+    private static final String TAG_CHEMICALS = "Chemicals";
+    private static final String TAG_CHEMICAL = "chemical";
     private static final String TAG_COUNT = "count";
 
     private final UUID owner;
@@ -77,6 +82,44 @@ public final class IdeaStorageSavedData extends SavedData {
             }
             data.storage.loadEntry(key.get(), count);
         }
+
+        ListTag fluids = tag.getList(TAG_FLUIDS, Tag.TAG_COMPOUND);
+        for (int i = 0; i < fluids.size(); i++) {
+            CompoundTag entry = fluids.getCompound(i);
+            if (!entry.contains(TAG_FLUID, Tag.TAG_COMPOUND)) {
+                LOGGER.warn("Skipping fluid entry without fluid data in idea storage of {} (index {}).", owner, i);
+                continue;
+            }
+            Optional<FluidResourceKey> key = FluidResourceKey.parse(registries, entry.get(TAG_FLUID));
+            if (key.isEmpty()) {
+                LOGGER.warn("Skipping unknown or invalid fluid entry in idea storage of {} (index {}).", owner, i);
+                continue;
+            }
+            long amount = entry.getLong(TAG_COUNT);
+            if (amount <= 0) {
+                LOGGER.warn("Skipping non-positive fluid entry {} in idea storage of {} (amount={}).",
+                        key.get(), owner, amount);
+                continue;
+            }
+            data.storage.loadFluidEntry(key.get(), amount);
+        }
+
+        ListTag chemicals = tag.getList(TAG_CHEMICALS, Tag.TAG_COMPOUND);
+        for (int i = 0; i < chemicals.size(); i++) {
+            CompoundTag entry = chemicals.getCompound(i);
+            ResourceLocation chemicalId = ResourceLocation.tryParse(entry.getString(TAG_CHEMICAL));
+            if (chemicalId == null) {
+                LOGGER.warn("Skipping invalid chemical ID in idea storage of {} (index {}).", owner, i);
+                continue;
+            }
+            long amount = entry.getLong(TAG_COUNT);
+            if (amount <= 0) {
+                LOGGER.warn("Skipping non-positive chemical entry {} in idea storage of {} (amount={}).",
+                        chemicalId, owner, amount);
+                continue;
+            }
+            data.storage.loadChemicalEntry(chemicalId, amount);
+        }
         return data;
     }
 
@@ -92,6 +135,24 @@ public final class IdeaStorageSavedData extends SavedData {
             items.add(entryTag);
         }
         tag.put(TAG_ITEMS, items);
+
+        ListTag fluids = new ListTag();
+        for (Map.Entry<FluidResourceKey, Long> entry : storage.fluidEntries()) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.put(TAG_FLUID, entry.getKey().save(registries));
+            entryTag.putLong(TAG_COUNT, entry.getValue());
+            fluids.add(entryTag);
+        }
+        tag.put(TAG_FLUIDS, fluids);
+
+        ListTag chemicals = new ListTag();
+        for (Map.Entry<ResourceLocation, Long> entry : storage.chemicalEntries()) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.putString(TAG_CHEMICAL, entry.getKey().toString());
+            entryTag.putLong(TAG_COUNT, entry.getValue());
+            chemicals.add(entryTag);
+        }
+        tag.put(TAG_CHEMICALS, chemicals);
         return tag;
     }
 

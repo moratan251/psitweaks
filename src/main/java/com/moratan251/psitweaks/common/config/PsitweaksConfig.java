@@ -37,6 +37,12 @@ public class PsitweaksConfig {
         public final ModConfigSpec.IntValue ideaStorageMaxItemTypes;
         public final ModConfigSpec.IntValue ideaStorageItemStacksPerType;
         public final ModConfigSpec.LongValue ideaStorageMaxTotalItems;
+        public final ModConfigSpec.IntValue ideaStorageMaxFluidTypes;
+        public final ModConfigSpec.LongValue ideaStorageMaxFluidPerType;
+        public final ModConfigSpec.LongValue ideaStorageMaxTotalFluid;
+        public final ModConfigSpec.IntValue ideaStorageMaxChemicalTypes;
+        public final ModConfigSpec.LongValue ideaStorageMaxChemicalPerType;
+        public final ModConfigSpec.LongValue ideaStorageMaxTotalChemical;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
@@ -274,6 +280,42 @@ public class PsitweaksConfig {
                             "Maximum total item count per player in the Ideaspace Storage")
                     .translation("psitweaks.configuration.idea_storage.max_total_items")
                     .defineInRange("maxTotalItems", 16_777_216L, 1L, Long.MAX_VALUE);
+
+            ideaStorageMaxFluidTypes = builder
+                    .comment("イデアストレージに格納できる液体の最大種類数",
+                            "Maximum number of distinct fluid types per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_fluid_types")
+                    .defineInRange("maxFluidTypes", 64, 1, 100_000);
+
+            ideaStorageMaxFluidPerType = builder
+                    .comment("液体1種類あたりの上限(mB)",
+                            "Maximum amount per fluid type in mB")
+                    .translation("psitweaks.configuration.idea_storage.max_fluid_per_type")
+                    .defineInRange("maxFluidPerType", 32_768_000L, 1L, Long.MAX_VALUE);
+
+            ideaStorageMaxTotalFluid = builder
+                    .comment("イデアストレージに格納できる液体の総量上限(mB)",
+                            "Maximum total fluid amount per player in mB")
+                    .translation("psitweaks.configuration.idea_storage.max_total_fluid")
+                    .defineInRange("maxTotalFluid", 524_288_000L, 1L, Long.MAX_VALUE);
+
+            ideaStorageMaxChemicalTypes = builder
+                    .comment("イデアストレージに格納できるChemicalの最大種類数",
+                            "Maximum number of distinct chemical types per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_chemical_types")
+                    .defineInRange("maxChemicalTypes", 64, 1, 100_000);
+
+            ideaStorageMaxChemicalPerType = builder
+                    .comment("Chemical 1種類あたりの上限",
+                            "Maximum amount per chemical type")
+                    .translation("psitweaks.configuration.idea_storage.max_chemical_per_type")
+                    .defineInRange("maxChemicalPerType", 1_048_576_000L, 1L, Long.MAX_VALUE);
+
+            ideaStorageMaxTotalChemical = builder
+                    .comment("イデアストレージに格納できるChemicalの総量上限",
+                            "Maximum total chemical amount per player")
+                    .translation("psitweaks.configuration.idea_storage.max_total_chemical")
+                    .defineInRange("maxTotalChemical", 16_777_216_000L, 1L, Long.MAX_VALUE);
 
             builder.pop(); // ideaStorage カテゴリ終了
         }

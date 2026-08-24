@@ -1,8 +1,6 @@
 package com.moratan251.psitweaks.client.gui;
 
-import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
 import java.util.Comparator;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -14,26 +12,22 @@ import net.minecraft.world.item.Items;
 public enum IdeaStorageSortMode {
     PORT("port", new ItemStack(Items.ENDER_CHEST), null),
     ITEM_ID("item_id", new ItemStack(Items.NAME_TAG),
-            Comparator.comparing(entry -> itemKey(entry).toString())),
+            Comparator.comparing(entry -> entry.resourceId().toString())),
     MOD_ID("mod_id", new ItemStack(Items.BOOK),
-            Comparator.comparing((MessageIdeaStorageSync.Entry entry) -> itemKey(entry).getNamespace())
-                    .thenComparing(entry -> itemKey(entry).toString())),
+            Comparator.comparing((IdeaStorageDisplayEntry entry) -> entry.resourceId().getNamespace())
+                    .thenComparing(entry -> entry.resourceId().toString())),
     COUNT("count", new ItemStack(Items.HOPPER),
-            Comparator.comparingLong(MessageIdeaStorageSync.Entry::count).reversed());
+            Comparator.comparingLong(IdeaStorageDisplayEntry::amount).reversed());
 
     private final String id;
     private final ItemStack icon;
     /** PORT では null(ソートせず元順を維持)。 */
-    private final Comparator<MessageIdeaStorageSync.Entry> comparator;
+    private final Comparator<IdeaStorageDisplayEntry> comparator;
 
-    IdeaStorageSortMode(String id, ItemStack icon, Comparator<MessageIdeaStorageSync.Entry> comparator) {
+    IdeaStorageSortMode(String id, ItemStack icon, Comparator<IdeaStorageDisplayEntry> comparator) {
         this.id = id;
         this.icon = icon;
         this.comparator = comparator;
-    }
-
-    private static net.minecraft.resources.ResourceLocation itemKey(MessageIdeaStorageSync.Entry entry) {
-        return BuiltInRegistries.ITEM.getKey(entry.template().getItem());
     }
 
     public Component displayName() {
@@ -44,7 +38,7 @@ public enum IdeaStorageSortMode {
         return icon;
     }
 
-    public Comparator<MessageIdeaStorageSync.Entry> comparator() {
+    public Comparator<IdeaStorageDisplayEntry> comparator() {
         return comparator;
     }
 

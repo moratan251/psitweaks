@@ -520,6 +520,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Max Total Items", "アイテム総量上限",
                 "Maximum total item count per player in the Ideaspace Storage.",
                 "イデアストレージに格納できるアイテムの総量上限です。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_fluid_types",
+                "Max Fluid Types", "液体最大種類数",
+                "Maximum number of distinct fluid types per player in the Ideaspace Storage.",
+                "イデアストレージに格納できる液体の最大種類数です。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_fluid_per_type",
+                "Max Fluid per Type", "液体1種類あたりの上限",
+                "Maximum amount stored per fluid type in mB.",
+                "液体1種類あたりに格納できる上限をmB単位で設定します。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_total_fluid",
+                "Max Total Fluid", "液体総量上限",
+                "Maximum total fluid amount per player in mB.",
+                "イデアストレージに格納できる液体の総量上限をmB単位で設定します。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_chemical_types",
+                "Max Chemical Types", "Chemical最大種類数",
+                "Maximum number of distinct chemical types per player in the Ideaspace Storage.",
+                "イデアストレージに格納できるChemicalの最大種類数です。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_chemical_per_type",
+                "Max Chemical per Type", "Chemical 1種類あたりの上限",
+                "Maximum amount stored per chemical type.",
+                "Chemical 1種類あたりに格納できる上限です。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_total_chemical",
+                "Max Total Chemical", "Chemical総量上限",
+                "Maximum total chemical amount per player.",
+                "イデアストレージに格納できるChemicalの総量上限です。");
     }
 
     private void addDamageMultiplierConfig(JsonObject root, String id, String enUsName, String jaJpName) {
@@ -1124,16 +1148,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Port Number";
         });
         root.addProperty("gui.psitweaks.idea_storage.sort.item_id", switch (locale) {
-            case "ja_jp" -> "アイテムID順";
-            default -> "Item ID";
+            case "ja_jp" -> "資源ID順";
+            default -> "Resource ID";
         });
         root.addProperty("gui.psitweaks.idea_storage.sort.mod_id", switch (locale) {
             case "ja_jp" -> "Mod ID順";
             default -> "Mod ID";
         });
         root.addProperty("gui.psitweaks.idea_storage.sort.count", switch (locale) {
-            case "ja_jp" -> "個数順";
-            default -> "Item Count";
+            case "ja_jp" -> "保管量順";
+            default -> "Stored Amount";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.fluid_amount", switch (locale) {
+            case "ja_jp" -> "%s mB";
+            default -> "%s mB";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.chemical_amount", switch (locale) {
+            case "ja_jp" -> "%s 単位";
+            default -> "%s units";
         });
         root.addProperty("gui.psitweaks.idea_storage.transfer_missing", switch (locale) {
             case "ja_jp" -> "材料が足りません";
