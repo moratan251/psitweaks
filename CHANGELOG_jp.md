@@ -1,5 +1,10 @@
 ## Changelog
 
+#### v0.10.7-hotfix
+
+- (1.20.1) NuclearCraft: Neoteric との mixin 競合によるクラッシュを修正
+
+
 #### v0.10.7
 
 - CADバッテリーを追加

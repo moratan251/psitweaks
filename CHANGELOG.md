@@ -1,6 +1,11 @@
 ## Changelog
 
 
+#### v0.10.7-hotfix
+
+- (1.20.1) Fixed a crash caused by a mixin conflict with NuclearCraft: Neoteric
+
+
 #### v0.10.7
 
 - Added CAD batteries
