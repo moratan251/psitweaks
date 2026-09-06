@@ -1,0 +1,6 @@
+{
+  "command_id": "idea_storage",
+  "piece": "psitweaks:trick_idea_storage_view",
+  "unlock_item": "psitweaks:program_idea_storage",
+  "unlock_tag": "psitweaks.unlock.idea_storage"
+}

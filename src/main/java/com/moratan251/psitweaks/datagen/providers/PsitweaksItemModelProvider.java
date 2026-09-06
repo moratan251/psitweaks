@@ -108,6 +108,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             "program_guillotine",
             "program_jump_flex",
             "program_material_mutation",
+            "program_idea_storage",
             "program_mass_block_break",
             "program_dry_meteor",
             "program_meteor_line",
@@ -313,6 +314,7 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
             case "program_guillotine" -> modLoc("item/program_trick_guillotine");
             case "program_jump_flex" -> modLoc("item/program_trick_jump_flex");
             case "program_material_mutation" -> modLoc("item/program_trick_material_mutation");
+            case "program_idea_storage" -> modLoc("item/program_trick_idea_storage");
             case "program_mass_block_break" -> modLoc("item/program_trick_mass_block_break");
             case "program_dry_meteor" -> modLoc("item/program_trick_dry_meteor");
             case "program_meteor_line" -> modLoc("item/program_trick_meteor_line");

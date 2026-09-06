@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class NetworkHandler {
-    public static final String PROTOCOL_VERSION = "2";
+    public static final String PROTOCOL_VERSION = "3";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.fromNamespaceAndPath("psitweaks", "main"),
             () -> PROTOCOL_VERSION,
@@ -34,6 +34,7 @@ public class NetworkHandler {
                 MessageAutoCasterCustomTickSync::handle
         );
 
+        id = com.moratan251.psitweaks.common.network.IdeaStorageNetwork.register(id);
         MekanismCompat.registerNetworkMessages(id);
     }
 }

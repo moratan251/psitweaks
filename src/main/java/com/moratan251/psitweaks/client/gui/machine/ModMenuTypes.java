@@ -19,4 +19,6 @@ public class ModMenuTypes {
             MENUS.register("portable_cad_assembler",
                     () -> IForgeMenuType.create(PortableCADAssemblerMenu::fromNetwork));
 
+    public static final RegistryObject<MenuType<com.moratan251.psitweaks.common.menu.IdeaStorageMenu>> IDEA_STORAGE =
+            MENUS.register("idea_storage", () -> IForgeMenuType.create(com.moratan251.psitweaks.common.menu.IdeaStorageMenu::fromNetwork));
 }

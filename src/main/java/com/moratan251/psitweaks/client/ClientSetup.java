@@ -44,6 +44,7 @@ public class ClientSetup {
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
+            MenuScreens.register(ModMenuTypes.IDEA_STORAGE.get(), com.moratan251.psitweaks.client.gui.IdeaStorageScreen::new);
         });
     }
 }

@@ -262,6 +262,7 @@ public class PsitweaksSpells {
             registerSpellPiece("macro_face_axial_offset", PieceMacroFaceAxialOffset.class);
             registerSpellPiece("macro_face_axial_rotation", PieceMacroFaceAxialRotation.class);
             registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+            registerSpellPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
 
 
         });

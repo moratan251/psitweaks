@@ -74,4 +74,11 @@ public final class MekanismCompat {
             MekanismIntegration.supplyLaserEnergy(blockEntity, energy);
         }
     }
+    @org.jetbrains.annotations.Nullable
+    public static com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer planIdeaStorageChemicalTransfer(
+            com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage storage, net.minecraft.world.item.ItemStack container,
+            @org.jetbrains.annotations.Nullable net.minecraft.resources.ResourceLocation target,
+            com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection direction) {
+        return isMekanismLoaded() ? IdeaStorageMekanismIntegration.plan(storage, container, target, direction) : null;
+    }
 }

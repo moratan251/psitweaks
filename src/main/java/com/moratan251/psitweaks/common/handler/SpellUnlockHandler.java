@@ -78,7 +78,8 @@ public class SpellUnlockHandler {
             definition("jump_flex", "trick_jump_flex", "program_jump_flex"),
             definition("switch_flex", "trick_switch_flex", "program_switch_flex"),
             definition("material_mutation", "trick_material_mutation", "program_material_mutation"),
-            definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break")
+            definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break"),
+            new SpellUnlockDefinition("idea_storage", Psitweaks.location("trick_idea_storage_view"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage")
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();

@@ -389,6 +389,11 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(item("antinite_ingot"), 2),
                 counted(item("chaotic_factor"), 2),
                 counted(item("psionic_echo"), 2)));
+        addProgram(recipes, "program_idea_storage", List.of(
+                counted(item("dimensional_crystal"), 2),
+                counted(item("psycheonic_metal_ingot"), 2),
+                counted("minecraft:ender_chest", 2),
+                counted(item("quantized_plate"), 2)));
         addProgram(recipes, "program_mass_block_break", List.of(
                 counted("minecraft:tnt", 4),
                 counted("psi:psigem", 2),

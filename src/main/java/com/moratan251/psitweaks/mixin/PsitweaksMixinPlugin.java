@@ -46,11 +46,16 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
     }
 
     private static boolean isClassPresent(String className) {
-        try {
-            Class.forName(className, false, PsitweaksMixinPlugin.class.getClassLoader());
-            return true;
-        } catch (ClassNotFoundException | LinkageError ignored) {
-            return false;
+        String classResource = className.replace('.', '/') + ".class";
+        ClassLoader[] classLoaders = {
+                Thread.currentThread().getContextClassLoader(),
+                PsitweaksMixinPlugin.class.getClassLoader()
+        };
+        for (ClassLoader classLoader : classLoaders) {
+            if (classLoader != null && classLoader.getResource(classResource) != null) {
+                return true;
+            }
         }
+        return false;
     }
 }

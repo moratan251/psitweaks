@@ -82,6 +82,7 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> PROGRAM_JUMP_FLEX = ITEMS.register("program_jump_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_SWITCH_FLEX = ITEMS.register("program_switch_flex", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MATERIAL_MUTATION = ITEMS.register("program_material_mutation", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
+    public static final RegistryObject<Item> PROGRAM_IDEA_STORAGE = ITEMS.register("program_idea_storage", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> PROGRAM_MASS_BLOCK_BREAK = ITEMS.register("program_mass_block_break", () -> new ItemPsitweaksProgram(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), false));
     public static final RegistryObject<Item> HEAVY_PSIMETAL_SCRAP = ITEMS.register("heavy_psimetal_scrap", () -> new Item(new Item.Properties()));
 

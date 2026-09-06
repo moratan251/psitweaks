@@ -198,6 +198,15 @@ public final class ProgramResearchRecipeProvider {
                 .energyPerTick(250_000L)
                 .time(24000)
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_material_mutation"));
+        ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_IDEA_STORAGE.get())
+                .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
+                .requires(PsitweaksItems.QUANTIZED_PLATE.get(), 16)
+                .requires(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT.get(), 8)
+                .requires(MekanismBlocks.QUANTUM_ENTANGLOPORTER.asItem(), 2)
+                .requires(PsitweaksItems.DIMENSIONAL_CRYSTAL.get(), 2)
+                .requires(PsitweaksItems.PSYCHEONIC_METAL_INGOT.get(), 2)
+                .energyPerTick(750_000L).time(36_000)
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "program_research/program_idea_storage"));
         ProgramResearchRecipeBuilder.research(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get())
                 .requires(PsitweaksItems.PROGRAM_BLANK.get(), 1)
                 .requires(ModItems.psigem, 16)

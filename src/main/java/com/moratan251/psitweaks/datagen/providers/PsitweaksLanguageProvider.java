@@ -2366,6 +2366,45 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
     }
 
     private void addBackportedMatrixTranslations() {
+        addBackportedMatrixTranslation("container.psitweaks.idea_storage", "Ideaspace Storage", "イデアストレージ");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.chemical_amount", "%s B", "%s B");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.craft_clear", "Return Crafting Grid to Storage", "クラフトグリッドをストレージへ戻す");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.craft_window", "Open Crafting Table", "作業台を開く");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.fluid_amount", "%s B", "%s B");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.info.chemical_types", "Chemicals: %s/%s types", "化学物質: %s/%s 種類");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.info.fluid_types", "Fluids: %s/%s types", "液体: %s/%s 種類");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.info.item_types", "Items: %s/%s types", "アイテム: %s/%s 種類");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.item_amount", "%s items", "%s 個");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.load_failed", "Storage data could not be loaded (newer data format)", "ストレージデータを読み込めません(新しい形式のデータです)");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.rows_add", "Increase Grid Rows", "表示行数を増やす");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.rows_remove", "Decrease Grid Rows", "表示行数を減らす");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.search", "Search...", "検索...");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort", "Sort: %s", "ソート: %s");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort.count", "Stored Amount", "保管量順");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort.item_id", "Resource ID", "資源ID順");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort.mod_id", "Mod ID", "Mod ID順");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort.port", "Port Number", "ポート番号順");
+        addBackportedMatrixTranslation("gui.psitweaks.idea_storage.transfer_missing", "Not enough ingredients", "材料が足りません");
+        addBackportedMatrixTranslation("item.psitweaks.program_idea_storage", "Program: Ideaspace Storage (WIP)", "プログラム: イデアストレージ (WIP)");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.0", "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, and Mekanism chemicals are stored separately, and your contents persist across logout and dimension changes. This feature is still under development.$(p)By default, it holds 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.", "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismのケミカルをそれぞれ保管でき、ログアウトやディメンション移動後も内容を保持します。この機能は現在開発中です。$(p)標準設定ではアイテム256種類、液体64種類、ケミカル64種類を保管できます。保存上限はコンフィグで変更できます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.1", "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.", "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.2", "Hold a fluid or chemical container on the cursor and right-click the storage grid to transfer its contents. Right-click the desired stored resource to fill a compatible container; if it cannot be filled, its contents may be deposited instead.$(p)Shift-right-click repeats the transfer in the same direction. With an empty cursor, left-click a stored fluid to fill one empty bucket from storage, if that fluid supports buckets.", "液体やケミカルの容器をカーソルで持ち、ストレージ欄を右クリックすると中身を移します。保存済みの資源を右クリックすると、対応する容器への充填を試みます。充填できない場合は、容器の中身を格納することがあります。$(p)Shift＋右クリックでは、同じ方向への転送を繰り返します。カーソルが空の状態で液体を左クリックすると、保存済みの空バケツ1個に充填できます。バケツに対応する液体に限ります。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.3", "The side crafting-table button opens a 3x3 crafting grid. Consumed ingredients are replenished from storage when available. Shift-click the result to craft roughly one stack at a time.$(p)The clear button returns ingredients to storage if they all fit. Search, sorting, and the + / - buttons help organize the view. JEI and EMI can also place recipe ingredients while the crafting grid is open.", "左側の作業台ボタンで3×3のクラフト欄を開きます。消費した材料は、ストレージに在庫があれば自動補充されます。完成品をShiftクリックすると、約1スタック分をまとめて作成します。$(p)材料返却ボタンは、全量を格納できる場合に材料をストレージへ戻します。検索・並べ替え・＋／－ボタンで表示を調整できます。クラフト欄を開いている間は、JEI・EMIからの材料配置にも対応します。");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage", "Ideaspace Storage", "イデアストレージ");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.item_stacks_per_type", "Item Stacks per Type", "1種類あたりのスタック数係数");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.item_stacks_per_type.tooltip", "Per-type item limit as a multiplier of the item's max stack size.", "アイテム1種類あたりの上限を、最大スタック数に掛ける係数として設定します。");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_chemical_per_type", "Max Chemical per Type", "Chemical 1種類あたりの上限");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_chemical_per_type.tooltip", "Maximum amount stored per chemical type. The config value uses internal API units; the default is 33,554,432 B.", "Chemical 1種類あたりに格納できる上限です。コンフィグ値は内部API単位で、既定値は33,554,432 Bです。");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_chemical_types", "Max Chemical Types", "Chemical最大種類数");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_chemical_types.tooltip", "Maximum number of distinct chemical types per player in the Ideaspace Storage.", "イデアストレージに格納できるChemicalの最大種類数です。");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_fluid_per_type", "Max Fluid per Type", "液体1種類あたりの上限");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_fluid_per_type.tooltip", "Maximum amount stored per fluid type. The config value uses internal mB units; the default is 1,048,576 B.", "液体1種類あたりに格納できる上限です。コンフィグ値は内部mB単位で、既定値は1,048,576 Bです。");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_fluid_types", "Max Fluid Types", "液体最大種類数");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_fluid_types.tooltip", "Maximum number of distinct fluid types per player in the Ideaspace Storage.", "イデアストレージに格納できる液体の最大種類数です。");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_item_types", "Max Item Types", "アイテム最大種類数");
+        addBackportedMatrixTranslation("psitweaks.configuration.idea_storage.max_item_types.tooltip", "Maximum number of distinct item types per player in the Ideaspace Storage.", "イデアストレージに格納できるアイテムの最大種類数です。");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.trick_idea_storage_view", "Trick: View Ideaspace Storage", "作動式: イデアストレージ閲覧");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.trick_idea_storage_view.desc", "Opens a GUI to view and manage your Ideaspace Storage. Only works when cast by a player.", "自分のイデアストレージを閲覧・出し入れするGUIを開きます。プレイヤーの詠唱時のみ有効です。");
         addBackportedMatrixTranslation("item.psitweaks.program_mass_block_break", "Program: Mass Block Break", "プログラム: 大規模ブロック破壊");
         addBackportedMatrixTranslation("psitweaks.spellerror.mass_break_too_many_pending", "Too many pending mass-break blocks", "保留中の一括破壊ブロック数が上限を超えています");
         addBackportedMatrixTranslation("psitweaks.spellerror.matrix_incompatible_sizes", "Matrix dimensions are incompatible", "行列のサイズが整合しません");

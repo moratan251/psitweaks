@@ -26,6 +26,14 @@ base {
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+// Integration checks use Forge's real registries without entering the distributable jar.
+sourceSets {
+    gameTest {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
 
@@ -68,6 +76,10 @@ minecraft {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             property 'forge.enabledGameTestNamespaces', mod_id
+            workingDirectory project.file('run-gametest')
+            mods {
+                "${mod_id}" { source sourceSets.gameTest }
+            }
         }
 
         data {
@@ -98,6 +110,9 @@ repositories {
 }
 
 dependencies {
+    testImplementation platform("org.junit:junit-bom:5.10.2")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
@@ -157,7 +172,7 @@ dependencies {
     }
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
     // runtimeOnly fg.deobf("curse.maven:ars-nouveau-401955:6688854")
-    // runtimeOnly fg.deobf("curse.maven:emi-580555:6420945")
+    compileOnly fg.deobf("curse.maven:emi-580555:6420945")
     // runtimeOnly fg.deobf("curse.maven:emi-professions-emip-1065904:7279969")
     // runtimeOnly fg.deobf("curse.maven:projecte-226410:4901949")
     runtimeOnly fg.deobf("curse.maven:applied-energistics-2-223794:7096071")
@@ -323,3 +338,5 @@ tasks.register('buildDeobf', Jar) {
 
     finalizedBy 'reobfJar'
 }
+
+tasks.named("test", Test).configure { useJUnitPlatform() }
