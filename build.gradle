@@ -191,6 +191,8 @@ dependencies {
     runtimeOnly "curse.maven:glodium-957920:5821676"
     runtimeOnly "curse.maven:guideme-1173950:6223759"
     runtimeOnly "curse.maven:geckolib-388172:7023453"
+    //runtimeOnly "curse.maven:nuclearcraft-neoteric-840010:8754140"
+    //runtimeOnly "curse.maven:nuclear-radiation-1148833:8745596"
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

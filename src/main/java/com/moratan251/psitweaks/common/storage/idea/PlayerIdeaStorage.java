@@ -83,6 +83,11 @@ public final class PlayerIdeaStorage {
         return extracted;
     }
 
+    /** For synchronous transfers that may need to return unaccepted items, including over-capacity data. */
+    public IdeaStorageWithdrawal<ItemResourceKey> withdrawItem(ItemResourceKey key, long amount) {
+        return IdeaStorageWithdrawal.take(items, key, simulateExtract(key, amount), this::markChanged);
+    }
+
     public long simulateInsertFluid(FluidStack template, long amount) {
         if (loadFailed || amount <= 0 || template == null || template.isEmpty()) {
             return 0;

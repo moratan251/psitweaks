@@ -11,6 +11,7 @@ import com.moratan251.psitweaks.common.storage.idea.IdeaStorageContainerTransfer
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageDefaults;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageWithdrawal;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import java.util.ArrayList;
@@ -499,9 +500,10 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
                 continue;
             }
             Optional<ItemResourceKey> key = ItemResourceKey.of(target);
-            long extracted = key.map(value -> storage.extract(value, 1L)).orElse(0L);
-            if (extracted == 1L) {
-                storageOperations.add(new StorageOperation(target.copyWithCount(1), -1L));
+            IdeaStorageWithdrawal<ItemResourceKey> withdrawal = key
+                    .map(value -> storage.withdrawItem(value, 1L)).orElse(null);
+            if (withdrawal != null && withdrawal.amount() == 1L) {
+                storageOperations.add(new StorageOperation(target.copyWithCount(1), -1L, withdrawal));
                 finalStacks[i] = target.copyWithCount(1);
                 continue;
             }
@@ -609,7 +611,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
                 ItemResourceKey.of(operation.template())
                         .ifPresent(key -> storage.extract(key, operation.delta()));
             } else if (operation.delta() < 0) {
-                storage.insert(operation.template(), -operation.delta());
+                operation.withdrawal().restore(-operation.delta());
             }
         }
     }
@@ -641,7 +643,8 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         if (toCursor && !this.getCarried().isEmpty()) {
             return;
         }
-        long extracted = storage.extract(key, want);
+        IdeaStorageWithdrawal<ItemResourceKey> withdrawal = storage.withdrawItem(key, want);
+        long extracted = withdrawal.amount();
         if (extracted <= 0) {
             return;
         }
@@ -652,7 +655,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         long leftover = addToPlayerInventory(player, template, extracted, maxStack);
         if (leftover > 0) {
             // インベントリに入りきらなかった分はストレージへ戻す(ロスト防止)
-            storage.insert(template, leftover);
+            withdrawal.restore(leftover);
         }
     }
 
@@ -1041,7 +1044,11 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         }
     }
 
-    private record StorageOperation(ItemStack template, long delta) {
+    private record StorageOperation(ItemStack template, long delta,
+                                    @Nullable IdeaStorageWithdrawal<ItemResourceKey> withdrawal) {
+        private StorageOperation(ItemStack template, long delta) {
+            this(template, delta, null);
+        }
     }
 
     private record InventoryWithdrawal(int slot, ItemStack template) {
