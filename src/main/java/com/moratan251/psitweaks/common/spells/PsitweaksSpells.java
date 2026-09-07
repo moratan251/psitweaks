@@ -45,6 +45,11 @@ public class PsitweaksSpells {
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_melt_block"), PieceTrickMeltBlock.class);
             PsiAPI.addPieceToGroup(PieceTrickMeltBlock.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_melt_block"), false);
 
+            ResourceLocation pulsarGroup = ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_pulsar");
+            registerSpellPiece("trick_pulsar", PieceTrickConjurePulsar.class, pulsarGroup);
+            registerSpellPiece("trick_pulsar_sequence", PieceTrickConjurePulsarSequence.class, pulsarGroup);
+            registerSpellPiece("trick_pulsar_light", PieceTrickConjurePulsarLight.class, pulsarGroup);
+
             PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_store_entity"), PieceTrickStoreEntityUUID.class);
             PsiAPI.addPieceToGroup(PieceTrickStoreEntityUUID.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_store_entity"), false);
 
@@ -257,6 +262,7 @@ public class PsitweaksSpells {
             registerSpellPiece("macro_face_axial_offset", PieceMacroFaceAxialOffset.class);
             registerSpellPiece("macro_face_axial_rotation", PieceMacroFaceAxialRotation.class);
             registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+            registerSpellPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
 
 
         });
@@ -265,5 +271,11 @@ public class PsitweaksSpells {
         ResourceLocation location = ResourceLocation.fromNamespaceAndPath("psitweaks", id);
         PsiAPI.registerSpellPieceAndTexture(location, pieceClass);
         PsiAPI.addPieceToGroup(pieceClass, location, false);
+    }
+
+    private static void registerSpellPiece(String id, Class<? extends SpellPiece> pieceClass,
+                                           ResourceLocation group) {
+        PsiAPI.registerSpellPieceAndTexture(ResourceLocation.fromNamespaceAndPath("psitweaks", id), pieceClass);
+        PsiAPI.addPieceToGroup(pieceClass, group, false);
     }
 }

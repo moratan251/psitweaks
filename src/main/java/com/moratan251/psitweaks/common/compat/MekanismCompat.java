@@ -17,6 +17,10 @@ public final class MekanismCompat {
     private MekanismCompat() {
     }
 
+    public static boolean isIdeaStorageChemicalContainer(net.minecraft.world.item.ItemStack stack) {
+        return isMekanismLoaded() && IdeaStorageMekanismIntegration.isIdeaStorageChemicalContainer(stack);
+    }
+
     public static boolean isMekanismLoaded() {
         return ModList.get().isLoaded(MEKANISM_MOD_ID);
     }
@@ -73,5 +77,12 @@ public final class MekanismCompat {
         if (isMekanismLoaded()) {
             MekanismIntegration.supplyLaserEnergy(blockEntity, energy);
         }
+    }
+    @org.jetbrains.annotations.Nullable
+    public static com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer planIdeaStorageChemicalTransfer(
+            com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage storage, net.minecraft.world.item.ItemStack container,
+            @org.jetbrains.annotations.Nullable net.minecraft.resources.ResourceLocation target,
+            com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection direction) {
+        return isMekanismLoaded() ? IdeaStorageMekanismIntegration.plan(storage, container, target, direction) : null;
     }
 }

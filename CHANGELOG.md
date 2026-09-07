@@ -1,10 +1,22 @@
 ## Changelog
 
 
-#### v0.10.7-hotfix
+#### v0.10.8
 
-- (1.20.1) Fixed a crash caused by a mixin conflict with NuclearCraft: Neoteric
+- Ported spell pieces from 1.12.2 Random PSIdeas
+  + Trick: Conjure Pulsar
+  + Trick: Conjure Pulsar Sequence
+  + Trick: Conjure Pulsar Light
 
+
+- (1.21.1) Changed Trick: Antipersonnel Explode so that experience orbs and dropped items are not destroyed
+
+
+- Added the new Ideaspace Storage system (WIP)
+  + A virtual storage feature with a UI similar to AE2 and Mekanism QIO
+
+
+- Fixed an item duplication bug when the count input of Trick: Send Item was omitted
 
 #### v0.10.7
 

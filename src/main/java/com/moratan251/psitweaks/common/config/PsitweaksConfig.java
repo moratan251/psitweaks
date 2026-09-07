@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageDefaults;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PsitweaksConfig {
@@ -33,7 +34,58 @@ public class PsitweaksConfig {
         public final ForgeConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
         public final ForgeConfigSpec.LongValue psionicGeneratorEnergyCapacity;
 
+        public final ForgeConfigSpec.IntValue ideaStorageMaxItemTypes;
+        public final ForgeConfigSpec.IntValue ideaStorageItemStacksPerType;
+        public final ForgeConfigSpec.IntValue ideaStorageMaxFluidTypes;
+        public final ForgeConfigSpec.LongValue ideaStorageMaxFluidPerType;
+        public final ForgeConfigSpec.IntValue ideaStorageMaxChemicalTypes;
+        public final ForgeConfigSpec.LongValue ideaStorageMaxChemicalPerType;
+
         public Common(ForgeConfigSpec.Builder builder) {
+            builder.comment("Ideaspace Storage Settings")
+                    .translation("psitweaks.configuration.idea_storage")
+                    .push("ideaStorage");
+
+            ideaStorageMaxItemTypes = builder
+                    .comment("イデアストレージに格納できるアイテムの最大種類数",
+                            "Maximum number of distinct item types per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_item_types")
+                    .defineInRange("maxItemTypes", 256, 1, 100_000);
+
+            ideaStorageItemStacksPerType = builder
+                    .comment("アイテム1種類あたりの上限(最大スタック数に掛ける係数)",
+                            "Per-type item limit as a multiplier of the item's max stack size")
+                    .translation("psitweaks.configuration.idea_storage.item_stacks_per_type")
+                    .defineInRange("itemStacksPerType", 16_384, 1, Integer.MAX_VALUE);
+
+            ideaStorageMaxFluidTypes = builder
+                    .comment("イデアストレージに格納できる液体の最大種類数",
+                            "Maximum number of distinct fluid types per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_fluid_types")
+                    .defineInRange("maxFluidTypes", 64, 1, 100_000);
+
+            ideaStorageMaxFluidPerType = builder
+                    .comment("液体1種類あたりの上限(内部単位: mB、既定値は1,048,576 B)",
+                            "Maximum amount per fluid type in internal mB units (default: 1,048,576 B)")
+                    .translation("psitweaks.configuration.idea_storage.max_fluid_per_type")
+                    .defineInRange("maxFluidPerType", IdeaStorageDefaults.FLUID_PER_TYPE_RAW,
+                            1L, Long.MAX_VALUE);
+
+            ideaStorageMaxChemicalTypes = builder
+                    .comment("イデアストレージに格納できるChemicalの最大種類数",
+                            "Maximum number of distinct chemical types per player in the Ideaspace Storage")
+                    .translation("psitweaks.configuration.idea_storage.max_chemical_types")
+                    .defineInRange("maxChemicalTypes", 64, 1, 100_000);
+
+            ideaStorageMaxChemicalPerType = builder
+                    .comment("Chemical 1種類あたりの上限(内部単位、既定値は33,554,432 B)",
+                            "Maximum amount per chemical type in internal units (default: 33,554,432 B)")
+                    .translation("psitweaks.configuration.idea_storage.max_chemical_per_type")
+                    .defineInRange("maxChemicalPerType", IdeaStorageDefaults.CHEMICAL_PER_TYPE_RAW,
+                            1L, Long.MAX_VALUE);
+
+            builder.pop(); // ideaStorage カテゴリ終了
+
             builder.comment("Psitweaks Common Configuration")
                     .push("spells"); // カテゴリ開始
 

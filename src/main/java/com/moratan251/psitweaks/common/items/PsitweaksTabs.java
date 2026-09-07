@@ -181,6 +181,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.PROGRAM_SWITCH_FLEX.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get());
                         pOutput.accept(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get());
+                        pOutput.accept(PsitweaksItems.PROGRAM_IDEA_STORAGE.get());
 
                         pOutput.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
                         pOutput.accept(PsitweaksBlocks.ORE_ANTINITE.get());

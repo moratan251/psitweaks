@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_pulsar_light",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_pulsar_light.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_pulsar_light"
+    }
+  ]
+}

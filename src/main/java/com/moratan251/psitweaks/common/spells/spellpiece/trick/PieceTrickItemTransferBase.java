@@ -305,7 +305,6 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
             int limit) throws SpellRuntimeException;
 
     protected static int transferAmount(ItemStack stack, int limit) {
-        int cap = stack.getMaxStackSize();
-        return limit < 0 ? cap : Math.min(limit, cap);
+        return ItemTransferAmount.calculate(stack.getCount(), stack.getMaxStackSize(), limit);
     }
 }
