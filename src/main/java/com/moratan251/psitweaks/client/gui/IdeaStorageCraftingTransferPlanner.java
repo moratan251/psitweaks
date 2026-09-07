@@ -18,6 +18,13 @@ public final class IdeaStorageCraftingTransferPlanner {
         }
 
         List<AvailableStack> available = collectAvailable(menu);
+        int[][] candidates = new int[MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT][];
+        for (int slot = 0; slot < candidates.length; slot++) {
+            candidates[slot] = slot < candidatesBySlot.size()
+                    ? findCandidates(available, candidatesBySlot.get(slot)) : new int[0];
+        }
+        int[] assignment = IdeaStorageIngredientAssignment.assign(candidates,
+                available.stream().mapToLong(entry -> entry.count).toArray());
         List<ItemStack> templates = new ArrayList<>(MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT);
         List<Integer> missingSlots = new ArrayList<>();
         for (int slot = 0; slot < MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT; slot++) {
@@ -25,12 +32,12 @@ public final class IdeaStorageCraftingTransferPlanner {
                 templates.add(ItemStack.EMPTY);
                 continue;
             }
-            ItemStack selected = consumeOne(available, candidatesBySlot.get(slot));
-            if (selected.isEmpty()) {
+            int selected = assignment[slot];
+            if (selected < 0) {
                 missingSlots.add(slot);
                 templates.add(ItemStack.EMPTY);
             } else {
-                templates.add(selected.copyWithCount(1));
+                templates.add(available.get(selected).template.copyWithCount(1));
             }
         }
         return new Plan(List.copyOf(templates), List.copyOf(missingSlots));
@@ -53,37 +60,35 @@ public final class IdeaStorageCraftingTransferPlanner {
         }
         for (AvailableStack entry : available) {
             if (ItemStack.isSameItemSameComponents(entry.template, template)) {
-                entry.count = Math.addExact(entry.count, count);
+                entry.count = Math.min(MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT,
+                        entry.count + Math.min(count, MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT));
                 return;
             }
         }
-        available.add(new AvailableStack(template.copyWithCount(1), count));
+        available.add(new AvailableStack(template.copyWithCount(1),
+                Math.min(count, MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT)));
     }
 
-    private static ItemStack consumeOne(List<AvailableStack> available, List<ItemStack> candidates) {
-        for (ItemStack candidate : candidates) {
-            if (candidate.isEmpty()) {
-                continue;
-            }
-            for (AvailableStack entry : available) {
-                if (entry.count > 0 && ItemStack.isSameItemSameComponents(entry.template, candidate)) {
-                    entry.count--;
-                    return entry.template;
+    private static int[] findCandidates(List<AvailableStack> available, List<ItemStack> candidates) {
+        List<Integer> matches = new ArrayList<>();
+        boolean[] added = new boolean[available.size()];
+        // Preserve exact-match preference, then the existing item-only fallback.
+        for (boolean exact : new boolean[] {true, false}) {
+            for (ItemStack candidate : candidates) {
+                if (candidate.isEmpty()) {
+                    continue;
+                }
+                for (int index = 0; index < available.size(); index++) {
+                    ItemStack template = available.get(index).template;
+                    if (!added[index] && (exact ? ItemStack.isSameItemSameComponents(template, candidate)
+                            : ItemStack.isSameItem(template, candidate))) {
+                        added[index] = true;
+                        matches.add(index);
+                    }
                 }
             }
         }
-        for (ItemStack candidate : candidates) {
-            if (candidate.isEmpty()) {
-                continue;
-            }
-            for (AvailableStack entry : available) {
-                if (entry.count > 0 && ItemStack.isSameItem(entry.template, candidate)) {
-                    entry.count--;
-                    return entry.template;
-                }
-            }
-        }
-        return ItemStack.EMPTY;
+        return matches.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public record Plan(List<ItemStack> templates, List<Integer> missingSlots) {
