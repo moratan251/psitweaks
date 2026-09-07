@@ -154,6 +154,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
 
         // 行数変更による開き直し直後は、退避してあったカーソル位置を復元する
         IdeaStorageClientHandler.restoreMousePositionIfStashed();
+        if (menu.clientSnapshot() != null) applySnapshot(menu.clientSnapshot());
     }
 
     /** ソートボタンのツールチップ。「ソート: <モード名>」形式で現在のモードを示す。 */
@@ -169,7 +170,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             craftClearButton.visible = next;
             craftClearButton.active = next;
         }
-        IdeaStorageNetwork.sendToServer(new MessageIdeaStorageCraftToggle(next));
+        IdeaStorageNetwork.sendToServer(new MessageIdeaStorageCraftToggle(menu.token(), next));
     }
 
     /** JEI/EMI の占有領域(exclusion area)通知用。クラフトパネルの矩形(画面絶対座標)。 */
@@ -194,7 +195,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             MouseHandler mouse = minecraft.mouseHandler;
             double guiScale = minecraft.getWindow().getGuiScale();
             IdeaStorageClientHandler.stashMousePosition(mouse.xpos() / guiScale, mouse.ypos() / guiScale);
-            IdeaStorageNetwork.sendToServer(new MessageIdeaStorageResize(next));
+            IdeaStorageNetwork.sendToServer(new MessageIdeaStorageResize(menu.token(), next));
         }
     }
 
@@ -579,7 +580,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             if (!carried.isEmpty()) {
                 if (!loadFailed) {
                     if (button == 0) {
-                        IdeaStorageNetwork.sendToServer(new MessageIdeaStorageDeposit(carried.copyWithCount(1)));
+                        IdeaStorageNetwork.sendToServer(new MessageIdeaStorageDeposit(menu.token()));
                     } else if (button == 1) {
                         IdeaStorageNetwork.sendToServer(contentTransferMessage(entryAt(mx, my), hasShiftDown()));
                     } else {
@@ -591,7 +592,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             IdeaStorageDisplayEntry entry = entryAt(mx, my);
             if (entry != null && !loadFailed
                     && entry.kind() == IdeaStorageDisplayEntry.Kind.FLUID && button == 0) {
-                IdeaStorageNetwork.sendToServer(new MessageIdeaStorageFillBucket(entry.fluidTemplate()));
+                IdeaStorageNetwork.sendToServer(new MessageIdeaStorageFillBucket(menu.token(), entry.entryId()));
                 return true;
             }
             if (entry != null && !loadFailed && entry.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
@@ -607,22 +608,16 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                 if (mode == 0) {
                     return super.mouseClicked(mouseX, mouseY, button);
                 }
-                IdeaStorageNetwork.sendToServer(new MessageIdeaStorageExtract(entry.itemTemplate(), mode));
+                IdeaStorageNetwork.sendToServer(new MessageIdeaStorageExtract(menu.token(), entry.entryId(), mode));
                 return true;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private static MessageIdeaStorageTransferContents contentTransferMessage(
+    private MessageIdeaStorageTransferContents contentTransferMessage(
             @Nullable IdeaStorageDisplayEntry target, boolean bulk) {
-        if (target == null || target.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
-            return MessageIdeaStorageTransferContents.emptyTarget(bulk);
-        }
-        if (target.kind() == IdeaStorageDisplayEntry.Kind.FLUID) {
-            return MessageIdeaStorageTransferContents.fluidTarget(target.fluidTemplate(), bulk);
-        }
-        return MessageIdeaStorageTransferContents.chemicalTarget(target.chemicalId(), bulk);
+        return new MessageIdeaStorageTransferContents(menu.token(), target == null ? 0 : target.entryId(), bulk);
     }
 
     @Override
@@ -712,7 +707,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private class CraftClearButton extends Button {
         CraftClearButton(int x, int y) {
             super(x, y, CRAFT_CLEAR_BUTTON_SIZE, CRAFT_CLEAR_BUTTON_SIZE, Component.literal("×"),
-                    button -> IdeaStorageNetwork.sendToServer(new MessageIdeaStorageClearCrafting()),
+                    button -> IdeaStorageNetwork.sendToServer(new MessageIdeaStorageClearCrafting(menu.token())),
                     DEFAULT_NARRATION);
             setTooltip(Tooltip.create(Component.translatable("gui.psitweaks.idea_storage.craft_clear")));
         }

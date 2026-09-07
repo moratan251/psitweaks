@@ -58,7 +58,7 @@ public class IdeaStorageEmiRecipeHandler implements EmiRecipeHandler<IdeaStorage
         if (!plan.complete()) {
             return false;
         }
-        IdeaStorageNetwork.sendToServer(new MessageIdeaStorageFillCrafting(plan.templates()));
+        IdeaStorageNetwork.sendToServer(MessageIdeaStorageFillCrafting.fromTemplates(context.getScreenHandler(), plan.templates()));
         return true;
     }
 

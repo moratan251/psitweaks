@@ -80,7 +80,7 @@ public class IdeaStorageJeiRecipeTransferHandler
                             Component.translatable("gui.psitweaks.idea_storage.transfer_missing"), missing);
         }
         if (doTransfer) {
-            IdeaStorageNetwork.sendToServer(new MessageIdeaStorageFillCrafting(plan.templates()));
+            IdeaStorageNetwork.sendToServer(MessageIdeaStorageFillCrafting.fromTemplates(container, plan.templates()));
         }
         return null;
     }

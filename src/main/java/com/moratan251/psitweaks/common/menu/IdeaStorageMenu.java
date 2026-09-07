@@ -1,5 +1,9 @@
 package com.moratan251.psitweaks.common.menu;
 
+import com.moratan251.psitweaks.common.network.MessageIdeaStorageSyncPart;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageSyncAccumulator;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageSyncSession;
+import com.moratan251.psitweaks.common.network.IdeaStorageMenuToken;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageExtract;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageFillCrafting;
@@ -79,6 +83,9 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     public static final int CRAFT_MATRIX_START = 36;
     public static final int CRAFT_RESULT_SLOT = 45;
 
+    private final IdeaStorageMenuToken token;
+    private final IdeaStorageSyncSession syncSession = new IdeaStorageSyncSession();
+    private final IdeaStorageSyncAccumulator syncAccumulator = new IdeaStorageSyncAccumulator();
     private final UUID ownerUuid;
     private final Player player;
     @Nullable
@@ -94,14 +101,20 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private int craftingMutationDepth;
     private boolean craftingResultDirty;
     private List<MessageIdeaStorageSync.Entry> clientStorageEntries = List.of();
+    @Nullable private MessageIdeaStorageSync clientSnapshot;
 
     public static IdeaStorageMenu fromNetwork(int windowId, Inventory playerInventory, FriendlyByteBuf buf) {
-        return new IdeaStorageMenu(windowId, playerInventory, buf.readUUID(), buf.readVarInt());
+        return new IdeaStorageMenu(windowId, playerInventory, buf.readUUID(), buf.readVarInt(), buf.readUUID());
     }
 
     public IdeaStorageMenu(int windowId, Inventory playerInventory, UUID ownerUuid, int gridRows) {
+        this(windowId, playerInventory, ownerUuid, gridRows, UUID.randomUUID());
+    }
+
+    public IdeaStorageMenu(int windowId, Inventory playerInventory, UUID ownerUuid, int gridRows, UUID session) {
         super(ModMenuTypes.IDEA_STORAGE.get(), windowId);
         this.ownerUuid = ownerUuid;
+        this.token = new IdeaStorageMenuToken(windowId, session);
         this.player = playerInventory.player;
         this.gridRows = Math.max(PlayerIdeaStorage.GRID_ROWS_MIN, Math.min(PlayerIdeaStorage.GRID_ROWS_MAX, gridRows));
         if (player instanceof ServerPlayer serverPlayer) {
@@ -189,6 +202,12 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             return;
         }
         super.clicked(slotId, button, clickType, player);
+    }
+
+    @Override
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+        return slot.container != craftResult && (!isCraftSlot(slot) || craftOpen)
+                && super.canTakeItemForPickAll(stack, slot);
     }
 
     @Override
@@ -376,10 +395,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             storage.setGridRows(clamped);
         }
         serverPlayer.closeContainer();
-        net.minecraftforge.network.NetworkHooks.openScreen(serverPlayer, new Provider(ownerUuid, clamped), buf -> {
-            buf.writeUUID(ownerUuid);
-            buf.writeVarInt(clamped);
-        });
+        open(serverPlayer, ownerUuid, clamped);
     }
 
     @Override
@@ -394,30 +410,33 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             lastSyncedMaxItemTypes = storage.maxItemTypes();
             lastSyncedMaxFluidTypes = storage.maxFluidTypes();
             lastSyncedMaxChemicalTypes = storage.maxChemicalTypes();
-            IdeaStorageNetwork.sendToPlayer(serverPlayer, createSyncMessage());
+            syncSession.send(storage, token, part -> IdeaStorageNetwork.sendToPlayer(serverPlayer, part));
         }
     }
 
-    private MessageIdeaStorageSync createSyncMessage() {
-        List<MessageIdeaStorageSync.Entry> entries = new ArrayList<>();
-        List<MessageIdeaStorageSync.FluidEntry> fluidEntries = new ArrayList<>();
-        List<MessageIdeaStorageSync.ChemicalEntry> chemicalEntries = new ArrayList<>();
-        if (storage != null) {
-            for (var entry : storage.itemEntries()) {
-                entries.add(new MessageIdeaStorageSync.Entry(entry.getKey().template(), entry.getValue()));
-            }
-            for (var entry : storage.fluidEntries()) {
-                fluidEntries.add(new MessageIdeaStorageSync.FluidEntry(entry.getKey().template(), entry.getValue()));
-            }
-            for (var entry : storage.chemicalEntries()) {
-                chemicalEntries.add(new MessageIdeaStorageSync.ChemicalEntry(entry.getKey(), entry.getValue()));
-            }
-        }
-        return new MessageIdeaStorageSync(entries, fluidEntries, chemicalEntries,
-                storage == null ? 0 : storage.maxItemTypes(),
-                storage == null ? 0 : storage.maxFluidTypes(),
-                storage == null ? 0 : storage.maxChemicalTypes(),
-                storage != null && storage.isLoadFailed());
+    public IdeaStorageMenuToken token() { return token; }
+
+    public Object resolveEntry(long id) { return syncSession.resolve(id); }
+
+    public Optional<MessageIdeaStorageSync> receiveSyncPart(MessageIdeaStorageSyncPart part) {
+        Optional<MessageIdeaStorageSync> completed = syncAccumulator.accept(token, part);
+        completed.ifPresent(snapshot -> {
+            clientSnapshot = snapshot;
+            applyClientStorageEntries(snapshot.entries());
+        });
+        return completed;
+    }
+
+    @Nullable
+    public MessageIdeaStorageSync clientSnapshot() { return clientSnapshot; }
+
+    public static void open(ServerPlayer player, UUID owner, int rows) {
+        Provider provider = new Provider(owner, rows, UUID.randomUUID());
+        net.minecraftforge.network.NetworkHooks.openScreen(player, provider, buf -> {
+            buf.writeUUID(owner);
+            buf.writeVarInt(rows);
+            buf.writeUUID(provider.session());
+        });
     }
 
     /**
@@ -687,7 +706,14 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         if (carried.isEmpty() || !ItemStack.isSameItem(carried, template)) {
             return;
         }
-        long moved = storage.insert(carried, carried.getCount());
+        depositCarried(false);
+    }
+
+    public void depositCarried(boolean single) {
+        if (storage == null || storage.isLoadFailed()) return;
+        ItemStack carried = getCarried();
+        if (carried.isEmpty()) return;
+        long moved = storage.insert(carried, single ? 1 : carried.getCount());
         if (moved <= 0) {
             return;
         }
@@ -734,6 +760,11 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         }
         ItemStack carried = this.getCarried();
         if (carried.isEmpty()) {
+            return;
+        }
+        if (!carried.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()
+                && !MekanismCompat.isIdeaStorageChemicalContainer(carried)) {
+            depositCarried(true);
             return;
         }
         if (targetKind == MessageIdeaStorageTransferContents.TARGET_FLUID) {
@@ -1058,7 +1089,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
                                           long amount, boolean intoStorage) {
     }
 
-    public record Provider(UUID owner, int rows) implements MenuProvider {
+    public record Provider(UUID owner, int rows, UUID session) implements MenuProvider {
         @Override
         public @NotNull Component getDisplayName() {
             return Component.translatable("container.psitweaks.idea_storage");
@@ -1066,7 +1097,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
 
         @Override
         public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-            return new IdeaStorageMenu(windowId, playerInventory, owner, rows);
+            return new IdeaStorageMenu(windowId, playerInventory, owner, rows, session);
         }
     }
 }

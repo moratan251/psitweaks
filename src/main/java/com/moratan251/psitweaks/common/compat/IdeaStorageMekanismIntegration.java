@@ -20,6 +20,13 @@ import org.jetbrains.annotations.Nullable;
 
 /** Forge 1.20.1 Chemical registries remain separate. Encoded keys are namespace:kind/path. */
 public final class IdeaStorageMekanismIntegration {
+    public static boolean isIdeaStorageChemicalContainer(ItemStack stack) {
+        return stack.getCapability(Capabilities.GAS_HANDLER).isPresent()
+                || stack.getCapability(Capabilities.INFUSION_HANDLER).isPresent()
+                || stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent()
+                || stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent();
+    }
+
     private IdeaStorageMekanismIntegration() {}
 
     public static ResourceLocation key(String kind, ResourceLocation id) {

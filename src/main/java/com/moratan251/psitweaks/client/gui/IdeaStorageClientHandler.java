@@ -1,7 +1,8 @@
 package com.moratan251.psitweaks.client.gui;
 
+import com.moratan251.psitweaks.common.menu.IdeaStorageMenu;
+import com.moratan251.psitweaks.common.network.MessageIdeaStorageSyncPart;
 import com.mojang.blaze3d.platform.Window;
-import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -9,7 +10,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * イデアストレージ同期 payload のクライアント側処理。
  * common 側の payload ハンドラから委譲され、dedicated server ではロードされない。
- * スナップショットは開いている Screen インスタンス内にのみ保持し、static キャッシュを持たない。
+ * 受信状態とスナップショットは開いている Menu が所有し、static キャッシュを持たない。
  */
 public final class IdeaStorageClientHandler {
     /** リサイズ時の Menu 再生成をまたいで検索文字列を維持するための一時保持(String のみ、Level/Player 参照は持たない)。 */
@@ -26,9 +27,15 @@ public final class IdeaStorageClientHandler {
     private IdeaStorageClientHandler() {
     }
 
-    public static void handleSync(MessageIdeaStorageSync message) {
-        if (Minecraft.getInstance().screen instanceof IdeaStorageScreen screen) {
-            screen.applySnapshot(message);
+    public static void handleSyncPart(MessageIdeaStorageSyncPart message) {
+        Minecraft minecraft = Minecraft.getInstance();
+        // Recipe viewers may temporarily replace the screen while the server menu remains open.
+        if (minecraft.player != null && minecraft.player.containerMenu instanceof IdeaStorageMenu menu) {
+            menu.receiveSyncPart(message).ifPresent(snapshot -> {
+                if (minecraft.screen instanceof IdeaStorageScreen screen && screen.getMenu() == menu) {
+                    screen.applySnapshot(snapshot);
+                }
+            });
         }
     }
 

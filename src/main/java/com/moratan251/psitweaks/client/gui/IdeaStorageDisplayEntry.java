@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 /** Item / Fluid / Chemicalを同じ仮想グリッドへ表示するためのクライアント専用表現。 */
-public record IdeaStorageDisplayEntry(Kind kind, ItemStack itemTemplate, FluidStack fluidTemplate,
+public record IdeaStorageDisplayEntry(long entryId, Kind kind, ItemStack itemTemplate, FluidStack fluidTemplate,
                                       @Nullable ResourceLocation chemicalId, long amount) {
     public enum Kind {
         ITEM,
@@ -20,15 +20,15 @@ public record IdeaStorageDisplayEntry(Kind kind, ItemStack itemTemplate, FluidSt
     }
 
     public static IdeaStorageDisplayEntry item(MessageIdeaStorageSync.Entry entry) {
-        return new IdeaStorageDisplayEntry(Kind.ITEM, entry.template(), FluidStack.EMPTY, null, entry.count());
+        return new IdeaStorageDisplayEntry(entry.entryId(), Kind.ITEM, entry.template(), FluidStack.EMPTY, null, entry.count());
     }
 
     public static IdeaStorageDisplayEntry fluid(MessageIdeaStorageSync.FluidEntry entry) {
-        return new IdeaStorageDisplayEntry(Kind.FLUID, ItemStack.EMPTY, entry.template(), null, entry.amount());
+        return new IdeaStorageDisplayEntry(entry.entryId(), Kind.FLUID, ItemStack.EMPTY, entry.template(), null, entry.amount());
     }
 
     public static IdeaStorageDisplayEntry chemical(MessageIdeaStorageSync.ChemicalEntry entry) {
-        return new IdeaStorageDisplayEntry(Kind.CHEMICAL, ItemStack.EMPTY, FluidStack.EMPTY,
+        return new IdeaStorageDisplayEntry(entry.entryId(), Kind.CHEMICAL, ItemStack.EMPTY, FluidStack.EMPTY,
                 entry.chemicalId(), entry.amount());
     }
 

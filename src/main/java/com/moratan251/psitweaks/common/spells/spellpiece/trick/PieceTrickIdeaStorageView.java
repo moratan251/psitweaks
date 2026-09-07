@@ -36,10 +36,7 @@ public class PieceTrickIdeaStorageView extends PieceTrick {
         if (context.caster instanceof ServerPlayer serverPlayer) {
             UUID owner = serverPlayer.getUUID();
             int rows = IdeaStorageService.get(serverPlayer.server, owner).getGridRows();
-            net.minecraftforge.network.NetworkHooks.openScreen(serverPlayer, new IdeaStorageMenu.Provider(owner, rows), buf -> {
-                buf.writeUUID(owner);
-                buf.writeVarInt(rows);
-            });
+            IdeaStorageMenu.open(serverPlayer, owner, rows);
         }
         return null;
     }

@@ -14,7 +14,7 @@ public final class IdeaStorageNetwork {
         NetworkHandler.CHANNEL.registerMessage(id++, MessageIdeaStorageFillBucket.class, MessageIdeaStorageFillBucket::write, MessageIdeaStorageFillBucket::read, MessageIdeaStorageFillBucket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         NetworkHandler.CHANNEL.registerMessage(id++, MessageIdeaStorageFillCrafting.class, MessageIdeaStorageFillCrafting::write, MessageIdeaStorageFillCrafting::read, MessageIdeaStorageFillCrafting::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         NetworkHandler.CHANNEL.registerMessage(id++, MessageIdeaStorageResize.class, MessageIdeaStorageResize::write, MessageIdeaStorageResize::read, MessageIdeaStorageResize::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
-        NetworkHandler.CHANNEL.registerMessage(id++, MessageIdeaStorageSync.class, MessageIdeaStorageSync::write, MessageIdeaStorageSync::read, MessageIdeaStorageSync::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        NetworkHandler.CHANNEL.registerMessage(id++, MessageIdeaStorageSyncPart.class, MessageIdeaStorageSyncPart::write, MessageIdeaStorageSyncPart::read, MessageIdeaStorageSyncPart::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         NetworkHandler.CHANNEL.registerMessage(id++, MessageIdeaStorageTransferContents.class, MessageIdeaStorageTransferContents::write, MessageIdeaStorageTransferContents::read, MessageIdeaStorageTransferContents::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         return id;
     }

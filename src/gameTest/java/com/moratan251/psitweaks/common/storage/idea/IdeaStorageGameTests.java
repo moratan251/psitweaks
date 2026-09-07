@@ -148,19 +148,17 @@ public final class IdeaStorageGameTests {
 
     @GameTest(template = "empty")
     public static void syncRoundTrip(GameTestHelper helper) {
-        var message = new MessageIdeaStorageSync(List.of(new MessageIdeaStorageSync.Entry(new ItemStack(Items.DIAMOND), 9_000_000_000L)),
-                List.of(new MessageIdeaStorageSync.FluidEntry(new FluidStack(Fluids.WATER, 1), 9000)),
-                List.of(new MessageIdeaStorageSync.ChemicalEntry(ResourceLocation.fromNamespaceAndPath("test", "gas/example"), 9_000_000_000L)),
-                256, 64, 64, false);
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        try {
-            message.write(buf);
-            var copy = MessageIdeaStorageSync.read(buf);
-            helper.assertTrue(copy.entries().get(0).count() == 9_000_000_000L, "long item count");
-            helper.assertTrue(copy.chemicalEntries().get(0).amount() == 9_000_000_000L, "long chemical count");
-            helper.assertTrue(copy.fluidEntries().get(0).template().getFluid() == Fluids.WATER, "fluid identity");
-            helper.assertTrue(buf.readableBytes() == 0, "wire format consumed");
-        } finally { buf.release(); }
+        var storage = new PlayerIdeaStorage();
+        storage.insert(new ItemStack(Items.DIAMOND), 128);
+        storage.insertFluid(new FluidStack(Fluids.WATER, 1), 9000);
+        storage.insertChemical(ResourceLocation.fromNamespaceAndPath("test", "gas/example"), 9_000_000_000L);
+        var token = new com.moratan251.psitweaks.common.network.IdeaStorageMenuToken(1, UUID.randomUUID());
+        var receiver = new IdeaStorageSyncAccumulator();
+        var result = new java.util.concurrent.atomic.AtomicReference<MessageIdeaStorageSync>();
+        new IdeaStorageSyncSession().send(storage, token, part -> receiver.accept(token, part).ifPresent(result::set));
+        helper.assertTrue(result.get().entries().get(0).count() == 128, "item quantity");
+        helper.assertTrue(result.get().chemicalEntries().get(0).amount() == 9_000_000_000L, "long chemical quantity");
+        helper.assertTrue(result.get().fluidEntries().get(0).template().getFluid() == Fluids.WATER, "fluid identity");
         helper.succeed();
     }
 }
