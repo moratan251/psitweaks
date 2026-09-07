@@ -18,6 +18,10 @@ public final class MekanismCompat {
     private MekanismCompat() {
     }
 
+    public static boolean isIdeaStorageChemicalContainer(net.minecraft.world.item.ItemStack stack) {
+        return isMekanismLoaded() && MekanismIntegration.isIdeaStorageChemicalContainer(stack);
+    }
+
     public static boolean isMekanismLoaded() {
         return ModList.get().isLoaded(MEKANISM_MOD_ID);
     }

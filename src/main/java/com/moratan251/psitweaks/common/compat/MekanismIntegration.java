@@ -29,6 +29,10 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 final class MekanismIntegration {
+    public static boolean isIdeaStorageChemicalContainer(ItemStack stack) {
+        return Capabilities.CHEMICAL.getCapability(stack) != null;
+    }
+
     private MekanismIntegration() {
     }
 

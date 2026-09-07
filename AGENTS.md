@@ -28,9 +28,5 @@ Use this file when an agent starts inside `1.21.1-worktree/`. The workspace-leve
 
 ## Verification
 
-- Run Gradle commands in this directory (`.\gradlew` in PowerShell, `./gradlew` in bash).
-- Minimum implementation verification: `.\gradlew compileJava`.
-- Datagen changes: `.\gradlew runData`, followed by a generated-resource diff review.
-- Visible/client changes: `.\gradlew runClient` when practical.
-- GameTest additions: `.\gradlew runGameTestServer`.
-- Do not commit `run/`, logs, crash reports, or unrelated generated output.
+Follow [../docs/verification.md](../docs/verification.md). Run commands in the Gradle build that owns the changed code; record results and any unperformed checks separately.
+Do not commit runtime output, logs, crash reports, or unrelated generated resources.

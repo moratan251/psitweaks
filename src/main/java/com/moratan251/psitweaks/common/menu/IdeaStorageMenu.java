@@ -192,6 +192,12 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+        return slot.container != craftResult && (!isCraftSlot(slot) || craftOpen)
+                && super.canTakeItemForPickAll(stack, slot);
+    }
+
+    @Override
     public boolean canDragTo(Slot slot) {
         return (!isCraftSlot(slot) || craftOpen) && super.canDragTo(slot);
     }
@@ -686,7 +692,14 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         if (carried.isEmpty() || !ItemStack.isSameItemSameComponents(carried, template)) {
             return;
         }
-        long moved = storage.insert(carried, carried.getCount());
+        depositCarried(false);
+    }
+
+    public void depositCarried(boolean single) {
+        if (storage == null || storage.isLoadFailed()) return;
+        ItemStack carried = getCarried();
+        if (carried.isEmpty()) return;
+        long moved = storage.insert(carried, single ? 1 : carried.getCount());
         if (moved <= 0) {
             return;
         }
@@ -733,6 +746,11 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         }
         ItemStack carried = this.getCarried();
         if (carried.isEmpty()) {
+            return;
+        }
+        if (Capabilities.FluidHandler.ITEM.getCapability(carried, null) == null
+                && !MekanismCompat.isIdeaStorageChemicalContainer(carried)) {
+            depositCarried(true);
             return;
         }
         if (targetKind == MessageIdeaStorageTransferContents.TARGET_FLUID) {
