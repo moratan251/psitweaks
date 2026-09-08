@@ -5,6 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.ItemCircleSpellBullet;
 
@@ -91,7 +92,7 @@ public final class SpellPsiRefundLedger {
             return 0;
         }
 
-        PlayerDataHandler.PlayerData playerData = PlayerDataHandler.get(player);
+        PlayerData playerData = PlayerDataHandler.get(player);
         int before = Math.max(playerData.getAvailablePsi(), 0);
         int headroom = Math.max(playerData.getTotalPsi() - before, 0);
         int refund = Math.min(requestedRefund, headroom);

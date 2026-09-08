@@ -2,7 +2,6 @@ package com.moratan251.psitweaksqol.client.gui;
 
 import com.moratan251.psitweaksqol.client.config.PsitweaksQolConfig;
 import net.minecraft.resources.ResourceLocation;
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.SpellPiece;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public final class PieceBookmarkManager {
     }
 
     private static ResourceLocation getPieceId(SpellPiece piece) {
-        return PsiAPI.SPELL_PIECE_REGISTRY.getKey(piece.getClass());
+        return piece.getRegistryKey();
     }
 
     public static Set<String> getBookmarkIds() {

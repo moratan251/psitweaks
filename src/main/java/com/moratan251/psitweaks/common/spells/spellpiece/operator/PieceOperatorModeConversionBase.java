@@ -60,7 +60,6 @@ public abstract class PieceOperatorModeConversionBase extends PieceOperator impl
         rebuildParams(savedSides);
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, currentMode());
     }

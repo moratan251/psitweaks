@@ -27,7 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
-import vazkii.psi.common.core.handler.PlayerDataHandler.PlayerData;
+import vazkii.psi.common.core.handler.PlayerData;
 
 public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
     private static final String NBT_LINK_ACTIVE = "linkActive";

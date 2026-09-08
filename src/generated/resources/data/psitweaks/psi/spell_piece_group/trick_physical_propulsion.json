@@ -1,0 +1,10 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sable"
+    }
+  ],
+  "main": "psitweaks:trick_physical_propulsion",
+  "pieces": []
+}

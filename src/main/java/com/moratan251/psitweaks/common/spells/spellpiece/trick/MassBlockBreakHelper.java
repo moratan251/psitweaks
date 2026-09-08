@@ -31,7 +31,7 @@ import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
-import vazkii.psi.common.core.handler.ConfigHandler;
+import vazkii.psi.common.platform.PsiConfig;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 import org.slf4j.Logger;
 
@@ -193,7 +193,7 @@ public final class MassBlockBreakHelper {
         }
         final ItemStack effectiveTool = tool;
         Predicate<BlockState> filter = state -> effectiveTool.isCorrectToolForDrops(state)
-                || PieceTrickBreakBlock.canHarvest(ConfigHandler.COMMON.cadHarvestLevel.get(), state);
+                || PieceTrickBreakBlock.canHarvest(PsiConfig.common().cadHarvestLevel(), state);
 
         Vector3 focalPoint = new Vector3(context.focalPoint.getX(), context.focalPoint.getY(), context.focalPoint.getZ());
         double maxRadiusSq = 0.0;

@@ -34,9 +34,9 @@ public final class CadBatteryAttributeHandler {
         }
 
         ItemStack battery = getCadBattery(player);
-        updateModifier(player.getAttribute(ModAttributes.REGEN), REACTIVE_BATTERY_REGEN_ID,
+        updateModifier(player.getAttribute(ModAttributes.REGEN.holder()), REACTIVE_BATTERY_REGEN_ID,
                 battery.is(PsitweaksItems.CAD_BATTERY_REACTIVE.get()) ? REACTIVE_BATTERY_REGEN_BONUS : 0.0D);
-        updateModifier(player.getAttribute(ModAttributes.TOTAL_PSI), QUANTUM_BATTERY_MAX_PSI_ID,
+        updateModifier(player.getAttribute(ModAttributes.TOTAL_PSI.holder()), QUANTUM_BATTERY_MAX_PSI_ID,
                 battery.is(PsitweaksItems.CAD_BATTERY_QUANTUM.get()) ? QUANTUM_BATTERY_MAX_PSI_BONUS : 0.0D);
     }
 

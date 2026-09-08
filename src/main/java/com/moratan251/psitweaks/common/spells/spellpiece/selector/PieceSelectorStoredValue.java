@@ -84,7 +84,6 @@ public class PieceSelectorStoredValue extends PieceSelector implements Psitweaks
                 .toList();
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, getModeOption());
     }

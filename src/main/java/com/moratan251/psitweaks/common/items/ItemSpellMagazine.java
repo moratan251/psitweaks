@@ -40,7 +40,7 @@ public class ItemSpellMagazine extends Item {
 
         if (!level.isClientSide && swapBullets(magazineStack, cadStack)) {
             player.getInventory().setChanged();
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), PsiSoundHandler.bulletCreate,
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), PsiSoundHandler.bulletCreate.get(),
                     SoundSource.PLAYERS, 0.5F, 1.0F);
         }
 

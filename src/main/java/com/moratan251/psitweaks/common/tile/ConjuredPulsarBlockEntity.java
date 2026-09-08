@@ -13,7 +13,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import vazkii.psi.api.internal.PsiRenderHelper;
-import vazkii.psi.common.Psi;
+import vazkii.psi.common.client.PsiClientRuntime;
+import vazkii.psi.api.cad.CADComponentLookup;
 import vazkii.psi.common.block.BlockConjured;
 
 public class ConjuredPulsarBlockEntity extends BlockEntity {
@@ -43,7 +44,7 @@ public class ConjuredPulsarBlockEntity extends BlockEntity {
             return;
         }
 
-        int color = Psi.proxy.getColorForColorizer(colorizer);
+        int color = CADComponentLookup.color(level.registryAccess(), colorizer);
         float red = PsiRenderHelper.r(color) / 255.0F;
         float green = PsiRenderHelper.g(color) / 255.0F;
         float blue = PsiRenderHelper.b(color) / 255.0F;
@@ -105,10 +106,10 @@ public class ConjuredPulsarBlockEntity extends BlockEntity {
         double z = worldPosition.getZ() + 0.5 + (random.nextDouble() - 0.5) * width;
         float size = 0.2F + random.nextFloat() * 0.1F;
         float motion = 0.01F + random.nextFloat() * 0.015F;
-        Psi.proxy.wispFX(x, y, z, red, green, blue, size, -motion);
+        PsiClientRuntime.wisp(level, x, y, z, red, green, blue, size, 0, motion, 0, 1.0F);
     }
 
-    private static void makeSparkle(boolean enabled, float red, float green, float blue,
+    private void makeSparkle(boolean enabled, float red, float green, float blue,
                                     double x, double y, double z, double xLength, double yLength, double zLength) {
         if (!enabled) {
             return;
@@ -117,7 +118,7 @@ public class ConjuredPulsarBlockEntity extends BlockEntity {
         float xMotion = (float) (xLength * scale);
         float yMotion = (float) (yLength * scale);
         float zMotion = (float) (zLength * scale);
-        Psi.proxy.sparkleFX(x, y, z, red, green, blue,
+        PsiClientRuntime.sparkle(level, x, y, z, red, green, blue,
                 xMotion, yMotion, zMotion, 2.75F, 15);
     }
 

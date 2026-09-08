@@ -1,0 +1,33 @@
+{
+  "main": "psitweaks:operator_matrix_add",
+  "pieces": [
+    "psitweaks:operator_matrix_subtract",
+    "psitweaks:operator_matrix_multiply",
+    "psitweaks:operator_matrix_scalar_multiply",
+    "psitweaks:operator_matrix_transpose",
+    "psitweaks:operator_matrix_determinant",
+    "psitweaks:operator_matrix_inverse",
+    "psitweaks:operator_matrix_extract_row",
+    "psitweaks:operator_matrix_extract_column",
+    "psitweaks:operator_matrix_element",
+    "psitweaks:operator_matrix_row_count",
+    "psitweaks:operator_matrix_column_count",
+    "psitweaks:operator_matrix_multiply_vector",
+    "psitweaks:operator_matrix_column_from_list",
+    "psitweaks:operator_matrix_flatten",
+    "psitweaks:operator_matrix_identity",
+    "psitweaks:operator_matrix_zero",
+    "psitweaks:operator_matrix_diagonal",
+    "psitweaks:operator_matrix_replace_column",
+    "psitweaks:operator_matrix_replace_row",
+    "psitweaks:operator_matrix_replace_element",
+    "psitweaks:operator_matrix_delete_row",
+    "psitweaks:operator_matrix_delete_column",
+    "psitweaks:operator_matrix_transform_vector",
+    "psitweaks:operator_matrix_linear_part",
+    "psitweaks:operator_matrix_cuboid_region",
+    "psitweaks:operator_region_vector_list",
+    "psitweaks:operator_inside_region",
+    "psitweaks:operator_outside_region"
+  ]
+}

@@ -32,7 +32,7 @@ public class ItemCuriosController extends Item implements ISocketableController 
         }
 
         if (!level.isClientSide) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), PsiSoundHandler.compileError,
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), PsiSoundHandler.compileError.get(),
                     SoundSource.PLAYERS, 0.25F, 1.0F);
         } else {
             player.swing(hand);

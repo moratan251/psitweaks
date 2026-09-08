@@ -75,7 +75,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "psi"
 type = "required"
-versionRange = "[1.21.1-108,)"
+versionRange = "[1.21.1-110,)"
 ordering = "AFTER"
 side = "BOTH"
 

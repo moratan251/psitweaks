@@ -21,7 +21,7 @@ import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
-import vazkii.psi.common.core.handler.ConfigHandler;
+import vazkii.psi.common.platform.PsiConfig;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 
 import java.util.function.Predicate;
@@ -81,7 +81,7 @@ public class PieceTrickBreakBlockFortune extends PieceTrick {
         ItemStack fortuneTool = createFortuneTool(context, fortune);
 
         Predicate<BlockState> filter = state -> fortuneTool.isCorrectToolForDrops(state)
-                || PieceTrickBreakBlock.canHarvest(ConfigHandler.COMMON.cadHarvestLevel.get(), state);
+                || PieceTrickBreakBlock.canHarvest(PsiConfig.common().cadHarvestLevel(), state);
 
         PieceTrickBreakBlock.removeBlockWithDrops(context, context.caster, level, fortuneTool, pos, filter);
 

@@ -1,0 +1,7 @@
+{
+  "main": "psitweaks:trick_pulsar",
+  "pieces": [
+    "psitweaks:trick_pulsar_sequence",
+    "psitweaks:trick_pulsar_light"
+  ]
+}

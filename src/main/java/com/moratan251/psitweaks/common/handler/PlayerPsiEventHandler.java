@@ -26,7 +26,6 @@ public final class PlayerPsiEventHandler {
         PsiArmorEvent.post(new PsiArmorEvent(player, "psitweaks.event.custom_tick"));
     }
 
-    @SubscribeEvent
     public static void onPsiCurioEvent(PsiArmorEvent event) {
         Player player = event.getEntity();
         if (player.isSpectator() || !ModList.get().isLoaded("curios")) {

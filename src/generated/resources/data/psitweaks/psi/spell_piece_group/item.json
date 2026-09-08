@@ -1,0 +1,11 @@
+{
+  "main": "psitweaks:selector_held_item",
+  "pieces": [
+    "psitweaks:selector_selected_slot_item",
+    "psitweaks:selector_entity_slot_item",
+    "psitweaks:selector_internal_slot_item",
+    "psitweaks:operator_item_count",
+    "psitweaks:operator_item_slot",
+    "psitweaks:operator_item_total_count"
+  ]
+}

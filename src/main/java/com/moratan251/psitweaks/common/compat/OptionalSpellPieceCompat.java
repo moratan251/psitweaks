@@ -64,7 +64,7 @@ public final class OptionalSpellPieceCompat {
     }
 
     public static SpellPiece createRemovalMarker(Spell spell) {
-        SpellPiece marker = new PieceTrickDie(spell == null ? SpellPiece.dummySpell : spell);
+        SpellPiece marker = vazkii.psi.api.PsiAPI.SPELL_PIECE_REGISTRY.get(vazkii.psi.api.PsiAPI.location("trick_die")).create(spell == null ? SpellPiece.dummySpell : spell);
         marker.comment = REMOVAL_MARKER_COMMENT;
         return marker;
     }

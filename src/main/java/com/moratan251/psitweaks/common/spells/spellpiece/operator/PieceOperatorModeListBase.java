@@ -54,7 +54,6 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
         rebuildParams(savedSides);
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, currentMode());
     }

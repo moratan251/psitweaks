@@ -51,7 +51,7 @@ import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
-abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConfigurableSpellPiece {
+public abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConfigurableSpellPiece {
 
     private static final String TAG_MODE = "psitweaksMode";
     private static final String ERROR_NULL_ITEM = "psitweaks.spellerror.nullitem";
@@ -103,7 +103,6 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
         rebuildParams(savedSides);
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, getModeOption());
     }

@@ -6,7 +6,11 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.registries.DeferredItem;
-import vazkii.psi.api.PsiAPI;
+import vazkii.psi.api.capability.PsiCapabilities;
+import vazkii.psi.api.cad.IPsiBarDisplay;
+import vazkii.psi.api.cad.ISocketable;
+import vazkii.psi.api.spell.ISpellAcceptor;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import vazkii.psi.common.item.ItemSpellBullet;
 import vazkii.psi.common.item.armor.ItemPsimetalArmor;
 import vazkii.psi.common.item.base.ModDataComponents;
@@ -36,12 +40,12 @@ public final class PsitweaksItemCapabilities {
                 item.get()
         );
         event.registerItem(
-                PsiAPI.SOCKETABLE_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SOCKETABLE, ISocketable.class),
                 (stack, context) -> new ItemInlineCasterBase.InlineCasterSocketable(stack, slotCount),
                 item.get()
         );
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ItemInlineCasterBase.InlineCasterSocketable(stack, slotCount),
                 item.get()
         );
@@ -61,17 +65,17 @@ public final class PsitweaksItemCapabilities {
                 armorItems
         );
         event.registerItem(
-                PsiAPI.PSI_BAR_DISPLAY_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.PSI_BAR_DISPLAY, IPsiBarDisplay.class),
                 (stack, context) -> new ItemPsimetalArmor.ArmorSocketable(stack, 3),
                 armorItems
         );
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ItemPsimetalArmor.ArmorSocketable(stack, 3),
                 armorItems
         );
         event.registerItem(
-                PsiAPI.SOCKETABLE_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SOCKETABLE, ISocketable.class),
                 (stack, context) -> new ItemPsimetalArmor.ArmorSocketable(stack, 3),
                 armorItems
         );
@@ -89,17 +93,17 @@ public final class PsitweaksItemCapabilities {
                 autoCasters
         );
         event.registerItem(
-                PsiAPI.PSI_BAR_DISPLAY_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.PSI_BAR_DISPLAY, IPsiBarDisplay.class),
                 (stack, context) -> new ItemCuriosCompat.CurioSocketable(stack),
                 autoCasters
         );
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ItemCuriosCompat.CurioSocketable(stack),
                 autoCasters
         );
         event.registerItem(
-                PsiAPI.SOCKETABLE_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SOCKETABLE, ISocketable.class),
                 (stack, context) -> new ItemCuriosCompat.CurioSocketable(stack),
                 autoCasters
         );
@@ -112,12 +116,12 @@ public final class PsitweaksItemCapabilities {
                 PsitweaksItems.SPELL_MAGAZINE.get()
         );
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ItemSpellMagazine.SpellMagazineSocketable(stack),
                 PsitweaksItems.SPELL_MAGAZINE.get()
         );
         event.registerItem(
-                PsiAPI.SOCKETABLE_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SOCKETABLE, ISocketable.class),
                 (stack, context) -> new ItemSpellMagazine.SpellMagazineSocketable(stack),
                 PsitweaksItems.SPELL_MAGAZINE.get()
         );
@@ -130,17 +134,17 @@ public final class PsitweaksItemCapabilities {
                 PsitweaksItems.PSIMETAL_BOW.get()
         );
         event.registerItem(
-                PsiAPI.PSI_BAR_DISPLAY_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.PSI_BAR_DISPLAY, IPsiBarDisplay.class),
                 (stack, context) -> new ToolSocketable(stack, ItemPsimetalBow.SLOT_COUNT),
                 PsitweaksItems.PSIMETAL_BOW.get()
         );
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ToolSocketable(stack, ItemPsimetalBow.SLOT_COUNT),
                 PsitweaksItems.PSIMETAL_BOW.get()
         );
         event.registerItem(
-                PsiAPI.SOCKETABLE_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SOCKETABLE, ISocketable.class),
                 (stack, context) -> new ToolSocketable(stack, ItemPsimetalBow.SLOT_COUNT),
                 PsitweaksItems.PSIMETAL_BOW.get()
         );
@@ -153,17 +157,17 @@ public final class PsitweaksItemCapabilities {
                 PsitweaksItems.GRAVSTRINGER.get()
         );
         event.registerItem(
-                PsiAPI.PSI_BAR_DISPLAY_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.PSI_BAR_DISPLAY, IPsiBarDisplay.class),
                 (stack, context) -> new ToolSocketable(stack, ItemGravstringer.SLOT_COUNT),
                 PsitweaksItems.GRAVSTRINGER.get()
         );
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ToolSocketable(stack, ItemGravstringer.SLOT_COUNT),
                 PsitweaksItems.GRAVSTRINGER.get()
         );
         event.registerItem(
-                PsiAPI.SOCKETABLE_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SOCKETABLE, ISocketable.class),
                 (stack, context) -> new ToolSocketable(stack, ItemGravstringer.SLOT_COUNT),
                 PsitweaksItems.GRAVSTRINGER.get()
         );
@@ -209,7 +213,7 @@ public final class PsitweaksItemCapabilities {
         };
 
         event.registerItem(
-                PsiAPI.SPELL_ACCEPTOR_CAPABILITY,
+                ItemCapability.createVoid(PsiCapabilities.SPELL_ACCEPTOR, ISpellAcceptor.class),
                 (stack, context) -> new ItemSpellBullet.SpellAcceptor(stack),
                 spellBulletItems
         );

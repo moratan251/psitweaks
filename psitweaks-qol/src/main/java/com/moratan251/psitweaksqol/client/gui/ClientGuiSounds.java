@@ -14,6 +14,6 @@ public final class ClientGuiSounds {
     }
 
     public static void playError() {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(PsiSoundHandler.compileError, 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(PsiSoundHandler.compileError.get(), 1.0F));
     }
 }

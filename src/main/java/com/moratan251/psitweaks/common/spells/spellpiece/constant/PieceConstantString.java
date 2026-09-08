@@ -54,7 +54,6 @@ public class PieceConstantString extends SpellPiece implements EditableStringSpe
         return value;
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         String display = displayValue();
         if (display.isEmpty()) {

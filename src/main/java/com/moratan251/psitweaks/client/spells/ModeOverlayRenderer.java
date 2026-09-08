@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.Material;
 import vazkii.psi.api.ClientPsiAPI;
 import org.joml.Matrix4f;
-import vazkii.psi.api.spell.SpellPiece;
+import vazkii.psi.client.render.spell.SpellPieceRenderLayer;
 
 public final class ModeOverlayRenderer {
     private static final float LEFT = 0.0F;
@@ -24,7 +24,7 @@ public final class ModeOverlayRenderer {
             PsitweaksModeOption mode
     ) {
         Material material = materialFor(mode);
-        VertexConsumer buffer = material.buffer(bufferSource, location -> SpellPiece.getLayer());
+        VertexConsumer buffer = material.buffer(bufferSource, location -> SpellPieceRenderLayer.get());
         Matrix4f matrix = poseStack.last().pose();
         float right = LEFT + SIZE;
         float bottom = TOP + SIZE;

@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import vazkii.psi.api.internal.PsiRenderHelper;
-import vazkii.psi.common.Psi;
+import vazkii.psi.common.client.PsiClientRuntime;
 
 public record MessageFlightPsiCastEffect(int entityId, int color) implements CustomPacketPayload {
     private static final int PARTICLE_COUNT = 25;
@@ -64,7 +64,7 @@ public record MessageFlightPsiCastEffect(int entityId, int color) implements Cus
                             (random.nextDouble() - 0.5) * DIRECTION_VARIANCE)
                     .normalize()
                     .scale(PARTICLE_SPEED);
-            Psi.proxy.sparkleFX(
+            PsiClientRuntime.sparkle(player.level(),
                     x,
                     y,
                     z,

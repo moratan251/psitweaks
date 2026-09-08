@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.client.gui.widget.PiecePanelWidget;
@@ -135,7 +134,7 @@ public abstract class PiecePanelWidgetEnglishSearchMixin {
                     continue;
                 }
 
-                ResourceLocation pieceKey = PsiAPI.SPELL_PIECE_REGISTRY.getKey(piece.getClass());
+                ResourceLocation pieceKey = piece.getRegistryKey();
                 String pieceNamespace = pieceKey == null ? null : pieceKey.getNamespace();
                 if (pieceNamespace == null) {
                     return 0;

@@ -1,0 +1,11 @@
+{
+  "main": "psitweaks:selector_block",
+  "pieces": [
+    "psitweaks:selector_block_list",
+    "psitweaks:operator_block_state",
+    "psitweaks:operator_block_state_value",
+    "psitweaks:operator_block_state_entries",
+    "psitweaks:operator_block_position",
+    "psitweaks:operator_block_position_list"
+  ]
+}

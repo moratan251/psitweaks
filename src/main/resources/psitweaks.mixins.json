@@ -17,6 +17,9 @@
     "SpellPieceOptionalCompatMixin",
     "SpellHelpersRangeLimitMixin"
   ],
+  "client": [
+    "client.SpellPieceRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

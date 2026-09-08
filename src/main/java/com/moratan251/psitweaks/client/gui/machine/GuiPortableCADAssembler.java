@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.cad.ICAD;
-import vazkii.psi.common.Psi;
+import vazkii.psi.common.platform.PsiEnvironment;
 import vazkii.psi.common.block.base.ModBlocks;
 import vazkii.psi.common.block.tile.TileCADAssembler;
 
@@ -52,7 +52,7 @@ public class GuiPortableCADAssembler extends AbstractContainerScreen<PortableCAD
 
             int index = 0;
             for (EnumCADStat stat : EnumCADStat.values()) {
-                String row = (Psi.magical ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.AQUA)
+                String row = (PsiEnvironment.isMagical() ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.AQUA)
                         + I18n.get(stat.getName())
                         + ChatFormatting.RESET
                         + ": " + cadItem.getStatValue(cad, stat);

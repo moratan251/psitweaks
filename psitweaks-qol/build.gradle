@@ -95,9 +95,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
-    implementation "curse.maven:psi-241665:7664607"
+    implementation "curse.maven:psi-241665:8786571"
     implementation "curse.maven:patchouli-306770:7730942"
-    implementation "curse.maven:psionic-utilities-611991:8358809"
+    // Psi 110 is incompatible with Psionic Utilities 1.21-1.4; overlay integration is optional.
 
     testImplementation platform("org.junit:junit-bom:5.11.4")
     testImplementation "org.junit.jupiter:junit-jupiter"

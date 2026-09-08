@@ -80,7 +80,6 @@ public class PieceOperatorFormatString extends PieceOperator implements Editable
         return Component.translatable("psitweaks.datatype.string");
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         String display = displayValue();
         if (display.isEmpty()) {

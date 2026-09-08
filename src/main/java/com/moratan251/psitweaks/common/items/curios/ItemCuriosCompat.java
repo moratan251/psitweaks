@@ -14,6 +14,7 @@ import vazkii.psi.api.exosuit.IPsiEventArmor;
 import vazkii.psi.api.exosuit.PsiArmorEvent;
 import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.base.ModDataComponents;
 import vazkii.psi.common.item.tool.IPsimetalTool;
@@ -36,7 +37,7 @@ public class ItemCuriosCompat extends Item implements ICurioItem, IPsimetalTool,
             return;
         }
 
-        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(event.getEntity());
+        PlayerData data = PlayerDataHandler.get(event.getEntity());
         ItemStack playerCad = PsiAPI.getPlayerCAD(event.getEntity());
         ItemStack bullet = ISocketable.socketable(stack).getSelectedBullet();
         if (playerCad.isEmpty() || bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {

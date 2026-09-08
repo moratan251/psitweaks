@@ -1,5 +1,13 @@
 package com.moratan251.psitweaks;
 
+import vazkii.psi.api.event.PsiEvents;
+import com.moratan251.psitweaks.common.handler.SpellUnlockHandler;
+import com.moratan251.psitweaks.common.handler.PlayerPsiEventHandler;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellPieceGroupProvider;
+import vazkii.psi.api.spell.PreSpellCastEvent;
+import vazkii.psi.api.spell.SpellCastEvent;
+import vazkii.psi.api.spell.PieceKnowledgeEvent;
+
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
@@ -167,11 +175,13 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onBlockDrops);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onEntityJoinLevel);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SafetySpellCastHandler::onPreSpellCast);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SpellPsiRefundCaptureHandler::onPreSpellCast);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, FlightPsiCostCaptureHandler::onPreSpellCast);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, DimensionalCrystalDropHandler::onPreSpellCast);
-        NeoForge.EVENT_BUS.addListener(DimensionalCrystalDropHandler::onSpellCast);
+        PsiEvents.register(PreSpellCastEvent.class, SafetySpellCastHandler::onPreSpellCast);
+        PsiEvents.register(PreSpellCastEvent.class, SpellPsiRefundCaptureHandler::onPreSpellCast);
+        PsiEvents.register(PreSpellCastEvent.class, FlightPsiCostCaptureHandler::onPreSpellCast);
+        PsiEvents.register(PreSpellCastEvent.class, DimensionalCrystalDropHandler::onPreSpellCast);
+        PsiEvents.register(SpellCastEvent.class, DimensionalCrystalDropHandler::onSpellCast);
+        PsiEvents.register(PieceKnowledgeEvent.class, SpellUnlockHandler::onPieceKnowledge);
+        PsiEvents.register(vazkii.psi.api.exosuit.PsiArmorEvent.class, PlayerPsiEventHandler::onPsiCurioEvent);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityJoinLevel);
@@ -219,6 +229,7 @@ public class Psitweaks {
         generator.addProvider(event.includeServer(), new PsiTweaksMekanismDataMapProvider(packOutput));
         generator.addProvider(event.includeServer(), new MaterialMutationRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsitweaksSpellUnlockProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsitweaksSpellPieceGroupProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksWorldgenProvider(packOutput));
     }
 

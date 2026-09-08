@@ -71,8 +71,8 @@ public final class ArmorSpellDamageAttributeHandler {
         EquipmentSlotGroup group = EquipmentSlotGroup.bySlot(slot);
 
         addModifier(event, PsitweaksAttributes.SPELL_DAMAGE_FACTOR, SPELL_DAMAGE_IDS.get(slot), MOVAL_SUIT_SPELL_DAMAGE_BONUS, group);
-        addModifier(event, ModAttributes.REGEN, PSI_REGEN_IDS.get(slot), MOVAL_SUIT_PSI_REGEN_BONUS, group);
-        addModifier(event, ModAttributes.TOTAL_PSI, MAX_PSI_IDS.get(slot), MOVAL_SUIT_MAX_PSI_BONUS, group);
+        addModifier(event, ModAttributes.REGEN.holder(), PSI_REGEN_IDS.get(slot), MOVAL_SUIT_PSI_REGEN_BONUS, group);
+        addModifier(event, ModAttributes.TOTAL_PSI.holder(), MAX_PSI_IDS.get(slot), MOVAL_SUIT_MAX_PSI_BONUS, group);
     }
 
     private static boolean addPsiExosuitModifiers(ItemAttributeModifierEvent event) {
@@ -89,9 +89,9 @@ public final class ArmorSpellDamageAttributeHandler {
         EquipmentSlotGroup group = EquipmentSlotGroup.bySlot(slot);
         addModifier(event, PsitweaksAttributes.SPELL_DAMAGE_FACTOR, PSI_EXOSUIT_SPELL_DAMAGE_IDS.get(slot),
                 PSI_EXOSUIT_SPELL_DAMAGE_BONUS, group);
-        addModifier(event, ModAttributes.REGEN, PSI_EXOSUIT_PSI_REGEN_IDS.get(slot),
+        addModifier(event, ModAttributes.REGEN.holder(), PSI_EXOSUIT_PSI_REGEN_IDS.get(slot),
                 PSI_EXOSUIT_PSI_REGEN_BONUS, group);
-        addModifier(event, ModAttributes.TOTAL_PSI, PSI_EXOSUIT_MAX_PSI_IDS.get(slot),
+        addModifier(event, ModAttributes.TOTAL_PSI.holder(), PSI_EXOSUIT_MAX_PSI_IDS.get(slot),
                 PSI_EXOSUIT_MAX_PSI_BONUS, group);
         return true;
     }
@@ -128,13 +128,13 @@ public final class ArmorSpellDamageAttributeHandler {
     private static void addMekaSuitBodyarmorModifiers(ItemAttributeModifierEvent event) {
         int regenCount = getInstalledModuleCount(event, PsitweaksModules.PSYON_SUPPLYING_UNIT);
         if (regenCount > 0) {
-            addModifier(event, ModAttributes.REGEN, MEKASUIT_PSI_REGEN_ID,
+            addModifier(event, ModAttributes.REGEN.holder(), MEKASUIT_PSI_REGEN_ID,
                     regenCount * MEKASUIT_PSI_REGEN_BONUS, EquipmentSlotGroup.CHEST);
         }
 
         int maxPsiCount = getInstalledModuleCount(event, PsitweaksModules.PSYON_CAPACITY_UNIT);
         if (maxPsiCount > 0) {
-            addModifier(event, ModAttributes.TOTAL_PSI, MEKASUIT_MAX_PSI_ID,
+            addModifier(event, ModAttributes.TOTAL_PSI.holder(), MEKASUIT_MAX_PSI_ID,
                     maxPsiCount * MEKASUIT_MAX_PSI_BONUS, EquipmentSlotGroup.CHEST);
         }
     }

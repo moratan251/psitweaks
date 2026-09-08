@@ -21,8 +21,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.minecraft.world.Container;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.api.cad.EnumCADComponent;
 import vazkii.psi.api.cad.ICADComponent;
@@ -66,20 +65,20 @@ public class PortableCADAssemblerMenu extends AbstractContainerMenu {
         int playerSize = playerInventory.getContainerSize();
 
         this.assembler = createVirtualAssembler(player, hand, portableId);
-        IItemHandlerModifiable assemblerInv = assembler.getInventory();
+        Container assemblerInv = assembler.getInventory();
         assembler.clearCachedCAD();
 
         InventoryAssemblerOutput output = new InventoryAssemblerOutput(player, assembler);
-        InventorySocketable bullets = new InventorySocketable(assembler, assembler.getSocketableStack());
+        InventorySocketable bullets = new InventorySocketable(assembler::setChanged, assembler.getSocketableStack());
 
         this.addSlot(new SlotCADOutput(output, assembler, 120, 35));
 
         this.cadComponentStart = this.slots.size();
-        this.addSlot(new SlotItemHandler(assemblerInv, componentSlot(EnumCADComponent.ASSEMBLY), 120, 91));
-        this.addSlot(new SlotItemHandler(assemblerInv, componentSlot(EnumCADComponent.CORE), 100, 91));
-        this.addSlot(new SlotItemHandler(assemblerInv, componentSlot(EnumCADComponent.SOCKET), 140, 91));
-        this.addSlot(new SlotItemHandler(assemblerInv, componentSlot(EnumCADComponent.BATTERY), 110, 111));
-        this.addSlot(new SlotItemHandler(assemblerInv, componentSlot(EnumCADComponent.DYE), 130, 111));
+        this.addSlot(new Slot(assemblerInv, componentSlot(EnumCADComponent.ASSEMBLY), 120, 91));
+        this.addSlot(new Slot(assemblerInv, componentSlot(EnumCADComponent.CORE), 100, 91));
+        this.addSlot(new Slot(assemblerInv, componentSlot(EnumCADComponent.SOCKET), 140, 91));
+        this.addSlot(new Slot(assemblerInv, componentSlot(EnumCADComponent.BATTERY), 110, 111));
+        this.addSlot(new Slot(assemblerInv, componentSlot(EnumCADComponent.DYE), 130, 111));
 
         this.socketableStart = this.slots.size();
         this.addSlot(new SlotSocketable(assemblerInv, bullets, 0, 35, 21));

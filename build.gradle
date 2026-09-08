@@ -139,7 +139,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
-    implementation "curse.maven:psi-241665:7664607"
+    implementation "curse.maven:psi-241665:8786571"
     compileOnly "curse.maven:mekanism-268560:7904058"
     compileOnly "curse.maven:mekanism-generators-268566:7904061"
     if (providers.gradleProperty("psitweaks.includeMekanismInRuns").orElse("true").get().toBoolean()) {
@@ -150,7 +150,9 @@ dependencies {
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"
     compileOnly "curse.maven:emi-580555:8081408"
-    runtimeOnly "curse.maven:psionic-utilities-611991:8358809"
+    // This Psionic Utilities release targets pre-110 SpellPiece rendering and fails during loading.
+    // Re-enable after a Psi 110-compatible release is available.
+    // runtimeOnly "curse.maven:psionic-utilities-611991:8358809"
     implementation "com.moratan251:psitweaks-qol"
     jarJar "com.moratan251:psitweaks-qol"
     implementation "curse.maven:mystical-agriculture-246640:8344249"

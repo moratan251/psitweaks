@@ -25,7 +25,7 @@ import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceOperator;
 
-abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements PsitweaksModeConfigurable {
+public abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements PsitweaksModeConfigurable {
 
     private static final String TAG_MODE = "psitweaksMode";
     private static final List<PsitweaksModeOption> MODES = List.of(PsitweaksModeOptions.NUMBER, PsitweaksModeOptions.VECTOR);
@@ -72,7 +72,6 @@ abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator implements 
         rebuildParams(savedSides);
     }
 
-    @Override
     public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, getModeOption());
     }

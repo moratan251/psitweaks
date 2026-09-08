@@ -19,6 +19,7 @@ import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.entity.EntitySpellProjectile;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.ItemProjectileSpellBullet;
@@ -35,7 +36,7 @@ public final class BowSpellProjectileHandler {
             return;
         }
 
-        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
+        PlayerData data = PlayerDataHandler.get(player);
         ItemStack playerCad = PsiAPI.getPlayerCAD(player);
         ItemStack bullet = ISocketable.socketable(bowStack).getSelectedBullet();
         if (playerCad.isEmpty() || bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {

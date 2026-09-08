@@ -16,6 +16,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.common.core.handler.PsiSoundHandler;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 
 public class EffectFlight extends MobEffect {
     public static final ResourceLocation FLIGHT_MODIFIER_ID = Psitweaks.location("effect.flight");
@@ -52,7 +53,7 @@ public class EffectFlight extends MobEffect {
             return true;
         }
 
-        PlayerDataHandler.PlayerData playerData = PlayerDataHandler.get(player);
+        PlayerData playerData = PlayerDataHandler.get(player);
         long availablePsi = playerData == null ? 0 : getAvailablePsi(playerData);
         if (availablePsi < cost) {
             player.getAbilities().flying = false;
@@ -92,7 +93,7 @@ public class EffectFlight extends MobEffect {
                         && modifier.amount() > 0.0);
     }
 
-    private static long getAvailablePsi(PlayerDataHandler.PlayerData playerData) {
+    private static long getAvailablePsi(PlayerData playerData) {
         long availablePsi = Math.max(0, playerData.getAvailablePsi());
         ItemStack cad = playerData.getCAD();
         if (!cad.isEmpty() && cad.getItem() instanceof ICAD cadItem) {
@@ -116,7 +117,7 @@ public class EffectFlight extends MobEffect {
                 player.getX(),
                 player.getY(),
                 player.getZ(),
-                PsiSoundHandler.cadShoot,
+                PsiSoundHandler.cadShoot.get(),
                 SoundSource.PLAYERS,
                 CAST_SOUND_VOLUME,
                 0.5F + player.getRandom().nextFloat() * 0.5F

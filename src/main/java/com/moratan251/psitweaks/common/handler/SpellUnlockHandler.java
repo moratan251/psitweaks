@@ -40,8 +40,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import vazkii.psi.api.spell.PieceKnowledgeEvent;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PsiSoundHandler;
-import vazkii.psi.common.network.MessageRegister;
+import vazkii.psi.common.network.PsiNetwork;
 import vazkii.psi.common.network.message.MessageDataSync;
 
 @EventBusSubscriber(modid = Psitweaks.MOD_ID)
@@ -176,7 +177,6 @@ public final class SpellUnlockHandler {
                                         EntityArgument.getPlayer(ctx, "target")))));
     }
 
-    @SubscribeEvent
     public static void onPieceKnowledge(PieceKnowledgeEvent event) {
         ResourceLocation pieceName = event.getPieceName();
         if (pieceName == null) {
@@ -224,7 +224,7 @@ public final class SpellUnlockHandler {
                     serverPlayer.getX(),
                     serverPlayer.getY(),
                     serverPlayer.getZ(),
-                    PsiSoundHandler.levelUp,
+                    PsiSoundHandler.levelUp.get(),
                     SoundSource.PLAYERS,
                     0.6F,
                     1.0F
@@ -372,7 +372,7 @@ public final class SpellUnlockHandler {
     }
 
     private static boolean setSpellUnlocked(ServerPlayer player, SpellUnlockDefinition definition, boolean unlocked) {
-        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
+        PlayerData data = PlayerDataHandler.get(player);
         CompoundTag unlockData = getUnlockData(data.getCustomData(), true);
         boolean current = unlockData.getBoolean(definition.unlockTag());
         if (current == unlocked) {
@@ -381,7 +381,7 @@ public final class SpellUnlockHandler {
 
         unlockData.putBoolean(definition.unlockTag(), unlocked);
         data.save();
-        MessageRegister.sendToPlayer(player, new MessageDataSync(data));
+        PsiNetwork.sendToPlayer(player, new MessageDataSync(data));
 
         if (unlocked) {
             player.addTag(definition.unlockTag());
@@ -393,7 +393,7 @@ public final class SpellUnlockHandler {
     }
 
     private static boolean isSpellUnlocked(Player player, SpellUnlockDefinition definition) {
-        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
+        PlayerData data = PlayerDataHandler.get(player);
         CompoundTag unlockData = getUnlockData(data.getCustomData(), false);
         if (unlockData.getBoolean(definition.unlockTag())) {
             return true;

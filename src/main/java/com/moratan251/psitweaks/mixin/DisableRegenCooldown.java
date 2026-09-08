@@ -4,9 +4,9 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 
-@Mixin(value = PlayerDataHandler.PlayerData.class, remap = false)
+@Mixin(value = PlayerData.class, remap = false)
 public abstract class DisableRegenCooldown {
     @ModifyVariable(method = "deductPsi(IIZ)V", at = @At("HEAD"), index = 2, argsOnly = true)
     private int psitweaks$removeRegenCooldown(int cooldown) {

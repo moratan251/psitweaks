@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import vazkii.psi.common.Psi;
+import vazkii.psi.api.cad.CADComponentLookup;
 import vazkii.psi.common.block.BlockConjured;
 
 public class ConjuredPulsarBlock extends BlockConjured {
@@ -46,7 +46,7 @@ public class ConjuredPulsarBlock extends BlockConjured {
     public Integer getBeaconColorMultiplier(BlockState state, LevelReader level, BlockPos pos, BlockPos beaconPos) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof ConjuredPulsarBlockEntity pulsar) {
-            return Psi.proxy.getColorForColorizer(pulsar.getColorizer());
+            return CADComponentLookup.color(pulsar.getLevel().registryAccess(), pulsar.getColorizer());
         }
         return null;
     }

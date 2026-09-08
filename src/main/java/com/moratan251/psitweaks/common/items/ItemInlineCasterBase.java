@@ -20,6 +20,7 @@ import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.base.ModDataComponents;
 
@@ -43,7 +44,7 @@ public class ItemInlineCasterBase extends Item {
             return new InteractionResultHolder<>(InteractionResult.PASS, casterStack);
         }
 
-        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
+        PlayerData data = PlayerDataHandler.get(player);
         ItemStack cadStack = PsiAPI.getPlayerCAD(player);
         if (cadStack.isEmpty()) {
             return new InteractionResultHolder<>(InteractionResult.PASS, casterStack);
