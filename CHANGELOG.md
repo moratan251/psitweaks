@@ -2,7 +2,7 @@
 
 #### v0.10.8-hotfix
 
-- Compatible with Psi 1.21.1-110
+- (1.21.1) Compatible with Psi 1.21.1-110
 
 
 #### v0.10.8
