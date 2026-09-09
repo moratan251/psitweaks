@@ -351,6 +351,11 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_VIEW =
             registerPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class);
 
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_ABSORB_FE =
+            registerPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_SUPPLY_FE =
+            registerPiece("trick_idea_storage_supply_fe", PieceTrickIdeaStorageSupplyFE.class);
+
     private PsitweaksSpells() {
     }
 

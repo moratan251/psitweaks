@@ -41,6 +41,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.LongValue ideaStorageMaxFluidPerType;
         public final ModConfigSpec.IntValue ideaStorageMaxChemicalTypes;
         public final ModConfigSpec.LongValue ideaStorageMaxChemicalPerType;
+        public final ModConfigSpec.LongValue ideaStorageMaxEnergy;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.comment("Psitweaks Common Configuration")
@@ -298,6 +299,11 @@ public class PsitweaksConfig {
                     .translation("psitweaks.configuration.idea_storage.max_chemical_per_type")
                     .defineInRange("maxChemicalPerType", IdeaStorageDefaults.CHEMICAL_PER_TYPE_RAW,
                             1L, Long.MAX_VALUE);
+
+            ideaStorageMaxEnergy = builder
+                    .comment("Maximum FE stored per player")
+                    .translation("psitweaks.configuration.idea_storage.max_energy")
+                    .defineInRange("maxEnergy", Long.MAX_VALUE, 1L, Long.MAX_VALUE);
 
             builder.pop(); // ideaStorage カテゴリ終了
         }

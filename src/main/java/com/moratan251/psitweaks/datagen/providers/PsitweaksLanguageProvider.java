@@ -528,10 +528,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Max Chemical Types", "Chemical最大種類数",
                 "Maximum number of distinct chemical types per player in the Ideaspace Storage.",
                 "イデアストレージに格納できるChemicalの最大種類数です。");
+        addConfigValue(root, "psitweaks.configuration.idea_storage.max_energy",
+                "Max FE", "FE上限", "Maximum FE stored per player.", "プレイヤーごとに保存できるFEの上限です。");
         addConfigValue(root, "psitweaks.configuration.idea_storage.max_chemical_per_type",
                 "Max Chemical per Type", "Chemical 1種類あたりの上限",
-                "Maximum amount stored per chemical type. The config value uses internal API units; the default is 33,554,432 B.",
-                "Chemical 1種類あたりに格納できる上限です。コンフィグ値は内部API単位で、既定値は33,554,432 Bです。");
+                "Maximum amount stored per chemical type. The config value uses internal mB units; the default is 33,554,432 B.",
+                "Chemical 1種類あたりに格納できる上限です。コンフィグ値は内部mB単位で、既定値は33,554,432 Bです。");
     }
 
     private void addDamageMultiplierConfig(JsonObject root, String id, String enUsName, String jaJpName) {
@@ -1147,6 +1149,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "保管量順";
             default -> "Stored Amount";
         });
+        root.addProperty("gui.psitweaks.idea_storage.info.energy", switch (locale) {
+            case "ja_jp" -> "電力: %s / %s FE";
+            default -> "Energy: %s / %s FE";
+        });
         root.addProperty("gui.psitweaks.idea_storage.info.item_types", switch (locale) {
             case "ja_jp" -> "アイテム: %s/%s 種類";
             default -> "Items: %s/%s types";
@@ -1158,6 +1164,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("gui.psitweaks.idea_storage.info.chemical_types", switch (locale) {
             case "ja_jp" -> "化学物質: %s/%s 種類";
             default -> "Chemicals: %s/%s types";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.energy", switch (locale) {
+            case "ja_jp" -> "FE";
+            default -> "FE";
+        });
+        root.addProperty("gui.psitweaks.idea_storage.energy_amount", switch (locale) {
+            case "ja_jp" -> "内容量: %s FE";
+            default -> "Stored: %s FE";
         });
         root.addProperty("gui.psitweaks.idea_storage.fluid_amount", switch (locale) {
             case "ja_jp" -> "%s B";
@@ -1533,13 +1547,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "macro_face_axial_offset", "Macro: Face Axial Offset", "Offsets a position along axes aligned to the block face under the caster's crosshair. If Position is omitted, the hit block is used. Positive values move screen-right, into the block, and screen-up.", "マクロ: 面基準平行移動", "術者の視線が命中したブロック面を基準に、位置を左右・前後・上下へ平行移動します。位置を省略した場合は命中ブロックを使います。正の値で画面右・ブロック内側・画面上へ移動します。");
         addSpellPiece(root, "macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを、術者の視線が命中したブロック面の方向を基準として回転させます。");
         addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. Drops are intentionally collected into the caster's inventory first; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。ドロップは意図的に先に術者のインベントリへ回収され、入りきらない分だけドロップします。");
+        addSpellPiece(root, "trick_idea_storage_absorb_fe", "Trick: Ideaspace Storage - FE Absorb", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage.", "作動式: イデアストレージ-FE吸収", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。");
+        addSpellPiece(root, "trick_idea_storage_supply_fe", "Trick: Ideaspace Storage - FE Supply", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position.", "作動式: イデアストレージ-FE供給", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。");
         addSpellPiece(root, "trick_idea_storage_view", "Trick: View Ideaspace Storage", "Opens a GUI to view and manage your Ideaspace Storage. Only works when cast by a player.", "作動式: イデアストレージ閲覧", "自分のイデアストレージを閲覧・出し入れするGUIを開きます。プレイヤーの詠唱時のみ有効です。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
+        addBookPage(root, "trick_idea_storage_supply_fe", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position. Transfers only the amount available and accepted. Position (Vector), Power (Number), and Direction (Vector) are required. Power must be positive. Uses your Ideaspace Storage research unlock.", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。残量や空き容量が不足する場合は、移動できる分だけ転送します。位置（Vector）・威力（Number）・方向（Vector）が必須です。威力は正の数を指定してください。イデアストレージ用プログラムで解禁されます。");
+        addBookPage(root, "trick_idea_storage_absorb_fe", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage. Transfers only the amount available and accepted. Position (Vector), Power (Number), and Direction (Vector) are required. Power must be positive. Uses your Ideaspace Storage research unlock.", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。残量や空き容量が不足する場合は、移動できる分だけ転送します。位置（Vector）・威力（Number）・方向（Vector）が必須です。威力は正の数を指定してください。イデアストレージ用プログラムで解禁されます。");
         addBookPage(root, "trick_idea_storage_view.0",
-                "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, and Mekanism chemicals can each be stored. This feature is still under development.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
-                "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismの化学物資をそれぞれ保管できます。この機能は現在開発中です。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
+                "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE Absorb and FE Supply tricks; its balance appears in the storage grid, and the information button also shows capacity. This feature is still under development.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
+                "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismの化学物資・FEを保管できます。FEはFE吸収・FE供給の作動式で転送し、一覧のスロットで残量、情報ボタンで上限も確認できます。この機能は現在開発中です。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
         addBookPage(root, "trick_idea_storage_view.1",
                 "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory. Right-click while holding a normal item to store just one. Fluid and chemical containers keep their contents-transfer behavior.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.",
                 "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。通常アイテムを持って右クリックすると1個だけ格納します。液体・ケミカル容器は従来どおり中身を転送します。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");

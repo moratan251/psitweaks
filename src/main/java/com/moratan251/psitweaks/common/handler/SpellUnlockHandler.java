@@ -77,6 +77,10 @@ public final class SpellUnlockHandler {
             definition("material_mutation", "trick_material_mutation", "program_material_mutation"),
             definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break"),
             // イデアストレージ系ピースは共通の unlock_tag を共有し、1つのプログラムで全ピースを解禁する
+            definition("idea_storage_absorb_fe", "trick_idea_storage_absorb_fe", "program_idea_storage",
+                    Psitweaks.MOD_ID + ".unlock.idea_storage"),
+            definition("idea_storage_supply_fe", "trick_idea_storage_supply_fe", "program_idea_storage",
+                    Psitweaks.MOD_ID + ".unlock.idea_storage"),
             definition("idea_storage", "trick_idea_storage_view", "program_idea_storage",
                     Psitweaks.MOD_ID + ".unlock.idea_storage")
     );

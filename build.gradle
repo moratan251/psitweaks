@@ -188,6 +188,7 @@ dependencies {
     //runtimeOnly "curse.maven:psiex-1408745:8499563"
 
     runtimeOnly "curse.maven:applied-energistics-2-223794:7027323"
+    runtimeOnly "maven.modrinth:appflux:4x40hq9D"
     runtimeOnly "curse.maven:ex-pattern-provider-892005:8511901"
     runtimeOnly "curse.maven:advancedae-1084104:7849217"
     runtimeOnly "curse.maven:glodium-957920:5821676"

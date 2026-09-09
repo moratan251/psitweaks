@@ -27,6 +27,37 @@ public final class PlayerIdeaStorage {
     private final Map<FluidResourceKey, Long> fluids = new LinkedHashMap<>();
     private final Map<ResourceLocation, Long> chemicals = new LinkedHashMap<>();
     private long version;
+    private long energy;
+
+    public long energy() {
+        return energy;
+    }
+
+    public long maxEnergy() {
+        return PsitweaksConfig.COMMON.ideaStorageMaxEnergy.get();
+    }
+
+    public long insertEnergy(long amount, boolean simulate) {
+        long accepted = loadFailed || amount <= 0 ? 0 : Math.min(amount, Math.max(0, maxEnergy() - energy));
+        if (!simulate && accepted > 0) {
+            energy += accepted;
+            markChanged();
+        }
+        return accepted;
+    }
+
+    public long extractEnergy(long amount, boolean simulate) {
+        long extracted = loadFailed || amount <= 0 ? 0 : Math.min(amount, energy);
+        if (!simulate && extracted > 0) {
+            energy -= extracted;
+            markChanged();
+        }
+        return extracted;
+    }
+
+    void loadEnergy(long amount) {
+        energy = Math.max(0, amount);
+    }
     private boolean loadFailed;
     private int gridRows = GRID_ROWS_DEFAULT;
     private Runnable dirtyCallback = () -> {

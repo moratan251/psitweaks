@@ -1,4 +1,7 @@
 {
   "main": "psitweaks:trick_idea_storage_view",
-  "pieces": []
+  "pieces": [
+    "psitweaks:trick_idea_storage_absorb_fe",
+    "psitweaks:trick_idea_storage_supply_fe"
+  ]
 }

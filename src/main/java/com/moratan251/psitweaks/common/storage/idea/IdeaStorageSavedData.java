@@ -19,7 +19,7 @@ import org.slf4j.Logger;
  */
 public final class IdeaStorageSavedData extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final int CURRENT_DATA_VERSION = 2;
+    public static final int CURRENT_DATA_VERSION = 3;
 
     private static final String TAG_DATA_VERSION = "DataVersion";
     private static final String TAG_GRID_ROWS = "gridRows";
@@ -63,6 +63,7 @@ public final class IdeaStorageSavedData extends SavedData {
             data.storage.loadGridRows(tag.getInt(TAG_GRID_ROWS));
         }
 
+        data.storage.loadEnergy(tag.getLong("Energy"));
         ListTag items = tag.getList(TAG_ITEMS, Tag.TAG_COMPOUND);
         for (int i = 0; i < items.size(); i++) {
             CompoundTag entry = items.getCompound(i);
@@ -127,6 +128,7 @@ public final class IdeaStorageSavedData extends SavedData {
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt(TAG_DATA_VERSION, CURRENT_DATA_VERSION);
         tag.putInt(TAG_GRID_ROWS, storage.getGridRows());
+        tag.putLong("Energy", storage.energy());
         ListTag items = new ListTag();
         for (Map.Entry<ItemResourceKey, Long> entry : storage.itemEntries()) {
             CompoundTag entryTag = new CompoundTag();

@@ -88,6 +88,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private final ResultContainer craftResult = new ResultContainer();
     private boolean craftOpen;
     private long lastSyncedVersion = -1L;
+    private long lastSyncedMaxEnergy = -1L;
     private int lastSyncedMaxItemTypes = -1;
     private int lastSyncedMaxFluidTypes = -1;
     private int lastSyncedMaxChemicalTypes = -1;
@@ -394,10 +395,12 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         if (player instanceof ServerPlayer serverPlayer && storage != null
                 && (storage.getVersion() != lastSyncedVersion
                 || storage.maxItemTypes() != lastSyncedMaxItemTypes
+                || storage.maxEnergy() != lastSyncedMaxEnergy
                 || storage.maxFluidTypes() != lastSyncedMaxFluidTypes
                 || storage.maxChemicalTypes() != lastSyncedMaxChemicalTypes)) {
             lastSyncedVersion = storage.getVersion();
             lastSyncedMaxItemTypes = storage.maxItemTypes();
+            lastSyncedMaxEnergy = storage.maxEnergy();
             lastSyncedMaxFluidTypes = storage.maxFluidTypes();
             lastSyncedMaxChemicalTypes = storage.maxChemicalTypes();
             PacketDistributor.sendToPlayer(serverPlayer, createSyncMessage());
@@ -423,6 +426,8 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
                 storage == null ? 0 : storage.maxItemTypes(),
                 storage == null ? 0 : storage.maxFluidTypes(),
                 storage == null ? 0 : storage.maxChemicalTypes(),
+                storage == null ? 0 : storage.energy(),
+                storage == null ? 0 : storage.maxEnergy(),
                 storage != null && storage.isLoadFailed());
     }
 

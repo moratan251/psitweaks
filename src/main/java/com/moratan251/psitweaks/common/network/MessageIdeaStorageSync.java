@@ -19,7 +19,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluidEntries,
                                      List<ChemicalEntry> chemicalEntries,
                                      int maxItemTypes, int maxFluidTypes, int maxChemicalTypes,
-                                     boolean loadFailed) implements CustomPacketPayload {
+                                     long energy, long maxEnergy, boolean loadFailed) implements CustomPacketPayload {
     public static final Type<MessageIdeaStorageSync> TYPE =
             new Type<>(Psitweaks.location("idea_storage_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, MessageIdeaStorageSync> STREAM_CODEC =
@@ -58,6 +58,8 @@ public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluid
         buf.writeVarInt(maxItemTypes);
         buf.writeVarInt(maxFluidTypes);
         buf.writeVarInt(maxChemicalTypes);
+        buf.writeLong(energy);
+        buf.writeLong(maxEnergy);
         buf.writeBoolean(loadFailed);
     }
 
@@ -88,7 +90,7 @@ public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluid
         int maxChemicalTypes = buf.readVarInt();
         return new MessageIdeaStorageSync(List.copyOf(entries), List.copyOf(fluidEntries),
                 List.copyOf(chemicalEntries), maxItemTypes, maxFluidTypes, maxChemicalTypes,
-                buf.readBoolean());
+                buf.readLong(), buf.readLong(), buf.readBoolean());
     }
 
     public static void handle(MessageIdeaStorageSync message, IPayloadContext context) {

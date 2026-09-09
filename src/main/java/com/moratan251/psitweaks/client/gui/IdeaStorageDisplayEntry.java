@@ -10,13 +10,14 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-/** Item / Fluid / Chemicalを同じ仮想グリッドへ表示するためのクライアント専用表現。 */
+/** Item / Fluid / Chemical / FEを同じ仮想グリッドへ表示するためのクライアント専用表現。 */
 public record IdeaStorageDisplayEntry(Kind kind, ItemStack itemTemplate, FluidStack fluidTemplate,
                                       @Nullable ResourceLocation chemicalId, long amount) {
     public enum Kind {
         ITEM,
         FLUID,
-        CHEMICAL
+        CHEMICAL,
+        ENERGY
     }
 
     public static IdeaStorageDisplayEntry item(MessageIdeaStorageSync.Entry entry) {
@@ -37,6 +38,7 @@ public record IdeaStorageDisplayEntry(Kind kind, ItemStack itemTemplate, FluidSt
             case ITEM -> itemTemplate.getHoverName();
             case FLUID -> fluidTemplate.getHoverName();
             case CHEMICAL -> IdeaStorageChemicalClientCompat.displayName(chemicalId);
+            case ENERGY -> Component.translatable("gui.psitweaks.idea_storage.energy");
         };
     }
 
@@ -45,16 +47,21 @@ public record IdeaStorageDisplayEntry(Kind kind, ItemStack itemTemplate, FluidSt
             case ITEM -> BuiltInRegistries.ITEM.getKey(itemTemplate.getItem());
             case FLUID -> BuiltInRegistries.FLUID.getKey(fluidTemplate.getFluid());
             case CHEMICAL -> chemicalId;
+            case ENERGY -> ResourceLocation.fromNamespaceAndPath("psitweaks", "fe");
         };
     }
 
     public int displayAmountScale() {
-        return kind == Kind.ITEM
+        return kind == Kind.ITEM || kind == Kind.ENERGY
                 ? IdeaStorageAmountFormatter.ITEM_SCALE
                 : IdeaStorageAmountFormatter.BUCKET_SCALE;
     }
 
     public BigDecimal amountInDisplayUnits() {
         return IdeaStorageAmountFormatter.asDisplayAmount(amount, displayAmountScale());
+    }
+
+    public static IdeaStorageDisplayEntry energy(long amount) {
+        return new IdeaStorageDisplayEntry(Kind.ENERGY, ItemStack.EMPTY, FluidStack.EMPTY, null, amount);
     }
 }

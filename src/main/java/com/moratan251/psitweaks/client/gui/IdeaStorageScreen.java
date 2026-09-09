@@ -84,6 +84,8 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private int maxItemTypes;
     private int maxFluidTypes;
     private int maxChemicalTypes;
+    private long energy;
+    private long maxEnergy;
     private String filter = "";
     private int firstRow;
     private boolean draggingScrollBar;
@@ -213,6 +215,9 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         message.entries().stream().map(IdeaStorageDisplayEntry::item).forEach(displayEntries::add);
         message.fluidEntries().stream().map(IdeaStorageDisplayEntry::fluid).forEach(displayEntries::add);
         message.chemicalEntries().stream().map(IdeaStorageDisplayEntry::chemical).forEach(displayEntries::add);
+        if (message.energy() > 0) {
+            displayEntries.add(IdeaStorageDisplayEntry.energy(message.energy()));
+        }
         this.entries = List.copyOf(displayEntries);
         this.menu.applyClientStorageEntries(message.entries());
         this.itemTypeCount = message.entries().size();
@@ -221,6 +226,8 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         this.maxItemTypes = message.maxItemTypes();
         this.maxFluidTypes = message.maxFluidTypes();
         this.maxChemicalTypes = message.maxChemicalTypes();
+        this.energy = message.energy();
+        this.maxEnergy = message.maxEnergy();
         this.loadFailed = message.loadFailed();
         clampScroll();
     }
@@ -318,6 +325,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         switch (entry.kind()) {
             case ITEM -> guiGraphics.renderItem(entry.itemTemplate(), x, y);
             case FLUID -> renderFluid(guiGraphics, entry.fluidTemplate(), x, y);
+            case ENERGY -> renderEnergy(guiGraphics, x, y);
             case CHEMICAL -> {
                 if (!IdeaStorageChemicalClientCompat.render(guiGraphics, entry.chemicalId(), x, y)) {
                     guiGraphics.fill(x + 1, y + 1, x + 15, y + 15, 0xFF6A3D8F);
@@ -345,6 +353,25 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         );
         guiGraphics.blit(x, y, 300, 16, 16, sprite);
         guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    private static void renderEnergy(GuiGraphics guiGraphics, int x, int y) {
+        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath("mekanism", "liquid/energy");
+        TextureAtlasSprite sprite = Minecraft.getInstance()
+                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
+        if (sprite.contents().name().equals(texture)) {
+            // Use the animated energy gauge sprite when Mekanism provides it.
+            guiGraphics.blit(x, y, 300, 16, 16, sprite);
+        } else {
+            // Draw the original lightning bolt when the Mekanism sprite is unavailable.
+            guiGraphics.fill(x + 6, y + 1, x + 12, y + 3, 0xFFFFD54F);
+            guiGraphics.fill(x + 5, y + 3, x + 11, y + 5, 0xFFFFD54F);
+            guiGraphics.fill(x + 4, y + 5, x + 10, y + 7, 0xFFFFD54F);
+            guiGraphics.fill(x + 3, y + 7, x + 13, y + 9, 0xFFFFD54F);
+            guiGraphics.fill(x + 7, y + 9, x + 11, y + 11, 0xFFFFB300);
+            guiGraphics.fill(x + 6, y + 11, x + 9, y + 13, 0xFFFFB300);
+            guiGraphics.fill(x + 5, y + 13, x + 7, y + 15, 0xFFFFB300);
+        }
     }
 
     /** バニラコンテナ風のフレーム(明るいグレー背景 + ベベル枠)。 */
@@ -404,7 +431,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
 
     private void drawCount(GuiGraphics guiGraphics, IdeaStorageDisplayEntry entry, int x, int y) {
         BigDecimal displayAmount = entry.amountInDisplayUnits();
-        if (displayAmount.compareTo(BigDecimal.ONE) == 0) {
+        if (entry.kind() != IdeaStorageDisplayEntry.Kind.ENERGY && displayAmount.compareTo(BigDecimal.ONE) == 0) {
             return;
         }
         String text = IdeaStorageAmountFormatter.formatGrid(entry.amount(), entry.displayAmountScale());
@@ -444,7 +471,10 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                     Component.translatable("gui.psitweaks.idea_storage.info.fluid_types",
                             fluidTypeCount, maxFluidTypes),
                     Component.translatable("gui.psitweaks.idea_storage.info.chemical_types",
-                            chemicalTypeCount, maxChemicalTypes)
+                            chemicalTypeCount, maxChemicalTypes),
+                    Component.translatable("gui.psitweaks.idea_storage.info.energy",
+                            String.format(java.util.Locale.ROOT, "%,d", energy),
+                            String.format(java.util.Locale.ROOT, "%,d", maxEnergy))
             ), mouseX, mouseY);
         }
         IdeaStorageDisplayEntry hovered = entryAt(mouseX, mouseY);
@@ -452,9 +482,11 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             if (hovered.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
                 renderItemEntryTooltip(guiGraphics, hovered, mouseX, mouseY);
             } else {
-                String amountKey = hovered.kind() == IdeaStorageDisplayEntry.Kind.FLUID
-                        ? "gui.psitweaks.idea_storage.fluid_amount"
-                        : "gui.psitweaks.idea_storage.chemical_amount";
+                String amountKey = switch (hovered.kind()) {
+                    case ENERGY -> "gui.psitweaks.idea_storage.energy_amount";
+                    case FLUID -> "gui.psitweaks.idea_storage.fluid_amount";
+                    default -> "gui.psitweaks.idea_storage.chemical_amount";
+                };
                 guiGraphics.renderComponentTooltip(this.font, List.of(
                         hovered.displayName(),
                         Component.translatable(amountKey, IdeaStorageAmountFormatter.formatExact(
@@ -626,7 +658,8 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
 
     private static MessageIdeaStorageTransferContents contentTransferMessage(
             @Nullable IdeaStorageDisplayEntry target, boolean bulk) {
-        if (target == null || target.kind() == IdeaStorageDisplayEntry.Kind.ITEM) {
+        if (target == null || target.kind() == IdeaStorageDisplayEntry.Kind.ITEM
+                || target.kind() == IdeaStorageDisplayEntry.Kind.ENERGY) {
             return MessageIdeaStorageTransferContents.emptyTarget(bulk);
         }
         if (target.kind() == IdeaStorageDisplayEntry.Kind.FLUID) {
