@@ -748,6 +748,11 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         if (carried.isEmpty()) {
             return;
         }
+        // Empty buckets are ordinary items unless a fluid entry is explicitly targeted for filling.
+        if (carried.is(Items.BUCKET) && targetKind != MessageIdeaStorageTransferContents.TARGET_FLUID) {
+            depositCarried(true);
+            return;
+        }
         if (Capabilities.FluidHandler.ITEM.getCapability(carried, null) == null
                 && !MekanismCompat.isIdeaStorageChemicalContainer(carried)) {
             depositCarried(true);

@@ -15,7 +15,8 @@
     "SpellParamBlockVectorCompatMixin",
     "SpellPieceParamConversionMixin",
     "SpellPieceOptionalCompatMixin",
-    "SpellHelpersRangeLimitMixin"
+    "SpellHelpersRangeLimitMixin",
+    "WitherBossMixin"
   ],
   "client": [
     "client.SpellPieceRendererMixin"
