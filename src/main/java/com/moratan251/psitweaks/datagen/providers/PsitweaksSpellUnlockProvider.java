@@ -51,6 +51,9 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "idea_storage_supply_fe", "trick_idea_storage_supply_fe", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
 
+        spellUnlock(entries, "idea_storage_energy", "selector_idea_storage_energy", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+                Psitweaks.MOD_ID + ".unlock.idea_storage");
+
         CompletableFuture<?>[] futures = entries.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))
                 .toArray(CompletableFuture[]::new);
