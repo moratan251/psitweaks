@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
 import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorState;
+import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaspaceConnector;
 import com.moratan251.psitweaks.common.storage.connector.*;
 import com.moratan251.psitweaks.common.storage.idea.*;
@@ -26,6 +27,9 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -275,46 +279,167 @@ public final class IdeaspaceConnectorGameTests {
     }
 
     @GameTest(template = "connector_empty")
-    public static void largePagesAndAmountUpdatesPreserveResourceIdentity(GameTestHelper helper) {
+    public static void publishedTemplatesAndAmountUpdatesPreserveResourceIdentity(GameTestHelper helper) {
         CompoundTag full = new CompoundTag();
         full.putBoolean("Full", true);
         full.putLong("Templates", 7);
         ListTag entries = new ListTag();
         // Multiple large component-bearing stacks can exceed the default 2 MiB NBT read budget.
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < 9; i++) {
             CompoundTag entry = new CompoundTag();
             entry.putString("Identity", "resource-" + i);
-            entry.putByteArray("Components", new byte[100_000]);
+            entry.putByteArray("Components", new byte[300_000]);
             entry.putLong("Amount", 1);
             entries.add(entry);
         }
-        full.put("Available", entries);
-        full.put("Selected", new ListTag());
+        full.put("Selected", entries);
         var message = new MessageConnectorState(4, UUID.randomUUID(), 8, full);
         var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
         try {
             MessageConnectorState.STREAM_CODEC.encode(buf, message);
             var decoded = MessageConnectorState.STREAM_CODEC.decode(buf);
-            helper.assertTrue(decoded.data().equals(full), "Large page failed to round-trip");
+            helper.assertTrue(decoded.data().equals(full), "Large published templates failed to round-trip");
         } finally { buf.release(); }
         CompoundTag delta = new CompoundTag();
         delta.putLong("Templates", 7);
         ListTag amounts = new ListTag();
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < 9; i++) {
             CompoundTag entry = new CompoundTag();
             entry.putLong("Amount", 5_000_000_123L + i);
             amounts.add(entry);
         }
-        delta.put("Available", amounts);
-        delta.put("Selected", new ListTag());
+        delta.put("Selected", amounts);
         CompoundTag result = IdeaspaceConnectorMenu.mergeAmounts(full, delta);
-        var merged = result.getList("Available", net.minecraft.nbt.Tag.TAG_COMPOUND);
-        helper.assertTrue(merged.getCompound(26).getString("Identity").equals("resource-26")
-                && merged.getCompound(26).getLong("Amount") == 5_000_000_149L
-                && merged.getCompound(26).getByteArray("Components").length == 100_000,
+        var merged = result.getList("Selected", net.minecraft.nbt.Tag.TAG_COMPOUND);
+        helper.assertTrue(merged.getCompound(8).getString("Identity").equals("resource-8")
+                && merged.getCompound(8).getLong("Amount") == 5_000_000_131L
+                && merged.getCompound(8).getByteArray("Components").length == 300_000,
                 "Amount update corrupted identities, components, or long quantities");
-        delta.put("Available", new ListTag());
+        delta.put("Selected", new ListTag());
         helper.assertTrue(IdeaspaceConnectorMenu.mergeAmounts(full, delta) == null, "Mismatched pages must not be merged");
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void openingConsumesHeldItemInteraction(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "connector-user"));
+        var connector = place(helper, new BlockPos(1, 1, 1), player.getUUID());
+        var pos = connector.getBlockPos();
+        player.setPos(Vec3.atCenterOf(pos));
+        var hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
+        for (var item : new net.minecraft.world.item.Item[] {Items.APPLE, Items.BOW, Items.ENDER_PEARL}) {
+            for (InteractionHand hand : InteractionHand.values()) {
+                var stack = new ItemStack(item, 1);
+                player.setItemInHand(hand, stack);
+                player.startUsingItem(hand);
+                var result = connector.getBlockState().useItemOn(stack, helper.getLevel(), player, hand, hit);
+                helper.assertTrue(result.consumesAction() && !player.isUsingItem() && stack.getCount() == 1,
+                        "Opening with " + item + " / " + hand + " allowed held item use");
+            }
+        }
+        helper.assertTrue(connector.getBlockState().useWithoutItem(helper.getLevel(), player, hit).consumesAction(),
+                "Empty-hand interaction fell through");
+        var outsider = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "connector-outsider"));
+        outsider.setPos(player.position());
+        helper.assertTrue(connector.getBlockState().useItemOn(new ItemStack(Items.ENDER_PEARL), helper.getLevel(), outsider,
+                        InteractionHand.MAIN_HAND, hit).consumesAction() && !connector.canConfigure(outsider),
+                "Rejected GUI interaction fell through to item use");
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void inventoryFiltersDoNotConsumeOrMoveResources(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "connector-inventory"));
+        var connector = place(helper, new BlockPos(1, 1, 1), player.getUUID());
+        player.setPos(Vec3.atCenterOf(connector.getBlockPos()));
+        var menu = new IdeaspaceConnectorMenu(13, player.getInventory(), connector);
+        ItemStack apple = new ItemStack(Items.APPLE, 16);
+        apple.set(DataComponents.CUSTOM_NAME, Component.literal("Filter variant"));
+        player.getInventory().setItem(9, apple.copy());
+        helper.assertTrue(menu.slots.size() == 36 && ItemStack.matches(menu.getSlot(0).getItem(), apple),
+                "Player inventory is not exposed as normal slots");
+        menu.setCarried(apple.copy());
+        long storageVersion = connector.storage().getVersion();
+        menu.handleAction(player, new MessageConnectorAction(13, menu.session(), menu.revision(), IdeaspaceConnectorMenu.ASSIGN, 0, 0));
+        helper.assertTrue(connector.resource(0).equals(ConnectorResource.item(ItemResourceKey.of(apple).orElseThrow()))
+                && ItemStack.matches(menu.getCarried(), apple) && ItemStack.matches(player.getInventory().getItem(9), apple),
+                "Item filter consumed inventory, cursor, or components");
+        menu.setCarried(new ItemStack(Items.WATER_BUCKET));
+        menu.handleAction(player, new MessageConnectorAction(13, menu.session(), menu.revision(), IdeaspaceConnectorMenu.ASSIGN, 1, 1));
+        helper.assertTrue(connector.resource(1).equals(ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.WATER, 1)).orElseThrow()))
+                && menu.getCarried().is(Items.WATER_BUCKET) && menu.getCarried().getCount() == 1,
+                "Container filter drained or replaced the bucket");
+        var waterFilter = connector.resource(1);
+        for (var emptyOrPlain : new ItemStack[] {new ItemStack(Items.BUCKET), apple.copy()}) {
+            menu.setCarried(emptyOrPlain);
+            menu.handleAction(player, new MessageConnectorAction(13, menu.session(), menu.revision(), IdeaspaceConnectorMenu.ASSIGN, 1, 1));
+            helper.assertTrue(connector.resource(1).equals(waterFilter) && ItemStack.matches(menu.getCarried(), emptyOrPlain),
+                    "Empty container or normal item cleared an existing contents filter");
+        }
+        menu.handleAction(player, new MessageConnectorAction(13, menu.session(), menu.revision(), IdeaspaceConnectorMenu.ENERGY, 2, 0));
+        helper.assertTrue(connector.resource(2).equals(ConnectorResource.ENERGY) && connector.storage().getVersion() == storageVersion,
+                "Filter configuration changed stored resources");
+        menu.quickMoveStack(player, 0);
+        helper.assertTrue(player.getInventory().getItem(9).isEmpty() && ItemStack.matches(player.getInventory().getItem(0), apple),
+                "Shift movement failed between inventory and hotbar");
+        menu.quickMoveStack(player, 27);
+        helper.assertTrue(ItemStack.matches(player.getInventory().getItem(9), apple) && player.getInventory().getItem(0).isEmpty(),
+                "Return shift movement lost inventory");
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void externalGhostTemplatesValidateSessionAndNeverCreateStock(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "connector-ghost"));
+        var connector = place(helper, new BlockPos(1, 1, 1), player.getUUID());
+        player.setPos(Vec3.atCenterOf(connector.getBlockPos()));
+        var menu = new IdeaspaceConnectorMenu(14, player.getInventory(), connector);
+        ItemStack item = new ItemStack(Items.DIAMOND, 64);
+        item.set(DataComponents.CUSTOM_NAME, Component.literal("JEI variant"));
+        var resource = ConnectorResource.item(ItemResourceKey.of(item).orElseThrow());
+        var message = new MessageConnectorTemplate(14, menu.session(), 0, resource.save(player.registryAccess()));
+        var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), player.registryAccess());
+        try {
+            MessageConnectorTemplate.STREAM_CODEC.encode(buf, message);
+            menu.handleTemplate(player, MessageConnectorTemplate.STREAM_CODEC.decode(buf));
+        } finally { buf.release(); }
+        helper.assertTrue(connector.resource(0).equals(resource) && connector.resource(0).itemStack(1).getCount() == 1,
+                "Ghost item identity/components lost");
+        var fluid = ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.LAVA, 1000)).orElseThrow());
+        var fluidTag = fluid.save(player.registryAccess());
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, menu.session(), 1, fluidTag));
+        helper.assertTrue(connector.resource(1).equals(fluid) && resource.amount(connector.storage()) == 0
+                && fluid.amount(connector.storage()) == 0 && player.getInventory().isEmpty() && menu.getCarried().isEmpty(),
+                "Ghost template created or required real stock");
+        var chemical = ConnectorResource.chemical(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen"));
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, menu.session(), 2, chemical.save(player.registryAccess())));
+        helper.assertTrue(connector.resource(2).equals(MekanismCompat.isMekanismLoaded() ? chemical : ConnectorResource.EMPTY)
+                        && chemical.amount(connector.storage()) == 0,
+                "Chemical filter did not respect optional integration or created stock");
+        long version = connector.settingsVersion();
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, UUID.randomUUID(), 0, fluidTag));
+        menu.handleTemplate(player, new MessageConnectorTemplate(15, menu.session(), 0, fluidTag));
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, menu.session(), 9, fluidTag));
+        var outsider = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "ghost-outsider"));
+        outsider.setPos(player.position());
+        menu.handleTemplate(outsider, message);
+        var invalidChemical = ConnectorResource.chemical(Psitweaks.location("missing_chemical")).save(player.registryAccess());
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, menu.session(), 2, invalidChemical));
+        var oversized = fluidTag.copy();
+        oversized.putByteArray("TooLarge", new byte[MessageConnectorTemplate.MAX_TEMPLATE_SIZE]);
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, menu.session(), 0, oversized));
+        var oversizedBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), player.registryAccess());
+        boolean rejected = false;
+        try {
+            MessageConnectorTemplate.STREAM_CODEC.encode(oversizedBuffer, new MessageConnectorTemplate(14, menu.session(), 0, oversized));
+            try { MessageConnectorTemplate.STREAM_CODEC.decode(oversizedBuffer); }
+            catch (net.minecraft.nbt.NbtAccounterException expected) { rejected = true; }
+        } finally { oversizedBuffer.release(); }
+        helper.assertTrue(rejected, "Ghost template decoding ignored the NBT allocation limit");
+        helper.assertTrue(connector.settingsVersion() == version, "Invalid or foreign template changed settings");
+        helper.getLevel().destroyBlock(connector.getBlockPos(), false);
+        menu.handleTemplate(player, new MessageConnectorTemplate(14, menu.session(), 0, fluidTag));
+        helper.assertTrue(connector.settingsVersion() == version, "Removed connector accepted a ghost template");
         helper.succeed();
     }
 }

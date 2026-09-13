@@ -1893,23 +1893,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("block.psitweaks.ideaspace_connector", japanese ? "イデアコネクター" : "Ideaspace Connector");
         String[][] labels = {
                 {"published", "公開する資源（9枠）", "Published resources (9 slots)"},
-                {"available", "イデアストレージ内の資源", "Resources in your storage"},
+                {"settings", "搬入出設定", "Connection settings"},
+                {"back", "戻る", "Back"},
                 {"faces", "面ごとの入出力・自動搬出", "Connections / auto output"},
-                {"mode.both", "入出力", "Input/Output"},
-                {"mode.input", "搬入のみ", "Input only"},
-                {"mode.output", "搬出のみ", "Output only"},
+                {"mode.both", "入出力", "In / Out"},
+                {"mode.input", "搬入のみ", "Input"},
+                {"mode.output", "搬出のみ", "Output"},
                 {"mode.disabled", "無効", "Disabled"},
                 {"auto_on", "自動: 有効", "Auto: ON"},
                 {"auto_off", "自動: 無効", "Auto: OFF"},
                 {"face.down", "下", "Down"}, {"face.up", "上", "Up"},
                 {"face.north", "北", "North"}, {"face.south", "南", "South"},
                 {"face.west", "西", "West"}, {"face.east", "東", "East"},
-                {"page", "%s / %s", "%s / %s"},
-                {"help", "上の公開枠を選び、下の資源をクリックして設定。右クリックで解除。設定で資源は消費しません。",
-                        "Select a top slot, then a resource below. Right-click a top slot to clear it. Configuration consumes no resources."},
+                {"help", "アイテムを持った状態で左クリックで設定。液体・化学物質が入ったアイテムを右クリックで中身の液体・化学物質を設定可能。 設定に資源は消費しません。",
+                        "Left-click while holding an item to configure it. Right-click while holding an item containing a fluid or chemical to configure its contents. Configuration consumes no resources."},
+                {"energy_hint", "選択中の公開枠にFEを設定", "Assign FE to the selected published slot"},
+                {"template_too_large", "このアイテムは設定データが大きすぎます。", "This item's filter data is too large."},
                 {"amount", "イデアストレージ内: %s", "In Ideaspace Storage: %s"},
-                {"select_hint", "クリックで選択中の公開枠に設定", "Click to assign to the selected slot"},
-                {"clear_hint", "左クリックで枠を選択 / 右クリックで解除", "Left-click to select / Right-click to clear"},
+                {"clear_hint", "何も持たずに右クリックで解除", "Right-click with an empty cursor to clear"},
                 {"load_failed", "ストレージを読み込めません。", "Storage could not be loaded."}
         };
         for (String[] label : labels) root.addProperty("gui.psitweaks.connector." + label[0], label[japanese ? 1 : 2]);

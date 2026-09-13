@@ -1,13 +1,15 @@
 package com.moratan251.psitweaks.common.menu;
 
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
 import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorState;
+import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
+import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,22 +21,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-/** Configuration-only menu; the client sends indices, never resource identities or owner UUIDs. */
+/** Player inventory plus ghost filters; published resources remain exclusively in owner storage. */
 public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
-    public static final int PAGE_SIZE = 27;
-    public static final int ASSIGN = 0, CLEAR = 1, SIDE = 2, AUTO = 3, PAGE = 4;
+    public static final int ASSIGN = 0, CLEAR = 1, SIDE = 2, AUTO = 3, ENERGY = 4;
+    public static final int INVENTORY_X = 8, INVENTORY_Y = 106, HOTBAR_Y = 164;
     private final Player player;
     private final IdeaspaceConnectorBlockEntity connector;
     private final BlockPos pos;
     private UUID session = UUID.randomUUID();
     private long revision;
     private long templateRevision;
-    private int page;
+    private boolean inventoryVisible = true;
     private long syncedStorage = -1, syncedSettings = -1, lastSyncTick = -20;
-    private List<ConnectorResource> shown = List.of();
     private CompoundTag clientState = new CompoundTag();
 
     public IdeaspaceConnectorMenu(int id, Inventory inventory, IdeaspaceConnectorBlockEntity connector) {
@@ -46,7 +49,19 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
         this.player = inventory.player;
         this.pos = pos;
         this.connector = connector;
+        for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++)
+            addPlayerSlot(inventory, column + row * 9 + 9, INVENTORY_X + column * 18, INVENTORY_Y + row * 18);
+        for (int column = 0; column < 9; column++)
+            addPlayerSlot(inventory, column, INVENTORY_X + column * 18, HOTBAR_Y);
     }
+
+    private void addPlayerSlot(Inventory inventory, int index, int x, int y) {
+        addSlot(new Slot(inventory, index, x, y) {
+            @Override public boolean isActive() { return inventoryVisible; }
+        });
+    }
+
+    public void setInventoryVisible(boolean visible) { inventoryVisible = visible; }
 
     public static IdeaspaceConnectorMenu fromNetwork(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
         return new IdeaspaceConnectorMenu(id, inventory, buf.readBlockPos(), null);
@@ -57,9 +72,21 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
                 : connector.canConfigure(player);
     }
 
-    @Override public ItemStack quickMoveStack(Player player, int slot) { return ItemStack.EMPTY; }
+    @Override public ItemStack quickMoveStack(Player player, int index) {
+        if (index < 0 || index >= slots.size()) return ItemStack.EMPTY;
+        Slot slot = slots.get(index);
+        if (!slot.hasItem()) return ItemStack.EMPTY;
+        ItemStack stack = slot.getItem(), original = stack.copy();
+        if (!(index < 27 ? moveItemStackTo(stack, 27, 36, false) : moveItemStackTo(stack, 0, 27, false)))
+            return ItemStack.EMPTY;
+        if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
+        else slot.setChanged();
+        slot.onTake(player, stack);
+        return original;
+    }
 
     public UUID session() { return session; }
+    public BlockPos blockPos() { return pos; }
     public long revision() { return revision; }
     public CompoundTag clientState() { return clientState; }
 
@@ -79,7 +106,7 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     /** Amount-only updates retain resource components without resending them every few ticks. */
     public static CompoundTag mergeAmounts(CompoundTag previous, CompoundTag update) {
         CompoundTag merged = update.copy();
-        for (String key : new String[] {"Selected", "Available"}) {
+        for (String key : new String[] {"Selected"}) {
             ListTag templates = previous.getList(key, Tag.TAG_COMPOUND);
             ListTag amounts = update.getList(key, Tag.TAG_COMPOUND);
             if (templates.size() != amounts.size()) return null;
@@ -95,12 +122,25 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     }
 
     public void handleAction(Player sender, MessageConnectorAction action) {
-        if (sender != player || connector == null || !stillValid(sender) || !session.equals(action.session())) return;
+        if (action.containerId() != containerId || !authorized(sender, action.session())) return;
         int argument = action.argument();
         switch (action.action()) {
             case ASSIGN -> {
-                if (action.revision() != revision || argument < 0 || argument >= shown.size()) return;
-                connector.setResource(action.slot(), shown.get(argument));
+                if (getCarried().isEmpty() || (argument != 0 && argument != 1)) return;
+                ConnectorResource resource = ItemResourceKey.of(getCarried()).map(ConnectorResource::item).orElse(ConnectorResource.EMPTY);
+                if (argument == 1) {
+                    resource = ConnectorResource.EMPTY;
+                    var fluids = FluidUtil.getFluidHandler(getCarried().copyWithCount(1)).orElse(null);
+                    if (fluids != null) for (int tank = 0; tank < fluids.getTanks(); tank++) {
+                        // A filter only needs the identity, regardless of the container's drain permission or rate.
+                        resource = FluidResourceKey.of(fluids.getFluidInTank(tank)).map(ConnectorResource::fluid).orElse(ConnectorResource.EMPTY);
+                        if (resource.kind() != ConnectorResource.Kind.EMPTY) break;
+                    }
+                    if (resource.kind() == ConnectorResource.Kind.EMPTY && MekanismCompat.isMekanismLoaded())
+                        resource = ConnectorMekanism.containedResource(getCarried().copyWithCount(1));
+                    if (resource.kind() == ConnectorResource.Kind.EMPTY) return;
+                }
+                connector.setResource(action.slot(), resource);
             }
             case CLEAR -> connector.setResource(action.slot(), ConnectorResource.EMPTY);
             case SIDE -> {
@@ -113,12 +153,26 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
                 Direction side = Direction.values()[argument];
                 connector.setAutomatic(side, !connector.automatic(side));
             }
-            case PAGE -> {
-                if (argument != -1 && argument != 1) return;
-                page = Math.max(0, page + argument);
-            }
+            case ENERGY -> connector.setResource(action.slot(), ConnectorResource.ENERGY);
             default -> { return; }
         }
+        syncedSettings = -1;
+        broadcastChanges();
+    }
+
+    private boolean authorized(Player sender, UUID session) {
+        return sender == player && connector != null && stillValid(sender) && this.session.equals(session);
+    }
+
+    public void handleTemplate(Player sender, MessageConnectorTemplate message) {
+        if (message.containerId() != containerId || !authorized(sender, message.session())
+                || message.slot() < 0 || message.slot() >= IdeaspaceConnectorBlockEntity.SLOTS
+                || message.resource().sizeInBytes() > MessageConnectorTemplate.MAX_TEMPLATE_SIZE) return;
+        ConnectorResource resource = ConnectorResource.load(message.resource(), player.registryAccess());
+        if (resource.kind() == ConnectorResource.Kind.EMPTY) return;
+        if (resource.kind() == ConnectorResource.Kind.CHEMICAL
+                && (!MekanismCompat.isMekanismLoaded() || !ConnectorMekanism.validChemical(resource.chemical()))) return;
+        connector.setResource(message.slot(), resource);
         syncedSettings = -1;
         broadcastChanges();
     }
@@ -131,35 +185,14 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
         long now = player.level().getGameTime();
         boolean settingsChanged = syncedSettings != connector.settingsVersion();
         if (!settingsChanged && (syncedStorage == storage.getVersion() || now - lastSyncTick < 5)) return;
-        List<ConnectorResource> catalog = new ArrayList<>();
-        if (!storage.isLoadFailed()) {
-            storage.itemEntries().forEach(entry -> catalog.add(ConnectorResource.item(entry.getKey())));
-            storage.fluidEntries().forEach(entry -> catalog.add(ConnectorResource.fluid(entry.getKey())));
-            if (MekanismCompat.isMekanismLoaded())
-                storage.chemicalEntries().forEach(entry -> catalog.add(ConnectorResource.chemical(entry.getKey())));
-            catalog.add(ConnectorResource.ENERGY); // FE can be configured even with a zero balance.
-        }
-        int pages = Math.max(1, (catalog.size() + PAGE_SIZE - 1) / PAGE_SIZE);
-        page = Math.min(page, pages - 1);
-        List<ConnectorResource> next = List.copyOf(catalog.subList(Math.min(page * PAGE_SIZE, catalog.size()),
-                Math.min((page + 1) * PAGE_SIZE, catalog.size())));
-        boolean full = settingsChanged || !next.equals(shown);
-        if (!next.equals(shown)) {
-            shown = next;
-            revision++;
-        }
+        boolean full = settingsChanged;
         CompoundTag data = new CompoundTag();
-        if (full) templateRevision++;
+        if (full) { templateRevision++; revision++; }
         data.putLong("Templates", templateRevision);
         data.putBoolean("Full", full);
         ListTag selected = new ListTag();
         for (int i = 0; i < IdeaspaceConnectorBlockEntity.SLOTS; i++) selected.add(entry(connector.resource(i), storage, full));
-        ListTag available = new ListTag();
-        for (ConnectorResource resource : shown) available.add(entry(resource, storage, full));
         data.put("Selected", selected);
-        data.put("Available", available);
-        data.putInt("Page", page);
-        data.putInt("Pages", pages);
         data.putBoolean("LoadFailed", storage.isLoadFailed());
         int[] sides = new int[6];
         int automatic = 0;

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client.jei;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.client.gui.IdeaStorageScreen;
+import com.moratan251.psitweaks.client.gui.IdeaspaceConnectorScreen;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
@@ -72,6 +73,7 @@ public class PsitweaksJeiPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGhostIngredientHandler(IdeaspaceConnectorScreen.class, new ConnectorGhostIngredientHandler());
         if (MekanismCompat.isMekanismLoaded()) {
             PsitweaksMekanismJeiPlugin.registerGuiHandlers(registration);
         }

@@ -6,7 +6,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,10 +45,23 @@ public class IdeaspaceConnectorBlock extends BlockConjured {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.getBlockEntity(pos) instanceof IdeaspaceConnectorBlockEntity connector && connector.canConfigure(player)) {
-            if (player instanceof ServerPlayer serverPlayer) serverPlayer.openMenu(connector, pos);
-            return InteractionResult.sidedSuccess(level.isClientSide);
-        }
-        return InteractionResult.PASS;
+        openConnector(level, pos, player);
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                             Player player, InteractionHand hand, BlockHitResult hit) {
+        openConnector(level, pos, player);
+        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    private void openConnector(Level level, BlockPos pos, Player player) {
+        // Owner data is server-only. Consume the click on both sides so the client does not
+        // send a second, item-use packet while the server is opening the menu.
+        player.stopUsingItem();
+        if (player instanceof ServerPlayer serverPlayer
+                && level.getBlockEntity(pos) instanceof IdeaspaceConnectorBlockEntity connector
+                && connector.canConfigure(player)) serverPlayer.openMenu(connector, pos);
     }
 }

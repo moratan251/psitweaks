@@ -1,6 +1,10 @@
 package com.moratan251.psitweaks.common.gametest;
 
 import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
+import com.mojang.authlib.GameProfile;
+import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
+import com.moratan251.psitweaks.common.network.MessageConnectorAction;
+import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
@@ -8,9 +12,16 @@ import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 /** Kept out of the GameTest scanner so Mekanism-free dedicated servers never load this class. */
 final class ConnectorChemicalChecks {
@@ -52,5 +63,32 @@ final class ConnectorChemicalChecks {
         helper.assertTrue(ConnectorMekanism.push(connector.storage(), id, target, 1000) == 37
                 && received[0] == 37 && connector.storage().simulateExtractChemical(id, 9999) == 2463,
                 "Chemical automatic output failed to refund actual unaccepted amount");
+        checkContainerFilters(helper, connector, id);
+    }
+
+    private static void checkContainerFilters(GameTestHelper helper, IdeaspaceConnectorBlockEntity connector, ResourceLocation id) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(connector.owner(), "tank-filter"));
+        player.setPos(Vec3.atCenterOf(connector.getBlockPos()));
+        var menu = new IdeaspaceConnectorMenu(19, player.getInventory(), connector);
+        ItemStack chemicalTank = new ItemStack(MekanismBlocks.BASIC_CHEMICAL_TANK.get());
+        var chemicals = Capabilities.CHEMICAL.getCapability(chemicalTank);
+        helper.assertTrue(chemicals != null && chemicals.insertChemical(ConnectorMekanism.stack(id, 750), Action.EXECUTE).isEmpty(),
+                "Test chemical tank could not be filled");
+        ItemStack fluidTank = new ItemStack(MekanismBlocks.BASIC_FLUID_TANK.get());
+        var fluids = fluidTank.getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM);
+        helper.assertTrue(fluids != null && fluids.fill(new FluidStack(Fluids.WATER, 750), FluidAction.EXECUTE) == 750,
+                "Test fluid tank could not be filled");
+        ConnectorResource[] expected = {ConnectorResource.chemical(id),
+                ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.WATER, 1)).orElseThrow())};
+        ItemStack[] tanks = {chemicalTank, fluidTank};
+        long version = connector.storage().getVersion();
+        for (int i = 0; i < tanks.length; i++) {
+            ItemStack before = tanks[i].copy();
+            menu.setCarried(tanks[i]);
+            menu.handleAction(player, new MessageConnectorAction(19, menu.session(), menu.revision(), IdeaspaceConnectorMenu.ASSIGN, 4 + i, 1));
+            helper.assertTrue(connector.resource(4 + i).equals(expected[i]) && ItemStack.matches(before, menu.getCarried()),
+                    "Tank filter did not select contents, or changed the tank/count/components");
+        }
+        helper.assertTrue(connector.storage().getVersion() == version, "Tank filter transferred stored resources");
     }
 }

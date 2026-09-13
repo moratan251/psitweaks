@@ -5,10 +5,13 @@ import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksRecipeTypes;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.SculkEroderBlockEntity;
 import java.util.List;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackChemicalToItemStackRecipeCategory;
@@ -24,6 +27,12 @@ import net.minecraft.world.level.Level;
 
 final class PsitweaksMekanismJeiPlugin {
     private PsitweaksMekanismJeiPlugin() {
+    }
+
+    static ConnectorResource connectorResource(Object ingredient) {
+        if (ingredient instanceof ChemicalStack stack && !stack.isEmpty())
+            return ConnectorResource.chemical(MekanismAPI.CHEMICAL_REGISTRY.getKey(stack.getChemical()));
+        return ConnectorResource.EMPTY;
     }
 
     static void registerCategories(IRecipeCategoryRegistration registration) {

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.compat;
 
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -12,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /** Loaded only when Mekanism is present; no Mekanism types cross the common API. */
@@ -26,6 +28,19 @@ public final class ConnectorMekanism {
     public static ChemicalStack stack(ResourceLocation id, long amount) {
         var chemical = id == null ? null : MekanismAPI.CHEMICAL_REGISTRY.getHolder(id).orElse(null);
         return chemical == null || amount <= 0 ? ChemicalStack.EMPTY : new ChemicalStack(chemical, amount);
+    }
+
+    public static boolean validChemical(ResourceLocation id) {
+        return !stack(id, 1).isEmpty();
+    }
+
+    public static ConnectorResource containedResource(ItemStack stack) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
+        if (handler != null) for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+            ChemicalStack chemical = handler.getChemicalInTank(tank);
+            if (!chemical.isEmpty()) return ConnectorResource.chemical(MekanismAPI.CHEMICAL_REGISTRY.getKey(chemical.getChemical()));
+        }
+        return ConnectorResource.EMPTY;
     }
 
     public static long push(PlayerIdeaStorage storage, ResourceLocation id, Level level,
