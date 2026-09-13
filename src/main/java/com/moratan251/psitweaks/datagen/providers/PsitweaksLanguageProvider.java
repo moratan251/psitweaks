@@ -1893,7 +1893,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("block.psitweaks.ideaspace_connector", japanese ? "イデアコネクター" : "Ideaspace Connector");
         String[][] labels = {
                 {"published", "公開する資源（9枠）", "Published resources (9 slots)"},
-                {"settings", "搬入出設定", "Connection settings"},
+                {"settings", "搬入出設定(共通)", "I/O settings (Shared)"},
+                {"export_settings", "自動搬出量・間隔", "Export rate"},
+                {"export_common_title", "搬出量・間隔(共通)", "Export rate (Shared)"},
+                {"export_slot_title", "搬出量・間隔(枠 %s)", "Export rate (Slot %s)"},
+                {"export_amount", "1回の量", "Amount"},
+                {"export_interval", "間隔 (tick)", "Interval (tick)"},
+                {"export_tick_hint", "20 tick = 1秒", "20 ticks = 1 second"},
+                {"export_amount_hint", "設定範囲: 1 ～ %s", "Range: 1 - %s"},
+                {"export_interval_hint", "設定範囲: 1 ～ %s", "Range: 1 - %s"},
+                {"export_type.0", "アイテム", "Items"},
+                {"export_type.1", "液体 (mB)", "Fluid (mB)"},
+                {"export_type.2", "化学物質 (mB)", "Chem. (mB)"},
+                {"export_type.3", "FE", "FE"},
+                {"slot_settings", "搬入出設定(公開枠 %s)", "I/O settings (Slot %s)"},
+                {"use_common", "共通設定を使用", "Use shared settings"},
+                {"use_individual", "個別設定を使用", "Use individual settings"},
+                {"inherit_hint", "クリックで切り替え。個別設定に切り替えると、現在の共通設定をコピーします。", "Click to switch. Switching to individual settings copies the current shared settings."},
                 {"back", "戻る", "Back"},
                 {"faces", "面ごとの入出力・自動搬出", "Connections / auto output"},
                 {"mode.both", "入出力", "In / Out"},
@@ -1907,7 +1923,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"face.west", "西", "West"}, {"face.east", "東", "East"},
                 {"help", "アイテムを持った状態で左クリックで設定。液体・化学物質が入ったアイテムを右クリックで中身の液体・化学物質を設定可能。 設定に資源は消費しません。",
                         "Left-click while holding an item to configure it. Right-click while holding an item containing a fluid or chemical to configure its contents. Configuration consumes no resources."},
-                {"energy_hint", "選択中の公開枠にFEを設定", "Assign FE to the selected published slot"},
+                {"energy_hint", "公開枠にドラッグしてFEを設定", "Drag onto a published slot to assign FE"},
                 {"template_too_large", "このアイテムは設定データが大きすぎます。", "This item's filter data is too large."},
                 {"amount", "イデアストレージ内: %s", "In Ideaspace Storage: %s"},
                 {"clear_hint", "何も持たずに右クリックで解除", "Right-click with an empty cursor to clear"},
@@ -1924,7 +1940,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Incoming items, fluids, chemicals and FE enter the owner's Ideaspace Storage directly. Right-click to configure up to nine published resources. External devices can extract only these resources. Configuration consumes nothing; the connector holds no inventory. Only the owner can configure it, and it works while the owner is offline if its chunk is loaded. Chemicals require Mekanism.",
                 "搬入されたアイテム・液体・化学物質・FEは、設置者のイデアストレージに直接収納されます。右クリックの設定画面で最大9種類を公開し、外部機器から搬出できます。設定に資源は消費せず、ブロック内に在庫は持ちません。設定変更は設置者のみ可能です。チャンクが読み込まれていれば設置者がオフラインでも利用できます。化学物質にはMekanismが必要です。");
         addBookPage(root, "trick_ideaspace_connector.2",
-                "All six faces initially allow input and output. Each face can be set to input/output, input only, output only, or disabled. Automatic output is initially off and can be enabled per output face. Every 5 ticks it sends up to one stack, 1,000 mB or 16,000 FE per published resource and face, waiting 20 ticks when nothing moves. Transfers are limited to available stock and destination capacity.",
-                "初期状態では全6面から搬入・搬出できます。各面を入出力・搬入のみ・搬出のみ・無効に設定できます。自動搬出は初期状態では無効で、搬出可能な面ごとに有効化できます。5tickごとに公開資源・面ごとで最大1スタック、1,000mBまたは16,000FEを送り、移動できない場合は20tick待機します。在庫や移動先の空きに応じ、移動できる分だけ搬出します。");
+                "All six faces initially allow input and output. Each published slot can override the shared face settings. Automatic output is initially off. Export rate settings control the amount per attempt and interval for each resource type, shared by all six faces of each slot. Defaults are one stack, 1,000 mB of fluid or chemical, and 16,000 FE every 5 ticks. Transfers are limited to available stock and destination capacity.",
+                "初期状態では全6面から搬入・搬出できます。面設定は共通設定を基本に、公開枠ごとに個別設定で上書きできます。自動搬出は初期状態では無効です。「自動搬出量・間隔」で資源別の1回量と間隔を設定でき、各枠の6面で共用します。初期値は5tickごとに最大1スタック、液体・化学物質1,000mB、16,000FEです。在庫や移動先の空きに応じ、移動できる分だけ搬出します。");
     }
 }

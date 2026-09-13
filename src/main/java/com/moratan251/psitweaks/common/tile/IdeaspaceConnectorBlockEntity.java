@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.common.storage.connector.ConnectorHandlers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import java.util.Arrays;
@@ -33,14 +34,27 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
     private final ConnectorResource[] resources = new ConnectorResource[SLOTS];
     private final ConnectorSideMode[] sides = new ConnectorSideMode[6];
     private final boolean[] automatic = new boolean[6];
+    private final boolean[] slotOverrides = new boolean[SLOTS];
+    private final ConnectorSideMode[][] slotSides = new ConnectorSideMode[SLOTS][6];
+    private final boolean[][] slotAutomatic = new boolean[SLOTS][6];
     private final ConnectorHandlers[] handlers = new ConnectorHandlers[6];
     private long settingsVersion;
     private int nextSide;
+    private final ConnectorExportSettings[] commonExport = new ConnectorExportSettings[ConnectorExportSettings.TYPES];
+    private final ConnectorExportSettings[][] slotExport = new ConnectorExportSettings[SLOTS][ConnectorExportSettings.TYPES];
+    private final long[] nextExportTicks = new long[SLOTS];
+    private int[] savedExportCooldowns;
+    private long nextExportTick = Long.MAX_VALUE;
 
     public IdeaspaceConnectorBlockEntity(BlockPos pos, BlockState state) {
         super(PsitweaksBlockEntityTypes.IDEASPACE_CONNECTOR.get(), pos, state);
         Arrays.fill(resources, ConnectorResource.EMPTY);
         Arrays.fill(sides, ConnectorSideMode.BOTH);
+        for (var modes : slotSides) Arrays.fill(modes, ConnectorSideMode.BOTH);
+        for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
+            commonExport[type] = ConnectorExportSettings.defaults(type);
+            for (var values : slotExport) values[type] = commonExport[type];
+        }
         for (Direction side : Direction.values()) handlers[side.ordinal()] = new ConnectorHandlers(this, side);
     }
 
@@ -102,6 +116,78 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         settingsChanged();
     }
 
+    public boolean usesCommonSettings(int slot) {
+        return slot < 0 || slot >= SLOTS || !slotOverrides[slot];
+    }
+
+    public void setUsesCommonSettings(int slot, boolean common) {
+        if (slot < 0 || slot >= SLOTS || common == usesCommonSettings(slot)) return;
+        if (!common) {
+            System.arraycopy(sides, 0, slotSides[slot], 0, 6);
+            System.arraycopy(automatic, 0, slotAutomatic[slot], 0, 6);
+            System.arraycopy(commonExport, 0, slotExport[slot], 0, ConnectorExportSettings.TYPES);
+        }
+        slotOverrides[slot] = !common;
+        resetExportInterval(slot);
+        settingsChanged();
+    }
+
+    public ConnectorExportSettings exportSettings(int slot, int type) {
+        return usesCommonSettings(slot) ? commonExport[type] : slotExport[slot][type];
+    }
+
+    public boolean setExportSettings(int slot, ConnectorExportSettings[] settings) {
+        if (slot < -1 || slot >= SLOTS || (slot >= 0 && usesCommonSettings(slot))
+                || settings == null || settings.length != ConnectorExportSettings.TYPES) return false;
+        for (int type = 0; type < settings.length; type++)
+            if (settings[type] == null || !settings[type].valid(type)) return false;
+        System.arraycopy(settings, 0, slot < 0 ? commonExport : slotExport[slot], 0, settings.length);
+        for (int i = 0; i < SLOTS; i++) if (i == slot || (slot < 0 && usesCommonSettings(i))) resetExportInterval(i);
+        settingsChanged();
+        return true;
+    }
+
+    private void resetExportInterval(int slot) {
+        if (level == null) return;
+        restoreExportCooldowns();
+        int type = ConnectorExportSettings.type(resource(slot).kind());
+        nextExportTicks[slot] = level.getGameTime() + (type < 0 ? 1 : exportSettings(slot, type).interval());
+    }
+
+    public ConnectorSideMode sideMode(int slot, @Nullable Direction side) {
+        if (slot < 0 || slot >= SLOTS || side == null) return ConnectorSideMode.DISABLED;
+        return usesCommonSettings(slot) ? sideMode(side) : slotSides[slot][side.ordinal()];
+    }
+
+    public void setSideMode(int slot, Direction side, ConnectorSideMode mode) {
+        if (usesCommonSettings(slot)) return;
+        slotSides[slot][side.ordinal()] = mode;
+        settingsChanged();
+    }
+
+    public boolean automatic(int slot, Direction side) {
+        if (slot < 0 || slot >= SLOTS) return false;
+        return usesCommonSettings(slot) ? automatic(side) : slotAutomatic[slot][side.ordinal()];
+    }
+
+    public void setAutomatic(int slot, Direction side, boolean enabled) {
+        if (usesCommonSettings(slot)) return;
+        slotAutomatic[slot][side.ordinal()] = enabled;
+        settingsChanged();
+    }
+
+    public int publishedSlot(ConnectorResource resource) {
+        if (resource.kind() != ConnectorResource.Kind.EMPTY)
+            for (int slot = 0; slot < SLOTS; slot++) if (resources[slot].equals(resource)) return slot;
+        return -1;
+    }
+
+    /** Match the incoming identity, not an arbitrary insertion slot supplied by a pipe. */
+    public boolean allowsInput(Direction side, ConnectorResource resource) {
+        int slot = publishedSlot(resource);
+        return (slot < 0 ? sideMode(side) : sideMode(slot, side)).input;
+    }
+
     public ConnectorHandlers handlers(Direction side) { return handlers[side.ordinal()]; }
     public long settingsVersion() { return settingsVersion; }
 
@@ -111,7 +197,14 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
     }
 
     private boolean hasAutomaticOutput() {
-        for (Direction side : Direction.values()) if (automatic(side) && sideMode(side).output) return true;
+        for (Direction side : Direction.values()) if (hasAutomaticOutput(side)) return true;
+        return false;
+    }
+
+    public boolean hasAutomaticOutput(Direction side) {
+        for (int slot = 0; slot < SLOTS; slot++)
+            if (resources[slot].kind() != ConnectorResource.Kind.EMPTY && automatic(slot, side) && sideMode(slot, side).output)
+                return true;
         return false;
     }
 
@@ -120,32 +213,53 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         setChanged();
         if (level instanceof ServerLevel) {
             level.invalidateCapabilities(worldPosition);
-            scheduleTransfer(1);
+            refreshExportSchedule();
         }
     }
 
-    private void scheduleTransfer(int delay) {
-        if (level instanceof ServerLevel && hasAutomaticOutput())
-            level.scheduleTick(worldPosition, getBlockState().getBlock(), delay);
+    private boolean slotExports(int slot) {
+        if (resource(slot).kind() == ConnectorResource.Kind.EMPTY) return false;
+        for (Direction side : Direction.values()) if (automatic(slot, side) && sideMode(slot, side).output) return true;
+        return false;
+    }
+
+    private void restoreExportCooldowns() {
+        if (savedExportCooldowns == null || level == null) return;
+        for (int slot = 0; slot < SLOTS; slot++) nextExportTicks[slot] = level.getGameTime() + savedExportCooldowns[slot];
+        savedExportCooldowns = null;
+    }
+
+    private void refreshExportSchedule() {
+        nextExportTick = Long.MAX_VALUE;
+        if (!(level instanceof ServerLevel)) return;
+        restoreExportCooldowns();
+        for (int slot = 0; slot < SLOTS; slot++) if (slotExports(slot))
+            nextExportTick = Math.min(nextExportTick, Math.max(level.getGameTime() + 1, nextExportTicks[slot]));
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        scheduleTransfer(5);
+        refreshExportSchedule();
     }
 
     public void autoTransfer() {
+        // Idle ticks only compare a timestamp. No storage/capability lookup until a slot is due.
+        if (level == null || level.getGameTime() < nextExportTick) return;
+        long now = level.getGameTime();
         PlayerIdeaStorage storage = storage();
-        if (storage == null || !hasAutomaticOutput()) return;
-        boolean moved = false;
+        if (storage == null) { nextExportTick = now + 20; return; }
+        int due = 0;
+        for (int slot = 0; slot < SLOTS; slot++) if (slotExports(slot) && now >= nextExportTicks[slot]) due |= 1 << slot;
         for (int i = 0; i < 6; i++) {
             Direction side = Direction.values()[(nextSide + i) % 6];
-            if (automatic(side) && sideMode(side).output) moved |= ConnectorTransfers.push(this, storage, side);
+            if (hasAutomaticOutput(side)) ConnectorTransfers.push(this, storage, side, due);
         }
         nextSide = (nextSide + 1) % 6;
-        // No ticker when disabled; back off when empty, disconnected, or blocked.
-        scheduleTransfer(moved ? 5 : 20);
+        for (int slot = 0; slot < SLOTS; slot++) if ((due & (1 << slot)) != 0)
+            nextExportTicks[slot] = now + exportSettings(slot, ConnectorExportSettings.type(resource(slot).kind())).interval();
+        if (due != 0) setChanged();
+        refreshExportSchedule();
     }
 
     @Override
@@ -155,6 +269,16 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         ListTag selected = new ListTag();
         for (ConnectorResource resource : resources) selected.add(resource.save(registries));
         tag.put("Published", selected);
+        writeConnectionSettings(tag);
+        int[] cooldowns = new int[SLOTS];
+        long now = level == null ? 0 : level.getGameTime();
+        for (int slot = 0; slot < SLOTS; slot++) cooldowns[slot] = savedExportCooldowns != null ? savedExportCooldowns[slot]
+                : (int) Math.clamp(nextExportTicks[slot] - now, 0, ConnectorExportSettings.MAX_INTERVAL);
+        tag.putIntArray("ExportCooldowns", cooldowns);
+    }
+
+    /** Shared by persistence and the owner's menu sync; contains settings only. */
+    public void writeConnectionSettings(CompoundTag tag) {
         int[] modes = new int[6];
         int autoMask = 0;
         for (int i = 0; i < 6; i++) {
@@ -163,6 +287,32 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         }
         tag.putIntArray("Sides", modes);
         tag.putInt("Automatic", autoMask);
+        int overrides = 0;
+        int[] perSlotModes = new int[SLOTS * 6], perSlotAutomatic = new int[SLOTS];
+        for (int slot = 0; slot < SLOTS; slot++) {
+            if (slotOverrides[slot]) overrides |= 1 << slot;
+            for (int face = 0; face < 6; face++) {
+                perSlotModes[slot * 6 + face] = slotSides[slot][face].ordinal();
+                if (slotAutomatic[slot][face]) perSlotAutomatic[slot] |= 1 << face;
+            }
+        }
+        tag.putInt("SlotOverrides", overrides);
+        tag.putIntArray("SlotSides", perSlotModes);
+        tag.putIntArray("SlotAutomatic", perSlotAutomatic);
+        int[] amounts = new int[ConnectorExportSettings.TYPES], intervals = new int[ConnectorExportSettings.TYPES];
+        int[] slotAmounts = new int[SLOTS * ConnectorExportSettings.TYPES], slotIntervals = new int[slotAmounts.length];
+        for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
+            amounts[type] = commonExport[type].amount();
+            intervals[type] = commonExport[type].interval();
+            for (int slot = 0; slot < SLOTS; slot++) {
+                slotAmounts[slot * ConnectorExportSettings.TYPES + type] = slotExport[slot][type].amount();
+                slotIntervals[slot * ConnectorExportSettings.TYPES + type] = slotExport[slot][type].interval();
+            }
+        }
+        tag.putIntArray("ExportAmounts", amounts);
+        tag.putIntArray("ExportIntervals", intervals);
+        tag.putIntArray("SlotExportAmounts", slotAmounts);
+        tag.putIntArray("SlotExportIntervals", slotIntervals);
     }
 
     @Override
@@ -182,7 +332,29 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
             sides[i] = i < modes.length ? ConnectorSideMode.byId(modes[i]) : ConnectorSideMode.BOTH;
             automatic[i] = (tag.getInt("Automatic") & (1 << i)) != 0;
         }
+        int[] perSlotModes = tag.getIntArray("SlotSides"), perSlotAutomatic = tag.getIntArray("SlotAutomatic");
+        for (int slot = 0; slot < SLOTS; slot++) {
+            // Old saves have no override mask, so all nine slots keep using their existing common settings.
+            slotOverrides[slot] = (tag.getInt("SlotOverrides") & (1 << slot)) != 0;
+            for (int face = 0; face < 6; face++) {
+                int index = slot * 6 + face;
+                slotSides[slot][face] = index < perSlotModes.length ? ConnectorSideMode.byId(perSlotModes[index]) : sides[face];
+                slotAutomatic[slot][face] = slot < perSlotAutomatic.length ? (perSlotAutomatic[slot] & (1 << face)) != 0 : automatic[face];
+            }
+        }
         settingsVersion++;
+        int[] amounts = tag.getIntArray("ExportAmounts"), intervals = tag.getIntArray("ExportIntervals");
+        int[] slotAmounts = tag.getIntArray("SlotExportAmounts"), slotIntervals = tag.getIntArray("SlotExportIntervals");
+        for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
+            commonExport[type] = ConnectorExportSettings.read(type, amounts, intervals, type);
+            for (int slot = 0; slot < SLOTS; slot++)
+                slotExport[slot][type] = ConnectorExportSettings.read(type, slotAmounts, slotIntervals, slot * ConnectorExportSettings.TYPES + type);
+        }
+        int[] cooldowns = tag.getIntArray("ExportCooldowns");
+        savedExportCooldowns = new int[SLOTS];
+        for (int slot = 0; slot < SLOTS; slot++) savedExportCooldowns[slot] = slot < cooldowns.length
+                ? Math.clamp(cooldowns[slot], 0, ConnectorExportSettings.MAX_INTERVAL) : 0;
+        refreshExportSchedule();
     }
 
     @Override

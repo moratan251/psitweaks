@@ -71,7 +71,7 @@ public final class ConnectorMekanism {
         @Override public int getChemicalTanks() { return IdeaspaceConnectorBlockEntity.SLOTS; }
         @Override public ChemicalStack getChemicalInTank(int tank) {
             var resource = connector.resource(tank);
-            return connector.sideMode(side).output ? stack(resource.chemical(), resource.amount(connector.storage())) : ChemicalStack.EMPTY;
+            return connector.sideMode(tank, side).output ? stack(resource.chemical(), resource.amount(connector.storage())) : ChemicalStack.EMPTY;
         }
         @Override public void setChemicalInTank(int tank, ChemicalStack stack) {
             // This is a view of shared storage, not a mutable standalone tank.
@@ -82,7 +82,8 @@ public final class ConnectorMekanism {
             return valid(tank) && storage != null ? storage.maxChemicalPerType() : 0;
         }
         @Override public boolean isValid(int tank, ChemicalStack stack) {
-            return valid(tank) && connector.sideMode(side).input && !stack.isEmpty();
+            return valid(tank) && !stack.isEmpty() && connector.allowsInput(side,
+                    ConnectorResource.chemical(MekanismAPI.CHEMICAL_REGISTRY.getKey(stack.getChemical())));
         }
         @Override public ChemicalStack insertChemical(int tank, ChemicalStack stack, Action action) {
             PlayerIdeaStorage storage = connector.storage();
@@ -95,7 +96,7 @@ public final class ConnectorMekanism {
         @Override public ChemicalStack extractChemical(int tank, long amount, Action action) {
             PlayerIdeaStorage storage = connector.storage();
             ResourceLocation id = connector.resource(tank).chemical();
-            if (!connector.sideMode(side).output || storage == null || id == null || stack(id, 1).isEmpty()) return ChemicalStack.EMPTY;
+            if (!connector.sideMode(tank, side).output || storage == null || id == null || stack(id, 1).isEmpty()) return ChemicalStack.EMPTY;
             return stack(id, action.simulate() ? storage.simulateExtractChemical(id, amount) : storage.extractChemical(id, amount));
         }
     }

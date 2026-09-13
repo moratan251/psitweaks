@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
@@ -25,6 +26,72 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 /** Kept out of the GameTest scanner so Mekanism-free dedicated servers never load this class. */
 final class ConnectorChemicalChecks {
+    static void checkConfiguredAmounts(GameTestHelper helper, IdeaspaceConnectorBlockEntity source, IdeaspaceConnectorBlockEntity target) {
+        var id = ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen");
+        source.setResource(3, ConnectorResource.chemical(id));
+        source.storage().insertChemical(id, 300);
+        ConnectorTransfers.push(source, source.storage(), Direction.EAST);
+        helper.assertTrue(target.storage().simulateExtractChemical(id, 1000) == 175, "Chemical export ignored its configured amount");
+        ConnectorTransfers.push(source, source.storage(), Direction.EAST);
+        helper.assertTrue(target.storage().simulateExtractChemical(id, 1000) == 300
+                && source.storage().simulateExtractChemical(id, 1000) == 0, "Configured chemical transfer lost a partial remainder");
+    }
+
+    static void checkIndividualFaces(GameTestHelper helper, IdeaspaceConnectorBlockEntity connector) {
+        var hydrogen = ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen");
+        var oxygen = ResourceLocation.fromNamespaceAndPath("mekanism", "oxygen");
+        connector.setResource(5, ConnectorResource.chemical(hydrogen));
+        connector.setResource(6, ConnectorResource.chemical(oxygen));
+        connector.storage().insertChemical(hydrogen, 2500);
+        connector.storage().insertChemical(oxygen, 1000);
+        var handler = helper.getLevel().getCapability(Capabilities.CHEMICAL.block(), connector.getBlockPos(), Direction.NORTH);
+        connector.setUsesCommonSettings(5, false);
+        connector.setSideMode(5, Direction.NORTH, ConnectorSideMode.OUTPUT);
+        connector.setSideMode(Direction.NORTH, ConnectorSideMode.INPUT);
+        long version = connector.storage().getVersion();
+        helper.assertTrue(handler.getChemicalInTank(5).getAmount() == 2500 && handler.getChemicalInTank(6).isEmpty(),
+                "Chemical views ignored per-resource output settings");
+        for (int tank = 0; tank < handler.getChemicalTanks(); tank++)
+            helper.assertTrue(!handler.isValid(tank, ConnectorMekanism.stack(hydrogen, 10))
+                    && handler.insertChemical(tank, ConnectorMekanism.stack(hydrogen, 10), Action.EXECUTE).getAmount() == 10,
+                    "Chemical input bypassed its settings through tank " + tank);
+        helper.assertTrue(handler.insertChemical(ConnectorMekanism.stack(hydrogen, 10), Action.SIMULATE).getAmount() == 10
+                && handler.insertChemical(ConnectorMekanism.stack(oxygen, 10), Action.SIMULATE).isEmpty()
+                && connector.storage().getVersion() == version, "Chemical bulk input ignored inheritance or changed stock");
+        helper.assertTrue(handler.extractChemical(ConnectorMekanism.stack(hydrogen, 123), Action.EXECUTE).getAmount() == 123
+                && connector.storage().simulateExtractChemical(hydrogen, 3000) == 2377, "Chemical individual output lost stock");
+        connector.setSideMode(5, Direction.NORTH, ConnectorSideMode.INPUT);
+        connector.setSideMode(Direction.NORTH, ConnectorSideMode.DISABLED);
+        helper.assertTrue(handler.getChemicalInTank(5).isEmpty() && handler.extractChemical(5000, Action.EXECUTE).isEmpty()
+                && handler.insertChemical(8, ConnectorMekanism.stack(hydrogen, 10), Action.SIMULATE).isEmpty()
+                && !handler.insertChemical(8, ConnectorMekanism.stack(oxygen, 10), Action.SIMULATE).isEmpty(),
+                "Cached chemical handler ignored changed per-slot/common modes");
+        connector.setUsesCommonSettings(5, true);
+        helper.assertTrue(!handler.insertChemical(8, ConnectorMekanism.stack(hydrogen, 10), Action.SIMULATE).isEmpty(),
+                "Chemical handler ignored return to common settings");
+    }
+
+    static void checkIndividualAutomatic(GameTestHelper helper, IdeaspaceConnectorBlockEntity source,
+                                         IdeaspaceConnectorBlockEntity east, IdeaspaceConnectorBlockEntity north) {
+        var id = ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen");
+        source.setResource(3, ConnectorResource.chemical(id));
+        source.storage().insertChemical(id, 2500);
+        source.setUsesCommonSettings(3, false);
+        source.setSideMode(3, Direction.NORTH, ConnectorSideMode.OUTPUT);
+        source.setAutomatic(3, Direction.NORTH, true);
+        ConnectorTransfers.push(source, source.storage(), Direction.NORTH);
+        helper.assertTrue(north.storage().simulateExtractChemical(id, 3000) == 1000
+                && east.storage().simulateExtractChemical(id, 3000) == 0, "Chemical auto output went to the wrong face");
+        source.setSideMode(3, Direction.NORTH, ConnectorSideMode.INPUT);
+        source.setSideMode(3, Direction.EAST, ConnectorSideMode.OUTPUT);
+        source.setAutomatic(3, Direction.EAST, true);
+        ConnectorTransfers.push(source, source.storage(), Direction.NORTH);
+        ConnectorTransfers.push(source, source.storage(), Direction.EAST);
+        helper.assertTrue(north.storage().simulateExtractChemical(id, 3000) == 1000
+                && east.storage().simulateExtractChemical(id, 3000) == 1000
+                && source.storage().simulateExtractChemical(id, 3000) == 500, "Chemical auto output ignored changed slot faces");
+    }
+
     static void run(GameTestHelper helper, IdeaspaceConnectorBlockEntity connector) {
         var id = ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen");
         var handler = helper.getLevel().getCapability(Capabilities.CHEMICAL.block(), connector.getBlockPos(), Direction.UP);

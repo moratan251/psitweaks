@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.blocks;
 
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
+import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -39,8 +42,13 @@ public class IdeaspaceConnectorBlock extends BlockConjured {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        // Override the conjured block's expiration tick: this block is permanent.
-        if (level.getBlockEntity(pos) instanceof IdeaspaceConnectorBlockEntity connector) connector.autoTransfer();
+        // Ignore inherited/old scheduled ticks: this block is permanent. Export uses its own deadlines.
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide || type != PsitweaksBlockEntityTypes.IDEASPACE_CONNECTOR.get()) return null;
+        return (tickLevel, pos, blockState, blockEntity) -> ((IdeaspaceConnectorBlockEntity) blockEntity).autoTransfer();
     }
 
     @Override

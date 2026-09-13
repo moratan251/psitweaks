@@ -18,6 +18,10 @@ public final class ConnectorTransfers {
     private ConnectorTransfers() { }
 
     public static boolean push(IdeaspaceConnectorBlockEntity source, PlayerIdeaStorage storage, Direction direction) {
+        return push(source, storage, direction, (1 << IdeaspaceConnectorBlockEntity.SLOTS) - 1);
+    }
+
+    public static boolean push(IdeaspaceConnectorBlockEntity source, PlayerIdeaStorage storage, Direction direction, int dueSlots) {
         var level = source.getLevel();
         BlockPos targetPos = source.getBlockPos().relative(direction);
         if (level == null || !level.hasChunkAt(targetPos)) return false;
@@ -30,33 +34,36 @@ public final class ConnectorTransfers {
         IEnergyStorage energy = null;
         boolean checkedItems = false, checkedFluids = false, checkedEnergy = false;
         for (int slot = 0; slot < IdeaspaceConnectorBlockEntity.SLOTS; slot++) {
+            if ((dueSlots & (1 << slot)) == 0) continue;
+            if (!source.sideMode(slot, direction).output || !source.automatic(slot, direction)) continue;
             ConnectorResource resource = source.resource(slot);
             if (resource.amount(storage) <= 0) continue;
+            int amount = source.exportSettings(slot, ConnectorExportSettings.type(resource.kind())).amount();
             switch (resource.kind()) {
                 case ITEM -> {
                     if (!checkedItems) {
                         items = level.getCapability(Capabilities.ItemHandler.BLOCK, targetPos, face);
                         checkedItems = true;
                     }
-                    if (items != null) moved |= pushItem(storage, resource.item(), items, 64) > 0;
+                    if (items != null) moved |= pushItem(storage, resource.item(), items, amount) > 0;
                 }
                 case FLUID -> {
                     if (!checkedFluids) {
                         fluids = level.getCapability(Capabilities.FluidHandler.BLOCK, targetPos, face);
                         checkedFluids = true;
                     }
-                    if (fluids != null) moved |= pushFluid(storage, resource.fluid(), fluids, 1000) > 0;
+                    if (fluids != null) moved |= pushFluid(storage, resource.fluid(), fluids, amount) > 0;
                 }
                 case ENERGY -> {
                     if (!checkedEnergy) {
                         energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, targetPos, face);
                         checkedEnergy = true;
                     }
-                    if (energy != null) moved |= pushEnergy(storage, energy, 16000) > 0;
+                    if (energy != null) moved |= pushEnergy(storage, energy, amount) > 0;
                 }
                 case CHEMICAL -> {
                     if (MekanismCompat.isMekanismLoaded())
-                        moved |= ConnectorMekanism.push(storage, resource.chemical(), level, targetPos, face, 1000) > 0;
+                        moved |= ConnectorMekanism.push(storage, resource.chemical(), level, targetPos, face, amount) > 0;
                 }
                 default -> { }
             }

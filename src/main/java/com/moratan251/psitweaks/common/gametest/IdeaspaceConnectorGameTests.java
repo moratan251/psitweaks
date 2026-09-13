@@ -8,6 +8,7 @@ import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
 import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorState;
 import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
+import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaspaceConnector;
 import com.moratan251.psitweaks.common.storage.connector.*;
 import com.moratan251.psitweaks.common.storage.idea.*;
@@ -15,6 +16,7 @@ import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import io.netty.buffer.Unpooled;
 import java.nio.file.Files;
 import java.util.UUID;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,11 +55,270 @@ import vazkii.psi.api.spell.*;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class IdeaspaceConnectorGameTests {
+    private static ConnectorExportSettings[] defaultExportSettings() {
+        var values = new ConnectorExportSettings[ConnectorExportSettings.TYPES];
+        for (int type = 0; type < values.length; type++) values[type] = ConnectorExportSettings.defaults(type);
+        return values;
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void configuredExportAmountsRespectLimitsAndShortages(GameTestHelper helper) {
+        var source = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        var target = place(helper, new BlockPos(2, 1, 1), UUID.randomUUID());
+        var apple = ConnectorResource.item(ItemResourceKey.of(new ItemStack(Items.APPLE)).orElseThrow());
+        var water = ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.WATER, 1)).orElseThrow());
+        source.setResource(0, apple);
+        source.setResource(1, water);
+        source.setResource(2, ConnectorResource.ENERGY);
+        var settings = defaultExportSettings();
+        settings[0] = new ConnectorExportSettings(3, 10);
+        settings[1] = new ConnectorExportSettings(250, 15);
+        settings[2] = new ConnectorExportSettings(175, 20);
+        settings[3] = new ConnectorExportSettings(750, 25);
+        helper.assertTrue(source.setExportSettings(-1, settings), "Valid common rates rejected");
+        source.storage().insert(new ItemStack(Items.APPLE), 10);
+        source.storage().insertFluid(new FluidStack(Fluids.WATER, 1), 600);
+        source.storage().insertEnergy(800, false);
+        source.setAutomatic(Direction.EAST, true);
+        ConnectorTransfers.push(source, source.storage(), Direction.EAST);
+        helper.assertTrue(apple.amount(target.storage()) == 3 && water.amount(target.storage()) == 250 && target.storage().energy() == 750,
+                "Configured per-resource export amounts ignored");
+        ConnectorTransfers.push(source, source.storage(), Direction.EAST);
+        helper.assertTrue(apple.amount(source.storage()) == 4 && water.amount(source.storage()) == 100 && source.storage().energy() == 0
+                && target.storage().energy() == 800, "Configured transfer lost resources or mishandled shortage");
+        helper.assertTrue(source.handlers(Direction.EAST).items.extractItem(0, 64, true).getCount() == 4,
+                "Automatic rate incorrectly capped external extraction");
+        if (MekanismCompat.isMekanismLoaded()) ConnectorChemicalChecks.checkConfiguredAmounts(helper, source, target);
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void exportIntervalsAreIndependentAndCanBeShortened(GameTestHelper helper) {
+        var source = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        var target = place(helper, new BlockPos(2, 1, 1), UUID.randomUUID());
+        var apple = ConnectorResource.item(ItemResourceKey.of(new ItemStack(Items.APPLE)).orElseThrow());
+        source.setResource(0, apple);
+        source.setResource(1, ConnectorResource.ENERGY);
+        source.storage().insert(new ItemStack(Items.APPLE), 100);
+        source.storage().insertEnergy(1000, false);
+        var common = defaultExportSettings();
+        common[0] = new ConnectorExportSettings(2, 10);
+        common[3] = new ConnectorExportSettings(100, 20);
+        source.setExportSettings(-1, common);
+        source.setAutomatic(Direction.EAST, true);
+        helper.runAfterDelay(9, () -> helper.assertTrue(apple.amount(target.storage()) == 0 && target.storage().energy() == 0,
+                "Export happened before the configured deadline"));
+        helper.runAfterDelay(11, () -> helper.assertTrue(apple.amount(target.storage()) == 2 && target.storage().energy() == 0,
+                "Different resource intervals were not independent"));
+        helper.runAfterDelay(21, () -> {
+            helper.assertTrue(apple.amount(target.storage()) == 4 && target.storage().energy() == 100,
+                    "Configured frequency drifted or exported twice in one tick");
+            source.setUsesCommonSettings(0, false);
+            var individual = common.clone();
+            individual[0] = new ConnectorExportSettings(1, 1);
+            source.setExportSettings(0, individual);
+            helper.runAfterDelay(3, () -> {
+                helper.assertTrue(apple.amount(target.storage()) > 4 && target.storage().energy() == 100,
+                        "Shorter interval waited for the old deadline or changed another slot");
+                source.setAutomatic(0, Direction.EAST, false);
+                long count = apple.amount(target.storage());
+                helper.runAfterDelay(3, () -> {
+                    helper.assertTrue(apple.amount(target.storage()) == count, "Disabled slot kept exporting");
+                    helper.succeed();
+                });
+            });
+        });
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void exportSettingsPayloadIsAtomicAndAuthorized(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "export-settings"));
+        var source = place(helper, new BlockPos(1, 1, 1), player.getUUID());
+        player.setPos(Vec3.atCenterOf(source.getBlockPos()));
+        var menu = new IdeaspaceConnectorMenu(26, player.getInventory(), source);
+        var settings = defaultExportSettings();
+        settings[0] = new ConnectorExportSettings(7, 17);
+        settings[1] = new ConnectorExportSettings(Integer.MAX_VALUE, 1200);
+        var message = new MessageConnectorExportSettings(26, menu.session(), menu.revision(), -1, List.of(settings));
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), player.registryAccess());
+        try {
+            MessageConnectorExportSettings.STREAM_CODEC.encode(buffer, message);
+            menu.handleExportSettings(player, MessageConnectorExportSettings.STREAM_CODEC.decode(buffer));
+        } finally { buffer.release(); }
+        helper.assertTrue(source.exportSettings(0, 0).equals(settings[0]) && source.exportSettings(8, 1).equals(settings[1]),
+                "Payload did not preserve valid rates or maximum values");
+        source.setUsesCommonSettings(8, false);
+        menu.handleExportSettings(player, new MessageConnectorExportSettings(26, menu.session(), menu.revision(), 8,
+                List.of(defaultExportSettings())));
+        helper.assertTrue(source.exportSettings(8, 0).amount() == 64 && source.exportSettings(0, 0).amount() == 7,
+                "Individual rates affected common settings");
+        long version = source.settingsVersion(), storageVersion = source.storage().getVersion();
+        var outsider = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "rate-outsider"));
+        outsider.setPos(player.position());
+        var valid = new MessageConnectorExportSettings(26, menu.session(), menu.revision(), -1, List.of(settings));
+        menu.handleExportSettings(outsider, valid);
+        menu.handleExportSettings(player, new MessageConnectorExportSettings(26, UUID.randomUUID(), menu.revision(), -1, List.of(settings)));
+        menu.handleExportSettings(player, new MessageConnectorExportSettings(27, menu.session(), menu.revision(), -1, List.of(settings)));
+        menu.handleExportSettings(player, new MessageConnectorExportSettings(26, menu.session(), menu.revision() - 1, -1, List.of(settings)));
+        for (int slot : new int[] {-2, 0, 9})
+            menu.handleExportSettings(player, new MessageConnectorExportSettings(26, menu.session(), menu.revision(), slot, List.of(settings)));
+        for (var invalid : new ConnectorExportSettings[] {new ConnectorExportSettings(0, 5), new ConnectorExportSettings(-1, 5),
+                new ConnectorExportSettings(65, 5), new ConnectorExportSettings(1, 0), new ConnectorExportSettings(1, 1201)}) {
+            var bad = settings.clone();
+            bad[0] = invalid;
+            menu.handleExportSettings(player, new MessageConnectorExportSettings(26, menu.session(), menu.revision(), -1, List.of(bad)));
+        }
+        helper.assertTrue(version == source.settingsVersion() && storageVersion == source.storage().getVersion(),
+                "Invalid rates partially applied or mutated storage");
+        helper.getLevel().destroyBlock(source.getBlockPos(), false);
+        menu.handleExportSettings(player, valid);
+        helper.assertTrue(version == source.settingsVersion(), "Removed connector accepted rate settings");
+        helper.succeed();
+    }
+
     private static IdeaspaceConnectorBlockEntity place(GameTestHelper helper, BlockPos relative, UUID owner) {
         helper.setBlock(relative, PsitweaksBlocks.IDEASPACE_CONNECTOR.get());
         var connector = (IdeaspaceConnectorBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
         connector.initialize(owner, ItemStack.EMPTY);
         return connector;
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void individualFacesMatchResourcesAndPreserveInheritance(GameTestHelper helper) {
+        var connector = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        var storage = connector.storage();
+        var apple = ConnectorResource.item(ItemResourceKey.of(new ItemStack(Items.APPLE)).orElseThrow());
+        var carrot = ConnectorResource.item(ItemResourceKey.of(new ItemStack(Items.CARROT)).orElseThrow());
+        var water = ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.WATER, 1)).orElseThrow());
+        var lava = ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.LAVA, 1)).orElseThrow());
+        ConnectorResource[] resources = {apple, carrot, water, lava, ConnectorResource.ENERGY};
+        for (int slot = 0; slot < resources.length; slot++) connector.setResource(slot, resources[slot]);
+        storage.insert(new ItemStack(Items.APPLE), 12);
+        storage.insert(new ItemStack(Items.CARROT), 10);
+        storage.insertFluid(new FluidStack(Fluids.WATER, 1), 2000);
+        storage.insertFluid(new FluidStack(Fluids.LAVA, 1), 3000);
+        storage.insertEnergy(4000, false);
+        var items = connector.handlers(Direction.NORTH).items;
+        var fluids = connector.handlers(Direction.NORTH).fluids;
+        var energy = connector.handlers(Direction.NORTH).energy;
+        long version = storage.getVersion();
+        for (int slot : new int[] {0, 2, 4}) {
+            connector.setUsesCommonSettings(slot, false);
+            connector.setSideMode(slot, Direction.NORTH, ConnectorSideMode.OUTPUT);
+        }
+        connector.setSideMode(Direction.NORTH, ConnectorSideMode.INPUT);
+        for (int slot = 0; slot < 9; slot++) {
+            helper.assertTrue(!items.isItemValid(slot, new ItemStack(Items.APPLE))
+                    && items.insertItem(slot, new ItemStack(Items.APPLE), false).getCount() == 1,
+                    "Item input bypassed its resource settings through slot " + slot);
+            helper.assertTrue(!fluids.isFluidValid(slot, new FluidStack(Fluids.WATER, 1)), "Water input bypassed its resource settings");
+        }
+        helper.assertTrue(items.getStackInSlot(0).getCount() == 12 && items.getStackInSlot(1).isEmpty()
+                && fluids.getFluidInTank(2).getAmount() == 2000 && fluids.getFluidInTank(3).isEmpty()
+                && energy.canExtract() && !energy.canReceive(), "Individual output did not override common input mode");
+        helper.assertTrue(fluids.fill(new FluidStack(Fluids.WATER, 100), FluidAction.EXECUTE) == 0
+                && energy.receiveEnergy(100, false) == 0, "Registered resource accepted disallowed input");
+        ItemStack variant = new ItemStack(Items.APPLE);
+        variant.set(DataComponents.CUSTOM_NAME, Component.literal("Unpublished variant"));
+        helper.assertTrue(items.insertItem(8, variant, true).isEmpty()
+                && items.insertItem(8, new ItemStack(Items.CARROT), true).isEmpty()
+                && fluids.fill(new FluidStack(Fluids.LAVA, 100), FluidAction.SIMULATE) == 100
+                && storage.getVersion() == version, "Inheritance, component identity, or simulation mutated resources");
+        helper.assertTrue(items.extractItem(0, 1, false).getCount() == 1
+                && fluids.drain(new FluidStack(Fluids.WATER, 100), FluidAction.EXECUTE).getAmount() == 100
+                && energy.extractEnergy(200, false) == 200
+                && apple.amount(storage) == 11 && water.amount(storage) == 1900 && storage.energy() == 3800,
+                "Individual output did not preserve balances");
+        connector.setSideMode(Direction.NORTH, ConnectorSideMode.DISABLED);
+        helper.assertTrue(!items.getStackInSlot(0).isEmpty() && !fluids.getFluidInTank(2).isEmpty() && energy.canExtract()
+                && !items.insertItem(8, variant, true).isEmpty(), "Common changes leaked into overrides or unregistered input");
+        connector.setUsesCommonSettings(0, true);
+        helper.assertTrue(items.getStackInSlot(0).isEmpty(), "Returning to common settings did not update cached handler");
+        connector.setSideMode(Direction.NORTH, ConnectorSideMode.BOTH);
+        helper.assertTrue(items.getStackInSlot(0).getCount() == 11 && items.insertItem(8, new ItemStack(Items.APPLE), true).isEmpty()
+                && !energy.canReceive(), "Inherited slot did not follow common settings, or affected another slot");
+        if (MekanismCompat.isMekanismLoaded()) ConnectorChemicalChecks.checkIndividualFaces(helper, connector);
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void individualAutomaticOutputRoutesEachResource(GameTestHelper helper) {
+        var connector = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        var east = place(helper, new BlockPos(2, 1, 1), UUID.randomUUID());
+        var north = place(helper, new BlockPos(1, 1, 0), UUID.randomUUID());
+        var apple = ConnectorResource.item(ItemResourceKey.of(new ItemStack(Items.APPLE)).orElseThrow());
+        var water = ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.WATER, 1)).orElseThrow());
+        connector.setResource(0, apple);
+        connector.setResource(1, water);
+        connector.setResource(2, ConnectorResource.ENERGY);
+        connector.storage().insert(new ItemStack(Items.APPLE), 90);
+        connector.storage().insertFluid(new FluidStack(Fluids.WATER, 1), 1500);
+        connector.storage().insertEnergy(5000, false);
+        for (Direction side : Direction.values()) connector.setSideMode(side, ConnectorSideMode.DISABLED);
+        for (int slot = 0; slot < 3; slot++) connector.setUsesCommonSettings(slot, false);
+        connector.setSideMode(0, Direction.EAST, ConnectorSideMode.OUTPUT);
+        connector.setAutomatic(0, Direction.EAST, true);
+        connector.setSideMode(1, Direction.NORTH, ConnectorSideMode.OUTPUT);
+        connector.setAutomatic(1, Direction.NORTH, true);
+        connector.setSideMode(2, Direction.EAST, ConnectorSideMode.OUTPUT);
+        helper.assertTrue(connector.handlers(Direction.EAST).energy.extractEnergy(5000, true) == 5000,
+                "Disabling automatic output also disabled passive extraction");
+        for (Direction side : Direction.values()) ConnectorTransfers.push(connector, connector.storage(), side);
+        helper.assertTrue(apple.amount(east.storage()) == 64 && water.amount(east.storage()) == 0 && east.storage().energy() == 0
+                && apple.amount(north.storage()) == 0 && water.amount(north.storage()) == 1000 && north.storage().energy() == 0
+                && apple.amount(connector.storage()) == 26 && water.amount(connector.storage()) == 500,
+                "Automatic resources went to the wrong face or ignored per-slot toggles");
+        connector.setAutomatic(0, Direction.EAST, false);
+        connector.setSideMode(1, Direction.NORTH, ConnectorSideMode.INPUT);
+        connector.setAutomatic(2, Direction.EAST, true);
+        for (Direction side : Direction.values()) ConnectorTransfers.push(connector, connector.storage(), side);
+        helper.assertTrue(apple.amount(east.storage()) == 64 && water.amount(north.storage()) == 1000
+                && east.storage().energy() == 5000 && connector.storage().energy() == 0,
+                "Automatic output ignored changed slot mode/toggle or lost FE");
+        if (MekanismCompat.isMekanismLoaded()) ConnectorChemicalChecks.checkIndividualAutomatic(helper, connector, east, north);
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
+    public static void individualSettingsActionsValidateTargetAndSession(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "slot-settings"));
+        var connector = place(helper, new BlockPos(1, 1, 1), player.getUUID());
+        player.setPos(Vec3.atCenterOf(connector.getBlockPos()));
+        var menu = new IdeaspaceConnectorMenu(25, player.getInventory(), connector);
+        menu.setCarried(new ItemStack(Items.DIAMOND, 3));
+        long stockVersion = connector.storage().getVersion();
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_COMMON, 8, 1));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_SIDE, 8, Direction.EAST.ordinal()));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_AUTO, 8, Direction.WEST.ordinal()));
+        helper.assertTrue(!connector.usesCommonSettings(8) && connector.sideMode(8, Direction.EAST) == ConnectorSideMode.INPUT
+                && connector.automatic(8, Direction.WEST) && connector.sideMode(Direction.EAST) == ConnectorSideMode.BOTH
+                && connector.usesCommonSettings(0), "Individual actions changed the wrong slot or common settings");
+        long settingsVersion = connector.settingsVersion();
+        var outsider = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "slot-outsider"));
+        outsider.setPos(player.position());
+        var valid = new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_SIDE, 8, 0);
+        menu.handleAction(outsider, valid);
+        menu.handleAction(player, new MessageConnectorAction(25, UUID.randomUUID(), menu.revision(), IdeaspaceConnectorMenu.SLOT_COMMON, 8, 0));
+        menu.handleAction(player, new MessageConnectorAction(26, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_COMMON, 8, 0));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision() - 1, IdeaspaceConnectorMenu.SLOT_COMMON, 8, 0));
+        for (int action : new int[] {IdeaspaceConnectorMenu.SLOT_SIDE, IdeaspaceConnectorMenu.SLOT_AUTO, IdeaspaceConnectorMenu.SLOT_COMMON})
+            for (int slot : new int[] {-1, 9})
+                menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), action, slot, 0));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_SIDE, 8, 6));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_AUTO, 8, -1));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_COMMON, 8, 2));
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_SIDE, 0, 0));
+        helper.assertTrue(connector.settingsVersion() == settingsVersion && connector.storage().getVersion() == stockVersion
+                && menu.getCarried().is(Items.DIAMOND) && menu.getCarried().getCount() == 3, "Invalid action mutated settings or resources");
+        connector.setSideMode(Direction.EAST, ConnectorSideMode.OUTPUT);
+        menu.handleAction(player, new MessageConnectorAction(25, menu.session(), menu.revision(), IdeaspaceConnectorMenu.SLOT_COMMON, 8, 0));
+        helper.assertTrue(connector.usesCommonSettings(8) && connector.sideMode(8, Direction.EAST) == ConnectorSideMode.OUTPUT,
+                "Common toggle did not use current common settings");
+        helper.getLevel().destroyBlock(connector.getBlockPos(), false);
+        settingsVersion = connector.settingsVersion();
+        menu.handleAction(player, valid);
+        helper.assertTrue(connector.settingsVersion() == settingsVersion, "Removed connector accepted individual configuration");
+        helper.succeed();
     }
 
     @GameTest(template = "connector_empty")
@@ -155,6 +416,18 @@ public final class IdeaspaceConnectorGameTests {
         connector.setResource(2, ConnectorResource.fluid(FluidResourceKey.of(new FluidStack(Fluids.LAVA, 1)).orElseThrow()));
         connector.setSideMode(Direction.WEST, ConnectorSideMode.OUTPUT);
         connector.setAutomatic(Direction.WEST, true);
+        connector.setUsesCommonSettings(0, false);
+        connector.setSideMode(0, Direction.WEST, ConnectorSideMode.INPUT);
+        connector.setAutomatic(0, Direction.WEST, false);
+        connector.setSideMode(0, Direction.EAST, ConnectorSideMode.OUTPUT);
+        connector.setAutomatic(0, Direction.EAST, true);
+        var commonRates = defaultExportSettings();
+        commonRates[0] = new ConnectorExportSettings(7, 13);
+        commonRates[3] = new ConnectorExportSettings(900, 37);
+        connector.setExportSettings(-1, commonRates);
+        var slotRates = defaultExportSettings();
+        slotRates[3] = new ConnectorExportSettings(123, 17);
+        connector.setExportSettings(0, slotRates);
         long stored = connector.storage().insertEnergy(5_000_000_123L, false);
         var tag = connector.saveWithFullMetadata(helper.getLevel().registryAccess());
         helper.assertTrue(!tag.contains("Energy") && !tag.contains("Items"), "Connector persisted a second inventory");
@@ -171,6 +444,12 @@ public final class IdeaspaceConnectorGameTests {
                     && restored.resource(1).equals(connector.resource(1)) && restored.resource(2).equals(connector.resource(2))
                     && restored.sideMode(Direction.WEST) == ConnectorSideMode.OUTPUT && restored.automatic(Direction.WEST),
                     "Disk round-trip lost owner/publication/sides/automatic settings");
+            helper.assertTrue(!restored.usesCommonSettings(0) && restored.usesCommonSettings(1)
+                    && restored.sideMode(0, Direction.WEST) == ConnectorSideMode.INPUT && !restored.automatic(0, Direction.WEST)
+                    && restored.sideMode(0, Direction.EAST) == ConnectorSideMode.OUTPUT && restored.automatic(0, Direction.EAST),
+                    "Disk round-trip lost individual modes/automatic/inheritance");
+            helper.assertTrue(restored.exportSettings(0, 3).equals(slotRates[3]) && restored.exportSettings(1, 0).equals(commonRates[0])
+                    && tag.getIntArray("ExportCooldowns")[0] == 17, "Disk round-trip lost export quantity, interval, or cooldown");
             helper.assertTrue(restored.storage().energy() == stored, "Reload changed owner balance");
             CompoundTag data = restored.resource(0).save(helper.getLevel().registryAccess());
             data.putLong("Amount", stored);
@@ -182,6 +461,26 @@ public final class IdeaspaceConnectorGameTests {
                 helper.assertTrue(decoded.data().getLong("Amount") == stored && decoded.session().equals(state.session()),
                         "Network truncated balance/session");
             } finally { buf.release(); }
+            CompoundTag settings = new CompoundTag();
+            restored.writeConnectionSettings(settings);
+            var settingsBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
+            try {
+                MessageConnectorState.STREAM_CODEC.encode(settingsBuffer, new MessageConnectorState(22, UUID.randomUUID(), 5, settings));
+                helper.assertTrue(MessageConnectorState.STREAM_CODEC.decode(settingsBuffer).data().equals(settings),
+                        "Network lost per-slot connection settings");
+            } finally { settingsBuffer.release(); }
+            // Exercise the previous save format on the same instance, clearing any in-memory overrides.
+            tag.remove("SlotOverrides");
+            tag.remove("SlotSides");
+            tag.remove("SlotAutomatic");
+            for (String key : new String[] {"ExportAmounts", "ExportIntervals", "SlotExportAmounts", "SlotExportIntervals", "ExportCooldowns"}) tag.remove(key);
+            restored.loadWithComponents(tag, helper.getLevel().registryAccess());
+            for (int slot = 0; slot < IdeaspaceConnectorBlockEntity.SLOTS; slot++)
+                helper.assertTrue(restored.usesCommonSettings(slot) && restored.sideMode(slot, Direction.WEST) == ConnectorSideMode.OUTPUT
+                        && restored.automatic(slot, Direction.WEST), "Legacy save did not preserve common behavior");
+            for (int type = 0; type < ConnectorExportSettings.TYPES; type++)
+                helper.assertTrue(restored.exportSettings(0, type).equals(ConnectorExportSettings.defaults(type)),
+                        "Legacy save did not restore the old default export rates");
         } finally { Files.deleteIfExists(file); }
         helper.succeed();
     }
@@ -309,12 +608,26 @@ public final class IdeaspaceConnectorGameTests {
             amounts.add(entry);
         }
         delta.put("Selected", amounts);
+        var connector = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        connector.setUsesCommonSettings(7, false);
+        connector.setSideMode(7, Direction.SOUTH, ConnectorSideMode.INPUT);
+        connector.writeConnectionSettings(delta);
+        var rates = defaultExportSettings();
+        rates[0] = new ConnectorExportSettings(9, 29);
+        connector.setExportSettings(7, rates);
+        connector.writeConnectionSettings(delta);
         CompoundTag result = IdeaspaceConnectorMenu.mergeAmounts(full, delta);
         var merged = result.getList("Selected", net.minecraft.nbt.Tag.TAG_COMPOUND);
         helper.assertTrue(merged.getCompound(8).getString("Identity").equals("resource-8")
                 && merged.getCompound(8).getLong("Amount") == 5_000_000_131L
                 && merged.getCompound(8).getByteArray("Components").length == 300_000,
                 "Amount update corrupted identities, components, or long quantities");
+        helper.assertTrue(result.getInt("SlotOverrides") == 1 << 7
+                && result.getIntArray("SlotSides")[7 * 6 + Direction.SOUTH.ordinal()] == ConnectorSideMode.INPUT.ordinal(),
+                "Amount update lost individual connection settings");
+        helper.assertTrue(result.getIntArray("SlotExportAmounts")[7 * ConnectorExportSettings.TYPES] == 9
+                && result.getIntArray("SlotExportIntervals")[7 * ConnectorExportSettings.TYPES] == 29,
+                "Amount update lost automatic export settings");
         delta.put("Selected", new ListTag());
         helper.assertTrue(IdeaspaceConnectorMenu.mergeAmounts(full, delta) == null, "Mismatched pages must not be merged");
         helper.succeed();

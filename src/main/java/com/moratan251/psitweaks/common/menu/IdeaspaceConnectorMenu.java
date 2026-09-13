@@ -5,6 +5,8 @@ import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
 import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorState;
 import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
+import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
@@ -29,6 +31,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /** Player inventory plus ghost filters; published resources remain exclusively in owner storage. */
 public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     public static final int ASSIGN = 0, CLEAR = 1, SIDE = 2, AUTO = 3, ENERGY = 4;
+    public static final int SLOT_SIDE = 5, SLOT_AUTO = 6, SLOT_COMMON = 7;
     public static final int INVENTORY_X = 8, INVENTORY_Y = 106, HOTBAR_Y = 164;
     private final Player player;
     private final IdeaspaceConnectorBlockEntity connector;
@@ -154,6 +157,19 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
                 connector.setAutomatic(side, !connector.automatic(side));
             }
             case ENERGY -> connector.setResource(action.slot(), ConnectorResource.ENERGY);
+            case SLOT_SIDE, SLOT_AUTO, SLOT_COMMON -> {
+                int slot = action.slot();
+                if (slot < 0 || slot >= IdeaspaceConnectorBlockEntity.SLOTS || action.revision() != revision) return;
+                if (action.action() == SLOT_COMMON) {
+                    if (argument != 0 && argument != 1) return;
+                    connector.setUsesCommonSettings(slot, argument == 0);
+                } else {
+                    if (argument < 0 || argument >= 6 || connector.usesCommonSettings(slot)) return;
+                    Direction side = Direction.values()[argument];
+                    if (action.action() == SLOT_SIDE) connector.setSideMode(slot, side, connector.sideMode(slot, side).next());
+                    else connector.setAutomatic(slot, side, !connector.automatic(slot, side));
+                }
+            }
             default -> { return; }
         }
         syncedSettings = -1;
@@ -162,6 +178,13 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
 
     private boolean authorized(Player sender, UUID session) {
         return sender == player && connector != null && stillValid(sender) && this.session.equals(session);
+    }
+
+    public void handleExportSettings(Player sender, MessageConnectorExportSettings message) {
+        if (message.containerId() != containerId || !authorized(sender, message.session()) || message.revision() != revision) return;
+        if (!connector.setExportSettings(message.slot(), message.settings().toArray(ConnectorExportSettings[]::new))) return;
+        syncedSettings = -1;
+        broadcastChanges();
     }
 
     public void handleTemplate(Player sender, MessageConnectorTemplate message) {
@@ -194,14 +217,7 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
         for (int i = 0; i < IdeaspaceConnectorBlockEntity.SLOTS; i++) selected.add(entry(connector.resource(i), storage, full));
         data.put("Selected", selected);
         data.putBoolean("LoadFailed", storage.isLoadFailed());
-        int[] sides = new int[6];
-        int automatic = 0;
-        for (Direction direction : Direction.values()) {
-            sides[direction.ordinal()] = connector.sideMode(direction).ordinal();
-            if (connector.automatic(direction)) automatic |= 1 << direction.ordinal();
-        }
-        data.putIntArray("Sides", sides);
-        data.putInt("Automatic", automatic);
+        connector.writeConnectionSettings(data);
         PacketDistributor.sendToPlayer(serverPlayer, new MessageConnectorState(containerId, session, revision, data));
         syncedStorage = storage.getVersion();
         syncedSettings = connector.settingsVersion();
