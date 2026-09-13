@@ -350,6 +350,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_VIEW =
             registerPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEASPACE_CONNECTOR =
+            registerPiece("trick_ideaspace_connector", com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaspaceConnector.class);
 
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class);

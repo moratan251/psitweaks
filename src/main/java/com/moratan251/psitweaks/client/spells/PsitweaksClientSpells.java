@@ -119,6 +119,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_idea_storage_energy");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_VIEW =
             registerPieceMaterial("trick_idea_storage_view");
+    public static final DeferredHolder<Material, Material> TRICK_IDEASPACE_CONNECTOR =
+            registerPieceMaterial("trick_ideaspace_connector");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPieceMaterial("trick_idea_storage_absorb_fe");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_SUPPLY_FE =

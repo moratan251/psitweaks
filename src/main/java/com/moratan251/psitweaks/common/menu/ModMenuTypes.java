@@ -23,6 +23,9 @@ public final class ModMenuTypes {
     private ModMenuTypes() {
     }
 
+    public static final DeferredHolder<MenuType<?>, MenuType<IdeaspaceConnectorMenu>> IDEASPACE_CONNECTOR =
+            MENUS.register("ideaspace_connector", () -> IMenuTypeExtension.create(IdeaspaceConnectorMenu::fromNetwork));
+
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);
     }

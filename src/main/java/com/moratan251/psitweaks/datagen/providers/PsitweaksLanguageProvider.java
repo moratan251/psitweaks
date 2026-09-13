@@ -30,6 +30,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         JsonObject root = new JsonObject();
 
         addConfigTranslations(root);
+        addConnectorTranslations(root);
         root.addProperty("creativetabs.psitweaks", "Psi: Tweaks and Additions");
         addMysticalAgricultureTranslations(root);
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
@@ -1885,5 +1886,44 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります.";
             default -> "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast.";
         });
+    }
+
+    private void addConnectorTranslations(JsonObject root) {
+        boolean japanese = "ja_jp".equals(locale);
+        root.addProperty("block.psitweaks.ideaspace_connector", japanese ? "イデアコネクター" : "Ideaspace Connector");
+        String[][] labels = {
+                {"published", "公開する資源（9枠）", "Published resources (9 slots)"},
+                {"available", "イデアストレージ内の資源", "Resources in your storage"},
+                {"faces", "面ごとの入出力・自動搬出", "Connections / auto output"},
+                {"mode.both", "入出力", "Input/Output"},
+                {"mode.input", "搬入のみ", "Input only"},
+                {"mode.output", "搬出のみ", "Output only"},
+                {"mode.disabled", "無効", "Disabled"},
+                {"auto_on", "自動: 有効", "Auto: ON"},
+                {"auto_off", "自動: 無効", "Auto: OFF"},
+                {"face.down", "下", "Down"}, {"face.up", "上", "Up"},
+                {"face.north", "北", "North"}, {"face.south", "南", "South"},
+                {"face.west", "西", "West"}, {"face.east", "東", "East"},
+                {"page", "%s / %s", "%s / %s"},
+                {"help", "上の公開枠を選び、下の資源をクリックして設定。右クリックで解除。設定で資源は消費しません。",
+                        "Select a top slot, then a resource below. Right-click a top slot to clear it. Configuration consumes no resources."},
+                {"amount", "イデアストレージ内: %s", "In Ideaspace Storage: %s"},
+                {"select_hint", "クリックで選択中の公開枠に設定", "Click to assign to the selected slot"},
+                {"clear_hint", "左クリックで枠を選択 / 右クリックで解除", "Left-click to select / Right-click to clear"},
+                {"load_failed", "ストレージを読み込めません。", "Storage could not be loaded."}
+        };
+        for (String[] label : labels) root.addProperty("gui.psitweaks.connector." + label[0], label[japanese ? 1 : 2]);
+        addSpellPiece(root, "trick_ideaspace_connector", "Trick: Ideaspace Connector",
+                "Places an Ideaspace Connector linked to your Ideaspace Storage at the specified position.",
+                "作動式: イデアコネクター", "指定位置に、自分のイデアストレージへ接続するイデアコネクターを設置します。");
+        addBookPage(root, "trick_ideaspace_connector.0",
+                "Places an Ideaspace Connector at the input position (Vector). Potency: 100. Complexity: 1. Psi cost: 500. Unlocked with Program: Ideaspace Storage. Its appearance uses only conjured-block particles in the CAD color. It does not expire; breaking it drops no block item and leaves your stored resources intact.",
+                "位置(Vector)の座標にイデアコネクターを設置します。規模100、複雑性1、コスト500です。プログラム: イデアストレージで解禁されます。外観はCADの色を使った魔法ブロックのパーティクルのみです。時間経過では消えず、破壊時にブロックアイテムは落ちません。ストレージの中身は保持されます。");
+        addBookPage(root, "trick_ideaspace_connector.1",
+                "Incoming items, fluids, chemicals and FE enter the owner's Ideaspace Storage directly. Right-click to configure up to nine published resources. External devices can extract only these resources. Configuration consumes nothing; the connector holds no inventory. Only the owner can configure it, and it works while the owner is offline if its chunk is loaded. Chemicals require Mekanism.",
+                "搬入されたアイテム・液体・化学物質・FEは、設置者のイデアストレージに直接収納されます。右クリックの設定画面で最大9種類を公開し、外部機器から搬出できます。設定に資源は消費せず、ブロック内に在庫は持ちません。設定変更は設置者のみ可能です。チャンクが読み込まれていれば設置者がオフラインでも利用できます。化学物質にはMekanismが必要です。");
+        addBookPage(root, "trick_ideaspace_connector.2",
+                "All six faces initially allow input and output. Each face can be set to input/output, input only, output only, or disabled. Automatic output is initially off and can be enabled per output face. Every 5 ticks it sends up to one stack, 1,000 mB or 16,000 FE per published resource and face, waiting 20 ticks when nothing moves. Transfers are limited to available stock and destination capacity.",
+                "初期状態では全6面から搬入・搬出できます。各面を入出力・搬入のみ・搬出のみ・無効に設定できます。自動搬出は初期状態では無効で、搬出可能な面ごとに有効化できます。5tickごとに公開資源・面ごとで最大1スタック、1,000mBまたは16,000FEを送り、移動できない場合は20tick待機します。在庫や移動先の空きに応じ、移動できる分だけ搬出します。");
     }
 }

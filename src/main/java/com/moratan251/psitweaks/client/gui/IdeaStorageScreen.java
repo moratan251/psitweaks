@@ -321,7 +321,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         }
     }
 
-    private static void renderEntry(GuiGraphics guiGraphics, IdeaStorageDisplayEntry entry, int x, int y) {
+    public static void renderEntry(GuiGraphics guiGraphics, IdeaStorageDisplayEntry entry, int x, int y) {
         switch (entry.kind()) {
             case ITEM -> guiGraphics.renderItem(entry.itemTemplate(), x, y);
             case FLUID -> renderFluid(guiGraphics, entry.fluidTemplate(), x, y);

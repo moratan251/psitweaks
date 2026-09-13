@@ -1,0 +1,10 @@
+{
+  "name": "psitweaks.spellpiece.trick_ideaspace_connector",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_ideaspace_connector.png",
+  "pages": [
+    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.0" },
+    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.1" },
+    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.2" }
+  ]
+}

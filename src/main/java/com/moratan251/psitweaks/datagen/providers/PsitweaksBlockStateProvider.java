@@ -28,6 +28,11 @@ public class PsitweaksBlockStateProvider implements DataProvider {
 
         addConjuredPulsarAssets(output, futures, "conjuredpulsar");
         addConjuredPulsarAssets(output, futures, "conjuredpulsarlight");
+        ResourceLocation connector = Psitweaks.location("ideaspace_connector");
+        futures.add(DataProvider.saveStable(output, simpleBlockState(Psitweaks.location("block/ideaspace_connector")),
+                blockStatePathProvider.json(connector)));
+        // Empty geometry, no textures. The block renders only Psi particles.
+        futures.add(DataProvider.saveStable(output, new JsonObject(), blockModelPathProvider.json(connector)));
 
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             if ("transcendent_universal_cable".equals(block.id())) {

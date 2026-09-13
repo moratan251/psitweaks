@@ -83,6 +83,8 @@ public final class SpellUnlockHandler {
                     Psitweaks.MOD_ID + ".unlock.idea_storage"),
             definition("idea_storage_energy", "selector_idea_storage_energy", "program_idea_storage",
                     Psitweaks.MOD_ID + ".unlock.idea_storage"),
+            definition("ideaspace_connector", "trick_ideaspace_connector", "program_idea_storage",
+                    Psitweaks.MOD_ID + ".unlock.idea_storage"),
             definition("idea_storage", "trick_idea_storage_view", "program_idea_storage",
                     Psitweaks.MOD_ID + ".unlock.idea_storage")
     );

@@ -119,6 +119,21 @@ public final class PlayerIdeaStorage {
         return IdeaStorageWithdrawal.take(items, key, simulateExtract(key, amount), this::markChanged);
     }
 
+    public IdeaStorageWithdrawal<FluidResourceKey> withdrawFluid(FluidResourceKey key, long amount) {
+        return IdeaStorageWithdrawal.take(fluids, key, simulateExtractFluid(key, amount), this::markChanged);
+    }
+
+    public IdeaStorageWithdrawal<ResourceLocation> withdrawChemical(ResourceLocation key, long amount) {
+        return IdeaStorageWithdrawal.take(chemicals, key, simulateExtractChemical(key, amount), this::markChanged);
+    }
+
+    public IdeaStorageWithdrawal<Void> withdrawEnergy(long amount) {
+        return new IdeaStorageWithdrawal<>(extractEnergy(amount, false), restored -> {
+            energy = Math.addExact(energy, restored);
+            markChanged();
+        });
+    }
+
     public long simulateInsertFluid(FluidStack template, long amount) {
         if (loadFailed || amount <= 0 || template == null || template.isEmpty()) {
             return 0;

@@ -17,6 +17,9 @@ public final class PsitweaksBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Psitweaks.MOD_ID);
     public static final DeferredRegister.Items BLOCK_ITEMS = DeferredRegister.createItems(Psitweaks.MOD_ID);
 
+    public static final DeferredBlock<IdeaspaceConnectorBlock> IDEASPACE_CONNECTOR = BLOCKS.register(
+            "ideaspace_connector", () -> new IdeaspaceConnectorBlock(conjuredPulsarProperties()));
+
     public static final DeferredBlock<ConjuredPulsarBlock> CONJURED_PULSAR = BLOCKS.register(
             "conjuredpulsar",
             () -> new ConjuredPulsarBlock(conjuredPulsarProperties(), true, false)
