@@ -538,6 +538,15 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'A', ingredientItem(ModItems.cadAssemblerItem.get())
                 ),
                 PsitweaksItems.PORTABLE_CAD_ASSEMBLER, 1));
+        recipe(recipes, "portable_spell_programmer", shaped(
+                List.of("CGC", "EPE", "CGC"),
+                Map.of(
+                        'C', ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL),
+                        'G', ingredientItem(ModItems.psigem.get()),
+                        'E', ingredientItem(Items.ENDER_PEARL),
+                        'P', ingredientItem(ModItems.programmerItem.get())
+                ),
+                PsitweaksItems.PORTABLE_SPELL_PROGRAMMER, 1));
         recipe(recipes, "spell_magazine", shaped("tools",
                 List.of("PBH"),
                 Map.of(

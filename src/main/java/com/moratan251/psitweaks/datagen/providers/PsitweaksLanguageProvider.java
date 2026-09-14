@@ -1774,6 +1774,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "手持ちで使えるCAD組立機です. ブロックを設置せずに組立機画面を開けるため, 拠点外でも簡単にCAD部品や装填済み術式弾を調整できます.";
             default -> "A handheld CAD Assembler. Use it to open an assembler interface without placing the block, making it easy to adjust CAD parts or loaded spell bullets while away from base.";
         });
+        root.addProperty("psi.book.page.psitweaks_item.portable_spell_programmer.0", switch (locale) {
+            case "ja_jp" -> "手持ちで使える魔法構築機です。右クリックすると、魔法構築機と同じスペルプログラム画面を開くことができます。";
+            default -> "A handheld Spell Programmer. Right-click to open the same spell programming screen as the Spell Programmer.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.portable_spell_programmer.1", switch (locale) {
+            case "ja_jp" -> "メインハンドに携帯型魔法構築機を、オフハンドに術式弾やCADを持ち、スニーク右クリックすると、編集中の魔法を登録します。CADなどでは、現在選択している術式弾に登録されます。";
+            default -> "Hold the Portable Spell Programmer in your main hand and a spell bullet or CAD in your offhand, then sneak-right-click to register the spell you are editing. For a CAD or another socketable device, this writes to its currently selected spell bullet.";
+        });
         root.addProperty("psi.book.page.psitweaks_item.auto_casters.0", switch (locale) {
             case "ja_jp" -> "術式自動詠唱デバイスは, Curiosスロットに装備可能であり, 自動で術式を詠唱する装備です.$(p)キュリオスコントローラを用いることで, サイメタル外装と同じ要領で術式弾を変更できます.";
             default -> "Auto Casters can be equipped in Curios slots and automatically cast spells.$(p)With the Curios Controller, you can change their spell bullets in the same way as psimetal exosuit armor.";

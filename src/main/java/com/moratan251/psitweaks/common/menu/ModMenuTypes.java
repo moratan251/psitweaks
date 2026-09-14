@@ -16,6 +16,10 @@ public final class ModMenuTypes {
             MENUS.register("portable_cad_assembler",
                     () -> IMenuTypeExtension.create(PortableCADAssemblerMenu::fromNetwork));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<PortableSpellProgrammerMenu>> PORTABLE_SPELL_PROGRAMMER =
+            MENUS.register("portable_spell_programmer",
+                    () -> IMenuTypeExtension.create(PortableSpellProgrammerMenu::fromNetwork));
+
     public static final DeferredHolder<MenuType<?>, MenuType<IdeaStorageMenu>> IDEA_STORAGE =
             MENUS.register("idea_storage",
                     () -> IMenuTypeExtension.create(IdeaStorageMenu::fromNetwork));

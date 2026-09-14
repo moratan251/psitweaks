@@ -298,6 +298,7 @@ public class Psitweaks {
 
         public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
+            event.register(ModMenuTypes.PORTABLE_SPELL_PROGRAMMER.get(), com.moratan251.psitweaks.client.gui.machine.GuiPortableSpellProgrammer::new);
             event.register(ModMenuTypes.IDEA_STORAGE.get(), IdeaStorageScreen::new);
             event.register(ModMenuTypes.IDEASPACE_CONNECTOR.get(), com.moratan251.psitweaks.client.gui.IdeaspaceConnectorScreen::new);
         }

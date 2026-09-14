@@ -88,6 +88,7 @@ final class PsitweaksDatagenItems {
             item("philosophers_stone", "Philosopher's Stone", "賢者の石"),
             item("spell_magazine", "Spell Magazine", "スペルマガジン", "spell_magazine_huge"),
             item("portable_cad_assembler", "Portable CAD Assembler", "携帯型CAD組立機"),
+            item("portable_spell_programmer", "Portable Spell Programmer", "携帯型魔法構築機"),
             item("psimetal_bow", "Psimetal Bow", "サイメタルの弓"),
             item("gravstringer", "Gravstringer", "グラヴストリンガー"),
             item("curios_controller", "Curios Controller", "キュリオスコントローラ"),

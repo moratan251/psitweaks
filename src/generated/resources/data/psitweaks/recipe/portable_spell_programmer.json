@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "G": {
+      "item": "psi:psigem"
+    },
+    "P": {
+      "item": "psi:programmer"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "EPE",
+    "CGC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:portable_spell_programmer"
+  }
+}

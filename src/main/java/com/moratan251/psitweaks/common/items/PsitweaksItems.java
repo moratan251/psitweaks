@@ -338,6 +338,11 @@ public final class PsitweaksItems {
             "spell_magazine",
             () -> new ItemSpellMagazine(new Item.Properties().rarity(Rarity.RARE))
     );
+    public static final DeferredItem<ItemPortableSpellProgrammer> PORTABLE_SPELL_PROGRAMMER = ITEMS.register(
+            "portable_spell_programmer",
+            () -> new ItemPortableSpellProgrammer(new Item.Properties().rarity(Rarity.RARE))
+    );
+
     public static final DeferredItem<ItemPortableCADAssembler> PORTABLE_CAD_ASSEMBLER = ITEMS.register(
             "portable_cad_assembler",
             () -> new ItemPortableCADAssembler(new Item.Properties().rarity(Rarity.RARE))

@@ -86,6 +86,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.PHILOSOPHERS_STONE.get());
                         output.accept(PsitweaksItems.SPELL_MAGAZINE.get());
                         output.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
+                        output.accept(PsitweaksItems.PORTABLE_SPELL_PROGRAMMER.get());
                         output.accept(PsitweaksItems.PSIMETAL_BOW.get());
                         output.accept(PsitweaksItems.GRAVSTRINGER.get());
                         output.accept(PsitweaksItems.CURIOS_CONTROLLER.get());
