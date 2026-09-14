@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client.gui;
 
 import com.mojang.blaze3d.platform.Window;
 import com.moratan251.psitweaks.common.network.MessageIdeaStorageSync;
+import com.moratan251.psitweaks.common.menu.IdeaStorageMenu;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -9,7 +10,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * イデアストレージ同期 payload のクライアント側処理。
  * common 側の payload ハンドラから委譲され、dedicated server ではロードされない。
- * スナップショットは開いている Screen インスタンス内にのみ保持し、static キャッシュを持たない。
+ * スナップショットは現在のMenuインスタンス内にのみ保持し、staticキャッシュを持たない。
  */
 public final class IdeaStorageClientHandler {
     /** リサイズ時の Menu 再生成をまたいで検索文字列を維持するための一時保持(String のみ、Level/Player 参照は持たない)。 */
@@ -27,8 +28,9 @@ public final class IdeaStorageClientHandler {
     }
 
     public static void handleSync(MessageIdeaStorageSync message) {
-        if (Minecraft.getInstance().screen instanceof IdeaStorageScreen screen) {
-            screen.applySnapshot(message);
+        var player = Minecraft.getInstance().player;
+        if (player != null && player.containerMenu instanceof IdeaStorageMenu menu) {
+            menu.acceptClientSync(message);
         }
     }
 

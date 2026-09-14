@@ -32,17 +32,19 @@ public final class ConnectorHandlers {
     private boolean energyInput() { return connector.allowsInput(side, ConnectorResource.ENERGY); }
     private boolean energyOutput() { return output(connector.publishedSlot(ConnectorResource.ENERGY)); }
     private static boolean valid(int slot) { return slot >= 0 && slot < IdeaspaceConnectorBlockEntity.SLOTS; }
+    private static boolean validItemSlot(int slot) { return valid(slot) || slot == IdeaspaceConnectorBlockEntity.SLOTS; }
     private static int bounded(long amount) { return (int) Math.min(Integer.MAX_VALUE, Math.max(0L, amount)); }
 
     public final IItemHandler items = new IItemHandler() {
-        @Override public int getSlots() { return IdeaspaceConnectorBlockEntity.SLOTS; }
+        // The extra, permanently empty slot lets standard insertion helpers accept unpublished items.
+        @Override public int getSlots() { return IdeaspaceConnectorBlockEntity.SLOTS + 1; }
         @Override public ItemStack getStackInSlot(int slot) {
             ConnectorResource resource = connector.resource(slot);
             return output(slot) ? resource.itemStack(bounded(resource.amount(connector.storage()))) : ItemStack.EMPTY;
         }
         @Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             PlayerIdeaStorage storage = connector.storage();
-            if (!valid(slot) || !itemInput(stack) || storage == null) return stack;
+            if (!validItemSlot(slot) || !itemInput(stack) || storage == null) return stack;
             long accepted = simulate ? storage.simulateInsert(stack, stack.getCount()) : storage.insert(stack, stack.getCount());
             return stack.copyWithCount(stack.getCount() - (int) accepted);
         }
@@ -54,8 +56,8 @@ public final class ConnectorHandlers {
             long extracted = simulate ? storage.simulateExtract(resource.item(), request) : storage.extract(resource.item(), request);
             return resource.itemStack((int) extracted);
         }
-        @Override public int getSlotLimit(int slot) { return valid(slot) ? Integer.MAX_VALUE : 0; }
-        @Override public boolean isItemValid(int slot, ItemStack stack) { return valid(slot) && itemInput(stack); }
+        @Override public int getSlotLimit(int slot) { return validItemSlot(slot) ? Integer.MAX_VALUE : 0; }
+        @Override public boolean isItemValid(int slot, ItemStack stack) { return validItemSlot(slot) && itemInput(stack); }
     };
 
     public final IFluidHandler fluids = new IFluidHandler() {

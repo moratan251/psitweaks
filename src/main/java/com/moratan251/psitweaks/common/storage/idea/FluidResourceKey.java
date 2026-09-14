@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.storage.idea;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /** Fluid ID + Data Component一式からなる不変の資源キー。量は1 mBへ正規化する。 */
@@ -21,7 +22,8 @@ public final class FluidResourceKey {
     }
 
     public static Optional<FluidResourceKey> parse(HolderLookup.Provider registries, Tag tag) {
-        return FluidStack.parse(registries, tag).flatMap(FluidResourceKey::of);
+        return FluidStack.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result().flatMap(FluidResourceKey::of);
     }
 
     public Tag save(HolderLookup.Provider registries) {

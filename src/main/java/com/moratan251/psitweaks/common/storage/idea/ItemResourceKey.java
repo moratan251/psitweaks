@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.storage.idea;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -24,7 +25,9 @@ public final class ItemResourceKey {
     }
 
     public static Optional<ItemResourceKey> parse(HolderLookup.Provider registries, Tag tag) {
-        return ItemStack.parse(registries, tag).flatMap(ItemResourceKey::of);
+        // ItemStack.parse accepts partial codec results, which can silently strip unread components.
+        return ItemStack.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result().flatMap(ItemResourceKey::of);
     }
 
     public Tag save(HolderLookup.Provider registries) {

@@ -107,18 +107,6 @@ public final class ConnectorTransfers {
     }
 
     public static int pushEnergy(PlayerIdeaStorage storage, IEnergyStorage target, int maximum) {
-        if (!target.canReceive()) return 0;
-        int available = (int) storage.extractEnergy(maximum, true);
-        if (available <= 0) return 0;
-        int planned = Math.max(0, Math.min(available, target.receiveEnergy(available, true)));
-        var withdrawal = storage.withdrawEnergy(planned);
-        int accepted = 0;
-        try {
-            if (withdrawal.amount() > 0) accepted = (int) Math.max(0,
-                    Math.min(withdrawal.amount(), target.receiveEnergy((int) withdrawal.amount(), false)));
-            return accepted;
-        } finally {
-            withdrawal.restore(withdrawal.amount() - accepted);
-        }
+        return IdeaStorageEnergyTransfer.supply(storage, target, maximum);
     }
 }

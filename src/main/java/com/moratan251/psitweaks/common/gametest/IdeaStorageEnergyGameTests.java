@@ -128,7 +128,7 @@ public final class IdeaStorageEnergyGameTests {
 
     @GameTest(template = "psi110_empty")
     public static void energySyncPreservesLongValues(GameTestHelper helper) {
-        var message = new MessageIdeaStorageSync(List.of(), List.of(), List.of(), 256, 64, 64,
+        var message = new MessageIdeaStorageSync(1, UUID.randomUUID(), true, List.of(), List.of(), List.of(), 256, 64, 64,
                 5_000_000_123L, Long.MAX_VALUE, false);
         var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
         try {

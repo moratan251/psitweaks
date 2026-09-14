@@ -77,6 +77,8 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private static final int CRAFT_CLEAR_BUTTON_SIZE = 12;
 
     private List<IdeaStorageDisplayEntry> entries = List.of();
+    private java.util.UUID syncSession;
+    private long appliedSnapshotVersion = -1, appliedTemplateVersion = -1;
     private boolean loadFailed;
     private int itemTypeCount;
     private int fluidTypeCount;
@@ -209,7 +211,30 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         super.removed();
     }
 
-    public void applySnapshot(MessageIdeaStorageSync message) {
+    private void updateSnapshot() {
+        var snapshot = menu.clientSnapshot();
+        if (snapshot == null || appliedSnapshotVersion == menu.clientSnapshotVersion()) return;
+        applySnapshot(appliedTemplateVersion != menu.clientTemplateVersion() ? snapshot
+                : MessageIdeaStorageSync.energyUpdate(menu.containerId, snapshot.session(), snapshot.energy(), snapshot.maxEnergy()));
+        appliedSnapshotVersion = menu.clientSnapshotVersion();
+        appliedTemplateVersion = menu.clientTemplateVersion();
+    }
+
+    private void applySnapshot(MessageIdeaStorageSync message) {
+        if (message.containerId() != menu.containerId) return;
+        if (!message.full()) {
+            if (!message.session().equals(syncSession)) return;
+            boolean hadEnergy = energy > 0;
+            if (hadEnergy) {
+                if (message.energy() > 0) entries.set(entries.size() - 1, IdeaStorageDisplayEntry.energy(message.energy()));
+                else entries.remove(entries.size() - 1);
+            } else if (message.energy() > 0) entries.add(IdeaStorageDisplayEntry.energy(message.energy()));
+            energy = message.energy();
+            maxEnergy = message.maxEnergy();
+            if (hadEnergy != (energy > 0)) clampScroll();
+            return;
+        }
+        syncSession = message.session();
         List<IdeaStorageDisplayEntry> displayEntries = new ArrayList<>(
                 message.entries().size() + message.fluidEntries().size() + message.chemicalEntries().size());
         message.entries().stream().map(IdeaStorageDisplayEntry::item).forEach(displayEntries::add);
@@ -218,8 +243,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
         if (message.energy() > 0) {
             displayEntries.add(IdeaStorageDisplayEntry.energy(message.energy()));
         }
-        this.entries = List.copyOf(displayEntries);
-        this.menu.applyClientStorageEntries(message.entries());
+        this.entries = displayEntries;
         this.itemTypeCount = message.entries().size();
         this.fluidTypeCount = message.fluidEntries().size();
         this.chemicalTypeCount = message.chemicalEntries().size();
@@ -462,6 +486,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        updateSnapshot();
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         if (isOverInfoButton(mouseX, mouseY)) {

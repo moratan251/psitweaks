@@ -88,6 +88,10 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private final ResultContainer craftResult = new ResultContainer();
     private boolean craftOpen;
     private long lastSyncedVersion = -1L;
+    private long lastSyncedInventoryVersion = -1L;
+    private long lastStorageSyncTick;
+    private boolean lastSyncedLoadFailed;
+    private final UUID syncSession = UUID.randomUUID();
     private long lastSyncedMaxEnergy = -1L;
     private int lastSyncedMaxItemTypes = -1;
     private int lastSyncedMaxFluidTypes = -1;
@@ -95,6 +99,8 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private int craftingMutationDepth;
     private boolean craftingResultDirty;
     private List<MessageIdeaStorageSync.Entry> clientStorageEntries = List.of();
+    @Nullable private MessageIdeaStorageSync clientSnapshot;
+    private long clientSnapshotVersion, clientTemplateVersion;
 
     public static IdeaStorageMenu fromNetwork(int windowId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         return new IdeaStorageMenu(windowId, playerInventory, buf.readUUID(), buf.readVarInt());
@@ -167,6 +173,27 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     public List<MessageIdeaStorageSync.Entry> clientStorageEntries() {
         return clientStorageEntries;
     }
+
+    /** Keep updates while a recipe screen temporarily covers the storage screen. Owned by this menu only. */
+    public void acceptClientSync(MessageIdeaStorageSync message) {
+        if (message.containerId() != containerId) return;
+        if (message.full()) {
+            clientSnapshot = message;
+            applyClientStorageEntries(message.entries());
+            clientTemplateVersion++;
+        } else {
+            if (clientSnapshot == null || !clientSnapshot.session().equals(message.session())) return;
+            clientSnapshot = new MessageIdeaStorageSync(containerId, message.session(), true,
+                    clientSnapshot.entries(), clientSnapshot.fluidEntries(), clientSnapshot.chemicalEntries(),
+                    clientSnapshot.maxItemTypes(), clientSnapshot.maxFluidTypes(), clientSnapshot.maxChemicalTypes(),
+                    message.energy(), message.maxEnergy(), clientSnapshot.loadFailed());
+        }
+        clientSnapshotVersion++;
+    }
+
+    @Nullable public MessageIdeaStorageSync clientSnapshot() { return clientSnapshot; }
+    public long clientSnapshotVersion() { return clientSnapshotVersion; }
+    public long clientTemplateVersion() { return clientTemplateVersion; }
 
     /** 開閉状態はクライアント(楽観)とサーバー(payload)の双方で同じ値に更新する。 */
     public void setCraftOpen(boolean open) {
@@ -392,19 +419,35 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        if (player instanceof ServerPlayer serverPlayer && storage != null
-                && (storage.getVersion() != lastSyncedVersion
-                || storage.maxItemTypes() != lastSyncedMaxItemTypes
-                || storage.maxEnergy() != lastSyncedMaxEnergy
-                || storage.maxFluidTypes() != lastSyncedMaxFluidTypes
-                || storage.maxChemicalTypes() != lastSyncedMaxChemicalTypes)) {
-            lastSyncedVersion = storage.getVersion();
-            lastSyncedMaxItemTypes = storage.maxItemTypes();
-            lastSyncedMaxEnergy = storage.maxEnergy();
-            lastSyncedMaxFluidTypes = storage.maxFluidTypes();
-            lastSyncedMaxChemicalTypes = storage.maxChemicalTypes();
-            PacketDistributor.sendToPlayer(serverPlayer, createSyncMessage());
+        if (player instanceof ServerPlayer serverPlayer) {
+            MessageIdeaStorageSync update = pollStorageSync(player.level().getGameTime());
+            if (update != null) PacketDistributor.sendToPlayer(serverPlayer, update);
         }
+    }
+
+    /** Initial snapshot, then at most one update every five ticks. FE updates never enumerate inventory. */
+    @Nullable
+    public MessageIdeaStorageSync pollStorageSync(long now) {
+        if (storage == null) return null;
+        boolean first = lastSyncedVersion < 0;
+        boolean full = first || storage.getInventoryVersion() != lastSyncedInventoryVersion
+                || storage.maxItemTypes() != lastSyncedMaxItemTypes
+                || storage.maxFluidTypes() != lastSyncedMaxFluidTypes
+                || storage.maxChemicalTypes() != lastSyncedMaxChemicalTypes
+                || storage.isLoadFailed() != lastSyncedLoadFailed;
+        boolean changed = full || storage.getVersion() != lastSyncedVersion || storage.maxEnergy() != lastSyncedMaxEnergy;
+        if (!changed || (!first && now - lastStorageSyncTick < 5)) return null;
+        MessageIdeaStorageSync update = full ? createSyncMessage()
+                : MessageIdeaStorageSync.energyUpdate(containerId, syncSession, storage.energy(), storage.maxEnergy());
+        lastSyncedVersion = storage.getVersion();
+        lastSyncedInventoryVersion = storage.getInventoryVersion();
+        lastSyncedMaxItemTypes = storage.maxItemTypes();
+        lastSyncedMaxFluidTypes = storage.maxFluidTypes();
+        lastSyncedMaxChemicalTypes = storage.maxChemicalTypes();
+        lastSyncedMaxEnergy = storage.maxEnergy();
+        lastSyncedLoadFailed = storage.isLoadFailed();
+        lastStorageSyncTick = now;
+        return update;
     }
 
     private MessageIdeaStorageSync createSyncMessage() {
@@ -422,7 +465,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
                 chemicalEntries.add(new MessageIdeaStorageSync.ChemicalEntry(entry.getKey(), entry.getValue()));
             }
         }
-        return new MessageIdeaStorageSync(entries, fluidEntries, chemicalEntries,
+        return new MessageIdeaStorageSync(containerId, syncSession, true, entries, fluidEntries, chemicalEntries,
                 storage == null ? 0 : storage.maxItemTypes(),
                 storage == null ? 0 : storage.maxFluidTypes(),
                 storage == null ? 0 : storage.maxChemicalTypes(),

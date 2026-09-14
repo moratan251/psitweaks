@@ -9,7 +9,7 @@ public final class PsitweaksNetwork {
     }
 
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("14");
+        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("15");
         registrar.playToClient(MessageConnectorState.TYPE, MessageConnectorState.STREAM_CODEC, MessageConnectorState::handle);
         registrar.playToServer(MessageConnectorAction.TYPE, MessageConnectorAction.STREAM_CODEC, MessageConnectorAction::handle);
         registrar.playToServer(MessageConnectorTemplate.TYPE, MessageConnectorTemplate.STREAM_CODEC, MessageConnectorTemplate::handle);

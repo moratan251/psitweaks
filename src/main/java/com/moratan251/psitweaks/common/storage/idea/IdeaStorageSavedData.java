@@ -33,6 +33,7 @@ public final class IdeaStorageSavedData extends SavedData {
 
     private final UUID owner;
     private final PlayerIdeaStorage storage;
+    private CompoundTag unreadData;
 
     private IdeaStorageSavedData(UUID owner) {
         this.owner = owner;
@@ -54,78 +55,98 @@ public final class IdeaStorageSavedData extends SavedData {
         if (dataVersion > CURRENT_DATA_VERSION) {
             LOGGER.warn("Idea storage data for {} uses newer DataVersion {} (current {}); leaving it unread and unmodified.",
                     owner, dataVersion, CURRENT_DATA_VERSION);
-            data.storage.markLoadFailed();
+            return data.preserveUnread(tag);
+        }
+
+        try {
+            for (String name : new String[] {TAG_ITEMS, TAG_FLUIDS, TAG_CHEMICALS}) {
+                if (tag.contains(name) && (!(tag.get(name) instanceof ListTag list)
+                        || (!list.isEmpty() && list.getElementType() != Tag.TAG_COMPOUND))) {
+                    LOGGER.warn("Invalid {} list in idea storage of {}; preserving original data.", name, owner);
+                    return data.preserveUnread(tag);
+                }
+            }
+
+            // オプションフィールド: 欠落時はデフォルト(DataVersion 据え置きの後方互換)
+            if (tag.contains(TAG_GRID_ROWS, Tag.TAG_INT)) {
+                data.storage.loadGridRows(tag.getInt(TAG_GRID_ROWS));
+            }
+
+            data.storage.loadEnergy(tag.getLong("Energy"));
+            ListTag items = tag.getList(TAG_ITEMS, Tag.TAG_COMPOUND);
+            for (int i = 0; i < items.size(); i++) {
+                CompoundTag entry = items.getCompound(i);
+                if (!entry.contains(TAG_ITEM, Tag.TAG_COMPOUND)) {
+                    LOGGER.warn("Cannot restore item entry without item data in idea storage of {} (index {}).", owner, i);
+                    return data.preserveUnread(tag);
+                }
+                Optional<ItemResourceKey> key = ItemResourceKey.parse(registries, entry.get(TAG_ITEM));
+                if (key.isEmpty()) {
+                    LOGGER.warn("Cannot restore unknown or invalid item entry in idea storage of {} (index {}).", owner, i);
+                    return data.preserveUnread(tag);
+                }
+                long count = entry.getLong(TAG_COUNT);
+                if (count <= 0) {
+                    LOGGER.warn("Cannot restore non-positive item entry {} in idea storage of {} (count={}).", key.get(), owner, count);
+                    return data.preserveUnread(tag);
+                }
+                data.storage.loadEntry(key.get(), count);
+            }
+
+            ListTag fluids = tag.getList(TAG_FLUIDS, Tag.TAG_COMPOUND);
+            for (int i = 0; i < fluids.size(); i++) {
+                CompoundTag entry = fluids.getCompound(i);
+                if (!entry.contains(TAG_FLUID, Tag.TAG_COMPOUND)) {
+                    LOGGER.warn("Cannot restore fluid entry without fluid data in idea storage of {} (index {}).", owner, i);
+                    return data.preserveUnread(tag);
+                }
+                Optional<FluidResourceKey> key = FluidResourceKey.parse(registries, entry.get(TAG_FLUID));
+                if (key.isEmpty()) {
+                    LOGGER.warn("Cannot restore unknown or invalid fluid entry in idea storage of {} (index {}).", owner, i);
+                    return data.preserveUnread(tag);
+                }
+                long amount = entry.getLong(TAG_COUNT);
+                if (amount <= 0) {
+                    LOGGER.warn("Cannot restore non-positive fluid entry {} in idea storage of {} (amount={}).",
+                            key.get(), owner, amount);
+                    return data.preserveUnread(tag);
+                }
+                data.storage.loadFluidEntry(key.get(), amount);
+            }
+
+            ListTag chemicals = tag.getList(TAG_CHEMICALS, Tag.TAG_COMPOUND);
+            for (int i = 0; i < chemicals.size(); i++) {
+                CompoundTag entry = chemicals.getCompound(i);
+                ResourceLocation chemicalId = ResourceLocation.tryParse(entry.getString(TAG_CHEMICAL));
+                if (chemicalId == null) {
+                    LOGGER.warn("Cannot restore invalid chemical ID in idea storage of {} (index {}).", owner, i);
+                    return data.preserveUnread(tag);
+                }
+                long amount = entry.getLong(TAG_COUNT);
+                if (amount <= 0) {
+                    LOGGER.warn("Cannot restore non-positive chemical entry {} in idea storage of {} (amount={}).",
+                            chemicalId, owner, amount);
+                    return data.preserveUnread(tag);
+                }
+                data.storage.loadChemicalEntry(chemicalId, amount);
+            }
             return data;
+        } catch (RuntimeException failure) {
+            LOGGER.warn("Cannot decode idea storage of {}; preserving original data.", owner, failure);
+            return data.preserveUnread(tag);
         }
+    }
 
-        // オプションフィールド: 欠落時はデフォルト(DataVersion 据え置きの後方互換)
-        if (tag.contains(TAG_GRID_ROWS, Tag.TAG_INT)) {
-            data.storage.loadGridRows(tag.getInt(TAG_GRID_ROWS));
-        }
-
-        data.storage.loadEnergy(tag.getLong("Energy"));
-        ListTag items = tag.getList(TAG_ITEMS, Tag.TAG_COMPOUND);
-        for (int i = 0; i < items.size(); i++) {
-            CompoundTag entry = items.getCompound(i);
-            if (!entry.contains(TAG_ITEM, Tag.TAG_COMPOUND)) {
-                LOGGER.warn("Skipping item entry without item data in idea storage of {} (index {}).", owner, i);
-                continue;
-            }
-            Optional<ItemResourceKey> key = ItemResourceKey.parse(registries, entry.get(TAG_ITEM));
-            if (key.isEmpty()) {
-                LOGGER.warn("Skipping unknown or invalid item entry in idea storage of {} (index {}).", owner, i);
-                continue;
-            }
-            long count = entry.getLong(TAG_COUNT);
-            if (count <= 0) {
-                LOGGER.warn("Skipping non-positive item entry {} in idea storage of {} (count={}).", key.get(), owner, count);
-                continue;
-            }
-            data.storage.loadEntry(key.get(), count);
-        }
-
-        ListTag fluids = tag.getList(TAG_FLUIDS, Tag.TAG_COMPOUND);
-        for (int i = 0; i < fluids.size(); i++) {
-            CompoundTag entry = fluids.getCompound(i);
-            if (!entry.contains(TAG_FLUID, Tag.TAG_COMPOUND)) {
-                LOGGER.warn("Skipping fluid entry without fluid data in idea storage of {} (index {}).", owner, i);
-                continue;
-            }
-            Optional<FluidResourceKey> key = FluidResourceKey.parse(registries, entry.get(TAG_FLUID));
-            if (key.isEmpty()) {
-                LOGGER.warn("Skipping unknown or invalid fluid entry in idea storage of {} (index {}).", owner, i);
-                continue;
-            }
-            long amount = entry.getLong(TAG_COUNT);
-            if (amount <= 0) {
-                LOGGER.warn("Skipping non-positive fluid entry {} in idea storage of {} (amount={}).",
-                        key.get(), owner, amount);
-                continue;
-            }
-            data.storage.loadFluidEntry(key.get(), amount);
-        }
-
-        ListTag chemicals = tag.getList(TAG_CHEMICALS, Tag.TAG_COMPOUND);
-        for (int i = 0; i < chemicals.size(); i++) {
-            CompoundTag entry = chemicals.getCompound(i);
-            ResourceLocation chemicalId = ResourceLocation.tryParse(entry.getString(TAG_CHEMICAL));
-            if (chemicalId == null) {
-                LOGGER.warn("Skipping invalid chemical ID in idea storage of {} (index {}).", owner, i);
-                continue;
-            }
-            long amount = entry.getLong(TAG_COUNT);
-            if (amount <= 0) {
-                LOGGER.warn("Skipping non-positive chemical entry {} in idea storage of {} (amount={}).",
-                        chemicalId, owner, amount);
-                continue;
-            }
-            data.storage.loadChemicalEntry(chemicalId, amount);
-        }
-        return data;
+    private IdeaStorageSavedData preserveUnread(CompoundTag original) {
+        unreadData = original.copy();
+        storage.markLoadFailed();
+        return this;
     }
 
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        // Even a forced save must not replace an unread warehouse with the partial decoded view.
+        if (unreadData != null) return unreadData.copy();
         tag.putInt(TAG_DATA_VERSION, CURRENT_DATA_VERSION);
         tag.putInt(TAG_GRID_ROWS, storage.getGridRows());
         tag.putLong("Energy", storage.energy());
