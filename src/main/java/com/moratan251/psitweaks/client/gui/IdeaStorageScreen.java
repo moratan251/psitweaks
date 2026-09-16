@@ -459,11 +459,14 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             return;
         }
         String text = IdeaStorageAmountFormatter.formatGrid(entry.amount(), entry.displayAmountScale());
+        float scale = entry.kind() == IdeaStorageDisplayEntry.Kind.ENERGY
+                ? Math.min(COUNT_SCALE, (CELL - 2F) / Math.max(1, this.font.width(text)))
+                : COUNT_SCALE;
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 300.0F);
-        guiGraphics.pose().scale(COUNT_SCALE, COUNT_SCALE, 1.0F);
-        int drawX = Math.round((x + CELL - 1) / COUNT_SCALE) - this.font.width(text);
-        int drawY = Math.round((y + CELL - 1) / COUNT_SCALE) - 9;
+        guiGraphics.pose().scale(scale, scale, 1.0F);
+        int drawX = Math.round((x + CELL - 1) / scale) - this.font.width(text);
+        int drawY = Math.round((y + CELL - 1) / scale) - 9;
         guiGraphics.drawString(this.font, text, drawX, drawY, 0xFFFFFFFF, true);
         guiGraphics.pose().popPose();
     }
