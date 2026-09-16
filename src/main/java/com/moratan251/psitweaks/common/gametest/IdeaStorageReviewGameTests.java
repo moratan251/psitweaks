@@ -257,8 +257,8 @@ public final class IdeaStorageReviewGameTests {
                 && menu.clientSnapshot().chemicalEntries() == full.chemicalEntries()
                 && menu.clientStorageEntries().size() == 1, "FE update rebuilt or discarded inventory templates");
         long received = menu.clientSnapshotVersion();
-        menu.acceptClientSync(MessageIdeaStorageSync.energyUpdate(7, UUID.randomUUID(), 999, 999));
-        menu.acceptClientSync(MessageIdeaStorageSync.energyUpdate(8, full.session(), 999, 999));
+        menu.acceptClientSync(MessageIdeaStorageSync.energyUpdate(7, UUID.randomUUID(), 3, 999, 999));
+        menu.acceptClientSync(MessageIdeaStorageSync.energyUpdate(8, full.session(), 3, 999, 999));
         helper.assertTrue(menu.clientSnapshotVersion() == received && menu.clientSnapshot().energy() == 14,
                 "Foreign or stale FE update changed client snapshot");
         helper.assertTrue(menu.pollStorageSync(10) == null, "Unchanged inventory was sent again");

@@ -1786,6 +1786,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "手持ちで使えるCAD組立機です. ブロックを設置せずに組立機画面を開けるため, 拠点外でも簡単にCAD部品や装填済み術式弾を調整できます.";
             default -> "A handheld CAD Assembler. Use it to open an assembler interface without placing the block, making it easy to adjust CAD parts or loaded spell bullets while away from base.";
         });
+        root.addProperty("message.psitweaks.portable_spell_programmer.no_target", switch (locale) {
+            case "ja_jp" -> "オフハンドに書き込み可能なアイテムがありません";
+            default -> "There is no writable item in your offhand.";
+        });
+        root.addProperty("message.psitweaks.portable_spell_programmer.empty_spell", switch (locale) {
+            case "ja_jp" -> "術式が空です";
+            default -> "The spell is empty.";
+        });
+        root.addProperty("message.psitweaks.portable_spell_programmer.compile_failed", switch (locale) {
+            case "ja_jp" -> "術式をコンパイルできません";
+            default -> "The spell cannot be compiled.";
+        });
         root.addProperty("psi.book.page.psitweaks_item.portable_spell_programmer.0", switch (locale) {
             case "ja_jp" -> "手持ちで使える魔法構築機です。右クリックすると、魔法構築機と同じスペルプログラム画面を開くことができます。";
             default -> "A handheld Spell Programmer. Right-click to open the same spell programming screen as the Spell Programmer.";

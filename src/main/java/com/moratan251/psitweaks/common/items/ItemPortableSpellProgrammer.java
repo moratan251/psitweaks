@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.common.menu.PortableSpellProgrammerMenu;
 import java.util.UUID;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -62,10 +63,16 @@ public final class ItemPortableSpellProgrammer extends Item {
         }
         var acceptor = PsiCapabilities.spellAcceptor(player.getOffhandItem());
         Spell spell = getSpellCopy(programmer);
-        if (acceptor == null || spell.grid.isEmpty()) {
+        if (acceptor == null) {
+            player.displayClientMessage(Component.translatable("message.psitweaks.portable_spell_programmer.no_target"), true);
+            return false;
+        }
+        if (spell.grid.isEmpty()) {
+            player.displayClientMessage(Component.translatable("message.psitweaks.portable_spell_programmer.empty_spell"), true);
             return false;
         }
         if (new SpellCompiler().compile(spell, player.registryAccess(), player).right().isPresent()) {
+            player.displayClientMessage(Component.translatable("message.psitweaks.portable_spell_programmer.compile_failed"), true);
             player.level().playSound(null, player.blockPosition(), PsiSoundHandler.compileError.get(),
                     SoundSource.PLAYERS, 0.5F, 1F);
             return false;

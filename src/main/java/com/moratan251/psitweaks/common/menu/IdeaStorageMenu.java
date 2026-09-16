@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageChemicalTransfer;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageContainerTransferBatch;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageDefaults;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageInventorySync;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageWithdrawal;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -92,6 +94,8 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private long lastStorageSyncTick;
     private boolean lastSyncedLoadFailed;
     private final UUID syncSession = UUID.randomUUID();
+    private final IdeaStorageInventorySync inventorySync = new IdeaStorageInventorySync();
+    private long syncRevision;
     private long lastSyncedMaxEnergy = -1L;
     private int lastSyncedMaxItemTypes = -1;
     private int lastSyncedMaxFluidTypes = -1;
@@ -100,7 +104,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private boolean craftingResultDirty;
     private List<MessageIdeaStorageSync.Entry> clientStorageEntries = List.of();
     @Nullable private MessageIdeaStorageSync clientSnapshot;
-    private long clientSnapshotVersion, clientTemplateVersion;
+    private long clientSnapshotVersion, clientTemplateVersion, clientQuantityVersion;
 
     public static IdeaStorageMenu fromNetwork(int windowId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         return new IdeaStorageMenu(windowId, playerInventory, buf.readUUID(), buf.readVarInt());
@@ -177,23 +181,56 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     /** Keep updates while a recipe screen temporarily covers the storage screen. Owned by this menu only. */
     public void acceptClientSync(MessageIdeaStorageSync message) {
         if (message.containerId() != containerId) return;
+        if (message.revision() <= 0 || clientSnapshot != null
+                && (!clientSnapshot.session().equals(message.session()) || message.revision() <= clientSnapshot.revision())) return;
         if (message.full()) {
             clientSnapshot = message;
             applyClientStorageEntries(message.entries());
             clientTemplateVersion++;
         } else {
-            if (clientSnapshot == null || !clientSnapshot.session().equals(message.session())) return;
-            clientSnapshot = new MessageIdeaStorageSync(containerId, message.session(), true,
-                    clientSnapshot.entries(), clientSnapshot.fluidEntries(), clientSnapshot.chemicalEntries(),
+            if (clientSnapshot == null || message.revision() != clientSnapshot.revision() + 1
+                    || !validAmounts(message.itemAmounts(), clientSnapshot.entries().size())
+                    || !validAmounts(message.fluidAmounts(), clientSnapshot.fluidEntries().size())
+                    || !validAmounts(message.chemicalAmounts(), clientSnapshot.chemicalEntries().size())) return;
+            var items = applyAmounts(clientSnapshot.entries(), message.itemAmounts(),
+                    (entry, amount) -> new MessageIdeaStorageSync.Entry(entry.template(), amount));
+            var fluids = applyAmounts(clientSnapshot.fluidEntries(), message.fluidAmounts(),
+                    (entry, amount) -> new MessageIdeaStorageSync.FluidEntry(entry.template(), amount));
+            var chemicals = applyAmounts(clientSnapshot.chemicalEntries(), message.chemicalAmounts(),
+                    (entry, amount) -> new MessageIdeaStorageSync.ChemicalEntry(entry.chemicalId(), amount));
+            clientSnapshot = new MessageIdeaStorageSync(containerId, message.session(), message.revision(), true,
+                    items, fluids, chemicals,
                     clientSnapshot.maxItemTypes(), clientSnapshot.maxFluidTypes(), clientSnapshot.maxChemicalTypes(),
                     message.energy(), message.maxEnergy(), clientSnapshot.loadFailed());
+            if (!message.itemAmounts().isEmpty()) applyClientStorageEntries(items);
+            if (!message.itemAmounts().isEmpty() || !message.fluidAmounts().isEmpty() || !message.chemicalAmounts().isEmpty()) {
+                clientQuantityVersion++;
+            }
         }
         clientSnapshotVersion++;
+    }
+
+    private static boolean validAmounts(List<MessageIdeaStorageSync.QuantityUpdate> updates, int size) {
+        int previous = -1;
+        for (var update : updates) {
+            if (update.index() <= previous || update.index() >= size || update.amount() <= 0) return false;
+            previous = update.index();
+        }
+        return true;
+    }
+
+    private static <T> List<T> applyAmounts(List<T> entries, List<MessageIdeaStorageSync.QuantityUpdate> updates,
+                                          BiFunction<T, Long, T> withAmount) {
+        if (updates.isEmpty()) return entries;
+        var result = new ArrayList<>(entries);
+        for (var update : updates) result.set(update.index(), withAmount.apply(entries.get(update.index()), update.amount()));
+        return List.copyOf(result);
     }
 
     @Nullable public MessageIdeaStorageSync clientSnapshot() { return clientSnapshot; }
     public long clientSnapshotVersion() { return clientSnapshotVersion; }
     public long clientTemplateVersion() { return clientTemplateVersion; }
+    public long clientQuantityVersion() { return clientQuantityVersion; }
 
     /** 開閉状態はクライアント(楽観)とサーバー(payload)の双方で同じ値に更新する。 */
     public void setCraftOpen(boolean open) {
@@ -430,15 +467,18 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     public MessageIdeaStorageSync pollStorageSync(long now) {
         if (storage == null) return null;
         boolean first = lastSyncedVersion < 0;
-        boolean full = first || storage.getInventoryVersion() != lastSyncedInventoryVersion
+        boolean full = first
                 || storage.maxItemTypes() != lastSyncedMaxItemTypes
                 || storage.maxFluidTypes() != lastSyncedMaxFluidTypes
                 || storage.maxChemicalTypes() != lastSyncedMaxChemicalTypes
                 || storage.isLoadFailed() != lastSyncedLoadFailed;
+        boolean inventoryChanged = storage.getInventoryVersion() != lastSyncedInventoryVersion;
         boolean changed = full || storage.getVersion() != lastSyncedVersion || storage.maxEnergy() != lastSyncedMaxEnergy;
         if (!changed || (!first && now - lastStorageSyncTick < 5)) return null;
-        MessageIdeaStorageSync update = full ? createSyncMessage()
-                : MessageIdeaStorageSync.energyUpdate(containerId, syncSession, storage.energy(), storage.maxEnergy());
+        long revision = ++syncRevision;
+        MessageIdeaStorageSync update = full || inventoryChanged
+                ? inventorySync.createUpdate(storage, containerId, syncSession, revision, full)
+                : MessageIdeaStorageSync.energyUpdate(containerId, syncSession, revision, storage.energy(), storage.maxEnergy());
         lastSyncedVersion = storage.getVersion();
         lastSyncedInventoryVersion = storage.getInventoryVersion();
         lastSyncedMaxItemTypes = storage.maxItemTypes();
@@ -448,30 +488,6 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         lastSyncedLoadFailed = storage.isLoadFailed();
         lastStorageSyncTick = now;
         return update;
-    }
-
-    private MessageIdeaStorageSync createSyncMessage() {
-        List<MessageIdeaStorageSync.Entry> entries = new ArrayList<>();
-        List<MessageIdeaStorageSync.FluidEntry> fluidEntries = new ArrayList<>();
-        List<MessageIdeaStorageSync.ChemicalEntry> chemicalEntries = new ArrayList<>();
-        if (storage != null) {
-            for (var entry : storage.itemEntries()) {
-                entries.add(new MessageIdeaStorageSync.Entry(entry.getKey().template(), entry.getValue()));
-            }
-            for (var entry : storage.fluidEntries()) {
-                fluidEntries.add(new MessageIdeaStorageSync.FluidEntry(entry.getKey().template(), entry.getValue()));
-            }
-            for (var entry : storage.chemicalEntries()) {
-                chemicalEntries.add(new MessageIdeaStorageSync.ChemicalEntry(entry.getKey(), entry.getValue()));
-            }
-        }
-        return new MessageIdeaStorageSync(containerId, syncSession, true, entries, fluidEntries, chemicalEntries,
-                storage == null ? 0 : storage.maxItemTypes(),
-                storage == null ? 0 : storage.maxFluidTypes(),
-                storage == null ? 0 : storage.maxChemicalTypes(),
-                storage == null ? 0 : storage.energy(),
-                storage == null ? 0 : storage.maxEnergy(),
-                storage != null && storage.isLoadFailed());
     }
 
     /**

@@ -15,6 +15,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,6 +36,57 @@ import vazkii.psi.common.spell.SpellCompiler;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class PortableSpellProgrammerGameTests {
+    @GameTest(template = "psi110_empty")
+    public static void failedRegistrationExplainsReasonInActionBar(GameTestHelper helper) {
+        var player = new FeedbackPlayer(helper.getLevel());
+        player.setGameMode(GameType.CREATIVE);
+        player.setShiftKeyDown(true);
+        var programmer = programmer("Feedback");
+        player.setItemInHand(InteractionHand.MAIN_HAND, programmer);
+        var food = new ItemStack(Items.APPLE, 3);
+        player.setItemInHand(InteractionHand.OFF_HAND, food);
+        var result = programmer.getItem().use(player.level(), player, InteractionHand.MAIN_HAND);
+        helper.assertTrue(result.getResult().consumesAction() && food.getCount() == 3 && !player.isUsingItem(),
+                "Failure must still consume the interaction and not use the offhand");
+        player.assertFeedback(helper, "no_target");
+
+        var bullet = new ItemStack(ModItems.spellBullet.get());
+        player.setItemInHand(InteractionHand.OFF_HAND, bullet);
+        ItemPortableSpellProgrammer.saveSpell(programmer, new Spell());
+        helper.assertTrue(!ItemPortableSpellProgrammer.registerOffhandSpell(player, programmer), "Empty spell was registered");
+        player.assertFeedback(helper, "empty_spell");
+        ItemPortableSpellProgrammer.saveSpell(programmer, spell(""));
+        helper.assertTrue(!ItemPortableSpellProgrammer.registerOffhandSpell(player, programmer), "Invalid spell was registered");
+        player.assertFeedback(helper, "compile_failed");
+        helper.assertTrue(ItemSpellDrive.getSpell(bullet) == null, "Failed registration changed the bullet");
+
+        player.lastMessage = null;
+        ItemPortableSpellProgrammer.saveSpell(programmer, spell("Valid"));
+        helper.assertTrue(ItemPortableSpellProgrammer.registerOffhandSpell(player, programmer) && player.lastMessage == null,
+                "Successful registration reported an error");
+        helper.succeed();
+    }
+
+    private static final class FeedbackPlayer extends FakePlayer {
+        private Component lastMessage;
+        private boolean actionBar;
+
+        private FeedbackPlayer(ServerLevel level) {
+            super(level, new GameProfile(UUID.randomUUID(), "programmer-feedback"));
+        }
+
+        @Override
+        public void displayClientMessage(Component message, boolean actionBar) {
+            this.lastMessage = message;
+            this.actionBar = actionBar;
+        }
+
+        private void assertFeedback(GameTestHelper helper, String reason) {
+            helper.assertTrue(actionBar && Component.translatable("message.psitweaks.portable_spell_programmer." + reason)
+                    .equals(lastMessage), "Missing action-bar reason: " + reason);
+        }
+    }
+
     @GameTest(template = "psi110_empty")
     public static void itemCopiesAndDiskReloadRetainIndependentSpells(GameTestHelper helper) throws Exception {
         var first = programmer("First");

@@ -78,7 +78,7 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
 
     private List<IdeaStorageDisplayEntry> entries = List.of();
     private java.util.UUID syncSession;
-    private long appliedSnapshotVersion = -1, appliedTemplateVersion = -1;
+    private long appliedSnapshotVersion = -1, appliedTemplateVersion = -1, appliedQuantityVersion = -1;
     private boolean loadFailed;
     private int itemTypeCount;
     private int fluidTypeCount;
@@ -214,10 +214,28 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
     private void updateSnapshot() {
         var snapshot = menu.clientSnapshot();
         if (snapshot == null || appliedSnapshotVersion == menu.clientSnapshotVersion()) return;
-        applySnapshot(appliedTemplateVersion != menu.clientTemplateVersion() ? snapshot
-                : MessageIdeaStorageSync.energyUpdate(menu.containerId, snapshot.session(), snapshot.energy(), snapshot.maxEnergy()));
+        if (appliedTemplateVersion != menu.clientTemplateVersion()) {
+            applySnapshot(snapshot);
+        } else {
+            if (appliedQuantityVersion != menu.clientQuantityVersion()) {
+                // The menu accumulates all updates, including those received while JEI/EMI covers this screen.
+                int index = 0;
+                for (var entry : snapshot.entries()) updateAmount(index++, entry.count());
+                for (var entry : snapshot.fluidEntries()) updateAmount(index++, entry.amount());
+                for (var entry : snapshot.chemicalEntries()) updateAmount(index++, entry.amount());
+            }
+            applySnapshot(MessageIdeaStorageSync.energyUpdate(menu.containerId, snapshot.session(), snapshot.revision(),
+                    snapshot.energy(), snapshot.maxEnergy()));
+        }
         appliedSnapshotVersion = menu.clientSnapshotVersion();
         appliedTemplateVersion = menu.clientTemplateVersion();
+        appliedQuantityVersion = menu.clientQuantityVersion();
+    }
+
+    private void updateAmount(int index, long amount) {
+        var entry = entries.get(index);
+        if (entry.amount() != amount) entries.set(index, new IdeaStorageDisplayEntry(entry.kind(), entry.itemTemplate(),
+                entry.fluidTemplate(), entry.chemicalId(), amount));
     }
 
     private void applySnapshot(MessageIdeaStorageSync message) {
