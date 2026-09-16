@@ -1,0 +1,6 @@
+{
+  "command_id": "ideaspace_connector",
+  "piece": "psitweaks:trick_ideaspace_connector",
+  "unlock_item": "psitweaks:program_idea_storage",
+  "unlock_tag": "psitweaks.unlock.idea_storage"
+}

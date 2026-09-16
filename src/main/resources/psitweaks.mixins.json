@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "psitweaks.refmap.json",
   "mixins": [
+    "WitherBossMixin",
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
     "PlayerDataAttributeBonusesMixin",

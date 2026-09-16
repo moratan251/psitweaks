@@ -14,6 +14,7 @@ public class PsitweaksBlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Psitweaks.MOD_ID);
 
+    public static final RegistryObject<BlockEntityType<com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity>> IDEASPACE_CONNECTOR = BLOCK_ENTITY_TYPES.register("ideaspace_connector", () -> BlockEntityType.Builder.of(com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity::new, PsitweaksBlocks.IDEASPACE_CONNECTOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<ConjuredPulsarBlockEntity>> CONJURED_PULSAR =
             BLOCK_ENTITY_TYPES.register("conjured_pulsar", () -> BlockEntityType.Builder.of(
                     ConjuredPulsarBlockEntity::new,

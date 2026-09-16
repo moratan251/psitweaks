@@ -43,6 +43,9 @@ public class ClientSetup {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            MenuScreens.register(ModMenuTypes.PORTABLE_SPELL_PROGRAMMER.get(), com.moratan251.psitweaks.client.gui.machine.GuiPortableSpellProgrammer::new);
+            MenuScreens.register(ModMenuTypes.IDEASPACE_CONNECTOR.get(), com.moratan251.psitweaks.client.gui.IdeaspaceConnectorScreen::new);
+            net.minecraft.client.renderer.item.ItemProperties.register(com.moratan251.psitweaks.common.items.PsitweaksItems.PORTABLE_SPELL_PROGRAMMER.get(), com.moratan251.psitweaks.Psitweaks.location("active"), (stack, level, entity, seed) -> com.moratan251.psitweaks.common.items.ItemPortableSpellProgrammer.getSpellCopy(stack).grid.isEmpty() ? 0F : 1F);
             MenuScreens.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
             MenuScreens.register(ModMenuTypes.IDEA_STORAGE.get(), com.moratan251.psitweaks.client.gui.IdeaStorageScreen::new);
         });

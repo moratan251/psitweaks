@@ -8,8 +8,6 @@ import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 1プレイヤー分のイデアストレージ(Item / Fluid / Chemical カテゴリ)の有界状態。
@@ -17,8 +15,6 @@ import org.slf4j.LoggerFactory;
  * 変更のたびに version をインクリメントし、dirty コールバックを呼ぶ。
  */
 public final class PlayerIdeaStorage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayerIdeaStorage.class);
-
     public static final int GRID_ROWS_DEFAULT = 4;
     public static final int GRID_ROWS_MIN = 2;
     public static final int GRID_ROWS_MAX = 8;
@@ -27,6 +23,77 @@ public final class PlayerIdeaStorage {
     private final Map<FluidResourceKey, Long> fluids = new LinkedHashMap<>();
     private final Map<ResourceLocation, Long> chemicals = new LinkedHashMap<>();
     private long version;
+    private long inventoryVersion;
+    private long energy;
+    private boolean energyTransferActive;
+
+    public long energy() {
+        return energy;
+    }
+
+    public long maxEnergy() {
+        return PsitweaksConfig.COMMON.ideaStorageMaxEnergy.get();
+    }
+
+    public long insertEnergy(long amount, boolean simulate) {
+        return energyTransferActive ? 0 : insertEnergyInternal(amount, simulate);
+    }
+
+    private long insertEnergyInternal(long amount, boolean simulate) {
+        long accepted = loadFailed || amount <= 0 ? 0 : Math.min(amount, Math.max(0, maxEnergy() - energy));
+        if (!simulate && accepted > 0) {
+            energy += accepted;
+            markEnergyChanged();
+        }
+        return accepted;
+    }
+
+    public long extractEnergy(long amount, boolean simulate) {
+        return energyTransferActive ? 0 : extractEnergyInternal(amount, simulate);
+    }
+
+    private long extractEnergyInternal(long amount, boolean simulate) {
+        long extracted = loadFailed || amount <= 0 ? 0 : Math.min(amount, energy);
+        if (!simulate && extracted > 0) {
+            energy -= extracted;
+            markEnergyChanged();
+        }
+        return extracted;
+    }
+
+    void loadEnergy(long amount) {
+        energy = Math.max(0, amount);
+    }
+
+    /** A synchronous lease excludes callbacks through every public FE insertion/extraction path. */
+    EnergyTransfer beginEnergyTransfer() {
+        if (loadFailed || energyTransferActive) return null;
+        energyTransferActive = true;
+        return new EnergyTransfer();
+    }
+
+    final class EnergyTransfer implements AutoCloseable {
+        private boolean closed;
+
+        long insert(long amount, boolean simulate) { return insertEnergyInternal(amount, simulate); }
+        long extract(long amount, boolean simulate) { return extractEnergyInternal(amount, simulate); }
+
+        // Capacity was checked before the external call. It cannot be consumed by a reentrant transfer.
+        // A mid-call config reduction must not discard extracted FE or an unaccepted withdrawal.
+        void restore(long amount) {
+            if (amount > 0) {
+                energy = Math.addExact(energy, amount);
+                markEnergyChanged();
+            }
+        }
+
+        @Override public void close() {
+            if (!closed) {
+                closed = true;
+                energyTransferActive = false;
+            }
+        }
+    }
     private boolean loadFailed;
     private int gridRows = GRID_ROWS_DEFAULT;
     private Runnable dirtyCallback = () -> {
@@ -86,6 +153,21 @@ public final class PlayerIdeaStorage {
     /** For synchronous transfers that may need to return unaccepted items, including over-capacity data. */
     public IdeaStorageWithdrawal<ItemResourceKey> withdrawItem(ItemResourceKey key, long amount) {
         return IdeaStorageWithdrawal.take(items, key, simulateExtract(key, amount), this::markChanged);
+    }
+
+    public IdeaStorageWithdrawal<FluidResourceKey> withdrawFluid(FluidResourceKey key, long amount) {
+        return IdeaStorageWithdrawal.take(fluids, key, simulateExtractFluid(key, amount), this::markChanged);
+    }
+
+    public IdeaStorageWithdrawal<ResourceLocation> withdrawChemical(ResourceLocation key, long amount) {
+        return IdeaStorageWithdrawal.take(chemicals, key, simulateExtractChemical(key, amount), this::markChanged);
+    }
+
+    public IdeaStorageWithdrawal<Void> withdrawEnergy(long amount) {
+        return new IdeaStorageWithdrawal<>(extractEnergy(amount, false), restored -> {
+            energy = Math.addExact(energy, restored);
+            markEnergyChanged();
+        });
     }
 
     public long simulateInsertFluid(FluidStack template, long amount) {
@@ -203,40 +285,37 @@ public final class PlayerIdeaStorage {
 
     /**
      * ロード時の復元専用。容量チェックを行わず、超過状態のまま復元する。
-     * 重複キーは安全に加算し、overflow 時は警告のうえ大きい方を採用する。
+     * 重複キーは加算する。overflow は保存層へ通知して元NBTを保護する。
      */
     void loadEntry(ItemResourceKey key, long count) {
         long existing = items.getOrDefault(key, 0L);
-        long merged = mergeLoadedAmount("item", key, existing, count);
+        long merged = Math.addExact(existing, count);
         items.put(key, merged);
     }
 
     void loadFluidEntry(FluidResourceKey key, long amount) {
         long existing = fluids.getOrDefault(key, 0L);
-        long merged = mergeLoadedAmount("fluid", key, existing, amount);
+        long merged = Math.addExact(existing, amount);
         fluids.put(key, merged);
     }
 
     void loadChemicalEntry(ResourceLocation chemicalId, long amount) {
         long existing = chemicals.getOrDefault(chemicalId, 0L);
-        long merged = mergeLoadedAmount("chemical", chemicalId, existing, amount);
+        long merged = Math.addExact(existing, amount);
         chemicals.put(chemicalId, merged);
     }
 
-    private static long mergeLoadedAmount(String category, Object key, long existing, long amount) {
-        try {
-            return Math.addExact(existing, amount);
-        } catch (ArithmeticException overflow) {
-            LOGGER.warn("Idea storage {} entry overflow while merging duplicate keys for {}; keeping the larger amount.",
-                    category, key);
-            return Math.max(existing, amount);
-        }
+    private void markChanged() {
+        inventoryVersion++;
+        markEnergyChanged();
     }
 
-    private void markChanged() {
+    private void markEnergyChanged() {
         version++;
         dirtyCallback.run();
     }
+
+    public long getInventoryVersion() { return inventoryVersion; }
 
     public List<Map.Entry<ItemResourceKey, Long>> itemEntries() {
         return List.copyOf(items.entrySet());
@@ -248,6 +327,38 @@ public final class PlayerIdeaStorage {
 
     public List<Map.Entry<ResourceLocation, Long>> chemicalEntries() {
         return List.copyOf(chemicals.entrySet());
+    }
+
+    /** ID-only totals for Psi Number; component variants count together without copying templates. */
+    public double itemAmountById(ResourceLocation id) {
+        if (loadFailed || id == null) return 0.0D;
+        double total = 0.0D;
+        for (var entry : items.entrySet()) {
+            if (id.equals(entry.getKey().id())) total += entry.getValue();
+        }
+        return total;
+    }
+
+    public double fluidAmountById(ResourceLocation id) {
+        if (loadFailed || id == null) return 0.0D;
+        double total = 0.0D;
+        for (var entry : fluids.entrySet()) {
+            if (id.equals(entry.getKey().id())) total += entry.getValue();
+        }
+        return total;
+    }
+
+    /** Mekanism 10 persists kind-prefixed keys; user-facing IDs aggregate matching registries. */
+    public double chemicalAmountById(ResourceLocation id) {
+        if (loadFailed || id == null) return 0;
+        double total = 0;
+        for (var entry : chemicals.entrySet()) {
+            ResourceLocation key = entry.getKey();
+            int slash = key.getPath().indexOf('/');
+            if (id.equals(key) || slash >= 0 && id.equals(ResourceLocation.fromNamespaceAndPath(key.getNamespace(), key.getPath().substring(slash + 1))))
+                total += entry.getValue();
+        }
+        return total;
     }
 
     public int itemTypeCount() {

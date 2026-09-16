@@ -1,0 +1,6 @@
+{
+  "command_id": "idea_storage_energy",
+  "piece": "psitweaks:selector_idea_storage_energy",
+  "unlock_item": "psitweaks:program_idea_storage",
+  "unlock_tag": "psitweaks.unlock.idea_storage"
+}

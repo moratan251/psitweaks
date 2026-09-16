@@ -111,6 +111,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.CAD_BATTERY_REACTIVE.get());
                         pOutput.accept(PsitweaksItems.CAD_BATTERY_QUANTUM.get());
                         pOutput.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());
+                        pOutput.accept(PsitweaksItems.PORTABLE_SPELL_PROGRAMMER.get());
                         pOutput.accept(PsitweaksItems.SPELL_MAGAZINE.get());
                         pOutput.accept(PsitweaksItems.INLINE_CASTER.get());
                         pOutput.accept(PsitweaksItems.SECONDARY_CASTER.get());

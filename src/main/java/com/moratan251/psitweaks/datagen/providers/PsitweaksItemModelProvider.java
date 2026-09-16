@@ -203,6 +203,11 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        var activeProgrammer = withExistingParent("portable_spell_programmer_active", mcLoc("item/generated"))
+                .texture("layer0", modLoc("item/portable_spell_programmer"));
+        withExistingParent("portable_spell_programmer", mcLoc("item/generated"))
+                .texture("layer0", modLoc("item/portable_spell_programmer_inactive"))
+                .override().predicate(modLoc("active"), 1).model(activeProgrammer).end();
         for (String name : GENERATED_ITEMS) {
             generated(name);
         }

@@ -9,7 +9,10 @@ import net.minecraftforge.fluids.FluidStack;
 public record MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluidEntries,
                                      List<ChemicalEntry> chemicalEntries,
                                      int maxItemTypes, int maxFluidTypes, int maxChemicalTypes,
-                                     boolean loadFailed) {
+                                     boolean loadFailed, long energy, long maxEnergy) {
+    public MessageIdeaStorageSync(List<Entry> entries, List<FluidEntry> fluids, List<ChemicalEntry> chemicals, int itemsMax, int fluidsMax, int chemicalsMax, boolean failed) {
+        this(entries, fluids, chemicals, itemsMax, fluidsMax, chemicalsMax, failed, 0, 0);
+    }
 
     public record Entry(long entryId, ItemStack template, long count) {
         public Entry(ItemStack template, long count) { this(0, template, count); }

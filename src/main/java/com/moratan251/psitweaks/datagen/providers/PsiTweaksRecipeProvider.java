@@ -976,6 +976,17 @@ public class PsiTweaksRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_flashmetal", has(PsitweaksItems.FLASHMETAL.get()))
                 .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "flash_charm"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PORTABLE_SPELL_PROGRAMMER.get())
+                .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
+                .define('G', ModItems.psigem)
+                .define('E', Items.ENDER_PEARL)
+                .define('A', ModBlocks.programmer)
+                .pattern("CGC")
+                .pattern("EAE")
+                .pattern("CGC")
+                .unlockedBy("has_chaotic_psimetal", has(PsitweaksItems.CHAOTIC_PSIMETAL.get()))
+                .save(consumer, ResourceLocation.fromNamespaceAndPath("psitweaks", "portable_spell_programmer"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get())
                 .define('C', PsitweaksItems.CHAOTIC_PSIMETAL.get())
                 .define('G', ModItems.psigem)

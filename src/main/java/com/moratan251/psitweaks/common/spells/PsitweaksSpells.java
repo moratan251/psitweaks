@@ -262,6 +262,13 @@ public class PsitweaksSpells {
             registerSpellPiece("macro_face_axial_offset", PieceMacroFaceAxialOffset.class);
             registerSpellPiece("macro_face_axial_rotation", PieceMacroFaceAxialRotation.class);
             registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
+            registerSpellPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_supply_fe", PieceTrickIdeaStorageSupplyFE.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("selector_idea_storage_energy", PieceSelectorIdeaStorageEnergy.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("selector_idea_storage_item_amount", PieceSelectorIdeaStorageItemAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("selector_idea_storage_fluid_amount", PieceSelectorIdeaStorageFluidAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("selector_idea_storage_chemical_amount", PieceSelectorIdeaStorageChemicalAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_ideaspace_connector", PieceTrickIdeaspaceConnector.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
             registerSpellPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
 
 

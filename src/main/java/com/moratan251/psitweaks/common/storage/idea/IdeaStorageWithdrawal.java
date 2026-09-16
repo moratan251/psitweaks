@@ -1,21 +1,18 @@
 package com.moratan251.psitweaks.common.storage.idea;
 
 import java.util.Map;
+import java.util.function.LongConsumer;
 
 /** Short-lived receipt for a synchronous transfer. Only withdrawn units may bypass insertion limits. */
 public final class IdeaStorageWithdrawal<K> {
-    private final Map<K, Long> entries;
-    private final K key;
-    private final Runnable changed;
+    private final LongConsumer restorer;
     private final long amount;
     private long refundable;
 
-    private IdeaStorageWithdrawal(Map<K, Long> entries, K key, long amount, Runnable changed) {
-        this.entries = entries;
-        this.key = key;
+    IdeaStorageWithdrawal(long amount, LongConsumer restorer) {
         this.amount = amount;
         this.refundable = amount;
-        this.changed = changed;
+        this.restorer = restorer;
     }
 
     static <K> IdeaStorageWithdrawal<K> take(Map<K, Long> entries, K key, long requested, Runnable changed) {
@@ -29,7 +26,10 @@ public final class IdeaStorageWithdrawal<K> {
             }
             changed.run();
         }
-        return new IdeaStorageWithdrawal<>(entries, key, amount, changed);
+        return new IdeaStorageWithdrawal<>(amount, restored -> {
+            entries.put(key, Math.addExact(entries.getOrDefault(key, 0L), restored));
+            changed.run();
+        });
     }
 
     public long amount() {
@@ -44,8 +44,7 @@ public final class IdeaStorageWithdrawal<K> {
         if (amount == 0) {
             return;
         }
-        entries.put(key, Math.addExact(entries.getOrDefault(key, 0L), amount));
+        restorer.accept(amount);
         refundable -= amount;
-        changed.run();
     }
 }

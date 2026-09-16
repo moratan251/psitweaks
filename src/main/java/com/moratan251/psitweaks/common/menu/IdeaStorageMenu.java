@@ -94,6 +94,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     private final TransientCraftingContainer craftMatrix = new TransientCraftingContainer(this, 3, 3);
     private final ResultContainer craftResult = new ResultContainer();
     private boolean craftOpen;
+    private long lastSyncTick = -20, lastMaxEnergy = -1;
     private long lastSyncedVersion = -1L;
     private int lastSyncedMaxItemTypes = -1;
     private int lastSyncedMaxFluidTypes = -1;
@@ -402,10 +403,13 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     public void broadcastChanges() {
         super.broadcastChanges();
         if (player instanceof ServerPlayer serverPlayer && storage != null
-                && (storage.getVersion() != lastSyncedVersion
+                && (lastSyncedVersion < 0 || player.level().getGameTime() - lastSyncTick >= 5)
+                && (storage.maxEnergy() != lastMaxEnergy || storage.getVersion() != lastSyncedVersion
                 || storage.maxItemTypes() != lastSyncedMaxItemTypes
                 || storage.maxFluidTypes() != lastSyncedMaxFluidTypes
                 || storage.maxChemicalTypes() != lastSyncedMaxChemicalTypes)) {
+            lastSyncTick = player.level().getGameTime();
+            lastMaxEnergy = storage.maxEnergy();
             lastSyncedVersion = storage.getVersion();
             lastSyncedMaxItemTypes = storage.maxItemTypes();
             lastSyncedMaxFluidTypes = storage.maxFluidTypes();
@@ -760,6 +764,10 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         }
         ItemStack carried = this.getCarried();
         if (carried.isEmpty()) {
+            return;
+        }
+        if (carried.is(Items.BUCKET) && targetKind != MessageIdeaStorageTransferContents.TARGET_FLUID) {
+            depositCarried(true);
             return;
         }
         if (!carried.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()

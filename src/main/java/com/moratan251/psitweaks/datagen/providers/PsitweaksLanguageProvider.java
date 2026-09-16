@@ -6,6 +6,11 @@ import net.minecraftforge.common.data.LanguageProvider;
 
 public class PsitweaksLanguageProvider extends LanguageProvider {
     private final String locale;
+    private final java.util.Set<String> emitted109 = new java.util.HashSet<>();
+    @Override public void add(String key, String value) {
+        emitted109.add(key);
+        super.add(key, Backport109Translations.values(locale).getOrDefault(key, value));
+    }
 
     public PsitweaksLanguageProvider(PackOutput output, String locale) {
         super(output, Psitweaks.MOD_ID, locale);
@@ -32,6 +37,9 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
                 default -> bee.enUs();
             });
         }
+            Backport109Translations.values(locale).forEach((key, value) -> {
+            if (!emitted109.contains(key)) add(key, value);
+        });
     }
 
     private void addBackportedItemTranslations() {

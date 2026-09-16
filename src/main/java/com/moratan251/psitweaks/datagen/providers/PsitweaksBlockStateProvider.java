@@ -21,6 +21,7 @@ public class PsitweaksBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        simpleBlock(PsitweaksBlocks.IDEASPACE_CONNECTOR.get(), models().getBuilder("ideaspace_connector").texture("particle", modLoc("block/conjuredpulsar")));
         conjuredPulsar(PsitweaksBlocks.CONJURED_PULSAR.get(), "conjuredpulsar");
         conjuredPulsar(PsitweaksBlocks.CONJURED_PULSAR_LIGHT.get(), "conjuredpulsarlight");
         cubeAll(PsitweaksBlocks.CAD_DISASSEMBLER.get(), "cad_disassembler");

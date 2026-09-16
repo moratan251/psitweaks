@@ -1,0 +1,21 @@
+{
+  "name": "item.psitweaks.portable_spell_programmer",
+  "category": "psi:items",
+  "icon": "psitweaks:portable_spell_programmer",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.portable_spell_programmer.0",
+      "item": "psitweaks:portable_spell_programmer",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_item.portable_spell_programmer.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "psitweaks:portable_spell_programmer"
+    }
+  ]
+}

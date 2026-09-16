@@ -22,7 +22,11 @@ public class ConjuredPulsarBlockEntity extends BlockEntity {
     private ItemStack colorizer = ItemStack.EMPTY;
 
     public ConjuredPulsarBlockEntity(BlockPos pos, BlockState state) {
-        super(PsitweaksBlockEntityTypes.CONJURED_PULSAR.get(), pos, state);
+        this(PsitweaksBlockEntityTypes.CONJURED_PULSAR.get(), pos, state);
+    }
+
+    protected ConjuredPulsarBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public ItemStack getColorizer() {

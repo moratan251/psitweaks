@@ -33,6 +33,10 @@ public final class FluidResourceKey {
         return template.copy();
     }
 
+    public net.minecraft.resources.ResourceLocation id() {
+        return net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(template.getFluid());
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FluidResourceKey other

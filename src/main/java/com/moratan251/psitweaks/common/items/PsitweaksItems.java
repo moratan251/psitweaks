@@ -227,6 +227,9 @@ public class PsitweaksItems {
     public static final RegistryObject<Item> TRANSCENDENT_SPELL_BULLET_CIRCLE = ITEMS.register("transcendent_spell_bullet_circle", () -> new ItemTranscendentCircleSpellBullet(new Item.Properties()));
 
 
+    public static final RegistryObject<Item> PORTABLE_SPELL_PROGRAMMER = ITEMS.register("portable_spell_programmer",
+            () -> new ItemPortableSpellProgrammer(new Item.Properties().rarity(Rarity.RARE)));
+
     public static final RegistryObject<Item> PORTABLE_CAD_ASSEMBLER = ITEMS.register("portable_cad_assembler",
             () -> new ItemPortableCADAssembler(new Item.Properties()));
 

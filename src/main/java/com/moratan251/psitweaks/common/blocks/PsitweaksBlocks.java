@@ -19,6 +19,8 @@ public class PsitweaksBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "psitweaks");
     public static final DeferredRegister<Item> BLOCK_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "psitweaks");
 
+    public static final RegistryObject<IdeaspaceConnectorBlock> IDEASPACE_CONNECTOR = BLOCKS.register("ideaspace_connector", () -> new IdeaspaceConnectorBlock(conjuredPulsarProperties()));
+
     public static final RegistryObject<ConjuredPulsarBlock> CONJURED_PULSAR = BLOCKS.register(
             "conjuredpulsar",
             () -> new ConjuredPulsarBlock(conjuredPulsarProperties(), true, false)

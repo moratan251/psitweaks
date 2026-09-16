@@ -41,6 +41,10 @@ public final class ItemResourceKey {
         return Math.max(1, template.getMaxStackSize());
     }
 
+    public net.minecraft.resources.ResourceLocation id() {
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(template.getItem());
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof ItemResourceKey other

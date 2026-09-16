@@ -12,33 +12,37 @@ public final class IdeaStorageSyncSession {
     private final Map<Long, Object> keys = new HashMap<>();
     private long nextId = 1;
     private long revision;
+    private long inventoryVersion = -1;
 
     public Object resolve(long id) { return keys.get(id); }
 
     public void send(PlayerIdeaStorage storage, IdeaStorageMenuToken token, Consumer<MessageIdeaStorageSyncPart> output) {
-        Map<Object, Long> current = new LinkedHashMap<>();
-        storage.itemEntries().forEach(e -> current.put(e.getKey(), e.getValue()));
-        storage.fluidEntries().forEach(e -> current.put(e.getKey(), e.getValue()));
-        storage.chemicalEntries().forEach(e -> current.put(e.getKey(), e.getValue()));
         List<IdeaStorageSyncEntry> changes = new ArrayList<>();
-        var iterator = previous.entrySet().iterator();
-        while (iterator.hasNext()) {
-            var old = iterator.next();
-            if (!current.containsKey(old.getKey())) {
-                changes.add(new IdeaStorageSyncEntry(old.getValue().id(), null, 0));
-                keys.remove(old.getValue().id());
-                iterator.remove();
+        if (inventoryVersion != storage.getInventoryVersion()) {
+            Map<Object, Long> current = new LinkedHashMap<>();
+            storage.itemEntries().forEach(e -> current.put(e.getKey(), e.getValue()));
+            storage.fluidEntries().forEach(e -> current.put(e.getKey(), e.getValue()));
+            storage.chemicalEntries().forEach(e -> current.put(e.getKey(), e.getValue()));
+            var iterator = previous.entrySet().iterator();
+            while (iterator.hasNext()) {
+                var old = iterator.next();
+                if (!current.containsKey(old.getKey())) {
+                    changes.add(new IdeaStorageSyncEntry(old.getValue().id(), null, 0));
+                    keys.remove(old.getValue().id());
+                    iterator.remove();
+                }
             }
+            current.forEach((key, count) -> {
+                IdeaStorageSyncEntry old = previous.get(key);
+                if (old == null || old.amount() != count) {
+                    var next = new IdeaStorageSyncEntry(old == null ? nextId++ : old.id(), key, count);
+                    previous.put(key, next);
+                    keys.put(next.id(), key);
+                    changes.add(new IdeaStorageSyncEntry(next.id(), old == null ? key : null, count));
+                }
+            });
+            inventoryVersion = storage.getInventoryVersion();
         }
-        current.forEach((key, count) -> {
-            IdeaStorageSyncEntry old = previous.get(key);
-            if (old == null || old.amount() != count) {
-                var next = new IdeaStorageSyncEntry(old == null ? nextId++ : old.id(), key, count);
-                previous.put(key, next);
-                keys.put(next.id(), key);
-                changes.add(new IdeaStorageSyncEntry(next.id(), old == null ? key : null, count));
-            }
-        });
         boolean reset = revision == 0;
         long currentRevision = ++revision;
         FriendlyByteBuf frame = new FriendlyByteBuf(Unpooled.buffer(256, MessageIdeaStorageSyncPart.MAX_DATA));
@@ -69,6 +73,6 @@ public final class IdeaStorageSyncSession {
         byte[] bytes = new byte[frame.readableBytes()];
         frame.getBytes(frame.readerIndex(), bytes);
         return new MessageIdeaStorageSyncPart(token, revision, sequence, reset && sequence == 0, last,
-                storage.maxItemTypes(), storage.maxFluidTypes(), storage.maxChemicalTypes(), storage.isLoadFailed(), bytes);
+                storage.maxItemTypes(), storage.maxFluidTypes(), storage.maxChemicalTypes(), storage.isLoadFailed(), bytes, storage.energy(), storage.maxEnergy());
     }
 }

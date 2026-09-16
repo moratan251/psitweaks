@@ -41,11 +41,14 @@ public class PsitweaksConfig {
         public final ForgeConfigSpec.IntValue ideaStorageMaxChemicalTypes;
         public final ForgeConfigSpec.LongValue ideaStorageMaxChemicalPerType;
 
+        public final ForgeConfigSpec.LongValue ideaStorageMaxEnergy;
+
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Ideaspace Storage Settings")
                     .translation("psitweaks.configuration.idea_storage")
                     .push("ideaStorage");
 
+            ideaStorageMaxEnergy = builder.comment("Maximum stored FE per player.").translation("psitweaks.configuration.idea_storage.max_energy").defineInRange("maxEnergy", Long.MAX_VALUE, 1L, Long.MAX_VALUE);
             ideaStorageMaxItemTypes = builder
                     .comment("イデアストレージに格納できるアイテムの最大種類数",
                             "Maximum number of distinct item types per player in the Ideaspace Storage")

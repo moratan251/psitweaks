@@ -19,6 +19,7 @@ public final class IdeaStorageJeiPlugin implements IModPlugin {
     public ResourceLocation getPluginUid() { return ResourceLocation.fromNamespaceAndPath("psitweaks", "idea_storage"); }
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGhostIngredientHandler(com.moratan251.psitweaks.client.gui.IdeaspaceConnectorScreen.class, new ConnectorGhostIngredientHandler());
         IIngredientManager ingredientManager = registration.getJeiHelpers().getIngredientManager();
         registration.addGuiContainerHandler(IdeaStorageScreen.class, new IGuiContainerHandler<>() {
             @Override

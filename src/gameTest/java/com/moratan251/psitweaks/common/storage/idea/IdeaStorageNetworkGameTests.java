@@ -156,7 +156,7 @@ public class IdeaStorageNetworkGameTests {
         menu.handleTransferContents(player, 0, FluidStack.EMPTY, null, false);
         h.assertTrue(menu.getCarried().is(Items.BUCKET), "container contents transferred");
         menu.handleTransferContents(player, 0, FluidStack.EMPTY, null, false);
-        h.assertTrue(menu.getCarried().is(Items.BUCKET), "empty container not deposited");
+        h.assertTrue(menu.getCarried().isEmpty() && storage.simulateExtract(ItemResourceKey.of(new ItemStack(Items.BUCKET)).orElseThrow(), 2) == 1, "empty bucket deposited individually");
         storage.insert(new ItemStack(Items.DIAMOND), Long.MAX_VALUE);
         menu.setCarried(new ItemStack(Items.DIAMOND, 2));
         menu.handleTransferContents(player, 0, FluidStack.EMPTY, null, false);

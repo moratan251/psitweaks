@@ -20,12 +20,21 @@ public final class IdeaStorageSyncAccumulator {
     private int recordLength;
     private ByteArrayOutputStream record;
     private boolean broken;
+    private MessageIdeaStorageSync snapshot;
+    // Menu-owned render templates are reused for amount-only updates.
+    private Map<Long, Object> templates = new HashMap<>();
 
     public Optional<MessageIdeaStorageSync> accept(IdeaStorageMenuToken expected, MessageIdeaStorageSyncPart part) {
         if (!expected.equals(part.token()) || part.revision() <= completedRevision || broken) return Optional.empty();
         if (part.sequence() == 0) {
             if (staging != null || part.revision() != completedRevision + 1
                     || part.reset() != (completedRevision == 0)) return fail();
+            if (!part.reset() && part.last() && part.data().length == 0 && snapshot != null) {
+                completedRevision = part.revision();
+                snapshot = new MessageIdeaStorageSync(snapshot.entries(), snapshot.fluidEntries(), snapshot.chemicalEntries(),
+                        part.maxItems(), part.maxFluids(), part.maxChemicals(), part.loadFailed(), part.energy(), part.maxEnergy());
+                return Optional.of(snapshot);
+            }
             receivingRevision = part.revision();
             nextSequence = 0;
             staging = part.reset() ? new LinkedHashMap<>() : new LinkedHashMap<>(visible);
@@ -67,23 +76,33 @@ public final class IdeaStorageSyncAccumulator {
             }
             if (!part.last()) return Optional.empty();
             if (record != null || headerBytes != 0) return fail();
+            var previous = visible;
             visible = staging;
             staging = null;
             completedRevision = receivingRevision;
             List<MessageIdeaStorageSync.Entry> items = new ArrayList<>();
             List<MessageIdeaStorageSync.FluidEntry> fluids = new ArrayList<>();
             List<MessageIdeaStorageSync.ChemicalEntry> chemicals = new ArrayList<>();
+            Map<Long, Object> nextTemplates = new HashMap<>();
             for (var entry : visible.values()) {
+                var old = previous.get(entry.id());
+                Object template = old != null && old.key() == entry.key() ? templates.get(entry.id()) : null;
                 if (entry.key() instanceof ItemResourceKey item) {
-                    items.add(new MessageIdeaStorageSync.Entry(entry.id(), item.template(), entry.amount()));
+                    if (template == null) template = item.template();
+                    nextTemplates.put(entry.id(), template);
+                    items.add(new MessageIdeaStorageSync.Entry(entry.id(), (net.minecraft.world.item.ItemStack) template, entry.amount()));
                 } else if (entry.key() instanceof FluidResourceKey fluid) {
-                    fluids.add(new MessageIdeaStorageSync.FluidEntry(entry.id(), fluid.template(), entry.amount()));
+                    if (template == null) template = fluid.template();
+                    nextTemplates.put(entry.id(), template);
+                    fluids.add(new MessageIdeaStorageSync.FluidEntry(entry.id(), (net.minecraftforge.fluids.FluidStack) template, entry.amount()));
                 } else if (entry.key() instanceof ResourceLocation chemical) {
                     chemicals.add(new MessageIdeaStorageSync.ChemicalEntry(entry.id(), chemical, entry.amount()));
                 }
             }
-            return Optional.of(new MessageIdeaStorageSync(items, fluids, chemicals,
-                    part.maxItems(), part.maxFluids(), part.maxChemicals(), part.loadFailed()));
+            templates = nextTemplates;
+            snapshot = new MessageIdeaStorageSync(items, fluids, chemicals,
+                    part.maxItems(), part.maxFluids(), part.maxChemicals(), part.loadFailed(), part.energy(), part.maxEnergy());
+            return Optional.of(snapshot);
         } catch (RuntimeException malformed) {
             return fail();
         }
