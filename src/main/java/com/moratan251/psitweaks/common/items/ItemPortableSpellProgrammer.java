@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import vazkii.psi.api.capability.PsiCapabilities;
+import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.common.core.handler.PsiSoundHandler;
 import vazkii.psi.common.item.base.ModDataComponents;
@@ -61,12 +62,21 @@ public final class ItemPortableSpellProgrammer extends Item {
                 || player.getMainHandItem() != programmer || !player.isShiftKeyDown()) {
             return false;
         }
-        var acceptor = PsiCapabilities.spellAcceptor(player.getOffhandItem());
-        Spell spell = getSpellCopy(programmer);
+        ItemStack target = player.getOffhandItem();
+        var acceptor = PsiCapabilities.spellAcceptor(target);
         if (acceptor == null) {
             player.displayClientMessage(Component.translatable("message.psitweaks.portable_spell_programmer.no_target"), true);
             return false;
         }
+        // CADs and socketable equipment expose an acceptor even when their selected socket is empty.
+        // Check the actual destination before renewing the spell UUID or reporting success.
+        var socketable = PsiCapabilities.socketable(target);
+        if (socketable != null && (!socketable.isSocketSlotAvailable(socketable.getSelectedSlot())
+                || !ISpellAcceptor.isAcceptor(socketable.getSelectedBullet()))) {
+            player.displayClientMessage(Component.translatable("message.psitweaks.portable_spell_programmer.no_selected_bullet"), true);
+            return false;
+        }
+        Spell spell = getSpellCopy(programmer);
         if (spell.grid.isEmpty()) {
             player.displayClientMessage(Component.translatable("message.psitweaks.portable_spell_programmer.empty_spell"), true);
             return false;

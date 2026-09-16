@@ -322,6 +322,7 @@
   "message.psitweaks.cad_disassembler.unsupported_tic_cad": "このTiCCADは安全に分解できませんでした",
   "message.psitweaks.portable_spell_programmer.compile_failed": "術式をコンパイルできません",
   "message.psitweaks.portable_spell_programmer.empty_spell": "術式が空です",
+  "message.psitweaks.portable_spell_programmer.no_selected_bullet": "選択中のスロットに書き込み可能な術式弾がありません",
   "message.psitweaks.portable_spell_programmer.no_target": "オフハンドに書き込み可能なアイテムがありません",
   "message.psitweaks.spell_unlock.already": "%s は既に解禁済みです",
   "message.psitweaks.spell_unlock.command.all.grant.multi": "全術式の解禁を付与しました（%s/%s 件変更、対象変更%s/%s人）",

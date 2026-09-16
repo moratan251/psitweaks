@@ -8,7 +8,10 @@ import com.moratan251.psitweaks.common.menu.PortableSpellProgrammerMenu;
 import com.moratan251.psitweaks.common.network.MessagePortableSpellProgrammerEdit;
 import io.netty.buffer.Unpooled;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.PlayLevelSoundEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.PsiAPI;
@@ -29,6 +34,7 @@ import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.common.item.ItemCAD;
+import vazkii.psi.common.core.handler.PsiSoundHandler;
 import vazkii.psi.common.item.ItemSpellDrive;
 import vazkii.psi.common.item.base.ModItems;
 import vazkii.psi.common.spell.SpellCompiler;
@@ -36,6 +42,89 @@ import vazkii.psi.common.spell.SpellCompiler;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class PortableSpellProgrammerGameTests {
+    @GameTest(template = "psi110_empty")
+    public static void emptySelectedCadSocketDoesNotReportSuccess(GameTestHelper helper) {
+        var player = new FeedbackPlayer(helper.getLevel());
+        player.setGameMode(GameType.CREATIVE);
+        player.setShiftKeyDown(true);
+        var programmer = programmer("CAD destination");
+        player.setItemInHand(InteractionHand.MAIN_HAND, programmer);
+        var cad = ItemCAD.makeCAD(player.registryAccess(), new ItemStack(ModItems.cadAssemblyPsimetal.get()),
+                new ItemStack(ModItems.cadSocketHuge.get()));
+        var sockets = ISocketable.socketable(cad);
+        sockets.setSelectedSlot(1);
+        var successSounds = new AtomicInteger();
+        Consumer<PlayLevelSoundEvent.AtPosition> listener = event -> {
+            if (event.getLevel() == helper.getLevel() && event.getSound() != null
+                    && event.getSound().value() == PsiSoundHandler.bulletCreate.get()) successSounds.incrementAndGet();
+        };
+        NeoForge.EVENT_BUS.addListener(listener);
+        try {
+            assertMissingSelectedBullet(helper, player, programmer, cad);
+            helper.assertTrue(successSounds.get() == 0, "Empty CAD played the registration success sound");
+
+            sockets.setBulletInSocket(0, new ItemStack(ModItems.spellBullet.get()));
+            assertMissingSelectedBullet(helper, player, programmer, cad);
+            helper.assertTrue(successSounds.get() == 0, "Bullet in another socket caused a false success");
+
+            // Also reject a non-writable item left in a socket by commands or malformed component data.
+            sockets.setBulletInSocket(1, new ItemStack(Items.APPLE));
+            assertMissingSelectedBullet(helper, player, programmer, cad);
+            helper.assertTrue(successSounds.get() == 0, "Non-writable socket contents caused a false success");
+
+            sockets.setBulletInSocket(1, new ItemStack(ModItems.spellBullet.get()));
+            var previousUuid = ItemPortableSpellProgrammer.getSpellCopy(programmer).uuid;
+            player.lastMessage = null;
+            helper.assertTrue(ItemPortableSpellProgrammer.registerOffhandSpell(player, programmer), "Valid selected bullet was rejected");
+            helper.assertTrue(successSounds.get() == 1 && player.lastMessage == null, "Successful registration feedback changed");
+            helper.assertTrue(!previousUuid.equals(ItemPortableSpellProgrammer.getSpellCopy(programmer).uuid)
+                    && ItemSpellDrive.getSpell(sockets.getBulletInSocket(1)).name.equals("CAD destination")
+                    && ItemSpellDrive.getSpell(sockets.getBulletInSocket(0)) == null,
+                    "Valid registration did not renew identity or wrote the wrong socket");
+        } finally {
+            NeoForge.EVENT_BUS.unregister(listener);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void socketableEquipmentAlsoRequiresWritableSelectedBullet(GameTestHelper helper) {
+        var player = new FeedbackPlayer(helper.getLevel());
+        player.setGameMode(GameType.CREATIVE);
+        player.setShiftKeyDown(true);
+        var programmer = programmer("Equipment destination");
+        player.setItemInHand(InteractionHand.MAIN_HAND, programmer);
+        for (var item : List.of(PsitweaksItems.SECONDARY_CASTER.get(), PsitweaksItems.SPELL_MAGAZINE.get(),
+                PsitweaksItems.PSIMETAL_BOW.get(), PsitweaksItems.GRAVSTRINGER.get())) {
+            var target = new ItemStack(item);
+            var sockets = ISocketable.socketable(target);
+            sockets.setSelectedSlot(0);
+            assertMissingSelectedBullet(helper, player, programmer, target);
+            sockets.setBulletInSocket(0, new ItemStack(ModItems.spellBullet.get()));
+            player.lastMessage = null;
+            helper.assertTrue(ItemPortableSpellProgrammer.registerOffhandSpell(player, programmer) && player.lastMessage == null
+                    && ItemSpellDrive.getSpell(sockets.getBulletInSocket(0)).name.equals("Equipment destination"),
+                    "Socketable equipment could not register a valid bullet: " + item);
+        }
+        helper.succeed();
+    }
+
+    private static void assertMissingSelectedBullet(GameTestHelper helper, FeedbackPlayer player,
+                                                   ItemStack programmer, ItemStack target) {
+        player.setItemInHand(InteractionHand.OFF_HAND, target);
+        var previousTarget = target.copy();
+        var previousProgrammer = programmer.copy();
+        var previousUuid = ItemPortableSpellProgrammer.getSpellCopy(programmer).uuid;
+        player.lastMessage = null;
+        helper.assertTrue(!ItemPortableSpellProgrammer.registerOffhandSpell(player, programmer), "Missing selected bullet reported success");
+        player.assertFeedback(helper, "no_selected_bullet");
+        var result = programmer.getItem().use(player.level(), player, InteractionHand.MAIN_HAND);
+        helper.assertTrue(result.getResult().consumesAction() && !player.isUsingItem(), "Failure allowed offhand use");
+        helper.assertTrue(ItemStack.matches(target, previousTarget) && ItemStack.matches(programmer, previousProgrammer)
+                && previousUuid.equals(ItemPortableSpellProgrammer.getSpellCopy(programmer).uuid),
+                "Failed registration changed a socket, the programmer or its spell UUID");
+    }
+
     @GameTest(template = "psi110_empty")
     public static void failedRegistrationExplainsReasonInActionBar(GameTestHelper helper) {
         var player = new FeedbackPlayer(helper.getLevel());

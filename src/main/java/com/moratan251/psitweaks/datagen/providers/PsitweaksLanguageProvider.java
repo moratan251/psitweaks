@@ -1794,6 +1794,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "術式が空です";
             default -> "The spell is empty.";
         });
+        root.addProperty("message.psitweaks.portable_spell_programmer.no_selected_bullet", switch (locale) {
+            case "ja_jp" -> "選択中のスロットに書き込み可能な術式弾がありません";
+            default -> "The selected slot has no writable spell bullet.";
+        });
         root.addProperty("message.psitweaks.portable_spell_programmer.compile_failed", switch (locale) {
             case "ja_jp" -> "術式をコンパイルできません";
             default -> "The spell cannot be compiled.";
