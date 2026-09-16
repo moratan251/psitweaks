@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.selector_idea_storage_fluid_amount",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/selector_idea_storage_fluid_amount.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_idea_storage_fluid_amount"
+    }
+  ]
+}

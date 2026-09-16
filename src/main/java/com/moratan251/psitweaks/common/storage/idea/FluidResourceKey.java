@@ -2,8 +2,10 @@ package com.moratan251.psitweaks.common.storage.idea;
 
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /** Fluid ID + Data Component一式からなる不変の資源キー。量は1 mBへ正規化する。 */
@@ -32,6 +34,10 @@ public final class FluidResourceKey {
 
     public FluidStack template() {
         return template.copy();
+    }
+
+    public ResourceLocation id() {
+        return BuiltInRegistries.FLUID.getKey(template.getFluid());
     }
 
     @Override

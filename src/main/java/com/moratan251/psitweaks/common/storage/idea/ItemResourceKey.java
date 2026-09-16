@@ -2,9 +2,11 @@ package com.moratan251.psitweaks.common.storage.idea;
 
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Item ID + Data Component 一式からなる不変の資源キー。
@@ -36,6 +38,10 @@ public final class ItemResourceKey {
 
     public ItemStack template() {
         return template.copy();
+    }
+
+    public ResourceLocation id() {
+        return BuiltInRegistries.ITEM.getKey(template.getItem());
     }
 
     public int getMaxStackSize() {

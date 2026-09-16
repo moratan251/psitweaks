@@ -360,6 +360,12 @@ public final class PsitweaksSpells {
 
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ENERGY =
             registerPiece("selector_idea_storage_energy", PieceSelectorIdeaStorageEnergy.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ITEM_AMOUNT =
+            registerPiece("selector_idea_storage_item_amount", PieceSelectorIdeaStorageItemAmount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FLUID_AMOUNT =
+            registerPiece("selector_idea_storage_fluid_amount", PieceSelectorIdeaStorageFluidAmount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_AMOUNT =
+            registerPiece("selector_idea_storage_chemical_amount", PieceSelectorIdeaStorageChemicalAmount.class);
 
     private PsitweaksSpells() {
     }

@@ -70,7 +70,8 @@ public final class IdeaStorageEnergySelectorGameTests {
                 "Selector must share the Ideaspace Storage group");
         var data = PlayerDataHandler.get(player);
         String[] ids = {"trick_idea_storage_view", "trick_idea_storage_absorb_fe",
-                "trick_idea_storage_supply_fe", "selector_idea_storage_energy", "trick_ideaspace_connector"};
+                "trick_idea_storage_supply_fe", "selector_idea_storage_energy", "trick_ideaspace_connector",
+                "selector_idea_storage_item_amount", "selector_idea_storage_fluid_amount", "selector_idea_storage_chemical_amount"};
         for (String pieceId : ids) {
             helper.assertTrue(data.isPieceGroupUnlocked(group.key().location(), Psitweaks.location(pieceId))
                     == !PsitweaksConfig.COMMON.requireSpellUnlocks.get(), "Unexpected initial unlock: " + pieceId);

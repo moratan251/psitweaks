@@ -329,6 +329,25 @@ public final class PlayerIdeaStorage {
         return List.copyOf(chemicals.entrySet());
     }
 
+    /** ID-only totals for Psi Number; component variants count together without copying templates. */
+    public double itemAmountById(ResourceLocation id) {
+        if (loadFailed || id == null) return 0.0D;
+        double total = 0.0D;
+        for (var entry : items.entrySet()) {
+            if (id.equals(entry.getKey().id())) total += entry.getValue();
+        }
+        return total;
+    }
+
+    public double fluidAmountById(ResourceLocation id) {
+        if (loadFailed || id == null) return 0.0D;
+        double total = 0.0D;
+        for (var entry : fluids.entrySet()) {
+            if (id.equals(entry.getKey().id())) total += entry.getValue();
+        }
+        return total;
+    }
+
     public int itemTypeCount() {
         return items.size();
     }
