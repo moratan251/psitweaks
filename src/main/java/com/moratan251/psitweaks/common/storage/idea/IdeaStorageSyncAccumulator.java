@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 /** Menu-owned receiver. A partial update never replaces the last complete visible snapshot. */
 public final class IdeaStorageSyncAccumulator {
-    private static final int MAX_RECORD_BYTES = 64 * 1024 * 1024;
+    private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
     private Map<Long, IdeaStorageSyncEntry> visible = new LinkedHashMap<>();
     private Map<Long, IdeaStorageSyncEntry> staging;
     private long completedRevision;
@@ -49,7 +49,7 @@ public final class IdeaStorageSyncAccumulator {
                     if (headerBytes < 4) break;
                     recordLength = ((header[0] & 255) << 24) | ((header[1] & 255) << 16)
                             | ((header[2] & 255) << 8) | (header[3] & 255);
-                    if (recordLength < 16 || recordLength > MAX_RECORD_BYTES) return fail();
+                    if (recordLength < 16 || recordLength > IdeaStorageNbtLimits.MAX_RECORD_BYTES) return fail();
                     record = new ByteArrayOutputStream(Math.min(recordLength, MessageIdeaStorageSyncPart.MAX_DATA));
                 }
                 int count = Math.min(recordLength - record.size(), part.data().length - offset);
@@ -104,6 +104,8 @@ public final class IdeaStorageSyncAccumulator {
                     part.maxItems(), part.maxFluids(), part.maxChemicals(), part.loadFailed(), part.energy(), part.maxEnergy());
             return Optional.of(snapshot);
         } catch (RuntimeException malformed) {
+            LOGGER.warn("Cannot decode Ideaspace Storage revision {} (item NBT budget {} bytes); keeping the last complete snapshot.",
+                    receivingRevision, IdeaStorageNbtLimits.MAX_ITEM_NBT_BYTES, malformed);
             return fail();
         }
     }

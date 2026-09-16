@@ -15,7 +15,8 @@ public record IdeaStorageSyncEntry(long id, Object key, long amount) {
             buf.writeByte(3);
         } else if (key instanceof ItemResourceKey item) {
             buf.writeByte(0);
-            IdeaStorageNetwork.writeItem(buf, item.template());
+            // Send the immutable identity that already passed the admission limit.
+            buf.writeNbt((net.minecraft.nbt.CompoundTag) item.save());
         } else if (key instanceof FluidResourceKey fluid) {
             buf.writeByte(1);
             fluid.template().writeToPacket(buf);
@@ -31,7 +32,7 @@ public record IdeaStorageSyncEntry(long id, Object key, long amount) {
         if (id <= 0 || amount < 0) throw new IllegalArgumentException("Invalid storage entry");
         if (amount == 0) return new IdeaStorageSyncEntry(id, null, 0);
         Object key = switch (buf.readUnsignedByte()) {
-            case 0 -> ItemResourceKey.of(IdeaStorageNetwork.readItem(buf)).orElseThrow();
+            case 0 -> ItemResourceKey.of(IdeaStorageNetwork.readStorageItem(buf)).orElseThrow();
             case 1 -> FluidResourceKey.of(FluidStack.readFromPacket(buf)).orElseThrow();
             case 2 -> buf.readResourceLocation();
             case 3 -> null;

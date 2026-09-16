@@ -177,6 +177,9 @@ public final class ConnectorChemicalChecks {
         var resource = ConnectorMekanism.ingredient(stack);
         connector.setResource(0, resource);
         var handler = connector.getCapability(capability, Direction.NORTH).orElseThrow(AssertionError::new);
+        helper.assertTrue(handler.getTanks() == 10 && handler.getChemicalInTank(9).isEmpty()
+                && handler.getTankCapacity(9) > 0 && handler.extractChemical(9, 1, Action.EXECUTE).isEmpty(),
+                "Missing input-only virtual tank for " + resource);
         helper.assertTrue(handler.insertChemical(stack, Action.SIMULATE).isEmpty() && resource.amount(connector.storage()) == 0,
                 "Chemical simulation mutated inventory: " + resource);
         helper.assertTrue(handler.insertChemical(stack, Action.EXECUTE).isEmpty()
@@ -188,6 +191,48 @@ public final class ConnectorChemicalChecks {
         var tank = new ItemStack(MekanismBlocks.BASIC_CHEMICAL_TANK.asItem());
         tank.getCapability(capability).orElseThrow(AssertionError::new).insertChemical(factory.apply(chemical, 10L), Action.EXECUTE);
         helper.assertTrue(ConnectorMekanism.containedResource(tank).equals(resource), "Container filter lost chemical kind: " + resource);
+    }
+
+    public static void checkFullTanks(GameTestHelper helper, IdeaspaceConnectorBlockEntity source,
+                                      IdeaspaceConnectorBlockEntity target) {
+        var gases = MekanismAPI.gasRegistry().getValues().stream().filter(c -> !c.isEmptyType()).limit(10).toList();
+        helper.assertTrue(gases.size() == 10, "Need ten distinct gases for full-tank regression");
+        for (int i = 0; i < 9; i++) {
+            var resource = ConnectorMekanism.ingredient(new GasStack(gases.get(i), 1));
+            target.setResource(i, resource);
+            target.storage().insertChemical(resource.chemical(), 1000);
+        }
+        var incoming = new GasStack(gases.get(9), 1000);
+        var resource = ConnectorMekanism.ingredient(incoming);
+        var handler = target.getCapability(Capabilities.GAS_HANDLER, Direction.WEST).orElseThrow(AssertionError::new);
+        for (int i = 0; i < 9; i++) helper.assertTrue(!handler.getChemicalInTank(i).isEmpty(), "Published tank must be occupied");
+        long version = target.storage().getVersion();
+        helper.assertTrue(handler.insertChemical(incoming, Action.SIMULATE).isEmpty()
+                && target.storage().getVersion() == version, "Full tanks reject simulated unpublished gas or mutate storage");
+        helper.assertTrue(handler.insertChemical(incoming, Action.EXECUTE).isEmpty()
+                && resource.amount(target.storage()) == 1000, "Full tanks reject standard unpublished gas insertion");
+        source.setResource(0, resource);
+        source.storage().insertChemical(resource.chemical(), 1700);
+        helper.assertTrue(ConnectorMekanism.push(source.storage(), resource.chemical(), helper.getLevel(),
+                target.getBlockPos(), Direction.WEST, 700) == 700 && resource.amount(source.storage()) == 1000
+                && resource.amount(target.storage()) == 1700, "Connector transfer cannot insert through full tanks");
+        helper.assertTrue(handler.getTanks() == 10 && handler.getChemicalInTank(9).isEmpty()
+                && handler.getTankCapacity(9) > 0 && handler.extractChemical(9, 9999, Action.EXECUTE).isEmpty(),
+                "Virtual input tank must not expose stock");
+        target.setUsesCommonSettings(0, false);
+        target.setSideMode(0, Direction.WEST, ConnectorSideMode.OUTPUT);
+        var prohibited = new GasStack(gases.get(0), 50);
+        helper.assertTrue(!handler.isValid(9, prohibited)
+                && handler.insertChemical(9, prohibited, Action.EXECUTE).getAmount() == 50
+                && handler.insertChemical(prohibited, Action.EXECUTE).getAmount() == 50,
+                "Virtual tank bypassed per-slot input restrictions");
+        target.setSideMode(Direction.WEST, ConnectorSideMode.DISABLED);
+        helper.assertTrue(handler.insertChemical(9, incoming, Action.EXECUTE).getAmount() == 1000,
+                "Cached virtual tank bypassed disabled face");
+        target.setSideMode(Direction.WEST, ConnectorSideMode.BOTH);
+        helper.getLevel().destroyBlock(target.getBlockPos(), false);
+        helper.assertTrue(handler.insertChemical(9, incoming, Action.EXECUTE).getAmount() == 1000
+                && handler.getTankCapacity(9) == 0, "Removed connector accepts virtual tank input");
     }
 
 }

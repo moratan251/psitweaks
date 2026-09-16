@@ -86,8 +86,11 @@ public final class ConnectorMekanism {
             C chemical = registry.getValue(rawId(id));
             return chemical == null || chemical.isEmptyType() ? getEmptyStack() : factory.apply(chemical, amount);
         }
-        @Override public int getTanks() { return IdeaspaceConnectorBlockEntity.SLOTS; }
+        // Mekanism's bulk insertion visits matching tanks, then empty tanks. Keep an
+        // extra input-only tank available even when all nine published tanks are full.
+        @Override public int getTanks() { return IdeaspaceConnectorBlockEntity.SLOTS + 1; }
         @Override public S getChemicalInTank(int tank) {
+            if (tank < 0 || tank >= IdeaspaceConnectorBlockEntity.SLOTS) return getEmptyStack();
             var resource = connector.resource(tank);
             return connector.sideMode(tank, side).output ? stack(resource.chemical(), resource.amount(connector.storage())) : getEmptyStack();
         }
@@ -101,6 +104,7 @@ public final class ConnectorMekanism {
             return factory.apply(stack.getType(), stack.getAmount() - accepted);
         }
         @Override public S extractChemical(int tank, long amount, Action action) {
+            if (tank < 0 || tank >= IdeaspaceConnectorBlockEntity.SLOTS) return getEmptyStack();
             var storage = connector.storage(); var id = connector.resource(tank).chemical();
             if (storage == null || !connector.sideMode(tank, side).output || stack(id, 1).isEmpty()) return getEmptyStack();
             return stack(id, action.simulate() ? storage.simulateExtractChemical(id, amount) : storage.extractChemical(id, amount));

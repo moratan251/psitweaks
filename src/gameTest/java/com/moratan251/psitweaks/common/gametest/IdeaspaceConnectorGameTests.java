@@ -779,4 +779,14 @@ public final class IdeaspaceConnectorGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "connector_empty")
+    public static void fullChemicalTanksAcceptUnpublishedResources(GameTestHelper helper) {
+        if (MekanismCompat.isMekanismLoaded()) {
+            var source = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+            var target = place(helper, new BlockPos(2, 1, 1), UUID.randomUUID());
+            ConnectorChemicalChecks.checkFullTanks(helper, source, target);
+        }
+        helper.succeed();
+    }
+
 }

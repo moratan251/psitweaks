@@ -176,4 +176,109 @@ public class IdeaStorageNetworkGameTests {
         h.assertTrue(menu.getCarried().getCount() == 1, "visible result also excluded, like vanilla crafting table");
         h.succeed();
     }
+    @GameTest(template = "empty")
+    public static void singleItemAboveVanillaNbtLimitStillSynchronizes(GameTestHelper h) {
+        var stack = new ItemStack(Items.APPLE);
+        byte[] data = new byte[3 * 1024 * 1024];
+        new Random(719).nextBytes(data);
+        stack.getOrCreateTag().putByteArray("large", data);
+        var storage = new PlayerIdeaStorage();
+        h.assertTrue(storage.insert(stack, 2) == 2, "3 MiB item must be accepted");
+        var token = new IdeaStorageMenuToken(22, UUID.randomUUID());
+        var session = new IdeaStorageSyncSession();
+        var receiver = new IdeaStorageSyncAccumulator();
+        var parts = send(session, storage, token);
+        h.assertTrue(parts.size() > 6, "Single large resource was not fragmented");
+        MessageIdeaStorageSync snapshot = null;
+        for (int i = 0; i < parts.size(); i++) {
+            var wire = new FriendlyByteBuf(Unpooled.buffer());
+            try {
+                parts.get(i).write(wire);
+                var decoded = receiver.accept(token, MessageIdeaStorageSyncPart.read(wire));
+                h.assertTrue(decoded.isPresent() == (i == parts.size() - 1), "Large item failed atomic reassembly/decode");
+                if (decoded.isPresent()) snapshot = decoded.get();
+            } finally { wire.release(); }
+        }
+        h.assertTrue(snapshot != null && snapshot.entries().size() == 1
+                && ItemResourceKey.of(snapshot.entries().get(0).template()).equals(ItemResourceKey.of(stack)), "Large item NBT changed");
+        var template = snapshot.entries().get(0).template();
+        storage.insert(stack, 1);
+        var delta = send(session, storage, token);
+        h.assertTrue(delta.size() == 1 && delta.get(0).data().length < 64, "Large-item quantity resent NBT");
+        snapshot = receiver.accept(token, delta.get(0)).orElseThrow();
+        h.assertTrue(snapshot.entries().get(0).count() == 3 && snapshot.entries().get(0).template() == template,
+                "Receiver stopped after large NBT or copied template");
+        var wire = new FriendlyByteBuf(Unpooled.buffer());
+        try {
+            IdeaStorageNetwork.writeItem(wire, stack);
+            boolean rejected = false;
+            try { IdeaStorageNetwork.readItem(wire); } catch (RuntimeException expected) { rejected = true; }
+            h.assertTrue(rejected, "General-purpose item decoder must retain the vanilla limit");
+        } finally { wire.release(); }
+        h.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void storageNbtBudgetMatchesForgeAccounting(GameTestHelper h) {
+        var tag = new CompoundTag();
+        tag.putByte("byte", (byte) 7); tag.putShort("short", (short) 9); tag.putInt("int", 99);
+        tag.putLong("long", 4000); tag.putFloat("float", 1.2F); tag.putDouble("double", 1.5);
+        tag.putByteArray("bytes", new byte[31]); tag.putIntArray("ints", new int[23]); tag.putLongArray("longs", new long[13]);
+        tag.putString("Unicode 日本語", "\u0000a日本語😺");
+        var list = new ListTag(); list.add(tag.copy()); list.add(new CompoundTag()); tag.put("nested", list);
+        var strings = new ListTag(); strings.add(StringTag.valueOf("\u0000z日本語😺")); tag.put("strings", strings);
+        var wire = new FriendlyByteBuf(Unpooled.buffer());
+        try {
+            wire.writeNbt(tag);
+            var actual = new NbtAccounter(IdeaStorageNbtLimits.MAX_ITEM_NBT_BYTES);
+            h.assertTrue(tag.equals(wire.readNbt(actual)), "NBT round trip changed test data");
+            long predicted = IdeaStorageNbtLimits.accountItem(tag, IdeaStorageNbtLimits.MAX_ITEM_NBT_BYTES);
+            h.assertTrue(actual.getUsage() == predicted, "Admission budget differs from Forge reader: " + actual.getUsage() + " vs " + predicted);
+            h.assertTrue(IdeaStorageNbtLimits.accountItem(tag, predicted) == predicted, "Exact budget rejected");
+            boolean rejected = false;
+            try { IdeaStorageNbtLimits.accountItem(tag, predicted - 1); } catch (RuntimeException expected) { rejected = true; }
+            h.assertTrue(rejected, "NBT admission ignored the upper bound");
+            var tooLong = new CompoundTag(); tooLong.putString("text", "a".repeat(65536));
+            h.assertTrue(!IdeaStorageNbtLimits.fitsItem(tooLong), "Unencodable modified UTF accepted");
+            var tooDeep = new CompoundTag(); var cursor = tooDeep;
+            for (int depth = 0; depth < 513; depth++) { var next = new CompoundTag(); cursor.put("next", next); cursor = next; }
+            h.assertTrue(!IdeaStorageNbtLimits.fitsItem(tooDeep), "NBT deeper than the reader limit accepted");
+        } finally { wire.release(); }
+        h.succeed();
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void oversizedItemsAreRejectedAndOldDataIsPreserved(GameTestHelper h) throws Exception {
+        var item = new ItemStack(Items.APPLE);
+        item.getOrCreateTag().putByteArray("large", new byte[IdeaStorageNbtLimits.MAX_RECORD_BYTES]);
+        var storage = new PlayerIdeaStorage();
+        h.assertTrue(storage.simulateInsert(item, 1) == 0 && storage.insert(item, 1) == 0
+                && storage.itemEntries().isEmpty() && storage.getVersion() == 0 && item.getCount() == 1,
+                "Oversized admission consumed or stored the item");
+        var original = new CompoundTag(); original.putInt("DataVersion", IdeaStorageSavedData.CURRENT_DATA_VERSION);
+        var entry = new CompoundTag(); entry.put("item", item.save(new CompoundTag())); entry.putLong("count", 5);
+        var entries = new ListTag(); entries.add(entry); original.put("Items", entries);
+        var loaded = IdeaStorageSavedData.load(UUID.randomUUID(), original);
+        h.assertTrue(loaded.storage().isLoadFailed() && loaded.storage().insertEnergy(100, false) == 0,
+                "Existing oversized inventory must preserve its original save");
+        var file = java.nio.file.Files.createTempFile("psitweaks-oversized-", ".nbt");
+        try {
+            NbtIo.writeCompressed(loaded.save(new CompoundTag()), file.toFile());
+            h.assertTrue(NbtIo.readCompressed(file.toFile()).equals(original), "Oversized saved data was lost");
+        } finally { java.nio.file.Files.delete(file); }
+        var wire = new FriendlyByteBuf(Unpooled.buffer());
+        try {
+            // Announce an oversized array without allocating it in the decoder.
+            wire.writeByte(Tag.TAG_COMPOUND); wire.writeShort(0);
+            wire.writeByte(Tag.TAG_BYTE_ARRAY); wire.writeShort(0); wire.writeInt(IdeaStorageNbtLimits.MAX_RECORD_BYTES);
+            boolean rejected = false;
+            try { IdeaStorageNetwork.readStorageItem(wire); }
+            catch (RuntimeException expected) {
+                rejected = expected.getMessage() != null && expected.getMessage().contains("too big");
+            }
+            h.assertTrue(rejected, "S2C item reader did not enforce its allocation budget");
+        } finally { wire.release(); }
+        h.succeed();
+    }
+
 }

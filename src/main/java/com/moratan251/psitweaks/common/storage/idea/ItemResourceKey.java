@@ -22,11 +22,16 @@ public final class ItemResourceKey {
         if (stack == null || stack.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new ItemResourceKey(stack.copyWithCount(1)));
+        // Reject an oversized item before copying its payload, then check the full identity
+        // (including ForgeCaps) with the same allocation budget used by the S2C decoder.
+        if (stack.hasTag() && !IdeaStorageNbtLimits.fitsItem(stack.getTag())) return Optional.empty();
+        ItemResourceKey key = new ItemResourceKey(stack.copyWithCount(1));
+        return IdeaStorageNbtLimits.fitsItem(key.identity) ? Optional.of(key) : Optional.empty();
     }
 
     public static Optional<ItemResourceKey> parse(Tag tag) {
-        return tag instanceof CompoundTag compound ? ItemResourceKey.of(ItemStack.of(compound)) : Optional.empty();
+        return tag instanceof CompoundTag compound && IdeaStorageNbtLimits.fitsItem(compound)
+                ? ItemResourceKey.of(ItemStack.of(compound)) : Optional.empty();
     }
 
     public Tag save() {

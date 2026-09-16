@@ -1,5 +1,24 @@
 ## Changelog
 
+#### v0.10.9
+
+- Added the Portable Spell Programmer
+
+
+- Added new spell pieces
+  + Trick: Ideaspace Connector
+  + Selector: Ideaspace Storage Energy
+  + Selector: Ideaspace Storage - Item Amount
+  + Selector: Ideaspace Storage - Fluid Amount
+  + Selector: Ideaspace Storage - Chemical Amount
+
+
+- Changed the Tunneler to also deal damage to the Wither when its health is at or below 50%
+
+
+- Empty buckets can now be stored one at a time by right-clicking in Ideaspace Storage
+
+
 #### v0.10.8-hotfix
 
 - (1.21.1) Compatible with Psi 1.21.1-110

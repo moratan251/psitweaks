@@ -42,4 +42,11 @@ public final class IdeaStorageNetwork {
         var tag = buf.readNbt();
         return tag == null ? net.minecraft.world.item.ItemStack.EMPTY : net.minecraft.world.item.ItemStack.of(tag);
     }
+
+    /** Only for authenticated server-to-client warehouse records, after bounded reassembly. */
+    public static net.minecraft.world.item.ItemStack readStorageItem(net.minecraft.network.FriendlyByteBuf buf) {
+        var tag = buf.readNbt(new net.minecraft.nbt.NbtAccounter(
+                com.moratan251.psitweaks.common.storage.idea.IdeaStorageNbtLimits.MAX_ITEM_NBT_BYTES));
+        return tag == null ? net.minecraft.world.item.ItemStack.EMPTY : net.minecraft.world.item.ItemStack.of(tag);
+    }
 }

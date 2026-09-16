@@ -49,7 +49,8 @@ public final class IdeaStorageSyncSession {
         int sequence = 0;
         try {
             for (var entry : changes) {
-                FriendlyByteBuf record = new FriendlyByteBuf(Unpooled.buffer());
+                FriendlyByteBuf record = new FriendlyByteBuf(Unpooled.buffer(256,
+                        IdeaStorageNbtLimits.MAX_RECORD_BYTES + Integer.BYTES));
                 try {
                     record.writeInt(0);
                     entry.write(record);
