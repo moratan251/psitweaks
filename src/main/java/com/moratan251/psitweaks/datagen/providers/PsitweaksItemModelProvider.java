@@ -152,7 +152,7 @@ public class PsitweaksItemModelProvider implements DataProvider {
         JsonObject textures = new JsonObject();
 
         root.addProperty("parent", item.parent());
-        textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "item/" + item.texture() + "_active").toString());
+        textures.addProperty("layer0", ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "item/" + item.activeTexture()).toString());
         root.add("textures", textures);
 
         return root;

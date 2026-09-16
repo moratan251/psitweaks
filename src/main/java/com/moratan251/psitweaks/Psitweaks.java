@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks;
 
 import vazkii.psi.api.event.PsiEvents;
+import vazkii.psi.common.item.base.ModDataComponents;
 import com.moratan251.psitweaks.common.handler.SpellUnlockHandler;
 import com.moratan251.psitweaks.common.handler.PlayerPsiEventHandler;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellPieceGroupProvider;
@@ -256,6 +257,12 @@ public class Psitweaks {
                 ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(), Psitweaks.location("tunneler_loaded"),
                         (stack, level, entity, seed) -> entity instanceof Player player
                                 && player.getProjectile(stack).is(PsitweaksItems.TUNNELER.get()) ? 1.0F : 0.0F);
+                ItemProperties.register(PsitweaksItems.PORTABLE_SPELL_PROGRAMMER.get(), ACTIVE_PROPERTY,
+                        (stack, level, entity, seed) -> {
+                            var spell = stack.get(ModDataComponents.SPELL.get());
+                            // Match Psi's TileProgrammer.isEnabled(), including unfinished spells.
+                            return spell != null && !spell.grid.isEmpty() ? 1.0F : 0.0F;
+                        });
                 registerActiveSpellProperties(
                         PsitweaksItems.ADVANCED_SPELL_BULLET,
                         PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP,

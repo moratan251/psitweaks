@@ -88,7 +88,8 @@ final class PsitweaksDatagenItems {
             item("philosophers_stone", "Philosopher's Stone", "賢者の石"),
             item("spell_magazine", "Spell Magazine", "スペルマガジン", "spell_magazine_huge"),
             item("portable_cad_assembler", "Portable CAD Assembler", "携帯型CAD組立機"),
-            item("portable_spell_programmer", "Portable Spell Programmer", "携帯型魔法構築機"),
+            activeItem("portable_spell_programmer", "Portable Spell Programmer", "携帯型魔法構築機",
+                    "portable_spell_programmer_inactive", "portable_spell_programmer"),
             item("psimetal_bow", "Psimetal Bow", "サイメタルの弓"),
             item("gravstringer", "Gravstringer", "グラヴストリンガー"),
             item("curios_controller", "Curios Controller", "キュリオスコントローラ"),
@@ -168,17 +169,24 @@ final class PsitweaksDatagenItems {
     }
 
     private static GeneratedItem item(String id, String enUs, String jaJp, String texture) {
-        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", texture, false);
+        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", texture, null);
     }
 
     private static GeneratedItem activeItem(String id, String enUs, String jaJp) {
-        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", id, true);
+        return activeItem(id, enUs, jaJp, id, id + "_active");
+    }
+
+    private static GeneratedItem activeItem(String id, String enUs, String jaJp, String texture, String activeTexture) {
+        return new GeneratedItem(id, enUs, jaJp, "minecraft:item/generated", texture, activeTexture);
     }
 
     private static GeneratedItem modelItem(String id, String enUs, String jaJp, String parent) {
-        return new GeneratedItem(id, enUs, jaJp, parent, null, false);
+        return new GeneratedItem(id, enUs, jaJp, parent, null, null);
     }
 
-    record GeneratedItem(String id, String enUs, String jaJp, String parent, String texture, boolean activeModel) {
+    record GeneratedItem(String id, String enUs, String jaJp, String parent, String texture, String activeTexture) {
+        boolean activeModel() {
+            return activeTexture != null;
+        }
     }
 }
