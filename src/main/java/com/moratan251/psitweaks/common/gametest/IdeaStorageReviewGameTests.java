@@ -51,26 +51,9 @@ public final class IdeaStorageReviewGameTests {
         var registries = helper.getLevel().registryAccess();
         CompoundTag valid = data.save(new CompoundTag(), registries);
         var invalidTags = new ArrayList<CompoundTag>();
-        var unknownItem = valid.copy();
-        unknownItem.getList("Items", 10).getCompound(0).getCompound("item").putString("id", "absent_mod:lost_item");
-        invalidTags.add(unknownItem);
-        var unknownFluid = valid.copy();
-        unknownFluid.getList("Fluids", 10).getCompound(0).getCompound("fluid").putString("id", "absent_mod:lost_fluid");
-        invalidTags.add(unknownFluid);
-        var badComponents = valid.copy();
-        CompoundTag components = new CompoundTag();
-        components.putString("minecraft:damage", "not an integer");
-        badComponents.getList("Items", 10).getCompound(0).getCompound("item").put("components", components);
-        invalidTags.add(badComponents);
-        var missingItem = valid.copy();
-        missingItem.getList("Items", 10).getCompound(0).remove("item");
-        invalidTags.add(missingItem);
         var badList = valid.copy();
         badList.putString("Fluids", "unreadable list");
         invalidTags.add(badList);
-        var badCount = valid.copy();
-        badCount.getList("Items", 10).getCompound(0).putLong("count", -1);
-        invalidTags.add(badCount);
         var overflow = valid.copy();
         ListTag duplicateItems = overflow.getList("Items", 10);
         duplicateItems.getCompound(0).putLong("count", Long.MAX_VALUE);
@@ -103,6 +86,67 @@ public final class IdeaStorageReviewGameTests {
             var restored = factory.deserializer().apply(NbtIo.readCompressed(file, NbtAccounter.unlimitedHeap()), registries);
             helper.assertTrue(restored.storage().energy() == 101 && restored.storage().itemTypeCount() == 1
                     && restored.storage().fluidTypeCount() == 1, "Valid data no longer round-trips");
+        } finally { Files.deleteIfExists(file); }
+        helper.succeed();
+    }
+
+    private record UnreadCase(String name, CompoundTag tag, String category, CompoundTag unreadEntry, int items, int fluids, int chemicals) { }
+
+    @GameTest(template = "connector_empty")
+    public static void unreadableEntriesAreKeptWithoutLockingWarehouse(GameTestHelper helper) throws Exception {
+        var factory = IdeaStorageSavedData.factory(UUID.randomUUID());
+        var data = factory.constructor().get();
+        data.storage().insert(new ItemStack(Items.APPLE), 7);
+        data.storage().insertFluid(new FluidStack(Fluids.WATER, 1), 900);
+        data.storage().insertChemical(ResourceLocation.fromNamespaceAndPath("psitweaks_test", "gas"), 500);
+        data.storage().insertEnergy(100, false);
+        var registries = helper.getLevel().registryAccess();
+        CompoundTag valid = data.save(new CompoundTag(), registries);
+        var cases = new ArrayList<UnreadCase>();
+        var unknownItem = valid.copy();
+        unknownItem.getList("Items", 10).getCompound(0).getCompound("item").putString("id", "absent_mod:lost_item");
+        cases.add(new UnreadCase("unknown item", unknownItem, "Items", unknownItem.getList("Items", 10).getCompound(0), 0, 1, 1));
+        var unknownFluid = valid.copy();
+        unknownFluid.getList("Fluids", 10).getCompound(0).getCompound("fluid").putString("id", "absent_mod:lost_fluid");
+        cases.add(new UnreadCase("unknown fluid", unknownFluid, "Fluids", unknownFluid.getList("Fluids", 10).getCompound(0), 1, 0, 1));
+        var badComponents = valid.copy();
+        CompoundTag components = new CompoundTag();
+        components.putString("minecraft:damage", "not an integer");
+        badComponents.getList("Items", 10).getCompound(0).getCompound("item").put("components", components);
+        cases.add(new UnreadCase("bad components", badComponents, "Items", badComponents.getList("Items", 10).getCompound(0), 0, 1, 1));
+        var missingItem = valid.copy();
+        missingItem.getList("Items", 10).getCompound(0).remove("item");
+        cases.add(new UnreadCase("missing item", missingItem, "Items", missingItem.getList("Items", 10).getCompound(0), 0, 1, 1));
+        var badCount = valid.copy();
+        badCount.getList("Items", 10).getCompound(0).putLong("count", -1);
+        cases.add(new UnreadCase("non-positive count", badCount, "Items", badCount.getList("Items", 10).getCompound(0), 0, 1, 1));
+        var badChemical = valid.copy();
+        badChemical.getList("Chemicals", 10).getCompound(0).putString("chemical", "Not A Valid ID!");
+        cases.add(new UnreadCase("invalid chemical ID", badChemical, "Chemicals", badChemical.getList("Chemicals", 10).getCompound(0), 1, 1, 0));
+        var file = Files.createTempFile("psitweaks-partial-warehouse-", ".dat");
+        try {
+            for (UnreadCase unread : cases) {
+                var loaded = factory.deserializer().apply(unread.tag(), registries);
+                var storage = loaded.storage();
+                helper.assertTrue(!storage.isLoadFailed() && loaded.unreadEntryCount() == 1
+                        && storage.itemTypeCount() == unread.items() && storage.fluidTypeCount() == unread.fluids()
+                        && storage.chemicalTypeCount() == unread.chemicals() && storage.energy() == 100,
+                        "Readable entries were not restored alongside " + unread.name());
+                helper.assertTrue(storage.insert(new ItemStack(Items.DIAMOND), 3) == 3 && storage.insertEnergy(1, false) == 1,
+                        "Warehouse with " + unread.name() + " stayed locked");
+                NbtIo.writeCompressed(loaded.save(new CompoundTag(), registries), file);
+                CompoundTag disk = NbtIo.readCompressed(file, NbtAccounter.unlimitedHeap());
+                ListTag saved = disk.getList(unread.category(), 10);
+                int retained = 0;
+                for (int i = 0; i < saved.size(); i++) if (saved.getCompound(i).equals(unread.unreadEntry())) retained++;
+                helper.assertTrue(retained == 1, "Unread " + unread.name() + " entry was not saved unchanged exactly once");
+                var reloaded = factory.deserializer().apply(disk, registries);
+                helper.assertTrue(!reloaded.storage().isLoadFailed() && reloaded.unreadEntryCount() == 1
+                        && reloaded.storage().simulateExtract(ItemResourceKey.of(new ItemStack(Items.DIAMOND)).orElseThrow(), 10) == 3
+                        && reloaded.storage().energy() == 101, "Partial warehouse did not round-trip: " + unread.name());
+                helper.assertTrue(reloaded.save(new CompoundTag(), registries).equals(disk),
+                        "Repeated saves changed or duplicated unread " + unread.name());
+            }
         } finally { Files.deleteIfExists(file); }
         helper.succeed();
     }

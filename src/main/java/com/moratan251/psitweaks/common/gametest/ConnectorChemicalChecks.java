@@ -10,6 +10,7 @@ import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import mekanism.api.Action;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
@@ -90,6 +91,40 @@ final class ConnectorChemicalChecks {
         helper.assertTrue(north.storage().simulateExtractChemical(id, 3000) == 1000
                 && east.storage().simulateExtractChemical(id, 3000) == 1000
                 && source.storage().simulateExtractChemical(id, 3000) == 500, "Chemical auto output ignored changed slot faces");
+    }
+
+    static void checkFullPublishedSlots(GameTestHelper helper, IdeaspaceConnectorBlockEntity connector) {
+        var ids = MekanismAPI.CHEMICAL_REGISTRY.keySet().stream().filter(ConnectorMekanism::validChemical)
+                .sorted().limit(IdeaspaceConnectorBlockEntity.SLOTS + 1).toList();
+        helper.assertTrue(ids.size() == IdeaspaceConnectorBlockEntity.SLOTS + 1, "Not enough registered chemicals");
+        for (int slot = 0; slot < IdeaspaceConnectorBlockEntity.SLOTS; slot++) {
+            connector.setResource(slot, ConnectorResource.chemical(ids.get(slot)));
+            connector.storage().insertChemical(ids.get(slot), 100);
+        }
+        var unpublished = ids.get(IdeaspaceConnectorBlockEntity.SLOTS);
+        var handler = helper.getLevel().getCapability(Capabilities.CHEMICAL.block(), connector.getBlockPos(), Direction.WEST);
+        helper.assertTrue(handler != null && handler.getChemicalTanks() == IdeaspaceConnectorBlockEntity.SLOTS + 1
+                && handler.getChemicalInTank(IdeaspaceConnectorBlockEntity.SLOTS).isEmpty(), "Missing empty chemical input tank");
+        for (int tank = 0; tank < IdeaspaceConnectorBlockEntity.SLOTS; tank++)
+            helper.assertTrue(!handler.getChemicalInTank(tank).isEmpty(), "Published chemical tank " + tank + " looked empty");
+        long version = connector.storage().getVersion();
+        helper.assertTrue(handler.insertChemical(ConnectorMekanism.stack(unpublished, 250), Action.SIMULATE).isEmpty()
+                && connector.storage().getVersion() == version, "Simulation failed or changed stock");
+        helper.assertTrue(handler.insertChemical(ConnectorMekanism.stack(unpublished, 250), Action.EXECUTE).isEmpty()
+                && connector.storage().simulateExtractChemical(unpublished, 1000) == 250,
+                "Bulk chemical insertion stopped at full published tanks");
+        helper.assertTrue(handler.extractChemical(IdeaspaceConnectorBlockEntity.SLOTS, 1000, Action.EXECUTE).isEmpty(),
+                "Chemical input tank exposed storage");
+        connector.setUsesCommonSettings(4, false);
+        connector.setSideMode(4, Direction.WEST, ConnectorSideMode.OUTPUT);
+        helper.assertTrue(!handler.insertChemical(IdeaspaceConnectorBlockEntity.SLOTS, ConnectorMekanism.stack(ids.get(4), 10),
+                Action.EXECUTE).isEmpty(), "Chemical input tank bypassed published resource settings");
+        connector.setSideMode(Direction.WEST, ConnectorSideMode.OUTPUT);
+        helper.assertTrue(!handler.insertChemical(ConnectorMekanism.stack(unpublished, 10), Action.EXECUTE).isEmpty(),
+                "Output-only face accepted chemicals");
+        helper.getLevel().destroyBlock(connector.getBlockPos(), false);
+        helper.assertTrue(!handler.insertChemical(IdeaspaceConnectorBlockEntity.SLOTS, ConnectorMekanism.stack(unpublished, 10),
+                Action.EXECUTE).isEmpty(), "Cached chemical input tank survived block removal");
     }
 
     static void run(GameTestHelper helper, IdeaspaceConnectorBlockEntity connector) {

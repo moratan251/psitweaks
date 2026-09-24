@@ -68,10 +68,13 @@ public final class ConnectorMekanism {
 
     private record Handler(IdeaspaceConnectorBlockEntity connector, Direction side) implements IChemicalHandler {
         private boolean valid(int tank) { return tank >= 0 && tank < getChemicalTanks(); }
-        @Override public int getChemicalTanks() { return IdeaspaceConnectorBlockEntity.SLOTS; }
+        // Mekanism's bulk insertion visits matching tanks, then empty tanks. Keep an
+        // extra input-only tank available even when all nine published tanks are full.
+        @Override public int getChemicalTanks() { return IdeaspaceConnectorBlockEntity.SLOTS + 1; }
         @Override public ChemicalStack getChemicalInTank(int tank) {
+            if (tank < 0 || tank >= IdeaspaceConnectorBlockEntity.SLOTS) return ChemicalStack.EMPTY;
             var resource = connector.resource(tank);
-            return connector.sideMode(tank, side).output ? stack(resource.chemical(), resource.amount(connector.storage())) : ChemicalStack.EMPTY;
+            return connector.allowsOutput(tank, side) ? stack(resource.chemical(), resource.amount(connector.storage())) : ChemicalStack.EMPTY;
         }
         @Override public void setChemicalInTank(int tank, ChemicalStack stack) {
             // This is a view of shared storage, not a mutable standalone tank.
@@ -96,7 +99,7 @@ public final class ConnectorMekanism {
         @Override public ChemicalStack extractChemical(int tank, long amount, Action action) {
             PlayerIdeaStorage storage = connector.storage();
             ResourceLocation id = connector.resource(tank).chemical();
-            if (!connector.sideMode(tank, side).output || storage == null || id == null || stack(id, 1).isEmpty()) return ChemicalStack.EMPTY;
+            if (!connector.allowsOutput(tank, side) || storage == null || id == null || stack(id, 1).isEmpty()) return ChemicalStack.EMPTY;
             return stack(id, action.simulate() ? storage.simulateExtractChemical(id, amount) : storage.extractChemical(id, amount));
         }
     }

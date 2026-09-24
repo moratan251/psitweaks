@@ -578,6 +578,13 @@ public final class IdeaspaceConnectorGameTests {
     }
 
     @GameTest(template = "connector_empty")
+    public static void fullPublishedSlotsStillAcceptUnpublishedChemicals(GameTestHelper helper) {
+        var connector = place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        if (MekanismCompat.isMekanismLoaded()) ConnectorChemicalChecks.checkFullPublishedSlots(helper, connector);
+        helper.succeed();
+    }
+
+    @GameTest(template = "connector_empty")
     public static void publishedTemplatesAndAmountUpdatesPreserveResourceIdentity(GameTestHelper helper) {
         CompoundTag full = new CompoundTag();
         full.putBoolean("Full", true);
