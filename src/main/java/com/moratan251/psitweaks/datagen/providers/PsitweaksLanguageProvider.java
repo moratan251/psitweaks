@@ -1954,6 +1954,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"mode.disabled", "無効", "Disabled"},
                 {"auto_on", "自動: 有効", "Auto: ON"},
                 {"auto_off", "自動: 無効", "Auto: OFF"},
+                {"redstone_title", "レッドストーン", "Redstone"},
+                {"redstone.always", "常時動作", "Always active"},
+                {"redstone.high", "信号ありで動作", "When powered"},
+                {"redstone.low", "信号なしで動作", "When unpowered"},
+                {"redstone_hint", "%s面の動作条件。どの面からの信号もブロック全体で共有します。停止中は、この面の搬入・搬出・自動搬出をすべて停止します。",
+                        "Condition for the %s face. Signals from any face are shared by the whole block. When inactive, this face blocks input, extraction and automatic output."},
+                {"redstone_all.always", "全6面: 常時", "All: Always"},
+                {"redstone_all.high", "全6面: 信号あり", "All: Powered"},
+                {"redstone_all.low", "全6面: 信号なし", "All: Unpowered"},
+                {"redstone_all.mixed", "全6面: 個別", "All: Mixed"},
+                {"redstone_all_hint", "クリックで編集中の設定の全6面を一括変更します。常時→信号あり→信号なしの順に切り替えます。面ごとに条件が異なる場合は常時に揃えます。",
+                        "Click to set all six faces at once: always, powered, then unpowered. Mixed conditions reset to always. Applies to the profile currently being edited."},
                 {"face.down", "下", "Down"}, {"face.up", "上", "Up"},
                 {"face.north", "北", "North"}, {"face.south", "南", "South"},
                 {"face.west", "西", "West"}, {"face.east", "東", "East"},
@@ -1978,5 +1990,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_ideaspace_connector.2",
                 "All six faces initially allow input and output. Each published slot can override the shared face settings. Automatic output is initially off. Export rate settings control the amount per attempt and interval for each resource type, shared by all six faces of each slot. Defaults are one stack, 1,000 mB of fluid or chemical, and 16,000 FE every 5 ticks. Transfers are limited to available stock and destination capacity.",
                 "初期状態では全6面から搬入・搬出できます。面設定は共通設定を基本に、公開枠ごとに個別設定で上書きできます。自動搬出は初期状態では無効です。「自動搬出量・間隔」で資源別の1回量と間隔を設定でき、各枠の6面で共用します。初期値は5tickごとに最大1スタック、液体・化学物質1,000mB、16,000FEです。在庫や移動先の空きに応じ、移動できる分だけ搬出します。");
+        addBookPage(root, "trick_ideaspace_connector.3",
+                "Each face can run always, when powered, or when unpowered. Signals received on any face are shared by the whole connector. An inactive face blocks external input, extraction and automatic output for items, fluids, chemicals and FE. Conditions follow the shared or individual slot settings. The All button changes all six faces of the current profile together. New and existing connectors default to always active.",
+                "各面の動作条件を「常時動作」「信号ありで動作」「信号なしで動作」から選べます。どの面から受けた信号もブロック全体で共有します。停止中の面は、アイテム・液体・化学物質・FEの外部からの搬入・搬出と自動搬出を停止します。条件は共通設定を基本に、公開枠ごとに上書きできます。「全6面」ボタンで編集中の設定の6面を一括変更できます。初期値と既存のコネクターは常時動作です。");
     }
 }

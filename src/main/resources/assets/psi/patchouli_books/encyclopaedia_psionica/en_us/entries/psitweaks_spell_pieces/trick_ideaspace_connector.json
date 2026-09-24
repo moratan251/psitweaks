@@ -5,6 +5,7 @@
   "pages": [
     { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.0" },
     { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.1" },
-    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.2" }
+    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.2" },
+    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_ideaspace_connector.3" }
   ]
 }

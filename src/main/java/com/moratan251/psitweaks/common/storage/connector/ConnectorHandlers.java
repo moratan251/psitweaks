@@ -20,7 +20,7 @@ public final class ConnectorHandlers {
         this.side = side;
     }
 
-    private boolean output(int slot) { return connector.sideMode(slot, side).output; }
+    private boolean output(int slot) { return connector.allowsOutput(slot, side); }
     private boolean itemInput(ItemStack stack) {
         return !stack.isEmpty() && ItemResourceKey.of(stack)
                 .map(key -> connector.allowsInput(side, ConnectorResource.item(key))).orElse(false);

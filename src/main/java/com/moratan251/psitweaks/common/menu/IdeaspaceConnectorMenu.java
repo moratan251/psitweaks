@@ -8,6 +8,7 @@ import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
@@ -32,6 +33,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     public static final int ASSIGN = 0, CLEAR = 1, SIDE = 2, AUTO = 3, ENERGY = 4;
     public static final int SLOT_SIDE = 5, SLOT_AUTO = 6, SLOT_COMMON = 7;
+    public static final int REDSTONE = 8, REDSTONE_ALL = 9;
     public static final int INVENTORY_X = 8, INVENTORY_Y = 106, HOTBAR_Y = 164;
     private final Player player;
     private final IdeaspaceConnectorBlockEntity connector;
@@ -157,6 +159,19 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
                 connector.setAutomatic(side, !connector.automatic(side));
             }
             case ENERGY -> connector.setResource(action.slot(), ConnectorResource.ENERGY);
+            case REDSTONE, REDSTONE_ALL -> {
+                int slot = action.slot();
+                if (slot < -1 || slot >= IdeaspaceConnectorBlockEntity.SLOTS || action.revision() != revision
+                        || (slot >= 0 && connector.usesCommonSettings(slot))) return;
+                if (action.action() == REDSTONE) {
+                    if (argument < 0 || argument >= 6) return;
+                    Direction side = Direction.values()[argument];
+                    connector.setRedstoneMode(slot, side, connector.redstoneMode(slot, side).next());
+                } else {
+                    if (argument < 0 || argument >= ConnectorRedstoneMode.values().length) return;
+                    connector.setAllRedstoneModes(slot, ConnectorRedstoneMode.byId(argument));
+                }
+            }
             case SLOT_SIDE, SLOT_AUTO, SLOT_COMMON -> {
                 int slot = action.slot();
                 if (slot < 0 || slot >= IdeaspaceConnectorBlockEntity.SLOTS || action.revision() != revision) return;

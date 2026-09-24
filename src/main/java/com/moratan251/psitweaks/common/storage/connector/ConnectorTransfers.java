@@ -35,7 +35,7 @@ public final class ConnectorTransfers {
         boolean checkedItems = false, checkedFluids = false, checkedEnergy = false;
         for (int slot = 0; slot < IdeaspaceConnectorBlockEntity.SLOTS; slot++) {
             if ((dueSlots & (1 << slot)) == 0) continue;
-            if (!source.sideMode(slot, direction).output || !source.automatic(slot, direction)) continue;
+            if (!source.allowsOutput(slot, direction) || !source.automatic(slot, direction)) continue;
             ConnectorResource resource = source.resource(slot);
             if (resource.amount(storage) <= 0) continue;
             int amount = source.exportSettings(slot, ConnectorExportSettings.type(resource.kind())).amount();

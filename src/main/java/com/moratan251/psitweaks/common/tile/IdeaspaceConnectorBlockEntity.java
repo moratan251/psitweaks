@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorHandlers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
@@ -34,9 +35,11 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
     private final ConnectorResource[] resources = new ConnectorResource[SLOTS];
     private final ConnectorSideMode[] sides = new ConnectorSideMode[6];
     private final boolean[] automatic = new boolean[6];
+    private final ConnectorRedstoneMode[] redstone = new ConnectorRedstoneMode[6];
     private final boolean[] slotOverrides = new boolean[SLOTS];
     private final ConnectorSideMode[][] slotSides = new ConnectorSideMode[SLOTS][6];
     private final boolean[][] slotAutomatic = new boolean[SLOTS][6];
+    private final ConnectorRedstoneMode[][] slotRedstone = new ConnectorRedstoneMode[SLOTS][6];
     private final ConnectorHandlers[] handlers = new ConnectorHandlers[6];
     private long settingsVersion;
     private int nextSide;
@@ -50,7 +53,9 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         super(PsitweaksBlockEntityTypes.IDEASPACE_CONNECTOR.get(), pos, state);
         Arrays.fill(resources, ConnectorResource.EMPTY);
         Arrays.fill(sides, ConnectorSideMode.BOTH);
+        Arrays.fill(redstone, ConnectorRedstoneMode.ALWAYS);
         for (var modes : slotSides) Arrays.fill(modes, ConnectorSideMode.BOTH);
+        for (var modes : slotRedstone) Arrays.fill(modes, ConnectorRedstoneMode.ALWAYS);
         for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
             commonExport[type] = ConnectorExportSettings.defaults(type);
             for (var values : slotExport) values[type] = commonExport[type];
@@ -125,6 +130,7 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         if (!common) {
             System.arraycopy(sides, 0, slotSides[slot], 0, 6);
             System.arraycopy(automatic, 0, slotAutomatic[slot], 0, 6);
+            System.arraycopy(redstone, 0, slotRedstone[slot], 0, 6);
             System.arraycopy(commonExport, 0, slotExport[slot], 0, ConnectorExportSettings.TYPES);
         }
         slotOverrides[slot] = !common;
@@ -182,10 +188,52 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         return -1;
     }
 
+    /** Slot -1 is the shared profile, also used for unpublished incoming resources. */
+    public ConnectorRedstoneMode redstoneMode(int slot, Direction side) {
+        return usesCommonSettings(slot) ? redstone[side.ordinal()] : slotRedstone[slot][side.ordinal()];
+    }
+
+    public boolean setRedstoneMode(int slot, Direction side, ConnectorRedstoneMode mode) {
+        if (!canSetRedstone(slot) || side == null || mode == null) return false;
+        (slot < 0 ? redstone : slotRedstone[slot])[side.ordinal()] = mode;
+        settingsChanged();
+        return true;
+    }
+
+    public boolean setAllRedstoneModes(int slot, ConnectorRedstoneMode mode) {
+        if (!canSetRedstone(slot) || mode == null) return false;
+        Arrays.fill(slot < 0 ? redstone : slotRedstone[slot], mode);
+        settingsChanged();
+        return true;
+    }
+
+    private boolean canSetRedstone(int slot) {
+        return slot == -1 || (slot >= 0 && slot < SLOTS && !usesCommonSettings(slot));
+    }
+
+    private boolean redstoneAllows(int slot, @Nullable Direction side) {
+        if (side == null) return false;
+        ConnectorRedstoneMode mode = redstoneMode(slot, side);
+        // Read the current world even for cached handlers; no saved or stale power state.
+        return mode == ConnectorRedstoneMode.ALWAYS
+                || (level != null && mode.allows(level.hasNeighborSignal(worldPosition)));
+    }
+
+    public boolean allowsOutput(int slot, @Nullable Direction side) {
+        return sideMode(slot, side).output && redstoneAllows(slot, side);
+    }
+
+    public void neighborSignalChanged() {
+        if (level instanceof ServerLevel) {
+            level.invalidateCapabilities(worldPosition);
+            refreshExportSchedule();
+        }
+    }
+
     /** Match the incoming identity, not an arbitrary insertion slot supplied by a pipe. */
     public boolean allowsInput(Direction side, ConnectorResource resource) {
         int slot = publishedSlot(resource);
-        return (slot < 0 ? sideMode(side) : sideMode(slot, side)).input;
+        return (slot < 0 ? sideMode(side) : sideMode(slot, side)).input && redstoneAllows(slot, side);
     }
 
     public ConnectorHandlers handlers(Direction side) { return handlers[side.ordinal()]; }
@@ -203,7 +251,7 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
 
     public boolean hasAutomaticOutput(Direction side) {
         for (int slot = 0; slot < SLOTS; slot++)
-            if (resources[slot].kind() != ConnectorResource.Kind.EMPTY && automatic(slot, side) && sideMode(slot, side).output)
+            if (resources[slot].kind() != ConnectorResource.Kind.EMPTY && automatic(slot, side) && allowsOutput(slot, side))
                 return true;
         return false;
     }
@@ -219,7 +267,7 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
 
     private boolean slotExports(int slot) {
         if (resource(slot).kind() == ConnectorResource.Kind.EMPTY) return false;
-        for (Direction side : Direction.values()) if (automatic(slot, side) && sideMode(slot, side).output) return true;
+        for (Direction side : Direction.values()) if (automatic(slot, side) && allowsOutput(slot, side)) return true;
         return false;
     }
 
@@ -286,19 +334,22 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
             if (automatic[i]) autoMask |= 1 << i;
         }
         tag.putIntArray("Sides", modes);
+        tag.putIntArray("Redstone", Arrays.stream(redstone).mapToInt(Enum::ordinal).toArray());
         tag.putInt("Automatic", autoMask);
         int overrides = 0;
-        int[] perSlotModes = new int[SLOTS * 6], perSlotAutomatic = new int[SLOTS];
+        int[] perSlotModes = new int[SLOTS * 6], perSlotAutomatic = new int[SLOTS], perSlotRedstone = new int[SLOTS * 6];
         for (int slot = 0; slot < SLOTS; slot++) {
             if (slotOverrides[slot]) overrides |= 1 << slot;
             for (int face = 0; face < 6; face++) {
                 perSlotModes[slot * 6 + face] = slotSides[slot][face].ordinal();
+                perSlotRedstone[slot * 6 + face] = slotRedstone[slot][face].ordinal();
                 if (slotAutomatic[slot][face]) perSlotAutomatic[slot] |= 1 << face;
             }
         }
         tag.putInt("SlotOverrides", overrides);
         tag.putIntArray("SlotSides", perSlotModes);
         tag.putIntArray("SlotAutomatic", perSlotAutomatic);
+        tag.putIntArray("SlotRedstone", perSlotRedstone);
         int[] amounts = new int[ConnectorExportSettings.TYPES], intervals = new int[ConnectorExportSettings.TYPES];
         int[] slotAmounts = new int[SLOTS * ConnectorExportSettings.TYPES], slotIntervals = new int[slotAmounts.length];
         for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
@@ -327,18 +378,22 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
             for (int j = 0; j < i; j++) duplicate |= resources[j].equals(resource);
             if (!duplicate) resources[i] = resource;
         }
-        int[] modes = tag.getIntArray("Sides");
+        int[] modes = tag.getIntArray("Sides"), redstoneModes = tag.getIntArray("Redstone");
         for (int i = 0; i < 6; i++) {
             sides[i] = i < modes.length ? ConnectorSideMode.byId(modes[i]) : ConnectorSideMode.BOTH;
             automatic[i] = (tag.getInt("Automatic") & (1 << i)) != 0;
+            redstone[i] = i < redstoneModes.length ? ConnectorRedstoneMode.byId(redstoneModes[i]) : ConnectorRedstoneMode.ALWAYS;
         }
         int[] perSlotModes = tag.getIntArray("SlotSides"), perSlotAutomatic = tag.getIntArray("SlotAutomatic");
+        int[] perSlotRedstone = tag.getIntArray("SlotRedstone");
         for (int slot = 0; slot < SLOTS; slot++) {
             // Old saves have no override mask, so all nine slots keep using their existing common settings.
             slotOverrides[slot] = (tag.getInt("SlotOverrides") & (1 << slot)) != 0;
             for (int face = 0; face < 6; face++) {
                 int index = slot * 6 + face;
                 slotSides[slot][face] = index < perSlotModes.length ? ConnectorSideMode.byId(perSlotModes[index]) : sides[face];
+                slotRedstone[slot][face] = index < perSlotRedstone.length
+                        ? ConnectorRedstoneMode.byId(perSlotRedstone[index]) : ConnectorRedstoneMode.ALWAYS;
                 slotAutomatic[slot][face] = slot < perSlotAutomatic.length ? (perSlotAutomatic[slot] & (1 << face)) != 0 : automatic[face];
             }
         }
