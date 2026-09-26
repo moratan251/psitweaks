@@ -37,33 +37,39 @@ public final class ConnectorTransfers {
             if ((dueSlots & (1 << slot)) == 0) continue;
             if (!source.allowsOutput(slot, direction) || !source.automatic(slot, direction)) continue;
             ConnectorResource resource = source.resource(slot);
-            if (resource.amount(storage) <= 0) continue;
-            int amount = source.exportSettings(slot, ConnectorExportSettings.type(resource.kind())).amount();
+            if (resource.kind() == ConnectorResource.Kind.EMPTY) continue;
+            var settings = source.exportSettings(slot, ConnectorExportSettings.type(resource.kind()));
+            long available = resource.amount(storage);
+            int amount = settings.limit(available, 0);
+            if (amount <= 0) continue;
             switch (resource.kind()) {
                 case ITEM -> {
                     if (!checkedItems) {
                         items = level.getCapability(Capabilities.ItemHandler.BLOCK, targetPos, face);
                         checkedItems = true;
                     }
-                    if (items != null) moved |= pushItem(storage, resource.item(), items, amount) > 0;
+                    if (items != null) moved |= pushItem(storage, resource.item(), items,
+                            settings.limit(available, settings.targetStock() < 0 ? 0 : countItems(items, resource.item()))) > 0;
                 }
                 case FLUID -> {
                     if (!checkedFluids) {
                         fluids = level.getCapability(Capabilities.FluidHandler.BLOCK, targetPos, face);
                         checkedFluids = true;
                     }
-                    if (fluids != null) moved |= pushFluid(storage, resource.fluid(), fluids, amount) > 0;
+                    if (fluids != null) moved |= pushFluid(storage, resource.fluid(), fluids,
+                            settings.limit(available, settings.targetStock() < 0 ? 0 : countFluids(fluids, resource.fluid()))) > 0;
                 }
                 case ENERGY -> {
                     if (!checkedEnergy) {
                         energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, targetPos, face);
                         checkedEnergy = true;
                     }
-                    if (energy != null) moved |= pushEnergy(storage, energy, amount) > 0;
+                    if (energy != null) moved |= pushEnergy(storage, energy,
+                            settings.limit(available, settings.targetStock() < 0 ? 0 : energy.getEnergyStored())) > 0;
                 }
                 case CHEMICAL -> {
                     if (MekanismCompat.isMekanismLoaded())
-                        moved |= ConnectorMekanism.push(storage, resource.chemical(), level, targetPos, face, amount) > 0;
+                        moved |= ConnectorMekanism.pushToStock(storage, resource.chemical(), level, targetPos, face, amount, settings.targetStock()) > 0;
                 }
                 default -> { }
             }
@@ -72,7 +78,12 @@ public final class ConnectorTransfers {
     }
 
     public static int pushItem(PlayerIdeaStorage storage, ItemResourceKey key, IItemHandler target, int maximum) {
-        int available = (int) storage.simulateExtract(key, Math.min(maximum, key.getMaxStackSize()));
+        return pushItemBatch(storage, key, target, Math.min(maximum, key.getMaxStackSize()));
+    }
+
+    /** One bounded handler scan; the amount may span multiple destination stacks. */
+    public static int pushItemBatch(PlayerIdeaStorage storage, ItemResourceKey key, IItemHandler target, int maximum) {
+        int available = (int) storage.simulateExtract(key, maximum);
         if (available <= 0) return 0;
         ItemStack offered = key.template().copyWithCount(available);
         int planned = available - ItemHandlerHelper.insertItemStacked(target, offered, true).getCount();
@@ -108,5 +119,27 @@ public final class ConnectorTransfers {
 
     public static int pushEnergy(PlayerIdeaStorage storage, IEnergyStorage target, int maximum) {
         return IdeaStorageEnergyTransfer.supply(storage, target, maximum);
+    }
+
+    public static long countItems(IItemHandler target, ItemResourceKey key) {
+        long count = 0;
+        for (int slot = 0; slot < target.getSlots(); slot++) {
+            ItemStack stack = target.getStackInSlot(slot);
+            if (ItemResourceKey.of(stack).filter(key::equals).isPresent()) count = saturatedAdd(count, stack.getCount());
+        }
+        return count;
+    }
+
+    public static long countFluids(IFluidHandler target, FluidResourceKey key) {
+        long count = 0;
+        for (int tank = 0; tank < target.getTanks(); tank++) {
+            FluidStack stack = target.getFluidInTank(tank);
+            if (FluidResourceKey.of(stack).filter(key::equals).isPresent()) count = saturatedAdd(count, stack.getAmount());
+        }
+        return count;
+    }
+
+    public static long saturatedAdd(long count, long amount) {
+        return amount <= 0 ? count : count + Math.min(amount, Long.MAX_VALUE - count);
     }
 }

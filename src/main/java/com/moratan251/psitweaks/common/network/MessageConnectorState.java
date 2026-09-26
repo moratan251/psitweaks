@@ -10,7 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/** Only nine settings and the visible page, sent only to the owner while the menu is open. */
+/** Nine published resources and nine input templates, sent only to the owner while the menu is open. */
 public record MessageConnectorState(int containerId, UUID session, long revision, CompoundTag data) implements CustomPacketPayload {
     public static final Type<MessageConnectorState> TYPE = new Type<>(Psitweaks.location("connector_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, MessageConnectorState> STREAM_CODEC =

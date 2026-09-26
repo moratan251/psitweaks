@@ -353,6 +353,19 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEASPACE_CONNECTOR =
             registerPiece("trick_ideaspace_connector", com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaspaceConnector.class);
 
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_ITEM =
+            registerPiece("trick_idea_storage_deposit_item", PieceTrickIdeaStorageDepositItem.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_FLUID =
+            registerPiece("trick_idea_storage_deposit_fluid", PieceTrickIdeaStorageDepositFluid.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_CHEMICAL =
+            registerPiece("trick_idea_storage_deposit_chemical", PieceTrickIdeaStorageDepositChemical.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_ITEM =
+            registerPiece("trick_idea_storage_withdraw_item", PieceTrickIdeaStorageWithdrawItem.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_FLUID =
+            registerPiece("trick_idea_storage_withdraw_fluid", PieceTrickIdeaStorageWithdrawFluid.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_CHEMICAL =
+            registerPiece("trick_idea_storage_withdraw_chemical", PieceTrickIdeaStorageWithdrawChemical.class);
+
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_SUPPLY_FE =

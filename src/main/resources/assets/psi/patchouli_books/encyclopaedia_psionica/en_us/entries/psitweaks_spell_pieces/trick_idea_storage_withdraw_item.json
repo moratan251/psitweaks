@@ -1,0 +1,19 @@
+{
+  "name": "psitweaks.spellpiece.trick_idea_storage_withdraw_item",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_idea_storage_withdraw_item.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw_item.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw_item.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw_item.2"
+    }
+  ]
+}

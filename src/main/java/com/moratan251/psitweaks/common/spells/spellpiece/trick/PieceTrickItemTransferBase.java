@@ -220,7 +220,7 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
         return null;
     }
 
-    private static IItemHandler getBlockItemHandler(Level level, BlockPos pos, Direction facing) {
+    static IItemHandler getBlockItemHandler(Level level, BlockPos pos, Direction facing) {
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         IItemHandler handler = Capabilities.ItemHandler.BLOCK.getCapability(level, pos, state, blockEntity, facing);
@@ -240,7 +240,7 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
      * Asks protection mods whether the caster may interact with the block's inventory by
      * posting a right-click equivalent event. Canceled or block-use denied means protected.
      */
-    private static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
+    static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false);
         PlayerInteractEvent.RightClickBlock event = NeoForge.EVENT_BUS.post(
                 new PlayerInteractEvent.RightClickBlock(caster, InteractionHand.MAIN_HAND, pos, hit));

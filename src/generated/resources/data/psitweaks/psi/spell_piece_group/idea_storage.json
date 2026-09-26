@@ -7,6 +7,12 @@
     "psitweaks:trick_ideaspace_connector",
     "psitweaks:selector_idea_storage_item_amount",
     "psitweaks:selector_idea_storage_fluid_amount",
-    "psitweaks:selector_idea_storage_chemical_amount"
+    "psitweaks:selector_idea_storage_chemical_amount",
+    "psitweaks:trick_idea_storage_deposit_item",
+    "psitweaks:trick_idea_storage_withdraw_item",
+    "psitweaks:trick_idea_storage_deposit_fluid",
+    "psitweaks:trick_idea_storage_withdraw_fluid",
+    "psitweaks:trick_idea_storage_deposit_chemical",
+    "psitweaks:trick_idea_storage_withdraw_chemical"
   ]
 }

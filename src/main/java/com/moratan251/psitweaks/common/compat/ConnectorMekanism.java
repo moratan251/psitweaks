@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.compat;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -64,6 +65,22 @@ public final class ConnectorMekanism {
         } finally {
             withdrawal.restore(withdrawal.amount() - accepted);
         }
+    }
+
+    public static long pushToStock(PlayerIdeaStorage storage, ResourceLocation id, Level level,
+                                   BlockPos pos, Direction face, long maximum, long targetStock) {
+        IChemicalHandler target = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, face);
+        if (target == null) return 0;
+        if (targetStock >= 0) {
+            long count = 0;
+            for (int tank = 0; tank < target.getChemicalTanks(); tank++) {
+                var stack = target.getChemicalInTank(tank);
+                if (!stack.isEmpty() && id.equals(MekanismAPI.CHEMICAL_REGISTRY.getKey(stack.getChemical())))
+                    count = ConnectorTransfers.saturatedAdd(count, stack.getAmount());
+            }
+            maximum = Math.min(maximum, Math.max(0, targetStock - count));
+        }
+        return push(storage, id, target, maximum);
     }
 
     private record Handler(IdeaspaceConnectorBlockEntity connector, Direction side) implements IChemicalHandler {

@@ -1,0 +1,19 @@
+{
+  "name": "psitweaks.spellpiece.trick_idea_storage_deposit_fluid",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_idea_storage_deposit_fluid.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit_fluid.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit_fluid.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit_fluid.2"
+    }
+  ]
+}

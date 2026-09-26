@@ -23,7 +23,10 @@ public record MessageConnectorExportSettings(int containerId, UUID session, long
     @Override public Type<? extends CustomPacketPayload> type() { return TYPE; }
     private void write(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(containerId); buf.writeUUID(session); buf.writeLong(revision); buf.writeVarInt(slot);
-        for (var value : settings) { buf.writeVarInt(value.amount()); buf.writeVarInt(value.interval()); }
+        for (var value : settings) {
+            buf.writeVarInt(value.amount()); buf.writeVarInt(value.interval());
+            buf.writeVarLong(value.minimumStock()); buf.writeVarLong(value.targetStock());
+        }
     }
     private static MessageConnectorExportSettings read(RegistryFriendlyByteBuf buf) {
         int id = buf.readVarInt();
@@ -31,7 +34,8 @@ public record MessageConnectorExportSettings(int containerId, UUID session, long
         long revision = buf.readLong();
         int slot = buf.readVarInt();
         var settings = new ConnectorExportSettings[ConnectorExportSettings.TYPES];
-        for (int type = 0; type < settings.length; type++) settings[type] = new ConnectorExportSettings(buf.readVarInt(), buf.readVarInt());
+        for (int type = 0; type < settings.length; type++) settings[type] = new ConnectorExportSettings(
+                buf.readVarInt(), buf.readVarInt(), buf.readVarLong(), buf.readVarLong());
         return new MessageConnectorExportSettings(id, session, revision, slot, List.of(settings));
     }
     public static void handle(MessageConnectorExportSettings message, IPayloadContext context) {

@@ -1558,6 +1558,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
     }
 
     private void addSpellPiecesBook(JsonObject root) {
+        addIdeaResourceLogistics(root);
         addBookPage(root, "selector_idea_storage_energy", "Returns the FE currently stored in your Ideaspace Storage as a Number. No inputs are required. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked together with the other Ideaspace Storage pieces by using Program: Ideaspace Storage. Reading the balance does not consume FE.", "自分のイデアストレージに現在蓄えられているFE量をNumberとして取得します。入力は不要です。規模0、複雑性1、コスト0です。プログラム: イデアストレージを使用すると、他のイデアストレージ系ピースと共に解禁されます。取得してもFEは消費しません。");
         addBookPage(root, "selector_idea_storage_item_amount",
                 "Returns the total count of items with the specified ID in your Ideaspace Storage as a Number. Switch between String input (e.g. minecraft:stone) and Item input, which uses that item's ID. Items with different data components are counted together when their IDs match. Invalid IDs, empty Item values and missing stock return 0. Reading does not consume resources. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.",
@@ -1975,7 +1976,26 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"template_too_large", "このアイテムは設定データが大きすぎます。", "This item's filter data is too large."},
                 {"amount", "イデアストレージ内: %s", "In Ideaspace Storage: %s"},
                 {"clear_hint", "何も持たずに右クリックで解除", "Right-click with an empty cursor to clear"},
-                {"load_failed", "ストレージを読み込めません。", "Storage could not be loaded."}
+                {"load_failed", "ストレージを読み込めません。", "Storage could not be loaded."},
+                {"input_filters", "搬入フィルタ", "Input filter"},
+                {"input_list", "搬入フィルタ（9枠）", "Input filter (9 slots)"},
+                {"input_mode.any", "すべて許可", "Accept all"},
+                {"input_mode.allow_list", "許可リスト", "Allow list"},
+                {"input_mode.deny_list", "拒否リスト", "Deny list"},
+                {"input_mode.existing", "在庫のある種類のみ", "Stored types only"},
+                {"input_hint", "全6面の搬入に適用されます。リスト用の9枠は公開枠とは別です。アイテムを持って左クリックで登録、液体や化学物質の容器を持って右クリックで中身を登録、何も持たずに右クリックで解除します。耐久値などのデータまで一致するものだけが対象です。「在庫のある種類のみ」は、ストレージに1以上ある種類だけを受け入れます。FEは対象外です。",
+                        "Applies to input on all six faces. The nine list slots are separate from the published slots. Left-click with an item to register it, right-click with a fluid or chemical container to register its contents, and right-click with an empty cursor to clear. Only resources with identical data, such as durability, match. Stored types only accepts types the storage holds at least one of. FE is unaffected."},
+                {"stock_settings", "在庫条件", "Stock rules"},
+                {"stock_common_title", "在庫条件(共通)", "Stock rules (Shared)"},
+                {"stock_slot_title", "在庫条件(枠 %s)", "Stock rules (Slot %s)"},
+                {"minimum_stock", "開始在庫", "Min. storage stock"},
+                {"target_stock", "目標在庫", "Target stock"},
+                {"minimum_stock_hint", "ストレージの在庫がこの量以上のときだけ自動搬出します。0で条件なし。残量を確保する機能ではないので、1回の搬出でこの量を下回ることがあります。",
+                        "Automatic export runs only while the storage holds at least this amount. 0 means no condition. This does not keep a reserve, so a single export may drop below it."},
+                {"target_stock_hint", "搬出先の、接続している面から見える同じ資源の量を数え、この量に足りない分だけ自動搬出します。空欄で無効。他の機器がコネクターから引き出す場合には影響しません。",
+                        "Counts the same resource visible through the connected face of the destination and exports only what is missing to reach this amount. Blank turns it off. Does not affect other devices extracting from the connector."},
+                {"target_disabled", "無効", "Off"},
+                {"stock_hint", "目標在庫: 空欄で無効", "Target stock: blank = off"}
         };
         for (String[] label : labels) root.addProperty("gui.psitweaks.connector." + label[0], label[japanese ? 1 : 2]);
         addSpellPiece(root, "trick_ideaspace_connector", "Trick: Ideaspace Connector",
@@ -1993,5 +2013,65 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_ideaspace_connector.3",
                 "Each face can run always, when powered, or when unpowered. Signals received on any face are shared by the whole connector. An inactive face blocks external input, extraction and automatic output for items, fluids, chemicals and FE. Conditions follow the shared or individual slot settings. The All button changes all six faces of the current profile together. New and existing connectors default to always active.",
                 "各面の動作条件を「常時動作」「信号ありで動作」「信号なしで動作」から選べます。どの面から受けた信号もブロック全体で共有します。停止中の面は、アイテム・液体・化学物質・FEの外部からの搬入・搬出と自動搬出を停止します。条件は共通設定を基本に、公開枠ごとに上書きできます。「全6面」ボタンで編集中の設定の6面を一括変更できます。初期値と既存のコネクターは常時動作です。");
+        addBookPage(root, "trick_ideaspace_connector.4",
+                "The Input filter limits which resources are accepted. It applies to all six faces and has four modes: Accept all, Allow list, Deny list, and Stored types only. The nine list slots are separate from the published slots, match only resources with identical data such as durability, and never consume resources. Stored types only accepts types the storage holds at least one of, so a type that runs out is no longer accepted. FE is unaffected. Defaults to Accept all.",
+                "「搬入フィルタ」で、受け入れる資源を制限できます。全6面に適用され、方式は「すべて許可」「許可リスト」「拒否リスト」「在庫のある種類のみ」の4つです。リスト用の9枠は公開枠とは別で、耐久値などのデータまで一致するものだけが対象です。登録しても資源は消費しません。「在庫のある種類のみ」は、ストレージに1以上ある種類だけを受け入れます。在庫が0になった種類は受け入れなくなります。FEは対象外です。初期値は「すべて許可」です。");
+        addBookPage(root, "trick_ideaspace_connector.5",
+                "Stock rules adjust when and how much automatic export sends. Min. storage stock exports only while the storage holds at least that amount. It does not keep a reserve, so a single export may drop below it. Target stock counts the same resource visible through the connected face of the destination and exports only what is missing (blank = off). Both can be combined and follow the shared or per-slot settings. They do not apply when other devices extract from the connector.",
+                "自動搬出の「在庫条件」で、搬出のタイミングと量を調整できます。「開始在庫」を設定すると、ストレージにその量以上あるときだけ搬出します。残量を確保する機能ではないので、1回の搬出で下回ることがあります。「目標在庫」を設定すると、搬出先の接続面から見える同じ資源を数え、目標に足りない分だけ搬出します（空欄で無効）。両方を併用でき、共通設定と公開枠ごとの個別設定に従います。他の機器がコネクターから引き出す場合には適用されません。");
+    }
+
+    private void addIdeaResourceLogistics(JsonObject root) {
+        // id, English noun, English name, Japanese name, amount limit (en/ja), quantity input (en/ja), fraction (en/ja),
+        // filter input (en/ja), wildcard example (en/ja)
+        String[][] types = {
+                {"item", "items", "Item", "アイテム", "up to the count given by Number", "上限は「数値」で指定した個数です。",
+                        "Number", "数値", "fractions of an item", "1個未満の端数", "the filter (String/Item)", "フィルタ（String/Item）",
+                        "e.g. *_ore for every mod's ores", "例: *_ore で各Modの鉱石"},
+                {"fluid", "fluids", "Fluid", "液体", "up to Power * 1000 mB", "上限は威力×1000mBです。",
+                        "Power", "威力", "fractions of 1 mB", "1mB未満の端数", "the filter (String)", "フィルタ（String）",
+                        "e.g. *water for water, heavy water and more", "例: *water で水や重水など"},
+                {"chemical", "chemicals", "Chemical", "化学物質", "up to Power * 1000 mB", "上限は威力×1000mBです。",
+                        "Power", "威力", "fractions of 1 mB", "1mB未満の端数", "the filter (String)", "フィルタ（String）",
+                        "e.g. *_acid for every acid", "例: *_acid で各種の酸"}};
+        for (String[] type : types) for (boolean deposit : new boolean[] {true, false}) {
+            String id = "trick_idea_storage_" + (deposit ? "deposit_" : "withdraw_") + type[0];
+            boolean item = type[0].equals("item"), chemical = type[0].equals("chemical");
+            String en = deposit
+                    ? "Deposits " + type[1] + " matching the filter from the specified face of the block at Position into your Ideaspace Storage, " + type[4] + "."
+                    : "Withdraws " + type[1] + " matching the filter from your Ideaspace Storage into the specified face of the block at Position, " + type[4] + ".";
+            String jp = deposit
+                    ? "位置のブロックの指定面から、フィルタに一致する" + type[3] + "を自分のイデアストレージへ格納します。" + type[5]
+                    : "自分のイデアストレージから、フィルタに一致する" + type[3] + "を位置のブロックの指定面へ取り出します。" + type[5];
+            addSpellPiece(root, id, "Trick: Ideaspace Storage - " + type[2] + (deposit ? " Deposit" : " Withdraw"), en,
+                    "作動式: イデアストレージ-" + type[3] + (deposit ? "格納" : "取出"), jp);
+            addBookPage(root, id + ".0",
+                    en + (chemical ? " Requires Mekanism." : "") + " If stock or destination space runs short, moves as much as possible. Position and Direction (Vector) and "
+                            + type[6] + " (Number) are required; " + type[10] + " is optional. " + type[6] + " must be positive; " + type[8]
+                            + " are rounded down. Potency: 50. Complexity: 1. Psi cost: 100. Unlocked with Program: Ideaspace Storage.",
+                    jp + (chemical ? "Mekanismが必要です。" : "") + "在庫や移動先の空きが足りない場合は、移せる分だけ移します。位置・方向（Vector）と" + type[7]
+                            + "（Number）は必須、" + type[11] + "は任意です。" + type[7] + "には正の数を指定し、" + type[9]
+                            + "は切り捨てます。規模50、複雑性1、コスト100。プログラム: イデアストレージで解禁されます。");
+            String enFilter = "With no filter or an empty String, every " + type[1].substring(0, type[1].length() - 1) + " is a target. "
+                    + (item ? "In String mode the filter" : "The filter") + " matches resource IDs and supports * (any text) and ? (any single character). "
+                    + "Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods (" + type[12] + ").";
+            String jpFilter = "フィルタを接続しないか空文字にすると、すべての" + type[3] + "が対象です。"
+                    + (item ? "Stringモードでは" : "フィルタは") + "資源IDで照合し、*（任意の文字列）と?（任意の1文字）が使えます。"
+                    + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します（" + type[13] + "）。";
+            if (item) {
+                enFilter += " Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability.";
+                jpFilter += "Itemモードはアイテムの種類だけを、Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致するものを対象にします。";
+            }
+            addBookPage(root, id + ".1", enFilter, jpFilter);
+            addBookPage(root, id + ".2",
+                    (deposit ? "" : "When several types match, they are withdrawn in turn until the limit is reached. ")
+                            + "Follows the block's per-face input and output. Casting fails with an error if the block is protected. "
+                            + "Has no effect on blocks in unloaded chunks or on your own Ideaspace Connector."
+                            + (chemical ? " Does nothing without Mekanism." : ""),
+                    (deposit ? "" : "複数の種類が一致する場合は、上限に達するまで順に取り出します。")
+                            + "ブロックの面ごとの入出力に従います。保護されたブロックを対象にするとエラーになります。"
+                            + "読み込まれていないチャンクのブロックや、自分のイデアコネクターには作用しません。"
+                            + (chemical ? "Mekanismが導入されていない場合は何もしません。" : ""));
+        }
     }
 }

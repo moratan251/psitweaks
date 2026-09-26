@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorInputMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
@@ -44,10 +45,14 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     private int neighborRefreshTicks;
     private Button settingsButton, backButton, helpButton, useCommonButton;
     private Button exportButton, applyExportButton;
+    private Button inputPageButton, inputModeButton, stockButton;
     private Button allRedstoneButton;
     private ConnectorRedstoneMode nextAllRedstoneMode = ConnectorRedstoneMode.ALWAYS;
     private final EditBox[] exportAmounts = new EditBox[ConnectorExportSettings.TYPES];
     private final EditBox[] exportIntervals = new EditBox[ConnectorExportSettings.TYPES];
+    private final EditBox[] exportMinimums = new EditBox[ConnectorExportSettings.TYPES];
+    private final EditBox[] exportTargets = new EditBox[ConnectorExportSettings.TYPES];
+    private boolean inputPage, stockPage;
     private boolean exportPage, exportDraftDirty, loadingExportValues;
     private long exportValuesRevision = -1;
     private boolean settingsOpen;
@@ -58,6 +63,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     private CompoundTag lastState;
     private long templateRevision = -1;
     private List<IdeaStorageDisplayEntry> selected = List.of();
+    private List<IdeaStorageDisplayEntry> inputFilters = List.of();
 
     public IdeaspaceConnectorScreen(IdeaspaceConnectorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -74,10 +80,13 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     @Override protected void init() {
         exportValuesRevision = -1;
         String[] draftAmounts = new String[ConnectorExportSettings.TYPES], draftIntervals = new String[ConnectorExportSettings.TYPES];
+        String[] draftMinimums = new String[ConnectorExportSettings.TYPES], draftTargets = new String[ConnectorExportSettings.TYPES];
         boolean restoreDraft = exportPage && exportDraftDirty;
         if (restoreDraft) for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
             draftAmounts[type] = exportAmounts[type].getValue();
             draftIntervals[type] = exportIntervals[type].getValue();
+            draftMinimums[type] = exportMinimums[type].getValue();
+            draftTargets[type] = exportTargets[type].getValue();
         }
         super.init();
         minecraft.player.stopUsingItem();
@@ -103,6 +112,13 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         }
         settingsButton = addRenderableWidget(Button.builder(text("settings"), button -> openSettings(-1))
                 .bounds(leftPos + 8, topPos + 74, 124, 18).build());
+        inputPageButton = addRenderableWidget(Button.builder(text(inputPage ? "back" : "input_filters"), button -> {
+            inputPage = !inputPage;
+            setSettingsOpen(false);
+        }).bounds(leftPos + 8, topPos + 184, 160, 14).build());
+        inputModeButton = addRenderableWidget(Button.builder(Component.empty(), button -> send(IdeaspaceConnectorMenu.INPUT_MODE,
+                0, ConnectorInputMode.byId(menu.clientState().getInt("InputMode")).next().ordinal()))
+                .bounds(leftPos + 8, topPos + 74, 160, 18).tooltip(Tooltip.create(text("input_hint"))).build());
         useCommonButton = addRenderableWidget(Button.builder(Component.empty(),
                 button -> {
                     exportDraftDirty = false;
@@ -111,12 +127,15 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
                 })
                 .bounds(leftPos + 8, topPos + 24, imageWidth - 16, 16).tooltip(Tooltip.create(text("inherit_hint"))).build());
         backButton = addRenderableWidget(Button.builder(text("back"), button -> {
-                    if (exportPage) setExportPage(false); else setSettingsOpen(false);
+                    if (stockPage) setStockPage(false); else if (exportPage) setExportPage(false); else setSettingsOpen(false);
                 }).bounds(leftPos + 112, topPos + 180, 56, 18).build());
         exportButton = addRenderableWidget(Button.builder(text("export_settings"), button -> setExportPage(true))
                 .bounds(leftPos + 8, topPos + 180, 100, 18).build());
         applyExportButton = addRenderableWidget(Button.builder(Component.translatable("gui.psitweaks.apply"), button -> applyExportSettings())
                 .bounds(leftPos + 8, topPos + 180, 100, 18).build());
+        stockButton = addRenderableWidget(Button.builder(text(stockPage ? "export_settings" : "stock_settings"),
+                button -> setStockPage(!stockPage)).bounds(leftPos + (stockPage ? 172 : 108), topPos + (stockPage ? 180 : 164),
+                stockPage ? 116 : 60, stockPage ? 18 : 14).build());
         allRedstoneButton = addRenderableWidget(Button.builder(Component.empty(),
                 button -> send(IdeaspaceConnectorMenu.REDSTONE_ALL, settingsSlot, nextAllRedstoneMode.ordinal()))
                 .bounds(leftPos + 172, topPos + 180, 116, 18)
@@ -127,6 +146,13 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
             exportAmounts[type].setTooltip(Tooltip.create(text("export_amount_hint", ConnectorExportSettings.maximumAmount(type))));
             exportIntervals[type] = addExportField(leftPos + 124, y, 44, text("export_interval"));
             exportIntervals[type].setTooltip(Tooltip.create(text("export_interval_hint", ConnectorExportSettings.MAX_INTERVAL)));
+            exportMinimums[type] = addExportField(leftPos + 80, y, 100, text("minimum_stock"));
+            exportMinimums[type].setMaxLength(19);
+            exportMinimums[type].setTooltip(Tooltip.create(text("minimum_stock_hint")));
+            exportTargets[type] = addExportField(leftPos + 184, y, 104, text("target_stock"));
+            exportTargets[type].setMaxLength(19);
+            exportTargets[type].setHint(text("target_disabled"));
+            exportTargets[type].setTooltip(Tooltip.create(text("target_stock_hint")));
         }
         helpButton = addRenderableWidget(Button.builder(Component.literal("?"), button -> {})
                 .bounds(leftPos + 154, topPos + 6, 14, 14).tooltip(Tooltip.create(text("help"))).build());
@@ -134,6 +160,8 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         if (restoreDraft) for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
             exportAmounts[type].setValue(draftAmounts[type]);
             exportIntervals[type].setValue(draftIntervals[type]);
+            exportMinimums[type].setValue(draftMinimums[type]);
+            exportTargets[type].setValue(draftTargets[type]);
         }
         lastState = null;
         updateState();
@@ -142,6 +170,8 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     private void openSettings(int slot) {
         settingsSlot = slot;
         exportPage = false;
+        stockPage = false;
+        inputPage = false;
         setSettingsOpen(true);
     }
 
@@ -158,8 +188,14 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
 
     private void setExportPage(boolean open) {
         exportPage = open;
+        stockPage = false;
         exportDraftDirty = false;
         exportValuesRevision = -1;
+        setSettingsOpen(true);
+    }
+
+    private void setStockPage(boolean open) {
+        stockPage = open;
         setSettingsOpen(true);
     }
 
@@ -167,22 +203,30 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         cancelEnergyDrag();
         if (!open) exportPage = false;
         settingsOpen = open;
-        int pageWidth = open && !exportPage ? 296 : 176;
+        int pageWidth = open && (!exportPage || stockPage) ? 296 : 176;
         if (imageWidth != pageWidth) {
             imageWidth = pageWidth;
             rebuildWidgets();
             return;
         }
         menu.setInventoryVisible(!open);
-        settingsButton.visible = helpButton.visible = !open;
+        settingsButton.visible = !open && !inputPage;
+        helpButton.visible = !open;
+        helpButton.setTooltip(Tooltip.create(text(inputPage ? "input_hint" : "help")));
+        inputPageButton.visible = !open && !menu.clientState().getBoolean("LoadFailed");
+        inputPageButton.setMessage(text(inputPage ? "back" : "input_filters"));
+        inputModeButton.visible = !open && inputPage;
         backButton.visible = open;
         exportButton.visible = open && !exportPage;
         applyExportButton.visible = open && exportPage;
+        stockButton.visible = open && exportPage;
         allRedstoneButton.visible = open && !exportPage;
-        for (int type = 0; type < ConnectorExportSettings.TYPES; type++)
-            exportAmounts[type].visible = exportIntervals[type].visible = open && exportPage;
+        for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
+            exportAmounts[type].visible = exportIntervals[type].visible = open && exportPage && !stockPage;
+            exportMinimums[type].visible = exportTargets[type].visible = open && exportPage && stockPage;
+        }
         useCommonButton.visible = open && settingsSlot >= 0;
-        for (Button button : slotSettingsButtons) button.visible = !open;
+        for (Button button : slotSettingsButtons) button.visible = !open && !inputPage;
         for (int i = 0; i < 6; i++)
             modeButtons[i].visible = autoButtons[i].visible = redstoneButtons[i].visible = open && !exportPage;
         if (open && !exportPage) updateNeighbors();
@@ -191,7 +235,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         updateState();
     }
 
-    /** JEI only sees the nine filter targets on the main page. */
+    /** JEI sees either published resources or the independent input filter list. */
     public List<Rect2i> publishedSlotAreas() {
         if (settingsOpen) return List.of();
         List<Rect2i> areas = new ArrayList<>();
@@ -201,12 +245,14 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
 
     public void acceptGhostResource(int slot, ConnectorResource resource) {
         if (settingsOpen || slot < 0 || slot >= 9 || resource.kind() == ConnectorResource.Kind.EMPTY) return;
+        if (inputPage && resource.kind() == ConnectorResource.Kind.ENERGY) return;
         CompoundTag template = resource.save(minecraft.player.registryAccess());
         if (template.sizeInBytes() > MessageConnectorTemplate.MAX_TEMPLATE_SIZE) {
             minecraft.player.displayClientMessage(text("template_too_large"), true);
             return;
         }
-        PacketDistributor.sendToServer(new MessageConnectorTemplate(menu.containerId, menu.session(), slot, template));
+        PacketDistributor.sendToServer(new MessageConnectorTemplate(menu.containerId, menu.session(), slot, template,
+                inputPage, menu.revision()));
     }
 
     private void send(int action, int slot, int argument) {
@@ -245,6 +291,9 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         lastState = state;
         boolean reuseTemplates = templateRevision == state.getLong("Templates");
         selected = readEntries(state, "Selected", 9, selected, reuseTemplates);
+        inputFilters = readEntries(state, "InputFilters", 9, inputFilters, reuseTemplates);
+        inputModeButton.setMessage(text("input_mode." + ConnectorInputMode.byId(state.getInt("InputMode")).name().toLowerCase(Locale.ROOT)));
+        inputPageButton.visible = !settingsOpen && !state.getBoolean("LoadFailed");
         templateRevision = state.getLong("Templates");
         boolean inherited = slotUsesCommon();
         useCommonButton.setMessage(text(inherited ? "use_common" : "use_individual"));
@@ -277,14 +326,20 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
             try {
                 int[] amounts = state.getIntArray(inherited ? "ExportAmounts" : "SlotExportAmounts");
                 int[] intervals = state.getIntArray(inherited ? "ExportIntervals" : "SlotExportIntervals");
+                long[] minimums = state.getLongArray(inherited ? "ExportMinimums" : "SlotExportMinimums");
+                long[] targets = state.getLongArray(inherited ? "ExportTargets" : "SlotExportTargets");
                 for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
                     exportAmounts[type].setEditable(editable);
                     exportIntervals[type].setEditable(editable);
+                    exportMinimums[type].setEditable(editable);
+                    exportTargets[type].setEditable(editable);
                     if (!exportDraftDirty && exportValuesRevision != menu.revision()) {
                         int index = inherited ? type : settingsSlot * ConnectorExportSettings.TYPES + type;
-                        var value = ConnectorExportSettings.read(type, amounts, intervals, index);
+                        var value = ConnectorExportSettings.read(type, amounts, intervals, minimums, targets, index);
                         exportAmounts[type].setValue(Integer.toString(value.amount()));
                         exportIntervals[type].setValue(Integer.toString(value.interval()));
+                        exportMinimums[type].setValue(Long.toString(value.minimumStock()));
+                        exportTargets[type].setValue(value.targetStock() < 0 ? "" : Long.toString(value.targetStock()));
                     }
                 }
                 exportValuesRevision = menu.revision();
@@ -297,9 +352,11 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         List<ConnectorExportSettings> values = new ArrayList<>();
         try {
             for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
-                if (exportAmounts[type] == null || exportIntervals[type] == null) return List.of();
+                if (exportAmounts[type] == null || exportIntervals[type] == null
+                        || exportMinimums[type] == null || exportTargets[type] == null) return List.of();
                 var value = new ConnectorExportSettings(Integer.parseInt(exportAmounts[type].getValue()),
-                        Integer.parseInt(exportIntervals[type].getValue()));
+                        Integer.parseInt(exportIntervals[type].getValue()), Long.parseLong(exportMinimums[type].getValue()),
+                        exportTargets[type].getValue().isEmpty() ? -1 : Long.parseLong(exportTargets[type].getValue()));
                 if (!value.valid(type)) return List.of();
                 values.add(value);
             }
@@ -368,9 +425,11 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
                 else if (neighborNames[i] != null) graphics.drawCenteredString(font, "?", x + 9, y + 5, 0xFFFFFFFF);
             }
         } else {
-            for (int i = 0; i < 9; i++) drawCell(graphics, selected, i, SELECTED_Y);
-            drawSlotBackground(graphics, leftPos + ENERGY_X, topPos + ENERGY_Y);
-            IdeaStorageScreen.renderEntry(graphics, energyIcon, leftPos + ENERGY_X + 1, topPos + ENERGY_Y + 1);
+            for (int i = 0; i < 9; i++) drawCell(graphics, inputPage ? inputFilters : selected, i, SELECTED_Y);
+            if (!inputPage) {
+                drawSlotBackground(graphics, leftPos + ENERGY_X, topPos + ENERGY_Y);
+                IdeaStorageScreen.renderEntry(graphics, energyIcon, leftPos + ENERGY_X + 1, topPos + ENERGY_Y + 1);
+            }
             for (var slot : menu.slots) {
                 int x = leftPos + slot.x - 1, y = topPos + slot.y - 1;
                 drawSlotBackground(graphics, x, y);
@@ -399,21 +458,22 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        Component heading = settingsOpen ? settingsSlot < 0 ? text(exportPage ? "export_common_title" : "settings")
-                : text(exportPage ? "export_slot_title" : "slot_settings", settingsSlot + 1) : title;
+        Component heading = settingsOpen ? settingsSlot < 0 ? text(stockPage ? "stock_common_title" : exportPage ? "export_common_title" : "settings")
+                : text(stockPage ? "stock_slot_title" : exportPage ? "export_slot_title" : "slot_settings", settingsSlot + 1)
+                : inputPage ? text("input_filters") : title;
         graphics.drawString(font, heading, 8, 8, 0xFF202A35, false);
         if (exportPage) {
-            graphics.drawString(font, text("export_amount"), 50, 47, 0xFF202A35, false);
-            Component intervalLabel = text("export_interval");
-            graphics.drawString(font, intervalLabel, 168 - font.width(intervalLabel), 47, 0xFF202A35, false);
+            graphics.drawString(font, text(stockPage ? "minimum_stock" : "export_amount"), stockPage ? 80 : 50, 47, 0xFF202A35, false);
+            Component intervalLabel = text(stockPage ? "target_stock" : "export_interval");
+            graphics.drawString(font, intervalLabel, (stockPage ? 288 : 168) - font.width(intervalLabel), 47, 0xFF202A35, false);
             for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
                 Component label = text("export_type." + type);
                 // Wrap the unit below the name so labels stay clear of the amount field.
-                int lines = font.split(label, 38).size();
+                int lines = font.split(label, stockPage ? 68 : 38).size();
                 int y = 60 + type * 27 + Math.max(0, (18 - lines * font.lineHeight) / 2);
-                graphics.drawWordWrap(font, label, 8, y, 38, 0xFF202A35);
+                graphics.drawWordWrap(font, label, 8, y, stockPage ? 68 : 38, 0xFF202A35);
             }
-            graphics.drawString(font, text("export_tick_hint"), 8, 166, 0xFF202A35, false);
+            graphics.drawString(font, text(stockPage ? "stock_hint" : "export_tick_hint"), 8, 166, 0xFF202A35, false);
             return;
         }
         if (settingsOpen) {
@@ -424,7 +484,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
             for (Direction side : Direction.values()) graphics.drawString(font, text("face." + side.getName()),
                     8, FACE_ROW_Y + 6 + side.ordinal() * FACE_ROW_HEIGHT, 0xFF202A35, false);
         } else {
-            graphics.drawString(font, text("published"), 8, 26, 0xFF202A35, false);
+            graphics.drawString(font, text(inputPage ? "input_list" : "published"), 8, 26, 0xFF202A35, false);
             graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xFF202A35, false);
         }
         if (menu.clientState().getBoolean("LoadFailed"))
@@ -462,7 +522,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         }
         renderTooltip(graphics, mouseX, mouseY);
         int index = cellAt(mouseX, mouseY, SELECTED_Y, 1);
-        List<IdeaStorageDisplayEntry> entries = selected;
+        List<IdeaStorageDisplayEntry> entries = inputPage ? inputFilters : selected;
         if (index < 0 || index >= entries.size()) return;
         IdeaStorageDisplayEntry entry = entries.get(index);
         if (entry == null) return;
@@ -480,7 +540,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     }
 
     private boolean energyIconAt(double x, double y) {
-        return !settingsOpen && x >= leftPos + ENERGY_X && x < leftPos + ENERGY_X + CELL
+        return !settingsOpen && !inputPage && x >= leftPos + ENERGY_X && x < leftPos + ENERGY_X + CELL
                 && y >= topPos + ENERGY_Y && y < topPos + ENERGY_Y + CELL;
     }
 
@@ -507,10 +567,12 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         int index = settingsOpen ? -1 : cellAt(x, y, SELECTED_Y, 1);
         if (index >= 0 && (button == 0 || button == 1)) {
             ghostClick = true;
-            if (button == 1 && menu.getCarried().isEmpty()) send(IdeaspaceConnectorMenu.CLEAR, index, 0);
+            if (button == 1 && menu.getCarried().isEmpty())
+                send(inputPage ? IdeaspaceConnectorMenu.CLEAR_INPUT_FILTER : IdeaspaceConnectorMenu.CLEAR, index, 0);
             else {
                 if (!menu.getCarried().isEmpty())
-                    send(IdeaspaceConnectorMenu.ASSIGN, index, button == 1 || hasShiftDown() ? 1 : 0);
+                    send(inputPage ? IdeaspaceConnectorMenu.ASSIGN_INPUT_FILTER : IdeaspaceConnectorMenu.ASSIGN,
+                            index, button == 1 || hasShiftDown() ? 1 : 0);
             }
             return true;
         }
@@ -550,7 +612,10 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
             return true;
         }
         if (exportPage) {
-            if (key == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) { setExportPage(false); return true; }
+            if (key == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
+                if (stockPage) setStockPage(false); else setExportPage(false);
+                return true;
+            }
             if (key == org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER || key == org.lwjgl.glfw.GLFW.GLFW_KEY_KP_ENTER) {
                 applyExportSettings();
                 return true;
@@ -561,6 +626,11 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
             }
         }
         if (settingsOpen && key == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
+            setSettingsOpen(false);
+            return true;
+        }
+        if (inputPage && key == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
+            inputPage = false;
             setSettingsOpen(false);
             return true;
         }

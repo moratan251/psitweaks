@@ -26,6 +26,7 @@ public final class PlayerIdeaStorage {
     private long inventoryVersion;
     private long energy;
     private boolean energyTransferActive;
+    private boolean resourceTransferActive;
 
     public long energy() {
         return energy;
@@ -104,7 +105,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateInsert(ItemStack template, long amount) {
-        if (loadFailed || amount <= 0 || template == null || template.isEmpty()) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || template == null || template.isEmpty()) {
             return 0;
         }
         Optional<ItemResourceKey> keyOptional = ItemResourceKey.of(template);
@@ -129,7 +130,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateExtract(ItemResourceKey key, long amount) {
-        if (loadFailed || amount <= 0 || key == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || key == null) {
             return 0;
         }
         return Math.min(amount, items.getOrDefault(key, 0L));
@@ -171,7 +172,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateInsertFluid(FluidStack template, long amount) {
-        if (loadFailed || amount <= 0 || template == null || template.isEmpty()) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || template == null || template.isEmpty()) {
             return 0;
         }
         Optional<FluidResourceKey> keyOptional = FluidResourceKey.of(template);
@@ -196,7 +197,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateExtractFluid(FluidResourceKey key, long amount) {
-        if (loadFailed || amount <= 0 || key == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || key == null) {
             return 0;
         }
         return Math.min(amount, fluids.getOrDefault(key, 0L));
@@ -243,7 +244,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateInsertChemical(ResourceLocation chemicalId, long amount) {
-        if (loadFailed || amount <= 0 || chemicalId == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || chemicalId == null) {
             return 0;
         }
         boolean existing = chemicals.containsKey(chemicalId);
@@ -262,7 +263,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateExtractChemical(ResourceLocation chemicalId, long amount) {
-        if (loadFailed || amount <= 0 || chemicalId == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || chemicalId == null) {
             return 0;
         }
         return Math.min(amount, chemicals.getOrDefault(chemicalId, 0L));
@@ -281,6 +282,32 @@ public final class PlayerIdeaStorage {
         }
         markChanged();
         return extracted;
+    }
+
+    public IdeaStorageInsertion reserveItemInsertion(ItemStack template, long maximum) {
+        long amount = simulateInsert(template, maximum);
+        if (amount == 0) return null;
+        return reserveInsertion(items, ItemResourceKey.of(template).orElseThrow(), amount);
+    }
+
+    public IdeaStorageInsertion reserveFluidInsertion(FluidStack template, long maximum) {
+        long amount = simulateInsertFluid(template, maximum);
+        if (amount == 0) return null;
+        return reserveInsertion(fluids, FluidResourceKey.of(template).orElseThrow(), amount);
+    }
+
+    public IdeaStorageInsertion reserveChemicalInsertion(ResourceLocation key, long maximum) {
+        long amount = simulateInsertChemical(key, maximum);
+        return amount == 0 ? null : reserveInsertion(chemicals, key, amount);
+    }
+
+    private <K> IdeaStorageInsertion reserveInsertion(Map<K, Long> entries, K key, long amount) {
+        resourceTransferActive = true;
+        return new IdeaStorageInsertion(amount, transferred -> {
+            // Capacity/type slots were checked before extraction. A config reduction cannot delete the extracted units.
+            entries.put(key, Math.addExact(entries.getOrDefault(key, 0L), transferred));
+            markChanged();
+        }, () -> resourceTransferActive = false);
     }
 
     /**

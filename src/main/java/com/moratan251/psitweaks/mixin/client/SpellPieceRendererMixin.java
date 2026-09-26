@@ -17,6 +17,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorS
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageItemAmount;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickItemTransferBase;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageItemBase;
 
 /** Preserves addon overlays after Psi moved rendering out of SpellPiece. */
 @Mixin(value = SpellPieceRenderer.class, remap = false)
@@ -39,6 +40,8 @@ public abstract class SpellPieceRendererMixin {
         } else if (piece instanceof PieceTrickItemTransferBase custom) {
             custom.drawAdditional(poses, buffers, light);
         } else if (piece instanceof PieceSelectorIdeaStorageItemAmount custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceTrickIdeaStorageItemBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         }
     }

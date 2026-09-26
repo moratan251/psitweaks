@@ -5,6 +5,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorHandlers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorInputMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
@@ -33,6 +34,8 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
     public static final int SLOTS = 9;
     private UUID owner;
     private final ConnectorResource[] resources = new ConnectorResource[SLOTS];
+    private final ConnectorResource[] inputFilters = new ConnectorResource[SLOTS];
+    private ConnectorInputMode inputMode = ConnectorInputMode.ANY;
     private final ConnectorSideMode[] sides = new ConnectorSideMode[6];
     private final boolean[] automatic = new boolean[6];
     private final ConnectorRedstoneMode[] redstone = new ConnectorRedstoneMode[6];
@@ -52,6 +55,7 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
     public IdeaspaceConnectorBlockEntity(BlockPos pos, BlockState state) {
         super(PsitweaksBlockEntityTypes.IDEASPACE_CONNECTOR.get(), pos, state);
         Arrays.fill(resources, ConnectorResource.EMPTY);
+        Arrays.fill(inputFilters, ConnectorResource.EMPTY);
         Arrays.fill(sides, ConnectorSideMode.BOTH);
         Arrays.fill(redstone, ConnectorRedstoneMode.ALWAYS);
         for (var modes : slotSides) Arrays.fill(modes, ConnectorSideMode.BOTH);
@@ -200,6 +204,36 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         return true;
     }
 
+    public ConnectorInputMode inputMode() { return inputMode; }
+
+    public void setInputMode(ConnectorInputMode mode) {
+        if (mode == null) return;
+        inputMode = mode;
+        settingsChanged();
+    }
+
+    public ConnectorResource inputFilter(int slot) {
+        return slot >= 0 && slot < SLOTS ? inputFilters[slot] : ConnectorResource.EMPTY;
+    }
+
+    public boolean setInputFilter(int slot, ConnectorResource resource) {
+        if (slot < 0 || slot >= SLOTS || resource == null || resource.kind() == ConnectorResource.Kind.ENERGY) return false;
+        inputFilters[slot] = resource;
+        settingsChanged();
+        return true;
+    }
+
+    public boolean passesInputFilter(ConnectorResource resource) {
+        if (resource.kind() == ConnectorResource.Kind.ENERGY) return true;
+        if (resource.kind() == ConnectorResource.Kind.EMPTY) return false;
+        return switch (inputMode) {
+            case ANY -> true;
+            case ALLOW_LIST -> Arrays.asList(inputFilters).contains(resource);
+            case DENY_LIST -> !Arrays.asList(inputFilters).contains(resource);
+            case EXISTING -> resource.amount(storage()) > 0;
+        };
+    }
+
     public boolean setAllRedstoneModes(int slot, ConnectorRedstoneMode mode) {
         if (!canSetRedstone(slot) || mode == null) return false;
         Arrays.fill(slot < 0 ? redstone : slotRedstone[slot], mode);
@@ -233,7 +267,7 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
     /** Match the incoming identity, not an arbitrary insertion slot supplied by a pipe. */
     public boolean allowsInput(Direction side, ConnectorResource resource) {
         int slot = publishedSlot(resource);
-        return (slot < 0 ? sideMode(side) : sideMode(slot, side)).input && redstoneAllows(slot, side);
+        return (slot < 0 ? sideMode(side) : sideMode(slot, side)).input && redstoneAllows(slot, side) && passesInputFilter(resource);
     }
 
     public ConnectorHandlers handlers(Direction side) { return handlers[side.ordinal()]; }
@@ -317,6 +351,9 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         ListTag selected = new ListTag();
         for (ConnectorResource resource : resources) selected.add(resource.save(registries));
         tag.put("Published", selected);
+        ListTag filters = new ListTag();
+        for (ConnectorResource resource : inputFilters) filters.add(resource.save(registries));
+        tag.put("InputFilters", filters);
         writeConnectionSettings(tag);
         int[] cooldowns = new int[SLOTS];
         long now = level == null ? 0 : level.getGameTime();
@@ -327,6 +364,7 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
 
     /** Shared by persistence and the owner's menu sync; contains settings only. */
     public void writeConnectionSettings(CompoundTag tag) {
+        tag.putInt("InputMode", inputMode.ordinal());
         int[] modes = new int[6];
         int autoMask = 0;
         for (int i = 0; i < 6; i++) {
@@ -352,24 +390,41 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         tag.putIntArray("SlotRedstone", perSlotRedstone);
         int[] amounts = new int[ConnectorExportSettings.TYPES], intervals = new int[ConnectorExportSettings.TYPES];
         int[] slotAmounts = new int[SLOTS * ConnectorExportSettings.TYPES], slotIntervals = new int[slotAmounts.length];
+        long[] minimums = new long[ConnectorExportSettings.TYPES], targets = new long[ConnectorExportSettings.TYPES];
+        long[] slotMinimums = new long[slotAmounts.length], slotTargets = new long[slotAmounts.length];
         for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
             amounts[type] = commonExport[type].amount();
             intervals[type] = commonExport[type].interval();
+            minimums[type] = commonExport[type].minimumStock();
+            targets[type] = commonExport[type].targetStock();
             for (int slot = 0; slot < SLOTS; slot++) {
                 slotAmounts[slot * ConnectorExportSettings.TYPES + type] = slotExport[slot][type].amount();
                 slotIntervals[slot * ConnectorExportSettings.TYPES + type] = slotExport[slot][type].interval();
+                slotMinimums[slot * ConnectorExportSettings.TYPES + type] = slotExport[slot][type].minimumStock();
+                slotTargets[slot * ConnectorExportSettings.TYPES + type] = slotExport[slot][type].targetStock();
             }
         }
         tag.putIntArray("ExportAmounts", amounts);
         tag.putIntArray("ExportIntervals", intervals);
         tag.putIntArray("SlotExportAmounts", slotAmounts);
         tag.putIntArray("SlotExportIntervals", slotIntervals);
+        tag.putLongArray("ExportMinimums", minimums);
+        tag.putLongArray("ExportTargets", targets);
+        tag.putLongArray("SlotExportMinimums", slotMinimums);
+        tag.putLongArray("SlotExportTargets", slotTargets);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
+        inputMode = ConnectorInputMode.byId(tag.getInt("InputMode"));
+        Arrays.fill(inputFilters, ConnectorResource.EMPTY);
+        ListTag filters = tag.getList("InputFilters", Tag.TAG_COMPOUND);
+        for (int i = 0; i < Math.min(SLOTS, filters.size()); i++) {
+            ConnectorResource resource = ConnectorResource.load(filters.getCompound(i), registries);
+            if (resource.kind() != ConnectorResource.Kind.ENERGY) inputFilters[i] = resource;
+        }
         ListTag selected = tag.getList("Published", Tag.TAG_COMPOUND);
         Arrays.fill(resources, ConnectorResource.EMPTY);
         for (int i = 0; i < Math.min(SLOTS, selected.size()); i++) {
@@ -400,10 +455,12 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         settingsVersion++;
         int[] amounts = tag.getIntArray("ExportAmounts"), intervals = tag.getIntArray("ExportIntervals");
         int[] slotAmounts = tag.getIntArray("SlotExportAmounts"), slotIntervals = tag.getIntArray("SlotExportIntervals");
+        long[] minimums = tag.getLongArray("ExportMinimums"), targets = tag.getLongArray("ExportTargets");
+        long[] slotMinimums = tag.getLongArray("SlotExportMinimums"), slotTargets = tag.getLongArray("SlotExportTargets");
         for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
-            commonExport[type] = ConnectorExportSettings.read(type, amounts, intervals, type);
+            commonExport[type] = ConnectorExportSettings.read(type, amounts, intervals, minimums, targets, type);
             for (int slot = 0; slot < SLOTS; slot++)
-                slotExport[slot][type] = ConnectorExportSettings.read(type, slotAmounts, slotIntervals, slot * ConnectorExportSettings.TYPES + type);
+                slotExport[slot][type] = ConnectorExportSettings.read(type, slotAmounts, slotIntervals, slotMinimums, slotTargets, slot * ConnectorExportSettings.TYPES + type);
         }
         int[] cooldowns = tag.getIntArray("ExportCooldowns");
         savedExportCooldowns = new int[SLOTS];
