@@ -2022,6 +2022,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
     }
 
     private void addIdeaResourceLogistics(JsonObject root) {
+        root.addProperty("psitweaks.spellerror.idea_storage_transfer_failed", switch (locale) {
+            case "ja_jp" -> "外部機器とのイデア転送に失敗しました。詳細はサーバーログを確認してください";
+            default -> "Ideaspace transfer with the external device failed. Check the server log for details";
+        });
         // id, English noun, English name, Japanese name, amount limit (en/ja), quantity input (en/ja), fraction (en/ja),
         // filter input (en/ja), wildcard example (en/ja)
         String[][] types = {

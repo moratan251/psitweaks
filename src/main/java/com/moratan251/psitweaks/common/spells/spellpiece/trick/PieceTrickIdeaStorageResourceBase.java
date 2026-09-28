@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.compat.IdeaStorageLogisticsMekanism;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
@@ -8,9 +9,11 @@ import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
+import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import java.util.function.Predicate;
 import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,8 +24,11 @@ import vazkii.psi.api.spell.*;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
+import org.slf4j.Logger;
 
 public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick {
+    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final String ERROR_TRANSFER = "psitweaks.spellerror.idea_storage_transfer_failed";
     protected SpellParam<Vector3> position, direction;
     protected SpellParam<Number> quantity;
     protected SpellParam<String> string;
@@ -71,6 +77,18 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick {
         var storage = IdeaStorageService.get(player.server, player.getUUID());
         long maximum = IdeaStorageResourceTransfers.amountForPower(amount, kind() == Kind.ITEM ? 1 : 1000,
                 kind() == Kind.CHEMICAL ? Long.MAX_VALUE : Integer.MAX_VALUE);
+        try {
+            transfer(context, player, blockPos, facing, storage, maximum);
+        } catch (RuntimeException failure) {
+            LOGGER.warn("Ideaspace {} {} failed at {} face {}", kind(), deposit() ? "deposit" : "withdrawal", blockPos, facing, failure);
+            throw new SpellRuntimeException(ERROR_TRANSFER);
+        }
+        return null;
+    }
+
+    protected void transfer(SpellContext context, ServerPlayer player, BlockPos blockPos, Direction facing,
+                            PlayerIdeaStorage storage, long maximum) throws SpellRuntimeException {
+        var level = player.serverLevel();
         if (kind() == Kind.ITEM) {
             var handler = PieceTrickItemTransferBase.getBlockItemHandler(level, blockPos, facing);
             if (handler != null) {
@@ -88,7 +106,6 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick {
         } else if (MekanismCompat.isMekanismLoaded()) {
             IdeaStorageLogisticsMekanism.transfer(storage, level, blockPos, facing, idFilter(getParamValue(context, string)), maximum, deposit());
         }
-        return null;
     }
 
     protected Predicate<ItemStack> itemFilter(SpellContext context) throws SpellRuntimeException {

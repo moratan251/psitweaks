@@ -25,10 +25,10 @@ public final class IdeaStorageResourceTransfers {
             try (var reservation = storage.reserveItemInsertion(preview, Math.min(preview.getCount(), maximum - moved))) {
                 if (reservation == null) continue;
                 ItemStack extracted = source.extractItem(slot, (int) reservation.amount(), false);
-                if (!extracted.isEmpty() && !ItemStack.isSameItemSameComponents(preview, extracted))
-                    throw new IllegalStateException("Item handler changed resource identity during extraction");
-                reservation.commit(extracted.getCount());
-                moved += extracted.getCount();
+                int actualAmount = extracted.isEmpty() ? 0 : extracted.getCount();
+                if (!reservation.commit(ItemResourceKey.of(extracted).orElse(null), actualAmount))
+                    throw new IllegalStateException("Unexpected item extraction; actual resource preserved in Ideaspace Storage");
+                moved += actualAmount;
             }
         }
         return moved;
@@ -54,10 +54,10 @@ public final class IdeaStorageResourceTransfers {
             try (var reservation = storage.reserveFluidInsertion(preview, Math.min(preview.getAmount(), maximum - moved))) {
                 if (reservation == null) continue;
                 FluidStack extracted = source.drain(preview.copyWithAmount((int) reservation.amount()), IFluidHandler.FluidAction.EXECUTE);
-                if (!extracted.isEmpty() && !FluidResourceKey.of(preview).equals(FluidResourceKey.of(extracted)))
-                    throw new IllegalStateException("Fluid handler changed resource identity during extraction");
-                reservation.commit(extracted.getAmount());
-                moved += extracted.getAmount();
+                int actualAmount = extracted.isEmpty() ? 0 : extracted.getAmount();
+                if (!reservation.commit(FluidResourceKey.of(extracted).orElse(null), actualAmount))
+                    throw new IllegalStateException("Unexpected fluid extraction; actual resource preserved in Ideaspace Storage");
+                moved += actualAmount;
             }
         }
         return moved;

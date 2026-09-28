@@ -39,10 +39,11 @@ public final class IdeaStorageLogisticsMekanism {
             try (var reservation = storage.reserveChemicalInsertion(id, Math.min(preview.getAmount(), maximum - moved))) {
                 if (reservation == null) continue;
                 var extracted = handler.extractChemical(tank, reservation.amount(), Action.EXECUTE);
-                if (!extracted.isEmpty() && extracted.getChemical() != preview.getChemical())
-                    throw new IllegalStateException("Chemical handler changed resource identity during extraction");
-                reservation.commit(extracted.getAmount());
-                moved += extracted.getAmount();
+                long actualAmount = extracted.isEmpty() ? 0 : extracted.getAmount();
+                var actualId = extracted.isEmpty() ? null : MekanismAPI.CHEMICAL_REGISTRY.getKey(extracted.getChemical());
+                if (!reservation.commit(actualId, actualAmount))
+                    throw new IllegalStateException("Unexpected chemical extraction; actual resource preserved in Ideaspace Storage");
+                moved += actualAmount;
             }
         }
         return moved;

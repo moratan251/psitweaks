@@ -812,6 +812,7 @@
   "psitweaks.spellerror.accessdenyed": "エラー: 保護されたブロックにアクセスを試みました。",
   "psitweaks.spellerror.empty_delimiter": "区切り文字が空です",
   "psitweaks.spellerror.expected_three_numbers": "Number List の要素数は3である必要があります",
+  "psitweaks.spellerror.idea_storage_transfer_failed": "外部機器とのイデア転送に失敗しました。詳細はサーバーログを確認してください",
   "psitweaks.spellerror.mass_break_too_many_pending": "保留中の一括破壊ブロック数が上限を超えています",
   "psitweaks.spellerror.matrix_incompatible_sizes": "行列のサイズが整合しません",
   "psitweaks.spellerror.matrix_invalid_dimension": "行列の次元は1〜4である必要があります",

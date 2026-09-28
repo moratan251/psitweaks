@@ -171,7 +171,7 @@ public final class IdeaStorageSavedData extends SavedData {
         tag.putInt(TAG_GRID_ROWS, storage.getGridRows());
         tag.putLong("Energy", storage.energy());
         ListTag items = new ListTag();
-        for (Map.Entry<ItemResourceKey, Long> entry : storage.itemEntries()) {
+        for (Map.Entry<ItemResourceKey, Long> entry : storage.itemsForSave()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.put(TAG_ITEM, entry.getKey().save(registries));
             entryTag.putLong(TAG_COUNT, entry.getValue());
@@ -181,7 +181,7 @@ public final class IdeaStorageSavedData extends SavedData {
         tag.put(TAG_ITEMS, items);
 
         ListTag fluids = new ListTag();
-        for (Map.Entry<FluidResourceKey, Long> entry : storage.fluidEntries()) {
+        for (Map.Entry<FluidResourceKey, Long> entry : storage.fluidsForSave()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.put(TAG_FLUID, entry.getKey().save(registries));
             entryTag.putLong(TAG_COUNT, entry.getValue());
@@ -191,7 +191,7 @@ public final class IdeaStorageSavedData extends SavedData {
         tag.put(TAG_FLUIDS, fluids);
 
         ListTag chemicals = new ListTag();
-        for (Map.Entry<ResourceLocation, Long> entry : storage.chemicalEntries()) {
+        for (Map.Entry<ResourceLocation, Long> entry : storage.chemicalsForSave()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.putString(TAG_CHEMICAL, entry.getKey().toString());
             entryTag.putLong(TAG_COUNT, entry.getValue());
