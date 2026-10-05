@@ -1340,6 +1340,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%s の解禁状態は変更されませんでした";
             default -> "No %s unlock status was changed";
         });
+        root.addProperty("message.psitweaks.spell_unlock.command.unknown", switch (locale) {
+            case "ja_jp" -> "不明な術式解禁 ID です: %s";
+            default -> "Unknown spell unlock: %s";
+        });
         root.addProperty("message.psitweaks.spell_unlock.command.all.no_change", switch (locale) {
             case "ja_jp" -> "全術式の解禁状態は変更されませんでした（対象%s人・術式%s個）";
             default -> "No all-spell unlock status was changed (%s player(s), %s spell(s))";

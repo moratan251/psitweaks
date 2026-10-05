@@ -364,6 +364,7 @@
   "message.psitweaks.spell_unlock.command.revoke.single": "%s の解禁を %s から剥奪しました",
   "message.psitweaks.spell_unlock.command.status.locked": "%s は %s が未解禁です",
   "message.psitweaks.spell_unlock.command.status.unlocked": "%s は %s を解禁済みです",
+  "message.psitweaks.spell_unlock.command.unknown": "不明な術式解禁 ID です: %s",
   "message.psitweaks.spell_unlock.unlocked": "%s を解禁しました",
   "module.psitweaks.phenomenon_interference_enhancement_unit": "事象干渉力増大ユニット",
   "module.psitweaks.psyon_capacity_unit": "サイオン容量ユニット",

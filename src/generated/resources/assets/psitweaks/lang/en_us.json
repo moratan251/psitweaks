@@ -364,6 +364,7 @@
   "message.psitweaks.spell_unlock.command.revoke.single": "Revoked %s unlock from %s",
   "message.psitweaks.spell_unlock.command.status.locked": "%s has %s locked",
   "message.psitweaks.spell_unlock.command.status.unlocked": "%s has %s unlocked",
+  "message.psitweaks.spell_unlock.command.unknown": "Unknown spell unlock: %s",
   "message.psitweaks.spell_unlock.unlocked": "Unlocked %s",
   "module.psitweaks.phenomenon_interference_enhancement_unit": "Phenomenon Interference Enhancement Unit",
   "module.psitweaks.psyon_capacity_unit": "Psyon Capacity Unit",

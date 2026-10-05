@@ -9,6 +9,7 @@ import vazkii.psi.api.spell.PreSpellCastEvent;
 import vazkii.psi.api.spell.SpellCastEvent;
 import vazkii.psi.api.spell.PieceKnowledgeEvent;
 
+import com.moratan251.psitweaks.client.SpellUnlockClientEvents;
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
@@ -165,6 +166,7 @@ public class Psitweaks {
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
             MekanismCompat.registerClient(modEventBus);
+            SpellUnlockClientEvents.register();
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }

@@ -232,6 +232,7 @@
   "message.psitweaks.spell_unlock.command.revoke.single": "Заклинание «%s» заблокировано для игрока %s",
   "message.psitweaks.spell_unlock.command.status.locked": "У %s заблокировано заклинание «%s»",
   "message.psitweaks.spell_unlock.command.status.unlocked": "У %s открыто заклинание «%s»",
+  "message.psitweaks.spell_unlock.command.unknown": "Неизвестный идентификатор разблокировки заклинания: %s",
   "message.psitweaks.spell_unlock.unlocked": "Разблокировано заклинание: %s",
   "module.psitweaks.phenomenon_interference_enhancement_unit": "Модуль усиления интерференции феноменов",
   "module.psitweaks.psyon_capacity_unit": "Модуль емкости псионов",
