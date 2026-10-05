@@ -5,13 +5,21 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
+import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.SpellGrid;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.client.gui.GuiProgrammer;
+import vazkii.psi.common.core.handler.PlayerDataHandler;
 
 public final class SpellGridMultiSelectionController {
     private static final int LEFT_MOUSE_BUTTON = 0;
@@ -309,6 +317,10 @@ public final class SpellGridMultiSelectionController {
         if (placements.isEmpty()) {
             return;
         }
+        if (!canPastePieces(placements)) {
+            ClientGuiSounds.playError();
+            return;
+        }
 
         screen.pushState(true);
         for (PendingPlacement placement : placements) {
@@ -316,6 +328,28 @@ public final class SpellGridMultiSelectionController {
         }
         clearSelection();
         screen.onSpellChanged(false);
+    }
+
+    /** Psi 本体の貼り付けと同じ条件で、未研究のピースを含む貼り付けを拒否する(部分配置はしない)。 */
+    private static boolean canPastePieces(List<PendingPlacement> placements) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
+            return false;
+        }
+        if (player.isCreative()) {
+            return true;
+        }
+        PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
+        for (PendingPlacement placement : placements) {
+            SpellPiece piece = placement.piece;
+            ResourceLocation group = PsiAPI.getGroupForPiece(piece.getClass());
+            if (group == null || !data.isPieceGroupUnlocked(group, piece.registryKey)) {
+                player.sendSystemMessage(Component.translatable("psimisc.missing_pieces")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                return false;
+            }
+        }
+        return true;
     }
 
     private static boolean canStartSelection(GuiProgrammer screen) {

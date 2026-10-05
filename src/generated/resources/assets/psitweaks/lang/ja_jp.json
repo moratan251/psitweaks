@@ -426,6 +426,7 @@
   "message.psitweaks.spell_unlock.command.revoke.single": "%s の解禁を %s から剥奪しました",
   "message.psitweaks.spell_unlock.command.status.locked": "%s は %s が未解禁です",
   "message.psitweaks.spell_unlock.command.status.unlocked": "%s は %s を解禁済みです",
+  "message.psitweaks.spell_unlock.command.unknown": "不明な術式解禁 ID です: %s",
   "message.psitweaks.spell_unlock.unlocked": "%s を解禁しました",
   "modifier.psitweaks.casting_assist": "効率化演算",
   "modifier.psitweaks.casting_assist.description": "このツールを手持ちまたは防具として装備中は術式のPsi消費を軽減する（重複しない）",

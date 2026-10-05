@@ -404,6 +404,7 @@
   "message.psitweaks.spell_unlock.command.revoke.single": "Revoked %s unlock from %s",
   "message.psitweaks.spell_unlock.command.status.locked": "%s has %s locked",
   "message.psitweaks.spell_unlock.command.status.unlocked": "%s has %s unlocked",
+  "message.psitweaks.spell_unlock.command.unknown": "Unknown spell unlock: %s",
   "message.psitweaks.spell_unlock.unlocked": "Unlocked %s",
   "modifier.psitweaks.casting_assist": "High-efficiency Computation",
   "modifier.psitweaks.casting_assist.description": "Reduces spell Psi cost while this tool is held or worn as armor (does not stack)",

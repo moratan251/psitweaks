@@ -1,45 +1,60 @@
 package com.moratan251.psitweaks.common.handler;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.network.MessageSpellUnlockSync;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import vazkii.psi.api.spell.PieceKnowledgeEvent;
-import vazkii.psi.api.spell.programmer.ProgrammerPopulateEvent;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.core.handler.PsiSoundHandler;
 import vazkii.psi.common.network.MessageRegister;
 import vazkii.psi.common.network.message.MessageDataSync;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -51,8 +66,8 @@ import java.util.Map;
 public class SpellUnlockHandler {
 
     /** {@code groupId} が指定された定義は、そのスペルピースグループ全体の解禁も担う。 */
-    private record SpellUnlockDefinition(String commandId, ResourceLocation pieceId, ResourceLocation unlockItemId, String unlockTag,
-                                         @Nullable ResourceLocation groupId) {
+    public record SpellUnlockDefinition(String commandId, ResourceLocation pieceId, ResourceLocation unlockItemId, String unlockTag,
+                                        @Nullable ResourceLocation groupId) {
         SpellUnlockDefinition(String commandId, ResourceLocation pieceId, ResourceLocation unlockItemId, String unlockTag) {
             this(commandId, pieceId, unlockItemId, unlockTag, null);
         }
@@ -62,9 +77,25 @@ public class SpellUnlockHandler {
         }
     }
 
+    /** 定義と各索引をまとめて公開し、リロード中に索引どうしが食い違った状態を読まないようにする。 */
+    private record Snapshot(List<SpellUnlockDefinition> definitions,
+                            Map<String, SpellUnlockDefinition> byCommand,
+                            Map<ResourceLocation, SpellUnlockDefinition> byPiece,
+                            Map<ResourceLocation, SpellUnlockDefinition> byGroup,
+                            Map<ResourceLocation, List<SpellUnlockDefinition>> byItem) {
+    }
+
+    /** 同期パケットで送れる上限。これを超える定義はリロード時に不採用にする。 */
+    public static final int MAX_SYNC_DEFINITIONS = 4096;
+    public static final int MAX_SYNC_STRING_LENGTH = 32767;
+    /** Forge のカスタムペイロード上限(1MiB)に、チャンネル名などの余裕を残した値。 */
+    public static final int MAX_SYNC_PAYLOAD_BYTES = 1_000_000;
+
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Gson SPELL_UNLOCK_GSON = new GsonBuilder().create();
     private static final String SPELL_UNLOCK_DIRECTORY = "spell_unlocks";
+    private static final TypeAdapter<JsonElement> JSON_ELEMENT_ADAPTER = new Gson().getAdapter(JsonElement.class);
+    private static final DynamicCommandExceptionType UNKNOWN_SPELL = new DynamicCommandExceptionType(
+            id -> Component.translatable("message.psitweaks.spell_unlock.command.unknown", id));
 
     private static final List<SpellUnlockDefinition> DEFAULT_SPELL_UNLOCKS = List.of(
             definition("cocytus", "trick_cocytus", "program_cocytus"),
@@ -98,16 +129,14 @@ public class SpellUnlockHandler {
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();
+    private static final Snapshot DEFAULT_SNAPSHOT = buildSnapshot(DEFAULT_SPELL_UNLOCKS, true);
 
-    private static volatile List<SpellUnlockDefinition> SPELL_UNLOCKS = List.of();
-    private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_PIECE = Map.of();
-    private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_GROUP = Map.of();
-    private static volatile Map<ResourceLocation, List<SpellUnlockDefinition>> UNLOCK_BY_ITEM = Map.of();
+    /** サーバー側(統合サーバーを含む)の有効な定義。JSON リロードで置き換わる。 */
+    private static volatile Snapshot serverSnapshot = DEFAULT_SNAPSHOT;
+    /** 接続中のサーバーから同期された定義。未受信・切断後は null。 */
+    @Nullable
+    private static volatile Snapshot clientSnapshot;
     private static final String UNLOCKS_DATA_KEY = Psitweaks.MOD_ID + ".spell_unlocks";
-
-    static {
-        applyDefinitions(DEFAULT_SPELL_UNLOCKS);
-    }
 
     private static SpellUnlockDefinition definition(String commandId, String piecePath, String itemPath) {
         return new SpellUnlockDefinition(
@@ -128,12 +157,37 @@ public class SpellUnlockHandler {
         registerCommands(event.getDispatcher());
     }
 
+    /** ログイン時と /reload 後に、サーバーの有効な定義をクライアントへ送る。 */
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        MessageSpellUnlockSync message = new MessageSpellUnlockSync(serverSnapshot.definitions());
+        ServerPlayer target = event.getPlayer();
+        if (target != null) {
+            NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> target), message);
+        } else {
+            NetworkHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), message);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        serverSnapshot = DEFAULT_SNAPSHOT;
+    }
+
+    /** サーバーから同期された定義をクライアント側の判定に使う。 */
+    public static void applyClientDefinitions(List<SpellUnlockDefinition> definitions) {
+        clientSnapshot = buildSnapshot(definitions, false);
+    }
+
+    /** 切断時に、接続先サーバー由来の定義を破棄する。 */
+    public static void clearClientDefinitions() {
+        clientSnapshot = null;
+    }
+
     private static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> spellUnlockRoot = Commands.literal("spellunlock");
         spellUnlockRoot.then(createAllSpellCommand());
-        for (SpellUnlockDefinition definition : SPELL_UNLOCKS) {
-            spellUnlockRoot.then(createSpellCommand(definition));
-        }
+        spellUnlockRoot.then(createSpellCommand());
 
         dispatcher.register(
                 Commands.literal("psitweaks")
@@ -142,28 +196,39 @@ public class SpellUnlockHandler {
         );
     }
 
-    private static LiteralArgumentBuilder<CommandSourceStack> createSpellCommand(SpellUnlockDefinition definition) {
-        return Commands.literal(definition.commandId())
+    /** コマンド登録はリロード適用より前に行われるため、定義は実行時に現在のスナップショットから引く。 */
+    private static RequiredArgumentBuilder<CommandSourceStack, String> createSpellCommand() {
+        return Commands.argument("spell", StringArgumentType.word())
+                .suggests((context, builder) -> SharedSuggestionProvider.suggest(serverSnapshot.byCommand().keySet(), builder))
                 .then(Commands.literal("grant")
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .executes(ctx -> setSpellUnlock(
                                         ctx.getSource(),
                                         EntityArgument.getPlayers(ctx, "targets"),
-                                        definition,
+                                        getSpellDefinition(ctx),
                                         true))))
                 .then(Commands.literal("revoke")
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .executes(ctx -> setSpellUnlock(
                                         ctx.getSource(),
                                         EntityArgument.getPlayers(ctx, "targets"),
-                                        definition,
+                                        getSpellDefinition(ctx),
                                         false))))
                 .then(Commands.literal("status")
                         .then(Commands.argument("target", EntityArgument.player())
                                 .executes(ctx -> showSpellUnlockStatus(
                                         ctx.getSource(),
                                         EntityArgument.getPlayer(ctx, "target"),
-                                        definition))));
+                                        getSpellDefinition(ctx)))));
+    }
+
+    private static SpellUnlockDefinition getSpellDefinition(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        String commandId = StringArgumentType.getString(context, "spell");
+        SpellUnlockDefinition definition = serverSnapshot.byCommand().get(commandId.toLowerCase(Locale.ROOT));
+        if (definition == null) {
+            throw UNKNOWN_SPELL.create(commandId);
+        }
+        return definition;
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> createAllSpellCommand() {
@@ -189,7 +254,12 @@ public class SpellUnlockHandler {
 
     @SubscribeEvent
     public static void onPieceKnowledge(PieceKnowledgeEvent event) {
-        SpellUnlockDefinition definition = findDefinition(event.getPieceName(), event.getPieceGroup());
+        Player player = event.getPlayer();
+        if (player == null) {
+            return;
+        }
+        Snapshot snapshot = snapshotFor(player);
+        SpellUnlockDefinition definition = findDefinition(snapshot, event.getPieceName(), event.getPieceGroup());
         if (definition == null) {
             return;
         }
@@ -197,17 +267,24 @@ public class SpellUnlockHandler {
             return;
         }
 
-        if (!isSpellUnlocked(event.getPlayer(), definition)) {
+        if (!isSpellUnlocked(player, definition)) {
             event.setResult(Event.Result.DENY);
         }
     }
 
+    /** クライアント側は同期済み定義を優先する。未受信なら統合サーバーの定義(専用サーバー接続時は既定値)を使う。 */
+    private static Snapshot snapshotFor(Player player) {
+        Snapshot synced = clientSnapshot;
+        return player.level().isClientSide() && synced != null ? synced : serverSnapshot;
+    }
+
     /** ピース単位の定義を優先し、無ければグループ単位の定義で判定する(グループへのピース追加時の登録漏れ防止)。 */
     @Nullable
-    private static SpellUnlockDefinition findDefinition(@Nullable ResourceLocation pieceName, @Nullable ResourceLocation groupName) {
-        SpellUnlockDefinition definition = pieceName == null ? null : UNLOCK_BY_PIECE.get(pieceName);
+    private static SpellUnlockDefinition findDefinition(Snapshot snapshot, @Nullable ResourceLocation pieceName,
+                                                        @Nullable ResourceLocation groupName) {
+        SpellUnlockDefinition definition = pieceName == null ? null : snapshot.byPiece().get(pieceName);
         if (definition == null && groupName != null) {
-            definition = UNLOCK_BY_GROUP.get(groupName);
+            definition = snapshot.byGroup().get(groupName);
         }
         return definition;
     }
@@ -265,7 +342,7 @@ public class SpellUnlockHandler {
             return List.of();
         }
 
-        return UNLOCK_BY_ITEM.getOrDefault(itemId, List.of());
+        return serverSnapshot.byItem().getOrDefault(itemId, List.of());
     }
 
     private static int setSpellUnlock(CommandSourceStack source, Collection<ServerPlayer> targets, SpellUnlockDefinition definition, boolean unlocked) {
@@ -308,20 +385,25 @@ public class SpellUnlockHandler {
     }
 
     private static int setAllSpellUnlock(CommandSourceStack source, Collection<ServerPlayer> targets, boolean unlocked) {
+        List<SpellUnlockDefinition> definitions = serverSnapshot.definitions();
         int changed = 0;
         int changedPlayers = 0;
-        int totalSpells = SPELL_UNLOCKS.size();
+        int totalSpells = definitions.size();
         int totalOperations = targets.size() * totalSpells;
 
         for (ServerPlayer target : targets) {
-            boolean targetChanged = false;
-            for (SpellUnlockDefinition definition : SPELL_UNLOCKS) {
-                if (setSpellUnlocked(target, definition, unlocked)) {
-                    changed++;
-                    targetChanged = true;
+            // 共有 unlock_tag の定義は最初の1件で一緒に切り替わるため、件数は変更前の状態で数える(status と同じ定義数基準)
+            int targetChanged = 0;
+            for (SpellUnlockDefinition definition : definitions) {
+                if (isSpellUnlocked(target, definition) != unlocked) {
+                    targetChanged++;
                 }
             }
-            if (targetChanged) {
+            for (SpellUnlockDefinition definition : definitions) {
+                setSpellUnlocked(target, definition, unlocked);
+            }
+            changed += targetChanged;
+            if (targetChanged > 0) {
                 changedPlayers++;
             }
         }
@@ -375,9 +457,10 @@ public class SpellUnlockHandler {
     }
 
     private static int showAllSpellUnlockStatus(CommandSourceStack source, ServerPlayer target) {
+        List<SpellUnlockDefinition> definitions = serverSnapshot.definitions();
         int unlockedCount = 0;
-        int totalSpells = SPELL_UNLOCKS.size();
-        for (SpellUnlockDefinition definition : SPELL_UNLOCKS) {
+        int totalSpells = definitions.size();
+        for (SpellUnlockDefinition definition : definitions) {
             if (isSpellUnlocked(target, definition)) {
                 unlockedCount++;
             }
@@ -393,18 +476,19 @@ public class SpellUnlockHandler {
         return unlockedCount;
     }
 
+    /**
+     * 解禁状態を切り替え、実際の解禁状態(データ or 旧タグ)が変わったかを返す。
+     * 旧形式のプレイヤータグだけが残っている場合も revoke で外し、タグの補修だけでは「変更」と報告しない。
+     */
     private static boolean setSpellUnlocked(ServerPlayer player, SpellUnlockDefinition definition, boolean unlocked) {
+        boolean wasUnlocked = isSpellUnlocked(player, definition);
         PlayerDataHandler.PlayerData data = PlayerDataHandler.get(player);
         CompoundTag unlockData = getUnlockData(data.getCustomData(), true);
-        boolean current = unlockData.getBoolean(definition.unlockTag());
-        if (current == unlocked) {
-            return false;
+        if (unlockData.getBoolean(definition.unlockTag()) != unlocked) {
+            unlockData.putBoolean(definition.unlockTag(), unlocked);
+            data.save();
+            MessageRegister.sendToPlayer(new MessageDataSync(data), player);
         }
-
-        unlockData.putBoolean(definition.unlockTag(), unlocked);
-        data.save();
-        MessageRegister.sendToPlayer(new MessageDataSync(data), player);
-
         // Keep the previous storage as compatibility fallback.
         if (unlocked) {
             player.addTag(definition.unlockTag());
@@ -412,7 +496,7 @@ public class SpellUnlockHandler {
             player.removeTag(definition.unlockTag());
         }
 
-        return true;
+        return wasUnlocked != unlocked;
     }
 
     private static boolean isSpellUnlocked(Player player, SpellUnlockDefinition definition) {
@@ -437,7 +521,14 @@ public class SpellUnlockHandler {
         return customData.getCompound(UNLOCKS_DATA_KEY);
     }
 
-    private static void applyDefinitions(List<SpellUnlockDefinition> definitions) {
+    /**
+     * 定義から索引を作る。strict(サーバーの既定値・JSON)では、黙ってスキップすると解禁制限が外れるため
+     * 不正・重複・同期上限超過をすべて例外にする。同期受信側は strict にせず、従来どおりスキップする。
+     */
+    private static Snapshot buildSnapshot(List<SpellUnlockDefinition> definitions, boolean strict) {
+        if (strict && definitions.size() > MAX_SYNC_DEFINITIONS) {
+            throw new IllegalArgumentException("too many definitions for client sync: " + definitions.size());
+        }
         Map<String, SpellUnlockDefinition> byCommand = new LinkedHashMap<>();
         Map<ResourceLocation, SpellUnlockDefinition> byPiece = new LinkedHashMap<>();
         Map<ResourceLocation, SpellUnlockDefinition> byGroup = new LinkedHashMap<>();
@@ -447,7 +538,7 @@ public class SpellUnlockHandler {
         for (SpellUnlockDefinition original : definitions) {
             String commandId = normalizeCommandId(original.commandId());
             if (commandId == null) {
-                LOGGER.warn("Skipping spell unlock definition with invalid command id: {}", original.commandId());
+                skipOrThrow(strict, "invalid command id: " + original.commandId());
                 continue;
             }
 
@@ -460,43 +551,55 @@ public class SpellUnlockHandler {
             );
 
             if (byCommand.containsKey(commandId)) {
-                LOGGER.warn("Skipping duplicate spell unlock command id '{}'.", commandId);
+                skipOrThrow(strict, "duplicate command id '" + commandId + "'");
                 continue;
             }
             if ("all".equals(commandId)) {
-                LOGGER.warn("Skipping spell unlock command id '{}' because it is reserved.", commandId);
+                skipOrThrow(strict, "reserved command id '" + commandId + "'");
                 continue;
             }
             if (byPiece.containsKey(definition.pieceId())) {
-                LOGGER.warn("Skipping duplicate spell unlock piece id '{}'.", definition.pieceId());
+                skipOrThrow(strict, "duplicate piece id '" + definition.pieceId() + "'");
                 continue;
             }
+            if (definition.groupId() != null && byGroup.containsKey(definition.groupId())) {
+                skipOrThrow(strict, "duplicate group '" + definition.groupId() + "' in '" + commandId + "'");
+                continue;
+            }
+            if (strict && !fitsSyncLimits(definition)) {
+                throw new IllegalArgumentException("definition '" + commandId + "' exceeds client sync string limits");
+            }
+
             byCommand.put(commandId, definition);
             byPiece.put(definition.pieceId(), definition);
             if (definition.groupId() != null) {
-                if (byGroup.containsKey(definition.groupId())) {
-                    LOGGER.warn("Ignoring duplicate spell unlock group '{}' in '{}'.", definition.groupId(), commandId);
-                } else {
-                    byGroup.put(definition.groupId(), definition);
-                }
+                byGroup.put(definition.groupId(), definition);
             }
             // 同じ unlock_item を共有する定義を許容する(共通 unlock_tag で複数ピースを解禁するため)
             byItem.computeIfAbsent(definition.unlockItemId(), key -> new ArrayList<>()).add(definition);
             ordered.add(definition);
         }
 
-        if (ordered.isEmpty()) {
-            LOGGER.warn("No valid spell unlock definitions were provided; keeping {} existing definitions.", SPELL_UNLOCKS.size());
-            return;
-        }
-
         Map<ResourceLocation, List<SpellUnlockDefinition>> byItemImmutable = new LinkedHashMap<>();
         byItem.forEach((item, defs) -> byItemImmutable.put(item, List.copyOf(defs)));
 
-        SPELL_UNLOCKS = List.copyOf(ordered);
-        UNLOCK_BY_PIECE = Map.copyOf(byPiece);
-        UNLOCK_BY_GROUP = Map.copyOf(byGroup);
-        UNLOCK_BY_ITEM = Map.copyOf(byItemImmutable);
+        return new Snapshot(List.copyOf(ordered), Map.copyOf(byCommand), Map.copyOf(byPiece), Map.copyOf(byGroup),
+                Map.copyOf(byItemImmutable));
+    }
+
+    private static void skipOrThrow(boolean strict, String problem) {
+        if (strict) {
+            throw new IllegalArgumentException(problem);
+        }
+        LOGGER.warn("Skipping spell unlock definition: {}", problem);
+    }
+
+    private static boolean fitsSyncLimits(SpellUnlockDefinition definition) {
+        return definition.commandId().length() <= MAX_SYNC_STRING_LENGTH
+                && definition.unlockTag().length() <= MAX_SYNC_STRING_LENGTH
+                && definition.pieceId().toString().length() <= MAX_SYNC_STRING_LENGTH
+                && definition.unlockItemId().toString().length() <= MAX_SYNC_STRING_LENGTH
+                && (definition.groupId() == null || definition.groupId().toString().length() <= MAX_SYNC_STRING_LENGTH);
     }
 
     @Nullable
@@ -518,68 +621,119 @@ public class SpellUnlockHandler {
         return normalized;
     }
 
-    @Nullable
-    private static ResourceLocation readResourceLocation(JsonObject json, String key, ResourceLocation sourceId) {
-        if (!json.has(key)) {
-            LOGGER.warn("Skipping {} because '{}' is missing.", sourceId, key);
-            return null;
+    /** 数値や真偽値を文字列として受け入れないよう、JSON 文字列であることを確認する。 */
+    private static String requireString(JsonObject json, String key) {
+        JsonElement element = json.get(key);
+        if (element == null || !element.isJsonPrimitive() || !element.getAsJsonPrimitive().isString()) {
+            throw new JsonParseException("'" + key + "' must be a string");
         }
+        return element.getAsString();
+    }
 
-        String rawValue = GsonHelper.getAsString(json, key);
+    private static String optionalString(JsonObject json, String key, String fallback) {
+        return json.has(key) ? requireString(json, key) : fallback;
+    }
+
+    private static ResourceLocation requireResourceLocation(JsonObject json, String key) {
+        String rawValue = requireString(json, key);
         ResourceLocation parsed = ResourceLocation.tryParse(rawValue);
         if (parsed == null) {
-            LOGGER.warn("Skipping {} because '{}' is not a valid resource location: {}", sourceId, key, rawValue);
+            throw new JsonParseException("'" + key + "' is not a valid resource location: " + rawValue);
         }
         return parsed;
     }
 
-    private static class SpellUnlockReloadListener extends SimpleJsonResourceReloadListener {
+    private static SpellUnlockDefinition parseDefinition(ResourceLocation sourceId, @Nullable JsonElement element) {
+        if (element == null || !element.isJsonObject()) {
+            throw new JsonParseException("root is not a JSON object");
+        }
 
-        private SpellUnlockReloadListener() {
-            super(SPELL_UNLOCK_GSON, SPELL_UNLOCK_DIRECTORY);
+        JsonObject json = element.getAsJsonObject();
+        ResourceLocation pieceId = requireResourceLocation(json, "piece");
+        ResourceLocation unlockItemId = requireResourceLocation(json, "unlock_item");
+        ResourceLocation groupId = json.has("group") ? requireResourceLocation(json, "group") : null;
+        String defaultCommandId = sourceId.getPath().replace('/', '_');
+        String commandId = optionalString(json, "command_id", defaultCommandId);
+        String unlockTag = optionalString(json, "unlock_tag", Psitweaks.MOD_ID + ".unlock." + pieceId.getPath());
+        return new SpellUnlockDefinition(commandId, pieceId, unlockItemId, unlockTag, groupId);
+    }
+
+    /** バニラと同じ厳格な構文で1つの値を読み、後ろに余分な内容があれば不正とする。 */
+    private static JsonElement readStrictJson(Reader reader) throws IOException {
+        JsonReader jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(false);
+        JsonElement element = JSON_ELEMENT_ADAPTER.read(jsonReader);
+        if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
+            throw new JsonParseException("unexpected content after the JSON value");
+        }
+        return element;
+    }
+
+    /** 読み込めなかったファイルも不正として数えるため、JSON の読み込みも自前で行う。 */
+    private record PreparedDefinitions(Map<ResourceLocation, JsonElement> entries, List<ResourceLocation> unreadable) {
+    }
+
+    private static class SpellUnlockReloadListener extends SimplePreparableReloadListener<PreparedDefinitions> {
+        @Override
+        protected PreparedDefinitions prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+            FileToIdConverter converter = FileToIdConverter.json(SPELL_UNLOCK_DIRECTORY);
+            Map<ResourceLocation, JsonElement> entries = new LinkedHashMap<>();
+            List<ResourceLocation> unreadable = new ArrayList<>();
+            for (Map.Entry<ResourceLocation, Resource> entry : converter.listMatchingResources(resourceManager).entrySet()) {
+                ResourceLocation id = converter.fileToId(entry.getKey());
+                try (Reader reader = entry.getValue().openAsReader()) {
+                    entries.put(id, readStrictJson(reader));
+                } catch (IOException | RuntimeException e) {
+                    unreadable.add(id);
+                    LOGGER.error("Couldn't read spell unlock definition {} from {}: {}", id, entry.getKey(), e.getMessage());
+                }
+            }
+            return new PreparedDefinitions(entries, unreadable);
         }
 
         @Override
-        protected void apply(Map<ResourceLocation, JsonElement> entries, ResourceManager resourceManager, ProfilerFiller profiler) {
+        protected void apply(PreparedDefinitions prepared, ResourceManager resourceManager, ProfilerFiller profiler) {
             List<SpellUnlockDefinition> loaded = new ArrayList<>();
+            int invalid = prepared.unreadable().size();
 
-            for (Map.Entry<ResourceLocation, JsonElement> entry : entries.entrySet()) {
-                ResourceLocation sourceId = entry.getKey();
-                JsonElement element = entry.getValue();
-                if (!element.isJsonObject()) {
-                    LOGGER.warn("Skipping {} because its root is not a JSON object.", sourceId);
-                    continue;
+            for (Map.Entry<ResourceLocation, JsonElement> entry : prepared.entries().entrySet()) {
+                try {
+                    loaded.add(parseDefinition(entry.getKey(), entry.getValue()));
+                } catch (RuntimeException e) {
+                    invalid++;
+                    LOGGER.error("Invalid spell unlock definition {}: {}", entry.getKey(), e.getMessage());
                 }
-
-                JsonObject json = element.getAsJsonObject();
-                ResourceLocation pieceId = readResourceLocation(json, "piece", sourceId);
-                ResourceLocation unlockItemId = readResourceLocation(json, "unlock_item", sourceId);
-                if (pieceId == null || unlockItemId == null) {
-                    continue;
-                }
-                ResourceLocation groupId = null;
-                if (json.has("group")) {
-                    groupId = readResourceLocation(json, "group", sourceId);
-                    if (groupId == null) {
-                        continue;
-                    }
-                }
-
-                String defaultCommandId = sourceId.getPath().replace('/', '_');
-                String commandId = GsonHelper.getAsString(json, "command_id", defaultCommandId);
-                String unlockTag = GsonHelper.getAsString(json, "unlock_tag", Psitweaks.MOD_ID + ".unlock." + pieceId.getPath());
-
-                loaded.add(new SpellUnlockDefinition(commandId, pieceId, unlockItemId, unlockTag, groupId));
             }
 
+            // 一部だけ採用すると解禁制限が外れるおそれがあるため、不正な定義が1つでもあれば全体を不採用にする
+            if (invalid > 0) {
+                rejectReload(invalid + " definition(s) are invalid");
+                return;
+            }
             if (loaded.isEmpty()) {
-                LOGGER.warn("No valid spell unlock JSON found under data/*/{}; keeping {} existing definitions.",
-                        SPELL_UNLOCK_DIRECTORY, SPELL_UNLOCKS.size());
+                LOGGER.warn("No spell unlock JSON found under data/*/{}; keeping {} existing definitions.",
+                        SPELL_UNLOCK_DIRECTORY, serverSnapshot.definitions().size());
+                return;
+            }
+            Snapshot snapshot;
+            try {
+                snapshot = buildSnapshot(loaded, true);
+            } catch (IllegalArgumentException e) {
+                rejectReload(e.getMessage());
+                return;
+            }
+            if (MessageSpellUnlockSync.encodedSize(snapshot.definitions(), MAX_SYNC_PAYLOAD_BYTES) > MAX_SYNC_PAYLOAD_BYTES) {
+                rejectReload("client sync payload exceeds " + MAX_SYNC_PAYLOAD_BYTES + " bytes");
                 return;
             }
 
-            applyDefinitions(loaded);
-            LOGGER.info("Loaded {} spell unlock definitions from JSON.", SPELL_UNLOCKS.size());
+            serverSnapshot = snapshot;
+            LOGGER.info("Loaded {} spell unlock definitions from JSON.", snapshot.definitions().size());
+        }
+
+        private static void rejectReload(String reason) {
+            LOGGER.error("Rejecting spell unlock reload ({}); keeping {} existing definitions.",
+                    reason, serverSnapshot.definitions().size());
         }
     }
 }

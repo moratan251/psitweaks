@@ -3,12 +3,16 @@ package com.moratan251.psitweaks.common.handler;
 import com.moratan251.psitweaks.client.gui.machine.MessageAutoCasterCustomTickSync;
 import com.moratan251.psitweaks.client.gui.machine.MessageFlashRingSync;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.network.MessageSpellUnlockSync;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+import java.util.Optional;
+
 public class NetworkHandler {
-    public static final String PROTOCOL_VERSION = "5";
+    public static final String PROTOCOL_VERSION = "6";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.fromNamespaceAndPath("psitweaks", "main"),
             () -> PROTOCOL_VERSION,
@@ -32,6 +36,15 @@ public class NetworkHandler {
                 MessageAutoCasterCustomTickSync::encode,
                 MessageAutoCasterCustomTickSync::decode,
                 MessageAutoCasterCustomTickSync::handle
+        );
+
+        CHANNEL.registerMessage(
+                id++,
+                MessageSpellUnlockSync.class,
+                MessageSpellUnlockSync::write,
+                MessageSpellUnlockSync::read,
+                MessageSpellUnlockSync::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
 
         id = com.moratan251.psitweaks.common.network.IdeaStorageNetwork.register(id);

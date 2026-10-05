@@ -1411,6 +1411,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("message.psitweaks.spell_unlock.command.status.unlocked", "%s has %s unlocked");
         add("message.psitweaks.spell_unlock.command.status.locked", "%s has %s locked");
         add("message.psitweaks.spell_unlock.command.no_change", "No %s unlock status was changed");
+        add("message.psitweaks.spell_unlock.command.unknown", "Unknown spell unlock: %s");
         add("message.psitweaks.spell_unlock.command.all.no_change", "No all-spell unlock status was changed (%s player(s), %s spell(s))");
         add("message.psitweaks.spell_unlock.command.all.grant.single", "Granted all spell unlocks to %s (%s/%s changed)");
         add("message.psitweaks.spell_unlock.command.all.grant.multi", "Granted all spell unlocks: %s/%s changes, players changed %s/%s");
@@ -1945,6 +1946,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("message.psitweaks.spell_unlock.command.status.unlocked", "%s は %s を解禁済みです");
         add("message.psitweaks.spell_unlock.command.status.locked", "%s は %s が未解禁です");
         add("message.psitweaks.spell_unlock.command.no_change", "%s の解禁状態は変更されませんでした");
+        add("message.psitweaks.spell_unlock.command.unknown", "不明な術式解禁 ID です: %s");
         add("message.psitweaks.spell_unlock.command.all.no_change", "全術式の解禁状態は変更されませんでした（対象%s人・術式%s個）");
         add("message.psitweaks.spell_unlock.command.all.grant.single", "%s に全術式の解禁を付与しました（%s/%s 件変更）");
         add("message.psitweaks.spell_unlock.command.all.grant.multi", "全術式の解禁を付与しました（%s/%s 件変更、対象変更%s/%s人）");

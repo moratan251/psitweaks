@@ -14,6 +14,27 @@
   + Trick: Ideaspace Storage - Item Withdraw
   + Trick: Ideaspace Storage - Fluid Withdraw
   + Trick: Ideaspace Storage - Chemical Withdraw
+  + Trick: Ideaspace Storage - Slot Deposit
+  + Trick: Ideaspace Storage - Slot Withdraw
+
+
+- Fixed incorrect unlock settings for Ideaspace Storage spell pieces
+
+
+- Fixed multi-selection paste (QoL) allowing spell pieces that have not been researched
+
+
+- Fixed spell unlock settings changed by datapacks not being applied on multiplayer clients
+
+
+- Fixed datapacks with invalid spell unlock settings (spell_unlocks) removing some unlock restrictions
+  + If any setting is invalid, loading is aborted and the previous settings are kept
+
+
+- Fixed the /psitweaks spellunlock command
+  + Now uses the latest unlock settings after a datapack reload
+  + all grant / all revoke now report change counts consistent with all status
+  + Players unlocked with the legacy format can now have their unlocks revoked
 
 
 #### v0.10.9
