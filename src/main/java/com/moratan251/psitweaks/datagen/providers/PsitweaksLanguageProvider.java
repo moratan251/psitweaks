@@ -1559,6 +1559,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     private void addSpellPiecesBook(JsonObject root) {
         addIdeaResourceLogistics(root);
+        addIdeaSlotLogistics(root);
         addBookPage(root, "selector_idea_storage_energy", "Returns the FE currently stored in your Ideaspace Storage as a Number. No inputs are required. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked together with the other Ideaspace Storage pieces by using Program: Ideaspace Storage. Reading the balance does not consume FE.", "自分のイデアストレージに現在蓄えられているFE量をNumberとして取得します。入力は不要です。規模0、複雑性1、コスト0です。プログラム: イデアストレージを使用すると、他のイデアストレージ系ピースと共に解禁されます。取得してもFEは消費しません。");
         addBookPage(root, "selector_idea_storage_item_amount",
                 "Returns the total count of items with the specified ID in your Ideaspace Storage as a Number. Switch between String input (e.g. minecraft:stone) and Item input, which uses that item's ID. Items with different data components are counted together when their IDs match. Invalid IDs, empty Item values and missing stock return 0. Reading does not consume resources. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.",
@@ -2077,5 +2078,56 @@ public class PsitweaksLanguageProvider implements DataProvider {
                             + "読み込まれていないチャンクのブロックや、自分のイデアコネクターには作用しません。"
                             + (chemical ? "Mekanismが導入されていない場合は何もしません。" : ""));
         }
+    }
+
+    private void addIdeaSlotLogistics(JsonObject root) {
+        root.addProperty("psitweaks.spellerror.idea_storage_slot_transfer_failed", switch (locale) {
+            case "ja_jp" -> "指定スロットとのイデア転送に失敗しました。詳細はサーバーログを確認してください";
+            default -> "Ideaspace transfer with the target slot failed. Check the server log for details";
+        });
+        String enInputs = " Number (Number) is required; the filter (String/Item) is optional. Number must be positive; fractions of an item are rounded down."
+                + " Potency: 50. Complexity: 1. Psi cost: 100. Unlocked with Program: Ideaspace Storage.";
+        String jpInputs = "数値（Number）は必須、フィルタ（String/Item）は任意です。数値には正の数を指定し、1個未満の端数は切り捨てます。"
+                + "規模50、複雑性1、コスト100。プログラム: イデアストレージで解禁されます。";
+        String enSlot = "The target slot is the same one used by Psi pieces such as Trick: Place Block. By default it is the hotbar slot to the right of your CAD,"
+                + " and it can be changed with Trick: Switch Focus Slot (Hotbar) or Trick: Slot Change (Inventory)."
+                + " Has no effect on the slot holding the CAD in use or the tool casting the spell. Casting without a CAD fails with an error.";
+        String jpSlot = "指定スロットは、Psiの作動式: ブロック設置(単)などが使うスロットと同じです。既定ではCADの右隣のホットバーで、"
+                + "作動式: 指定スロット切替やTrick: Slot Change (Inventory)で変更できます。"
+                + "使用中のCADや、術式を詠唱している道具があるスロットには作用しません。CADを持っていないとエラーになります。";
+
+        String depositEn = "Deposits the item in the spell's target slot into your Ideaspace Storage, up to the count given by Number.";
+        String depositJp = "術式の指定スロットにあるアイテムを、自分のイデアストレージへ格納します。上限は「数値」で指定した個数です。";
+        addSpellPiece(root, "trick_idea_storage_deposit_slot", "Trick: Ideaspace Storage - Slot Deposit", depositEn,
+                "作動式: イデアストレージ-スロット格納", depositJp);
+        addBookPage(root, "trick_idea_storage_deposit_slot.0",
+                depositEn + " If storage space runs short, moves as much as possible." + enInputs,
+                depositJp + "ストレージの空きが足りない場合は、移せる分だけ移します。" + jpInputs);
+        addBookPage(root, "trick_idea_storage_deposit_slot.1",
+                "With no filter or an empty String, the item in the slot is deposited whatever it is; otherwise nothing happens unless it matches."
+                        + " In String mode the filter matches resource IDs and supports * (any text) and ? (any single character)."
+                        + " Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods."
+                        + " Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability.",
+                "フィルタを接続しないか空文字にすると、スロットのアイテムを種類を問わず格納します。フィルタに一致しない場合は何もしません。"
+                        + "Stringモードでは資源IDで照合し、*（任意の文字列）と?（任意の1文字）が使えます。"
+                        + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します。"
+                        + "Itemモードはアイテムの種類だけを、Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致するものを対象にします。");
+        addBookPage(root, "trick_idea_storage_deposit_slot.2", enSlot, jpSlot);
+
+        String withdrawEn = "Withdraws items from your Ideaspace Storage into the spell's target slot, up to the count given by Number.";
+        String withdrawJp = "自分のイデアストレージから、術式の指定スロットへアイテムを取り出します。上限は「数値」で指定した個数です。";
+        addSpellPiece(root, "trick_idea_storage_withdraw_slot", "Trick: Ideaspace Storage - Slot Withdraw", withdrawEn,
+                "作動式: イデアストレージ-スロット取出", withdrawJp);
+        addBookPage(root, "trick_idea_storage_withdraw_slot.0",
+                withdrawEn + " The slot is filled up to the item's max stack size. If stock runs short, moves as much as possible." + enInputs,
+                withdrawJp + "スロットには最大スタック数まで入ります。在庫が足りない場合は、移せる分だけ移します。" + jpInputs);
+        addBookPage(root, "trick_idea_storage_withdraw_slot.1",
+                "If the slot holds an item, only the same item with identical data components is added; with no filter or an empty String, the slot is simply topped up."
+                        + " If the slot is empty, the first stored type matching the filter is withdrawn. An empty slot with no filter does nothing."
+                        + " The filter modes and matching rules are the same as Trick: Ideaspace Storage - Slot Deposit.",
+                "スロットにアイテムがある場合は、データコンポーネントまで同じアイテムだけを補充します。フィルタを接続しないか空文字にすると、そのまま補充します。"
+                        + "スロットが空の場合は、フィルタに一致する最初の種類を取り出します。スロットが空でフィルタもない場合は何もしません。"
+                        + "フィルタのモードと照合方法は、作動式: イデアストレージ-スロット格納と同じです。");
+        addBookPage(root, "trick_idea_storage_withdraw_slot.2", enSlot, jpSlot);
     }
 }

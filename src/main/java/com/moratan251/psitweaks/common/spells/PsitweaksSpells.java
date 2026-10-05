@@ -365,6 +365,10 @@ public final class PsitweaksSpells {
             registerPiece("trick_idea_storage_withdraw_fluid", PieceTrickIdeaStorageWithdrawFluid.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_CHEMICAL =
             registerPiece("trick_idea_storage_withdraw_chemical", PieceTrickIdeaStorageWithdrawChemical.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_SLOT =
+            registerPiece("trick_idea_storage_deposit_slot", PieceTrickIdeaStorageDepositSlot.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
+            registerPiece("trick_idea_storage_withdraw_slot", PieceTrickIdeaStorageWithdrawSlot.class);
 
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class);

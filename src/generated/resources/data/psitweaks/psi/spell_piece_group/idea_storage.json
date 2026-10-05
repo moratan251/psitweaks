@@ -13,6 +13,8 @@
     "psitweaks:trick_idea_storage_deposit_fluid",
     "psitweaks:trick_idea_storage_withdraw_fluid",
     "psitweaks:trick_idea_storage_deposit_chemical",
-    "psitweaks:trick_idea_storage_withdraw_chemical"
+    "psitweaks:trick_idea_storage_withdraw_chemical",
+    "psitweaks:trick_idea_storage_deposit_slot",
+    "psitweaks:trick_idea_storage_withdraw_slot"
   ]
 }

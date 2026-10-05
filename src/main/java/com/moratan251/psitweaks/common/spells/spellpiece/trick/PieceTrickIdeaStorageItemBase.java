@@ -72,6 +72,13 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
         tag.putString("psitweaksMode", getModeOption().serializedId());
     }
 
+    /** False when the filter is unconnected or an empty String, i.e. when {@link #itemFilter} accepts everything. */
+    protected boolean hasFilter(SpellContext context) throws SpellRuntimeException {
+        if (itemMode()) return getParamValue(context, item) != null;
+        String pattern = getParamValue(context, string);
+        return pattern != null && !pattern.isEmpty();
+    }
+
     @Override protected Predicate<ItemStack> itemFilter(SpellContext context) throws SpellRuntimeException {
         if (!itemMode()) return super.itemFilter(context);
         SpellItemValue value = getParamValue(context, item);

@@ -43,10 +43,14 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick {
     protected abstract boolean deposit();
 
     @Override public void initParams() {
-        addParam(position = new ParamVector("psi.spellparam.position", SpellParam.BLUE, false, false));
-        addParam(direction = new ParamVector("psi.spellparam.direction", SpellParam.GREEN, false, false));
+        initEndpointParams();
         addParam(quantity = new ParamNumber(kind() == Kind.ITEM ? "psi.spellparam.number" : "psi.spellparam.power", SpellParam.RED, false, false));
         initFilter();
+    }
+
+    protected void initEndpointParams() {
+        addParam(position = new ParamVector("psi.spellparam.position", SpellParam.BLUE, false, false));
+        addParam(direction = new ParamVector("psi.spellparam.direction", SpellParam.GREEN, false, false));
     }
 
     protected void initFilter() {

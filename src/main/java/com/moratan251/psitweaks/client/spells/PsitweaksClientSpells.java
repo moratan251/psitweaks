@@ -139,6 +139,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_idea_storage_withdraw_fluid");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_CHEMICAL =
             registerPieceMaterial("trick_idea_storage_withdraw_chemical");
+    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_DEPOSIT_SLOT =
+            registerPieceMaterial("trick_idea_storage_deposit_slot");
+    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
+            registerPieceMaterial("trick_idea_storage_withdraw_slot");
 
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPieceMaterial("trick_idea_storage_absorb_fe");
