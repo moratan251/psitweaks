@@ -10,7 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageEnergy;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -69,11 +72,14 @@ public final class IdeaStorageEnergySelectorGameTests {
         helper.assertTrue(group.key().location().equals(Psitweaks.location("idea_storage")),
                 "Selector must share the Ideaspace Storage group");
         var data = PlayerDataHandler.get(player);
-        String[] ids = {"trick_idea_storage_view", "trick_idea_storage_absorb_fe",
-                "trick_idea_storage_supply_fe", "selector_idea_storage_energy", "trick_ideaspace_connector",
-                "selector_idea_storage_item_amount", "selector_idea_storage_fluid_amount", "selector_idea_storage_chemical_amount"};
-        for (String pieceId : ids) {
-            helper.assertTrue(data.isPieceGroupUnlocked(group.key().location(), Psitweaks.location(pieceId))
+        // グループの全メンバーに加え、個別定義の無いピース ID もグループ単位で解禁判定されること
+        List<ResourceLocation> ids = new ArrayList<>();
+        ids.add(group.value().main());
+        ids.addAll(group.value().pieces());
+        ids.add(Psitweaks.location("unregistered_idea_storage_piece"));
+        helper.assertTrue(ids.size() == 17, "Ideaspace Storage group membership changed: " + ids);
+        for (ResourceLocation pieceId : ids) {
+            helper.assertTrue(data.isPieceGroupUnlocked(group.key().location(), pieceId)
                     == !PsitweaksConfig.COMMON.requireSpellUnlocks.get(), "Unexpected initial unlock: " + pieceId);
         }
         player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(PsitweaksItems.PROGRAM_IDEA_STORAGE.get()));
@@ -81,8 +87,8 @@ public final class IdeaStorageEnergySelectorGameTests {
         SpellUnlockHandler.onRightClickUnlockItem(event);
         helper.assertTrue(event.isCanceled() && player.getTags().contains("psitweaks.unlock.idea_storage"),
                 "Program did not grant the shared unlock");
-        for (String pieceId : ids) {
-            helper.assertTrue(data.isPieceGroupUnlocked(group.key().location(), Psitweaks.location(pieceId)),
+        for (ResourceLocation pieceId : ids) {
+            helper.assertTrue(data.isPieceGroupUnlocked(group.key().location(), pieceId),
                     "Program did not unlock " + pieceId);
         }
         helper.succeed();

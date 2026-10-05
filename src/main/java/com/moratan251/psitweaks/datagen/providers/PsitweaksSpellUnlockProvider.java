@@ -12,6 +12,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
 
 public class PsitweaksSpellUnlockProvider implements DataProvider {
     private final PackOutput.PathProvider pathProvider;
@@ -42,8 +43,9 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "switch_flex", "trick_switch_flex", PsitweaksItems.PROGRAM_SWITCH_FLEX);
         spellUnlock(entries, "material_mutation", "trick_material_mutation", PsitweaksItems.PROGRAM_MATERIAL_MUTATION);
         spellUnlock(entries, "mass_block_break", "trick_mass_block_break", PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK);
+        // group 指定で idea_storage グループ全体を解禁対象にする(以下のピース単位定義はコマンド互換用)
         spellUnlock(entries, "idea_storage", "trick_idea_storage_view", PsitweaksItems.PROGRAM_IDEA_STORAGE,
-                Psitweaks.MOD_ID + ".unlock.idea_storage");
+                Psitweaks.MOD_ID + ".unlock.idea_storage", "idea_storage");
 
         spellUnlock(entries, "idea_storage_absorb_fe", "trick_idea_storage_absorb_fe", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
@@ -80,12 +82,20 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
 
     private static void spellUnlock(Map<ResourceLocation, JsonObject> entries, String commandId, String piecePath,
                                     ItemLike unlockItem, String unlockTag) {
+        spellUnlock(entries, commandId, piecePath, unlockItem, unlockTag, null);
+    }
+
+    private static void spellUnlock(Map<ResourceLocation, JsonObject> entries, String commandId, String piecePath,
+                                    ItemLike unlockItem, String unlockTag, @Nullable String groupPath) {
         JsonObject root = new JsonObject();
 
         root.addProperty("command_id", commandId);
         root.addProperty("piece", Psitweaks.location(piecePath).toString());
         root.addProperty("unlock_item", BuiltInRegistries.ITEM.getKey(unlockItem.asItem()).toString());
         root.addProperty("unlock_tag", unlockTag);
+        if (groupPath != null) {
+            root.addProperty("group", Psitweaks.location(groupPath).toString());
+        }
         entries.put(Psitweaks.location(commandId), root);
     }
 }
