@@ -1,6 +1,7 @@
 {
   "name": "psi.book.entry.psitweaks_mekanism_integration",
   "category": "psi:psitweaks",
+  "flag": "mod:mekanism",
   "icon": "mekanism:metallurgic_infuser",
   "pages": [
     {

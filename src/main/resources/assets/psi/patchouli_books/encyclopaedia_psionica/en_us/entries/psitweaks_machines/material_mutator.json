@@ -1,6 +1,7 @@
 {
   "name": "block.psitweaks.material_mutator",
   "category": "psi:psitweaks_machines",
+  "flag": "mod:mekanism",
   "icon": "psitweaks:material_mutator",
   "pages": [
     {

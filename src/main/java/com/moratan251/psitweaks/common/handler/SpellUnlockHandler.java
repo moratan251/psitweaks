@@ -50,7 +50,13 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = Psitweaks.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SpellUnlockHandler {
 
-    private record SpellUnlockDefinition(String commandId, ResourceLocation pieceId, ResourceLocation unlockItemId, String unlockTag) {
+    /** {@code groupId} が指定された定義は、そのスペルピースグループ全体の解禁も担う。 */
+    private record SpellUnlockDefinition(String commandId, ResourceLocation pieceId, ResourceLocation unlockItemId, String unlockTag,
+                                         @Nullable ResourceLocation groupId) {
+        SpellUnlockDefinition(String commandId, ResourceLocation pieceId, ResourceLocation unlockItemId, String unlockTag) {
+            this(commandId, pieceId, unlockItemId, unlockTag, null);
+        }
+
         Component spellNameComponent() {
             return Component.translatable(pieceId.getNamespace() + ".spellpiece." + pieceId.getPath());
         }
@@ -86,14 +92,17 @@ public class SpellUnlockHandler {
             new SpellUnlockDefinition("idea_storage_fluid_amount", Psitweaks.location("selector_idea_storage_fluid_amount"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
             new SpellUnlockDefinition("idea_storage_chemical_amount", Psitweaks.location("selector_idea_storage_chemical_amount"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
             new SpellUnlockDefinition("ideaspace_connector", Psitweaks.location("trick_ideaspace_connector"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
-            new SpellUnlockDefinition("idea_storage", Psitweaks.location("trick_idea_storage_view"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage")
+            // group 指定でグループ全体を解禁対象にする(上のピース単位定義はコマンド互換用)
+            new SpellUnlockDefinition("idea_storage", Psitweaks.location("trick_idea_storage_view"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage",
+                    Psitweaks.location("trick_idea_storage_view"))
     );
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();
 
     private static volatile List<SpellUnlockDefinition> SPELL_UNLOCKS = List.of();
     private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_PIECE = Map.of();
-    private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_ITEM = Map.of();
+    private static volatile Map<ResourceLocation, SpellUnlockDefinition> UNLOCK_BY_GROUP = Map.of();
+    private static volatile Map<ResourceLocation, List<SpellUnlockDefinition>> UNLOCK_BY_ITEM = Map.of();
     private static final String UNLOCKS_DATA_KEY = Psitweaks.MOD_ID + ".spell_unlocks";
 
     static {
@@ -180,12 +189,7 @@ public class SpellUnlockHandler {
 
     @SubscribeEvent
     public static void onPieceKnowledge(PieceKnowledgeEvent event) {
-        ResourceLocation pieceName = event.getPieceName();
-        if (pieceName == null) {
-            return;
-        }
-
-        SpellUnlockDefinition definition = UNLOCK_BY_PIECE.get(pieceName);
+        SpellUnlockDefinition definition = findDefinition(event.getPieceName(), event.getPieceGroup());
         if (definition == null) {
             return;
         }
@@ -198,11 +202,20 @@ public class SpellUnlockHandler {
         }
     }
 
+    /** ピース単位の定義を優先し、無ければグループ単位の定義で判定する(グループへのピース追加時の登録漏れ防止)。 */
+    @Nullable
+    private static SpellUnlockDefinition findDefinition(@Nullable ResourceLocation pieceName, @Nullable ResourceLocation groupName) {
+        SpellUnlockDefinition definition = pieceName == null ? null : UNLOCK_BY_PIECE.get(pieceName);
+        if (definition == null && groupName != null) {
+            definition = UNLOCK_BY_GROUP.get(groupName);
+        }
+        return definition;
+    }
 
     @SubscribeEvent
     public static void onRightClickUnlockItem(PlayerInteractEvent.RightClickItem event) {
-        SpellUnlockDefinition definition = getUnlockDefinitionByItem(event.getItemStack());
-        if (definition == null) {
+        List<SpellUnlockDefinition> definitions = getUnlockDefinitionsByItem(event.getItemStack());
+        if (definitions.isEmpty()) {
             return;
         }
 
@@ -218,7 +231,11 @@ public class SpellUnlockHandler {
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
 
-        boolean unlocked = setSpellUnlocked(serverPlayer, definition, true);
+        boolean unlocked = false;
+        for (SpellUnlockDefinition definition : definitions) {
+            unlocked |= setSpellUnlocked(serverPlayer, definition, true);
+        }
+        SpellUnlockDefinition definition = definitions.get(0);
         if (unlocked) {
             serverPlayer.level().playSound(
                     null,
@@ -242,13 +259,13 @@ public class SpellUnlockHandler {
         }
     }
 
-    private static SpellUnlockDefinition getUnlockDefinitionByItem(ItemStack stack) {
+    private static List<SpellUnlockDefinition> getUnlockDefinitionsByItem(ItemStack stack) {
         ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(stack.getItem());
         if (itemId == null) {
-            return null;
+            return List.of();
         }
 
-        return UNLOCK_BY_ITEM.get(itemId);
+        return UNLOCK_BY_ITEM.getOrDefault(itemId, List.of());
     }
 
     private static int setSpellUnlock(CommandSourceStack source, Collection<ServerPlayer> targets, SpellUnlockDefinition definition, boolean unlocked) {
@@ -423,7 +440,8 @@ public class SpellUnlockHandler {
     private static void applyDefinitions(List<SpellUnlockDefinition> definitions) {
         Map<String, SpellUnlockDefinition> byCommand = new LinkedHashMap<>();
         Map<ResourceLocation, SpellUnlockDefinition> byPiece = new LinkedHashMap<>();
-        Map<ResourceLocation, SpellUnlockDefinition> byItem = new LinkedHashMap<>();
+        Map<ResourceLocation, SpellUnlockDefinition> byGroup = new LinkedHashMap<>();
+        Map<ResourceLocation, List<SpellUnlockDefinition>> byItem = new LinkedHashMap<>();
         List<SpellUnlockDefinition> ordered = new ArrayList<>();
 
         for (SpellUnlockDefinition original : definitions) {
@@ -437,7 +455,8 @@ public class SpellUnlockHandler {
                     commandId,
                     original.pieceId(),
                     original.unlockItemId(),
-                    original.unlockTag()
+                    original.unlockTag(),
+                    original.groupId()
             );
 
             if (byCommand.containsKey(commandId)) {
@@ -452,14 +471,17 @@ public class SpellUnlockHandler {
                 LOGGER.warn("Skipping duplicate spell unlock piece id '{}'.", definition.pieceId());
                 continue;
             }
-            if (byItem.containsKey(definition.unlockItemId())) {
-                LOGGER.warn("Skipping duplicate spell unlock item id '{}'.", definition.unlockItemId());
-                continue;
-            }
-
             byCommand.put(commandId, definition);
             byPiece.put(definition.pieceId(), definition);
-            byItem.put(definition.unlockItemId(), definition);
+            if (definition.groupId() != null) {
+                if (byGroup.containsKey(definition.groupId())) {
+                    LOGGER.warn("Ignoring duplicate spell unlock group '{}' in '{}'.", definition.groupId(), commandId);
+                } else {
+                    byGroup.put(definition.groupId(), definition);
+                }
+            }
+            // 同じ unlock_item を共有する定義を許容する(共通 unlock_tag で複数ピースを解禁するため)
+            byItem.computeIfAbsent(definition.unlockItemId(), key -> new ArrayList<>()).add(definition);
             ordered.add(definition);
         }
 
@@ -468,9 +490,13 @@ public class SpellUnlockHandler {
             return;
         }
 
+        Map<ResourceLocation, List<SpellUnlockDefinition>> byItemImmutable = new LinkedHashMap<>();
+        byItem.forEach((item, defs) -> byItemImmutable.put(item, List.copyOf(defs)));
+
         SPELL_UNLOCKS = List.copyOf(ordered);
         UNLOCK_BY_PIECE = Map.copyOf(byPiece);
-        UNLOCK_BY_ITEM = Map.copyOf(byItem);
+        UNLOCK_BY_GROUP = Map.copyOf(byGroup);
+        UNLOCK_BY_ITEM = Map.copyOf(byItemImmutable);
     }
 
     @Nullable
@@ -531,12 +557,19 @@ public class SpellUnlockHandler {
                 if (pieceId == null || unlockItemId == null) {
                     continue;
                 }
+                ResourceLocation groupId = null;
+                if (json.has("group")) {
+                    groupId = readResourceLocation(json, "group", sourceId);
+                    if (groupId == null) {
+                        continue;
+                    }
+                }
 
                 String defaultCommandId = sourceId.getPath().replace('/', '_');
                 String commandId = GsonHelper.getAsString(json, "command_id", defaultCommandId);
                 String unlockTag = GsonHelper.getAsString(json, "unlock_tag", Psitweaks.MOD_ID + ".unlock." + pieceId.getPath());
 
-                loaded.add(new SpellUnlockDefinition(commandId, pieceId, unlockItemId, unlockTag));
+                loaded.add(new SpellUnlockDefinition(commandId, pieceId, unlockItemId, unlockTag, groupId));
             }
 
             if (loaded.isEmpty()) {

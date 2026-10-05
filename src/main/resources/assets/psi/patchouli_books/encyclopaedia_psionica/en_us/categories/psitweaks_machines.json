@@ -1,6 +1,6 @@
 {
   "name": "psi.book.category.psitweaks_machines",
   "description": "psi.book.category.psitweaks_machines.desc",
-  "icon": "psitweaks:material_mutator",
+  "icon": "psitweaks:cad_disassembler",
   "sortnum": 11
 }

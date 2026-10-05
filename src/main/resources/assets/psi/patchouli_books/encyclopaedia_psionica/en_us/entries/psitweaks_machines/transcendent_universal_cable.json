@@ -1,6 +1,7 @@
 {
   "name": "block.psitweaks.transcendent_universal_cable",
   "category": "psi:psitweaks_machines",
+  "flag": "mod:mekanism",
   "icon": "psitweaks:transcendent_universal_cable",
   "pages": [
     {

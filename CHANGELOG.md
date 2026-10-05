@@ -1,5 +1,21 @@
 ## Changelog
 
+#### v0.10.10
+
+- Updated the Ideaspace Connector
+  + Added redstone control
+  + Added a target stock setting for automatic output destinations
+  + Added an input filter
+
+- Added new spell pieces
+  + Trick: Ideaspace Storage - Item Deposit
+  + Trick: Ideaspace Storage - Fluid Deposit
+  + Trick: Ideaspace Storage - Chemical Deposit
+  + Trick: Ideaspace Storage - Item Withdraw
+  + Trick: Ideaspace Storage - Fluid Withdraw
+  + Trick: Ideaspace Storage - Chemical Withdraw
+
+
 #### v0.10.9
 
 - Added the Portable Spell Programmer
