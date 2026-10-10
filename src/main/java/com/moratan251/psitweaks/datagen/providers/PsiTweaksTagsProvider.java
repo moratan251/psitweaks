@@ -280,8 +280,13 @@ public class PsiTweaksTagsProvider implements DataProvider {
 
     private static void tagWithOptional(Map<ResourceLocation, JsonObject> tags, String namespace, String path,
                                         String[] requiredValues, String... optionalValues) {
-        JsonObject root = new JsonObject();
-        JsonArray jsonValues = new JsonArray();
+        // Same tag may be filled from several places; append to the existing values instead of replacing them.
+        JsonObject root = tags.computeIfAbsent(ResourceLocation.fromNamespaceAndPath(namespace, path), id -> {
+            JsonObject created = new JsonObject();
+            created.add("values", new JsonArray());
+            return created;
+        });
+        JsonArray jsonValues = root.getAsJsonArray("values");
         for (String value : requiredValues) {
             jsonValues.add(value);
         }
@@ -291,8 +296,6 @@ public class PsiTweaksTagsProvider implements DataProvider {
             optionalValue.addProperty("required", false);
             jsonValues.add(optionalValue);
         }
-        root.add("values", jsonValues);
-        tags.put(ResourceLocation.fromNamespaceAndPath(namespace, path), root);
     }
 
     private static String[] entries(String... values) {

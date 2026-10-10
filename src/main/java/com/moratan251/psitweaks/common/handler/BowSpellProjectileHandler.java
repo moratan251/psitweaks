@@ -42,6 +42,9 @@ public final class BowSpellProjectileHandler {
         if (playerCad.isEmpty() || bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {
             return;
         }
+        // 同乗中の EntitySpellProjectile は矢の命中では onHit が呼ばれないため、発射型術式弾のときだけ
+        // マーカーを付けて onProjectileImpact で発火させる。EntitySpellGrenade / EntitySpellCharge も
+        // EntitySpellProjectile 派生なので、エンティティ型で判定すると各弾種のタイマー・起爆処理を無視して即時発火する。
         boolean firesOnImpact = bullet.getItem() instanceof ItemProjectileSpellBullet;
 
         ItemCAD.cast(level, player, data, bullet, playerCad, 5, 10, 0.05F, (SpellContext context) -> {
@@ -69,6 +72,8 @@ public final class BowSpellProjectileHandler {
         }
     }
 
+    // 運搬側の命中を Psi 本体の EntitySpellProjectile#onHit と同じ分岐（生物なら attackedEntity を設定）で
+    // 一度だけ cast する。マーカーは発火前に外し、多重命中する投射物でも再発火させない。
     @SubscribeEvent
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         Projectile projectile = event.getProjectile();

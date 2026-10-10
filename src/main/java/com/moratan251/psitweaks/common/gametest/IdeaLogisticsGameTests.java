@@ -423,11 +423,25 @@ public final class IdeaLogisticsGameTests {
         connector.setRedstoneMode(-1, Direction.UP, ConnectorRedstoneMode.HIGH);
         deposit.execute(context);
         helper.assertTrue(water().amount(storage) == 0, "Fluid spell bypassed redstone face restriction");
-        connector.initialize(player.getUUID(), ItemStack.EMPTY);
+        // initialize() keeps an existing owner, so re-initializing the connector above would leave it foreign.
+        // A connector the caster really owns, with an active face, isolates the own-connector guard.
+        var own = place(helper, new BlockPos(2, 1, 1), player.getUUID());
+        own.setResource(0, water());
         storage.insertFluid(new FluidStack(Fluids.WATER, 1), 600);
+        var ownDeposit = new PieceTrickIdeaStorageDepositFluid(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return paramValue(param, own.getBlockPos(), 0.25, "water");
+            }
+        };
+        var ownWithdraw = new PieceTrickIdeaStorageWithdrawFluid(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return paramValue(param, own.getBlockPos(), 0.25, null);
+            }
+        };
         long version = storage.getVersion();
-        deposit.execute(context); withdraw.execute(context);
-        helper.assertTrue(storage.getVersion() == version, "Own-connector spell mutated the same warehouse twice");
+        ownDeposit.execute(context); ownWithdraw.execute(context);
+        helper.assertTrue(storage.getVersion() == version && water().amount(storage) == 600,
+                "Own-connector spell mutated the same warehouse twice");
         helper.succeed();
     }
 
