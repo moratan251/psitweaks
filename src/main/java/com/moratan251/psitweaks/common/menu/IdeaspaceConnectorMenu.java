@@ -8,6 +8,8 @@ import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorInputMode;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
@@ -33,6 +35,8 @@ import com.moratan251.psitweaks.common.network.IdeaStorageNetwork;
 public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     public static final int ASSIGN = 0, CLEAR = 1, SIDE = 2, AUTO = 3, ENERGY = 4;
     public static final int SLOT_SIDE = 5, SLOT_AUTO = 6, SLOT_COMMON = 7;
+    public static final int REDSTONE = 8, REDSTONE_ALL = 9;
+    public static final int INPUT_MODE = 10, ASSIGN_INPUT_FILTER = 11, CLEAR_INPUT_FILTER = 12;
     public static final int INVENTORY_X = 8, INVENTORY_Y = 106, HOTBAR_Y = 164;
     private final com.moratan251.psitweaks.common.network.MenuPayloadBuffer payloadBuffer = new com.moratan251.psitweaks.common.network.MenuPayloadBuffer();
     public com.moratan251.psitweaks.common.network.MenuPayloadBuffer payloadBuffer() { return payloadBuffer; }
@@ -112,7 +116,7 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     /** Amount-only updates retain resource components without resending them every few ticks. */
     public static CompoundTag mergeAmounts(CompoundTag previous, CompoundTag update) {
         CompoundTag merged = update.copy();
-        for (String key : new String[] {"Selected"}) {
+        for (String key : new String[] {"Selected", "InputFilters"}) {
             ListTag templates = previous.getList(key, Tag.TAG_COMPOUND);
             ListTag amounts = update.getList(key, Tag.TAG_COMPOUND);
             if (templates.size() != amounts.size()) return null;
@@ -130,8 +134,10 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     public void handleAction(Player sender, MessageConnectorAction action) {
         if (action.containerId() != containerId || !authorized(sender, action.session())) return;
         int argument = action.argument();
+        if (action.action() >= INPUT_MODE && action.action() <= CLEAR_INPUT_FILTER
+                && (action.revision() != revision || action.slot() < 0 || action.slot() >= IdeaspaceConnectorBlockEntity.SLOTS)) return;
         switch (action.action()) {
-            case ASSIGN -> {
+            case ASSIGN, ASSIGN_INPUT_FILTER -> {
                 if (getCarried().isEmpty() || (argument != 0 && argument != 1)) return;
                 ConnectorResource resource = ItemResourceKey.of(getCarried()).map(ConnectorResource::item).orElse(ConnectorResource.EMPTY);
                 if (argument == 1) {
@@ -146,9 +152,18 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
                         resource = ConnectorMekanism.containedResource(getCarried().copyWithCount(1));
                     if (resource.kind() == ConnectorResource.Kind.EMPTY) return;
                 }
-                connector.setResource(action.slot(), resource);
+                if (action.action() == ASSIGN_INPUT_FILTER) {
+                    if (resource.save().sizeInBytes() > MessageConnectorTemplate.MAX_TEMPLATE_SIZE) return;
+                    connector.setInputFilter(action.slot(), resource);
+                }
+                else connector.setResource(action.slot(), resource);
             }
             case CLEAR -> connector.setResource(action.slot(), ConnectorResource.EMPTY);
+            case CLEAR_INPUT_FILTER -> connector.setInputFilter(action.slot(), ConnectorResource.EMPTY);
+            case INPUT_MODE -> {
+                if (argument < 0 || argument >= ConnectorInputMode.values().length) return;
+                connector.setInputMode(ConnectorInputMode.byId(argument));
+            }
             case SIDE -> {
                 if (argument < 0 || argument >= 6) return;
                 Direction side = Direction.values()[argument];
@@ -160,6 +175,19 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
                 connector.setAutomatic(side, !connector.automatic(side));
             }
             case ENERGY -> connector.setResource(action.slot(), ConnectorResource.ENERGY);
+            case REDSTONE, REDSTONE_ALL -> {
+                int slot = action.slot();
+                if (slot < -1 || slot >= IdeaspaceConnectorBlockEntity.SLOTS || action.revision() != revision
+                        || (slot >= 0 && connector.usesCommonSettings(slot))) return;
+                if (action.action() == REDSTONE) {
+                    if (argument < 0 || argument >= 6) return;
+                    Direction side = Direction.values()[argument];
+                    connector.setRedstoneMode(slot, side, connector.redstoneMode(slot, side).next());
+                } else {
+                    if (argument < 0 || argument >= ConnectorRedstoneMode.values().length) return;
+                    connector.setAllRedstoneModes(slot, ConnectorRedstoneMode.byId(argument));
+                }
+            }
             case SLOT_SIDE, SLOT_AUTO, SLOT_COMMON -> {
                 int slot = action.slot();
                 if (slot < 0 || slot >= IdeaspaceConnectorBlockEntity.SLOTS || action.revision() != revision) return;
@@ -193,12 +221,15 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     public void handleTemplate(Player sender, MessageConnectorTemplate message) {
         if (message.containerId() != containerId || !authorized(sender, message.session())
                 || message.slot() < 0 || message.slot() >= IdeaspaceConnectorBlockEntity.SLOTS
+                || (message.inputFilter() && message.revision() != revision)
                 || message.resource().sizeInBytes() > MessageConnectorTemplate.MAX_TEMPLATE_SIZE) return;
         ConnectorResource resource = ConnectorResource.load(message.resource());
         if (resource.kind() == ConnectorResource.Kind.EMPTY) return;
         if (resource.kind() == ConnectorResource.Kind.CHEMICAL
                 && (!MekanismCompat.isMekanismLoaded() || !ConnectorMekanism.validChemical(resource.chemical()))) return;
-        connector.setResource(message.slot(), resource);
+        if (message.inputFilter()) {
+            if (!connector.setInputFilter(message.slot(), resource)) return;
+        } else connector.setResource(message.slot(), resource);
         syncedSettings = -1;
         broadcastChanges();
     }
@@ -219,6 +250,9 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
         ListTag selected = new ListTag();
         for (int i = 0; i < IdeaspaceConnectorBlockEntity.SLOTS; i++) selected.add(entry(connector.resource(i), storage, full));
         data.put("Selected", selected);
+        ListTag filters = new ListTag();
+        for (int i = 0; i < IdeaspaceConnectorBlockEntity.SLOTS; i++) filters.add(entry(connector.inputFilter(i), storage, full));
+        data.put("InputFilters", filters);
         data.putBoolean("LoadFailed", storage.isLoadFailed());
         connector.writeConnectionSettings(data);
         IdeaStorageNetwork.sendToPlayer(serverPlayer, new MessageConnectorState(containerId, session, revision, data));

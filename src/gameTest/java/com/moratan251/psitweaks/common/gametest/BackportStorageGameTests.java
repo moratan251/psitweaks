@@ -171,10 +171,10 @@ public class BackportStorageGameTests {
         original.storage().insertFluid(new FluidStack(Fluids.WATER, 1), 900);
         original.storage().insertEnergy(5_000_000_123L, false);
         CompoundTag valid = original.save(new CompoundTag());
+        // Only whole-file problems lock the warehouse. Individual unreadable entries (missing item/fluid,
+        // non-positive count, ...) are kept verbatim instead: see IdeaStorageUnreadEntryGameTests.
         var invalid = new ArrayList<CompoundTag>();
-        var item = valid.copy(); item.getList("Items", 10).getCompound(0).getCompound("item").putString("id", "missing:item"); invalid.add(item);
-        var fluid = valid.copy(); fluid.getList("Fluids", 10).getCompound(0).getCompound("fluid").putString("FluidName", "missing:fluid"); invalid.add(fluid);
-        var count = valid.copy(); count.getList("Items", 10).getCompound(0).putLong("count", -1); invalid.add(count);
+        var badList = valid.copy(); badList.putString("Fluids", "unreadable list"); invalid.add(badList);
         var overflow = valid.copy(); var list = overflow.getList("Items", 10); list.getCompound(0).putLong("count", Long.MAX_VALUE); list.add(list.getCompound(0).copy()); invalid.add(overflow);
         var future = valid.copy(); future.putInt("DataVersion", 999); future.putString("future", "retain"); invalid.add(future);
         var file = Files.createTempFile("backport109-storage", ".nbt");

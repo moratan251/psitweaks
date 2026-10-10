@@ -40,6 +40,10 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             Backport109Translations.values(locale).forEach((key, value) -> {
             if (!emitted109.contains(key)) add(key, value);
         });
+        // 0.10.10 only adds keys; none of them is emitted above.
+        Backport1010Translations.values(locale).forEach((key, value) -> {
+            if (!emitted109.contains(key)) add(key, value);
+        });
     }
 
     private void addBackportedItemTranslations() {

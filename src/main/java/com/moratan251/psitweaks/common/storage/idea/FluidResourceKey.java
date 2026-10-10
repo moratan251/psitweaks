@@ -22,7 +22,13 @@ public final class FluidResourceKey {
     }
 
     public static Optional<FluidResourceKey> parse(Tag tag) {
-        return tag instanceof CompoundTag compound ? FluidResourceKey.of(FluidStack.loadFluidStackFromNBT(compound)) : Optional.empty();
+        if (!(tag instanceof CompoundTag compound)) return Optional.empty();
+        try {
+            return FluidResourceKey.of(FluidStack.loadFluidStackFromNBT(compound));
+        } catch (net.minecraft.ResourceLocationException invalidId) {
+            // Forge parses FluidName without validation; treat it like an unknown fluid (one unread entry).
+            return Optional.empty();
+        }
     }
 
     public Tag save() {

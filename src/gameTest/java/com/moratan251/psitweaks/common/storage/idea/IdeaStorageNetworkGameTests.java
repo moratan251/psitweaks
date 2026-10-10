@@ -258,13 +258,21 @@ public class IdeaStorageNetworkGameTests {
         var original = new CompoundTag(); original.putInt("DataVersion", IdeaStorageSavedData.CURRENT_DATA_VERSION);
         var entry = new CompoundTag(); entry.put("item", item.save(new CompoundTag())); entry.putLong("count", 5);
         var entries = new ListTag(); entries.add(entry); original.put("Items", entries);
-        var loaded = IdeaStorageSavedData.load(UUID.randomUUID(), original);
-        h.assertTrue(loaded.storage().isLoadFailed() && loaded.storage().insertEnergy(100, false) == 0,
-                "Existing oversized inventory must preserve its original save");
+        UUID owner = UUID.randomUUID();
+        var loaded = IdeaStorageSavedData.load(owner, original);
+        // A single unreadable entry is kept verbatim and must not lock the rest of the warehouse.
+        h.assertTrue(!loaded.storage().isLoadFailed() && loaded.unreadEntryCount() == 1
+                && loaded.storage().itemTypeCount() == 0 && loaded.storage().insertEnergy(100, false) == 100,
+                "Existing oversized entry must stay unread without locking the warehouse");
         var file = java.nio.file.Files.createTempFile("psitweaks-oversized-", ".nbt");
         try {
             NbtIo.writeCompressed(loaded.save(new CompoundTag()), file.toFile());
-            h.assertTrue(NbtIo.readCompressed(file.toFile()).equals(original), "Oversized saved data was lost");
+            var disk = NbtIo.readCompressed(file.toFile());
+            var saved = disk.getList("Items", Tag.TAG_COMPOUND);
+            int retained = 0;
+            for (int i = 0; i < saved.size(); i++) if (saved.getCompound(i).equals(entry)) retained++;
+            h.assertTrue(saved.size() == 1 && retained == 1 && disk.getLong("Energy") == 100,
+                    "Oversized saved entry was lost, changed or duplicated");
         } finally { java.nio.file.Files.delete(file); }
         var wire = new FriendlyByteBuf(Unpooled.buffer());
         try {

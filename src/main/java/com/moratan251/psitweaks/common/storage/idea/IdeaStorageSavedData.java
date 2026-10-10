@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 /**
  * 1プレイヤー分のイデアストレージ永続データ。
  * ファイル名は {@code psitweaks_idea_storage_<uuid>}。
- * DataVersion が自分より新しい場合は読み込まず上書きもせず、loadFailed として扱う。
+ * DataVersion が自分より新しい場合やファイル全体が壊れている場合は読み込まず上書きもせず、loadFailed として扱う。
+ * 個別エントリだけが読めない場合(削除した Mod の資源など)は、そのエントリを原本のまま保持して保存し直し、
+ * 残りは通常どおり利用できるようにする。
  */
 public final class IdeaStorageSavedData extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -33,6 +35,9 @@ public final class IdeaStorageSavedData extends SavedData {
     private final UUID owner;
     private final PlayerIdeaStorage storage;
     private CompoundTag unreadData;
+    private final ListTag unreadItems = new ListTag();
+    private final ListTag unreadFluids = new ListTag();
+    private final ListTag unreadChemicals = new ListTag();
 
     public IdeaStorageSavedData(UUID owner) {
         this.owner = owner;
@@ -65,22 +70,24 @@ public final class IdeaStorageSavedData extends SavedData {
             }
 
             data.storage.loadEnergy(tag.getLong("Energy"));
+            // A single unreadable entry (e.g. from a removed mod) must not lock the rest of the warehouse.
+            // It is kept verbatim and written back, so it returns once it becomes readable again.
             ListTag items = tag.getList(TAG_ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < items.size(); i++) {
                 CompoundTag entry = items.getCompound(i);
                 if (!entry.contains(TAG_ITEM, Tag.TAG_COMPOUND)) {
-                    LOGGER.warn("Cannot restore item entry without item data in idea storage of {} (index {}).", owner, i);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadItems, entry, "item", i, "it has no item data");
+                    continue;
                 }
                 Optional<ItemResourceKey> key = ItemResourceKey.parse(entry.get(TAG_ITEM));
                 if (key.isEmpty()) {
-                    LOGGER.warn("Cannot restore unknown or invalid item entry in idea storage of {} (index {}).", owner, i);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadItems, entry, "item", i, "the item is unknown or invalid");
+                    continue;
                 }
                 long count = entry.getLong(TAG_COUNT);
                 if (count <= 0) {
-                    LOGGER.warn("Cannot restore non-positive item entry {} in idea storage of {} (count={}).", key.get(), owner, count);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadItems, entry, "item", i, "its count is not positive");
+                    continue;
                 }
                 data.storage.loadEntry(key.get(), count);
             }
@@ -89,19 +96,18 @@ public final class IdeaStorageSavedData extends SavedData {
             for (int i = 0; i < fluids.size(); i++) {
                 CompoundTag entry = fluids.getCompound(i);
                 if (!entry.contains(TAG_FLUID, Tag.TAG_COMPOUND)) {
-                    LOGGER.warn("Cannot restore fluid entry without fluid data in idea storage of {} (index {}).", owner, i);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadFluids, entry, "fluid", i, "it has no fluid data");
+                    continue;
                 }
                 Optional<FluidResourceKey> key = FluidResourceKey.parse(entry.get(TAG_FLUID));
                 if (key.isEmpty()) {
-                    LOGGER.warn("Cannot restore unknown or invalid fluid entry in idea storage of {} (index {}).", owner, i);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadFluids, entry, "fluid", i, "the fluid is unknown or invalid");
+                    continue;
                 }
                 long amount = entry.getLong(TAG_COUNT);
                 if (amount <= 0) {
-                    LOGGER.warn("Cannot restore non-positive fluid entry {} in idea storage of {} (amount={}).",
-                            key.get(), owner, amount);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadFluids, entry, "fluid", i, "its amount is not positive");
+                    continue;
                 }
                 data.storage.loadFluidEntry(key.get(), amount);
             }
@@ -111,14 +117,13 @@ public final class IdeaStorageSavedData extends SavedData {
                 CompoundTag entry = chemicals.getCompound(i);
                 ResourceLocation chemicalId = ResourceLocation.tryParse(entry.getString(TAG_CHEMICAL));
                 if (chemicalId == null) {
-                    LOGGER.warn("Cannot restore invalid chemical ID in idea storage of {} (index {}).", owner, i);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadChemicals, entry, "chemical", i, "its ID is invalid");
+                    continue;
                 }
                 long amount = entry.getLong(TAG_COUNT);
                 if (amount <= 0) {
-                    LOGGER.warn("Cannot restore non-positive chemical entry {} in idea storage of {} (amount={}).",
-                            chemicalId, owner, amount);
-                    return data.preserveUnread(tag);
+                    data.keepUnreadEntry(data.unreadChemicals, entry, "chemical", i, "its amount is not positive");
+                    continue;
                 }
                 data.storage.loadChemicalEntry(chemicalId, amount);
             }
@@ -135,6 +140,21 @@ public final class IdeaStorageSavedData extends SavedData {
         return this;
     }
 
+    private void keepUnreadEntry(ListTag unread, CompoundTag entry, String category, int index, String reason) {
+        LOGGER.warn("Keeping {} entry {} of idea storage of {} unread because {}; it is saved unchanged.",
+                category, index, owner, reason);
+        unread.add(entry.copy());
+    }
+
+    /** Entries kept verbatim because they could not be decoded. They do not count toward type limits. */
+    public int unreadEntryCount() {
+        return unreadItems.size() + unreadFluids.size() + unreadChemicals.size();
+    }
+
+    private static void appendUnread(ListTag target, ListTag unread) {
+        for (int i = 0; i < unread.size(); i++) target.add(unread.getCompound(i).copy());
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag) {
         // Even a forced save must not replace an unread warehouse with the partial decoded view.
@@ -143,30 +163,33 @@ public final class IdeaStorageSavedData extends SavedData {
         tag.putInt(TAG_GRID_ROWS, storage.getGridRows());
         tag.putLong("Energy", storage.energy());
         ListTag items = new ListTag();
-        for (Map.Entry<ItemResourceKey, Long> entry : storage.itemEntries()) {
+        for (Map.Entry<ItemResourceKey, Long> entry : storage.itemsForSave()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.put(TAG_ITEM, entry.getKey().save());
             entryTag.putLong(TAG_COUNT, entry.getValue());
             items.add(entryTag);
         }
+        appendUnread(items, unreadItems);
         tag.put(TAG_ITEMS, items);
 
         ListTag fluids = new ListTag();
-        for (Map.Entry<FluidResourceKey, Long> entry : storage.fluidEntries()) {
+        for (Map.Entry<FluidResourceKey, Long> entry : storage.fluidsForSave()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.put(TAG_FLUID, entry.getKey().save());
             entryTag.putLong(TAG_COUNT, entry.getValue());
             fluids.add(entryTag);
         }
+        appendUnread(fluids, unreadFluids);
         tag.put(TAG_FLUIDS, fluids);
 
         ListTag chemicals = new ListTag();
-        for (Map.Entry<ResourceLocation, Long> entry : storage.chemicalEntries()) {
+        for (Map.Entry<ResourceLocation, Long> entry : storage.chemicalsForSave()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.putString(TAG_CHEMICAL, entry.getKey().toString());
             entryTag.putLong(TAG_COUNT, entry.getValue());
             chemicals.add(entryTag);
         }
+        appendUnread(chemicals, unreadChemicals);
         tag.put(TAG_CHEMICALS, chemicals);
         return tag;
     }

@@ -9,8 +9,11 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.network.FriendlyByteBuf;
 
 /** A ghost filter only: this payload never inserts or extracts resources. */
-public record MessageConnectorTemplate(int containerId, UUID session, int slot, CompoundTag resource)
+public record MessageConnectorTemplate(int containerId, UUID session, int slot, CompoundTag resource, boolean inputFilter, long revision)
         {
+    public MessageConnectorTemplate(int containerId, UUID session, int slot, CompoundTag resource) {
+        this(containerId, session, slot, resource, false, -1);
+    }
     public static final int MAX_TEMPLATE_SIZE = 64 * 1024;
 
 
@@ -18,6 +21,8 @@ public record MessageConnectorTemplate(int containerId, UUID session, int slot, 
         buf.writeVarInt(containerId);
         buf.writeUUID(session);
         buf.writeVarInt(slot);
+        buf.writeBoolean(inputFilter);
+        buf.writeLong(revision);
         buf.writeNbt(resource);
     }
 
@@ -25,10 +30,12 @@ public record MessageConnectorTemplate(int containerId, UUID session, int slot, 
         int containerId = buf.readVarInt();
         UUID session = buf.readUUID();
         int slot = buf.readVarInt();
+        boolean inputFilter = buf.readBoolean();
+        long revision = buf.readLong();
         CompoundTag resource = buf.readNbt(new net.minecraft.nbt.NbtAccounter(MAX_TEMPLATE_SIZE));
         if (resource == null)
             throw new DecoderException("Missing connector template");
-        return new MessageConnectorTemplate(containerId, session, slot, resource);
+        return new MessageConnectorTemplate(containerId, session, slot, resource, inputFilter, revision);
     }
 
     public static void handle(MessageConnectorTemplate message, java.util.function.Supplier<net.minecraftforge.network.NetworkEvent.Context> supplied) {

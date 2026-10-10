@@ -134,6 +134,9 @@ public class EntityTunnelerArrow extends AbstractArrow {
         Vec3 start = position();
         super.tick();
 
+        // AbstractArrow.tick sets inGround directly (independent of onHitBlock) when the arrow's centre is
+        // inside a block collision box and skips that tick's movement, so an arrow that only ignores
+        // onHitBlock still stops inside the block. Clear the flag and apply the skipped movement.
         if (inGround) {
             inGround = false;
             Vec3 movement = getDeltaMovement();

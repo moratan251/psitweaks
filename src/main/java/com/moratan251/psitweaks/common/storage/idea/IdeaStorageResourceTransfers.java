@@ -1,0 +1,75 @@
+package com.moratan251.psitweaks.common.storage.idea;
+
+import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
+import java.util.function.Predicate;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
+
+/** Bounded scans of an endpoint or the warehouse's type list; never loops once per requested unit. */
+public final class IdeaStorageResourceTransfers {
+    private IdeaStorageResourceTransfers() { }
+
+    public static long amountForPower(double power, int units, long maximum) {
+        if (!Double.isFinite(power) || power <= 0) return 0;
+        double amount = power * units;
+        return amount >= maximum ? maximum : (long) amount;
+    }
+
+    public static int depositItems(PlayerIdeaStorage storage, IItemHandler source, Predicate<ItemStack> filter, int maximum) {
+        int moved = 0;
+        for (int slot = 0; slot < source.getSlots() && moved < maximum; slot++) {
+            ItemStack preview = source.extractItem(slot, maximum - moved, true);
+            if (preview.isEmpty() || !filter.test(preview)) continue;
+            try (var reservation = storage.reserveItemInsertion(preview, Math.min(preview.getCount(), maximum - moved))) {
+                if (reservation == null) continue;
+                ItemStack extracted = source.extractItem(slot, (int) reservation.amount(), false);
+                int actualAmount = extracted.isEmpty() ? 0 : extracted.getCount();
+                if (!reservation.commit(ItemResourceKey.of(extracted).orElse(null), actualAmount))
+                    throw new IllegalStateException("Unexpected item extraction; actual resource preserved in Ideaspace Storage");
+                moved += actualAmount;
+            }
+        }
+        return moved;
+    }
+
+    public static int withdrawItems(PlayerIdeaStorage storage, IItemHandler target, Predicate<ItemStack> filter, int maximum) {
+        int moved = 0;
+        for (var entry : storage.itemEntries()) {
+            if (moved >= maximum) break;
+            if (filter.test(entry.getKey().template()))
+                moved += ConnectorTransfers.pushItemBatch(storage, entry.getKey(), target, maximum - moved);
+        }
+        return moved;
+    }
+
+    public static int depositFluids(PlayerIdeaStorage storage, IFluidHandler source, Predicate<FluidStack> filter, int maximum) {
+        int moved = 0;
+        for (int tank = 0; tank < source.getTanks() && moved < maximum; tank++) {
+            FluidStack candidate = source.getFluidInTank(tank);
+            if (candidate.isEmpty() || !filter.test(candidate)) continue;
+            FluidStack preview = source.drain(new FluidStack(candidate, maximum - moved), IFluidHandler.FluidAction.SIMULATE);
+            if (preview.isEmpty() || !filter.test(preview)) continue;
+            try (var reservation = storage.reserveFluidInsertion(preview, Math.min(preview.getAmount(), maximum - moved))) {
+                if (reservation == null) continue;
+                FluidStack extracted = source.drain(new FluidStack(preview, (int) reservation.amount()), IFluidHandler.FluidAction.EXECUTE);
+                int actualAmount = extracted.isEmpty() ? 0 : extracted.getAmount();
+                if (!reservation.commit(FluidResourceKey.of(extracted).orElse(null), actualAmount))
+                    throw new IllegalStateException("Unexpected fluid extraction; actual resource preserved in Ideaspace Storage");
+                moved += actualAmount;
+            }
+        }
+        return moved;
+    }
+
+    public static int withdrawFluids(PlayerIdeaStorage storage, IFluidHandler target, Predicate<FluidStack> filter, int maximum) {
+        int moved = 0;
+        for (var entry : storage.fluidEntries()) {
+            if (moved >= maximum) break;
+            if (filter.test(entry.getKey().template()))
+                moved += ConnectorTransfers.pushFluid(storage, entry.getKey(), target, maximum - moved);
+        }
+        return moved;
+    }
+}

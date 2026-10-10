@@ -41,6 +41,9 @@ public final class BowSpellProjectileHandler {
         if (playerCad.isEmpty() || bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {
             return;
         }
+        // A riding EntitySpellProjectile never receives onHit when the carrier hits, so only projectile
+        // bullets get the marker and are fired from onProjectileImpact. EntitySpellGrenade / EntitySpellCharge
+        // also extend EntitySpellProjectile; keying on the entity type would skip their timers and fire at once.
         boolean firesOnImpact = bullet.getItem() instanceof ItemProjectileSpellBullet;
 
         ItemCAD.cast(level, player, data, bullet, playerCad, 5, 10, 0.05F, (SpellContext context) -> {
@@ -68,6 +71,8 @@ public final class BowSpellProjectileHandler {
         }
     }
 
+    // Cast once with the same branch as Psi's EntitySpellProjectile#onHit (attackedEntity for living targets).
+    // The marker is removed first so multi-hit projectiles do not fire the spell again.
     @SubscribeEvent
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         Projectile projectile = event.getProjectile();

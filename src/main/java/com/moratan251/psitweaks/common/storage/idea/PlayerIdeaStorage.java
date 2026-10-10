@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,10 +24,16 @@ public final class PlayerIdeaStorage {
     private final Map<ItemResourceKey, Long> items = new LinkedHashMap<>();
     private final Map<FluidResourceKey, Long> fluids = new LinkedHashMap<>();
     private final Map<ResourceLocation, Long> chemicals = new LinkedHashMap<>();
+    // At most one arithmetic-overflow recovery before the warehouse becomes read-only. Keep the
+    // original entry and extracted batch separately for lossless saving through the existing format.
+    private Map.Entry<ItemResourceKey, Long> unmergedItemRecovery;
+    private Map.Entry<FluidResourceKey, Long> unmergedFluidRecovery;
+    private Map.Entry<ResourceLocation, Long> unmergedChemicalRecovery;
     private long version;
     private long inventoryVersion;
     private long energy;
     private boolean energyTransferActive;
+    private boolean resourceTransferActive;
 
     public long energy() {
         return energy;
@@ -104,7 +112,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateInsert(ItemStack template, long amount) {
-        if (loadFailed || amount <= 0 || template == null || template.isEmpty()) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || template == null || template.isEmpty()) {
             return 0;
         }
         Optional<ItemResourceKey> keyOptional = ItemResourceKey.of(template);
@@ -129,7 +137,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateExtract(ItemResourceKey key, long amount) {
-        if (loadFailed || amount <= 0 || key == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || key == null) {
             return 0;
         }
         return Math.min(amount, items.getOrDefault(key, 0L));
@@ -171,7 +179,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateInsertFluid(FluidStack template, long amount) {
-        if (loadFailed || amount <= 0 || template == null || template.isEmpty()) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || template == null || template.isEmpty()) {
             return 0;
         }
         Optional<FluidResourceKey> keyOptional = FluidResourceKey.of(template);
@@ -196,7 +204,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateExtractFluid(FluidResourceKey key, long amount) {
-        if (loadFailed || amount <= 0 || key == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || key == null) {
             return 0;
         }
         return Math.min(amount, fluids.getOrDefault(key, 0L));
@@ -243,7 +251,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateInsertChemical(ResourceLocation chemicalId, long amount) {
-        if (loadFailed || amount <= 0 || chemicalId == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || chemicalId == null) {
             return 0;
         }
         boolean existing = chemicals.containsKey(chemicalId);
@@ -262,7 +270,7 @@ public final class PlayerIdeaStorage {
     }
 
     public long simulateExtractChemical(ResourceLocation chemicalId, long amount) {
-        if (loadFailed || amount <= 0 || chemicalId == null) {
+        if (resourceTransferActive || loadFailed || amount <= 0 || chemicalId == null) {
             return 0;
         }
         return Math.min(amount, chemicals.getOrDefault(chemicalId, 0L));
@@ -281,6 +289,51 @@ public final class PlayerIdeaStorage {
         }
         markChanged();
         return extracted;
+    }
+
+    public IdeaStorageInsertion<ItemResourceKey> reserveItemInsertion(ItemStack template, long maximum) {
+        long amount = simulateInsert(template, maximum);
+        if (amount == 0) return null;
+        return reserveInsertion(items, ItemResourceKey.of(template).orElseThrow(), amount, recovery -> unmergedItemRecovery = recovery);
+    }
+
+    public IdeaStorageInsertion<FluidResourceKey> reserveFluidInsertion(FluidStack template, long maximum) {
+        long amount = simulateInsertFluid(template, maximum);
+        if (amount == 0) return null;
+        return reserveInsertion(fluids, FluidResourceKey.of(template).orElseThrow(), amount, recovery -> unmergedFluidRecovery = recovery);
+    }
+
+    public IdeaStorageInsertion<ResourceLocation> reserveChemicalInsertion(ResourceLocation key, long maximum) {
+        long amount = simulateInsertChemical(key, maximum);
+        return amount == 0 ? null : reserveInsertion(chemicals, key, amount, recovery -> unmergedChemicalRecovery = recovery);
+    }
+
+    private <K> IdeaStorageInsertion<K> reserveInsertion(Map<K, Long> entries, K key, long amount,
+                                                       Consumer<Map.Entry<K, Long>> preserveOverflow) {
+        resourceTransferActive = true;
+        return new IdeaStorageInsertion<>(key, amount, (actualKey, transferred) -> {
+            long existing = entries.getOrDefault(actualKey, 0L);
+            boolean fitsLong = transferred <= Long.MAX_VALUE - existing;
+            if (fitsLong) {
+                // This is recovery of an actual extraction, not a new capacity-checked insertion.
+                entries.put(actualKey, existing + transferred);
+            } else {
+                preserveOverflow.accept(Map.entry(actualKey, transferred));
+                markLoadFailed();
+            }
+            markChanged();
+            return fitsLong;
+        }, () -> resourceTransferActive = false);
+    }
+
+    List<Map.Entry<ItemResourceKey, Long>> itemsForSave() { return entriesForSave(items, unmergedItemRecovery); }
+    List<Map.Entry<FluidResourceKey, Long>> fluidsForSave() { return entriesForSave(fluids, unmergedFluidRecovery); }
+    List<Map.Entry<ResourceLocation, Long>> chemicalsForSave() { return entriesForSave(chemicals, unmergedChemicalRecovery); }
+
+    private static <K> List<Map.Entry<K, Long>> entriesForSave(Map<K, Long> entries, Map.Entry<K, Long> recovery) {
+        var result = new ArrayList<>(entries.entrySet());
+        if (recovery != null) result.add(recovery);
+        return result;
     }
 
     /**

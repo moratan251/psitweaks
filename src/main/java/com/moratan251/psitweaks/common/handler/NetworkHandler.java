@@ -12,7 +12,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import java.util.Optional;
 
 public class NetworkHandler {
-    public static final String PROTOCOL_VERSION = "6";
+    public static final String PROTOCOL_VERSION = "7";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.fromNamespaceAndPath("psitweaks", "main"),
             () -> PROTOCOL_VERSION,

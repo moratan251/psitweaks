@@ -49,14 +49,34 @@ public final class ConnectorMekanism {
         caps.put(Capabilities.SLURRY_HANDLER, LazyOptional.of(() -> new SlurryHandler(connector, side)));
     }
     public static long push(PlayerIdeaStorage storage, ResourceLocation id, Level level, BlockPos pos, Direction side, long maximum) {
+        return pushToStock(storage, id, level, pos, side, maximum, -1);
+    }
+    /** A target of -1 disables destination counting; otherwise only the missing amount is sent. */
+    public static long pushToStock(PlayerIdeaStorage storage, ResourceLocation id, Level level, BlockPos pos, Direction side,
+                                   long maximum, long targetStock) {
         if (!validChemical(id)) return 0;
         return switch (id.getPath().substring(0, id.getPath().indexOf('/'))) {
-            case "gas" -> pushKind(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.GAS_HANDLER), maximum, MekanismAPI.gasRegistry(), GasStack::new);
-            case "infuse" -> pushKind(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.INFUSION_HANDLER), maximum, MekanismAPI.infuseTypeRegistry(), InfusionStack::new);
-            case "pigment" -> pushKind(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.PIGMENT_HANDLER), maximum, MekanismAPI.pigmentRegistry(), PigmentStack::new);
-            case "slurry" -> pushKind(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.SLURRY_HANDLER), maximum, MekanismAPI.slurryRegistry(), SlurryStack::new);
+            case "gas" -> pushToStock(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.GAS_HANDLER), maximum, targetStock, MekanismAPI.gasRegistry(), GasStack::new);
+            case "infuse" -> pushToStock(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.INFUSION_HANDLER), maximum, targetStock, MekanismAPI.infuseTypeRegistry(), InfusionStack::new);
+            case "pigment" -> pushToStock(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.PIGMENT_HANDLER), maximum, targetStock, MekanismAPI.pigmentRegistry(), PigmentStack::new);
+            case "slurry" -> pushToStock(storage, id, ConnectorCapabilities.get(level, pos, side, Capabilities.SLURRY_HANDLER), maximum, targetStock, MekanismAPI.slurryRegistry(), SlurryStack::new);
             default -> 0;
         };
+    }
+    private static <C extends Chemical<C>, S extends ChemicalStack<C>> long pushToStock(PlayerIdeaStorage storage,
+            ResourceLocation id, IChemicalHandler<C, S> target, long maximum, long targetStock, IForgeRegistry<C> registry, BiFunction<C, Long, S> factory) {
+        if (target == null) return 0;
+        if (targetStock >= 0) {
+            String kind = id.getPath().substring(0, id.getPath().indexOf('/'));
+            long count = 0;
+            for (int tank = 0; tank < target.getTanks(); tank++) {
+                S stack = target.getChemicalInTank(tank);
+                if (!stack.isEmpty() && id.equals(IdeaStorageMekanismIntegration.key(kind, stack.getTypeRegistryName())))
+                    count = ConnectorTransfers.saturatedAdd(count, stack.getAmount());
+            }
+            maximum = Math.min(maximum, Math.max(0, targetStock - count));
+        }
+        return maximum <= 0 ? 0 : pushKind(storage, id, target, maximum, registry, factory);
     }
     private static ResourceLocation rawId(ResourceLocation id) {
         return new ResourceLocation(id.getNamespace(), id.getPath().substring(id.getPath().indexOf('/') + 1));
@@ -92,7 +112,7 @@ public final class ConnectorMekanism {
         @Override public S getChemicalInTank(int tank) {
             if (tank < 0 || tank >= IdeaspaceConnectorBlockEntity.SLOTS) return getEmptyStack();
             var resource = connector.resource(tank);
-            return connector.sideMode(tank, side).output ? stack(resource.chemical(), resource.amount(connector.storage())) : getEmptyStack();
+            return connector.allowsOutput(tank, side) ? stack(resource.chemical(), resource.amount(connector.storage())) : getEmptyStack();
         }
         @Override public void setChemicalInTank(int tank, S stack) { throw new UnsupportedOperationException("Use insert/extract on shared storage"); }
         @Override public long getTankCapacity(int tank) { var storage = connector.storage(); return tank >= 0 && tank < getTanks() && storage != null ? storage.maxChemicalPerType() : 0; }
@@ -106,7 +126,7 @@ public final class ConnectorMekanism {
         @Override public S extractChemical(int tank, long amount, Action action) {
             if (tank < 0 || tank >= IdeaspaceConnectorBlockEntity.SLOTS) return getEmptyStack();
             var storage = connector.storage(); var id = connector.resource(tank).chemical();
-            if (storage == null || !connector.sideMode(tank, side).output || stack(id, 1).isEmpty()) return getEmptyStack();
+            if (storage == null || !connector.allowsOutput(tank, side) || stack(id, 1).isEmpty()) return getEmptyStack();
             return stack(id, action.simulate() ? storage.simulateExtractChemical(id, amount) : storage.extractChemical(id, amount));
         }
     }

@@ -220,7 +220,7 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
         return null;
     }
 
-    private static IItemHandler getBlockItemHandler(Level level, BlockPos pos, Direction facing) {
+    static IItemHandler getBlockItemHandler(Level level, BlockPos pos, Direction facing) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity != null) {
             IItemHandler handler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, facing).orElse(null);
@@ -241,7 +241,7 @@ abstract class PieceTrickItemTransferBase extends PieceTrick implements ModeConf
      * Asks protection mods whether the caster may interact with the block's inventory by
      * posting a right-click equivalent event. Canceled or block-use denied means protected.
      */
-    private static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
+    static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false);
         PlayerInteractEvent.RightClickBlock event =
                 new PlayerInteractEvent.RightClickBlock(caster, InteractionHand.MAIN_HAND, pos, hit);

@@ -269,6 +269,14 @@ public class PsitweaksSpells {
             registerSpellPiece("selector_idea_storage_fluid_amount", PieceSelectorIdeaStorageFluidAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
             registerSpellPiece("selector_idea_storage_chemical_amount", PieceSelectorIdeaStorageChemicalAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
             registerSpellPiece("trick_ideaspace_connector", PieceTrickIdeaspaceConnector.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_deposit_item", PieceTrickIdeaStorageDepositItem.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_withdraw_item", PieceTrickIdeaStorageWithdrawItem.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_deposit_fluid", PieceTrickIdeaStorageDepositFluid.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_withdraw_fluid", PieceTrickIdeaStorageWithdrawFluid.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_deposit_chemical", PieceTrickIdeaStorageDepositChemical.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_withdraw_chemical", PieceTrickIdeaStorageWithdrawChemical.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_deposit_slot", PieceTrickIdeaStorageDepositSlot.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            registerSpellPiece("trick_idea_storage_withdraw_slot", PieceTrickIdeaStorageWithdrawSlot.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
             registerSpellPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
 
 

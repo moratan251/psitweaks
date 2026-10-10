@@ -1,0 +1,89 @@
+package com.moratan251.psitweaks.common.spells.spellpiece.trick;
+
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
+import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import java.util.List;
+import java.util.function.Predicate;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellParam;
+import vazkii.psi.api.spell.SpellRuntimeException;
+
+/** Only item logistics has multiple filter modes. */
+public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorageResourceBase implements ModeConfigurableSpellPiece {
+    private PsitweaksModeOption mode = PsitweaksModeOptions.STRING;
+    private SpellParam<SpellItemValue> item;
+
+    protected PieceTrickIdeaStorageItemBase(Spell spell) {
+        super(spell);
+    }
+
+    @Override public List<PsitweaksModeOption> getAvailableModeOptions() {
+        return List.of(PsitweaksModeOptions.STRING, PsitweaksModeOptions.ITEM, PsitweaksModeOptions.ITEM_STRICT);
+    }
+
+    @Override public PsitweaksModeOption getModeOption() { return normalizeModeOption(mode); }
+
+    @Override public void setModeOption(PsitweaksModeOption option) {
+        var next = normalizeModeOption(option);
+        if (next.id().equals(getModeOption().id())) return;
+        var posSide = position == null ? null : paramSides.get(position);
+        var directionSide = direction == null ? null : paramSides.get(direction);
+        var quantitySide = paramSides.get(quantity);
+        var filterSide = paramSides.get(itemMode() ? item : string);
+        mode = next;
+        rebuildParams();
+        if (posSide != null) paramSides.put(position, posSide);
+        if (directionSide != null) paramSides.put(direction, directionSide);
+        if (quantitySide != null) paramSides.put(quantity, quantitySide);
+        if (filterSide != null) paramSides.put(itemMode() ? item : string, filterSide);
+    }
+
+    private boolean itemMode() { return !getModeOption().id().equals(PsitweaksModeOptions.STRING.id()); }
+    private void rebuildParams() { params.clear(); paramSides.clear(); initParams(); }
+
+    @Override protected void initFilter() {
+        if (itemMode()) addParam(item = new ParamSpellItemValue(PsitweaksSpellParams.ITEM, PsitweaksSpellParams.ITEM_COLOR, true, false));
+        else super.initFilter();
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    @Override
+    public void drawAdditional(com.mojang.blaze3d.vertex.PoseStack pose, net.minecraft.client.renderer.MultiBufferSource buffers, int light) {
+        com.moratan251.psitweaks.client.spells.ModeOverlayRenderer.drawModeOverlay(pose, buffers, light, getModeOption());
+    }
+
+    @Override public void readFromNBT(CompoundTag tag) {
+        mode = normalizeModeOption(PsitweaksModeOptions.byId(tag.getString("psitweaksMode")).orElse(null));
+        rebuildParams();
+        super.readFromNBT(tag);
+    }
+
+    @Override public void writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
+        tag.putString("psitweaksMode", getModeOption().serializedId());
+    }
+
+    /** False when the filter is unconnected or an empty String, i.e. when {@link #itemFilter} accepts everything. */
+    protected boolean hasFilter(SpellContext context) throws SpellRuntimeException {
+        if (itemMode()) return getParamValue(context, item) != null;
+        String pattern = getParamValue(context, string);
+        return pattern != null && !pattern.isEmpty();
+    }
+
+    @Override protected Predicate<ItemStack> itemFilter(SpellContext context) throws SpellRuntimeException {
+        if (!itemMode()) return super.itemFilter(context);
+        SpellItemValue value = getParamValue(context, item);
+        if (value == null) return stack -> true;
+        if (value.isEmpty()) throw new SpellRuntimeException("psitweaks.spellerror.nullitem");
+        ItemStack template = value.snapshot();
+        return getModeOption().id().equals(PsitweaksModeOptions.ITEM_STRICT.id())
+                ? stack -> ItemStack.isSameItemSameTags(template, stack) : stack -> stack.is(template.getItem());
+    }
+}
