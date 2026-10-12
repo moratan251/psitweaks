@@ -248,10 +248,10 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
                 if (tile.getComponentSlots().get(i).isEmpty() && mouseX >= x && mouseX < x + 16 && mouseY >= y && mouseY < y + 16) {
                     EnumCADComponent type = VirtualCad.SLOT_TYPES.get(i);
                     String fallback = type == EnumCADComponent.DYE ? "component.default.dye" : "component.default";
-                    guiGraphics.renderTooltip(font, List.of(
+                    // 既定部品の薄い表示は Mekanism が一段上の層で描くため、ツールチップは後回しにしてその上に描かせる。
+                    setTooltipForNextRenderPass(List.of(
                             Component.translatable(KEY + "component", Component.translatable(type.getName())).getVisualOrderText(),
-                            Component.translatable(KEY + fallback).withStyle(ChatFormatting.GRAY).getVisualOrderText()),
-                            mouseX, mouseY);
+                            Component.translatable(KEY + fallback).withStyle(ChatFormatting.GRAY).getVisualOrderText()));
                 }
             }
         }
