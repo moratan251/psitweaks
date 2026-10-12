@@ -100,7 +100,7 @@ final class AutonomousCasterTranslations {
     private void addLogWindow() {
         put(LOG + "title", "Activity Log", "作動ログ");
         put(LOG + "empty", "No log entries", "ログはありません");
-        put(LOG + "count", "%s entries", "%s 件");
+        put(LOG + "count", "Entries: %s", "%s 件");
         put(LOG + "latest", "Latest", "最新へ");
         put(LOG + "latest.tooltip", "Scroll to the newest entry", "最新のログまでスクロールします");
         put(LOG + "clear", "Clear", "消去");

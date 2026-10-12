@@ -111,7 +111,7 @@
   "gui.psitweaks.autonomous_caster.log_window.clear": "Clear",
   "gui.psitweaks.autonomous_caster.log_window.clear.confirm": "Clear the activity log?",
   "gui.psitweaks.autonomous_caster.log_window.clear.tooltip": "Clear the activity log",
-  "gui.psitweaks.autonomous_caster.log_window.count": "%s entries",
+  "gui.psitweaks.autonomous_caster.log_window.count": "Entries: %s",
   "gui.psitweaks.autonomous_caster.log_window.empty": "No log entries",
   "gui.psitweaks.autonomous_caster.log_window.latest": "Latest",
   "gui.psitweaks.autonomous_caster.log_window.latest.tooltip": "Scroll to the newest entry",

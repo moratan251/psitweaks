@@ -90,7 +90,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         return table;
     }
 
-        private static JsonObject oreDrop(String blockId, ItemLike item) {
+    private static JsonObject oreDrop(String blockId, ItemLike item) {
         JsonObject table = blockTable(blockId);
         JsonObject pool = pool();
         JsonArray entries = new JsonArray();
