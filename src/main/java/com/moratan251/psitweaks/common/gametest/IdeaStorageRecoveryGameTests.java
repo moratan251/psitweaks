@@ -196,10 +196,11 @@ public final class IdeaStorageRecoveryGameTests {
             @Override public Object getRawParamValue(SpellContext context, SpellParam<?> param) {
                 return IdeaLogisticsGameTests.paramValue(param, pos, 4, null);
             }
-            @Override protected void transfer(SpellContext context, ServerPlayer caster, BlockPos at, Direction face,
+            @Override protected long transfer(SpellContext context, ServerPlayer caster, BlockPos at, Direction face,
                                               PlayerIdeaStorage storage, long maximum) {
                 executed[0] = true;
                 operation.run();
+                return 0;
             }
         };
         var compiled = new CompiledSpell(spell);

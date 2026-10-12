@@ -16,6 +16,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.piece.PieceSelector;
 
+/** Ideaspace queries about one resource given by ID; amounts and free capacity share the input and the 0 fallbacks. */
 abstract class PieceSelectorIdeaStorageAmountBase extends PieceSelector {
     private SpellParam<String> resourceId;
 
@@ -41,8 +42,8 @@ abstract class PieceSelectorIdeaStorageAmountBase extends PieceSelector {
         if (!(context.caster instanceof ServerPlayer player)) {
             return 0.0D;
         }
-        ResourceLocation id = resourceId(context);
-        if (id == null) {
+        StorageQuery query = prepareQuery(context);
+        if (query == null) {
             return 0.0D;
         }
         var owner = IdeaStorageOwnerResolver.resolve(player);
@@ -50,10 +51,22 @@ abstract class PieceSelectorIdeaStorageAmountBase extends PieceSelector {
             return 0.0D;
         }
         var storage = IdeaStorageService.get(player.server, owner.get());
-        return storage.isLoadFailed() ? 0.0D : storedAmount(storage, id);
+        return storage.isLoadFailed() ? 0.0D : query.apply(storage);
     }
 
+    /** Reads the inputs before the storage is touched; null (no usable resource) evaluates to 0. */
+    protected StorageQuery prepareQuery(SpellContext context) throws SpellRuntimeException {
+        ResourceLocation id = resourceId(context);
+        return id == null ? null : storage -> storedAmount(storage, id);
+    }
+
+    /** The value for a resource ID: a stored amount, or a free capacity for the capacity selectors. */
     protected abstract double storedAmount(PlayerIdeaStorage storage, ResourceLocation id);
+
+    @FunctionalInterface
+    protected interface StorageQuery {
+        double apply(PlayerIdeaStorage storage);
+    }
 
     @Override
     public Class<?> getEvaluationType() {
