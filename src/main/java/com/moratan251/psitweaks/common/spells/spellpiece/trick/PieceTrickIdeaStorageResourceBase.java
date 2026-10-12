@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
@@ -70,15 +71,16 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick {
         if (!finite(pos) || !finite(face)) throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         if (!context.isInRadius(pos)) throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         if (!(context.caster instanceof ServerPlayer player)) return null;
+        var owner = IdeaStorageOwnerResolver.requireOwner(player);
         var level = player.serverLevel();
         var blockPos = pos.toBlockPos();
         if (!level.hasChunkAt(blockPos)) return null;
         Direction facing = Direction.getNearest(face.x, face.y, face.z);
         if (!level.mayInteract(player, blockPos) || PieceTrickItemTransferBase.isProtectedFromInteraction(player, blockPos, facing))
             throw new SpellRuntimeException("psitweaks.spellerror.accessdenyed");
-        if (level.getBlockEntity(blockPos) instanceof IdeaspaceConnectorBlockEntity connector && player.getUUID().equals(connector.owner()))
+        if (level.getBlockEntity(blockPos) instanceof IdeaspaceConnectorBlockEntity connector && owner.equals(connector.owner()))
             return null;
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var storage = IdeaStorageService.get(player.server, owner);
         long maximum = IdeaStorageResourceTransfers.amountForPower(amount, kind() == Kind.ITEM ? 1 : 1000,
                 kind() == Kind.CHEMICAL ? Long.MAX_VALUE : Integer.MAX_VALUE);
         try {

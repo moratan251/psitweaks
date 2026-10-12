@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,6 +41,7 @@ public class PieceTrickIdeaspaceConnector extends PieceTrick {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         if (!context.isInRadius(vector)) throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         if (!(context.caster instanceof ServerPlayer player) || context.focalPoint == null) return null;
+        var owner = IdeaStorageOwnerResolver.requireOwner(player);
         var level = context.focalPoint.level();
         var pos = vector.toBlockPos();
         if (level.isClientSide || !level.hasChunkAt(pos) || !level.isInWorldBounds(pos)
@@ -55,7 +57,7 @@ public class PieceTrickIdeaspaceConnector extends PieceTrick {
             ItemStack cad = PsiAPI.getPlayerCAD(player);
             ItemStack colorizer = !cad.isEmpty() && cad.getItem() instanceof ICAD item
                     ? item.getComponentInSlot(cad, EnumCADComponent.DYE) : ItemStack.EMPTY;
-            connector.initialize(player.getUUID(), colorizer);
+            connector.initialize(owner, colorizer);
         }
         return null;
     }

@@ -28,6 +28,10 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             JsonObject lootTable = switch (block.id()) {
                 case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
+                // 術式弾・CAD部品・参照アイテムを失わないよう、Mekanism の機械と同じく中身ごとアイテム化する
+                case "autonomous_caster" -> dropSelfWithMekanismContents(block.id(), List.of(
+                        "mekanism:ejector", "mekanism:owner", "mekanism:security", "mekanism:side_config",
+                        "mekanism:upgrades", "mekanism:items", "mekanism:chemicals"));
                 default -> dropSelf(block.id());
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));
@@ -58,7 +62,35 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         return table;
     }
 
-    private static JsonObject oreDrop(String blockId, ItemLike item) {
+    /** Mekanism の機械用ルートテーブルと同じ形。Mekanism がない環境では読み込まない。 */
+    private static JsonObject dropSelfWithMekanismContents(String blockId, List<String> components) {
+        JsonObject table = blockTable(blockId);
+        JsonObject pool = pool();
+        JsonArray entries = new JsonArray();
+        JsonObject entry = itemEntry(block(blockId));
+        JsonArray functions = new JsonArray();
+        JsonObject copyName = new JsonObject();
+        JsonObject copyComponents = new JsonObject();
+        JsonArray include = new JsonArray();
+
+        copyName.addProperty("function", "minecraft:copy_name");
+        copyName.addProperty("source", "block_entity");
+        functions.add(copyName);
+        copyComponents.addProperty("function", "minecraft:copy_components");
+        components.forEach(include::add);
+        copyComponents.add("include", include);
+        copyComponents.addProperty("source", "block_entity");
+        functions.add(copyComponents);
+        entry.add("functions", functions);
+        entries.add(entry);
+        pool.add("entries", entries);
+        addPool(table, pool);
+        RecipeConditionHelper.requireMod(table, "mekanism");
+
+        return table;
+    }
+
+        private static JsonObject oreDrop(String blockId, ItemLike item) {
         JsonObject table = blockTable(blockId);
         JsonObject pool = pool();
         JsonArray entries = new JsonArray();

@@ -403,6 +403,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addPsitweaksCategoryBook(root);
         addProgrammingConceptsBook(root);
         addMachineTranslations(root);
+        AutonomousCasterTranslations.add(root, locale);
         addSpellUnlockMessages(root);
         addCadDisassembler(root);
         addUtilityItemsBook(root);

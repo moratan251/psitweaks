@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +26,11 @@ public class PieceSelectorIdeaStorageEnergy extends PieceSelector {
         if (!(context.caster instanceof ServerPlayer player)) {
             return 0.0D;
         }
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var owner = IdeaStorageOwnerResolver.resolve(player);
+        if (owner.isEmpty()) {
+            return 0.0D;
+        }
+        var storage = IdeaStorageService.get(player.server, owner.get());
         return storage.isLoadFailed() ? 0.0D : (double) storage.energy();
     }
 

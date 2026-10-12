@@ -1,0 +1,42 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:ejector",
+                "mekanism:owner",
+                "mekanism:security",
+                "mekanism:side_config",
+                "mekanism:upgrades",
+                "mekanism:items",
+                "mekanism:chemicals"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "psitweaks:autonomous_caster"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "psitweaks:blocks/autonomous_caster"
+}

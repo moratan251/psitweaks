@@ -20,6 +20,10 @@
     {
       "id": "psitweaks:psionic_generator",
       "required": false
+    },
+    {
+      "id": "psitweaks:autonomous_caster",
+      "required": false
     }
   ]
 }

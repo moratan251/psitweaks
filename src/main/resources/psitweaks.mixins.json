@@ -7,8 +7,13 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
+    "EntitySpellCircleAutonomousCasterMixin",
+    "EntitySpellProjectileAutonomousCasterMixin",
+    "ItemCADAutonomousCasterMixin",
     "ItemCADPlainMemoryMixin",
+    "MessageSpamlessChatMixin",
     "PieceTrickMassExodusMixin",
+    "PsiNetworkAutonomousCasterMixin",
     "RadiationUtilMixin",
     "SpellContextRangeMixin",
     "SpellGridOptionalCompatMixin",

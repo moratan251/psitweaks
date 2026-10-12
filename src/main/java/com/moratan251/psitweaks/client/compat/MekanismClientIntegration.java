@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.client.compat;
 
+import com.moratan251.psitweaks.client.gui.machine.GuiAutonomousCaster;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
 import com.moratan251.psitweaks.client.gui.machine.GuiPsionicGenerator;
@@ -42,6 +43,7 @@ public final class MekanismClientIntegration {
         event.register(PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER.get(), GuiProgramResearcher::new);
         event.register(PsitweaksMekanismContainerTypes.MATERIAL_MUTATOR.get(), GuiMaterialMutator::new);
         event.register(PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR.get(), GuiPsionicGenerator::new);
+        event.register(PsitweaksMekanismContainerTypes.AUTONOMOUS_CASTER.get(), GuiAutonomousCaster::new);
         event.register(
                 PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE.get(),
                 GuiTranscendentEnergyCube::new

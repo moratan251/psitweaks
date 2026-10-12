@@ -2,6 +2,8 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerProvider;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import java.util.function.Predicate;
@@ -36,8 +38,10 @@ public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrickIdeaStorag
     @Override public Object execute(SpellContext context) throws SpellRuntimeException {
         double amount = this.<Number>getNotNullParamValue(context, quantity).doubleValue();
         if (!Double.isFinite(amount) || amount <= 0) throw new SpellRuntimeException("psi.spellerror.nonpositivevalue");
-        if (!(context.caster instanceof ServerPlayer player) || player instanceof FakePlayer
+        if (!(context.caster instanceof ServerPlayer player)
+                || (player instanceof FakePlayer && !(player instanceof IdeaStorageOwnerProvider))
                 || player.isSpectator() || !player.isAlive()) return null;
+        var owner = IdeaStorageOwnerResolver.requireOwner(player);
         int slot = context.getTargetSlot();
         Inventory inventory = player.getInventory();
         IItemHandler handler = slotHandler(inventory, slot);
@@ -45,7 +49,7 @@ public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrickIdeaStorag
         if (handler == null || isCasterEquipment(context, player, slot, current)) return null;
         Predicate<ItemStack> filter = itemFilter(context);
         int maximum = (int) IdeaStorageResourceTransfers.amountForPower(amount, 1, Integer.MAX_VALUE);
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var storage = IdeaStorageService.get(player.server, owner);
         try {
             if (deposit()) {
                 IdeaStorageResourceTransfers.depositItems(storage, handler, filter, maximum);

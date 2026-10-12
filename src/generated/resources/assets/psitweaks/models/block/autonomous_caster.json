@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "psitweaks:block/autonomous_casting_machine/bottom",
+    "east": "psitweaks:block/autonomous_casting_machine/right",
+    "north": "psitweaks:block/autonomous_casting_machine/front",
+    "particle": "psitweaks:block/autonomous_casting_machine/front",
+    "south": "psitweaks:block/autonomous_casting_machine/back",
+    "up": "psitweaks:block/autonomous_casting_machine/top",
+    "west": "psitweaks:block/autonomous_casting_machine/left"
+  }
+}

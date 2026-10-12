@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageEnergyTransfer;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,13 +55,14 @@ public abstract class PieceTrickIdeaStorageFEBase extends PieceTrick {
             throw new SpellRuntimeException("psi.spellerror.outsideradius");
         }
         if (!(context.caster instanceof ServerPlayer player)) return null;
+        var owner = IdeaStorageOwnerResolver.requireOwner(player);
         var level = player.serverLevel();
         var blockPos = pos.toBlockPos();
         if (!level.hasChunkAt(blockPos) || !level.mayInteract(player, blockPos)) return null;
         var handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, blockPos,
                 Direction.getNearest(face.x, face.y, face.z));
         if (handler == null) return null;
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var storage = IdeaStorageService.get(player.server, owner);
         int amount = IdeaStorageEnergyTransfer.amountForPower(strength);
         if (absorbs()) {
             IdeaStorageEnergyTransfer.absorb(storage, handler, amount);
