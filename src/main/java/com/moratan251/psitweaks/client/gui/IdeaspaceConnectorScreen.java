@@ -5,9 +5,12 @@ import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
 import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
+import com.moratan251.psitweaks.common.network.MessageConnectorPaste;
+import com.moratan251.psitweaks.common.network.MessageConnectorPasteResult;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorInputMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorSettingsClipboard;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.BlockPos;
@@ -37,6 +41,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     private static final int GRID_X = 7, SELECTED_Y = 40, CELL = 18;
     private static final int NEIGHBOR_X = 37, FACE_ROW_Y = 44, FACE_ROW_HEIGHT = 21;
     private static final int ENERGY_X = 150, ENERGY_Y = 74;
+    private static final SystemToast.SystemToastId CLIPBOARD_TOAST = new SystemToast.SystemToastId(4000L);
     private final IdeaStorageDisplayEntry energyIcon = IdeaStorageDisplayEntry.energy(0);
     private final Button[] modeButtons = new Button[6], autoButtons = new Button[6], redstoneButtons = new Button[6];
     private final Button[] slotSettingsButtons = new Button[9];
@@ -47,6 +52,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     private Button exportButton, applyExportButton;
     private Button inputPageButton, inputModeButton, stockButton;
     private Button allRedstoneButton;
+    private Button copyButton, pasteButton;
     private ConnectorRedstoneMode nextAllRedstoneMode = ConnectorRedstoneMode.ALWAYS;
     private final EditBox[] exportAmounts = new EditBox[ConnectorExportSettings.TYPES];
     private final EditBox[] exportIntervals = new EditBox[ConnectorExportSettings.TYPES];
@@ -115,7 +121,11 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         inputPageButton = addRenderableWidget(Button.builder(text(inputPage ? "back" : "input_filters"), button -> {
             inputPage = !inputPage;
             setSettingsOpen(false);
-        }).bounds(leftPos + 8, topPos + 184, 160, 14).build());
+        }).bounds(leftPos + 8, topPos + 184, 72, 14).build());
+        copyButton = addRenderableWidget(Button.builder(text("copy"), button -> copySettings())
+                .bounds(leftPos + 82, topPos + 184, 42, 14).tooltip(Tooltip.create(text("copy_hint"))).build());
+        pasteButton = addRenderableWidget(Button.builder(text("paste"), button -> pasteSettings())
+                .bounds(leftPos + 126, topPos + 184, 42, 14).tooltip(Tooltip.create(text("paste_hint"))).build());
         inputModeButton = addRenderableWidget(Button.builder(Component.empty(), button -> send(IdeaspaceConnectorMenu.INPUT_MODE,
                 0, ConnectorInputMode.byId(menu.clientState().getInt("InputMode")).next().ordinal()))
                 .bounds(leftPos + 8, topPos + 74, 160, 18).tooltip(Tooltip.create(text("input_hint"))).build());
@@ -214,6 +224,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         helpButton.visible = !open;
         helpButton.setTooltip(Tooltip.create(text(inputPage ? "input_hint" : "help")));
         inputPageButton.visible = !open && !menu.clientState().getBoolean("LoadFailed");
+        copyButton.visible = pasteButton.visible = inputPageButton.visible;
         inputPageButton.setMessage(text(inputPage ? "back" : "input_filters"));
         inputModeButton.visible = !open && inputPage;
         backButton.visible = open;
@@ -262,7 +273,46 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
     @Override protected void containerTick() {
         super.containerTick();
         updateState();
+        MessageConnectorPasteResult pasteResult = menu.takePasteResult();
+        if (pasteResult != null) showPasteResult(pasteResult);
         if (settingsOpen && !exportPage && ++neighborRefreshTicks >= 10) updateNeighbors();
+    }
+
+    /** Copies the last state the server sent; the clipboard text is checked again when pasted. */
+    private void copySettings() {
+        CompoundTag state = menu.clientState();
+        if (!state.contains("Selected", Tag.TAG_LIST)) return;
+        var registries = minecraft.player.registryAccess();
+        String json = ConnectorSettingsClipboard.toJson(ConnectorSettingsClipboard.fromState(state, registries), registries);
+        if (json.length() > ConnectorSettingsClipboard.MAX_LENGTH) {
+            notifyClipboard(text("clipboard.copy_too_large"));
+            return;
+        }
+        minecraft.keyboardHandler.setClipboard(json);
+        notifyClipboard(text("clipboard.copied"));
+    }
+
+    private void pasteSettings() {
+        String clipboard = minecraft.keyboardHandler.getClipboard();
+        if (clipboard == null || clipboard.isBlank()) notifyClipboard(text("clipboard.empty"));
+        else if (clipboard.length() > ConnectorSettingsClipboard.MAX_LENGTH) notifyClipboard(text("clipboard.too_large"));
+        else PacketDistributor.sendToServer(new MessageConnectorPaste(menu.containerId, menu.session(), clipboard));
+    }
+
+    private void showPasteResult(MessageConnectorPasteResult result) {
+        notifyClipboard(switch (result.code()) {
+            case SUCCESS -> result.skipped() > 0 ? text("clipboard.pasted_skipped", result.skipped()) : text("clipboard.pasted");
+            case INVALID_VALUE -> text("clipboard.invalid_value", result.detail());
+            default -> text("clipboard." + result.code().name().toLowerCase(Locale.ROOT));
+        });
+    }
+
+    /** The action bar is hidden under the GUI backdrop, so results use a toast drawn above the screen. */
+    private void notifyClipboard(Component message) {
+        var toasts = minecraft.getToasts();
+        SystemToast previous = toasts.getToast(SystemToast.class, CLIPBOARD_TOAST);
+        if (previous != null) previous.forceHide();
+        toasts.addToast(SystemToast.multiline(minecraft, CLIPBOARD_TOAST, title, message));
     }
 
     private void updateNeighbors() {
@@ -294,6 +344,7 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
         inputFilters = readEntries(state, "InputFilters", 9, inputFilters, reuseTemplates);
         inputModeButton.setMessage(text("input_mode." + ConnectorInputMode.byId(state.getInt("InputMode")).name().toLowerCase(Locale.ROOT)));
         inputPageButton.visible = !settingsOpen && !state.getBoolean("LoadFailed");
+        copyButton.visible = pasteButton.visible = inputPageButton.visible;
         templateRevision = state.getLong("Templates");
         boolean inherited = slotUsesCommon();
         useCommonButton.setMessage(text(inherited ? "use_common" : "use_individual"));
@@ -610,6 +661,17 @@ public class IdeaspaceConnectorScreen extends AbstractContainerScreen<IdeaspaceC
             else if (minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(key, scanCode))) onClose();
             // Inventory shortcuts must not act on real items underneath the FE preview.
             return true;
+        }
+        // Only the main and input pages: settings pages own the text fields.
+        if (!settingsOpen && copyButton.visible) {
+            if (isCopy(key)) {
+                copySettings();
+                return true;
+            }
+            if (isPaste(key)) {
+                pasteSettings();
+                return true;
+            }
         }
         if (exportPage) {
             if (key == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {

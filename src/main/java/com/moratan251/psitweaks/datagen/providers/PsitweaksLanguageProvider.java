@@ -2000,7 +2000,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"target_stock_hint", "搬出先の、接続している面から見える同じ資源の量を数え、この量に足りない分だけ自動搬出します。空欄で無効。他の機器がコネクターから引き出す場合には影響しません。",
                         "Counts the same resource visible through the connected face of the destination and exports only what is missing to reach this amount. Blank turns it off. Does not affect other devices extracting from the connector."},
                 {"target_disabled", "無効", "Off"},
-                {"stock_hint", "目標在庫: 空欄で無効", "Target stock: blank = off"}
+                {"stock_hint", "目標在庫: 空欄で無効", "Target stock: blank = off"},
+                {"copy", "コピー", "Copy"},
+                {"paste", "貼り付け", "Paste"},
+                {"copy_hint", "公開枠・搬入出設定・自動搬出量・在庫条件・搬入フィルタをJSONとしてクリップボードにコピーします。Ctrl+Cでも操作できます。",
+                        "Copies published slots, I/O settings, export rates, stock rules and input filters to the clipboard as JSON. Ctrl+C also works."},
+                {"paste_hint", "クリップボードのJSONから設定を読み込みます。JSONにない項目（faces・export・slots・input）は変更しません。Ctrl+Vでも操作できます。",
+                        "Loads settings from JSON in the clipboard. Sections missing from the JSON (faces, export, slots, input) stay unchanged. Ctrl+V also works."},
+                {"clipboard.copied", "設定をクリップボードにコピーしました", "Copied the settings to the clipboard"},
+                {"clipboard.copy_too_large", "設定データが大きすぎるためコピーできません", "The settings are too large to copy"},
+                {"clipboard.pasted", "設定を貼り付けました", "Pasted the settings"},
+                {"clipboard.pasted_skipped", "設定を貼り付けました。この環境で使えない資源 %s 件は空欄にしました", "Pasted the settings. %s resources unavailable here were left empty"},
+                {"clipboard.empty", "クリップボードが空です", "The clipboard is empty"},
+                {"clipboard.too_large", "クリップボードのデータが大きすぎます", "The clipboard content is too large"},
+                {"clipboard.invalid_json", "クリップボードの内容をJSONとして読み込めません", "The clipboard does not contain valid JSON"},
+                {"clipboard.not_connector", "イデアコネクターの設定ではありません", "This is not Ideaspace Connector settings"},
+                {"clipboard.newer_version", "新しい形式の設定のため読み込めません", "These settings use a newer format"},
+                {"clipboard.invalid_value", "設定値が正しくないため何も変更していません: %s", "Nothing changed because of an invalid value: %s"},
+                {"clipboard.no_settings", "貼り付ける設定がありません", "There are no settings to paste"}
         };
         for (String[] label : labels) root.addProperty("gui.psitweaks.connector." + label[0], label[japanese ? 1 : 2]);
         addSpellPiece(root, "trick_ideaspace_connector", "Trick: Ideaspace Connector",
@@ -2024,6 +2041,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_ideaspace_connector.5",
                 "Stock rules adjust when and how much automatic export sends. Min. storage stock exports only while the storage holds at least that amount. It does not keep a reserve, so a single export may drop below it. Target stock counts the same resource visible through the connected face of the destination and exports only what is missing (blank = off). Both can be combined and follow the shared or per-slot settings. They do not apply when other devices extract from the connector.",
                 "自動搬出の「在庫条件」で、搬出のタイミングと量を調整できます。「開始在庫」を設定すると、ストレージにその量以上あるときだけ搬出します。残量を確保する機能ではないので、1回の搬出で下回ることがあります。「目標在庫」を設定すると、搬出先の接続面から見える同じ資源を数え、目標に足りない分だけ搬出します（空欄で無効）。両方を併用でき、共通設定と公開枠ごとの個別設定に従います。他の機器がコネクターから引き出す場合には適用されません。");
+        addBookPage(root, "trick_ideaspace_connector.6",
+                "Copy on the main page puts the published slots, I/O settings, export rates, stock rules and input filters on the clipboard as JSON. Paste on another connector applies them; Ctrl+C and Ctrl+V also work. Deleting the faces, export, slots or input section from the JSON leaves that part unchanged. Faces keep their absolute directions, and resources unavailable in the world become empty.",
+                "メイン画面の「コピー」で、公開枠・搬入出設定・搬出量・在庫条件・搬入フィルタをJSONとしてクリップボードに保存し、別のコネクターで「貼り付け」すると同じ設定にできます。Ctrl+C / Ctrl+Vでも操作できます。JSONから faces・export・slots・input の項目を消すと、その部分は変更しません。面は東西南北などの向きのまま貼り付け、存在しない資源は空欄になります。");
     }
 
     private void addIdeaResourceLogistics(JsonObject root) {

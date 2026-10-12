@@ -6,7 +6,10 @@ import com.moratan251.psitweaks.common.network.MessageConnectorAction;
 import com.moratan251.psitweaks.common.network.MessageConnectorState;
 import com.moratan251.psitweaks.common.network.MessageConnectorTemplate;
 import com.moratan251.psitweaks.common.network.MessageConnectorExportSettings;
+import com.moratan251.psitweaks.common.network.MessageConnectorPaste;
+import com.moratan251.psitweaks.common.network.MessageConnectorPasteResult;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorSettingsClipboard;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorRedstoneMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorInputMode;
@@ -21,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +33,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
 /** Player inventory plus ghost filters; published resources remain exclusively in owner storage. */
 public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
@@ -46,6 +51,7 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
     private boolean inventoryVisible = true;
     private long syncedStorage = -1, syncedSettings = -1, lastSyncTick = -20;
     private CompoundTag clientState = new CompoundTag();
+    private MessageConnectorPasteResult pasteResult;
 
     public IdeaspaceConnectorMenu(int id, Inventory inventory, IdeaspaceConnectorBlockEntity connector) {
         this(id, inventory, connector.getBlockPos(), connector);
@@ -213,6 +219,35 @@ public class IdeaspaceConnectorMenu extends AbstractContainerMenu {
         if (!connector.setExportSettings(message.slot(), message.settings().toArray(ConnectorExportSettings[]::new))) return;
         syncedSettings = -1;
         broadcastChanges();
+    }
+
+    /** Absolute settings, so no revision check: only the open menu's owner session may paste. */
+    public void handlePaste(Player sender, MessageConnectorPaste message) {
+        if (message.containerId() != containerId || !authorized(sender, message.session())) return;
+        var result = ConnectorSettingsClipboard.parse(message.text(), player.registryAccess(), IdeaspaceConnectorMenu::chemicalAvailable);
+        if (result.settings() != null) {
+            connector.applySettings(result.settings());
+            syncedSettings = -1;
+            broadcastChanges();
+        }
+        if (player instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer,
+                new MessageConnectorPasteResult(containerId, result.code(), result.skipped(), result.detail()));
+    }
+
+    public static boolean chemicalAvailable(ResourceLocation id) {
+        return MekanismCompat.isMekanismLoaded() && ConnectorMekanism.validChemical(id);
+    }
+
+    public void receivePasteResult(MessageConnectorPasteResult message) {
+        if (player.level().isClientSide) pasteResult = message;
+    }
+
+    /** The open screen shows each result once. */
+    @Nullable
+    public MessageConnectorPasteResult takePasteResult() {
+        MessageConnectorPasteResult result = pasteResult;
+        pasteResult = null;
+        return result;
     }
 
     public void handleTemplate(Player sender, MessageConnectorTemplate message) {

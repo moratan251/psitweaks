@@ -9,9 +9,11 @@ import com.moratan251.psitweaks.common.storage.connector.ConnectorInputMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorExportSettings;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorSettingsSnapshot;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -360,6 +362,63 @@ public class IdeaspaceConnectorBlockEntity extends ConjuredPulsarBlockEntity imp
         for (int slot = 0; slot < SLOTS; slot++) cooldowns[slot] = savedExportCooldowns != null ? savedExportCooldowns[slot]
                 : (int) Math.clamp(nextExportTicks[slot] - now, 0, ConnectorExportSettings.MAX_INTERVAL);
         tag.putIntArray("ExportCooldowns", cooldowns);
+    }
+
+    /** Resource identities and settings in the owner menu's state shape, without amounts. */
+    public CompoundTag writeSettingsState(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        ListTag selected = new ListTag();
+        for (ConnectorResource resource : resources) selected.add(resource.save(registries));
+        tag.put("Selected", selected);
+        ListTag filters = new ListTag();
+        for (ConnectorResource resource : inputFilters) filters.add(resource.save(registries));
+        tag.put("InputFilters", filters);
+        writeConnectionSettings(tag);
+        return tag;
+    }
+
+    /** Replaces every section present in the snapshot at once. Values were validated while parsing. */
+    public void applySettings(ConnectorSettingsSnapshot settings) {
+        if (settings.faces() != null) for (int face = 0; face < 6; face++) {
+            var value = settings.faces().get(face);
+            sides[face] = value.mode();
+            automatic[face] = value.automatic();
+            redstone[face] = value.redstone();
+        }
+        if (settings.export() != null) copyExport(settings.export(), commonExport);
+        if (settings.slots() != null) for (int slot = 0; slot < SLOTS; slot++) {
+            var value = settings.slots().get(slot);
+            ConnectorResource resource = value.resource();
+            for (int i = 0; i < slot; i++) if (resource.kind() != ConnectorResource.Kind.EMPTY && resources[i].equals(resource))
+                resource = ConnectorResource.EMPTY;
+            resources[slot] = resource;
+            slotOverrides[slot] = value.individual() != null;
+            if (value.individual() == null) continue;
+            for (int face = 0; face < 6; face++) {
+                var faceValue = value.individual().faces().get(face);
+                slotSides[slot][face] = faceValue.mode();
+                slotAutomatic[slot][face] = faceValue.automatic();
+                slotRedstone[slot][face] = faceValue.redstone();
+            }
+            copyExport(value.individual().export(), slotExport[slot]);
+        }
+        if (settings.input() != null) {
+            inputMode = settings.input().mode();
+            for (int slot = 0; slot < SLOTS; slot++) {
+                ConnectorResource filter = settings.input().filters().get(slot);
+                inputFilters[slot] = filter.kind() == ConnectorResource.Kind.ENERGY ? ConnectorResource.EMPTY : filter;
+            }
+        }
+        if (settings.export() != null || settings.slots() != null)
+            for (int slot = 0; slot < SLOTS; slot++) resetExportInterval(slot);
+        settingsChanged();
+    }
+
+    private static void copyExport(List<ConnectorExportSettings> source, ConnectorExportSettings[] target) {
+        for (int type = 0; type < ConnectorExportSettings.TYPES; type++) {
+            ConnectorExportSettings value = source.get(type);
+            target[type] = value.valid(type) ? value : ConnectorExportSettings.defaults(type);
+        }
     }
 
     /** Shared by persistence and the owner's menu sync; contains settings only. */
