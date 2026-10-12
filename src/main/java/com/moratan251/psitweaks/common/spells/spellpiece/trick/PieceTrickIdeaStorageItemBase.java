@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
-import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
+import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
 import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
@@ -16,8 +16,11 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
-/** Only item logistics has multiple filter modes. */
-public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorageResourceBase implements ModeConfigurableSpellPiece {
+/**
+ * Only item logistics has multiple filter modes. The mode menu combines them with the transfer mode, but the filter
+ * type is stored under its original key and only it decides the parameters.
+ */
+public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorageResourceBase {
     private PsitweaksModeOption mode = PsitweaksModeOptions.STRING;
     private SpellParam<SpellItemValue> item;
 
@@ -26,19 +29,28 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
     }
 
     @Override public List<PsitweaksModeOption> getAvailableModeOptions() {
-        return List.of(PsitweaksModeOptions.STRING, PsitweaksModeOptions.ITEM, PsitweaksModeOptions.ITEM_STRICT);
+        return supportsExactTransfer() ? IdeaStorageTransferModes.ITEM_FILTERS_WITH_EXACT : IdeaStorageTransferModes.ITEM_FILTERS;
     }
 
-    @Override public PsitweaksModeOption getModeOption() { return normalizeModeOption(mode); }
+    @Override public PsitweaksModeOption getModeOption() {
+        return IdeaStorageTransferModes.withExact(filterMode(), isExactTransfer());
+    }
+
+    @Override public PsitweaksModeOption overlayModeOption() { return getModeOption(); }
+
+    /** Runs during construction too, before {@link #mode} is assigned. */
+    private PsitweaksModeOption filterMode() { return IdeaStorageTransferModes.filterOf(mode); }
 
     @Override public void setModeOption(PsitweaksModeOption option) {
         var next = normalizeModeOption(option);
-        if (next.id().equals(getModeOption().id())) return;
+        setExactTransfer(IdeaStorageTransferModes.isExact(next));
+        var nextFilter = IdeaStorageTransferModes.filterOf(next);
+        if (nextFilter.id().equals(filterMode().id())) return;
         var posSide = paramSides.get(position);
         var directionSide = paramSides.get(direction);
         var quantitySide = paramSides.get(quantity);
         var filterSide = paramSides.get(itemMode() ? item : string);
-        mode = next;
+        mode = nextFilter;
         rebuildParams();
         if (posSide != null) paramSides.put(position, posSide);
         if (directionSide != null) paramSides.put(direction, directionSide);
@@ -46,7 +58,7 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
         if (filterSide != null) paramSides.put(itemMode() ? item : string, filterSide);
     }
 
-    private boolean itemMode() { return !getModeOption().id().equals(PsitweaksModeOptions.STRING.id()); }
+    private boolean itemMode() { return !filterMode().id().equals(PsitweaksModeOptions.STRING.id()); }
     private void rebuildParams() { params.clear(); paramSides.clear(); initParams(); }
 
     @Override protected void initFilter() {
@@ -55,7 +67,7 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
     }
 
     @Override public void readFromNBT(CompoundTag tag) {
-        mode = normalizeModeOption(PsitweaksModeOptions.byId(tag.getString("psitweaksMode")).orElse(null));
+        mode = IdeaStorageTransferModes.filterOf(PsitweaksModeOptions.byId(tag.getString("psitweaksMode")).orElse(null));
         rebuildParams();
         super.readFromNBT(tag);
         // Psi saves standard parameter names as "_name"; retain pre-rename wiring.
@@ -69,7 +81,7 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
 
     @Override public void writeToNBT(CompoundTag tag) {
         super.writeToNBT(tag);
-        tag.putString("psitweaksMode", getModeOption().serializedId());
+        tag.putString("psitweaksMode", filterMode().serializedId());
     }
 
     /** False when the filter is unconnected or an empty String, i.e. when {@link #itemFilter} accepts everything. */
@@ -85,7 +97,7 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
         if (value == null) return stack -> true;
         if (value.isEmpty()) throw new SpellRuntimeException("psitweaks.spellerror.nullitem");
         ItemStack template = value.snapshot();
-        return getModeOption().id().equals(PsitweaksModeOptions.ITEM_STRICT.id())
+        return filterMode().id().equals(PsitweaksModeOptions.ITEM_STRICT.id())
                 ? stack -> ItemStack.isSameItemSameComponents(template, stack) : stack -> stack.is(template.getItem());
     }
 }

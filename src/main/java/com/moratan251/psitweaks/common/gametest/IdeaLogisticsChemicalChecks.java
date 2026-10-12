@@ -3,6 +3,8 @@ package com.moratan251.psitweaks.common.gametest;
 import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
 import com.moratan251.psitweaks.common.compat.IdeaStorageLogisticsMekanism;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.connector.*;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
@@ -11,6 +13,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaSto
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import mekanism.api.Action;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
@@ -107,5 +110,81 @@ final class IdeaLogisticsChemicalChecks {
         withdraw.execute(context);
         helper.assertTrue(warehouse.simulateExtractChemical(hydrogen, 1000) == 25
                 && source.storage().simulateExtractChemical(hydrogen, 1000) == 892, "Chemical spell withdrawal lost material");
+        exact(helper, hydrogen, oxygen);
+        double[] power = {1};
+        var exactDeposit = new PieceTrickIdeaStorageDepositChemical(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), power[0], "mekanism:hydrogen");
+            }
+        };
+        exactDeposit.setModeOption(IdeaStorageTransferModes.EXACT);
+        var lastTransfer = new PieceSelectorIdeaStorageLastTransfer(new Spell());
+        exactDeposit.execute(context);
+        helper.assertTrue(warehouse.simulateExtractChemical(hydrogen, 1000) == 25 && source.storage().simulateExtractChemical(hydrogen, 1000) == 892
+                && lastTransfer.execute(context).equals(0.0D), "Exact chemical shortfall must be a silent no-op");
+        power[0] = 0.5;
+        exactDeposit.execute(context);
+        helper.assertTrue(warehouse.simulateExtractChemical(hydrogen, 1000) == 525 && source.storage().simulateExtractChemical(hydrogen, 1000) == 392
+                && lastTransfer.execute(context).equals(500.0D), "Exact chemical deposit must move Power * 1000 mB");
+    }
+
+    /** One chemical type, all or nothing; tanks holding the same chemical add up on the source side. */
+    private static void exact(GameTestHelper helper, ResourceLocation hydrogen, ResourceLocation oxygen) {
+        long[] tanks = {300, 300, 100};
+        ResourceLocation[] contents = {hydrogen, hydrogen, oxygen};
+        long[] capacity = {1000};
+        IChemicalHandler device = new IChemicalHandler() {
+            @Override public int getChemicalTanks() { return tanks.length; }
+            @Override public ChemicalStack getChemicalInTank(int tank) { return ConnectorMekanism.stack(contents[tank], tanks[tank]); }
+            @Override public void setChemicalInTank(int tank, ChemicalStack stack) { throw new UnsupportedOperationException(); }
+            @Override public long getChemicalTankCapacity(int tank) { return capacity[0]; }
+            @Override public boolean isValid(int tank, ChemicalStack stack) {
+                return contents[tank].equals(MekanismAPI.CHEMICAL_REGISTRY.getKey(stack.getChemical()));
+            }
+            @Override public ChemicalStack insertChemical(int tank, ChemicalStack stack, Action action) {
+                if (stack.isEmpty() || !isValid(tank, stack)) return stack;
+                long accepted = Math.min(stack.getAmount(), capacity[0] - tanks[tank]);
+                if (action.execute()) tanks[tank] += accepted;
+                return stack.copyWithAmount(stack.getAmount() - accepted);
+            }
+            @Override public ChemicalStack extractChemical(int tank, long maximum, Action action) {
+                long extracted = Math.min(maximum, tanks[tank]);
+                if (action.execute()) tanks[tank] -= extracted;
+                return ConnectorMekanism.stack(contents[tank], extracted);
+            }
+        };
+        var storage = new PlayerIdeaStorage();
+        helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, id -> true, 700, true) == 0
+                && tanks[0] == 300 && tanks[1] == 300 && tanks[2] == 100 && storage.chemicalTypeCount() == 0,
+                "Exact chemical supply shortfall changed a side");
+        helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, id -> true, 500, true) == 500
+                && tanks[0] == 0 && tanks[1] == 100 && tanks[2] == 100 && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 500,
+                "Exact chemical deposit must add up tanks of one chemical");
+        helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, id -> true, 150, true) == 0
+                && tanks[1] == 100 && tanks[2] == 100, "Exact chemical deposit must not combine different chemicals");
+        int oldTypes = PsitweaksConfig.COMMON.ideaStorageMaxChemicalTypes.get();
+        long oldPerType = PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.get();
+        try {
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalTypes.set(1);
+            helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, oxygen::equals, 100, true) == 0
+                    && tanks[2] == 100, "A new chemical type bypassed the type limit");
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalTypes.set(oldTypes);
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(550L);
+            helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, hydrogen::equals, 100, true) == 0
+                    && tanks[1] == 100, "Per-type cap shortfall changed a side");
+        } finally {
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalTypes.set(oldTypes);
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(oldPerType);
+        }
+        helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, hydrogen::equals, 501, false) == 0
+                && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 500, "Exact chemical stock shortfall changed a side");
+        capacity[0] = 250; // hydrogen tanks can take 250 + 150 = 400 more, the oxygen tank none
+        helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, hydrogen::equals, 500, false) == 0
+                && tanks[0] == 0 && tanks[1] == 100 && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 500,
+                "Exact chemical destination shortfall changed a side");
+        capacity[0] = 1000;
+        helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, device, hydrogen::equals, 500, false) == 500
+                && tanks[0] + tanks[1] == 600 && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 0,
+                "Exact chemical withdrawal must move the whole amount");
     }
 }

@@ -1558,6 +1558,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_idea_storage_item_amount", "Selector: Ideaspace Storage - Item Amount", "Returns the total item count matching the specified ID in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-アイテム貯蔵量", "自分のイデアストレージ内で、指定したIDと一致するアイテムの合計個数をNumberとして取得します。");
         addSpellPiece(root, "selector_idea_storage_fluid_amount", "Selector: Ideaspace Storage - Fluid Amount", "Returns the total fluid amount in mB matching the specified ID in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-液体貯蔵量", "自分のイデアストレージ内で、指定したIDと一致する液体の合計量（mB）をNumberとして取得します。");
         addSpellPiece(root, "selector_idea_storage_chemical_amount", "Selector: Ideaspace Storage - Chemical Amount", "Returns the chemical amount in mB matching the specified ID in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-化学物質貯蔵量", "自分のイデアストレージ内で、指定したIDと一致する化学物質の量（mB）をNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_last_transfer", "Selector: Ideaspace Storage - Last Transfer Amount", "Returns the amount actually moved by the most recent Ideaspace transfer trick earlier in this cast as a Number.", "取得子: イデアストレージ-最終転送量", "この詠唱でそれまでに実行された最後のイデア転送の作動式が、実際に移した量をNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_item_free_capacity", "Selector: Ideaspace Storage - Item Free Capacity", "Returns how many more of the specified item your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-アイテム空き容量", "自分のイデアストレージに、指定したアイテムをあと何個格納できるかをNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_fluid_free_capacity", "Selector: Ideaspace Storage - Fluid Free Capacity", "Returns how many more mB of the specified fluid your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-液体空き容量", "自分のイデアストレージに、指定した液体をあと何mB格納できるかをNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_chemical_free_capacity", "Selector: Ideaspace Storage - Chemical Free Capacity", "Returns how many more mB of the specified chemical your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-化学物質空き容量", "自分のイデアストレージに、指定した化学物質をあと何mB格納できるかをNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_energy_free_capacity", "Selector: Ideaspace Storage - FE Free Capacity", "Returns how much more FE your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-FE空き容量", "自分のイデアストレージに、あと何FE蓄えられるかをNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_item_type_count", "Selector: Ideaspace Storage - Item Type Count", "Returns the number of item types stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-アイテム種類数", "自分のイデアストレージに格納されているアイテムの種類数をNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_fluid_type_count", "Selector: Ideaspace Storage - Fluid Type Count", "Returns the number of fluid types stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-液体種類数", "自分のイデアストレージに格納されている液体の種類数をNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_chemical_type_count", "Selector: Ideaspace Storage - Chemical Type Count", "Returns the number of chemical types stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-化学物質種類数", "自分のイデアストレージに格納されている化学物質の種類数をNumberとして取得します。");
         addSpellPiece(root, "trick_idea_storage_view", "Trick: View Ideaspace Storage", "Opens a GUI to view and manage your Ideaspace Storage. Only works when cast by a player.", "作動式: イデアストレージ閲覧", "自分のイデアストレージを閲覧・出し入れするGUIを開きます。プレイヤーの詠唱時のみ有効です。");
     }
 
@@ -1574,11 +1582,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_idea_storage_chemical_amount",
                 "Accepts a chemical ID as a String (e.g. mekanism:hydrogen) and returns its stored amount in your Ideaspace Storage in mB as a Number. Invalid IDs and missing stock return 0. Reading does not consume resources. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.",
                 "化学物質のIDをString（例: mekanism:hydrogen）で受け取り、自分のイデアストレージ内の保管量をmB単位のNumberとして取得します。不正なID・在庫なしの場合は0を返します。資源は消費しません。規模0、複雑性1、コスト0。プログラム: イデアストレージで解禁されます。");
+        addIdeaStorageSelectorPages(root);
         addBookPage(root, "trick_idea_storage_supply_fe", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position. Transfers only the amount available and accepted. Position (Vector), Power (Number), and Direction (Vector) are required. Power must be positive. Uses your Ideaspace Storage research unlock.", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。残量や空き容量が不足する場合は、移動できる分だけ転送します。位置（Vector）・威力（Number）・方向（Vector）が必須です。威力は正の数を指定してください。イデアストレージ用プログラムで解禁されます。");
         addBookPage(root, "trick_idea_storage_absorb_fe", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage. Transfers only the amount available and accepted. Position (Vector), Power (Number), and Direction (Vector) are required. Power must be positive. Uses your Ideaspace Storage research unlock.", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。残量や空き容量が不足する場合は、移動できる分だけ転送します。位置（Vector）・威力（Number）・方向（Vector）が必須です。威力は正の数を指定してください。イデアストレージ用プログラムで解禁されます。");
         addBookPage(root, "trick_idea_storage_view.0",
-                "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE Absorb and FE Supply tricks; its balance appears in the storage grid, and the information button also shows capacity. This feature is still under development.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
-                "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismの化学物資・FEを保管できます。FEはFE吸収・FE供給の作動式で転送し、一覧のスロットで残量、情報ボタンで上限も確認できます。この機能は現在開発中です。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
+                "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE Absorb and FE Supply tricks; its balance appears in the storage grid, and the information button also shows capacity.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
+                "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismの化学物質・FEを保管できます。FEはFE吸収・FE供給の作動式で転送し、一覧のスロットで残量、情報ボタンで上限も確認できます。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
         addBookPage(root, "trick_idea_storage_view.1",
                 "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory. Right-click while holding a normal item to store just one. Fluid and chemical containers keep their contents-transfer behavior.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.",
                 "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。通常アイテムを持って右クリックすると1個だけ格納します。液体・ケミカル容器は従来どおり中身を転送します。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");
@@ -2046,11 +2055,78 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "メイン画面の「コピー」で、公開枠・搬入出設定・搬出量・在庫条件・搬入フィルタをJSONとしてクリップボードに保存し、別のコネクターで「貼り付け」すると同じ設定にできます。Ctrl+C / Ctrl+Vでも操作できます。JSONから faces・export・slots・input の項目を消すと、その部分は変更しません。面は東西南北などの向きのまま貼り付け、存在しない資源は空欄になります。");
     }
 
+    private void addIdeaStorageSelectorPages(JsonObject root) {
+        String enUnlock = " Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.";
+        String jpUnlock = "規模0、複雑性1、コスト0。プログラム: イデアストレージで解禁されます。";
+        String enFree = " the per-type limit minus the stock, or 0 for a new type while every type slot is in use.";
+        String jpFree = "1種類あたりの上限から在庫を引いた値で、種類数が上限に達しているときに新しい種類を指定すると0です。";
+        addBookPage(root, "selector_idea_storage_last_transfer.0",
+                "Returns the amount actually moved by the most recent Ideaspace transfer trick that ran earlier in the same cast, as a Number."
+                        + " The units match the storage amount selectors: items are counted one by one, fluids and chemicals in mB, and FE in FE."
+                        + " Returns 0 if no such trick has run yet." + enUnlock,
+                "同じ詠唱の中で、それまでに実行された最後のイデア転送の作動式が実際に移した量をNumberとして取得します。"
+                        + "単位は貯蔵量の取得子と同じで、アイテムは個数、液体・化学物質はmB、FEはFEです。まだ実行されていなければ0です。" + jpUnlock);
+        addBookPage(root, "selector_idea_storage_last_transfer.1",
+                "Counted tricks: item, fluid and chemical Deposit/Withdraw, Slot Deposit/Withdraw, FE Absorb and FE Supply."
+                        + " A trick that moves nothing (an Exact Transfer that falls short included) or stops with an error records 0."
+                        + " Tricks run in reading order, row by row from the top left, so connect this selector only to tricks placed after the transfer."
+                        + " Each cast keeps its own value.",
+                "対象はアイテム・液体・化学物質の格納／取出、スロット格納／取出、FE吸収・FE供給の作動式です。"
+                        + "何も移さなかった場合（量が足りなかった完全転送を含む）や、エラーで止まった場合は0が記録されます。"
+                        + "作動式は左上から1行ずつ順に実行されるため、この取得子は転送より後にある作動式だけに接続してください。値は詠唱ごとに独立しています。");
+        addBookPage(root, "selector_idea_storage_item_free_capacity",
+                "Returns how many more of the specified item your Ideaspace Storage can accept now, as a Number:" + enFree
+                        + " Switch between String input (an item ID, meaning the item without extra data components) and Item input, which keeps its data components."
+                        + " Invalid IDs and empty Item values return 0." + enUnlock,
+                "自分のイデアストレージに、指定したアイテムを今あと何個格納できるかをNumberとして取得します。" + jpFree
+                        + "入力はString（アイテムID。追加のデータコンポーネントなし）とItem（データコンポーネントを含む）をモード切替できます。"
+                        + "不正なID・空のItemは0です。" + jpUnlock);
+        addBookPage(root, "selector_idea_storage_fluid_free_capacity",
+                "Accepts a fluid ID as a String (e.g. minecraft:water) and returns how many more mB of it your Ideaspace Storage can accept now, as a Number:"
+                        + enFree + " The fluid is taken without extra data components. Invalid IDs return 0." + enUnlock,
+                "液体のIDをString（例: minecraft:water）で受け取り、自分のイデアストレージに今あと何mB格納できるかをNumberとして取得します。" + jpFree
+                        + "追加のデータコンポーネントがない液体として扱います。不正なIDは0を返します。" + jpUnlock);
+        addBookPage(root, "selector_idea_storage_chemical_free_capacity",
+                "Accepts a chemical ID as a String (e.g. mekanism:hydrogen) and returns how many more mB of it your Ideaspace Storage can accept now, as a Number:"
+                        + enFree + " Invalid IDs return 0, as does every ID without Mekanism." + enUnlock,
+                "化学物質のIDをString（例: mekanism:hydrogen）で受け取り、自分のイデアストレージに今あと何mB格納できるかをNumberとして取得します。" + jpFree
+                        + "不正なIDや、Mekanismが導入されていない場合は0を返します。" + jpUnlock);
+        addBookPage(root, "selector_idea_storage_energy_free_capacity",
+                "Returns how much more FE your Ideaspace Storage can accept now, as a Number: the FE capacity minus the stored FE."
+                        + " No inputs are required. Reading does not consume FE." + enUnlock,
+                "自分のイデアストレージに今あと何FE蓄えられるか（FEの上限から蓄電量を引いた値）をNumberとして取得します。"
+                        + "入力は不要です。取得してもFEは消費しません。" + jpUnlock);
+        String[][] counts = {{"item", "item", "アイテム"}, {"fluid", "fluid", "液体"}, {"chemical", "chemical", "化学物質"}};
+        for (String[] count : counts) {
+            boolean components = !count[0].equals("chemical");
+            addBookPage(root, "selector_idea_storage_" + count[0] + "_type_count",
+                    "Returns the number of " + count[1] + " types currently stored in your Ideaspace Storage, as a Number."
+                            + (components ? " Different data components count as separate types." : "")
+                            + " This is the count the information button compares with the type limit. No inputs are required." + enUnlock,
+                    "自分のイデアストレージに現在格納されている" + count[2] + "の種類数をNumberとして取得します。"
+                            + (components ? "データコンポーネントが異なるものは別の種類として数えます。" : "")
+                            + "情報ボタンで種類数の上限と並べて表示される値と同じです。入力は不要です。" + jpUnlock);
+        }
+    }
+
     private void addIdeaResourceLogistics(JsonObject root) {
         root.addProperty("psitweaks.spellerror.idea_storage_transfer_failed", switch (locale) {
             case "ja_jp" -> "外部機器とのイデア転送に失敗しました。詳細はサーバーログを確認してください";
             default -> "Ideaspace transfer with the external device failed. Check the server log for details";
         });
+        // Transfer-mode labels shown in the mode menu (IdeaStorageTransferModes).
+        String[][] modes = {
+                {"partial", "Partial Transfer", "部分転送"},
+                {"exact", "Exact Transfer", "完全転送"},
+                {"string_exact", "String / Exact", "String / 完全転送"},
+                {"item_exact", "Item / Exact", "Item / 完全転送"},
+                {"item_strict_exact", "Item (Strict) / Exact", "Item (Strict) / 完全転送"}};
+        for (String[] mode : modes) {
+            root.addProperty("psitweaks.mode.idea_transfer." + mode[0], switch (locale) {
+                case "ja_jp" -> mode[2];
+                default -> mode[1];
+            });
+        }
         // id, English noun, English name, Japanese name, amount limit (en/ja), quantity input (en/ja), fraction (en/ja),
         // filter input (en/ja), wildcard example (en/ja)
         String[][] types = {
@@ -2075,10 +2151,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             addSpellPiece(root, id, "Trick: Ideaspace Storage - " + type[2] + (deposit ? " Deposit" : " Withdraw"), en,
                     "作動式: イデアストレージ-" + type[3] + (deposit ? "格納" : "取出"), jp);
             addBookPage(root, id + ".0",
-                    en + (chemical ? " Requires Mekanism." : "") + " If stock or destination space runs short, moves as much as possible. Position and Direction (Vector) and "
+                    en + (chemical ? " Requires Mekanism." : "") + " Partial Transfer (default) moves as much as it can. Position and Direction (Vector) and "
                             + type[6] + " (Number) are required; " + type[10] + " is optional. " + type[6] + " must be positive; " + type[8]
                             + " are rounded down. Potency: 50. Complexity: 1. Psi cost: 100. Unlocked with Program: Ideaspace Storage.",
-                    jp + (chemical ? "Mekanismが必要です。" : "") + "在庫や移動先の空きが足りない場合は、移せる分だけ移します。位置・方向（Vector）と" + type[7]
+                    jp + (chemical ? "Mekanismが必要です。" : "") + "部分転送（既定）では、移せる分だけ移します。位置・方向（Vector）と" + type[7]
                             + "（Number）は必須、" + type[11] + "は任意です。" + type[7] + "には正の数を指定し、" + type[9]
                             + "は切り捨てます。規模50、複雑性1、コスト100。プログラム: イデアストレージで解禁されます。");
             String enFilter = "With no filter or an empty String, every " + type[1].substring(0, type[1].length() - 1) + " is a target. "
@@ -2101,7 +2177,32 @@ public class PsitweaksLanguageProvider implements DataProvider {
                             + "ブロックの面ごとの入出力に従います。保護されたブロックを対象にするとエラーになります。"
                             + "読み込まれていないチャンクのブロックや、自分のイデアコネクターには作用しません。"
                             + (chemical ? "Mekanismが導入されていない場合は何もしません。" : ""));
+            addBookPage(root, id + ".3", exactPage(type[0], true), exactPage(type[0], false));
         }
+    }
+
+    /** Page .3 of the item/fluid/chemical logistics tricks: the exact transfer mode. */
+    private static String exactPage(String type, boolean english) {
+        boolean item = type.equals("item"), fluid = type.equals("fluid");
+        if (english) {
+            String noun = item ? "item" : fluid ? "fluid" : "chemical";
+            return (item ? "Exact Transfer: pick a \"/ Exact\" mode in the mode menu (its badge has a silver frame)."
+                    : "Exact Transfer: pick it in the mode menu (a silver-framed = badge appears).")
+                    + " It moves exactly " + (item ? "Number" : "Power * 1000 mB") + " of one " + noun + " type, or nothing at all."
+                    + " Both sides are simulated first, including the storage's per-type and type limits."
+                    + (item ? " Different items, or the same item with different data components, are never combined; the first type that fits is moved."
+                    : fluid ? " Different fluids are never combined; the first type that fits is moved. When depositing, the block must release the amount in a single drain, so the same fluid split across tanks does not add up."
+                    : " Different chemicals are never combined, but the same chemical in several tanks of the block adds up; the first type that fits is moved.")
+                    + " A shortfall is not an error.";
+        }
+        String noun = item ? "アイテム" : fluid ? "液体" : "化学物質";
+        return (item ? "完全転送: モード選択で「/ 完全転送」を選びます（バッジが銀枠になります）。" : "完全転送: モード選択で選びます（銀枠の「=」バッジが付きます）。")
+                + "1種類の" + noun + "を" + (item ? "「数値」の個数" : "威力×1000mB") + "ちょうど移すか、まったく移しません。"
+                + "移動元・移動先と、ストレージの1種類あたりの上限・種類数上限を先に試算します。"
+                + (item ? "別のアイテムやデータコンポーネント違いを合算することはなく、条件を満たす最初の種類を移します。"
+                : fluid ? "別の液体を合算することはなく、条件を満たす最初の種類を移します。格納では1回の排出で全量を出せる必要があり、複数のタンクに分かれた同じ液体は合算しません。"
+                : "別の化学物質は合算しませんが、ブロックの複数のタンクにある同じ化学物質は合算します。条件を満たす最初の種類を移します。")
+                + "量が足りなくてもエラーにはなりません。";
     }
 
     private void addIdeaSlotLogistics(JsonObject root) {

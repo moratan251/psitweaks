@@ -1,6 +1,9 @@
 package com.moratan251.psitweaks.common.compat;
 
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -47,5 +50,50 @@ public final class IdeaStorageLogisticsMekanism {
             }
         }
         return moved;
+    }
+
+    public static long transferExact(PlayerIdeaStorage storage, Level level, BlockPos pos, Direction face,
+                                     Predicate<ResourceLocation> filter, long amount, boolean deposit) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, face);
+        return handler == null ? 0 : transferExact(storage, handler, filter, amount, deposit);
+    }
+
+    /**
+     * All-or-nothing for one chemical type, simulated on both sides first. Tanks can be extracted individually, so
+     * per-tank previews of one chemical add up; insertion is a single handler-level request.
+     */
+    public static long transferExact(PlayerIdeaStorage storage, IChemicalHandler handler,
+                                     Predicate<ResourceLocation> filter, long amount, boolean deposit) {
+        if (amount <= 0) return 0;
+        if (!deposit) {
+            for (var entry : storage.chemicalEntries()) {
+                ResourceLocation id = entry.getKey();
+                if (entry.getValue() < amount || !filter.test(id) || storage.simulateExtractChemical(id, amount) < amount) continue;
+                var offered = ConnectorMekanism.stack(id, amount);
+                if (offered.isEmpty() || !handler.insertChemical(offered, Action.SIMULATE).isEmpty()) continue;
+                return ConnectorMekanism.push(storage, id, handler, amount);
+            }
+            return 0;
+        }
+        Map<ResourceLocation, Long> available = new LinkedHashMap<>();
+        for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+            var preview = handler.extractChemical(tank, amount, Action.SIMULATE);
+            if (preview.isEmpty()) continue;
+            var id = MekanismAPI.CHEMICAL_REGISTRY.getKey(preview.getChemical());
+            if (id == null || !filter.test(id)) continue;
+            available.merge(id, Math.min(preview.getAmount(), amount),
+                    (sum, more) -> IdeaStorageResourceTransfers.cappedSum(sum, more, amount));
+        }
+        for (var entry : available.entrySet()) {
+            ResourceLocation id = entry.getKey();
+            if (entry.getValue() < amount || storage.simulateInsertChemical(id, amount) < amount) continue;
+            return transfer(storage, handler, id::equals, amount, true);
+        }
+        return 0;
+    }
+
+    /** How much more of this chemical fits (per-type cap and type limit included); unknown IDs have none. */
+    public static long freeCapacity(PlayerIdeaStorage storage, ResourceLocation id) {
+        return ConnectorMekanism.validChemical(id) ? storage.simulateInsertChemical(id, Long.MAX_VALUE) : 0;
     }
 }

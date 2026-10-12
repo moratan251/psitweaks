@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageEnergyTransfer;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import net.minecraft.core.Direction;
@@ -40,6 +41,7 @@ public abstract class PieceTrickIdeaStorageFEBase extends PieceTrick {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
+        IdeaStorageLastTransfer.record(context, 0);
         Vector3 pos = getNotNullParamValue(context, position);
         Vector3 face = getNotNullParamValue(context, direction);
         double strength = this.<Number>getNotNullParamValue(context, power).doubleValue();
@@ -62,11 +64,10 @@ public abstract class PieceTrickIdeaStorageFEBase extends PieceTrick {
         if (handler == null) return null;
         var storage = IdeaStorageService.get(player.server, player.getUUID());
         int amount = IdeaStorageEnergyTransfer.amountForPower(strength);
-        if (absorbs()) {
-            IdeaStorageEnergyTransfer.absorb(storage, handler, amount);
-        } else {
-            IdeaStorageEnergyTransfer.supply(storage, handler, amount);
-        }
+        int moved = absorbs()
+                ? IdeaStorageEnergyTransfer.absorb(storage, handler, amount)
+                : IdeaStorageEnergyTransfer.supply(storage, handler, amount);
+        IdeaStorageLastTransfer.record(context, moved);
         return null;
     }
 }

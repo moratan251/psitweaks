@@ -383,6 +383,22 @@ public final class PsitweaksSpells {
             registerPiece("selector_idea_storage_fluid_amount", PieceSelectorIdeaStorageFluidAmount.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_AMOUNT =
             registerPiece("selector_idea_storage_chemical_amount", PieceSelectorIdeaStorageChemicalAmount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_LAST_TRANSFER =
+            registerPiece("selector_idea_storage_last_transfer", PieceSelectorIdeaStorageLastTransfer.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ITEM_FREE_CAPACITY =
+            registerPiece("selector_idea_storage_item_free_capacity", PieceSelectorIdeaStorageItemFreeCapacity.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FLUID_FREE_CAPACITY =
+            registerPiece("selector_idea_storage_fluid_free_capacity", PieceSelectorIdeaStorageFluidFreeCapacity.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_FREE_CAPACITY =
+            registerPiece("selector_idea_storage_chemical_free_capacity", PieceSelectorIdeaStorageChemicalFreeCapacity.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ENERGY_FREE_CAPACITY =
+            registerPiece("selector_idea_storage_energy_free_capacity", PieceSelectorIdeaStorageEnergyFreeCapacity.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ITEM_TYPE_COUNT =
+            registerPiece("selector_idea_storage_item_type_count", PieceSelectorIdeaStorageItemTypeCount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FLUID_TYPE_COUNT =
+            registerPiece("selector_idea_storage_fluid_type_count", PieceSelectorIdeaStorageFluidTypeCount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_TYPE_COUNT =
+            registerPiece("selector_idea_storage_chemical_type_count", PieceSelectorIdeaStorageChemicalTypeCount.class);
 
     private PsitweaksSpells() {
     }

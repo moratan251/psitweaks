@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.mojang.logging.LogUtils;
+import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
@@ -30,10 +31,14 @@ public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrickIdeaStorag
 
     @Override protected final Kind kind() { return Kind.ITEM; }
 
+    /** Exact transfer is offered only for block logistics; slot refills keep their filter-only modes. */
+    @Override protected final boolean supportsExactTransfer() { return false; }
+
     /** The target slot replaces the block position and face. */
     @Override protected void initEndpointParams() { }
 
     @Override public Object execute(SpellContext context) throws SpellRuntimeException {
+        IdeaStorageLastTransfer.record(context, 0);
         double amount = this.<Number>getNotNullParamValue(context, quantity).doubleValue();
         if (!Double.isFinite(amount) || amount <= 0) throw new SpellRuntimeException("psi.spellerror.nonpositivevalue");
         if (!(context.caster instanceof ServerPlayer player) || player instanceof FakePlayer
@@ -46,21 +51,23 @@ public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrickIdeaStorag
         Predicate<ItemStack> filter = itemFilter(context);
         int maximum = (int) IdeaStorageResourceTransfers.amountForPower(amount, 1, Integer.MAX_VALUE);
         var storage = IdeaStorageService.get(player.server, player.getUUID());
+        int moved = 0;
         try {
             if (deposit()) {
-                IdeaStorageResourceTransfers.depositItems(storage, handler, filter, maximum);
+                moved = IdeaStorageResourceTransfers.depositItems(storage, handler, filter, maximum);
             } else if (!current.isEmpty()) {
                 // Refill only the exact item already in the slot; the filter may still veto it.
                 ItemStack template = current.copy();
-                IdeaStorageResourceTransfers.withdrawItems(storage, handler,
+                moved = IdeaStorageResourceTransfers.withdrawItems(storage, handler,
                         stack -> ItemStack.isSameItemSameComponents(template, stack) && filter.test(stack), maximum);
             } else if (hasFilter(context)) {
-                IdeaStorageResourceTransfers.withdrawItems(storage, handler, filter, maximum);
+                moved = IdeaStorageResourceTransfers.withdrawItems(storage, handler, filter, maximum);
             }
         } catch (RuntimeException failure) {
             LOGGER.warn("Ideaspace slot {} failed at slot {}", deposit() ? "deposit" : "withdrawal", slot, failure);
             throw new SpellRuntimeException(ERROR_SLOT_TRANSFER);
         }
+        IdeaStorageLastTransfer.record(context, moved);
         return null;
     }
 

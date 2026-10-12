@@ -8,6 +8,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
 import com.moratan251.psitweaks.common.network.*;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
 import com.moratan251.psitweaks.common.storage.connector.*;
 import com.moratan251.psitweaks.common.storage.idea.*;
@@ -455,8 +456,9 @@ public final class IdeaLogisticsGameTests {
             helper.assertTrue(piece.params.containsKey(item ? "psi.spellparam.number" : "psi.spellparam.power")
                     && !piece.params.containsKey(item ? "psi.spellparam.power" : "psi.spellparam.number"),
                     "Only item spells must use Number instead of Power");
-            helper.assertTrue((piece instanceof PsitweaksModeConfigurable) == item,
-                    "Only item spells may expose the mode selector");
+            helper.assertTrue(piece instanceof PsitweaksModeConfigurable && piece.getAvailableModeOptions().equals(item
+                            ? IdeaStorageTransferModes.ITEM_FILTERS_WITH_EXACT : IdeaStorageTransferModes.TRANSFER_ONLY),
+                    "Item spells combine filter and transfer modes; fluid and chemical spells only choose the transfer mode");
             var metadata = new SpellMetadata(); piece.addToMetadata(metadata);
             helper.assertTrue(metadata.getStat(EnumSpellStat.POTENCY) == 50 && metadata.getStat(EnumSpellStat.COST) == 100,
                     "Spell metadata differs from documented stats");
@@ -464,16 +466,18 @@ public final class IdeaLogisticsGameTests {
             piece.paramSides.put(piece.params.get("psi.spellparam.direction"), SpellParam.Side.BOTTOM);
             piece.paramSides.put(piece.params.get(item ? "psi.spellparam.number" : "psi.spellparam.power"), SpellParam.Side.RIGHT);
             piece.paramSides.put(piece.params.get("psitweaks.spellparam.string"), SpellParam.Side.LEFT);
-            if (piece instanceof PieceTrickIdeaStorageItemBase itemPiece) {
-                for (var mode : itemPiece.getAvailableModeOptions()) {
-                    itemPiece.setModeOption(mode);
-                    assertLogisticsConnections(helper, itemPiece, true);
-                }
+            for (var mode : piece.getAvailableModeOptions()) {
+                piece.setModeOption(mode);
+                assertLogisticsConnections(helper, piece, item);
+                helper.assertTrue(piece.getModeOption().equals(mode) && piece.isExactTransfer() == IdeaStorageTransferModes.isExact(mode),
+                        "Mode switch did not take effect");
             }
             var tag = new CompoundTag(); piece.writeToNBT(tag); piece.readFromNBT(tag);
             assertLogisticsConnections(helper, piece, item);
+            helper.assertTrue(piece.isExactTransfer(), "NBT lost the exact transfer mode");
             if (piece instanceof PieceTrickIdeaStorageItemBase itemPiece) {
-                helper.assertTrue(itemPiece.getModeOption().equals(PsitweaksModeOptions.ITEM_STRICT), "NBT lost item mode");
+                helper.assertTrue(itemPiece.getModeOption().equals(IdeaStorageTransferModes.ITEM_STRICT_EXACT)
+                        && tag.getString("psitweaksMode").equals(PsitweaksModeOptions.ITEM_STRICT.serializedId()), "NBT lost item mode");
                 for (String oldKey : new String[] {"_power", "psi.spellparam.power"}) {
                     var legacy = tag.copy();
                     legacy.getCompound("params").remove("_number");

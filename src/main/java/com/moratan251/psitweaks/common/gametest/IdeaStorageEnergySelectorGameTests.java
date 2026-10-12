@@ -77,7 +77,10 @@ public final class IdeaStorageEnergySelectorGameTests {
         ids.add(group.value().main());
         ids.addAll(group.value().pieces());
         ids.add(Psitweaks.location("unregistered_idea_storage_piece"));
-        helper.assertTrue(ids.size() == 17, "Ideaspace Storage group membership changed: " + ids);
+        helper.assertTrue(ids.size() == 25, "Ideaspace Storage group membership changed: " + ids);
+        for (String added : IdeaLogisticsPlusGameTests.NEW_SELECTORS) {
+            helper.assertTrue(ids.contains(Psitweaks.location(added)), "Group is missing " + added);
+        }
         for (ResourceLocation pieceId : ids) {
             helper.assertTrue(data.isPieceGroupUnlocked(group.key().location(), pieceId)
                     == !PsitweaksConfig.COMMON.requireSpellUnlocks.get(), "Unexpected initial unlock: " + pieceId);
