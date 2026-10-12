@@ -8,7 +8,9 @@ import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageEnergy;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.ItemCAD;
@@ -270,11 +274,18 @@ public final class AutonomousCasterGameTests {
         StubHost host = new StubHost();
         host.owner = UUID.randomUUID();
         AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), host);
+        var ownerStorage = IdeaStorageService.get(helper.getLevel().getServer(), host.owner);
+        long inserted = ownerStorage.insertEnergy(4_000L, false);
+        var energy = new PieceSelectorIdeaStorageEnergy(new Spell());
         try {
             helper.assertTrue(IdeaStorageOwnerResolver.resolve(caster).equals(Optional.of(host.owner)),
                     "The dedicated caster did not use the machine owner's storage");
+            helper.assertTrue(energy.execute(new SpellContext().setPlayer(caster)).equals((double) inserted),
+                    "A storage selector cast by the machine did not read the owner's storage");
             host.owner = null;
             helper.assertTrue(IdeaStorageOwnerResolver.resolve(caster).isEmpty(), "An ownerless machine resolved an owner");
+            helper.assertTrue(energy.execute(new SpellContext().setPlayer(caster)).equals(0.0D),
+                    "An ownerless machine read some storage");
             boolean threw = false;
             try {
                 IdeaStorageOwnerResolver.requireOwner(caster);
@@ -284,6 +295,7 @@ public final class AutonomousCasterGameTests {
             helper.assertTrue(threw, "Spells did not report an unavailable storage owner");
         } finally {
             caster.detach();
+            ownerStorage.extractEnergy(Long.MAX_VALUE, false);
         }
         helper.assertTrue(IdeaStorageOwnerResolver.resolve(caster).isEmpty(), "A detached caster resolved an owner");
 
