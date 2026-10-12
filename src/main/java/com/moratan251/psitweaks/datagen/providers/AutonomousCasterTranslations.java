@@ -47,7 +47,7 @@ final class AutonomousCasterTranslations {
         put(GUI + "item.tooltip",
                 "Select the slot the spell treats as the held item. The 9 slots act as the caster's hotbar",
                 "術式が手に持っているとみなすスロットを選びます。9個のスロットは詠唱主体のホットバーです");
-        put(GUI + "interval", "Interval: %st", "詠唱間隔: %st");
+        put(GUI + "interval", "Interval: %st", "間隔: %st");
         put(GUI + "interval.tooltip",
                 "Minimum ticks between casts (4 or more). Press Enter to apply",
                 "詠唱から次の詠唱までの最小tick数です（4以上）。Enterで確定します");
@@ -92,6 +92,9 @@ final class AutonomousCasterTranslations {
         put(GUI + "component.default",
                 "When empty, a basic component is used",
                 "空のときは基本部品として扱います");
+        put(GUI + "component.default.dye",
+                "When empty, the default spell color is used",
+                "空のときは既定の術式の色になります");
     }
 
     private void addLogWindow() {
@@ -102,7 +105,7 @@ final class AutonomousCasterTranslations {
         put(LOG + "latest.tooltip", "Scroll to the newest entry", "最新のログまでスクロールします");
         put(LOG + "clear", "Clear", "消去");
         put(LOG + "clear.tooltip", "Clear the activity log", "作動ログを消去します");
-        put(LOG + "clear.confirm", "Clear all activity log entries?", "作動ログをすべて消去しますか？");
+        put(LOG + "clear.confirm", "Clear the activity log?", "作動ログを消去しますか？");
     }
 
     private void addErrors() {
@@ -184,10 +187,10 @@ final class AutonomousCasterTranslations {
                         + "術式弾スロットごとに成功回数を数えており, $(item)取得子: ループ回数$(0)でその値を読めます.");
         put(BOOK + ".3",
                 "The four slots on the right take CAD components and build the internal CAD. "
-                        + "Empty slots count as basic parts.$(p)"
+                        + "Empty slots count as basic parts, and the colorizer may be left out.$(p)"
                         + "The nine slots below are the caster's hotbar, and the selected one counts as the held item. "
                         + "Items that do not fit drop in front of the machine.",
-                "右側の4スロットにCADの部品を入れると, 内部CADが組み上がります. 空のスロットは基本部品として扱われます.$(p)"
+                "右側の4スロットにCADの部品を入れると, 内部CADが組み上がります. 空のスロットは基本部品として扱われ, 着色器は無くても動きます.$(p)"
                         + "下段の9スロットは詠唱主体のホットバーで, 選択中のスロットが手に持っている扱いになります. "
                         + "入りきらないアイテムは機械の正面に落ちます.");
         put(BOOK + ".4",

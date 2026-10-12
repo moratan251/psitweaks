@@ -199,9 +199,9 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
 
         drawCentered(guiGraphics, Component.translatable(KEY + "bullet", tile.getSelectedBullet() + 1), 43, 86);
         drawCentered(guiGraphics, Component.translatable(KEY + "item", tile.getSelectedItemSlot() + 1), 125, 86);
-        drawLabel(guiGraphics, Component.translatable(KEY + "interval", tile.getCastInterval()), 8, 98);
-        drawLabel(guiGraphics, Component.translatable(KEY + "yaw", tile.getYawOffset()), 62, 98);
-        drawLabel(guiGraphics, Component.translatable(KEY + "pitch", tile.getPitch()), 116, 98);
+        drawLabel(guiGraphics, Component.translatable(KEY + "interval", tile.getCastInterval()), 8, 97);
+        drawLabel(guiGraphics, Component.translatable(KEY + "yaw", tile.getYawOffset()), 62, 97);
+        drawLabel(guiGraphics, Component.translatable(KEY + "pitch", tile.getPitch()), 116, 97);
         drawLabel(guiGraphics, Component.translatable(KEY + "loop", tile.getLoopCounter(tile.getSelectedBullet())), 72, 121);
 
         drawGhostComponents(guiGraphics);
@@ -212,13 +212,16 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    /** 空の部品スロットに、既定で使われる部品を薄く描く。 */
+    /** 空の部品スロットに、既定で使われる部品を薄く描く。カラーライザーには既定部品が無いので描かない。 */
     private void drawGhostComponents(GuiGraphics guiGraphics) {
         for (int i = 0; i < AutonomousCasterBlockEntity.COMPONENT_SLOTS; i++) {
             if (!tile.getComponentSlots().get(i).isEmpty()) {
                 continue;
             }
             ItemStack ghost = ghostComponent(VirtualCad.SLOT_TYPES.get(i));
+            if (ghost.isEmpty()) {
+                continue;
+            }
             int x = AutonomousCasterBlockEntity.COMPONENT_X + i * 18;
             int y = AutonomousCasterBlockEntity.SLOT_ROW_Y;
             guiGraphics.renderFakeItem(ghost, x, y);
@@ -231,7 +234,7 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
             case ASSEMBLY -> new ItemStack(ModCADComponents.cadAssemblyIron.get());
             case CORE -> new ItemStack(ModCADComponents.cadCoreBasic.get());
             case SOCKET -> new ItemStack(ModCADComponents.cadSocketBasic.get());
-            default -> new ItemStack(ModCADComponents.cadColorizerPsi.get());
+            default -> ItemStack.EMPTY;
         };
     }
 
@@ -243,10 +246,11 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
                 int x = leftPos + AutonomousCasterBlockEntity.COMPONENT_X + i * 18;
                 int y = topPos + AutonomousCasterBlockEntity.SLOT_ROW_Y;
                 if (tile.getComponentSlots().get(i).isEmpty() && mouseX >= x && mouseX < x + 16 && mouseY >= y && mouseY < y + 16) {
+                    EnumCADComponent type = VirtualCad.SLOT_TYPES.get(i);
+                    String fallback = type == EnumCADComponent.DYE ? "component.default.dye" : "component.default";
                     guiGraphics.renderTooltip(font, List.of(
-                            Component.translatable(KEY + "component", Component.translatable(VirtualCad.SLOT_TYPES.get(i).getName()))
-                                    .getVisualOrderText(),
-                            Component.translatable(KEY + "component.default").withStyle(ChatFormatting.GRAY).getVisualOrderText()),
+                            Component.translatable(KEY + "component", Component.translatable(type.getName())).getVisualOrderText(),
+                            Component.translatable(KEY + fallback).withStyle(ChatFormatting.GRAY).getVisualOrderText()),
                             mouseX, mouseY);
                 }
             }
