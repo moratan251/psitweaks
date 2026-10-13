@@ -609,7 +609,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.entry.psitweaks_auto_casters", "Auto Casters"},
             {"psi.book.entry.psitweaks_cad_and_gear", "CADs and Gear"},
             {"psi.book.entry.psitweaks_inline_casters", "Inline Casters"},
-            {"psi.book.entry.psitweaks_machines", "Overview"},
             {"psi.book.entry.psitweaks_magician", "Magician"},
             {"psi.book.entry.psitweaks_mekanism_integration", "Mekanism Integration"},
             {"psi.book.entry.psitweaks_moval_suit", "M.O.V.A.L. Suit"},
@@ -617,19 +616,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.entry.psitweaks_research", "Research"},
             {"psi.book.entry.psitweaks_spell_bullets", "Upgraded Spell Bullets"},
             {"psi.book.page.psitweaks_cad_and_gear.0", "Several PsiTweaks items make spellcasting easier to carry, automate, or specialize. Some are direct CAD tools, while others support bullet handling or improve a caster's combat role."},
-            {"psi.book.page.psitweaks_cad_and_gear.1", "These recipes cover portable assembly, inline casting, spell storage, and caster support gear."},
             {"psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks also adds powerful CAD assemblies made from expensive ingots. When ordinary Psi equipment no longer keeps up, use them together with high-tier spell bullets and similar upgrades."},
             {"psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) adds five CAD material lines: $(l:components/psitweaks_alloy_psion)Psionic Alloy$(/l), $(l:components/psitweaks_chaotic_psimetal)Chaotic Psimetal$(/l), $(l:components/psitweaks_flashmetal)Flashmetal$(/l), $(l:components/psitweaks_heavy_psimetal)Heavy Psimetal$(/l), and $(l:components/psitweaks_psycheonic_metal_ingot)Psycheonic Metal$(/l).$(p)Psionic Alloy CADs have excellent Efficiency but very small Potency. The other CAD assemblies improve in Efficiency and Potency as their materials move into later progression."},
             {"psi.book.page.psitweaks_item.auto_casters.0", "Auto Casters can be equipped in Curios slots and automatically cast spells.$(p)With the Curios Controller, you can change their spell bullets in the same way as psimetal exosuit armor."},
-            {"psi.book.page.psitweaks_item.auto_casters.1", "The tick model fires every tick, the second model fires every 0.9 seconds, and the custom tick model lets you set an interval from 1 to 1200 ticks by using the item."},
             {"psi.book.page.psitweaks_item.blank_program", "Used as the base item for program research. Put it into the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) with the required materials to create a written program.$(p)It can also be crafted with an existing written program item to duplicate that program."},
             {"psi.book.page.psitweaks_item.curios_controller", "Controls the selected bullet slot of socketable items equipped in Magic Calculation Area slots.$(p)Use it while Auto Casters are equipped as the Curios-side counterpart to the exosuit controller."},
             {"psi.book.page.psitweaks_item.flash_charm", "A Curios charm that continually removes Blindness and Darkness from the wearer.$(p)It also works while carried in inventory, making it useful in the Deep Dark and against vision-disrupting effects."},
-            {"psi.book.page.psitweaks_item.flash_ring", "A tool that can build and cast spells on the spot.$(p)Sneak-use it to open the programming screen."},
             {"psi.book.page.psitweaks_item.inline_casters.0", "Inline, Secondary, and Parallel Casters are handheld spellcasting tools with their own bullet sockets. They still require the caster to have a CAD, but the selected bullet is stored in the caster item itself."},
             {"psi.book.page.psitweaks_item.inline_casters.1", "The Inline Caster has one slot, the Secondary Caster has five, and the Parallel Caster has eleven.$(p)Use them when you want to carry many spell bullets without constantly changing the CAD."},
             {"psi.book.page.psitweaks_item.moval_suit.0", "The $(item)M.O.V.A.L. Suit$(0) is a high-grade Psi armor set crafted with $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) and $(item)Ebony Psimetal$(0). Each equipped piece supports spellcasters by increasing spell damage, Psi regeneration, and maximum Psi.$(p)Use it when you want armor that improves both survival and sustained spellcasting instead of only adding protection."},
-            {"psi.book.page.psitweaks_item.moval_suit.1", "Like Psi's exosuit armor, M.O.V.A.L. Suit pieces can trigger spells from armor events. The helmet accepts exosuit sensors, the normal leggings cast on tick, the Ivory leggings cast on second, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi."},
             {"psi.book.page.psitweaks_item.philosophers_stone", "A reusable catalyst that provides interconversion recipes for metals, diamonds, coal, ender pearls, and other resources."},
             {"psi.book.page.psitweaks_item.portable_cad_assembler", "A handheld CAD Assembler. Use it to open an assembler interface without placing the block, making it easy to adjust CAD parts or loaded spell bullets while away from base."},
             {"psi.book.page.psitweaks_item.sorcery_booster", "Equips in the Magic Calculation Area slot and increases spell damage by 30%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l), making it a combat-focused caster upgrade."},
@@ -643,9 +638,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_machine.spellmachinery_casing", "A casing block used to execute advanced magic through machinery."},
             {"psi.book.page.psitweaks_machine.transcendent_energy_cube", "This is simply an upgraded version of Mekanism's Energy Cube. It has 128 times the capacity and output performance of the Ultimate Energy Cube, making it suitable for buffering fission reactor-class power."},
             {"psi.book.page.psitweaks_machine.transcendent_universal_cable", "This is simply an upgraded version of Mekanism's Universal Cable. It has 128 times the performance of the Ultimate Cable, making it suitable for fusion reactor-class power output."},
-            {"psi.book.page.psitweaks_machines.0", "PsiTweaks adds machines that connect spellcraft with automation and industrial processing. Some machines are pure psionic tools, while others integrate with Mekanism-style energy and materials."},
-            {"psi.book.page.psitweaks_machines.1", "These machines are the main entry points for research, mutation, Sculk processing, and Psi-to-energy conversion."},
-            {"psi.book.page.psitweaks_machines.2", "The $(l:psitweaks_machines/psionic_generator)$(o)$(item)Psi-Link Generator$(0)$(/l) links to its owner. When enabled, loaded, and the owner is online, it consumes that player's Psi and produces energy for the machine's buffer.$(p)The rate is set in the GUI. More Psi per tick means more power, but it also drains the owner faster."},
             {"psi.book.page.psitweaks_magician.0", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades."},
             {"psi.book.page.psitweaks_magician.1", "An unemployed villager can become a $(thing)Magician$(0) by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site.$(p)Place the assembler where a villager can reach it, just like other villager workstation blocks."},
             {"psi.book.page.psitweaks_magician.2", "A Magician is also the source of the $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l). It drops when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l), and is used in caster-focused recipes."},
@@ -674,11 +666,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_material.psionic_echo", "Made by infusing an $(item)Echo Shard$(0) with Psionic Echo infusion, or by using the $(l:psitweaks_spell_pieces/trick_supreme_infusion)$(o)Trick: Supreme Infusion$(0)$(/l).$(p)Used as the base catalyst for $(l:components/psitweaks_alloy_psionic_echo)echo-tier alloys$(/l), HDΨE materials, gas processing, and advanced psionic machinery."},
             {"psi.book.page.psitweaks_material.psycheonic_metal_ingot", "Infuse $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) with Hypostasis to make $(item)Psycheonic Metal Nuggets$(0), then craft nine nuggets into an ingot.$(p)Used for $(l:items/psitweaks_spell_bullets)transcendent spell bullets$(/l), Psycheonic Metal CAD assemblies, and the highest psionic material tier."},
             {"psi.book.page.psitweaks_material.unrefined_flashmetal", "Crafted from $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l) and Refined Glowstone.$(p)Enrich it to obtain usable $(l:components/psitweaks_flashmetal)$(o)$(item)Flashmetal$(0)$(/l)."},
-            {"psi.book.page.psitweaks_mekanism_integration.0", "$(thing)PsiTweaks$(0) ties $(thing)Psi$(0) into $(thing)Mekanism$(0) progression. Its integration covers Metallurgic Infusing recipes for Psi materials, MekaSuit modules that improve caster stats, and machines that exchange Psi, FE, and psionic resources.$(p)Use JEI as the exact recipe reference; this entry explains what each group is for."},
             {"psi.book.page.psitweaks_mekanism_integration.1", "The $(item)Metallurgic Infuser$(0) can produce core Psi materials with PsiTweaks infuse types. Psigem infusion turns redstone into $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l) and gold into $(item)Psimetal$(0).$(p)Ebony and Ivory infusion can make $(item)Ebony Substance$(0), $(item)Ivory Substance$(0), and their Psimetal variants. Later recipes extend this chain into $(l:components/psitweaks_chaotic_factor)psionic factors$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l), $(l:components/psitweaks_psionic_echo)Psionic Echo materials$(/l), and $(l:components/psitweaks_alloy_hypostasis)Hypostasis-tier metal$(/l)."},
             {"psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases spell damage."},
-            {"psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds many elements, including industrialized material production, new gear, and new spells.$(p)The mod is intended for setups where Psi remains powerful through the late game as both combat and utility, rather than ending at ordinary CADs and basic spell bullets."},
-            {"psi.book.page.psitweaks_overview.2", "Major additions include higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)Most systems are built to bridge Psi with industrial environments and to strengthen Psi's late-game capabilities."},
             {"psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed."},
             {"psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy usage per tick, and processing time."},
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available."},
@@ -738,7 +727,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.entry.psitweaks_auto_casters", "術式自動詠唱デバイス"},
             {"psi.book.entry.psitweaks_cad_and_gear", "CADと装備"},
             {"psi.book.entry.psitweaks_inline_casters", "インラインキャスター"},
-            {"psi.book.entry.psitweaks_machines", "概要"},
             {"psi.book.entry.psitweaks_magician", "魔法師"},
             {"psi.book.entry.psitweaks_mekanism_integration", "Mekanism連携"},
             {"psi.book.entry.psitweaks_moval_suit", "M.O.V.A.L. スーツ"},
@@ -750,28 +738,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.entry.vectorPrimer", "A Primer On Vectors"},
             {"psi.book.landing_text", "$(thing)Psi$(0) はあなたの創意工夫によって限界が決まる$(thing)魔法$(0)作成 mod です. 本書には, 熟練の魔法師になるために必要な知識がすべて収録されています.$(p)(本書は作成中です. 旧チュートリアル記事は「レガシーエントリー」でご覧いただけます.)"},
             {"psi.book.name", "サイオニカ魔法大全"},
-            {"psi.book.page.cadAssembler.0", "$(item)CAD組立機(0)は$(thing)Psi$(0)の中核であり, 二つの重要な機能を果たします. $(p)第一に, 構成部品から$(thing)CAD$(0)を組み立てます. 次に, $(o)空でない$() $(item)術式弾$(0)を$(thing)CAD$(0)に装填します.（$(l:items/spell_bullet)$(o)$(thing)術式弾$(0)$(/l)を保持する他のアイテム, 例えば$(l:items/tools)$(o)$ (thing)サイメタルツール$(0)$(/l)など）に$(o)空でない$(0)$(item)術式弾$(0)$を装填する."},
+            {"psi.book.page.cadAssembler.0", "$(item)CAD組立機$(0)は$(thing)Psi$(0)の中核であり, 二つの重要な機能を果たします.$(p)第一に, 構成部品から$(thing)CAD$(0)を組み立てます. 第二に, $(o)空でない$() $(item)術式弾$(0)を$(thing)CAD$(0)や, $(l:items/tools)$(o)$(thing)サイメタルツール$(0)$(/l)など$(l:items/spell_bullet)$(o)$(thing)術式弾$(0)$(/l)を保持する他のアイテムに装填します."},
             {"psi.book.page.cadAssembler.1", "CAD組立機のクラフト"},
             {"psi.book.page.cadAssembler.2", "最も簡素な魔法使用可能CAD"},
             {"psi.book.page.cadAssembler.3", "A $(thing)CAD$(0) is built from up to five components; the simplest $(thing)CAD$(0) only uses one component, an $(l:components/assembly)$(o)$(item)Assembly$(0)$(/l), though this is only useful for crafting $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l).$(p)A $(thing)CAD$(0) capable of casting $(thing)Spells$(0) requires a $(l:components/core)$(o)$(item)Core$(0)$(/l) and a $(l:components/socket)$(o)$(item)Socket$(0)$(/l) as well.$(p)Adding a $(l:components/battery)$(o)$(item)Battery$(0)$(/l) slightly increases a user's maximum $(thing)Psi energy$(0), and adding a $(l:components/colorizer)$(o)$(item)Colorizer$(0)$(/l) changes the color of cast $(thing)Spells$(0), which is purely cosmetic."},
             {"psi.book.page.cadAssembler.4", "Once a $(thing)CAD$(0) is created, it can be placed in the leftmost panel of the $(item)CAD Assembler$(0).$(p)When placed there, the slots below open; $(item)Spell Bullets$(0) can be placed in these slots to be loaded into the $(thing)CAD$(0).$(p)Once the $(l:items/spell_bullet)$(o)$(thing)Bullets$(0)$(/l) are loaded, the $(thing)CAD$(0) is removed and held, and the $(thing)Psi master keybind$(0) ($(k:psimisc.keybind)) is held, the $(l:items/spell_bullet)$(o)$(thing)Bullets$(0)$(/l)' $(thing)Spells$(0) will be displayed on a radial menu, ready to be selected and cast."},
             {"psi.book.page.cadAssembler.5", "A CAD with one bullet loaded"},
             {"psi.book.page.introduction.0", "$(thing)Psi$(0)へようこそ！ 宇宙で最も偉大なスペルプログラムベースの魔法技術MODです！$(p)$(thing)Psi$(0)は（魔法科高校の劣等生シリーズにインスパイアされた）MODで, あなたの命令を実行する$(thing)魔法$(0)$(o)を創造・発動して意のままに操るmodです.$(p)魔法を操る魔法師への道へ踏み出すには, まず$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)という素材が必要です――ただし, これを単純にクラフトできるものではありません."},
-            {"psi.book.page.introduction.1", "代わりに, まず$(l:basics/cad_assembler)$(o)$(item)CAD組立機(0)$(/l)と$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を作成してください. (p)$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)を配置し, 開いて$(l:components/assembly#iron)$(o)$ (item)鉄のCAD素体$(0)$(/l)を挿入し, 非常に簡素な$(thing)術式補助演算機(0)（略して$(thing)CAD$(0)）を構築します. (p)そこから地面に$(item)レッドストーンダスト$(0)を数個落とし, 新しく作成した$(thing)CAD$(0)をダストに向けて, $(k:use)を発動して$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)を生成します."},
+            {"psi.book.page.introduction.1", "代わりに, まず$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)と$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を作成してください.$(p)$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)を配置し, 開いて$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を挿入し, 非常に簡素な$(thing)術式補助演算機$(0)（略して$(thing)CAD$(0)）を構築します.$(p)そこから地面に$(item)レッドストーンダスト$(0)を数個落とし, 新しく作成した$(thing)CAD$(0)をダストに向けて, $(k:use)を発動して$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)を生成します."},
             {"psi.book.page.psitweaks_cad_and_gear.0", "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります."},
-            {"psi.book.page.psitweaks_cad_and_gear.1", "これらのレシピは, 携帯型組立, インライン詠唱, 術式保存, 魔法師支援装備の入口です."},
             {"psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks は, 高コストなインゴットを素材とした強力なCAD素体を追加します. 通常のPsi装備では物足りなくなったら, 高位術式弾などと組み合わせて使ってください."},
             {"psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) はCAD素材として, $(l:components/psitweaks_alloy_psion)サイオニック合金$(/l), $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の5系統を追加します.$(p)サイオニック合金CADは効率が非常に優れる一方で, 規模は非常に小さいCADです. 他のCAD素体は, 後半の素材ほど効率と規模が相応に強化されています."},
             {"psi.book.page.psitweaks_item.auto_casters.0", "術式自動詠唱デバイスは, Curiosスロットに装備可能であり, 自動で術式を詠唱する装備です. $(p) キュリオスコントローラを用いることで、サイメタル外装と同じ要領で術式弾を変更できます."},
-            {"psi.book.page.psitweaks_item.auto_casters.1", "tick型は毎tick, セカンド型は0.9秒ごとに詠唱します. カスタムtick型は, アイテム使用で1から1200tickの範囲から詠唱間隔を設定できます."},
             {"psi.book.page.psitweaks_item.blank_program", "プログラム研究の基礎素材です. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材と一緒に入れることで, 記入済みのプログラムを作成できます.$(p)既存の記入済みプログラムアイテムとクラフトすると, そのプログラムを複製することもできます."},
             {"psi.book.page.psitweaks_item.curios_controller", "魔法演算領域スロットに装備したソケット対応アイテムの選択術式弾スロットを操作します.$(p)術式自動詠唱デバイスを装備しているときに使う, Curios版の外装コントローラです."},
             {"psi.book.page.psitweaks_item.flash_charm", "装備者の盲目と暗闇を継続的に解除するCuriosチャームです.$(p)インベントリ内に持っているだけでも機能するため, ディープダークや視界妨害効果への対策になります."},
-            {"psi.book.page.psitweaks_item.flash_ring", "その場で術式を組み立てて詠唱が可能なツールです.$(p)スニーク使用でプログラム画面を開くことができます."},
             {"psi.book.page.psitweaks_item.inline_casters.0", "インライン, セカンダリ, パラレルキャスターは, 自身に術式弾スロットを持つ手持ち詠唱具です. 詠唱には通常通りCADが必要ですが, 選択中の術式弾はキャスター側に保存されます."},
             {"psi.book.page.psitweaks_item.inline_casters.1", "インラインキャスターは1スロット, セカンダリキャスターは5スロット, パラレルキャスターは11スロットです.$(p)CADを頻繁に差し替えず, 多数の術式弾を持ち替えたいときに使います."},
             {"psi.book.page.psitweaks_item.moval_suit.0", "$(item)M.O.V.A.L. スーツ$(0) は, $(l:components/psitweaks_heavy_psimetal)$(o)$(item)ヘビーサイメタル$(0)$(/l) と $(item)エボニーサイメタル$(0) を使って製作する高性能なPsi系防具です. 各部位を装備するごとに, 術式ダメージ, Psi回復速度, 最大Psiを強化します.$(p)単なる防御力だけでなく, 継続的な詠唱能力も伸ばしたいときに使う装備です."},
-            {"psi.book.page.psitweaks_item.moval_suit.1", "Psiの外装防具と同様に, M.O.V.A.L. スーツの各部位は防具イベントから術式を発動できます. ヘルメットは外装センサーに対応し, 通常レギンスはtick時, Ivory版レギンスはsecond時, ブーツはjump時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復速度+5, 最大Psi+500を付与します."},
             {"psi.book.page.psitweaks_item.philosophers_stone", "再利用可能な触媒で, 金属, ダイヤモンド, 石炭やエンダーパールなどの相互変換レシピを提供します."},
             {"psi.book.page.psitweaks_item.portable_cad_assembler", "手持ちで使えるCAD組立機です. ブロックを設置せずに組立機画面を開けるため, 拠点外でも簡単にCAD部品や装填済み術式弾を調整できます."},
             {"psi.book.page.psitweaks_item.sorcery_booster", "魔法演算領域スロットに装備し, 術式ダメージを30%増加させます.$(p)$(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使う, 戦闘向けの魔法師強化装備です."},
@@ -785,9 +769,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_machine.spellmachinery_casing", "高度な魔法を機械により実行するための筐体ブロックです."},
             {"psi.book.page.psitweaks_machine.transcendent_energy_cube", "これは単純に, MekanismのEnergy Cubeの強化版です. 究極エネルギーキューブの128倍の容量と出力性能を持ち, 核分裂炉級の電力を蓄えるのに向きます."},
             {"psi.book.page.psitweaks_machine.transcendent_universal_cable", "これは単純に, MekanismのUniversal Cableの強化版です. 究極ケーブルの128倍の性能を持ち, 核融合炉級の電力出力を扱うのに向きます."},
-            {"psi.book.page.psitweaks_machines.0", "PsiTweaks は, 術式工学と自動化・工業処理をつなぐ機械を追加します. 純粋なサイオニック装置もあれば, Mekanism形式のエネルギーや素材処理と連携する機械もあります."},
-            {"psi.book.page.psitweaks_machines.1", "これらの機械は, 研究, 物質変成, スカルク処理, Psiからエネルギーへの変換の入口になります."},
-            {"psi.book.page.psitweaks_machines.2", "$(l:psitweaks_machines/psionic_generator)$(o)$(item)サイリンク発電機$(0)$(/l) は Mekanism の所有者にリンクします. 有効化され, チャンクが読み込まれ, 所有者がオンラインのとき, そのプレイヤーのPsiを消費して内部バッファへエネルギーを生成します.$(p)発電レートはGUIで設定できます. tickあたりのPsi消費を増やすほど出力も増えますが, 所有者のPsiも速く減ります."},
             {"psi.book.page.psitweaks_magician.0", "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. Psi機械を扱う村人であり, 魔法師向けの素材や強化装備と関係します."},
             {"psi.book.page.psitweaks_magician.1", "無職の村人は, $(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l) を職業ブロックとして取得すると $(thing)魔法師$(0) になります.$(p)ほかの村人作業台と同じように, 村人が到達できる場所にCAD組立機を置いてください."},
             {"psi.book.page.psitweaks_magician.2", "魔法師は $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) の入手元でもあります. 魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップし, 魔法師向けのレシピに使います."},
@@ -816,11 +797,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_material.psionic_echo", "$(item)残響の欠片$(0) にサイオニックエコーを注入するか, $(l:psitweaks_spell_pieces/trick_supreme_infusion)$(o)作動式: 超位注入$(0)$(/l)で作成します.$(p)$(l:components/psitweaks_alloy_psionic_echo)感応系合金$(/l), HDΨE 素材, 気体加工, 上位のサイオニック機械の基礎触媒です."},
             {"psi.book.page.psitweaks_material.psycheonic_metal_ingot", "$(l:components/psitweaks_heavy_psimetal)$(o)$(item)ヘビーサイメタル$(0)$(/l) にヒュポスタシスを注入して $(item)プシオニックメタルナゲット$(0) を作り, 9個クラフトするとインゴットになります.$(p)$(l:items/psitweaks_spell_bullets)超越 tier の術式弾$(/l), プシオニックメタル CAD 素体, 最上位のサイオニック素材に使います."},
             {"psi.book.page.psitweaks_material.unrefined_flashmetal", "$(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l) と精製グロウストーンからクラフトします.$(p)濃縮すると使用可能な $(l:components/psitweaks_flashmetal)$(o)$(item)フラッシュメタル$(0)$(/l) になります."},
-            {"psi.book.page.psitweaks_mekanism_integration.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) を $(thing)Mekanism$(0) の進行へ接続します. 連携要素には, Psi素材を作る冶金吹き込みレシピ, 魔法師能力を伸ばすMekaSuitモジュール, Psi・FE・サイオニック資源を扱う機械があります.$(p)正確なレシピはJEIで確認してください. この項目では各要素の役割をまとめます."},
             {"psi.book.page.psitweaks_mekanism_integration.1", "$(item)冶金吹き込み機$(0) では, PsiTweaks の注入タイプを使って主要なPsi素材を作れます. サイジェム注入はレッドストーンを$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)に, 金インゴットを$(item)サイメタル$(0)に変換します.$(p)エボニー注入とアイボリー注入では, $(item)エボニー基質$(0), $(item)アイボリー基質$(0), それぞれのサイメタル派生素材を作れます. さらに$(l:components/psitweaks_chaotic_factor)サイオニック因子$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l), $(l:components/psitweaks_psionic_echo)サイオニックエコー素材$(/l), $(l:components/psitweaks_alloy_hypostasis)位格合金$(/l)へ発展します."},
             {"psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 術式ダメージを増加させます."},
-            {"psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 素材生成の工業化や, 新しい装備, 新しい術式など多数の要素を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを戦闘やユーティリティとして終盤まで強力に扱う構成を想定しています."},
-            {"psi.book.page.psitweaks_overview.2", "主な追加要素は, 高位術式弾, 新しいCAD素体や詠唱補助具,新しい魔法, 加工機械や発電機です.$(p)多くのシステムは, Psiと工業環境の橋渡しや, Psiの終盤での能力強化などを目的として作られています."},
             {"psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません)."},
             {"psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, tickあたりの消費電力, 処理時間は JEI で確認できます."},
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています."},
@@ -937,12 +915,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "What PsiTweaks Adds";
         });
         root.addProperty("psi.book.page.psitweaks_overview.0", switch (locale) {
-            case "ja_jp" -> "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 素材生成の工業化や, 新しい装備, 新しい術式など多数の要素を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを戦闘やユーティリティとして終盤まで強力に扱う構成を想定しています.";
-            default -> "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds many elements, including industrialized material production, new gear, and new spells.$(p)The mod is intended for setups where Psi remains powerful through the late game as both combat and utility, rather than ending at ordinary CADs and basic spell bullets.";
-        });
-        root.addProperty("psi.book.page.psitweaks_overview.2", switch (locale) {
-            case "ja_jp" -> "主な追加要素は, 高位術式弾, 新しいCAD素体や詠唱補助具, 新しい魔法, 加工機械や発電機です.$(p)多くのシステムは, Psiと工業環境の橋渡しや, Psiの終盤での能力強化などを目的として作られています.";
-            default -> "Major additions include higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)Most systems are built to bridge Psi with industrial environments and to strengthen Psi's late-game capabilities.";
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 高位術式弾, 新しいCAD素体や詠唱補助具, 新しい術式, 加工機械や発電機などを追加します.$(p)Psiを工業環境とつなぎ, 通常のCADや基本術式弾で終わらず, 終盤まで戦闘とユーティリティの両面で使えるようにすることを目指しています.";
+            default -> "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)It ties Psi into industrial setups and keeps it strong for combat and utility through the late game, beyond ordinary CADs and basic spell bullets.";
         });
         root.addProperty("psi.book.entry.psitweaks_changes", switch (locale) {
             case "ja_jp" -> "PsiTweaksによる変更";
@@ -972,6 +946,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "$(thing)Mekanism$(0) が導入されていない場合, 空白のプログラムと各スペルピースに対応する素材を作業台で不定形クラフトするとプログラムを作成できます.$(p)必要な素材はJEIのクラフトレシピで確認できます.";
             default -> "When $(thing)Mekanism$(0) is not installed, craft a Blank Program together with the materials for the corresponding spell piece in any arrangement to create its program.$(p)Check JEI for each crafting recipe's required materials.";
         });
+        root.addProperty("psi.book.entry.psitweaks_idea_storage", switch (locale) {
+            case "ja_jp" -> "イデアストレージ";
+            default -> "Ideaspace Storage";
+        });
+        root.addProperty("psi.book.page.psitweaks_idea_storage.0", switch (locale) {
+            case "ja_jp" -> "$(thing)イデアストレージ$(0) は, プレイヤーごとに1つずつ用意される専用の保管庫です. アイテム, 液体, Mekanismの化学物質, FEをまとめて保管できます.$(p)中身はプレイヤー単位でワールドに保存され, 持ち物とは別に管理されるので, 死亡しても失われません. 保管できる種類数や1種類あたりの上限はコンフィグで変更できます.";
+            default -> "$(thing)Ideaspace Storage$(0) is a personal storage space that every player has. It holds items, fluids, Mekanism chemicals, and FE together.$(p)Its contents are saved in the world for each player, separately from your inventory, so they are not lost when you die. The number of types and the per-type limits can be changed in the config.";
+        });
+        root.addProperty("psi.book.page.psitweaks_idea_storage.1", switch (locale) {
+            case "ja_jp" -> "中身は $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)作動式: イデアストレージ閲覧$(0)$(/l) の画面で確認・出し入れできます.$(p)術式からは, ブロックや指定スロットとの格納・取出, FEの吸収・供給を行う作動式と, 貯蔵量や空き容量を調べる取得子で操作します.$(p)$(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)作動式: イデアコネクター$(0)$(/l) を設置すると, パイプなどの外部機器ともやり取りできます.";
+            default -> "Use the screen opened by $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)Trick: View Ideaspace Storage$(0)$(/l) to check its contents and move things in and out.$(p)Spells work with it through tricks that deposit and withdraw with blocks or the target slot, tricks that absorb and supply FE, and selectors that read amounts and free capacity.$(p)Place a $(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)Trick: Ideaspace Connector$(0)$(/l) to exchange resources with pipes and other external devices.";
+        });
+        root.addProperty("psi.book.page.psitweaks_idea_storage.2", switch (locale) {
+            case "ja_jp" -> "イデアストレージ系のスペルピースは, この $(item)プログラム: イデアストレージ$(0) を右クリックで使用するだけで, すべてまとめて解禁されます. プログラムは消費されません.$(p)プログラムの作り方は $(l:psitweaks/research)研究$(/l) を参照してください.";
+            default -> "Using this $(item)Program: Ideaspace Storage$(0) with right-click unlocks every Ideaspace Storage spell piece at once. The program is not consumed.$(p)See $(l:psitweaks/research)Research$(/l) for how to make programs.";
+        });
         root.addProperty("psi.book.entry.psitweaks_magician", switch (locale) {
             case "ja_jp" -> "魔法師";
             default -> "Magician";
@@ -996,10 +986,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります.";
             default -> "Several PsiTweaks items make spellcasting easier to carry, automate, or specialize. Some are direct CAD tools, while others support bullet handling or improve a caster's combat role.";
         });
-        root.addProperty("psi.book.page.psitweaks_cad_and_gear.1", switch (locale) {
-            case "ja_jp" -> "これらのレシピは, 携帯型組立, インライン詠唱, 術式保存, 魔法師支援装備の入口です.";
-            default -> "These recipes cover portable assembly, inline casting, spell storage, and caster support gear.";
-        });
         root.addProperty("psi.book.page.psitweaks_cad_and_gear.2", switch (locale) {
             case "ja_jp" -> "PsiTweaks は, 高コストなインゴットを素材とした強力なCAD素体を追加します. 通常のPsi装備では物足りなくなったら, 高位術式弾などと組み合わせて使ってください.";
             default -> "PsiTweaks also adds powerful CAD assemblies made from expensive ingots. When ordinary Psi equipment no longer keeps up, use them together with high-tier spell bullets and similar upgrades.";
@@ -1015,8 +1001,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Types Added by PsiTweaks",
                 "PsiTweaks 追加の型");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.0",
-                "$(thing)PsiTweaks$(0) adds new value types to Psi spell programming. The main additions are String, Block, Item, and Matrix.$(p)These types allow spells to work with text, block information, item information, and numerical grids.",
-                "$(thing)PsiTweaks$(0) は, Psi のスペルプログラミングに新しい型を追加します. 主な追加型は String, Block, Item, Matrix です.$(p)これらの型を使うことで, 文字列, ブロック情報, アイテム情報, 数値の格子をスペル内で扱えるようになります.");
+                "$(thing)PsiTweaks$(0) adds new value types to Psi spell programming. The main additions are String, Block, Item, and Matrix.",
+                "$(thing)PsiTweaks$(0) は, Psi のスペルプログラミングに新しい型を追加します. 主な追加型は String, Block, Item, Matrix です.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.1",
                 "String is the type used for text. It can hold IDs, names, NBT paths, search conditions, and messages for display.$(p)For example, a spell can obtain a block or item ID as a String and test whether it matches a particular ID.$(p)String values are limited to 8192 characters at runtime. Note that Constant: String pieces can only store 1024 characters inside the spell, because the value is saved with the spell itself.",
                 "String 型は文字列を扱うための型です. ID, 名前, NBTパス, 検索条件, 表示用メッセージなどをスペル内で扱うために使用します.$(p)例えば, ブロックやアイテムのIDを String として取得し, 特定のIDと一致するかを調べることができます.$(p)実行時の String 値は 8192 文字までに制限されています. なお, 定数子: 文字列 は術式に値を保存するため, 1つのピースあたり最大1024文字までしか入力できません.");
@@ -1040,14 +1026,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "About Lists",
                 "List について");
         addLocalized(root, "psi.book.page.psitweaks_lists.0",
-                "Psi often uses Entity List. PsiTweaks also allows lists of values other than Entity.$(p)The main additional list types are String List, Number List, Vector List, Item List, and Block List.",
-                "Psi では Entity List がよく使われますが, PsiTweaks では Entity 以外のリストも扱えるようになります.$(p)追加される主なリストには, String List, Number List, Vector List, Item List, Block List があります.");
-        addLocalized(root, "psi.book.page.psitweaks_lists.1",
-                "A List groups multiple values of the same type.$(p)For example, multiple strings can be handled as a String List, while multiple items can be handled as an Item List.$(p)This makes searching, filtering, comparing, and counting multiple targets easier within a spell.",
-                "List は同じ種類の値を複数まとめて扱うための型です.$(p)例えば, 複数の文字列を String List として扱ったり, 複数のアイテムを Item List として扱ったりできます.$(p)これにより, 複数対象の検索, 抽出, 比較, 集計などをスペル内で行いやすくなります.");
+                "A List groups multiple values of the same type.$(p)Psi mostly uses Entity List; PsiTweaks also supports String List, Number List, Vector List, Item List, and Block List.",
+                "List は同じ種類の値を複数まとめて扱う型です.$(p)Psi では Entity List がよく使われますが, PsiTweaks では String List, Number List, Vector List, Item List, Block List も扱えるようになります.");
         addLocalized(root, "psi.book.page.psitweaks_lists.2",
-                "PsiTweaks adds operators for working with Lists.$(p)They can retrieve elements or list size, add, remove, insert, slice, search, exclude, intersect, and concatenate values.$(p)List operations make it easier to build spells that process several targets together.",
-                "PsiTweaks には List を操作するための演算子が追加されています.$(p)要素の取得, 要素数の取得, 追加, 削除, 挿入, 切り取り, 検索, 除外, 交差, 結合などを行えます.$(p)List 操作を使うことで, 複数の対象をまとめて処理するスペルを作りやすくなります.");
+                "PsiTweaks adds operators for working with Lists.$(p)They can retrieve elements or list size, add, remove, insert, slice, search, exclude, intersect, and concatenate values.",
+                "PsiTweaks には List を操作するための演算子が追加されています.$(p)要素の取得, 要素数の取得, 追加, 削除, 挿入, 切り取り, 検索, 除外, 交差, 結合などを行えます.");
 
         addLocalized(root, "psi.book.entry.psitweaks_mode_selection",
                 "Mode-Selectable Spell Pieces",
@@ -1061,9 +1044,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLocalized(root, "psi.book.page.psitweaks_mode_selection.2",
                 "To choose a mode, left-click the spell piece in the Spell Programmer.$(p)The current mode appears on the piece and in its tooltip. If a connection fails, check that the piece mode matches the type of the connected value.",
                 "モードは Spell Programmer 上で対象のピースを左クリックして選択します.$(p)現在のモードはピース上の表示やツールチップで確認できます. 接続できない場合は, ピースのモードと接続先の型が一致しているか確認してください.");
-        addLocalized(root, "psi.book.page.psitweaks_mode_selection.3",
-                "A mode-selectable spell piece can have a different meaning in each mode even though its icon is unchanged.$(p)This matters especially for Lists, because values such as String List and Item List behave differently. Check the current mode before connecting the piece.",
-                "モード選択スペルピースでは, 同じ見た目のピースでもモードによって意味が変わります.$(p)特に List 系では, String List と Item List のように扱う値の性質が大きく異なります. スペルを組むときは, 現在のモードを確認してから接続してください.");
     }
 
     private void addLocalized(JsonObject root, String key, String enUs, String jaJp) {
@@ -1379,7 +1359,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> jaJpDesc;
             default -> enUsDesc;
         });
+        // Patchouli のエントリ一覧だけで使う短縮名。ピース名やエントリ本文の見出しは変えない。
+        String name = locale.equals("ja_jp") ? jaJp : enUs;
+        String prefix = locale.equals("ja_jp") ? JA_IDEA_STORAGE_PREFIX : EN_IDEA_STORAGE_PREFIX;
+        String listPrefix = locale.equals("ja_jp") ? JA_IDEA_STORAGE_LIST_PREFIX : EN_IDEA_STORAGE_LIST_PREFIX;
+        if (name.contains(prefix)) {
+            root.addProperty("psitweaks.spellpiece." + id + ".book_list", name.replace(prefix, listPrefix));
+        }
     }
+
+    private static final String JA_IDEA_STORAGE_PREFIX = "イデアストレージ-";
+    private static final String JA_IDEA_STORAGE_LIST_PREFIX = "IS-";
+    private static final String EN_IDEA_STORAGE_PREFIX = "Ideaspace Storage - ";
+    private static final String EN_IDEA_STORAGE_LIST_PREFIX = "IS - ";
 
     private void addBookPage(JsonObject root, String id, String enUs, String jaJp) {
         root.addProperty("psi.book.page.psitweaks_spellpiece." + id, switch (locale) {
@@ -1428,27 +1420,27 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a flare Spell Gram Circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える");
         addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Spell Gram Circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
         addSpellPiece(root, "trick_set_spellgram_follow_target", "Trick: Set SpellGram Follow Target", "Sets the follow target entity for a SpellGram object", "作動式: 魔法式追従", "魔法式オブジェクトの追従対象エンティティを設定する");
-        addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります");
+        addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops the spell when given a number whose absolute value is below 1, and refunds the Psi of the pieces not yet run. In spells cast every tick, the Psi display may briefly desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると停止し、未実行分のPsiを返却します。毎tick詠唱では、Psi表示が一時的にずれることがあります。");
         addSpellPiece(root, "trick_jump", "Trick: Jump", "If the target number is unset or its absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.", "作動式: ジャンプ", "対象数値が未入力、または絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。");
-        addSpellPiece(root, "trick_jump_flex", "Trick: Flexible Jump", "Behaves like Trick: Jump and refunds the Psi cost of spell pieces skipped by the jump.", "作動式: 柔軟ジャンプ", "作動式: ジャンプと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。");
+        addSpellPiece(root, "trick_jump_flex", "Trick: Flexible Jump", "Behaves like Trick: Jump and refunds the Psi of the pieces it skips.", "作動式: 柔軟ジャンプ", "作動式: ジャンプと同じ動作をし、飛ばしたピースのPsiを返却します。");
         addSpellPiece(root, "trick_switch", "Trick: Switch", "Jumps forward to the next Jump Anchor with the same constant label as the input String. If no matching anchor exists, execution continues.", "作動式: スイッチ", "入力Stringと同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。一致するアンカーがない場合はそのまま次へ進みます。");
-        addSpellPiece(root, "trick_switch_flex", "Trick: Flexible Switch", "Behaves like Trick: Switch and refunds the Psi cost of spell pieces skipped by the jump.", "作動式: 柔軟スイッチ", "作動式: スイッチと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。");
+        addSpellPiece(root, "trick_switch_flex", "Trick: Flexible Switch", "Behaves like Trick: Switch and refunds the Psi of the pieces it skips.", "作動式: 柔軟スイッチ", "作動式: スイッチと同じ動作をし、飛ばしたピースのPsiを返却します。");
         addSpellPiece(root, "jump_anchor", "Jump Anchor", "A no-op marker used as the destination for Trick: Jump and Trick: Switch. It can take an optional constant label.", "ジャンプアンカー", "作動式: ジャンプと作動式: スイッチの到達点になる、何もしない目印です。任意の定数ラベルを指定できます。");
-        addSpellPiece(root, "safety", "Safety", "If the caster's current total Psi falls below the spell's actual Psi cost, the spell will fail before any Psi is consumed.", "安全装置", "術者の現在Psi量の合計が術式の実際のPsi消費量を下回る場合、Psiを消費する前に術式を不発にします。");
+        addSpellPiece(root, "safety", "Safety", "If the caster's Psi plus the CAD's stored Psi can't cover the cost, the spell fails without using any Psi.", "安全装置", "術者とCADのPsiを合わせても消費量に足りないとき、Psiを使わずに不発にします。");
         addSpellPiece(root, "trick_material_mutation", "Trick: Material Mutation", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.", "作動式: 物質変成", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
         addSpellPiece(root, "trick_physical_propulsion", "Trick: Physical Propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "作動式: 物理推進", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与える");
-        addSpellPiece(root, "trick_pull_item", "Trick: Pull Item", "Moves an item from the block at the input position through the input face into the caster's inventory.", "作動式: アイテム引き出し", "入力位置にあるブロックに対して、入力方向からアイテムを術者のインベントリに移動させます");
-        addSpellPiece(root, "trick_send_item", "Trick: Send Item", "Moves the specified item from the caster's inventory into the block at the input position through the input face.", "作動式: アイテム転送", "入力位置にあるブロックに対して、入力方向から指定アイテムを術者のインベントリから移動させます");
+        addSpellPiece(root, "trick_pull_item", "Trick: Pull Item", "Moves items from the specified face of the block at Position into the caster's inventory, up to one stack or the count given by Max.", "作動式: アイテム引き出し", "位置のブロックの指定面から、術者のインベントリへアイテムを移します。上限は1スタック、または「最大」で指定した個数です。");
+        addSpellPiece(root, "trick_send_item", "Trick: Send Item", "Moves items from the caster's inventory into the specified face of the block at Position, up to one stack or the count given by Max. CADs are skipped.", "作動式: アイテム転送", "術者のインベントリから、位置のブロックの指定面へアイテムを移します。上限は1スタック、または「最大」で指定した個数です。CADは移しません。");
         addSpellPiece(root, "operator_tan", "Operator: Tangent", "tan(A)", "演算子: タンジェント", "tan(A)");
         addSpellPiece(root, "operator_atan", "Operator: Arc Tangent", "atan(A)", "演算子: アークタンジェント", "atan(A)");
         addSpellPiece(root, "operator_sinh", "Operator: Hyperbolic Sine", "sinh(A)", "演算子: ハイパボリックサイン", "sinh(A)");
         addSpellPiece(root, "operator_cosh", "Operator: Hyperbolic Cosine", "cosh(A)", "演算子: ハイパボリックコサイン", "cosh(A)");
         addSpellPiece(root, "operator_tanh", "Operator: Hyperbolic Tangent", "tanh(A)", "演算子: ハイパボリックタンジェント", "tanh(A)");
-        addSpellPiece(root, "operator_greater_than", "Operator: Greater Than", "Outputs 1 if Value 1 is greater than Value 2, otherwise 0. Number inputs are accepted.", "演算子: ～より大きい", "値1が値2より大きいなら1、そうでなければ0を出力します。Number を入力できます。");
-        addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0. Number inputs are accepted.", "演算子: ～以上", "値1が値2以上なら1、そうでなければ0を出力します。Number を入力できます。");
+        addSpellPiece(root, "operator_greater_than", "Operator: Greater Than", "Outputs 1 if Value 1 is greater than Value 2, otherwise 0.", "演算子: ～より大きい", "値1が値2より大きいなら1、そうでなければ0を出力します。");
+        addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0.", "演算子: ～以上", "値1が値2以上なら1、そうでなければ0を出力します。");
         addSpellPiece(root, "operator_equal", "Operator: Equal", "Outputs 1 if Value 1 equals Value 2, otherwise 0.", "演算子: 等しい", "値1と値2が等しいなら1、そうでなければ0を出力します。");
         addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1024 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します。最大1024文字です。");
-        addSpellPiece(root, "operator_format_string", "Operator: Format String", "Returns the string entered in the text window. Optional input values are embedded into {1}, {2}, and {3} in the text.", "演算子: フォーマット文字列", "テキストウィンドウで入力された文字列を返します。 任意の入力された値はテキスト中の{1}, {2}, {3}へ埋め込まれます。");
+        addSpellPiece(root, "operator_format_string", "Operator: Format String", "Returns the entered text with Values 1 to 3 filled into {1}, {2}, and {3}.", "演算子: フォーマット文字列", "入力した文字列の {1}〜{3} に値1〜3を埋め込んで返します。");
         addSpellPiece(root, "operator_from_string", "Operator: From String", "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.", "演算子: 文字列から変換", "選択中のモードに応じて String をそのまま返すか、Number または Vector に変換します。");
         addSpellPiece(root, "operator_list_from_string_list", "Operator: From String List", "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.", "演算子: 文字列リストから変換", "選択中のモードに応じて String List をそのまま返すか、Number List または Vector List に変換します。");
         addSpellPiece(root, "operator_number_list_to_vector", "Operator: Number List to Vector", "Converts a Number List with exactly three elements into a Vector.", "演算子: 数値リスト→ベクトル", "要素数3の Number List を Vector に変換します。");
@@ -1482,25 +1474,25 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the target Contextual Value's top-level NBT as key:value strings.", "取得子: NBT", "対象 Contextual Value のNBTトップレベルを key:value 形式の String List として出力します。");
         addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the target Contextual Value's top-level NBT keys as a String List.", "取得子: NBTキー", "対象 Contextual Value のNBTトップレベルキーを String List として出力します。");
         addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the target Contextual Value's NBT value matching the String key or NBT path. Missing paths output an empty string.", "取得子: NBT値", "対象 Contextual Value のNBTから String キーまたはNBTパスに一致する値を出力します。一致しない場合は空文字列です。");
-        addSpellPiece(root, "operator_string_partial_match", "Operator: Partial Match", "Outputs 1 if searching String 1 with String 2 finds matching text, otherwise outputs 0. String 2 accepts wildcards: * matches any text, ? matches one character, and [abc] matches one listed character.", "演算子: 部分一致", "文字列1が文字列2での検索にマッチする文字列を含むなら1、そうでなければ0を出力します。文字列2ではワイルドカードを使えます: * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します。");
+        addSpellPiece(root, "operator_string_partial_match", "Operator: Partial Match", "Outputs 1 if part of String 1 matches the pattern in String 2, otherwise 0. * matches any text, ? one character, and [abc] one of a, b, or c.", "演算子: 部分一致", "文字列1の中に文字列2のパターンと一致する部分があれば1、なければ0を出力します。* は任意の文字列、? は任意の1文字、[abc] は a・b・c のいずれかに一致します。");
         addSpellPiece(root, "operator_string_starts_with", "Operator: String Starts With", "Outputs 1 if String 1 starts with String 2, otherwise outputs 0.", "演算子: 先頭一致", "文字列1が文字列2で始まるなら1、そうでなければ0を出力します。");
         addSpellPiece(root, "operator_string_ends_with", "Operator: String Ends With", "Outputs 1 if String 1 ends with String 2, otherwise outputs 0.", "演算子: 末尾一致", "文字列1が文字列2で終わるなら1、そうでなければ0を出力します。");
         addSpellPiece(root, "operator_string_concat", "Operator: String Concat", "String 1 + String 2 + String 3", "演算子: 文字列結合", "文字列1 + 文字列2 + 文字列3");
         addSpellPiece(root, "operator_string_split", "Operator: String Split", "Splits String 1 with String 2 as a literal delimiter and outputs a String List.", "演算子: 文字列分割", "文字列1を文字列2のリテラル区切り文字で分割し、String List を出力します。");
-        addSpellPiece(root, "operator_string_slice", "Operator: String Slice", "Slices the input String from Number A to Number B and returns a new String.", "演算子: 文字列スライス", "入力した文字列の文字を 数値A:数値B でスライスした新しい 文字列 を返します。");
+        addSpellPiece(root, "operator_string_slice", "Operator: String Slice", "Returns the part of the String from Number A to Number B.", "演算子: 文字列スライス", "文字列を 数値A:数値B の範囲で切り出します。");
         addSpellPiece(root, "operator_string_length", "Operator: String Length", "Returns the number of characters in the input String as a Number.", "演算子: 文字列長", "入力した文字列の文字数を Number として返します。");
         addSpellPiece(root, "operator_string_replace", "Operator: String Replace", "Replaces parts of String 1 matching String 2 with String 3.", "演算子: 文字列置換", "入力した文字列1のうち、文字列2と一致する部分を、指定した文字列3へ置換する。");
         addSpellPiece(root, "operator_string_trim", "Operator: String Trim", "Removes leading and trailing whitespace from the input String.", "演算子: 文字列トリム", "入力した文字列の前後の空白を取り除きます。");
         addSpellPiece(root, "operator_string_list_join", "Operator: String List Join", "Joins the input String List with String 2 and outputs a String.", "演算子: 文字列リスト結合", "入力リストを文字列2で結合し、String を出力します。");
         addSpellPiece(root, "operator_player_name", "Operator: Player Name", "Outputs the player name if the Entity is a player, otherwise outputs an empty string.", "演算子: プレイヤーネーム", "Entityがプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。");
-        addSpellPiece(root, "operator_list_search", "Operator: List Search", "Keeps only the input List elements whose string form matches the input search string.", "演算子: リスト検索", "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするもののみを残します。");
-        addSpellPiece(root, "operator_list_search_exclude", "Operator: List Search Exclude", "Removes the input List elements whose string form matches the input search string.", "演算子: リスト検索除外", "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするものを除外します。");
+        addSpellPiece(root, "operator_list_search", "Operator: List Keep Matches", "Keeps only the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work.", "演算子: リスト一致抽出", "要素のIDまたは文字列が、パターンと一致するものだけを残します。全体一致で、* ? [abc] を使えます。");
+        addSpellPiece(root, "operator_list_search_exclude", "Operator: List Remove Matches", "Removes the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work.", "演算子: リスト一致除外", "要素のIDまたは文字列が、パターンと一致するものを除きます。全体一致で、* ? [abc] を使えます。");
         addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the input List.", "演算子: ランダム要素", "入力した List からランダムに1要素を出力します。");
         addSpellPiece(root, "operator_list_add", "Operator: Add To List (PT)", "Adds up to three elements to the input List.", "リストへ追加 (PT)", "入力した List に最大3つの要素を追加します。");
         addSpellPiece(root, "operator_list_remove", "Operator: Remove From List (PT)", "Removes up to two elements from the input List.", "リストから削除 (PT)", "入力した List から最大2つの要素を削除します。");
         addSpellPiece(root, "operator_list_remove_indices", "Operator: Remove Indexed Elements", "Removes the elements at Number A and Number B from the input List.", "演算子: インデックス要素削除", "入力した List から数値Aと数値Bに対応するインデックスの要素を削除します。");
         addSpellPiece(root, "operator_list_insert", "Operator: List Insert", "Inserts the input element at the specified index in the input List.", "演算子: リストに挿入", "入力した List の指定インデックスへ要素を挿入します。");
-        addSpellPiece(root, "operator_list_slice", "Operator: List Slice", "Slices the input List from Number A to Number B and returns a new List.", "演算子: リストスライス", "入力した List の要素を 数値A:数値B でスライスした新しい List を返します。");
+        addSpellPiece(root, "operator_list_slice", "Operator: List Slice", "Returns the part of the List from Number A to Number B.", "演算子: リストスライス", "List を 数値A:数値B の範囲で切り出します。");
         addSpellPiece(root, "operator_list_size", "Operator: List Size (PT)", "Outputs the number of elements in the input List.", "演算子: リストサイズ (PT)", "入力した任意の List の要素数を出力します。");
         addSpellPiece(root, "operator_list_exclusion", "Operator: List Exclusion (PT)", "Removes the elements in List 2 from the input List 1.", "演算子: リスト除外 (PT)", "入力したリスト1からリスト2に含まれる要素を除外します。");
         addSpellPiece(root, "operator_list_intersection", "Operator: List Intersection (PT)", "Outputs the elements shared by the two input Lists.", "演算子: リスト共通部分 (PT)", "入力した2つの List に共通する要素を出力します。");
@@ -1530,8 +1522,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し、残りの列を詰めます。");
         addSpellPiece(root, "operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis.", "演算子: 直方体領域", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。");
         addSpellPiece(root, "operator_region_vector_list", "Operator: Region Vector List", "Returns block position vectors inside a matrix-defined region.", "演算子: 領域ベクトルリスト化", "行列で定義された領域内のブロック座標を Vector List として返します。");
-        addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the entities in the input Entity List whose bounding box centers are inside the matrix-defined parallelepiped.", "演算子: 領域内", "入力した Entity List のうち、当たり判定の中心が行列で定義された平行六面体の内部にあるエンティティのみを残します。");
-        addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the entities in the input Entity List whose bounding box centers are outside the matrix-defined parallelepiped.", "演算子: 領域外", "入力した Entity List のうち、当たり判定の中心が行列で定義された平行六面体の外部にあるエンティティのみを残します。");
+        addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the entities in the Entity List whose bounding box center is inside the matrix region.", "演算子: 領域内", "Entity List のうち、当たり判定の中心が行列の領域内にあるものだけを残します。");
+        addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the entities in the Entity List whose bounding box center is outside the matrix region.", "演算子: 領域外", "Entity List のうち、当たり判定の中心が行列の領域外にあるものだけを残します。");
         addSpellPiece(root, "operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。");
         addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトルを変換します。");
         addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します。");
@@ -1551,43 +1543,43 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "macro_caster_axial_rotation_3d", "Macro: Caster Axial Rotation (3D)", "Like Macro: Caster Axial Rotation, but the facing also follows the pitch (X = right, Y = view-up, Z = forward), including when looking straight up or down.", "マクロ: 術者方角回転 (3D)", "マクロ: 術者方角回転と同じですが、視線の上下も基準に含みます。X=右、Y=視点上、Z=前で、真上や真下を向いた時も視点に追随します。");
         addSpellPiece(root, "macro_face_axial_offset", "Macro: Face Axial Offset", "Offsets a position along axes aligned to the block face under the caster's crosshair. If Position is omitted, the hit block is used. Positive values move screen-right, into the block, and screen-up.", "マクロ: 面基準平行移動", "術者の視線が命中したブロック面を基準に、位置を左右・前後・上下へ平行移動します。位置を省略した場合は命中ブロックを使います。正の値で画面右・ブロック内側・画面上へ移動します。");
         addSpellPiece(root, "macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを、術者の視線が命中したブロック面の方向を基準として回転させます。");
-        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. Drops are intentionally collected into the caster's inventory first; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。ドロップは意図的に先に術者のインベントリへ回収され、入りきらない分だけドロップします。");
+        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. Drops go into the caster's inventory; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。ドロップは術者のインベントリに入り、入りきらない分だけ落ちます。");
         addSpellPiece(root, "trick_idea_storage_absorb_fe", "Trick: Ideaspace Storage - FE Absorb", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage.", "作動式: イデアストレージ-FE吸収", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。");
         addSpellPiece(root, "trick_idea_storage_supply_fe", "Trick: Ideaspace Storage - FE Supply", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position.", "作動式: イデアストレージ-FE供給", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。");
-        addSpellPiece(root, "selector_idea_storage_energy", "Selector: Ideaspace Storage Energy", "Returns the FE stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ蓄電量", "自分のイデアストレージに蓄えられているFE量をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_item_amount", "Selector: Ideaspace Storage - Item Amount", "Returns the total item count matching the specified ID in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-アイテム貯蔵量", "自分のイデアストレージ内で、指定したIDと一致するアイテムの合計個数をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_fluid_amount", "Selector: Ideaspace Storage - Fluid Amount", "Returns the total fluid amount in mB matching the specified ID in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-液体貯蔵量", "自分のイデアストレージ内で、指定したIDと一致する液体の合計量（mB）をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_chemical_amount", "Selector: Ideaspace Storage - Chemical Amount", "Returns the chemical amount in mB matching the specified ID in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-化学物質貯蔵量", "自分のイデアストレージ内で、指定したIDと一致する化学物質の量（mB）をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_last_transfer", "Selector: Ideaspace Storage - Last Transfer Amount", "Returns the amount actually moved by the most recent Ideaspace transfer trick earlier in this cast as a Number.", "取得子: イデアストレージ-最終転送量", "この詠唱でそれまでに実行された最後のイデア転送の作動式が、実際に移した量をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_item_free_capacity", "Selector: Ideaspace Storage - Item Free Capacity", "Returns how many more of the specified item your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-アイテム空き容量", "自分のイデアストレージに、指定したアイテムをあと何個格納できるかをNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_fluid_free_capacity", "Selector: Ideaspace Storage - Fluid Free Capacity", "Returns how many more mB of the specified fluid your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-液体空き容量", "自分のイデアストレージに、指定した液体をあと何mB格納できるかをNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_chemical_free_capacity", "Selector: Ideaspace Storage - Chemical Free Capacity", "Returns how many more mB of the specified chemical your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-化学物質空き容量", "自分のイデアストレージに、指定した化学物質をあと何mB格納できるかをNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_energy_free_capacity", "Selector: Ideaspace Storage - FE Free Capacity", "Returns how much more FE your Ideaspace Storage can accept right now as a Number.", "取得子: イデアストレージ-FE空き容量", "自分のイデアストレージに、あと何FE蓄えられるかをNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_item_type_count", "Selector: Ideaspace Storage - Item Type Count", "Returns the number of item types stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-アイテム種類数", "自分のイデアストレージに格納されているアイテムの種類数をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_fluid_type_count", "Selector: Ideaspace Storage - Fluid Type Count", "Returns the number of fluid types stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-液体種類数", "自分のイデアストレージに格納されている液体の種類数をNumberとして取得します。");
-        addSpellPiece(root, "selector_idea_storage_chemical_type_count", "Selector: Ideaspace Storage - Chemical Type Count", "Returns the number of chemical types stored in your Ideaspace Storage as a Number.", "取得子: イデアストレージ-化学物質種類数", "自分のイデアストレージに格納されている化学物質の種類数をNumberとして取得します。");
+        addSpellPiece(root, "selector_idea_storage_energy", "Selector: Ideaspace Storage - Energy", "Returns the stored FE.", "取得子: イデアストレージ-蓄電量", "蓄えているFEの量を取得します。");
+        addSpellPiece(root, "selector_idea_storage_item_amount", "Selector: Ideaspace Storage - Item Amount", "Returns the total item count matching the specified ID.", "取得子: イデアストレージ-アイテム貯蔵量", "指定IDのアイテムの合計個数を取得します。");
+        addSpellPiece(root, "selector_idea_storage_fluid_amount", "Selector: Ideaspace Storage - Fluid Amount", "Returns the total fluid amount in mB matching the specified ID.", "取得子: イデアストレージ-液体貯蔵量", "指定IDの液体の合計量（mB）を取得します。");
+        addSpellPiece(root, "selector_idea_storage_chemical_amount", "Selector: Ideaspace Storage - Chemical Amount", "Returns the chemical amount in mB matching the specified ID.", "取得子: イデアストレージ-化学物質貯蔵量", "指定IDの化学物質の量（mB）を取得します。");
+        addSpellPiece(root, "selector_idea_storage_last_transfer", "Selector: Ideaspace Storage - Last Transfer Amount", "Returns the amount actually moved by the most recent Ideaspace transfer trick earlier in this cast.", "取得子: イデアストレージ-最終転送量", "この詠唱で直前に実行したイデア転送が、実際に移した量を取得します。");
+        addSpellPiece(root, "selector_idea_storage_item_free_capacity", "Selector: Ideaspace Storage - Item Free Capacity", "Returns how many more of the specified item can be stored right now.", "取得子: イデアストレージ-アイテム空き容量", "指定したアイテムをあと何個格納できるかを取得します。");
+        addSpellPiece(root, "selector_idea_storage_fluid_free_capacity", "Selector: Ideaspace Storage - Fluid Free Capacity", "Returns how many more mB of the specified fluid can be stored right now.", "取得子: イデアストレージ-液体空き容量", "指定した液体をあと何mB格納できるかを取得します。");
+        addSpellPiece(root, "selector_idea_storage_chemical_free_capacity", "Selector: Ideaspace Storage - Chemical Free Capacity", "Returns how many more mB of the specified chemical can be stored right now.", "取得子: イデアストレージ-化学物質空き容量", "指定した化学物質をあと何mB格納できるかを取得します。");
+        addSpellPiece(root, "selector_idea_storage_energy_free_capacity", "Selector: Ideaspace Storage - FE Free Capacity", "Returns how much more FE can be stored right now.", "取得子: イデアストレージ-FE空き容量", "あと何FE蓄えられるかを取得します。");
+        addSpellPiece(root, "selector_idea_storage_item_type_count", "Selector: Ideaspace Storage - Item Type Count", "Returns the number of stored item types.", "取得子: イデアストレージ-アイテム種類数", "格納中のアイテムの種類数を取得します。");
+        addSpellPiece(root, "selector_idea_storage_fluid_type_count", "Selector: Ideaspace Storage - Fluid Type Count", "Returns the number of stored fluid types.", "取得子: イデアストレージ-液体種類数", "格納中の液体の種類数を取得します。");
+        addSpellPiece(root, "selector_idea_storage_chemical_type_count", "Selector: Ideaspace Storage - Chemical Type Count", "Returns the number of stored chemical types.", "取得子: イデアストレージ-化学物質種類数", "格納中の化学物質の種類数を取得します。");
         addSpellPiece(root, "trick_idea_storage_view", "Trick: View Ideaspace Storage", "Opens a GUI to view and manage your Ideaspace Storage. Only works when cast by a player.", "作動式: イデアストレージ閲覧", "自分のイデアストレージを閲覧・出し入れするGUIを開きます。プレイヤーの詠唱時のみ有効です。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
         addIdeaResourceLogistics(root);
         addIdeaSlotLogistics(root);
-        addBookPage(root, "selector_idea_storage_energy", "Returns the FE currently stored in your Ideaspace Storage as a Number. No inputs are required. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked together with the other Ideaspace Storage pieces by using Program: Ideaspace Storage. Reading the balance does not consume FE.", "自分のイデアストレージに現在蓄えられているFE量をNumberとして取得します。入力は不要です。規模0、複雑性1、コスト0です。プログラム: イデアストレージを使用すると、他のイデアストレージ系ピースと共に解禁されます。取得してもFEは消費しません。");
+        addBookPage(root, "selector_idea_storage_energy", "Returns the FE currently stored in your Ideaspace Storage as a Number.", "自分のイデアストレージに現在蓄えられているFE量をNumberとして取得します。");
         addBookPage(root, "selector_idea_storage_item_amount",
-                "Returns the total count of items with the specified ID in your Ideaspace Storage as a Number. Switch between String input (e.g. minecraft:stone) and Item input, which uses that item's ID. Items with different data components are counted together when their IDs match. Invalid IDs, empty Item values and missing stock return 0. Reading does not consume resources. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.",
-                "自分のイデアストレージ内で、指定したIDのアイテムの合計個数をNumberとして取得します。入力はString（例: minecraft:stone）とItemをモード切替でき、ItemではそのアイテムのIDを使います。同じIDならデータコンポーネントが異なるものも合算します。不正なID・空のItem・在庫なしの場合は0を返します。資源は消費しません。規模0、複雑性1、コスト0。プログラム: イデアストレージで解禁されます。");
+                "Returns the total count of items with the specified ID in your Ideaspace Storage as a Number. Switch between String input (e.g. minecraft:stone) and Item input, which uses that item's ID. Items with different data components are counted together when their IDs match. Invalid IDs, empty Item values and missing stock return 0.",
+                "自分のイデアストレージ内で、指定したIDのアイテムの合計個数をNumberとして取得します。入力はString（例: minecraft:stone）とItemをモード切替でき、ItemではそのアイテムのIDを使います。同じIDならデータコンポーネントが異なるものも合算します。不正なID・空のItem・在庫なしの場合は0を返します。");
         addBookPage(root, "selector_idea_storage_fluid_amount",
-                "Accepts a fluid ID as a String (e.g. minecraft:water) and returns its total amount in your Ideaspace Storage in mB as a Number. Fluids with different data components are counted together when their IDs match. Invalid IDs and missing stock return 0. Reading does not consume resources. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.",
-                "液体のIDをString（例: minecraft:water）で受け取り、自分のイデアストレージ内の合計量をmB単位のNumberとして取得します。同じIDならデータコンポーネントが異なるものも合算します。不正なID・在庫なしの場合は0を返します。資源は消費しません。規模0、複雑性1、コスト0。プログラム: イデアストレージで解禁されます。");
+                "Accepts a fluid ID as a String (e.g. minecraft:water) and returns its total amount in your Ideaspace Storage in mB as a Number. Fluids with different data components are counted together when their IDs match. Invalid IDs and missing stock return 0.",
+                "液体のIDをString（例: minecraft:water）で受け取り、自分のイデアストレージ内の合計量をmB単位のNumberとして取得します。同じIDならデータコンポーネントが異なるものも合算します。不正なID・在庫なしの場合は0を返します。");
         addBookPage(root, "selector_idea_storage_chemical_amount",
-                "Accepts a chemical ID as a String (e.g. mekanism:hydrogen) and returns its stored amount in your Ideaspace Storage in mB as a Number. Invalid IDs and missing stock return 0. Reading does not consume resources. Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.",
-                "化学物質のIDをString（例: mekanism:hydrogen）で受け取り、自分のイデアストレージ内の保管量をmB単位のNumberとして取得します。不正なID・在庫なしの場合は0を返します。資源は消費しません。規模0、複雑性1、コスト0。プログラム: イデアストレージで解禁されます。");
+                "Accepts a chemical ID as a String (e.g. mekanism:hydrogen) and returns its stored amount in your Ideaspace Storage in mB as a Number. Invalid IDs and missing stock return 0.",
+                "化学物質のIDをString（例: mekanism:hydrogen）で受け取り、自分のイデアストレージ内の保管量をmB単位のNumberとして取得します。不正なID・在庫なしの場合は0を返します。");
         addIdeaStorageSelectorPages(root);
-        addBookPage(root, "trick_idea_storage_supply_fe", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position. Transfers only the amount available and accepted. Position (Vector), Power (Number), and Direction (Vector) are required. Power must be positive. Uses your Ideaspace Storage research unlock.", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。残量や空き容量が不足する場合は、移動できる分だけ転送します。位置（Vector）・威力（Number）・方向（Vector）が必須です。威力は正の数を指定してください。イデアストレージ用プログラムで解禁されます。");
-        addBookPage(root, "trick_idea_storage_absorb_fe", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage. Transfers only the amount available and accepted. Position (Vector), Power (Number), and Direction (Vector) are required. Power must be positive. Uses your Ideaspace Storage research unlock.", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。残量や空き容量が不足する場合は、移動できる分だけ転送します。位置（Vector）・威力（Number）・方向（Vector）が必須です。威力は正の数を指定してください。イデアストレージ用プログラムで解禁されます。");
+        addBookPage(root, "trick_idea_storage_supply_fe", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position. Transfers only the amount available and accepted. Power must be positive.", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。残量や空き容量が不足する場合は、移動できる分だけ転送します。威力は正の数を指定してください。");
+        addBookPage(root, "trick_idea_storage_absorb_fe", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage. Transfers only the amount available and accepted. Power must be positive.", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。残量や空き容量が不足する場合は、移動できる分だけ転送します。威力は正の数を指定してください。");
         addBookPage(root, "trick_idea_storage_view.0",
-                "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE Absorb and FE Supply tricks; its balance appears in the storage grid, and the information button also shows capacity.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
-                "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismの化学物質・FEを保管できます。FEはFE吸収・FE供給の作動式で転送し、一覧のスロットで残量、情報ボタンで上限も確認できます。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
+                "Opens your personal Ideaspace Storage. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE Absorb and FE Supply tricks; its balance appears in the storage grid, and the information button also shows capacity.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
+                "自分専用のイデアストレージを開きます。アイテム・液体・Mekanismの化学物質・FEを保管できます。FEはFE吸収・FE供給の作動式で転送し、一覧のスロットで残量、情報ボタンで上限も確認できます。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
         addBookPage(root, "trick_idea_storage_view.1",
                 "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory. Right-click while holding a normal item to store just one. Fluid and chemical containers keep their contents-transfer behavior.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.",
                 "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。通常アイテムを持って右クリックすると1個だけ格納します。液体・ケミカル容器は従来どおり中身を転送します。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");
@@ -1710,8 +1702,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_string_trim", "Removes whitespace characters (such as spaces, tabs, and line breaks) from the beginning and end of the input String. Whitespace inside the String is preserved.", "入力した文字列の先頭と末尾にある空白（スペース, タブ, 改行など）を削除します. 文字列の途中にある空白は残ります.");
         addBookPage(root, "operator_string_list_join", "Joins the input String List with String 2 and outputs a String. If String 2 is not connected, a comma is used. Empty delimiters are allowed and concatenate the elements directly.", "入力リストを文字列2で結合し, String を出力します. 文字列2が未接続の場合はカンマを使います. 空の区切り文字は許可され, 要素を直接連結します.");
         addBookPage(root, "operator_player_name", "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.", "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.");
-        addBookPage(root, "operator_list_search", "Filters the selected List mode by comparing the String input with each element's search text. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. The String input accepts wildcards: * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.", "選択中の List モードを, 各要素の検索用文字列で絞り込みます. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. String入力ではワイルドカードを利用でき, * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.");
-        addBookPage(root, "operator_list_search_exclude", "Filters the selected List mode by removing elements whose search text matches the input wildcard. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.", "選択中の List モードから, 検索用文字列が入力ワイルドカードに一致する要素を除外します. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.");
+        addBookPage(root, "operator_list_search", "Keeps only the elements of the selected List mode that match the pattern. Entity and contextual values such as Item and Block compare by registry ID; other values use the same text as Operator: To String. If the pattern has no namespace such as \"minecraft:\", only the rest of the ID is compared. * matches any text, ? one character, and [abc] one of the listed characters. The whole text must match; use *zombie* for a partial match.", "選択中の List モードから, パターンに一致する要素だけを残します. Entity と Item/Block などの Contextual Value はレジストリIDで, それ以外は 演算子: 文字列へ変換 と同じ文字列で比較します. 「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で, 部分一致には *zombie* のように前後に * を付けます.");
+        addBookPage(root, "operator_list_search_exclude", "Removes the elements of the selected List mode that match the pattern. Entity and contextual values such as Item and Block compare by registry ID; other values use the same text as Operator: To String. If the pattern has no namespace such as \"minecraft:\", only the rest of the ID is compared. * matches any text, ? one character, and [abc] one of the listed characters. The whole text must match; use *zombie* for a partial match.", "選択中の List モードから, パターンに一致する要素を除きます. Entity と Item/Block などの Contextual Value はレジストリIDで, それ以外は 演算子: 文字列へ変換 と同じ文字列で比較します. 「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で, 部分一致には *zombie* のように前後に * を付けます.");
         addBookPage(root, "operator_random_element", "Returns one random element from the input List.", "入力された List から要素を1つランダムに返します.");
         addBookPage(root, "operator_list_add", "Adds up to three input elements to the input List.", "入力された List に最大3つの入力要素を追加します.");
         addBookPage(root, "operator_list_remove", "Removes up to two input elements from the input List.", "入力された List から最大2つの入力要素を削除します.");
@@ -1854,8 +1846,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Equips in the Magic Calculation Area slot and increases spell damage by 30%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l), making it a combat-focused caster upgrade.";
         });
         root.addProperty("psi.book.page.psitweaks_item.gravstringer.0", switch (locale) {
-            case "ja_jp" -> "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. $(item)グラヴィタイズドプレート$(0) と $(item)超ひも$(0), $(item)不可思議な機構$(0) で製作します. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出することが可能です.";
-            default -> "The $(item)Gravstringer$(0) is an upgraded version of the Psimetal Bow, crafted from $(item)Gravitized Plates$(0), $(item)Superstring$(0), and an $(item)Unfathomable Component$(0). Arrow damage and draw speed are greatly improved, it has no durability, and it provides 11 spell bullet sockets.$(p)It can fire its dedicated $(item)Tunneler$(0) ammunition.";
+            case "ja_jp" -> "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出することが可能です.";
+            default -> "The $(item)Gravstringer$(0) is an upgraded version of the Psimetal Bow. Arrow damage and draw speed are greatly improved, it has no durability, and it provides 11 spell bullet sockets.$(p)It can fire its dedicated $(item)Tunneler$(0) ammunition.";
         });
         root.addProperty("psi.book.page.psitweaks_item.gravstringer.1", switch (locale) {
             case "ja_jp" -> "スニーク+左クリックで射撃モードを切り替えます. 射撃モードはトンネラーを射出する際のみ影響します.$(li)通常モード: 5秒間重力の影響を受けず直進する高速の矢を3本放ちます.$(li)低速モード: 非常に低速で重力の影響を受けない矢を3本発射します. 60秒で消滅します.$(li)ハイブリッドモード: 中央に通常, 左右に低速の矢を放ちます.$(p)詠唱した術式弾は中央の矢にのみ付与されます.";
@@ -1877,8 +1869,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "$(thing)M.O.V.A.L. Suit$(0) is a stronger suit derived from Psi's exosuit armor. It has high durability and protection, and it can cast installed spell bullets from specific armor events.";
         });
         root.addProperty("psi.book.page.psitweaks_item.moval_suit.1", switch (locale) {
-            case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復量+5, 最大Psi量+500を付与します. Psi回復量と最大Psi量はPsi本体のAttributeを使用します.";
-            default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi. Psi regeneration and maximum Psi use Psi's own attributes.";
+            case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復量+5, 最大Psi量+500を付与します.";
+            default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi.";
         });
     }
 
@@ -1896,8 +1888,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "MekaSuit Modules";
         });
         root.addProperty("psi.book.page.psitweaks_mekanism_integration.0", switch (locale) {
-            case "ja_jp" -> "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) を $(thing)Mekanism$(0) の進行へ接続します. 連携要素には, Psi素材を作る冶金吹き込みレシピ, 魔法師能力を伸ばすMekaSuitモジュール, Psi・FE・サイオニック資源を扱う機械があります.$(p)正確なレシピはJEIで確認してください. この項目では各要素の役割をまとめます.";
-            default -> "$(thing)PsiTweaks$(0) ties $(thing)Psi$(0) into $(thing)Mekanism$(0) progression. Its integration covers Metallurgic Infusing recipes for Psi materials, MekaSuit modules that improve caster stats, and machines that exchange Psi, FE, and psionic resources.$(p)Use JEI as the exact recipe reference; this entry explains what each group is for.";
+            case "ja_jp" -> "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) を $(thing)Mekanism$(0) の進行へ接続します. 連携要素には, Psi素材を作る冶金吹き込みレシピ, 魔法師能力を伸ばすMekaSuitモジュール, Psi・FE・サイオニック資源を扱う機械があります.$(p)正確なレシピはJEIで確認してください.";
+            default -> "$(thing)PsiTweaks$(0) ties $(thing)Psi$(0) into $(thing)Mekanism$(0) progression. Its integration covers Metallurgic Infusing recipes for Psi materials, MekaSuit modules that improve caster stats, and machines that exchange Psi, FE, and psionic resources.$(p)See JEI for exact recipes.";
         });
         root.addProperty("psi.book.page.psitweaks_mekanism_integration.1", switch (locale) {
             case "ja_jp" -> "$(item)冶金吹き込み機$(0) では, PsiTweaks の注入タイプを使って主要なPsi素材を作れます. サイジェム注入はレッドストーンを$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)に, 金インゴットを$(item)サイメタル$(0)に変換します.$(p)エボニー注入とアイボリー注入では, $(item)エボニー基質$(0), $(item)アイボリー基質$(0), それぞれのサイメタル派生素材を作れます. さらに$(l:components/psitweaks_chaotic_factor)サイオニック因子$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l), $(l:components/psitweaks_psionic_echo)サイオニックエコー素材$(/l), $(l:components/psitweaks_alloy_hypostasis)位格合金$(/l)へ発展します.";
@@ -1960,7 +1952,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"slot_settings", "搬入出設定(公開枠 %s)", "I/O settings (Slot %s)"},
                 {"use_common", "共通設定を使用", "Use shared settings"},
                 {"use_individual", "個別設定を使用", "Use individual settings"},
-                {"inherit_hint", "クリックで切り替え。個別設定に切り替えると、現在の共通設定をコピーします。", "Click to switch. Switching to individual settings copies the current shared settings."},
+                {"inherit_hint", "個別設定に切り替えると、現在の共通設定をコピーします。", "Switching to individual settings copies the current shared settings."},
                 {"back", "戻る", "Back"},
                 {"faces", "面ごとの入出力・自動搬出", "Connections / auto output"},
                 {"mode.both", "入出力", "In / Out"},
@@ -1973,19 +1965,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"redstone.always", "常時動作", "Always active"},
                 {"redstone.high", "信号ありで動作", "When powered"},
                 {"redstone.low", "信号なしで動作", "When unpowered"},
-                {"redstone_hint", "%s面の動作条件。どの面からの信号もブロック全体で共有します。停止中は、この面の搬入・搬出・自動搬出をすべて停止します。",
-                        "Condition for the %s face. Signals from any face are shared by the whole block. When inactive, this face blocks input, extraction and automatic output."},
+                {"redstone_hint", "%s面の動作条件です。信号はどの面から受けてもブロック全体で共有し、停止中はこの面の搬入・搬出をすべて止めます。",
+                        "Condition for the %s face. A signal on any face counts for the whole block. While inactive, this face stops all input and output."},
                 {"redstone_all.always", "全6面: 常時", "All: Always"},
                 {"redstone_all.high", "全6面: 信号あり", "All: Powered"},
                 {"redstone_all.low", "全6面: 信号なし", "All: Unpowered"},
                 {"redstone_all.mixed", "全6面: 個別", "All: Mixed"},
-                {"redstone_all_hint", "クリックで編集中の設定の全6面を一括変更します。常時→信号あり→信号なしの順に切り替えます。面ごとに条件が異なる場合は常時に揃えます。",
-                        "Click to set all six faces at once: always, powered, then unpowered. Mixed conditions reset to always. Applies to the profile currently being edited."},
+                {"redstone_all_hint", "全6面の条件をまとめて切り替えます。面ごとに違う場合は常時に揃えます。",
+                        "Switches all six faces together. Mixed faces are reset to Always."},
                 {"face.down", "下", "Down"}, {"face.up", "上", "Up"},
                 {"face.north", "北", "North"}, {"face.south", "南", "South"},
                 {"face.west", "西", "West"}, {"face.east", "東", "East"},
-                {"help", "アイテムを持った状態で左クリックで設定。液体・化学物質が入ったアイテムを右クリックで中身の液体・化学物質を設定可能。 設定に資源は消費しません。",
-                        "Left-click while holding an item to configure it. Right-click while holding an item containing a fluid or chemical to configure its contents. Configuration consumes no resources."},
+                {"help", "アイテムを持って左クリック、液体・化学物質の容器を持って右クリックで公開枠に設定します。資源は消費しません。",
+                        "Click a slot with an item (left) or a fluid/chemical container (right) to set it. Nothing is consumed."},
                 {"energy_hint", "公開枠にドラッグしてFEを設定", "Drag onto a published slot to assign FE"},
                 {"template_too_large", "このアイテムは設定データが大きすぎます。", "This item's filter data is too large."},
                 {"amount", "イデアストレージ内: %s", "In Ideaspace Storage: %s"},
@@ -1997,25 +1989,25 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"input_mode.allow_list", "許可リスト", "Allow list"},
                 {"input_mode.deny_list", "拒否リスト", "Deny list"},
                 {"input_mode.existing", "在庫のある種類のみ", "Stored types only"},
-                {"input_hint", "全6面の搬入に適用されます。リスト用の9枠は公開枠とは別です。アイテムを持って左クリックで登録、液体や化学物質の容器を持って右クリックで中身を登録、何も持たずに右クリックで解除します。耐久値などのデータまで一致するものだけが対象です。「在庫のある種類のみ」は、ストレージに1以上ある種類だけを受け入れます。FEは対象外です。",
-                        "Applies to input on all six faces. The nine list slots are separate from the published slots. Left-click with an item to register it, right-click with a fluid or chemical container to register its contents, and right-click with an empty cursor to clear. Only resources with identical data, such as durability, match. Stored types only accepts types the storage holds at least one of. FE is unaffected."},
+                {"input_hint", "全6面の搬入に適用します。アイテムを持って左クリック、液体・化学物質の容器を持って右クリックで登録します。耐久値などのデータまで一致するものが対象で、FEは常に受け入れます。",
+                        "Applies to input on all six faces. Click a slot with an item (left) or a fluid/chemical container (right) to register it. Only resources with identical data, such as durability, match. FE is always accepted."},
                 {"stock_settings", "在庫条件", "Stock rules"},
                 {"stock_common_title", "在庫条件(共通)", "Stock rules (Shared)"},
                 {"stock_slot_title", "在庫条件(枠 %s)", "Stock rules (Slot %s)"},
                 {"minimum_stock", "開始在庫", "Min. storage stock"},
                 {"target_stock", "目標在庫", "Target stock"},
-                {"minimum_stock_hint", "ストレージの在庫がこの量以上のときだけ自動搬出します。0で条件なし。残量を確保する機能ではないので、1回の搬出でこの量を下回ることがあります。",
-                        "Automatic export runs only while the storage holds at least this amount. 0 means no condition. This does not keep a reserve, so a single export may drop below it."},
-                {"target_stock_hint", "搬出先の、接続している面から見える同じ資源の量を数え、この量に足りない分だけ自動搬出します。空欄で無効。他の機器がコネクターから引き出す場合には影響しません。",
-                        "Counts the same resource visible through the connected face of the destination and exports only what is missing to reach this amount. Blank turns it off. Does not affect other devices extracting from the connector."},
+                {"minimum_stock_hint", "ストレージにこの量以上あるときだけ自動搬出します。0で条件なし。",
+                        "Auto export runs only while storage holds at least this amount. 0 = no condition."},
+                {"target_stock_hint", "搬出先にある同じ資源がこの量になるまで自動搬出します。",
+                        "Auto export tops the destination up to this amount of the same resource."},
                 {"target_disabled", "無効", "Off"},
                 {"stock_hint", "目標在庫: 空欄で無効", "Target stock: blank = off"},
                 {"copy", "コピー", "Copy"},
                 {"paste", "貼り付け", "Paste"},
-                {"copy_hint", "公開枠・搬入出設定・自動搬出量・在庫条件・搬入フィルタをJSONとしてクリップボードにコピーします。Ctrl+Cでも操作できます。",
-                        "Copies published slots, I/O settings, export rates, stock rules and input filters to the clipboard as JSON. Ctrl+C also works."},
-                {"paste_hint", "クリップボードのJSONから設定を読み込みます。JSONにない項目（faces・export・slots・input）は変更しません。Ctrl+Vでも操作できます。",
-                        "Loads settings from JSON in the clipboard. Sections missing from the JSON (faces, export, slots, input) stay unchanged. Ctrl+V also works."},
+                {"copy_hint", "イデアコネクターの設定をクリップボードにコピーします。Ctrl+Cでも操作可能です。",
+                        "Copies this connector's settings to the clipboard. Ctrl+C also works."},
+                {"paste_hint", "クリップボードからイデアコネクターの設定を貼り付けます。Ctrl+Vでも操作可能です。",
+                        "Pastes connector settings from the clipboard. Ctrl+V also works."},
                 {"clipboard.copied", "設定をクリップボードにコピーしました", "Copied the settings to the clipboard"},
                 {"clipboard.copy_too_large", "設定データが大きすぎるためコピーできません", "The settings are too large to copy"},
                 {"clipboard.pasted", "設定を貼り付けました", "Pasted the settings"},
@@ -2033,8 +2025,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places an Ideaspace Connector linked to your Ideaspace Storage at the specified position.",
                 "作動式: イデアコネクター", "指定位置に、自分のイデアストレージへ接続するイデアコネクターを設置します。");
         addBookPage(root, "trick_ideaspace_connector.0",
-                "Places an Ideaspace Connector at the input position (Vector). Potency: 100. Complexity: 1. Psi cost: 500. Unlocked with Program: Ideaspace Storage. Its appearance uses only conjured-block particles in the CAD color. It does not expire; breaking it drops no block item and leaves your stored resources intact.",
-                "位置(Vector)の座標にイデアコネクターを設置します。規模100、複雑性1、コスト500です。プログラム: イデアストレージで解禁されます。外観はCADの色を使った魔法ブロックのパーティクルのみです。時間経過では消えず、破壊時にブロックアイテムは落ちません。ストレージの中身は保持されます。");
+                "Places an Ideaspace Connector at the input position (Vector). Its appearance uses only conjured-block particles in the CAD color. It does not expire; breaking it drops no block item and leaves your stored resources intact.",
+                "位置(Vector)の座標にイデアコネクターを設置します。外観はCADの色を使った魔法ブロックのパーティクルのみです。時間経過では消えず、破壊時にブロックアイテムは落ちません。ストレージの中身は保持されます。");
         addBookPage(root, "trick_ideaspace_connector.1",
                 "Incoming items, fluids, chemicals and FE enter the owner's Ideaspace Storage directly. Right-click to configure up to nine published resources. External devices can extract only these resources. Configuration consumes nothing; the connector holds no inventory. Only the owner can configure it, and it works while the owner is offline if its chunk is loaded. Chemicals require Mekanism.",
                 "搬入されたアイテム・液体・化学物質・FEは、設置者のイデアストレージに直接収納されます。右クリックの設定画面で最大9種類を公開し、外部機器から搬出できます。設定に資源は消費せず、ブロック内に在庫は持ちません。設定変更は設置者のみ可能です。チャンクが読み込まれていれば設置者がオフラインでも利用できます。化学物質にはMekanismが必要です。");
@@ -2045,8 +2037,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Each face can run always, when powered, or when unpowered. Signals received on any face are shared by the whole connector. An inactive face blocks external input, extraction and automatic output for items, fluids, chemicals and FE. Conditions follow the shared or individual slot settings. The All button changes all six faces of the current profile together. New and existing connectors default to always active.",
                 "各面の動作条件を「常時動作」「信号ありで動作」「信号なしで動作」から選べます。どの面から受けた信号もブロック全体で共有します。停止中の面は、アイテム・液体・化学物質・FEの外部からの搬入・搬出と自動搬出を停止します。条件は共通設定を基本に、公開枠ごとに上書きできます。「全6面」ボタンで編集中の設定の6面を一括変更できます。初期値と既存のコネクターは常時動作です。");
         addBookPage(root, "trick_ideaspace_connector.4",
-                "The Input filter limits which resources are accepted. It applies to all six faces and has four modes: Accept all, Allow list, Deny list, and Stored types only. The nine list slots are separate from the published slots, match only resources with identical data such as durability, and never consume resources. Stored types only accepts types the storage holds at least one of, so a type that runs out is no longer accepted. FE is unaffected. Defaults to Accept all.",
-                "「搬入フィルタ」で、受け入れる資源を制限できます。全6面に適用され、方式は「すべて許可」「許可リスト」「拒否リスト」「在庫のある種類のみ」の4つです。リスト用の9枠は公開枠とは別で、耐久値などのデータまで一致するものだけが対象です。登録しても資源は消費しません。「在庫のある種類のみ」は、ストレージに1以上ある種類だけを受け入れます。在庫が0になった種類は受け入れなくなります。FEは対象外です。初期値は「すべて許可」です。");
+                "The Input filter limits which resources are accepted. It applies to all six faces and has four modes: Accept all, Allow list, Deny list, and Stored types only. The nine list slots are separate from the published slots, match only resources with identical data such as durability, and never consume resources. Stored types only accepts types the storage holds at least one of, so a type that runs out is no longer accepted. FE is always accepted. Defaults to Accept all.",
+                "「搬入フィルタ」で、受け入れる資源を制限できます。全6面に適用され、方式は「すべて許可」「許可リスト」「拒否リスト」「在庫のある種類のみ」の4つです。リスト用の9枠は公開枠とは別で、耐久値などのデータまで一致するものだけが対象です。登録しても資源は消費しません。「在庫のある種類のみ」は、ストレージに1以上ある種類だけを受け入れます。在庫が0になった種類は受け入れなくなります。FEは常に受け入れます。初期値は「すべて許可」です。");
         addBookPage(root, "trick_ideaspace_connector.5",
                 "Stock rules adjust when and how much automatic export sends. Min. storage stock exports only while the storage holds at least that amount. It does not keep a reserve, so a single export may drop below it. Target stock counts the same resource visible through the connected face of the destination and exports only what is missing (blank = off). Both can be combined and follow the shared or per-slot settings. They do not apply when other devices extract from the connector.",
                 "自動搬出の「在庫条件」で、搬出のタイミングと量を調整できます。「開始在庫」を設定すると、ストレージにその量以上あるときだけ搬出します。残量を確保する機能ではないので、1回の搬出で下回ることがあります。「目標在庫」を設定すると、搬出先の接続面から見える同じ資源を数え、目標に足りない分だけ搬出します（空欄で無効）。両方を併用でき、共通設定と公開枠ごとの個別設定に従います。他の機器がコネクターから引き出す場合には適用されません。");
@@ -2056,16 +2048,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
     }
 
     private void addIdeaStorageSelectorPages(JsonObject root) {
-        String enUnlock = " Potency: 0. Complexity: 1. Psi cost: 0. Unlocked with Program: Ideaspace Storage.";
-        String jpUnlock = "規模0、複雑性1、コスト0。プログラム: イデアストレージで解禁されます。";
         String enFree = " the per-type limit minus the stock, or 0 for a new type while every type slot is in use.";
         String jpFree = "1種類あたりの上限から在庫を引いた値で、種類数が上限に達しているときに新しい種類を指定すると0です。";
         addBookPage(root, "selector_idea_storage_last_transfer.0",
                 "Returns the amount actually moved by the most recent Ideaspace transfer trick that ran earlier in the same cast, as a Number."
                         + " The units match the storage amount selectors: items are counted one by one, fluids and chemicals in mB, and FE in FE."
-                        + " Returns 0 if no such trick has run yet." + enUnlock,
+                        + " Returns 0 if no such trick has run yet.",
                 "同じ詠唱の中で、それまでに実行された最後のイデア転送の作動式が実際に移した量をNumberとして取得します。"
-                        + "単位は貯蔵量の取得子と同じで、アイテムは個数、液体・化学物質はmB、FEはFEです。まだ実行されていなければ0です。" + jpUnlock);
+                        + "単位は貯蔵量の取得子と同じで、アイテムは個数、液体・化学物質はmB、FEはFEです。まだ実行されていなければ0です。");
         addBookPage(root, "selector_idea_storage_last_transfer.1",
                 "Counted tricks: item, fluid and chemical Deposit/Withdraw, Slot Deposit/Withdraw, FE Absorb and FE Supply."
                         + " A trick that moves nothing (an Exact Transfer that falls short included) or stops with an error records 0."
@@ -2077,35 +2067,31 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_idea_storage_item_free_capacity",
                 "Returns how many more of the specified item your Ideaspace Storage can accept now, as a Number:" + enFree
                         + " Switch between String input (an item ID, meaning the item without extra data components) and Item input, which keeps its data components."
-                        + " Invalid IDs and empty Item values return 0." + enUnlock,
+                        + " Invalid IDs and empty Item values return 0.",
                 "自分のイデアストレージに、指定したアイテムを今あと何個格納できるかをNumberとして取得します。" + jpFree
                         + "入力はString（アイテムID。追加のデータコンポーネントなし）とItem（データコンポーネントを含む）をモード切替できます。"
-                        + "不正なID・空のItemは0です。" + jpUnlock);
+                        + "不正なID・空のItemは0です。");
         addBookPage(root, "selector_idea_storage_fluid_free_capacity",
                 "Accepts a fluid ID as a String (e.g. minecraft:water) and returns how many more mB of it your Ideaspace Storage can accept now, as a Number:"
-                        + enFree + " The fluid is taken without extra data components. Invalid IDs return 0." + enUnlock,
+                        + enFree + " The fluid is taken without extra data components. Invalid IDs return 0.",
                 "液体のIDをString（例: minecraft:water）で受け取り、自分のイデアストレージに今あと何mB格納できるかをNumberとして取得します。" + jpFree
-                        + "追加のデータコンポーネントがない液体として扱います。不正なIDは0を返します。" + jpUnlock);
+                        + "追加のデータコンポーネントがない液体として扱います。不正なIDは0を返します。");
         addBookPage(root, "selector_idea_storage_chemical_free_capacity",
                 "Accepts a chemical ID as a String (e.g. mekanism:hydrogen) and returns how many more mB of it your Ideaspace Storage can accept now, as a Number:"
-                        + enFree + " Invalid IDs return 0, as does every ID without Mekanism." + enUnlock,
+                        + enFree + " Invalid IDs return 0, as does every ID without Mekanism.",
                 "化学物質のIDをString（例: mekanism:hydrogen）で受け取り、自分のイデアストレージに今あと何mB格納できるかをNumberとして取得します。" + jpFree
-                        + "不正なIDや、Mekanismが導入されていない場合は0を返します。" + jpUnlock);
+                        + "不正なIDや、Mekanismが導入されていない場合は0を返します。");
         addBookPage(root, "selector_idea_storage_energy_free_capacity",
-                "Returns how much more FE your Ideaspace Storage can accept now, as a Number: the FE capacity minus the stored FE."
-                        + " No inputs are required. Reading does not consume FE." + enUnlock,
-                "自分のイデアストレージに今あと何FE蓄えられるか（FEの上限から蓄電量を引いた値）をNumberとして取得します。"
-                        + "入力は不要です。取得してもFEは消費しません。" + jpUnlock);
+                "Returns how much more FE your Ideaspace Storage can accept now, as a Number: the FE capacity minus the stored FE.",
+                "自分のイデアストレージに今あと何FE蓄えられるか（FEの上限から蓄電量を引いた値）をNumberとして取得します。");
         String[][] counts = {{"item", "item", "アイテム"}, {"fluid", "fluid", "液体"}, {"chemical", "chemical", "化学物質"}};
         for (String[] count : counts) {
             boolean components = !count[0].equals("chemical");
             addBookPage(root, "selector_idea_storage_" + count[0] + "_type_count",
                     "Returns the number of " + count[1] + " types currently stored in your Ideaspace Storage, as a Number."
-                            + (components ? " Different data components count as separate types." : "")
-                            + " This is the count the information button compares with the type limit. No inputs are required." + enUnlock,
+                            + (components ? " Different data components count as separate types." : ""),
                     "自分のイデアストレージに現在格納されている" + count[2] + "の種類数をNumberとして取得します。"
-                            + (components ? "データコンポーネントが異なるものは別の種類として数えます。" : "")
-                            + "情報ボタンで種類数の上限と並べて表示される値と同じです。入力は不要です。" + jpUnlock);
+                            + (components ? "データコンポーネントが異なるものは別の種類として数えます。" : ""));
         }
     }
 
@@ -2151,12 +2137,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             addSpellPiece(root, id, "Trick: Ideaspace Storage - " + type[2] + (deposit ? " Deposit" : " Withdraw"), en,
                     "作動式: イデアストレージ-" + type[3] + (deposit ? "格納" : "取出"), jp);
             addBookPage(root, id + ".0",
-                    en + (chemical ? " Requires Mekanism." : "") + " Partial Transfer (default) moves as much as it can. Position and Direction (Vector) and "
-                            + type[6] + " (Number) are required; " + type[10] + " is optional. " + type[6] + " must be positive; " + type[8]
-                            + " are rounded down. Potency: 50. Complexity: 1. Psi cost: 100. Unlocked with Program: Ideaspace Storage.",
-                    jp + (chemical ? "Mekanismが必要です。" : "") + "部分転送（既定）では、移せる分だけ移します。位置・方向（Vector）と" + type[7]
-                            + "（Number）は必須、" + type[11] + "は任意です。" + type[7] + "には正の数を指定し、" + type[9]
-                            + "は切り捨てます。規模50、複雑性1、コスト100。プログラム: イデアストレージで解禁されます。");
+                    en + (chemical ? " Requires Mekanism." : "") + " Partial Transfer (default) moves as much as it can. The filter is optional. " + type[6] + " must be positive; " + type[8]
+                            + " are rounded down.",
+                    jp + (chemical ? "Mekanismが必要です。" : "") + "部分転送（既定）では、移せる分だけ移します。フィルタは省略できます。" + type[7] + "には正の数を指定し、" + type[9]
+                            + "は切り捨てます。");
             String enFilter = "With no filter or an empty String, every " + type[1].substring(0, type[1].length() - 1) + " is a target. "
                     + (item ? "In String mode the filter" : "The filter") + " matches resource IDs and supports * (any text) and ? (any single character). "
                     + "Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods (" + type[12] + ").";
@@ -2210,10 +2194,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "指定スロットとのイデア転送に失敗しました。詳細はサーバーログを確認してください";
             default -> "Ideaspace transfer with the target slot failed. Check the server log for details";
         });
-        String enInputs = " Number (Number) is required; the filter (String/Item) is optional. Number must be positive; fractions of an item are rounded down."
-                + " Potency: 50. Complexity: 1. Psi cost: 100. Unlocked with Program: Ideaspace Storage.";
-        String jpInputs = "数値（Number）は必須、フィルタ（String/Item）は任意です。数値には正の数を指定し、1個未満の端数は切り捨てます。"
-                + "規模50、複雑性1、コスト100。プログラム: イデアストレージで解禁されます。";
+        String enInputs = " The filter is optional. Number must be positive; fractions of an item are rounded down.";
+        String jpInputs = "フィルタは省略できます。数値には正の数を指定し、1個未満の端数は切り捨てます。";
         String enSlot = "The target slot is the same one used by Psi pieces such as Trick: Place Block. By default it is the hotbar slot to the right of your CAD,"
                 + " and it can be changed with Trick: Switch Focus Slot (Hotbar) or Trick: Slot Change (Inventory)."
                 + " Has no effect on the slot holding the CAD in use or the tool casting the spell. Casting without a CAD fails with an error.";
