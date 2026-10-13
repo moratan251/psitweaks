@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.common.compat.BlockResourceMekanism;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
+import java.util.OptionalLong;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -58,13 +59,13 @@ public class PieceOperatorBlockResourceAmount extends PieceOperatorBlockResource
     }
 
     @Override
-    protected long readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side, @Nullable String resource,
-                                 boolean pooled) {
+    protected OptionalLong readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side,
+                                         @Nullable String resource, boolean pooled) {
         return BlockResourceMekanism.amount(level, pos, side, idFilter(resource));
     }
 
     @Override
-    protected long readEnergy(IEnergyStorage storage) {
+    protected long readEnergy(IEnergyStorage storage, boolean pooled) {
         return Math.max(0, storage.getEnergyStored());
     }
 

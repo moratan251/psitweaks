@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.common.compat.BlockResourceMekanism;
+import java.util.OptionalLong;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -67,14 +68,21 @@ public class PieceOperatorBlockFreeCapacity extends PieceOperatorBlockResourceBa
     }
 
     @Override
-    protected long readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side, @Nullable String resource,
-                                 boolean pooled) {
+    protected OptionalLong readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side,
+                                         @Nullable String resource, boolean pooled) {
         ResourceLocation id = resourceId(resource);
-        return id == null ? 0 : BlockResourceMekanism.freeCapacity(level, pos, side, id, pooled);
+        return id == null ? OptionalLong.of(0) : BlockResourceMekanism.freeCapacity(level, pos, side, id, pooled);
     }
 
+    /**
+     * Room left in the buffer, not limited by the block's transfer rate. A known pool is asked by a simulated insertion
+     * instead: the Ideaspace Connector's faces that only take FE show none of what it stores.
+     */
     @Override
-    protected long readEnergy(IEnergyStorage storage) {
+    protected long readEnergy(IEnergyStorage storage, boolean pooled) {
+        if (pooled) {
+            return Math.max(0, storage.receiveEnergy(Integer.MAX_VALUE, true));
+        }
         return storage.canReceive() ? Math.max(0, (long) storage.getMaxEnergyStored() - storage.getEnergyStored()) : 0;
     }
 

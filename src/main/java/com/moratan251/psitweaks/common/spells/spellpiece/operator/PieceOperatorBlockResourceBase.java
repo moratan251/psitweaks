@@ -15,6 +15,7 @@ import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalLong;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +24,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -41,9 +41,9 @@ import vazkii.psi.api.spell.piece.PieceOperator;
 
 /**
  * Reads items, fluids, chemicals or FE of a block through the side given by Direction. Unconnected, the block's
- * side-less view is read, or its first face with a handler when it has none (the Ideaspace Connector exposes faces
- * only). Like the ideaspace logistics tricks it asks protection mods first; a block without the capability, an
- * unloaded chunk or another dimension reads as 0.
+ * side-less view is read; a block that exposes faces only, such as the Ideaspace Connector, reads as its fullest face.
+ * Like the ideaspace logistics tricks it asks protection mods first; a block without the capability, an unloaded chunk
+ * or another dimension reads as 0.
  */
 public abstract class PieceOperatorBlockResourceBase extends PieceOperator implements PsitweaksModeConfigurable {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -68,11 +68,11 @@ public abstract class PieceOperatorBlockResourceBase extends PieceOperator imple
 
     protected abstract long readFluids(IFluidHandler handler, @Nullable String resource);
 
-    /** Called only while Mekanism is loaded. */
-    protected abstract long readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side,
-                                          @Nullable String resource, boolean pooled);
+    /** Called only while Mekanism is loaded; empty when the side has no chemical handler. */
+    protected abstract OptionalLong readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side,
+                                                  @Nullable String resource, boolean pooled);
 
-    protected abstract long readEnergy(IEnergyStorage storage);
+    protected abstract long readEnergy(IEnergyStorage storage, boolean pooled);
 
     @Override
     public void initParams() {
@@ -161,21 +161,37 @@ public abstract class PieceOperatorBlockResourceBase extends PieceOperator imple
     }
 
     private long read(ServerLevel level, BlockPos pos, @Nullable Direction side, @Nullable String resourceVal) {
-        PsitweaksModeOption current = getModeOption();
         boolean pooled = level.getBlockEntity(pos) instanceof IdeaspaceConnectorBlockEntity;
+        OptionalLong reading = readSide(level, pos, side, resourceVal, pooled);
+        if (reading.isPresent() || side != null) {
+            return reading.orElse(0);
+        }
+        // Faces may each show only part of the block (a disabled face shows nothing), so take the fullest one.
+        long fullest = 0;
+        for (Direction face : Direction.values()) {
+            fullest = Math.max(fullest, readSide(level, pos, face, resourceVal, pooled).orElse(0));
+        }
+        return fullest;
+    }
+
+    /** The reading through one side (null: the side-less view), or empty when the block has no handler there. */
+    private OptionalLong readSide(ServerLevel level, BlockPos pos, @Nullable Direction side, @Nullable String resourceVal,
+                                  boolean pooled) {
+        PsitweaksModeOption current = getModeOption();
         if (current == BlockResourceModes.FLUID) {
-            IFluidHandler handler = handler(level, pos, side, Capabilities.FluidHandler.BLOCK);
-            return handler == null ? 0 : readFluids(handler, resourceVal);
+            IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, side);
+            return handler == null ? OptionalLong.empty() : OptionalLong.of(readFluids(handler, resourceVal));
         }
         if (current == BlockResourceModes.CHEMICAL) {
-            return MekanismCompat.isMekanismLoaded() ? readChemicals(level, pos, side, resourceVal, pooled) : 0;
+            return MekanismCompat.isMekanismLoaded()
+                    ? readChemicals(level, pos, side, resourceVal, pooled) : OptionalLong.of(0);
         }
         if (current == BlockResourceModes.ENERGY) {
-            IEnergyStorage storage = handler(level, pos, side, Capabilities.EnergyStorage.BLOCK);
-            return storage == null ? 0 : readEnergy(storage);
+            IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
+            return storage == null ? OptionalLong.empty() : OptionalLong.of(readEnergy(storage, pooled));
         }
         IItemHandler handler = itemHandler(level, pos, side);
-        return handler == null ? 0 : readItems(handler, resourceVal, pooled);
+        return handler == null ? OptionalLong.empty() : OptionalLong.of(readItems(handler, resourceVal, pooled));
     }
 
     /** Without a side, plain containers are read whole (a sided wrapper needs a face). */
@@ -190,24 +206,7 @@ public abstract class PieceOperatorBlockResourceBase extends PieceOperator imple
         if (handler == null && blockEntity instanceof Container container) {
             return new InvWrapper(container);
         }
-        return handler != null ? handler : handler(level, pos, null, Capabilities.ItemHandler.BLOCK);
-    }
-
-    /** The handler of the side; without one, the side-less handler or else the first face that has a handler. */
-    @Nullable
-    public static <T> T handler(ServerLevel level, BlockPos pos, @Nullable Direction side,
-                                BlockCapability<T, @Nullable Direction> capability) {
-        T handler = level.getCapability(capability, pos, side);
-        if (handler != null || side != null) {
-            return handler;
-        }
-        for (Direction face : Direction.values()) {
-            handler = level.getCapability(capability, pos, face);
-            if (handler != null) {
-                return handler;
-            }
-        }
-        return null;
+        return handler;
     }
 
     protected static long saturatedAdd(long total, long amount) {

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.compat;
 
+import java.util.OptionalLong;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -16,10 +17,10 @@ import org.jetbrains.annotations.Nullable;
 public final class BlockResourceMekanism {
     private BlockResourceMekanism() { }
 
-    /** mB of the matching chemicals in every tank the side exposes. */
-    public static long amount(Level level, BlockPos pos, @Nullable Direction side, Predicate<ResourceLocation> filter) {
-        IChemicalHandler handler = handler(level, pos, side);
-        if (handler == null) return 0;
+    /** mB of the matching chemicals in every tank the side exposes; empty when the side has no chemical handler. */
+    public static OptionalLong amount(Level level, BlockPos pos, @Nullable Direction side, Predicate<ResourceLocation> filter) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, side);
+        if (handler == null) return OptionalLong.empty();
         long total = 0;
         for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
             ChemicalStack stack = handler.getChemicalInTank(tank);
@@ -29,32 +30,22 @@ public final class BlockResourceMekanism {
                 total = stack.getAmount() > Long.MAX_VALUE - total ? Long.MAX_VALUE : total + stack.getAmount();
             }
         }
-        return total;
+        return OptionalLong.of(total);
     }
 
     /**
-     * mB of this chemical the side would accept now, from a single simulated insertion; unknown IDs have none. Bulk
-     * insertion offers the rest to every empty tank, so a pool whose tanks share one storage is asked through its last
-     * tank only (the Ideaspace Connector's input tank).
+     * mB of this chemical the side would accept now, from a single simulated insertion; unknown IDs have none, and it is
+     * empty when the side has no chemical handler. Bulk insertion offers the rest to every empty tank, so a pool whose
+     * tanks share one storage is asked through its last tank only (the Ideaspace Connector's input tank).
      */
-    public static long freeCapacity(Level level, BlockPos pos, @Nullable Direction side, ResourceLocation id, boolean pooled) {
-        IChemicalHandler handler = handler(level, pos, side);
+    public static OptionalLong freeCapacity(Level level, BlockPos pos, @Nullable Direction side, ResourceLocation id,
+                                            boolean pooled) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, side);
+        if (handler == null) return OptionalLong.empty();
         ChemicalStack offered = ConnectorMekanism.stack(id, Long.MAX_VALUE);
-        if (handler == null || offered.isEmpty() || handler.getChemicalTanks() <= 0) return 0;
+        if (offered.isEmpty() || handler.getChemicalTanks() <= 0) return OptionalLong.of(0);
         ChemicalStack rest = pooled ? handler.insertChemical(handler.getChemicalTanks() - 1, offered, Action.SIMULATE)
                 : handler.insertChemical(offered, Action.SIMULATE);
-        return Long.MAX_VALUE - (rest.isEmpty() ? 0 : rest.getAmount());
-    }
-
-    /** Same lookup as the other resources: without a side, the side-less handler or else the first face with one. */
-    @Nullable
-    private static IChemicalHandler handler(Level level, BlockPos pos, @Nullable Direction side) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, side);
-        if (handler != null || side != null) return handler;
-        for (Direction face : Direction.values()) {
-            handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, face);
-            if (handler != null) return handler;
-        }
-        return null;
+        return OptionalLong.of(Long.MAX_VALUE - (rest.isEmpty() ? 0 : rest.getAmount()));
     }
 }

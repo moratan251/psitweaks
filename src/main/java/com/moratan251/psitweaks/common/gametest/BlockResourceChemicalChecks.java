@@ -5,7 +5,9 @@ import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorBlockFreeCapacity;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorBlockResourceAmount;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorSideMode;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import vazkii.psi.api.internal.Vector3;
@@ -54,7 +56,14 @@ final class BlockResourceChemicalChecks {
                 filter[0] = "missing:chemical";
                 helper.assertTrue(free.execute(context).equals(0.0D), "Unknown chemicals must read 0, face " + face);
             }
+            connector.setSideMode(Direction.DOWN, ConnectorSideMode.DISABLED);
+            side[0] = null;
+            filter[0] = "hydro*";
+            helper.assertTrue(amount.execute(context).equals(700.0D), "Without Direction the fullest face counts");
+            filter[0] = "mekanism:hydrogen";
+            helper.assertTrue(free.execute(context).equals(300.0D), "Free hydrogen without Direction, bottom disabled");
         } finally {
+            connector.setSideMode(Direction.DOWN, ConnectorSideMode.BOTH);
             PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(old);
         }
     }

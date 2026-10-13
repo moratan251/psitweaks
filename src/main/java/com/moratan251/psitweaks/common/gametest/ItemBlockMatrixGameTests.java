@@ -974,6 +974,18 @@ public final class ItemBlockMatrixGameTests {
             helper.assertTrue(read(amount, context) == 0.0 && read(free, context) == 0.0, "A disabled face must show and take no FE");
             side[0] = new Vector3(0, -1, 0);
             helper.assertTrue(read(amount, context) == 1234.0, "Other faces keep working");
+            connector.setSideMode(Direction.DOWN, ConnectorSideMode.INPUT);
+            helper.assertTrue(read(amount, context) == 0.0 && read(free, context) == 3766.0,
+                    "An input-only face shows no FE, which must not count as free: " + read(free, context));
+
+            connector.setSideMode(Direction.DOWN, ConnectorSideMode.DISABLED);
+            side[0] = null;
+            helper.assertTrue(read(amount, context) == 1234.0 && read(free, context) == 3766.0,
+                    "Without Direction the fullest face counts, not the disabled bottom");
+            amount.setModeOption(BlockResourceModes.ITEM);
+            free.setModeOption(BlockResourceModes.ITEM);
+            helper.assertTrue(read(amount, context) == 100.0 && read(free, context) == 28.0,
+                    "Items without Direction, bottom disabled");
         } finally {
             PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.set(oldStacks);
             PsitweaksConfig.COMMON.ideaStorageMaxFluidPerType.set(oldFluid);
