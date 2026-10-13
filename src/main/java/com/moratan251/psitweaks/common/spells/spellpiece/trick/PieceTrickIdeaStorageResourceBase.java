@@ -73,9 +73,9 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
         setExactTransfer(IdeaStorageTransferModes.isExact(normalizeModeOption(option)));
     }
 
-    /** Badge drawn over the piece in the programmer, or null for none (partial fluid/chemical keep the plain icon). */
+    /** Badge drawn over the piece in the programmer. Partial transfer shows an empty badge so the piece reads as having modes. */
     public PsitweaksModeOption overlayModeOption() {
-        return isExactTransfer() ? IdeaStorageTransferModes.EXACT : null;
+        return getModeOption();
     }
 
     @Override public void readFromNBT(CompoundTag tag) {

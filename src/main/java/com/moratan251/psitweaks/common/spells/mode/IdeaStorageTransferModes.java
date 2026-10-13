@@ -17,7 +17,7 @@ public final class IdeaStorageTransferModes {
     public static final String TAG = "psitweaksTransferMode";
     private static final String EXACT_VALUE = "exact";
 
-    public static final PsitweaksModeOption PARTIAL = option("idea_transfer_partial", "P", "partial", "partial",
+    public static final PsitweaksModeOption PARTIAL = option("idea_transfer_partial", "P", "partial", "blank",
             PsitweaksModeOptions.STRING.listTranslationKey(), PsitweaksValueKind.PLAIN);
     public static final PsitweaksModeOption EXACT = option("idea_transfer_exact", "=", "exact", "exact",
             PsitweaksModeOptions.STRING.listTranslationKey(), PsitweaksValueKind.PLAIN);

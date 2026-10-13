@@ -409,7 +409,9 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/item_s");
     public static final DeferredHolder<Material, Material> MODE_BLOCK =
             registerPieceMaterial("mode/block");
-    // Exact-transfer badges of the ideaspace logistics tricks (IdeaStorageTransferModes).
+    // Transfer-mode badges of the ideaspace logistics tricks (IdeaStorageTransferModes).
+    public static final DeferredHolder<Material, Material> MODE_BLANK =
+            registerPieceMaterial("mode/blank");
     public static final DeferredHolder<Material, Material> MODE_EXACT =
             registerPieceMaterial("mode/exact");
     public static final DeferredHolder<Material, Material> MODE_STRING_EXACT =
