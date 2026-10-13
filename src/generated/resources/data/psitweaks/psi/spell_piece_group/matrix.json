@@ -28,6 +28,11 @@
     "psitweaks:operator_matrix_cuboid_region",
     "psitweaks:operator_region_vector_list",
     "psitweaks:operator_inside_region",
-    "psitweaks:operator_outside_region"
+    "psitweaks:operator_outside_region",
+    "psitweaks:operator_matrix_caster_basis",
+    "psitweaks:operator_matrix_rotation",
+    "psitweaks:operator_matrix_translation",
+    "psitweaks:operator_matrix_transform_vector_list",
+    "psitweaks:trick_show_region"
   ]
 }

@@ -78,7 +78,7 @@ public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrickIdeaStorag
     }
 
     /** A custom target slot may point at the CAD in use or the tool casting the spell; leave both alone. */
-    private static boolean isCasterEquipment(SpellContext context, ServerPlayer player, int slot, ItemStack current) {
+    static boolean isCasterEquipment(SpellContext context, ServerPlayer player, int slot, ItemStack current) {
         if (slot == PsiAPI.getPlayerCADSlot(player)) return true;
         return !current.isEmpty() && (current == PsiAPI.getPlayerCAD(player) || current == context.tool);
     }

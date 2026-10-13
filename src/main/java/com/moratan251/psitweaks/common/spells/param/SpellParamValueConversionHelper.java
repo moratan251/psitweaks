@@ -27,7 +27,18 @@ public final class SpellParamValueConversionHelper {
         if (value instanceof VectorListWrapper vectorList && acceptsContextualList(param)) {
             return snapshotVectorList(context, vectorList);
         }
+        if (value instanceof BlockListWrapper blockList && param instanceof ParamVectorListWrapper) {
+            return positionList(blockList);
+        }
         return value;
+    }
+
+    public static VectorListWrapper positionList(BlockListWrapper blockList) {
+        List<Vector3> positions = new ArrayList<>(blockList.size());
+        for (BlockValue block : blockList) {
+            positions.add(block.positionVector());
+        }
+        return VectorListWrapper.make(positions);
     }
 
     private static BlockListWrapper snapshotVectorList(SpellContext context, VectorListWrapper vectorList)

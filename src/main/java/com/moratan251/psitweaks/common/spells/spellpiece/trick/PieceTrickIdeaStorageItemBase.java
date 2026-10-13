@@ -1,9 +1,10 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.item.SpellItemFilters;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
-import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
+import com.moratan251.psitweaks.common.spells.param.ParamSpellItemFilter;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import java.util.List;
@@ -62,7 +63,7 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
     private void rebuildParams() { params.clear(); paramSides.clear(); initParams(); }
 
     @Override protected void initFilter() {
-        if (itemMode()) addParam(item = new ParamSpellItemValue(PsitweaksSpellParams.ITEM, PsitweaksSpellParams.ITEM_COLOR, true, false));
+        if (itemMode()) addParam(item = new ParamSpellItemFilter(PsitweaksSpellParams.ITEM, PsitweaksSpellParams.ITEM_COLOR, true, false));
         else super.initFilter();
     }
 
@@ -86,18 +87,16 @@ public abstract class PieceTrickIdeaStorageItemBase extends PieceTrickIdeaStorag
 
     /** False when the filter is unconnected or an empty String, i.e. when {@link #itemFilter} accepts everything. */
     protected boolean hasFilter(SpellContext context) throws SpellRuntimeException {
-        if (itemMode()) return getParamValue(context, item) != null;
+        if (itemMode()) return getParamValue(context, (SpellParam<?>) item) != null;
         String pattern = getParamValue(context, string);
         return pattern != null && !pattern.isEmpty();
     }
 
     @Override protected Predicate<ItemStack> itemFilter(SpellContext context) throws SpellRuntimeException {
         if (!itemMode()) return super.itemFilter(context);
-        SpellItemValue value = getParamValue(context, item);
+        // An Item List matches any of its items; the value is read untyped because it need not be an Item.
+        Object value = getParamValue(context, (SpellParam<?>) item);
         if (value == null) return stack -> true;
-        if (value.isEmpty()) throw new SpellRuntimeException("psitweaks.spellerror.nullitem");
-        ItemStack template = value.snapshot();
-        return filterMode().id().equals(PsitweaksModeOptions.ITEM_STRICT.id())
-                ? stack -> ItemStack.isSameItemSameComponents(template, stack) : stack -> stack.is(template.getItem());
+        return SpellItemFilters.of(value, filterMode().id().equals(PsitweaksModeOptions.ITEM_STRICT.id()));
     }
 }

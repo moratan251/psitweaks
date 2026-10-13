@@ -180,6 +180,12 @@ public final class PsitweaksSpells {
             registerPiece("operator_block_position", PieceOperatorBlockPosition.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_POSITION_LIST =
             registerPiece("operator_block_position_list", PieceOperatorBlockPositionList.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_ITEM =
+            registerPiece("operator_block_item", PieceOperatorBlockItem.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_RESOURCE_AMOUNT =
+            registerPiece("operator_block_resource_amount", PieceOperatorBlockResourceAmount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_FREE_CAPACITY =
+            registerPiece("operator_block_free_capacity", PieceOperatorBlockFreeCapacity.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_ONLINE_PLAYERS =
             registerPiece("selector_online_players", PieceSelectorOnlinePlayers.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_HELD_ITEM =
@@ -196,6 +202,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_item_slot", PieceOperatorItemSlot.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ITEM_TOTAL_COUNT =
             registerPiece("operator_item_total_count", PieceOperatorItemTotalCount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_DROPPED_ITEMS =
+            registerPiece("operator_dropped_items", PieceOperatorDroppedItems.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_HELD_ITEMS =
             registerPiece("selector_held_items", PieceSelectorHeldItems.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_INTERNAL_ITEMS =
@@ -312,6 +320,16 @@ public final class PsitweaksSpells {
             registerPiece("operator_inside_region", PieceOperatorInsideRegion.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_OUTSIDE_REGION =
             registerPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_CASTER_BASIS =
+            registerPiece("operator_matrix_caster_basis", PieceOperatorMatrixCasterBasis.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_ROTATION =
+            registerPiece("operator_matrix_rotation", PieceOperatorMatrixRotation.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_TRANSLATION =
+            registerPiece("operator_matrix_translation", PieceOperatorMatrixTranslation.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_TRANSFORM_VECTOR_LIST =
+            registerPiece("operator_matrix_transform_vector_list", PieceOperatorMatrixTransformVectorList.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SHOW_REGION =
+            registerPiece("trick_show_region", PieceTrickShowRegion.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ALIVE =
             registerPiece("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_WEAK_RAYCAST =
@@ -369,6 +387,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_idea_storage_deposit_slot", PieceTrickIdeaStorageDepositSlot.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
             registerPiece("trick_idea_storage_withdraw_slot", PieceTrickIdeaStorageWithdrawSlot.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_COLLECT_ITEM =
+            registerPiece("trick_idea_storage_collect_item", PieceTrickIdeaStorageCollectItem.class);
 
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class);

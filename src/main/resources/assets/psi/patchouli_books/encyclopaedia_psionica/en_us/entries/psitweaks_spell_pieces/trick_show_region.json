@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_show_region",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_show_region.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_show_region.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_show_region.1"
+    }
+  ]
+}

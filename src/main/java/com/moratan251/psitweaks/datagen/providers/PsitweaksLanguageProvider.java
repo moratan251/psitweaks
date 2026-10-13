@@ -1010,11 +1010,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Block represents a block in the world. It provides information such as position, dimension, block state, registry ID, tags, and display name.$(p)A Vector represents coordinates, while a Block represents information about the block at those coordinates.",
                 "Block 型はワールド上のブロックを扱うための型です. ブロックの座標, ディメンション, ブロック状態, レジストリID, タグ, 表示名などの情報を扱えます.$(p)Vector が「座標」を表すのに対し, Block は「その座標に存在するブロックの情報」を表します.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.3",
-                "Because both relate to positions, many inputs convert Block and Vector automatically.$(p)A Block connected to a Vector input uses its position. A Vector connected to a Block input reads the block at that position when the spell runs.$(p)Any inputs, such as Operator: To String, preserve the original type.",
-                "Block と Vector はどちらも座標に関係するため, 多くの入力で自動変換されます.$(p)Block を Vector 入力へ接続すると座標として扱われます. Vector を Block 入力へ接続すると, 実行時にその座標のブロックを読み取ります.$(p)演算子: 文字列へ変換 などの Any 入力では, 元の型がそのまま扱われます.");
+                "Since both relate to positions, many inputs convert Block and Vector automatically.$(p)A Block connected to a Vector input uses its position, as does each block of a Block List in a Vector List input. A Vector connected to a Block input reads the block there when the spell runs.$(p)Any inputs, such as Operator: To String, keep the original type.",
+                "Block と Vector はどちらも座標に関係するため, 多くの入力で自動変換されます.$(p)Block を Vector 入力へ接続すると座標として扱われます (Block List と Vector List も同様). Vector を Block 入力へ接続すると, 実行時にその座標のブロックを読み取ります.$(p)演算子: 文字列へ変換 などの Any 入力では, 元の型がそのまま扱われます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.4",
-                "Item represents an ItemStack. It is used to inspect item type, stack count, NBT, display name, and similar data.$(p)Item values can be obtained from held items, selected inventory slots, or inventories inside blocks.$(p)Each Item value also records its source, so spells can tell where the item came from.",
-                "Item 型は ItemStack を扱うための型です. アイテムの種類, 個数, NBT, 表示名などを調べるために使用します.$(p)Item 型は, 手に持っているアイテム, 指定スロットのアイテム, ブロック内部のインベントリにあるアイテムなどから取得できます.$(p)Item 型の値は取得元を source として保持しており, スペル内でそのアイテムがどこから来たかを判別できます.");
+                "Item represents an ItemStack, for inspecting its type, count, NBT, display name and so on. It can be read from held items, inventory slots, block inventories or dropped items.$(p)Each Item also records its source, so spells can tell where it came from, and Trick: Ideaspace Storage - Item Collect can take it straight from there.",
+                "Item 型は ItemStack を扱う型で, アイテムの種類, 個数, NBT, 表示名などを調べるために使います. 手持ちのアイテム, 指定スロットのアイテム, ブロック内のインベントリ, ドロップアイテムなどから取得できます.$(p)Item 型の値は取得元を source として保持しており, そのアイテムがどこから来たかを判別できます. 作動式: イデアストレージ-アイテム回収 は, その取得元から直接回収します.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.5",
                 "PsiTweaks divides values into Plain Values and Contextual Values.$(p)Plain Values do not depend on world state, such as Number, Vector, and String.$(p)Contextual Values depend on a world or target context, such as Entity, Block, and Item.",
                 "PsiTweaks の値は Plain Value と Contextual Value に分けられます.$(p)Plain Value はワールドの状態に依存しない値で, Number, Vector, String などが該当します.$(p)Contextual Value はワールドや対象に依存する値で, Entity, Block, Item などが該当します.");
@@ -1461,7 +1461,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_block_position", "Operator: Block Position", "Outputs the saved position of a Block value as a plain Vector.", "演算子: ブロック座標", "Block 値に保存された座標を通常の Vector として出力します。");
         addSpellPiece(root, "operator_block_position_list", "Operator: Block Position List", "Gets the positions of the blocks in a Block List as a Vector List.", "演算子: ブロック位置リスト", "Block List のブロックの座標を Vector List として取得します。");
         addSpellPiece(root, "selector_online_players", "Selector: Online Players", "Outputs the names of online players in the world as a String List.", "取得子: オンラインプレイヤー", "ワールド内のオンラインプレイヤー名を String List として取得します。");
-        addSpellPiece(root, "selector_held_item", "Selector: Main-Hand Item", "Gets the target entity's main-hand item.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。");
+        addSpellPiece(root, "selector_held_item", "Selector: Main-Hand Item", "Gets the target entity's main-hand item. For a dropped item, gets its stack.", "取得子: 手持ちアイテム", "対象エンティティのメインハンドのアイテムを取得します。ドロップアイテムの場合はそのスタックを取得します。");
         addSpellPiece(root, "selector_selected_slot_item", "Selector: Selected Slot Item", "Gets the item currently selected by this spell.", "取得子: 選択スロットアイテム", "この術式で選択しているアイテムを取得します。");
         addSpellPiece(root, "selector_entity_slot_item", "Selector: Entity Slot Item", "Gets the item in the target entity's zero-based internal inventory slot. Outputs an empty Item if the slot cannot be read.", "取得子: エンティティスロットアイテム", "対象 Entity の0始まり内部インベントリスロットにある Item を取得します。スロットを読めない場合は空の Item を出力します。");
         addSpellPiece(root, "selector_internal_slot_item", "Selector: Internal Slot Item", "Gets the item in a block's zero-based internal inventory slot. Outputs an empty Item if the slot cannot be read.", "取得子: 内部スロットアイテム", "指定ブロックの0始まり内部インベントリスロットにある Item を取得します。スロットを読めない場合は空の Item を出力します。");
@@ -1522,8 +1522,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し、残りの列を詰めます。");
         addSpellPiece(root, "operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis.", "演算子: 直方体領域", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。");
         addSpellPiece(root, "operator_region_vector_list", "Operator: Region Vector List", "Returns block position vectors inside a matrix-defined region.", "演算子: 領域ベクトルリスト化", "行列で定義された領域内のブロック座標を Vector List として返します。");
-        addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the entities in the Entity List whose bounding box center is inside the matrix region.", "演算子: 領域内", "Entity List のうち、当たり判定の中心が行列の領域内にあるものだけを残します。");
-        addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the entities in the Entity List whose bounding box center is outside the matrix region.", "演算子: 領域外", "Entity List のうち、当たり判定の中心が行列の領域外にあるものだけを残します。");
+        addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the elements of an Entity, Vector or Block List that are inside the matrix region. Choose the list type in the mode menu.", "演算子: 領域内", "Entity・Vector・Block の List のうち、行列の領域内にあるものだけを残します。リストの種類はモードで選びます。");
+        addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the elements of an Entity, Vector or Block List that are outside the matrix region. Choose the list type in the mode menu.", "演算子: 領域外", "Entity・Vector・Block の List のうち、行列の領域外にあるものだけを残します。リストの種類はモードで選びます。");
         addSpellPiece(root, "operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。");
         addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトルを変換します。");
         addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します。");
@@ -1543,7 +1543,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "macro_caster_axial_rotation_3d", "Macro: Caster Axial Rotation (3D)", "Like Macro: Caster Axial Rotation, but the facing also follows the pitch (X = right, Y = view-up, Z = forward), including when looking straight up or down.", "マクロ: 術者方角回転 (3D)", "マクロ: 術者方角回転と同じですが、視線の上下も基準に含みます。X=右、Y=視点上、Z=前で、真上や真下を向いた時も視点に追随します。");
         addSpellPiece(root, "macro_face_axial_offset", "Macro: Face Axial Offset", "Offsets a position along axes aligned to the block face under the caster's crosshair. If Position is omitted, the hit block is used. Positive values move screen-right, into the block, and screen-up.", "マクロ: 面基準平行移動", "術者の視線が命中したブロック面を基準に、位置を左右・前後・上下へ平行移動します。位置を省略した場合は命中ブロックを使います。正の値で画面右・ブロック内側・画面上へ移動します。");
         addSpellPiece(root, "macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを、術者の視線が命中したブロック面の方向を基準として回転させます。");
-        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List. Drops go into the caster's inventory; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List の座標にあるブロックを破壊します。ドロップは術者のインベントリに入り、入りきらない分だけ落ちます。");
+        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Drops go into the caster's inventory; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List（Block List も可）の座標にあるブロックを破壊します。ドロップは術者のインベントリに入り、入りきらない分だけ落ちます。");
         addSpellPiece(root, "trick_idea_storage_absorb_fe", "Trick: Ideaspace Storage - FE Absorb", "Transfers up to Power * 4000 FE from the specified face of the block at Position into your Ideaspace Storage.", "作動式: イデアストレージ-FE吸収", "位置のブロックの指定面から、自分のイデアストレージへ威力×4000 FEを吸収します。");
         addSpellPiece(root, "trick_idea_storage_supply_fe", "Trick: Ideaspace Storage - FE Supply", "Transfers up to Power * 4000 FE from your Ideaspace Storage into the specified face of the block at Position.", "作動式: イデアストレージ-FE供給", "自分のイデアストレージから、位置のブロックの指定面へ威力×4000 FEを供給します。");
         addSpellPiece(root, "selector_idea_storage_energy", "Selector: Ideaspace Storage - Energy", "Returns the stored FE.", "取得子: イデアストレージ-蓄電量", "蓄えているFEの量を取得します。");
@@ -1564,6 +1564,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
     private void addSpellPiecesBook(JsonObject root) {
         addIdeaResourceLogistics(root);
         addIdeaSlotLogistics(root);
+        addItemBlockMatrixPieces(root);
         addBookPage(root, "selector_idea_storage_energy", "Returns the FE currently stored in your Ideaspace Storage as a Number.", "自分のイデアストレージに現在蓄えられているFE量をNumberとして取得します。");
         addBookPage(root, "selector_idea_storage_item_amount",
                 "Returns the total count of items with the specified ID in your Ideaspace Storage as a Number. Switch between String input (e.g. minecraft:stone) and Item input, which uses that item's ID. Items with different data components are counted together when their IDs match. Invalid IDs, empty Item values and missing stock return 0.",
@@ -1621,8 +1622,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
         addBookPage(root, "trick_cocytus", "Permanently freezes the mind of the target mob. Rather than merely dealing damage, this very powerful control trick prevents action.", "対象モブの精神を永久に凍結させます. 単なるダメージではなく行動を封じる, 非常に強力な制御術式です.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです.");
-        addBookPage(root, "trick_pull_item", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast; if the caster's inventory cannot hold it all, only what fits is moved. In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. The optional Max input caps the number of items moved. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. 任意入力の最大で移動数に上限を設けられます. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
-        addBookPage(root, "trick_send_item", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved. The filter modes and the optional Max input behave like Trick: Pull Item. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます. フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様です. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
+        addBookPage(root, "trick_pull_item.0", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast, as much of it as fits. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
+        addBookPage(root, "trick_pull_item.1", "In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. In both Item modes, the filter can also be an Item List, matching any of its items. The optional Max input caps the number of items moved.", "StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. Item と Item (Strict) モードでは Item List も接続でき, そのいずれかに一致するアイテムを移動します. 任意入力の最大で移動数に上限を設けられます.");
+        addBookPage(root, "trick_send_item.0", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます.");
+        addBookPage(root, "trick_send_item.1", "The filter modes and the optional Max input behave like Trick: Pull Item, including Item Lists in both Item modes. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様で, Item と Item (Strict) モードでは Item List も接続できます. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
         addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration. It is a powerful offensive trick.", "超音波振動による高威力の熱線を放ちます. 攻撃用の強力な術式です.");
         addBookPage(root, "trick_meteor_line", "Creates a beam from the specified position in the direction of the Ray vector, dealing special and lethally massive damage to living beings along its path.", "指定位置からRayベクトル方向へ光線を生み出し、経路上の生物に特殊かつ致死的な大ダメージを与えます。");
@@ -1676,16 +1679,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_block_state_entries", "Outputs the properties saved in a Block value's block state as a String List. Each entry uses property:value form, such as facing:north or waterlogged:false. Blocks with no state properties output an empty String List.", "Block 値に保存されたブロックステートのプロパティを String List として出力します. 各要素は facing:north や waterlogged:false のような property:value 形式です. state property を持たないブロックは空の String List を出力します.");
         addBookPage(root, "operator_tag_list", "Outputs registry tags from a Contextual Value as a String List. Entries use namespace:path form without #. Entity inputs return EntityType tags, not scoreboard tags.", "Contextual Value からレジストリタグを String List として出力します. 各要素は # を付けない namespace:path 形式です. Entity 入力は EntityType のタグを返し, スコアボードタグは含みません.");
         addBookPage(root, "operator_block_position", "Outputs the position saved in a Block as a plain Vector. A Block can usually be connected directly to spell pieces that require a Vector, but use this when a Vector value is explicitly needed, such as when checking coordinates with Trick: Debug.", "Block に保存された座標を通常の Vector として出力します. 基本的に Vector を必要とするスペルピースには Block 型をそのまま接続できますが、作動式: デバッグ に接続して座標を確認する際など Vector型 が明示的に必要な場合に使います.");
-        addBookPage(root, "operator_block_position_list", "Gets the positions saved in a Block List as a Vector List.", "Block List に保存された座標を Vector List として取得します.");
+        addBookPage(root, "operator_block_position_list", "Gets the positions saved in a Block List as a Vector List. A Block List can also be connected directly to Vector List inputs, which then use these positions.", "Block List に保存された座標を Vector List として取得します. Vector List の入力には Block List を直接つなぐこともでき, その場合も同じ座標が使われます.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
-        addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.");
+        addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value: a read-only snapshot of its kind, count, durability, name and so on. A dropped item, such as from Psi's Selector: Nearby Items, gives its own stack, with the dropped item as the source.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム などで得たドロップアイテムでは, そのスタックをドロップアイテムを取得元として出力します.");
         addBookPage(root, "selector_selected_slot_item", "Outputs the ItemStack in the slot selected by the spell as an Item value. This is the same slot used by Psi pieces such as Trick: Place Block, and is affected by Trick: Switch Target Slot. Empty slots output an empty Item.", "術式で選択しているスロットにある ItemStack を Item 型として出力します. スロットは Psi の 作動式: ブロック設置 などで扱うものと同じであり, 作動式: 指定スロット切替 の影響を受けます. 空スロットは空の Item を出力します.");
         addBookPage(root, "selector_entity_slot_item", "Outputs the Item in the target Entity's zero-based inventory slot. Players use their player inventory; other entities use their item handler when available. Unreadable, empty, negative, or out-of-range slots output an empty Item.", "対象 Entity の0始まりのインベントリスロットにある Item を出力します. Player はプレイヤーインベントリを使用し, その他の Entity は利用可能な ItemHandler を使用します. 読み取れないスロット, 空スロット, 負の番号, 範囲外の番号は空の Item を出力します.");
         addBookPage(root, "selector_internal_slot_item", "Outputs the Item in the target block's zero-based internal inventory slot. Item handlers are used first, with Container as a fallback. Blocks without a readable inventory and empty, negative, or out-of-range slots output an empty Item.", "対象ブロックの0始まりの内部インベントリスロットにある Item を出力します. ItemHandler を優先して使用し, 利用できない場合は Container を使用します. 読み取り可能なインベントリがないブロック, 空スロット, 負の番号, 範囲外の番号は空の Item を出力します.");
         addBookPage(root, "operator_item_count", "Outputs the stack count of an Item value as a Number. Empty Item values output 0.", "Item 値のスタック個数を Number として出力します. 空の Item は0を出力します.");
         addBookPage(root, "operator_item_slot", "Outputs the zero-based inventory slot number saved in an Item value. Items obtained from entity or block inventory slots retain this source slot. Items without an inventory-slot source, including empty Items, hand or equipment Items, and dropped item entities, output -1.", "Item 値に保存された0始まりのインベントリスロット番号を出力します. Entity またはブロックのインベントリスロットから取得した Item は取得元のスロット番号を保持します. 空の Item, 手や防具から取得した Item, ドロップアイテムなど, インベントリスロット由来でない Item は -1 を出力します.");
         addBookPage(root, "operator_item_total_count", "Outputs the total stack count from an Item List. If the String input is empty or not connected, all Items are counted. Otherwise only Items whose registry ID exactly matches the String are counted. Invalid IDs simply match nothing and output 0.", "Item List からスタック個数の合計を Number として出力します. String 入力が空または未接続ならすべての Item を数えます. それ以外の場合は String と registry ID が完全一致する Item だけを数えます. 無効な ID は何にも一致せず0を出力します.");
-        addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List.", "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を出力します.");
+        addBookPage(root, "selector_held_items", "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List, and a dropped item a list of its own stack.", "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を, ドロップアイテムの場合はそのスタックだけのリストを出力します.");
         addBookPage(root, "selector_internal_items", "Outputs items from the target block's internal inventory as an Item List. Item handlers and containers are read slot by slot. Blocks without readable inventories output an empty Item List.", "対象ブロックの内部インベントリを Item List として出力します. ItemHandler と Container をスロット単位で読み取ります. 読み取り可能なインベントリがない場合は空の Item List を出力します.");
         addBookPage(root, "selector_indexed_element", "Outputs the element at a zero-based index from the input List. Negative indexes count back from the end: -1 returns the last element, and -2 returns the element before it. Out-of-range indexes produce the same out-of-bounds spell error as Psi's Indexed Element.", "入力された List から, 0始まりのインデックスにある要素を出力します. 負のインデックスは末尾から数え, -1 は末尾要素, -2 はその1つ前の要素を返します. 範囲外のインデックスは Psi 本体の Indexed Element と同じ範囲外エラーになります.");
         addBookPage(root, "selector_nbt", "Outputs the target Contextual Value's top-level NBT as key:value strings in a String List. Entity inputs include their entity id key like other top-level NBT keys. Block inputs, including Vector inputs converted to Block values, read BlockEntity NBT; blocks without a BlockEntity output an empty list. Values use SNBT text.", "対象 Contextual Value のNBTトップレベルを key:value 形式の String List として出力します. Entity 入力ではエンティティIDキーも他のトップレベルNBTキーと同様に含まれます. Block 入力は, Vector 入力から変換された Block も含めて BlockEntity のNBTを読み取り, BlockEntity がないブロックは空リストになります. 値はSNBT文字列です.");
@@ -1739,8 +1742,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう、元の行列は2列以上である必要があります.");
         addBookPage(root, "operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts: odd counts are centered on the input position, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します.");
         addBookPage(root, "operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された平行六面体の内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
-        addBookPage(root, "operator_inside_region", "Filters an Entity List and returns only the entities whose bounding box centers are inside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Entities exactly on the boundary are counted as inside.", "3×4 または 4×4 の行列で定義された平行六面体の内部に当たり判定の中心があるエンティティのみを残した Entity List を返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるエンティティも内部とみなします.");
-        addBookPage(root, "operator_outside_region", "Filters an Entity List and returns only the entities whose bounding box centers are outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Entities exactly on the boundary are counted as inside, so they are excluded from the result.", "3×4 または 4×4 の行列で定義された平行六面体の外部に当たり判定の中心があるエンティティのみを残した Entity List を返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるエンティティは内部とみなすため、結果から除外されます.");
+        String regionModesEn = "Choose the list type in the mode menu. Entity (default) tests the center of each bounding box, Vector tests each vector as given, and Block tests block positions, the same points Operator: Region Vector List returns.";
+        String regionModesJa = "リストの種類はモードで選びます. Entity（既定）は当たり判定の中心、Vector はそのベクトル、Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.";
+        addBookPage(root, "operator_inside_region.0", "Filters a list and returns only the elements inside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside.", "3×4 または 4×4 の行列で定義された平行六面体の内部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるものも内部とみなします.");
+        addBookPage(root, "operator_inside_region.1", regionModesEn, regionModesJa);
+        addBookPage(root, "operator_outside_region.0", "Filters a list and returns only the elements outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside, so they are excluded.", "3×4 または 4×4 の行列で定義された平行六面体の外部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるものは内部とみなすため、結果から除外されます.");
+        addBookPage(root, "operator_outside_region.1", regionModesEn, regionModesJa);
         addBookPage(root, "operator_alive", "Filters the input Entity List and returns only LivingEntity instances that are currently alive. All other entities are removed.", "入力した Entity List をフィルターし、現在生存中の LivingEntity のみを返します. それ以外のエンティティは除外されます.");
         addBookPage(root, "operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
         addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
@@ -2153,11 +2160,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
             }
             addBookPage(root, id + ".1", enFilter, jpFilter);
             addBookPage(root, id + ".2",
-                    (deposit ? "" : "When several types match, they are withdrawn in turn until the limit is reached. ")
+                    (item ? "In Item and Item (Strict) modes, an Item List can be connected too; any of its items matches. " : "")
+                            + (deposit ? "" : "When several types match, they are withdrawn in turn until the limit is reached. ")
                             + "Follows the block's per-face input and output. Casting fails with an error if the block is protected. "
                             + "Has no effect on blocks in unloaded chunks or on your own Ideaspace Connector."
                             + (chemical ? " Does nothing without Mekanism." : ""),
-                    (deposit ? "" : "複数の種類が一致する場合は、上限に達するまで順に取り出します。")
+                    (item ? "Item と Item (Strict) モードでは Item List も接続でき、そのいずれかに一致するものが対象です。" : "")
+                            + (deposit ? "" : "複数の種類が一致する場合は、上限に達するまで順に取り出します。")
                             + "ブロックの面ごとの入出力に従います。保護されたブロックを対象にするとエラーになります。"
                             + "読み込まれていないチャンクのブロックや、自分のイデアコネクターには作用しません。"
                             + (chemical ? "Mekanismが導入されていない場合は何もしません。" : ""));
@@ -2213,13 +2222,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_idea_storage_deposit_slot.1",
                 "With no filter or an empty String, the item in the slot is deposited whatever it is; otherwise nothing happens unless it matches."
                         + " In String mode the filter matches resource IDs and supports * (any text) and ? (any single character)."
-                        + " Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods."
-                        + " Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability.",
-                "フィルタを接続しないか空文字にすると、スロットのアイテムを種類を問わず格納します。フィルタに一致しない場合は何もしません。"
+                        + " Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods.",
+                "フィルタを接続しないか空文字にすると、スロットのアイテムを種類を問わず格納します。"
+                        + "フィルタに一致しない場合は何もしません。"
                         + "Stringモードでは資源IDで照合し、*（任意の文字列）と?（任意の1文字）が使えます。"
-                        + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します。"
-                        + "Itemモードはアイテムの種類だけを、Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致するものを対象にします。");
-        addBookPage(root, "trick_idea_storage_deposit_slot.2", enSlot, jpSlot);
+                        + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します。");
+        addBookPage(root, "trick_idea_storage_deposit_slot.2",
+                "Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability."
+                        + " In these two modes, the filter can also be an Item List; any of its items matches.",
+                "Itemモードはアイテムの種類だけを、Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致するものを対象にします。"
+                        + "この2つのモードでは、フィルタに Item List も接続でき、そのいずれかに一致するものが対象です。");
+        addBookPage(root, "trick_idea_storage_deposit_slot.3", enSlot, jpSlot);
 
         String withdrawEn = "Withdraws items from your Ideaspace Storage into the spell's target slot, up to the count given by Number.";
         String withdrawJp = "自分のイデアストレージから、術式の指定スロットへアイテムを取り出します。上限は「数値」で指定した個数です。";
@@ -2236,5 +2249,196 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "スロットが空の場合は、フィルタに一致する最初の種類を取り出します。スロットが空でフィルタもない場合は何もしません。"
                         + "フィルタのモードと照合方法は、作動式: イデアストレージ-スロット格納と同じです。");
         addBookPage(root, "trick_idea_storage_withdraw_slot.2", enSlot, jpSlot);
+    }
+
+    /** Pieces that put the Item, Block and Matrix types to work: block resources, item collecting and region matrices. */
+    private void addItemBlockMatrixPieces(JsonObject root) {
+        // Mode labels of Operator: Caster Basis Matrix and the block resource operators.
+        String[][] modes = {
+                {"caster_basis_2d", "2D (Horizontal)", "2D（水平）"},
+                {"caster_basis_3d", "3D (With Pitch)", "3D（上下を含む）"},
+                {"caster_basis_face", "Face", "面基準"},
+                {"resource_item", "Item", "アイテム"},
+                {"resource_fluid", "Fluid", "液体"},
+                {"resource_chemical", "Chemical", "化学物質"},
+                {"resource_energy", "FE", "FE"}};
+        for (String[] mode : modes) {
+            addLocalized(root, "psitweaks.mode." + mode[0], mode[1], mode[2]);
+        }
+        addLocalized(root, "psitweaks.datatype.item_or_item_list", "Item/Item List", "Item/Item List");
+        addLocalized(root, "psitweaks.spellerror.block_resource_read_failed",
+                "Reading the block's resources failed. Check the server log for details",
+                "ブロックの資源の読み取りに失敗しました。詳細はサーバーログを確認してください");
+        addLocalized(root, "psitweaks.spellerror.idea_storage_collect_failed",
+                "Collecting items into Ideaspace Storage failed. Check the server log for details",
+                "イデアストレージへのアイテム回収に失敗しました。詳細はサーバーログを確認してください");
+
+        addSpellPiece(root, "operator_block_item", "Operator: Block Item",
+                "Gets the item that Pick Block gives for the block, as an Item without a source.",
+                "演算子: ブロックのアイテム化", "ブロックをブロック選択した時のアイテムを、取得元のない Item として取得します。");
+        addBookPage(root, "operator_block_item",
+                "Outputs the item that Pick Block gives for the block, as an Item: wheat seeds for a wheat crop, and an empty Item for air."
+                        + " The Item has no source, so Trick: Ideaspace Storage - Item Collect skips it, but it works as an Item filter, for example in Trick: Ideaspace Storage - Slot Withdraw.",
+                "ブロックをブロック選択した時のアイテムを Item として出力します。"
+                        + "小麦の作物なら小麦の種、空気なら空の Item です。"
+                        + "取得元を持たないので作動式: イデアストレージ-アイテム回収では対象外ですが、Item フィルタとして作動式: イデアストレージ-スロット取出などに使えます。");
+
+        addSpellPiece(root, "operator_block_resource_amount", "Operator: Block Resource Amount",
+                "Outputs the items, fluids, chemicals or FE stored in a block, chosen by the mode. String narrows it down by ID.",
+                "演算子: ブロック資源量", "ブロック内のアイテム・液体・化学物質・FEの量を、モードに応じて出力します。「文字列」でIDを絞り込めます。");
+        addBookPage(root, "operator_block_resource_amount.0",
+                "Outputs how much a block holds of the kind chosen in the mode menu: items (count), fluids or chemicals (mB), or FE."
+                        + " Direction picks the face to read, following the block's per-face input and output; unconnected, the whole block is read.",
+                "モードで選んだ種類について、ブロックが持つ量を出力します（アイテムは個数、液体と化学物質はmB、FEはFE）。"
+                        + "「方向」で読み取る面を選べ、面ごとの入出力に従います。"
+                        + "接続しない場合はブロック全体を読みます。");
+        addBookPage(root, "operator_block_resource_amount.1",
+                "The optional String filters by ID with * (any text) and ? (any single character); omit the namespace, such as \"minecraft:\", to match across all mods."
+                        + " Unconnected or empty, everything is counted."
+                        + " Blocks with no such storage, in unloaded chunks or in other dimensions read as 0, as do chemicals without Mekanism."
+                        + " A protected block fails with an error.",
+                "任意の「文字列」は資源IDで絞り込み、*（任意の文字列）と?（任意の1文字）が使えます。"
+                        + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します。"
+                        + "接続しないか空文字にすると、すべてを数えます。"
+                        + "該当する保管先がないブロック、読み込まれていないチャンクや別のディメンションのブロック、Mekanismがない場合の化学物質は0です。"
+                        + "保護されたブロックはエラーになります。");
+
+        addSpellPiece(root, "operator_block_free_capacity", "Operator: Block Free Capacity",
+                "Outputs how much more of one item, fluid or chemical ID, or FE, a block can accept now.",
+                "演算子: ブロック空き容量", "指定IDのアイテム・液体・化学物質、またはFEを、ブロックがあとどれだけ受け入れられるかを出力します。");
+        addBookPage(root, "operator_block_free_capacity.0",
+                "Outputs how much more a block accepts right now, by simulating an insertion; nothing moves."
+                        + " Everything but String works as in Operator: Block Resource Amount."
+                        + " String takes one exact ID such as minecraft:coal: no wildcards, \"minecraft:\" may be omitted, and unknown IDs read as 0.",
+                "ブロックが今あとどれだけ受け入れられるかを、搬入を試算して出力します（実際には移しません）。"
+                        + "「文字列」以外は演算子: ブロック資源量と同じです。"
+                        + "「文字列」には minecraft:coal のようなIDを1つ指定します。"
+                        + "ワイルドカードは使えず、「minecraft:」は省略でき、存在しないIDは0です。");
+        addBookPage(root, "operator_block_free_capacity.1",
+                "Items are simulated slot by slot, so machines whose slots share one pool may report more than really fits."
+                        + " A block that accepts without limit reports a very large number."
+                        + " Use it to keep machines stocked, for example by withdrawing fuel from your Ideaspace Storage only while a furnace has room for it.",
+                "アイテムは1スロットずつ試算するため、スロットが容量を共有する機械では実際より多くなることがあります。"
+                        + "上限なく受け入れるブロックは非常に大きな数になります。"
+                        + "例えば、かまどに空きがある時だけイデアストレージから燃料を取り出すといった、機械への補充に使えます。");
+
+        addSpellPiece(root, "operator_dropped_items", "Operator: Dropped Items",
+                "Turns the dropped items in an Entity List into an Item List. Other entities are skipped.",
+                "演算子: ドロップアイテム", "Entity List のドロップアイテムを Item List に変換します。他のエンティティは除外します。");
+        addBookPage(root, "operator_dropped_items",
+                "Turns the dropped items in an Entity List, such as from Selector: Nearby Items, into an Item List, keeping their order and skipping other entities."
+                        + " Each Item keeps its dropped item as the source, so Trick: Ideaspace Storage - Item Collect can pick up that very stack.",
+                "取得子: 近くのアイテムなどの Entity List から、ドロップアイテムを同じ順序で Item List に変換します。"
+                        + "他のエンティティは除外します。"
+                        + "各 Item はそのドロップアイテムを取得元として覚えているので、作動式: イデアストレージ-アイテム回収でそのスタックを直接回収できます。");
+
+        addSpellPiece(root, "trick_idea_storage_collect_item", "Trick: Ideaspace Storage - Item Collect",
+                "Deposits Items into your Ideaspace Storage straight from their sources: dropped items, your own inventory or block inventories.",
+                "作動式: イデアストレージ-アイテム回収",
+                "Item を取得元から直接、自分のイデアストレージへ格納します。ドロップアイテム、自分のインベントリ、ブロックのインベントリから回収できます。");
+        addBookPage(root, "trick_idea_storage_collect_item.0",
+                "Deposits an Item, or each Item of an Item List, into your Ideaspace Storage straight from its source: a dropped item, or a slot of your inventory or of a block."
+                        + " No position or face is needed, so a list narrowed down with list operators can be collected as it is.",
+                "Item、または Item List の各 Item を、取得元から直接自分のイデアストレージへ格納します。"
+                        + "取得元はドロップアイテム、自分のインベントリのスロット、ブロックのインベントリのスロットです。"
+                        + "位置や面を指定しないので、リスト演算子で絞り込んだ結果をそのまま回収できます。");
+        addBookPage(root, "trick_idea_storage_collect_item.1",
+                "Number caps the total count; it must be positive, and fractions are rounded down."
+                        + " Each Item moves at most its own count, and only while its source still holds the same item with the same data components, so nothing is taken twice and a swapped stack is left alone."
+                        + " If storage space runs short, moves as much as possible.",
+                "「数値」は合計個数の上限で、正の数を指定し、1個未満の端数は切り捨てます。"
+                        + "各 Item が移すのは最大でその個数までで、取得元に同じアイテム（データコンポーネントも同じ）が残っている場合だけです。"
+                        + "そのため二重に取ったり、入れ替わったスタックを取ったりすることはありません。"
+                        + "ストレージの空きが足りない場合は、移せる分だけ移します。");
+        addBookPage(root, "trick_idea_storage_collect_item.2",
+                "Items without a source, such as from Operator: Block Item, are skipped, as are items held or worn by other entities and dropped items that cannot be picked up yet or are meant for another player."
+                        + " In your own inventory, armor slots, the CAD in use and the tool casting the spell are left alone.",
+                "取得元のない Item（演算子: ブロックのアイテム化など）、他のエンティティの手持ち・装備、まだ拾えないドロップアイテム、他のプレイヤー向けのドロップアイテムは対象外です。"
+                        + "自分のインベントリでは、防具スロット、使用中のCAD、術式を詠唱している道具には作用しません。");
+        addBookPage(root, "trick_idea_storage_collect_item.3",
+                "All sources are checked before anything moves: a source outside the spell radius, or a protected block, fails with an error."
+                        + " Blocks in unloaded chunks or another dimension and your own Ideaspace Connector are skipped."
+                        + " Selector: Ideaspace Storage - Last Transfer Amount reports the total moved.",
+                "何かを移す前に、すべての取得元を確認します。"
+                        + "術式射程の外にある取得元や保護されたブロックがあるとエラーになります。"
+                        + "読み込まれていないチャンクや別のディメンションのブロック、自分のイデアコネクターは対象外です。"
+                        + "移した合計は取得子: イデアストレージ-最終転送量で確認できます。");
+
+        addSpellPiece(root, "operator_matrix_caster_basis", "Operator: Caster Basis Matrix",
+                "Builds a 4x4 matrix from the caster's axis-rounded facing (columns: right, up, forward, origin), so regions can follow the caster.",
+                "演算子: 術者基準行列", "術者の向きを軸に丸めた 4×4 行列（列: 右・上・前・原点）を作ります。領域を術者の向きに合わせるのに使います。");
+        addBookPage(root, "operator_matrix_caster_basis.0",
+                "Builds a 4x4 matrix whose columns are the caster's right, up and forward directions, each rounded to a block axis, and an origin: Position, or the caster's block if unconnected."
+                        + " It maps a local point (X = right, Y = up, Z = forward) to the world, so regions built around (0, 0, 0) can follow the caster.",
+                "術者の右・上・前の方向をブロックの軸に丸めて列に並べ、4列目を原点（「位置」、未接続なら術者のいるブロック）とした 4×4 行列です。"
+                        + "局所座標（X=右、Y=上、Z=前）の点をワールド座標へ写すので、(0, 0, 0) を基準に作った領域を術者に追従させられます。");
+        addBookPage(root, "operator_matrix_caster_basis.1",
+                "Each mode uses the same frame as a macro: 2D (default) as Macro: Caster Axial Rotation, so forward is always level; 3D as Macro: Caster Axial Rotation (3D), which follows the pitch too; Face as Macro: Face Axial Rotation, using the face the caster looks at."
+                        + " In Face mode the default origin is that block, and a miss is an error.",
+                "各モードはマクロと同じ基準を使います。"
+                        + "2D（既定）はマクロ: 術者方角回転と同じで、前は常に水平です。"
+                        + "3D はマクロ: 術者方角回転 (3D) と同じで、視線の上下にも追従します。"
+                        + "面基準はマクロ: 面基準回転と同じく、術者が見ているブロック面を使い、原点の既定値はそのブロックです。"
+                        + "命中しない場合はエラーになります。");
+        addBookPage(root, "operator_matrix_caster_basis.2",
+                "Example: build Operator: Matrix Cuboid Region with Position (0, 1, 3) and Size (3, 3, 5), and multiply it by this matrix from the left with Operator: Matrix Multiply."
+                        + " The result is a 3x3 tunnel five blocks deep ahead of the caster: Trick: Show Region previews it, and Operator: Region Vector List and Trick: Mass Block Break dig it.",
+                "例: 演算子: 直方体領域を「位置」(0, 1, 3)、「サイズ」(3, 3, 5) で作り、演算子: 行列積でこの行列を左から掛けます。"
+                        + "結果は術者の正面にある 3×3、奥行き5ブロックのトンネル状の領域です。"
+                        + "作動式: 領域表示で確認でき、演算子: 領域ベクトルリスト化と作動式: 大規模ブロック破壊で掘れます。");
+
+        addSpellPiece(root, "operator_matrix_rotation", "Operator: Rotation Matrix",
+                "Builds a 4x4 matrix that rotates around Axis by Angle in radians, like Operator: Rotate Vector.",
+                "演算子: 回転行列", "Axis（軸）の周りに Angle（ラジアン）だけ回す 4×4 行列を作ります。Operator: Rotate Vector と同じ回転です。");
+        addBookPage(root, "operator_matrix_rotation.0",
+                "Builds a 4x4 matrix that rotates around Axis, through the origin, by Angle in radians, the same rotation as Operator: Rotate Vector."
+                        + " Quarter turns come out exact, so rotated regions keep their block positions."
+                        + " A zero axis is an error.",
+                "原点を通る Axis（軸）の周りに Angle（ラジアン）だけ回す 4×4 行列で、Operator: Rotate Vector と同じ回転です。"
+                        + "90度単位の回転は誤差なく計算されるので、回転した領域でもブロック座標がずれません。"
+                        + "軸がゼロベクトルだとエラーです。");
+        addBookPage(root, "operator_matrix_rotation.1",
+                "To rotate around a point P instead, chain two Operator: Matrix Multiply pieces to get (translation by P) × (this matrix) × (translation by -P), making the translations with Operator: Translation Matrix.",
+                "点Pの周りで回すには、演算子: 平行移動行列と2つの演算子: 行列積で (Pの平行移動) × (この行列) × (-Pの平行移動) を作ります。");
+
+        addSpellPiece(root, "operator_matrix_translation", "Operator: Translation Matrix",
+                "Builds a 4x4 matrix that moves points by Offset.",
+                "演算子: 平行移動行列", "点を「オフセット」だけ移動させる 4×4 行列を作ります。");
+        addBookPage(root, "operator_matrix_translation",
+                "Builds a 4x4 matrix that moves points by Offset."
+                        + " Put it to the left of a region matrix in Operator: Matrix Multiply to move the region, or apply it with Operator: Matrix Transform Vector to move a position."
+                        + " With Operator: Rotation Matrix, it rotates a region around any point.",
+                "点を「オフセット」だけ移動させる 4×4 行列を作ります。"
+                        + "演算子: 行列積で領域行列の左に置くと領域を移動でき、演算子: 行列でベクトル変換で使うと座標を移動できます。"
+                        + "演算子: 回転行列と組み合わせると、任意の点の周りで領域を回転できます。");
+
+        addSpellPiece(root, "operator_matrix_transform_vector_list", "Operator: Matrix Transform Vector List",
+                "Transforms every vector in a Vector List with a 3x3 or 4x4 matrix, keeping the order.",
+                "演算子: 行列でベクトルリスト変換", "Vector List のすべてのベクトルを 3×3 または 4×4 の行列で変換します。順序は保たれます。");
+        addBookPage(root, "operator_matrix_transform_vector_list",
+                "Applies Operator: Matrix Transform Vector to each vector of a Vector List, keeping the order: a 4x4 matrix treats each vector as the point [x, y, z, 1] and divides by w."
+                        + " Any failure, such as w becoming 0, is an error."
+                        + " A Block List also works; its block positions are used.",
+                "演算子: 行列でベクトル変換を Vector List の各要素に適用し、同じ順序で返します。"
+                        + "4×4 行列は各ベクトルを点 [x, y, z, 1] として変換して w で割ります。"
+                        + "w が0になるなど、変換できない要素が1つでもあるとエラーです。"
+                        + "Block List もつなぐことができ、ブロックの座標が使われます。");
+
+        addSpellPiece(root, "trick_show_region", "Trick: Show Region",
+                "Draws the 12 edges of a region matrix with particles in your CAD's color.",
+                "作動式: 領域表示", "領域行列の12本の辺を、CADの色のパーティクルで描きます。");
+        addBookPage(root, "trick_show_region.0",
+                "Draws the outline of a region defined by a 3x4 or 4x4 matrix with particle trails in your CAD's color, to check it before working on it."
+                        + " Block mode (default) wraps the blocks that Operator: Region Vector List picks from the region; Vector mode draws the parallelepiped exactly as defined.",
+                "3×4 または 4×4 の行列で定義された領域の輪郭を、CADの色のパーティクルの軌跡で描きます。"
+                        + "作業前の範囲確認に使います。"
+                        + "Block モード（既定）は演算子: 領域ベクトルリスト化が選ぶブロックを囲むように、Vector モードは定義どおりの平行六面体を描きます。");
+        addBookPage(root, "trick_show_region.1",
+                "Time is an optional constant and works like the Time of Trick: Particle Trail: 20 by default, at most 1200, and it must be positive."
+                        + " Every corner must be within the spell radius, or casting fails with an error."
+                        + " Players near you see the particles too.",
+                "「時間」は任意入力の定数で、Trick: Particle Trail の時間と同じく既定値20、最大1200で、正の数を指定します。"
+                        + "すべての角が術式射程内にない場合はエラーになります。"
+                        + "パーティクルは近くのプレイヤーにも見えます。");
     }
 }

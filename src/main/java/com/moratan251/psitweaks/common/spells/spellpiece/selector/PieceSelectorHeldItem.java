@@ -3,10 +3,12 @@ package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 import com.moratan251.psitweaks.common.spells.item.EntityHandSource;
 import com.moratan251.psitweaks.common.spells.item.EntityInventorySlotSource;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
@@ -43,6 +45,10 @@ public class PieceSelectorHeldItem extends PieceSelector {
             return SpellItemValue.sourced(
                     living.getMainHandItem(),
                     new EntityHandSource(living.getUUID(), InteractionHand.MAIN_HAND));
+        }
+
+        if (entity instanceof ItemEntity itemEntity) {
+            return ItemListValueHelper.fromItemEntity(itemEntity);
         }
 
         return SpellItemValue.EMPTY;

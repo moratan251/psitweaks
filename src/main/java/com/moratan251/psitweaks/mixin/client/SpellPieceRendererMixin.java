@@ -10,6 +10,9 @@ import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.client.render.spell.SpellPieceRenderer;
 import com.moratan251.psitweaks.common.spells.spellpiece.constant.PieceConstantString;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceMacroCasterAxialOffsetBase;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorBlockResourceBase;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorMatrixCasterBasis;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorRegionFilterBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorFormatString;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorModeConversionBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorModeListBase;
@@ -18,6 +21,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorI
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickItemTransferBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageResourceBase;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickShowRegion;
 
 /** Preserves addon overlays after Psi moved rendering out of SpellPiece. */
 @Mixin(value = SpellPieceRenderer.class, remap = false)
@@ -43,6 +47,14 @@ public abstract class SpellPieceRendererMixin {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceTrickIdeaStorageResourceBase custom && custom.overlayModeOption() != null) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.overlayModeOption());
+        } else if (piece instanceof PieceOperatorRegionFilterBase custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceOperatorMatrixCasterBasis custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceTrickShowRegion custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceOperatorBlockResourceBase custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         }
     }
 }

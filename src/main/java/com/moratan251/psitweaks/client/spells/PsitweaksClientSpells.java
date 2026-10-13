@@ -159,6 +159,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_idea_storage_deposit_slot");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
             registerPieceMaterial("trick_idea_storage_withdraw_slot");
+    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_COLLECT_ITEM =
+            registerPieceMaterial("trick_idea_storage_collect_item");
 
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_ABSORB_FE =
             registerPieceMaterial("trick_idea_storage_absorb_fe");
@@ -227,6 +229,12 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_block_position");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_POSITION_LIST =
             registerPieceMaterial("operator_block_position_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_ITEM =
+            registerPieceMaterial("operator_block_item");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_RESOURCE_AMOUNT =
+            registerPieceMaterial("operator_block_resource_amount");
+    public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_FREE_CAPACITY =
+            registerPieceMaterial("operator_block_free_capacity");
     public static final DeferredHolder<Material, Material> SELECTOR_ONLINE_PLAYERS =
             registerPieceMaterial("selector_online_players");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEM =
@@ -243,6 +251,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_item_slot");
     public static final DeferredHolder<Material, Material> OPERATOR_ITEM_TOTAL_COUNT =
             registerPieceMaterial("operator_item_total_count");
+    public static final DeferredHolder<Material, Material> OPERATOR_DROPPED_ITEMS =
+            registerPieceMaterial("operator_dropped_items");
     public static final DeferredHolder<Material, Material> SELECTOR_HELD_ITEMS =
             registerPieceMaterial("selector_held_items");
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_ITEMS =
@@ -355,6 +365,16 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_inside_region");
     public static final DeferredHolder<Material, Material> OPERATOR_OUTSIDE_REGION =
             registerPieceMaterial("operator_outside_region");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_CASTER_BASIS =
+            registerPieceMaterial("operator_matrix_caster_basis");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ROTATION =
+            registerPieceMaterial("operator_matrix_rotation");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSLATION =
+            registerPieceMaterial("operator_matrix_translation");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR_LIST =
+            registerPieceMaterial("operator_matrix_transform_vector_list");
+    public static final DeferredHolder<Material, Material> TRICK_SHOW_REGION =
+            registerPieceMaterial("trick_show_region");
     public static final DeferredHolder<Material, Material> OPERATOR_ALIVE =
             registerPieceMaterial("operator_alive");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =
@@ -420,6 +440,22 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/item_exact");
     public static final DeferredHolder<Material, Material> MODE_ITEM_STRICT_EXACT =
             registerPieceMaterial("mode/item_s_exact");
+    // Frame badges of Operator: Caster Basis Matrix (PieceOperatorMatrixCasterBasis).
+    public static final DeferredHolder<Material, Material> MODE_BASIS_2D =
+            registerPieceMaterial("mode/basis_2d");
+    public static final DeferredHolder<Material, Material> MODE_BASIS_3D =
+            registerPieceMaterial("mode/basis_3d");
+    public static final DeferredHolder<Material, Material> MODE_BASIS_FACE =
+            registerPieceMaterial("mode/basis_face");
+    // Resource badges of the block resource operators (BlockResourceModes).
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_ITEM =
+            registerPieceMaterial("mode/resource_item");
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_FLUID =
+            registerPieceMaterial("mode/resource_fluid");
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_CHEMICAL =
+            registerPieceMaterial("mode/resource_chemical");
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_ENERGY =
+            registerPieceMaterial("mode/resource_energy");
 
     private PsitweaksClientSpells() {
     }

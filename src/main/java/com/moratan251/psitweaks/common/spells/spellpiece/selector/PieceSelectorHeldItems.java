@@ -2,9 +2,11 @@ package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
+import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -34,6 +36,10 @@ public class PieceSelectorHeldItems extends PieceSelector {
 
         if (entity instanceof Player player) {
             return ItemListValueHelper.fromEntityContainer(player, player.getInventory());
+        }
+
+        if (entity instanceof ItemEntity itemEntity) {
+            return ItemListValueHelper.fromItemEntities(List.of(itemEntity));
         }
 
         IItemHandler handler = Capabilities.ItemHandler.ENTITY.getCapability(entity, null);

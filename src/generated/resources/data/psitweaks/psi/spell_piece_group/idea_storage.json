@@ -23,6 +23,7 @@
     "psitweaks:selector_idea_storage_energy_free_capacity",
     "psitweaks:selector_idea_storage_item_type_count",
     "psitweaks:selector_idea_storage_fluid_type_count",
-    "psitweaks:selector_idea_storage_chemical_type_count"
+    "psitweaks:selector_idea_storage_chemical_type_count",
+    "psitweaks:trick_idea_storage_collect_item"
   ]
 }

@@ -2,9 +2,10 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.item.SpellItemFilters;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
-import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
+import com.moratan251.psitweaks.common.spells.param.ParamSpellItemFilter;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
@@ -24,7 +25,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -135,7 +135,7 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
         addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, false, false));
         addParam(direction = new ParamVector("psi.spellparam.direction", SpellParam.GREEN, false, false));
         if (isItemMode()) {
-            addParam(item = new ParamSpellItemValue(PsitweaksSpellParams.ITEM, PsitweaksSpellParams.ITEM_COLOR,
+            addParam(item = new ParamSpellItemFilter(PsitweaksSpellParams.ITEM, PsitweaksSpellParams.ITEM_COLOR,
                     true, false));
         } else {
             addParam(type = new ParamString(PsitweaksSpellParams.STRING, PsitweaksSpellParams.STRING_COLOR,
@@ -220,7 +220,7 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
         return null;
     }
 
-    static IItemHandler getBlockItemHandler(Level level, BlockPos pos, Direction facing) {
+    public static IItemHandler getBlockItemHandler(Level level, BlockPos pos, Direction facing) {
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         IItemHandler handler = Capabilities.ItemHandler.BLOCK.getCapability(level, pos, state, blockEntity, facing);
@@ -240,7 +240,7 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
      * Asks protection mods whether the caster may interact with the block's inventory by
      * posting a right-click equivalent event. Canceled or block-use denied means protected.
      */
-    static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
+    public static boolean isProtectedFromInteraction(Player caster, BlockPos pos, Direction facing) {
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false);
         PlayerInteractEvent.RightClickBlock event = NeoForge.EVENT_BUS.post(
                 new PlayerInteractEvent.RightClickBlock(caster, InteractionHand.MAIN_HAND, pos, hit));
@@ -249,21 +249,14 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
 
     private Predicate<ItemStack> buildFilter(SpellContext context) throws SpellRuntimeException {
         if (isItemMode()) {
-            SpellItemValue itemVal = getParamValue(context, item);
+            // Item List も受け付ける(いずれかに一致)。値は Item とは限らないため型を決めずに読む
+            Object itemVal = getParamValue(context, (SpellParam<?>) item);
             if (itemVal == null) {
                 return stack -> true;
             }
-            // 接続済みだが Item[empty] の場合は対象アイテム不在としてエラー
-            if (itemVal.isEmpty()) {
-                throw new SpellRuntimeException(ERROR_NULL_ITEM);
-            }
-            if (isItemStrictMode()) {
-                // アイテム種 + Data Component(エンチャント・耐久値・カスタム名等)の一致。個数は無視
-                ItemStack target = itemVal.snapshot();
-                return stack -> ItemStack.isSameItemSameComponents(stack, target);
-            }
-            Item target = itemVal.snapshot().getItem();
-            return stack -> stack.getItem() == target;
+            // 接続済みだが Item[empty] の場合は対象アイテム不在としてエラー。Strict はアイテム種 + Data Component
+            // (エンチャント・耐久値・カスタム名等)の一致で、個数は無視
+            return SpellItemFilters.of(itemVal, isItemStrictMode());
         }
 
         String typeVal = getParamValue(context, type);

@@ -1,13 +1,23 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
+import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.param.ParamBlockListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamMatrix;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper;
+import com.moratan251.psitweaks.common.spells.param.ParamVectorListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.VectorListWrapper;
+import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.Spell;
@@ -18,10 +28,20 @@ import vazkii.psi.api.spell.param.ParamEntityListWrapper;
 import vazkii.psi.api.spell.piece.PieceOperator;
 import vazkii.psi.api.spell.wrapper.EntityListWrapper;
 
-public abstract class PieceOperatorRegionFilterBase extends PieceOperator {
-    private static final double EPSILON = 1e-12;
+/**
+ * Filters a list by a region matrix. Entities are tested at their bounding box center, vectors as given,
+ * and blocks at their block position, the same lattice points that Operator: Region Vector List returns.
+ */
+public abstract class PieceOperatorRegionFilterBase extends PieceOperator implements PsitweaksModeConfigurable {
+    private static final String TAG_MODE = "psitweaksMode";
+    // Entity first: spells saved before the mode menu existed load as Entity List filters.
+    private static final List<PsitweaksModeOption> MODES = List.of(
+            PsitweaksModeOptions.ENTITY, PsitweaksModeOptions.VECTOR, PsitweaksModeOptions.BLOCK);
 
+    private PsitweaksModeOption mode = PsitweaksModeOptions.ENTITY;
     private SpellParam<EntityListWrapper> entities;
+    private SpellParam<VectorListWrapper> vectors;
+    private SpellParam<BlockListWrapper> blocks;
     private SpellParam<MatrixValue> region;
 
     public PieceOperatorRegionFilterBase(Spell spell) {
@@ -30,23 +50,109 @@ public abstract class PieceOperatorRegionFilterBase extends PieceOperator {
 
     @Override
     public void initParams() {
-        addParam(entities = new ParamEntityListWrapper(SpellParam.GENERIC_NAME_LIST, SpellParam.BLUE, false, false));
+        rebuildParams(null);
+    }
+
+    @Override
+    public List<PsitweaksModeOption> getAvailableModeOptions() {
+        return MODES;
+    }
+
+    @Override
+    public PsitweaksModeOption getModeOption() {
+        return normalizeModeOption(mode);
+    }
+
+    @Override
+    public void setModeOption(PsitweaksModeOption modeOption) {
+        PsitweaksModeOption nextMode = normalizeModeOption(modeOption);
+        if (nextMode.id().equals(getModeOption().id())) {
+            return;
+        }
+
+        Map<String, SpellParam.Side> savedSides = new LinkedHashMap<>();
+        paramSides.forEach((param, side) -> savedSides.put(param.name, side));
+        mode = nextMode;
+        rebuildParams(savedSides);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag tag) {
+        mode = normalizeModeOption(PsitweaksModeOptions.byId(tag.getString(TAG_MODE)).orElse(null));
+        rebuildParams(null);
+        super.readFromNBT(tag);
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
+        tag.putString(TAG_MODE, getModeOption().serializedId());
+    }
+
+    private boolean isMode(PsitweaksModeOption option) {
+        return getModeOption().id().equals(option.id());
+    }
+
+    private void rebuildParams(Map<String, SpellParam.Side> savedSides) {
+        params.clear();
+        paramSides.clear();
+        // Every mode uses the same list param name so a mode change keeps the wire.
+        if (isMode(PsitweaksModeOptions.VECTOR)) {
+            addParam(vectors = new ParamVectorListWrapper(SpellParam.GENERIC_NAME_LIST,
+                    PsitweaksSpellParams.VECTOR_LIST_COLOR, false, false));
+        } else if (isMode(PsitweaksModeOptions.BLOCK)) {
+            addParam(blocks = new ParamBlockListWrapper(SpellParam.GENERIC_NAME_LIST,
+                    PsitweaksSpellParams.BLOCK_LIST_COLOR, false, false));
+        } else {
+            addParam(entities = new ParamEntityListWrapper(SpellParam.GENERIC_NAME_LIST, SpellParam.BLUE, false, false));
+        }
         addParam(region = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+
+        if (savedSides != null) {
+            for (SpellParam<?> param : params.values()) {
+                SpellParam.Side side = savedSides.get(param.name);
+                if (side != null) {
+                    paramSides.put(param, side);
+                }
+            }
+        }
     }
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        EntityListWrapper source = getNotNullParamValue(context, entities);
-        MatrixValue matrix = getNotNullParamValue(context, region);
+        if (isMode(PsitweaksModeOptions.VECTOR)) {
+            VectorListWrapper source = getNotNullParamValue(context, vectors);
+            RegionMatrix area = RegionMatrix.parse(getNotNullParamValue(context, region));
+            List<Vector3> result = new ArrayList<>();
+            for (Vector3 vector : source) {
+                if (area.contains(vector) == keepInside()) {
+                    result.add(vector);
+                }
+            }
+            return VectorListWrapper.make(result);
+        }
 
-        Region region = parseRegion(matrix);
+        if (isMode(PsitweaksModeOptions.BLOCK)) {
+            BlockListWrapper source = getNotNullParamValue(context, blocks);
+            RegionMatrix area = RegionMatrix.parse(getNotNullParamValue(context, region));
+            List<BlockValue> result = new ArrayList<>();
+            for (BlockValue block : source) {
+                if (area.contains(block.positionVector()) == keepInside()) {
+                    result.add(block);
+                }
+            }
+            return BlockListWrapper.make(result);
+        }
+
+        EntityListWrapper source = getNotNullParamValue(context, entities);
+        RegionMatrix area = RegionMatrix.parse(getNotNullParamValue(context, region));
         List<Entity> result = new ArrayList<>();
         for (Entity entity : source) {
             if (entity == null) {
                 continue;
             }
-            boolean inside = isInside(region, entityPosition(entity));
-            if (inside == keepInside()) {
+            Vec3 center = entity.getBoundingBox().getCenter();
+            if (area.contains(new Vector3(center.x, center.y, center.z)) == keepInside()) {
                 result.add(entity);
             }
         }
@@ -55,58 +161,16 @@ public abstract class PieceOperatorRegionFilterBase extends PieceOperator {
 
     @Override
     public Class<?> getEvaluationType() {
-        return EntityListWrapper.class;
+        if (isMode(PsitweaksModeOptions.VECTOR)) {
+            return VectorListWrapper.class;
+        }
+        return isMode(PsitweaksModeOptions.BLOCK) ? BlockListWrapper.class : EntityListWrapper.class;
+    }
+
+    @Override
+    public Component getEvaluationTypeString() {
+        return Component.translatable(getModeOption().listTranslationKey());
     }
 
     protected abstract boolean keepInside();
-
-    private static Region parseRegion(MatrixValue matrix) throws SpellRuntimeException {
-        if ((matrix.rows() != 3 && matrix.rows() != 4) || matrix.cols() != 4) {
-            throw new SpellRuntimeException(MassBlockBreakHelper.ERROR_INVALID_MATRIX);
-        }
-
-        Vector3 edge0 = new Vector3(matrix.get(0, 0), matrix.get(1, 0), matrix.get(2, 0));
-        Vector3 edge1 = new Vector3(matrix.get(0, 1), matrix.get(1, 1), matrix.get(2, 1));
-        Vector3 edge2 = new Vector3(matrix.get(0, 2), matrix.get(1, 2), matrix.get(2, 2));
-        Vector3 start = new Vector3(matrix.get(0, 3), matrix.get(1, 3), matrix.get(2, 3));
-
-        MatrixValue edgeMatrix = MatrixOperations.checkedMatrix(3, 3, new double[]{
-                edge0.x, edge1.x, edge2.x,
-                edge0.y, edge1.y, edge2.y,
-                edge0.z, edge1.z, edge2.z
-        });
-
-        MatrixValue inverseMatrix;
-        try {
-            inverseMatrix = MatrixOperations.inverse(edgeMatrix);
-        } catch (SpellRuntimeException e) {
-            throw new SpellRuntimeException(MassBlockBreakHelper.ERROR_DEGENERATE_EDGES);
-        }
-
-        return new Region(start, inverseMatrix);
-    }
-
-    private static Vector3 entityPosition(Entity entity) {
-        AABB box = entity.getBoundingBox();
-        Vec3 center = box.getCenter();
-        return new Vector3(center.x, center.y, center.z);
-    }
-
-    private static boolean isInside(Region region, Vector3 position) throws SpellRuntimeException {
-        double dx = position.x - region.start().x;
-        double dy = position.y - region.start().y;
-        double dz = position.z - region.start().z;
-
-        MatrixValue inverse = region.inverseMatrix();
-        double u = inverse.get(0, 0) * dx + inverse.get(0, 1) * dy + inverse.get(0, 2) * dz;
-        double v = inverse.get(1, 0) * dx + inverse.get(1, 1) * dy + inverse.get(1, 2) * dz;
-        double w = inverse.get(2, 0) * dx + inverse.get(2, 1) * dy + inverse.get(2, 2) * dz;
-
-        return u >= -EPSILON && u <= 1.0 + EPSILON
-                && v >= -EPSILON && v <= 1.0 + EPSILON
-                && w >= -EPSILON && w <= 1.0 + EPSILON;
-    }
-
-    private record Region(Vector3 start, MatrixValue inverseMatrix) {
-    }
 }

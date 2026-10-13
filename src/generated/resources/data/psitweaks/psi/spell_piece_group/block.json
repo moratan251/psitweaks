@@ -6,6 +6,9 @@
     "psitweaks:operator_block_state_value",
     "psitweaks:operator_block_state_entries",
     "psitweaks:operator_block_position",
-    "psitweaks:operator_block_position_list"
+    "psitweaks:operator_block_position_list",
+    "psitweaks:operator_block_item",
+    "psitweaks:operator_block_resource_amount",
+    "psitweaks:operator_block_free_capacity"
   ]
 }
