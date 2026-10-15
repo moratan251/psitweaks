@@ -423,7 +423,9 @@ public final class ItemBlockMatrixGameTests {
         helper.assertTrue(columns((MatrixValue) basis.execute(new SpellContext().setPlayer(player)), north, west, down,
                         vector(helper.absolutePos(new BlockPos(1, 0, 3)))),
                 "Face mode on a top face: up follows the caster's horizontal facing");
-        player.moveTo(Vec3.atBottomCenterOf(feet.above(100)));
+        // The 1.20.1 game test world is a normal overworld with the tests underground, so 100 blocks up is still
+        // stone. Look up from above the build limit instead, where nothing can be hit.
+        player.moveTo(Vec3.atBottomCenterOf(feet.atY(helper.getLevel().getMaxBuildHeight() + 10)));
         player.setXRot(-90);
         helper.assertTrue(SpellRuntimeException.NULL_VECTOR.equals(error(() -> basis.execute(new SpellContext().setPlayer(player)))),
                 "Face mode must fail when the caster looks at nothing");
