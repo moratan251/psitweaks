@@ -12,6 +12,7 @@ import com.moratan251.psitweaks.common.spells.item.EntityHandSource;
 import com.moratan251.psitweaks.common.spells.item.ItemEntitySource;
 import com.moratan251.psitweaks.common.spells.item.SpellItemFilters;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.item.StrictItemFilter;
 import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
 import com.moratan251.psitweaks.common.spells.param.ParamBlockListWrapper;
 import com.moratan251.psitweaks.common.spells.param.ParamSpellItemFilter;
@@ -22,7 +23,6 @@ import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorH
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorHeldItems;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageCollectItem;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageDepositItem;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageSlotBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPullItem;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickShowRegion;
@@ -166,7 +166,9 @@ public final class ItemBlockMatrixGameTests {
         groups.put("operator_matrix_translation", "matrix");
         groups.put("trick_show_region", "matrix");
         groups.put("trick_idea_storage_collect_item", "idea_storage");
+        groups.put("operator_strict_item", "item");
         Map<String, Class<?>> outputs = Map.of(
+                "operator_strict_item", StrictItemFilter.class,
                 "operator_block_item", SpellItemValue.class,
                 "operator_block_resource_amount", Double.class,
                 "operator_block_free_capacity", Double.class,
@@ -585,12 +587,7 @@ public final class ItemBlockMatrixGameTests {
         chest.setItem(1, new ItemStack(Items.WHEAT_SEEDS, 6));
         var depositor = fakeCaster(helper, new BlockPos(2, 1, 1), "block-item-filter");
         var depositContext = new SpellContext().setPlayer(depositor);
-        var deposit = new PieceTrickIdeaStorageDepositItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, chestPos, 64, seeds);
-            }
-        };
-        deposit.setModeOption(PsitweaksModeOptions.ITEM);
+        var deposit = IdeaLogisticsGameTests.trick(true, BlockResourceModes.ITEM, param -> IdeaLogisticsGameTests.paramValue(param, chestPos, 64, seeds));
         deposit.execute(depositContext);
         var storage = IdeaStorageService.get(depositor.server, depositor.getUUID());
         helper.assertTrue(stored(storage, new ItemStack(Items.WHEAT_SEEDS)) == 6 && chest.getItem(0).getCount() == 4,
@@ -1085,12 +1082,12 @@ public final class ItemBlockMatrixGameTests {
 
         chest.setItem(1, new ItemStack(Items.APPLE, 4));
         chest.setItem(2, named(new ItemStack(Items.BREAD, 3), "Special"));
-        var deposit = new PieceTrickIdeaStorageDepositItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, chestPos, 64, wanted);
-            }
-        };
-        deposit.setModeOption(PsitweaksModeOptions.ITEM_STRICT);
+        // Operator: Strict Item turns the whole list into a strict filter.
+        Object strictWanted = new PieceOperatorStrictItem(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return wanted; }
+        }.execute(context);
+        var deposit = IdeaLogisticsGameTests.trick(true, BlockResourceModes.ITEM,
+                param -> IdeaLogisticsGameTests.paramValue(param, chestPos, 64, strictWanted));
         deposit.execute(context);
         var storage = IdeaStorageService.get(player.server, player.getUUID());
         helper.assertTrue(stored(storage, new ItemStack(Items.APPLE)) == 4 && chest.getItem(2).getCount() == 3
@@ -1102,7 +1099,6 @@ public final class ItemBlockMatrixGameTests {
         double[] count = {64};
         Object[] slotFilter = {wanted};
         PieceTrickIdeaStorageSlotBase depositSlot = IdeaStorageSlotGameTests.piece(true, count, slotFilter);
-        depositSlot.setModeOption(PsitweaksModeOptions.ITEM);
         depositSlot.execute(slotContext);
         var slotStorage = IdeaStorageService.get(caster.server, caster.getUUID());
         helper.assertTrue(caster.getInventory().getItem(1).isEmpty() && stored(slotStorage, new ItemStack(Items.BREAD)) == 9,

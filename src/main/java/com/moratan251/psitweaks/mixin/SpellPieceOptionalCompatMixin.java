@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.mixin;
 
+import com.moratan251.psitweaks.common.compat.IdeaStoragePieceMigration;
 import com.moratan251.psitweaks.common.compat.OptionalSpellPieceCompat;
 import net.minecraft.nbt.CompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +16,13 @@ public abstract class SpellPieceOptionalCompatMixin {
     private static void psitweaks$handleOptionalSpellPieceCompat(Spell spell, CompoundTag cmp, CallbackInfoReturnable<SpellPiece> cir) {
         if (OptionalSpellPieceCompat.shouldRemoveMissingPhysicalPropulsion(cmp)) {
             cir.setReturnValue(OptionalSpellPieceCompat.createRemovalMarker(spell));
+            return;
+        }
+        // Ideaspace pieces saved before the merge load from a migrated copy; the copy no longer matches, so this
+        // recursion ends after one step.
+        CompoundTag migrated = IdeaStoragePieceMigration.migrate(cmp);
+        if (migrated != null) {
+            cir.setReturnValue(SpellPiece.createFromNBT(spell, migrated));
         }
     }
 }

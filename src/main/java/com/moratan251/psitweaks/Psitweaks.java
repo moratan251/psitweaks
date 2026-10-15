@@ -9,11 +9,13 @@ import vazkii.psi.api.spell.PreSpellCastEvent;
 import vazkii.psi.api.spell.SpellCastEvent;
 import vazkii.psi.api.spell.PieceKnowledgeEvent;
 
+import com.moratan251.psitweaks.client.FilterCardClient;
 import com.moratan251.psitweaks.client.SpellUnlockClientEvents;
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
+import com.moratan251.psitweaks.client.gui.FilterCardScreen;
 import com.moratan251.psitweaks.client.gui.IdeaStorageScreen;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
 import com.moratan251.psitweaks.client.gui.machine.GuiProgramResearcher;
@@ -54,6 +56,7 @@ import com.moratan251.psitweaks.common.items.component.ComponentStats;
 import com.moratan251.psitweaks.common.items.armor.ArmorSpellDamageAttributeHandler;
 import com.moratan251.psitweaks.common.items.armor.PsitweaksArmorMaterials;
 import com.moratan251.psitweaks.common.items.ItemGravstringer;
+import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.items.PsitweaksItemCapabilities;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.PsitweaksTabs;
@@ -140,6 +143,7 @@ public class Psitweaks {
 
         PsitweaksArmorMaterials.register(modEventBus);
         PsitweaksItems.register(modEventBus);
+        PsitweaksDataComponents.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
         PsitweaksEffects.register(modEventBus);
         PsitweaksAttributes.register(modEventBus);
@@ -167,6 +171,7 @@ public class Psitweaks {
             ClientModEvents.register(modEventBus);
             MekanismCompat.registerClient(modEventBus);
             SpellUnlockClientEvents.register();
+            FilterCardClient.registerEvents();
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
@@ -255,6 +260,7 @@ public class Psitweaks {
 
             event.enqueueWork(() -> {
                 registerBowProperties(PsitweaksItems.PSIMETAL_BOW, BowItem.MAX_DRAW_DURATION);
+                FilterCardClient.registerItemProperties();
                 registerBowProperties(PsitweaksItems.GRAVSTRINGER, ItemGravstringer.FULL_DRAW_TICKS);
                 ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(), Psitweaks.location("tunneler_loaded"),
                         (stack, level, entity, seed) -> entity instanceof Player player
@@ -309,6 +315,7 @@ public class Psitweaks {
             event.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
             event.register(ModMenuTypes.PORTABLE_SPELL_PROGRAMMER.get(), com.moratan251.psitweaks.client.gui.machine.GuiPortableSpellProgrammer::new);
             event.register(ModMenuTypes.IDEA_STORAGE.get(), IdeaStorageScreen::new);
+            event.register(ModMenuTypes.FILTER_CARD.get(), FilterCardScreen::new);
             event.register(ModMenuTypes.IDEASPACE_CONNECTOR.get(), com.moratan251.psitweaks.client.gui.IdeaspaceConnectorScreen::new);
         }
 

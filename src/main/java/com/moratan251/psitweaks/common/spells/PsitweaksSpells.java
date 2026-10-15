@@ -182,6 +182,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_block_position_list", PieceOperatorBlockPositionList.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_ITEM =
             registerPiece("operator_block_item", PieceOperatorBlockItem.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_STRICT_ITEM =
+            registerPiece("operator_strict_item", PieceOperatorStrictItem.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_RESOURCE_AMOUNT =
             registerPiece("operator_block_resource_amount", PieceOperatorBlockResourceAmount.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_BLOCK_FREE_CAPACITY =
@@ -196,6 +198,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_entity_slot_item", PieceSelectorEntitySlotItem.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_INTERNAL_SLOT_ITEM =
             registerPiece("selector_internal_slot_item", PieceSelectorInternalSlotItem.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_FILTER_CARD =
+            registerPiece("selector_filter_card", PieceSelectorFilterCard.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ITEM_COUNT =
             registerPiece("operator_item_count", PieceOperatorItemCount.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ITEM_SLOT =
@@ -369,18 +373,10 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEASPACE_CONNECTOR =
             registerPiece("trick_ideaspace_connector", com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaspaceConnector.class);
 
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_ITEM =
-            registerPiece("trick_idea_storage_deposit_item", PieceTrickIdeaStorageDepositItem.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_FLUID =
-            registerPiece("trick_idea_storage_deposit_fluid", PieceTrickIdeaStorageDepositFluid.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_CHEMICAL =
-            registerPiece("trick_idea_storage_deposit_chemical", PieceTrickIdeaStorageDepositChemical.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_ITEM =
-            registerPiece("trick_idea_storage_withdraw_item", PieceTrickIdeaStorageWithdrawItem.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_FLUID =
-            registerPiece("trick_idea_storage_withdraw_fluid", PieceTrickIdeaStorageWithdrawFluid.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_CHEMICAL =
-            registerPiece("trick_idea_storage_withdraw_chemical", PieceTrickIdeaStorageWithdrawChemical.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT =
+            registerPiece("trick_idea_storage_deposit", PieceTrickIdeaStorageDeposit.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW =
+            registerPiece("trick_idea_storage_withdraw", PieceTrickIdeaStorageWithdraw.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_DEPOSIT_SLOT =
             registerPiece("trick_idea_storage_deposit_slot", PieceTrickIdeaStorageDepositSlot.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
@@ -388,35 +384,14 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_COLLECT_ITEM =
             registerPiece("trick_idea_storage_collect_item", PieceTrickIdeaStorageCollectItem.class);
 
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_ABSORB_FE =
-            registerPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_IDEA_STORAGE_SUPPLY_FE =
-            registerPiece("trick_idea_storage_supply_fe", PieceTrickIdeaStorageSupplyFE.class);
-
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ENERGY =
-            registerPiece("selector_idea_storage_energy", PieceSelectorIdeaStorageEnergy.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ITEM_AMOUNT =
-            registerPiece("selector_idea_storage_item_amount", PieceSelectorIdeaStorageItemAmount.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FLUID_AMOUNT =
-            registerPiece("selector_idea_storage_fluid_amount", PieceSelectorIdeaStorageFluidAmount.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_AMOUNT =
-            registerPiece("selector_idea_storage_chemical_amount", PieceSelectorIdeaStorageChemicalAmount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_AMOUNT =
+            registerPiece("selector_idea_storage_amount", PieceSelectorIdeaStorageAmount.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FREE_CAPACITY =
+            registerPiece("selector_idea_storage_free_capacity", PieceSelectorIdeaStorageFreeCapacity.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_TYPE_COUNT =
+            registerPiece("selector_idea_storage_type_count", PieceSelectorIdeaStorageTypeCount.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_LAST_TRANSFER =
             registerPiece("selector_idea_storage_last_transfer", PieceSelectorIdeaStorageLastTransfer.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ITEM_FREE_CAPACITY =
-            registerPiece("selector_idea_storage_item_free_capacity", PieceSelectorIdeaStorageItemFreeCapacity.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FLUID_FREE_CAPACITY =
-            registerPiece("selector_idea_storage_fluid_free_capacity", PieceSelectorIdeaStorageFluidFreeCapacity.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_FREE_CAPACITY =
-            registerPiece("selector_idea_storage_chemical_free_capacity", PieceSelectorIdeaStorageChemicalFreeCapacity.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ENERGY_FREE_CAPACITY =
-            registerPiece("selector_idea_storage_energy_free_capacity", PieceSelectorIdeaStorageEnergyFreeCapacity.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_ITEM_TYPE_COUNT =
-            registerPiece("selector_idea_storage_item_type_count", PieceSelectorIdeaStorageItemTypeCount.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_FLUID_TYPE_COUNT =
-            registerPiece("selector_idea_storage_fluid_type_count", PieceSelectorIdeaStorageFluidTypeCount.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_CHEMICAL_TYPE_COUNT =
-            registerPiece("selector_idea_storage_chemical_type_count", PieceSelectorIdeaStorageChemicalTypeCount.class);
 
     private PsitweaksSpells() {
     }

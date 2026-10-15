@@ -1,0 +1,27 @@
+{
+  "name": "psitweaks.spellpiece.trick_idea_storage_withdraw",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_idea_storage_withdraw.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw.3"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_withdraw.4"
+    }
+  ]
+}

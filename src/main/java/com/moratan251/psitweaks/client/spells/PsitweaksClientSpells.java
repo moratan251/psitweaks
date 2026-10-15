@@ -115,57 +115,28 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_send_item");
     public static final DeferredHolder<Material, Material> TRICK_MASS_BLOCK_BREAK =
             registerPieceMaterial("trick_mass_block_break");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_ENERGY =
-            registerPieceMaterial("selector_idea_storage_energy");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_ITEM_AMOUNT =
-            registerPieceMaterial("selector_idea_storage_item_amount");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_FLUID_AMOUNT =
-            registerPieceMaterial("selector_idea_storage_fluid_amount");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_CHEMICAL_AMOUNT =
-            registerPieceMaterial("selector_idea_storage_chemical_amount");
+    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_AMOUNT =
+            registerPieceMaterial("selector_idea_storage_amount");
+    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_FREE_CAPACITY =
+            registerPieceMaterial("selector_idea_storage_free_capacity");
+    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_TYPE_COUNT =
+            registerPieceMaterial("selector_idea_storage_type_count");
     public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_LAST_TRANSFER =
             registerPieceMaterial("selector_idea_storage_last_transfer");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_ITEM_FREE_CAPACITY =
-            registerPieceMaterial("selector_idea_storage_item_free_capacity");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_FLUID_FREE_CAPACITY =
-            registerPieceMaterial("selector_idea_storage_fluid_free_capacity");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_CHEMICAL_FREE_CAPACITY =
-            registerPieceMaterial("selector_idea_storage_chemical_free_capacity");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_ENERGY_FREE_CAPACITY =
-            registerPieceMaterial("selector_idea_storage_energy_free_capacity");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_ITEM_TYPE_COUNT =
-            registerPieceMaterial("selector_idea_storage_item_type_count");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_FLUID_TYPE_COUNT =
-            registerPieceMaterial("selector_idea_storage_fluid_type_count");
-    public static final DeferredHolder<Material, Material> SELECTOR_IDEA_STORAGE_CHEMICAL_TYPE_COUNT =
-            registerPieceMaterial("selector_idea_storage_chemical_type_count");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_VIEW =
             registerPieceMaterial("trick_idea_storage_view");
     public static final DeferredHolder<Material, Material> TRICK_IDEASPACE_CONNECTOR =
             registerPieceMaterial("trick_ideaspace_connector");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_DEPOSIT_ITEM =
-            registerPieceMaterial("trick_idea_storage_deposit_item");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_DEPOSIT_FLUID =
-            registerPieceMaterial("trick_idea_storage_deposit_fluid");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_DEPOSIT_CHEMICAL =
-            registerPieceMaterial("trick_idea_storage_deposit_chemical");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_ITEM =
-            registerPieceMaterial("trick_idea_storage_withdraw_item");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_FLUID =
-            registerPieceMaterial("trick_idea_storage_withdraw_fluid");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_CHEMICAL =
-            registerPieceMaterial("trick_idea_storage_withdraw_chemical");
+    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_DEPOSIT =
+            registerPieceMaterial("trick_idea_storage_deposit");
+    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW =
+            registerPieceMaterial("trick_idea_storage_withdraw");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_DEPOSIT_SLOT =
             registerPieceMaterial("trick_idea_storage_deposit_slot");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
             registerPieceMaterial("trick_idea_storage_withdraw_slot");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_COLLECT_ITEM =
             registerPieceMaterial("trick_idea_storage_collect_item");
-
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_ABSORB_FE =
-            registerPieceMaterial("trick_idea_storage_absorb_fe");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_SUPPLY_FE =
-            registerPieceMaterial("trick_idea_storage_supply_fe");
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerPieceMaterial("trick_physical_propulsion");
@@ -231,6 +202,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_block_position_list");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_ITEM =
             registerPieceMaterial("operator_block_item");
+    public static final DeferredHolder<Material, Material> OPERATOR_STRICT_ITEM =
+            registerPieceMaterial("operator_strict_item");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_RESOURCE_AMOUNT =
             registerPieceMaterial("operator_block_resource_amount");
     public static final DeferredHolder<Material, Material> OPERATOR_BLOCK_FREE_CAPACITY =
@@ -245,6 +218,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_entity_slot_item");
     public static final DeferredHolder<Material, Material> SELECTOR_INTERNAL_SLOT_ITEM =
             registerPieceMaterial("selector_internal_slot_item");
+    public static final DeferredHolder<Material, Material> SELECTOR_FILTER_CARD =
+            registerPieceMaterial("selector_filter_card");
     public static final DeferredHolder<Material, Material> OPERATOR_ITEM_COUNT =
             registerPieceMaterial("operator_item_count");
     public static final DeferredHolder<Material, Material> OPERATOR_ITEM_SLOT =
@@ -429,17 +404,6 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/item_s");
     public static final DeferredHolder<Material, Material> MODE_BLOCK =
             registerPieceMaterial("mode/block");
-    // Transfer-mode badges of the ideaspace logistics tricks (IdeaStorageTransferModes).
-    public static final DeferredHolder<Material, Material> MODE_BLANK =
-            registerPieceMaterial("mode/blank");
-    public static final DeferredHolder<Material, Material> MODE_EXACT =
-            registerPieceMaterial("mode/exact");
-    public static final DeferredHolder<Material, Material> MODE_STRING_EXACT =
-            registerPieceMaterial("mode/string_exact");
-    public static final DeferredHolder<Material, Material> MODE_ITEM_EXACT =
-            registerPieceMaterial("mode/item_exact");
-    public static final DeferredHolder<Material, Material> MODE_ITEM_STRICT_EXACT =
-            registerPieceMaterial("mode/item_s_exact");
     // Frame badges of Operator: Caster Basis Matrix (PieceOperatorMatrixCasterBasis).
     public static final DeferredHolder<Material, Material> MODE_BASIS_2D =
             registerPieceMaterial("mode/basis_2d");
@@ -456,6 +420,13 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/resource_chemical");
     public static final DeferredHolder<Material, Material> MODE_RESOURCE_ENERGY =
             registerPieceMaterial("mode/resource_energy");
+    // Exact-transfer badges of the ideaspace deposit and withdraw tricks (IdeaStorageResourceModes).
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_ITEM_EXACT =
+            registerPieceMaterial("mode/resource_item_exact");
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_FLUID_EXACT =
+            registerPieceMaterial("mode/resource_fluid_exact");
+    public static final DeferredHolder<Material, Material> MODE_RESOURCE_CHEMICAL_EXACT =
+            registerPieceMaterial("mode/resource_chemical_exact");
 
     private PsitweaksClientSpells() {
     }

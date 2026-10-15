@@ -18,7 +18,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorF
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorModeConversionBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorModeListBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorStoredValue;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageItemBase;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageResourceBase;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickItemTransferBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageResourceBase;
@@ -44,10 +44,10 @@ public abstract class SpellPieceRendererMixin {
             custom.drawAdditional(poses, buffers, light);
         } else if (piece instanceof PieceTrickItemTransferBase custom) {
             custom.drawAdditional(poses, buffers, light);
-        } else if (piece instanceof PieceSelectorIdeaStorageItemBase custom) {
+        } else if (piece instanceof PieceSelectorIdeaStorageResourceBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
-        } else if (piece instanceof PieceTrickIdeaStorageResourceBase custom && custom.overlayModeOption() != null) {
-            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.overlayModeOption());
+        } else if (piece instanceof PieceTrickIdeaStorageResourceBase custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorRegionFilterBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorMatrixCasterBasis custom) {

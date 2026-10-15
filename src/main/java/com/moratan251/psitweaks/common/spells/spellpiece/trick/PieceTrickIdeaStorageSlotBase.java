@@ -1,8 +1,10 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.mojang.logging.LogUtils;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.item.SpellItemFilters;
+import com.moratan251.psitweaks.common.spells.param.ParamItemSearch;
 import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
-import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import java.util.function.Predicate;
@@ -16,26 +18,54 @@ import net.neoforged.neoforge.items.wrapper.PlayerOffhandInvWrapper;
 import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import org.slf4j.Logger;
 import vazkii.psi.api.PsiAPI;
+import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellMetadata;
+import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.api.spell.StatLabel;
+import vazkii.psi.api.spell.param.ParamNumber;
+import vazkii.psi.api.spell.piece.PieceTrick;
 
-/** Moves items between Psi's target slot (right of the CAD by default) and the caster's Ideaspace Storage. */
-public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrickIdeaStorageItemBase {
+/**
+ * Moves items between Psi's target slot (right of the CAD by default) and the caster's Ideaspace Storage. The filter
+ * is the same search input as the block logistics: the wired value decides how it matches. There are no modes.
+ */
+public abstract class PieceTrickIdeaStorageSlotBase extends PieceTrick {
     private static final Logger LOGGER = LogUtils.getLogger();
     public static final String ERROR_SLOT_TRANSFER = "psitweaks.spellerror.idea_storage_slot_transfer_failed";
+    protected SpellParam<Number> quantity;
+    protected SpellParam<?> filterInput;
 
     protected PieceTrickIdeaStorageSlotBase(Spell spell) {
         super(spell);
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(50));
+        setStatLabel(EnumSpellStat.COST, new StatLabel(100));
     }
 
-    @Override protected final Kind kind() { return Kind.ITEM; }
+    protected abstract boolean deposit();
 
-    /** Exact transfer is offered only for block logistics; slot refills keep their filter-only modes. */
-    @Override protected final boolean supportsExactTransfer() { return false; }
+    @Override public void initParams() {
+        addParam(quantity = new ParamNumber("psi.spellparam.number", SpellParam.RED, false, false));
+        addParam(filterInput = new ParamItemSearch(PsitweaksSpellParams.FILTER, PsitweaksSpellParams.ITEM_COLOR, true, false));
+    }
 
-    /** The target slot replaces the block position and face. */
-    @Override protected void initEndpointParams() { }
+    @Override public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
+        super.addToMetadata(meta);
+        meta.addStat(EnumSpellStat.POTENCY, 50);
+        meta.addStat(EnumSpellStat.COST, 100);
+    }
+
+    protected Predicate<ItemStack> itemFilter(SpellContext context) throws SpellRuntimeException {
+        return SpellItemFilters.search(getParamValue(context, (SpellParam<?>) filterInput));
+    }
+
+    /** False when the filter is unconnected or an empty String, i.e. when {@link #itemFilter} accepts everything. */
+    protected boolean hasFilter(SpellContext context) throws SpellRuntimeException {
+        return SpellItemFilters.isSearchSet(getParamValue(context, (SpellParam<?>) filterInput));
+    }
 
     @Override public Object execute(SpellContext context) throws SpellRuntimeException {
         IdeaStorageLastTransfer.record(context, 0);

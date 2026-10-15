@@ -69,17 +69,11 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "trick_pull_item", "trick_pull_item");
         group(output, saves, "trick_send_item", "trick_send_item");
         group(output, saves, "trick_mass_block_break", "trick_mass_block_break");
-        group(output, saves, "idea_storage", "trick_idea_storage_view", "trick_idea_storage_absorb_fe", "trick_idea_storage_supply_fe", "selector_idea_storage_energy", "trick_ideaspace_connector",
-                "selector_idea_storage_item_amount", "selector_idea_storage_fluid_amount", "selector_idea_storage_chemical_amount",
-                "trick_idea_storage_deposit_item", "trick_idea_storage_withdraw_item",
-                "trick_idea_storage_deposit_fluid", "trick_idea_storage_withdraw_fluid",
-                "trick_idea_storage_deposit_chemical", "trick_idea_storage_withdraw_chemical",
+        group(output, saves, "idea_storage", "trick_idea_storage_view", "trick_ideaspace_connector",
+                "selector_idea_storage_amount", "selector_idea_storage_free_capacity", "selector_idea_storage_type_count",
+                "trick_idea_storage_deposit", "trick_idea_storage_withdraw",
                 "trick_idea_storage_deposit_slot", "trick_idea_storage_withdraw_slot",
-                "selector_idea_storage_last_transfer",
-                "selector_idea_storage_item_free_capacity", "selector_idea_storage_fluid_free_capacity",
-                "selector_idea_storage_chemical_free_capacity", "selector_idea_storage_energy_free_capacity",
-                "selector_idea_storage_item_type_count", "selector_idea_storage_fluid_type_count",
-                "selector_idea_storage_chemical_type_count", "trick_idea_storage_collect_item");
+                "selector_idea_storage_last_transfer", "trick_idea_storage_collect_item");
         group(output, saves, "operator_alive", "operator_alive");
         group(output, saves, "operator_weak_raycast", "operator_weak_raycast");
         group(output, saves, "operator_weak_raycast_axis", "operator_weak_raycast_axis");
@@ -107,7 +101,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "operator_greater_than_or_equal", "operator_greater_than_or_equal");
         group(output, saves, "operator_equal", "operator_equal");
         group(output, saves, "string", "constant_string", "operator_format_string", "operator_from_string", "operator_list_from_string_list", "operator_number_list_to_vector", "operator_vector_to_number_list", "operator_to_string", "operator_list_to_string_list", "operator_get_id", "operator_get_id_list", "selector_display_name", "selector_display_name_list", "selector_effect_list", "selector_online_players", "selector_held_items", "selector_internal_items", "selector_indexed_element", "selector_nbt", "selector_nbt_keys", "selector_nbt_value", "operator_tag_list", "operator_string_partial_match", "operator_string_starts_with", "operator_string_ends_with", "operator_string_concat", "operator_string_split", "operator_string_slice", "operator_string_length", "operator_string_replace", "operator_string_trim", "operator_string_list_join", "operator_player_name", "operator_list_search", "operator_list_search_exclude", "operator_random_element", "operator_list_add", "operator_list_remove", "operator_list_remove_indices", "operator_list_insert", "operator_list_slice", "operator_list_size", "operator_list_exclusion", "operator_list_intersection", "operator_list_concatenation");
-        group(output, saves, "item", "selector_held_item", "selector_selected_slot_item", "selector_entity_slot_item", "selector_internal_slot_item", "operator_item_count", "operator_item_slot", "operator_item_total_count", "operator_dropped_items");
+        group(output, saves, "item", "selector_held_item", "selector_selected_slot_item", "selector_entity_slot_item", "selector_internal_slot_item", "selector_filter_card", "operator_item_count", "operator_item_slot", "operator_item_total_count", "operator_dropped_items", "operator_strict_item");
         group(output, saves, "block", "selector_block", "selector_block_list", "operator_block_state", "operator_block_state_value", "operator_block_state_entries", "operator_block_position", "operator_block_position_list", "operator_block_item", "operator_block_resource_amount", "operator_block_free_capacity");
         group(output, saves, "matrix", "operator_matrix_add", "operator_matrix_subtract", "operator_matrix_multiply", "operator_matrix_scalar_multiply", "operator_matrix_transpose", "operator_matrix_determinant", "operator_matrix_inverse", "operator_matrix_extract_row", "operator_matrix_extract_column", "operator_matrix_element", "operator_matrix_row_count", "operator_matrix_column_count", "operator_matrix_multiply_vector", "operator_matrix_column_from_list", "operator_matrix_flatten", "operator_matrix_identity", "operator_matrix_zero", "operator_matrix_diagonal", "operator_matrix_replace_column", "operator_matrix_replace_row", "operator_matrix_replace_element", "operator_matrix_delete_row", "operator_matrix_delete_column", "operator_matrix_transform_vector", "operator_matrix_linear_part", "operator_matrix_cuboid_region", "operator_region_vector_list", "operator_inside_region", "operator_outside_region", "operator_matrix_caster_basis", "operator_matrix_rotation", "operator_matrix_translation", "trick_show_region");
         return CompletableFuture.allOf(saves.toArray(CompletableFuture[]::new));

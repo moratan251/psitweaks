@@ -3,13 +3,12 @@ package com.moratan251.psitweaks.common.gametest;
 import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
 import com.moratan251.psitweaks.common.compat.IdeaStorageLogisticsMekanism;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.mode.IdeaStorageResourceModes;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.connector.*;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageDepositChemical;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageWithdrawChemical;
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import mekanism.api.Action;
@@ -95,16 +94,8 @@ final class IdeaLogisticsChemicalChecks {
         player.setPos(Vec3.atCenterOf(source.getBlockPos()));
         var context = new SpellContext().setPlayer(player);
         var warehouse = IdeaStorageService.get(player.server, player.getUUID());
-        var deposit = new PieceTrickIdeaStorageDepositChemical(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), 0.125, "mekanism:hydro*");
-            }
-        };
-        var withdraw = new PieceTrickIdeaStorageWithdrawChemical(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), 0.1, null);
-            }
-        };
+        var deposit = IdeaLogisticsGameTests.trick(true, BlockResourceModes.CHEMICAL, param -> IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), 0.125, "mekanism:hydro*"));
+        var withdraw = IdeaLogisticsGameTests.trick(false, BlockResourceModes.CHEMICAL, param -> IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), 0.1, null));
         deposit.execute(context);
         helper.assertTrue(warehouse.simulateExtractChemical(hydrogen, 1000) == 125, "Chemical spell did not read its endpoint/filter/power");
         withdraw.execute(context);
@@ -112,12 +103,8 @@ final class IdeaLogisticsChemicalChecks {
                 && source.storage().simulateExtractChemical(hydrogen, 1000) == 892, "Chemical spell withdrawal lost material");
         exact(helper, hydrogen, oxygen);
         double[] power = {1};
-        var exactDeposit = new PieceTrickIdeaStorageDepositChemical(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), power[0], "mekanism:hydrogen");
-            }
-        };
-        exactDeposit.setModeOption(IdeaStorageTransferModes.EXACT);
+        var exactDeposit = IdeaLogisticsGameTests.trick(true, BlockResourceModes.CHEMICAL, param -> IdeaLogisticsGameTests.paramValue(param, source.getBlockPos(), power[0], "mekanism:hydrogen"));
+        exactDeposit.setModeOption(IdeaStorageResourceModes.CHEMICAL_EXACT);
         var lastTransfer = new PieceSelectorIdeaStorageLastTransfer(new Spell());
         exactDeposit.execute(context);
         helper.assertTrue(warehouse.simulateExtractChemical(hydrogen, 1000) == 25 && source.storage().simulateExtractChemical(hydrogen, 1000) == 892

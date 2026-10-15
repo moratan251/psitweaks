@@ -347,6 +347,10 @@ public final class PsitweaksItems {
             "portable_cad_assembler",
             () -> new ItemPortableCADAssembler(new Item.Properties().rarity(Rarity.RARE))
     );
+    public static final DeferredItem<ItemFilterCard> FILTER_CARD = ITEMS.register(
+            "filter_card",
+            () -> new ItemFilterCard(new Item.Properties())
+    );
     public static final DeferredItem<ItemFlashCharm> FLASH_CHARM = ITEMS.register(
             "flash_charm",
             () -> new ItemFlashCharm(new Item.Properties())

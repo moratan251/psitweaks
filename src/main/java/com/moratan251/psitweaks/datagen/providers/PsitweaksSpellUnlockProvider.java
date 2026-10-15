@@ -47,19 +47,18 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "idea_storage", "trick_idea_storage_view", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage", "idea_storage");
 
-        spellUnlock(entries, "idea_storage_absorb_fe", "trick_idea_storage_absorb_fe", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+        // 統合前のコマンド ID は統合後のピースを指す(同じピースを指せる定義は1つだけ)
+        spellUnlock(entries, "idea_storage_absorb_fe", "trick_idea_storage_deposit", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
 
-        spellUnlock(entries, "idea_storage_supply_fe", "trick_idea_storage_supply_fe", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+        spellUnlock(entries, "idea_storage_supply_fe", "trick_idea_storage_withdraw", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
 
-        spellUnlock(entries, "idea_storage_energy", "selector_idea_storage_energy", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+        spellUnlock(entries, "idea_storage_energy", "selector_idea_storage_amount", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
-        spellUnlock(entries, "idea_storage_item_amount", "selector_idea_storage_item_amount", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+        spellUnlock(entries, "idea_storage_free_capacity", "selector_idea_storage_free_capacity", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
-        spellUnlock(entries, "idea_storage_fluid_amount", "selector_idea_storage_fluid_amount", PsitweaksItems.PROGRAM_IDEA_STORAGE,
-                Psitweaks.MOD_ID + ".unlock.idea_storage");
-        spellUnlock(entries, "idea_storage_chemical_amount", "selector_idea_storage_chemical_amount", PsitweaksItems.PROGRAM_IDEA_STORAGE,
+        spellUnlock(entries, "idea_storage_type_count", "selector_idea_storage_type_count", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");
         spellUnlock(entries, "ideaspace_connector", "trick_ideaspace_connector", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage");

@@ -96,6 +96,7 @@ final class PsitweaksDatagenItems {
             item("auto_caster_tick", "Auto Caster: tick", "術式自動詠唱デバイス: tick"),
             item("auto_caster_custom_tick", "Auto Caster: custom tick", "術式自動詠唱デバイス: カスタムtick"),
             item("flash_charm", "Flash Charm", "フラッシュチャーム"),
+            activeItem("filter_card", "Filter Card", "フィルタカード", "filter_card_idle", "filter_card"),
             item("interference_range_extender", "Interference Range Extender", "干渉距離延長デバイス"),
             item("third_eye_device", "Third-Eye Device", "サードアイデバイス"),
             item("sorcery_booster", "Sorcery Booster", "ソーサリーブースター"),

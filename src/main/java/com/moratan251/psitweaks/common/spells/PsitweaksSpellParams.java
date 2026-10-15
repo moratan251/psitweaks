@@ -28,6 +28,10 @@ public final class PsitweaksSpellParams {
     public static final String UP_DOWN = PREFIX + "updown";
     public static final String OFFSET = PREFIX + "offset";
     public static final String MAX = PREFIX + "max";
+    /** Search input of the ideaspace logistics tricks (String, Item, Item List or a strict Item). */
+    public static final String FILTER = PREFIX + "filter";
+    /** Resource input of the ideaspace selectors (an ID String, or an Item in Item mode). */
+    public static final String RESOURCE = PREFIX + "resource";
 
     public static final int STRING_COLOR = 0xE0A030;
     public static final int STRING_LIST_COLOR = 0xD2D22A;

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "tools",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "psi:psidust"
+    },
+    {
+      "item": "psitweaks:psimetal_nugget"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:filter_card"
+  }
+}

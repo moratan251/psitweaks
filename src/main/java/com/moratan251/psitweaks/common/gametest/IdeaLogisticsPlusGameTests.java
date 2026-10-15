@@ -5,19 +5,18 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
-import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
-import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
-import com.moratan251.psitweaks.common.spells.param.ParamString;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageChemicalFreeCapacity;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageFluidFreeCapacity;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageItemFreeCapacity;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.mode.IdeaStorageResourceModes;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.param.ParamStringOrItem;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageFreeCapacity;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageLastTransfer;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageTypeCount;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
 import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
 import com.moratan251.psitweaks.common.storage.idea.*;
-import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
-import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -46,11 +45,12 @@ import vazkii.psi.api.spell.*;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class IdeaLogisticsPlusGameTests {
-    static final List<String> NEW_SELECTORS = List.of("selector_idea_storage_last_transfer",
-            "selector_idea_storage_item_free_capacity", "selector_idea_storage_fluid_free_capacity",
-            "selector_idea_storage_chemical_free_capacity", "selector_idea_storage_energy_free_capacity",
-            "selector_idea_storage_item_type_count", "selector_idea_storage_fluid_type_count",
-            "selector_idea_storage_chemical_type_count");
+    /** Every piece of the Ideaspace Storage research group after the merge, besides its main piece (the view trick). */
+    static final List<String> GROUP_PIECES = List.of("trick_ideaspace_connector",
+            "selector_idea_storage_amount", "selector_idea_storage_free_capacity", "selector_idea_storage_type_count",
+            "trick_idea_storage_deposit", "trick_idea_storage_withdraw",
+            "trick_idea_storage_deposit_slot", "trick_idea_storage_withdraw_slot",
+            "selector_idea_storage_last_transfer", "trick_idea_storage_collect_item");
 
     private static ItemStack named(int count) {
         var stack = new ItemStack(Items.APPLE, count);
@@ -200,14 +200,10 @@ public final class IdeaLogisticsPlusGameTests {
         var storage = IdeaStorageService.get(player.server, player.getUUID());
         var context = new SpellContext().setPlayer(player);
         double[] count = {41};
-        var deposit = new PieceTrickIdeaStorageDepositItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, pos, count[0], "apple");
-            }
-        };
-        deposit.setModeOption(IdeaStorageTransferModes.STRING_EXACT);
-        helper.assertTrue(deposit.isExactTransfer() && deposit.params.containsKey("psitweaks.spellparam.string"),
-                "String / Exact must keep the String filter");
+        var deposit = IdeaLogisticsGameTests.trick(true, BlockResourceModes.ITEM, param -> IdeaLogisticsGameTests.paramValue(param, pos, count[0], "apple"));
+        deposit.setModeOption(IdeaStorageResourceModes.ITEM_EXACT);
+        helper.assertTrue(deposit.isExactTransfer() && deposit.params.containsKey(PsitweaksSpellParams.FILTER),
+                "Item / Exact must keep the filter");
         deposit.execute(context);
         helper.assertTrue(stored(storage, new ItemStack(Items.APPLE)) == 0 && chest.getItem(0).getCount() == 30
                 && chest.getItem(1).getCount() == 10 && lastTransfer(context) == 0.0D, "Exact shortfall must be a silent no-op");
@@ -215,7 +211,7 @@ public final class IdeaLogisticsPlusGameTests {
         deposit.execute(context);
         helper.assertTrue(stored(storage, new ItemStack(Items.APPLE)) == 35 && lastTransfer(context) == 35.0D
                 && chest.getItem(0).isEmpty() && chest.getItem(1).getCount() == 5, "Exact deposit must move every requested item");
-        deposit.setModeOption(PsitweaksModeOptions.STRING);
+        deposit.setModeOption(BlockResourceModes.ITEM);
         count[0] = 41;
         deposit.execute(context);
         helper.assertTrue(stored(storage, new ItemStack(Items.APPLE)) == 40 && lastTransfer(context) == 5.0D,
@@ -225,12 +221,8 @@ public final class IdeaLogisticsPlusGameTests {
         connector.setResource(0, IdeaLogisticsGameTests.water());
         connector.storage().insertFluid(new FluidStack(Fluids.WATER, 1), 1500);
         double[] strength = {2};
-        var fluid = new PieceTrickIdeaStorageDepositFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0], "water");
-            }
-        };
-        fluid.setModeOption(IdeaStorageTransferModes.EXACT);
+        var fluid = IdeaLogisticsGameTests.trick(true, BlockResourceModes.FLUID, param -> IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0], "water"));
+        fluid.setModeOption(IdeaStorageResourceModes.FLUID_EXACT);
         fluid.execute(context);
         helper.assertTrue(water(storage) == 0 && water(connector.storage()) == 1500 && lastTransfer(context) == 0.0D,
                 "Exact fluid shortfall must be a silent no-op");
@@ -253,16 +245,8 @@ public final class IdeaLogisticsPlusGameTests {
         var context = new SpellContext().setPlayer(player);
         helper.assertTrue(lastTransfer(context) == 0.0D, "Nothing has moved yet in this cast");
         double[] requested = {12};
-        var depositItem = new PieceTrickIdeaStorageDepositItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, chestPos, requested[0], null);
-            }
-        };
-        var withdrawItem = new PieceTrickIdeaStorageWithdrawItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, chestPos, requested[0], null);
-            }
-        };
+        var depositItem = IdeaLogisticsGameTests.trick(true, BlockResourceModes.ITEM, param -> IdeaLogisticsGameTests.paramValue(param, chestPos, requested[0], null));
+        var withdrawItem = IdeaLogisticsGameTests.trick(false, BlockResourceModes.ITEM, param -> IdeaLogisticsGameTests.paramValue(param, chestPos, requested[0], null));
         depositItem.execute(context);
         helper.assertTrue(lastTransfer(context) == 12.0D, "Item deposit not recorded");
         requested[0] = 5;
@@ -287,32 +271,16 @@ public final class IdeaLogisticsPlusGameTests {
         connector.storage().insertFluid(new FluidStack(Fluids.WATER, 1), 2000);
         connector.storage().insertEnergy(10_000, false);
         double[] strength = {0.25};
-        var depositFluid = new PieceTrickIdeaStorageDepositFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0], null);
-            }
-        };
+        var depositFluid = IdeaLogisticsGameTests.trick(true, BlockResourceModes.FLUID, param -> IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0], null));
         depositFluid.execute(context);
         helper.assertTrue(lastTransfer(context) == 250.0D, "Fluid deposit must record mB");
-        var withdrawFluid = new PieceTrickIdeaStorageWithdrawFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0] / 5, null);
-            }
-        };
+        var withdrawFluid = IdeaLogisticsGameTests.trick(false, BlockResourceModes.FLUID, param -> IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0] / 5, null));
         withdrawFluid.execute(context);
         helper.assertTrue(lastTransfer(context) == 50.0D && water(storage) == 200, "Fluid withdrawal must record mB");
-        var absorb = new PieceTrickIdeaStorageAbsorbFE(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0], null);
-            }
-        };
+        var absorb = IdeaLogisticsGameTests.trick(true, BlockResourceModes.ENERGY, param -> IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), strength[0], null));
         absorb.execute(context);
         helper.assertTrue(lastTransfer(context) == 1000.0D && storage.energy() == 1000, "FE absorb must record FE");
-        var supply = new PieceTrickIdeaStorageSupplyFE(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), 1, null);
-            }
-        };
+        var supply = IdeaLogisticsGameTests.trick(false, BlockResourceModes.ENERGY, param -> IdeaLogisticsGameTests.paramValue(param, connector.getBlockPos(), 1, null));
         supply.execute(context);
         helper.assertTrue(lastTransfer(context) == 1000.0D && storage.energy() == 0, "FE supply must record the FE actually sent");
 
@@ -337,77 +305,6 @@ public final class IdeaLogisticsPlusGameTests {
     }
 
     @GameTest(template = "psi110_empty")
-    public static void modesSaveSeparatelyAndLegacySpellsStayPartial(GameTestHelper helper) {
-        for (String action : new String[] {"deposit", "withdraw"}) for (String type : new String[] {"item", "fluid", "chemical"}) {
-            var id = Psitweaks.location("trick_idea_storage_" + action + "_" + type);
-            boolean item = type.equals("item");
-            String quantity = item ? "_number" : "_power";
-            // Exactly what the previous release saved: no transfer-mode key, filter mode only on item spells.
-            var legacy = new CompoundTag();
-            legacy.putString("key", id.toString());
-            var params = new CompoundTag();
-            params.putInt("_position", SpellParam.Side.TOP.asInt());
-            params.putInt("_direction", SpellParam.Side.BOTTOM.asInt());
-            params.putInt(quantity, SpellParam.Side.RIGHT.asInt());
-            params.putInt(item ? "psitweaks.spellparam.item" : "psitweaks.spellparam.string", SpellParam.Side.LEFT.asInt());
-            legacy.put("params", params);
-            if (item) legacy.putString("psitweaksMode", PsitweaksModeOptions.ITEM_STRICT.serializedId());
-            var piece = (PieceTrickIdeaStorageResourceBase) SpellPiece.createFromNBT(new Spell(), legacy);
-            helper.assertTrue(piece != null && !piece.isExactTransfer()
-                            && piece.getModeOption().id().equals(item ? PsitweaksModeOptions.ITEM_STRICT.id() : IdeaStorageTransferModes.PARTIAL.id()),
-                    "Legacy spell must load as a partial transfer: " + id);
-            assertWiring(helper, piece, item, item ? "psitweaks.spellparam.item" : "psitweaks.spellparam.string");
-            var resaved = new CompoundTag();
-            piece.writeToNBT(resaved);
-            helper.assertTrue(!resaved.contains(IdeaStorageTransferModes.TAG)
-                            && resaved.getString("psitweaksMode").equals(item ? PsitweaksModeOptions.ITEM_STRICT.serializedId() : ""),
-                    "Partial transfer must save exactly like the previous release: " + id);
-
-            piece.setModeOption(item ? IdeaStorageTransferModes.ITEM_STRICT_EXACT : IdeaStorageTransferModes.EXACT);
-            assertWiring(helper, piece, item, item ? "psitweaks.spellparam.item" : "psitweaks.spellparam.string");
-            var exact = new CompoundTag();
-            piece.writeToNBT(exact);
-            helper.assertTrue("exact".equals(exact.getString(IdeaStorageTransferModes.TAG))
-                            && exact.getString("psitweaksMode").equals(item ? PsitweaksModeOptions.ITEM_STRICT.serializedId() : ""),
-                    "Exact transfer must be saved apart from the unchanged filter mode: " + id);
-            var reloaded = (PieceTrickIdeaStorageResourceBase) SpellPiece.createFromNBT(new Spell(), exact);
-            helper.assertTrue(reloaded.isExactTransfer() && reloaded.getModeOption().id().equals(piece.getModeOption().id()),
-                    "Exact transfer lost on reload: " + id);
-            assertWiring(helper, reloaded, item, item ? "psitweaks.spellparam.item" : "psitweaks.spellparam.string");
-            reloaded.setModeOption(item ? PsitweaksModeOptions.ITEM_STRICT : IdeaStorageTransferModes.PARTIAL);
-            var partialAgain = new CompoundTag();
-            reloaded.writeToNBT(partialAgain);
-            helper.assertTrue(!partialAgain.contains(IdeaStorageTransferModes.TAG) && !reloaded.isExactTransfer(),
-                    "Switching back must drop the exact flag: " + id);
-        }
-        for (String action : new String[] {"deposit", "withdraw"}) {
-            var slot = (PieceTrickIdeaStorageSlotBase) PsiAPI.SPELL_PIECE_REGISTRY
-                    .get(Psitweaks.location("trick_idea_storage_" + action + "_slot")).create(new Spell());
-            helper.assertTrue(slot.getAvailableModeOptions().equals(IdeaStorageTransferModes.ITEM_FILTERS),
-                    "Slot spells must keep only the filter modes");
-            slot.setModeOption(IdeaStorageTransferModes.ITEM_EXACT);
-            var tag = new CompoundTag();
-            tag.putString(IdeaStorageTransferModes.TAG, "exact");
-            slot.readFromNBT(tag);
-            var saved = new CompoundTag();
-            slot.writeToNBT(saved);
-            helper.assertTrue(!slot.isExactTransfer() && !saved.contains(IdeaStorageTransferModes.TAG),
-                    "Slot spells must never become exact");
-        }
-        helper.succeed();
-    }
-
-    private static void assertWiring(GameTestHelper helper, PieceTrickIdeaStorageResourceBase piece, boolean item, String filter) {
-        String quantity = item ? "psi.spellparam.number" : "psi.spellparam.power";
-        helper.assertTrue(piece.params.size() == 4 && piece.params.containsKey(filter)
-                        && piece.paramSides.get(piece.params.get("psi.spellparam.position")) == SpellParam.Side.TOP
-                        && piece.paramSides.get(piece.params.get("psi.spellparam.direction")) == SpellParam.Side.BOTTOM
-                        && piece.paramSides.get(piece.params.get(quantity)) == SpellParam.Side.RIGHT
-                        && piece.paramSides.get(piece.params.get(filter)) == SpellParam.Side.LEFT,
-                "Wiring lost for " + piece.getClass().getSimpleName());
-    }
-
-    @GameTest(template = "psi110_empty")
     public static void capacityAndTypeSelectorsFollowStorageLimits(GameTestHelper helper) throws Exception {
         int oldStacks = PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.get();
         int oldItemTypes = PsitweaksConfig.COMMON.ideaStorageMaxItemTypes.get();
@@ -424,15 +321,9 @@ public final class IdeaLogisticsPlusGameTests {
             var context = new SpellContext().setPlayer(player);
             var storage = IdeaStorageService.get(player.server, player.getUUID());
             Object[] input = {"minecraft:apple"};
-            var item = new PieceSelectorIdeaStorageItemFreeCapacity(new Spell()) {
-                @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
-            };
-            var fluid = new PieceSelectorIdeaStorageFluidFreeCapacity(new Spell()) {
-                @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
-            };
-            var chemical = new PieceSelectorIdeaStorageChemicalFreeCapacity(new Spell()) {
-                @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
-            };
+            var item = freeCapacity(BlockResourceModes.ITEM, input);
+            var fluid = freeCapacity(BlockResourceModes.FLUID, input);
+            var chemical = freeCapacity(BlockResourceModes.CHEMICAL, input);
             helper.assertTrue(item.execute(context).equals(64.0D), "Empty storage must offer the whole per-type limit");
             storage.insert(new ItemStack(Items.APPLE), 10);
             helper.assertTrue(item.execute(context).equals(54.0D), "Free capacity must subtract the stock");
@@ -446,8 +337,8 @@ public final class IdeaLogisticsPlusGameTests {
                 input[0] = invalid;
                 helper.assertTrue(item.execute(context).equals(0.0D), "Expected zero for " + invalid);
             }
-            item.setModeOption(PsitweaksModeOptions.ITEM);
-            helper.assertTrue(item.params.values().iterator().next() instanceof ParamSpellItemValue, "Item mode must take an Item");
+            helper.assertTrue(item.params.values().iterator().next() instanceof ParamStringOrItem,
+                    "Item mode must take a String or an Item on one input");
             input[0] = SpellItemValue.snapshot(new ItemStack(Items.APPLE, 30));
             helper.assertTrue(item.execute(context).equals(54.0D), "Item input count must not matter");
             input[0] = SpellItemValue.snapshot(named(1));
@@ -473,28 +364,28 @@ public final class IdeaLogisticsPlusGameTests {
             helper.assertTrue(chemical.execute(context).equals(0.0D), "Unknown chemical must return zero");
 
             storage.insertEnergy(1234, false);
-            helper.assertTrue(selector("selector_idea_storage_energy_free_capacity").execute(context).equals(3766.0D),
-                    "FE free capacity must be capacity minus stored FE");
-            helper.assertTrue(selector("selector_idea_storage_item_type_count").execute(context).equals(2.0D)
-                            && selector("selector_idea_storage_fluid_type_count").execute(context).equals(1.0D)
-                            && selector("selector_idea_storage_chemical_type_count").execute(context).equals(0.0D),
+            var energy = freeCapacity(BlockResourceModes.ENERGY, input);
+            helper.assertTrue(energy.execute(context).equals(3766.0D), "FE free capacity must be capacity minus stored FE");
+            var itemTypes = typeCount(BlockResourceModes.ITEM);
+            helper.assertTrue(itemTypes.execute(context).equals(2.0D)
+                            && typeCount(BlockResourceModes.FLUID).execute(context).equals(1.0D)
+                            && typeCount(BlockResourceModes.CHEMICAL).execute(context).equals(0.0D),
                     "Type counts must match the stored types");
             storage.insert(named(1), 1);
             helper.assertTrue(storage.itemTypeCount() == 2, "Type limit must hold");
-            helper.assertTrue(selector("selector_idea_storage_item_type_count").execute(new SpellContext()).equals(0.0D)
+            helper.assertTrue(itemTypes.execute(new SpellContext()).equals(0.0D)
                             && item.execute(new SpellContext()).equals(0.0D), "Missing caster must return zero");
             long version = storage.getVersion();
-            for (String id : NEW_SELECTORS) {
-                if (!id.contains("free_capacity") || id.contains("energy")) selector(id).execute(context);
-            }
+            input[0] = "minecraft:apple";
+            item.execute(context);
+            fluid.execute(context);
+            energy.execute(context);
+            itemTypes.execute(context);
             helper.assertTrue(storage.getVersion() == version, "Reading must not change the storage");
             storage.markLoadFailed();
             input[0] = "minecraft:carrot";
-            item.setModeOption(PsitweaksModeOptions.STRING);
-            helper.assertTrue(item.execute(context).equals(0.0D)
-                    && selector("selector_idea_storage_energy_free_capacity").execute(context).equals(0.0D)
-                    && selector("selector_idea_storage_item_type_count").execute(context).equals(0.0D),
-                    "Unread storage must return zero");
+            helper.assertTrue(item.execute(context).equals(0.0D) && energy.execute(context).equals(0.0D)
+                            && itemTypes.execute(context).equals(0.0D), "Unread storage must return zero");
         } finally {
             PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.set(oldStacks);
             PsitweaksConfig.COMMON.ideaStorageMaxItemTypes.set(oldItemTypes);
@@ -505,39 +396,17 @@ public final class IdeaLogisticsPlusGameTests {
         helper.succeed();
     }
 
-    private static SpellPiece selector(String id) {
-        return PsiAPI.SPELL_PIECE_REGISTRY.get(Psitweaks.location(id)).create(new Spell());
+    private static PieceSelectorIdeaStorageFreeCapacity freeCapacity(PsitweaksModeOption mode, Object[] input) {
+        var piece = new PieceSelectorIdeaStorageFreeCapacity(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
+        };
+        piece.setModeOption(mode);
+        return piece;
     }
 
-    @GameTest(template = "psi110_empty")
-    public static void newSelectorsAreFreeAndSharedResearch(GameTestHelper helper) throws Exception {
-        for (String id : NEW_SELECTORS) {
-            var piece = selector(id);
-            boolean resource = id.contains("item_free") || id.contains("fluid_free") || id.contains("chemical_free");
-            helper.assertTrue(piece.getEvaluationType() == Double.class, "Selector must return Number: " + id);
-            helper.assertTrue(resource ? piece.params.size() == 1 && piece.params.values().iterator().next() instanceof ParamString
-                    && !piece.params.values().iterator().next().canDisable : piece.params.isEmpty(), "Unexpected inputs: " + id);
-            helper.assertTrue((piece instanceof PsitweaksModeConfigurable) == id.contains("item_free"),
-                    "Only the item capacity selector switches String/Item: " + id);
-            var metadata = new SpellMetadata();
-            metadata.setStat(EnumSpellStat.COMPLEXITY, 7);
-            metadata.setStat(EnumSpellStat.POTENCY, 15);
-            metadata.setStat(EnumSpellStat.COST, 20);
-            piece.addToMetadata(metadata);
-            helper.assertTrue(metadata.getStat(EnumSpellStat.COMPLEXITY) == 8 && metadata.getStat(EnumSpellStat.POTENCY) == 15
-                    && metadata.getStat(EnumSpellStat.COST) == 20, "Expected Complexity +1, Potency/Cost +0: " + id);
-            helper.assertTrue(PsiAPI.getPieceGroup(helper.getLevel().registryAccess(), Psitweaks.location(id)).orElseThrow()
-                    .key().location().equals(Psitweaks.location("idea_storage")), "Selector must be researched with Ideaspace Storage: " + id);
-        }
-        var item = (PieceSelectorIdeaStorageItemFreeCapacity) selector("selector_idea_storage_item_free_capacity");
-        item.paramSides.replaceAll((param, side) -> SpellParam.Side.LEFT);
-        item.setModeOption(PsitweaksModeOptions.ITEM);
-        var tag = new CompoundTag();
-        item.writeToNBT(tag);
-        var reloaded = (PieceSelectorIdeaStorageItemFreeCapacity) SpellPiece.createFromNBT(new Spell(), tag);
-        helper.assertTrue(reloaded.getModeOption().equals(PsitweaksModeOptions.ITEM)
-                && reloaded.params.values().iterator().next() instanceof ParamSpellItemValue
-                && reloaded.paramSides.values().iterator().next() == SpellParam.Side.LEFT, "Item mode or its wire lost on reload");
-        helper.succeed();
+    private static PieceSelectorIdeaStorageTypeCount typeCount(PsitweaksModeOption mode) {
+        var piece = new PieceSelectorIdeaStorageTypeCount(new Spell());
+        piece.setModeOption(mode);
+        return piece;
     }
 }

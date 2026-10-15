@@ -8,7 +8,8 @@ import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageEnergy;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageAmount;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +31,11 @@ import vazkii.psi.common.core.handler.PlayerDataHandler;
 @PrefixGameTestTemplate(false)
 public final class IdeaStorageEnergySelectorGameTests {
     @GameTest(template = "psi110_empty")
-    public static void readsCurrentOwnerBalanceWithoutConsuming(GameTestHelper helper) {
+    public static void readsCurrentOwnerBalanceWithoutConsuming(GameTestHelper helper) throws Exception {
         var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "energy-reader"));
         var storage = IdeaStorageService.get(player.server, player.getUUID());
-        var piece = new PieceSelectorIdeaStorageEnergy(new Spell());
+        var piece = new PieceSelectorIdeaStorageAmount(new Spell());
+        piece.setModeOption(BlockResourceModes.ENERGY);
         var context = new SpellContext().setPlayer(player);
         helper.assertTrue(piece.execute(context).equals(0.0D), "Empty storage must return Number zero");
         long inserted = storage.insertEnergy(5_000_000_123L, false);
@@ -51,9 +53,10 @@ public final class IdeaStorageEnergySelectorGameTests {
 
     @GameTest(template = "psi110_empty")
     public static void noInputsNoCostAndSharedResearch(GameTestHelper helper) throws Exception {
-        var id = Psitweaks.location("selector_idea_storage_energy");
-        var piece = PsiAPI.SPELL_PIECE_REGISTRY.get(id).create(new Spell());
-        helper.assertTrue(piece.params.isEmpty(), "Selector must have no inputs");
+        var id = Psitweaks.location("selector_idea_storage_amount");
+        var piece = (PieceSelectorIdeaStorageAmount) PsiAPI.SPELL_PIECE_REGISTRY.get(id).create(new Spell());
+        piece.setModeOption(BlockResourceModes.ENERGY);
+        helper.assertTrue(piece.params.isEmpty(), "FE mode must have no inputs");
         helper.assertTrue(piece.getEvaluationType() == Double.class, "Selector must return Psi Number");
         var metadata = new SpellMetadata();
         piece.addToMetadata(metadata);
@@ -77,8 +80,8 @@ public final class IdeaStorageEnergySelectorGameTests {
         ids.add(group.value().main());
         ids.addAll(group.value().pieces());
         ids.add(Psitweaks.location("unregistered_idea_storage_piece"));
-        helper.assertTrue(ids.size() == 26, "Ideaspace Storage group membership changed: " + ids);
-        for (String added : IdeaLogisticsPlusGameTests.NEW_SELECTORS) {
+        helper.assertTrue(ids.size() == 12, "Ideaspace Storage group membership changed: " + ids);
+        for (String added : IdeaLogisticsPlusGameTests.GROUP_PIECES) {
             helper.assertTrue(ids.contains(Psitweaks.location(added)), "Group is missing " + added);
         }
         for (ResourceLocation pieceId : ids) {

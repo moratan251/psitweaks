@@ -18,7 +18,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SpellUnlockGameTests {
-    private static final int SHIPPED_DEFINITIONS = 26;
+    private static final int SHIPPED_DEFINITIONS = 25;
 
     @GameTest(template = "psi110_empty")
     public static void allCommandCountsDefinitionsLikeStatus(GameTestHelper helper) throws Exception {
@@ -57,7 +57,7 @@ public final class SpellUnlockGameTests {
     public static void commandsResolveDefinitionsAtExecution(GameTestHelper helper) throws Exception {
         var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "unlock-ids"));
         // JSON にのみある定義も、登録時点ではなく実行時の定義から解決される
-        helper.assertTrue(run(player, "idea_storage_item_amount status @s") == 0, "JSON-only definition was not resolved");
+        helper.assertTrue(run(player, "idea_storage_free_capacity status @s") == 0, "JSON-only definition was not resolved");
         boolean rejected = false;
         try {
             run(player, "no_such_spell status @s");

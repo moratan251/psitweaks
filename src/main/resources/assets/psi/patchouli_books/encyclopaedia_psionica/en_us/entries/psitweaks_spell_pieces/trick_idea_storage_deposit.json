@@ -1,0 +1,27 @@
+{
+  "name": "psitweaks.spellpiece.trick_idea_storage_deposit",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_idea_storage_deposit.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit.3"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_deposit.4"
+    }
+  ]
+}

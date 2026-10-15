@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageDeposit;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageResourceBase;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.*;
@@ -190,9 +192,7 @@ public final class IdeaStorageRecoveryGameTests {
         player.setPos(Vec3.atCenterOf(pos));
         var spell = new Spell();
         boolean[] executed = {false};
-        var piece = new PieceTrickIdeaStorageResourceBase(spell) {
-            @Override protected Kind kind() { return resourceKind; }
-            @Override protected boolean deposit() { return true; }
+        var piece = new PieceTrickIdeaStorageDeposit(spell) {
             @Override public Object getRawParamValue(SpellContext context, SpellParam<?> param) {
                 return IdeaLogisticsGameTests.paramValue(param, pos, 4, null);
             }
@@ -203,12 +203,17 @@ public final class IdeaStorageRecoveryGameTests {
                 return 0;
             }
         };
+        piece.setModeOption(switch (resourceKind) {
+            case FLUID -> BlockResourceModes.FLUID;
+            case CHEMICAL -> BlockResourceModes.CHEMICAL;
+            default -> BlockResourceModes.ITEM;
+        });
         var compiled = new CompiledSpell(spell);
         // SpellPieceType.create normally supplies this field. The local endpoint fixture bypasses
         // that factory, but Psi's action bookkeeping/hashCode still needs the registered piece ID.
         var registryKey = SpellPiece.class.getDeclaredField("registryKey");
         registryKey.setAccessible(true);
-        registryKey.set(piece, Psitweaks.location("trick_idea_storage_deposit_" + resourceKind.name().toLowerCase(java.util.Locale.ROOT)));
+        registryKey.set(piece, Psitweaks.location("trick_idea_storage_deposit"));
         compiled.actions.push(compiled.new Action(piece));
         var context = new SpellContext().setPlayer(player);
         context.cspell = compiled;

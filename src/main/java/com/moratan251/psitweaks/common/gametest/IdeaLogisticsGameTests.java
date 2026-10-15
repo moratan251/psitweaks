@@ -7,19 +7,24 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.menu.IdeaspaceConnectorMenu;
 import com.moratan251.psitweaks.common.network.*;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
-import com.moratan251.psitweaks.common.spells.mode.IdeaStorageTransferModes;
+import com.moratan251.psitweaks.common.spells.item.StrictItemFilter;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.mode.IdeaStorageResourceModes;
+import com.moratan251.psitweaks.common.spells.param.ParamItemSearch;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.*;
 import com.moratan251.psitweaks.common.storage.connector.*;
 import com.moratan251.psitweaks.common.storage.idea.*;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
-import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import io.netty.buffer.Unpooled;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -345,22 +350,15 @@ public final class IdeaLogisticsGameTests {
         var storage = IdeaStorageService.get(player.server, player.getUUID());
         var context = new SpellContext().setPlayer(player);
         Object[] filter = {"minecraft:app*"}; double[] itemCount = {32.9};
-        var deposit = new PieceTrickIdeaStorageDepositItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return paramValue(param, pos, itemCount[0], filter[0]);
-            }
-        };
-        var withdraw = new PieceTrickIdeaStorageWithdrawItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return paramValue(param, pos, itemCount[0], filter[0]);
-            }
-        };
+        var deposit = trick(true, BlockResourceModes.ITEM, param -> paramValue(param, pos, itemCount[0], filter[0]));
+        var withdraw = trick(false, BlockResourceModes.ITEM, param -> paramValue(param, pos, itemCount[0], filter[0]));
         deposit.execute(context);
         helper.assertTrue(apple().amount(storage) == 32 && chest.getItem(0).getCount() == 8, "Item count must be direct, rounded down and filtered");
-        deposit.setModeOption(PsitweaksModeOptions.ITEM_STRICT); filter[0] = SpellItemValue.snapshot(named);
+        // The wired value picks the match; Operator: Strict Item makes it compare data components.
+        filter[0] = new StrictItemFilter(List.of(named));
         deposit.execute(context);
         helper.assertTrue(storage.simulateExtract(ItemResourceKey.of(named).orElseThrow(), 100) == 20 && chest.getItem(0).getCount() == 8,
-                "Strict item spell ignored components");
+                "Strict item filter ignored components");
         filter[0] = "apple"; itemCount[0] = 16; withdraw.execute(context);
         helper.assertTrue(apple().amount(storage) == 16 && chest.getItem(0).getCount() == 24, "Withdrawal endpoint or ID-path match wrong");
         Consumer<PlayerInteractEvent.RightClickBlock> deny = event -> { if (event.getPos().equals(pos)) event.setCanceled(true); };
@@ -379,10 +377,24 @@ public final class IdeaLogisticsGameTests {
         itemCount[0] = 1; withdraw.execute(context);
         helper.assertTrue(apple().amount(storage) == 15 && chest.getItem(0).getCount() == 25,
                 "Number 1 must withdraw exactly one item");
-        deposit.setModeOption(PsitweaksModeOptions.STRING); deposit.execute(context);
+        deposit.execute(context);
         helper.assertTrue(apple().amount(storage) == 16 && chest.getItem(0).getCount() == 24,
                 "Number 1 must deposit exactly one item");
         helper.succeed();
+    }
+
+    /** A deposit or withdraw trick in {@code mode} whose inputs read {@code values}. */
+    static PieceTrickIdeaStorageResourceBase trick(boolean deposit, PsitweaksModeOption mode,
+                                                   Function<SpellParam<?>, Object> values) {
+        PieceTrickIdeaStorageResourceBase piece = deposit
+                ? new PieceTrickIdeaStorageDeposit(new Spell()) {
+                    @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.apply(param); }
+                }
+                : new PieceTrickIdeaStorageWithdraw(new Spell()) {
+                    @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.apply(param); }
+                };
+        piece.setModeOption(mode);
+        return piece;
     }
 
     static Object paramValue(SpellParam<?> param, BlockPos pos, double quantity, Object filter) {
@@ -403,16 +415,8 @@ public final class IdeaLogisticsGameTests {
         player.setPos(Vec3.atCenterOf(connector.getBlockPos()));
         var context = new SpellContext().setPlayer(player);
         var storage = IdeaStorageService.get(player.server, player.getUUID());
-        var deposit = new PieceTrickIdeaStorageDepositFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return paramValue(param, connector.getBlockPos(), 0.25, "water");
-            }
-        };
-        var withdraw = new PieceTrickIdeaStorageWithdrawFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return paramValue(param, connector.getBlockPos(), 0.25, null);
-            }
-        };
+        var deposit = trick(true, BlockResourceModes.FLUID, param -> paramValue(param, connector.getBlockPos(), 0.25, "water"));
+        var withdraw = trick(false, BlockResourceModes.FLUID, param -> paramValue(param, connector.getBlockPos(), 0.25, null));
         deposit.execute(context);
         helper.assertTrue(water().amount(storage) == 250 && water().amount(connector.storage()) == 750, "Fluid spell failed at specified face");
         connector.setInputMode(ConnectorInputMode.ALLOW_LIST);
@@ -429,16 +433,8 @@ public final class IdeaLogisticsGameTests {
         var own = place(helper, new BlockPos(2, 1, 1), player.getUUID());
         own.setResource(0, water());
         storage.insertFluid(new FluidStack(Fluids.WATER, 1), 600);
-        var ownDeposit = new PieceTrickIdeaStorageDepositFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return paramValue(param, own.getBlockPos(), 0.25, "water");
-            }
-        };
-        var ownWithdraw = new PieceTrickIdeaStorageWithdrawFluid(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return paramValue(param, own.getBlockPos(), 0.25, null);
-            }
-        };
+        var ownDeposit = trick(true, BlockResourceModes.FLUID, param -> paramValue(param, own.getBlockPos(), 0.25, "water"));
+        var ownWithdraw = trick(false, BlockResourceModes.FLUID, param -> paramValue(param, own.getBlockPos(), 0.25, null));
         long version = storage.getVersion();
         ownDeposit.execute(context); ownWithdraw.execute(context);
         helper.assertTrue(storage.getVersion() == version && water().amount(storage) == 600,
@@ -448,57 +444,48 @@ public final class IdeaLogisticsGameTests {
 
     @GameTest(template = "connector_empty")
     public static void allPiecesRegisterAndModesPreserveFourConnections(GameTestHelper helper) throws Exception {
-        for (String action : new String[] {"deposit", "withdraw"}) for (String type : new String[] {"item", "fluid", "chemical"}) {
-            var piece = (PieceTrickIdeaStorageResourceBase) PsiAPI.SPELL_PIECE_REGISTRY.get(Psitweaks.location("trick_idea_storage_" + action + "_" + type)).create(new Spell());
-            helper.assertTrue(piece.params.size() == 4 && piece.params.values().stream().filter(param -> param.canDisable).count() == 1,
-                    "Spell requires position, face and quantity plus optional filter");
-            boolean item = type.equals("item");
-            helper.assertTrue(piece.params.containsKey(item ? "psi.spellparam.number" : "psi.spellparam.power")
-                    && !piece.params.containsKey(item ? "psi.spellparam.power" : "psi.spellparam.number"),
-                    "Only item spells must use Number instead of Power");
-            helper.assertTrue(piece instanceof PsitweaksModeConfigurable && piece.getAvailableModeOptions().equals(item
-                            ? IdeaStorageTransferModes.ITEM_FILTERS_WITH_EXACT : IdeaStorageTransferModes.TRANSFER_ONLY),
-                    "Item spells combine filter and transfer modes; fluid and chemical spells only choose the transfer mode");
+        for (String action : new String[] {"deposit", "withdraw"}) {
+            var piece = (PieceTrickIdeaStorageResourceBase) PsiAPI.SPELL_PIECE_REGISTRY.get(Psitweaks.location("trick_idea_storage_" + action)).create(new Spell());
+            helper.assertTrue(piece instanceof PsitweaksModeConfigurable && piece.getAvailableModeOptions().equals(IdeaStorageResourceModes.TRANSFER)
+                            && piece.getModeOption() == BlockResourceModes.ITEM && !piece.isExactTransfer(),
+                    "Spell must offer every resource kind and start as a partial item transfer");
+            helper.assertTrue(piece.params.size() == 4 && piece.params.values().stream().filter(param -> param.canDisable).count() == 1
+                            && piece.params.get(PsitweaksSpellParams.FILTER) instanceof ParamItemSearch,
+                    "Item mode requires position, face and quantity plus the optional item search filter");
             var metadata = new SpellMetadata(); piece.addToMetadata(metadata);
             helper.assertTrue(metadata.getStat(EnumSpellStat.POTENCY) == 50 && metadata.getStat(EnumSpellStat.COST) == 100,
                     "Spell metadata differs from documented stats");
             piece.paramSides.put(piece.params.get("psi.spellparam.position"), SpellParam.Side.TOP);
             piece.paramSides.put(piece.params.get("psi.spellparam.direction"), SpellParam.Side.BOTTOM);
-            piece.paramSides.put(piece.params.get(item ? "psi.spellparam.number" : "psi.spellparam.power"), SpellParam.Side.RIGHT);
-            piece.paramSides.put(piece.params.get("psitweaks.spellparam.string"), SpellParam.Side.LEFT);
+            piece.paramSides.put(piece.params.get("psi.spellparam.number"), SpellParam.Side.RIGHT);
+            piece.paramSides.put(piece.params.get(PsitweaksSpellParams.FILTER), SpellParam.Side.LEFT);
             for (var mode : piece.getAvailableModeOptions()) {
                 piece.setModeOption(mode);
-                assertLogisticsConnections(helper, piece, item);
-                helper.assertTrue(piece.getModeOption().equals(mode) && piece.isExactTransfer() == IdeaStorageTransferModes.isExact(mode),
-                        "Mode switch did not take effect");
+                boolean item = mode == BlockResourceModes.ITEM || mode == IdeaStorageResourceModes.ITEM_EXACT;
+                boolean energy = mode == BlockResourceModes.ENERGY;
+                helper.assertTrue(piece.getModeOption() == mode && piece.isExactTransfer() == IdeaStorageResourceModes.isExact(mode),
+                        "Mode switch did not take effect: " + mode.serializedId());
+                helper.assertTrue(piece.params.containsKey(item ? "psi.spellparam.number" : "psi.spellparam.power")
+                                && !piece.params.containsKey(item ? "psi.spellparam.power" : "psi.spellparam.number"),
+                        "Only item transfers must use Number instead of Power: " + mode.serializedId());
+                helper.assertTrue(energy ? !piece.params.containsKey(PsitweaksSpellParams.FILTER)
+                                : item == (piece.params.get(PsitweaksSpellParams.FILTER) instanceof ParamItemSearch),
+                        "Wrong filter for " + mode.serializedId());
+                assertLogisticsConnections(helper, piece, item, !energy);
             }
-            var tag = new CompoundTag(); piece.writeToNBT(tag); piece.readFromNBT(tag);
-            assertLogisticsConnections(helper, piece, item);
-            helper.assertTrue(piece.isExactTransfer(), "NBT lost the exact transfer mode");
-            if (piece instanceof PieceTrickIdeaStorageItemBase itemPiece) {
-                helper.assertTrue(itemPiece.getModeOption().equals(IdeaStorageTransferModes.ITEM_STRICT_EXACT)
-                        && tag.getString("psitweaksMode").equals(PsitweaksModeOptions.ITEM_STRICT.serializedId()), "NBT lost item mode");
-                for (String oldKey : new String[] {"_power", "psi.spellparam.power"}) {
-                    var legacy = tag.copy();
-                    legacy.getCompound("params").remove("_number");
-                    legacy.getCompound("params").putInt(oldKey, SpellParam.Side.RIGHT.asInt());
-                    itemPiece.readFromNBT(legacy);
-                    assertLogisticsConnections(helper, itemPiece, true);
-                    helper.assertTrue(!legacy.getCompound("params").contains("_number"), "Migration mutated source NBT");
-                    var saved = new CompoundTag(); itemPiece.writeToNBT(saved);
-                    helper.assertTrue(saved.getCompound("params").contains("_number") && !saved.getCompound("params").contains(oldKey),
-                            "Renamed quantity must save under Number");
-                }
-                tag.getCompound("params").putInt("_power", SpellParam.Side.LEFT.asInt());
-                itemPiece.readFromNBT(tag);
-                assertLogisticsConnections(helper, itemPiece, true);
-            } else {
-                tag.putString("psitweaksMode", PsitweaksModeOptions.ITEM_STRICT.serializedId());
-                piece.readFromNBT(tag);
-                assertLogisticsConnections(helper, piece, false);
-                var saved = new CompoundTag(); piece.writeToNBT(saved);
-                helper.assertTrue(!saved.contains("psitweaksMode"), "Fluid and chemical spells must stop saving modes");
-            }
+            piece.setModeOption(IdeaStorageResourceModes.CHEMICAL_EXACT);
+            helper.assertTrue(piece.paramSides.get(piece.params.get(PsitweaksSpellParams.FILTER)) == SpellParam.Side.OFF,
+                    "Leaving FE mode must not invent a filter wire");
+            piece.paramSides.put(piece.params.get(PsitweaksSpellParams.FILTER), SpellParam.Side.LEFT);
+            var tag = new CompoundTag(); piece.writeToNBT(tag);
+            helper.assertTrue(tag.getString("psitweaksMode").equals("resource_chemical_exact"), "Mode must save under its own ID");
+            var reloaded = (PieceTrickIdeaStorageResourceBase) SpellPiece.createFromNBT(new Spell(), tag);
+            helper.assertTrue(reloaded.getModeOption() == IdeaStorageResourceModes.CHEMICAL_EXACT && reloaded.isExactTransfer(),
+                    "NBT lost the mode");
+            assertLogisticsConnections(helper, reloaded, false, true);
+            tag.putString("psitweaksMode", "unknown");
+            reloaded.readFromNBT(tag);
+            helper.assertTrue(reloaded.getModeOption() == BlockResourceModes.ITEM, "Unknown mode must fall back to Item");
         }
         helper.assertTrue(IdeaStorageResourceTransfers.amountForPower(1.5, 1, Integer.MAX_VALUE) == 1
                 && IdeaStorageResourceTransfers.amountForPower(0.001, 1, Integer.MAX_VALUE) == 0
@@ -509,8 +496,10 @@ public final class IdeaLogisticsGameTests {
         helper.succeed();
     }
 
-    private static void assertLogisticsConnections(GameTestHelper helper, PieceTrickIdeaStorageResourceBase piece, boolean item) {
-        helper.assertTrue(piece.params.size() == 4 && piece.paramSides.size() == 4
+    private static void assertLogisticsConnections(GameTestHelper helper, PieceTrickIdeaStorageResourceBase piece, boolean item,
+                                                   boolean filter) {
+        int inputs = filter ? 4 : 3;
+        helper.assertTrue(piece.params.size() == inputs && piece.paramSides.size() == inputs
                 && piece.paramSides.get(piece.params.get("psi.spellparam.position")) == SpellParam.Side.TOP
                 && piece.paramSides.get(piece.params.get("psi.spellparam.direction")) == SpellParam.Side.BOTTOM
                 && piece.paramSides.get(piece.params.get(item ? "psi.spellparam.number" : "psi.spellparam.power")) == SpellParam.Side.RIGHT

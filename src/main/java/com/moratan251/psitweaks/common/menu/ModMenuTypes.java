@@ -30,6 +30,9 @@ public final class ModMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<IdeaspaceConnectorMenu>> IDEASPACE_CONNECTOR =
             MENUS.register("ideaspace_connector", () -> IMenuTypeExtension.create(IdeaspaceConnectorMenu::fromNetwork));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<FilterCardMenu>> FILTER_CARD =
+            MENUS.register("filter_card", () -> IMenuTypeExtension.create(FilterCardMenu::fromNetwork));
+
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);
     }
