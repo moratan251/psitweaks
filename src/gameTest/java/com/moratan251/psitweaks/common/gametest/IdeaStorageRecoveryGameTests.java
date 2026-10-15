@@ -5,6 +5,8 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.IdeaStorageRecoveryChemicalChecks;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageDeposit;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageResourceBase;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
@@ -14,7 +16,6 @@ import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -213,24 +214,28 @@ public final class IdeaStorageRecoveryGameTests {
         player.setPos(Vec3.atCenterOf(pos));
         var spell = new Spell();
         boolean[] executed = {false};
-        var piece = new PieceTrickIdeaStorageResourceBase(spell) {
-            @Override protected Kind kind() { return resourceKind; }
-            @Override protected boolean deposit() { return true; }
+        var piece = new PieceTrickIdeaStorageDeposit(spell) {
             @Override public Object getRawParamValue(SpellContext context, SpellParam<?> param) {
                 return paramValue(param, pos, 4, null);
             }
-            @Override protected void transfer(SpellContext context, ServerPlayer caster, BlockPos at, Direction face,
+            @Override protected long transfer(SpellContext context, ServerPlayer caster, BlockPos at, Direction face,
                                               PlayerIdeaStorage storage, long maximum) {
                 executed[0] = true;
                 operation.run();
+                return 0;
             }
         };
+        piece.setModeOption(switch (resourceKind) {
+            case FLUID -> BlockResourceModes.FLUID;
+            case CHEMICAL -> BlockResourceModes.CHEMICAL;
+            default -> BlockResourceModes.ITEM;
+        });
         var compiled = new CompiledSpell(spell);
         // The SpellPiece constructor resolves registryKey from the concrete class; this anonymous fixture is not
         // registered, so give it the registered piece ID that Psi's execution bookkeeping/events expect.
         var registryKey = SpellPiece.class.getDeclaredField("registryKey");
         registryKey.setAccessible(true);
-        registryKey.set(piece, Psitweaks.location("trick_idea_storage_deposit_" + resourceKind.name().toLowerCase(Locale.ROOT)));
+        registryKey.set(piece, Psitweaks.location("trick_idea_storage_deposit"));
         compiled.actions.push(compiled.new Action(piece));
         var context = new SpellContext().setPlayer(player);
         context.cspell = compiled;

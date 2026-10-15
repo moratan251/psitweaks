@@ -108,7 +108,7 @@ public final class IdeaStorageLogisticsMekanism {
         return moved;
     }
 
-    private static <C extends Chemical<C>, S extends ChemicalStack<C>> long depositExact(PlayerIdeaStorage storage,
+    static <C extends Chemical<C>, S extends ChemicalStack<C>> long depositExact(PlayerIdeaStorage storage,
             IChemicalHandler<C, S> handler, String kind, Predicate<ResourceLocation> filter, long amount) {
         if (handler == null) return 0;
         Map<ResourceLocation, Long> available = new LinkedHashMap<>();

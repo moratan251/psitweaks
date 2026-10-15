@@ -4,16 +4,16 @@ import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
-import com.moratan251.psitweaks.common.spells.param.ParamSpellItemValue;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageChemicalAmount;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageFluidAmount;
-import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageItemAmount;
+import com.moratan251.psitweaks.common.spells.param.ParamStringOrItem;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageAmount;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageResourceBase;
 import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageSavedData;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
-import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import io.netty.buffer.Unpooled;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTest;
@@ -51,17 +51,16 @@ public final class IdeaStorageAmountSelectorGameTests {
         storage.insert(namedStone, 7);
         storage.insert(new ItemStack(Items.DIRT), 900);
         Object[] input = {"minecraft:stone"};
-        var selector = new PieceSelectorIdeaStorageItemAmount(new Spell()) {
+        var selector = new PieceSelectorIdeaStorageAmount(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
         };
         long version = storage.getVersion();
         helper.assertTrue(selector.execute(context).equals(137.0D), "String must sum component variants by ID");
-        selector.setModeOption(PsitweaksModeOptions.ITEM);
+        // Item mode takes an Item on the same input, without a mode switch.
         input[0] = SpellItemValue.snapshot(namedStone.copyWithCount(64));
         helper.assertTrue(selector.execute(context).equals(137.0D), "Item count/components must not narrow the ID match");
         input[0] = SpellItemValue.EMPTY;
         helper.assertTrue(selector.execute(context).equals(0.0D), "Empty Item must return zero");
-        selector.setModeOption(PsitweaksModeOptions.STRING);
         for (String missing : new String[] {"minecraft:apple", "example:stone", "minecraft:*", "INVALID ID", ""}) {
             input[0] = missing;
             helper.assertTrue(selector.execute(context).equals(0.0D), "Expected zero for " + missing);
@@ -104,12 +103,19 @@ public final class IdeaStorageAmountSelectorGameTests {
         helper.assertTrue(chemicalAmount == 4_000_000_123L, "Test requires a count above Integer.MAX_VALUE");
         storage.insertChemical(ResourceLocation.parse("mekanism:gas/oxygen"), 33);
         String[] input = {"minecraft:water"};
-        var fluid = new PieceSelectorIdeaStorageFluidAmount(new Spell()) {
+        var fluid = new PieceSelectorIdeaStorageAmount(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
         };
-        var chemical = new PieceSelectorIdeaStorageChemicalAmount(new Spell()) {
+        fluid.setModeOption(BlockResourceModes.FLUID);
+        var chemical = new PieceSelectorIdeaStorageAmount(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return input[0]; }
         };
+        chemical.setModeOption(BlockResourceModes.CHEMICAL);
+        var energy = new PieceSelectorIdeaStorageAmount(new Spell());
+        energy.setModeOption(BlockResourceModes.ENERGY);
+        storage.insertEnergy(1234, false);
+        helper.assertTrue(energy.params.isEmpty() && energy.execute(context).equals(1234.0D),
+                "FE mode must read the stored FE without an input");
         long version = storage.getVersion();
         helper.assertTrue(fluid.execute(context).equals(5500.0D), "Fluid component variants must sum in mB");
         input[0] = hydrogen.toString();
@@ -142,12 +148,24 @@ public final class IdeaStorageAmountSelectorGameTests {
     @GameTest(template = "psi110_empty")
     public static void modesSurviveSerializationAndSelectorsHaveCorrectStats(GameTestHelper helper) throws Exception {
         var spell = new Spell();
-        for (String suffix : new String[] {"item", "fluid", "chemical"}) {
-            var id = Psitweaks.location("selector_idea_storage_" + suffix + "_amount");
-            var piece = PsiAPI.getSpellPiece(id).getConstructor(Spell.class).newInstance(spell);
-            helper.assertTrue(piece.getEvaluationType() == Double.class && piece.params.size() == 1
-                    && piece.params.values().iterator().next() instanceof ParamString
-                    && !piece.params.values().iterator().next().canDisable, "Expected one required String input");
+        for (String suffix : new String[] {"amount", "free_capacity", "type_count"}) {
+            var id = Psitweaks.location("selector_idea_storage_" + suffix);
+            var piece = (PieceSelectorIdeaStorageResourceBase) SpellPiece.create(PsiAPI.getSpellPiece(id), spell);
+            boolean input = !suffix.equals("type_count");
+            helper.assertTrue(piece.getAvailableModeOptions().size() == (input ? 4 : 3), "Wrong modes for " + suffix);
+            for (PsitweaksModeOption mode : piece.getAvailableModeOptions()) {
+                piece.setModeOption(mode);
+                boolean takes = input && mode != BlockResourceModes.ENERGY;
+                helper.assertTrue(piece.getEvaluationType() == Double.class && piece.params.size() == (takes ? 1 : 0),
+                        "Wrong inputs for " + suffix + " in " + mode.serializedId());
+                if (takes) {
+                    var param = piece.params.values().iterator().next();
+                    boolean expected = mode == BlockResourceModes.ITEM ? param instanceof ParamStringOrItem
+                            : param instanceof ParamString;
+                    helper.assertTrue(!param.canDisable && expected,
+                            "Expected one required resource input for " + suffix + " in " + mode.serializedId());
+                }
+            }
             var metadata = new SpellMetadata();
             metadata.setStat(EnumSpellStat.COMPLEXITY, 7);
             metadata.setStat(EnumSpellStat.POTENCY, 15);
@@ -158,19 +176,23 @@ public final class IdeaStorageAmountSelectorGameTests {
                     && metadata.getStat(EnumSpellStat.COST) == 20, "Expected Complexity +1, Potency/Cost +0");
             helper.assertTrue(PsiAPI.getGroupForPiece(piece.getClass()).equals(Psitweaks.location("trick_idea_storage_view")), "Wrong research group");
         }
-        var item = (PieceSelectorIdeaStorageItemAmount) new PieceSelectorIdeaStorageItemAmount(spell);
-        item.paramSides.replaceAll((param, side) -> SpellParam.Side.RIGHT);
-        item.setModeOption(PsitweaksModeOptions.ITEM);
-        assertItemMode(helper, item);
+        var amount = (PieceSelectorIdeaStorageAmount) SpellPiece.create(PsiAPI.getSpellPiece(Psitweaks.location("selector_idea_storage_amount")), spell);
+        amount.paramSides.replaceAll((param, side) -> SpellParam.Side.RIGHT);
+        amount.setModeOption(BlockResourceModes.FLUID);
+        assertMode(helper, amount, BlockResourceModes.FLUID);
         var tag = new CompoundTag();
-        item.writeToNBT(tag);
-        assertItemMode(helper, (PieceSelectorIdeaStorageItemAmount) SpellPiece.createFromNBT(new Spell(), tag));
-        item.setModeOption(PsitweaksModeOptions.STRING);
-        helper.assertTrue(item.params.values().iterator().next() instanceof ParamString
-                && item.paramSides.values().iterator().next() == SpellParam.Side.RIGHT, "Switching back lost the input");
+        amount.writeToNBT(tag);
+        assertMode(helper, (PieceSelectorIdeaStorageAmount) SpellPiece.createFromNBT(new Spell(), tag), BlockResourceModes.FLUID);
+        // Psi 1.20.1 has no SpellPiece stream codec; spells travel as NBT, which the check above covers.
+        amount.setModeOption(BlockResourceModes.ITEM);
+        assertMode(helper, amount, BlockResourceModes.ITEM);
+        amount.setModeOption(BlockResourceModes.ENERGY);
+        amount.setModeOption(BlockResourceModes.CHEMICAL);
+        helper.assertTrue(amount.params.size() == 1 && amount.paramSides.values().iterator().next() == SpellParam.Side.OFF,
+                "FE mode must drop the input and its wire");
         tag.putString("psitweaksMode", "unknown:mode");
-        item.readFromNBT(tag);
-        helper.assertTrue(item.getModeOption().equals(PsitweaksModeOptions.STRING), "Unknown mode must fall back to String");
+        amount.readFromNBT(tag);
+        helper.assertTrue(amount.getModeOption() == BlockResourceModes.ITEM, "Unknown mode must fall back to Item");
         helper.succeed();
     }
 
@@ -194,10 +216,9 @@ public final class IdeaStorageAmountSelectorGameTests {
         helper.succeed();
     }
 
-    private static void assertItemMode(GameTestHelper helper, PieceSelectorIdeaStorageItemAmount piece) {
-        helper.assertTrue(piece.getModeOption().equals(PsitweaksModeOptions.ITEM) && piece.params.size() == 1
-                && piece.params.values().iterator().next() instanceof ParamSpellItemValue
-                && piece.paramSides.values().iterator().next() == SpellParam.Side.RIGHT, "Item mode/input direction lost");
+    private static void assertMode(GameTestHelper helper, PieceSelectorIdeaStorageAmount piece, PsitweaksModeOption mode) {
+        helper.assertTrue(piece.getModeOption() == mode && piece.params.size() == 1
+                && piece.paramSides.values().iterator().next() == SpellParam.Side.RIGHT, "Mode/input direction lost");
     }
 
     private static FakePlayer player(GameTestHelper helper) {

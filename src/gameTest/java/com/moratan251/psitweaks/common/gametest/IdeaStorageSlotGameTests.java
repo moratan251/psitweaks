@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.item.StrictItemFilter;
+import com.moratan251.psitweaks.common.spells.param.ParamItemSearch;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageDepositSlot;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageSlotBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageWithdrawSlot;
@@ -11,7 +13,7 @@ import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.ItemResourceKey;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
-import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -35,6 +37,7 @@ import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
+import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.base.ModItems;
@@ -102,33 +105,23 @@ public final class IdeaStorageSlotGameTests {
         for (String action : new String[] {"deposit", "withdraw"}) {
             var piece = create(action);
             helper.assertTrue(piece.params.size() == 2 && piece.params.containsKey(NUMBER)
-                            && piece.params.containsKey(PsitweaksSpellParams.STRING),
-                    "Slot spell must take only Number and the filter");
-            helper.assertTrue(!piece.params.get(NUMBER).canDisable && piece.params.get(PsitweaksSpellParams.STRING).canDisable,
+                            && piece.params.get(PsitweaksSpellParams.FILTER) instanceof ParamItemSearch,
+                    "Slot spell must take only Number and the item search filter");
+            helper.assertTrue(!piece.params.get(NUMBER).canDisable && piece.params.get(PsitweaksSpellParams.FILTER).canDisable,
                     "Number must be required and the filter optional");
-            helper.assertTrue(piece instanceof PsitweaksModeConfigurable, "Slot spell must expose the item filter modes");
+            helper.assertTrue(!(piece instanceof PsitweaksModeConfigurable), "Slot spells have no modes; the filter value decides");
             var metadata = new SpellMetadata(); piece.addToMetadata(metadata);
             helper.assertTrue(metadata.getStat(EnumSpellStat.POTENCY) == 50 && metadata.getStat(EnumSpellStat.COST) == 100,
                     "Slot spell metadata differs from documented stats");
             piece.paramSides.put(piece.params.get(NUMBER), SpellParam.Side.RIGHT);
-            piece.paramSides.put(piece.params.get(PsitweaksSpellParams.STRING), SpellParam.Side.LEFT);
-            for (var mode : piece.getAvailableModeOptions()) {
-                piece.setModeOption(mode);
-                assertSides(helper, piece);
-            }
+            piece.paramSides.put(piece.params.get(PsitweaksSpellParams.FILTER), SpellParam.Side.LEFT);
             var tag = new CompoundTag(); piece.writeToNBT(tag);
-            var reloaded = create(action);
-            reloaded.readFromNBT(tag);
-            helper.assertTrue(reloaded.getModeOption().equals(PsitweaksModeOptions.ITEM_STRICT), "NBT lost slot spell mode");
-            assertSides(helper, reloaded);
+            var reloaded = (PieceTrickIdeaStorageSlotBase) SpellPiece.createFromNBT(new Spell(), tag);
+            helper.assertTrue(reloaded.params.size() == 2 && reloaded.paramSides.get(reloaded.params.get(NUMBER)) == SpellParam.Side.RIGHT
+                    && reloaded.paramSides.get(reloaded.params.get(PsitweaksSpellParams.FILTER)) == SpellParam.Side.LEFT,
+                    "NBT lost slot spell wiring");
         }
         helper.succeed();
-    }
-
-    private static void assertSides(GameTestHelper helper, PieceTrickIdeaStorageSlotBase piece) {
-        String filter = piece.params.containsKey(PsitweaksSpellParams.ITEM) ? PsitweaksSpellParams.ITEM : PsitweaksSpellParams.STRING;
-        helper.assertTrue(piece.params.size() == 2 && piece.paramSides.get(piece.params.get(NUMBER)) == SpellParam.Side.RIGHT
-                && piece.paramSides.get(piece.params.get(filter)) == SpellParam.Side.LEFT, "Mode switch lost slot spell wiring");
     }
 
     @GameTest(template = "connector_empty")
@@ -154,10 +147,10 @@ public final class IdeaStorageSlotGameTests {
                 "Matching filter must deposit the rest of the slot");
 
         inventory.setItem(1, named(5));
-        deposit.setModeOption(PsitweaksModeOptions.ITEM_STRICT); filter[0] = SpellItemValue.snapshot(new ItemStack(Items.APPLE));
+        filter[0] = new StrictItemFilter(List.of(new ItemStack(Items.APPLE)));
         deposit.execute(context);
         helper.assertTrue(inventory.getItem(1).getCount() == 5, "Strict filter ignored NBT");
-        deposit.setModeOption(PsitweaksModeOptions.ITEM);
+        filter[0] = SpellItemValue.snapshot(new ItemStack(Items.APPLE));
         deposit.execute(context);
         helper.assertTrue(inventory.getItem(1).isEmpty() && stored(storage, named(1)) == 5, "Item filter must match the type only");
 

@@ -44,7 +44,8 @@ import org.jetbrains.annotations.Nullable;
  * number types and would turn NBT resources into different resources. Items keep their NBT ({@code nbt}) and Forge
  * capability data ({@code forge_caps}) apart, as the stack saves them. Parsing validates the whole text before anything
  * is applied; only resources this environment cannot use are emptied and counted. Text copied on 1.21.1 stores
- * data components ({@code components}), which have no NBT form here, so such resources are emptied and counted too.
+ * data components ({@code components}), which have no NBT form here, so such resources are emptied and counted too;
+ * its plain chemical IDs are accepted.
  */
 public final class ConnectorSettingsClipboard {
     public static final String TYPE = "psitweaks:ideaspace_connector";
@@ -57,6 +58,7 @@ public final class ConnectorSettingsClipboard {
     private static final int MAX_SNBT_DEPTH = 512;
     private static final int MAX_NUMBER_LENGTH = 40;
     private static final List<String> EXPORT_KEYS = List.of("item", "fluid", "chemical", "energy");
+    private static final List<String> CHEMICAL_KINDS = List.of("gas", "infuse", "pigment", "slurry");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().disableHtmlEscaping().create();
     private static final TypeAdapter<JsonElement> JSON_ELEMENT = new Gson().getAdapter(JsonElement.class);
 
@@ -388,8 +390,7 @@ public final class ConnectorSettingsClipboard {
                     return usable(parsed);
                 }
                 case "chemical" -> {
-                    ResourceLocation id = id(json, path);
-                    return usable(chemicalAvailable.test(id) ? Optional.of(ConnectorResource.chemical(id)) : Optional.empty());
+                    return usable(chemicalKey(id(json, path)).map(ConnectorResource::chemical));
                 }
                 case "energy" -> {
                     if (!allowEnergy) throw new InvalidValue(path + ".kind");
@@ -397,6 +398,20 @@ public final class ConnectorSettingsClipboard {
                 }
                 default -> throw new InvalidValue(path + ".kind");
             }
+        }
+
+        /**
+         * Chemical keys carry their Mekanism 10 kind (namespace:kind/path). Text copied on 1.21.1 names a chemical by
+         * its plain registry ID, which means the first available kind in gas, infusion type, pigment, slurry order.
+         */
+        private Optional<ResourceLocation> chemicalKey(ResourceLocation id) {
+            if (chemicalAvailable.test(id)) return Optional.of(id);
+            if (id.getPath().indexOf('/') >= 0) return Optional.empty();
+            for (String kind : CHEMICAL_KINDS) {
+                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), kind + "/" + id.getPath());
+                if (chemicalAvailable.test(key)) return Optional.of(key);
+            }
+            return Optional.empty();
         }
 
         /** Unknown IDs, unreadable NBT and oversized templates depend on the environment, so only that slot is emptied. */
