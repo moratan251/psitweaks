@@ -1,16 +1,19 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
-import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
+import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.piece.PieceSelector;
 
-public class PieceSelectorIdeaStorageEnergy extends PieceSelector {
-    public PieceSelectorIdeaStorageEnergy(Spell spell) {
+/**
+ * Amount moved by the latest ideaspace transfer trick that ran earlier in this cast (items: count, fluids and
+ * chemicals: mB, FE: FE); 0 before any of them ran.
+ */
+public class PieceSelectorIdeaStorageLastTransfer extends PieceSelector {
+    public PieceSelectorIdeaStorageLastTransfer(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(0));
         setStatLabel(EnumSpellStat.COST, new StatLabel(0));
@@ -22,11 +25,7 @@ public class PieceSelectorIdeaStorageEnergy extends PieceSelector {
 
     @Override
     public Object execute(SpellContext context) {
-        if (!(context.caster instanceof ServerPlayer player)) {
-            return 0.0D;
-        }
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
-        return storage.isLoadFailed() ? 0.0D : (double) storage.energy();
+        return (double) IdeaStorageLastTransfer.get(context);
     }
 
     @Override

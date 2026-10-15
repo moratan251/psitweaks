@@ -19,11 +19,13 @@ public final class IdeaStorageNetwork {
         NetworkHandler.CHANNEL.registerMessage(id++, MessageConnectorAction.class, MessageConnectorAction::write, MessageConnectorAction::read, MessageConnectorAction::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         NetworkHandler.CHANNEL.registerMessage(id++, MessageConnectorExportSettings.class, MessageConnectorExportSettings::write, MessageConnectorExportSettings::read, MessageConnectorExportSettings::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         NetworkHandler.CHANNEL.registerMessage(id++, MessageMenuFragment.class, MessageMenuFragment::write, MessageMenuFragment::read, MessageMenuFragment::handle);
+        NetworkHandler.CHANNEL.registerMessage(id++, MessageConnectorPasteResult.class, MessageConnectorPasteResult::write, MessageConnectorPasteResult::read, MessageConnectorPasteResult::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         return id;
     }
     public static void sendToServer(Object message) {
         if (message instanceof MessageConnectorTemplate m) MessageMenuFragment.send(m.containerId(), m.session(), MessageMenuFragment.CONNECTOR_TEMPLATE, m::write, NetworkHandler.CHANNEL::sendToServer);
         else if (message instanceof MessagePortableSpellProgrammerEdit m) MessageMenuFragment.send(m.containerId(), m.session(), MessageMenuFragment.SPELL_EDIT, m::write, NetworkHandler.CHANNEL::sendToServer);
+        else if (message instanceof MessageConnectorPaste m) MessageMenuFragment.send(m.containerId(), m.session(), MessageMenuFragment.CONNECTOR_PASTE, m::write, NetworkHandler.CHANNEL::sendToServer);
         else NetworkHandler.CHANNEL.sendToServer(message);
     }
     public static void sendToPlayer(ServerPlayer player, Object message) {

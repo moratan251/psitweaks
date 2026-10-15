@@ -13,7 +13,7 @@ import net.minecraftforge.network.NetworkEvent;
 /** Both directions stay below Forge's 32767 byte C2S custom payload limit. */
 public record MessageMenuFragment(int containerId, UUID session, UUID transfer, int kind,
                                   int sequence, boolean last, byte[] data) {
-    public static final int CONNECTOR_STATE = 0, CONNECTOR_TEMPLATE = 1, SPELL_EDIT = 2, SPELL_INITIAL = 3;
+    public static final int CONNECTOR_STATE = 0, CONNECTOR_TEMPLATE = 1, SPELL_EDIT = 2, SPELL_INITIAL = 3, CONNECTOR_PASTE = 4;
     public static final int MAX_PART = 24 * 1024, MAX_TOTAL = 32 * 1024 * 1024;
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(containerId); buf.writeUUID(session); buf.writeUUID(transfer); buf.writeVarInt(kind);
@@ -47,7 +47,8 @@ public record MessageMenuFragment(int containerId, UUID session, UUID transfer, 
             ServerPlayer player = context.getSender();
             if (player == null || player.containerMenu.containerId != part.containerId()) return;
             MenuPayloadBuffer receiver;
-            if (part.kind() == CONNECTOR_TEMPLATE && player.containerMenu instanceof IdeaspaceConnectorMenu menu
+            if ((part.kind() == CONNECTOR_TEMPLATE || part.kind() == CONNECTOR_PASTE)
+                    && player.containerMenu instanceof IdeaspaceConnectorMenu menu
                     && menu.stillValid(player) && menu.session().equals(part.session())) receiver = menu.payloadBuffer();
             else if (part.kind() == SPELL_EDIT && player.containerMenu instanceof PortableSpellProgrammerMenu menu
                     && menu.stillValid(player) && menu.session().equals(part.session())) receiver = menu.payloadBuffer();
@@ -59,6 +60,9 @@ public record MessageMenuFragment(int containerId, UUID session, UUID transfer, 
                 if (part.kind() == CONNECTOR_TEMPLATE) {
                     var message = MessageConnectorTemplate.read(buf);
                     if (!buf.isReadable()) ((IdeaspaceConnectorMenu) player.containerMenu).handleTemplate(player, message);
+                } else if (part.kind() == CONNECTOR_PASTE) {
+                    var message = MessageConnectorPaste.read(buf);
+                    if (!buf.isReadable()) ((IdeaspaceConnectorMenu) player.containerMenu).handlePaste(player, message);
                 } else {
                     var message = MessagePortableSpellProgrammerEdit.read(buf);
                     if (!buf.isReadable()) ((PortableSpellProgrammerMenu) player.containerMenu).handleEdit(player, message);

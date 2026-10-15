@@ -191,6 +191,10 @@ public class PsitweaksSpells {
             registerSpellPiece("selector_held_items", PieceSelectorHeldItems.class);
             registerSpellPiece("operator_block_position", PieceOperatorBlockPosition.class);
             registerSpellPiece("operator_block_position_list", PieceOperatorBlockPositionList.class);
+            registerSpellPiece("operator_block_item", PieceOperatorBlockItem.class);
+            registerSpellPiece("operator_strict_item", PieceOperatorStrictItem.class);
+            registerSpellPiece("operator_block_resource_amount", PieceOperatorBlockResourceAmount.class);
+            registerSpellPiece("operator_block_free_capacity", PieceOperatorBlockFreeCapacity.class);
             registerSpellPiece("operator_block_state", PieceOperatorBlockState.class);
             registerSpellPiece("operator_block_state_entries", PieceOperatorBlockStateEntries.class);
             registerSpellPiece("operator_block_state_value", PieceOperatorBlockStateValue.class);
@@ -203,8 +207,10 @@ public class PsitweaksSpells {
             registerSpellPiece("operator_item_count", PieceOperatorItemCount.class);
             registerSpellPiece("operator_item_total_count", PieceOperatorItemTotalCount.class);
             registerSpellPiece("operator_item_slot", PieceOperatorItemSlot.class);
+            registerSpellPiece("operator_dropped_items", PieceOperatorDroppedItems.class);
             registerSpellPiece("selector_internal_items", PieceSelectorInternalItems.class);
             registerSpellPiece("selector_internal_slot_item", PieceSelectorInternalSlotItem.class);
+            registerSpellPiece("selector_filter_card", PieceSelectorFilterCard.class);
             registerSpellPiece("selector_selected_slot_item", PieceSelectorSelectedSlotItem.class);
             registerSpellPiece("selector_entity_slot_item", PieceSelectorEntitySlotItem.class);
             registerSpellPiece("selector_display_name", PieceSelectorDisplayName.class);
@@ -244,6 +250,10 @@ public class PsitweaksSpells {
             registerSpellPiece("operator_region_vector_list", PieceOperatorRegionVectorList.class);
             registerSpellPiece("operator_inside_region", PieceOperatorInsideRegion.class);
             registerSpellPiece("operator_outside_region", PieceOperatorOutsideRegion.class);
+            registerSpellPiece("operator_matrix_caster_basis", PieceOperatorMatrixCasterBasis.class);
+            registerSpellPiece("operator_matrix_rotation", PieceOperatorMatrixRotation.class);
+            registerSpellPiece("operator_matrix_translation", PieceOperatorMatrixTranslation.class);
+            registerSpellPiece("trick_show_region", PieceTrickShowRegion.class);
             registerSpellPiece("operator_alive", PieceOperatorAlive.class);
             registerSpellPiece("operator_weak_raycast", PieceOperatorWeakRaycast.class);
             registerSpellPiece("operator_weak_raycast_axis", PieceOperatorWeakRaycastAxis.class);
@@ -262,22 +272,17 @@ public class PsitweaksSpells {
             registerSpellPiece("macro_face_axial_offset", PieceMacroFaceAxialOffset.class);
             registerSpellPiece("macro_face_axial_rotation", PieceMacroFaceAxialRotation.class);
             registerSpellPiece("trick_mass_block_break", PieceTrickMassBlockBreak.class);
-            registerSpellPiece("trick_idea_storage_absorb_fe", PieceTrickIdeaStorageAbsorbFE.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_supply_fe", PieceTrickIdeaStorageSupplyFE.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("selector_idea_storage_energy", PieceSelectorIdeaStorageEnergy.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("selector_idea_storage_item_amount", PieceSelectorIdeaStorageItemAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("selector_idea_storage_fluid_amount", PieceSelectorIdeaStorageFluidAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("selector_idea_storage_chemical_amount", PieceSelectorIdeaStorageChemicalAmount.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_ideaspace_connector", PieceTrickIdeaspaceConnector.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_deposit_item", PieceTrickIdeaStorageDepositItem.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_withdraw_item", PieceTrickIdeaStorageWithdrawItem.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_deposit_fluid", PieceTrickIdeaStorageDepositFluid.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_withdraw_fluid", PieceTrickIdeaStorageWithdrawFluid.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_deposit_chemical", PieceTrickIdeaStorageDepositChemical.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_withdraw_chemical", PieceTrickIdeaStorageWithdrawChemical.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_deposit_slot", PieceTrickIdeaStorageDepositSlot.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_withdraw_slot", PieceTrickIdeaStorageWithdrawSlot.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
-            registerSpellPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class, ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view"));
+            ResourceLocation ideaStorageGroup = ResourceLocation.fromNamespaceAndPath("psitweaks", "trick_idea_storage_view");
+            registerSpellPiece("selector_idea_storage_amount", PieceSelectorIdeaStorageAmount.class, ideaStorageGroup);
+            registerSpellPiece("selector_idea_storage_free_capacity", PieceSelectorIdeaStorageFreeCapacity.class, ideaStorageGroup);
+            registerSpellPiece("selector_idea_storage_type_count", PieceSelectorIdeaStorageTypeCount.class, ideaStorageGroup);
+            registerSpellPiece("selector_idea_storage_last_transfer", PieceSelectorIdeaStorageLastTransfer.class, ideaStorageGroup);
+            registerSpellPiece("trick_ideaspace_connector", PieceTrickIdeaspaceConnector.class, ideaStorageGroup);
+            registerSpellPiece("trick_idea_storage_deposit", PieceTrickIdeaStorageDeposit.class, ideaStorageGroup);
+            registerSpellPiece("trick_idea_storage_withdraw", PieceTrickIdeaStorageWithdraw.class, ideaStorageGroup);
+            registerSpellPiece("trick_idea_storage_deposit_slot", PieceTrickIdeaStorageDepositSlot.class, ideaStorageGroup);
+            registerSpellPiece("trick_idea_storage_withdraw_slot", PieceTrickIdeaStorageWithdrawSlot.class, ideaStorageGroup);
+            registerSpellPiece("trick_idea_storage_view", PieceTrickIdeaStorageView.class, ideaStorageGroup);
 
 
         });

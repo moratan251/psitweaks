@@ -48,6 +48,9 @@ public class ClientSetup {
             net.minecraft.client.renderer.item.ItemProperties.register(com.moratan251.psitweaks.common.items.PsitweaksItems.PORTABLE_SPELL_PROGRAMMER.get(), com.moratan251.psitweaks.Psitweaks.location("active"), (stack, level, entity, seed) -> com.moratan251.psitweaks.common.items.ItemPortableSpellProgrammer.getSpellCopy(stack).grid.isEmpty() ? 0F : 1F);
             MenuScreens.register(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), GuiPortableCADAssembler::new);
             MenuScreens.register(ModMenuTypes.IDEA_STORAGE.get(), com.moratan251.psitweaks.client.gui.IdeaStorageScreen::new);
+            MenuScreens.register(ModMenuTypes.FILTER_CARD.get(), com.moratan251.psitweaks.client.gui.FilterCardScreen::new);
+            FilterCardClient.registerItemProperties();
         });
+        FilterCardClient.registerEvents();
     }
 }

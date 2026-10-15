@@ -180,6 +180,7 @@ public class PsitweaksItems {
             () -> new ItemInterferenceRangeExtender(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
     public static final RegistryObject<Item> THIRD_EYE_DEVICE= ITEMS.register("third_eye_device", () -> new ItemThirdEyeDevice(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final RegistryObject<Item> SORCERY_BOOSTER = ITEMS.register("sorcery_booster", () -> new ItemSorceryBooster(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+    public static final RegistryObject<Item> FILTER_CARD = ITEMS.register("filter_card", () -> new ItemFilterCard(new Item.Properties()));
     public static final RegistryObject<Item> FLASH_CHARM = ITEMS.register("flash_charm", () -> new ItemFlashCharm(new Item.Properties()));
     public static final RegistryObject<Item> SPELL_MAGAZINE = ITEMS.register("spell_magazine", () -> new ItemSpellMagazine(new Item.Properties()));
     public static final RegistryObject<Item> INLINE_CASTER = ITEMS.register("inline_caster", () -> new ItemInlineCaster(new Item.Properties()));

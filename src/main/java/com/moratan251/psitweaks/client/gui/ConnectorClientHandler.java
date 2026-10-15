@@ -9,6 +9,11 @@ public final class ConnectorClientHandler {
         if (player != null && player.containerMenu instanceof IdeaspaceConnectorMenu menu
                 && menu.containerId == message.containerId()) menu.applyState(message);
     }
+    public static void accept(com.moratan251.psitweaks.common.network.MessageConnectorPasteResult message) {
+        var player = Minecraft.getInstance().player;
+        if (player != null && player.containerMenu instanceof IdeaspaceConnectorMenu menu
+                && menu.containerId == message.containerId()) menu.receivePasteResult(message);
+    }
     public static void accept(com.moratan251.psitweaks.common.network.MessageMenuFragment part) {
         var player = Minecraft.getInstance().player;
         if (player == null || player.containerMenu.containerId != part.containerId()) return;

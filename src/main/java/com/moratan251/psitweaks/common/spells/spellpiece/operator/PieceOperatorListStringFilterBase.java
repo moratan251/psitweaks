@@ -29,13 +29,14 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         Object source = getNotNullParamValue(context, typed(list));
         String wildcard = getNotNullParamValue(context, string);
         WildcardStringMatcher matcher = WildcardStringMatcher.compile(wildcard);
+        boolean matchFullId = wildcard.indexOf(':') >= 0;
         PsitweaksListAdapter<Object> adapter = currentAdapter();
         List<Object> result = new ArrayList<>();
 
         int size = adapter.size(source);
         for (int i = 0; i < size; i++) {
             Object value = adapter.get(source, i);
-            boolean matches = matcher.matches(searchText(context, value));
+            boolean matches = matcher.matches(searchText(context, value, matchFullId));
             if (shouldKeep(matches)) {
                 result.add(value);
             }
@@ -63,9 +64,12 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         restoreParamSides(savedSides);
     }
 
-    private static String searchText(SpellContext context, Object value) throws SpellRuntimeException {
+    private static String searchText(SpellContext context, Object value, boolean matchFullId)
+            throws SpellRuntimeException {
         if (value instanceof Entity || value instanceof ContextualValue) {
-            return RegistryIdTargetHelper.getRegistryId(context, value);
+            // Like the item transfer filters: a pattern without a namespace matches the ID path in any namespace.
+            String id = RegistryIdTargetHelper.getRegistryId(context, value);
+            return matchFullId ? id : id.substring(id.indexOf(':') + 1);
         }
         return ModeStringConversionHelper.anyToString(value);
     }

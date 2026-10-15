@@ -31,6 +31,7 @@ public class PsitweaksTabs {
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_TICK.get());
                         pOutput.accept(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK.get());
                         pOutput.accept(PsitweaksItems.FLASH_CHARM.get());
+                        pOutput.accept(PsitweaksItems.FILTER_CARD.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_PSIGEM.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_EBONY.get());
                         pOutput.accept(PsitweaksItems.ENRICHED_IVORY.get());

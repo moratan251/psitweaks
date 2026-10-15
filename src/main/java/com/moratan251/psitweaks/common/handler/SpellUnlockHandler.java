@@ -116,12 +116,12 @@ public class SpellUnlockHandler {
             definition("switch_flex", "trick_switch_flex", "program_switch_flex"),
             definition("material_mutation", "trick_material_mutation", "program_material_mutation"),
             definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break"),
-            new SpellUnlockDefinition("idea_storage_absorb_fe", Psitweaks.location("trick_idea_storage_absorb_fe"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
-            new SpellUnlockDefinition("idea_storage_supply_fe", Psitweaks.location("trick_idea_storage_supply_fe"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
-            new SpellUnlockDefinition("idea_storage_energy", Psitweaks.location("selector_idea_storage_energy"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
-            new SpellUnlockDefinition("idea_storage_item_amount", Psitweaks.location("selector_idea_storage_item_amount"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
-            new SpellUnlockDefinition("idea_storage_fluid_amount", Psitweaks.location("selector_idea_storage_fluid_amount"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
-            new SpellUnlockDefinition("idea_storage_chemical_amount", Psitweaks.location("selector_idea_storage_chemical_amount"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
+            // 統合前のコマンド ID は統合後のピースを指す(同じピースを指せる定義は1つだけ)
+            new SpellUnlockDefinition("idea_storage_absorb_fe", Psitweaks.location("trick_idea_storage_deposit"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
+            new SpellUnlockDefinition("idea_storage_supply_fe", Psitweaks.location("trick_idea_storage_withdraw"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
+            new SpellUnlockDefinition("idea_storage_energy", Psitweaks.location("selector_idea_storage_amount"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
+            new SpellUnlockDefinition("idea_storage_free_capacity", Psitweaks.location("selector_idea_storage_free_capacity"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
+            new SpellUnlockDefinition("idea_storage_type_count", Psitweaks.location("selector_idea_storage_type_count"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
             new SpellUnlockDefinition("ideaspace_connector", Psitweaks.location("trick_ideaspace_connector"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage"),
             // group 指定でグループ全体を解禁対象にする(上のピース単位定義はコマンド互換用)
             new SpellUnlockDefinition("idea_storage", Psitweaks.location("trick_idea_storage_view"), Psitweaks.location("program_idea_storage"), "psitweaks.unlock.idea_storage",

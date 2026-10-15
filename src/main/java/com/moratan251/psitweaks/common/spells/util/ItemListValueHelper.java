@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.spells.item.BlockInventorySlotSource;
 import com.moratan251.psitweaks.common.spells.item.EntityEquipmentSource;
 import com.moratan251.psitweaks.common.spells.item.EntityHandSource;
 import com.moratan251.psitweaks.common.spells.item.EntityInventorySlotSource;
+import com.moratan251.psitweaks.common.spells.item.ItemEntitySource;
 import com.moratan251.psitweaks.common.spells.item.ItemSourceRef;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
@@ -78,6 +80,29 @@ public final class ItemListValueHelper {
         add(result, living.getOffhandItem(), new EntityHandSource(living.getUUID(), InteractionHand.OFF_HAND));
         for (EquipmentSlot slot : ARMOR_SLOTS) {
             add(result, living.getItemBySlot(slot), new EntityEquipmentSource(living.getUUID(), slot));
+        }
+        return SpellItemListWrapper.make(result);
+    }
+
+    /** A dropped item is its own stack; the value points back at the item entity. */
+    public static SpellItemValue fromItemEntity(ItemEntity itemEntity) {
+        if (itemEntity == null || !itemEntity.isAlive()) {
+            return SpellItemValue.EMPTY;
+        }
+        return sourced(itemEntity.getItem(), new ItemEntitySource(itemEntity.getUUID(), itemEntity.getId()));
+    }
+
+    /** The dropped items among the entities, in order; other entities are skipped. */
+    public static SpellItemListWrapper fromItemEntities(Iterable<? extends Entity> entities) {
+        if (entities == null) {
+            return SpellItemListWrapper.EMPTY;
+        }
+
+        List<SpellItemValue> result = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity instanceof ItemEntity itemEntity && itemEntity.isAlive()) {
+                add(result, itemEntity.getItem(), new ItemEntitySource(itemEntity.getUUID(), itemEntity.getId()));
+            }
         }
         return SpellItemListWrapper.make(result);
     }
