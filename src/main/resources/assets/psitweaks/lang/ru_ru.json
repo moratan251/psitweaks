@@ -388,7 +388,7 @@
   "psi.book.page.psitweaks_spellpiece.operator_matrix_row_count": "Возвращает количество строк матрицы в виде Числа.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_scalar_multiply": "Умножает каждый элемент матрицы на указанное входное число.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_subtract": "Вычитает матрицы одинакового размера. Необязательная третья матрица вычитается после второй.",
-  "psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector": "Трансформирует вектор с помощью матрицы 3x3 или 4x4. Матрица 3x3 умножает [x,y,z]. Матрица 4x4 рассматривает вектор как однородную точку [x,y,z,1] и делит результат на координату w.",
+  "psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector.0": "Трансформирует вектор с помощью матрицы 3x3 или 4x4. Матрица 3x3 умножает [x,y,z]. Матрица 4x4 рассматривает вектор как однородную точку [x,y,z,1] и делит результат на координату w.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_transpose": "Меняет местами строки и столбцы матрицы (транспонирование).",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_zero": "Создает нулевую матрицу. Если второй размер упущен, возвращается квадратная матрица.",
   "psi.book.page.psitweaks_spellpiece.operator_number_list_to_vector": "Преобразует Список Чисел, состоящий ровно из трех элементов, в Вектор. Элементы списка упорядочены как X, Y, Z. Если список не содержит ровно три элемента, заклинание вызовет ошибку во время выполнения.",

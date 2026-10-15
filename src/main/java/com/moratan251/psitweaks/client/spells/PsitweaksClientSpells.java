@@ -371,8 +371,6 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_rotation");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSLATION =
             registerPieceMaterial("operator_matrix_translation");
-    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR_LIST =
-            registerPieceMaterial("operator_matrix_transform_vector_list");
     public static final DeferredHolder<Material, Material> TRICK_SHOW_REGION =
             registerPieceMaterial("trick_show_region");
     public static final DeferredHolder<Material, Material> OPERATOR_ALIVE =
@@ -419,6 +417,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("mode/number");
     public static final DeferredHolder<Material, Material> MODE_VECTOR =
             registerPieceMaterial("mode/vector");
+    public static final DeferredHolder<Material, Material> MODE_LIST =
+            registerPieceMaterial("mode/list");
     public static final DeferredHolder<Material, Material> MODE_MATRIX =
             registerPieceMaterial("mode/matrix");
     public static final DeferredHolder<Material, Material> MODE_ENTITY =

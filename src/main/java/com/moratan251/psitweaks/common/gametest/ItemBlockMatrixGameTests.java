@@ -164,7 +164,6 @@ public final class ItemBlockMatrixGameTests {
         groups.put("operator_matrix_caster_basis", "matrix");
         groups.put("operator_matrix_rotation", "matrix");
         groups.put("operator_matrix_translation", "matrix");
-        groups.put("operator_matrix_transform_vector_list", "matrix");
         groups.put("trick_show_region", "matrix");
         groups.put("trick_idea_storage_collect_item", "idea_storage");
         Map<String, Class<?>> outputs = Map.of(
@@ -174,8 +173,7 @@ public final class ItemBlockMatrixGameTests {
                 "operator_dropped_items", SpellItemListWrapper.class,
                 "operator_matrix_caster_basis", MatrixValue.class,
                 "operator_matrix_rotation", MatrixValue.class,
-                "operator_matrix_translation", MatrixValue.class,
-                "operator_matrix_transform_vector_list", VectorListWrapper.class);
+                "operator_matrix_translation", MatrixValue.class);
         for (var entry : groups.entrySet()) {
             var id = Psitweaks.location(entry.getKey());
             helper.assertTrue(PsiAPI.SPELL_PIECE_REGISTRY.get(id) != null, "Piece is not registered: " + id);
@@ -344,11 +342,26 @@ public final class ItemBlockMatrixGameTests {
 
         Object[] vectors = {VectorListWrapper.make(List.of(new Vector3(0, 0, 0), new Vector3(1, 1, 1)))};
         Object[] matrix = {moved};
-        var transform = new PieceOperatorMatrixTransformVectorList(new Spell()) {
+        var transform = new PieceOperatorMatrixTransformVector(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return param.name.equals(LIST) ? vectors[0] : matrix[0];
+                return param.name.equals(SpellParam.GENERIC_NAME_TARGET) ? vectors[0] : matrix[0];
             }
         };
+        helper.assertTrue(transform.getModeOption() == PieceOperatorMatrixTransformVector.VECTOR
+                        && transform.getEvaluationType() == Vector3.class,
+                "Matrix Transform Vector must start in Vector mode");
+        var legacy = new PieceOperatorMatrixTransformVector(new Spell());
+        legacy.readFromNBT(new CompoundTag());
+        helper.assertTrue(legacy.getModeOption() == PieceOperatorMatrixTransformVector.VECTOR,
+                "Spells saved without a mode must load in Vector mode");
+        var toSave = (PieceOperatorMatrixTransformVector) create("operator_matrix_transform_vector");
+        toSave.setModeOption(PieceOperatorMatrixTransformVector.VECTOR_LIST);
+        var saved = new CompoundTag();
+        toSave.writeToNBT(saved);
+        legacy.readFromNBT(saved);
+        transform.setModeOption(PieceOperatorMatrixTransformVector.VECTOR_LIST);
+        helper.assertTrue(legacy.isListMode() && legacy.getEvaluationType() == VectorListWrapper.class,
+                "Vector List mode must be saved and output a Vector List");
         var transformed = ((VectorListWrapper) transform.execute(context)).asList();
         helper.assertTrue(transformed.size() == 2 && near(transformed.get(0), 1, 2, 3) && near(transformed.get(1), 2, 3, 4),
                 "Each vector must be transformed in order");

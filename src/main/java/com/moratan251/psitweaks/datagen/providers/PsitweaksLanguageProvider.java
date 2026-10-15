@@ -1525,7 +1525,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the elements of an Entity, Vector or Block List that are inside the matrix region. Choose the list type in the mode menu.", "演算子: 領域内", "Entity・Vector・Block の List のうち、行列の領域内にあるものだけを残します。リストの種類はモードで選びます。");
         addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the elements of an Entity, Vector or Block List that are outside the matrix region. Choose the list type in the mode menu.", "演算子: 領域外", "Entity・Vector・Block の List のうち、行列の領域外にあるものだけを残します。リストの種類はモードで選びます。");
         addSpellPiece(root, "operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。");
-        addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトルを変換します。");
+        addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector, or every vector of a Vector List, with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトル、または Vector List の各ベクトルを変換します。");
         addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します。");
         addSpellPiece(root, "operator_weak_raycast", "Operator: Vector Weak Raycast", "Raycasts from Position in the Ray direction and returns the coordinates of the hit block or fluid.", "演算子: ベクトルレイキャスト (弱)", "位置から Ray 方向へレイキャストし、命中したブロックまたは流体の座標を返します。");
         addSpellPiece(root, "operator_weak_raycast_axis", "Operator: Vector Axis Weak Raycast", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "演算子: ベクトルレイキャスト方向 (弱)", "位置から Ray 方向へレイキャストし、最初に命中したブロックまたは流体の面の法線方向を返します。");
@@ -1749,7 +1749,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_outside_region.0", "Filters a list and returns only the elements outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside, so they are excluded.", "3×4 または 4×4 の行列で定義された平行六面体の外部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるものは内部とみなすため、結果から除外されます.");
         addBookPage(root, "operator_outside_region.1", regionModesEn, regionModesJa);
         addBookPage(root, "operator_alive", "Filters the input Entity List and returns only LivingEntity instances that are currently alive. All other entities are removed.", "入力した Entity List をフィルターし、現在生存中の LivingEntity のみを返します. それ以外のエンティティは除外されます.");
-        addBookPage(root, "operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
+        addBookPage(root, "operator_matrix_transform_vector.0", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
+        addBookPage(root, "operator_matrix_transform_vector.1",
+                "Modes: Vector transforms one vector. Vector List transforms each vector of a Vector List and returns them in the same order;"
+                        + " if any of them cannot be transformed, such as when w becomes 0, it is an error."
+                        + " A Block List also works; its block positions are used.",
+                "モード: Vector は1つのベクトルを変換します. Vector List は Vector List の各要素を変換し、同じ順序で返します."
+                        + " w が0になるなど、変換できない要素が1つでもあるとエラーです."
+                        + " Block List もつなぐことができ、ブロックの座標が使われます.");
         addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
         addBookPage(root, "operator_weak_raycast", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Water and lava can stop the ray.", "位置から Ray 方向へレイキャストし、最初に命中したブロック座標を返します. 水や溶岩でも停止します.");
         addBookPage(root, "operator_weak_raycast_axis", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "位置から Ray 方向へレイキャストし、最初に命中したブロックまたは流体の面の法線方向を返します.");
@@ -2411,18 +2418,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "点を「オフセット」だけ移動させる 4×4 行列を作ります。"
                         + "演算子: 行列積で領域行列の左に置くと領域を移動でき、演算子: 行列でベクトル変換で使うと座標を移動できます。"
                         + "演算子: 回転行列と組み合わせると、任意の点の周りで領域を回転できます。");
-
-        addSpellPiece(root, "operator_matrix_transform_vector_list", "Operator: Matrix Transform Vector List",
-                "Transforms every vector in a Vector List with a 3x3 or 4x4 matrix, keeping the order.",
-                "演算子: 行列でベクトルリスト変換", "Vector List のすべてのベクトルを 3×3 または 4×4 の行列で変換します。順序は保たれます。");
-        addBookPage(root, "operator_matrix_transform_vector_list",
-                "Applies Operator: Matrix Transform Vector to each vector of a Vector List, keeping the order: a 4x4 matrix treats each vector as the point [x, y, z, 1] and divides by w."
-                        + " Any failure, such as w becoming 0, is an error."
-                        + " A Block List also works; its block positions are used.",
-                "演算子: 行列でベクトル変換を Vector List の各要素に適用し、同じ順序で返します。"
-                        + "4×4 行列は各ベクトルを点 [x, y, z, 1] として変換して w で割ります。"
-                        + "w が0になるなど、変換できない要素が1つでもあるとエラーです。"
-                        + "Block List もつなぐことができ、ブロックの座標が使われます。");
 
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
