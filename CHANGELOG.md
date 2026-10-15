@@ -6,16 +6,65 @@
   + Added redstone control
   + Added a target stock setting for automatic output destinations
   + Added an input filter
+  + Settings can now be copied and pasted through the clipboard (Ctrl+C / Ctrl+V also work)
+
+
+- Added the Filter Card
+  + Register up to 9 sample items and read them in spells with Selector: Filter Card
+  + Works in a Curios slot, in either hand or in the inventory
+
 
 - Added new spell pieces
-  + Trick: Ideaspace Storage - Item Deposit
-  + Trick: Ideaspace Storage - Fluid Deposit
-  + Trick: Ideaspace Storage - Chemical Deposit
-  + Trick: Ideaspace Storage - Item Withdraw
-  + Trick: Ideaspace Storage - Fluid Withdraw
-  + Trick: Ideaspace Storage - Chemical Withdraw
+  + Trick: Ideaspace Storage - Deposit
+  + Trick: Ideaspace Storage - Withdraw
   + Trick: Ideaspace Storage - Slot Deposit
   + Trick: Ideaspace Storage - Slot Withdraw
+  + Selector: Ideaspace Storage - Free Capacity
+  + Selector: Ideaspace Storage - Type Count
+  + Selector: Ideaspace Storage - Last Transfer Amount
+  + Selector: Filter Card
+  + Operator: Strict Item
+  + Operator: Block Item
+  + Operator: Dropped Items
+  + Operator: Block Resource Amount
+  + Operator: Block Free Capacity
+  + Operator: Caster Basis Matrix
+  + Operator: Rotation Matrix
+  + Operator: Translation Matrix
+  + Trick: Show Region
+
+
+- Merged Ideaspace Storage spell pieces into pieces with modes (items, fluids, chemicals, FE)
+  + Selector: Ideaspace Storage Energy / Item Amount / Fluid Amount / Chemical Amount -> Selector: Ideaspace Storage - Amount
+  + Trick: Ideaspace Storage - FE Absorb -> Trick: Ideaspace Storage - Deposit (FE mode)
+  + Trick: Ideaspace Storage - FE Supply -> Trick: Ideaspace Storage - Withdraw (FE mode)
+  + Spells that use the old pieces are converted automatically when loaded
+
+
+- Trick: Ideaspace Storage - Deposit / Withdraw can move exactly the requested amount of one resource type or nothing at all (Exact modes)
+
+
+- The item filters of the Ideaspace Storage tricks now match according to the connected value
+  + String: item ID with wildcards / Item: item type / Item List: any of the items / Operator: Strict Item: also compares NBT
+
+
+- Changed existing spell pieces
+  + Operator: Inside Region / Outside Region: added Entity, Vector and Block List modes (existing spells use Entity)
+  + Operator: Matrix Transform Vector: added a mode that transforms every vector of a Vector List or Block List
+  + Selector: Main-Hand Item / Carried Items now also work on dropped items
+  + Item filter inputs, such as those of Trick: Pull Item and Trick: Send Item, now also accept an Item List (matches any of the items)
+  + Vector List inputs, such as that of Trick: Mass Block Break, now also accept a Block List
+  + Renamed Operator: List Search / List Search Exclude to Operator: List Keep Matches / List Remove Matches
+
+
+- Program: Ideaspace Storage is no longer marked as WIP
+
+
+- Shortened and clarified the descriptions in the guide book
+  + Pages with several recipes now show the name of the recipe currently displayed
+
+
+- (1.21.1) Fixed ΨE-O Fuel producing far more energy than intended in the Gas-Burning Generator (now the same as 1.20.1)
 
 
 - Fixed incorrect unlock settings for Ideaspace Storage spell pieces
