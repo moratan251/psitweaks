@@ -1030,8 +1030,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Since both relate to positions, many inputs convert Block and Vector automatically.$(p)A Block connected to a Vector input uses its position, as does each block of a Block List in a Vector List input. A Vector connected to a Block input reads the block there when the spell runs.$(p)Any inputs, such as Operator: To String, keep the original type.",
                 "Block と Vector はどちらも座標に関係するため, 多くの入力で自動変換されます.$(p)Block を Vector 入力へ接続すると座標として扱われます (Block List と Vector List も同様). Vector を Block 入力へ接続すると, 実行時にその座標のブロックを読み取ります.$(p)演算子: 文字列へ変換 などの Any 入力では, 元の型がそのまま扱われます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.4",
-                "Item represents an ItemStack, for inspecting its type, count, NBT, display name and so on. It can be read from held items, inventory slots, block inventories or dropped items.$(p)Each Item also records its source, so spells can tell where it came from, and Trick: Ideaspace Storage - Item Collect can take it straight from there.",
-                "Item 型は ItemStack を扱う型で, アイテムの種類, 個数, NBT, 表示名などを調べるために使います. 手持ちのアイテム, 指定スロットのアイテム, ブロック内のインベントリ, ドロップアイテムなどから取得できます.$(p)Item 型の値は取得元を source として保持しており, そのアイテムがどこから来たかを判別できます. 作動式: イデアストレージ-アイテム回収 は, その取得元から直接回収します.");
+                "Item represents an ItemStack, for inspecting its type, count, NBT, display name and so on. It can be read from held items, inventory slots, block inventories or dropped items.$(p)Each Item also records its source, so spells can tell where it came from.",
+                "Item 型は ItemStack を扱う型で, アイテムの種類, 個数, NBT, 表示名などを調べるために使います. 手持ちのアイテム, 指定スロットのアイテム, ブロック内のインベントリ, ドロップアイテムなどから取得できます.$(p)Item 型の値は取得元を source として保持しており, そのアイテムがどこから来たかを判別できます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.5",
                 "PsiTweaks divides values into Plain Values and Contextual Values.$(p)Plain Values do not depend on world state, such as Number, Vector, and String.$(p)Contextual Values depend on a world or target context, such as Entity, Block, and Item.",
                 "PsiTweaks の値は Plain Value と Contextual Value に分けられます.$(p)Plain Value はワールドの状態に依存しない値で, Number, Vector, String などが該当します.$(p)Contextual Value はワールドや対象に依存する値で, Entity, Block, Item などが該当します.");
@@ -2245,20 +2245,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLocalized(root, "psitweaks.spellerror.block_resource_read_failed",
                 "Reading the block's resources failed. Check the server log for details",
                 "ブロックの資源の読み取りに失敗しました。詳細はサーバーログを確認してください");
-        addLocalized(root, "psitweaks.spellerror.idea_storage_collect_failed",
-                "Collecting items into Ideaspace Storage failed. Check the server log for details",
-                "イデアストレージへのアイテム回収に失敗しました。詳細はサーバーログを確認してください");
 
         addSpellPiece(root, "operator_strict_item", "Operator: Strict Item",
                 "Turns an Item or Item List into a filter that also compares data components.",
                 "演算子: 厳密一致アイテム", "Item または Item List を、データコンポーネントまで比べるフィルタに変えます。");
         addBookPage(root, "operator_strict_item",
                 "Turns an Item, or every item of an Item List, into a strict Item. Connect it to an item filter, such as the filter of"
-                        + " Trick: Ideaspace Storage - Deposit/Withdraw, the Slot tricks, Trick: Ideaspace Storage - Item Collect, or the Item modes of"
+                        + " Trick: Ideaspace Storage - Deposit/Withdraw, the Slot tricks, or the Item modes of"
                         + " Trick: Pull Item and Trick: Send Item, to match only items with the same data components, such as enchantments, durability and names."
                         + " The count is never compared. An empty Item is an error; empty elements of a list are skipped.",
                 "Item、または Item List の各アイテムを、厳密一致の Item に変えます。作動式: イデアストレージ-格納・取出のフィルタ、スロット系、"
-                        + "作動式: イデアストレージ-アイテム回収、作動式: アイテム引き出し・アイテム転送のItemモードなどのフィルタにつなぐと、"
+                        + "作動式: アイテム引き出し・アイテム転送のItemモードなどのフィルタにつなぐと、"
                         + "エンチャント・耐久値・名前などのデータコンポーネントまで一致するものだけが対象になります。"
                         + "個数は比べません。空のItemはエラーで、リストの空の要素は無視します。");
         addSpellPiece(root, "operator_block_item", "Operator: Block Item",
@@ -2266,10 +2263,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "演算子: ブロックのアイテム化", "ブロックをブロック選択した時のアイテムを、取得元のない Item として取得します。");
         addBookPage(root, "operator_block_item",
                 "Outputs the item that Pick Block gives for the block, as an Item: wheat seeds for a wheat crop, and an empty Item for air."
-                        + " The Item has no source, so Trick: Ideaspace Storage - Item Collect skips it, but it works as an Item filter, for example in Trick: Ideaspace Storage - Slot Withdraw.",
+                        + " The Item has no source; it works as an Item filter, for example in Trick: Ideaspace Storage - Slot Withdraw.",
                 "ブロックをブロック選択した時のアイテムを Item として出力します。"
                         + "小麦の作物なら小麦の種、空気なら空の Item です。"
-                        + "取得元を持たないので作動式: イデアストレージ-アイテム回収では対象外ですが、Item フィルタとして作動式: イデアストレージ-スロット取出などに使えます。");
+                        + "取得元は持ちませんが、Item フィルタとして作動式: イデアストレージ-スロット取出などに使えます。");
 
         addSpellPiece(root, "operator_block_resource_amount", "Operator: Block Resource Amount",
                 "Outputs the items, fluids, chemicals or FE stored in a block, chosen by the mode. String narrows it down by ID.",
@@ -2315,42 +2312,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "演算子: ドロップアイテム", "Entity List のドロップアイテムを Item List に変換します。他のエンティティは除外します。");
         addBookPage(root, "operator_dropped_items",
                 "Turns the dropped items in an Entity List, such as from Selector: Nearby Items, into an Item List, keeping their order and skipping other entities."
-                        + " Each Item keeps its dropped item as the source, so Trick: Ideaspace Storage - Item Collect can pick up that very stack.",
+                        + " Each Item keeps its dropped item as its source.",
                 "取得子: 近くのアイテムなどの Entity List から、ドロップアイテムを同じ順序で Item List に変換します。"
                         + "他のエンティティは除外します。"
-                        + "各 Item はそのドロップアイテムを取得元として覚えているので、作動式: イデアストレージ-アイテム回収でそのスタックを直接回収できます。");
-
-        addSpellPiece(root, "trick_idea_storage_collect_item", "Trick: Ideaspace Storage - Item Collect",
-                "Deposits Items into your Ideaspace Storage straight from their sources: dropped items, your own inventory or block inventories.",
-                "作動式: イデアストレージ-アイテム回収",
-                "取得元から直接、Item を自分のイデアストレージへ格納します。ドロップアイテム、自分のインベントリ、ブロックのインベントリから回収できます。");
-        addBookPage(root, "trick_idea_storage_collect_item.0",
-                "Deposits an Item, or each Item of an Item List, into your Ideaspace Storage straight from its source: a dropped item, or a slot of your inventory or of a block."
-                        + " No position or face is needed, so a list narrowed down with list operators can be collected as it is.",
-                "Item、または Item List の各 Item を、取得元から直接自分のイデアストレージへ格納します。"
-                        + "取得元はドロップアイテム、自分のインベントリのスロット、ブロックのインベントリのスロットです。"
-                        + "位置や面を指定しないので、リスト演算子で絞り込んだ結果をそのまま回収できます。");
-        addBookPage(root, "trick_idea_storage_collect_item.1",
-                "Number caps the total count; it must be positive, and fractions are rounded down."
-                        + " Each Item moves at most its own count, and only while its source still holds the same item with the same data components, so nothing is taken twice and a swapped stack is left alone."
-                        + " If storage space runs short, moves as much as possible.",
-                "「数値」は合計個数の上限で、正の数を指定し、1個未満の端数は切り捨てます。"
-                        + "各 Item が移すのは最大でその個数までで、取得元に同じアイテム（データコンポーネントも同じ）が残っている場合だけです。"
-                        + "そのため二重に取ったり、入れ替わったスタックを取ったりすることはありません。"
-                        + "ストレージの空きが足りない場合は、移せる分だけ移します。");
-        addBookPage(root, "trick_idea_storage_collect_item.2",
-                "Items without a source, such as from Operator: Block Item, are skipped, as are items held or worn by other entities and dropped items that cannot be picked up yet or are meant for another player."
-                        + " In your own inventory, armor slots, the CAD in use and the tool casting the spell are left alone.",
-                "取得元のない Item（演算子: ブロックのアイテム化など）、他のエンティティの手持ち・装備、まだ拾えないドロップアイテム、他のプレイヤー向けのドロップアイテムは対象外です。"
-                        + "自分のインベントリでは、防具スロット、使用中のCAD、術式を詠唱している道具には作用しません。");
-        addBookPage(root, "trick_idea_storage_collect_item.3",
-                "All sources are checked before anything moves: a source outside the spell radius, or a protected block, fails with an error."
-                        + " Blocks in unloaded chunks or another dimension and your own Ideaspace Connector are skipped."
-                        + " Selector: Ideaspace Storage - Last Transfer Amount reports the total moved.",
-                "何かを移す前に、すべての取得元を確認します。"
-                        + "術式射程の外にある取得元や保護されたブロックがあるとエラーになります。"
-                        + "読み込まれていないチャンクや別のディメンションのブロック、自分のイデアコネクターは対象外です。"
-                        + "移した合計は取得子: イデアストレージ-最終転送量で確認できます。");
+                        + "各 Item はそのドロップアイテムを取得元として覚えています。");
 
         addSpellPiece(root, "operator_matrix_caster_basis", "Operator: Caster Basis Matrix",
                 "Builds a 4x4 matrix from the caster's axis-rounded facing (columns: right, up, forward, origin), so regions can follow the caster.",

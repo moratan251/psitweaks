@@ -1,16 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "tools",
-  "ingredients": [
-    {
-      "item": "minecraft:paper"
-    },
-    {
+  "key": {
+    "A": {
       "item": "psi:psidust"
     },
-    {
-      "item": "psitweaks:psimetal_nugget"
+    "B": {
+      "item": "psi:psimetal"
+    },
+    "C": {
+      "item": "minecraft:paper"
     }
+  },
+  "pattern": [
+    " A ",
+    "BCB",
+    " B "
   ],
   "result": {
     "count": 1,

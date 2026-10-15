@@ -135,8 +135,6 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_idea_storage_deposit_slot");
     public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_WITHDRAW_SLOT =
             registerPieceMaterial("trick_idea_storage_withdraw_slot");
-    public static final DeferredHolder<Material, Material> TRICK_IDEA_STORAGE_COLLECT_ITEM =
-            registerPieceMaterial("trick_idea_storage_collect_item");
     static {
         if (SablePhysicsCompat.isLoaded()) {
             registerPieceMaterial("trick_physical_propulsion");

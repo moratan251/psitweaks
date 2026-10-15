@@ -50,7 +50,7 @@ public final class IdeaLogisticsPlusGameTests {
             "selector_idea_storage_amount", "selector_idea_storage_free_capacity", "selector_idea_storage_type_count",
             "trick_idea_storage_deposit", "trick_idea_storage_withdraw",
             "trick_idea_storage_deposit_slot", "trick_idea_storage_withdraw_slot",
-            "selector_idea_storage_last_transfer", "trick_idea_storage_collect_item");
+            "selector_idea_storage_last_transfer");
 
     private static ItemStack named(int count) {
         var stack = new ItemStack(Items.APPLE, count);

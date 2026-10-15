@@ -22,7 +22,6 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.*;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorHeldItem;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorHeldItems;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageCollectItem;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageSlotBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPullItem;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickShowRegion;
@@ -78,7 +77,7 @@ import vazkii.psi.api.spell.*;
 import vazkii.psi.api.spell.param.ParamEntityListWrapper;
 import vazkii.psi.api.spell.wrapper.EntityListWrapper;
 
-/** The Item, Block and Matrix pieces of 0.10.10: block reads, dropped items, collection, region tools and Item List filters. */
+/** The Item, Block and Matrix pieces of 0.10.10: block reads, dropped items, region tools and Item List filters. */
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class ItemBlockMatrixGameTests {
@@ -165,7 +164,6 @@ public final class ItemBlockMatrixGameTests {
         groups.put("operator_matrix_rotation", "matrix");
         groups.put("operator_matrix_translation", "matrix");
         groups.put("trick_show_region", "matrix");
-        groups.put("trick_idea_storage_collect_item", "idea_storage");
         groups.put("operator_strict_item", "item");
         Map<String, Class<?>> outputs = Map.of(
                 "operator_strict_item", StrictItemFilter.class,
@@ -186,16 +184,8 @@ public final class ItemBlockMatrixGameTests {
             helper.assertTrue(output == null || piece.getEvaluationType() == output, "Unexpected output type: " + id);
         }
 
-        var collect = create("trick_idea_storage_collect_item");
-        var metadata = new SpellMetadata();
-        collect.addToMetadata(metadata);
-        helper.assertTrue(metadata.getStat(EnumSpellStat.POTENCY) == 50 && metadata.getStat(EnumSpellStat.COST) == 100,
-                "Collect must cost like the slot deposit: Potency 50, Cost 100");
-        helper.assertTrue(collect.params.get(PsitweaksSpellParams.ITEM) instanceof ParamSpellItemFilter
-                        && !collect.params.get(PsitweaksSpellParams.ITEM).canDisable && collect.params.get(NUMBER).canDisable,
-                "Collect takes a required Item or Item List and an optional Number");
         var show = create("trick_show_region");
-        metadata = new SpellMetadata();
+        var metadata = new SpellMetadata();
         show.addToMetadata(metadata);
         helper.assertTrue(metadata.getStat(EnumSpellStat.POTENCY) == 10 && metadata.getStat(EnumSpellStat.COST) == 0,
                 "Show region must be a cheap preview: Potency 10");
@@ -643,159 +633,6 @@ public final class ItemBlockMatrixGameTests {
                 "A picked up item entity must fail like any removed entity");
         helper.assertTrue(((SpellItemListWrapper) dropped.execute(context)).size() == 1,
                 "A picked up item entity must drop out of the list");
-        helper.succeed();
-    }
-
-    private static PieceTrickIdeaStorageCollectItem collect(Object[] item, Object[] number) {
-        return new PieceTrickIdeaStorageCollectItem(new Spell()) {
-            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return param.name.equals(NUMBER) ? number[0] : item[0];
-            }
-        };
-    }
-
-    @GameTest(template = "connector_empty")
-    public static void collectTakesItemsStraightFromTheirSources(GameTestHelper helper) throws Exception {
-        var level = helper.getLevel();
-        var caster = IdeaStorageSlotGameTests.caster(helper, false, true);
-        caster.setPos(Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(2, 1, 2))));
-        var context = new SpellContext().setPlayer(caster);
-        var storage = IdeaStorageService.get(caster.server, caster.getUUID());
-        Object[] item = {null};
-        Object[] number = {null};
-        var collect = collect(item, number);
-
-        var dropped = drop(helper, new BlockPos(1, 1, 1), new ItemStack(Items.APPLE, 7));
-        item[0] = ItemListValueHelper.fromItemEntity(dropped);
-        collect.execute(context);
-        helper.assertTrue(stored(storage, new ItemStack(Items.APPLE)) == 7 && dropped.isRemoved()
-                && IdeaStorageLastTransfer.get(context) == 7, "A dropped item must be collected and its entity removed");
-
-        var inventory = caster.getInventory();
-        ItemStack cad = inventory.getItem(0);
-        inventory.setItem(1, new ItemStack(Items.CARROT, 10));
-        inventory.setItem(Inventory.SLOT_OFFHAND, new ItemStack(Items.BREAD, 2));
-        inventory.setItem(36, new ItemStack(Items.IRON_BOOTS));
-        item[0] = ItemListValueHelper.fromEntityContainer(caster, inventory);
-        collect.execute(context);
-        helper.assertTrue(stored(storage, new ItemStack(Items.CARROT)) == 10 && stored(storage, new ItemStack(Items.BREAD)) == 2
-                        && inventory.getItem(1).isEmpty() && inventory.getItem(Inventory.SLOT_OFFHAND).isEmpty()
-                        && inventory.getItem(0) == cad && inventory.getItem(36).is(Items.IRON_BOOTS)
-                        && IdeaStorageLastTransfer.get(context) == 12,
-                "The caster's own slots must be collected, except armor and the CAD in use");
-
-        helper.setBlock(new BlockPos(1, 1, 3), Blocks.CHEST);
-        BlockPos chestPos = helper.absolutePos(new BlockPos(1, 1, 3));
-        var chest = (ChestBlockEntity) level.getBlockEntity(chestPos);
-        chest.setItem(0, new ItemStack(Items.BREAD, 10));
-        chest.setItem(5, new ItemStack(Items.GOLDEN_APPLE, 4));
-        item[0] = ItemListValueHelper.fromBlockContainer(level, chestPos, chest);
-        collect.execute(context);
-        helper.assertTrue(stored(storage, new ItemStack(Items.BREAD)) == 12 && stored(storage, new ItemStack(Items.GOLDEN_APPLE)) == 4
-                && chest.isEmpty() && IdeaStorageLastTransfer.get(context) == 14, "Block inventory slots must be collected");
-
-        // A value moves at most its own count, once, and only while its source still holds that very item.
-        chest.setItem(0, new ItemStack(Items.BREAD, 10));
-        var readEarlier = SpellItemValue.sourced(new ItemStack(Items.BREAD, 5), new BlockInventorySlotSource(level.dimension(), chestPos, 0));
-        item[0] = SpellItemListWrapper.make(List.of(readEarlier, readEarlier));
-        collect.execute(context);
-        helper.assertTrue(chest.getItem(0).getCount() == 5 && IdeaStorageLastTransfer.get(context) == 5,
-                "A value listed twice must move its own count once");
-        for (SpellItemValue skipped : List.of(
-                SpellItemValue.sourced(new ItemStack(Items.APPLE, 5), new BlockInventorySlotSource(level.dimension(), chestPos, 0)),
-                SpellItemValue.sourced(named(new ItemStack(Items.BREAD, 5), "Other bread"),
-                        new BlockInventorySlotSource(level.dimension(), chestPos, 0)),
-                SpellItemValue.snapshot(new ItemStack(Items.BREAD, 5)),
-                SpellItemValue.sourced(new ItemStack(Items.BREAD, 5), new EntityHandSource(UUID.randomUUID(), InteractionHand.MAIN_HAND)),
-                SpellItemValue.sourced(new ItemStack(Items.BREAD, 5), new BlockInventorySlotSource(Level.NETHER, chestPos, 0)),
-                SpellItemValue.EMPTY)) {
-            item[0] = skipped;
-            collect.execute(context);
-            helper.assertTrue(chest.getItem(0).getCount() == 5 && IdeaStorageLastTransfer.get(context) == 0,
-                    "This value must be skipped: " + skipped);
-        }
-
-        chest.setItem(1, new ItemStack(Items.BREAD, 6));
-        item[0] = ItemListValueHelper.fromBlockContainer(level, chestPos, chest);
-        number[0] = 7.9;
-        collect.execute(context);
-        helper.assertTrue(chest.getItem(0).isEmpty() && chest.getItem(1).getCount() == 4 && IdeaStorageLastTransfer.get(context) == 7,
-                "Number must cap the total, rounded down");
-        item[0] = ItemListValueHelper.fromBlockContainer(level, chestPos, chest);
-        number[0] = 0.5;
-        collect.execute(context);
-        helper.assertTrue(chest.getItem(1).getCount() == 4 && IdeaStorageLastTransfer.get(context) == 0,
-                "Less than one item must move nothing");
-        for (double invalid : new double[]{0, -1}) {
-            number[0] = invalid;
-            helper.assertTrue(SpellRuntimeException.NON_POSITIVE_VALUE.equals(error(() -> collect.execute(context))),
-                    "Number must be positive: " + invalid);
-        }
-        helper.succeed();
-    }
-
-    @GameTest(template = "connector_empty")
-    public static void collectChecksEverySourceBeforeAnythingMoves(GameTestHelper helper) throws Exception {
-        var level = helper.getLevel();
-        var caster = IdeaStorageSlotGameTests.caster(helper, false, true);
-        BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
-        caster.setPos(Vec3.atBottomCenterOf(center));
-        var context = new SpellContext().setPlayer(caster);
-        var storage = IdeaStorageService.get(caster.server, caster.getUUID());
-        Object[] item = {null};
-        Object[] number = {null};
-        var collect = collect(item, number);
-
-        var delayed = drop(helper, new BlockPos(1, 1, 1), new ItemStack(Items.APPLE, 3));
-        delayed.setPickUpDelay(40);
-        var reserved = drop(helper, new BlockPos(1, 1, 1), new ItemStack(Items.CARROT, 3));
-        reserved.setTarget(UUID.randomUUID());
-        var mine = drop(helper, new BlockPos(1, 1, 1), new ItemStack(Items.BREAD, 3));
-        mine.setTarget(caster.getUUID());
-        item[0] = ItemListValueHelper.fromItemEntities(List.of(delayed, reserved, mine));
-        collect.execute(context);
-        helper.assertTrue(delayed.isAlive() && reserved.isAlive() && mine.isRemoved() && stored(storage, new ItemStack(Items.BREAD)) == 3
-                        && stored(storage, new ItemStack(Items.APPLE)) == 0 && stored(storage, new ItemStack(Items.CARROT)) == 0,
-                "Only items the caster could pick up now may be collected");
-
-        var inventory = caster.getInventory();
-        inventory.setItem(1, new ItemStack(Items.CARROT, 10));
-        var far = drop(helper, new BlockPos(3, 1, 3), new ItemStack(Items.BREAD, 2));
-        item[0] = SpellItemListWrapper.make(List.of(ItemListValueHelper.fromEntityContainerSlot(caster, inventory, 1),
-                ItemListValueHelper.fromItemEntity(far)));
-        caster.setPos(Vec3.atBottomCenterOf(center.above(100)));
-        helper.assertTrue(SpellRuntimeException.OUTSIDE_RADIUS.equals(error(() -> collect.execute(context)))
-                        && inventory.getItem(1).getCount() == 10 && far.isAlive() && IdeaStorageLastTransfer.get(context) == 0,
-                "A source outside the radius must fail before anything moves");
-        caster.setPos(Vec3.atBottomCenterOf(center));
-
-        helper.setBlock(new BlockPos(1, 1, 3), Blocks.CHEST);
-        BlockPos chestPos = helper.absolutePos(new BlockPos(1, 1, 3));
-        var chest = (ChestBlockEntity) level.getBlockEntity(chestPos);
-        chest.setItem(0, new ItemStack(Items.BREAD, 10));
-        item[0] = SpellItemListWrapper.make(List.of(ItemListValueHelper.fromEntityContainerSlot(caster, inventory, 1),
-                ItemListValueHelper.fromBlockContainerSlot(level, chestPos, chest, 0)));
-        Consumer<PlayerInteractEvent.RightClickBlock> deny = event -> { if (event.getPos().equals(chestPos)) event.setCanceled(true); };
-        NeoForge.EVENT_BUS.addListener(deny);
-        String denied;
-        try {
-            denied = error(() -> collect.execute(context));
-        } finally {
-            NeoForge.EVENT_BUS.unregister(deny);
-        }
-        helper.assertTrue("psitweaks.spellerror.accessdenyed".equals(denied) && inventory.getItem(1).getCount() == 10
-                && chest.getItem(0).getCount() == 10, "A protected block must fail before anything moves");
-        collect.execute(context);
-        helper.assertTrue(inventory.getItem(1).isEmpty() && chest.getItem(0).isEmpty() && IdeaStorageLastTransfer.get(context) == 20,
-                "Without protection both sources must be collected");
-
-        var fake = fakeCaster(helper, new BlockPos(2, 1, 2), "fake-collector");
-        fake.getInventory().setItem(1, new ItemStack(Items.APPLE, 5));
-        item[0] = ItemListValueHelper.fromEntityContainer(fake, fake.getInventory());
-        var fakeContext = new SpellContext().setPlayer(fake);
-        collect.execute(fakeContext);
-        helper.assertTrue(fake.getInventory().getItem(1).getCount() == 5 && IdeaStorageLastTransfer.get(fakeContext) == 0,
-                "A fake player's inventory must be left alone");
         helper.succeed();
     }
 

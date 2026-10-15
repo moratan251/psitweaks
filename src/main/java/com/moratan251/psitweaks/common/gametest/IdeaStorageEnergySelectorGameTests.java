@@ -80,7 +80,7 @@ public final class IdeaStorageEnergySelectorGameTests {
         ids.add(group.value().main());
         ids.addAll(group.value().pieces());
         ids.add(Psitweaks.location("unregistered_idea_storage_piece"));
-        helper.assertTrue(ids.size() == 12, "Ideaspace Storage group membership changed: " + ids);
+        helper.assertTrue(ids.size() == 11, "Ideaspace Storage group membership changed: " + ids);
         for (String added : IdeaLogisticsPlusGameTests.GROUP_PIECES) {
             helper.assertTrue(ids.contains(Psitweaks.location(added)), "Group is missing " + added);
         }

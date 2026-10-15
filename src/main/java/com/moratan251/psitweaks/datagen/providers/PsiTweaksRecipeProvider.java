@@ -561,11 +561,12 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         ingredientItem(PsitweaksItems.CHAOTIC_PSIMETAL)
                 ),
                 PsitweaksItems.CURIOS_CONTROLLER, 1));
-        recipe(recipes, "filter_card", shapeless("tools",
-                List.of(
-                        ingredientItem(Items.PAPER),
-                        ingredientItem(ModItems.psidust.get()),
-                        ingredientItem(PsitweaksItems.PSIMETAL_NUGGET)
+        recipe(recipes, "filter_card", shaped("tools",
+                List.of(" A ", "BCB", " B "),
+                Map.of(
+                        'A', ingredientItem(ModItems.psidust.get()),
+                        'B', ingredientItem(ModItems.psimetal.get()),
+                        'C', ingredientItem(Items.PAPER)
                 ),
                 PsitweaksItems.FILTER_CARD, 1));
         recipe(recipes, "flash_charm", shaped("combat",
