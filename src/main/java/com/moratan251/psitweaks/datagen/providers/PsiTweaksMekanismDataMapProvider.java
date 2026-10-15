@@ -34,7 +34,8 @@ public class PsiTweaksMekanismDataMapProvider implements DataProvider {
 
     private static void addChemicalDataMaps(Map<ResourceLocation, JsonObject> dataMaps) {
         JsonObject fuelValues = new JsonObject();
-        fuelValues.add(chemical("gas_peo_fuel"), chemicalFuel(240, 540_000L));
+        // energy is per tick (J/t): 2250 J/t * 240 ticks = 540,000 J per mB, matching 1.20.1's energy density.
+        fuelValues.add(chemical("gas_peo_fuel"), chemicalFuel(240, 2_250L));
         dataMaps.put(ResourceLocation.fromNamespaceAndPath("mekanism", "chemical_attribute_fuel"), dataMap(fuelValues));
 
         JsonObject solidTagValues = new JsonObject();
