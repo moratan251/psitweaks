@@ -13,6 +13,11 @@
     "RadiationManagerMixin",
     "ItemCADPlainMemoryMixin",
     "isInRadiusMixin",
-    "rangeLimitParamMixin"
+    "rangeLimitParamMixin",
+    "SpellPieceMigrationMixin",
+    "SpellPieceParamConversionMixin"
+  ],
+  "client": [
+    "client.PatchouliGuiButtonEntryMixin"
   ]
 }

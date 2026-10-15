@@ -208,6 +208,12 @@ public class PsitweaksItemModelProvider extends ItemModelProvider {
         withExistingParent("portable_spell_programmer", mcLoc("item/generated"))
                 .texture("layer0", modLoc("item/portable_spell_programmer_inactive"))
                 .override().predicate(modLoc("active"), 1).model(activeProgrammer).end();
+        // In use (or not carried) shows the normal texture; an idle card shows the idle texture.
+        var activeFilterCard = withExistingParent("filter_card_active", mcLoc("item/generated"))
+                .texture("layer0", modLoc("item/filter_card"));
+        withExistingParent("filter_card", mcLoc("item/generated"))
+                .texture("layer0", modLoc("item/filter_card_idle"))
+                .override().predicate(modLoc("active"), 1).model(activeFilterCard).end();
         for (String name : GENERATED_ITEMS) {
             generated(name);
         }

@@ -68,11 +68,11 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("death.attack.psitweaks.tunneler.item", japanese ? "%1$sはトンネル効果を体感した" : "%1$s experienced the tunneling effect");
 
         add("psi.book.page.psitweaks_material.dimensional_crystal", japanese
-                ? "(v0.10.5現在用途無し) 術式の詠唱時に, まれに $(item)次元の結晶$(0) が手に入ります. 確率は詠唱が消費した Psi の量に比例して上がります.$(p)クラフトでは作れません. 安定して集めたいなら, 日常的に魔法を使って生活する必要があります."
-                : "(No use as of v0.10.5) Occasionally, casting a spell yields a $(item)Dimensional Crystal$(0). The chance increases in proportion to the amount of Psi the cast consumes.$(p)It cannot be crafted. If you want to gather them steadily, you need to make spellcasting part of your daily life.");
+                ? "術式の詠唱時に, まれに $(item)次元の結晶$(0) が手に入ります. 確率は詠唱が消費した Psi の量に比例して上がります.$(p)クラフトでは作れません. 安定して集めたいなら, 日常的に魔法を使って生活する必要があります."
+                : "Occasionally, casting a spell yields a $(item)Dimensional Crystal$(0). The chance increases in proportion to the amount of Psi the cast consumes.$(p)It cannot be crafted. If you want to gather them steadily, you need to make spellcasting part of your daily life.");
         add("psi.book.page.psitweaks_item.gravstringer.0", japanese
-                ? "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. $(item)グラヴィタイズドプレート$(0), $(item)超弦$(0), $(item)不可思議な機構$(0) で製作します. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出できます."
-                : "The $(item)Gravstringer$(0) is an upgraded version of the Psimetal Bow, crafted from $(item)Gravitized Plates$(0), $(item)Superstring$(0), and an $(item)Unfathomable Component$(0). Arrow damage and draw speed are greatly improved, it has no durability, and it provides 11 spell bullet sockets.$(p)It can fire its dedicated $(item)Tunneler$(0) ammunition.");
+                ? "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出できます."
+                : "The $(item)Gravstringer$(0) is an upgraded version of the Psimetal Bow. Arrow damage and draw speed are greatly improved, it has no durability, and it provides 11 spell bullet sockets.$(p)It can fire its dedicated $(item)Tunneler$(0) ammunition.");
         add("psi.book.page.psitweaks_item.gravstringer.1", japanese
                 ? "スニーク+左クリックで射撃モードを切り替えます. 射撃モードはトンネラーを射出する際のみ影響します.$(li)通常モード: 5秒間重力の影響を受けず直進する高速の矢を3本放ちます.$(li)低速モード: 非常に低速で重力の影響を受けない矢を3本発射します. 60秒で消滅します.$(li)ハイブリッドモード: 中央に通常, 左右に低速の矢を放ちます.$(p)詠唱した術式弾は中央の矢にのみ付与されます."
                 : "Sneak + left-click cycles the firing mode. Firing modes only apply when firing Tunnelers.$(li)Normal: fires 3 high-speed arrows that fly straight, unaffected by gravity for 5 seconds.$(li)Slow: fires 3 extremely slow arrows that are unaffected by gravity. They expire after 60 seconds.$(li)Hybrid: a volley with a Normal arrow in the center and Slow arrows on both sides.$(p)The cast spell bullet is applied only to the center arrow.");
@@ -132,7 +132,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
                 "位置に非固体のパルサー光源を生成します.  光源は全方向へ強度15のレッドストーン信号を出力します. 光源色は術者のCADの色を反映します. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります."
         );
 
-        addBackportedSpellPiece15Translation("operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。", "Filters the input Entity List and returns only LivingEntity instances that are currently alive. All other entities are removed.", "入力した Entity List をフィルターし、現在生存中の LivingEntity のみを返します. それ以外のエンティティは除外されます.");
+        addBackportedSpellPiece15Translation("operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち、生存中の LivingEntity のみを残します。", "Filters the input Entity List and returns only LivingEntity instances that are currently alive.", "入力した Entity List をフィルターし、現在生存中の LivingEntity のみを返します.");
         addBackportedSpellPiece15Translation("operator_weak_raycast", "Operator: Vector Weak Raycast", "Raycasts from Position in the Ray direction and returns the coordinates of the hit block or fluid.", "演算子: ベクトルレイキャスト (弱)", "位置から Ray 方向へレイキャストし、命中したブロックまたは流体の座標を返します。", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Water and lava can stop the ray.", "位置から Ray 方向へレイキャストし、最初に命中したブロック座標を返します. 水や溶岩でも停止します.");
         addBackportedSpellPiece15Translation("operator_weak_raycast_axis", "Operator: Vector Axis Weak Raycast", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "演算子: ベクトルレイキャスト方向 (弱)", "位置から Ray 方向へレイキャストし、最初に命中したブロックまたは流体の面の法線方向を返します。", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "位置から Ray 方向へレイキャストし、最初に命中したブロックまたは流体の面の法線方向を返します.");
         addBackportedSpellPiece15Translation("operator_strong_raycast", "Operator: Vector Strong Raycast", "Raycasts from Position in the Ray direction, ignores blocks without a collision shape, and returns the coordinates of the hit block.", "演算子: ベクトルレイキャスト (強)", "位置から Ray 方向へレイキャストし、当たり判定のないブロックを無視して命中したブロックの座標を返します。", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Blocks without a collision shape are ignored.", "位置から Ray 方向へレイキャストし、最初に命中したブロック座標を返します. 当たり判定のないブロックを無視します.");
@@ -143,18 +143,18 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         addBackportedSpellPiece15Translation("macro_caster_weak_raycast_axis", "Macro: Weak Axis Caster Raycast", "Like Macro: Axis Caster Raycast, but it also hits fluids such as water and lava.", "マクロ: 術者レイキャスト方向 (弱)", "マクロ: 術者レイキャスト方向と同じですが、水や溶岩などの流体にも命中します。", "Raycasts from the caster's position in the look direction and returns the normal direction of the face of the hit block or fluid.", "術者の位置から視線方向へレイキャストし、命中したブロックや流体の面の法線方向を返します.");
         addBackportedSpellPiece15Translation("macro_caster_strong_raycast", "Macro: Strong Caster Raycast", "Like Macro: Caster Raycast, but blocks without a collision shape are ignored.", "マクロ: 術者レイキャスト (強)", "マクロ: 術者レイキャストと同じですが、当たり判定のないブロックを無視します。", "Raycasts from the caster's position in the look direction and returns the coordinates of the hit block with a collision shape.", "術者の位置から視線方向へレイキャストし、命中した当たり判定のあるブロックの座標を返します.");
         addBackportedSpellPiece15Translation("macro_caster_strong_raycast_axis", "Macro: Strong Axis Caster Raycast", "Like Macro: Axis Caster Raycast, but blocks without a collision shape and fluids are ignored.", "マクロ: 術者レイキャスト方向 (強)", "マクロ: 術者レイキャスト方向と同じですが、当たり判定のないブロックと流体を無視します。", "Raycasts from the caster's position in the look direction and returns the normal direction of the face of the hit block with a collision shape.", "術者の位置から視線方向へレイキャストし、命中した当たり判定のあるブロックの面の法線方向を返します.");
-        addBackportedSpellPiece15Translation("macro_caster_axial_offset", "Macro: Caster Axial Offset", "Offsets a position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Positive values move right, forward, and up. Pitch is ignored.", "マクロ: 術者方角平行移動", "術者の水平方向の向きを基準に、位置を左右・前後・上下へ平行移動します。正の値で右・前・上へ移動します。視線の上下成分は無視されます。", "Moves the given position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Facing is rounded to the nearest horizontal cardinal direction, and pitch is ignored. Positive Left/Right moves to the caster's right, positive Forward/Backward moves forward, and positive Up/Down moves upward; negative values move in the opposite directions. Unconnected parameters are treated as 0. The mode button switches to vector input: a single vector whose components are distances in the caster's view frame (X = right, Y = up, Z = forward), equivalent to adding the result of Macro: Caster Axial Rotation to the position.", "指定した位置を、術者の水平方向の向きを基準に左右・前後・上下へ平行移動します. 向きは最も近い水平4方角へ丸められ、視線の上下成分は無視されます. 左右の正の値は術者の右へ、前後の正の値は前へ、上下の正の値は上へ移動し、負の値は逆方向です. 未接続のパラメータは 0 として扱われます. モードボタンでベクトル入力に切り替えると、視点座標(X=右、Y=上、Z=前)の距離を成分とするベクトル1つで指定できます. これは位置にマクロ: 術者方角回転の結果を加算するのと同等です.");
+        addBackportedSpellPiece15Translation("macro_caster_axial_offset", "Macro: Caster Axial Offset", "Offsets a position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Positive values move right, forward, and up. Pitch is ignored.", "マクロ: 術者方角平行移動", "術者の水平方向の向きを基準に、位置を左右・前後・上下へ平行移動します。正の値で右・前・上へ移動します。視線の上下成分は無視されます。", "Moves the given position by Left/Right, Forward/Backward, and Up/Down relative to the caster's horizontal facing. Facing is rounded to the nearest horizontal cardinal direction, and pitch is ignored. Positive values move right, forward, and up; negative values move the opposite way. Unconnected parameters are treated as 0. The mode button switches to vector input: a single vector whose components are distances in the caster's view frame (X = right, Y = up, Z = forward), equivalent to adding the result of Macro: Caster Axial Rotation to the position.", "指定した位置を、術者の水平方向の向きを基準に左右・前後・上下へ平行移動します. 向きは最も近い水平4方角へ丸められ、視線の上下成分は無視されます. 正の値で右・前・上へ, 負の値で逆へ移動します. 未接続のパラメータは 0 として扱われます. モードボタンでベクトル入力に切り替えると、視点座標(X=右、Y=上、Z=前)の距離を成分とするベクトル1つで指定できます. これは位置にマクロ: 術者方角回転の結果を加算するのと同等です.");
         addBackportedSpellPiece15Translation("macro_caster_axial_rotation", "Macro: Caster Axial Rotation", "Rotates a direction vector from the caster's view frame (X = right, Y = up, Z = forward) into world space. Facing is rounded to the nearest horizontal cardinal direction. Pitch is ignored.", "マクロ: 術者方角回転", "方向ベクトルを術者の視点座標(X=右、Y=上、Z=前)からワールド座標へ回転します。向きは最も近い水平4方角に丸められ、視線の上下成分は無視されます。", "Rotates the given direction vector from the caster's view frame into world space. The X component is treated as right, Y as up, and Z as forward relative to the caster's horizontal facing, which is rounded to the nearest cardinal direction; pitch is ignored. For example, (0, 0, 1) returns the caster's facing direction and (1, 0, 0) returns the direction to the caster's right. The vector's magnitude is preserved.", "指定した方向ベクトルを術者の視点座標からワールド座標へ回転します. X成分を右、Y成分を上、Z成分を前として、最も近い水平4方角へ丸めた術者の向きを基準に変換します. 視線の上下成分は無視されます. 例えば (0, 0, 1) は術者の正面方向、(1, 0, 0) は術者の右方向を返します. ベクトルの大きさは保存されます.");
         addBackportedSpellPiece15Translation("macro_caster_axial_offset_3d", "Macro: Caster Axial Offset (3D)", "Like Macro: Caster Axial Offset, but the facing also follows the pitch. When looking straight up or down, forward points vertically and the offset plane becomes horizontal.", "マクロ: 術者方角平行移動 (3D)", "マクロ: 術者方角平行移動と同じですが、視線の上下も基準に含みます。真上や真下を向いた時は前後が垂直になり、オフセット平面が水平になります。", "Like Macro: Caster Axial Offset, but the facing is rounded to the nearest of the six axis directions, including straight up and down. When looking straight up or down, forward points vertically and the Up/Down axis becomes horizontal, so offsets form a horizontal plane. This is useful for effects like 3x3 area mining, where the mined plane should become the floor or ceiling when looking up or down. The mode button switches to vector input: a single vector whose components are distances in the caster's view frame (X = right, Y = view-up, Z = forward), equivalent to adding the result of Macro: Caster Axial Rotation (3D) to the position.", "マクロ: 術者方角平行移動と同じですが、向きは真上・真下を含む6方角の最も近い方向へ丸められます. 真上や真下を向いた時は前後が垂直になり、上下の軸が水平になるため、オフセット平面が水平に張られます. 上や下を向いた時に掘削平面を床や天井にしたい 3×3 範囲破壊などに有用です. モードボタンでベクトル入力に切り替えると、視点座標(X=右、Y=視点上、Z=前)の距離を成分とするベクトル1つで指定できます. これは位置にマクロ: 術者方角回転 (3D) の結果を加算するのと同等です.");
         addBackportedSpellPiece15Translation("macro_caster_axial_rotation_3d", "Macro: Caster Axial Rotation (3D)", "Like Macro: Caster Axial Rotation, but the facing also follows the pitch (X = right, Y = view-up, Z = forward), including when looking straight up or down.", "マクロ: 術者方角回転 (3D)", "マクロ: 術者方角回転と同じですが、視線の上下も基準に含みます。X=右、Y=視点上、Z=前で、真上や真下を向いた時も視点に追随します。", "Like Macro: Caster Axial Rotation, but the facing is rounded to the nearest of the six axis directions, including straight up and down. The X component is treated as right, Y as view-up, and Z as forward. When looking straight up or down, Z points vertically and Y becomes horizontal, matching the orientation of the view.", "マクロ: 術者方角回転と同じですが、向きは真上・真下を含む6方角の最も近い方向へ丸められます. X成分を右、Y成分を視点上、Z成分を前として変換します. 真上や真下を向いた時はZが垂直、Yが水平になり、視点の向きに一致します.");
         addBackportedSpellPieceTwoPageTranslation("macro_face_axial_offset", "Macro: Face Axial Offset", "Offsets a position along axes aligned to the block face under the caster's crosshair. If Position is omitted, the hit block is used. Positive values move screen-right, into the block, and screen-up.", "マクロ: 面基準平行移動", "術者の視線が命中したブロック面を基準に、位置を左右・前後・上下へ平行移動します。位置を省略した場合は命中ブロックを使います。正の値で画面右・ブロック内側・画面上へ移動します。", "Moves a position vector relative to the block face hit by a raycast from the caster. Position is optional; when omitted, the block position hit by that same raycast is used. Positive Left/Right moves to the right as the face is viewed, positive Forward/Backward moves inward into the block, and positive Up/Down moves toward the top as the face is viewed; negative values move in the opposite directions. On the top and bottom faces, the caster's horizontal facing changes where Up/Down and Left/Right lead. The mode button switches to vector input, allowing the distances to be specified with one vector whose components are X = right, Y = up, and Z = inward into the block. If the raycast misses, a null-vector error is raised.", "術者からのレイキャストが命中したブロック面を基準に位置ベクトルを移動します. 位置入力は任意で、省略時はその同じレイキャストが命中したブロック座標を使います. 左右の正の値は面を見た時の右へ、前後の正の値はブロック内側方向へ、上下の正の値は面を見た時の上へ移動し、負の値は逆方向です. 上面と下面では、術者の水平向きによって上下、左右の行き先が変わります. モードボタンでベクトル入力に切り替えると、X=右、Y=上、Z=ブロック内側の距離を成分とするベクトル1つで指定できます. レイキャストが命中しなかった場合は null vector エラーになります.", "When a program contains multiple Face Axial Offsets or Face Axial Rotations, only the first piece executed performs a raycast. The hit block and face are saved and used by all later instances of either piece, so breaking the block partway through the spell does not affect them. If Position is supplied to Face Axial Offset, that input takes precedence.", "1つのプログラムに面基準平行移動または面基準回転が複数存在するとき、最初に実行されたピースだけがレイキャストを行います. 命中ブロックと面は保存され、以降のこれらのピースで使用されるため、術式途中でブロックが破壊されても影響を受けません（面基準平行移動に位置を入力した場合はそちらが優先されます）.");
-        addBackportedSpellPieceTwoPageTranslation("macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを、術者の視線が命中したブロック面の方向を基準として回転させます。", "Rotates the specified direction vector according to the orientation of the block face hit by a raycast from the caster. X points right as the face is viewed, Y points toward the top as the face is viewed, and Z points inward into the block. On the top and bottom faces, the caster's horizontal facing determines the rotation within the face. The vector's magnitude is preserved. If the raycast misses, a null-vector error is raised.", "術者からのレイキャストが命中したブロック面の向きに応じて、指定した方向ベクトルを回転します. Xは面を見た時の右、Yは面を見た時の上、Zはブロック内側方向です. 上面と下面では、術者の水平向きによって面内の回転を決めます. ベクトルの大きさは保存されます. レイキャストが命中しなかった場合は null vector エラーになります.", "When a program contains multiple Face Axial Offsets or Face Axial Rotations, only the first piece executed performs a raycast. The hit block and face are saved and used by all later instances of either piece, so breaking the block partway through the spell does not affect them. If Position is supplied to Face Axial Offset, that input takes precedence.", "1つのプログラムに面基準平行移動または面基準回転が複数存在するとき、最初に実行されたピースだけがレイキャストを行います. 命中ブロックと面は保存され、以降のこれらのピースで使用されるため、術式途中でブロックが破壊されても影響を受けません（面基準平行移動に位置を入力した場合はそちらが優先されます）.");
+        addBackportedSpellPieceTwoPageTranslation("macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを、術者の視線が命中したブロック面の方向を基準として回転させます。", "Rotates the specified direction vector according to the orientation of the block face hit by a raycast from the caster. X points right as the face is viewed, Y points toward the top as the face is viewed, and Z points inward into the block. On the top and bottom faces, the caster's horizontal facing determines the rotation within the face. The vector's magnitude is preserved. If the raycast misses, a null-vector error is raised.", "術者からのレイキャストが命中したブロック面の向きに応じて、指定した方向ベクトルを回転します. Xは面を見た時の右、Yは面を見た時の上、Zはブロック内側方向です. 上面と下面では、術者の水平向きによって面内の回転を決めます. ベクトルの大きさは保存されます. レイキャストが命中しなかった場合は null vector エラーになります.", "Face Axial Offset and Face Axial Rotation in the same program share the raycast result of the first one executed. See page 2 of $(l:psitweaks_spell_pieces/macro_face_axial_offset)$(o)Macro: Face Axial Offset$(0)$(/l) for details.", "同じプログラムにある 面基準平行移動 と 面基準回転 は, 最初に実行されたピースのレイキャスト結果を共有します. 詳しくは $(l:psitweaks_spell_pieces/macro_face_axial_offset)$(o)マクロ: 面基準平行移動$(0)$(/l) の2ページ目を参照してください.");
         addBackportedSpellPiece15Translation("psitweaks.spellparam.max", "Max", "最大");
         addBackportedSpellPiece15Translation("psitweaks.spellerror.nullitem", "Error: The target item of the spell does not exist.", "エラー: 魔法の対象となるアイテムは存在しません。");
         addBackportedSpellPiece15Translation("psitweaks.spellerror.accessdenyed", "Error: Attempted to access a protected block.", "エラー: 保護されたブロックにアクセスを試みました。");
         addBackportedSpellPiece15Translation("psitweaks.datatype.item_strict", "Item (Strict)", "Item (Strict)");
-        addBackportedSpellPiece15Translation("trick_pull_item", "Trick: Pull Item", "Moves an item from the block at the input position through the input face into the caster's inventory.", "作動式: アイテム引き出し", "入力位置にあるブロックに対して、入力方向からアイテムを術者のインベントリに移動させます", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast; if the caster's inventory cannot hold it all, only what fits is moved. In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. The optional Max input caps the number of items moved. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. 任意入力の最大で移動数に上限を設けられます. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
-        addBackportedSpellPiece15Translation("trick_send_item", "Trick: Send Item", "Moves the specified item from the caster's inventory into the block at the input position through the input face.", "作動式: アイテム転送", "入力位置にあるブロックに対して、入力方向から指定アイテムを術者のインベントリから移動させます", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved. The filter modes and the optional Max input behave like Trick: Pull Item. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます. フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様です. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
+        addBackportedSpellPieceTwoPageTranslation("trick_pull_item", "Trick: Pull Item", "Moves items from the specified face of the block at Position into the caster's inventory, up to one stack or the count given by Max.", "作動式: アイテム引き出し", "位置のブロックの指定面から、術者のインベントリへアイテムを移します。上限は1スタック、または「最大」で指定した個数です。", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast, as much of it as fits. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.", "In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. In both Item modes, the filter can also be an Item List, matching any of its items. The optional Max input caps the number of items moved.", "StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. Item と Item (Strict) モードでは Item List も接続でき, そのいずれかに一致するアイテムを移動します. 任意入力の最大で移動数に上限を設けられます.");
+        addBackportedSpellPieceTwoPageTranslation("trick_send_item", "Trick: Send Item", "Moves items from the caster's inventory into the specified face of the block at Position, up to one stack or the count given by Max. CADs are skipped.", "作動式: アイテム転送", "術者のインベントリから、位置のブロックの指定面へアイテムを移します。上限は1スタック、または「最大」で指定した個数です。CADは移しません。", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます.", "The filter modes and the optional Max input behave like Trick: Pull Item, including Item Lists in both Item modes. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様で, Item と Item (Strict) モードでは Item List も接続できます. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
     }
 
     private void addBackportedSpellPiece15Translation(String key, String enUs, String jaJp) {
@@ -395,8 +395,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Trick: Flexible Jump";
         });
         add("psitweaks.spellpiece.trick_jump_flex.desc", switch (locale) {
-            case "ja_jp" -> "作動式: ジャンプと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。";
-            default -> "Behaves like Trick: Jump and refunds the Psi cost of spell pieces skipped by the jump.";
+            case "ja_jp" -> "作動式: ジャンプと同じ動作をし、飛ばしたピースのPsiを返却します。";
+            default -> "Behaves like Trick: Jump and refunds the Psi of the pieces it skips.";
         });
         add("psitweaks.spellpiece.trick_switch", switch (locale) {
             case "ja_jp" -> "作動式: スイッチ";
@@ -411,8 +411,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Trick: Flexible Switch";
         });
         add("psitweaks.spellpiece.trick_switch_flex.desc", switch (locale) {
-            case "ja_jp" -> "作動式: スイッチと同じ動作を行い、ジャンプによってスキップしたスペルピースのPsiコストを返却します。";
-            default -> "Behaves like Trick: Switch and refunds the Psi cost of spell pieces skipped by the jump.";
+            case "ja_jp" -> "作動式: スイッチと同じ動作をし、飛ばしたピースのPsiを返却します。";
+            default -> "Behaves like Trick: Switch and refunds the Psi of the pieces it skips.";
         });
         add("psitweaks.spellpiece.jump_anchor", switch (locale) {
             case "ja_jp" -> "ジャンプアンカー";
@@ -427,12 +427,12 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Safety";
         });
         add("psitweaks.spellpiece.safety.desc", switch (locale) {
-            case "ja_jp" -> "術者の現在Psi量の合計が術式の実際のPsi消費量を下回る場合、Psiを消費する前に術式を不発にします。";
-            default -> "If the caster's current total Psi falls below the spell's actual Psi cost, the spell will fail before any Psi is consumed.";
+            case "ja_jp" -> "術者とCADのPsiを合わせても消費量に足りないとき、Psiを使わずに不発にします。";
+            default -> "If the caster's Psi plus the CAD's stored Psi can't cover the cost, the spell fails without using any Psi.";
         });
         add("psi.book.page.psitweaks_spellpiece.trick_jump", switch (locale) {
-            case "ja_jp" -> "対象数値が未入力、または絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 対象入力なしの場合は無条件の前方ジャンプとして動作します. 後方のジャンプアンカーには飛ぶことができません.";
-            default -> "Jumps forward to the next Jump Anchor with the same label when the target number is unset, or when its absolute value is less than 1. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. With no target input, it acts as an unconditional forward jump. It cannot jump to Jump Anchors behind it.";
+            case "ja_jp" -> "対象数値が未入力、または絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 後方のジャンプアンカーには飛ぶことができません.";
+            default -> "Jumps forward to the next Jump Anchor with the same label when the target number is unset, or when its absolute value is less than 1. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. It cannot jump to Jump Anchors behind it.";
         });
         add("psi.book.page.psitweaks_spellpiece.trick_jump_flex", switch (locale) {
             case "ja_jp" -> "作動式: ジャンプと同じ条件でジャンプアンカーまでジャンプし, ジャンプによって実際にスキップしたスペルピースのPsiコストを返却します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.";
@@ -495,8 +495,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Outputs the saved position of a Block value as a plain Vector.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_block_position", switch (locale) {
-            case "ja_jp" -> "Block に保存された座標を通常の Vector として出力します. 基本的に Vector を必要とするスペルピースには Block 型をそのまま接続できますが、作動式: デバッグ に接続して座標を確認する際など Vector型 が明示的に必要な場合に使います.";
-            default -> "Outputs the position saved in a Block as a plain Vector. A Block can usually be connected directly to spell pieces that require a Vector, but use this when a Vector value is explicitly needed, such as when checking coordinates with Trick: Debug.";
+            case "ja_jp" -> "Block に保存された座標を Vector として出力します. Vector を受け取るピースには Block をそのまま接続できるので, 主に 作動式: デバッグ で座標を見たいときに使います.";
+            default -> "Outputs the position saved in a Block as a Vector. Pieces that take a Vector also accept a Block directly, so this is mainly for checking coordinates with Trick: Debug.";
         });
         add("psitweaks.spellpiece.operator_block_position_list", switch (locale) {
             case "ja_jp" -> "演算子: ブロック位置リスト";
@@ -507,8 +507,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Gets the positions of the blocks in a Block List as a Vector List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_block_position_list", switch (locale) {
-            case "ja_jp" -> "Block List に保存された座標を Vector List として取得します.";
-            default -> "Gets the positions saved in a Block List as a Vector List.";
+            case "ja_jp" -> "Block List に保存された座標を Vector List として取得します. Vector List の入力には Block List を直接つなぐこともでき, その場合も同じ座標が使われます.";
+            default -> "Gets the positions saved in a Block List as a Vector List. A Block List can also be connected directly to Vector List inputs, which then use these positions.";
         });
         add("psitweaks.spellpiece.operator_block_state", switch (locale) {
             case "ja_jp" -> "演算子: ブロックステート";
@@ -563,8 +563,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Operator: Greater Than";
         });
         add("psitweaks.spellpiece.operator_greater_than.desc", switch (locale) {
-            case "ja_jp" -> "値1が値2より大きいなら1、そうでなければ0を出力します。Number を入力できます。";
-            default -> "Outputs 1 if Value 1 is greater than Value 2, otherwise 0. Number inputs are accepted.";
+            case "ja_jp" -> "値1が値2より大きいなら1、そうでなければ0を出力します。";
+            default -> "Outputs 1 if Value 1 is greater than Value 2, otherwise 0.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_greater_than", switch (locale) {
             case "ja_jp" -> "値1と値2を Number として比較します. 値1が値2より大きいなら1, そうでなければ0を出力します.";
@@ -575,8 +575,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Operator: Greater Than or Equal";
         });
         add("psitweaks.spellpiece.operator_greater_than_or_equal.desc", switch (locale) {
-            case "ja_jp" -> "値1が値2以上なら1、そうでなければ0を出力します。Number を入力できます。";
-            default -> "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0. Number inputs are accepted.";
+            case "ja_jp" -> "値1が値2以上なら1、そうでなければ0を出力します。";
+            default -> "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_greater_than_or_equal", switch (locale) {
             case "ja_jp" -> "値1と値2を Number として比較します. 値1が値2以上なら1, そうでなければ0を出力します.";
@@ -711,8 +711,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Outputs the localized display name of a Contextual Value.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_display_name", switch (locale) {
-            case "ja_jp" -> "Contextual Value の表示名を, 術者の現在言語に応じた String として出力します. プレイヤーやカスタム名付き Entity は表示されている名前を返し, 通常の Entity は EntityType の名前, Item は hover name, Block はブロック名を返します. 術者の言語を取得できない場合は English を使います. 翻訳がない場合は English, それもなければ翻訳キーそのものを返します.";
-            default -> "Outputs the display name of a Contextual Value as a String in the caster's current language. Players and custom-named entities keep their visible names; other entities use their EntityType name, Items use their hover name, and Blocks use their block name. If the caster language cannot be read, English is used. Missing translations fall back to English, then to the translation key itself.";
+            case "ja_jp" -> "Contextual Value の表示名を, 術者の現在言語に応じた String として出力します. プレイヤーやカスタム名付き Entity は表示されている名前を返し, 通常の Entity は EntityType の名前, Item は hover name, Block はブロック名を返します. 術者の言語や翻訳が見つからなければ English, それもなければ翻訳キーを返します.";
+            default -> "Outputs the display name of a Contextual Value as a String in the caster's current language. Players and custom-named entities keep their visible names; other entities use their EntityType name, Items use their hover name, and Blocks use their block name. If the caster's language or a translation is missing, English is used, then the translation key itself.";
         });
         add("psitweaks.spellpiece.selector_display_name_list", switch (locale) {
             case "ja_jp" -> "取得子: 表示名リスト";
@@ -807,8 +807,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Operator: Format String";
         });
         add("psitweaks.spellpiece.operator_format_string.desc", switch (locale) {
-            case "ja_jp" -> "テキストウィンドウで入力された文字列を返します。 任意の入力された値はテキスト中の{1}, {2}, {3}へ埋め込まれます。";
-            default -> "Returns the string entered in the text window. Optional input values are embedded into {1}, {2}, and {3} in the text.";
+            case "ja_jp" -> "入力した文字列の {1}〜{3} に値1〜3を埋め込んで返します。";
+            default -> "Returns the entered text with Values 1 to 3 filled into {1}, {2}, and {3}.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_format_string", switch (locale) {
             case "ja_jp" -> "保存したテンプレート中の {1}, {2}, {3} を最大3つの任意 Any 入力で置換して String を出力します. テンプレートは 定数子: 文字列 と同じ入力ウィンドウで編集し, 最大1024文字です. 未接続の入力は空文字になります. Entity, Item, Block などの Contextual Value は 取得子: 表示名 と同じ現在言語表示名を使います. Contextual Value List は 取得子: 表示名リスト と同じ現在言語表示名へ変換し, コンマ区切りで埋め込みます. それ以外の値は通常の String 変換を使います. 最終出力は実行時 String 上限で制限されます.";
@@ -823,8 +823,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_from_string", switch (locale) {
-            case "ja_jp" -> "選択中の Plain モードに応じて String 入力を変換します. String モードは入力をそのまま返します. Number モードは有限の数値文字列を解析し, 無効な入力では0を出力します. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) を受け付けます. Vector は大文字小文字を区別せず, 解析失敗時はゼロベクトルを出力します. スペルピースを左クリックでモードを選択できます.";
-            default -> "Converts the String input for the selected Plain mode. String mode returns the input as-is. Number mode parses finite numeric text and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails. Left-click the spell piece to select the mode.";
+            case "ja_jp" -> "選択中の Plain モードに応じて String 入力を変換します. String モードは入力をそのまま返します. Number モードは有限の数値文字列を解析し, 無効な入力では0を出力します. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) を受け付けます. Vector は大文字小文字を区別せず, 解析失敗時はゼロベクトルを出力します.";
+            default -> "Converts the String input for the selected Plain mode. String mode returns the input as-is. Number mode parses finite numeric text and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails.";
         });
         add("psitweaks.spellpiece.operator_list_from_string_list", switch (locale) {
             case "ja_jp" -> "演算子: 文字列リストから変換";
@@ -835,8 +835,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_from_string_list", switch (locale) {
-            case "ja_jp" -> "選択中の Plain モードに応じて String List を変換します. String モードは入力リストをそのまま返します. Number モードは各要素を有限の数値文字列として解析し, 無効な要素は0になります. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) に一致する要素のみ変換し, 無効な要素は無視します. Vector は大文字小文字を区別しません. スペルピースを左クリックでモードを選択できます.";
-            default -> "Converts a String List for the selected Plain mode. String mode returns the input list as-is. Number mode parses each entry as finite numeric text, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries. Left-click the spell piece to select the mode.";
+            case "ja_jp" -> "選択中の Plain モードに応じて String List を変換します. String モードは入力リストをそのまま返します. Number モードは各要素を有限の数値文字列として解析し, 無効な要素は0になります. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) に一致する要素のみ変換し, 無効な要素は無視します. Vector は大文字小文字を区別しません.";
+            default -> "Converts a String List for the selected Plain mode. String mode returns the input list as-is. Number mode parses each entry as finite numeric text, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries.";
         });
         add("psitweaks.spellpiece.operator_number_list_to_vector", switch (locale) {
             case "ja_jp" -> "演算子: 数値リスト→ベクトル";
@@ -891,8 +891,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Operator: Partial Match";
         });
         add("psitweaks.spellpiece.operator_string_partial_match.desc", switch (locale) {
-            case "ja_jp" -> "文字列1が文字列2での検索にマッチする文字列を含むなら1、そうでなければ0を出力します。文字列2ではワイルドカードを使えます: * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します。";
-            default -> "Outputs 1 if searching String 1 with String 2 finds matching text, otherwise outputs 0. String 2 accepts wildcards: * matches any text, ? matches one character, and [abc] matches one listed character.";
+            case "ja_jp" -> "文字列1の中に文字列2のパターンと一致する部分があれば1、なければ0を出力します。* は任意の文字列、? は任意の1文字、[abc] は a・b・c のいずれかに一致します。";
+            default -> "Outputs 1 if part of String 1 matches the pattern in String 2, otherwise 0. * matches any text, ? one character, and [abc] one of a, b, or c.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_partial_match", switch (locale) {
             case "ja_jp" -> "文字列1を文字列2で検索してマッチする文字列を含むか判定します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカード文字はバックスラッシュでエスケープできます. 比較は大文字小文字を区別します.";
@@ -951,8 +951,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Operator: String Slice";
         });
         add("psitweaks.spellpiece.operator_string_slice.desc", switch (locale) {
-            case "ja_jp" -> "入力した文字列の文字を 数値A:数値B でスライスした新しい 文字列 を返します。";
-            default -> "Slices the input String from Number A to Number B and returns a new String.";
+            case "ja_jp" -> "文字列を 数値A:数値B の範囲で切り出します。";
+            default -> "Returns the part of the String from Number A to Number B.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_string_slice", switch (locale) {
             case "ja_jp" -> "入力文字列の文字数を指定して範囲を切り出して新しい文字列として返します. AまたはBが未接続なら先頭または末尾を使います. 負数は末尾から数え, 範囲外は有効範囲に収め, 終了位置が開始位置以下なら空文字列を返します. 小数部分は0方向へ切り捨てます.";
@@ -1019,28 +1019,28 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.";
         });
         add("psitweaks.spellpiece.operator_list_search", switch (locale) {
-            case "ja_jp" -> "演算子: リスト検索";
-            default -> "Operator: List Search";
+            case "ja_jp" -> "演算子: リスト一致抽出";
+            default -> "Operator: List Keep Matches";
         });
         add("psitweaks.spellpiece.operator_list_search.desc", switch (locale) {
-            case "ja_jp" -> "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするもののみを残します。";
-            default -> "Keeps only the input List elements whose string form matches the input search string.";
+            case "ja_jp" -> "要素のIDまたは文字列が、パターンと一致するものだけを残します。全体一致で、* ? [abc] を使えます。";
+            default -> "Keeps only the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_search", switch (locale) {
-            case "ja_jp" -> "選択中の List モードを, 各要素の検索用文字列で絞り込みます. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. String入力ではワイルドカードを利用でき, * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.";
-            default -> "Filters the selected List mode by comparing the String input with each element's search text. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. The String input accepts wildcards: * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.";
+            case "ja_jp" -> "選択中の List モードから, パターンに一致する要素だけを残します. Entity と Item/Block などの Contextual Value はレジストリIDで, それ以外は 演算子: 文字列へ変換 と同じ文字列で比較します. 「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で, 部分一致には *zombie* のように前後に * を付けます.";
+            default -> "Keeps only the elements of the selected List mode that match the pattern. Entity and contextual values such as Item and Block compare by registry ID; other values use the same text as Operator: To String. If the pattern has no namespace such as \"minecraft:\", only the rest of the ID is compared. * matches any text, ? one character, and [abc] one of the listed characters. The whole text must match; use *zombie* for a partial match.";
         });
         add("psitweaks.spellpiece.operator_list_search_exclude", switch (locale) {
-            case "ja_jp" -> "演算子: リスト検索除外";
-            default -> "Operator: List Search Exclude";
+            case "ja_jp" -> "演算子: リスト一致除外";
+            default -> "Operator: List Remove Matches";
         });
         add("psitweaks.spellpiece.operator_list_search_exclude.desc", switch (locale) {
-            case "ja_jp" -> "リストの要素を文字列化したもののうち、入力した文字列で検索してマッチするものを除外します。";
-            default -> "Removes the input List elements whose string form matches the input search string.";
+            case "ja_jp" -> "要素のIDまたは文字列が、パターンと一致するものを除きます。全体一致で、* ? [abc] を使えます。";
+            default -> "Removes the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_search_exclude", switch (locale) {
-            case "ja_jp" -> "選択中の List モードから, 検索用文字列が入力ワイルドカードに一致する要素を除外します. Entity と Item/Block などの Contextual Value はレジストリIDで比較します. それ以外の値は 演算子: 文字列へ変換 と同じ文字列で比較します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカードなしでは完全一致です.";
-            default -> "Filters the selected List mode by removing elements whose search text matches the input wildcard. Entity and contextual values such as Item and Block compare by registry ID. Other values use the same text form as Operator: To String. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Without wildcards, matching is exact.";
+            case "ja_jp" -> "選択中の List モードから, パターンに一致する要素を除きます. Entity と Item/Block などの Contextual Value はレジストリIDで, それ以外は 演算子: 文字列へ変換 と同じ文字列で比較します. 「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で, 部分一致には *zombie* のように前後に * を付けます.";
+            default -> "Removes the elements of the selected List mode that match the pattern. Entity and contextual values such as Item and Block compare by registry ID; other values use the same text as Operator: To String. If the pattern has no namespace such as \"minecraft:\", only the rest of the ID is compared. * matches any text, ? one character, and [abc] one of the listed characters. The whole text must match; use *zombie* for a partial match.";
         });
         add("psitweaks.spellpiece.operator_random_element", switch (locale) {
             case "ja_jp" -> "演算子: ランダム要素";
@@ -1063,8 +1063,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Adds up to three elements to the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_add", switch (locale) {
-            case "ja_jp" -> "入力された List に最大3つの入力要素を追加します.";
-            default -> "Adds up to three input elements to the input List.";
+            case "ja_jp" -> "List に要素を最大3つ追加します.";
+            default -> "Adds up to three elements to the List.";
         });
         add("psitweaks.spellpiece.operator_list_remove", switch (locale) {
             case "ja_jp" -> "リストから削除 (PT)";
@@ -1075,8 +1075,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Removes up to two elements from the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_remove", switch (locale) {
-            case "ja_jp" -> "入力された List から最大2つの入力要素を削除します.";
-            default -> "Removes up to two input elements from the input List.";
+            case "ja_jp" -> "List から要素を最大2つ削除します.";
+            default -> "Removes up to two elements from the List.";
         });
         add("psitweaks.spellpiece.operator_list_remove_indices", switch (locale) {
             case "ja_jp" -> "演算子: インデックス要素削除";
@@ -1107,8 +1107,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Operator: List Slice";
         });
         add("psitweaks.spellpiece.operator_list_slice.desc", switch (locale) {
-            case "ja_jp" -> "入力した List の要素を 数値A:数値B でスライスした新しい List を返します。";
-            default -> "Slices the input List from Number A to Number B and returns a new List.";
+            case "ja_jp" -> "List を 数値A:数値B の範囲で切り出します。";
+            default -> "Returns the part of the List from Number A to Number B.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_slice", switch (locale) {
             case "ja_jp" -> "選択中の List モード に対しインデックスを指定して範囲を切り出して新しい List として返します. A を省略すると先頭から, B を省略すると末尾までが対象です. 負数は末尾から数え, 範囲外は有効範囲へ丸め, 終了位置が開始位置以前なら空の List を返します. 小数は0方向へ切り捨てます.";
@@ -1123,8 +1123,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Outputs the number of elements in the input List.";
         });
         add("psi.book.page.psitweaks_spellpiece.operator_list_size", switch (locale) {
-            case "ja_jp" -> "入力された任意の List 入力に含まれる要素数を出力します.";
-            default -> "Outputs the number of elements in any input List.";
+            case "ja_jp" -> "List の要素数を出力します.";
+            default -> "Outputs the number of elements in the List.";
         });
         add("psitweaks.spellpiece.operator_list_exclusion", switch (locale) {
             case "ja_jp" -> "演算子: リスト除外 (PT)";
@@ -1171,8 +1171,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Returns the block at the given position as a Block value.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_block", switch (locale) {
-            case "ja_jp" -> "対象座標にあるブロックを Block 型として出力します. Block は保存座標, ディメンション, ブロック状態, レジストリID, ブロックタグを持つ読み取り用スナップショットです. Block 型を必要とするスペルピースにも Vector型 が自動変換されそのまま接続できますが, 作動式: デバッグ に Block としての情報を表示させたい場合など Block型 であることを明示的に示したい場合に用います.";
-            default -> "Outputs the block at the target position as a Block value. Block is a read-only snapshot containing the saved position, dimension, block state, registry ID, and block tags. Spell pieces that require a Block can also accept a Vector through automatic conversion, so use this when you want to explicitly keep the value as a Block, such as when showing Block information with Trick: Debug.";
+            case "ja_jp" -> "対象座標にあるブロックを Block 型として出力します. Block は保存座標, ディメンション, ブロック状態, レジストリID, ブロックタグを持つ読み取り用スナップショットです. Block を受け取るピースには Vector をそのまま接続できるので, 主に 作動式: デバッグ で Block の情報を見たいときに使います.";
+            default -> "Outputs the block at the target position as a Block value. Block is a read-only snapshot containing the saved position, dimension, block state, registry ID, and block tags. Pieces that take a Block also accept a Vector directly, so this is mainly for viewing Block information with Trick: Debug.";
         });
         add("psitweaks.spellpiece.selector_block_list", switch (locale) {
             case "ja_jp" -> "取得子: ブロックリスト";
@@ -1191,12 +1191,12 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Selector: Main-Hand Item";
         });
         add("psitweaks.spellpiece.selector_held_item.desc", switch (locale) {
-            case "ja_jp" -> "対象エンティティのメインハンドのアイテムを取得します。";
-            default -> "Gets the target entity's main-hand item.";
+            case "ja_jp" -> "対象エンティティのメインハンドのアイテムを取得します。ドロップアイテムの場合はそのスタックを取得します。";
+            default -> "Gets the target entity's main-hand item. For a dropped item, gets its stack.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_held_item", switch (locale) {
-            case "ja_jp" -> "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム で取得できるドロップアイテムはエンティティであり, PsiTweaksで追加されるItem型とは異なることに注意してください.";
-            default -> "Outputs the target living entity's main-hand ItemStack as an Item value. Item is a read-only snapshot containing item data such as kind, count, durability, and name. Note that Psi's Selector: Nearby Items returns dropped item entities, which are different from the Item type added by PsiTweaks.";
+            case "ja_jp" -> "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム などで得たドロップアイテムでは, そのスタックを出力します.";
+            default -> "Outputs the target living entity's main-hand ItemStack as an Item value: a read-only snapshot of its kind, count, durability, name and so on. A dropped item, such as from Psi's Selector: Nearby Items, gives its own stack.";
         });
         add("psitweaks.spellpiece.selector_held_items", switch (locale) {
             case "ja_jp" -> "取得子: 所持アイテム";
@@ -1207,8 +1207,8 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
             default -> "Outputs the target entity's carried items as an Item List.";
         });
         add("psi.book.page.psitweaks_spellpiece.selector_held_items", switch (locale) {
-            case "ja_jp" -> "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を出力します.";
-            default -> "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List.";
+            case "ja_jp" -> "対象 Entity の所持アイテムを Item List として出力します. Player はインベントリをスロット単位で読み取り, その他の Entity は ItemHandler があればそれを使い, なければ手持ちと防具スロットを読み取ります. 空の場合は空の Item List を, ドロップアイテムの場合はそのスタックだけのリストを出力します.";
+            default -> "Outputs carried items from the target Entity as an Item List. Player inventories are read slot by slot; other entities use their item handler when available, or their hands and armor slots as a fallback. Empty inventories output an empty Item List, and a dropped item a list of its own stack.";
         });
         add("psitweaks.spellpiece.selector_indexed_element", switch (locale) {
             case "ja_jp" -> "取得子: インデックス要素 (PT)";
@@ -1550,7 +1550,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_set_spellgram_follow_target", "Trick: Set SpellGram Follow Target");
         add("psitweaks.spellpiece.trick_set_spellgram_follow_target.desc", "Sets the follow target entity for a SpellGram object");
         add("psitweaks.spellpiece.trick_die_flex", "Trick: Flexible Die");
-        add("psitweaks.spellpiece.trick_die_flex.desc", "Stops execution when given a number whose absolute value is less than 1, and refunds Psi cost for skipped pieces. When used in spells that cast every tick, client-side Psi display may temporarily desync.");
+        add("psitweaks.spellpiece.trick_die_flex.desc", "Stops the spell when given a number whose absolute value is below 1, and refunds the Psi of the pieces not yet run. In spells cast every tick, the Psi display may briefly desync.");
         add("psitweaks.spellpiece.trick_material_mutation", "Trick: Material Mutation");
         add("psitweaks.spellpiece.trick_material_mutation.desc", "Acts on a specific block, alters its material structure, and transmutes it into a different substance.");
         add("psitweaks.spellpiece.operator_tan", "Operator: Tangent");
@@ -1641,8 +1641,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.psitweaks_machines", "Machines");
         add("psi.book.category.psitweaks_machines.desc", "Machine blocks and infrastructure added by PsiTweaks.");
         add("psi.book.entry.psitweaks_overview", "What PsiTweaks Adds");
-        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds many elements, including industrialized material production, new gear, and new spells.$(p)The mod is intended for setups where Psi remains powerful through the late game as both combat and utility, rather than ending at ordinary CADs and basic spell bullets.");
-        add("psi.book.page.psitweaks_overview.2", "Major additions include higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)Most systems are built to bridge Psi with industrial environments and to strengthen Psi's late-game capabilities.");
+        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) is an expansion for $(thing)Psi$(0). It adds higher-tier spell bullets, new CAD assemblies and casting support tools, new spells, processing machines, and generators.$(p)It ties Psi into industrial setups and keeps it strong for combat and utility through the late game, beyond ordinary CADs and basic spell bullets.");
         add("psi.book.entry.psitweaks_changes", "Changes by PsiTweaks");
         add("psi.book.page.psitweaks_changes.0", "Installing $(thing)Psi: Tweaks And Additions$(0) applies several adjustments to improve QOL.$(p)Psi is no longer reduced when you take damage, and the Psi regeneration cooldown after casting is removed.$(p)In the Spell Programmer screen, spell pieces can be searched in English regardless of the current language setting.");
         add("psi.book.entry.psitweaks_research", "Research");
@@ -1650,34 +1649,28 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy usage per tick, and processing time.");
         add("psi.book.page.psitweaks_research.no_mekanism", "The Program Research Table requires $(thing)Mekanism$(0). Without Mekanism, program items can only be obtained through fallback crafting recipes or by duplicating an existing program.");
         add("psi.book.entry.psitweaks_magician", "Magician");
-        add("psi.book.page.psitweaks_magician.0", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. They represent villagers who work with Psi machinery and are connected to several caster-focused materials and upgrades.");
-        add("psi.book.page.psitweaks_magician.1", "An unemployed villager can become a $(thing)Magician$(0) by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site.$(p)Place the assembler where a villager can reach it, just like other villager workstation blocks.");
+        add("psi.book.page.psitweaks_magician.1", "$(thing)Magicians$(0) are a villager profession added by PsiTweaks. An unemployed villager becomes one by claiming a $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) as its job site; place it where a villager can reach it.");
         add("psi.book.page.psitweaks_magician.2", "A Magician is also the source of the $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l). It drops when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l), and is used in caster-focused recipes.");
         add("psi.book.entry.psitweaks_mekanism_integration", "Mekanism Integration");
         add("psi.book.title.psitweaks_mekanism_integration.infusing", "Metallurgic Infusing");
         add("psi.book.title.psitweaks_mekanism_integration.mekasuit", "MekaSuit Modules");
-        add("psi.book.page.psitweaks_mekanism_integration.0", "$(thing)PsiTweaks$(0) ties $(thing)Psi$(0) into $(thing)Mekanism$(0) progression. Its integration covers Metallurgic Infusing recipes for Psi materials, MekaSuit modules that improve caster stats, and machines that exchange Psi, FE, and psionic resources.$(p)Use JEI as the exact recipe reference; this entry explains what each group is for.");
+        add("psi.book.page.psitweaks_mekanism_integration.0", "$(thing)PsiTweaks$(0) ties $(thing)Psi$(0) into $(thing)Mekanism$(0) progression. Its integration covers Metallurgic Infusing recipes for Psi materials, MekaSuit modules that improve caster stats, and machines that exchange Psi, FE, and psionic resources.$(p)See JEI for exact recipes.");
         add("psi.book.page.psitweaks_mekanism_integration.1", "The $(item)Metallurgic Infuser$(0) can produce core Psi materials with PsiTweaks infuse types. Psigem infusion turns redstone into $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l) and gold into $(item)Psimetal$(0).$(p)Ebony and Ivory infusion can make $(item)Ebony Substance$(0), $(item)Ivory Substance$(0), and their Psimetal variants. Later recipes extend this chain into $(l:components/psitweaks_chaotic_factor)psionic factors$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l), $(l:components/psitweaks_psionic_echo)Psionic Echo materials$(/l), and $(l:components/psitweaks_alloy_hypostasis)Hypostasis-tier metal$(/l).");
         add("psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases spell damage.");
         add("psi.book.entry.psitweaks_spell_bullets", "Upgraded Spell Bullets");
         add("psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available.");
         add("psi.book.page.psitweaks_spell_bullets.1", "Upgrading a spell bullet requires four bullets from the previous tier, making it very expensive.");
         add("psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast.");
-        add("psi.book.entry.psitweaks_machines", "Overview");
-        add("psi.book.page.psitweaks_machines.0", "PsiTweaks adds machines that connect spellcraft with automation and industrial processing. Some machines are pure psionic tools, while others integrate with Mekanism-style energy and materials.");
-        add("psi.book.page.psitweaks_machines.1", "These machines are the main entry points for research, mutation, Sculk processing, and Psi-to-energy conversion.");
-        add("psi.book.page.psitweaks_machines.2", "The $(l:psitweaks_machines/psionic_generator)$(o)$(item)Psi-Link Generator$(0)$(/l) links to its owner. When enabled, loaded, and the owner is online, it consumes that player's Psi and produces energy for the machine's buffer.$(p)The rate is set in the GUI. More Psi per tick means more power, but it also drains the owner faster.");
-        add("psi.book.page.psitweaks_machine.cad_disassembler", "A workbench for disassembling CADs and recovering their parts. Sneak-right-click it with a CAD to break the CAD into its installed components and loaded spell bullets.$(p)Use it when replacing CAD bodies or salvaging parts from old setups.");
+        add("psi.book.page.psitweaks_machine.cad_disassembler", "A workbench for disassembling CADs and recovering their parts. Sneak-right-click it with a CAD to break the CAD into its installed components and loaded spell bullets.");
         add("psi.book.page.psitweaks_machine.program_researcher", "A powered research table for producing PsiTweaks program items. Put the required ingredients in the input slots and supply FE; completed research outputs the program item.$(p)JEI shows each research recipe's energy usage per tick and time.");
-        add("psi.book.page.psitweaks_machine.sculk_eroder", "A machine that corrodes stone, dirt, sand, and related block items into Sculk outputs.$(p)Use it when you need Sculk materials without relying on natural spread.");
+        add("psi.book.page.psitweaks_machine.sculk_eroder", "A machine that corrodes stone, dirt, sand, and related block items into Sculk outputs.");
         add("psi.book.page.psitweaks_machine.material_mutator", "A Mekanism injecting-style machine that performs material mutation with $(item)Psionic Echo Gas$(0) and energy.$(p)It automates mutations that can also be produced by $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)Trick: Material Mutation$(0)$(/l), such as $(l:components/psitweaks_jade)Jade$(/l) and $(l:components/psitweaks_hypostasis_gem)Hypostasis Gems$(/l).");
         add("psi.book.page.psitweaks_machine.psionic_generator", "A generator that links to its owner and converts that player's Psi into energy while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Higher consumption gives higher output and drains the owner faster.");
         add("psi.book.page.psitweaks_machine.spellmachinery_casing", "A casing block used to execute advanced magic through machinery.");
-        add("psi.book.page.psitweaks_machine.transcendent_universal_cable", "This is simply an upgraded version of Mekanism's Universal Cable. It has 128 times the performance of the Ultimate Cable, making it suitable for fusion reactor-class power output.");
-        add("psi.book.page.psitweaks_machine.transcendent_energy_cube", "This is simply an upgraded version of Mekanism's Energy Cube. It has 128 times the capacity and output performance of the Ultimate Energy Cube, making it suitable for buffering fission reactor-class power.");
+        add("psi.book.page.psitweaks_machine.transcendent_universal_cable", "An upgraded version of Mekanism's Universal Cable. It has 128 times the performance of the Ultimate Cable, making it suitable for fusion reactor-class power output.");
+        add("psi.book.page.psitweaks_machine.transcendent_energy_cube", "An upgraded version of Mekanism's Energy Cube. It has 128 times the capacity and output of the Ultimate Energy Cube, making it suitable for buffering fission reactor-class power.");
         add("psi.book.entry.psitweaks_cad_and_gear", "CADs and Gear");
         add("psi.book.page.psitweaks_cad_and_gear.0", "Several PsiTweaks items make spellcasting easier to carry, automate, or specialize. Some are direct CAD tools, while others support bullet handling or improve a caster's combat role.");
-        add("psi.book.page.psitweaks_cad_and_gear.1", "These recipes cover portable assembly, inline casting, spell storage, and caster support gear.");
         add("psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks also adds powerful CAD assemblies made from expensive ingots. When ordinary Psi equipment no longer keeps up, use them together with high-tier spell bullets and similar upgrades.");
         add("psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) adds five CAD material lines: $(l:components/psitweaks_alloy_psion)Psionic Alloy$(/l), $(l:components/psitweaks_chaotic_psimetal)Chaotic Psimetal$(/l), $(l:components/psitweaks_flashmetal)Flashmetal$(/l), $(l:components/psitweaks_heavy_psimetal)Heavy Psimetal$(/l), and $(l:components/psitweaks_psycheonic_metal_ingot)Psycheonic Metal$(/l).$(p)Psionic Alloy CADs have excellent Efficiency but very small Potency. The other CAD assemblies improve in Efficiency and Potency as their materials move into later progression.");
         add("psi.book.entry.psitweaks_inline_casters", "Inline Casters");
@@ -1685,20 +1678,20 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.entry.psitweaks_moval_suit", "M.O.V.A.L. Suit");
         add("psi.book.page.psitweaks_item.blank_program", "Used as the base item for program research. Put it into the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) with the required materials to create a written program.$(p)It can also be crafted with an existing written program item to duplicate that program.");
         add("psi.book.page.psitweaks_item.philosophers_stone", "A reusable catalyst that provides interconversion recipes for metals, diamonds, coal, ender pearls, and other resources.");
-        add("psi.book.page.psitweaks_item.spell_magazine", "Stores up to twelve spell bullets and swaps them with the matching slots of your equipped CAD when used.$(p)Use it as a portable loadout carrier when you need to change many bullets at once.");
+        add("psi.book.page.psitweaks_item.spell_magazine", "Stores up to twelve spell bullets and swaps them with the matching slots of your equipped CAD when used.");
         add("psi.book.page.psitweaks_item.flash_ring", "A tool that can build and cast spells on the spot.$(p)Sneak-use it to open the programming screen.");
         add("psi.book.page.psitweaks_item.portable_cad_assembler", "A handheld CAD Assembler. Use it to open an assembler interface without placing the block, making it easy to adjust CAD parts or loaded spell bullets while away from base.");
-        add("psi.book.page.psitweaks_item.sorcery_booster", "Equips in the Magic Calculation Area slot and increases spell damage by 30%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l), making it a combat-focused caster upgrade.");
+        add("psi.book.page.psitweaks_item.sorcery_booster", "Equips in the Magic Calculation Area slot and increases spell damage by 30%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l).");
         add("psi.book.page.psitweaks_item.flash_charm", "A Curios charm that continually removes Blindness and Darkness from the wearer.$(p)It also works while carried in inventory, making it useful in the Deep Dark and against vision-disrupting effects.");
         add("psi.book.page.psitweaks_item.interference_range_extender", "Equips in the Magic Calculation Area slot and extends spell targeting and raycast range to 64 blocks.$(p)It is the lower-tier range option used to craft the Third-Eye Device.");
         add("psi.book.page.psitweaks_item.third_eye_device", "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)Raycasts are limited to 256 blocks, so use it carefully.");
         add("psi.book.page.psitweaks_item.inline_casters.0", "Inline, Secondary, and Parallel Casters are handheld spellcasting tools with their own bullet sockets. They still require the caster to have a CAD, but the selected bullet is stored in the caster item itself.");
         add("psi.book.page.psitweaks_item.inline_casters.1", "The Inline Caster has one slot, the Secondary Caster has five, and the Parallel Caster has eleven.$(p)Use them when you want to carry many spell bullets without constantly changing the CAD.");
-        add("psi.book.page.psitweaks_item.auto_casters.0", "Auto Casters can be equipped in Curios slots and automatically cast spells.$(p)With the Curios Controller, you can change their spell bullets in the same way as psimetal exosuit armor.");
-        add("psi.book.page.psitweaks_item.auto_casters.1", "The tick model fires every tick, the second model fires every 0.9 seconds, and the custom tick model lets you set an interval from 1 to 1200 ticks by using the item.");
-        add("psi.book.page.psitweaks_item.curios_controller", "Controls the selected bullet slot of socketable items equipped in Magic Calculation Area slots.$(p)Use it while Auto Casters are equipped as the Curios-side counterpart to the exosuit controller.");
-        add("psi.book.page.psitweaks_item.moval_suit.0", "The $(item)M.O.V.A.L. Suit$(0) is a high-grade Psi armor set crafted with $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) and $(item)Ebony Psimetal$(0). Each equipped piece supports spellcasters by increasing spell damage, Psi regeneration, and maximum Psi.$(p)Use it when you want armor that improves both survival and sustained spellcasting instead of only adding protection.");
-        add("psi.book.page.psitweaks_item.moval_suit.1", "Like Psi's exosuit armor, M.O.V.A.L. Suit pieces can trigger spells from armor events. The helmet accepts exosuit sensors, the normal leggings cast on tick, the Ivory leggings cast on second, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi.");
+        add("psi.book.page.psitweaks_item.auto_casters.0", "Auto Casters are worn in Curios slots and cast spells automatically.$(p)Change their spell bullets with the Curios Controller.");
+        add("psi.book.page.psitweaks_item.auto_casters.1", "The tick model fires every tick. The custom tick model lets you set an interval from 1 to 1200 ticks by using the item.");
+        add("psi.book.page.psitweaks_item.curios_controller", "Switches the selected bullet slot of Auto Casters and other socketable items in Magic Calculation Area slots, the same way the Exosuit Controller does.");
+        add("psi.book.page.psitweaks_item.moval_suit.0", "The $(item)M.O.V.A.L. Suit$(0) is a high-grade Psi armor set crafted with $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) and $(item)Ebony Psimetal$(0).");
+        add("psi.book.page.psitweaks_item.moval_suit.1", "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi.");
         add("psi.book.title.psitweaks_material.chaotic_psimetal", "Chaotic Psimetal Ingot");
         add("psi.book.title.psitweaks_material.psycheonic_metal_ingot", "Psycheonic Metal Ingot");
         add("psi.book.page.psitweaks_material.psionic_echo", "Made by infusing an $(item)Echo Shard$(0) with Psionic Echo infusion, or by using the $(l:psitweaks_spell_pieces/trick_supreme_infusion)$(o)Trick: Supreme Infusion$(0)$(/l).$(p)Used as the base catalyst for $(l:components/psitweaks_alloy_psionic_echo)echo-tier alloys$(/l), HDΨE materials, gas processing, and advanced psionic machinery.");
@@ -1728,7 +1721,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.psitweaks_spell_pieces", "Additional Spell Pieces");
         add("psi.book.category.psitweaks_spell_pieces.desc", "Spell pieces added by PsiTweaks. Many are offensive, industrial, or utility-focused, and some require research depending on the config.");
         add("psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Be careful: dropped items and similar entities can still be erased.");
-        add("psi.book.page.psitweaks_spellpiece.trick_barrier", "Applies a barrier effect that reduces incoming damage. It reduces damage taken by (level * 4).");
+        add("psi.book.page.psitweaks_spellpiece.trick_barrier", "Applies a barrier effect that reduces damage taken by (level * 4).");
         add("psi.book.page.psitweaks_spellpiece.trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).");
         add("psi.book.page.psitweaks_spellpiece.trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance.");
         add("psi.book.page.psitweaks_spellpiece.trick_flight", "Gives the target an effect that enables creative flight.");
@@ -1743,24 +1736,24 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects.");
         add("psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.");
         add("psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.");
-        add("psi.book.page.psitweaks_spellpiece.trick_cocytus", "Permanently freezes the mind of the target mob. Rather than merely dealing damage, this very powerful control trick prevents action.");
+        add("psi.book.page.psitweaks_spellpiece.trick_cocytus", "Permanently freezes the mind of the target mob, leaving it unable to act.");
         add("psi.book.page.psitweaks_spellpiece.trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi.");
         add("psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.");
-        add("psi.book.page.psitweaks_spellpiece.trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration. It is a powerful offensive trick.");
+        add("psi.book.page.psitweaks_spellpiece.trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration.");
         add("psi.book.page.psitweaks_spellpiece.trick_meteor_line", "Creates a beam from the specified position in the direction of the Ray vector, dealing special and lethally massive damage to living beings along its path.");
         add("psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.");
-        add("psi.book.page.psitweaks_spellpiece.trick_molecular_divider", "Cuts living beings along a plane defined by three points. It is a high-power area attack trick.");
+        add("psi.book.page.psitweaks_spellpiece.trick_molecular_divider", "Cuts living beings along a plane defined by three points.");
         add("psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick.");
         add("psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.");
-        add("psi.book.page.psitweaks_spellpiece.trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range. This is an area attack detonated at a chosen location.");
+        add("psi.book.page.psitweaks_spellpiece.trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.");
         add("psi.book.page.psitweaks_spellpiece.trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds.");
         add("psi.book.page.psitweaks_spellpiece.trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control.");
         add("psi.book.page.psitweaks_spellpiece.trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object.");
         add("psi.book.page.psitweaks_spellpiece.trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.");
         add("psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "Applies Mekanism radiation exposure to the target.");
-        add("psi.book.page.psitweaks_spellpiece.trick_radiation_filter", "Applies a radiation protection effect to the target, protecting them from radiation.");
+        add("psi.book.page.psitweaks_spellpiece.trick_radiation_filter", "Applies a radiation protection effect to the target.");
         add("psi.book.page.psitweaks_spellpiece.trick_cure_radiation", "Removes the target's radiation exposure.");
-        add("psi.book.page.psitweaks_spellpiece.trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed. This is a single-target offensive trick.");
+        add("psi.book.page.psitweaks_spellpiece.trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.");
         add("psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.");
         add("psi.book.page.psitweaks_spellpiece.operator_tan", "Returns the tangent of the target number.");
         add("psi.book.page.psitweaks_spellpiece.operator_atan", "Returns the arc tangent of the target number.");
@@ -2097,7 +2090,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psitweaks.spellpiece.trick_set_spellgram_follow_target", "作動式: 魔法式追従");
         add("psitweaks.spellpiece.trick_set_spellgram_follow_target.desc", "魔法式オブジェクトの追従対象エンティティを設定する");
         add("psitweaks.spellpiece.trick_die_flex", "作動式: 柔軟停止");
-        add("psitweaks.spellpiece.trick_die_flex.desc", "絶対値が1未満の数値を受け取ると術式を停止し、未実行分のPsi消費を返却する。毎tick詠唱する術式に組み込むと、クライアント側のPsi量表示が同期ずれする場合があります");
+        add("psitweaks.spellpiece.trick_die_flex.desc", "絶対値が1未満の数値を受け取ると停止し、未実行分のPsiを返却します。毎tick詠唱では、Psi表示が一時的にずれることがあります。");
         add("psitweaks.spellpiece.trick_material_mutation", "作動式: 物質変成");
         add("psitweaks.spellpiece.trick_material_mutation.desc", "特定のブロックに作用して物質構造を改変し異なる物質に変成させる");
         add("psitweaks.spellpiece.operator_tan", "演算子: タンジェント");
@@ -2118,9 +2111,9 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.basics.desc", "$(thing)Psi$(0)を初めてご利用になる方は, こちらのすべての項目を必ずお読みになることをお勧めします. いずれも重要な情報が含まれています.");
         add("psi.book.entry.introduction", "導入");
         add("psi.book.page.introduction.0", "$(thing)Psi$(0)へようこそ！ 宇宙で最も偉大なスペルプログラムベースの魔法技術MODです！$(p)$(thing)Psi$(0)は（魔法科高校の劣等生シリーズにインスパイアされた）MODで, あなたの命令を実行する$(thing)魔法$(0)$(o)を創造・発動して意のままに操るmodです.$(p)魔法を操る魔法師への道へ踏み出すには, まず$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)という素材が必要です――ただし, これを単純にクラフトできるものではありません.");
-        add("psi.book.page.introduction.1", "代わりに, まず$(l:basics/cad_assembler)$(o)$(item)CAD組立機(0)$(/l)と$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を作成してください. (p)$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)を配置し, 開いて$(l:components/assembly#iron)$(o)$ (item)鉄のCAD素体$(0)$(/l)を挿入し, 非常に簡素な$(thing)術式補助演算機(0)（略して$(thing)CAD$(0)）を構築します. (p)そこから地面に$(item)レッドストーンダスト$(0)を数個落とし, 新しく作成した$(thing)CAD$(0)をダストに向けて, $(k:use)を発動して$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)を生成します.");
+        add("psi.book.page.introduction.1", "代わりに, まず$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)と$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を作成してください.$(p)$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)を配置し, 開いて$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を挿入し, 非常に簡素な$(thing)術式補助演算機$(0)（略して$(thing)CAD$(0)）を構築します.$(p)そこから地面に$(item)レッドストーンダスト$(0)を数個落とし, 新しく作成した$(thing)CAD$(0)をダストに向けて, $(k:use)を発動して$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)を生成します.");
         add("psi.book.entry.cadAssembler", "CAD組立機");
-        add("psi.book.page.cadAssembler.0", "$(item)CAD組立機(0)は$(thing)Psi$(0)の中核であり, 二つの重要な機能を果たします. $(p)第一に, 構成部品から$(thing)CAD$(0)を組み立てます. 次に, $(o)空でない$() $(item)術式弾$(0)を$(thing)CAD$(0)に装填します.（$(l:items/spell_bullet)$(o)$(thing)術式弾$(0)$(/l)を保持する他のアイテム, 例えば$(l:items/tools)$(o)$ (thing)サイメタルツール$(0)$(/l)など）に$(o)空でない$(0)$(item)術式弾$(0)$を装填する.");
+        add("psi.book.page.cadAssembler.0", "$(item)CAD組立機$(0)は$(thing)Psi$(0)の中核であり, 二つの重要な機能を果たします.$(p)第一に, 構成部品から$(thing)CAD$(0)を組み立てます. 第二に, $(o)空でない$() $(item)術式弾$(0)を$(thing)CAD$(0)や, $(l:items/tools)$(o)$(thing)サイメタルツール$(0)$(/l)など$(l:items/spell_bullet)$(o)$(thing)術式弾$(0)$(/l)を保持する他のアイテムに装填します.");
         add("psi.book.page.cadAssembler.1", "CAD組立機のクラフト");
         add("psi.book.page.cadAssembler.2", "最も簡素な魔法使用可能CAD");
         add("psi.book.page.cadAssembler.3", "A $(thing)CAD$(0) is built from up to five components; the simplest $(thing)CAD$(0) only uses one component, an $(l:components/assembly)$(o)$(item)Assembly$(0)$(/l), though this is only useful for crafting $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l).$(p)A $(thing)CAD$(0) capable of casting $(thing)Spells$(0) requires a $(l:components/core)$(o)$(item)Core$(0)$(/l) and a $(l:components/socket)$(o)$(item)Socket$(0)$(/l) as well.$(p)Adding a $(l:components/battery)$(o)$(item)Battery$(0)$(/l) slightly increases a user's maximum $(thing)Psi energy$(0), and adding a $(l:components/colorizer)$(o)$(item)Colorizer$(0)$(/l) changes the color of cast $(thing)Spells$(0), which is purely cosmetic.");
@@ -2158,8 +2151,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.psitweaks_machines", "機械");
         add("psi.book.category.psitweaks_machines.desc", "PsiTweaks が追加する機械ブロックと基盤設備です.");
         add("psi.book.entry.psitweaks_overview", "PsiTweaksの追加要素");
-        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 素材生成の工業化や, 新しい装備, 新しい術式など多数の要素を追加します.$(p)通常のCADや基本術式弾で終わらず, Psiを戦闘やユーティリティとして終盤まで強力に扱う構成を想定しています.");
-        add("psi.book.page.psitweaks_overview.2", "主な追加要素は, 高位術式弾, 新しいCAD素体や詠唱補助具,新しい魔法, 加工機械や発電機です.$(p)多くのシステムは, Psiと工業環境の橋渡しや, Psiの終盤での能力強化などを目的として作られています.");
+        add("psi.book.page.psitweaks_overview.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) の拡張modです. 高位術式弾, 新しいCAD素体や詠唱補助具, 新しい術式, 加工機械や発電機などを追加します.$(p)Psiを工業環境とつなぎ, 通常のCADや基本術式弾で終わらず, 終盤まで戦闘とユーティリティの両面で使えるようにすることを目指しています.");
         add("psi.book.entry.psitweaks_changes", "PsiTweaksによる変更");
         add("psi.book.page.psitweaks_changes.0", "$(thing)Psi: Tweaks And Additions$(0) を導入することによって QOL を改善するためのいくつかの調整が加えられます.$(p)ダメージを受けた際に Psi量 が減少しなくなり, 詠唱時の Psi回復クールタイムも撤廃されます.$(p)スペルプログラム画面では, 現在の設定言語に関わらず英語でスペルピースを検索することができます.");
         add("psi.book.entry.psitweaks_research", "研究");
@@ -2167,34 +2159,28 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, tickあたりの消費電力, 処理時間は JEI で確認できます.");
         add("psi.book.page.psitweaks_research.no_mekanism", "プログラム研究台を利用するには $(thing)Mekanism$(0) が必要です. Mekanism未導入時は, 代替クラフトレシピまたは既存プログラムの複製によってプログラムアイテムを入手できます.");
         add("psi.book.entry.psitweaks_magician", "魔法師");
-        add("psi.book.page.psitweaks_magician.0", "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. Psi機械を扱う村人であり, 魔法師向けの素材や強化装備と関係します.");
-        add("psi.book.page.psitweaks_magician.1", "無職の村人は, $(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l) を職業ブロックとして取得すると $(thing)魔法師$(0) になります.$(p)ほかの村人作業台と同じように, 村人が到達できる場所にCAD組立機を置いてください.");
+        add("psi.book.page.psitweaks_magician.1", "$(thing)魔法師$(0) は PsiTweaks が追加する村人の職業です. 無職の村人は, $(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l) を職業ブロックとして取得すると魔法師になります. 村人が到達できる場所に置いてください.");
         add("psi.book.page.psitweaks_magician.2", "魔法師は $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) の入手元でもあります. 魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップし, 魔法師向けのレシピに使います.");
         add("psi.book.entry.psitweaks_mekanism_integration", "Mekanism連携");
         add("psi.book.title.psitweaks_mekanism_integration.infusing", "冶金吹き込み");
         add("psi.book.title.psitweaks_mekanism_integration.mekasuit", "MekaSuitモジュール");
-        add("psi.book.page.psitweaks_mekanism_integration.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) を $(thing)Mekanism$(0) の進行へ接続します. 連携要素には, Psi素材を作る冶金吹き込みレシピ, 魔法師能力を伸ばすMekaSuitモジュール, Psi・FE・サイオニック資源を扱う機械があります.$(p)正確なレシピはJEIで確認してください. この項目では各要素の役割をまとめます.");
+        add("psi.book.page.psitweaks_mekanism_integration.0", "$(thing)PsiTweaks$(0) は $(thing)Psi$(0) を $(thing)Mekanism$(0) の進行へ接続します. 連携要素には, Psi素材を作る冶金吹き込みレシピ, 魔法師能力を伸ばすMekaSuitモジュール, Psi・FE・サイオニック資源を扱う機械があります.$(p)正確なレシピはJEIで確認してください.");
         add("psi.book.page.psitweaks_mekanism_integration.1", "$(item)冶金吹き込み機$(0) では, PsiTweaks の注入タイプを使って主要なPsi素材を作れます. サイジェム注入はレッドストーンを$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)に, 金インゴットを$(item)サイメタル$(0)に変換します.$(p)エボニー注入とアイボリー注入では, $(item)エボニー基質$(0), $(item)アイボリー基質$(0), それぞれのサイメタル派生素材を作れます. さらに$(l:components/psitweaks_chaotic_factor)サイオニック因子$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l), $(l:components/psitweaks_psionic_echo)サイオニックエコー素材$(/l), $(l:components/psitweaks_alloy_hypostasis)位格合金$(/l)へ発展します.");
         add("psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 術式ダメージを増加させます.");
         add("psi.book.entry.psitweaks_spell_bullets", "強化術式弾");
         add("psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています.");
         add("psi.book.page.psitweaks_spell_bullets.1", "術式弾の強化は前段階の術式弾を4つ必要とするため、非常に高コストです.");
         add("psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります.");
-        add("psi.book.entry.psitweaks_machines", "概要");
-        add("psi.book.page.psitweaks_machines.0", "PsiTweaks は, 術式工学と自動化・工業処理をつなぐ機械を追加します. 純粋なサイオニック装置もあれば, Mekanism形式のエネルギーや素材処理と連携する機械もあります.");
-        add("psi.book.page.psitweaks_machines.1", "これらの機械は, 研究, 物質変成, スカルク処理, Psiからエネルギーへの変換の入口になります.");
-        add("psi.book.page.psitweaks_machines.2", "$(l:psitweaks_machines/psionic_generator)$(o)$(item)サイリンク発電機$(0)$(/l) は所有者にリンクします. 有効化され, チャンクが読み込まれ, 所有者がオンラインのとき, そのプレイヤーのPsiを消費して内部バッファへエネルギーを生成します.$(p)発電レートはGUIで設定できます. tickあたりのPsi消費を増やすほど出力も増えますが, 所有者のPsiも速く減ります.");
-        add("psi.book.page.psitweaks_machine.cad_disassembler", "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.$(p)CAD素体を交換するときや, 古い構成から部品を回収したいときに使います.");
+        add("psi.book.page.psitweaks_machine.cad_disassembler", "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.");
         add("psi.book.page.psitweaks_machine.program_researcher", "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究のtickあたりの消費電力と時間はJEIで確認できます.");
-        add("psi.book.page.psitweaks_machine.sculk_eroder", "石, 土, 砂系などのブロックアイテムをスカルク系の出力へ侵食加工する機械です.$(p)自然なスカルク伝播に頼らず, スカルク素材を得たいときに使います.");
+        add("psi.book.page.psitweaks_machine.sculk_eroder", "石, 土, 砂系などのブロックアイテムをスカルク系の出力へ侵食加工する機械です.");
         add("psi.book.page.psitweaks_machine.material_mutator", "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます.");
         add("psi.book.page.psitweaks_machine.psionic_generator", "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.");
         add("psi.book.page.psitweaks_machine.spellmachinery_casing", "高度な魔法を機械により実行するための筐体ブロックです.");
-        add("psi.book.page.psitweaks_machine.transcendent_universal_cable", "これは単純に, MekanismのUniversal Cableの強化版です. 究極ケーブルの128倍の性能を持ち, 核融合炉級の電力出力を扱うのに向きます.");
-        add("psi.book.page.psitweaks_machine.transcendent_energy_cube", "これは単純に, MekanismのEnergy Cubeの強化版です. 究極エネルギーキューブの128倍の容量と出力性能を持ち, 核分裂炉級の電力を蓄えるのに向きます.");
+        add("psi.book.page.psitweaks_machine.transcendent_universal_cable", "Mekanism のユニバーサルケーブルの強化版です. 究極ケーブルの128倍の性能を持ち, 核融合炉級の電力出力を扱うのに向きます.");
+        add("psi.book.page.psitweaks_machine.transcendent_energy_cube", "Mekanism のエネルギーキューブの強化版です. 究極エネルギーキューブの128倍の容量と出力性能を持ち, 核分裂炉級の電力を蓄えるのに向きます.");
         add("psi.book.entry.psitweaks_cad_and_gear", "CADと装備");
         add("psi.book.page.psitweaks_cad_and_gear.0", "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります.");
-        add("psi.book.page.psitweaks_cad_and_gear.1", "これらのレシピは, 携帯型組立, インライン詠唱, 術式保存, 魔法師支援装備の入口です.");
         add("psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks は, 高コストなインゴットを素材とした強力なCAD素体を追加します. 通常のPsi装備では物足りなくなったら, 高位術式弾などと組み合わせて使ってください.");
         add("psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) はCAD素材として, $(l:components/psitweaks_alloy_psion)サイオニック合金$(/l), $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の5系統を追加します.$(p)サイオニック合金CADは効率が非常に優れる一方で, 規模は非常に小さいCADです. 他のCAD素体は, 後半の素材ほど効率と規模が相応に強化されています.");
         add("psi.book.entry.psitweaks_inline_casters", "インラインキャスター");
@@ -2202,20 +2188,20 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.entry.psitweaks_moval_suit", "M.O.V.A.L. スーツ");
         add("psi.book.page.psitweaks_item.blank_program", "プログラム研究の基礎素材です. $(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材と一緒に入れることで, 記入済みのプログラムを作成できます.$(p)既存の記入済みプログラムアイテムとクラフトすると, そのプログラムを複製することもできます.");
         add("psi.book.page.psitweaks_item.philosophers_stone", "再利用可能な触媒で, 金属, ダイヤモンド, 石炭やエンダーパールなどの相互変換レシピを提供します.");
-        add("psi.book.page.psitweaks_item.spell_magazine", "最大12個の術式弾を保持し, 使用すると装備中のCADの対応スロットと入れ替えます.$(p)複数の術式弾をまとめて切り替えるための携帯用ロードアウトです.");
+        add("psi.book.page.psitweaks_item.spell_magazine", "最大12個の術式弾を保持し, 使用すると装備中のCADの対応スロットと入れ替えます.");
         add("psi.book.page.psitweaks_item.flash_ring", "その場で術式を組み立てて詠唱が可能なツールです.$(p)スニーク使用でプログラム画面を開くことができます.");
         add("psi.book.page.psitweaks_item.portable_cad_assembler", "手持ちで使えるCAD組立機です. ブロックを設置せずに組立機画面を開けるため, 拠点外でも簡単にCAD部品や装填済み術式弾を調整できます.");
-        add("psi.book.page.psitweaks_item.sorcery_booster", "魔法演算領域スロットに装備し, 術式ダメージを30%増加させます.$(p)$(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使う, 戦闘向けの魔法師強化装備です.");
+        add("psi.book.page.psitweaks_item.sorcery_booster", "魔法演算領域スロットに装備し, 術式ダメージを30%増加させます.$(p)素材に $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使います.");
         add("psi.book.page.psitweaks_item.flash_charm", "装備者の盲目と暗闇を継続的に解除するCuriosチャームです.$(p)インベントリ内に持っているだけでも機能するため, ディープダークや視界妨害効果への対策になります.");
         add("psi.book.page.psitweaks_item.interference_range_extender", "魔法演算領域スロットに装備し, 術式の対象判定とレイキャスト射程を64ブロックまで延長します.$(p)サードアイデバイスの素材にもなる下位の射程延長装備です.");
         add("psi.book.page.psitweaks_item.third_eye_device", "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)レイキャスト射程は256ブロックまで延長されます.");
         add("psi.book.page.psitweaks_item.inline_casters.0", "インライン, セカンダリ, パラレルキャスターは, 自身に術式弾スロットを持つ手持ち詠唱具です. 詠唱には通常通りCADが必要ですが, 選択中の術式弾はキャスター側に保存されます.");
         add("psi.book.page.psitweaks_item.inline_casters.1", "インラインキャスターは1スロット, セカンダリキャスターは5スロット, パラレルキャスターは11スロットです.$(p)CADを頻繁に差し替えず, 多数の術式弾を持ち替えたいときに使います.");
-        add("psi.book.page.psitweaks_item.auto_casters.0", "術式自動詠唱デバイスは, Curiosスロットに装備可能であり, 自動で術式を詠唱する装備です. $(p) キュリオスコントローラを用いることで、サイメタル外装と同じ要領で術式弾を変更できます.");
-        add("psi.book.page.psitweaks_item.auto_casters.1", "tick型は毎tick, セカンド型は0.9秒ごとに詠唱します. カスタムtick型は, アイテム使用で1から1200tickの範囲から詠唱間隔を設定できます.");
-        add("psi.book.page.psitweaks_item.curios_controller", "魔法演算領域スロットに装備したソケット対応アイテムの選択術式弾スロットを操作します.$(p)術式自動詠唱デバイスを装備しているときに使う, Curios版の外装コントローラです.");
-        add("psi.book.page.psitweaks_item.moval_suit.0", "$(item)M.O.V.A.L. スーツ$(0) は, $(l:components/psitweaks_heavy_psimetal)$(o)$(item)ヘビーサイメタル$(0)$(/l) と $(item)エボニーサイメタル$(0) を使って製作する高性能なPsi系防具です. 各部位を装備するごとに, 術式ダメージ, Psi回復速度, 最大Psiを強化します.$(p)単なる防御力だけでなく, 継続的な詠唱能力も伸ばしたいときに使う装備です.");
-        add("psi.book.page.psitweaks_item.moval_suit.1", "Psiの外装防具と同様に, M.O.V.A.L. スーツの各部位は防具イベントから術式を発動できます. ヘルメットは外装センサーに対応し, 通常レギンスはtick時, Ivory版レギンスはsecond時, ブーツはjump時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復速度+5, 最大Psi+500を付与します.");
+        add("psi.book.page.psitweaks_item.auto_casters.0", "術式自動詠唱デバイスは, Curiosスロットに装備して自動で術式を詠唱する装備です.$(p)術式弾は キュリオスコントローラ で変更できます.");
+        add("psi.book.page.psitweaks_item.auto_casters.1", "tick型は毎tick詠唱します. カスタムtick型は, アイテム使用で1から1200tickの範囲から詠唱間隔を設定できます.");
+        add("psi.book.page.psitweaks_item.curios_controller", "魔法演算領域スロットに装備した術式自動詠唱デバイスなどの選択術式弾スロットを, 外装コントローラと同じ要領で切り替えます.");
+        add("psi.book.page.psitweaks_item.moval_suit.0", "$(item)M.O.V.A.L. スーツ$(0) は, $(l:components/psitweaks_heavy_psimetal)$(o)$(item)ヘビーサイメタル$(0)$(/l) と $(item)エボニーサイメタル$(0) を使って製作する高性能なPsi系防具です.");
+        add("psi.book.page.psitweaks_item.moval_suit.1", "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復量+5, 最大Psi量+500を付与します.");
         add("psi.book.title.psitweaks_material.chaotic_psimetal", "カオティックサイメタル");
         add("psi.book.title.psitweaks_material.psycheonic_metal_ingot", "プシオニックメタル");
         add("psi.book.page.psitweaks_material.psionic_echo", "$(item)残響の欠片$(0) にサイオニックエコーを注入するか, $(l:psitweaks_spell_pieces/trick_supreme_infusion)$(o)作動式: 超位注入$(0)$(/l)で作成します.$(p)$(l:components/psitweaks_alloy_psionic_echo)感応系合金$(/l), HDΨE 素材, 気体加工, 上位のサイオニック機械の基礎触媒です.");
@@ -2231,10 +2217,10 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_material.pellet_neptunium", "$(item)ポロニウムブロック$(0) を $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l) で変成するか, $(l:psitweaks_machines/material_mutator)$(o)物質変成機$(0)$(/l) で加工して作ります.$(p)$(l:psitweaks_machines/transcendent_universal_cable)$(o)$(item)超越ユニバーサルケーブル$(0)$(/l) や MekaSuit の $(item)事象干渉力増大ユニット$(0) に使います.");
         add("psi.book.page.psitweaks_material.pellet_americium", "$(item)プルトニウムブロック$(0) を $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l) で変成するか, $(l:psitweaks_machines/material_mutator)$(o)物質変成機$(0)$(/l) で加工して作ります.$(p)プシオニックメタルCAD素体など, 終盤のサイオニックレシピに使います.");
         add("psi.book.page.psitweaks_material.echo_sheet", "HDΨE 素材をシート状に濃縮して作ります.$(p)感応制御回路と位格制御回路のレシピで多く使います.");
-        add("psi.book.page.psitweaks_material.magicians_brain", "魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップします.$(p)$(l:items/psitweaks_sorcery_booster)$(o)$(item)ソーサリーブースター$(0)$(/l) と事象干渉力増強ユニットの素材に使います.");
+        add("psi.book.page.psitweaks_material.magicians_brain", "魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップします.$(p)$(l:items/psitweaks_sorcery_booster)$(o)$(item)ソーサリーブースター$(0)$(/l) と事象干渉力増大ユニットの素材に使います.");
         add("psi.book.page.psitweaks_material.jade", "$(item)エメラルドブロック$(0) に物質変成を作用させて作ります. 術式でも$(l:psitweaks_machines/material_mutator)物質変成機$(/l)でも入手できます.$(p)$(l:components/psitweaks_magatama)$(o)$(item)勾玉$(0)$(/l) を作るための主素材です.");
         add("psi.book.page.psitweaks_material.hypostasis_gem", "$(item)アンティナイトブロック$(0) に物質変成を作用させて作ります. 術式でも$(l:psitweaks_machines/material_mutator)物質変成機$(/l)でも入手できます.$(p)濃縮してヒュポスタシス注入へ変換できるほか, $(l:components/psitweaks_magatama)$(o)$(item)勾玉$(0)$(/l), $(l:components/psitweaks_alloy_hypostasis)位格合金$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル系列$(/l)に使います.");
-        add("psi.book.page.psitweaks_material.magatama", "$(l:components/psitweaks_jade)$(o)$(item)翡翠$(0)$(/l) で $(l:components/psitweaks_hypostasis_gem)$(o)$(item)ヒュポスタシスジェム$(0)$(/l) を囲んでクラフトします.$(p)$(l:psitweaks_machines/spellmachinery_casing)スペル機械筐体$(/l)に使うため, 物質変成素材と上位サイオニック機械をつなぐ素材です.");
+        add("psi.book.page.psitweaks_material.magatama", "$(l:components/psitweaks_jade)$(o)$(item)翡翠$(0)$(/l) で $(l:components/psitweaks_hypostasis_gem)$(o)$(item)ヒュポスタシスジェム$(0)$(/l) を囲んでクラフトします.$(p)$(l:psitweaks_machines/spellmachinery_casing)魔導機構ケーシング$(/l)に使うため, 物質変成素材と上位サイオニック機械をつなぐ素材です.");
         add("psi.book.page.psitweaks_material.unrefined_flashmetal", "$(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l) と精製グロウストーンからクラフトします.$(p)濃縮すると使用可能な $(l:components/psitweaks_flashmetal)$(o)$(item)フラッシュメタル$(0)$(/l) になります.");
         add("psi.book.page.psitweaks_material.flashmetal", "$(l:components/psitweaks_unrefined_flashmetal)$(o)$(item)未精製フラッシュメタル$(0)$(/l) を濃縮して作ります.$(p)フラッシュメタルブロック, フラッシュメタル CAD 素体, $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), 昇華 tier の術式弾に使います.");
         add("psi.book.page.psitweaks_material.graviton_factor", "$(item)グラヴィトン因子$(0) はクラフトや注入では作れません. $(item)クァンタム因子$(0) をアイテムとして落とし, 380ブロック落下させると, 落下の負荷によって空中で $(item)グラヴィトン因子$(0) へ書き換わります. スタック数はそのまま引き継がれます.$(p)ジェットパックや飛行魔法などを使うか, 建築限界の高さ付近から落下用の縦穴を用意し, 底で回収しましょう.");
@@ -2245,7 +2231,7 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.category.psitweaks_spell_pieces", "追加術式");
         add("psi.book.category.psitweaks_spell_pieces.desc", "PsiTweaks が追加するスペルピースです. 攻撃, 工業処理, 補助用途のものが多く, 設定によっては研究解禁が必要になります.");
         add("psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムなどは消滅するので注意してください.");
-        add("psi.book.page.psitweaks_spellpiece.trick_barrier", "被ダメージを軽減する障壁効果を付与します.(レベル * 4)だけ被ダメージを減少させます.");
+        add("psi.book.page.psitweaks_spellpiece.trick_barrier", "障壁効果を付与し, 被ダメージを (レベル×4) 減らします.");
         add("psi.book.page.psitweaks_spellpiece.trick_hardening", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         add("psi.book.page.psitweaks_spellpiece.trick_parade", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します.");
         add("psi.book.page.psitweaks_spellpiece.trick_flight", "対象にクリエイティブ飛行を可能にする効果を与えます. ");
@@ -2260,24 +2246,24 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         add("psi.book.page.psitweaks_spellpiece.trick_dispel", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です.");
         add("psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
         add("psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
-        add("psi.book.page.psitweaks_spellpiece.trick_cocytus", "対象モブの精神を永久に凍結させます. 単なるダメージではなく行動を封じる, 非常に強力な制御術式です.");
+        add("psi.book.page.psitweaks_spellpiece.trick_cocytus", "対象モブの精神を永久に凍結させ, 行動できなくします.");
         add("psi.book.page.psitweaks_spellpiece.trick_supply_fe", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです.");
         add("psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
-        add("psi.book.page.psitweaks_spellpiece.trick_phonon_maser", "超音波振動による高威力の熱線を放ちます. 攻撃用の強力な術式です.");
+        add("psi.book.page.psitweaks_spellpiece.trick_phonon_maser", "超音波振動による高威力の熱線を放ちます.");
         add("psi.book.page.psitweaks_spellpiece.trick_meteor_line", "指定位置からRayベクトル方向へ光線を生み出し、経路上の生物に特殊かつ致死的な大ダメージを与えます。");
         add("psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "残響の欠片をサイオニックエコーへ注入変換します.");
-        add("psi.book.page.psitweaks_spellpiece.trick_molecular_divider", "三点で定義した平面で生物を切断します. 高威力の範囲攻撃術式です.");
+        add("psi.book.page.psitweaks_spellpiece.trick_molecular_divider", "三点で定義した平面で生物を切断します.");
         add("psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です.");
         add("psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です.");
-        add("psi.book.page.psitweaks_spellpiece.trick_active_air_mine", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます. 場所を指定して起爆する範囲攻撃です.");
+        add("psi.book.page.psitweaks_spellpiece.trick_active_air_mine", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
         add("psi.book.page.psitweaks_spellpiece.trick_flare_circle", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けます.");
         add("psi.book.page.psitweaks_spellpiece.trick_ice_circle", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いています.");
         add("psi.book.page.psitweaks_spellpiece.trick_set_spellgram_follow_target", "魔法式オブジェクトの追従対象エンティティを設定します.");
         add("psi.book.page.psitweaks_spellpiece.trick_die_flex", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
         add("psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "対象へMekanismの放射線被ばくを付与します. ");
-        add("psi.book.page.psitweaks_spellpiece.trick_radiation_filter", "対象に放射線防護効果を付与し、放射線の影響から身を守ります.");
+        add("psi.book.page.psitweaks_spellpiece.trick_radiation_filter", "対象に放射線防護効果を付与します.");
         add("psi.book.page.psitweaks_spellpiece.trick_cure_radiation", "対象の被ばく量を除去します.");
-        add("psi.book.page.psitweaks_spellpiece.trick_guillotine", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます. 単体対象の攻撃術式です.");
+        add("psi.book.page.psitweaks_spellpiece.trick_guillotine", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         add("psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         add("psi.book.page.psitweaks_spellpiece.operator_tan", "対象数値のタンジェントを返します.");
         add("psi.book.page.psitweaks_spellpiece.operator_atan", "対象数値のアークタンジェントを返します.");
@@ -2399,9 +2385,9 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort.mod_id", "Mod ID", "Mod ID順");
         addBackportedMatrixTranslation("gui.psitweaks.idea_storage.sort.port", "Port Number", "ポート番号順");
         addBackportedMatrixTranslation("gui.psitweaks.idea_storage.transfer_missing", "Not enough ingredients", "材料が足りません");
-        addBackportedMatrixTranslation("item.psitweaks.program_idea_storage", "Program: Ideaspace Storage (WIP)", "プログラム: イデアストレージ (WIP)");
+        addBackportedMatrixTranslation("item.psitweaks.program_idea_storage", "Program: Ideaspace Storage", "プログラム: イデアストレージ");
         addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.0", "Opens your personal Ideaspace Storage. No inputs are required. Items, fluids, and Mekanism chemicals can each be stored, and your contents are retained after logging out or changing dimensions. This feature is still under development.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.", "自分専用のイデアストレージを開きます。入力は不要です。アイテム・液体・Mekanismのケミカルをそれぞれ保管でき、ログアウトやディメンション移動後も内容を保持します。この機能は現在開発中です。$(p)標準設定ではアイテム256種類、液体64種類、ケミカル64種類を保管できます。保存上限はコンフィグで変更できます。");
-        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.1", "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory. Right-click while holding a normal item to store just one. Fluid and chemical containers keep their contents-transfer behavior.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.", "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。通常アイテムを持って右クリックすると1個だけ格納します。液体・ケミカル容器は従来どおり中身を転送します。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.1", "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory. Right-click while holding a normal item to store just one. Fluid and chemical containers transfer their contents instead.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.", "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。通常アイテムを持って右クリックすると1個だけ格納します。液体・化学物質の容器は中身を移します。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");
         addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.2", "Hold a fluid or chemical container on the cursor and right-click the storage grid to transfer its contents. Right-click the desired stored resource to fill a compatible container; if it cannot be filled, its contents may be deposited instead.$(p)Shift-right-click repeats the transfer in the same direction. With an empty cursor, left-click a stored fluid to fill one empty bucket from storage, if that fluid supports buckets.", "液体やケミカルの容器をカーソルで持ち、ストレージ欄を右クリックすると中身を移します。保存済みの資源を右クリックすると、対応する容器への充填を試みます。充填できない場合は、容器の中身を格納することがあります。$(p)Shift＋右クリックでは、同じ方向への転送を繰り返します。カーソルが空の状態で液体を左クリックすると、保存済みの空バケツ1個に充填できます。バケツに対応する液体に限ります。");
         addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.3", "The side crafting-table button opens a 3x3 crafting grid. Consumed ingredients are replenished from storage when available. Shift-click the result to craft roughly one stack at a time.$(p)The clear button returns ingredients to storage if they all fit. Search, sorting, and the + / - buttons help organize the view. JEI and EMI can also place recipe ingredients while the crafting grid is open.", "左側の作業台ボタンで3×3のクラフト欄を開きます。消費した材料は、ストレージに在庫があれば自動補充されます。完成品をShiftクリックすると、約1スタック分をまとめて作成します。$(p)材料返却ボタンは、全量を格納できる場合に材料をストレージへ戻します。検索・並べ替え・＋／－ボタンで表示を調整できます。クラフト欄を開いている間は、JEI・EMIからの材料配置にも対応します。");
         addBackportedMatrixTranslation("psitweaks.configuration.idea_storage", "Ideaspace Storage", "イデアストレージ");
@@ -2508,10 +2494,11 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_diagonal", "Creates a diagonal matrix from a Number List or Vector. The input must contain 1 to 4 elements.", "Number List または Vector から対角行列を作ります. 入力は1〜4要素である必要があります.");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_linear_part", "Operator: Matrix Linear Part", "演算子: 行列線形部分");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_linear_part.desc", "Extracts the top-left 3x3 submatrix.", "左上の 3×3 部分行列を取り出します。");
-        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_linear_part", "Extracts the top-left 3x3 submatrix from the input matrix. If the input is 3x3 or larger, the first 3 rows and 3 columns are returned as a new 3x3 matrix.", "入力された行列の左上 3×3 部分行列を取り出します. 入力が 3×3 以上であれば、最初の3行3列を新しい 3×3 行列として返します.");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_linear_part", "Extracts the top-left 3x3 part of the matrix. Matrices smaller than 3x3 cause an error.", "行列の左上 3×3 部分を取り出します. 3×3 より小さい行列ではエラーになります.");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "演算子: 行列でベクトル変換");
-        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_transform_vector.desc", "Transforms a vector with a 3x3 or 4x4 matrix.", "3×3 または 4×4 行列でベクトルを変換します。");
-        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_transform_vector.desc", "Transforms a vector, or every vector of a Vector List, with a 3x3 or 4x4 matrix.", "3×3 または 4×4 行列でベクトル、または Vector List の各ベクトルを変換します。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector.0", "Transforms a vector with a 3x3 or 4x4 matrix. A 3x3 matrix multiplies [x,y,z]. A 4x4 matrix treats the vector as a homogeneous point [x,y,z,1] and divides the result by w.", "3×3 または 4×4 行列でベクトルを変換します. 3×3 行列では [x,y,z] の列ベクトルとして扱います. 4×4 行列では入力された Vector を列ベクトル [x,y,z,1] として行列との積を計算し、結果 [x',y',z',w'] の各成分を w' で除算した Vector を返します.");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector.1", "Modes: Vector transforms one vector. Vector List transforms each vector of a Vector List and returns them in the same order; if any of them cannot be transformed, such as when w becomes 0, it is an error. A Block List also works; its block positions are used.", "モード: Vector は1つのベクトルを変換します. Vector List は Vector List の各要素を変換し、同じ順序で返します. w が0になるなど、変換できない要素が1つでもあるとエラーです. Block List もつなぐことができ、ブロックの座標が使われます.");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "演算子: 直方体領域");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_matrix_cuboid_region.desc", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis.", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。");
         addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts: odd counts are centered on the input position, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します.");
@@ -2519,14 +2506,16 @@ public class PsitweaksLanguageProvider extends LanguageProvider {
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_region_vector_list.desc", "Returns block position vectors inside a matrix-defined region.", "行列で定義された領域内のブロック座標を Vector List として返します。");
         addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された平行六面体の内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_inside_region", "Operator: Inside Region", "演算子: 領域内");
-        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_inside_region.desc", "Keeps only the entities in the input Entity List whose bounding box centers are inside the matrix-defined parallelepiped.", "入力した Entity List のうち、当たり判定の中心が行列で定義された平行六面体の内部にあるエンティティのみを残します。");
-        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_inside_region", "Filters an Entity List and returns only the entities whose bounding box centers are inside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Entities exactly on the boundary are counted as inside.", "3×4 または 4×4 の行列で定義された平行六面体の内部に当たり判定の中心があるエンティティのみを残した Entity List を返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるエンティティも内部とみなします.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_inside_region.desc", "Keeps only the elements of an Entity, Vector or Block List that are inside the matrix region. Choose the list type in the mode menu.", "Entity・Vector・Block の List のうち、行列の領域内にあるものだけを残します。リストの種類はモードで選びます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_inside_region.0", "Filters a list and returns only the elements inside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside.", "3×4 または 4×4 の行列で定義された平行六面体の内部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるものも内部とみなします.");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_inside_region.1", "Choose the list type in the mode menu. Entity (default) tests the center of each bounding box, Vector tests each vector as given, and Block tests block positions, the same points Operator: Region Vector List returns.", "リストの種類はモードで選びます. Entity（既定）は当たり判定の中心、Vector はそのベクトル、Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.");
         addBackportedMatrixTranslation("psitweaks.spellpiece.operator_outside_region", "Operator: Outside Region", "演算子: 領域外");
-        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_outside_region.desc", "Keeps only the entities in the input Entity List whose bounding box centers are outside the matrix-defined parallelepiped.", "入力した Entity List のうち、当たり判定の中心が行列で定義された平行六面体の外部にあるエンティティのみを残します。");
-        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_outside_region", "Filters an Entity List and returns only the entities whose bounding box centers are outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Entities exactly on the boundary are counted as inside, so they are excluded from the result.", "3×4 または 4×4 の行列で定義された平行六面体の外部に当たり判定の中心があるエンティティのみを残した Entity List を返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるエンティティは内部とみなすため、結果から除外されます.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.operator_outside_region.desc", "Keeps only the elements of an Entity, Vector or Block List that are outside the matrix region. Choose the list type in the mode menu.", "Entity・Vector・Block の List のうち、行列の領域外にあるものだけを残します。リストの種類はモードで選びます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_outside_region.0", "Filters a list and returns only the elements outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside, so they are excluded.", "3×4 または 4×4 の行列で定義された平行六面体の外部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル、第4列は開始点です. 境界面上にあるものは内部とみなすため、結果から除外されます.");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.operator_outside_region.1", "Choose the list type in the mode menu. Entity (default) tests the center of each bounding box, Vector tests each vector as given, and Block tests block positions, the same points Operator: Region Vector List returns.", "リストの種類はモードで選びます. Entity（既定）は当たり判定の中心、Vector はそのベクトル、Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.");
         addBackportedMatrixTranslation("psitweaks.spellpiece.trick_mass_block_break", "Trick: Mass Block Break", "作動式: 大規模ブロック破壊");
-        addBackportedMatrixTranslation("psitweaks.spellpiece.trick_mass_block_break.desc", "Breaks blocks at the coordinates in a Vector List. Drops are intentionally collected into the caster's inventory first; only overflow is dropped.", "Vector List の座標にあるブロックを破壊します。ドロップは意図的に先に術者のインベントリへ回収され、入りきらない分だけドロップします。");
-        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List. Vectors are treated as block coordinates, duplicate block positions are ignored after their first occurrence, and the remaining order is preserved. The maximum block count input must be a positive integer constant. Only positions within the configured maximum are range-checked and broken. Dropped items are merged by item and data components, then intentionally collected into the caster's inventory first. Only overflow is dropped at the caster's position, or at the focal point if the task is interrupted. The processed positions must fit within the shared internal limit.", "Vector List の座標にあるブロックを破壊します. Vector はブロック座標として扱われ、重複したブロック座標は最初の1回だけ使われ、残りの順序は維持されます. 破壊数の上限入力は正の整数定数である必要があります. 設定した最大数まで実際に処理される座標だけが範囲チェックと破壊の対象になります. ドロップアイテムはアイテムとデータコンポーネントごとにまとめられ、意図的に先に術者のインベントリへ回収されます. 入りきらない分だけ術者の位置へ、タスクが中断された場合は焦点位置へドロップします. 処理対象は共通の内部上限内に収まる必要があります.");
+        addBackportedMatrixTranslation("psitweaks.spellpiece.trick_mass_block_break.desc", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Drops go into the caster's inventory; only overflow is dropped.", "Vector List（Block List も可）の座標にあるブロックを破壊します。ドロップは術者のインベントリに入り、入りきらない分だけ落ちます。");
+        addBackportedMatrixTranslation("psi.book.page.psitweaks_spellpiece.trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Duplicate positions count once, and only the first positions up to the maximum block count (at most 4096) are processed. The maximum must be a positive integer constant. Drops go into the caster's inventory; overflow drops at the caster's position, or at the focal point if the task is interrupted.", "Vector List（Block List も可）の座標にあるブロックを破壊します. 重複した座標は1回だけ扱い, 先頭から破壊数の上限まで(最大4096)を処理します. 上限は正の整数定数である必要があります. ドロップは術者のインベントリに入り, 入りきらない分は術者の位置(タスクが中断されたときは焦点位置)に落ちます.");
     }
 
     private void addBackportedMatrixTranslation(String key, String enUs, String jaJp) {

@@ -1,0 +1,17 @@
+{
+  "name": "item.psitweaks.filter_card",
+  "category": "psi:items",
+  "icon": "psitweaks:filter_card",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.filter_card.0",
+      "item": "psitweaks:filter_card",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_item.filter_card.1"
+    }
+  ]
+}

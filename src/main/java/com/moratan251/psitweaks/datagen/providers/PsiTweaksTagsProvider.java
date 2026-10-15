@@ -139,6 +139,8 @@ public final class PsiTweaksTagsProvider {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             add(itemTag("curios", "charm"), entries("psitweaks:flash_charm"));
+            // curios:curio lets the card go in any Curios slot that uses the tag validator.
+            add(itemTag("curios", "curio"), entries("psitweaks:filter_card"));
             add(itemTag("curios", "magic_calculation_area"), entries(
                     "psitweaks:auto_caster_tick",
                     "psitweaks:auto_caster_second",

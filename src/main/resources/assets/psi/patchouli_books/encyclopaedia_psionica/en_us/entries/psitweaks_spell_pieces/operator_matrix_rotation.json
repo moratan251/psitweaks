@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.operator_matrix_rotation",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_matrix_rotation.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_rotation.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_rotation.1"
+    }
+  ]
+}

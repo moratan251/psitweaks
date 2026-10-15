@@ -4,10 +4,6 @@
   "icon": "minecraft:villager_spawn_egg",
   "pages": [
     {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_magician.0"
-    },
-    {
       "type": "spotlight",
       "text": "psi.book.page.psitweaks_magician.1",
       "item": "psi:cad_assembler",

@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.operator_block_free_capacity",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_block_free_capacity.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_block_free_capacity.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_block_free_capacity.1"
+    }
+  ]
+}

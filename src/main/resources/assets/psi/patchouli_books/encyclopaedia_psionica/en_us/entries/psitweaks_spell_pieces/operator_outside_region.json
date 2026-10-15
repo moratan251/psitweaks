@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.operator_outside_region"
+      "text": "psi.book.page.psitweaks_spellpiece.operator_outside_region.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_outside_region.1"
     }
   ]
 }

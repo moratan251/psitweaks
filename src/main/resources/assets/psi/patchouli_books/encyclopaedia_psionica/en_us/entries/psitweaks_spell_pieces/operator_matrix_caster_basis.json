@@ -1,0 +1,19 @@
+{
+  "name": "psitweaks.spellpiece.operator_matrix_caster_basis",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_matrix_caster_basis.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_caster_basis.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_caster_basis.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_caster_basis.2"
+    }
+  ]
+}

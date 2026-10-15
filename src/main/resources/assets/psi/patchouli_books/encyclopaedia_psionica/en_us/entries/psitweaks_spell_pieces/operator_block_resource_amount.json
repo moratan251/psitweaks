@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.operator_block_resource_amount",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_block_resource_amount.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_block_resource_amount.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_block_resource_amount.1"
+    }
+  ]
+}

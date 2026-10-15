@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.operator_dropped_items",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_dropped_items.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_dropped_items"
+    }
+  ]
+}

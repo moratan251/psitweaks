@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector"
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_transform_vector.1"
     }
   ]
 }

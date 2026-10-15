@@ -9,7 +9,6 @@
     },
     {
       "type": "crafting_multi",
-      "text": "psi.book.page.psitweaks_cad_and_gear.1",
       "recipes": [
         "psitweaks:inline_caster",
         "psitweaks:spell_magazine",

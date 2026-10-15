@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "psi:psidust"
+    },
+    "B": {
+      "item": "psi:psimetal"
+    },
+    "C": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    " A ",
+    "BCB",
+    " B "
+  ],
+  "result": {
+    "item": "psitweaks:filter_card"
+  },
+  "show_notification": true
+}
