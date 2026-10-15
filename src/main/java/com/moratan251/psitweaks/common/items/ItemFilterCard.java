@@ -12,8 +12,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-public class ItemFilterCard extends Item {
+public class ItemFilterCard extends Item implements ICurioItem {
     public ItemFilterCard(Properties properties) {
         super(properties.stacksTo(1));
     }
@@ -26,6 +27,20 @@ public class ItemFilterCard extends Item {
                     buf -> buf.writeEnum(hand));
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    /**
+     * Curios lists every slot the card is valid for, which depends on the slots other mods add. The card fits any
+     * tag-validated slot through {@code curios:curio}, so show that instead of the list.
+     */
+    @Override
+    public List<Component> getSlotsTooltip(List<Component> tooltips, TooltipContext context, ItemStack stack) {
+        if (tooltips.isEmpty()) {
+            return tooltips;
+        }
+        return List.of(Component.translatable("curios.tooltip.slot").append(" ").withStyle(ChatFormatting.GOLD)
+                .append(Component.translatable("tooltip.psitweaks.filter_card.any_slot")
+                        .withStyle(ChatFormatting.YELLOW)));
     }
 
     @Override

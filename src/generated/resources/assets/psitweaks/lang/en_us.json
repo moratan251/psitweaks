@@ -1260,6 +1260,7 @@
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "Cast interval: %s ticks",
   "tooltip.psitweaks.cad_battery_quantum.bonus": "While your CAD: +1500 Max Psi",
   "tooltip.psitweaks.cad_battery_reactive.bonus": "While your CAD: +10 Psi Regen",
+  "tooltip.psitweaks.filter_card.any_slot": "Any",
   "tooltip.psitweaks.filter_card.empty": "No items registered",
   "tooltip.psitweaks.filter_card.idle": "Idle: another Filter Card found first is in use",
   "tooltip.psitweaks.filter_card.slot": "%s: %s",

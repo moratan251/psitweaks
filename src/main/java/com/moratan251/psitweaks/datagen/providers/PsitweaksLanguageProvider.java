@@ -2423,6 +2423,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("tooltip.psitweaks.filter_card.slot", "%s: %s");
         root.addProperty("tooltip.psitweaks.filter_card.empty",
                 japanese ? "アイテムが登録されていません" : "No items registered");
+        root.addProperty("tooltip.psitweaks.filter_card.any_slot", japanese ? "どこでも" : "Any");
         root.addProperty("tooltip.psitweaks.filter_card.idle",
                 japanese ? "待機中: 先に見つかる別のフィルタカードが使われます" : "Idle: another Filter Card found first is in use");
         root.addProperty("psitweaks.spellerror.no_filter_card",

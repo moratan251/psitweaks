@@ -1302,6 +1302,7 @@
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔: %s tick",
   "tooltip.psitweaks.cad_battery_quantum.bonus": "CAD所持時: 最大Psi +1500",
   "tooltip.psitweaks.cad_battery_reactive.bonus": "CAD所持時: Psi再生速度 +10",
+  "tooltip.psitweaks.filter_card.any_slot": "どこでも",
   "tooltip.psitweaks.filter_card.empty": "アイテムが登録されていません",
   "tooltip.psitweaks.filter_card.idle": "待機中: 先に見つかる別のフィルタカードが使われます",
   "tooltip.psitweaks.filter_card.slot": "%s: %s",
