@@ -2093,12 +2093,27 @@ public class PsitweaksLanguageProvider implements DataProvider {
             addSpellPiece(root, id, "Trick: Ideaspace Storage - " + (deposit ? "Deposit" : "Withdraw"), en,
                     "作動式: イデアストレージ-" + (deposit ? "格納" : "取出"), jp);
             addBookPage(root, id + ".0",
-                    en + " The mode picks Item (I), Fluid (F), Chemical (C) or FE, and for the first three also Exact Transfer (I=, F=, C=)."
+                    (deposit
+                            ? "Deposits the resource chosen by the mode from the specified face of the block at Position into your Ideaspace Storage."
+                            : "Withdraws the resource chosen by the mode from your Ideaspace Storage into the specified face of the block at Position.")
+                            + " The modes are Item (I), Fluid (F), Chemical (C) and FE, and the first three also have Exact Transfer (I=, F=, C=)."
                             + " Partial Transfer moves as much as it can: items up to the count given by Number, fluids and chemicals up to Power * 1000 mB,"
                             + " and FE up to Power * 4000 FE. The amount must be positive; fractions are rounded down.",
-                    jp + "モードでアイテム（I）・液体（F）・化学物質（C）・FEを選び、FE以外は完全転送（I=・F=・C=）も選べます。"
+                    (deposit
+                            ? "位置のブロックの指定面から、モードで選んだ資源を自分のイデアストレージへ格納します。"
+                            : "自分のイデアストレージから、モードで選んだ資源を位置のブロックの指定面へ取り出します。")
+                            + "モードはアイテム（I）・液体（F）・化学物質（C）・FEで、FE以外は完全転送（I=・F=・C=）も選べます。"
                             + "部分転送では移せる分だけ移します。上限はアイテムが「数値」の個数、液体・化学物質が威力×1000mB、FEが威力×4000FEです。"
                             + "量には正の数を指定し、端数は切り捨てます。");
+            if (!deposit) {
+                // Filters, block transfers and Exact Transfer are shared with Deposit, so Withdraw links there instead of repeating them.
+                addBookPage(root, id + ".1",
+                        "Filters, block transfers and Exact Transfer work as in $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l)."
+                                + " When several types match, they are withdrawn in turn until the limit is reached.",
+                        "フィルタ、ブロックとの転送、完全転送は $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l) と同じです。"
+                                + "複数の種類が一致する場合は、上限に達するまで順に取り出します。");
+                continue;
+            }
             addBookPage(root, id + ".1",
                     "The filter is optional; with no filter or an empty String, everything of the chosen kind is a target."
                             + " In Fluid and Chemical modes the filter is a String matched against resource IDs, supporting * (any text) and ? (any single character)."
@@ -2116,12 +2131,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                             + "Itemはそのアイテムの種類に、Item Listはそのいずれかに一致します。演算子: 厳密一致アイテムの出力をつなぐと、"
                             + "エンチャントや耐久値などのデータコンポーネントまで一致するものだけが対象です。");
             addBookPage(root, id + ".3",
-                    (deposit ? "" : "When several types match, they are withdrawn in turn until the limit is reached. ")
-                            + "Follows the block's per-face input and output. For items, fluids and chemicals, casting fails with an error if the block is protected,"
+                    "Follows the block's per-face input and output. For items, fluids and chemicals, casting fails with an error if the block is protected,"
                             + " and nothing happens on blocks in unloaded chunks or on your own Ideaspace Connector."
                             + " FE mode does nothing where you may not interact. Chemical mode requires Mekanism and does nothing without it.",
-                    (deposit ? "" : "複数の種類が一致する場合は、上限に達するまで順に取り出します。")
-                            + "ブロックの面ごとの入出力に従います。アイテム・液体・化学物質では、保護されたブロックを対象にするとエラーになり、"
+                    "ブロックの面ごとの入出力に従います。アイテム・液体・化学物質では、保護されたブロックを対象にするとエラーになり、"
                             + "読み込まれていないチャンクのブロックや、自分のイデアコネクターには作用しません。"
                             + "FEモードは、操作できない場所では何もしません。化学物質モードにはMekanismが必要で、導入されていない場合は何もしません。");
             addBookPage(root, id + ".4",
