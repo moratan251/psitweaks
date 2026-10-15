@@ -990,8 +990,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Since both relate to positions, many inputs convert Block and Vector automatically.$(p)A Block connected to a Vector input uses its position, as does each block of a Block List in a Vector List input. A Vector connected to a Block input reads the block there when the spell runs.$(p)Any inputs, such as Operator: To String, keep the original type.",
                 "Block と Vector はどちらも座標に関係するため, 多くの入力で自動変換されます.$(p)Block を Vector 入力へ接続すると座標として扱われます (Block List と Vector List も同様). Vector を Block 入力へ接続すると, 実行時にその座標のブロックを読み取ります.$(p)演算子: 文字列へ変換 などの Any 入力では, 元の型がそのまま扱われます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.4",
-                "Item represents an ItemStack, for inspecting its type, count, NBT, display name and so on. It can be read from held items, inventory slots, block inventories or dropped items.$(p)Each Item also records its source, so spells can tell where it came from.",
-                "Item 型は ItemStack を扱う型で, アイテムの種類, 個数, NBT, 表示名などを調べるために使います. 手持ちのアイテム, 指定スロットのアイテム, ブロック内のインベントリ, ドロップアイテムなどから取得できます.$(p)Item 型の値は取得元を source として保持しており, そのアイテムがどこから来たかを判別できます.");
+                "Item represents an ItemStack, for inspecting its type, count, NBT, display name and so on. It can be read from held items, inventory slots, block inventories or dropped items.",
+                "Item 型は ItemStack を扱う型で, アイテムの種類, 個数, NBT, 表示名などを調べるために使います. 手持ちのアイテム, 指定スロットのアイテム, ブロック内のインベントリ, ドロップアイテムなどから取得できます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.5",
                 "PsiTweaks divides values into Plain Values and Contextual Values.$(p)Plain Values do not depend on world state, such as Number, Vector, and String.$(p)Contextual Values depend on a world or target context, such as Entity, Block, and Item.",
                 "PsiTweaks の値は Plain Value と Contextual Value に分けられます.$(p)Plain Value はワールドの状態に依存しない値で, Number, Vector, String などが該当します.$(p)Contextual Value はワールドや対象に依存する値で, Entity, Block, Item などが該当します.");
@@ -1636,7 +1636,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_block_position", "Outputs the position saved in a Block as a Vector. Pieces that take a Vector also accept a Block directly, so this is mainly for checking coordinates with Trick: Debug.", "Block に保存された座標を Vector として出力します. Vector を受け取るピースには Block をそのまま接続できるので, 主に 作動式: デバッグ で座標を見たいときに使います.");
         addBookPage(root, "operator_block_position_list", "Gets the positions saved in a Block List as a Vector List. A Block List can also be connected directly to Vector List inputs, which then use these positions.", "Block List に保存された座標を Vector List として取得します. Vector List の入力には Block List を直接つなぐこともでき, その場合も同じ座標が使われます.");
         addBookPage(root, "selector_online_players", "Outputs the names of all online players in the caster's current world as a String List.", "術者の現在ワールドにいるオンラインプレイヤー全員の名前を String List として出力します.");
-        addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value: a read-only snapshot of its kind, count, durability, name and so on. A dropped item, such as from Psi's Selector: Nearby Items, gives its own stack, with the dropped item as the source.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム などで得たドロップアイテムでは, そのスタックを出力し, 取得元はそのドロップアイテムになります.");
+        addBookPage(root, "selector_held_item", "Outputs the target living entity's main-hand ItemStack as an Item value: a read-only snapshot of its kind, count, durability, name and so on. A dropped item, such as from Psi's Selector: Nearby Items, gives its own stack.", "対象 LivingEntity のメインハンドの ItemStack を Item 型として出力します. Item型は, アイテムの種類, 個数, 耐久値, 名前などを持つ読み取り用の値です. Psi の 取得子: 近くのアイテム などで得たドロップアイテムでは, そのスタックを出力します.");
         addBookPage(root, "selector_selected_slot_item", "Outputs the ItemStack in the slot selected by the spell as an Item value. This is the same slot used by Psi pieces such as Trick: Place Block, and is affected by Trick: Switch Target Slot. Empty slots output an empty Item.", "術式で選択しているスロットにある ItemStack を Item 型として出力します. スロットは Psi の 作動式: ブロック設置 などで扱うものと同じであり, 作動式: 指定スロット切替 の影響を受けます. 空スロットは空の Item を出力します.");
         addBookPage(root, "selector_entity_slot_item", "Outputs the Item in the target Entity's zero-based inventory slot. Players use their player inventory; other entities use their item handler when available. Unreadable, empty, negative, or out-of-range slots output an empty Item.", "対象 Entity の0始まりのインベントリスロットにある Item を出力します. Player はプレイヤーインベントリを使用し, その他の Entity は利用可能な ItemHandler を使用します. 読み取れないスロット, 空スロット, 負の番号, 範囲外の番号は空の Item を出力します.");
         addBookPage(root, "selector_internal_slot_item", "Outputs the Item in the target block's zero-based internal inventory slot. Item handlers are used first, with Container as a fallback. Blocks without a readable inventory and empty, negative, or out-of-range slots output an empty Item.", "対象ブロックの0始まりの内部インベントリスロットにある Item を出力します. ItemHandler を優先して使用し, 利用できない場合は Container を使用します. 読み取り可能なインベントリがないブロック, 空スロット, 負の番号, 範囲外の番号は空の Item を出力します.");
@@ -2218,14 +2218,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "エンチャント・耐久値・名前などのデータコンポーネントまで一致するものだけが対象になります。"
                         + "個数は比べません。空のItemはエラーで、リストの空の要素は無視します。");
         addSpellPiece(root, "operator_block_item", "Operator: Block Item",
-                "Gets the item that Pick Block gives for the block, as an Item without a source.",
-                "演算子: ブロックのアイテム化", "ブロックをブロック選択した時のアイテムを、取得元のない Item として取得します。");
+                "Gets the item that Pick Block gives for the block, as an Item.",
+                "演算子: ブロックのアイテム化", "ブロックをブロック選択した時のアイテムを、Item として取得します。");
         addBookPage(root, "operator_block_item",
                 "Outputs the item that Pick Block gives for the block, as an Item: wheat seeds for a wheat crop, and an empty Item for air."
-                        + " The Item has no source; it works as an Item filter, for example in Trick: Ideaspace Storage - Slot Withdraw.",
+                        + " It works as an Item filter, for example in Trick: Ideaspace Storage - Slot Withdraw.",
                 "ブロックをブロック選択した時のアイテムを Item として出力します。"
                         + "小麦の作物なら小麦の種、空気なら空の Item です。"
-                        + "取得元は持ちませんが、Item フィルタとして作動式: イデアストレージ-スロット取出などに使えます。");
+                        + "Item フィルタとして作動式: イデアストレージ-スロット取出などに使えます。");
 
         addSpellPiece(root, "operator_block_resource_amount", "Operator: Block Resource Amount",
                 "Outputs the items, fluids, chemicals or FE stored in a block, chosen by the mode. String narrows it down by ID.",
@@ -2270,11 +2270,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Turns the dropped items in an Entity List into an Item List. Other entities are skipped.",
                 "演算子: ドロップアイテム", "Entity List のドロップアイテムを Item List に変換します。他のエンティティは除外します。");
         addBookPage(root, "operator_dropped_items",
-                "Turns the dropped items in an Entity List, such as from Selector: Nearby Items, into an Item List, keeping their order and skipping other entities."
-                        + " Each Item keeps its dropped item as its source.",
+                "Turns the dropped items in an Entity List, such as from Selector: Nearby Items, into an Item List, keeping their order and skipping other entities.",
                 "取得子: 近くのアイテムなどの Entity List から、ドロップアイテムを同じ順序で Item List に変換します。"
-                        + "他のエンティティは除外します。"
-                        + "各 Item はそのドロップアイテムを取得元として覚えています。");
+                        + "他のエンティティは除外します。");
 
         addSpellPiece(root, "operator_matrix_caster_basis", "Operator: Caster Basis Matrix",
                 "Builds a 4x4 matrix from the caster's axis-rounded facing (columns: right, up, forward, origin), so regions can follow the caster.",
@@ -2361,8 +2359,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Gets the item registered in the given slot (1-9) of the Filter Card in use",
                 "取得子: フィルタカード", "使用中のフィルタカードの指定した番号(1〜9)に登録したアイテムを取得する");
         addBookPage(root, "selector_filter_card",
-                "Outputs the item registered in the given slot (1 to 9) of the caster's Filter Card in use, as an Item value with a count of 1 and no source. Connect it to Operator: Strict Item to also match data such as enchantments and names.$(p)If the caster has no Filter Card, or the slot is empty, the spell stops with an error.",
-                "術者が使用中のフィルタカードの, 指定した番号(1〜9)に登録したアイテムを, 個数1で取得元のない Item 型として出力します. エンチャントや名前などのデータまで一致させるには, 演算子: 厳密アイテム につなぎます.$(p)フィルタカードを持っていないときや, 指定した枠が空のときはエラーで止まります.");
+                "Outputs the item registered in the given slot (1 to 9) of the caster's Filter Card in use, as an Item value with a count of 1. Connect it to Operator: Strict Item to also match data such as enchantments and names.$(p)If the caster has no Filter Card, or the slot is empty, the spell stops with an error.",
+                "術者が使用中のフィルタカードの, 指定した番号(1〜9)に登録したアイテムを, 個数1の Item として出力します. エンチャントや名前などのデータまで一致させるには, 演算子: 厳密一致アイテム につなぎます.$(p)フィルタカードを持っていないときや, 指定した枠が空のときはエラーで止まります.");
         root.addProperty("psi.book.page.psitweaks_item.filter_card.0", japanese
                 ? "術式のフィルタに使う見本アイテムを, 9枠まで登録できるカードです. 使うとGUIが開き, 枠をアイテムでクリックすると個数1の写しを登録します. 元のアイテムは消費しません. 空の手でクリックするかシフトクリックで枠を空にします.$(p)取得子: フィルタカード に番号(1〜9)を入力すると, その枠のアイテムを取得できます."
                 : "A card that holds up to 9 sample items for spell filters. Using it opens a GUI; clicking a slot with an item registers a copy with a count of 1 without using up the item. Click with an empty hand or shift-click to clear a slot.$(p)Selector: Filter Card reads the item in the slot whose number (1 to 9) you give it.");
