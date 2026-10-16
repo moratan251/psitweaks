@@ -117,6 +117,11 @@ public final class ConnectorMekanism {
         @Override public void setChemicalInTank(int tank, S stack) { throw new UnsupportedOperationException("Use insert/extract on shared storage"); }
         @Override public long getTankCapacity(int tank) { var storage = connector.storage(); return tank >= 0 && tank < getTanks() && storage != null ? storage.maxChemicalPerType() : 0; }
         @Override public boolean isValid(int tank, S stack) { return tank >= 0 && tank < getTanks() && !stack.isEmpty() && connector.allowsInput(side, ingredient(stack)); }
+        // Every tank is a view of the same storage, so Mekanism's per-tank bulk loop would count its free space once
+        // per empty tank when simulating. The input tank accepts whatever the face allows; ask it alone.
+        @Override public S insertChemical(S stack, Action action) {
+            return insertChemical(IdeaspaceConnectorBlockEntity.SLOTS, stack, action);
+        }
         @Override public S insertChemical(int tank, S stack, Action action) {
             var storage = connector.storage(); if (storage == null || !isValid(tank, stack)) return stack;
             var id = IdeaStorageMekanismIntegration.key(kind, stack.getTypeRegistryName());

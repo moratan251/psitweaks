@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.storage.idea;
 
+import com.moratan251.psitweaks.common.storage.connector.ConnectorHandlers;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorTransfers;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -10,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * Bounded scans of an endpoint or the warehouse's type list; never loops once per requested unit.
@@ -109,8 +109,9 @@ public final class IdeaStorageResourceTransfers {
         for (var entry : storage.itemEntries()) {
             ItemStack template = entry.getKey().template();
             if (entry.getValue() < amount || !filter.test(template) || storage.simulateExtract(entry.getKey(), amount) < amount) continue;
-            // One stacked insertion of one item type spreads over independent slots, so its simulation is reliable.
-            if (!ItemHandlerHelper.insertItemStacked(target, template.copyWithCount(amount), true).isEmpty()) continue;
+            // One stacked insertion of one item type spreads over independent slots, so its simulation is reliable;
+            // a connector's slots share one storage and are simulated through its input slot.
+            if (!ConnectorHandlers.simulateInsertStacked(target, template.copyWithCount(amount)).isEmpty()) continue;
             return ConnectorTransfers.pushItemBatch(storage, entry.getKey(), target, amount);
         }
         return 0;

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.gametest;
 
 import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.IdeaLogisticsChemicalChecks;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
@@ -24,6 +25,7 @@ import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -195,6 +198,39 @@ public final class IdeaLogisticsPlusGameTests {
             PsitweaksConfig.COMMON.ideaStorageMaxFluidPerType.set(oldPerType);
             PsitweaksConfig.COMMON.ideaStorageMaxFluidTypes.set(oldTypes);
         }
+        helper.succeed();
+    }
+
+    /** A connector's slots and tanks are views of one storage: its free space must be counted once, not per slot. */
+    @GameTest(template = "connector_empty")
+    public static void exactWithdrawalIntoConnectorCountsSharedSpaceOnce(GameTestHelper helper) {
+        int oldStacks = PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.get();
+        try {
+            PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.set(1); // 64 apples per type
+            var connector = IdeaLogisticsGameTests.place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+            var target = connector.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP)
+                    .orElseThrow(() -> new AssertionError("Missing item capability"));
+            var apple = new ItemStack(Items.APPLE);
+            connector.storage().insert(apple, 60); // room for 4 more
+            var storage = new PlayerIdeaStorage();
+            storage.insert(apple, 10);
+            for (boolean published : new boolean[] {false, true}) {
+                if (published) connector.setResource(0, IdeaLogisticsGameTests.apple());
+                long version = storage.getVersion();
+                helper.assertTrue(IdeaStorageResourceTransfers.withdrawItemsExact(storage, target, stack -> true, 8) == 0
+                                && storage.getVersion() == version && stored(storage, apple) == 10
+                                && stored(connector.storage(), apple) == 60,
+                        "Exact item withdrawal into a connector moved part of the amount (published=" + published + ")");
+            }
+            helper.assertTrue(IdeaStorageResourceTransfers.withdrawItemsExact(storage, target, stack -> true, 4) == 4
+                            && stored(storage, apple) == 6 && stored(connector.storage(), apple) == 64,
+                    "Exact item withdrawal into a connector must fill the remaining space");
+            helper.assertTrue(IdeaStorageResourceTransfers.withdrawItems(storage, target, stack -> true, 8) == 0
+                    && stored(storage, apple) == 6, "Partial item withdrawal into a full connector moved items");
+        } finally {
+            PsitweaksConfig.COMMON.ideaStorageItemStacksPerType.set(oldStacks);
+        }
+        if (MekanismCompat.isMekanismLoaded()) IdeaLogisticsChemicalChecks.checkConnectorTarget(helper);
         helper.succeed();
     }
 

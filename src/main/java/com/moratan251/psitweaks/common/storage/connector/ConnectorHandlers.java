@@ -10,6 +10,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /** Stable sided adapters recheck settings/lifecycle on every call, including previously cached handles. */
 public final class ConnectorHandlers {
@@ -35,7 +36,19 @@ public final class ConnectorHandlers {
     private static boolean validItemSlot(int slot) { return valid(slot) || slot == IdeaspaceConnectorBlockEntity.SLOTS; }
     private static int bounded(long amount) { return (int) Math.min(Integer.MAX_VALUE, Math.max(0L, amount)); }
 
-    public final IItemHandler items = new IItemHandler() {
+    public final IItemHandler items = new ItemView();
+
+    /**
+     * Simulates {@link ItemHandlerHelper#insertItemStacked}. Every slot of a connector view inserts into the same
+     * storage, so the helper's slot-by-slot simulation would count its free space once per slot; such a view is asked
+     * through its input slot alone, which accepts whatever the face allows.
+     */
+    public static ItemStack simulateInsertStacked(IItemHandler target, ItemStack stack) {
+        return target instanceof ItemView view ? view.insertItem(IdeaspaceConnectorBlockEntity.SLOTS, stack, true)
+                : ItemHandlerHelper.insertItemStacked(target, stack, true);
+    }
+
+    private final class ItemView implements IItemHandler {
         // The extra, permanently empty slot lets standard insertion helpers accept unpublished items.
         @Override public int getSlots() { return IdeaspaceConnectorBlockEntity.SLOTS + 1; }
         @Override public ItemStack getStackInSlot(int slot) {
@@ -58,7 +71,7 @@ public final class ConnectorHandlers {
         }
         @Override public int getSlotLimit(int slot) { return validItemSlot(slot) ? Integer.MAX_VALUE : 0; }
         @Override public boolean isItemValid(int slot, ItemStack stack) { return validItemSlot(slot) && itemInput(stack); }
-    };
+    }
 
     public final IFluidHandler fluids = new IFluidHandler() {
         @Override public int getTanks() { return IdeaspaceConnectorBlockEntity.SLOTS; }

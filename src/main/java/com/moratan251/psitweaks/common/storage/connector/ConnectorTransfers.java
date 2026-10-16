@@ -87,7 +87,7 @@ public final class ConnectorTransfers {
         int available = (int) storage.simulateExtract(key, maximum);
         if (available <= 0) return 0;
         ItemStack offered = key.template().copyWithCount(available);
-        int planned = available - ItemHandlerHelper.insertItemStacked(target, offered, true).getCount();
+        int planned = available - ConnectorHandlers.simulateInsertStacked(target, offered).getCount();
         var withdrawal = storage.withdrawItem(key, Math.max(0, planned));
         int accepted = 0;
         try {

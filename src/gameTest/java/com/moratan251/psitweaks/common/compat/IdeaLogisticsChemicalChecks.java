@@ -183,8 +183,8 @@ public final class IdeaLogisticsChemicalChecks {
             PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(oldPerType);
         }
         // The supply half resolves its target through the world on 1.20.1. A Basic Chemical Tank (input on every face
-        // but the front) filled to 400 mB below capacity plays the device's limited tanks. An Ideaspace Connector
-        // cannot: its tanks share one storage, so Mekanism's bulk simulation counts the free space once per tank.
+        // but the front) filled to 400 mB below capacity plays the device's limited tanks; checkConnectorTarget covers
+        // an Ideaspace Connector, whose tanks share one storage.
         var level = helper.getLevel();
         var at = helper.absolutePos(new BlockPos(3, 1, 1));
         level.setBlockAndUpdate(at, MekanismBlocks.BASIC_CHEMICAL_TANK.getBlock().defaultBlockState());
@@ -204,5 +204,37 @@ public final class IdeaLogisticsChemicalChecks {
                 && tank.getChemicalInTank(0).getAmount() == capacity
                 && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 500 - room,
                 "Exact chemical withdrawal must move the whole amount");
+    }
+
+    /** Exact withdrawal into another player's connector whose storage has room for 400 of the 500 mB. */
+    public static void checkConnectorTarget(GameTestHelper helper) {
+        var hydrogenId = ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen");
+        var hydrogen = IdeaStorageMekanismIntegration.key("gas", hydrogenId);
+        long oldPerType = PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.get();
+        try {
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(1000L);
+            var connector = IdeaLogisticsGameTests.place(helper, new BlockPos(2, 1, 1), UUID.randomUUID());
+            connector.storage().insertChemical(hydrogen, 600);
+            var level = helper.getLevel();
+            var at = connector.getBlockPos();
+            IGasHandler handler = ConnectorCapabilities.get(level, at, Direction.UP, Capabilities.GAS_HANDLER);
+            helper.assertTrue(handler != null && handler.insertChemical(gas(hydrogenId, 500), Action.SIMULATE).getAmount() == 100,
+                    "Connector bulk chemical simulation counted the shared storage once per tank");
+            var storage = new PlayerIdeaStorage();
+            storage.insertChemical(hydrogen, 500);
+            for (boolean published : new boolean[] {false, true}) {
+                if (published) connector.setResource(0, ConnectorResource.chemical(hydrogen));
+                helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, level, at, Direction.UP, hydrogenId::equals, 500, false) == 0
+                                && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 500
+                                && connector.storage().simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 600,
+                        "Exact chemical withdrawal into a connector moved part of the amount (published=" + published + ")");
+            }
+            helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, level, at, Direction.UP, hydrogenId::equals, 400, false) == 400
+                            && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 100
+                            && connector.storage().simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 1000,
+                    "Exact chemical withdrawal into a connector must fill the remaining space");
+        } finally {
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(oldPerType);
+        }
     }
 }
