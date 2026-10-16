@@ -174,4 +174,33 @@ final class IdeaLogisticsChemicalChecks {
                 && tanks[0] + tanks[1] == 600 && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 0,
                 "Exact chemical withdrawal must move the whole amount");
     }
+
+    /** Exact withdrawal into another player's connector whose storage has room for 400 of the 500 mB. */
+    static void checkConnectorTarget(GameTestHelper helper) {
+        var hydrogen = ResourceLocation.parse("mekanism:hydrogen");
+        long oldPerType = PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.get();
+        try {
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(1000L);
+            var connector = IdeaLogisticsGameTests.place(helper, new BlockPos(2, 1, 1), UUID.randomUUID());
+            connector.storage().insertChemical(hydrogen, 600);
+            var handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(helper.getLevel(), connector.getBlockPos(), Direction.UP);
+            helper.assertTrue(handler != null && handler.insertChemical(ConnectorMekanism.stack(hydrogen, 500), Action.SIMULATE).getAmount() == 100,
+                    "Connector bulk chemical simulation counted the shared storage once per tank");
+            var storage = new PlayerIdeaStorage();
+            storage.insertChemical(hydrogen, 500);
+            for (boolean published : new boolean[] {false, true}) {
+                if (published) connector.setResource(0, ConnectorResource.chemical(hydrogen));
+                helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, handler, id -> true, 500, false) == 0
+                                && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 500
+                                && connector.storage().simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 600,
+                        "Exact chemical withdrawal into a connector moved part of the amount (published=" + published + ")");
+            }
+            helper.assertTrue(IdeaStorageLogisticsMekanism.transferExact(storage, handler, id -> true, 400, false) == 400
+                            && storage.simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 100
+                            && connector.storage().simulateExtractChemical(hydrogen, Long.MAX_VALUE) == 1000,
+                    "Exact chemical withdrawal into a connector must fill the remaining space");
+        } finally {
+            PsitweaksConfig.COMMON.ideaStorageMaxChemicalPerType.set(oldPerType);
+        }
+    }
 }

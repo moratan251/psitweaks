@@ -105,6 +105,11 @@ public final class ConnectorMekanism {
             return valid(tank) && !stack.isEmpty() && connector.allowsInput(side,
                     ConnectorResource.chemical(MekanismAPI.CHEMICAL_REGISTRY.getKey(stack.getChemical())));
         }
+        // Every tank is a view of the same storage, so Mekanism's per-tank bulk loop would count its free space once
+        // per empty tank when simulating. The input tank accepts whatever the face allows; ask it alone.
+        @Override public ChemicalStack insertChemical(ChemicalStack stack, Action action) {
+            return insertChemical(IdeaspaceConnectorBlockEntity.SLOTS, stack, action);
+        }
         @Override public ChemicalStack insertChemical(int tank, ChemicalStack stack, Action action) {
             PlayerIdeaStorage storage = connector.storage();
             if (!isValid(tank, stack) || storage == null) return stack;
