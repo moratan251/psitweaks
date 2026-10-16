@@ -143,19 +143,57 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String dryMeteor = damageType("dry_meteor");
         String carbonPoisoning = damageType("carbon_poisoning");
         String tunneler = damageType("tunneler");
-        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler);
-        tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler);
+        String mineGenesis = damageType("mine_genesis");
+        String burst = damageType("burst");
+        String kamaitachi = damageType("kamaitachi");
+        String dancingBlades = damageType("dancing_blades");
+        String starfall = damageType("starfall");
+        String gravityCollapse = damageType("gravity_collapse");
+        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, gravityCollapse);
+        // Meteors and blades are separate hits, so each one counts even right after the previous.
+        tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler, dancingBlades, starfall);
         tag(tags, "minecraft", "bypasses_effects", meteorLine, tunneler);
         tag(tags, "minecraft", "bypasses_enchantments", meteorLine, tunneler);
         tag(tags, "minecraft", "bypasses_invulnerability", meteorLine);
         tag(tags, "minecraft", "bypasses_resistance", meteorLine);
-        tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler);
+        tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler, mineGenesis, burst, gravityCollapse);
+        tag(tags, "minecraft", "is_explosion", starfall);
         tag(tags, "minecraft", "is_freezing", dryMeteor);
-        tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning);
+        // These tricks push their targets themselves.
+        tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, kamaitachi, dancingBlades,
+                starfall, gravityCollapse);
+        // Trick: Barrier does not absorb these: damage from inside the body or the world, not from an attack.
+        tag(tags, "psitweaks", "bypasses_barrier",
+                tagRef("minecraft:bypasses_invulnerability"),
+                "minecraft:starve",
+                "minecraft:drown",
+                "minecraft:in_wall",
+                "minecraft:cramming",
+                "minecraft:fall",
+                "minecraft:stalagmite",
+                "minecraft:fly_into_wall",
+                "minecraft:outside_border",
+                "minecraft:freeze",
+                "minecraft:wither",
+                "minecraft:on_fire",
+                "minecraft:dry_out",
+                carbonPoisoning);
     }
 
     private static void addEntityTypeTags(Map<ResourceLocation, JsonObject> tags) {
         tag(tags, "minecraft", "arrows", "psitweaks:tunneler_arrow");
+        // Creatures with little liquid inside; Trick: Burst deals a quarter of its damage to them.
+        tag(tags, "psitweaks", "burst_resistant",
+                tagRef("minecraft:skeletons"),
+                "minecraft:iron_golem",
+                "minecraft:snow_golem",
+                "minecraft:blaze",
+                "minecraft:breeze",
+                "minecraft:shulker",
+                "minecraft:vex",
+                "minecraft:allay",
+                "minecraft:magma_cube",
+                "minecraft:wither");
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {

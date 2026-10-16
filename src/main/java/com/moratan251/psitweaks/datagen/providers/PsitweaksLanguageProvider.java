@@ -68,6 +68,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "魔法師";
             default -> "Magician";
         });
+        root.addProperty("entity.psitweaks.ground_shockwave", switch (locale) {
+            case "ja_jp" -> "地雷原の衝撃波";
+            default -> "Ground Shockwave";
+        });
+        root.addProperty("entity.psitweaks.kamaitachi_blade", switch (locale) {
+            case "ja_jp" -> "鎌鼬の刃";
+            default -> "Kamaitachi Blade";
+        });
+        root.addProperty("entity.psitweaks.dancing_blade", switch (locale) {
+            case "ja_jp" -> "舞う刃";
+            default -> "Dancing Blade";
+        });
+        root.addProperty("entity.psitweaks.starfall_meteor", switch (locale) {
+            case "ja_jp" -> "スターフォールの流星";
+            default -> "Starfall Meteor";
+        });
+        root.addProperty("entity.psitweaks.gravity_well", switch (locale) {
+            case "ja_jp" -> "重力の井戸";
+            default -> "Gravity Well";
+        });
+        root.addProperty("entity.psitweaks.chain_lightning", switch (locale) {
+            case "ja_jp" -> "連鎖雷撃";
+            default -> "Chain Lightning";
+        });
         addDeathMessages(root);
         root.addProperty("item.psitweaks.gravstringer.mode.normal", switch (locale) {
             case "ja_jp" -> "通常モード";
@@ -329,6 +353,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "ラベル";
             default -> "Label";
         });
+        root.addProperty("psitweaks.spellparam.chains", switch (locale) {
+            case "ja_jp" -> "連鎖数";
+            default -> "Chains";
+        });
+        root.addProperty("psitweaks.spellparam.count", switch (locale) {
+            case "ja_jp" -> "数";
+            default -> "Count";
+        });
+        root.addProperty("psitweaks.spellerror.no_ground", switch (locale) {
+            case "ja_jp" -> "指定位置の下に地面がありません";
+            default -> "No ground below the position";
+        });
         root.addProperty("psitweaks.spellerror.no_jump_anchor", switch (locale) {
             case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
             default -> "No matching Jump Anchor found ahead";
@@ -466,6 +502,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Common Configuration", "共通設定");
         addConfigLabel(root, "psitweaks.configuration.section.psitweaks.common.toml.title",
                 "Common Configuration", "共通設定");
+        addConfigLabel(root, "psitweaks.configuration.section.psitweaks.client.toml",
+                "Client Configuration", "クライアント設定");
+        addConfigLabel(root, "psitweaks.configuration.section.psitweaks.client.toml.title",
+                "Client Configuration", "クライアント設定");
+        addConfigLabel(root, "psitweaks.configuration.effects", "Spell Effects", "術式エフェクト");
+        addConfigValue(root, "psitweaks.configuration.effects.camera_shake",
+                "Camera Shake", "画面の揺れ",
+                "Shake the camera for ground shockwaves, meteor impacts and gravity collapses.",
+                "地雷原の衝撃波、流星の着弾、重力崩壊などで画面を揺らします。");
+        addConfigValue(root, "psitweaks.configuration.effects.camera_shake_strength",
+                "Camera Shake Strength", "画面の揺れの強さ",
+                "Strength of the camera shake. 1.0 is the default.",
+                "画面の揺れの強さです。1.0が標準です。");
+        addConfigValue(root, "psitweaks.configuration.effects.barrier_hud",
+                "Barrier Shield Bar", "障壁シールドのバー",
+                "Show the remaining shield of Trick: Barrier above the health bar.",
+                "作動式: 障壁のシールド残量を体力ゲージの上に表示します。");
 
         addConfigLabel(root, "psitweaks.configuration.spells", "Spell Settings", "スペル設定");
         addConfigValue(root, "psitweaks.configuration.spells.global_spell_power_multiplier",
@@ -488,6 +541,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "flare_circle", "Flare Circle", "フレアサークル");
         addDamageMultiplierConfig(root, "ice_circle", "Ice Circle", "アイスサークル");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
+        addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖雷撃");
+        addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
+        addDamageMultiplierConfig(root, "burst", "Burst", "爆裂");
+        addDamageMultiplierConfig(root, "kamaitachi", "Kamaitachi", "鎌鼬");
+        addDamageMultiplierConfig(root, "dancing_blades", "Dancing Blades", "ダンシングブレイズ");
+        addDamageMultiplierConfig(root, "starfall", "Starfall", "スターフォール");
+        addDamageMultiplierConfig(root, "gravity_collapse", "Gravity Collapse", "重力崩壊");
+        addConfigLabel(root, "psitweaks.configuration.spells.barrier", "Barrier", "障壁");
+        addConfigValue(root, "psitweaks.configuration.spells.barrier.shield_multiplier",
+                "Shield Multiplier", "シールド量倍率",
+                "Multiplier applied to the shield of Trick: Barrier (10 per point of Power).",
+                "作動式: 障壁のシールド量 (威力1につき10) に適用する倍率です。");
 
         addConfigLabel(root, "psitweaks.configuration.spells.radiation_injection",
                 "Radiation Injection", "放射線注入");
@@ -614,6 +679,91 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sはトンネル効果を体感した";
             default -> "%1$s experienced the tunneling effect";
         });
+        // Combat tricks: the source always has the caster (or the spell entity) as attacker, so %2$s is filled.
+        root.addProperty("death.attack.psitweaks.chain_lightning", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの連鎖雷撃に撃たれた";
+            default -> "%1$s was struck by %2$s's chain lightning";
+        });
+        root.addProperty("death.attack.psitweaks.chain_lightning.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの連鎖雷撃に撃たれた";
+            default -> "%1$s was struck by %2$s's chain lightning";
+        });
+        root.addProperty("death.attack.psitweaks.chain_lightning.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放った連鎖雷撃に撃たれた";
+            default -> "%1$s was struck by chain lightning cast by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.mine_genesis", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの地雷原に吹き飛ばされた";
+            default -> "%1$s was blown off their feet by %2$s's Mine Genesis";
+        });
+        root.addProperty("death.attack.psitweaks.mine_genesis.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの地雷原に吹き飛ばされた";
+            default -> "%1$s was blown off their feet by %2$s's Mine Genesis";
+        });
+        root.addProperty("death.attack.psitweaks.mine_genesis.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした地雷原に吹き飛ばされた";
+            default -> "%1$s was blown off their feet by Mine Genesis cast by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.burst", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの爆裂で内側から弾け飛んだ";
+            default -> "%1$s was blown apart from within by %2$s";
+        });
+        root.addProperty("death.attack.psitweaks.burst.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの爆裂で内側から弾け飛んだ";
+            default -> "%1$s was blown apart from within by %2$s";
+        });
+        root.addProperty("death.attack.psitweaks.burst.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放った爆裂で内側から弾け飛んだ";
+            default -> "%1$s was blown apart from within by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.kamaitachi", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの鎌鼬に切り裂かれた";
+            default -> "%1$s was sliced by %2$s's Kamaitachi";
+        });
+        root.addProperty("death.attack.psitweaks.kamaitachi.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの鎌鼬に切り裂かれた";
+            default -> "%1$s was sliced by %2$s's Kamaitachi";
+        });
+        root.addProperty("death.attack.psitweaks.kamaitachi.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放った鎌鼬に切り裂かれた";
+            default -> "%1$s was sliced by Kamaitachi cast by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.dancing_blades", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの舞う刃に斬り伏せられた";
+            default -> "%1$s was cut down by %2$s's dancing blades";
+        });
+        root.addProperty("death.attack.psitweaks.dancing_blades.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの舞う刃に斬り伏せられた";
+            default -> "%1$s was cut down by %2$s's dancing blades";
+        });
+        root.addProperty("death.attack.psitweaks.dancing_blades.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで呼んだ舞う刃に斬り伏せられた";
+            default -> "%1$s was cut down by dancing blades summoned by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.starfall", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが呼んだ流星に押し潰された";
+            default -> "%1$s was crushed by a meteor called down by %2$s";
+        });
+        root.addProperty("death.attack.psitweaks.starfall.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが呼んだ流星に押し潰された";
+            default -> "%1$s was crushed by a meteor called down by %2$s";
+        });
+        root.addProperty("death.attack.psitweaks.starfall.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで呼んだ流星に押し潰された";
+            default -> "%1$s was crushed by a meteor %2$s called down using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.gravity_collapse", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの重力崩壊に押し潰された";
+            default -> "%1$s was crushed by %2$s's gravity collapse";
+        });
+        root.addProperty("death.attack.psitweaks.gravity_collapse.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの重力崩壊に押し潰された";
+            default -> "%1$s was crushed by %2$s's gravity collapse";
+        });
+        root.addProperty("death.attack.psitweaks.gravity_collapse.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした重力崩壊に押し潰された";
+            default -> "%1$s was crushed by a gravity collapse %2$s caused using %3$s";
+        });
     }
 
     private static final String[][] LEGACY_PATCHOULI_BOOK_EN_US = {
@@ -699,7 +849,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava."},
-            {"psi.book.page.psitweaks_spellpiece.trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance."},
+            {"psi.book.page.psitweaks_spellpiece.trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)%% chance."},
             {"psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "Applies Mekanism radiation exposure to the target."},
             {"psi.book.page.psitweaks_spellpiece.trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object."},
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID in CAD memory."},
@@ -812,7 +962,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります."},
-            {"psi.book.page.psitweaks_spellpiece.trick_parade", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します."},
+            {"psi.book.page.psitweaks_spellpiece.trick_parade", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) %% で攻撃を回避します."},
             {"psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "対象へMekanismの放射線被ばくを付与します. "},
             {"psi.book.page.psitweaks_spellpiece.trick_set_spellgram_follow_target", "魔法式オブジェクトの追従対象エンティティを設定します."},
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをCADメモリに保存します."},
@@ -1359,7 +1509,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     private void addSpellPieces(JsonObject root) {
         addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
-        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Reduce damage taken", "作動式: 障壁", "受けるダメージを減少させる");
+        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place", "作動式: 障壁", "対象に、受けるダメージを肩代わりするシールドを張る");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時、一定値まで減少させる");
         addSpellPiece(root, "trick_parade", "Trick: Parade", "Avoid damage with a certain probability", "作動式: パレード", "確率で被ダメージを回避する");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します。Psiを消費し続けることでクリエイティブ飛行を可能にします。");
@@ -1393,6 +1543,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_radiation_filter", "Trick: Radiation Filter", "Applies a radiation filter effect to the target", "作動式: 放射線フィルタ", "対象に放射線防護効果を付与する");
         addSpellPiece(root, "trick_cure_radiation", "Trick: Cure Radiation", "Removes radiation exposure from the target", "作動式: 放射線除去", "対象の被ばく量を除去する");
         addSpellPiece(root, "trick_guillotine", "Trick: Guillotine", "Deals a heavy slash to the target and drops a head on kill", "作動式: ギロチン", "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる");
+        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Strikes the target with lightning that jumps to nearby hostile creatures", "作動式: 連鎖雷撃", "対象に雷撃を放ち、近くの敵対的な生物へ連鎖させる");
+        addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
+        addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the target so it bursts from within", "作動式: 爆裂", "対象の体内の液体を気化させ、内側から破裂させる");
+        addSpellPiece(root, "trick_kamaitachi", "Trick: Kamaitachi", "Fires a crescent blade of wind that cuts through everything in its path", "作動式: 鎌鼬", "三日月形の風の刃を飛ばし、通り道の生物をまとめて切り裂く");
+        addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Summons blades that circle the caster and strike nearby hostile creatures", "作動式: ダンシングブレイズ", "術者の周りを舞い、近くの敵対的な生物を斬りつける刃を呼び出す");
+        addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
+        addSpellPiece(root, "trick_gravity_collapse", "Trick: Gravity Collapse", "Opens a gravity well that pulls creatures in, then collapses", "作動式: 重力崩壊", "生物を引き寄せる重力の井戸を開き、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a flare Spell Gram Circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える");
         addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Spell Gram Circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
@@ -1555,9 +1712,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
 
         addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
-        addBookPage(root, "trick_barrier", "Applies a barrier effect that reduces damage taken by (level * 4).", "障壁効果を付与し, 被ダメージを (レベル×4) 減らします.");
+        addBookPage(root, "trick_barrier.0",
+                "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for $(thing)Time$(0) seconds. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
+                "対象を $(thing)威力×10$(0) のシールドで $(thing)時間$(0) 秒間包みます. シールドがある間、対象が受けるダメージは体力の代わりにシールドから差し引かれ、対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り、シールドは砕けます.");
+        addBookPage(root, "trick_barrier.1",
+                "Power and Time must be positive integers. Casting it again replaces the current shield. It does not absorb starvation, drowning, suffocation, falling, freezing, withering, the damage of being on fire, the void or /kill. A bar above your health shows the shield you have left.",
+                "威力と時間には正の整数を指定します. もう一度かけると今のシールドと置き換わります. 空腹、溺れ、窒息、落下、凍結、衰弱、炎上中の継続ダメージ、奈落、/kill は防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
-        addBookPage(root, "trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)% chance.", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) % で攻撃を回避します.");
+        addBookPage(root, "trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)%% chance.", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) %% で攻撃を回避します.");
         addBookPage(root, "trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively.", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です.");
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
         addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");
@@ -1604,6 +1766,48 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_radiation_filter", "Applies a radiation protection effect to the target.", "対象に放射線防護効果を付与します.");
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
         addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
+        addBookPage(root, "trick_chain_lightning.0",
+                "Strikes the target with a bolt of lightning from the caster's hand. The bolt then jumps up to $(thing)Chains$(0) times (at most 8), each time to the nearest hostile creature it has not hit yet, within 6 blocks of the last target and in its line of sight.",
+                "術者の手元から対象へ雷撃を放ちます. 雷撃はさらに最大 $(thing)連鎖数$(0) 回 (上限8) まで、直前の対象から6ブロック以内で見通せる、まだ当たっていない最も近い敵対的な生物へ飛び移ります.");
+        addBookPage(root, "trick_chain_lightning.1",
+                "The first hit deals $(thing)3 + 3 × Power$(0) damage, and each jump deals 15%% less than the one before. Creatures in water or rain take 50%% more. The first target can be anything, but the bolt only jumps to hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
+                "最初の一撃のダメージは $(thing)3 + 3×威力$(0) で、飛び移るたびに直前より15%%下がります. 水中や雨の中にいる生物には50%%増しになります. 最初の対象は何でも構いませんが、連鎖先は敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+        addBookPage(root, "trick_mine_genesis.0",
+                "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
+                "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
+        addBookPage(root, "trick_mine_genesis.1",
+                "Damage is $(thing)4 + 3 × Power$(0) at the centre and falls to 70%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
+                "ダメージは中心で $(thing)4 + 3×威力$(0)、外縁では70%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
+        addBookPage(root, "trick_burst.0",
+                "Vaporizes the liquid inside the target, dealing $(thing)6 + 5 × Power$(0) damage that ignores armor and shields. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
+                "対象の体内の液体を気化させ、防具と盾を無視する $(thing)6 + 5×威力$(0) のダメージを与えます. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
+        addBookPage(root, "trick_burst.1",
+                "If the target dies from it, its body bursts and hits hostile creatures within 3 blocks for up to 40%% of the damage. The creatures that resist it are listed in the entity type tag $(thing)#psitweaks:burst_resistant$(0), which modpacks can change.",
+                "この術式で対象が倒れると体が破裂し、3ブロック以内の敵対的な生物に最大でダメージの40%%を与えます. ダメージが下がる生物はエンティティタグ $(thing)#psitweaks:burst_resistant$(0) で決まっており、Modパックで変更できます.");
+        addBookPage(root, "trick_kamaitachi.0",
+                "Fires a crescent blade of wind from the position in the direction. It flies 24 blocks, cutting every creature in its path once, and breaks apart when it hits a solid block.",
+                "指定位置から方向へ三日月形の風の刃を放ちます. 刃は24ブロック飛び、通り道の生物をそれぞれ一度ずつ切り裂き、固いブロックに当たると砕けます.");
+        addBookPage(root, "trick_kamaitachi.1",
+                "Each cut deals $(thing)3 + 3 × Power$(0) damage. The blade is $(thing)1.5 + 0.25 × Power$(0) blocks wide (at most 4) and reaches 0.7 blocks above and below its path.",
+                "1回の斬撃のダメージは $(thing)3 + 3×威力$(0) です. 刃の幅は $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) で、軌道の上下0.7ブロックまで届きます.");
+        addBookPage(root, "trick_dancing_blades.0",
+                "Summons $(thing)Count$(0) spectral blades (at most 8) that circle the caster. Each blade darts at a hostile creature it can see within 16 blocks, cuts it and comes back. A blade fades after two cuts, and all of them fade after 5 seconds.",
+                "術者の周りを回る幻影の刃を $(thing)数$(0) 本 (上限8) 呼び出します. 刃は16ブロック以内の見通せる敵対的な生物へ飛びかかって斬りつけ、術者のもとへ戻ります. 刃は2回斬ると消え、5秒経つとすべて消えます.");
+        addBookPage(root, "trick_dancing_blades.1",
+                "Each cut deals $(thing)2 + 2 × Power$(0) damage. When there are several targets the blades spread out over them. Casting it again replaces the blades you already have.",
+                "1回の斬撃のダメージは $(thing)2 + 2×威力$(0) です. 敵が複数いると、刃は狙いを分散させます. もう一度唱えると、今ある刃と入れ替わります.");
+        addBookPage(root, "trick_starfall.0",
+                "Calls $(thing)Count$(0) meteors (at most 12) down around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
+                "指定位置の周りに $(thing)数$(0) 個 (上限12) の流星を降らせます. 着弾点は地面の輪で示され、1秒後から流星が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
+        addBookPage(root, "trick_starfall.1",
+                "Each meteor explodes on landing, dealing up to $(thing)5 + 4 × Power$(0) damage within 2.5 blocks (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
+                "流星は着弾と同時に爆発し、2.5ブロック以内に最大 $(thing)5 + 4×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
+        addBookPage(root, "trick_gravity_collapse.0",
+                "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 10) towards its centre, then collapses and crushes everything close to the centre.",
+                "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜10) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
+        addBookPage(root, "trick_gravity_collapse.1",
+                "The collapse deals $(thing)6 + 5 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius, but never less than 3 blocks. While being pulled, creatures build up no fall damage.",
+                "崩壊のダメージは防具と盾を無視する $(thing)6 + 5×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%%ですが、3ブロックより狭くはなりません. 引き寄せられている間は落下ダメージが溜まりません.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");
@@ -1811,8 +2015,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully.";
         });
         root.addProperty("psi.book.page.psitweaks_item.sorcery_booster", switch (locale) {
-            case "ja_jp" -> "魔法演算領域スロットに装備し, 術式ダメージを30%増加させます.$(p)素材に $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使います.";
-            default -> "Equips in the Magic Calculation Area slot and increases spell damage by 30%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l).";
+            case "ja_jp" -> "魔法演算領域スロットに装備し, 術式ダメージを30%%増加させます.$(p)素材に $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使います.";
+            default -> "Equips in the Magic Calculation Area slot and increases spell damage by 30%%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l).";
         });
         root.addProperty("psi.book.page.psitweaks_item.gravstringer.0", switch (locale) {
             case "ja_jp" -> "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出することが可能です.";
@@ -1838,8 +2042,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "The $(item)M.O.V.A.L. Suit$(0) is a high-grade Psi armor set crafted with $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) and $(item)Ebony Psimetal$(0).";
         });
         root.addProperty("psi.book.page.psitweaks_item.moval_suit.1", switch (locale) {
-            case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%, Psi回復量+5, 最大Psi量+500を付与します.";
-            default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10% spell damage, +5 Psi regeneration, and +500 maximum Psi.";
+            case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%%, Psi回復量+5, 最大Psi量+500を付与します.";
+            default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10%% spell damage, +5 Psi regeneration, and +500 maximum Psi.";
         });
     }
 

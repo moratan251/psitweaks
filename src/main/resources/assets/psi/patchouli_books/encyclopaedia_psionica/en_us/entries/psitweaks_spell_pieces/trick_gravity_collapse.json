@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_gravity_collapse",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_gravity_collapse.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_gravity_collapse.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_gravity_collapse.1"
+    }
+  ]
+}

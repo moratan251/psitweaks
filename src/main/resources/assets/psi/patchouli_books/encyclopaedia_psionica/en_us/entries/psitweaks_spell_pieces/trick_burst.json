@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_burst",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_burst.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_burst.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_burst.1"
+    }
+  ]
+}

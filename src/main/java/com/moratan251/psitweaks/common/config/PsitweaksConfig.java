@@ -31,6 +31,14 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue iceCircleDamageMultiplier;
         public final ModConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ModConfigSpec.DoubleValue guillotineDamageMultiplier;
+        public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
+        public final ModConfigSpec.DoubleValue mineGenesisDamageMultiplier;
+        public final ModConfigSpec.DoubleValue burstDamageMultiplier;
+        public final ModConfigSpec.DoubleValue kamaitachiDamageMultiplier;
+        public final ModConfigSpec.DoubleValue dancingBladesDamageMultiplier;
+        public final ModConfigSpec.DoubleValue starfallDamageMultiplier;
+        public final ModConfigSpec.DoubleValue gravityCollapseDamageMultiplier;
+        public final ModConfigSpec.DoubleValue barrierShieldMultiplier;
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ModConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
@@ -196,6 +204,110 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // guillotine カテゴリ終了
+
+            // --- 連鎖雷撃 ---
+            builder.comment("Chain Lightning Settings")
+                    .translation("psitweaks.configuration.spells.chain_lightning")
+                    .push("chain_lightning");
+
+            chainLightningDamageMultiplier = builder
+                    .comment("作動式: 連鎖雷撃 のダメージ倍率",
+                            "Damage multiplier for Trick: Chain Lightning")
+                    .translation("psitweaks.configuration.spells.chain_lightning.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // chain_lightning カテゴリ終了
+
+            // --- 地雷原 ---
+            builder.comment("Mine Genesis Settings")
+                    .translation("psitweaks.configuration.spells.mine_genesis")
+                    .push("mine_genesis");
+
+            mineGenesisDamageMultiplier = builder
+                    .comment("作動式: 地雷原 のダメージ倍率",
+                            "Damage multiplier for Trick: Mine Genesis")
+                    .translation("psitweaks.configuration.spells.mine_genesis.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // mine_genesis カテゴリ終了
+
+            // --- 爆裂 ---
+            builder.comment("Burst Settings")
+                    .translation("psitweaks.configuration.spells.burst")
+                    .push("burst");
+
+            burstDamageMultiplier = builder
+                    .comment("作動式: 爆裂 のダメージ倍率",
+                            "Damage multiplier for Trick: Burst")
+                    .translation("psitweaks.configuration.spells.burst.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // burst カテゴリ終了
+
+            // --- 鎌鼬 ---
+            builder.comment("Kamaitachi Settings")
+                    .translation("psitweaks.configuration.spells.kamaitachi")
+                    .push("kamaitachi");
+
+            kamaitachiDamageMultiplier = builder
+                    .comment("作動式: 鎌鼬 のダメージ倍率",
+                            "Damage multiplier for Trick: Kamaitachi")
+                    .translation("psitweaks.configuration.spells.kamaitachi.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // kamaitachi カテゴリ終了
+
+            // --- ダンシングブレイズ ---
+            builder.comment("Dancing Blades Settings")
+                    .translation("psitweaks.configuration.spells.dancing_blades")
+                    .push("dancing_blades");
+
+            dancingBladesDamageMultiplier = builder
+                    .comment("作動式: ダンシングブレイズ のダメージ倍率",
+                            "Damage multiplier for Trick: Dancing Blades")
+                    .translation("psitweaks.configuration.spells.dancing_blades.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // dancing_blades カテゴリ終了
+
+            // --- スターフォール ---
+            builder.comment("Starfall Settings")
+                    .translation("psitweaks.configuration.spells.starfall")
+                    .push("starfall");
+
+            starfallDamageMultiplier = builder
+                    .comment("作動式: スターフォール のダメージ倍率",
+                            "Damage multiplier for Trick: Starfall")
+                    .translation("psitweaks.configuration.spells.starfall.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // starfall カテゴリ終了
+
+            // --- 重力崩壊 ---
+            builder.comment("Gravity Collapse Settings")
+                    .translation("psitweaks.configuration.spells.gravity_collapse")
+                    .push("gravity_collapse");
+
+            gravityCollapseDamageMultiplier = builder
+                    .comment("作動式: 重力崩壊 のダメージ倍率",
+                            "Damage multiplier for Trick: Gravity Collapse")
+                    .translation("psitweaks.configuration.spells.gravity_collapse.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // gravity_collapse カテゴリ終了
+
+            // --- 障壁 ---
+            builder.comment("Barrier Settings")
+                    .translation("psitweaks.configuration.spells.barrier")
+                    .push("barrier");
+
+            barrierShieldMultiplier = builder
+                    .comment("作動式: 障壁 のシールド量倍率（威力1あたり10 × この倍率）",
+                            "Shield amount multiplier for Trick: Barrier (10 per Power, times this value)")
+                    .translation("psitweaks.configuration.spells.barrier.shield_multiplier")
+                    .defineInRange("shieldMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // barrier カテゴリ終了
 
             builder.pop(); // spells カテゴリ終了
 

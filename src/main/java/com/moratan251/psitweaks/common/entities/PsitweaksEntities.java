@@ -2,6 +2,12 @@ package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
+import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
+import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
+import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
+import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -102,6 +108,69 @@ public class PsitweaksEntities {
                             .clientTrackingRange(4)
                             .updateInterval(20)
                             .build(Psitweaks.MOD_ID + ":tunneler_arrow"));
+
+    // Combat trick effects: short-lived, never saved (see CombatSpellEntity).
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityGroundShockwave>> GROUND_SHOCKWAVE =
+            ENTITY_TYPES.register("ground_shockwave",
+                    () -> EntityType.Builder.<EntityGroundShockwave>of(EntityGroundShockwave::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(8)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":ground_shockwave"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityKamaitachiBlade>> KAMAITACHI_BLADE =
+            ENTITY_TYPES.register("kamaitachi_blade",
+                    () -> EntityType.Builder.<EntityKamaitachiBlade>of(EntityKamaitachiBlade::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(8)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":kamaitachi_blade"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityDancingBlade>> DANCING_BLADE =
+            ENTITY_TYPES.register("dancing_blade",
+                    () -> EntityType.Builder.<EntityDancingBlade>of(EntityDancingBlade::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(8)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":dancing_blade"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityStarfallMeteor>> STARFALL_METEOR =
+            ENTITY_TYPES.register("starfall_meteor",
+                    () -> EntityType.Builder.<EntityStarfallMeteor>of(EntityStarfallMeteor::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":starfall_meteor"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityGravityWell>> GRAVITY_WELL =
+            ENTITY_TYPES.register("gravity_well",
+                    () -> EntityType.Builder.<EntityGravityWell>of(EntityGravityWell::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(8)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":gravity_well"));
+
+    /** Deals the later jumps of Trick: Chain Lightning; it is never sent to clients. */
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityChainLightning>> CHAIN_LIGHTNING =
+            ENTITY_TYPES.register("chain_lightning",
+                    () -> EntityType.Builder.<EntityChainLightning>of(EntityChainLightning::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(4)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .noSave()
+                            .noSummon()
+                            .build(Psitweaks.MOD_ID + ":chain_lightning"));
 
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);

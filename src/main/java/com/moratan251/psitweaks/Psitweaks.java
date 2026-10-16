@@ -11,6 +11,7 @@ import vazkii.psi.api.spell.PieceKnowledgeEvent;
 
 import com.moratan251.psitweaks.client.FilterCardClient;
 import com.moratan251.psitweaks.client.SpellUnlockClientEvents;
+import com.moratan251.psitweaks.client.combat.CombatEffectsClient;
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
@@ -32,6 +33,11 @@ import com.moratan251.psitweaks.client.renderer.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.DancingBladeRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.GravityWellRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.GroundShockwaveRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.KamaitachiBladeRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.StarfallMeteorRenderer;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributeEvents;
@@ -94,6 +100,7 @@ import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.api.MekanismIMC;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -172,6 +179,7 @@ public class Psitweaks {
             MekanismCompat.registerClient(modEventBus);
             SpellUnlockClientEvents.register();
             FilterCardClient.registerEvents();
+            CombatEffectsClient.registerEvents(modEventBus);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
@@ -330,6 +338,12 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.FLARE_CIRCLE.get(), FlareCircleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(), IceCircleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.KAMAITACHI_BLADE.get(), KamaitachiBladeRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.DANCING_BLADE.get(), DancingBladeRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.STARFALL_METEOR.get(), StarfallMeteorRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.GRAVITY_WELL.get(), GravityWellRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.CHAIN_LIGHTNING.get(), NoopRenderer::new);
         }
 
         @SafeVarargs

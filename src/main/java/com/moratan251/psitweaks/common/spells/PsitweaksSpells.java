@@ -111,6 +111,20 @@ public final class PsitweaksSpells {
             MekanismCompat.isMekanismLoaded() ? registerPiece("trick_cure_radiation", PieceTrickCureRadiation.class) : null;
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_GUILLOTINE =
             registerPiece("trick_guillotine", PieceTrickGuillotine.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_CHAIN_LIGHTNING =
+            registerPiece("trick_chain_lightning", PieceTrickChainLightning.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_MINE_GENESIS =
+            registerPiece("trick_mine_genesis", PieceTrickMineGenesis.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_BURST =
+            registerPiece("trick_burst", PieceTrickBurst.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_KAMAITACHI =
+            registerPiece("trick_kamaitachi", PieceTrickKamaitachi.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DANCING_BLADES =
+            registerPiece("trick_dancing_blades", PieceTrickDancingBlades.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_STARFALL =
+            registerPiece("trick_starfall", PieceTrickStarfall.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_GRAVITY_COLLAPSE =
+            registerPiece("trick_gravity_collapse", PieceTrickGravityCollapse.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_MATERIAL_MUTATION =
             registerPiece("trick_material_mutation", PieceTrickMaterialMutation.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_PULL_ITEM =

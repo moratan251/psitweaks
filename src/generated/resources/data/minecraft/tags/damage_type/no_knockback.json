@@ -1,6 +1,12 @@
 {
   "values": [
     "psitweaks:meteor_line",
-    "psitweaks:carbon_poisoning"
+    "psitweaks:carbon_poisoning",
+    "psitweaks:mine_genesis",
+    "psitweaks:burst",
+    "psitweaks:kamaitachi",
+    "psitweaks:dancing_blades",
+    "psitweaks:starfall",
+    "psitweaks:gravity_collapse"
   ]
 }

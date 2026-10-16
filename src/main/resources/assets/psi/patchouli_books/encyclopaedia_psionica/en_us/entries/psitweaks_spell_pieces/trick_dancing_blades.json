@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_dancing_blades",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_dancing_blades.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_dancing_blades.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_dancing_blades.1"
+    }
+  ]
+}

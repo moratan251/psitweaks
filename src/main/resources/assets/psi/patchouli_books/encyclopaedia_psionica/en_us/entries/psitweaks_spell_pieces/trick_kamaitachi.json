@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_kamaitachi",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_kamaitachi.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_kamaitachi.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_kamaitachi.1"
+    }
+  ]
+}

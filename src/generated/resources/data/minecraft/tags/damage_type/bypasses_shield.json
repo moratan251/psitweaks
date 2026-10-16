@@ -1,6 +1,9 @@
 {
   "values": [
     "psitweaks:meteor_line",
-    "psitweaks:tunneler"
+    "psitweaks:tunneler",
+    "psitweaks:mine_genesis",
+    "psitweaks:burst",
+    "psitweaks:gravity_collapse"
   ]
 }

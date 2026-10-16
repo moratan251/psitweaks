@@ -55,11 +55,7 @@ public final class EffectHandler {
 
         LivingEntity entity = event.getEntity();
         float damage = event.getNewDamage();
-        if (entity.hasEffect(PsitweaksEffects.BARRIER)) {
-            MobEffectInstance effect = entity.getEffect(PsitweaksEffects.BARRIER);
-            int amplifier = Objects.requireNonNull(effect).getAmplifier();
-            damage -= (amplifier + 1) * 4.0F;
-        }
+        // Trick: Barrier no longer uses its effect; its shield is handled by BarrierShieldHandler.
         if (entity.hasEffect(PsitweaksEffects.HARDENING)) {
             MobEffectInstance effect = entity.getEffect(PsitweaksEffects.HARDENING);
             int amplifier = Objects.requireNonNull(effect).getAmplifier();

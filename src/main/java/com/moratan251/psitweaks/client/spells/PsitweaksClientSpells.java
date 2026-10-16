@@ -107,6 +107,20 @@ public final class PsitweaksClientSpells {
             MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_cure_radiation") : null;
     public static final DeferredHolder<Material, Material> TRICK_GUILLOTINE =
             registerPieceMaterial("trick_guillotine");
+    public static final DeferredHolder<Material, Material> TRICK_CHAIN_LIGHTNING =
+            registerPieceMaterial("trick_chain_lightning");
+    public static final DeferredHolder<Material, Material> TRICK_MINE_GENESIS =
+            registerPieceMaterial("trick_mine_genesis");
+    public static final DeferredHolder<Material, Material> TRICK_BURST =
+            registerPieceMaterial("trick_burst");
+    public static final DeferredHolder<Material, Material> TRICK_KAMAITACHI =
+            registerPieceMaterial("trick_kamaitachi");
+    public static final DeferredHolder<Material, Material> TRICK_DANCING_BLADES =
+            registerPieceMaterial("trick_dancing_blades");
+    public static final DeferredHolder<Material, Material> TRICK_STARFALL =
+            registerPieceMaterial("trick_starfall");
+    public static final DeferredHolder<Material, Material> TRICK_GRAVITY_COLLAPSE =
+            registerPieceMaterial("trick_gravity_collapse");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
     public static final DeferredHolder<Material, Material> TRICK_PULL_ITEM =

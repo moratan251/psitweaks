@@ -42,6 +42,20 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
                 damageType("psitweaks.carbon_poisoning", "never", 0.0F));
         damageTypes.put(PsitweaksDamageTypes.TUNNELER.location(),
                 damageType("psitweaks.tunneler", "when_caused_by_living_non_player", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.CHAIN_LIGHTNING.location(),
+                damageType("psitweaks.chain_lightning", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.MINE_GENESIS.location(),
+                damageType("psitweaks.mine_genesis", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.BURST.location(),
+                damageType("psitweaks.burst", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.KAMAITACHI.location(),
+                damageType("psitweaks.kamaitachi", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.DANCING_BLADES.location(),
+                damageType("psitweaks.dancing_blades", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.STARFALL.location(),
+                damageType("psitweaks.starfall", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.GRAVITY_COLLAPSE.location(),
+                damageType("psitweaks.gravity_collapse", "never", 0.1F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {
