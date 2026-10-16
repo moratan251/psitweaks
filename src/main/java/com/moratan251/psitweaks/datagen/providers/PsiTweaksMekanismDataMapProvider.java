@@ -41,7 +41,7 @@ public class PsiTweaksMekanismDataMapProvider implements DataProvider {
         JsonObject solidTagValues = new JsonObject();
         solidTagValues.add(chemical("dirty_antinite"), chemicalSolidTag("c:ores/antinite"));
         solidTagValues.add(chemical("clean_antinite"), chemicalSolidTag("c:ores/antinite"));
-        dataMaps.put(ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID, "chemical_solid_tag"), dataMap(solidTagValues));
+        dataMaps.put(ResourceLocation.fromNamespaceAndPath("mekanism", "chemical_solid_tag"), dataMap(solidTagValues));
     }
 
     private static JsonObject dataMap(JsonObject values) {
