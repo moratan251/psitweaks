@@ -66,6 +66,14 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', mod_id
         }
 
+        // Second client for AI/automation use (e.g. Pendulum MCP), isolated from the main client's game dir.
+        client2 {
+            parent runs.client
+            workingDirectory project.file('run/client2')
+            args '--username', 'TestUser2'
+            jvmArg '-Xmx4G'
+        }
+
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
@@ -192,6 +200,9 @@ dependencies {
     if (!isRunDataInvocation) {
         runtimeOnly fg.deobf("curse.maven:konkrete-410295:5028413")
         runtimeOnly fg.deobf("curse.maven:just-zoom-561885:6290336")
+        runtimeOnly fg.deobf("curse.maven:rhino-416294:6186971")
+        runtimeOnly fg.deobf("curse.maven:jupiter-1072905:7738299")
+        runtimeOnly fg.deobf("curse.maven:pendulum-1562526:8654861")
 
     } else {
         logger.lifecycle("Skipping client-only dependencies for runData")
