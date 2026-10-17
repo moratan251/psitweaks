@@ -35,14 +35,16 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
  * Strikes the target with lightning that then jumps to the nearest hostile creature it can see, up to Chains times.
- * Each jump deals a little less damage and lands a moment after the previous one; targets in water or rain take extra
- * damage.
+ * Each jump deals half the damage of the one before (but at least 1) and lands a moment after the previous one; targets
+ * in water or rain take extra damage.
  */
 public class PieceTrickChainLightning extends PieceTrick {
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 3.0F;
-    private static final float DAMAGE_PER_POWER = 3.0F;
-    private static final float JUMP_DAMAGE_FACTOR = 0.85F;
+    private static final float BASE_DAMAGE = 9.0F;
+    private static final float DAMAGE_PER_POWER = 9.0F;
+    private static final float JUMP_DAMAGE_FACTOR = 0.5F;
+    /** The jumps never fall below this, unless the first hit itself is weaker. */
+    private static final float MIN_JUMP_DAMAGE = 1.0F;
     private static final double JUMP_RANGE = 6.0;
     public static final int MAX_CHAINS = 8;
     private static final double POTENCY_BASE = 60.0;
@@ -85,6 +87,9 @@ public class PieceTrickChainLightning extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity first = getParamValue(context, target);
+        if (CombatSpellHelper.skipFallenTarget(context, first)) {
+            return null;
+        }
         context.verifyEntity(first);
         if (!(first instanceof LivingEntity firstLiving)) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
@@ -114,7 +119,7 @@ public class PieceTrickChainLightning extends PieceTrick {
         for (int jump = 0; current != null; jump++) {
             points.add(CombatSpellHelper.center(current));
             struck.add(current.getUUID());
-            float dealt = damage * (float) Math.pow(JUMP_DAMAGE_FACTOR, jump);
+            float dealt = jumpDamage(damage, jump);
             if (jump == 0) {
                 if (CombatSpellHelper.canHarm(caster, current, safeToPlayers)) {
                     EntityChainLightning.strike(level, current, source, dealt, jump);
@@ -140,6 +145,11 @@ public class PieceTrickChainLightning extends PieceTrick {
         CombatEffects.sound(level, firstHit, SoundEvents.TRIDENT_THUNDER, 0.7F, 1.6F);
         CombatEffects.sound(level, firstHit, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.9F, 1.5F);
         return null;
+    }
+
+    /** The damage of jump number {@code jump} (the first target is jump 0): halved at each jump, but at least 1. */
+    public static float jumpDamage(float firstHit, int jump) {
+        return Math.max(Math.min(MIN_JUMP_DAMAGE, firstHit), firstHit * (float) Math.pow(JUMP_DAMAGE_FACTOR, jump));
     }
 
     /** The closest hostile creature within jump range of {@code from}, in the spell radius and in sight. */

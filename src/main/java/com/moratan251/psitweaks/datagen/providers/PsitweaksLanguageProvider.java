@@ -450,8 +450,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Too many pending mass-break blocks";
         });
         root.addProperty("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
-            case "ja_jp" -> "CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました";
-            default -> "String CAD memory value in slot %s was truncated from %s to %s characters";
+            case "ja_jp" -> "警告: CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました。";
+            default -> "WARNING: String CAD memory value in slot %s was truncated from %s to %s characters.";
+        });
+        root.addProperty("psitweaks.spellwarning.position", switch (locale) {
+            case "ja_jp" -> "警告 場所 [%s, %s].";
+            default -> "Warning Position: [%s, %s].";
+        });
+        root.addProperty("psitweaks.spellwarning.target_fallen", switch (locale) {
+            case "ja_jp" -> "警告: 対象は既に戦闘不能です。";
+            default -> "WARNING: The target is already down.";
         });
         addPsitweaksCategoryBook(root);
         addProgrammingConceptsBook(root);
@@ -1770,8 +1778,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Strikes the target with a bolt of lightning from the caster's hand. The bolt then jumps up to $(thing)Chains$(0) times (at most 8), each time to the nearest hostile creature it has not hit yet, within 6 blocks of the last target and in its line of sight.",
                 "術者の手元から対象へ雷撃を放ちます. 雷撃はさらに最大 $(thing)連鎖数$(0) 回 (上限8) まで、直前の対象から6ブロック以内で見通せる、まだ当たっていない最も近い敵対的な生物へ飛び移ります.");
         addBookPage(root, "trick_chain_lightning.1",
-                "The first hit deals $(thing)3 + 3 × Power$(0) damage, and each jump deals 15%% less than the one before. Creatures in water or rain take 50%% more. The first target can be anything, but the bolt only jumps to hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
-                "最初の一撃のダメージは $(thing)3 + 3×威力$(0) で、飛び移るたびに直前より15%%下がります. 水中や雨の中にいる生物には50%%増しになります. 最初の対象は何でも構いませんが、連鎖先は敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+                "The first hit deals $(thing)9 + 9 × Power$(0) damage, and each jump deals half as much as the one before (but at least 1). Creatures in water or rain take 50%% more. The first target can be anything, but the bolt only jumps to hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
+                "最初の一撃のダメージは $(thing)9 + 9×威力$(0) で、飛び移るたびに直前の半分になります (最低1). 水中や雨の中にいる生物には50%%増しになります. 最初の対象は何でも構いませんが、連鎖先は敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
         addBookPage(root, "trick_mine_genesis.0",
                 "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
                 "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
@@ -1779,8 +1787,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Damage is $(thing)4 + 3 × Power$(0) at the centre and falls to 70%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
                 "ダメージは中心で $(thing)4 + 3×威力$(0)、外縁では70%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
         addBookPage(root, "trick_burst.0",
-                "Vaporizes the liquid inside the target, dealing $(thing)6 + 5 × Power$(0) damage that ignores armor and shields. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
-                "対象の体内の液体を気化させ、防具と盾を無視する $(thing)6 + 5×威力$(0) のダメージを与えます. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
+                "Vaporizes the liquid inside the target, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
+                "対象の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
         addBookPage(root, "trick_burst.1",
                 "If the target dies from it, its body bursts and hits hostile creatures within 3 blocks for up to 40%% of the damage. The creatures that resist it are listed in the entity type tag $(thing)#psitweaks:burst_resistant$(0), which modpacks can change.",
                 "この術式で対象が倒れると体が破裂し、3ブロック以内の敵対的な生物に最大でダメージの40%%を与えます. ダメージが下がる生物はエンティティタグ $(thing)#psitweaks:burst_resistant$(0) で決まっており、Modパックで変更できます.");
@@ -1800,14 +1808,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Calls $(thing)Count$(0) meteors (at most 12) down around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
                 "指定位置の周りに $(thing)数$(0) 個 (上限12) の流星を降らせます. 着弾点は地面の輪で示され、1秒後から流星が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
         addBookPage(root, "trick_starfall.1",
-                "Each meteor explodes on landing, dealing up to $(thing)5 + 4 × Power$(0) damage within 2.5 blocks (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
-                "流星は着弾と同時に爆発し、2.5ブロック以内に最大 $(thing)5 + 4×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
+                "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within 2.5 blocks (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
+                "流星は着弾と同時に爆発し、2.5ブロック以内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
         addBookPage(root, "trick_gravity_collapse.0",
                 "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 10) towards its centre, then collapses and crushes everything close to the centre.",
                 "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜10) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
         addBookPage(root, "trick_gravity_collapse.1",
-                "The collapse deals $(thing)6 + 5 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius, but never less than 3 blocks. While being pulled, creatures build up no fall damage.",
-                "崩壊のダメージは防具と盾を無視する $(thing)6 + 5×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%%ですが、3ブロックより狭くはなりません. 引き寄せられている間は落下ダメージが溜まりません.");
+                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius, but never less than 3 blocks. While being pulled, creatures build up no fall damage.",
+                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%%ですが、3ブロックより狭くはなりません. 引き寄せられている間は落下ダメージが溜まりません.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");

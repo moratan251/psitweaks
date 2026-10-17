@@ -32,8 +32,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  */
 public class PieceTrickStarfall extends PieceTrick {
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 5.0F;
-    private static final float DAMAGE_PER_POWER = 4.0F;
+    private static final float BASE_DAMAGE = 50.0F;
+    private static final float DAMAGE_PER_POWER = 40.0F;
     public static final int MAX_METEORS = 12;
     private static final double SPREAD = 4.0;
     private static final int WARNING_TICKS = 20;
@@ -42,12 +42,12 @@ public class PieceTrickStarfall extends PieceTrick {
     private static final double SKY_OFFSET = 12.0;
     private static final int MAX_CLIMB = 4;
     private static final int MAX_DROP = 12;
-    private static final double POTENCY_BASE = 150.0;
+    private static final double POTENCY_BASE = 760.0;
     private static final double POTENCY_PER_POWER = 40.0;
     private static final double POTENCY_PER_METEOR = 30.0;
-    private static final double COST_BASE = 400.0;
-    private static final double COST_PER_METEOR = 100.0;
-    private static final double COST_PER_METEOR_POWER = 80.0;
+    private static final double COST_BASE = 1200.0;
+    private static final double COST_PER_METEOR = 300.0;
+    private static final double COST_PER_METEOR_POWER = 240.0;
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;

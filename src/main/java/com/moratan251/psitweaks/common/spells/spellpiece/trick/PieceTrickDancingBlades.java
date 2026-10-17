@@ -29,7 +29,7 @@ public class PieceTrickDancingBlades extends PieceTrick {
     private static final float BASE_DAMAGE = 2.0F;
     private static final float DAMAGE_PER_POWER = 2.0F;
     public static final int MAX_BLADES = 8;
-    private static final double POTENCY_BASE = 50.0;
+    private static final double POTENCY_BASE = 780.0;
     private static final double POTENCY_PER_BLADE = 15.0;
     private static final double POTENCY_PER_BLADE_POWER = 15.0;
     private static final double COST_BASE = 200.0;

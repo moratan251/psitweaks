@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.combat;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.spells.SpellWarning;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
@@ -32,6 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.spell.ISpellImmune;
+import vazkii.psi.api.spell.SpellContext;
 
 /** Rules shared by the combat tricks: damage scaling, who may be hit, damage sources and small physics helpers. */
 public final class CombatSpellHelper {
@@ -84,6 +86,29 @@ public final class CombatSpellHelper {
             // A caster that is gone (logged out, unloaded) only hits players where PvP is on.
             return caster != null || (player.getServer() != null && player.getServer().isPvpAllowed());
         }
+        return true;
+    }
+
+    /**
+     * Whether the target has already fallen (health 0, playing its death animation) or is gone. Psi's
+     * {@code verifyEntity} reports such a target as immune and stops the spell, which only gets in the way when a
+     * spell keeps aiming at a creature it has just killed, so the targeted combat tricks skip it instead.
+     */
+    public static boolean hasFallen(@Nullable Entity entity) {
+        return entity != null && !entity.isAlive();
+    }
+
+    /**
+     * Skips a fallen target (see {@link #hasFallen}): the spell goes on, and the caster gets a {@link SpellWarning} so
+     * the trick does not look like it misfired for no reason.
+     *
+     * @return whether the trick should do nothing because the target has fallen
+     */
+    public static boolean skipFallenTarget(SpellContext context, @Nullable Entity target) {
+        if (!hasFallen(target)) {
+            return false;
+        }
+        SpellWarning.warn(context, SpellWarning.TARGET_FALLEN);
         return true;
     }
 

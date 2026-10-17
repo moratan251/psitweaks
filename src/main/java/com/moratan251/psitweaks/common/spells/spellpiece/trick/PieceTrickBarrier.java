@@ -63,6 +63,9 @@ public class PieceTrickBarrier extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity targetVal = getParamValue(context, target);
+        if (CombatSpellHelper.skipFallenTarget(context, targetVal)) {
+            return null;
+        }
         context.verifyEntity(targetVal);
         if (!(targetVal instanceof LivingEntity living)) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);

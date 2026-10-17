@@ -34,16 +34,16 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  */
 public class PieceTrickBurst extends PieceTrick {
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 6.0F;
-    private static final float DAMAGE_PER_POWER = 5.0F;
+    private static final float BASE_DAMAGE = 36.0F;
+    private static final float DAMAGE_PER_POWER = 30.0F;
     /** Damage factor against {@code #psitweaks:burst_resistant} creatures (skeletons, golems, blazes, ...). */
     private static final float RESISTANT_FACTOR = 0.25F;
     private static final double SPLASH_RADIUS = 3.0;
     private static final float SPLASH_FACTOR = 0.4F;
-    private static final double POTENCY_BASE = 120.0;
+    private static final double POTENCY_BASE = 1180.0;
     private static final double POTENCY_PER_POWER = 60.0;
-    private static final double COST_BASE = 400.0;
-    private static final double COST_PER_POWER = 300.0;
+    private static final double COST_BASE = 600.0;
+    private static final double COST_PER_POWER = 450.0;
 
     private SpellParam<Entity> target;
     private SpellParam<Number> power;
@@ -73,6 +73,9 @@ public class PieceTrickBurst extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity targetVal = getParamValue(context, target);
+        if (CombatSpellHelper.skipFallenTarget(context, targetVal)) {
+            return null;
+        }
         context.verifyEntity(targetVal);
         if (!(targetVal instanceof LivingEntity living)) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);

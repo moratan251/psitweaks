@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier;
@@ -19,6 +20,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravity
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickKamaitachi;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickStarfall;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,8 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -40,6 +44,7 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.api.spell.CompiledSpell;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
@@ -67,6 +72,8 @@ public final class CombatSpellGameTests {
     private static final String CHAINS = "psitweaks.spellparam.chains";
     private static final String COUNT = "psitweaks.spellparam.count";
     private static final float EPSILON = 1.0E-3F;
+    /** Health of the creatures {@link #tough} prepares. */
+    private static final float TOUGH_HEALTH = 200.0F;
 
     private interface CompileAction {
         void run() throws SpellCompilationException;
@@ -92,6 +99,13 @@ public final class CombatSpellGameTests {
 
     private static Husk husk(GameTestHelper helper, BlockPos relative, boolean physics) {
         return husk(helper, Vec3.atBottomCenterOf(relative), physics);
+    }
+
+    /** Gives {@code entity} {@link #TOUGH_HEALTH} health, so the heavy-hitting tricks do not kill it outright. */
+    private static <T extends LivingEntity> T tough(T entity) {
+        entity.getAttribute(Attributes.MAX_HEALTH).setBaseValue(TOUGH_HEALTH);
+        entity.setHealth(TOUGH_HEALTH);
+        return entity;
     }
 
     private static Vector3 vector(Vec3 vec) {
@@ -304,15 +318,33 @@ public final class CombatSpellGameTests {
         int[] mine = stats(mineGenesis(Map.of(POWER, 1.0, RADIUS, 3.0)));
         helper.assertTrue(mine[0] == 185 && mine[1] == 630, "Mine Genesis P1 R3, got " + mine[0] + "/" + mine[1]);
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
-        helper.assertTrue(burst[0] == 180 && burst[1] == 700, "Burst P1, got " + burst[0] + "/" + burst[1]);
+        helper.assertTrue(burst[0] == 1240 && burst[1] == 1050, "Burst P1, got " + burst[0] + "/" + burst[1]);
         int[] kamaitachi = stats(kamaitachi(Map.of(POWER, 1.0)));
         helper.assertTrue(kamaitachi[0] == 120 && kamaitachi[1] == 420, "Kamaitachi P1, got " + kamaitachi[0] + "/" + kamaitachi[1]);
         int[] blades = stats(dancingBlades(Map.of(COUNT, 2.0, POWER, 1.0)));
-        helper.assertTrue(blades[0] == 110 && blades[1] == 440, "Dancing Blades N2 P1, got " + blades[0] + "/" + blades[1]);
+        helper.assertTrue(blades[0] == 840 && blades[1] == 440, "Dancing Blades N2 P1, got " + blades[0] + "/" + blades[1]);
         int[] starfall = stats(starfall(Map.of(POWER, 1.0, COUNT, 13.0)));
-        helper.assertTrue(starfall[0] == 550 && starfall[1] == 2560, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
+        helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
         int[] gravity = stats(gravityCollapse(Map.of(POWER, 1.0, RADIUS, 20.0)));
-        helper.assertTrue(gravity[0] == 450 && gravity[1] == 2050, "Gravity radius must be capped at 10, got " + gravity[0] + "/" + gravity[1]);
+        helper.assertTrue(gravity[0] == 1370 && gravity[1] == 6150, "Gravity radius must be capped at 10, got " + gravity[0] + "/" + gravity[1]);
+        helper.succeed();
+    }
+
+    /**
+     * The smallest Dancing Blades and Starfall need a heavy psimetal CAD (more than flashmetal's 800, within the beta's
+     * 1000); the smallest Burst and Gravity Collapse need a psycheonic metal CAD (more than the heavy alpha's 1200,
+     * within 1500).
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void largeCombatTricksNeedHighTierCads(GameTestHelper helper) throws Exception {
+        int blades = stats(dancingBlades(Map.of(COUNT, 1.0, POWER, 0.5)))[0];
+        helper.assertTrue(blades > 800 && blades <= 1000, "Smallest Dancing Blades must need heavy psimetal, got " + blades);
+        int starfall = stats(starfall(Map.of(POWER, 0.5, COUNT, 1.0)))[0];
+        helper.assertTrue(starfall > 800 && starfall <= 1000, "Smallest Starfall must need heavy psimetal, got " + starfall);
+        int burst = stats(burst(Map.of(POWER, 0.5)))[0];
+        helper.assertTrue(burst > 1200 && burst <= 1500, "Smallest Burst must need psycheonic metal, got " + burst);
+        int gravity = stats(gravityCollapse(Map.of(POWER, 0.5, RADIUS, 3.0)))[0];
+        helper.assertTrue(gravity > 1200 && gravity <= 1500, "Smallest Gravity Collapse must need psycheonic metal, got " + gravity);
         helper.succeed();
     }
 
@@ -348,26 +380,27 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH + "_chain")
     public static void chainLightningJumpsBetweenHostilesOnly(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 4), "chain-caster");
-        var first = husk(helper, new BlockPos(1, 0, 1), false);
-        var second = husk(helper, new BlockPos(3, 0, 1), false);
-        var third = husk(helper, new BlockPos(3, 0, 3), false);
+        // 9 + 9 x Power would nearly kill a plain husk, so give them room to show each hit.
+        var first = tough(husk(helper, new BlockPos(1, 0, 1), false));
+        var second = tough(husk(helper, new BlockPos(3, 0, 1), false));
+        var third = tough(husk(helper, new BlockPos(3, 0, 3), false));
         var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(1, 0, 3));
         pig.setNoAi(true);
 
         chainLightning(Map.of(TARGET, first, POWER, 1.0, CHAINS, 8.0)).execute(new SpellContext().setPlayer(player));
-        float d1 = 20.0F - first.getHealth();
-        helper.assertTrue(near(d1, 6) || near(d1, 9), "The first hit must deal 3 + 3 x Power (x1.5 when wet): " + d1);
-        helper.assertTrue(near(second.getHealth(), 20) && near(third.getHealth(), 20),
+        float d1 = TOUGH_HEALTH - first.getHealth();
+        helper.assertTrue(near(d1, 18) || near(d1, 27), "The first hit must deal 9 + 9 x Power (x1.5 when wet): " + d1);
+        helper.assertTrue(near(second.getHealth(), TOUGH_HEALTH) && near(third.getHealth(), TOUGH_HEALTH),
                 "The jumps must land after the first hit, not with it");
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(second.getHealth() < 20 - EPSILON, "The bolt must jump to the second husk"))
-                .thenExecute(() -> helper.assertTrue(near(third.getHealth(), 20), "The third husk must be hit after the second"))
-                .thenWaitUntil(() -> helper.assertTrue(third.getHealth() < 20 - EPSILON, "The bolt must jump to the third husk"))
+                .thenWaitUntil(() -> helper.assertTrue(second.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must jump to the second husk"))
+                .thenExecute(() -> helper.assertTrue(near(third.getHealth(), TOUGH_HEALTH), "The third husk must be hit after the second"))
+                .thenWaitUntil(() -> helper.assertTrue(third.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must jump to the third husk"))
                 .thenExecute(() -> {
-                    float d2 = 20.0F - second.getHealth();
-                    float d3 = 20.0F - third.getHealth();
-                    helper.assertTrue(near(d2 / d1, 0.85) && near(d3 / d1, 0.85 * 0.85),
-                            "Each jump must deal 15% less: " + d1 + ", " + d2 + ", " + d3);
+                    float d2 = TOUGH_HEALTH - second.getHealth();
+                    float d3 = TOUGH_HEALTH - third.getHealth();
+                    helper.assertTrue(near(d2 / d1, 0.5) && near(d3 / d1, 0.25),
+                            "Each jump must deal half of the one before: " + d1 + ", " + d2 + ", " + d3);
                     helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "The bolt must not jump to animals");
                 })
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class,
@@ -376,31 +409,82 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void targetedCombatTricksSkipFallenTargetsWithAWarning(GameTestHelper helper) {
+        List<Component> messages = new ArrayList<>();
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "fallen-caster")) {
+            @Override
+            public void sendSystemMessage(Component message) {
+                messages.add(message);
+            }
+        };
+        player.moveTo(Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(0, 0, 4))));
+        var context = new SpellContext().setPlayer(player);
+        // Health 0: the husk is playing its death animation, which Psi's verifyEntity would call immune.
+        var fallen = husk(helper, new BlockPos(1, 0, 1), false);
+        fallen.setHealth(0.0F);
+        var bystander = husk(helper, new BlockPos(3, 0, 1), false);
+        helper.assertTrue(castError(() -> chainLightning(Map.of(TARGET, fallen, POWER, 1.0, CHAINS, 3.0)).execute(context)) == null,
+                "Chain Lightning must skip a fallen target without an error");
+        helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
+                "Burst must skip a fallen target without an error");
+        helper.assertTrue(castError(() -> barrier(Map.of(TARGET, fallen, POWER, 1.0, TIME, 10.0)).execute(context)) == null,
+                "Barrier must skip a fallen target without an error");
+        helper.assertTrue(near(bystander.getHealth(), 20) && shield(fallen) == 0.0F,
+                "Nothing must happen when the target has fallen");
+        helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).isEmpty(),
+                "No chain must start from a fallen target");
+        helper.assertTrue(messages.size() == 3 && messages.stream().allMatch(message -> message.getContents()
+                        instanceof TranslatableContents contents && SpellWarning.TARGET_FALLEN.equals(contents.getKey())),
+                "Each skip must warn the caster, got " + messages);
+
+        // An Error Suppressor hides warnings as it hides Psi's errors.
+        var suppressed = new CompiledSpell(new Spell());
+        suppressed.metadata.errorsSuppressed = true;
+        var quietContext = new SpellContext().setPlayer(player).setCompiledSpell(suppressed);
+        messages.clear();
+        helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(quietContext)) == null,
+                "Burst must skip a fallen target without an error when errors are suppressed");
+        helper.assertTrue(messages.isEmpty(), "An Error Suppressor must hide the warning, got " + messages);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void chainLightningJumpsHalveDownToOne(GameTestHelper helper) {
+        helper.assertTrue(near(PieceTrickChainLightning.jumpDamage(18.0F, 0), 18) && near(PieceTrickChainLightning.jumpDamage(18.0F, 1), 9)
+                && near(PieceTrickChainLightning.jumpDamage(18.0F, 3), 2.25), "Each jump must halve the damage");
+        helper.assertTrue(near(PieceTrickChainLightning.jumpDamage(18.0F, 5), 1) && near(PieceTrickChainLightning.jumpDamage(18.0F, 8), 1),
+                "The jumps must not fall below 1");
+        helper.assertTrue(near(PieceTrickChainLightning.jumpDamage(0.6F, 3), 0.6),
+                "A first hit weaker than 1 must not grow along the chain");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
     public static void burstPiercesArmorAndSplashesOnKill(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 0, 2), "burst-caster");
         var context = new SpellContext().setPlayer(player);
-        var armored = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(1, 0, 0));
+        var armored = tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(1, 0, 0)));
         armored.setNoAi(true);
         armored.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
         var golem = helper.spawnWithNoFreeWill(EntityType.IRON_GOLEM, new BlockPos(4, 0, 0));
         golem.setNoAi(true);
         var doomed = husk(helper, new BlockPos(0, 0, 4), false);
         doomed.setHealth(5.0F);
-        var neighbour = husk(helper, new BlockPos(1, 0, 4), false);
+        var neighbour = tough(husk(helper, new BlockPos(1, 0, 4), false));
 
         burst(Map.of(TARGET, armored, POWER, 1.0)).execute(context);
-        helper.assertTrue(near(armored.getHealth(), 9), "Burst must deal 6 + 5 x Power through armor: " + armored.getHealth());
+        helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - 66), "Burst must deal 36 + 30 x Power through armor: " + armored.getHealth());
         burst(Map.of(TARGET, golem, POWER, 1.0)).execute(context);
-        helper.assertTrue(near(golem.getMaxHealth() - golem.getHealth(), 2.75), "Golems must take a quarter: "
+        helper.assertTrue(near(golem.getMaxHealth() - golem.getHealth(), 16.5), "Golems must take a quarter: "
                 + (golem.getMaxHealth() - golem.getHealth()));
-        helper.assertTrue(near(neighbour.getHealth(), 20), "No splash without a kill");
+        helper.assertTrue(near(neighbour.getHealth(), TOUGH_HEALTH), "No splash without a kill");
 
         burst(Map.of(TARGET, doomed, POWER, 1.0)).execute(context);
-        // 40% of 11, 1 block away out of 3 with half damage at the edge.
-        float splash = 11.0F * 0.4F * (1.0F - 0.5F / 3.0F);
-        helper.assertTrue(!doomed.isAlive() && near(20 - neighbour.getHealth(), splash),
-                "A kill must splash " + splash + ", got " + (20 - neighbour.getHealth()));
-        helper.assertTrue(near(armored.getHealth(), 9), "The splash must stay within 3 blocks");
+        // 40% of 66, 1 block away out of 3 with half damage at the edge.
+        float splash = 66.0F * 0.4F * (1.0F - 0.5F / 3.0F);
+        helper.assertTrue(!doomed.isAlive() && near(TOUGH_HEALTH - neighbour.getHealth(), splash),
+                "A kill must splash " + splash + ", got " + (TOUGH_HEALTH - neighbour.getHealth()));
+        helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - 66), "The splash must stay within 3 blocks");
         helper.succeed();
     }
 
@@ -549,7 +633,8 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 200)
     public static void gravityCollapsePullsInThenCrushes(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 4), "gravity-caster");
-        var husk = husk(helper, new BlockPos(4, 0, 2), true);
+        // 60 + 50 x Power would kill a plain husk, so give it room to show the collapse hits only once.
+        var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
         husk.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
         double startX = husk.getX();
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
@@ -557,13 +642,13 @@ public final class CombatSpellGameTests {
         helper.startSequence()
                 .thenExecuteAfter(15, () -> {
                     helper.assertTrue(husk.getX() < startX - 0.4, "The well must drag the husk in: moved " + (startX - husk.getX()));
-                    helper.assertTrue(near(husk.getHealth(), 20), "No damage before the collapse");
+                    helper.assertTrue(near(husk.getHealth(), TOUGH_HEALTH), "No damage before the collapse");
                 })
-                .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() < 20 - 5.5F + EPSILON,
-                        "The collapse must crush through armor for at least half of 6 + 5 x Power, health " + husk.getHealth()))
+                .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - 55 + EPSILON,
+                        "The collapse must crush through armor for at least half of 60 + 50 x Power, health " + husk.getHealth()))
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityGravityWell.class,
                         helper.getBounds().inflate(4)).isEmpty(), "The well must close after collapsing"))
-                .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > 20 - 11 - EPSILON,
+                .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 110 - EPSILON,
                         "The collapse hits once, health " + husk.getHealth()))
                 .thenSucceed();
     }
