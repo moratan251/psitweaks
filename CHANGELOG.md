@@ -57,14 +57,8 @@
   + Renamed Operator: List Search / List Search Exclude to Operator: List Keep Matches / List Remove Matches
 
 
-- Program: Ideaspace Storage is no longer marked as WIP
-
-
 - Shortened and clarified the descriptions in the guide book
   + Pages with several recipes now show the name of the recipe currently displayed
-
-
-- (1.21.1) Fixed ΨE-O Fuel producing far more energy than intended in the Gas-Burning Generator (now the same as 1.20.1)
 
 
 - Fixed incorrect unlock settings for Ideaspace Storage spell pieces
