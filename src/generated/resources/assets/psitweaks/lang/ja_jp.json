@@ -682,7 +682,7 @@
   "psi.book.page.psitweaks_spellpiece.trick_active_air_mine": "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.",
   "psi.book.page.psitweaks_spellpiece.trick_aqua_cutter": "前方へ水刃の発射体を放つ序盤用の攻撃術式です.",
   "psi.book.page.psitweaks_spellpiece.trick_barrier.0": "対象を $(thing)威力×10$(0) のシールドで $(thing)時間$(0) 秒間包みます. シールドがある間、対象が受けるダメージは体力の代わりにシールドから差し引かれ、対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り、シールドは砕けます.",
-  "psi.book.page.psitweaks_spellpiece.trick_barrier.1": "威力と時間には正の整数を指定します. もう一度かけると今のシールドと置き換わります. 空腹、溺れ、窒息、落下、凍結、衰弱、炎上中の継続ダメージ、奈落、/kill は防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.",
+  "psi.book.page.psitweaks_spellpiece.trick_barrier.1": "威力と時間には正の整数を指定します. もう一度かけると今のシールドと置き換わります. 空腹、溺れ、窒息、落下、凍結、毒、衰弱、炎上中の継続ダメージ、奈落、/kill は防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.",
   "psi.book.page.psitweaks_spellpiece.trick_blaze_ball": "前方へ火の弾を放つ序盤用の攻撃術式です.",
   "psi.book.page.psitweaks_spellpiece.trick_break_fortune": "対象ブロックを幸運付きで破壊します.",
   "psi.book.page.psitweaks_spellpiece.trick_break_silk": "対象ブロックをシルクタッチ付きで破壊します.",

@@ -35,6 +35,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -245,6 +246,43 @@ public final class CombatSpellGameTests {
         helper.runAtTickTime(10, () -> helper.assertTrue(near(shield(husk), 10), "The shield faded too early"));
         helper.succeedWhen(() -> helper.assertTrue(husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
                 "A one-second shield must be gone after its time"));
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void barrierShieldLetsPoisonThrough(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-poison");
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+
+        husk.hurt(helper.getLevel().damageSources().source(NeoForgeMod.POISON_DAMAGE), 1.0F);
+        helper.assertTrue(near(husk.getHealth(), 19) && near(shield(husk), 10),
+                "Poison must bypass the shield like withering: health " + husk.getHealth() + ", shield " + shield(husk));
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void barrierShieldBreakKeepsTheWholeHitForTheCooldown(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-break");
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        var sources = helper.getLevel().damageSources();
+        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+
+        husk.hurt(sources.generic(), 14.0F);
+        helper.assertTrue(near(husk.getHealth(), 16) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
+                "A hit of 14 must break the shield of 10 and pass 4: health " + husk.getHealth());
+
+        // The rest of the cooldown is measured against the whole 14, not the 4 that went past the shield.
+        husk.hurt(sources.generic(), 12.0F);
+        helper.assertTrue(near(husk.getHealth(), 16),
+                "A hit of 12 during the cooldown must cost nothing: health " + husk.getHealth());
+        husk.hurt(sources.generic(), 17.0F);
+        helper.assertTrue(near(husk.getHealth(), 13),
+                "A hit of 17 during the cooldown must pass only 17 - 14: health " + husk.getHealth());
+
+        husk.invulnerableTime = 0;
+        husk.hurt(sources.generic(), 5.0F);
+        helper.assertTrue(near(husk.getHealth(), 8), "After the cooldown a hit counts in full: health " + husk.getHealth());
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)

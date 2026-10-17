@@ -18,6 +18,12 @@ public final class BarrierShieldHandler {
     private BarrierShieldHandler() {
     }
 
+    // HIGHEST: before any listener or vanilla measures this hit against the previous one.
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void beforeLivingIncomingDamage(LivingIncomingDamageEvent event) {
+        BarrierShields.restoreBrokenHit(event);
+    }
+
     // LOW: after evasion (Parade) and other listeners that may cancel or reduce the hit, so the shield only pays
     // for what would actually land.
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -35,6 +41,6 @@ public final class BarrierShieldHandler {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
-        BarrierShields.cleanUpCancelledHits();
+        BarrierShields.cleanUpAfterTick();
     }
 }

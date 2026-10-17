@@ -665,7 +665,7 @@
   "psi.book.page.psitweaks_spellpiece.trick_active_air_mine": "Creates a spherical shockwave at the specified coordinates and damages living beings within range.",
   "psi.book.page.psitweaks_spellpiece.trick_aqua_cutter": "Fires a water-blade projectile forward as an early-game offensive trick.",
   "psi.book.page.psitweaks_spellpiece.trick_barrier.0": "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for $(thing)Time$(0) seconds. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
-  "psi.book.page.psitweaks_spellpiece.trick_barrier.1": "Power and Time must be positive integers. Casting it again replaces the current shield. It does not absorb starvation, drowning, suffocation, falling, freezing, withering, the damage of being on fire, the void or /kill. A bar above your health shows the shield you have left.",
+  "psi.book.page.psitweaks_spellpiece.trick_barrier.1": "Power and Time must be positive integers. Casting it again replaces the current shield. It does not absorb starvation, drowning, suffocation, falling, freezing, poison, withering, the damage of being on fire, the void or /kill. A bar above your health shows the shield you have left.",
   "psi.book.page.psitweaks_spellpiece.trick_blaze_ball": "Fires a ball of flame forward as an early-game offensive trick.",
   "psi.book.page.psitweaks_spellpiece.trick_break_fortune": "Breaks the target block with Fortune.",
   "psi.book.page.psitweaks_spellpiece.trick_break_silk": "Breaks the target block with Silk Touch.",

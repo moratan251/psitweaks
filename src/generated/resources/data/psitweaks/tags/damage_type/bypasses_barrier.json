@@ -11,6 +11,7 @@
     "minecraft:outside_border",
     "minecraft:freeze",
     "minecraft:wither",
+    "#neoforge:is_poison",
     "minecraft:on_fire",
     "minecraft:dry_out",
     "psitweaks:carbon_poisoning"

@@ -7,8 +7,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 /**
- * Trick: Barrier cancels absorbed hits before vanilla sets the hurt cooldown, so it keeps {@code lastHurt} itself.
- * NeoForge leaves the damage container of a cancelled hit on {@code damageContainers}; the barrier clears it later.
+ * Trick: Barrier takes hits before vanilla's hurt cooldown, so it keeps {@code lastHurt} itself: for the hits it cancels
+ * and for the hit that breaks a shield. NeoForge leaves the damage container of a cancelled hit on
+ * {@code damageContainers}; the barrier clears it later.
  */
 @Mixin(LivingEntity.class)
 public interface LivingEntityAccessor {

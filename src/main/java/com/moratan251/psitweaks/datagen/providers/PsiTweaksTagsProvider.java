@@ -175,6 +175,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 "minecraft:outside_border",
                 "minecraft:freeze",
                 "minecraft:wither",
+                tagRef("neoforge:is_poison"),
                 "minecraft:on_fire",
                 "minecraft:dry_out",
                 carbonPoisoning);
