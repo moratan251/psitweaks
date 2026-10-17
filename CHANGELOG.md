@@ -41,9 +41,6 @@
   + Spells that use the old pieces are converted automatically when loaded
 
 
-- Trick: Ideaspace Storage - Deposit / Withdraw can move exactly the requested amount of one resource type or nothing at all (Exact modes)
-
-
 - The item filters of the Ideaspace Storage tricks now match according to the connected value
   + String: item ID with wildcards / Item: item type / Item List: any of the items / Operator: Strict Item: also compares NBT
 
