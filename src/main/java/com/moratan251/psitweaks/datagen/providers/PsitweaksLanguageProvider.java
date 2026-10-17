@@ -1784,8 +1784,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
                 "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
         addBookPage(root, "trick_mine_genesis.1",
-                "Damage is $(thing)4 + 3 × Power$(0) at the centre and falls to 70%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
-                "ダメージは中心で $(thing)4 + 3×威力$(0)、外縁では70%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
+                "Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 70%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
+                "ダメージは中心で $(thing)16 + 12×威力$(0)、外縁では70%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
         addBookPage(root, "trick_burst.0",
                 "Vaporizes the liquid inside the target, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
                 "対象の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
@@ -1796,8 +1796,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Fires a crescent blade of wind from the position in the direction. It flies 24 blocks, cutting every creature in its path once, and breaks apart when it hits a solid block.",
                 "指定位置から方向へ三日月形の風の刃を放ちます. 刃は24ブロック飛び、通り道の生物をそれぞれ一度ずつ切り裂き、固いブロックに当たると砕けます.");
         addBookPage(root, "trick_kamaitachi.1",
-                "Each cut deals $(thing)3 + 3 × Power$(0) damage. The blade is $(thing)1.5 + 0.25 × Power$(0) blocks wide (at most 4) and reaches 0.7 blocks above and below its path.",
-                "1回の斬撃のダメージは $(thing)3 + 3×威力$(0) です. 刃の幅は $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) で、軌道の上下0.7ブロックまで届きます.");
+                "Each cut deals $(thing)4.5 + 4.5 × Power$(0) damage. The blade is $(thing)1.5 + 0.25 × Power$(0) blocks wide (at most 4) and reaches 0.7 blocks above and below its path.",
+                "1回の斬撃のダメージは $(thing)4.5 + 4.5×威力$(0) です. 刃の幅は $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) で、軌道の上下0.7ブロックまで届きます.");
         addBookPage(root, "trick_dancing_blades.0",
                 "Summons $(thing)Count$(0) spectral blades (at most 8) that circle the caster. Each blade darts at a hostile creature it can see within 16 blocks, cuts it and comes back. A blade fades after two cuts, and all of them fade after 5 seconds.",
                 "術者の周りを回る幻影の刃を $(thing)数$(0) 本 (上限8) 呼び出します. 刃は16ブロック以内の見通せる敵対的な生物へ飛びかかって斬りつけ、術者のもとへ戻ります. 刃は2回斬ると消え、5秒経つとすべて消えます.");

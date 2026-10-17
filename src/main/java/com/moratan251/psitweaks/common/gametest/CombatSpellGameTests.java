@@ -493,7 +493,8 @@ public final class CombatSpellGameTests {
         // The helper's y = 0 is the layer under the test box; the ground below it has its top at y = 0.
         var player = caster(helper, new BlockPos(0, 0, 4), "mine-caster");
         var context = new SpellContext().setPlayer(player);
-        var grounded = husk(helper, new BlockPos(3, 0, 2), true);
+        // 16 + 12 x Power would kill a plain husk, so give it room to show the ring hits only once.
+        var grounded = tough(husk(helper, new BlockPos(3, 0, 2), true));
         var floating = husk(helper, new Vec3(1.5, 1.5, 2.5), false);
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
 
@@ -502,12 +503,12 @@ public final class CombatSpellGameTests {
                 "A position more than 3 blocks above the ground must fail");
         mineGenesis(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 3.0)).execute(context);
         double groundY = grounded.getY();
-        // 7 at the centre, falling to 70% at the radius: 1 block of 3 out.
-        float expected = 7.0F * (1.0F - 0.3F / 3.0F);
+        // 28 at the centre, falling to 70% at the radius: 1 block of 3 out.
+        float expected = 28.0F * (1.0F - 0.3F / 3.0F);
         helper.startSequence()
                 .thenWaitUntil(() -> {
-                    helper.assertTrue(near(20 - grounded.getHealth(), expected), "Grounded husk must take " + expected
-                            + ", took " + (20 - grounded.getHealth()));
+                    helper.assertTrue(near(TOUGH_HEALTH - grounded.getHealth(), expected), "Grounded husk must take " + expected
+                            + ", took " + (TOUGH_HEALTH - grounded.getHealth()));
                     helper.assertTrue(grounded.getY() > groundY + 0.3, "Grounded husk must be thrown up");
                 })
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityGroundShockwave.class,
@@ -516,7 +517,7 @@ public final class CombatSpellGameTests {
                     helper.assertTrue(near(floating.getHealth(), 20), "A creature in the air must be left alone: health "
                             + floating.getHealth() + " from " + floating.getLastDamageSource() + ", on ground " + floating.onGround()
                             + " at " + floating.position().subtract(helper.absoluteVec(Vec3.ZERO)));
-                    helper.assertTrue(near(20 - grounded.getHealth(), expected), "The ring hits each creature once");
+                    helper.assertTrue(near(TOUGH_HEALTH - grounded.getHealth(), expected), "The ring hits each creature once");
                     helper.assertTrue(player.isAlive(), "Caster gone");
                 })
                 .thenSucceed();
@@ -537,14 +538,14 @@ public final class CombatSpellGameTests {
                 POWER, 1.0)).execute(new SpellContext().setPlayer(player));
         helper.startSequence()
                 .thenWaitUntil(() -> {
-                    helper.assertTrue(near(near.getHealth(), 14) && near(far.getHealth(), 14),
-                            "Both husks in the path must be cut once for 3 + 3 x Power: " + near.getHealth() + ", " + far.getHealth());
+                    helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11),
+                            "Both husks in the path must be cut once for 4.5 + 4.5 x Power: " + near.getHealth() + ", " + far.getHealth());
                     helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityKamaitachiBlade.class,
                             helper.getBounds().inflate(4)).isEmpty(), "The blade must break on the wall");
                 })
                 .thenIdle(5)
                 .thenExecute(() -> {
-                    helper.assertTrue(near(near.getHealth(), 14) && near(far.getHealth(), 14), "Each creature is cut only once");
+                    helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11), "Each creature is cut only once");
                     helper.assertTrue(near(aside.getHealth(), 20), "A husk 2 blocks to the side of a 1.75-wide blade is missed");
                     helper.assertTrue(player.isAlive(), "Caster gone");
                 })

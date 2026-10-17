@@ -25,8 +25,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 /** Fires a wide crescent of wind from the position in the direction; it cuts through every creature in its path. */
 public class PieceTrickKamaitachi extends PieceTrick {
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 3.0F;
-    private static final float DAMAGE_PER_POWER = 3.0F;
+    private static final float BASE_DAMAGE = 4.5F;
+    private static final float DAMAGE_PER_POWER = 4.5F;
     private static final float BASE_WIDTH = 1.5F;
     private static final float WIDTH_PER_POWER = 0.25F;
     private static final float MAX_WIDTH = 4.0F;

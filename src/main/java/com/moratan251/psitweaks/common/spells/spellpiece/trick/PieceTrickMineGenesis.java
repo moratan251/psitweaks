@@ -31,8 +31,8 @@ public class PieceTrickMineGenesis extends PieceTrick {
     public static final String ERROR_NO_GROUND = "psitweaks.spellerror.no_ground";
 
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 4.0F;
-    private static final float DAMAGE_PER_POWER = 3.0F;
+    private static final float BASE_DAMAGE = 16.0F;
+    private static final float DAMAGE_PER_POWER = 12.0F;
     public static final double MAX_RADIUS = 12.0;
     private static final double MIN_RADIUS = 2.0;
     /** How far above the ground the position may be. */
