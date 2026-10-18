@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:armor_stand"
+    },
+    {
+      "item": "minecraft:armor_stand"
+    },
+    {
+      "item": "minecraft:fermented_spider_eye"
+    },
+    {
+      "item": "minecraft:fermented_spider_eye"
+    },
+    {
+      "item": "minecraft:tinted_glass"
+    },
+    {
+      "item": "minecraft:tinted_glass"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_parade"
+  }
+}

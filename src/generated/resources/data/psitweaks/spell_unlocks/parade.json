@@ -1,0 +1,6 @@
+{
+  "command_id": "parade",
+  "piece": "psitweaks:trick_parade",
+  "unlock_item": "psitweaks:program_parade",
+  "unlock_tag": "psitweaks.unlock.trick_parade"
+}

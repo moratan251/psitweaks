@@ -316,6 +316,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_STARFALL = registerProgram("program_starfall", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BURST = registerProgram("program_burst", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_GRAVITY_COLLAPSE = registerProgram("program_gravity_collapse", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PARADE = registerProgram("program_parade", false);
     public static final DeferredItem<ItemPhilosophersStone> PHILOSOPHERS_STONE = ITEMS.register(
             "philosophers_stone",
             () -> new ItemPhilosophersStone(new Item.Properties().rarity(Rarity.RARE))

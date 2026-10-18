@@ -34,17 +34,7 @@ public final class EffectHandler {
             return;
         }
 
-        LivingEntity entity = event.getEntity();
-        if (entity.hasEffect(PsitweaksEffects.PARADE)) {
-            MobEffectInstance effect = entity.getEffect(PsitweaksEffects.PARADE);
-            int amplifier = Objects.requireNonNull(effect).getAmplifier();
-            double chance = 0.70 + amplifier * 0.075;
-
-            if (Math.random() < chance) {
-                event.setCanceled(true);
-                return;
-            }
-        }
+        // Trick: Parade no longer uses its effect to evade; it conjures a lookalike (see Parades).
     }
 
     @SubscribeEvent

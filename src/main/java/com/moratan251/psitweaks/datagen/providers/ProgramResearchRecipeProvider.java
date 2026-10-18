@@ -219,6 +219,15 @@ public final class ProgramResearchRecipeProvider {
                 input(Items.NETHER_STAR, 8),
                 input(PsitweaksItems.GRAVITIZED_PLATE, 24)
         ), PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE, 1_500_000L, 108_000);
+
+        research(recipes, "program_parade", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.ARMOR_STAND, 4),
+                input(Items.FERMENTED_SPIDER_EYE, 16),
+                input(Items.TINTED_GLASS, 16),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8),
+                input(PsitweaksItems.FLASHMETAL, 4)
+        ), PsitweaksItems.PROGRAM_PARADE, 50_000L, 3_600);
     }
 
     private static void research(Map<ResourceLocation, JsonObject> recipes, String id, List<JsonObject> inputs,

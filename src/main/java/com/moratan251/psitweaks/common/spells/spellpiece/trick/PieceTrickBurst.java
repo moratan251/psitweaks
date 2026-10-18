@@ -76,7 +76,7 @@ public class PieceTrickBurst extends PieceTrick {
         if (CombatSpellHelper.skipFallenTarget(context, targetVal)) {
             return null;
         }
-        CombatSpellHelper.verifyTarget(targetVal);
+        CombatSpellHelper.verifyTarget(context, targetVal);
         if (!(targetVal instanceof LivingEntity living)) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
         }

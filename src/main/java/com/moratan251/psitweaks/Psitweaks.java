@@ -3,6 +3,7 @@ package com.moratan251.psitweaks;
 import vazkii.psi.api.event.PsiEvents;
 import vazkii.psi.common.item.base.ModDataComponents;
 import com.moratan251.psitweaks.common.handler.SpellUnlockHandler;
+import com.moratan251.psitweaks.common.handler.ParadeHandler;
 import com.moratan251.psitweaks.common.handler.PlayerPsiEventHandler;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellPieceGroupProvider;
 import vazkii.psi.api.spell.PreSpellCastEvent;
@@ -35,6 +36,7 @@ import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.DancingBladeRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.GravityWellRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.ParadeDecoyRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.GroundShockwaveRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.KamaitachiBladeRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.StarfallMeteorRenderer;
@@ -147,6 +149,7 @@ public class Psitweaks {
         modEventBus.addListener(PsitweaksItemCapabilities::registerCapabilities);
         modEventBus.addListener(PsitweaksBlockEntityCapabilities::registerCapabilities);
         modEventBus.addListener(PsitweaksAttributeEvents::onEntityAttributeModification);
+        modEventBus.addListener(ParadeHandler::onAttributeCreation);
         modEventBus.addListener(PsitweaksNetwork::registerPayloadHandlers);
 
         PsitweaksArmorMaterials.register(modEventBus);
@@ -343,6 +346,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.KAMAITACHI_BLADE.get(), KamaitachiBladeRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.DANCING_BLADE.get(), DancingBladeRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.PARADE_DECOY.get(), ParadeDecoyRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.STARFALL_METEOR.get(), StarfallMeteorRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GRAVITY_WELL.get(), GravityWellRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.CHAIN_LIGHTNING.get(), NoopRenderer::new);

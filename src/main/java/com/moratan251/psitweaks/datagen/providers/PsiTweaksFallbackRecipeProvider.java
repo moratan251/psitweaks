@@ -434,6 +434,11 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(PsitweaksItems.GRAVITIZED_PLATE, 3),
                 counted(Items.NETHER_STAR, 2),
                 counted(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_PARADE, List.of(
+                counted(Items.ARMOR_STAND, 2),
+                counted(Items.FERMENTED_SPIDER_EYE, 2),
+                counted(Items.TINTED_GLASS, 2),
+                counted(PsitweaksItems.FLASHMETAL, 2)));
     }
 
     private static void addProgram(Map<ResourceLocation, JsonObject> recipes, ItemLike program,

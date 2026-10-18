@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import net.minecraft.core.registries.Registries;
@@ -171,6 +172,17 @@ public class PsitweaksEntities {
                             .noSave()
                             .noSummon()
                             .build(Psitweaks.MOD_ID + ":chain_lightning"));
+
+    /** The lookalike of Trick: Parade: player-sized, never saved. */
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityParadeDecoy>> PARADE_DECOY =
+            ENTITY_TYPES.register("parade_decoy",
+                    () -> EntityType.Builder.<EntityParadeDecoy>of(EntityParadeDecoy::new, MobCategory.MISC)
+                            .sized(0.6f, 1.8f)
+                            .eyeHeight(1.62f)
+                            .clientTrackingRange(10)
+                            .noSave()
+                            .noSummon()
+                            .build(Psitweaks.MOD_ID + ":parade_decoy"));
 
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);

@@ -47,6 +47,7 @@ public final class CombatEffectsClient {
         NeoForge.EVENT_BUS.addListener(CameraShake::onComputeCameraAngles);
         NeoForge.EVENT_BUS.addListener(CombatEffectsClient::onLoggingOut);
         CocytusIceRenderer.registerEvents();
+        ParadeHiddenPlayers.registerEvents();
     }
 
     public static void handleSphereFlash(MessageSphereFlash message) {

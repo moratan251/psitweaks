@@ -5,6 +5,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
+import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
@@ -13,9 +14,11 @@ import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
+import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickActiveAirMine;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
@@ -34,12 +37,18 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -49,6 +58,7 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityPosition;
 import vazkii.psi.api.spell.CompiledSpell;
 import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -78,6 +88,8 @@ public final class CombatSpellGameTests {
     private static final String CHAINS = "psitweaks.spellparam.chains";
     private static final String COUNT = "psitweaks.spellparam.count";
     private static final float EPSILON = 1.0E-3F;
+    /** Long enough for a Parade lookalike to rescan who is after it. */
+    private static final int WATCH_SCAN_TICKS = 6;
     /** Health of the creatures {@link #tough} prepares. */
     private static final float TOUGH_HEALTH = 200.0F;
 
@@ -186,6 +198,19 @@ public final class CombatSpellGameTests {
         return new PieceTrickActiveAirMine(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
             @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
+        };
+    }
+
+    private static PieceTrickParade parade(Map<String, ?> values) {
+        return new PieceTrickParade(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
+            @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
+        };
+    }
+
+    private static PieceOperatorEntityPosition entityPosition(Entity target) {
+        return new PieceOperatorEntityPosition(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return target; }
         };
     }
 
@@ -342,6 +367,8 @@ public final class CombatSpellGameTests {
         helper.assertTrue(mine[0] == 185 && mine[1] == 630, "Mine Genesis P1 R3, got " + mine[0] + "/" + mine[1]);
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
         helper.assertTrue(burst[0] == 1240 && burst[1] == 1050, "Burst P1, got " + burst[0] + "/" + burst[1]);
+        int[] parade = stats(parade(Map.of(POWER, 2.0, TIME, 30.0)));
+        helper.assertTrue(parade[0] == 660 && parade[1] == 900, "Parade P2 T30: 300+150P+2T / 400+100P+10T, got " + parade[0] + "/" + parade[1]);
         int[] kamaitachi = stats(kamaitachi(Map.of(POWER, 1.0)));
         helper.assertTrue(kamaitachi[0] == 120 && kamaitachi[1] == 420, "Kamaitachi P1, got " + kamaitachi[0] + "/" + kamaitachi[1]);
         int[] blades = stats(dancingBlades(Map.of(COUNT, 2.0, POWER, 1.0)));
@@ -533,6 +560,133 @@ public final class CombatSpellGameTests {
         } finally {
             wither.discard();
             helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).forEach(Entity::discard);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeConjuresALookalikeThatTakesHitsForItsOwner(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "parade-caster");
+        player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+        Vec3 spot = helper.absoluteVec(new Vec3(3.5, 0.0, 1.5));
+        parade(Map.of(POSITION, vector(spot), POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        helper.assertTrue(decoy != null && decoy.isOwnedBy(player) && decoy.position().distanceTo(spot) < 0.5,
+                "A lookalike must stand at the position");
+        helper.assertTrue(decoy.getItemBySlot(EquipmentSlot.HEAD).is(Items.IRON_HELMET)
+                        && player.getName().getString().equals(decoy.getName().getString()),
+                "The lookalike must wear the caster's gear and name");
+        helper.assertTrue(decoy.getHitsLeft() == PieceTrickParade.HITS_PER_POWER, "Power 1 must last 2 hits");
+        var sources = helper.getLevel().damageSources();
+        helper.assertTrue(decoy.hurt(sources.generic(), 5.0F) && decoy.isAlive() && decoy.getHealth() == decoy.getMaxHealth(),
+                "A hit must use up one hit, not health");
+        helper.startSequence()
+                .thenExecuteAfter(11, () -> {
+                    decoy.hurt(sources.generic(), 5.0F);
+                    helper.assertTrue(decoy.isRemoved() && Parades.activeDecoy(player) == null, "The last hit must end it");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeLookalikeMimicsItsOwnerAndFacesItsEnemy(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "parade-mimic");
+        player.setYRot(90.0F);
+        player.setYHeadRot(90.0F);
+        parade(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(2.5, 0.0, 2.5))), POWER, 2.0, TIME, 10.0))
+                .execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        helper.assertTrue(decoy != null, "No lookalike");
+        player.setShiftKeyDown(true);
+        player.setPose(Pose.CROUCHING);
+        player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
+        Husk[] hunter = new Husk[1];
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(decoy.isCrouching() && decoy.getMainHandItem().is(Items.DIAMOND_SWORD),
+                            "The lookalike must crouch and change gear with its owner");
+                    // It wanders, so check where it wants to look rather than where its head is right now.
+                    Vec3 wanted = new Vec3(decoy.getLookControl().getWantedX(), decoy.getLookControl().getWantedY(),
+                            decoy.getLookControl().getWantedZ()).subtract(decoy.getEyePosition());
+                    helper.assertTrue(wanted.normalize().dot(player.getLookAngle()) > 0.99,
+                            "With no enemy it must look where its owner looks, wants " + wanted);
+                    // A husk east of the lookalike that goes for it.
+                    hunter[0] = husk(helper, new BlockPos(5, 0, 2), false);
+                    hunter[0].setTarget(decoy);
+                })
+                .thenExecuteAfter(WATCH_SCAN_TICKS, () -> {
+                    var husk = hunter[0];
+                    Vec3 wanted = new Vec3(decoy.getLookControl().getWantedX(), decoy.getLookControl().getWantedY(),
+                            decoy.getLookControl().getWantedZ());
+                    helper.assertTrue(wanted.distanceTo(husk.getEyePosition()) < 0.5,
+                            "It must turn to the mob after it, wants " + wanted + ", husk at " + husk.getEyePosition());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeDrawsMobsAwayFromItsCaster(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "parade-lure");
+        var husk = husk(helper, new BlockPos(1, 0, 1), false);
+        husk.setTarget(player);
+        parade(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(4.5, 0.0, 1.5))), POWER, 2.0, TIME, 10.0))
+                .execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        helper.assertTrue(decoy != null && husk.getTarget() == decoy, "A mob after the caster must turn to the lookalike");
+        husk.setTarget(player);
+        helper.assertTrue(husk.getTarget() == decoy, "A mob that picks the caster again must get the lookalike");
+        decoy.vanish(false);
+        husk.setTarget(player);
+        helper.assertTrue(husk.getTarget() == player, "Once the lookalike is gone the caster can be targeted");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeHidesItsCasterFromOtherPlayersSpells(GameTestHelper helper) throws Exception {
+        var server = helper.getLevel().getServer();
+        boolean pvp = server.isPvpAllowed();
+        server.setPvpAllowed(true);
+        try {
+            var player = caster(helper, new BlockPos(0, 0, 4), "parade-hidden");
+            // Fake players never harm players; the rival stands in for a real one while PvP is on.
+            var rival = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "parade-rival")) {
+                @Override
+                public boolean canHarmPlayer(Player other) {
+                    return true;
+                }
+            };
+            rival.moveTo(Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(4, 0, 4))));
+            var own = new SpellContext().setPlayer(player);
+            var theirs = new SpellContext().setPlayer(rival);
+            Vec3 spot = helper.absoluteVec(new Vec3(2.5, 0.0, 0.5));
+            parade(Map.of(POSITION, vector(spot), POWER, 1.0, TIME, 10.0)).execute(own);
+            EntityParadeDecoy decoy = Parades.activeDecoy(player);
+            helper.assertTrue(decoy != null, "No lookalike");
+
+            helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> theirs.verifyEntity(player))),
+                    "Psi tricks of another player must fail on the hidden caster");
+            helper.assertTrue(castError(() -> own.verifyEntity(player)) == null, "The caster's own spells must still work");
+            helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> burst(Map.of(TARGET, player, POWER, 1.0)).execute(theirs))),
+                    "Burst from another player must fail");
+
+            // Game mode and PvP do not matter; only team mates see through it.
+            player.setGameMode(GameType.CREATIVE);
+            helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> theirs.verifyEntity(player))),
+                    "A caster in creative mode must stay hidden");
+            player.setGameMode(GameType.SURVIVAL);
+            var scoreboard = helper.getLevel().getScoreboard();
+            var team = scoreboard.addPlayerTeam("parade_allies_" + UUID.randomUUID().toString().substring(0, 8));
+            scoreboard.addPlayerToTeam(player.getScoreboardName(), team);
+            scoreboard.addPlayerToTeam(rival.getScoreboardName(), team);
+            helper.assertTrue(castError(() -> theirs.verifyEntity(player)) == null, "Team mates must see through it");
+            scoreboard.removePlayerTeam(team);
+
+            Vector3 seen = (Vector3) entityPosition(player).execute(theirs);
+            Vector3 real = (Vector3) entityPosition(player).execute(own);
+            helper.assertTrue(near(seen.x, decoy.getX()) && near(seen.z, decoy.getZ()), "Others must be told the lookalike's position: " + seen);
+            helper.assertTrue(near(real.x, player.getX()) && near(real.z, player.getZ()), "The caster must see their own position: " + real);
+        } finally {
+            server.setPvpAllowed(pvp);
         }
         helper.succeed();
     }

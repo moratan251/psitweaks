@@ -49,6 +49,7 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "starfall", "trick_starfall", PsitweaksItems.PROGRAM_STARFALL);
         spellUnlock(entries, "burst", "trick_burst", PsitweaksItems.PROGRAM_BURST);
         spellUnlock(entries, "gravity_collapse", "trick_gravity_collapse", PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE);
+        spellUnlock(entries, "parade", "trick_parade", PsitweaksItems.PROGRAM_PARADE);
         // group 指定で idea_storage グループ全体を解禁対象にする(以下のピース単位定義はコマンド互換用)
         spellUnlock(entries, "idea_storage", "trick_idea_storage_view", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage", "idea_storage");

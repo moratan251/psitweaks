@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.trick_parade"
+      "text": "psi.book.page.psitweaks_spellpiece.trick_parade.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_parade.1"
     }
   ]
 }

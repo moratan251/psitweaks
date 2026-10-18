@@ -209,5 +209,6 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_STARFALL.get());
         output.accept(PsitweaksItems.PROGRAM_BURST.get());
         output.accept(PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE.get());
+        output.accept(PsitweaksItems.PROGRAM_PARADE.get());
     }
 }

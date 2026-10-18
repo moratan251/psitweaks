@@ -114,6 +114,7 @@ public final class SpellUnlockHandler {
             definition("starfall", "trick_starfall", "program_starfall"),
             definition("burst", "trick_burst", "program_burst"),
             definition("gravity_collapse", "trick_gravity_collapse", "program_gravity_collapse"),
+            definition("parade", "trick_parade", "program_parade"),
             // イデアストレージ系ピースは共通の unlock_tag を共有し、1つのプログラムで全ピースを解禁する
             // 統合前のコマンド ID は統合後のピースを指す
             definition("idea_storage_absorb_fe", "trick_idea_storage_deposit", "program_idea_storage",

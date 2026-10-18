@@ -70,7 +70,7 @@ public class PieceTrickGuillotine extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity targetVal = getParamValue(context, target);
-        CombatSpellHelper.verifyTarget(targetVal);
+        CombatSpellHelper.verifyTarget(context, targetVal);
 
         if (!(targetVal instanceof LivingEntity livingEntity)) {
             throw new SpellRuntimeException("psi.spellerror.nulltarget");

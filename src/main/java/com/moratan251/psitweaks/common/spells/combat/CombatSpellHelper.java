@@ -125,13 +125,19 @@ public final class CombatSpellHelper {
         return immune != null && immune.isImmune();
     }
 
-    /** Psi's {@code verifyEntity} for attack tricks: the target must exist and must not opt out of spells. */
-    public static void verifyTarget(@Nullable Entity entity) throws SpellRuntimeException {
+    /**
+     * Psi's {@code verifyEntity} for attack tricks: the target must exist, must not opt out of spells and must not be
+     * hiding behind a Trick: Parade lookalike from this caster.
+     */
+    public static void verifyTarget(SpellContext context, @Nullable Entity entity) throws SpellRuntimeException {
         if (entity == null) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
         }
         if (isSpellImmune(entity)) {
             throw new SpellRuntimeException(SpellRuntimeException.IMMUNE_TARGET);
+        }
+        if (Parades.decoyFacing(entity, context.caster) != null) {
+            throw new SpellRuntimeException(Parades.ERROR_DISGUISED);
         }
     }
 

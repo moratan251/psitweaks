@@ -40,6 +40,10 @@ public final class PsitweaksAttachments {
                     .sync(CocytusFreeze.STREAM_CODEC)
                     .build());
 
+    /** Entity id of the player's Trick: Parade lookalike. Server-side bookkeeping only: neither saved nor synced. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> PARADE_DECOY =
+            ATTACHMENT_TYPES.register("parade_decoy", () -> AttachmentType.builder(() -> -1).build());
+
     private PsitweaksAttachments() {
     }
 

@@ -80,6 +80,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "舞う刃";
             default -> "Dancing Blade";
         });
+        root.addProperty("entity.psitweaks.parade_decoy", switch (locale) {
+            case "ja_jp" -> "仮装行列の分身";
+            default -> "Parade Lookalike";
+        });
         root.addProperty("entity.psitweaks.starfall_meteor", switch (locale) {
             case "ja_jp" -> "スターフォールの流星";
             default -> "Starfall Meteor";
@@ -361,6 +365,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "数";
             default -> "Count";
         });
+        root.addProperty("psitweaks.spellerror.parade_disguised", switch (locale) {
+            case "ja_jp" -> "エラー: 対象の情報は偽装されています。";
+            default -> "ERROR: The target's information is disguised.";
+        });
         root.addProperty("psitweaks.spellerror.no_ground", switch (locale) {
             case "ja_jp" -> "指定位置の下に地面がありません";
             default -> "No ground below the position";
@@ -471,7 +479,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addMekanismIntegrationBook(root);
         addMaterialBookAdditions(root);
         addSpellBulletsBook(root);
-        addEffect(root, "parade", "Parade", "仮想行列");
+        addEffect(root, "parade", "Parade", "仮装行列");
         addEffect(root, "flight", "Flight", "飛行");
         addEffect(root, "barrier", "Barrier", "障壁");
         addEffect(root, "hardening", "Hardening", "硬化");
@@ -869,7 +877,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava."},
-            {"psi.book.page.psitweaks_spellpiece.trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)%% chance."},
             {"psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "Applies Mekanism radiation exposure to the target."},
             {"psi.book.page.psitweaks_spellpiece.trick_set_spellgram_follow_target", "Sets the follow target entity of a SpellGram object."},
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID in CAD memory."},
@@ -982,7 +989,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります."},
-            {"psi.book.page.psitweaks_spellpiece.trick_parade", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) %% で攻撃を回避します."},
             {"psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "対象へMekanismの放射線被ばくを付与します. "},
             {"psi.book.page.psitweaks_spellpiece.trick_set_spellgram_follow_target", "魔法式オブジェクトの追従対象エンティティを設定します."},
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをCADメモリに保存します."},
@@ -1531,7 +1537,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
         addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place", "作動式: 障壁", "対象に、受けるダメージを肩代わりするシールドを張る");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時、一定値まで減少させる");
-        addSpellPiece(root, "trick_parade", "Trick: Parade", "Avoid damage with a certain probability", "作動式: パレード", "確率で被ダメージを回避する");
+        addSpellPiece(root, "trick_parade", "Trick: Parade", "Conjures a lookalike of the caster that draws enemies' attacks and spells", "作動式: 仮装行列", "術者そっくりの分身を作り、敵の攻撃と魔法を引きつける");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します。Psiを消費し続けることでクリエイティブ飛行を可能にします。");
         addSpellPiece(root, "trick_interact_block", "Trick: Block Interact", "Right-click with the off-hand item on the target block", "作動式: ブロック作用", "座標のブロックに、オフハンドのアイテムで右クリックの動作を行う");
         addSpellPiece(root, "trick_freeze_block", "Trick: Block Freeze", "Freeze the block at the target position into its next colder form", "作動式: ブロック凍結", "指定座標のブロックを次の凍結段階に変化させる");
@@ -1739,7 +1745,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Power and Time must be positive integers. Casting it again replaces the current shield. It does not absorb starvation, drowning, suffocation, falling, freezing, poison, withering, the damage of being on fire, the void or /kill. A bar above your health shows the shield you have left.",
                 "威力と時間には正の整数を指定します. もう一度かけると今のシールドと置き換わります. 空腹、溺れ、窒息、落下、凍結、毒、衰弱、炎上中の継続ダメージ、奈落、/kill は防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
-        addBookPage(root, "trick_parade", "Applies an effect that evades attacks by chance. It evades attacks with a (62.5 + 7.5 * level)%% chance.", "確率で攻撃を回避する効果を付与します. (62.5 + 7.5 * レベル) %% で攻撃を回避します.");
+        addBookPage(root, "trick_parade.0",
+                "Modelled on the Kudou family's secret magic. Conjures a lookalike of the caster at the position; it wanders within 5 blocks of it, copies the caster's gestures and turns to face whoever is after it. It wavers away after $(thing)Time$(0) seconds or after taking $(thing)2 × Power$(0) hits. Casting it again replaces the current lookalike.",
+                "九島家の秘術を模した術式です. 指定位置に術者そっくりの分身を作ります. 分身はその周り5ブロック以内を歩き回り, 術者の仕草をまね, 狙ってくる敵の方を向きます. 分身は $(thing)時間$(0) 秒たつか, $(thing)2×威力$(0) 回攻撃を受けると揺らいで消えます. もう一度唱えると, 今ある分身と入れ替わります.");
+        addBookPage(root, "trick_parade.1",
+                "While it stands, hostile creatures within 32 blocks that go for the caster go for the lookalike instead (bosses excepted). Other players no longer see the caster, spells of theirs that name the caster directly act on the lookalike and fail with an error, and $(thing)Operator: Entity Position$(0) reports the lookalike's position. The caster and their team mates are unaffected.",
+                "分身がいる間, 術者を狙う32ブロック以内の敵対的な生物は分身を狙います (ボスを除く). 他のプレイヤーからは術者の姿が見えなくなり, 術者を直接指定した術式は分身に作用して何も起こらずにエラーになり, $(thing)演算子: エンティティ位置$(0) は分身の位置を返します. 術者自身と同じチームの味方には影響しません.");
         addBookPage(root, "trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively.", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です.");
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
         addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");

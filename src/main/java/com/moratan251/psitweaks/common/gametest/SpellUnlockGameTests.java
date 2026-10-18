@@ -32,10 +32,10 @@ import vazkii.psi.common.item.base.ModItems;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SpellUnlockGameTests {
-    private static final int SHIPPED_DEFINITIONS = 31;
-    /** The combat tricks unlocked by research; Kamaitachi is free. */
+    private static final int SHIPPED_DEFINITIONS = 32;
+    /** The combat tricks unlocked by research (Parade included); Kamaitachi is free. */
     private static final List<String> COMBAT_UNLOCKS = List.of(
-            "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "gravity_collapse");
+            "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "gravity_collapse", "parade");
 
     @GameTest(template = "psi110_empty")
     public static void allCommandCountsDefinitionsLikeStatus(GameTestHelper helper) throws Exception {
