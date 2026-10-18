@@ -709,6 +709,47 @@ public final class UtilitySpellGameTests {
         helper.succeed();
     }
 
+    /** A 17x16x16 block of stone in the air: the walk stops at 4096 blocks; the log tells how long that takes. */
+    @GameTest(template = TEMPLATE)
+    public static void connectedBlocksStopsAtTheMaximum(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 2), "quarry-finder");
+        // High in the air, where the stone touches nothing else.
+        player.moveTo(player.getX(), player.getY() + 150, player.getZ());
+        var context = new SpellContext().setPlayer(player);
+        var level = helper.getLevel();
+        BlockPos center = player.blockPosition();
+        List<BlockPos> stone = new ArrayList<>();
+        for (int x = -8; x <= 8; x++) {
+            for (int y = -8; y < 8; y++) {
+                for (int z = -8; z < 8; z++) {
+                    stone.add(center.offset(x, y, z));
+                }
+            }
+        }
+        for (BlockPos pos : stone) {
+            level.setBlock(pos, Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+        try {
+            long start = System.nanoTime();
+            Object first = connectedBlocks(Map.of(POSITION, corner(center), MAX, 4096.0)).execute(context);
+            long firstNanos = System.nanoTime() - start;
+            start = System.nanoTime();
+            Object second = connectedBlocks(Map.of(POSITION, corner(center), MAX, 1.0E9)).execute(context);
+            long secondNanos = System.nanoTime() - start;
+            LOGGER.info("Connected Blocks of {} stone found 4096 in {} ms, then in {} ms", stone.size(),
+                    String.format("%.1f", firstNanos / 1.0E6), String.format("%.1f", secondNanos / 1.0E6));
+            helper.assertTrue(first instanceof VectorListWrapper list && list.size() == PieceOperatorConnectedBlocks.MAX_BLOCKS,
+                    "The walk must stop at 4096 blocks, got " + (first instanceof VectorListWrapper list ? list.size() : first));
+            helper.assertTrue(second instanceof VectorListWrapper list && list.size() == PieceOperatorConnectedBlocks.MAX_BLOCKS,
+                    "A larger maximum must be capped at 4096");
+        } finally {
+            for (BlockPos pos : stone) {
+                level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+        helper.succeed();
+    }
+
     private static List<Vector3> toList(VectorListWrapper list) {
         List<Vector3> result = new ArrayList<>();
         list.forEach(result::add);

@@ -2,11 +2,10 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper;
 import com.moratan251.psitweaks.common.spells.wrapper.VectorListWrapper;
-import java.util.ArrayDeque;
+import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -67,19 +66,24 @@ public class PieceOperatorConnectedBlocks extends PieceOperator {
             return result;
         }
         Block block = startState.getBlock();
-        Set<BlockPos> seen = new HashSet<>();
-        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-        seen.add(start);
-        queue.add(start);
+        // Packed positions: the walk looks at up to 26 neighbors of each of 4096 blocks within one tick.
+        LongOpenHashSet seen = new LongOpenHashSet();
+        LongArrayFIFOQueue queue = new LongArrayFIFOQueue();
+        seen.add(start.asLong());
+        queue.enqueue(start.asLong());
+        BlockPos.MutableBlockPos next = new BlockPos.MutableBlockPos();
         while (!queue.isEmpty() && result.size() < limit) {
-            BlockPos pos = queue.poll();
-            result.add(cornerOf(pos));
+            long pos = queue.dequeueLong();
+            int x = BlockPos.getX(pos);
+            int y = BlockPos.getY(pos);
+            int z = BlockPos.getZ(pos);
+            result.add(new Vector3(x, y, z));
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
                     for (int dz = -1; dz <= 1; dz++) {
-                        BlockPos next = pos.offset(dx, dy, dz);
-                        if (seen.add(next) && isWalkable(context, level, next) && level.getBlockState(next).is(block)) {
-                            queue.add(next);
+                        next.set(x + dx, y + dy, z + dz);
+                        if (seen.add(next.asLong()) && isWalkable(context, level, next) && level.getBlockState(next).is(block)) {
+                            queue.enqueue(next.asLong());
                         }
                     }
                 }
@@ -89,12 +93,8 @@ public class PieceOperatorConnectedBlocks extends PieceOperator {
     }
 
     private static boolean isWalkable(SpellContext context, Level level, BlockPos pos) {
-        // The tricks that take the list check its vectors against the radius, so check the same vectors here.
-        return !level.isOutsideBuildHeight(pos) && level.isLoaded(pos) && context.isInRadius(cornerOf(pos));
-    }
-
-    private static Vector3 cornerOf(BlockPos pos) {
-        return new Vector3(pos.getX(), pos.getY(), pos.getZ());
+        // The tricks that take the list check the block corners against the radius, so check the same points here.
+        return context.isInRadius(pos.getX(), pos.getY(), pos.getZ()) && !level.isOutsideBuildHeight(pos) && level.isLoaded(pos);
     }
 
     @Override
