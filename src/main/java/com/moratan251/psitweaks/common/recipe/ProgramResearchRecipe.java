@@ -218,6 +218,30 @@ public class ProgramResearchRecipe implements Recipe<MachineRecipeInput> {
         return true;
     }
 
+    /**
+     * The input slots as recipe viewers show them. An input whose items do not stack that high (three Psimetal Swords)
+     * is spread over several slots, as it has to be put into the research table; if that would not fit in the nine
+     * slots, every input keeps a single slot.
+     */
+    public List<DisplaySlot> getDisplaySlots() {
+        List<DisplaySlot> spread = new ArrayList<>();
+        for (RequiredInput input : inputs) {
+            int maxStack = Arrays.stream(input.ingredient().getItems()).mapToInt(ItemStack::getMaxStackSize).min().orElse(64);
+            maxStack = Math.max(1, maxStack);
+            for (int left = input.count(); left > 0; left -= maxStack) {
+                spread.add(new DisplaySlot(input, Math.min(left, maxStack)));
+            }
+        }
+        if (spread.size() <= MAX_INPUT_SLOTS) {
+            return spread;
+        }
+        return inputs.stream().map(input -> new DisplaySlot(input, input.count())).toList();
+    }
+
+    /** One input slot shown by a recipe viewer: {@code count} of {@code input}'s items. */
+    public record DisplaySlot(RequiredInput input, int count) {
+    }
+
     public record RequiredInput(Ingredient ingredient, int count, boolean consume) {
         private static final Codec<RequiredInput> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(RequiredInput::ingredient),

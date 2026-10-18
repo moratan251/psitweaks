@@ -56,6 +56,8 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
                 damageType("psitweaks.starfall", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.GRAVITY_COLLAPSE.location(),
                 damageType("psitweaks.gravity_collapse", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.ACTIVE_AIR_MINE.location(),
+                damageType("psitweaks.active_air_mine", "never", 0.1F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {

@@ -3,15 +3,19 @@ package com.moratan251.psitweaks.common.gametest;
 import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
+import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickActiveAirMine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
@@ -176,6 +180,13 @@ public final class CombatSpellGameTests {
         };
     }
 
+    private static PieceTrickActiveAirMine activeAirMine(Map<String, ?> values) {
+        return new PieceTrickActiveAirMine(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
+            @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
+        };
+    }
+
     private static PieceTrickBurst burst(Map<String, ?> values) {
         return new PieceTrickBurst(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
@@ -209,6 +220,16 @@ public final class CombatSpellGameTests {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
             @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
         };
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void barrierShieldGrowsWithPhenomenonInterference(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-interference");
+        player.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.5);
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        barrier(Map.of(TARGET, husk, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        helper.assertTrue(near(shield(husk), 30), "Power 2 at 1.5x Phenomenon Interference must raise 30, got " + shield(husk));
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
@@ -325,8 +346,10 @@ public final class CombatSpellGameTests {
         helper.assertTrue(blades[0] == 840 && blades[1] == 440, "Dancing Blades N2 P1, got " + blades[0] + "/" + blades[1]);
         int[] starfall = stats(starfall(Map.of(POWER, 1.0, COUNT, 13.0)));
         helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
-        int[] gravity = stats(gravityCollapse(Map.of(POWER, 1.0, RADIUS, 20.0)));
-        helper.assertTrue(gravity[0] == 1370 && gravity[1] == 6150, "Gravity radius must be capped at 10, got " + gravity[0] + "/" + gravity[1]);
+        int[] gravity = stats(gravityCollapse(Map.of(POWER, 1.0, RADIUS, 30.0)));
+        helper.assertTrue(gravity[0] == 1340 && gravity[1] == 10350, "Gravity radius must be capped at 24, got " + gravity[0] + "/" + gravity[1]);
+        int widest = stats(gravityCollapse(Map.of(POWER, 0.5, RADIUS, 24.0)))[0];
+        helper.assertTrue(widest <= 1500, "The widest Gravity Collapse must still fit a psycheonic metal CAD, got " + widest);
         helper.succeed();
     }
 
@@ -445,6 +468,42 @@ public final class CombatSpellGameTests {
         helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(quietContext)) == null,
                 "Burst must skip a fallen target without an error when errors are suppressed");
         helper.assertTrue(messages.isEmpty(), "An Error Suppressor must hide the warning, got " + messages);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void cocytusFreezesUntilSomethingWakesTheMobUp(GameTestHelper helper) {
+        var husk = husk(helper, new BlockPos(1, 0, 1), true);
+        var quiet = husk(helper, new BlockPos(3, 0, 1), true);
+        quiet.setSilent(true);
+        CocytusFreezes.freeze(helper.getLevel(), husk);
+        CocytusFreezes.freeze(helper.getLevel(), quiet);
+        helper.assertTrue(husk.isNoAi() && husk.isSilent() && CocytusFreezes.isFrozen(husk), "Cocytus must freeze the husk");
+        // Freezing again must not forget that the husk could make sounds before.
+        CocytusFreezes.freeze(helper.getLevel(), husk);
+
+        husk.setNoAi(false);
+        quiet.setNoAi(false);
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(!CocytusFreezes.isFrozen(husk) && !husk.hasData(PsitweaksAttachments.COCYTUS_FREEZE),
+                            "The ice must melt once the AI is back");
+                    helper.assertTrue(!husk.isSilent(), "The thawed husk must get its voice back");
+                    helper.assertTrue(quiet.isSilent() && !quiet.hasData(PsitweaksAttachments.COCYTUS_FREEZE),
+                            "A mob that was silent before must stay silent");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void activeAirMineStillHitsWithItsNewShockwave(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "air-mine-caster");
+        var husk = tough(husk(helper, new BlockPos(2, 0, 2), false));
+        activeAirMine(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(2.5, 1.0, 2.5))), POWER, 1.0))
+                .execute(new SpellContext().setPlayer(player));
+        helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - EPSILON, "The blast must still hurt: " + husk.getHealth());
+        helper.assertTrue(husk.getLastDamageSource() != null && husk.getLastDamageSource().is(PsitweaksDamageTypes.ACTIVE_AIR_MINE),
+                "The blast must use its own damage type (shockwave death message), got " + husk.getLastDamageSource());
         helper.succeed();
     }
 

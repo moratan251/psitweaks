@@ -31,11 +31,11 @@ public class PieceTrickGravityCollapse extends PieceTrick {
     private static final double MIN_POWER = 0.5;
     private static final float BASE_DAMAGE = 60.0F;
     private static final float DAMAGE_PER_POWER = 50.0F;
-    public static final double MAX_RADIUS = 10.0;
+    public static final double MAX_RADIUS = 24.0;
     private static final double MIN_RADIUS = 3.0;
-    private static final double POTENCY_BASE = 1120.0;
+    private static final double POTENCY_BASE = 1170.0;
     private static final double POTENCY_PER_POWER = 50.0;
-    private static final double POTENCY_PER_RADIUS = 20.0;
+    private static final double POTENCY_PER_RADIUS = 5.0;
     private static final double COST_BASE = 2400.0;
     private static final double COST_PER_POWER = 750.0;
     private static final double COST_PER_RADIUS = 300.0;

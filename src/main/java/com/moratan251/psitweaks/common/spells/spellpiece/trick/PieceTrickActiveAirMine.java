@@ -5,10 +5,13 @@ import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.network.MessageSphereFlash;
+import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -132,33 +135,12 @@ public class PieceTrickActiveAirMine extends PieceTrick {
                 continue;
             }
 
-            target.hurt(context.caster.damageSources().sonicBoom(context.caster), distanceDamage);
+            target.hurt(CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.ACTIVE_AIR_MINE, context.caster, context.caster),
+                    distanceDamage);
         }
 
-        level.playSound(
-                null,
-                center.x,
-                center.y,
-                center.z,
-                SoundEvents.WARDEN_SONIC_BOOM,
-                SoundSource.PLAYERS,
-                0.7F,
-                1.0F
-        );
-        level.playSound(
-                null,
-                center.x,
-                center.y,
-                center.z,
-                SoundEvents.GENERIC_EXPLODE,
-                SoundSource.PLAYERS,
-                0.7F,
-                1.0F
-        );
-
         if (level instanceof ServerLevel serverLevel) {
-            spawnSonicSphere(serverLevel, center, radius);
-            serverLevel.sendParticles(ParticleTypes.CLOUD, center.x, center.y, center.z, 14, radius * 0.2, radius * 0.2, radius * 0.2, 0.02);
+            burstEffects(serverLevel, center, radius, CombatSpellHelper.spellColor(context.caster));
         }
 
         return null;
@@ -182,31 +164,29 @@ public class PieceTrickActiveAirMine extends PieceTrick {
         return (float) (baseDamage * multiplier);
     }
 
-    private static void spawnSonicSphere(ServerLevel level, Vec3 center, double radius) {
-        int pointCount = Math.max(18, (int) Math.ceil(radius * 12.0));
-        emitFibonacciSphere(level, center, radius, pointCount);
-        emitFibonacciSphere(level, center, radius * 0.55, Math.max(8, pointCount / 2));
-    }
+    /**
+     * The compressed air bursts: a spherical shock wave the size of the blast, a quicker inner one, a gust at the centre
+     * and a shell of air rushing outward.
+     */
+    private static void burstEffects(ServerLevel level, Vec3 center, double radius, int color) {
+        CombatEffects.sphereFlash(level, center, (float) radius, color, MessageSphereFlash.Style.SHOCKWAVE, 1.2F);
+        CombatEffects.sphereFlash(level, center, (float) radius * 0.55F, color,
+                MessageSphereFlash.Style.SHOCKWAVE, 0.9F);
+        level.sendParticles(ParticleTypes.GUST_EMITTER_LARGE, center.x, center.y, center.z, 1, 0.0, 0.0, 0.0, 0.0);
 
-    private static void emitFibonacciSphere(ServerLevel level, Vec3 center, double radius, int pointCount) {
+        int pointCount = Math.max(24, (int) Math.ceil(radius * 10.0));
         for (int i = 0; i < pointCount; i++) {
             double y = 1.0 - (2.0 * (i + 0.5)) / pointCount;
             double horizontal = Math.sqrt(Math.max(0.0, 1.0 - y * y));
             double theta = GOLDEN_ANGLE * i;
             double x = Math.cos(theta) * horizontal;
             double z = Math.sin(theta) * horizontal;
-
-            level.sendParticles(
-                    ParticleTypes.SONIC_BOOM,
-                    center.x + x * radius,
-                    center.y + y * radius,
-                    center.z + z * radius,
-                    1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0
-            );
+            // Count 0 makes the offset the direction and the speed its scale: each puff flies straight outward.
+            level.sendParticles(ParticleTypes.CLOUD, center.x + x * 0.3, center.y + y * 0.3, center.z + z * 0.3,
+                    0, x, y, z, 0.12 + radius * 0.04);
         }
+
+        CombatEffects.sound(level, center, SoundEvents.WIND_CHARGE_BURST, 1.2F, 0.6F);
+        CombatEffects.sound(level, center, SoundEvents.GENERIC_EXPLODE, 0.8F, 1.3F);
     }
 }

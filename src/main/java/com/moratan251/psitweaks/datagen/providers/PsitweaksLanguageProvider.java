@@ -125,10 +125,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addChemical(root, "gas_peo_fuel", "ΨE-O Fuel", "ΨE-O 燃料");
         addChemical(root, "dirty_antinite", "Dirty Antinite Slurry", "汚れたアンティナイトの懸濁液");
         addChemical(root, "clean_antinite", "Clean Antinite Slurry", "純粋なアンティナイトの懸濁液");
-        addAttribute(root, "spell_damage_factor", "Spell Damage Factor", "術式ダメージ倍率");
+        addAttribute(root, "spell_damage_factor", "Phenomenon Interference", "事象干渉力");
         addModule(root, "psyon_supplying_unit", "Psyon Supplying Unit", "Increases Psi regeneration.", "サイオン供給ユニット", "ユーザーのPsi回復速度を増加させます.");
         addModule(root, "psyon_capacity_unit", "Psyon Capacity Unit", "Increases maximum Psi.", "サイオン容量ユニット", "ユーザーの最大Psi量を増加させます.");
-        addModule(root, "phenomenon_interference_enhancement_unit", "Phenomenon Interference Enhancement Unit", "Increases spell damage.", "事象干渉力増大ユニット", "ユーザーの術式の威力を増大させます.");
+        addModule(root, "phenomenon_interference_enhancement_unit", "Phenomenon Interference Enhancement Unit", "Increases the user's Phenomenon Interference.", "事象干渉力増大ユニット", "ユーザーの事象干渉力を高めます.");
         root.addProperty("curios.identifier.magic_calculation_area", switch (locale) {
             case "ja_jp" -> "魔法演算領域";
             default -> "Magic Calculation Area";
@@ -772,6 +772,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sは%2$sが%3$sで起こした重力崩壊に押し潰された";
             default -> "%1$s was crushed by a gravity collapse %2$s caused using %3$s";
         });
+        root.addProperty("death.attack.psitweaks.active_air_mine", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの衝撃波に粉砕された";
+            default -> "%1$s was shattered by %2$s's shockwave";
+        });
+        root.addProperty("death.attack.psitweaks.active_air_mine.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの衝撃波に粉砕された";
+            default -> "%1$s was shattered by %2$s's shockwave";
+        });
+        root.addProperty("death.attack.psitweaks.active_air_mine.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放った衝撃波に粉砕された";
+            default -> "%1$s was shattered by a shockwave %2$s unleashed using %3$s";
+        });
     }
 
     private static final String[][] LEGACY_PATCHOULI_BOOK_EN_US = {
@@ -831,7 +843,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_material.psycheonic_metal_ingot", "Infuse $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) with Hypostasis to make $(item)Psycheonic Metal Nuggets$(0), then craft nine nuggets into an ingot.$(p)Used for $(l:items/psitweaks_spell_bullets)transcendent spell bullets$(/l), Psycheonic Metal CAD assemblies, and the highest psionic material tier."},
             {"psi.book.page.psitweaks_material.unrefined_flashmetal", "Crafted from $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l) and Refined Glowstone.$(p)Enrich it to obtain usable $(l:components/psitweaks_flashmetal)$(o)$(item)Flashmetal$(0)$(/l)."},
             {"psi.book.page.psitweaks_mekanism_integration.1", "The $(item)Metallurgic Infuser$(0) can produce core Psi materials with PsiTweaks infuse types. Psigem infusion turns redstone into $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l) and gold into $(item)Psimetal$(0).$(p)Ebony and Ivory infusion can make $(item)Ebony Substance$(0), $(item)Ivory Substance$(0), and their Psimetal variants. Later recipes extend this chain into $(l:components/psitweaks_chaotic_factor)psionic factors$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l), $(l:components/psitweaks_psionic_echo)Psionic Echo materials$(/l), and $(l:components/psitweaks_alloy_hypostasis)Hypostasis-tier metal$(/l)."},
-            {"psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases spell damage."},
+            {"psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases Phenomenon Interference."},
             {"psi.book.page.psitweaks_research.0", "Some spell pieces added by $(thing)PsiTweaks$(0) must be unlocked through research before they can be used in spell programs.$(p)Research creates program items that correspond to those spell pieces. Right-clicking with a program unlocks its spell piece, and the program is not consumed."},
             {"psi.book.page.psitweaks_research.1", "Place the required ingredients in the $(l:psitweaks_machines/program_researcher)$(o)$(item)Program Research Table$(0)$(/l) and supply FE to craft a program.$(p)JEI lists each research recipe's required materials, energy usage per tick, and processing time."},
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available."},
@@ -944,7 +956,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_material.psycheonic_metal_ingot", "$(l:components/psitweaks_heavy_psimetal)$(o)$(item)ヘビーサイメタル$(0)$(/l) にヒュポスタシスを注入して $(item)プシオニックメタルナゲット$(0) を作り, 9個クラフトするとインゴットになります.$(p)$(l:items/psitweaks_spell_bullets)超越 tier の術式弾$(/l), プシオニックメタル CAD 素体, 最上位のサイオニック素材に使います."},
             {"psi.book.page.psitweaks_material.unrefined_flashmetal", "$(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l) と精製グロウストーンからクラフトします.$(p)濃縮すると使用可能な $(l:components/psitweaks_flashmetal)$(o)$(item)フラッシュメタル$(0)$(/l) になります."},
             {"psi.book.page.psitweaks_mekanism_integration.1", "$(item)冶金吹き込み機$(0) では, PsiTweaks の注入タイプを使って主要なPsi素材を作れます. サイジェム注入はレッドストーンを$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)に, 金インゴットを$(item)サイメタル$(0)に変換します.$(p)エボニー注入とアイボリー注入では, $(item)エボニー基質$(0), $(item)アイボリー基質$(0), それぞれのサイメタル派生素材を作れます. さらに$(l:components/psitweaks_chaotic_factor)サイオニック因子$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)カオティックサイメタル$(0)$(/l), $(l:components/psitweaks_psionic_echo)サイオニックエコー素材$(/l), $(l:components/psitweaks_alloy_hypostasis)位格合金$(/l)へ発展します."},
-            {"psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 術式ダメージを増加させます."},
+            {"psi.book.page.psitweaks_mekanism_integration.2", "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 事象干渉力を高めます."},
             {"psi.book.page.psitweaks_research.0", "$(thing)PsiTweaks$(0) が追加する一部のスペルピースは, 術式プログラムで使う前に研究によるアンロックが必要です.$(p)研究では, それらのスペルピースに対応するプログラムアイテムを作成します. プログラムを右クリックで使用することでスペルピースをアンロックできます(プログラムは消費しません)."},
             {"psi.book.page.psitweaks_research.1", "$(l:psitweaks_machines/program_researcher)$(o)$(item)プログラム研究台$(0)$(/l) に必要素材を入れて FE を供給すると, プログラムをクラフトできます.$(p)各研究に必要な素材, tickあたりの消費電力, 処理時間は JEI で確認できます."},
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています."},
@@ -1811,8 +1823,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within 2.5 blocks (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
                 "流星は着弾と同時に爆発し、2.5ブロック以内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
         addBookPage(root, "trick_gravity_collapse.0",
-                "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 10) towards its centre, then collapses and crushes everything close to the centre.",
-                "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜10) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
+                "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
+                "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
         addBookPage(root, "trick_gravity_collapse.1",
                 "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius, but never less than 3 blocks. While being pulled, creatures build up no fall damage.",
                 "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%%ですが、3ブロックより狭くはなりません. 引き寄せられている間は落下ダメージが溜まりません.");
@@ -2023,8 +2035,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully.";
         });
         root.addProperty("psi.book.page.psitweaks_item.sorcery_booster", switch (locale) {
-            case "ja_jp" -> "魔法演算領域スロットに装備し, 術式ダメージを30%%増加させます.$(p)素材に $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使います.";
-            default -> "Equips in the Magic Calculation Area slot and increases spell damage by 30%%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l).";
+            case "ja_jp" -> "魔法演算領域スロットに装備し, 事象干渉力を30%%高めます.$(p)素材に $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) を使います.";
+            default -> "Equips in the Magic Calculation Area slot and increases Phenomenon Interference by 30%%.$(p)It is made from a $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l).";
         });
         root.addProperty("psi.book.page.psitweaks_item.gravstringer.0", switch (locale) {
             case "ja_jp" -> "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出することが可能です.";
@@ -2050,8 +2062,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "The $(item)M.O.V.A.L. Suit$(0) is a high-grade Psi armor set crafted with $(l:components/psitweaks_heavy_psimetal)$(o)$(item)Heavy Psimetal$(0)$(/l) and $(item)Ebony Psimetal$(0).";
         });
         root.addProperty("psi.book.page.psitweaks_item.moval_suit.1", switch (locale) {
-            case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は術式ダメージ+10%%, Psi回復量+5, 最大Psi量+500を付与します.";
-            default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10%% spell damage, +5 Psi regeneration, and +500 maximum Psi.";
+            case "ja_jp" -> "ヘルメットは外装センサーに対応し, チェストプレートはダメージ時, レギンスはtick時, ブーツはジャンプ時に詠唱します.$(p)各部位は事象干渉力+10%%, Psi回復量+5, 最大Psi量+500を付与します.";
+            default -> "The helmet accepts exosuit sensors, the chestplate casts on damage, the leggings cast on tick, and the boots cast on jump.$(p)Each piece grants +10%% Phenomenon Interference, +5 Psi regeneration, and +500 maximum Psi.";
         });
     }
 
@@ -2077,8 +2089,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "The $(item)Metallurgic Infuser$(0) can produce core Psi materials with PsiTweaks infuse types. Psigem infusion turns redstone into $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l) and gold into $(item)Psimetal$(0).$(p)Ebony and Ivory infusion can make $(item)Ebony Substance$(0), $(item)Ivory Substance$(0), and their Psimetal variants. Later recipes extend this chain into $(l:components/psitweaks_chaotic_factor)psionic factors$(/l), $(l:components/psitweaks_chaotic_psimetal)$(o)$(item)Chaotic Psimetal$(0)$(/l), $(l:components/psitweaks_psionic_echo)Psionic Echo materials$(/l), and $(l:components/psitweaks_alloy_hypostasis)Hypostasis-tier metal$(/l).";
         });
         root.addProperty("psi.book.page.psitweaks_mekanism_integration.2", switch (locale) {
-            case "ja_jp" -> "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します. これらはPsi本体のAttributeを使用します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 術式ダメージを増加させます.";
-            default -> "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi. These bonuses use Psi's own attributes.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases spell damage.";
+            case "ja_jp" -> "PsiTweaks は魔法師向けのMekaSuitモジュールを3種類追加します. $(item)サイオン供給ユニット$(0) と $(item)サイオン容量ユニット$(0) はMekaSuit胴体に装着し, Psi回復速度と最大Psi保有量を強化します. これらはPsi本体のAttributeを使用します.$(p)$(item)事象干渉力増大ユニット$(0) はMekaSuitヘルメットに装着し, 事象干渉力を高めます.";
+            default -> "PsiTweaks adds three MekaSuit modules for spellcasters. The $(item)Psyon Supplying Unit$(0) and $(item)Psyon Capacity Unit$(0) install in the MekaSuit body armor and improve Psi regeneration and maximum Psi. These bonuses use Psi's own attributes.$(p)The $(item)Phenomenon Interference Enhancement Unit$(0) installs in the MekaSuit helmet and increases Phenomenon Interference.";
         });
     }
 

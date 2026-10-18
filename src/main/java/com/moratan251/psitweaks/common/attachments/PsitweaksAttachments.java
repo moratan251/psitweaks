@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.attachments;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
+import com.moratan251.psitweaks.common.spells.combat.CocytusFreeze;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -27,6 +28,16 @@ public final class PsitweaksAttachments {
             ATTACHMENT_TYPES.register("barrier_shield", () -> AttachmentType.builder(() -> BarrierShield.NONE)
                     .serialize(BarrierShield.CODEC, BarrierShield::isPresent)
                     .sync(BarrierShield.STREAM_CODEC)
+                    .build());
+
+    /**
+     * Ice of Trick: Cocytus on a mob whose AI it switched off. Saved with the mob and synced to everyone who sees it, so
+     * clients draw the ice; removed once the AI comes back on.
+     */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<CocytusFreeze>> COCYTUS_FREEZE =
+            ATTACHMENT_TYPES.register("cocytus_freeze", () -> AttachmentType.builder(() -> CocytusFreeze.DEFAULT)
+                    .serialize(CocytusFreeze.CODEC)
+                    .sync(CocytusFreeze.STREAM_CODEC)
                     .build());
 
     private PsitweaksAttachments() {

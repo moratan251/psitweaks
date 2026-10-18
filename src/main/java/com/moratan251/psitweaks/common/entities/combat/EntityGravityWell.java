@@ -26,7 +26,12 @@ import vazkii.psi.api.spell.ISpellImmune;
 public class EntityGravityWell extends CombatSpellEntity {
     public static final int CHARGE_TICKS = 60;
     private static final int LINGER_TICKS = 4;
-    private static final double PULL_STRENGTH = 0.09;
+    /** Pull acceleration per tick at the edge; wider wells pull harder so the edge still reaches the centre in time. */
+    private static final double PULL_BASE = 0.15;
+    private static final double PULL_PER_RADIUS = 0.008;
+    /** Upward kick for creatures on the ground, so they leave it (and its friction) and are dragged through the air. */
+    private static final double GROUND_LIFT = 0.09;
+    private static final double AIR_LIFT = 0.035;
     private static final double MIN_COLLAPSE_RADIUS = 3.0;
     private static final double COLLAPSE_RADIUS_FACTOR = 0.6;
     private static final double EDGE_DAMAGE_FACTOR = 0.5;
@@ -104,13 +109,13 @@ public class EntityGravityWell extends CombatSpellEntity {
             if (distance > radius || distance < 0.05) {
                 continue;
             }
-            double strength = PULL_STRENGTH * (0.4 + 0.6 * (1.0 - distance / radius));
+            double strength = (PULL_BASE + PULL_PER_RADIUS * radius) * (0.6 + 0.4 * (1.0 - distance / radius));
             Vec3 pull = offset.scale(strength / distance);
-            if (distance < 1.5) {
+            if (distance < 2.0) {
                 // Hold things near the centre instead of letting them overshoot.
-                living.setDeltaMovement(living.getDeltaMovement().scale(0.6));
+                living.setDeltaMovement(living.getDeltaMovement().scale(0.5));
             }
-            CombatSpellHelper.push(living, pull.add(0.0, 0.035, 0.0));
+            CombatSpellHelper.push(living, pull.add(0.0, living.onGround() ? GROUND_LIFT : AIR_LIFT, 0.0));
             living.fallDistance = 0.0F;
         }
     }
@@ -138,7 +143,9 @@ public class EntityGravityWell extends CombatSpellEntity {
 
     private void inflowParticles() {
         double radius = getRadius();
-        for (int i = 0; i < 4; i++) {
+        // More particles for wider wells, so a large one does not look empty.
+        int count = 4 + (int) (radius / 3.0);
+        for (int i = 0; i < count; i++) {
             double theta = random.nextDouble() * Math.PI * 2.0;
             double phi = Math.acos(random.nextDouble() * 2.0 - 1.0);
             double distance = radius * (0.5 + random.nextDouble() * 0.5);

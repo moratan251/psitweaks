@@ -24,12 +24,16 @@ final class ProgramResearchEmiRecipe extends BasicEmiRecipe {
         this.displayInputs = new ArrayList<>(holder.value().getInputs().size());
         for (ProgramResearchRecipe.RequiredInput input : holder.value().getInputs()) {
             EmiIngredient ingredient = EmiIngredient.of(input.ingredient(), input.count());
-            displayInputs.add(new DisplayInput(ingredient, !input.consume()));
             if (input.consume()) {
                 inputs.add(ingredient);
             } else {
                 catalysts.add(ingredient);
             }
+        }
+        // Items that do not stack are shown one slot each, as they go into the research table.
+        for (ProgramResearchRecipe.DisplaySlot slot : holder.value().getDisplaySlots()) {
+            displayInputs.add(new DisplayInput(EmiIngredient.of(slot.input().ingredient(), slot.count()),
+                    !slot.input().consume()));
         }
         outputs.add(EmiStack.of(holder.value().getOutput()));
     }

@@ -3,6 +3,7 @@
     "psitweaks:meteor_line",
     "psitweaks:tunneler",
     "psitweaks:burst",
-    "psitweaks:gravity_collapse"
+    "psitweaks:gravity_collapse",
+    "psitweaks:active_air_mine"
   ]
 }

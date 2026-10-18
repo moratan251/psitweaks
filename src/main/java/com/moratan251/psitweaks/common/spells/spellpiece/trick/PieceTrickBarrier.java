@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShields;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -19,7 +20,7 @@ import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Raises a shield of (10 x Power) points on the target for Time seconds. Incoming damage is taken from the shield
+ * Raises a shield of (10 x Power x the caster's Phenomenon Interference) points on the target for Time seconds. Incoming damage is taken from the shield
  * first. The parameters keep the names and colours of the old effect-based version so saved spells still load.
  */
 public class PieceTrickBarrier extends PieceTrick {
@@ -79,7 +80,8 @@ public class PieceTrickBarrier extends PieceTrick {
         int powerVal = Math.max(1, getParamValue(context, power).intValue());
         int seconds = Math.max(1, getParamValue(context, time).intValue());
         float amount = (float) (powerVal * BarrierShields.SHIELD_PER_POWER
-                * PsitweaksConfig.COMMON.barrierShieldMultiplier.get());
+                * PsitweaksConfig.COMMON.barrierShieldMultiplier.get()
+                * context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR));
         BarrierShields.raise(living, amount, seconds * 20, CombatSpellHelper.spellColor(context.caster));
         return null;
     }

@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.handler.SpellUnlockHandler.SpellUnlockDefinition;
 import com.moratan251.psitweaks.common.network.MessageSpellUnlockSync;
 import com.moratan251.psitweaks.common.recipe.EnchantedBookIngredient;
+import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.common.item.base.ModItems;
 
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -140,6 +142,22 @@ public final class SpellUnlockGameTests {
                 && !ingredient.test(new ItemStack(Items.ENCHANTED_BOOK)), "Books without Loyalty must not match");
         helper.assertTrue(!ingredient.test(trident), "Only enchanted books count, not enchanted items");
         helper.assertTrue(ingredient.getItems().length == 3, "Recipe viewers must show Loyalty I to III, got " + ingredient.getItems().length);
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void recipeViewersSpreadUnstackableResearchInputs(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            // The research table and its recipes need Mekanism.
+            helper.succeed();
+            return;
+        }
+        var holder = helper.getLevel().getRecipeManager().byKey(Psitweaks.location("program_research/program_dancing_blades"));
+        helper.assertTrue(holder.isPresent() && holder.get().value() instanceof ProgramResearchRecipe, "Dancing Blades research missing");
+        var slots = ((ProgramResearchRecipe) holder.get().value()).getDisplaySlots();
+        long swordSlots = slots.stream().filter(slot -> slot.input().ingredient().test(new ItemStack(ModItems.psimetalSword.get()))).count();
+        helper.assertTrue(swordSlots == 3 && slots.stream().allMatch(slot -> slot.count() <= 64), "Three swords must take three slots: " + slots);
+        helper.assertTrue(slots.size() == 7, "Blank, 3 swords, book, heavy psimetal and circuits make 7 slots, got " + slots.size());
         helper.succeed();
     }
 

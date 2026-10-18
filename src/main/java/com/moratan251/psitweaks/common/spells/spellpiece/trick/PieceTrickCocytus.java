@@ -1,9 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -41,29 +39,8 @@ public class PieceTrickCocytus extends PieceTrick {
         } else {
             if (!(targetVal instanceof Player)) {
 
-                if(targetVal instanceof Mob mob){
-                    mob.setNoAi(true);
-                    mob.setSilent(true);
-                    if (context.caster.level() instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(
-                                ParticleTypes.SNOWFLAKE,  // パーティクルの種類
-                                mob.getX(), mob.getY(), mob.getZ(),              // 座標
-                                30,                   // パーティクルの数
-                                0.5, 0.5, 0.5,       // X, Y, Z方向の拡散範囲
-                                0.02                  // 速度
-                        );
-                    }
-                    if (!context.caster.level().isClientSide) {
-                        context.caster.level().playSound(
-                                null,
-                                mob.getX(), mob.getY(), mob.getZ(),
-                                SoundEvents.GLASS_BREAK,
-                                SoundSource.PLAYERS,
-                                1.0F,
-                                1.0F
-                        );
-                    }
-
+                if (targetVal instanceof Mob mob && context.caster.level() instanceof ServerLevel serverLevel) {
+                    CocytusFreezes.freeze(serverLevel, mob);
                 }
 
             }

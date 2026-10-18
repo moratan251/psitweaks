@@ -149,11 +149,13 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String dancingBlades = damageType("dancing_blades");
         String starfall = damageType("starfall");
         String gravityCollapse = damageType("gravity_collapse");
-        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, gravityCollapse);
+        String activeAirMine = damageType("active_air_mine");
+        // Active Air Mine keeps what it had as a sonic boom: armour and protection enchantments do not help.
+        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, gravityCollapse, activeAirMine);
         // Meteors and blades are separate hits, so each one counts even right after the previous.
         tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler, dancingBlades, starfall);
         tag(tags, "minecraft", "bypasses_effects", meteorLine, tunneler);
-        tag(tags, "minecraft", "bypasses_enchantments", meteorLine, tunneler);
+        tag(tags, "minecraft", "bypasses_enchantments", meteorLine, tunneler, activeAirMine);
         tag(tags, "minecraft", "bypasses_invulnerability", meteorLine);
         tag(tags, "minecraft", "bypasses_resistance", meteorLine);
         tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler, mineGenesis, burst, gravityCollapse);

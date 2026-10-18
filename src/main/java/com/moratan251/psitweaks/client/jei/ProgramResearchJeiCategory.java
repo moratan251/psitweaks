@@ -75,7 +75,7 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ProgramResearchJeiRecipe jeiRecipe, IFocusGroup focuses) {
         ProgramResearchRecipe recipe = jeiRecipe.recipe();
-        List<ProgramResearchRecipe.RequiredInput> inputs = recipe.getInputs();
+        List<ProgramResearchRecipe.DisplaySlot> inputs = recipe.getDisplaySlots();
         for (int i = 0; i < ProgramResearchRecipe.MAX_INPUT_SLOTS; i++) {
             int x = INPUT_START_X + (i % 3) * 18;
             int y = INPUT_START_Y + (i / 3) * 18;
@@ -120,19 +120,19 @@ public class ProgramResearchJeiCategory implements IRecipeCategory<ProgramResear
         );
     }
 
-    private static RecipeIngredientRole getInputRole(List<ProgramResearchRecipe.RequiredInput> inputs, int index) {
-        if (index < inputs.size() && !inputs.get(index).consume()) {
+    private static RecipeIngredientRole getInputRole(List<ProgramResearchRecipe.DisplaySlot> inputs, int index) {
+        if (index < inputs.size() && !inputs.get(index).input().consume()) {
             return RecipeIngredientRole.CATALYST;
         }
         return RecipeIngredientRole.INPUT;
     }
 
-    private static List<ItemStack> toDisplayStacks(ProgramResearchRecipe.RequiredInput input) {
-        ItemStack[] stacks = input.ingredient().getItems();
+    private static List<ItemStack> toDisplayStacks(ProgramResearchRecipe.DisplaySlot slot) {
+        ItemStack[] stacks = slot.input().ingredient().getItems();
         List<ItemStack> result = new ArrayList<>(stacks.length);
         for (ItemStack stack : stacks) {
             ItemStack copy = stack.copy();
-            copy.setCount(input.count());
+            copy.setCount(slot.count());
             result.add(copy);
         }
         return result;
