@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "psi:psimetal_sword"
+    },
+    {
+      "item": "psi:psimetal_sword"
+    },
+    {
+      "item": "psi:psimetal_sword"
+    },
+    {
+      "type": "psitweaks:enchanted_book",
+      "enchantment": "minecraft:loyalty"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_dancing_blades"
+  }
+}

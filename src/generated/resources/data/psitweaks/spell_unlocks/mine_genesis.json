@@ -1,0 +1,6 @@
+{
+  "command_id": "mine_genesis",
+  "piece": "psitweaks:trick_mine_genesis",
+  "unlock_item": "psitweaks:program_mine_genesis",
+  "unlock_tag": "psitweaks.unlock.trick_mine_genesis"
+}

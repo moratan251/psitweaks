@@ -310,6 +310,12 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MATERIAL_MUTATION = registerProgram("program_material_mutation", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MASS_BLOCK_BREAK = registerProgram("program_mass_block_break", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_IDEA_STORAGE = registerProgram("program_idea_storage", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CHAIN_LIGHTNING = registerProgram("program_chain_lightning", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MINE_GENESIS = registerProgram("program_mine_genesis", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DANCING_BLADES = registerProgram("program_dancing_blades", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_STARFALL = registerProgram("program_starfall", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BURST = registerProgram("program_burst", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_GRAVITY_COLLAPSE = registerProgram("program_gravity_collapse", false);
     public static final DeferredItem<ItemPhilosophersStone> PHILOSOPHERS_STONE = ITEMS.register(
             "philosophers_stone",
             () -> new ItemPhilosophersStone(new Item.Properties().rarity(Rarity.RARE))

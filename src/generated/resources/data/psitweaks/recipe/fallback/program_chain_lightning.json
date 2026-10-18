@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:lightning_rod"
+    },
+    {
+      "item": "minecraft:lightning_rod"
+    },
+    {
+      "item": "minecraft:copper_block"
+    },
+    {
+      "item": "minecraft:copper_block"
+    },
+    {
+      "item": "psi:psigem"
+    },
+    {
+      "item": "psi:psigem"
+    },
+    {
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    {
+      "item": "psitweaks:chaotic_psimetal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_chain_lightning"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "command_id": "starfall",
+  "piece": "psitweaks:trick_starfall",
+  "unlock_item": "psitweaks:program_starfall",
+  "unlock_tag": "psitweaks.unlock.trick_starfall"
+}

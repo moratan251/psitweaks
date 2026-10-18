@@ -3,14 +3,26 @@ package com.moratan251.psitweaks.common.gametest;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.handler.SpellUnlockHandler.SpellUnlockDefinition;
 import com.moratan251.psitweaks.common.network.MessageSpellUnlockSync;
+import com.moratan251.psitweaks.common.recipe.EnchantedBookIngredient;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import java.util.UUID;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -18,7 +30,10 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SpellUnlockGameTests {
-    private static final int SHIPPED_DEFINITIONS = 25;
+    private static final int SHIPPED_DEFINITIONS = 31;
+    /** The combat tricks unlocked by research; Kamaitachi is free. */
+    private static final List<String> COMBAT_UNLOCKS = List.of(
+            "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "gravity_collapse");
 
     @GameTest(template = "psi110_empty")
     public static void allCommandCountsDefinitionsLikeStatus(GameTestHelper helper) throws Exception {
@@ -81,6 +96,61 @@ public final class SpellUnlockGameTests {
         helper.assertTrue(decoded.definitions().equals(definitions), "Sync payload changed definitions: " + decoded.definitions());
         helper.assertTrue(buffer.readableBytes() == 0, "Sync payload left unread bytes");
         helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void combatTricksAreUnlockedByTheirResearchedPrograms(GameTestHelper helper) throws Exception {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "unlock-combat"));
+        var recipes = helper.getLevel().getRecipeManager();
+        for (String id : COMBAT_UNLOCKS) {
+            helper.assertTrue(run(player, id + " status @s") == 0, id + " must start locked");
+            helper.assertTrue(run(player, id + " grant @s") == 1, id + " must be grantable");
+            // The research table needs Mekanism; without it the program is crafted from the fallback recipe.
+            String recipe = (MekanismCompat.isMekanismLoaded() ? "program_research/" : "fallback/") + "program_" + id;
+            var holder = recipes.byKey(Psitweaks.location(recipe));
+            helper.assertTrue(holder.isPresent() && holder.get().value().getResultItem(helper.getLevel().registryAccess())
+                    .is(BuiltInRegistries.ITEM.get(Psitweaks.location("program_" + id))), "No recipe " + recipe);
+        }
+        helper.assertTrue(isNotUnlockDefinition(player, "kamaitachi"), "Kamaitachi must stay free");
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void enchantedBookIngredientAcceptsAnyLevelAlongsideOtherEnchantments(GameTestHelper helper) {
+        var enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        var loyalty = enchantments.getOrThrow(Enchantments.LOYALTY);
+        var sharpness = enchantments.getOrThrow(Enchantments.SHARPNESS);
+        Ingredient ingredient = new EnchantedBookIngredient(loyalty).toVanilla();
+
+        var loyaltyOne = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(loyalty, 1));
+        var loyaltyThree = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(loyalty, 3));
+        var mixed = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(sharpness, 2));
+        mixed.update(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY, stored -> {
+            var mutable = new ItemEnchantments.Mutable(stored);
+            mutable.set(loyalty, 2);
+            return mutable.toImmutable();
+        });
+        var sharpnessOnly = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(sharpness, 2));
+        var trident = new ItemStack(Items.TRIDENT);
+        trident.enchant(loyalty, 3);
+
+        helper.assertTrue(ingredient.test(loyaltyOne) && ingredient.test(loyaltyThree), "Loyalty books of any level must match");
+        helper.assertTrue(ingredient.test(mixed), "A book with Loyalty and other enchantments must match");
+        helper.assertTrue(!ingredient.test(sharpnessOnly) && !ingredient.test(new ItemStack(Items.BOOK))
+                && !ingredient.test(new ItemStack(Items.ENCHANTED_BOOK)), "Books without Loyalty must not match");
+        helper.assertTrue(!ingredient.test(trident), "Only enchanted books count, not enchanted items");
+        helper.assertTrue(ingredient.getItems().length == 3, "Recipe viewers must show Loyalty I to III, got " + ingredient.getItems().length);
+        helper.succeed();
+    }
+
+    /** Whether {@code id} is not a spell unlock command id (the command rejects it). */
+    private static boolean isNotUnlockDefinition(FakePlayer player, String id) throws Exception {
+        try {
+            run(player, id + " status @s");
+            return false;
+        } catch (CommandSyntaxException e) {
+            return true;
+        }
     }
 
     private static int run(FakePlayer player, String arguments) throws Exception {

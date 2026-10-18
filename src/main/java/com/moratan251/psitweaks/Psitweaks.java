@@ -70,6 +70,7 @@ import com.moratan251.psitweaks.common.menu.ModMenuTypes;
 import com.moratan251.psitweaks.common.network.PsitweaksNetwork;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityCapabilities;
 import com.moratan251.psitweaks.common.registries.PsitweaksBlockEntityTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksIngredientTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
@@ -161,6 +162,7 @@ public class Psitweaks {
         PsitweaksBlockEntityTypes.register(modEventBus);
         PsitweaksRecipeTypes.register(modEventBus);
         PsitweaksRecipeSerializers.register(modEventBus);
+        PsitweaksIngredientTypes.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         MekanismCompat.register(modEventBus);
         PsitweaksTabs.register(modEventBus);

@@ -14,6 +14,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import vazkii.psi.common.item.base.ModItems;
 
@@ -305,7 +306,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         root.addProperty("category", "misc");
         ingredients.forEach(entry -> {
             for (int i = 0; i < entry.count(); i++) {
-                ingredientsJson.add(ingredient(entry.item()));
+                ingredientsJson.add(entry.ingredient().deepCopy());
             }
         });
         root.add("ingredients", ingredientsJson);
@@ -403,6 +404,36 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
                 counted(Items.ENDER_CHEST, 2),
                 counted(PsitweaksItems.QUANTIZED_PLATE, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_CHAIN_LIGHTNING, List.of(
+                counted(Items.LIGHTNING_ROD, 2),
+                counted(Items.COPPER_BLOCK, 2),
+                counted(ModItems.psigem.get(), 2),
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_MINE_GENESIS, List.of(
+                counted(Items.SCULK_SENSOR, 1),
+                counted(Items.PISTON, 2),
+                counted(Items.TNT, 2),
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_DANCING_BLADES, List.of(
+                counted(ModItems.psimetalSword.get(), 3),
+                counted(ProgramResearchRecipeProvider.enchantedBook(Enchantments.LOYALTY), 1),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 2),
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_STARFALL, List.of(
+                counted(Items.NETHER_STAR, 1),
+                counted(Items.FIRE_CHARGE, 2),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 3),
+                counted(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_BURST, List.of(
+                counted(Items.MAGMA_CREAM, 2),
+                counted(Items.GHAST_TEAR, 2),
+                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
+                counted(Items.NETHER_STAR, 1)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE, List.of(
+                counted(Items.HEAVY_CORE, 1),
+                counted(PsitweaksItems.GRAVITIZED_PLATE, 3),
+                counted(Items.NETHER_STAR, 2),
+                counted(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2)));
     }
 
     private static void addProgram(Map<ResourceLocation, JsonObject> recipes, ItemLike program,
@@ -419,10 +450,14 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
     }
 
     private static CountedIngredient counted(ItemLike item, int count) {
-        return new CountedIngredient(item, count);
+        return new CountedIngredient(ingredient(item), count);
     }
 
-    private record CountedIngredient(ItemLike item, int count) {
+    private static CountedIngredient counted(JsonObject ingredient, int count) {
+        return new CountedIngredient(ingredient, count);
+    }
+
+    private record CountedIngredient(JsonObject ingredient, int count) {
     }
 
     private static JsonObject cooking(String type, JsonObject ingredient, ItemLike result, double experience,

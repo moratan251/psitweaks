@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 750000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "mekanism:superheating_element"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "minecraft:magma_cream"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:ghast_tear"
+      }
+    },
+    {
+      "count": 16,
+      "ingredient": {
+        "item": "psitweaks:psycheonic_metal_ingot"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_burst"
+  },
+  "time": 36000
+}

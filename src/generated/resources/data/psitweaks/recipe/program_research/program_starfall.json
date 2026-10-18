@@ -1,0 +1,47 @@
+{
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 250000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "minecraft:fire_charge"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "minecraft:magma_block"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "psitweaks:heavy_psimetal"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:hypostasis_control_circuit"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_starfall"
+  },
+  "time": 24000
+}

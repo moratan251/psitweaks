@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "minecraft:heavy_core"
+    },
+    {
+      "item": "psitweaks:gravitized_plate"
+    },
+    {
+      "item": "psitweaks:gravitized_plate"
+    },
+    {
+      "item": "psitweaks:gravitized_plate"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "psitweaks:dimensional_crystal"
+    },
+    {
+      "item": "psitweaks:dimensional_crystal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_gravity_collapse"
+  }
+}

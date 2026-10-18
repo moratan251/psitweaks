@@ -1,0 +1,53 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 1500000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "minecraft:heavy_core"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "mekanism:pellet_antimatter"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "psitweaks:dimensional_crystal"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    {
+      "count": 24,
+      "ingredient": {
+        "item": "psitweaks:gravitized_plate"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_gravity_collapse"
+  },
+  "time": 108000
+}

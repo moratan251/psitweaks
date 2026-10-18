@@ -1,0 +1,42 @@
+{
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 80000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "psi:psimetal_sword"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "type": "psitweaks:enchanted_book",
+        "enchantment": "minecraft:loyalty"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:heavy_psimetal"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "psitweaks:echo_control_circuit"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_dancing_blades"
+  },
+  "time": 6000
+}

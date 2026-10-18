@@ -1,0 +1,6 @@
+{
+  "command_id": "gravity_collapse",
+  "piece": "psitweaks:trick_gravity_collapse",
+  "unlock_item": "psitweaks:program_gravity_collapse",
+  "unlock_tag": "psitweaks.unlock.trick_gravity_collapse"
+}

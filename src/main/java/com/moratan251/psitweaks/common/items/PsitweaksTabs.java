@@ -203,5 +203,11 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get());
         output.accept(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get());
         output.accept(PsitweaksItems.PROGRAM_IDEA_STORAGE.get());
+        output.accept(PsitweaksItems.PROGRAM_CHAIN_LIGHTNING.get());
+        output.accept(PsitweaksItems.PROGRAM_MINE_GENESIS.get());
+        output.accept(PsitweaksItems.PROGRAM_DANCING_BLADES.get());
+        output.accept(PsitweaksItems.PROGRAM_STARFALL.get());
+        output.accept(PsitweaksItems.PROGRAM_BURST.get());
+        output.accept(PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE.get());
     }
 }

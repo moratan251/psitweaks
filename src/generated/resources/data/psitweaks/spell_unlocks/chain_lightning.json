@@ -1,0 +1,6 @@
+{
+  "command_id": "chain_lightning",
+  "piece": "psitweaks:trick_chain_lightning",
+  "unlock_item": "psitweaks:program_chain_lightning",
+  "unlock_tag": "psitweaks.unlock.trick_chain_lightning"
+}

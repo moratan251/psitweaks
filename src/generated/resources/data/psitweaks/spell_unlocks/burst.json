@@ -1,0 +1,6 @@
+{
+  "command_id": "burst",
+  "piece": "psitweaks:trick_burst",
+  "unlock_item": "psitweaks:program_burst",
+  "unlock_tag": "psitweaks.unlock.trick_burst"
+}

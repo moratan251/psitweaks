@@ -7,8 +7,11 @@ import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import vazkii.psi.common.item.base.ModItems;
 
@@ -164,6 +167,58 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2),
                 input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2)
         ), PsitweaksItems.PROGRAM_IDEA_STORAGE, 750_000L, 36_000);
+
+        // 戦闘系魔法: 研究の重さは必要な CAD の段階に合わせる(スターフォールと重力崩壊は終盤向けとして重め)
+        research(recipes, "program_chain_lightning", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.LIGHTNING_ROD, 8),
+                input(Items.COPPER_BLOCK, 16),
+                input(Items.REDSTONE_BLOCK, 8),
+                input(ModItems.psigem.get(), 4),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
+        ), PsitweaksItems.PROGRAM_CHAIN_LIGHTNING, 10_000L, 1_200);
+
+        research(recipes, "program_mine_genesis", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.SCULK_SENSOR, 4),
+                input(Items.PISTON, 16),
+                input(Items.TNT, 16),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
+        ), PsitweaksItems.PROGRAM_MINE_GENESIS, 15_000L, 1_200);
+
+        research(recipes, "program_dancing_blades", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(ModItems.psimetalSword.get(), 3),
+                input(enchantedBook(Enchantments.LOYALTY), 1),
+                input(PsitweaksItems.HEAVY_PSIMETAL, 8),
+                input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3)
+        ), PsitweaksItems.PROGRAM_DANCING_BLADES, 80_000L, 6_000);
+
+        research(recipes, "program_starfall", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.NETHER_STAR, 2),
+                input(Items.FIRE_CHARGE, 32),
+                input(Items.MAGMA_BLOCK, 32),
+                input(PsitweaksItems.HEAVY_PSIMETAL, 32),
+                input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 8)
+        ), PsitweaksItems.PROGRAM_STARFALL, 250_000L, 24_000);
+
+        research(recipes, "program_burst", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                inputId(mekanism("superheating_element"), 4),
+                input(Items.MAGMA_CREAM, 32),
+                input(Items.GHAST_TEAR, 8),
+                input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 16)
+        ), PsitweaksItems.PROGRAM_BURST, 750_000L, 36_000);
+
+        research(recipes, "program_gravity_collapse", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.HEAVY_CORE, 1),
+                inputId(mekanism("pellet_antimatter"), 8),
+                input(PsitweaksItems.DIMENSIONAL_CRYSTAL, 4),
+                input(Items.NETHER_STAR, 8),
+                input(PsitweaksItems.GRAVITIZED_PLATE, 24)
+        ), PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE, 1_500_000L, 108_000);
     }
 
     private static void research(Map<ResourceLocation, JsonObject> recipes, String id, List<JsonObject> inputs,
@@ -202,13 +257,29 @@ public final class ProgramResearchRecipeProvider {
     }
 
     private static JsonObject input(String itemId, int count, boolean consume) {
+        return input(ingredient(itemId), count, consume);
+    }
+
+    private static JsonObject input(JsonObject ingredient, int count) {
+        return input(ingredient, count, true);
+    }
+
+    private static JsonObject input(JsonObject ingredient, int count, boolean consume) {
         JsonObject input = new JsonObject();
-        input.add("ingredient", ingredient(itemId));
+        input.add("ingredient", ingredient);
         input.addProperty("count", count);
         if (!consume) {
             input.addProperty("consume", false);
         }
         return input;
+    }
+
+    /** An enchanted book storing {@code enchantment} at any level, alongside any other enchantments. */
+    static JsonObject enchantedBook(ResourceKey<Enchantment> enchantment) {
+        JsonObject ingredient = new JsonObject();
+        ingredient.addProperty("type", Psitweaks.location("enchanted_book").toString());
+        ingredient.addProperty("enchantment", enchantment.location().toString());
+        return ingredient;
     }
 
     private static JsonObject ingredient(String item) {
