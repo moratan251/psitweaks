@@ -32,8 +32,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.api.capability.PsiCapabilities;
 import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /** Rules shared by the combat tricks: damage scaling, who may be hit, damage sources and small physics helpers. */
 public final class CombatSpellHelper {
@@ -113,12 +115,33 @@ public final class CombatSpellHelper {
     }
 
     /**
+     * Whether the entity opted out of spells through Psi's spell-immune capability (a mod's own boss, for example).
+     * Unlike {@link ISpellImmune#isImmune}, bosses, riders and sleepers are not immune here: Psi rules them out because
+     * they cannot use a portal, which suits tricks that move or rewrite entities but leaves attack spells powerless
+     * against the Wither and the Ender Dragon.
+     */
+    public static boolean isSpellImmune(Entity entity) {
+        ISpellImmune immune = PsiCapabilities.spellImmune(entity);
+        return immune != null && immune.isImmune();
+    }
+
+    /** Psi's {@code verifyEntity} for attack tricks: the target must exist and must not opt out of spells. */
+    public static void verifyTarget(@Nullable Entity entity) throws SpellRuntimeException {
+        if (entity == null) {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
+        }
+        if (isSpellImmune(entity)) {
+            throw new SpellRuntimeException(SpellRuntimeException.IMMUNE_TARGET);
+        }
+    }
+
+    /**
      * Targets that auto-aimed attacks (chain jumps, dancing blades) may pick by themselves: monsters, mobs that
-     * target or are angry at the caster, and anything that recently hurt the caster. Spell-immune entities
-     * (bosses) are skipped, as Psi skips them for targeted tricks.
+     * target or are angry at the caster, and anything that recently hurt the caster. Entities that opt out of
+     * spells are skipped ({@link #isSpellImmune}); bosses are fair game.
      */
     public static boolean isHostileTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
-        if (!canHarm(caster, entity, safeToPlayers) || ISpellImmune.isImmune(entity)) {
+        if (!canHarm(caster, entity, safeToPlayers) || isSpellImmune(entity)) {
             return false;
         }
         if (entity instanceof Enemy) {

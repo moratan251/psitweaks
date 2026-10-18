@@ -34,6 +34,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -49,6 +50,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.CompiledSpell;
+import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
@@ -504,6 +506,34 @@ public final class CombatSpellGameTests {
         helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - EPSILON, "The blast must still hurt: " + husk.getHealth());
         helper.assertTrue(husk.getLastDamageSource() != null && husk.getLastDamageSource().is(PsitweaksDamageTypes.ACTIVE_AIR_MINE),
                 "The blast must use its own damage type (shockwave death message), got " + husk.getLastDamageSource());
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void attackTricksHitBossesAndRiders(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "boss-caster");
+        var context = new SpellContext().setPlayer(player);
+        var wither = helper.spawnWithNoFreeWill(EntityType.WITHER, new BlockPos(2, 0, 2));
+        var rider = husk(helper, new BlockPos(4, 0, 4), false);
+        var mount = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 0, 4));
+        rider.startRiding(mount, true);
+        try {
+            helper.assertTrue(ISpellImmune.isImmune(wither) && ISpellImmune.isImmune(rider),
+                    "Psi itself treats bosses and riders as immune");
+            float witherHealth = wither.getHealth();
+            helper.assertTrue(castError(() -> burst(Map.of(TARGET, wither, POWER, 1.0)).execute(context)) == null,
+                    "Burst must accept the Wither");
+            helper.assertTrue(wither.getHealth() < witherHealth, "Burst must hurt the Wither");
+            float afterBurst = wither.getHealth();
+            helper.assertTrue(castError(() -> chainLightning(Map.of(TARGET, wither, POWER, 1.0, CHAINS, 1.0)).execute(context)) == null,
+                    "Chain Lightning must accept the Wither");
+            helper.assertTrue(wither.getHealth() < afterBurst, "Chain Lightning must hurt the Wither");
+            helper.assertTrue(castError(() -> burst(Map.of(TARGET, rider, POWER, 1.0)).execute(context)) == null
+                    && rider.getHealth() < 20, "Burst must hit a creature riding another");
+        } finally {
+            wither.discard();
+            helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).forEach(Entity::discard);
+        }
         helper.succeed();
     }
 

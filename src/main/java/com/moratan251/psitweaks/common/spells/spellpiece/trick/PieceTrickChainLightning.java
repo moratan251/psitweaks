@@ -90,7 +90,7 @@ public class PieceTrickChainLightning extends PieceTrick {
         if (CombatSpellHelper.skipFallenTarget(context, first)) {
             return null;
         }
-        context.verifyEntity(first);
+        CombatSpellHelper.verifyTarget(first);
         if (!(first instanceof LivingEntity firstLiving)) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
         }

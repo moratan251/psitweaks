@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import vazkii.psi.api.spell.ISpellImmune;
 
 /**
  * The singularity of Trick: Gravity Collapse. For three seconds it drags creatures within its radius towards the
@@ -101,7 +100,7 @@ public class EntityGravityWell extends CombatSpellEntity {
         double radius = getRadius();
         Vec3 center = position();
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(radius))) {
-            if (!CombatSpellHelper.canHarm(caster, living, isSafeToPlayers()) || ISpellImmune.isImmune(living)) {
+            if (!CombatSpellHelper.canHarm(caster, living, isSafeToPlayers()) || CombatSpellHelper.isSpellImmune(living)) {
                 continue;
             }
             Vec3 offset = center.subtract(CombatSpellHelper.center(living));

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
@@ -69,7 +70,7 @@ public class PieceTrickGuillotine extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity targetVal = getParamValue(context, target);
-        context.verifyEntity(targetVal);
+        CombatSpellHelper.verifyTarget(targetVal);
 
         if (!(targetVal instanceof LivingEntity livingEntity)) {
             throw new SpellRuntimeException("psi.spellerror.nulltarget");
