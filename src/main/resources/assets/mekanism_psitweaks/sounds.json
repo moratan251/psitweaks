@@ -1,0 +1,8 @@
+{
+  "tile.machine.program_researcher": {
+    "sounds": [
+      "mekanism_psitweaks:tile/program_researcher"
+    ],
+    "subtitle": "sound_event.psitweaks.tile.machine.program_researcher"
+  }
+}

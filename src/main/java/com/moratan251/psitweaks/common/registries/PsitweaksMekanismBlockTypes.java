@@ -22,9 +22,13 @@ import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.tier.CableTier;
+import mekanism.common.util.EnumUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import vazkii.psi.client.fx.SparkleParticleData;
 
 public final class PsitweaksMekanismBlockTypes {
@@ -38,6 +42,13 @@ public final class PsitweaksMekanismBlockTypes {
     private static final ILangEntry DESCRIPTION_PSIONIC_GENERATOR = () -> "description.psitweaks.psionic_generator";
     private static final ILangEntry DESCRIPTION_TRANSCENDENT_CABLE = () -> "description.psitweaks.transcendent_universal_cable";
     private static final ILangEntry DESCRIPTION_TRANSCENDENT_ENERGY_CUBE = () -> "description.psitweaks.transcendent_energy_cube";
+    // Matches models/block/machine/program_researcher.json (facing north): plinth, legs, desk and the tilted monitor.
+    private static final VoxelShape[] PROGRAM_RESEARCHER_SHAPES = horizontalShapes(VoxelShapeUtils.combine(
+            Block.box(1, 0, 1, 15, 2, 15),
+            Block.box(2, 2, 2, 14, 7, 14),
+            Block.box(0, 7, 0, 16, 10, 16),
+            Block.box(1, 10, 11, 15, 16, 16)
+    ));
 
     public static final BlockTypeTile<SculkEroderBlockEntity> SCULK_ERODER =
             BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.SCULK_ERODER, DESCRIPTION_SCULK_ERODER)
@@ -72,8 +83,9 @@ public final class PsitweaksMekanismBlockTypes {
                             AttributeSideConfig.ELECTRIC_MACHINE,
                             new AttributeUpgradeSupport(EnumSet.of(Upgrade.MUFFLING))
                     )
+                    .withCustomShape(PROGRAM_RESEARCHER_SHAPES)
                     .withGui(() -> PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER)
-                    .withSound(MekanismSounds.ENRICHMENT_CHAMBER)
+                    .withSound(PsitweaksMekanismSounds.PROGRAM_RESEARCHER)
                     .withEnergyConfig(() -> PROGRAM_RESEARCHER_STORAGE, () -> PROGRAM_RESEARCHER_STORAGE)
                     .withComputerSupport("programResearcher")
                     .build();
@@ -142,6 +154,12 @@ public final class PsitweaksMekanismBlockTypes {
                     .build();
 
     private PsitweaksMekanismBlockTypes() {
+    }
+
+    private static VoxelShape[] horizontalShapes(VoxelShape northShape) {
+        VoxelShape[] shapes = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+        VoxelShapeUtils.setShape(northShape, shapes);
+        return shapes;
     }
 
     private static Pos3D machineFrontParticleOffset(RandomSource random) {

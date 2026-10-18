@@ -56,6 +56,12 @@ public class PsitweaksBlockStateProvider implements DataProvider {
                 continue;
             }
             ResourceLocation id = Psitweaks.location(block.id());
+            if (block.customModel()) {
+                String modelPath = "machine/" + block.id();
+                futures.add(DataProvider.saveStable(output, machineBlockState(modelPath), blockStatePathProvider.json(id)));
+                futures.add(DataProvider.saveStable(output, blockItemModel(modelPath), itemModelPathProvider.json(id)));
+                continue;
+            }
             futures.add(DataProvider.saveStable(output,
                     block.machine() ? machineBlockState(block.id()) : blockState(block.id()),
                     blockStatePathProvider.json(id)));

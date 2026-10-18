@@ -1,33 +1,33 @@
 {
   "variants": {
     "active=false,facing=east": {
-      "model": "psitweaks:block/program_researcher",
+      "model": "psitweaks:block/machine/program_researcher",
       "y": 90
     },
     "active=false,facing=north": {
-      "model": "psitweaks:block/program_researcher"
+      "model": "psitweaks:block/machine/program_researcher"
     },
     "active=false,facing=south": {
-      "model": "psitweaks:block/program_researcher",
+      "model": "psitweaks:block/machine/program_researcher",
       "y": 180
     },
     "active=false,facing=west": {
-      "model": "psitweaks:block/program_researcher",
+      "model": "psitweaks:block/machine/program_researcher",
       "y": 270
     },
     "active=true,facing=east": {
-      "model": "psitweaks:block/program_researcher_active",
+      "model": "psitweaks:block/machine/program_researcher_active",
       "y": 90
     },
     "active=true,facing=north": {
-      "model": "psitweaks:block/program_researcher_active"
+      "model": "psitweaks:block/machine/program_researcher_active"
     },
     "active=true,facing=south": {
-      "model": "psitweaks:block/program_researcher_active",
+      "model": "psitweaks:block/machine/program_researcher_active",
       "y": 180
     },
     "active=true,facing=west": {
-      "model": "psitweaks:block/program_researcher_active",
+      "model": "psitweaks:block/machine/program_researcher_active",
       "y": 270
     }
   }

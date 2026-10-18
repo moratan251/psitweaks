@@ -11,6 +11,7 @@ import com.moratan251.psitweaks.common.storage.idea.IdeaStorageTransferDirection
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismSounds;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
 import mekanism.api.MekanismIMC;
@@ -39,6 +40,7 @@ final class MekanismIntegration {
     static void register(IEventBus modEventBus) {
         PsitweaksMekanismItems.register(modEventBus);
         PsitweaksChemicals.register(modEventBus);
+        PsitweaksMekanismSounds.register(modEventBus);
         PsitweaksMekanismBlocks.register(modEventBus);
         PsitweaksMekanismTileEntityTypes.register(modEventBus);
         PsitweaksMekanismContainerTypes.register(modEventBus);

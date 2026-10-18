@@ -1323,6 +1323,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "材料が足りません";
             default -> "Not enough ingredients";
         });
+        root.addProperty("sound_event.psitweaks.tile.machine.program_researcher", switch (locale) {
+            case "ja_jp" -> "プログラム研究台が演算する";
+            default -> "Program Research Table computes";
+        });
         root.addProperty("description.psitweaks.program_researcher", switch (locale) {
             case "ja_jp" -> "素材と電力からプログラムアイテムを研究します";
             default -> "Researches program items from materials and power";

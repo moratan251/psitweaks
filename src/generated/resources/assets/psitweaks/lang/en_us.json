@@ -1352,6 +1352,7 @@
   "screen.psitweaks.auto_caster_custom_tick.interval": "Cast Interval (ticks)",
   "screen.psitweaks.auto_caster_custom_tick.invalid": "Enter a value between %s and %s",
   "screen.psitweaks.auto_caster_custom_tick.range": "Range: %s - %s",
+  "sound_event.psitweaks.tile.machine.program_researcher": "Program Research Table computes",
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "Cast interval: %s ticks",
   "tooltip.psitweaks.cad_battery_quantum.bonus": "While your CAD: +1500 Max Psi",
   "tooltip.psitweaks.cad_battery_reactive.bonus": "While your CAD: +10 Psi Regen",

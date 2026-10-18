@@ -1394,6 +1394,7 @@
   "screen.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔 (tick)",
   "screen.psitweaks.auto_caster_custom_tick.invalid": "%s から %s の間で入力してください",
   "screen.psitweaks.auto_caster_custom_tick.range": "設定可能範囲: %s - %s",
+  "sound_event.psitweaks.tile.machine.program_researcher": "プログラム研究台が演算する",
   "tooltip.psitweaks.auto_caster_custom_tick.interval": "詠唱間隔: %s tick",
   "tooltip.psitweaks.cad_battery_quantum.bonus": "CAD所持時: 最大Psi +1500",
   "tooltip.psitweaks.cad_battery_reactive.bonus": "CAD所持時: Psi再生速度 +10",
