@@ -24,6 +24,8 @@ public final class SpellWarning {
     public static final String CAD_MEMORY_STRING_TRUNCATED = "psitweaks.spellwarning.cad_memory_string_truncated";
     /** A targeted combat trick skipped its target because it has already fallen. */
     public static final String TARGET_FALLEN = "psitweaks.spellwarning.target_fallen";
+    /** Trick: Breed found no food in the caster's inventory for an animal; argument: the first such animal's name. */
+    public static final String NO_BREEDING_FOOD = "psitweaks.spellwarning.no_breeding_food";
 
     public final String key;
     public final Object[] arguments;

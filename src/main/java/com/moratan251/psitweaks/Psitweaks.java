@@ -58,6 +58,7 @@ import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.handler.SafetySpellCastHandler;
 import com.moratan251.psitweaks.common.handler.SpellPsiRefundCaptureHandler;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassHarvestScheduler;
 import com.moratan251.psitweaks.common.handler.PsitweaksMekanismGeneratorTweaks;
 import com.moratan251.psitweaks.common.items.component.CadBatteryAttributeHandler;
 import com.moratan251.psitweaks.common.items.component.ComponentStats;
@@ -205,6 +206,8 @@ public class Psitweaks {
         PsiEvents.register(vazkii.psi.api.exosuit.PsiArmorEvent.class, PlayerPsiEventHandler::onPsiCurioEvent);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(MassHarvestScheduler::onServerTick);
+        NeoForge.EVENT_BUS.addListener(MassHarvestScheduler::onServerStopping);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityJoinLevel);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityTick);
         NeoForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onPlayerTick);

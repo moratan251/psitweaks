@@ -1,0 +1,7 @@
+{
+  "main": "psitweaks:trick_harvest",
+  "pieces": [
+    "psitweaks:trick_harvest_sequence",
+    "psitweaks:trick_mass_harvest"
+  ]
+}

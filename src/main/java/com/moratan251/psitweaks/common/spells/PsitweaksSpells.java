@@ -405,6 +405,23 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_IDEA_STORAGE_LAST_TRANSFER =
             registerPiece("selector_idea_storage_last_transfer", PieceSelectorIdeaStorageLastTransfer.class);
 
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_ENDER_CHEST =
+            registerPiece("trick_ender_chest", PieceTrickEnderChest.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_CRAFTING_TABLE =
+            registerPiece("trick_crafting_table", PieceTrickCraftingTable.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_HARVEST =
+            registerPiece("trick_harvest", PieceTrickHarvest.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_HARVEST_SEQUENCE =
+            registerPiece("trick_harvest_sequence", PieceTrickHarvestSequence.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_MASS_HARVEST =
+            registerPiece("trick_mass_harvest", PieceTrickMassHarvest.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SHEAR =
+            registerPiece("trick_shear", PieceTrickShear.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_BREED =
+            registerPiece("trick_breed", PieceTrickBreed.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_CONNECTED_BLOCKS =
+            registerPiece("operator_connected_blocks", PieceOperatorConnectedBlocks.class);
+
     private PsitweaksSpells() {
     }
 

@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_shear",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_shear.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_shear.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_shear.1"
+    }
+  ]
+}

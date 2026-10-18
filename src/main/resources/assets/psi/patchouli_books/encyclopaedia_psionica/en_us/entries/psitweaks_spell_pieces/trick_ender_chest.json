@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_ender_chest",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_ender_chest.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_ender_chest"
+    }
+  ]
+}

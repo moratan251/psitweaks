@@ -9,6 +9,7 @@
     "psitweaks:operator_block_position_list",
     "psitweaks:operator_block_item",
     "psitweaks:operator_block_resource_amount",
-    "psitweaks:operator_block_free_capacity"
+    "psitweaks:operator_block_free_capacity",
+    "psitweaks:operator_connected_blocks"
   ]
 }

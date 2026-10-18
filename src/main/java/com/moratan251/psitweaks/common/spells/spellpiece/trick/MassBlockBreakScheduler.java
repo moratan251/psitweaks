@@ -32,7 +32,6 @@ import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 
 public final class MassBlockBreakScheduler {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final long BUDGET_NS = 4_000_000L; // 4ms per tick shared across all tasks
     private static final int CHECK_INTERVAL = 32;
 
     private static final ArrayDeque<PendingBreak> ACTIVE_BREAKS = new ArrayDeque<>();
@@ -71,7 +70,8 @@ public final class MassBlockBreakScheduler {
             return;
         }
 
-        long deadline = System.nanoTime() + BUDGET_NS;
+        // Shared with Trick: Mass Harvest.
+        long deadline = MassWorkBudget.deadline(event.getServer());
         while (!ACTIVE_BREAKS.isEmpty() && System.nanoTime() < deadline) {
             PendingBreak task = ACTIVE_BREAKS.peekFirst();
 

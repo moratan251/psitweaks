@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.operator_connected_blocks",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_connected_blocks.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_connected_blocks.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_connected_blocks.1"
+    }
+  ]
+}

@@ -440,6 +440,23 @@ public final class PsitweaksClientSpells {
     public static final DeferredHolder<Material, Material> MODE_RESOURCE_CHEMICAL_EXACT =
             registerPieceMaterial("mode/resource_chemical_exact");
 
+    public static final DeferredHolder<Material, Material> TRICK_ENDER_CHEST =
+            registerPieceMaterial("trick_ender_chest");
+    public static final DeferredHolder<Material, Material> TRICK_CRAFTING_TABLE =
+            registerPieceMaterial("trick_crafting_table");
+    public static final DeferredHolder<Material, Material> TRICK_HARVEST =
+            registerPieceMaterial("trick_harvest");
+    public static final DeferredHolder<Material, Material> TRICK_HARVEST_SEQUENCE =
+            registerPieceMaterial("trick_harvest_sequence");
+    public static final DeferredHolder<Material, Material> TRICK_MASS_HARVEST =
+            registerPieceMaterial("trick_mass_harvest");
+    public static final DeferredHolder<Material, Material> TRICK_SHEAR =
+            registerPieceMaterial("trick_shear");
+    public static final DeferredHolder<Material, Material> TRICK_BREED =
+            registerPieceMaterial("trick_breed");
+    public static final DeferredHolder<Material, Material> OPERATOR_CONNECTED_BLOCKS =
+            registerPieceMaterial("operator_connected_blocks");
+
     private PsitweaksClientSpells() {
     }
 

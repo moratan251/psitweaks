@@ -469,6 +469,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "警告: 対象は既に戦闘不能です。";
             default -> "WARNING: The target is already down.";
         });
+        root.addProperty("psitweaks.spellwarning.no_breeding_food", switch (locale) {
+            case "ja_jp" -> "警告: %sを繁殖させる餌を持っていません。";
+            default -> "WARNING: You have no food to breed %s.";
+        });
         addPsitweaksCategoryBook(root);
         addProgrammingConceptsBook(root);
         addMachineTranslations(root);
@@ -1719,6 +1723,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addIdeaResourceLogistics(root);
         addIdeaSlotLogistics(root);
         addItemBlockMatrixPieces(root);
+        addUtilitySpellPieces(root);
         addIdeaStorageSelectorPages(root);
         addBookPage(root, "trick_idea_storage_view.0",
                 "Opens your personal Ideaspace Storage. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE mode of the Deposit and Withdraw tricks; its balance appears in the storage grid, and the information button also shows capacity.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
@@ -2590,6 +2595,124 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "「時間」は任意入力の定数で、Trick: Particle Trail の時間と同じく既定値20、最大1200で、正の数を指定します。"
                         + "すべての角が術式射程内にない場合はエラーになります。"
                         + "パーティクルは近くのプレイヤーにも見えます。");
+    }
+
+    /** 1.0.0 utility tricks: ender chest, crafting table, harvesting, shearing and breeding, and Operator: Connected Blocks. */
+    private void addUtilitySpellPieces(JsonObject root) {
+        addLocalized(root, "psitweaks.datatype.entity_or_entity_list", "Entity/Entity List", "Entity/Entity List");
+        addLocalized(root, "psitweaks.spellerror.mass_harvest_too_many_pending", "Too many pending mass-harvest blocks",
+                "保留中の一括収穫ブロック数が上限を超えています");
+
+        addSpellPiece(root, "trick_ender_chest", "Trick: Ender Chest", "Opens the caster's ender chest.",
+                "作動式: エンダーチェスト", "術者のエンダーチェストを開きます。");
+        addBookPage(root, "trick_ender_chest",
+                "Opens the caster's ender chest, as if they had used an ender chest block. No ender chest needs to be nearby."
+                        + " The trick itself has no potency and no cost.",
+                "エンダーチェストのブロックを使ったときと同じように、術者のエンダーチェストを開きます. 近くにエンダーチェストがなくても使えます."
+                        + " この作動式自体の規模とコストは0です.");
+
+        addSpellPiece(root, "trick_crafting_table", "Trick: Crafting Table", "Opens a 3x3 crafting grid.",
+                "作動式: 作業台", "3×3のクラフト画面を開きます。");
+        addBookPage(root, "trick_crafting_table",
+                "Opens a 3x3 crafting grid, as if the caster had used a crafting table. Items left in the grid go back to the caster's"
+                        + " inventory when the screen is closed. The trick itself has no potency and no cost.",
+                "作業台を使ったときと同じように、3×3のクラフト画面を開きます. 画面を閉じると、クラフト欄に残ったアイテムは術者のインベントリに戻ります."
+                        + " この作動式自体の規模とコストは0です.");
+
+        addSpellPiece(root, "trick_harvest", "Trick: Harvest",
+                "Harvests the ripe crop at the position and replants it. The harvest goes into the caster's inventory.",
+                "作動式: 収穫", "指定位置の熟した作物を収穫して植え直します。収穫物は術者のインベントリに入ります。");
+        addBookPage(root, "trick_harvest.0",
+                "Harvests the ripe crop at the position like right-click harvesting mods do: one seed from the drops replants it,"
+                        + " the rest goes into the caster's inventory, and what does not fit drops at the caster's position. Cast from a"
+                        + " Psimetal tool, the tool's Fortune applies.",
+                "右クリック収穫系のModと同じように、指定位置の熟した作物を収穫します. ドロップから種を1つ使って植え直すので、作物は植えたばかりの状態に戻ります."
+                        + " 残りは術者のインベントリに入り、入りきらない分は術者の位置に落ちます. Psimetalの道具から唱えると、その道具の幸運が効きます.");
+        addBookPage(root, "trick_harvest.1",
+                "Fully grown crops, cocoa and nether wart are replanted. Sweet berry bushes and glow berries are picked. Sugar cane,"
+                        + " cactus and bamboo keep only their lowest block. Melons and pumpkins next to a stem are taken; the stem stays."
+                        + " Unripe crops and blocks the caster may not break (protected areas, Adventure mode) are left alone.",
+                "最終段階まで育った作物、カカオ、ネザーウォートは植え直します. スイートベリーの低木とグロウベリーは実だけを摘みます."
+                        + " サトウキビ、サボテン、竹は一番下のブロックだけを残します. 茎から実ったスイカとカボチャは実だけを取り、茎は残ります."
+                        + " 熟していない作物と、術者が壊せないブロック (保護された場所やアドベンチャーモード) はそのままです.");
+
+        addSpellPiece(root, "trick_harvest_sequence", "Trick: Harvest Sequence",
+                "Harvests and replants the ripe crops in a line from the position in the direction of the target.",
+                "作動式: 収穫(列)", "指定位置から対象の方向へ並ぶ熟した作物を収穫して植え直します。");
+        addBookPage(root, "trick_harvest_sequence",
+                "Harvests the crops in a line that starts at the position and runs $(thing)Max$(0) blocks in the direction of the"
+                        + " target, the same way as $(thing)Trick: Harvest$(0). Blocks outside the spell's range are skipped."
+                        + " Max must be a positive constant.",
+                "指定位置から対象の方向へ $(thing)最大$(0) ブロック並ぶ作物を、$(thing)作動式: 収穫$(0) と同じように収穫します."
+                        + " 射程外のブロックは飛ばします. 最大には正の定数を指定します.");
+
+        addSpellPiece(root, "trick_mass_harvest", "Trick: Mass Harvest",
+                "Harvests and replants the ripe crops at the coordinates in a Vector List (a Block List also works). The harvest goes into the caster's inventory.",
+                "作動式: 大規模収穫", "Vector List（Block List も可）の座標にある熟した作物を収穫して植え直します。収穫物は術者のインベントリに入ります。");
+        addBookPage(root, "trick_mass_harvest.0",
+                "Harvests the crops at the coordinates in a Vector List (a Block List also works), the same way as"
+                        + " $(thing)Trick: Harvest$(0). Duplicate positions count once, and only the first positions up to $(thing)Max$(0)"
+                        + " (at most 4096) are processed. Max must be a positive integer constant.",
+                "Vector List（Block List も可）の座標にある作物を、$(thing)作動式: 収穫$(0) と同じように収穫します. 重複した座標は1回だけ数え、"
+                        + "先頭から $(thing)最大$(0) 個 (上限4096) までの座標を扱います. 最大には正の整数の定数を指定します.");
+        addBookPage(root, "trick_mass_harvest.1",
+                "If any processed position is outside the spell's range, the spell fails before harvesting anything.$(p)The crops"
+                        + " are harvested over the following ticks, and the caster gets the whole harvest at the end. If the caster dies, logs"
+                        + " out or changes dimension before then, the harvest so far drops at the focal point.",
+                "扱う座標が1つでも射程外にあると、何も収穫せずにエラーになります.$(p)収穫は次のtickから少しずつ進み、収穫物は最後にまとめて術者に届きます."
+                        + " 途中で術者が倒れたり、ログアウトしたり、別のディメンションへ移動したりすると、そこまでの収穫物は焦点位置に落ちます.");
+
+        addSpellPiece(root, "trick_shear", "Trick: Shear",
+                "Shears the target as shears would. What comes off goes into the caster's inventory.",
+                "作動式: 毛刈り", "対象をハサミで刈ったときと同じように刈ります。刈り取ったものは術者のインベントリに入ります。");
+        addBookPage(root, "trick_shear.0",
+                "Shears the target, an Entity or every entity of an Entity List, as if the caster had used shears on it: sheep"
+                        + " lose their wool, mooshrooms turn into cows and snow golems lose their pumpkin. Mobs from other mods that shears"
+                        + " work on are sheared too.",
+                "対象 (Entity、または Entity List の各エンティティ) を、術者がハサミを使ったときと同じように刈ります. ヒツジは羊毛を落とし、"
+                        + "ムーシュルームは普通のウシになり、スノーゴーレムはカボチャを外します. ハサミが使える他Modの生物も刈れます.");
+        addBookPage(root, "trick_shear.1",
+                "What comes off goes into the caster's inventory, and what does not fit drops at the caster's position. Targets"
+                        + " that cannot be sheared now, or that are in an area protected from the caster, are skipped. Every target must be"
+                        + " within the spell's range.",
+                "刈り取ったものは術者のインベントリに入り、入りきらない分は術者の位置に落ちます. 今は刈れない対象と、術者から保護された場所にいる対象は飛ばします."
+                        + " 対象はすべて射程内にいる必要があります.");
+
+        addSpellPiece(root, "trick_breed", "Trick: Breed",
+                "Feeds the target animals from the caster's inventory so that they fall in love.",
+                "作動式: 繁殖", "術者のインベントリにある餌を対象の動物に与えて、繁殖モードにします。");
+        addBookPage(root, "trick_breed.0",
+                "Feeds each target animal (an Entity, or every entity of an Entity List) a breeding food from the caster's"
+                        + " inventory, as if by hand, so that it falls in love. The hotbar is searched first, the off hand last."
+                        + " Creative mode uses no food. A warning names an animal the caster has no food for.",
+                "対象の動物 (Entity、または Entity List の各エンティティ) に、術者のインベントリにある繁殖用の餌を1つずつ与え、"
+                        + "手で与えたときと同じように繁殖モードにします. 餌はホットバーから探し、オフハンドは最後に探します."
+                        + " クリエイティブモードでは餌を消費しません. 餌を持っていない動物がいると、その名前を警告で知らせます.");
+        addBookPage(root, "trick_breed.1",
+                "Babies, animals that are already in love or resting after breeding, and untamed wolves, cats, horses, donkeys and"
+                        + " llamas are skipped without using food, as are animals in an area protected from the caster. Horses and donkeys"
+                        + " take golden carrots or golden apples, and llamas take hay bales. Every target must be within the spell's range.",
+                "子ども、繁殖モード中や繁殖後の休憩中の動物、飼いならしていないオオカミ、ネコ、ウマ、ロバ、ラマは、餌を使わずに飛ばします."
+                        + " 術者から保護された場所にいる動物も飛ばします. ウマとロバには金のニンジンか金のリンゴ、ラマには干し草の俵を与えます."
+                        + " 対象はすべて射程内にいる必要があります.");
+
+        addSpellPiece(root, "operator_connected_blocks", "Operator: Connected Blocks",
+                "Lists the positions of the blocks of the same kind connected to the block at the position.",
+                "演算子: 連結ブロック", "指定位置のブロックとつながっている同じ種類のブロックの座標を Vector List で返します。");
+        addBookPage(root, "operator_connected_blocks.0",
+                "Starting from the block at the position, follows the blocks of the same kind that touch it by a face, an edge or"
+                        + " a corner, and returns their coordinates as a Vector List, nearest first, up to $(thing)Max$(0) blocks (at most"
+                        + " 4096).",
+                "指定位置のブロックから、面・辺・角で接する同じ種類のブロックをたどり、その座標を近いものから順に Vector List で返します."
+                        + " 返すのは $(thing)最大$(0) 個 (上限4096) までです.");
+        addBookPage(root, "operator_connected_blocks.1",
+                "Block states do not matter, so crops of any age and logs facing any way count as one kind. Blocks outside the"
+                        + " spell's range are not followed, and an air block gives an empty list.$(p)Pass the list to"
+                        + " $(thing)Trick: Mass Block Break$(0) to fell a tree or mine out a vein of ore, or to $(thing)Trick: Mass Harvest$(0)"
+                        + " to harvest a whole field.",
+                "ブロックの状態は区別しないため、成長段階の違う作物や向きの違う原木も同じ種類として扱います. 射程外のブロックはたどらず、"
+                        + "位置が空気なら空のリストを返します.$(p)$(thing)作動式: 大規模ブロック破壊$(0) に渡すと木の伐採や鉱脈の採掘に、"
+                        + "$(thing)作動式: 大規模収穫$(0) に渡すと畑全体の収穫に使えます.");
     }
 
     private void addFilterCardTranslations(JsonObject root) {

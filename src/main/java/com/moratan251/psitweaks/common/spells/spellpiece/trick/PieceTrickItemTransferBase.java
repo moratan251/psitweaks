@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -245,6 +246,15 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
         PlayerInteractEvent.RightClickBlock event = NeoForge.EVENT_BUS.post(
                 new PlayerInteractEvent.RightClickBlock(caster, InteractionHand.MAIN_HAND, pos, hit));
         return event.isCanceled() || event.getUseBlock() == TriState.FALSE;
+    }
+
+    /**
+     * Asks protection mods whether the caster may interact with the entity by posting a right-click equivalent
+     * event. Canceled means protected.
+     */
+    public static boolean isProtectedFromInteraction(Player caster, Entity entity) {
+        return NeoForge.EVENT_BUS.post(new PlayerInteractEvent.EntityInteract(caster, InteractionHand.MAIN_HAND, entity))
+                .isCanceled();
     }
 
     private Predicate<ItemStack> buildFilter(SpellContext context) throws SpellRuntimeException {

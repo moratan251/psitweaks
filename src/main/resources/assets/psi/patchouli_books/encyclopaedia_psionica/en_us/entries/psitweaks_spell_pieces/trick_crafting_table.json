@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.trick_crafting_table",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_crafting_table.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_crafting_table"
+    }
+  ]
+}
