@@ -1,21 +1,12 @@
 package com.moratan251.psitweaks.common.items;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.ISlotType;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 /**
  * Template storage and lookup of Filter Cards.
@@ -97,46 +88,6 @@ public final class FilterCards {
 
     /** The player's Filter Cards in lookup order. The returned stacks are the live stacks, not copies. */
     public static List<ItemStack> findCards(Player player) {
-        List<ItemStack> cards = new ArrayList<>();
-        Set<ItemStack> seen = Collections.newSetFromMap(new IdentityHashMap<>());
-        collectCurios(player, cards, seen);
-
-        Inventory inventory = player.getInventory();
-        add(cards, seen, player.getMainHandItem());
-        add(cards, seen, player.getOffhandItem());
-        for (int slot = 0; slot < inventory.items.size(); slot++) {
-            add(cards, seen, inventory.items.get(slot));
-        }
-        return cards;
-    }
-
-    private static void collectCurios(Player player, List<ItemStack> cards, Set<ItemStack> seen) {
-        CuriosApi.getCuriosInventory(player).ifPresent(curios -> {
-            List<Map.Entry<String, ICurioStacksHandler>> handlers = new ArrayList<>(curios.getCurios().entrySet());
-            // The map order is not guaranteed to match between server and client; sort like the Curios screen does.
-            handlers.sort(Comparator
-                    .comparingInt((Map.Entry<String, ICurioStacksHandler> entry) -> slotOrder(player, entry.getKey()))
-                    .thenComparing(Map.Entry::getKey));
-            for (Map.Entry<String, ICurioStacksHandler> entry : handlers) {
-                ICurioStacksHandler handler = entry.getValue();
-                NonNullList<Boolean> activeStates = handler.getActiveStates();
-                for (int slot = 0; slot < handler.getSlots(); slot++) {
-                    if (slot < activeStates.size() && !activeStates.get(slot)) {
-                        continue;
-                    }
-                    add(cards, seen, handler.getStacks().getStackInSlot(slot));
-                }
-            }
-        });
-    }
-
-    private static int slotOrder(Player player, String identifier) {
-        return CuriosApi.getSlot(identifier, player.level()).map(ISlotType::getOrder).orElse(Integer.MAX_VALUE);
-    }
-
-    private static void add(List<ItemStack> cards, Set<ItemStack> seen, ItemStack stack) {
-        if (isFilterCard(stack) && seen.add(stack)) {
-            cards.add(stack);
-        }
+        return CarriedItems.find(player, FilterCards::isFilterCard);
     }
 }

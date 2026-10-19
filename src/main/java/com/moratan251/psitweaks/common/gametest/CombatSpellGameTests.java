@@ -5,20 +5,23 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
-import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.items.BladePouches;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.menu.BladePouchMenu;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
-import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.Parades;
+import com.moratan251.psitweaks.common.spells.combat.SwordStrikes;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickActiveAirMine;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
@@ -26,6 +29,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancing
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityCollapse;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickKamaitachi;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickStarfall;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,22 +37,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -58,10 +65,9 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.internal.Vector3;
-import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityPosition;
 import vazkii.psi.api.spell.CompiledSpell;
-import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.EnumSpellStat;
+import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
@@ -69,6 +75,7 @@ import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityPosition;
 
 /**
  * Trick: Barrier's shield and the combat tricks of 1.0.0: who they hit, how much, when, and what they cost.
@@ -85,11 +92,9 @@ public final class CombatSpellGameTests {
     private static final String POSITION = SpellParam.GENERIC_NAME_POSITION;
     private static final String DIRECTION = SpellParam.GENERIC_NAME_DIRECTION;
     private static final String RADIUS = SpellParam.GENERIC_NAME_RADIUS;
-    private static final String CHAINS = "psitweaks.spellparam.chains";
+    private static final String CHAINS = SpellParam.GENERIC_NAME_NUMBER;
     private static final String COUNT = "psitweaks.spellparam.count";
     private static final float EPSILON = 1.0E-3F;
-    /** Long enough for a Parade lookalike to rescan who is after it. */
-    private static final int WATCH_SCAN_TICKS = 6;
     /** Health of the creatures {@link #tough} prepares. */
     private static final float TOUGH_HEALTH = 200.0F;
 
@@ -371,8 +376,8 @@ public final class CombatSpellGameTests {
         helper.assertTrue(parade[0] == 660 && parade[1] == 900, "Parade P2 T30: 300+150P+2T / 400+100P+10T, got " + parade[0] + "/" + parade[1]);
         int[] kamaitachi = stats(kamaitachi(Map.of(POWER, 1.0)));
         helper.assertTrue(kamaitachi[0] == 120 && kamaitachi[1] == 420, "Kamaitachi P1, got " + kamaitachi[0] + "/" + kamaitachi[1]);
-        int[] blades = stats(dancingBlades(Map.of(COUNT, 2.0, POWER, 1.0)));
-        helper.assertTrue(blades[0] == 840 && blades[1] == 440, "Dancing Blades N2 P1, got " + blades[0] + "/" + blades[1]);
+        int[] blades = stats(dancingBlades(Map.of()));
+        helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
         int[] starfall = stats(starfall(Map.of(POWER, 1.0, COUNT, 13.0)));
         helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
         int[] gravity = stats(gravityCollapse(Map.of(POWER, 1.0, RADIUS, 30.0)));
@@ -389,7 +394,7 @@ public final class CombatSpellGameTests {
      */
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void largeCombatTricksNeedHighTierCads(GameTestHelper helper) throws Exception {
-        int blades = stats(dancingBlades(Map.of(COUNT, 1.0, POWER, 0.5)))[0];
+        int blades = stats(dancingBlades(Map.of()))[0];
         helper.assertTrue(blades > 800 && blades <= 1000, "Smallest Dancing Blades must need heavy psimetal, got " + blades);
         int starfall = stats(starfall(Map.of(POWER, 0.5, COUNT, 1.0)))[0];
         helper.assertTrue(starfall > 800 && starfall <= 1000, "Smallest Starfall must need heavy psimetal, got " + starfall);
@@ -614,7 +619,8 @@ public final class CombatSpellGameTests {
                     hunter[0] = husk(helper, new BlockPos(5, 0, 2), false);
                     hunter[0].setTarget(decoy);
                 })
-                .thenExecuteAfter(WATCH_SCAN_TICKS, () -> {
+                // It rescans who is after it every few ticks; wait for it rather than for an exact tick.
+                .thenWaitUntil(() -> {
                     var husk = hunter[0];
                     Vec3 wanted = new Vec3(decoy.getLookControl().getWantedX(), decoy.getLookControl().getWantedY(),
                             decoy.getLookControl().getWantedZ());
@@ -795,7 +801,7 @@ public final class CombatSpellGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = TEMPLATE, batch = BATCH + "_blades", timeoutTicks = 160)
+    @GameTest(template = TEMPLATE, batch = BATCH + "_blades", timeoutTicks = 240)
     public static void dancingBladesStrikeHostilesAndReplaceOldOnes(GameTestHelper helper) throws Exception {
         // The orbit (1.6 blocks) must stay inside the box: only the box's chunks are sure to tick.
         var player = caster(helper, new BlockPos(2, 0, 2), "blades-caster");
@@ -805,27 +811,159 @@ public final class CombatSpellGameTests {
         pig.setNoAi(true);
         AABB area = helper.getBounds().inflate(8);
 
-        dancingBlades(Map.of(COUNT, 3.0, POWER, 1.0)).execute(context);
-        helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityDancingBlade.class, area).size() == 3, "Three blades expected");
-        dancingBlades(Map.of(COUNT, 2.0, POWER, 1.0)).execute(context);
-        helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityDancingBlade.class, area).size() == 2,
-                "Casting again must replace the blades");
+        // A wooden sword swings for 1 + 3 = 4.
+        ItemStack pouch = new ItemStack(PsitweaksItems.BLADE_POUCH.get());
+        BladePouches.setContents(pouch, List.of(new ItemStack(Items.WOODEN_SWORD), new ItemStack(Items.WOODEN_SWORD),
+                new ItemStack(Items.WOODEN_SWORD)));
+        player.getInventory().setItem(9, pouch);
+        dancingBlades(Map.of()).execute(context);
+        helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityDancingBlade.class, area).size() == 3,
+                "Every sword in the pouch must become a blade");
+        BladePouches.setContents(pouch, List.of(ItemStack.EMPTY, new ItemStack(Items.WOODEN_SWORD)));
+        dancingBlades(Map.of()).execute(context);
+        var blades = helper.getLevel().getEntitiesOfClass(EntityDancingBlade.class, area);
+        helper.assertTrue(blades.size() == 1 && blades.get(0).getSword().is(Items.WOODEN_SWORD),
+                "Casting again must replace the blades with the pouch's swords");
+        helper.assertTrue(BladePouches.swords(pouch).size() == 1, "The swords must stay in the pouch");
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() <= 12 + EPSILON,
-                        "Two cuts of 2 + 2 x Power expected, health " + husk.getHealth()))
+                .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() <= 16 + EPSILON,
+                        "A cut of a wooden sword expected, health " + husk.getHealth()))
                 .thenWaitUntil(() -> {
                     var left = helper.getLevel().getEntitiesOfClass(EntityDancingBlade.class, area);
-                    helper.assertTrue(left.isEmpty(), "Blades must fade after two cuts each: " + left.stream()
+                    helper.assertTrue(left.isEmpty(), "Blades must fade after three cuts each: " + left.stream()
                             .map(blade -> blade.tickCount + "t state " + blade.getState() + " at "
                                     + blade.position().subtract(helper.absoluteVec(Vec3.ZERO)))
                             .toList() + ", husk " + husk.getHealth());
                 })
                 .thenExecute(() -> {
-                    helper.assertTrue(near(husk.getHealth(), 4), "Two blades x two cuts x 4 expected, health " + husk.getHealth());
+                    helper.assertTrue(near(husk.getHealth(), 8), "One blade x three cuts x 4 expected, health " + husk.getHealth());
                     helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "Blades must leave animals alone");
                     helper.assertTrue(player.isAlive(), "Caster gone");
                 })
                 .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void dancingBladesNeedSwordsInABladePouch(GameTestHelper helper) {
+        var player = caster(helper, new BlockPos(2, 0, 2), "blades-no-pouch");
+        var context = new SpellContext().setPlayer(player);
+        helper.assertTrue(PieceTrickDancingBlades.ERROR_NO_SWORDS.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
+                "Without a pouch the spell must fail");
+        player.getInventory().setItem(9, new ItemStack(PsitweaksItems.BLADE_POUCH.get()));
+        helper.assertTrue(PieceTrickDancingBlades.ERROR_NO_SWORDS.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
+                "With an empty pouch the spell must fail");
+        helper.assertTrue(!BladePouches.isSword(new ItemStack(Items.IRON_AXE)) && BladePouches.isSword(new ItemStack(Items.IRON_SWORD)),
+                "Only #minecraft:swords go in a pouch");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void bladeCutsHitLikeTheirSword(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 0, 4));
+        var source = level.damageSources().generic();
+
+        helper.assertTrue(near(SwordStrikes.meleeDamage(level, new ItemStack(Items.WOODEN_SWORD), husk, source), 4),
+                "Wooden sword: 1 + 3");
+        helper.assertTrue(near(SwordStrikes.meleeDamage(level, new ItemStack(Items.DIAMOND_SWORD), husk, source), 7),
+                "Diamond sword: 1 + 6");
+        var sharp = new ItemStack(Items.DIAMOND_SWORD);
+        sharp.enchant(enchantments.getOrThrow(Enchantments.SHARPNESS), 1);
+        helper.assertTrue(near(SwordStrikes.meleeDamage(level, sharp, husk, source), 8), "Sharpness I adds 1");
+        var smite = new ItemStack(Items.DIAMOND_SWORD);
+        smite.enchant(enchantments.getOrThrow(Enchantments.SMITE), 1);
+        helper.assertTrue(near(SwordStrikes.meleeDamage(level, smite, husk, source), 9.5)
+                        && near(SwordStrikes.meleeDamage(level, smite, pig, source), 7),
+                "Smite I adds 2.5 against the undead only");
+
+        var fiery = new ItemStack(Items.DIAMOND_SWORD);
+        fiery.enchant(enchantments.getOrThrow(Enchantments.FIRE_ASPECT), 1);
+        var player = caster(helper, new BlockPos(0, 0, 0), "blade-fire");
+        var playerSource = SwordStrikes.weaponSource(level, PsitweaksDamageTypes.DANCING_BLADES, player, fiery);
+        helper.assertTrue(playerSource.getWeaponItem() == fiery && playerSource.isDirect(),
+                "The hit must count as a direct swing of the sword");
+        SwordStrikes.afterHit(level, player, fiery, husk, playerSource, new Vec3(1, 0, 0));
+        helper.assertTrue(husk.getRemainingFireTicks() > 0, "Fire Aspect must set the target alight");
+
+        // The on-hit wear (a sword's postHurtEnemy) falls on a copy, never on the sword in the pouch.
+        var worn = new ItemStack(Items.IRON_SWORD);
+        worn.setDamageValue(100);
+        var copy = SwordStrikes.swingCopy(worn);
+        SwordStrikes.afterHit(level, player, copy, husk, playerSource, new Vec3(1, 0, 0));
+        helper.assertTrue(worn.getDamageValue() == 100 && copy.getDamageValue() <= 1, "Only the copy may wear down");
+
+        // The item's own bonus counts as in a melee swing: a mace after a 3 block fall adds 4 x 3 to its 1 + 5.
+        var mace = new ItemStack(Items.MACE);
+        player.fallDistance = 3.0F;
+        var maceSource = SwordStrikes.weaponSource(level, PsitweaksDamageTypes.DANCING_BLADES, player, mace);
+        float smash = SwordStrikes.meleeDamage(level, mace, pig, maceSource);
+        helper.assertTrue(near(smash, 18), "Mace smash bonus expected, got " + smash);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void dancingBladesLeaveBrokenSwordsInThePouch(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 2), "blades-broken");
+        var context = new SpellContext().setPlayer(player);
+        AABB area = helper.getBounds().inflate(8);
+        var broken = new ItemStack(Items.IRON_SWORD);
+        broken.setDamageValue(broken.getMaxDamage());
+        var pouch = new ItemStack(PsitweaksItems.BLADE_POUCH.get());
+        BladePouches.setContents(pouch, List.of(broken));
+        player.getInventory().setItem(9, pouch);
+        helper.assertTrue(BladePouches.isBroken(broken) && !BladePouches.isBroken(new ItemStack(Items.IRON_SWORD)),
+                "A sword with no durability left is broken");
+        helper.assertTrue(PieceTrickDancingBlades.ERROR_NO_SWORDS.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
+                "Only broken swords: the spell must fail");
+        BladePouches.setContents(pouch, List.of(broken, new ItemStack(Items.WOODEN_SWORD)));
+        dancingBlades(Map.of()).execute(context);
+        var blades = helper.getLevel().getEntitiesOfClass(EntityDancingBlade.class, area);
+        helper.assertTrue(blades.size() == 1 && blades.get(0).getSword().is(Items.WOODEN_SWORD), "Only the intact sword deploys");
+        blades.forEach(Entity::discard);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void bladePouchMenuKeepsToItsPouchAndLocksWhileBladesAreOut(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var player = caster(helper, new BlockPos(2, 0, 2), "pouch-menu");
+        var first = new ItemStack(PsitweaksItems.BLADE_POUCH.get());
+        var second = new ItemStack(PsitweaksItems.BLADE_POUCH.get());
+        player.getInventory().selected = 0;
+        player.setItemInHand(InteractionHand.MAIN_HAND, first);
+        player.getInventory().setItem(1, second);
+        helper.assertTrue(BladePouches.isIdle(player, second) && !BladePouches.isIdle(player, first),
+                "The pouch found second must read as idle");
+
+        var menu = new BladePouchMenu(0, player.getInventory(), InteractionHand.MAIN_HAND);
+        helper.assertTrue(menu.stillValid(player) && !menu.isDeployed(), "Fresh menu must be open and unlocked");
+        menu.getSlot(0).set(new ItemStack(Items.WOODEN_SWORD));
+        helper.assertTrue(BladePouches.swords(first).size() == 1 && BladePouches.swords(second).isEmpty(),
+                "Edits must land on the pouch the menu was opened on");
+
+        // Blades out: the sword slots take nothing and give nothing back.
+        var blade = new EntityDancingBlade(level, player, 0, 1);
+        blade.setSword(new ItemStack(Items.WOODEN_SWORD));
+        level.addFreshEntity(blade);
+        menu.broadcastChanges();
+        helper.assertTrue(menu.isDeployed() && !menu.getSlot(0).mayPickup(player)
+                        && !menu.getSlot(1).mayPlace(new ItemStack(Items.IRON_SWORD)),
+                "Sword slots must lock while the blades are out");
+        helper.assertTrue(menu.quickMoveStack(player, 0).isEmpty(), "Shift-click must not take a sword out while locked");
+        blade.discard();
+        menu.broadcastChanges();
+        helper.assertTrue(!menu.isDeployed() && menu.getSlot(0).mayPickup(player), "Sword slots must unlock once the blades are gone");
+
+        // Another stack in that hand, or another hotbar slot selected, closes the menu.
+        player.setItemInHand(InteractionHand.MAIN_HAND, second);
+        helper.assertTrue(!menu.stillValid(player), "Another pouch in hand must close the menu");
+        player.setItemInHand(InteractionHand.MAIN_HAND, first);
+        helper.assertTrue(menu.stillValid(player), "The same pouch back in hand keeps the menu");
+        player.getInventory().selected = 1;
+        helper.assertTrue(!menu.stillValid(player), "Selecting another hotbar slot must close the menu");
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH + "_starfall")

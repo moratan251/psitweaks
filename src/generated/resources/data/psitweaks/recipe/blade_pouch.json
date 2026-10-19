@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "combat",
+  "key": {
+    "A": {
+      "item": "minecraft:leather"
+    },
+    "B": {
+      "item": "minecraft:string"
+    },
+    "C": {
+      "item": "psi:psimetal"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "C C",
+    "ACA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:blade_pouch"
+  }
+}

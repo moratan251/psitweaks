@@ -32,6 +32,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigTranslations(root);
         addConnectorTranslations(root);
         addFilterCardTranslations(root);
+        addBladePouchTranslations(root);
         root.addProperty("creativetabs.psitweaks", "Psi: Tweaks and Additions");
         addMysticalAgricultureTranslations(root);
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
@@ -356,10 +357,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellparam.label", switch (locale) {
             case "ja_jp" -> "ラベル";
             default -> "Label";
-        });
-        root.addProperty("psitweaks.spellparam.chains", switch (locale) {
-            case "ja_jp" -> "連鎖数";
-            default -> "Chains";
         });
         root.addProperty("psitweaks.spellparam.count", switch (locale) {
             case "ja_jp" -> "数";
@@ -1581,7 +1578,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
         addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the target so it bursts from within", "作動式: 爆裂", "対象の体内の液体を気化させ、内側から破裂させる");
         addSpellPiece(root, "trick_kamaitachi", "Trick: Kamaitachi", "Fires a crescent blade of wind that cuts through everything in its path", "作動式: 鎌鼬", "三日月形の風の刃を飛ばし、通り道の生物をまとめて切り裂く");
-        addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Summons blades that circle the caster and strike nearby hostile creatures", "作動式: ダンシングブレイズ", "術者の周りを舞い、近くの敵対的な生物を斬りつける刃を呼び出す");
+        addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
         addSpellPiece(root, "trick_gravity_collapse", "Trick: Gravity Collapse", "Opens a gravity well that pulls creatures in, then collapses", "作動式: 重力崩壊", "生物を引き寄せる重力の井戸を開き、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
@@ -1807,8 +1804,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
         addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         addBookPage(root, "trick_chain_lightning.0",
-                "Strikes the target with a bolt of lightning from the caster's hand. The bolt then jumps up to $(thing)Chains$(0) times (at most 8), each time to the nearest hostile creature it has not hit yet, within 6 blocks of the last target and in its line of sight.",
-                "術者の手元から対象へ雷撃を放ちます. 雷撃はさらに最大 $(thing)連鎖数$(0) 回 (上限8) まで、直前の対象から6ブロック以内で見通せる、まだ当たっていない最も近い敵対的な生物へ飛び移ります.");
+                "Strikes the target with a bolt of lightning from the caster's hand. The bolt then jumps up to $(thing)Number$(0) times (at most 8), each time to the nearest hostile creature it has not hit yet, within 6 blocks of the last target and in its line of sight.",
+                "術者の手元から対象へ雷撃を放ちます. 雷撃はさらに最大 $(thing)数値$(0) 回 (上限8) まで、直前の対象から6ブロック以内で見通せる、まだ当たっていない最も近い敵対的な生物へ飛び移ります.");
         addBookPage(root, "trick_chain_lightning.1",
                 "The first hit deals $(thing)9 + 9 × Power$(0) damage, and each jump deals half as much as the one before (but at least 1). Creatures in water or rain take 50%% more. The first target can be anything, but the bolt only jumps to hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
                 "最初の一撃のダメージは $(thing)9 + 9×威力$(0) で、飛び移るたびに直前の半分になります (最低1). 水中や雨の中にいる生物には50%%増しになります. 最初の対象は何でも構いませんが、連鎖先は敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
@@ -1831,11 +1828,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Each cut deals $(thing)4.5 + 4.5 × Power$(0) damage. The blade is $(thing)1.5 + 0.25 × Power$(0) blocks wide (at most 4) and reaches 0.7 blocks above and below its path.",
                 "1回の斬撃のダメージは $(thing)4.5 + 4.5×威力$(0) です. 刃の幅は $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) で、軌道の上下0.7ブロックまで届きます.");
         addBookPage(root, "trick_dancing_blades.0",
-                "Summons $(thing)Count$(0) spectral blades (at most 8) that circle the caster. Each blade darts at a hostile creature it can see within 16 blocks, cuts it and comes back. A blade fades after two cuts, and all of them fade after 5 seconds.",
-                "術者の周りを回る幻影の刃を $(thing)数$(0) 本 (上限8) 呼び出します. 刃は16ブロック以内の見通せる敵対的な生物へ飛びかかって斬りつけ、術者のもとへ戻ります. 刃は2回斬ると消え、5秒経つとすべて消えます.");
+                "Deploys every sword in the caster's $(l:items/psitweaks_blade_pouch)$(o)$(item)Blade Pouch$(0)$(/l) (up to 8) as spectral blades that circle the caster. Each blade darts at a hostile creature it can see within 16 blocks, cuts it and comes back. A blade fades after three cuts, and all of them fade after 15 seconds.",
+                "術者の $(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l) に入っている剣をすべて (最大8本) 幻影の刃として展開し, 術者の周りを回らせます. 刃は16ブロック以内の見通せる敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回斬ると消え, 15秒経つとすべて消えます.");
         addBookPage(root, "trick_dancing_blades.1",
-                "Each cut deals $(thing)2 + 2 × Power$(0) damage. When there are several targets the blades spread out over them. Casting it again replaces the blades you already have.",
-                "1回の斬撃のダメージは $(thing)2 + 2×威力$(0) です. 敵が複数いると、刃は狙いを分散させます. もう一度唱えると、今ある刃と入れ替わります.");
+                "Each cut deals what a swing of that sword would (its attack damage and damage enchantments) times the caster's Phenomenon Interference, and Fire Aspect, Knockback and the like take effect. The swords lose no durability, and a sword with no durability left (a broken psimetal sword) is not deployed. Without a pouch, or with an empty one, the spell stops with an error. Casting it again replaces the blades you already have.",
+                "1回の斬撃のダメージは, その剣で殴ったときのダメージ (攻撃力とダメージ増加などのエンチャント) に事象干渉力を掛けたもので, 火属性やノックバックなどのエンチャントも働きます. 剣の耐久値は減らず, 耐久値が尽きた剣 (壊れたサイメタルの剣など) は展開されません. ポーチがないときや剣が入っていないときはエラーで止まります. もう一度唱えると, 今ある刃と入れ替わります.");
         addBookPage(root, "trick_starfall.0",
                 "Calls $(thing)Count$(0) meteors (at most 12) down around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
                 "指定位置の周りに $(thing)数$(0) 個 (上限12) の流星を降らせます. 着弾点は地面の輪で示され、1秒後から流星が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
@@ -2595,6 +2592,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "「時間」は任意入力の定数で、Trick: Particle Trail の時間と同じく既定値20、最大1200で、正の数を指定します。"
                         + "すべての角が術式射程内にない場合はエラーになります。"
                         + "パーティクルは近くのプレイヤーにも見えます。");
+    }
+
+    private void addBladePouchTranslations(JsonObject root) {
+        boolean japanese = "ja_jp".equals(locale);
+        root.addProperty("tooltip.psitweaks.blade_pouch.empty", japanese ? "剣が入っていません" : "No swords inside");
+        root.addProperty("tooltip.psitweaks.blade_pouch.count", japanese ? "剣: %s / %s" : "Swords: %s / %s");
+        root.addProperty("tooltip.psitweaks.blade_pouch.broken", japanese ? "(破損: 展開されません)" : "(broken: not deployed)");
+        root.addProperty("tooltip.psitweaks.blade_pouch.idle",
+                japanese ? "待機中: 先に見つかる別のブレードポーチが使われます" : "Idle: another Blade Pouch found first is in use");
+        root.addProperty("gui.psitweaks.blade_pouch.deployed", japanese ? "刃を展開中" : "Blades out");
+        root.addProperty("psitweaks.spellerror.required_item_missing",
+                japanese ? "エラー: 術式に必要なアイテムが存在しません。" : "ERROR: An item the spell needs is missing.");
+        root.addProperty("psi.book.page.psitweaks_item.blade_pouch.0", japanese
+                ? "剣を8本まで入れておけるポーチです. 使うとGUIが開き, $(thing)#minecraft:swords$(0) の剣だけを入れられます.$(p)$(l:psitweaks_spell_pieces/trick_dancing_blades)$(o)作動式: ダンシングブレイズ$(0)$(/l) は, このポーチの剣をすべて展開して斬りつけます. 刃を展開している間は, ポーチの剣を出し入れできません."
+                : "A pouch that holds up to 8 swords. Using it opens a GUI that only accepts items in $(thing)#minecraft:swords$(0).$(p)$(l:psitweaks_spell_pieces/trick_dancing_blades)$(o)Trick: Dancing Blades$(0)$(/l) deploys every sword in it. While the blades are out, swords cannot be put in or taken out.");
+        root.addProperty("psi.book.page.psitweaks_item.blade_pouch.1", japanese
+                ? "使われるポーチは1つだけです. フィルタカードと同じく, Curiosのスロット(どのスロットにも装備できます)を先に, 次にメインハンド, オフハンド, ホットバー, インベントリの順で探し, 最初に見つかったポーチを使います."
+                : "Only one pouch is used at a time. As with the Filter Card, the Curios slots (it fits any slot) are searched first, then the main hand, the offhand, the hotbar and the inventory, and the first pouch found is used.");
     }
 
     /** 1.0.0 utility tricks: ender chest, crafting table, harvesting, shearing and breeding, and Operator: Connected Blocks. */

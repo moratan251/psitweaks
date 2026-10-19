@@ -10,6 +10,7 @@ import vazkii.psi.api.spell.PreSpellCastEvent;
 import vazkii.psi.api.spell.SpellCastEvent;
 import vazkii.psi.api.spell.PieceKnowledgeEvent;
 
+import com.moratan251.psitweaks.client.BladePouchClient;
 import com.moratan251.psitweaks.client.FilterCardClient;
 import com.moratan251.psitweaks.client.SpellUnlockClientEvents;
 import com.moratan251.psitweaks.client.combat.CombatEffectsClient;
@@ -17,6 +18,7 @@ import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
+import com.moratan251.psitweaks.client.gui.BladePouchScreen;
 import com.moratan251.psitweaks.client.gui.FilterCardScreen;
 import com.moratan251.psitweaks.client.gui.IdeaStorageScreen;
 import com.moratan251.psitweaks.client.gui.machine.GuiMaterialMutator;
@@ -185,6 +187,7 @@ public class Psitweaks {
             MekanismCompat.registerClient(modEventBus);
             SpellUnlockClientEvents.register();
             FilterCardClient.registerEvents();
+            BladePouchClient.registerEvents();
             CombatEffectsClient.registerEvents(modEventBus);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
@@ -277,6 +280,7 @@ public class Psitweaks {
             event.enqueueWork(() -> {
                 registerBowProperties(PsitweaksItems.PSIMETAL_BOW, BowItem.MAX_DRAW_DURATION);
                 FilterCardClient.registerItemProperties();
+                BladePouchClient.registerItemProperties();
                 registerBowProperties(PsitweaksItems.GRAVSTRINGER, ItemGravstringer.FULL_DRAW_TICKS);
                 ItemProperties.register(PsitweaksItems.GRAVSTRINGER.get(), Psitweaks.location("tunneler_loaded"),
                         (stack, level, entity, seed) -> entity instanceof Player player
@@ -332,6 +336,7 @@ public class Psitweaks {
             event.register(ModMenuTypes.PORTABLE_SPELL_PROGRAMMER.get(), com.moratan251.psitweaks.client.gui.machine.GuiPortableSpellProgrammer::new);
             event.register(ModMenuTypes.IDEA_STORAGE.get(), IdeaStorageScreen::new);
             event.register(ModMenuTypes.FILTER_CARD.get(), FilterCardScreen::new);
+            event.register(ModMenuTypes.BLADE_POUCH.get(), BladePouchScreen::new);
             event.register(ModMenuTypes.IDEASPACE_CONNECTOR.get(), com.moratan251.psitweaks.client.gui.IdeaspaceConnectorScreen::new);
         }
 

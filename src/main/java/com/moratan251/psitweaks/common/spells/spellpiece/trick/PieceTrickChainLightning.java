@@ -34,7 +34,7 @@ import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Strikes the target with lightning that then jumps to the nearest hostile creature it can see, up to Chains times.
+ * Strikes the target with lightning that then jumps to the nearest hostile creature it can see, up to Number times.
  * Each jump deals half the damage of the one before (but at least 1) and lands a moment after the previous one; targets
  * in water or rain take extra damage.
  */
@@ -61,10 +61,10 @@ public class PieceTrickChainLightning extends PieceTrick {
     public PieceTrickChainLightning(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER)
-                .add(new StatLabel("psitweaks.spellparam.chains", true).min(MAX_CHAINS).mul(POTENCY_PER_CHAIN))
+                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_CHAINS).mul(POTENCY_PER_CHAIN))
                 .add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(COST_PER_POWER)
-                .add(new StatLabel("psitweaks.spellparam.chains", true).min(MAX_CHAINS).mul(COST_PER_CHAIN))
+                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_CHAINS).mul(COST_PER_CHAIN))
                 .add(COST_BASE).floor());
     }
 
@@ -72,7 +72,7 @@ public class PieceTrickChainLightning extends PieceTrick {
     public void initParams() {
         addParam(target = new ParamEntity(SpellParam.GENERIC_NAME_TARGET, SpellParam.YELLOW, false, false));
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
-        addParam(chains = new ParamNumber("psitweaks.spellparam.chains", SpellParam.GREEN, false, true));
+        addParam(chains = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER, SpellParam.GREEN, false, true));
     }
 
     @Override

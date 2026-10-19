@@ -1,10 +1,13 @@
 package com.moratan251.psitweaks.common.entities.combat;
 
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.SwordStrikes;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -19,6 +22,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -28,8 +32,8 @@ import net.minecraft.world.phys.Vec3;
  * over several targets), cut, and come back, a few times each, until they fade.
  */
 public class EntityDancingBlade extends CombatSpellEntity {
-    public static final int LIFETIME = 100;
-    public static final int STRIKES = 2;
+    public static final int LIFETIME = 300;
+    public static final int STRIKES = 3;
     private static final double ORBIT_RADIUS = 1.6;
     private static final double SEEK_RANGE = 16.0;
     private static final double STRIKE_SPEED = 1.3;
@@ -37,6 +41,8 @@ public class EntityDancingBlade extends CombatSpellEntity {
     private static final int STRIKE_TIMEOUT = 30;
     private static final int REST_TICKS = 6;
     private static final int SPAWN_TICKS = 6;
+    /** Blades never stray this far from their caster: they vanish when the caster is gone. */
+    private static final double OWNER_SEARCH_RANGE = 64.0;
 
     public static final byte ORBIT = 0;
     public static final byte STRIKE = 1;
@@ -44,6 +50,8 @@ public class EntityDancingBlade extends CombatSpellEntity {
 
     private static final EntityDataAccessor<Byte> STATE = SynchedEntityData.defineId(EntityDancingBlade.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> OWNER_ID = SynchedEntityData.defineId(EntityDancingBlade.class, EntityDataSerializers.INT);
+    /** The sword from the Blade Pouch this blade is: what it looks like and how hard it cuts. */
+    private static final EntityDataAccessor<ItemStack> SWORD = SynchedEntityData.defineId(EntityDancingBlade.class, EntityDataSerializers.ITEM_STACK);
 
     private int index;
     private int count = 1;
@@ -75,6 +83,15 @@ public class EntityDancingBlade extends CombatSpellEntity {
         super.defineSynchedData(builder);
         builder.define(STATE, ORBIT);
         builder.define(OWNER_ID, -1);
+        builder.define(SWORD, ItemStack.EMPTY);
+    }
+
+    public ItemStack getSword() {
+        return entityData.get(SWORD);
+    }
+
+    public void setSword(ItemStack sword) {
+        entityData.set(SWORD, sword.copyWithCount(1));
     }
 
     public byte getState() {
@@ -83,6 +100,18 @@ public class EntityDancingBlade extends CombatSpellEntity {
 
     public int getOwnerId() {
         return entityData.get(OWNER_ID);
+    }
+
+    /** The blades {@code owner} has out (server side). */
+    public static List<EntityDancingBlade> bladesOf(ServerLevel level, LivingEntity owner) {
+        int ownerId = owner.getId();
+        return level.getEntitiesOfClass(EntityDancingBlade.class, owner.getBoundingBox().inflate(OWNER_SEARCH_RANGE),
+                blade -> blade.isAlive() && blade.getOwnerId() == ownerId);
+    }
+
+    /** Whether {@code owner} has blades out, which keeps their Blade Pouch locked (server side). */
+    public static boolean hasBladesOut(ServerLevel level, LivingEntity owner) {
+        return !bladesOf(level, owner).isEmpty();
     }
 
     @Override
@@ -153,9 +182,16 @@ public class EntityDancingBlade extends CombatSpellEntity {
     }
 
     private void strike(ServerLevel level, LivingEntity caster, LivingEntity target, Vec3 direction) {
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.DANCING_BLADES, this, caster);
-        if (CombatSpellHelper.canHarm(caster, target, isSafeToPlayers()) && target.hurt(source, getDamage())) {
+        // A swing as the caster with the sword in hand: the caster is the direct attacker (Fire Aspect and the like only
+        // act on direct hits) and the sword is the weapon; a copy takes whatever wear the hit causes.
+        ItemStack sword = SwordStrikes.swingCopy(getSword());
+        DamageSource source = SwordStrikes.weaponSource(level, PsitweaksDamageTypes.DANCING_BLADES, caster, sword);
+        // A swing of the sword, scaled like every attack spell (global and per-spell multipliers, Phenomenon Interference).
+        float damage = CombatSpellHelper.scaleDamage(SwordStrikes.meleeDamage(level, sword, target, source),
+                PsitweaksConfig.COMMON.dancingBladesDamageMultiplier.get(), caster);
+        if (CombatSpellHelper.canHarm(caster, target, isSafeToPlayers()) && target.hurt(source, damage)) {
             CombatSpellHelper.push(target, new Vec3(direction.x, 0.0, direction.z).scale(0.3).add(0.0, 0.08, 0.0));
+            SwordStrikes.afterHit(level, caster, sword, target, source, direction);
         }
         Vec3 center = CombatSpellHelper.center(target);
         level.sendParticles(ParticleTypes.SWEEP_ATTACK, center.x, center.y, center.z, 1, 0.0, 0.0, 0.0, 0.0);

@@ -23,18 +23,19 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-/** Trick: Dancing Blades. A spectral psimetal sword pointing where it flies, wrapped in a glow and a short trail. */
+/** Trick: Dancing Blades. The blade's sword from the Blade Pouch, pointing where it flies, wrapped in a glow. */
 public class DancingBladeRenderer extends CombatGlowRenderer<EntityDancingBlade> {
     private static final ResourceLocation PSIMETAL_SWORD = ResourceLocation.fromNamespaceAndPath("psi", "psimetal_sword");
     private static final float SPAWN_TICKS = 6.0F;
 
     private final ItemRenderer itemRenderer;
-    private final ItemStack sword;
+    /** Shown until the blade's own sword has synced. */
+    private final ItemStack fallbackSword;
 
     public DancingBladeRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.itemRenderer = context.getItemRenderer();
-        this.sword = BuiltInRegistries.ITEM.getOptional(PSIMETAL_SWORD).map(ItemStack::new)
+        this.fallbackSword = BuiltInRegistries.ITEM.getOptional(PSIMETAL_SWORD).map(ItemStack::new)
                 .orElseGet(() -> new ItemStack(Items.IRON_SWORD));
     }
 
@@ -48,11 +49,7 @@ public class DancingBladeRenderer extends CombatGlowRenderer<EntityDancingBlade>
         Vector3f origin = new Vector3f();
         Matrix4f pose = cameraPose(entity, partialTick, poseStack, origin);
         int color = GlowDrawing.glowColor(entity.getColor());
-        byte state = entity.getState();
-        float trail = state == EntityDancingBlade.STRIKE ? 2.0F : state == EntityDancingBlade.RETURN ? 1.2F : 0.7F;
         VertexConsumer glow = buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR);
-        GlowDrawing.ribbon(glow, pose, origin, offset(origin, facing, -trail), 0.5F * appear, 0.0F, color,
-                0.6F, 0.0F, 255);
         GlowDrawing.glowDisc(glow, pose, origin, 0.9F * appear, color, 0.45F, 255);
 
         // The sprite's tip points to its top-right corner: turn it to +Y, roll it slowly, then aim +Y along the flight.
@@ -60,9 +57,10 @@ public class DancingBladeRenderer extends CombatGlowRenderer<EntityDancingBlade>
         poseStack.mulPose(new Quaternionf().rotationTo(0.0F, 1.0F, 0.0F, (float) facing.x, (float) facing.y, (float) facing.z));
         poseStack.mulPose(Axis.YP.rotationDegrees(entity.getId() * 47.0F + age * 9.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
-        float scale = 1.15F * appear;
+        float scale = 0.575F * appear;
         poseStack.scale(scale, scale, scale);
-        itemRenderer.renderStatic(sword, ItemDisplayContext.NONE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+        ItemStack shown = entity.getSword().isEmpty() ? fallbackSword : entity.getSword();
+        itemRenderer.renderStatic(shown, ItemDisplayContext.NONE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
                 poseStack, buffers, entity.level(), entity.getId());
         poseStack.popPose();
     }

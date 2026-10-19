@@ -569,6 +569,14 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'C', ingredientItem(Items.PAPER)
                 ),
                 PsitweaksItems.FILTER_CARD, 1));
+        recipe(recipes, "blade_pouch", shaped("combat",
+                List.of("ABA", "C C", "ACA"),
+                Map.of(
+                        'A', ingredientItem(Items.LEATHER),
+                        'B', ingredientItem(Items.STRING),
+                        'C', ingredientItem(ModItems.psimetal.get())
+                ),
+                PsitweaksItems.BLADE_POUCH, 1));
         recipe(recipes, "flash_charm", shaped("combat",
                 List.of(" F ", "FNF", " F "),
                 Map.of(

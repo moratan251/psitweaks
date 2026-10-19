@@ -94,6 +94,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK.get());
                         output.accept(PsitweaksItems.FLASH_CHARM.get());
                         output.accept(PsitweaksItems.FILTER_CARD.get());
+                        output.accept(PsitweaksItems.BLADE_POUCH.get());
                         output.accept(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER.get());
                         output.accept(PsitweaksItems.THIRD_EYE_DEVICE.get());
                         output.accept(PsitweaksItems.SORCERY_BOOSTER.get());

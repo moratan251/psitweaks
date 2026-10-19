@@ -1,0 +1,17 @@
+{
+  "name": "item.psitweaks.blade_pouch",
+  "category": "psi:items",
+  "icon": "psitweaks:blade_pouch",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.blade_pouch.0",
+      "item": "psitweaks:blade_pouch",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_item.blade_pouch.1"
+    }
+  ]
+}

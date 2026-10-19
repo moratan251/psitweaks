@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "psitweaks:item/blade_pouch_active",
+      "predicate": {
+        "psitweaks:active": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "psitweaks:item/blade_pouch_idle"
+  }
+}

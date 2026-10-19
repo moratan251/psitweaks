@@ -358,6 +358,10 @@ public final class PsitweaksItems {
             "filter_card",
             () -> new ItemFilterCard(new Item.Properties())
     );
+    public static final DeferredItem<ItemBladePouch> BLADE_POUCH = ITEMS.register(
+            "blade_pouch",
+            () -> new ItemBladePouch(new Item.Properties())
+    );
     public static final DeferredItem<ItemFlashCharm> FLASH_CHARM = ITEMS.register(
             "flash_charm",
             () -> new ItemFlashCharm(new Item.Properties())

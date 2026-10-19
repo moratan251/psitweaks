@@ -273,8 +273,8 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "minecraft", "enchantable/foot_armor", item(PsitweaksItems.MOVAL_SUIT_BOOTS));
         tag(tags, "minecraft", "enchantable/bow", item(PsitweaksItems.PSIMETAL_BOW), item(PsitweaksItems.GRAVSTRINGER));
         tag(tags, "curios", "charm", item(PsitweaksItems.FLASH_CHARM));
-        // curios:curio lets the card go in any Curios slot that uses the tag validator.
-        tag(tags, "curios", "curio", item(PsitweaksItems.FILTER_CARD));
+        // curios:curio lets the card and the pouch go in any Curios slot that uses the tag validator.
+        tag(tags, "curios", "curio", item(PsitweaksItems.FILTER_CARD), item(PsitweaksItems.BLADE_POUCH));
         tag(tags, "curios", "magic_calculation_area",
                 item(PsitweaksItems.AUTO_CASTER_TICK),
                 item(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK),

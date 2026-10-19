@@ -33,6 +33,9 @@ public final class ModMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<FilterCardMenu>> FILTER_CARD =
             MENUS.register("filter_card", () -> IMenuTypeExtension.create(FilterCardMenu::fromNetwork));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<BladePouchMenu>> BLADE_POUCH =
+            MENUS.register("blade_pouch", () -> IMenuTypeExtension.create(BladePouchMenu::fromNetwork));
+
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);
     }
