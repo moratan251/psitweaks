@@ -15,6 +15,7 @@ import com.moratan251.psitweaks.common.items.BladePouches;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.menu.BladePouchMenu;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
@@ -462,6 +463,45 @@ public final class CombatSpellGameTests {
                 })
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class,
                         helper.getBounds().inflate(4)).isEmpty(), "The chain must be gone once every jump has landed"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH + "_chain")
+    public static void indiscriminateChainLightningJumpsToAnyCreatureButPets(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "chain-indiscriminate");
+        var first = tough(husk(helper, new BlockPos(1, 0, 1), false));
+        // Nearest first: the villager, then the pig. The pet and the armor stand in between are skipped.
+        var villager = helper.spawnWithNoFreeWill(EntityType.VILLAGER, new BlockPos(1, 0, 2));
+        villager.setNoAi(true);
+        var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(3, 0, 1));
+        pig.setNoAi(true);
+        var pet = helper.spawnWithNoFreeWill(EntityType.WOLF, new BlockPos(2, 0, 2));
+        pet.setTame(true, false);
+        pet.setOwnerUUID(player.getUUID());
+        var stand = helper.spawn(EntityType.ARMOR_STAND, new BlockPos(2, 0, 1));
+
+        helper.assertTrue(CombatSpellHelper.isIndiscriminateTarget(player, pig, false)
+                        && CombatSpellHelper.isIndiscriminateTarget(player, villager, false)
+                        && CombatSpellHelper.isIndiscriminateTarget(player, first, false),
+                "Indiscriminate picks animals, villagers and monsters");
+        helper.assertTrue(!CombatSpellHelper.isIndiscriminateTarget(player, pet, false)
+                        && !CombatSpellHelper.isIndiscriminateTarget(player, stand, false)
+                        && !CombatSpellHelper.isIndiscriminateTarget(player, player, false),
+                "Indiscriminate still spares pets, armor stands and the caster");
+        helper.assertTrue(CombatSpellHelper.isIndiscriminate(1) && !CombatSpellHelper.isIndiscriminate(0)
+                && !CombatSpellHelper.isIndiscriminate(null), "Only a non-zero number turns it on");
+
+        chainLightning(Map.of(TARGET, first, POWER, 1.0, CHAINS, 2.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0))
+                .execute(new SpellContext().setPlayer(player));
+        float petHealth = pet.getHealth();
+        helper.startSequence()
+                .thenWaitUntil(() -> helper.assertTrue(!villager.isAlive() || villager.getHealth() < villager.getMaxHealth() - EPSILON,
+                        "The bolt must jump to the villager"))
+                .thenWaitUntil(() -> helper.assertTrue(!pig.isAlive() || pig.getHealth() < pig.getMaxHealth() - EPSILON,
+                        "The bolt must jump on to the pig"))
+                .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class,
+                        helper.getBounds().inflate(4)).isEmpty(), "The chain must finish"))
+                .thenExecute(() -> helper.assertTrue(near(pet.getHealth(), petHealth), "The pet must be spared"))
                 .thenSucceed();
     }
 

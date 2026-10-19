@@ -57,6 +57,8 @@ public class EntityDancingBlade extends CombatSpellEntity {
     private int count = 1;
     private int launchDelay;
     private int strikesLeft = STRIKES;
+    /** Whether the blade goes after any creature, not only hostile ones (server side; blades are never saved). */
+    private boolean indiscriminate;
     private int stateTicks;
     private int restTicks;
     @Nullable
@@ -92,6 +94,10 @@ public class EntityDancingBlade extends CombatSpellEntity {
 
     public void setSword(ItemStack sword) {
         entityData.set(SWORD, sword.copyWithCount(1));
+    }
+
+    public void setIndiscriminate(boolean indiscriminate) {
+        this.indiscriminate = indiscriminate;
     }
 
     public byte getState() {
@@ -215,7 +221,10 @@ public class EntityDancingBlade extends CombatSpellEntity {
         setPos(next.x, next.y, next.z);
     }
 
-    /** The nearest visible hostile creature, preferring ones fewer sibling blades are already after. */
+    /**
+     * The nearest visible hostile creature (any creature when indiscriminate), preferring ones fewer sibling blades are
+     * already after.
+     */
     @Nullable
     private LivingEntity findTarget(ServerLevel level, LivingEntity caster) {
         AABB area = caster.getBoundingBox().inflate(SEEK_RANGE);
@@ -228,7 +237,7 @@ public class EntityDancingBlade extends CombatSpellEntity {
         double bestScore = Double.MAX_VALUE;
         Vec3 from = position();
         for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (!CombatSpellHelper.isHostileTarget(caster, candidate, isSafeToPlayers())) {
+            if (!CombatSpellHelper.isAutoTarget(caster, candidate, isSafeToPlayers(), indiscriminate)) {
                 continue;
             }
             Vec3 center = CombatSpellHelper.center(candidate);

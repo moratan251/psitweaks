@@ -165,6 +165,26 @@ public final class CombatSpellHelper {
         return caster.getLastHurtByMob() == entity;
     }
 
+    /**
+     * What an auto-targeting trick in indiscriminate mode may pick: any creature it may harm ({@link #canHarm}, so
+     * never the caster, allies, the caster's pets, armour stands, creative players, or players spared by Safe to
+     * Players) that is not immune to spells. Villagers and wandering traders are fair game.
+     */
+    public static boolean isIndiscriminateTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
+        return canHarm(caster, entity, safeToPlayers) && !isSpellImmune(entity);
+    }
+
+    /** {@link #isIndiscriminateTarget} when {@code indiscriminate}, else {@link #isHostileTarget}. */
+    public static boolean isAutoTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers,
+                                       boolean indiscriminate) {
+        return indiscriminate ? isIndiscriminateTarget(caster, entity, safeToPlayers) : isHostileTarget(caster, entity, safeToPlayers);
+    }
+
+    /** Whether an optional Indiscriminate input was given a non-zero number (an unconnected input reads as null). */
+    public static boolean isIndiscriminate(@Nullable Number value) {
+        return value != null && value.doubleValue() != 0.0;
+    }
+
     public static DamageSource damageSource(Level level, ResourceKey<DamageType> key,
                                             @Nullable Entity directEntity, @Nullable Entity attacker) {
         Holder<DamageType> type = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key);

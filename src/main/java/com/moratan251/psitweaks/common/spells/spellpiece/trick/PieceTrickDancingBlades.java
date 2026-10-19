@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.items.BladePouches;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -14,15 +15,18 @@ import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellMetadata;
+import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
+import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
  * Deploys every sword in the caster's Blade Pouch (up to eight) as a spectral blade circling the caster. Each one darts
  * at a hostile creature nearby and cuts it as its sword would, three times, then fades; all of them fade after fifteen
  * seconds at most. The swords stay in the pouch and lose no durability; a sword with no durability left (a broken
- * psimetal sword) is not deployed.
+ * psimetal sword) is not deployed. With a non-zero Indiscriminate input the blades go after any creature instead (see
+ * {@link CombatSpellHelper#isIndiscriminateTarget}).
  */
 public class PieceTrickDancingBlades extends PieceTrick {
     public static final String ERROR_NO_SWORDS = "psitweaks.spellerror.required_item_missing";
@@ -30,10 +34,17 @@ public class PieceTrickDancingBlades extends PieceTrick {
     public static final int POTENCY = 900;
     public static final int COST = 1500;
 
+    private SpellParam<Number> indiscriminate;
+
     public PieceTrickDancingBlades(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(POTENCY));
         setStatLabel(EnumSpellStat.COST, new StatLabel(COST));
+    }
+
+    @Override
+    public void initParams() {
+        addParam(indiscriminate = new ParamNumber(PsitweaksSpellParams.INDISCRIMINATE, SpellParam.PURPLE, true, false));
     }
 
     @Override
@@ -53,6 +64,7 @@ public class PieceTrickDancingBlades extends PieceTrick {
             return null;
         }
         boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
+        boolean anyCreature = CombatSpellHelper.isIndiscriminate(getParamValue(context, indiscriminate));
         int color = CombatSpellHelper.spellColor(context.caster);
         // Recasting replaces the caster's earlier blades instead of piling more up.
         for (EntityDancingBlade old : EntityDancingBlade.bladesOf(level, context.caster)) {
@@ -62,6 +74,7 @@ public class PieceTrickDancingBlades extends PieceTrick {
             EntityDancingBlade blade = new EntityDancingBlade(level, context.caster, i, swords.size());
             blade.configure(context.caster, safeToPlayers, 0.0F, color);
             blade.setSword(swords.get(i));
+            blade.setIndiscriminate(anyCreature);
             level.addFreshEntity(blade);
         }
         CombatEffects.sound(level, context.caster.position(), SoundEvents.TRIDENT_RETURN, 0.9F, 1.3F);

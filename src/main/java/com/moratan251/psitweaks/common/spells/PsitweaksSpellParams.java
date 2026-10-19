@@ -28,6 +28,8 @@ public final class PsitweaksSpellParams {
     public static final String UP_DOWN = PREFIX + "updown";
     public static final String OFFSET = PREFIX + "offset";
     public static final String MAX = PREFIX + "max";
+    /** Optional input of the auto-targeting combat tricks: non-zero aims at every creature, not only hostile ones. */
+    public static final String INDISCRIMINATE = PREFIX + "indiscriminate";
     /** Search input of the ideaspace logistics tricks (String, Item, Item List or a strict Item). */
     public static final String FILTER = PREFIX + "filter";
     /** Resource input of the ideaspace selectors (an ID String, or an Item in Item mode). */

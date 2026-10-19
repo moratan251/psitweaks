@@ -358,6 +358,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "ラベル";
             default -> "Label";
         });
+        root.addProperty("psitweaks.spellparam.indiscriminate", switch (locale) {
+            case "ja_jp" -> "無差別";
+            default -> "Indiscriminate";
+        });
         root.addProperty("psitweaks.spellparam.count", switch (locale) {
             case "ja_jp" -> "数";
             default -> "Count";
@@ -1809,6 +1813,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_chain_lightning.1",
                 "The first hit deals $(thing)9 + 9 × Power$(0) damage, and each jump deals half as much as the one before (but at least 1). Creatures in water or rain take 50%% more. The first target can be anything, but the bolt only jumps to hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
                 "最初の一撃のダメージは $(thing)9 + 9×威力$(0) で、飛び移るたびに直前の半分になります (最低1). 水中や雨の中にいる生物には50%%増しになります. 最初の対象は何でも構いませんが、連鎖先は敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+        addBookPage(root, "trick_chain_lightning.2",
+                "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt jumps to any creature, animals and villagers included. It still never jumps to you, your allies or pets, armour stands, creative players, players spared by Safe to Players, or anything immune to spells. Connect Psi's $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
+                "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物へ飛び移ります. ただし術者自身, 味方や自分のペット, 防具立て, クリエイティブのプレイヤー, プレイヤー保護で守られたプレイヤー, 術式が効かないものへは飛び移りません. Psiの $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
         addBookPage(root, "trick_mine_genesis.0",
                 "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
                 "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
@@ -1830,6 +1837,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dancing_blades.0",
                 "Deploys every sword in the caster's $(l:items/psitweaks_blade_pouch)$(o)$(item)Blade Pouch$(0)$(/l) (up to 8) as spectral blades that circle the caster. Each blade darts at a hostile creature it can see within 16 blocks, cuts it and comes back. A blade fades after three cuts, and all of them fade after 15 seconds.",
                 "術者の $(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l) に入っている剣をすべて (最大8本) 幻影の刃として展開し, 術者の周りを回らせます. 刃は16ブロック以内の見通せる敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回斬ると消え, 15秒経つとすべて消えます.");
+        addBookPage(root, "trick_dancing_blades.2",
+                "With a non-zero $(thing)Indiscriminate$(0) (optional), the blades go after any creature, animals and villagers included. They still never attack you, your allies or pets, armour stands, creative players, players spared by Safe to Players, or anything immune to spells. Connect Psi's $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
+                "$(thing)無差別$(0) (省略可) に0以外を入れると, 刃は動物や村人を含むあらゆる生物を狙います. ただし術者自身, 味方や自分のペット, 防具立て, クリエイティブのプレイヤー, プレイヤー保護で守られたプレイヤー, 術式が効かないものは狙いません. Psiの $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
         addBookPage(root, "trick_dancing_blades.1",
                 "Each cut deals what a swing of that sword would (its attack damage and damage enchantments) times the caster's Phenomenon Interference, and Fire Aspect, Knockback and the like take effect. The swords lose no durability, and a sword with no durability left (a broken psimetal sword) is not deployed. Without a pouch, or with an empty one, the spell stops with an error. Casting it again replaces the blades you already have.",
                 "1回の斬撃のダメージは, その剣で殴ったときのダメージ (攻撃力とダメージ増加などのエンチャント) に事象干渉力を掛けたもので, 火属性やノックバックなどのエンチャントも働きます. 剣の耐久値は減らず, 耐久値が尽きた剣 (壊れたサイメタルの剣など) は展開されません. ポーチがないときや剣が入っていないときはエラーで止まります. もう一度唱えると, 今ある刃と入れ替わります.");

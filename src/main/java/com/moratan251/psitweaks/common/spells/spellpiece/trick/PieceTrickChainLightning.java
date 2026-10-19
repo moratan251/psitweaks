@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -36,7 +37,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 /**
  * Strikes the target with lightning that then jumps to the nearest hostile creature it can see, up to Number times.
  * Each jump deals half the damage of the one before (but at least 1) and lands a moment after the previous one; targets
- * in water or rain take extra damage.
+ * in water or rain take extra damage. With a non-zero Indiscriminate input it jumps to any creature instead (see
+ * {@link CombatSpellHelper#isIndiscriminateTarget}).
  */
 public class PieceTrickChainLightning extends PieceTrick {
     private static final double MIN_POWER = 0.5;
@@ -57,6 +59,7 @@ public class PieceTrickChainLightning extends PieceTrick {
     private SpellParam<Entity> target;
     private SpellParam<Number> power;
     private SpellParam<Number> chains;
+    private SpellParam<Number> indiscriminate;
 
     public PieceTrickChainLightning(Spell spell) {
         super(spell);
@@ -73,6 +76,7 @@ public class PieceTrickChainLightning extends PieceTrick {
         addParam(target = new ParamEntity(SpellParam.GENERIC_NAME_TARGET, SpellParam.YELLOW, false, false));
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
         addParam(chains = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER, SpellParam.GREEN, false, true));
+        addParam(indiscriminate = new ParamNumber(PsitweaksSpellParams.INDISCRIMINATE, SpellParam.PURPLE, true, false));
     }
 
     @Override
@@ -104,6 +108,7 @@ public class PieceTrickChainLightning extends PieceTrick {
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         int chainCount = Mth.clamp(getParamValue(context, chains).intValue(), 1, MAX_CHAINS);
         boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
+        boolean anyCreature = CombatSpellHelper.isIndiscriminate(getParamValue(context, indiscriminate));
         LivingEntity caster = context.caster;
         float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.chainLightningDamageMultiplier.get(), caster);
@@ -134,7 +139,7 @@ public class PieceTrickChainLightning extends PieceTrick {
             if (jump >= chainCount) {
                 break;
             }
-            current = nextTarget(level, context, caster, current, struck, safeToPlayers);
+            current = nextTarget(level, context, caster, current, struck, safeToPlayers, anyCreature);
         }
         if (jumps != null) {
             level.addFreshEntity(jumps);
@@ -152,16 +157,19 @@ public class PieceTrickChainLightning extends PieceTrick {
         return Math.max(Math.min(MIN_JUMP_DAMAGE, firstHit), firstHit * (float) Math.pow(JUMP_DAMAGE_FACTOR, jump));
     }
 
-    /** The closest hostile creature within jump range of {@code from}, in the spell radius and in sight. */
+    /**
+     * The closest hostile creature (any creature when {@code anyCreature}) within jump range of {@code from}, in the
+     * spell radius and in sight.
+     */
     @Nullable
     private static LivingEntity nextTarget(ServerLevel level, SpellContext context, LivingEntity caster, LivingEntity from,
-                                           Set<UUID> struck, boolean safeToPlayers) {
+                                           Set<UUID> struck, boolean safeToPlayers, boolean anyCreature) {
         Vec3 origin = CombatSpellHelper.center(from);
         AABB area = new AABB(origin, origin).inflate(JUMP_RANGE);
         LivingEntity best = null;
         double bestDistance = JUMP_RANGE * JUMP_RANGE;
         for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (struck.contains(candidate.getUUID()) || !CombatSpellHelper.isHostileTarget(caster, candidate, safeToPlayers)
+            if (struck.contains(candidate.getUUID()) || !CombatSpellHelper.isAutoTarget(caster, candidate, safeToPlayers, anyCreature)
                     || !context.isInRadius(candidate)) {
                 continue;
             }
