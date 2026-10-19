@@ -161,6 +161,14 @@ public final class SpellUnlockGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "psi110_empty")
+    public static void machineItemsDescribeTheirSlots(GameTestHelper helper) {
+        if (MekanismCompat.isMekanismLoaded()) {
+            MachineItemSlotChecks.checkMachineItemsDescribeTheirSlots(helper);
+        }
+        helper.succeed();
+    }
+
     /** Whether {@code id} is not a spell unlock command id (the command rejects it). */
     private static boolean isNotUnlockDefinition(FakePlayer player, String id) throws Exception {
         try {
