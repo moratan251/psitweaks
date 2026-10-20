@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -15,6 +16,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 public class PsiTweaksLootTableProvider implements DataProvider {
+    /** Mekanism machines: the dropped item keeps the machine's contents and settings, as Mekanism's own machines do. */
+    private static final Set<String> MEKANISM_MACHINES = Set.of("sculk_eroder", "program_researcher", "material_mutator",
+            "psionic_generator", "transcendent_energy_cube");
+    /** The components Mekanism's machine loot tables copy from the block entity; ones a machine lacks are skipped. */
+    private static final List<String> MEKANISM_MACHINE_COMPONENTS = List.of("mekanism:ejector", "mekanism:owner",
+            "mekanism:redstone_control", "mekanism:security", "mekanism:side_config", "mekanism:upgrades", "mekanism:energy",
+            "mekanism:items", "mekanism:chemicals");
+
     private final PackOutput.PathProvider pathProvider;
 
     public PsiTweaksLootTableProvider(PackOutput output) {
@@ -28,7 +37,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             JsonObject lootTable = switch (block.id()) {
                 case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
-                default -> dropSelf(block.id());
+                default -> MEKANISM_MACHINES.contains(block.id()) ? dropMekanismMachine(block.id()) : dropSelf(block.id());
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));
         }
@@ -54,6 +63,27 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         pool.add("entries", entries);
         pool.add("conditions", conditions);
         addPool(table, pool);
+
+        return table;
+    }
+
+    private static JsonObject dropMekanismMachine(String blockId) {
+        JsonObject table = dropSelf(blockId);
+        JsonObject entry = table.getAsJsonArray("pools").get(0).getAsJsonObject().getAsJsonArray("entries").get(0).getAsJsonObject();
+        JsonArray functions = new JsonArray();
+        JsonObject copyName = new JsonObject();
+        JsonObject copyComponents = new JsonObject();
+        JsonArray include = new JsonArray();
+
+        copyName.addProperty("function", "minecraft:copy_name");
+        copyName.addProperty("source", "block_entity");
+        functions.add(copyName);
+        copyComponents.addProperty("function", "minecraft:copy_components");
+        copyComponents.addProperty("source", "block_entity");
+        MEKANISM_MACHINE_COMPONENTS.forEach(include::add);
+        copyComponents.add("include", include);
+        functions.add(copyComponents);
+        entry.add("functions", functions);
 
         return table;
     }
