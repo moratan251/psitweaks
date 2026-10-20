@@ -11,7 +11,6 @@ import com.moratan251.psitweaks.common.tile.machine.SculkEroderBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.TileEntityTranscendentEnergyCube;
 import java.util.Map;
 import java.util.function.Predicate;
-import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
@@ -33,13 +32,10 @@ import net.neoforged.bus.api.IEventBus;
 
 public final class PsitweaksMekanismBlocks {
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Psitweaks.MOD_ID);
+    // Auto-eject out of the energy port on the back, as the tile defaults to.
     private static final AttachedSideConfig PSIONIC_GENERATOR_SIDE_CONFIG = new AttachedSideConfig(Map.of(
             TransmissionType.ENERGY, new AttachedSideConfig.LightConfigInfo(Map.of(
-                    RelativeSide.BACK, DataType.OUTPUT,
-                    RelativeSide.LEFT, DataType.OUTPUT,
-                    RelativeSide.RIGHT, DataType.OUTPUT,
-                    RelativeSide.TOP, DataType.OUTPUT,
-                    RelativeSide.BOTTOM, DataType.OUTPUT
+                    PsionicGeneratorBlockEntity.ENERGY_OUTPUT_SIDE, DataType.OUTPUT
             ), true)));
 
     /**

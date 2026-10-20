@@ -499,7 +499,7 @@
   "psi.book.page.psitweaks_machine.cad_disassembler": "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.",
   "psi.book.page.psitweaks_machine.material_mutator": "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます.",
   "psi.book.page.psitweaks_machine.program_researcher": "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究のtickあたりの消費電力と時間はJEIで確認できます.",
-  "psi.book.page.psitweaks_machine.psionic_generator": "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.",
+  "psi.book.page.psitweaks_machine.psionic_generator": "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.$(p)発電したFEは, 初期設定では背面から最大6400 FE/tickで自動出力します.",
   "psi.book.page.psitweaks_machine.sculk_eroder": "石, 土, 砂系などのブロックアイテムをスカルク系の出力へ侵食加工する機械です.",
   "psi.book.page.psitweaks_machine.spellmachinery_casing": "高度な魔法を機械により実行するための筐体ブロックです.",
   "psi.book.page.psitweaks_machine.transcendent_energy_cube": "Mekanism のエネルギーキューブの強化版です. 究極エネルギーキューブの128倍の容量と出力性能を持ち, 核分裂炉級の電力を蓄えるのに向きます.",

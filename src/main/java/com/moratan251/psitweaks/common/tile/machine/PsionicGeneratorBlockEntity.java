@@ -19,6 +19,8 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -41,13 +43,8 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
     private static final long ENERGY_CAPACITY_JOULES = 1_600_000L;
     private static final long AUTO_EJECT_FE_PER_TICK = 6_400;
     private static final long AUTO_EJECT_RATE_JOULES = AUTO_EJECT_FE_PER_TICK * 5 / 2;
-    private static final RelativeSide[] ENERGY_OUTPUT_SIDES = {
-            RelativeSide.BACK,
-            RelativeSide.LEFT,
-            RelativeSide.RIGHT,
-            RelativeSide.TOP,
-            RelativeSide.BOTTOM
-    };
+    /** The side with the energy port in the model; matches the item's default side config. */
+    public static final RelativeSide ENERGY_OUTPUT_SIDE = RelativeSide.BACK;
 
     private BasicEnergyContainer energyContainer;
     private EnergyInventorySlot energySlot;
@@ -63,9 +60,14 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
 
     public PsionicGeneratorBlockEntity(BlockPos pos, BlockState state) {
         super(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, pos, state);
-        configComponent.setupOutputConfig(TransmissionType.ENERGY, energyContainer, ENERGY_OUTPUT_SIDES)
-                .addDisabledSides(RelativeSide.FRONT);
-        ejectorComponent = new TileComponentEjector(this, PsionicGeneratorBlockEntity::getAutoEjectRateJoules)
+        ConfigInfo energyConfig = configComponent.setupOutputConfig(TransmissionType.ENERGY, energyContainer);
+        energyConfig.addDisabledSides(RelativeSide.FRONT);
+        // Mekanism ignores setupOutputConfig's sides and leaves every side off unless the placing item carries a side
+        // config, so set the default here too: also a generator placed without its item ejects out of the back.
+        energyConfig.setDataType(DataType.OUTPUT, ENERGY_OUTPUT_SIDE);
+        energyConfig.setEjecting(true);
+        // The energy-rate constructor; the one without the marker sets the chemical rate and ejects energy unlimited.
+        ejectorComponent = new TileComponentEjector(this, PsionicGeneratorBlockEntity::getAutoEjectRateJoules, true)
                 .setOutputData(configComponent, TransmissionType.ENERGY)
                 .setCanEject(type -> canFunction());
     }
