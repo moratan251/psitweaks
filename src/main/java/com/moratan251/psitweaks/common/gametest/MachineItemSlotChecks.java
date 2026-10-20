@@ -99,7 +99,7 @@ final class MachineItemSlotChecks {
         }
         List<IChemicalTank> tanks = tile.getChemicalTanks(null);
         if (!tanks.isEmpty()) {
-            tanks.getFirst().setStack(new ChemicalStack(MekanismMaterialMutationRecipeHandler.getPsionicEchoChemical(), STORED_CHEMICAL));
+            tanks.getFirst().setStack(new ChemicalStack(MekanismMaterialMutationRecipeHandler.getPsionicEchoChemicalHolder(), STORED_CHEMICAL));
         }
 
         level.destroyBlock(absolute, true, new FakePlayer(level, new GameProfile(UUID.randomUUID(), "machine-breaker")));
