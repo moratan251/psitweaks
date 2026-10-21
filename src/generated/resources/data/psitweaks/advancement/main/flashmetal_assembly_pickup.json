@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/flashmetal_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:cad_assembly_flashmetal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:flashmetal_assembly_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:cad_assembly_flashmetal"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:flashmetal_assembly_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

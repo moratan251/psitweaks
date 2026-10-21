@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/alloy_psion_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:cad_assembly_alloy_psion"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:alloy_psion_assembly_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:cad_assembly_alloy_psion"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:alloy_psion_assembly_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

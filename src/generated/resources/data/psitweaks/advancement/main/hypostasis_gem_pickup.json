@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/antinite_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:hypostasis_gem"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:hypostasis_gem_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:hypostasis_gem"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:hypostasis_gem_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

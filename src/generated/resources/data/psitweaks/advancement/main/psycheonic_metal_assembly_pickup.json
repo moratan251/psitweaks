@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/psycheonic_metal_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:cad_assembly_psycheonic_metal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:psycheonic_metal_assembly_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:cad_assembly_psycheonic_metal"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:psycheonic_metal_assembly_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

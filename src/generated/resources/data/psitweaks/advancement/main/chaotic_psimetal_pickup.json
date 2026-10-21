@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/alloy_psion_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:chaotic_psimetal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:chaotic_psimetal_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:chaotic_psimetal"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:chaotic_psimetal_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

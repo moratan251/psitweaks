@@ -96,6 +96,7 @@ import com.moratan251.psitweaks.datagen.providers.PsiTweaksRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksTagsProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksWorldgenProvider;
 import com.moratan251.psitweaks.datagen.providers.ProductiveBeesDataProvider;
+import com.moratan251.psitweaks.datagen.providers.PsitweaksAdvancementProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksBlockStateProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksDamageTypeProvider;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksItemModelProvider;
@@ -258,6 +259,8 @@ public class Psitweaks {
         generator.addProvider(event.includeServer(), new PsitweaksSpellUnlockProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsitweaksSpellPieceGroupProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksWorldgenProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsitweaksAdvancementProvider(
+                packOutput, event.getLookupProvider(), event.getExistingFileHelper()));
     }
 
     @SubscribeEvent

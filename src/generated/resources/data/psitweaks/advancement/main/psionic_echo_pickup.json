@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/flashmetal_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:psionic_echo"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:psionic_echo_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:psionic_echo"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:psionic_echo_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

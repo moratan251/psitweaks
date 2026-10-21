@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/alloy_psion_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:psionic_control_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:psionic_control_circuit_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:psionic_control_circuit"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:psionic_control_circuit_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/hypostasis_gem_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:alloy_hypostasis"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:alloy_hypostasis_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:alloy_hypostasis"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:alloy_hypostasis_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

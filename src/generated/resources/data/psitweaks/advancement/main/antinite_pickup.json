@@ -1,0 +1,35 @@
+{
+  "parent": "psitweaks:main/heavy_psimetal_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:raw_antinite",
+              "psitweaks:antinite_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:antinite_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:raw_antinite"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:antinite_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

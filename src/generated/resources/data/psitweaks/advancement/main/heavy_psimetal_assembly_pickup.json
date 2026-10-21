@@ -1,0 +1,35 @@
+{
+  "parent": "psitweaks:main/heavy_psimetal_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:cad_assembly_heavy_psimetal_alpha",
+              "psitweaks:cad_assembly_heavy_psimetal_beta"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:heavy_psimetal_assembly_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:cad_assembly_heavy_psimetal_alpha"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:heavy_psimetal_assembly_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

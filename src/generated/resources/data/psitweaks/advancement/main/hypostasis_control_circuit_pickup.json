@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/alloy_hypostasis_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:hypostasis_control_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:hypostasis_control_circuit_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:hypostasis_control_circuit"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:hypostasis_control_circuit_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

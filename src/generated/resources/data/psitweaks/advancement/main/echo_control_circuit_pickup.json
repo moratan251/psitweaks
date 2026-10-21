@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/alloy_psionic_echo_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:echo_control_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:echo_control_circuit_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:echo_control_circuit"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:echo_control_circuit_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

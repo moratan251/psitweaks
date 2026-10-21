@@ -1,0 +1,32 @@
+{
+  "parent": "psitweaks:main/psionic_echo_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:heavy_psimetal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:heavy_psimetal_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:heavy_psimetal"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:heavy_psimetal_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

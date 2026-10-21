@@ -33,6 +33,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConnectorTranslations(root);
         addFilterCardTranslations(root);
         addBladePouchTranslations(root);
+        addAdvancementTranslations(root);
         root.addProperty("creativetabs.psitweaks", "Psi: Tweaks and Additions");
         addMysticalAgricultureTranslations(root);
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
@@ -2620,6 +2621,76 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_item.blade_pouch.1", japanese
                 ? "使われるポーチは1つだけです. フィルタカードと同じく, Curiosのスロット(どのスロットにも装備できます)を先に, 次にメインハンド, オフハンド, ホットバー, インベントリの順で探し, 最初に見つかったポーチを使います."
                 : "Only one pouch is used at a time. As with the Filter Card, the Curios slots (it fits any slot) are searched first, then the main hand, the offhand, the hotbar and the inventory, and the first pouch found is used.");
+    }
+
+    /**
+     * 1.0.0 advancements on Psi's tab; the tree itself is in {@link PsitweaksAdvancementProvider}.
+     * Each line: id, English name, English description, Japanese name, Japanese description.
+     */
+    private void addAdvancementTranslations(JsonObject root) {
+        addAdvancement(root, "alloy_psion_pickup", "One Small Step", "Obtain your first Psionic Alloy",
+                "未知への一歩", "サイオニック合金を初めて手に入れる");
+        addAdvancement(root, "alloy_psion_assembly_pickup", "Lightweight Champion", "Craft a Psionic Alloy CAD Assembly",
+                "効率特化", "サイオニック合金のCAD素体を作る");
+        addAdvancement(root, "psionic_control_circuit_pickup", "Perceptron", "Craft a Psionic Control Circuit",
+                "パーセプトロン", "サイオニック制御回路を作る");
+        addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
+                "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
+        addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",
+                "アウフヘーベン", "カオティックサイメタルのCAD素体を作る");
+        addAdvancement(root, "flashmetal_pickup", "In a Flash", "Refine Chaotic Psimetal with the glow of Glowstone",
+                "ピカイチ", "カオティックサイメタルにグロウストーンの輝きを合わせて精製する");
+        addAdvancement(root, "flashmetal_assembly_pickup", "Faster Than Thought", "Craft a Flashmetal CAD Assembly",
+                "電光石火", "フラッシュメタルのCAD素体を作る");
+        addAdvancement(root, "psionic_echo_pickup", "Power from Beyond", "Research Trick: Supreme Infusion and use it on an Echo Shard",
+                "向こう側からの力", "研究で作動式: 超位注入を解禁し, エコーの欠片に使う");
+        addAdvancement(root, "alloy_psionic_echo_pickup", "Good Vibrations", "Infuse Psionic Alloy with Psionic Echo",
+                "反響を呼ぶ", "サイオニック合金にサイオニックエコーを注ぐ");
+        addAdvancement(root, "echo_control_circuit_pickup", "Turing Test", "Craft an Echo Control Circuit",
+                "チューリングテスト", "感応制御回路を作る");
+        addAdvancement(root, "heavy_psimetal_pickup", "Heavy Metal", "Combine echo-infused Netherite Scrap with Flashmetal",
+                "重鎮", "サイオニックエコーを注いだネザライトの欠片とフラッシュメタルを合わせる");
+        addAdvancement(root, "heavy_psimetal_assembly_pickup", "It's All Greek to Me", "Craft a Heavy Psimetal CAD Assembly, α or β",
+                "重みが違う", "ヘビーサイメタルのCAD素体を α型か β型で作る");
+        addAdvancement(root, "antinite_pickup", "Two of a Kind", "Mine Antinite Ore on the outer End islands",
+                "対を成す", "ジ・エンドの外側の島でアンティナイト鉱石を掘る");
+        addAdvancement(root, "hypostasis_gem_pickup", "Awakening", "Research Trick: Material Mutation and use it on a Block of Antinite",
+                "目覚め", "研究で作動式: 物質変成を解禁し, アンティナイトブロックに使う");
+        addAdvancement(root, "alloy_hypostasis_pickup", "It Knows", "Infuse Echo Alloy with Hypostasis",
+                "「それ」は認識する", "感応合金にヒュポスタシスを注ぐ");
+        addAdvancement(root, "hypostasis_control_circuit_pickup", "Ascension is All You Need", "Craft a Hypostasis Control Circuit",
+                "Ascension is All You Need", "位格制御回路を作る");
+        addAdvancement(root, "psycheonic_metal_pickup", "Entelechy", "Infuse Heavy Psimetal with Hypostasis",
+                "エンテレケイア", "ヘビーサイメタルにヒュポスタシスを注ぎ, 粒からインゴットを作る");
+        addAdvancement(root, "psycheonic_metal_assembly_pickup", "Body and Soul", "Craft a Psycheonic Metal CAD Assembly",
+                "一心同体", "プシオニックメタルのCAD素体を作る");
+
+        // Psi ships no Japanese for its own tab, so only ja_jp gets these; English stays Psi's.
+        if ("ja_jp".equals(locale)) {
+            root.addProperty("psi.desc", "第四の壁を壊すジョークです. お楽しみください.");
+            addPsiAdvancementJapanese(root, "iron_cad_pickup", "ナイスバディ", "鉄のCAD素体を作る");
+            addPsiAdvancementJapanese(root, "gold_assembly_pickup", "値千金", "金のCAD素体を作る");
+            addPsiAdvancementJapanese(root, "encyclopaedia_psionica", "タブレットはつけで", "Psi のすべてを記した手引き書, Encyclopaedia Psionica を作る");
+            addPsiAdvancementJapanese(root, "psidust", "クラフトできない…?", "初めてサイダストを作る");
+            addPsiAdvancementJapanese(root, "psimetal_pickup", "注目の鋳塊", "初めてサイメタルを注入して作る");
+            addPsiAdvancementJapanese(root, "psimetal_assembly_pickup", "微サイな進歩", "サイメタルのCAD素体を作る");
+            addPsiAdvancementJapanese(root, "psigem_pickup", "思考の結晶", "ダイヤモンドに注入して初めてサイジェムを作る");
+            addPsiAdvancementJapanese(root, "ebony_pickup", "成金", "石炭に注入して初めてエボニー実体を作る");
+            addPsiAdvancementJapanese(root, "ebony_assembly_pickup", "ガチムチ", "エボニーサイメタルのCAD素体を作る");
+            addPsiAdvancementJapanese(root, "ivory_pickup", "真価", "クォーツに注入して初めてアイボリー実体を作る");
+            addPsiAdvancementJapanese(root, "ivory_assembly_pickup", "魅惑的", "アイボリーサイメタルのCAD素体を作る");
+        }
+    }
+
+    private void addAdvancement(JsonObject root, String id, String enUs, String enUsDesc, String jaJp, String jaJpDesc) {
+        String key = "advancement.psitweaks:" + id;
+        addLocalized(root, key, enUs, jaJp);
+        addLocalized(root, key + ".desc", enUsDesc, jaJpDesc);
+    }
+
+    private static void addPsiAdvancementJapanese(JsonObject root, String id, String jaJp, String jaJpDesc) {
+        root.addProperty("advancement.psi:" + id, jaJp);
+        root.addProperty("advancement.psi:" + id + ".desc", jaJpDesc);
     }
 
     /** 1.0.0 utility tricks: ender chest, crafting table, harvesting, shearing and breeding, and Operator: Connected Blocks. */
