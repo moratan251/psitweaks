@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanismgenerators"
+    }
+  ],
+  "parent": "psitweaks:main/program_researcher_pickup",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:phonon_maser_fusion_ignition.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "mekanismgenerators:fusion_reactor_controller"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:phonon_maser_fusion_ignition"
+    }
+  },
+  "requirements": [
+    [
+      "code_triggered"
+    ]
+  ]
+}

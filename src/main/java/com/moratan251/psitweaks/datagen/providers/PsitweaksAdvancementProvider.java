@@ -1,20 +1,32 @@
 package com.moratan251.psitweaks.datagen.providers;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.handler.PsitweaksAdvancements;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.conditions.WithConditions;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -23,9 +35,62 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
  * Their names live in {@link PsitweaksLanguageProvider} (addAdvancementTranslations).
  */
 public class PsitweaksAdvancementProvider extends AdvancementProvider {
+    private final PackOutput.PathProvider pathProvider;
+    private final CompletableFuture<HolderLookup.Provider> registries;
+
     public PsitweaksAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries,
             ExistingFileHelper existingFileHelper) {
         super(output, registries, existingFileHelper, List.of(PsitweaksAdvancementProvider::generate));
+        this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
+        this.registries = registries;
+    }
+
+    /** The vanilla provider cannot write load conditions, so the advancements that need another mod are saved here. */
+    @Override
+    public CompletableFuture<?> run(CachedOutput output) {
+        CompletableFuture<?> modOnly = registries.thenCompose(lookup -> {
+            List<CompletableFuture<?>> saved = new ArrayList<>();
+            generateMekanismOnly(requiringMod(output, lookup, saved, "mekanism"));
+            generateMekanismGeneratorsOnly(requiringMod(output, lookup, saved, "mekanismgenerators"));
+            return CompletableFuture.allOf(saved.toArray(CompletableFuture[]::new));
+        });
+        return CompletableFuture.allOf(super.run(output), modOnly);
+    }
+
+    /** A saver that writes each advancement with a condition to load only when {@code modId} is loaded. */
+    private Consumer<AdvancementHolder> requiringMod(CachedOutput output, HolderLookup.Provider lookup,
+            List<CompletableFuture<?>> saved, String modId) {
+        return holder -> saved.add(DataProvider.saveStable(output, lookup, Advancement.CONDITIONAL_CODEC,
+                Optional.of(new WithConditions<>(holder.value(), new ModLoadedCondition(modId))),
+                pathProvider.json(holder.id())));
+    }
+
+    /**
+     * Advancements for the Mekanism machines. They load only with Mekanism, so only advancements that also need
+     * Mekanism may hang from them.
+     */
+    private static void generateMekanismOnly(Consumer<AdvancementHolder> saver) {
+        add(saver, "program_researcher_pickup", own("psionic_control_circuit_pickup"), modItem(Psitweaks.location("program_researcher")));
+    }
+
+    /** Advancements about Mekanism Generators (which needs Mekanism). */
+    private static void generateMekanismGeneratorsOnly(Consumer<AdvancementHolder> saver) {
+        // Hidden; awarded from code when Trick: Phonon Maser lights a Fusion Reactor (MekanismGeneratorsGameplayIntegration).
+        ResourceLocation id = PsitweaksAdvancements.PHONON_MASER_FUSION_IGNITION;
+        String key = "advancement.psitweaks:" + id.getPath().substring("main/".length());
+        new Advancement.Builder()
+                .parent(own("program_researcher_pickup"))
+                .display(modItem(ResourceLocation.fromNamespaceAndPath("mekanismgenerators", "fusion_reactor_controller")),
+                        Component.translatable(key), Component.translatable(key + ".desc"),
+                        null, AdvancementType.CHALLENGE, true, true, true)
+                .addCriterion(PsitweaksAdvancements.CODE_TRIGGERED, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+                .save(saver, id.toString());
+    }
+
+    /** Looked up by id so this class does not load other mods' classes; datagen runs with Mekanism and its Generators. */
+    private static Item modItem(ResourceLocation id) {
+        return BuiltInRegistries.ITEM.getOptional(id)
+                .orElseThrow(() -> new IllegalStateException(id + " is not registered; run datagen with Mekanism and Mekanism Generators"));
     }
 
     private static void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver,

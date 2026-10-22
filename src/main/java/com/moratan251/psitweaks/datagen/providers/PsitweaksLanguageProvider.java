@@ -2634,6 +2634,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "効率特化", "サイオニック合金のCAD素体を作る");
         addAdvancement(root, "psionic_control_circuit_pickup", "Perceptron", "Craft a Psionic Control Circuit",
                 "パーセプトロン", "サイオニック制御回路を作る");
+        // Mekanism only
+        addAdvancement(root, "program_researcher_pickup", "Research and Development", "Craft a Program Research Table",
+                "研究開発", "プログラム研究台を作る");
+        // Mekanism Generators only, hidden
+        addAdvancement(root, "phonon_maser_fusion_ignition", "Sonofusion", "Ignite a Fusion Reactor with Trick: Phonon Maser",
+                "音響核融合", "作動式: フォノンメーザーで核融合炉を点火する");
         addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
                 "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",

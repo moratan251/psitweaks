@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -105,7 +106,7 @@ public class EntityPhononMaserBeam extends Entity {
             // ブロックへのエネルギー供給（毎tick）
             BlockPos hitBlockPos = getHitBlockPos();
             if (hitBlockPos != null) {
-                supplyEnergyToBlock(hitBlockPos);
+                supplyEnergyToBlock(hitBlockPos, caster);
             }
 
             ticksRemaining--;
@@ -301,12 +302,13 @@ public class EntityPhononMaserBeam extends Entity {
     /**
      * ILaserReceptorにエネルギーを供給
      */
-    private void supplyEnergyToBlock(BlockPos hitBlockPos) {
+    private void supplyEnergyToBlock(BlockPos hitBlockPos, LivingEntity caster) {
         BlockEntity blockEntity = level().getBlockEntity(hitBlockPos);
         if (blockEntity != null) {
             // 1tick当たりのエネルギー
             long energyPerTick = (long) power * 2000000L;
-            MekanismGameplayCompat.supplyLaserEnergy(blockEntity, energyPerTick);
+            // 核融合炉を点火させた術者には隠し進捗
+            MekanismGameplayCompat.supplyLaserEnergy(blockEntity, energyPerTick, caster instanceof ServerPlayer player ? player : null);
         }
     }
 

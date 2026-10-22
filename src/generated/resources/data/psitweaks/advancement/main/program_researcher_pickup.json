@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "parent": "psitweaks:main/psionic_control_circuit_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:program_researcher"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:program_researcher_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:program_researcher"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:program_researcher_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}
