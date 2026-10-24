@@ -1753,15 +1753,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for $(thing)Time$(0) seconds. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
                 "対象を $(thing)威力×10$(0) のシールドで $(thing)時間$(0) 秒間包みます. シールドがある間、対象が受けるダメージは体力の代わりにシールドから差し引かれ、対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り、シールドは砕けます.");
         addBookPage(root, "trick_barrier.1",
-                "Power and Time must be positive integers. Casting it again replaces the current shield. It does not absorb starvation, drowning, suffocation, falling, freezing, poison, withering, the damage of being on fire, the void or /kill. A bar above your health shows the shield you have left.",
-                "威力と時間には正の整数を指定します. もう一度かけると今のシールドと置き換わります. 空腹、溺れ、窒息、落下、凍結、毒、衰弱、炎上中の継続ダメージ、奈落、/kill は防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.");
+                "Casting it again replaces the current shield. It does not absorb falling, drowning, poison, burning and the like. A bar above your health shows the shield you have left.",
+                "もう一度かけると今のシールドと置き換わります. 落下、溺れ、毒、炎上中のダメージなどは防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade.0",
-                "Modelled on the Kudou family's secret magic. Conjures a lookalike of the caster at the position; it wanders within 5 blocks of it, copies the caster's gestures and turns to face whoever is after it. It wavers away after $(thing)Time$(0) seconds or after taking $(thing)2 × Power$(0) hits. Casting it again replaces the current lookalike.",
-                "九島家の秘術を模した術式です. 指定位置に術者そっくりの分身を作ります. 分身はその周り5ブロック以内を歩き回り, 術者の仕草をまね, 狙ってくる敵の方を向きます. 分身は $(thing)時間$(0) 秒たつか, $(thing)2×威力$(0) 回攻撃を受けると揺らいで消えます. もう一度唱えると, 今ある分身と入れ替わります.");
+                "Conjures a lookalike of the caster at the position, which wanders around it. It wavers away after $(thing)Time$(0) seconds or after taking $(thing)2 × Power$(0) hits. Casting it again replaces the current lookalike.",
+                "指定位置に術者そっくりの分身を作り, その近くを歩き回らせます. 分身は $(thing)時間$(0) 秒たつか, $(thing)2×威力$(0) 回攻撃を受けると揺らいで消えます. もう一度唱えると, 今ある分身と入れ替わります.");
         addBookPage(root, "trick_parade.1",
-                "While it stands, hostile creatures within 32 blocks that go for the caster go for the lookalike instead (bosses excepted). Other players no longer see the caster, spells of theirs that name the caster directly act on the lookalike and fail with an error, and $(thing)Operator: Entity Position$(0) reports the lookalike's position. The caster and their team mates are unaffected.",
-                "分身がいる間, 術者を狙う32ブロック以内の敵対的な生物は分身を狙います (ボスを除く). 他のプレイヤーからは術者の姿が見えなくなり, 術者を直接指定した術式は分身に作用して何も起こらずにエラーになり, $(thing)演算子: エンティティ位置$(0) は分身の位置を返します. 術者自身と同じチームの味方には影響しません.");
+                "While it stands, hostile creatures within 32 blocks that go for the caster go for the lookalike instead (bosses excepted). Other players no longer see the caster, and their spells aimed at the caster go to the lookalike and never reach the caster. Team mates are unaffected.",
+                "分身がいる間, 術者を狙う32ブロック以内の敵対的な生物は分身を狙います (ボスを除く). 他のプレイヤーからは術者の姿が見えなくなり, 術者を狙った術式は分身に向かい, 術者には届きません. 同じチームの味方には影響しません.");
         addBookPage(root, "trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively.", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です.");
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
         addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");
@@ -1833,17 +1833,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Fires a crescent blade of wind from the position in the direction. It flies 24 blocks, cutting every creature in its path once, and breaks apart when it hits a solid block.",
                 "指定位置から方向へ三日月形の風の刃を放ちます. 刃は24ブロック飛び、通り道の生物をそれぞれ一度ずつ切り裂き、固いブロックに当たると砕けます.");
         addBookPage(root, "trick_kamaitachi.1",
-                "Each cut deals $(thing)4.5 + 4.5 × Power$(0) damage. The blade is $(thing)1.5 + 0.25 × Power$(0) blocks wide (at most 4) and reaches 0.7 blocks above and below its path.",
-                "1回の斬撃のダメージは $(thing)4.5 + 4.5×威力$(0) です. 刃の幅は $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) で、軌道の上下0.7ブロックまで届きます.");
+                "Each cut deals $(thing)4.5 + 4.5 × Power$(0) damage.",
+                "1回の斬撃のダメージは $(thing)4.5 + 4.5×威力$(0) です.");
         addBookPage(root, "trick_dancing_blades.0",
-                "Deploys every sword in the caster's $(l:items/psitweaks_blade_pouch)$(o)$(item)Blade Pouch$(0)$(/l) (up to 8) as spectral blades that circle the caster. Each blade darts at a hostile creature it can see within 16 blocks, cuts it and comes back. A blade fades after three cuts, and all of them fade after 15 seconds.",
-                "術者の $(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l) に入っている剣をすべて (最大8本) 幻影の刃として展開し, 術者の周りを回らせます. 刃は16ブロック以内の見通せる敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回斬ると消え, 15秒経つとすべて消えます.");
+                "Deploys every sword in the caster's $(l:items/psitweaks_blade_pouch)$(o)$(item)Blade Pouch$(0)$(/l) (up to 8) as spectral blades that circle the caster. Each blade darts at a hostile creature within 16 blocks, cuts it and comes back. A blade fades after three cuts, and all of them fade after 15 seconds.",
+                "術者の $(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l) に入っている剣をすべて (最大8本) 幻影の刃として展開し, 術者の周りを回らせます. 刃は16ブロック以内の敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回斬ると消え, 15秒経つとすべて消えます.");
         addBookPage(root, "trick_dancing_blades.2",
-                "With a non-zero $(thing)Indiscriminate$(0) (optional), the blades go after any creature, animals and villagers included. They still never attack you, your allies or pets, armour stands, creative players, players spared by Safe to Players, or anything immune to spells. Connect Psi's $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
-                "$(thing)無差別$(0) (省略可) に0以外を入れると, 刃は動物や村人を含むあらゆる生物を狙います. ただし術者自身, 味方や自分のペット, 防具立て, クリエイティブのプレイヤー, プレイヤー保護で守られたプレイヤー, 術式が効かないものは狙いません. Psiの $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
+                "With a non-zero $(thing)Indiscriminate$(0) (optional), the blades go after any creature, animals and villagers included. They still never attack you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
+                "$(thing)無差別$(0) (省略可) に0以外を入れると, 刃は動物や村人を含むあらゆる生物を狙います. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
         addBookPage(root, "trick_dancing_blades.1",
-                "Each cut deals what a swing of that sword would (its attack damage and damage enchantments) times the caster's Phenomenon Interference, and Fire Aspect, Knockback and the like take effect. The swords lose no durability, and a sword with no durability left (a broken psimetal sword) is not deployed. Without a pouch, or with an empty one, the spell stops with an error. Casting it again replaces the blades you already have.",
-                "1回の斬撃のダメージは, その剣で殴ったときのダメージ (攻撃力とダメージ増加などのエンチャント) に事象干渉力を掛けたもので, 火属性やノックバックなどのエンチャントも働きます. 剣の耐久値は減らず, 耐久値が尽きた剣 (壊れたサイメタルの剣など) は展開されません. ポーチがないときや剣が入っていないときはエラーで止まります. もう一度唱えると, 今ある刃と入れ替わります.");
+                "Each cut deals what a swing of that sword would (its attack damage and damage enchantments) times the caster's Phenomenon Interference, and Fire Aspect, Knockback and the like take effect. The swords lose no durability. Casting it again replaces the blades you already have.",
+                "1回の斬撃のダメージは, その剣で殴ったときのダメージ (攻撃力とダメージ増加などのエンチャント) に事象干渉力を掛けたもので, 火属性やノックバックなどのエンチャントも働きます. 剣の耐久値は減りません. もう一度唱えると, 今ある刃と入れ替わります.");
         addBookPage(root, "trick_starfall.0",
                 "Calls $(thing)Count$(0) meteors (at most 12) down around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
                 "指定位置の周りに $(thing)数$(0) 個 (上限12) の流星を降らせます. 着弾点は地面の輪で示され、1秒後から流星が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
@@ -1854,8 +1854,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
                 "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
         addBookPage(root, "trick_gravity_collapse.1",
-                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius, but never less than 3 blocks. While being pulled, creatures build up no fall damage.",
-                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%%ですが、3ブロックより狭くはなりません. 引き寄せられている間は落下ダメージが溜まりません.");
+                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius (at least 3 blocks). While being pulled, creatures build up no fall damage.",
+                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%% (最低3ブロック) です. 引き寄せられている間は落下ダメージが溜まりません.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");
@@ -2708,113 +2708,91 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_ender_chest", "Trick: Ender Chest", "Opens the caster's ender chest.",
                 "作動式: エンダーチェスト", "術者のエンダーチェストを開きます。");
         addBookPage(root, "trick_ender_chest",
-                "Opens the caster's ender chest, as if they had used an ender chest block. No ender chest needs to be nearby."
-                        + " The trick itself has no potency and no cost.",
-                "エンダーチェストのブロックを使ったときと同じように、術者のエンダーチェストを開きます. 近くにエンダーチェストがなくても使えます."
-                        + " この作動式自体の規模とコストは0です.");
+                "Opens the caster's ender chest, with no ender chest block needed.",
+                "エンダーチェストがなくても、術者のエンダーチェストを開きます.");
 
         addSpellPiece(root, "trick_crafting_table", "Trick: Crafting Table", "Opens a 3x3 crafting grid.",
                 "作動式: 作業台", "3×3のクラフト画面を開きます。");
         addBookPage(root, "trick_crafting_table",
-                "Opens a 3x3 crafting grid, as if the caster had used a crafting table. Items left in the grid go back to the caster's"
-                        + " inventory when the screen is closed. The trick itself has no potency and no cost.",
-                "作業台を使ったときと同じように、3×3のクラフト画面を開きます. 画面を閉じると、クラフト欄に残ったアイテムは術者のインベントリに戻ります."
-                        + " この作動式自体の規模とコストは0です.");
+                "Opens a 3x3 crafting grid, as if the caster had used a crafting table, with no crafting table needed.",
+                "作業台がなくても、作業台と同じ3×3のクラフト画面を開きます.");
 
         addSpellPiece(root, "trick_harvest", "Trick: Harvest",
                 "Harvests the ripe crop at the position and replants it. The harvest goes into the caster's inventory.",
                 "作動式: 収穫", "指定位置の熟した作物を収穫して植え直します。収穫物は術者のインベントリに入ります。");
         addBookPage(root, "trick_harvest.0",
-                "Harvests the ripe crop at the position like right-click harvesting mods do: one seed from the drops replants it,"
-                        + " the rest goes into the caster's inventory, and what does not fit drops at the caster's position. Cast from a"
-                        + " Psimetal tool, the tool's Fortune applies.",
-                "右クリック収穫系のModと同じように、指定位置の熟した作物を収穫します. ドロップから種を1つ使って植え直すので、作物は植えたばかりの状態に戻ります."
-                        + " 残りは術者のインベントリに入り、入りきらない分は術者の位置に落ちます. Psimetalの道具から唱えると、その道具の幸運が効きます.");
+                "Harvests the ripe crop at the position and replants it with one of its seeds. The harvest goes into the"
+                        + " caster's inventory. Cast from a Psimetal tool, the tool's Fortune applies.",
+                "指定位置の熟した作物を収穫し、種を1つ使って植え直します. 収穫物は術者のインベントリに入ります."
+                        + " サイメタルの道具から唱えると、その道具の幸運が効きます.");
         addBookPage(root, "trick_harvest.1",
-                "Fully grown crops, cocoa and nether wart are replanted. Sweet berry bushes and glow berries are picked. Sugar cane,"
-                        + " cactus and bamboo keep only their lowest block. Melons and pumpkins next to a stem are taken; the stem stays."
-                        + " Unripe crops and blocks the caster may not break (protected areas, Adventure mode) are left alone.",
-                "最終段階まで育った作物、カカオ、ネザーウォートは植え直します. スイートベリーの低木とグロウベリーは実だけを摘みます."
-                        + " サトウキビ、サボテン、竹は一番下のブロックだけを残します. 茎から実ったスイカとカボチャは実だけを取り、茎は残ります."
-                        + " 熟していない作物と、術者が壊せないブロック (保護された場所やアドベンチャーモード) はそのままです.");
+                "Sweet berry bushes and glow berries are only picked. Sugar cane, cactus and bamboo keep their lowest block,"
+                        + " and melons and pumpkins are taken while the stem stays. Unripe crops are left alone.",
+                "スイートベリーの低木とグロウベリーは実だけを摘みます."
+                        + " サトウキビ、サボテン、竹は一番下のブロックを残し、スイカとカボチャは茎を残して実だけを取ります."
+                        + " 熟していない作物はそのままです.");
 
         addSpellPiece(root, "trick_harvest_sequence", "Trick: Harvest Sequence",
                 "Harvests and replants the ripe crops in a line from the position in the direction of the target.",
                 "作動式: 収穫(列)", "指定位置から対象の方向へ並ぶ熟した作物を収穫して植え直します。");
         addBookPage(root, "trick_harvest_sequence",
-                "Harvests the crops in a line that starts at the position and runs $(thing)Max$(0) blocks in the direction of the"
-                        + " target, the same way as $(thing)Trick: Harvest$(0). Blocks outside the spell's range are skipped."
-                        + " Max must be a positive constant.",
-                "指定位置から対象の方向へ $(thing)最大$(0) ブロック並ぶ作物を、$(thing)作動式: 収穫$(0) と同じように収穫します."
-                        + " 射程外のブロックは飛ばします. 最大には正の定数を指定します.");
+                "Harvests the crops in a line that starts at the position and runs $(thing)Max$(0) blocks in the direction of"
+                        + " the target, the same way as $(thing)Trick: Harvest$(0).",
+                "指定位置から対象の方向へ $(thing)最大$(0) ブロック並ぶ作物を、$(thing)作動式: 収穫$(0) と同じように収穫します.");
 
         addSpellPiece(root, "trick_mass_harvest", "Trick: Mass Harvest",
                 "Harvests and replants the ripe crops at the coordinates in a Vector List (a Block List also works). The harvest goes into the caster's inventory.",
                 "作動式: 大規模収穫", "Vector List（Block List も可）の座標にある熟した作物を収穫して植え直します。収穫物は術者のインベントリに入ります。");
         addBookPage(root, "trick_mass_harvest.0",
-                "Harvests the crops at the coordinates in a Vector List (a Block List also works), the same way as"
-                        + " $(thing)Trick: Harvest$(0). Duplicate positions count once, and only the first positions up to $(thing)Max$(0)"
-                        + " (at most 4096) are processed. Max must be a positive integer constant.",
-                "Vector List（Block List も可）の座標にある作物を、$(thing)作動式: 収穫$(0) と同じように収穫します. 重複した座標は1回だけ数え、"
-                        + "先頭から $(thing)最大$(0) 個 (上限4096) までの座標を扱います. 最大には正の整数の定数を指定します.");
+                "Harvests the crops at the first $(thing)Max$(0) coordinates (at most 4096) in a Vector List (a Block List also"
+                        + " works), the same way as $(thing)Trick: Harvest$(0).",
+                "Vector List（Block List も可）の座標にある作物を、先頭から $(thing)最大$(0) 個 (上限4096) まで、$(thing)作動式: 収穫$(0) と同じように収穫します.");
         addBookPage(root, "trick_mass_harvest.1",
-                "If any processed position is outside the spell's range, the spell fails before harvesting anything.$(p)The crops"
-                        + " are harvested over the following ticks, and the caster gets the whole harvest at the end. If the caster dies, logs"
-                        + " out or changes dimension before then, the harvest so far drops at the focal point.",
-                "扱う座標が1つでも射程外にあると、何も収穫せずにエラーになります.$(p)収穫は次のtickから少しずつ進み、収穫物は最後にまとめて術者に届きます."
-                        + " 途中で術者が倒れたり、ログアウトしたり、別のディメンションへ移動したりすると、そこまでの収穫物は焦点位置に落ちます.");
+                "If any position is out of range, the spell fails before harvesting anything. The crops are harvested a little"
+                        + " at a time, and the caster gets the whole harvest at the end.",
+                "座標が1つでも射程外にあると、何も収穫せずにエラーになります."
+                        + " 収穫は少しずつ進み、収穫物は終わったときにまとめて術者に届きます.");
 
         addSpellPiece(root, "trick_shear", "Trick: Shear",
                 "Shears the target as shears would. What comes off goes into the caster's inventory.",
                 "作動式: 毛刈り", "対象をハサミで刈ったときと同じように刈ります。刈り取ったものは術者のインベントリに入ります。");
         addBookPage(root, "trick_shear.0",
-                "Shears the target, an Entity or every entity of an Entity List, as if the caster had used shears on it: sheep"
-                        + " lose their wool, mooshrooms turn into cows and snow golems lose their pumpkin. Mobs from other mods that shears"
-                        + " work on are sheared too.",
-                "対象 (Entity、または Entity List の各エンティティ) を、術者がハサミを使ったときと同じように刈ります. ヒツジは羊毛を落とし、"
-                        + "ムーシュルームは普通のウシになり、スノーゴーレムはカボチャを外します. ハサミが使える他Modの生物も刈れます.");
+                "Shears the target, an Entity or every entity of an Entity List, as if the caster had used shears on it. Mobs"
+                        + " from other mods that shears work on are sheared too.",
+                "対象 (Entity、または Entity List の各エンティティ) を、術者がハサミを使ったときと同じように刈ります."
+                        + " ハサミが使える他Modの生物も刈れます.");
         addBookPage(root, "trick_shear.1",
-                "What comes off goes into the caster's inventory, and what does not fit drops at the caster's position. Targets"
-                        + " that cannot be sheared now, or that are in an area protected from the caster, are skipped. Every target must be"
-                        + " within the spell's range.",
-                "刈り取ったものは術者のインベントリに入り、入りきらない分は術者の位置に落ちます. 今は刈れない対象と、術者から保護された場所にいる対象は飛ばします."
-                        + " 対象はすべて射程内にいる必要があります.");
+                "What comes off goes into the caster's inventory. Targets that cannot be sheared right now are skipped, and if"
+                        + " any target is out of range, the spell fails.",
+                "刈り取ったものは術者のインベントリに入ります. 今は刈れない対象は飛ばし、対象が1体でも射程外にいるとエラーになります.");
 
         addSpellPiece(root, "trick_breed", "Trick: Breed",
                 "Feeds the target animals from the caster's inventory so that they fall in love.",
                 "作動式: 繁殖", "術者のインベントリにある餌を対象の動物に与えて、繁殖モードにします。");
         addBookPage(root, "trick_breed.0",
                 "Feeds each target animal (an Entity, or every entity of an Entity List) a breeding food from the caster's"
-                        + " inventory, as if by hand, so that it falls in love. The hotbar is searched first, the off hand last."
-                        + " Creative mode uses no food. A warning names an animal the caster has no food for.",
-                "対象の動物 (Entity、または Entity List の各エンティティ) に、術者のインベントリにある繁殖用の餌を1つずつ与え、"
-                        + "手で与えたときと同じように繁殖モードにします. 餌はホットバーから探し、オフハンドは最後に探します."
-                        + " クリエイティブモードでは餌を消費しません. 餌を持っていない動物がいると、その名前を警告で知らせます.");
+                        + " inventory so that it falls in love. A warning names an animal the caster has no food for.",
+                "対象の動物 (Entity、または Entity List の各エンティティ) に、術者のインベントリにある餌を1つずつ与えて繁殖モードにします."
+                        + " 餌を持っていない動物がいると、警告で知らせます.");
         addBookPage(root, "trick_breed.1",
-                "Babies, animals that are already in love or resting after breeding, and untamed wolves, cats, horses, donkeys and"
-                        + " llamas are skipped without using food, as are animals in an area protected from the caster. Horses and donkeys"
-                        + " take golden carrots or golden apples, and llamas take hay bales. Every target must be within the spell's range.",
-                "子ども、繁殖モード中や繁殖後の休憩中の動物、飼いならしていないオオカミ、ネコ、ウマ、ロバ、ラマは、餌を使わずに飛ばします."
-                        + " 術者から保護された場所にいる動物も飛ばします. ウマとロバには金のニンジンか金のリンゴ、ラマには干し草の俵を与えます."
-                        + " 対象はすべて射程内にいる必要があります.");
+                "Babies, animals resting after breeding and others that cannot breed right now get no food. If any target is"
+                        + " out of range, the spell fails.",
+                "子どもや繁殖後の休憩中の動物など、今は繁殖できない動物には餌を与えません."
+                        + " 対象が1体でも射程外にいるとエラーになります.");
 
         addSpellPiece(root, "operator_connected_blocks", "Operator: Connected Blocks",
                 "Lists the positions of the blocks of the same kind connected to the block at the position.",
                 "演算子: 連結ブロック", "指定位置のブロックとつながっている同じ種類のブロックの座標を Vector List で返します。");
         addBookPage(root, "operator_connected_blocks.0",
-                "Starting from the block at the position, follows the blocks of the same kind that touch it by a face, an edge or"
-                        + " a corner, and returns their coordinates as a Vector List, nearest first, up to $(thing)Max$(0) blocks (at most"
-                        + " 4096).",
-                "指定位置のブロックから、面・辺・角で接する同じ種類のブロックをたどり、その座標を近いものから順に Vector List で返します."
-                        + " 返すのは $(thing)最大$(0) 個 (上限4096) までです.");
+                "Returns the coordinates of the blocks of the same kind connected to the block at the position (diagonally too)"
+                        + " as a Vector List, nearest first, up to $(thing)Max$(0) blocks (at most 4096).",
+                "指定位置のブロックとつながっている (斜めも含む) 同じ種類のブロックの座標を、近い順に $(thing)最大$(0) 個 (上限4096) まで Vector List で返します.");
         addBookPage(root, "operator_connected_blocks.1",
-                "Block states do not matter, so crops of any age and logs facing any way count as one kind. Blocks outside the"
-                        + " spell's range are not followed, and an air block gives an empty list.$(p)Pass the list to"
-                        + " $(thing)Trick: Mass Block Break$(0) to fell a tree or mine out a vein of ore, or to $(thing)Trick: Mass Harvest$(0)"
-                        + " to harvest a whole field.",
-                "ブロックの状態は区別しないため、成長段階の違う作物や向きの違う原木も同じ種類として扱います. 射程外のブロックはたどらず、"
-                        + "位置が空気なら空のリストを返します.$(p)$(thing)作動式: 大規模ブロック破壊$(0) に渡すと木の伐採や鉱脈の採掘に、"
-                        + "$(thing)作動式: 大規模収穫$(0) に渡すと畑全体の収穫に使えます.");
+                "Crops of any age and logs facing any way count as one kind. Blocks outside the spell's range are not"
+                        + " followed.$(p)Pass the list to $(thing)Trick: Mass Block Break$(0) to fell a tree or mine out a vein of ore,"
+                        + " or to $(thing)Trick: Mass Harvest$(0) to harvest a whole field.",
+                "成長段階の違う作物や向きの違う原木も、同じ種類として扱います."
+                        + " 射程外のブロックはたどりません.$(p)$(thing)作動式: 大規模ブロック破壊$(0) に渡すと木の伐採や鉱脈の採掘に、$(thing)作動式: 大規模収穫$(0) に渡すと畑全体の収穫に使えます.");
     }
 
     private void addFilterCardTranslations(JsonObject root) {
