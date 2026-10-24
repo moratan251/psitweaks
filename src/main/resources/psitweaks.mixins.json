@@ -7,6 +7,7 @@
   "mixins": [
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
+    "EntityBarrierFireMixin",
     "EntityParadeInvisibleMixin",
     "ItemCADPlainMemoryMixin",
     "LivingEntityAccessor",

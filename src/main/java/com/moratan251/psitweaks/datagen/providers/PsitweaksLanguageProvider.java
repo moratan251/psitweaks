@@ -539,8 +539,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "画面の揺れの強さです。1.0が標準です。");
         addConfigValue(root, "psitweaks.configuration.effects.barrier_hud",
                 "Barrier Shield Bar", "障壁シールドのバー",
-                "Show the remaining shield of Trick: Barrier above the health bar.",
-                "作動式: 障壁のシールド残量を体力ゲージの上に表示します。");
+                "Show the remaining shield and time of Trick: Barrier above the health bar.",
+                "作動式: 障壁のシールド残量と残り時間を体力ゲージの上に表示します。");
 
         addConfigLabel(root, "psitweaks.configuration.spells", "Spell Settings", "スペル設定");
         addConfigValue(root, "psitweaks.configuration.spells.global_spell_power_multiplier",
@@ -1545,7 +1545,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     private void addSpellPieces(JsonObject root) {
         addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
-        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place", "作動式: 障壁", "対象に、受けるダメージを肩代わりするシールドを張る");
+        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "対象に、受けるダメージを1分間肩代わりするシールドを張る");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時、一定値まで減少させる");
         addSpellPiece(root, "trick_parade", "Trick: Parade", "Conjures a lookalike of the caster that draws enemies' attacks and spells", "作動式: 仮装行列", "術者そっくりの分身を作り、敵の攻撃と魔法を引きつける");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します。Psiを消費し続けることでクリエイティブ飛行を可能にします。");
@@ -1750,11 +1750,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
         addBookPage(root, "trick_barrier.0",
-                "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for $(thing)Time$(0) seconds. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
-                "対象を $(thing)威力×10$(0) のシールドで $(thing)時間$(0) 秒間包みます. シールドがある間、対象が受けるダメージは体力の代わりにシールドから差し引かれ、対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り、シールドは砕けます.");
+                "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for one minute. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
+                "対象を $(thing)威力×10$(0) のシールドで1分間包みます. シールドがある間、対象が受けるダメージは体力の代わりにシールドから差し引かれ、対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り、シールドは砕けます.");
         addBookPage(root, "trick_barrier.1",
-                "Casting it again replaces the current shield. It does not absorb falling, drowning, poison, burning and the like. A bar above your health shows the shield you have left.",
-                "もう一度かけると今のシールドと置き換わります. 落下、溺れ、毒、炎上中のダメージなどは防げません. 自分のシールドの残量は体力ゲージの上のバーに表示されます.");
+                "Casting it again replaces the current shield. While shielded, the target does not catch fire. It does not absorb falling, drowning, poison and the like. A bar above your health shows the shield you have left and the seconds remaining.",
+                "もう一度かけると今のシールドと置き換わります. シールドがある間、対象は炎上しません. 落下、溺れ、毒などのダメージは防げません. 自分のシールドの残量と残り秒数は体力ゲージの上のバーに表示されます.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade.0",
                 "Conjures a lookalike of the caster at the position, which wanders around it. It wavers away after $(thing)Time$(0) seconds or after taking $(thing)2 × Power$(0) hits. Casting it again replaces the current lookalike.",

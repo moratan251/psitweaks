@@ -42,7 +42,7 @@ public final class PsitweaksClientConfig {
                     .defineInRange("cameraShakeStrength", 1.0, 0.0, 2.0);
 
             barrierHud = builder
-                    .comment("Show the remaining shield of Trick: Barrier above the health bar")
+                    .comment("Show the remaining shield and time of Trick: Barrier above the health bar")
                     .translation("psitweaks.configuration.effects.barrier_hud")
                     .define("barrierHud", true);
 

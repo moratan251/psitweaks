@@ -18,6 +18,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
+import com.moratan251.psitweaks.common.spells.combat.BarrierShields;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.Parades;
@@ -270,7 +271,7 @@ public final class CombatSpellGameTests {
         var player = caster(helper, new BlockPos(0, 0, 0), "barrier-interference");
         player.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.5);
         var husk = husk(helper, new BlockPos(2, 0, 2), false);
-        barrier(Map.of(TARGET, husk, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        barrier(Map.of(TARGET, husk, POWER, 2.0)).execute(new SpellContext().setPlayer(player));
         helper.assertTrue(near(shield(husk), 30), "Power 2 at 1.5x Phenomenon Interference must raise 30, got " + shield(husk));
         helper.succeed();
     }
@@ -282,7 +283,7 @@ public final class CombatSpellGameTests {
         var husk = husk(helper, new BlockPos(2, 0, 2), false);
         var sources = helper.getLevel().damageSources();
 
-        barrier(Map.of(TARGET, husk, POWER, 2.0, TIME, 10.0)).execute(context);
+        barrier(Map.of(TARGET, husk, POWER, 2.0)).execute(context);
         BarrierShield raised = husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD);
         helper.assertTrue(raised != null && near(raised.amount(), 20) && near(raised.maxAmount(), 20),
                 "Power 2 must raise a shield of 20: " + raised);
@@ -292,7 +293,7 @@ public final class CombatSpellGameTests {
                 "The shield must take the whole hit: health " + husk.getHealth() + ", shield " + shield(husk));
 
         husk.invulnerableTime = 0;
-        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 10.0)).execute(context);
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(context);
         helper.assertTrue(near(shield(husk), 10), "Casting again must replace the shield, not add to it: " + shield(husk));
 
         husk.hurt(sources.generic(), 15.0F);
@@ -300,7 +301,7 @@ public final class CombatSpellGameTests {
                 "Damage beyond the shield must go through and break it: health " + husk.getHealth());
 
         husk.invulnerableTime = 0;
-        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 10.0)).execute(context);
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(context);
         husk.hurt(sources.starve(), 4.0F);
         helper.assertTrue(near(husk.getHealth(), 11) && near(shield(husk), 10),
                 "Starvation must bypass the shield: health " + husk.getHealth() + ", shield " + shield(husk));
@@ -319,18 +320,41 @@ public final class CombatSpellGameTests {
     public static void barrierShieldFadesAfterItsTime(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 0), "barrier-timer");
         var husk = husk(helper, new BlockPos(2, 0, 2), false);
-        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 1.0)).execute(new SpellContext().setPlayer(player));
-        helper.assertTrue(near(shield(husk), 10), "Shield not raised");
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(new SpellContext().setPlayer(player));
+        BarrierShield raised = husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD);
+        long lasts = raised == null ? 0L : raised.expiresAt() - helper.getLevel().getGameTime();
+        helper.assertTrue(lasts == 1200L, "The shield must last one minute, got " + lasts + " ticks");
+
+        // A minute is too long to wait for here, so a one-second shield stands in for the timer.
+        BarrierShields.raise(husk, 10.0F, 20, 0xFFFFFF);
         helper.runAtTickTime(10, () -> helper.assertTrue(near(shield(husk), 10), "The shield faded too early"));
         helper.succeedWhen(() -> helper.assertTrue(husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
                 "A one-second shield must be gone after its time"));
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void barrierShieldKeepsTheTargetFromBurning(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-fire");
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        husk.igniteForSeconds(8.0F);
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(new SpellContext().setPlayer(player));
+        helper.assertTrue(husk.getRemainingFireTicks() <= 0, "Raising the shield must put the fire out: " + husk.getRemainingFireTicks());
+
+        husk.igniteForSeconds(8.0F);
+        helper.assertTrue(husk.getRemainingFireTicks() <= 0, "A shielded target must not catch fire: " + husk.getRemainingFireTicks());
+
+        husk.removeData(PsitweaksAttachments.BARRIER_SHIELD);
+        husk.igniteForSeconds(8.0F);
+        helper.assertTrue(husk.getRemainingFireTicks() == 160, "Without the shield it must catch fire: " + husk.getRemainingFireTicks());
+        helper.succeed();
+    }
+
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
     public static void barrierShieldLetsPoisonThrough(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 0), "barrier-poison");
         var husk = husk(helper, new BlockPos(2, 0, 2), false);
-        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(new SpellContext().setPlayer(player));
 
         husk.hurt(helper.getLevel().damageSources().source(NeoForgeMod.POISON_DAMAGE), 1.0F);
         helper.assertTrue(near(husk.getHealth(), 19) && near(shield(husk), 10),
@@ -343,7 +367,7 @@ public final class CombatSpellGameTests {
         var player = caster(helper, new BlockPos(0, 0, 0), "barrier-break");
         var husk = husk(helper, new BlockPos(2, 0, 2), false);
         var sources = helper.getLevel().damageSources();
-        barrier(Map.of(TARGET, husk, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(new SpellContext().setPlayer(player));
 
         husk.hurt(sources.generic(), 14.0F);
         helper.assertTrue(near(husk.getHealth(), 16) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
@@ -365,10 +389,10 @@ public final class CombatSpellGameTests {
 
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void combatTrickStatsFollowTheirFormulas(GameTestHelper helper) throws Exception {
-        int[] barrier = stats(barrier(Map.of(POWER, 2.0, TIME, 10.0)));
-        helper.assertTrue(barrier[0] == 90 && barrier[1] == 320, "Barrier P2 T10: 20+15P²+T / 40+60P²+4T, got " + barrier[0] + "/" + barrier[1]);
+        int[] barrier = stats(barrier(Map.of(POWER, 2.0)));
+        helper.assertTrue(barrier[0] == 140 && barrier[1] == 520, "Barrier P2: 80+15P² / 280+60P², got " + barrier[0] + "/" + barrier[1]);
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_INTEGER.equals(compileError(
-                () -> stats(barrier(Map.of(POWER, 1.5, TIME, 10.0))))), "Barrier Power must be a whole number");
+                () -> stats(barrier(Map.of(POWER, 1.5))))), "Barrier Power must be a whole number");
 
         int[] chain = stats(chainLightning(Map.of(POWER, 2.0)));
         helper.assertTrue(chain[0] == 380 && chain[1] == 1030, "Chain Lightning P2: 300+40P / 790+120P, got " + chain[0] + "/" + chain[1]);
@@ -566,7 +590,7 @@ public final class CombatSpellGameTests {
                 "Chain Lightning must skip a fallen creature in front without an error");
         helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null,
                 "Burst must skip a fallen target without an error");
-        helper.assertTrue(castError(() -> barrier(Map.of(TARGET, fallen, POWER, 1.0, TIME, 10.0)).execute(context)) == null,
+        helper.assertTrue(castError(() -> barrier(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
                 "Barrier must skip a fallen target without an error");
         helper.assertTrue(near(bystander.getHealth(), 20) && shield(fallen) == 0.0F,
                 "Nothing must happen when the target has fallen");

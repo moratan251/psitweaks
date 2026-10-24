@@ -26,11 +26,14 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * The shield of Trick: Barrier. A shield holds a number of points; while it lasts, incoming damage is taken from
  * those points instead of from the entity, before armour. A hit the shield takes completely causes no knockback,
  * no hurt flash and no hurt sound, only the honeycomb flash. Damage in {@code #psitweaks:bypasses_barrier}
- * (void, starvation, drowning, falling, burning, poison and other damage over time) goes past it.
+ * (void, starvation, drowning, falling, poison and other damage over time) goes past it. A shielded entity does not
+ * catch fire ({@code EntityBarrierFireMixin}).
  */
 public final class BarrierShields {
     /** Shield points per point of Power, before the config multiplier. */
     public static final float SHIELD_PER_POWER = 10.0F;
+    /** How long a shield of Trick: Barrier lasts: one minute. */
+    public static final int DURATION_TICKS = 60 * 20;
 
     /** Entities whose hit was cancelled this tick; NeoForge leaves that hit's damage container behind. */
     private static final Set<LivingEntity> PENDING_CONTAINER_CLEANUP = Collections.newSetFromMap(new WeakHashMap<>());
@@ -48,9 +51,18 @@ public final class BarrierShields {
         long expiresAt = entity.level().getGameTime() + Math.max(1, durationTicks);
         BarrierShield shield = new BarrierShield(amount, amount, expiresAt, color & 0xFFFFFF);
         entity.setData(PsitweaksAttachments.BARRIER_SHIELD, shield);
+        if (entity.getRemainingFireTicks() > 0) {
+            entity.clearFire();
+        }
         flash(entity, shield, Style.BARRIER_RAISE, Vec3.ZERO, 1.0F);
         playSound(entity, SoundEvents.BEACON_ACTIVATE, 0.5F, 1.8F);
         playSound(entity, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
+    }
+
+    /** Whether the entity has a shield up. Works on both sides, as the shield is synced. */
+    public static boolean isShielded(LivingEntity entity) {
+        BarrierShield shield = entity.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD);
+        return shield != null && shield.isActive(entity.level().getGameTime());
     }
 
     /** Takes the hit from the shield. Runs late among incoming-damage listeners, after evasion and similar effects. */

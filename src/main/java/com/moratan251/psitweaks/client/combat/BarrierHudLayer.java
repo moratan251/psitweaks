@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 /**
  * A bar above the armour row showing the shield of Trick: Barrier: fill = remaining / raised amount,
- * text = remaining points. It blinks during the last three seconds.
+ * text = remaining / raised points and the seconds left. It blinks during the last three seconds.
  */
 final class BarrierHudLayer {
     private static final int WIDTH = 81;
@@ -57,9 +57,21 @@ final class BarrierHudLayer {
             graphics.fill(left + 1, top + 1, left + 1 + filled, top + HEIGHT - 1, fill);
             graphics.fill(left + 1, top + 1, left + 1 + filled, top + 2, shine);
         }
-        String text = Mth.ceil(shield.amount()) + " / " + Mth.ceil(shield.maxAmount());
+        long secondsLeft = (remaining + 19) / 20;
+        String text = Mth.ceil(shield.amount()) + " / " + Mth.ceil(shield.maxAmount()) + "  " + secondsLeft + "s";
         int textWidth = minecraft.font.width(text);
-        graphics.drawString(minecraft.font, text, left + (WIDTH - textWidth) / 2, top + 1, argb(alpha, 0xFFFFFF), true);
+        int textColor = argb(alpha, 0xFFFFFF);
+        if (textWidth <= WIDTH - 4) {
+            graphics.drawString(minecraft.font, text, left + (WIDTH - textWidth) / 2, top + 1, textColor, true);
+        } else {
+            // Very large shields: shrink the text to fit inside the bar.
+            float scale = (WIDTH - 4) / (float) textWidth;
+            graphics.pose().pushPose();
+            graphics.pose().translate(left + WIDTH / 2.0F, top + HEIGHT / 2.0F, 0.0F);
+            graphics.pose().scale(scale, scale, 1.0F);
+            graphics.drawString(minecraft.font, text, -textWidth / 2, -4, textColor, true);
+            graphics.pose().popPose();
+        }
     }
 
     private static int argb(float alpha, int rgb) {
