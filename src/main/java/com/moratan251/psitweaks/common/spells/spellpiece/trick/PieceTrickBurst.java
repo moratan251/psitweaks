@@ -12,7 +12,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,13 +23,13 @@ import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
-import vazkii.psi.api.spell.param.ParamEntity;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Vaporises the liquid inside the target so it bursts from within: armour-piercing damage, reduced against
- * creatures with little liquid in them. A creature killed by it bursts and hits hostile creatures nearby.
+ * Vaporises the liquid inside the creature under the caster's crosshair (see {@link CombatSpellHelper#aimedCreature})
+ * so it bursts from within: armour-piercing damage, reduced against creatures with little liquid in them. A creature
+ * killed by it bursts and hits hostile creatures nearby.
  */
 public class PieceTrickBurst extends PieceTrick {
     private static final double MIN_POWER = 0.5;
@@ -45,7 +44,6 @@ public class PieceTrickBurst extends PieceTrick {
     private static final double COST_BASE = 600.0;
     private static final double COST_PER_POWER = 450.0;
 
-    private SpellParam<Entity> target;
     private SpellParam<Number> power;
 
     public PieceTrickBurst(Spell spell) {
@@ -58,7 +56,7 @@ public class PieceTrickBurst extends PieceTrick {
 
     @Override
     public void initParams() {
-        addParam(target = new ParamEntity(SpellParam.GENERIC_NAME_TARGET, SpellParam.YELLOW, false, false));
+        // Spells saved with the old Target input still load: Psi only reads the inputs a piece has now.
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
     }
 
@@ -72,17 +70,11 @@ public class PieceTrickBurst extends PieceTrick {
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        Entity targetVal = getParamValue(context, target);
-        if (CombatSpellHelper.skipFallenTarget(context, targetVal)) {
+        LivingEntity living = CombatSpellHelper.aimedCreature(context);
+        if (CombatSpellHelper.skipFallenTarget(context, living)) {
             return null;
         }
-        CombatSpellHelper.verifyTarget(context, targetVal);
-        if (!(targetVal instanceof LivingEntity living)) {
-            throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
-        }
-        if (!context.isInRadius(targetVal)) {
-            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
-        }
+        CombatSpellHelper.verifyTarget(context, living);
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
         }

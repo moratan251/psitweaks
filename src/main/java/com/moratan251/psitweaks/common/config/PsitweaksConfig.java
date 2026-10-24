@@ -205,13 +205,13 @@ public class PsitweaksConfig {
 
             builder.pop(); // guillotine カテゴリ終了
 
-            // --- 連鎖雷撃 ---
+            // --- 連鎖電光 ---
             builder.comment("Chain Lightning Settings")
                     .translation("psitweaks.configuration.spells.chain_lightning")
                     .push("chain_lightning");
 
             chainLightningDamageMultiplier = builder
-                    .comment("作動式: 連鎖雷撃 のダメージ倍率",
+                    .comment("作動式: 連鎖電光 のダメージ倍率",
                             "Damage multiplier for Trick: Chain Lightning")
                     .translation("psitweaks.configuration.spells.chain_lightning.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);

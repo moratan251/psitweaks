@@ -95,7 +95,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Gravity Well";
         });
         root.addProperty("entity.psitweaks.chain_lightning", switch (locale) {
-            case "ja_jp" -> "連鎖雷撃";
+            case "ja_jp" -> "連鎖電光";
             default -> "Chain Lightning";
         });
         addDeathMessages(root);
@@ -563,7 +563,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "flare_circle", "Flare Circle", "フレアサークル");
         addDamageMultiplierConfig(root, "ice_circle", "Ice Circle", "アイスサークル");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
-        addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖雷撃");
+        addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
         addDamageMultiplierConfig(root, "burst", "Burst", "爆裂");
         addDamageMultiplierConfig(root, "kamaitachi", "Kamaitachi", "鎌鼬");
@@ -703,15 +703,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
         // Combat tricks: the source always has the caster (or the spell entity) as attacker, so %2$s is filled.
         root.addProperty("death.attack.psitweaks.chain_lightning", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの連鎖雷撃に撃たれた";
+            case "ja_jp" -> "%1$sは%2$sの連鎖電光に撃たれた";
             default -> "%1$s was struck by %2$s's chain lightning";
         });
         root.addProperty("death.attack.psitweaks.chain_lightning.player", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの連鎖雷撃に撃たれた";
+            case "ja_jp" -> "%1$sは%2$sの連鎖電光に撃たれた";
             default -> "%1$s was struck by %2$s's chain lightning";
         });
         root.addProperty("death.attack.psitweaks.chain_lightning.item", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが%3$sで放った連鎖雷撃に撃たれた";
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放った連鎖電光に撃たれた";
             default -> "%1$s was struck by chain lightning cast by %2$s using %3$s";
         });
         root.addProperty("death.attack.psitweaks.mine_genesis", switch (locale) {
@@ -1579,9 +1579,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_radiation_filter", "Trick: Radiation Filter", "Applies a radiation filter effect to the target", "作動式: 放射線フィルタ", "対象に放射線防護効果を付与する");
         addSpellPiece(root, "trick_cure_radiation", "Trick: Cure Radiation", "Removes radiation exposure from the target", "作動式: 放射線除去", "対象の被ばく量を除去する");
         addSpellPiece(root, "trick_guillotine", "Trick: Guillotine", "Deals a heavy slash to the target and drops a head on kill", "作動式: ギロチン", "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる");
-        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Strikes the target with lightning that jumps to nearby hostile creatures", "作動式: 連鎖雷撃", "対象に雷撃を放ち、近くの敵対的な生物へ連鎖させる");
+        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Strikes the nearest hostile creature in front of you with lightning that jumps to nearby hostile creatures", "作動式: 連鎖電光", "前方の最も近い敵対的な生物に雷撃を放ち、近くの敵対的な生物へ連鎖させる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
-        addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the target so it bursts from within", "作動式: 爆裂", "対象の体内の液体を気化させ、内側から破裂させる");
+        addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the creature you are aiming at so it bursts from within", "作動式: 爆裂", "照準を合わせた生物の体内の液体を気化させ、内側から破裂させる");
         addSpellPiece(root, "trick_kamaitachi", "Trick: Kamaitachi", "Fires a crescent blade of wind that cuts through everything in its path", "作動式: 鎌鼬", "三日月形の風の刃を飛ばし、通り道の生物をまとめて切り裂く");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
@@ -1809,14 +1809,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
         addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         addBookPage(root, "trick_chain_lightning.0",
-                "Strikes the target with a bolt of lightning from the caster's hand. The bolt then jumps up to $(thing)Number$(0) times (at most 8), each time to the nearest hostile creature it has not hit yet, within 6 blocks of the last target and in its line of sight.",
-                "術者の手元から対象へ雷撃を放ちます. 雷撃はさらに最大 $(thing)数値$(0) 回 (上限8) まで、直前の対象から6ブロック以内で見通せる、まだ当たっていない最も近い敵対的な生物へ飛び移ります.");
+                "Strikes the nearest hostile creature within 32 blocks in front of the caster with a bolt of lightning; no precise aim is needed. The bolt then jumps up to 10 times, each time to a hostile creature within 6 blocks of the last target that it has not hit yet.",
+                "術者の前方32ブロック以内で最も近い敵対的な生物へ雷撃を放ちます. 正確に狙う必要はありません. 雷撃はさらに、直前の対象から6ブロック以内でまだ当たっていない敵対的な生物へ、最大10回まで飛び移ります.");
         addBookPage(root, "trick_chain_lightning.1",
-                "The first hit deals $(thing)9 + 9 × Power$(0) damage, and each jump deals half as much as the one before (but at least 1). Creatures in water or rain take 50%% more. The first target can be anything, but the bolt only jumps to hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
-                "最初の一撃のダメージは $(thing)9 + 9×威力$(0) で、飛び移るたびに直前の半分になります (最低1). 水中や雨の中にいる生物には50%%増しになります. 最初の対象は何でも構いませんが、連鎖先は敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+                "The first hit deals $(thing)9 + 9 × Power$(0) damage, and each jump deals half as much as the one before (but at least 1). Creatures in water or rain take 50%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone. With no hostile creature in front, the spell fails.",
+                "最初の一撃のダメージは $(thing)9 + 9×威力$(0) で、飛び移るたびに直前の半分になります (最低1). 水中や雨の中にいる生物には50%%増しになります. 最初の対象も連鎖先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません. 前方に敵対的な生物がいなければ術式は失敗します.");
         addBookPage(root, "trick_chain_lightning.2",
-                "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt jumps to any creature, animals and villagers included. It still never jumps to you, your allies or pets, armour stands, creative players, players spared by Safe to Players, or anything immune to spells. Connect Psi's $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
-                "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物へ飛び移ります. ただし術者自身, 味方や自分のペット, 防具立て, クリエイティブのプレイヤー, プレイヤー保護で守られたプレイヤー, 術式が効かないものへは飛び移りません. Psiの $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
+                "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt strikes and jumps to any creature, animals and villagers included. It still never strikes you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
+                "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物を狙い、飛び移ります. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
         addBookPage(root, "trick_mine_genesis.0",
                 "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
                 "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
@@ -1824,11 +1824,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 70%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
                 "ダメージは中心で $(thing)16 + 12×威力$(0)、外縁では70%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
         addBookPage(root, "trick_burst.0",
-                "Vaporizes the liquid inside the target, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
-                "対象の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
+                "Vaporizes the liquid inside the creature under the caster's crosshair, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. The range is 32 blocks, and with nothing in the sights the spell fails. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
+                "照準を合わせた生物の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. 射程は32ブロックで、照準の先に生物がいなければ術式は失敗します. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
         addBookPage(root, "trick_burst.1",
-                "If the target dies from it, its body bursts and hits hostile creatures within 3 blocks for up to 40%% of the damage. The creatures that resist it are listed in the entity type tag $(thing)#psitweaks:burst_resistant$(0), which modpacks can change.",
-                "この術式で対象が倒れると体が破裂し、3ブロック以内の敵対的な生物に最大でダメージの40%%を与えます. ダメージが下がる生物はエンティティタグ $(thing)#psitweaks:burst_resistant$(0) で決まっており、Modパックで変更できます.");
+                "If the target dies from it, its body bursts and hits hostile creatures within 3 blocks for up to 40%% of the damage.",
+                "この術式で対象が倒れると体が破裂し、3ブロック以内の敵対的な生物に最大でダメージの40%%を与えます.");
         addBookPage(root, "trick_kamaitachi.0",
                 "Fires a crescent blade of wind from the position in the direction. It flies 24 blocks, cutting every creature in its path once, and breaks apart when it hits a solid block.",
                 "指定位置から方向へ三日月形の風の刃を放ちます. 刃は24ブロック飛び、通り道の生物をそれぞれ一度ずつ切り裂き、固いブロックに当たると砕けます.");

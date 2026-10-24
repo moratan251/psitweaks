@@ -37,6 +37,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
@@ -93,7 +94,6 @@ public final class CombatSpellGameTests {
     private static final String POSITION = SpellParam.GENERIC_NAME_POSITION;
     private static final String DIRECTION = SpellParam.GENERIC_NAME_DIRECTION;
     private static final String RADIUS = SpellParam.GENERIC_NAME_RADIUS;
-    private static final String CHAINS = SpellParam.GENERIC_NAME_NUMBER;
     private static final String COUNT = "psitweaks.spellparam.count";
     private static final float EPSILON = 1.0E-3F;
     /** Health of the creatures {@link #tough} prepares. */
@@ -138,6 +138,16 @@ public final class CombatSpellGameTests {
 
     private static boolean near(double actual, double expected) {
         return Math.abs(actual - expected) < EPSILON;
+    }
+
+    /** Turns the caster to look at the centre of {@code target}, as Burst and Chain Lightning aim by the caster's view. */
+    private static void lookAt(Player caster, Entity target) {
+        caster.lookAt(EntityAnchorArgument.Anchor.EYES, CombatSpellHelper.center(target));
+    }
+
+    /** Turns the caster to look straight up, where no creature stands. */
+    private static void lookUp(Player caster) {
+        caster.setXRot(-90.0F);
     }
 
     private static float shield(LivingEntity entity) {
@@ -360,14 +370,12 @@ public final class CombatSpellGameTests {
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_INTEGER.equals(compileError(
                 () -> stats(barrier(Map.of(POWER, 1.5, TIME, 10.0))))), "Barrier Power must be a whole number");
 
-        int[] chain = stats(chainLightning(Map.of(POWER, 2.0, CHAINS, 3.0)));
-        helper.assertTrue(chain[0] == 230 && chain[1] == 630, "Chain Lightning P2 C3, got " + chain[0] + "/" + chain[1]);
-        int[] longChain = stats(chainLightning(Map.of(POWER, 2.0, CHAINS, 20.0)));
-        helper.assertTrue(longChain[0] == 380 && longChain[1] == 1030, "Chains must be capped at 8, got " + longChain[0] + "/" + longChain[1]);
+        int[] chain = stats(chainLightning(Map.of(POWER, 2.0)));
+        helper.assertTrue(chain[0] == 380 && chain[1] == 1030, "Chain Lightning P2: 300+40P / 790+120P, got " + chain[0] + "/" + chain[1]);
+        int chainP1 = stats(chainLightning(Map.of(POWER, 1.0)))[0];
+        helper.assertTrue(chainP1 <= 350, "Chain Lightning at Power 1 must fit an ebony psimetal CAD (350), got " + chainP1);
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_VALUE.equals(compileError(
-                () -> stats(chainLightning(Map.of(POWER, 0.0, CHAINS, 3.0))))), "Chain Lightning Power must be positive");
-        helper.assertTrue(SpellCompilationException.NON_POSITIVE_INTEGER.equals(compileError(
-                () -> stats(chainLightning(Map.of(POWER, 1.0, CHAINS, 2.5))))), "Chains must be a whole number");
+                () -> stats(chainLightning(Map.of(POWER, 0.0))))), "Chain Lightning Power must be positive");
 
         int[] mine = stats(mineGenesis(Map.of(POWER, 1.0, RADIUS, 3.0)));
         helper.assertTrue(mine[0] == 185 && mine[1] == 630, "Mine Genesis P1 R3, got " + mine[0] + "/" + mine[1]);
@@ -445,7 +453,8 @@ public final class CombatSpellGameTests {
         var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(1, 0, 3));
         pig.setNoAi(true);
 
-        chainLightning(Map.of(TARGET, first, POWER, 1.0, CHAINS, 8.0)).execute(new SpellContext().setPlayer(player));
+        lookAt(player, first);
+        chainLightning(Map.of(POWER, 1.0)).execute(new SpellContext().setPlayer(player));
         float d1 = TOUGH_HEALTH - first.getHealth();
         helper.assertTrue(near(d1, 18) || near(d1, 27), "The first hit must deal 9 + 9 x Power (x1.5 when wet): " + d1);
         helper.assertTrue(near(second.getHealth(), TOUGH_HEALTH) && near(third.getHealth(), TOUGH_HEALTH),
@@ -470,7 +479,7 @@ public final class CombatSpellGameTests {
     public static void indiscriminateChainLightningJumpsToAnyCreatureButPets(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 4), "chain-indiscriminate");
         var first = tough(husk(helper, new BlockPos(1, 0, 1), false));
-        // Nearest first: the villager, then the pig. The pet and the armor stand in between are skipped.
+        // Nearest first: the villager, then the husk and the pig. The pet and the armor stand in between are skipped.
         var villager = helper.spawnWithNoFreeWill(EntityType.VILLAGER, new BlockPos(1, 0, 2));
         villager.setNoAi(true);
         var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(3, 0, 1));
@@ -491,18 +500,49 @@ public final class CombatSpellGameTests {
         helper.assertTrue(CombatSpellHelper.isIndiscriminate(1) && !CombatSpellHelper.isIndiscriminate(0)
                 && !CombatSpellHelper.isIndiscriminate(null), "Only a non-zero number turns it on");
 
-        chainLightning(Map.of(TARGET, first, POWER, 1.0, CHAINS, 2.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0))
-                .execute(new SpellContext().setPlayer(player));
+        // Looking at the husk, the villager in between is the nearest creature in front, so it is struck first.
+        lookAt(player, first);
+        chainLightning(Map.of(POWER, 1.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0)).execute(new SpellContext().setPlayer(player));
+        helper.assertTrue(!villager.isAlive() || villager.getHealth() < villager.getMaxHealth() - EPSILON,
+                "An indiscriminate bolt must strike the nearest creature in front, the villager");
+        helper.assertTrue(near(first.getHealth(), TOUGH_HEALTH), "The husk behind the villager must be reached by a jump");
         float petHealth = pet.getHealth();
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(!villager.isAlive() || villager.getHealth() < villager.getMaxHealth() - EPSILON,
-                        "The bolt must jump to the villager"))
+                .thenWaitUntil(() -> helper.assertTrue(first.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must jump to the husk"))
                 .thenWaitUntil(() -> helper.assertTrue(!pig.isAlive() || pig.getHealth() < pig.getMaxHealth() - EPSILON,
                         "The bolt must jump on to the pig"))
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class,
                         helper.getBounds().inflate(4)).isEmpty(), "The chain must finish"))
                 .thenExecute(() -> helper.assertTrue(near(pet.getHealth(), petHealth), "The pet must be spared"))
                 .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH + "_chain_front")
+    public static void chainLightningStrikesTheNearestHostileInFront(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 2), "chain-front");
+        var context = new SpellContext().setPlayer(player);
+        // The caster looks along +x. Nearer than anything ahead, but to the side.
+        var beside = tough(husk(helper, new BlockPos(0, 0, 0), false));
+        // Nearest ahead, but not hostile.
+        var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(1, 0, 2));
+        pig.setNoAi(true);
+        var ahead = tough(husk(helper, new BlockPos(4, 0, 2), false));
+        // About 20 degrees off the line of sight and nearer than the husk straight ahead.
+        var offAxis = tough(husk(helper, new BlockPos(3, 0, 3), false));
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, player.getEyePosition().add(1.0, 0.0, 0.0));
+
+        chainLightning(Map.of(POWER, 1.0)).execute(context);
+        helper.assertTrue(offAxis.getHealth() < TOUGH_HEALTH - EPSILON,
+                "The bolt must strike the nearest hostile within 30 degrees of the view, not just what is straight ahead");
+        helper.assertTrue(near(ahead.getHealth(), TOUGH_HEALTH) && near(beside.getHealth(), TOUGH_HEALTH),
+                "The others may only be reached by later jumps");
+        helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "The pig in front must be passed over");
+
+        lookUp(player);
+        helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> chainLightning(Map.of(POWER, 1.0)).execute(context))),
+                "With nothing in front the spell must fail as with no target");
+        helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).forEach(Entity::discard);
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
@@ -519,10 +559,12 @@ public final class CombatSpellGameTests {
         // Health 0: the husk is playing its death animation, which Psi's verifyEntity would call immune.
         var fallen = husk(helper, new BlockPos(1, 0, 1), false);
         fallen.setHealth(0.0F);
-        var bystander = husk(helper, new BlockPos(3, 0, 1), false);
-        helper.assertTrue(castError(() -> chainLightning(Map.of(TARGET, fallen, POWER, 1.0, CHAINS, 3.0)).execute(context)) == null,
-                "Chain Lightning must skip a fallen target without an error");
-        helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
+        // Off to the side, out of Chain Lightning's view, but within a jump of the fallen husk.
+        var bystander = husk(helper, new BlockPos(4, 0, 4), false);
+        lookAt(player, fallen);
+        helper.assertTrue(castError(() -> chainLightning(Map.of(POWER, 1.0)).execute(context)) == null,
+                "Chain Lightning must skip a fallen creature in front without an error");
+        helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null,
                 "Burst must skip a fallen target without an error");
         helper.assertTrue(castError(() -> barrier(Map.of(TARGET, fallen, POWER, 1.0, TIME, 10.0)).execute(context)) == null,
                 "Barrier must skip a fallen target without an error");
@@ -539,7 +581,7 @@ public final class CombatSpellGameTests {
         suppressed.metadata.errorsSuppressed = true;
         var quietContext = new SpellContext().setPlayer(player).setCompiledSpell(suppressed);
         messages.clear();
-        helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(quietContext)) == null,
+        helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(quietContext)) == null,
                 "Burst must skip a fallen target without an error when errors are suppressed");
         helper.assertTrue(messages.isEmpty(), "An Error Suppressor must hide the warning, got " + messages);
         helper.succeed();
@@ -593,14 +635,16 @@ public final class CombatSpellGameTests {
             helper.assertTrue(ISpellImmune.isImmune(wither) && ISpellImmune.isImmune(rider),
                     "Psi itself treats bosses and riders as immune");
             float witherHealth = wither.getHealth();
-            helper.assertTrue(castError(() -> burst(Map.of(TARGET, wither, POWER, 1.0)).execute(context)) == null,
+            lookAt(player, wither);
+            helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null,
                     "Burst must accept the Wither");
             helper.assertTrue(wither.getHealth() < witherHealth, "Burst must hurt the Wither");
             float afterBurst = wither.getHealth();
-            helper.assertTrue(castError(() -> chainLightning(Map.of(TARGET, wither, POWER, 1.0, CHAINS, 1.0)).execute(context)) == null,
+            helper.assertTrue(castError(() -> chainLightning(Map.of(POWER, 1.0)).execute(context)) == null,
                     "Chain Lightning must accept the Wither");
             helper.assertTrue(wither.getHealth() < afterBurst, "Chain Lightning must hurt the Wither");
-            helper.assertTrue(castError(() -> burst(Map.of(TARGET, rider, POWER, 1.0)).execute(context)) == null
+            lookAt(player, rider);
+            helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null
                     && rider.getHealth() < 20, "Burst must hit a creature riding another");
         } finally {
             wither.discard();
@@ -712,8 +756,9 @@ public final class CombatSpellGameTests {
             helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> theirs.verifyEntity(player))),
                     "Psi tricks of another player must fail on the hidden caster");
             helper.assertTrue(castError(() -> own.verifyEntity(player)) == null, "The caster's own spells must still work");
-            helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> burst(Map.of(TARGET, player, POWER, 1.0)).execute(theirs))),
-                    "Burst from another player must fail");
+            // Burst and Chain Lightning check what they picked the same way.
+            helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> CombatSpellHelper.verifyTarget(theirs, player))),
+                    "Attack tricks of another player must fail on the hidden caster");
 
             // Game mode and PvP do not matter; only team mates see through it.
             player.setGameMode(GameType.CREATIVE);
@@ -761,19 +806,50 @@ public final class CombatSpellGameTests {
         doomed.setHealth(5.0F);
         var neighbour = tough(husk(helper, new BlockPos(1, 0, 4), false));
 
-        burst(Map.of(TARGET, armored, POWER, 1.0)).execute(context);
+        lookAt(player, armored);
+        burst(Map.of(POWER, 1.0)).execute(context);
         helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - 66), "Burst must deal 36 + 30 x Power through armor: " + armored.getHealth());
-        burst(Map.of(TARGET, golem, POWER, 1.0)).execute(context);
+        lookAt(player, golem);
+        burst(Map.of(POWER, 1.0)).execute(context);
         helper.assertTrue(near(golem.getMaxHealth() - golem.getHealth(), 16.5), "Golems must take a quarter: "
                 + (golem.getMaxHealth() - golem.getHealth()));
         helper.assertTrue(near(neighbour.getHealth(), TOUGH_HEALTH), "No splash without a kill");
 
-        burst(Map.of(TARGET, doomed, POWER, 1.0)).execute(context);
+        lookAt(player, doomed);
+        burst(Map.of(POWER, 1.0)).execute(context);
         // 40% of 66, 1 block away out of 3 with half damage at the edge.
         float splash = 66.0F * 0.4F * (1.0F - 0.5F / 3.0F);
         helper.assertTrue(!doomed.isAlive() && near(TOUGH_HEALTH - neighbour.getHealth(), splash),
                 "A kill must splash " + splash + ", got " + (TOUGH_HEALTH - neighbour.getHealth()));
         helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - 66), "The splash must stay within 3 blocks");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void burstHitsOnlyTheCreatureUnderTheCrosshair(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 2), "burst-aim");
+        var context = new SpellContext().setPlayer(player);
+        var aimed = tough(husk(helper, new BlockPos(4, 0, 2), false));
+        // Nearer and only a block off the crosshair: Burst needs a precise aim, so it is spared.
+        var offAim = tough(husk(helper, new BlockPos(2, 0, 3), false));
+        Vec3 ahead = player.getEyePosition().add(1.0, 0.0, 0.0);
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, ahead);
+
+        burst(Map.of(POWER, 1.0)).execute(context);
+        helper.assertTrue(near(aimed.getHealth(), TOUGH_HEALTH - 66), "Burst must hit the husk under the crosshair: " + aimed.getHealth());
+        helper.assertTrue(near(offAim.getHealth(), TOUGH_HEALTH), "Burst must leave a husk off the crosshair alone");
+
+        // A solid block in the line of sight hides the husk behind it.
+        BlockPos wall = BlockPos.containing(player.getEyePosition().add(2.0, 0.0, 0.0));
+        helper.getLevel().setBlockAndUpdate(wall, Blocks.STONE.defaultBlockState());
+        helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> burst(Map.of(POWER, 1.0)).execute(context))),
+                "With a wall in the way the spell must fail as with no target");
+        helper.getLevel().setBlockAndUpdate(wall, Blocks.AIR.defaultBlockState());
+        helper.assertTrue(near(aimed.getHealth(), TOUGH_HEALTH - 66), "The husk behind the wall must be unharmed");
+
+        lookUp(player);
+        helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> burst(Map.of(POWER, 1.0)).execute(context))),
+                "Aiming at nothing must fail as with no target");
         helper.succeed();
     }
 

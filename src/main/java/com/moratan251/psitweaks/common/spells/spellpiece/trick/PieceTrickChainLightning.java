@@ -8,6 +8,7 @@ import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
+import com.moratan251.psitweaks.common.spells.combat.Parades;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,9 +17,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -30,15 +29,14 @@ import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
-import vazkii.psi.api.spell.param.ParamEntity;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Strikes the target with lightning that then jumps to the nearest hostile creature it can see, up to Number times.
- * Each jump deals half the damage of the one before (but at least 1) and lands a moment after the previous one; targets
- * in water or rain take extra damage. With a non-zero Indiscriminate input it jumps to any creature instead (see
- * {@link CombatSpellHelper#isIndiscriminateTarget}).
+ * Strikes the nearest hostile creature in front of the caster with lightning that then jumps to the nearest hostile
+ * creature it can see, up to {@link #MAX_CHAINS} times. Each jump deals half the damage of the one before (but at least
+ * 1) and lands a moment after the previous one; targets in water or rain take extra damage. With a non-zero
+ * Indiscriminate input it picks and jumps to any creature instead (see {@link CombatSpellHelper#isIndiscriminateTarget}).
  */
 public class PieceTrickChainLightning extends PieceTrick {
     private static final double MIN_POWER = 0.5;
@@ -48,34 +46,33 @@ public class PieceTrickChainLightning extends PieceTrick {
     /** The jumps never fall below this, unless the first hit itself is weaker. */
     private static final float MIN_JUMP_DAMAGE = 1.0F;
     private static final double JUMP_RANGE = 6.0;
-    public static final int MAX_CHAINS = 8;
-    private static final double POTENCY_BASE = 60.0;
+    public static final int MAX_CHAINS = 10;
+    /** How far from where the caster looks the first target may stand: 30 degrees. */
+    private static final double FRONT_COS = Math.cos(Math.toRadians(30.0));
+    /**
+     * The number of jumps is no longer chosen, so the stats are those the old Number input gave at its cap of eight:
+     * an ebony psimetal CAD still casts it at Power 1.
+     */
+    private static final double POTENCY_BASE = 300.0;
     private static final double POTENCY_PER_POWER = 40.0;
-    private static final double POTENCY_PER_CHAIN = 30.0;
-    private static final double COST_BASE = 150.0;
+    private static final double COST_BASE = 790.0;
     private static final double COST_PER_POWER = 120.0;
-    private static final double COST_PER_CHAIN = 80.0;
 
-    private SpellParam<Entity> target;
     private SpellParam<Number> power;
-    private SpellParam<Number> chains;
     private SpellParam<Number> indiscriminate;
 
     public PieceTrickChainLightning(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_CHAINS).mul(POTENCY_PER_CHAIN))
-                .add(POTENCY_BASE).floor());
-        setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(COST_PER_POWER)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_CHAINS).mul(COST_PER_CHAIN))
-                .add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER)
+                .mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
+        setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER)
+                .mul(COST_PER_POWER).add(COST_BASE).floor());
     }
 
     @Override
     public void initParams() {
-        addParam(target = new ParamEntity(SpellParam.GENERIC_NAME_TARGET, SpellParam.YELLOW, false, false));
+        // Spells saved with the old Target and Number inputs still load: Psi only reads the inputs a piece has now.
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
-        addParam(chains = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER, SpellParam.GREEN, false, true));
         addParam(indiscriminate = new ParamNumber(PsitweaksSpellParams.INDISCRIMINATE, SpellParam.PURPLE, true, false));
     }
 
@@ -83,33 +80,25 @@ public class PieceTrickChainLightning extends PieceTrick {
     public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
         super.addToMetadata(meta);
         double powerVal = Math.max(MIN_POWER, CombatTrickStats.positive(getParamEvaluation(power), x, y));
-        int chainCount = Math.min(MAX_CHAINS, CombatTrickStats.positiveInteger(getParamEvaluation(chains), x, y));
-        meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + powerVal * POTENCY_PER_POWER + chainCount * POTENCY_PER_CHAIN));
-        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(COST_BASE + powerVal * COST_PER_POWER + chainCount * COST_PER_CHAIN));
+        meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + powerVal * POTENCY_PER_POWER));
+        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(COST_BASE + powerVal * COST_PER_POWER));
     }
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        Entity first = getParamValue(context, target);
+        if (!(context.caster.level() instanceof ServerLevel level)) {
+            return null;
+        }
+        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
+        boolean anyCreature = CombatSpellHelper.isIndiscriminate(getParamValue(context, indiscriminate));
+        LivingEntity caster = context.caster;
+        LivingEntity first = firstTarget(level, context, caster, safeToPlayers, anyCreature);
         if (CombatSpellHelper.skipFallenTarget(context, first)) {
             return null;
         }
         CombatSpellHelper.verifyTarget(context, first);
-        if (!(first instanceof LivingEntity firstLiving)) {
-            throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
-        }
-        if (!context.isInRadius(first)) {
-            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
-        }
-        if (!(context.caster.level() instanceof ServerLevel level)) {
-            return null;
-        }
 
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
-        int chainCount = Mth.clamp(getParamValue(context, chains).intValue(), 1, MAX_CHAINS);
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
-        boolean anyCreature = CombatSpellHelper.isIndiscriminate(getParamValue(context, indiscriminate));
-        LivingEntity caster = context.caster;
         float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.chainLightningDamageMultiplier.get(), caster);
         DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.CHAIN_LIGHTNING, caster, caster);
@@ -120,7 +109,7 @@ public class PieceTrickChainLightning extends PieceTrick {
         Set<UUID> struck = new HashSet<>();
         // The first target is hit at once; the jumps land one by one, in step with the arcs.
         EntityChainLightning jumps = null;
-        LivingEntity current = firstLiving;
+        LivingEntity current = first;
         for (int jump = 0; current != null; jump++) {
             points.add(CombatSpellHelper.center(current));
             struck.add(current.getUUID());
@@ -136,7 +125,7 @@ public class PieceTrickChainLightning extends PieceTrick {
                 }
                 jumps.schedule(current, jump, dealt);
             }
-            if (jump >= chainCount) {
+            if (jump >= MAX_CHAINS) {
                 break;
             }
             current = nextTarget(level, context, caster, current, struck, safeToPlayers, anyCreature);
@@ -155,6 +144,52 @@ public class PieceTrickChainLightning extends PieceTrick {
     /** The damage of jump number {@code jump} (the first target is jump 0): halved at each jump, but at least 1. */
     public static float jumpDamage(float firstHit, int jump) {
         return Math.max(Math.min(MIN_JUMP_DAMAGE, firstHit), firstHit * (float) Math.pow(JUMP_DAMAGE_FACTOR, jump));
+    }
+
+    /**
+     * The first target: the closest creature the bolt may jump to ({@link #nextTarget}'s rules) in front of the caster,
+     * within the spell radius and in sight. "In front" is within 30 degrees of where the caster looks, or under the
+     * crosshair for a creature too big or too close for its centre to be in that cone. Creatures hidden by another
+     * player's Trick: Parade are passed over. When nothing standing is in front but a creature that has just fallen is,
+     * that one is returned, so the caller can warn instead of failing; null when there is nothing.
+     */
+    @Nullable
+    private static LivingEntity firstTarget(ServerLevel level, SpellContext context, LivingEntity caster,
+                                            boolean safeToPlayers, boolean anyCreature) {
+        Vec3 eye = caster.getEyePosition();
+        Vec3 look = caster.getLookAngle();
+        double range = SpellContext.MAX_DISTANCE;
+        Vec3 reach = eye.add(look.scale(range));
+        LivingEntity best = null;
+        LivingEntity fallen = null;
+        double bestDistance = range * range;
+        double fallenDistance = range * range;
+        for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(range))) {
+            if (candidate == caster || !context.isInRadius(candidate)) {
+                continue;
+            }
+            Vec3 center = CombatSpellHelper.center(candidate);
+            Vec3 offset = center.subtract(eye);
+            double distance = offset.lengthSqr();
+            boolean fell = CombatSpellHelper.hasFallen(candidate);
+            boolean wanted = fell ? distance <= fallenDistance
+                    : distance <= bestDistance && CombatSpellHelper.isAutoTarget(caster, candidate, safeToPlayers, anyCreature)
+                    && Parades.decoyFacing(candidate, caster) == null;
+            boolean inFront = offset.dot(look) >= FRONT_COS * Math.sqrt(distance)
+                    || candidate.getBoundingBox().clip(eye, reach).isPresent();
+            if (!wanted || !inFront || !CombatSpellHelper.canSee(level, eye, center, caster)
+                    && !CombatSpellHelper.canSee(level, eye, candidate.getEyePosition(), caster)) {
+                continue;
+            }
+            if (fell) {
+                fallen = candidate;
+                fallenDistance = distance;
+            } else {
+                best = candidate;
+                bestDistance = distance;
+            }
+        }
+        return best != null ? best : fallen;
     }
 
     /**
