@@ -29,6 +29,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_hardening", PieceTrickHardening.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_BARRIER =
             registerPiece("trick_barrier", PieceTrickBarrier.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_BARRIER_AMOUNT =
+            registerPiece("selector_barrier_amount", PieceSelectorBarrierAmount.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_INTERACT_BLOCK =
             registerPiece("trick_interact_block", PieceTrickInteractBlock.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_FREEZE_BLOCK =

@@ -59,10 +59,15 @@ public final class BarrierShields {
         playSound(entity, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
     }
 
+    /** Shield points the entity has left, or 0 without a shield. Works on both sides, as the shield is synced. */
+    public static float amount(LivingEntity entity) {
+        BarrierShield shield = entity.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD);
+        return shield != null && shield.isActive(entity.level().getGameTime()) ? shield.amount() : 0.0F;
+    }
+
     /** Whether the entity has a shield up. Works on both sides, as the shield is synced. */
     public static boolean isShielded(LivingEntity entity) {
-        BarrierShield shield = entity.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD);
-        return shield != null && shield.isActive(entity.level().getGameTime());
+        return amount(entity) > 0.0F;
     }
 
     /** Takes the hit from the shield. Runs late among incoming-damage listeners, after evasion and similar effects. */

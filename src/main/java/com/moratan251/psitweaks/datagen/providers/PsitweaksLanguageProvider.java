@@ -1546,6 +1546,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
     private void addSpellPieces(JsonObject root) {
         addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
         addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "対象に、受けるダメージを1分間肩代わりするシールドを張る");
+        addSpellPiece(root, "selector_barrier_amount", "Selector: Barrier Amount", "Gets the shield the target's Barrier has left. 0 when it has none.", "取得子: 障壁量", "対象の障壁のシールド残量を取得します。障壁がなければ0を返します。");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時、一定値まで減少させる");
         addSpellPiece(root, "trick_parade", "Trick: Parade", "Conjures a lookalike of the caster that draws enemies' attacks and spells", "作動式: 仮装行列", "術者そっくりの分身を作り、敵の攻撃と魔法を引きつける");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します。Psiを消費し続けることでクリエイティブ飛行を可能にします。");
@@ -1755,6 +1756,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_barrier.1",
                 "Casting it again replaces the current shield. While shielded, the target does not catch fire. It does not absorb falling, drowning, poison and the like. A bar above your health shows the shield you have left and the seconds remaining.",
                 "もう一度かけると今のシールドと置き換わります. シールドがある間、対象は炎上しません. 落下、溺れ、毒などのダメージは防げません. 自分のシールドの残量と残り秒数は体力ゲージの上のバーに表示されます.");
+        addBookPage(root, "selector_barrier_amount",
+                "Outputs the shield points the target's $(thing)Trick: Barrier$(0) has left, as a Number. It outputs 0 when the target has no shield or is not a living entity.",
+                "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade.0",
                 "Conjures a lookalike of the caster at the position, which wanders around it. It wavers away after $(thing)Time$(0) seconds or after taking $(thing)2 × Power$(0) hits. Casting it again replaces the current lookalike.",

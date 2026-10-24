@@ -25,6 +25,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_hardening");
     public static final DeferredHolder<Material, Material> TRICK_BARRIER =
             registerPieceMaterial("trick_barrier");
+    public static final DeferredHolder<Material, Material> SELECTOR_BARRIER_AMOUNT =
+            registerPieceMaterial("selector_barrier_amount");
     public static final DeferredHolder<Material, Material> TRICK_INTERACT_BLOCK =
             registerPieceMaterial("trick_interact_block");
     public static final DeferredHolder<Material, Material> TRICK_FREEZE_BLOCK =

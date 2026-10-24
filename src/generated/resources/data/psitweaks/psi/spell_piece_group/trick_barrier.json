@@ -1,4 +1,6 @@
 {
   "main": "psitweaks:trick_barrier",
-  "pieces": []
+  "pieces": [
+    "psitweaks:selector_barrier_amount"
+  ]
 }

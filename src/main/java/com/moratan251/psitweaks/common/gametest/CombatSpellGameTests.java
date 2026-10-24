@@ -23,6 +23,7 @@ import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.combat.SwordStrikes;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorBarrierAmount;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickActiveAirMine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
@@ -197,6 +198,12 @@ public final class CombatSpellGameTests {
         };
     }
 
+    private static PieceSelectorBarrierAmount barrierAmount(Entity target) {
+        return new PieceSelectorBarrierAmount(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return target; }
+        };
+    }
+
     private static PieceTrickChainLightning chainLightning(Map<String, ?> values) {
         return new PieceTrickChainLightning(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
@@ -349,6 +356,25 @@ public final class CombatSpellGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void barrierAmountReadsTheShieldLeft(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-amount");
+        var context = new SpellContext().setPlayer(player);
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        helper.assertTrue(Double.valueOf(0.0).equals(barrierAmount(husk).execute(context)), "No shield must read 0");
+
+        barrier(Map.of(TARGET, husk, POWER, 2.0)).execute(context);
+        helper.assertTrue(Double.valueOf(20.0).equals(barrierAmount(husk).execute(context)), "Power 2 must read 20");
+        husk.hurt(helper.getLevel().damageSources().generic(), 8.0F);
+        helper.assertTrue(Double.valueOf(12.0).equals(barrierAmount(husk).execute(context)),
+                "After a hit of 8 it must read 12, got " + barrierAmount(husk).execute(context));
+
+        var item = helper.spawnItem(Items.STONE, 1.5F, 1.0F, 1.5F);
+        helper.assertTrue(Double.valueOf(0.0).equals(barrierAmount(item).execute(context)), "A non-living entity must read 0");
+        helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> barrierAmount(null).execute(context))),
+                "A missing target must fail like Psi's entity operators");
+        helper.succeed();
+    }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void barrierShieldLetsPoisonThrough(GameTestHelper helper) throws Exception {

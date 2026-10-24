@@ -25,7 +25,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "trick_parade", "trick_parade");
         group(output, saves, "trick_flight", "trick_flight");
         group(output, saves, "trick_hardening", "trick_hardening");
-        group(output, saves, "trick_barrier", "trick_barrier");
+        group(output, saves, "trick_barrier", "trick_barrier", "selector_barrier_amount");
         group(output, saves, "trick_interact_block", "trick_interact_block");
         group(output, saves, "trick_freeze_block", "trick_freeze_block");
         group(output, saves, "trick_melt_block", "trick_melt_block");
