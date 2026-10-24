@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
@@ -35,6 +36,11 @@ public final class PsitweaksMekanismTileEntityTypes {
                     .build();
     public static final TileEntityTypeRegistryObject<PsionicGeneratorBlockEntity> PSIONIC_GENERATOR =
             TILE_ENTITY_TYPES.mekBuilder(PsitweaksMekanismBlocks.PSIONIC_GENERATOR, PsionicGeneratorBlockEntity::new)
+                    .serverTicker((level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile))
+                    .clientTicker((level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile))
+                    .build();
+    public static final TileEntityTypeRegistryObject<AutonomousCasterBlockEntity> AUTONOMOUS_CASTER =
+            TILE_ENTITY_TYPES.mekBuilder(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER, AutonomousCasterBlockEntity::new)
                     .serverTicker((level, pos, state, tile) -> TileEntityMekanism.tickServer(level, pos, state, tile))
                     .clientTicker((level, pos, state, tile) -> TileEntityMekanism.tickClient(level, pos, state, tile))
                     .build();

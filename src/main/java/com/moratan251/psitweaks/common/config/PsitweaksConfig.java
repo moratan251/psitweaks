@@ -42,6 +42,15 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ModConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
+        public final ModConfigSpec.IntValue autonomousCasterPsiCapacity;
+        public final ModConfigSpec.IntValue autonomousCasterEchoPerOperation;
+        public final ModConfigSpec.IntValue autonomousCasterPsiPerOperation;
+        public final ModConfigSpec.LongValue autonomousCasterEchoTankCapacity;
+        public final ModConfigSpec.IntValue autonomousCasterMinCastInterval;
+        public final ModConfigSpec.IntValue autonomousCasterDefaultCastInterval;
+        public final ModConfigSpec.DoubleValue autonomousCasterCastVolume;
+        public final ModConfigSpec.IntValue autonomousCasterLogCapacity;
+        public final ModConfigSpec.IntValue autonomousCasterMaxLogMessageLength;
         // イデアストレージ関連
         public final ModConfigSpec.IntValue ideaStorageMaxItemTypes;
         public final ModConfigSpec.IntValue ideaStorageItemStacksPerType;
@@ -369,6 +378,66 @@ public class PsitweaksConfig {
                     .defineInRange("gasBurningGeneratorEnergyCapacity", 2000000, -1L, Long.MAX_VALUE);
 
             builder.pop(); // mekanism カテゴリ終了
+
+            builder.comment("Autonomous Caster Settings (requires Mekanism)")
+                    .translation("psitweaks.configuration.autonomous_caster")
+                    .push("autonomousCaster");
+
+            autonomousCasterPsiCapacity = builder
+                    .comment("自律詠唱機の内部Psi容量",
+                            "Internal Psi capacity of the Autonomous Caster")
+                    .translation("psitweaks.configuration.autonomous_caster.psi_capacity")
+                    .defineInRange("psiCapacity", 10_000, 1, 10_000_000);
+
+            autonomousCasterEchoPerOperation = builder
+                    .comment("1回のPsi回復で消費する気化サイオニックエコー量（mB）",
+                            "Psionic Echo Gas consumed by one Psi recovery operation (mB)")
+                    .translation("psitweaks.configuration.autonomous_caster.echo_per_operation")
+                    .defineInRange("echoPerOperation", 250, 1, 1_000_000);
+
+            autonomousCasterPsiPerOperation = builder
+                    .comment("1回のPsi回復で得られるPsi量（スピードアップグレードなしで1tickに1回）",
+                            "Psi restored by one recovery operation (one operation per tick without speed upgrades)")
+                    .translation("psitweaks.configuration.autonomous_caster.psi_per_operation")
+                    .defineInRange("psiPerOperation", 25, 1, 1_000_000);
+
+            autonomousCasterEchoTankCapacity = builder
+                    .comment("気化サイオニックエコータンクの容量（mB）。変更は機械の再読み込み後に反映されます",
+                            "Psionic Echo Gas tank capacity (mB). Applies after the machine is reloaded")
+                    .translation("psitweaks.configuration.autonomous_caster.echo_tank_capacity")
+                    .defineInRange("echoTankCapacity", 8_000L, 1L, 1_000_000_000L);
+
+            autonomousCasterMinCastInterval = builder
+                    .comment("詠唱間隔の下限（tick）。4未満にはできません",
+                            "Minimum cast interval in ticks. Cannot be lower than 4")
+                    .translation("psitweaks.configuration.autonomous_caster.min_cast_interval")
+                    .defineInRange("minCastInterval", 4, 4, 72_000);
+
+            autonomousCasterDefaultCastInterval = builder
+                    .comment("新しく設置した自律詠唱機の詠唱間隔（tick）",
+                            "Cast interval for newly placed Autonomous Casters (ticks)")
+                    .translation("psitweaks.configuration.autonomous_caster.default_cast_interval")
+                    .defineInRange("defaultCastInterval", 10, 4, 72_000);
+
+            autonomousCasterCastVolume = builder
+                    .comment("詠唱音の音量。0で無音",
+                            "Cast sound volume. 0 is silent")
+                    .translation("psitweaks.configuration.autonomous_caster.cast_volume")
+                    .defineInRange("castVolume", 0.0D, 0.0D, 1.0D);
+
+            autonomousCasterLogCapacity = builder
+                    .comment("作動ログに保持するエントリ数",
+                            "Number of entries kept in the operation log")
+                    .translation("psitweaks.configuration.autonomous_caster.log_capacity")
+                    .defineInRange("logCapacity", 100, 10, 1_000);
+
+            autonomousCasterMaxLogMessageLength = builder
+                    .comment("作動ログ1件あたりの最大文字数。超えた分は省略されます",
+                            "Maximum characters per operation log entry. Longer messages are truncated")
+                    .translation("psitweaks.configuration.autonomous_caster.max_log_message_length")
+                    .defineInRange("maxLogMessageLength", 2_048, 64, 32_767);
+
+            builder.pop(); // autonomousCaster カテゴリ終了
 
             builder.comment("Ideaspace Storage Settings")
                     .translation("psitweaks.configuration.idea_storage")

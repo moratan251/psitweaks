@@ -88,6 +88,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 "psitweaks:sculk_eroder",
                 "psitweaks:material_mutator",
                 "psitweaks:psionic_generator",
+                "psitweaks:autonomous_caster",
                 "psitweaks:transcendent_energy_cube");
         tag(tags, "minecraft", "needs_diamond_tool",
                 block(PsitweaksBlocks.HEAVY_PSIMETAL_BLOCK.get()),
@@ -103,7 +104,8 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 "psitweaks:program_researcher",
                 "psitweaks:sculk_eroder",
                 "psitweaks:material_mutator",
-                "psitweaks:psionic_generator");
+                "psitweaks:psionic_generator",
+                "psitweaks:autonomous_caster");
         tag(tags, "neoforge", "needs_netherite_tool",
                 block(PsitweaksBlocks.ORE_ANTINITE.get()),
                 block(PsitweaksBlocks.ANTINITE_BLOCK.get()),

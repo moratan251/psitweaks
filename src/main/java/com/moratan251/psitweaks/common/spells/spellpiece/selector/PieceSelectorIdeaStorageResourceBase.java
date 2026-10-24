@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.spells.mode.IdeaStorageResourceModes;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.param.ParamStringOrItem;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
@@ -27,7 +28,7 @@ import vazkii.psi.api.spell.piece.PieceSelector;
 /**
  * Ideaspace readings whose mode picks the resource kind. Item mode takes an ID String or an Item, fluids and chemicals
  * an ID String, and FE nothing; the one input keeps its wire across modes. Every unusable input, a cast without a
- * server player and a broken save read 0.
+ * server player or a storage owner, and a broken save read 0.
  */
 public abstract class PieceSelectorIdeaStorageResourceBase extends PieceSelector implements ModeConfigurableSpellPiece {
     public static final String TAG_MODE = "psitweaksMode";
@@ -115,7 +116,11 @@ public abstract class PieceSelectorIdeaStorageResourceBase extends PieceSelector
         if (resource != null && input == null) {
             return 0.0D;
         }
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var owner = IdeaStorageOwnerResolver.resolve(player);
+        if (owner.isEmpty()) {
+            return 0.0D;
+        }
+        var storage = IdeaStorageService.get(player.server, owner.get());
         return storage.isLoadFailed() ? 0.0D : read(storage, getModeOption(), input);
     }
 
