@@ -2644,18 +2644,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",
                 "アウフヘーベン", "カオティックサイメタルのCAD素体を作る");
-        addAdvancement(root, "flashmetal_pickup", "In a Flash", "Refine Chaotic Psimetal with the glow of Glowstone",
-                "ピカイチ", "カオティックサイメタルにグロウストーンの輝きを合わせて精製する");
+        addAdvancement(root, "flashmetal_pickup", "In a Flash", "Mix Chaotic Psimetal with Refined Glowstone and refine it",
+                "ピカイチ", "カオティックサイメタルと精製グロウストーンを混ぜ合わせて精製する");
         addAdvancement(root, "flashmetal_assembly_pickup", "Faster Than Thought", "Craft a Flashmetal CAD Assembly",
                 "電光石火", "フラッシュメタルのCAD素体を作る");
         addAdvancement(root, "psionic_echo_pickup", "Power from Beyond", "Research Trick: Supreme Infusion and use it on an Echo Shard",
-                "向こう側からの力", "研究で作動式: 超位注入を解禁し, エコーの欠片に使う");
+                "向こう側からの力", "研究で作動式: 超位注入を解禁し, 残響の欠片に使う");
         addAdvancement(root, "alloy_psionic_echo_pickup", "Good Vibrations", "Infuse Psionic Alloy with Psionic Echo",
-                "反響を呼ぶ", "サイオニック合金にサイオニックエコーを注ぐ");
+                "反響を呼ぶ", "サイオニック合金にサイオニックエコーを注入する");
         addAdvancement(root, "echo_control_circuit_pickup", "Turing Test", "Craft an Echo Control Circuit",
                 "チューリングテスト", "感応制御回路を作る");
         addAdvancement(root, "heavy_psimetal_pickup", "Heavy Metal", "Combine echo-infused Netherite Scrap with Flashmetal",
-                "重鎮", "サイオニックエコーを注いだネザライトの欠片とフラッシュメタルを合わせる");
+                "重鎮", "サイオニックエコーを注入したネザライトの欠片とフラッシュメタルを合わせる");
         addAdvancement(root, "heavy_psimetal_assembly_pickup", "It's All Greek to Me", "Craft a Heavy Psimetal CAD Assembly, α or β",
                 "重みが違う", "ヘビーサイメタルのCAD素体を α型か β型で作る");
         addAdvancement(root, "antinite_pickup", "Two of a Kind", "Mine Antinite Ore on the outer End islands",
@@ -2663,11 +2663,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addAdvancement(root, "hypostasis_gem_pickup", "Awakening", "Research Trick: Material Mutation and use it on a Block of Antinite",
                 "目覚め", "研究で作動式: 物質変成を解禁し, アンティナイトブロックに使う");
         addAdvancement(root, "alloy_hypostasis_pickup", "It Knows", "Infuse Echo Alloy with Hypostasis",
-                "「それ」は認識する", "感応合金にヒュポスタシスを注ぐ");
+                "「それ」は認識する", "感応合金にヒュポスタシスを注入する");
         addAdvancement(root, "hypostasis_control_circuit_pickup", "Ascension is All You Need", "Craft a Hypostasis Control Circuit",
                 "Ascension is All You Need", "位格制御回路を作る");
-        addAdvancement(root, "psycheonic_metal_pickup", "Entelechy", "Infuse Heavy Psimetal with Hypostasis",
-                "エンテレケイア", "ヘビーサイメタルにヒュポスタシスを注ぎ, 粒からインゴットを作る");
+        addAdvancement(root, "psycheonic_metal_pickup", "Entelechy", "Infuse Heavy Psimetal with Hypostasis and craft an ingot from the nuggets",
+                "エンテレケイア", "ヘビーサイメタルにヒュポスタシスを注入し, ナゲットからインゴットを作る");
         addAdvancement(root, "psycheonic_metal_assembly_pickup", "Body and Soul", "Craft a Psycheonic Metal CAD Assembly",
                 "一心同体", "プシオニックメタルのCAD素体を作る");
 
