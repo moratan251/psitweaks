@@ -9,7 +9,6 @@ import java.util.UUID;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.item.AttachedItems;
@@ -47,6 +46,7 @@ final class MachineItemSlotChecks {
         check(helper, PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get(), PsitweaksMekanismBlocks.MATERIAL_MUTATOR, new BlockPos(1, 1, 3));
         check(helper, PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get(), PsitweaksMekanismBlocks.PSIONIC_GENERATOR, new BlockPos(3, 1, 3));
         check(helper, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.get(), PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE, new BlockPos(2, 1, 2));
+        check(helper, PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.get(), PsitweaksMekanismBlocks.AUTONOMOUS_CASTER, new BlockPos(2, 1, 4));
     }
 
     /**
@@ -59,6 +59,7 @@ final class MachineItemSlotChecks {
         breakAndRestore(helper, PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get());
         breakAndRestore(helper, PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get());
         breakAndRestore(helper, PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.get());
+        breakAndRestore(helper, PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.get());
     }
 
     private static void check(GameTestHelper helper, Block block, ItemLike item, BlockPos pos) {
@@ -91,8 +92,11 @@ final class MachineItemSlotChecks {
         helper.setBlock(pos, block);
         TileEntityMekanism tile = (TileEntityMekanism) helper.getBlockEntity(pos);
         ItemStack stored = fillFirstSlot(helper, tile, block);
-        List<IEnergyContainer> energy = tile.getEnergyContainers(null);
-        energy.getFirst().setEnergy(STORED_ENERGY);
+        // The Autonomous Caster runs on Psionic Echo alone and has no energy container.
+        boolean powered = !tile.getEnergyContainers(null).isEmpty();
+        if (powered) {
+            tile.getEnergyContainers(null).getFirst().setEnergy(STORED_ENERGY);
+        }
         boolean muffled = tile.supportsUpgrades() && tile.getComponent().supports(Upgrade.MUFFLING);
         if (muffled) {
             tile.getComponent().addUpgrades(Upgrade.MUFFLING, 1);
@@ -125,7 +129,9 @@ final class MachineItemSlotChecks {
         placed.applyComponentsFromItemStack(dropped);
         helper.assertTrue(placed.getInventorySlots(null).stream().anyMatch(slot -> ItemStack.isSameItem(slot.getStack(), stored)),
                 block + " lost its item when placed again");
-        helper.assertTrue(placed.getEnergyContainers(null).getFirst().getEnergy() == STORED_ENERGY, block + " lost its energy");
+        if (powered) {
+            helper.assertTrue(placed.getEnergyContainers(null).getFirst().getEnergy() == STORED_ENERGY, block + " lost its energy");
+        }
         if (muffled) {
             helper.assertTrue(placed.getComponent().getUpgrades(Upgrade.MUFFLING) == 1, block + " lost its upgrade");
         }
