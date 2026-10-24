@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -100,7 +101,12 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
 
     /** クライアント側 GuiProgrammer を参照せず、Psi のエラー位置表示（列は A〜I）を再現する。 */
     public static Component spellErrorPosition(String translationKey, int x, int y) {
-        return Component.translatable(translationKey, gridColumn(x), y).withStyle(ChatFormatting.RED);
+        return gridPosition(translationKey, x, y).withStyle(ChatFormatting.RED);
+    }
+
+    /** 術式グリッドの位置の行（x・y は 1 始まり、列は A〜I）。術式の警告の位置にも使う。 */
+    public static MutableComponent gridPosition(String translationKey, int x, int y) {
+        return Component.translatable(translationKey, gridColumn(x), y);
     }
 
     static String gridColumn(int x) {

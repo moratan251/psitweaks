@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells;
 
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.network.MessageSpellWarningPosition;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
@@ -46,9 +47,16 @@ public final class SpellWarning {
             return;
         }
         context.caster.sendSystemMessage(toComponent());
-        // Fake players (machines casting spells) have no client to show the position to.
-        if (context.caster instanceof ServerPlayer player && !(player instanceof FakePlayer) && context.currentAction != null) {
-            var piece = context.currentAction.piece;
+        if (context.currentAction == null) {
+            return;
+        }
+        var piece = context.currentAction.piece;
+        if (context.caster instanceof AutonomousCasterPlayer caster) {
+            // The Autonomous Caster's activity log shows the position the way it shows Psi's error positions.
+            caster.sendSystemMessage(AutonomousCasterPlayer.gridPosition(POSITION, piece.x + 1, piece.y + 1)
+                    .withStyle(ChatFormatting.YELLOW));
+        } else if (context.caster instanceof ServerPlayer player && !(player instanceof FakePlayer)) {
+            // Other fake players (machines casting spells) have no client to show the position to.
             PacketDistributor.sendToPlayer(player, new MessageSpellWarningPosition(piece.x + 1, piece.y + 1));
         }
     }

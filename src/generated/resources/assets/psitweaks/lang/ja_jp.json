@@ -611,7 +611,7 @@
   "psi.book.page.psitweaks_machine.autonomous_caster.2": "詠唱主体は正面に立ち, $(item)Yaw$(0)と$(item)Pitch$(0)の方向を向いて詠唱します.$(p)$(item)ループ型術式弾$(0)はトリガー1回につき1回だけ実行されます. 術式弾スロットごとに成功回数を数えており, $(item)取得子: ループ回数$(0)でその値を読めます.",
   "psi.book.page.psitweaks_machine.autonomous_caster.3": "右側の4スロットにCADの部品を入れると, 内部CADが組み上がります. 空のスロットは基本部品として扱われ, 着色器は無くても動きます.$(p)下段の9スロットは詠唱主体のホットバーで, 選択中のスロットが手に持っている扱いになります. 入りきらないアイテムは機械の正面に落ちます.",
   "psi.book.page.psitweaks_machine.autonomous_caster.4": "初期設定では, $(item)気化サイオニックエコー$(0)250mBでPsiが25回復し, 最大10,000まで貯まります. 気体はどの面からでも搬入でき, ゲージ左のスロットに気体入りアイテムを入れても補充できます.$(p)$(item)スピードアップグレード$(0)で回復が速くなり, $(item)化学アップグレード$(0)で気体の消費が減ります. コンパレーターで内部Psiの残量を読み取れます.",
-  "psi.book.page.psitweaks_machine.autonomous_caster.5": "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)デバッグ出力や術式のエラーはチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. 機械を回収するとアイテム・気体・アップグレードは残りますが, Psi・設定・ログは初期化されます.",
+  "psi.book.page.psitweaks_machine.autonomous_caster.5": "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. 機械を回収するとアイテム・気体・アップグレードは残りますが, Psi・設定・ログは初期化されます.",
   "psi.book.page.psitweaks_machine.cad_disassembler": "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.",
   "psi.book.page.psitweaks_machine.material_mutator": "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます.",
   "psi.book.page.psitweaks_machine.program_researcher": "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究のtickあたりの消費電力と時間はJEIで確認できます.",

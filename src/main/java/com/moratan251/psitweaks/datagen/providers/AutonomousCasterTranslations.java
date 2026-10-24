@@ -204,10 +204,10 @@ final class AutonomousCasterTranslations {
                         + "コンパレーターで内部Psiの残量を読み取れます.");
         put(BOOK + ".5",
                 "Spells that use the Ideaspace Storage use the storage of the machine's owner.$(p)"
-                        + "Debug output and spell errors go to the $(item)Activity Log$(0) in the GUI instead of your chat. "
+                        + "Debug output, spell errors and spell warnings go to the $(item)Activity Log$(0) in the GUI instead of your chat. "
                         + "Breaking the machine keeps its items, gas and upgrades, but resets its Psi, settings and log.",
                 "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)"
-                        + "デバッグ出力や術式のエラーはチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. "
+                        + "デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. "
                         + "機械を回収するとアイテム・気体・アップグレードは残りますが, Psi・設定・ログは初期化されます.");
     }
 }

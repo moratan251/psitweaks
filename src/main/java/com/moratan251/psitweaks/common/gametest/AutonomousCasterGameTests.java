@@ -8,8 +8,10 @@ import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageAmount;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import io.netty.buffer.Unpooled;
@@ -18,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.ChatFormatting;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +28,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -33,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.api.spell.CompiledSpell;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
@@ -252,6 +257,38 @@ public final class AutonomousCasterGameTests {
                     "A detached caster was still registered");
             Optional<ArrayList<Entity>> detached = cast(helper, caster, host, AutonomousCasterTestSpells.debugBullet(1), cad);
             helper.assertTrue(detached.isEmpty(), "A detached caster could still cast");
+        } finally {
+            caster.detach();
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void dedicatedCasterLogsSpellWarningsWithTheirPosition(GameTestHelper helper) {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), host);
+        try {
+            Spell spell = new Spell();
+            var piece = new PieceSelectorIdeaStorageLastTransfer(spell);
+            piece.x = 2;
+            piece.y = 4;
+            CompiledSpell compiled = new CompiledSpell(spell);
+            SpellContext context = new SpellContext().setPlayer(caster).setCompiledSpell(compiled);
+            context.currentAction = compiled.new Action(piece);
+            SpellWarning.warn(context, SpellWarning.TARGET_FALLEN);
+
+            helper.assertTrue(host.messages.size() == 2, "A warning should log its text and its position: " + host.messages);
+            helper.assertTrue(host.messages.get(0).getContents() instanceof TranslatableContents warning
+                            && SpellWarning.TARGET_FALLEN.equals(warning.getKey()),
+                    "The warning text did not reach the log");
+            Component position = host.messages.get(1);
+            helper.assertTrue(position.getContents() instanceof TranslatableContents contents
+                            && SpellWarning.POSITION.equals(contents.getKey())
+                            && contents.getArgs().length == 2 && "C".equals(contents.getArgs()[0])
+                            && Integer.valueOf(5).equals(contents.getArgs()[1])
+                            && position.getStyle().getColor() != null
+                            && position.getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.YELLOW)),
+                    "The warning position was not logged as a yellow grid position: " + position);
         } finally {
             caster.detach();
         }
