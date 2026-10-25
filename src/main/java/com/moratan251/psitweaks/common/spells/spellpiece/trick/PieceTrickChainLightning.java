@@ -50,12 +50,11 @@ public class PieceTrickChainLightning extends PieceTrick {
     /** How far from where the caster looks the first target may stand: 30 degrees. */
     private static final double FRONT_COS = Math.cos(Math.toRadians(30.0));
     /**
-     * The number of jumps is no longer chosen, so the stats are those the old Number input gave at its cap of eight:
-     * an ebony psimetal CAD still casts it at Power 1.
+     * The number of jumps is no longer chosen; the stats are those the old Number input gave at four jumps.
      */
-    private static final double POTENCY_BASE = 300.0;
+    private static final double POTENCY_BASE = 180.0;
     private static final double POTENCY_PER_POWER = 40.0;
-    private static final double COST_BASE = 790.0;
+    private static final double COST_BASE = 470.0;
     private static final double COST_PER_POWER = 120.0;
 
     private SpellParam<Number> power;

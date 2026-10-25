@@ -25,10 +25,11 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * so saved spells still load; the Time parameter was removed, and a piece still wired to it is simply left unused.
  */
 public class PieceTrickBarrier extends PieceTrick {
-    // The bases include what the removed Time parameter cost at 60 seconds (1 potency and 4 cost per second).
-    private static final double POTENCY_BASE = 80.0;
+    // The bases include what the removed Time parameter cost at 30 seconds (1 potency and 4 cost per second), though the
+    // shield lasts one minute.
+    private static final double POTENCY_BASE = 50.0;
     private static final double POTENCY_PER_POWER_SQUARED = 15.0;
-    private static final double COST_BASE = 280.0;
+    private static final double COST_BASE = 160.0;
     private static final double COST_PER_POWER_SQUARED = 60.0;
 
     private SpellParam<Entity> target;

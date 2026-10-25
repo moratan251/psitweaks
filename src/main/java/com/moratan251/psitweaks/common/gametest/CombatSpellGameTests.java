@@ -416,12 +416,12 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void combatTrickStatsFollowTheirFormulas(GameTestHelper helper) throws Exception {
         int[] barrier = stats(barrier(Map.of(POWER, 2.0)));
-        helper.assertTrue(barrier[0] == 140 && barrier[1] == 520, "Barrier P2: 80+15P² / 280+60P², got " + barrier[0] + "/" + barrier[1]);
+        helper.assertTrue(barrier[0] == 110 && barrier[1] == 400, "Barrier P2: 50+15P² / 160+60P², got " + barrier[0] + "/" + barrier[1]);
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_INTEGER.equals(compileError(
                 () -> stats(barrier(Map.of(POWER, 1.5))))), "Barrier Power must be a whole number");
 
         int[] chain = stats(chainLightning(Map.of(POWER, 2.0)));
-        helper.assertTrue(chain[0] == 380 && chain[1] == 1030, "Chain Lightning P2: 300+40P / 790+120P, got " + chain[0] + "/" + chain[1]);
+        helper.assertTrue(chain[0] == 260 && chain[1] == 710, "Chain Lightning P2: 180+40P / 470+120P, got " + chain[0] + "/" + chain[1]);
         int chainP1 = stats(chainLightning(Map.of(POWER, 1.0)))[0];
         helper.assertTrue(chainP1 <= 350, "Chain Lightning at Power 1 must fit an ebony psimetal CAD (350), got " + chainP1);
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_VALUE.equals(compileError(
