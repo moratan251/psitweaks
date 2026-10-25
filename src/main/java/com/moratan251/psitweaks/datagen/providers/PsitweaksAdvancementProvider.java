@@ -50,8 +50,8 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
     public CompletableFuture<?> run(CachedOutput output) {
         CompletableFuture<?> modOnly = registries.thenCompose(lookup -> {
             List<CompletableFuture<?>> saved = new ArrayList<>();
-            generateMekanismOnly(requiringMod(output, lookup, saved, "mekanism"));
-            generateMekanismGeneratorsOnly(requiringMod(output, lookup, saved, "mekanismgenerators"));
+            AdvancementHolder programResearcher = generateMekanismOnly(requiringMod(output, lookup, saved, "mekanism"));
+            generateMekanismGeneratorsOnly(requiringMod(output, lookup, saved, "mekanismgenerators"), programResearcher);
             return CompletableFuture.allOf(saved.toArray(CompletableFuture[]::new));
         });
         return CompletableFuture.allOf(super.run(output), modOnly);
@@ -67,19 +67,21 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
 
     /**
      * Advancements for the Mekanism machines. They load only with Mekanism, so only advancements that also need
-     * Mekanism may hang from them.
+     * Mekanism may hang from them. Returns the Program Researcher one, the parent of the Generators advancements.
      */
-    private static void generateMekanismOnly(Consumer<AdvancementHolder> saver) {
-        add(saver, "program_researcher_pickup", own("psionic_control_circuit_pickup"), modItem(Psitweaks.location("program_researcher")));
+    private static AdvancementHolder generateMekanismOnly(Consumer<AdvancementHolder> saver) {
+        // The parent is saved by generate(), so only its id is at hand here.
+        return add(saver, "program_researcher_pickup", byId(own("psionic_control_circuit_pickup")),
+                modItem(Psitweaks.location("program_researcher")));
     }
 
     /** Advancements about Mekanism Generators (which needs Mekanism). */
-    private static void generateMekanismGeneratorsOnly(Consumer<AdvancementHolder> saver) {
+    private static void generateMekanismGeneratorsOnly(Consumer<AdvancementHolder> saver, AdvancementHolder programResearcher) {
         // Hidden; awarded from code when Trick: Phonon Maser lights a Fusion Reactor (MekanismGeneratorsGameplayIntegration).
         ResourceLocation id = PsitweaksAdvancements.PHONON_MASER_FUSION_IGNITION;
         String key = "advancement.psitweaks:" + id.getPath().substring("main/".length());
         new Advancement.Builder()
-                .parent(own("program_researcher_pickup"))
+                .parent(programResearcher)
                 .display(modItem(ResourceLocation.fromNamespaceAndPath("mekanismgenerators", "fusion_reactor_controller")),
                         Component.translatable(key), Component.translatable(key + ".desc"),
                         null, AdvancementType.CHALLENGE, true, true, true)
@@ -95,35 +97,34 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
 
     private static void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver,
             ExistingFileHelper existingFileHelper) {
-        add(saver, "alloy_psion_pickup", psi("psigem_pickup"), PsitweaksItems.ALLOY_PSION);
-        add(saver, "alloy_psion_assembly_pickup", own("alloy_psion_pickup"), PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION);
-        add(saver, "psionic_control_circuit_pickup", own("alloy_psion_pickup"), PsitweaksItems.PSIONIC_CONTROL_CIRCUIT);
-        add(saver, "chaotic_psimetal_pickup", own("alloy_psion_pickup"), PsitweaksItems.CHAOTIC_PSIMETAL);
-        add(saver, "chaotic_psimetal_assembly_pickup", own("chaotic_psimetal_pickup"), PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL);
-        add(saver, "flashmetal_pickup", own("chaotic_psimetal_pickup"), PsitweaksItems.FLASHMETAL);
-        add(saver, "flashmetal_assembly_pickup", own("flashmetal_pickup"), PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL);
-        add(saver, "psionic_echo_pickup", own("flashmetal_pickup"), PsitweaksItems.PSIONIC_ECHO);
-        add(saver, "alloy_psionic_echo_pickup", own("psionic_echo_pickup"), PsitweaksItems.ALLOY_PSIONIC_ECHO);
-        add(saver, "echo_control_circuit_pickup", own("alloy_psionic_echo_pickup"), PsitweaksItems.ECHO_CONTROL_CIRCUIT);
-        add(saver, "heavy_psimetal_pickup", own("psionic_echo_pickup"), PsitweaksItems.HEAVY_PSIMETAL);
-        add(saver, "heavy_psimetal_assembly_pickup", own("heavy_psimetal_pickup"),
+        // The data run cannot see Psi's advancements, so Psigem is named by id.
+        AdvancementHolder alloyPsion = add(saver, "alloy_psion_pickup",
+                byId(ResourceLocation.fromNamespaceAndPath("psi", "main/psigem_pickup")), PsitweaksItems.ALLOY_PSION);
+        add(saver, "alloy_psion_assembly_pickup", alloyPsion, PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION);
+        add(saver, "psionic_control_circuit_pickup", alloyPsion, PsitweaksItems.PSIONIC_CONTROL_CIRCUIT);
+        AdvancementHolder chaoticPsimetal = add(saver, "chaotic_psimetal_pickup", alloyPsion, PsitweaksItems.CHAOTIC_PSIMETAL);
+        add(saver, "chaotic_psimetal_assembly_pickup", chaoticPsimetal, PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL);
+        AdvancementHolder flashmetal = add(saver, "flashmetal_pickup", chaoticPsimetal, PsitweaksItems.FLASHMETAL);
+        add(saver, "flashmetal_assembly_pickup", flashmetal, PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL);
+        AdvancementHolder psionicEcho = add(saver, "psionic_echo_pickup", flashmetal, PsitweaksItems.PSIONIC_ECHO);
+        AdvancementHolder alloyPsionicEcho = add(saver, "alloy_psionic_echo_pickup", psionicEcho, PsitweaksItems.ALLOY_PSIONIC_ECHO);
+        add(saver, "echo_control_circuit_pickup", alloyPsionicEcho, PsitweaksItems.ECHO_CONTROL_CIRCUIT);
+        AdvancementHolder heavyPsimetal = add(saver, "heavy_psimetal_pickup", psionicEcho, PsitweaksItems.HEAVY_PSIMETAL);
+        add(saver, "heavy_psimetal_assembly_pickup", heavyPsimetal,
                 PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_ALPHA, PsitweaksItems.CAD_ASSEMBLY_HEAVY_PSIMETAL_BETA);
-        add(saver, "antinite_pickup", own("heavy_psimetal_pickup"), PsitweaksItems.RAW_ANTINITE, PsitweaksItems.ANTINITE_INGOT);
-        add(saver, "hypostasis_gem_pickup", own("antinite_pickup"), PsitweaksItems.HYPOSTASIS_GEM);
-        add(saver, "alloy_hypostasis_pickup", own("hypostasis_gem_pickup"), PsitweaksItems.ALLOY_HYPOSTASIS);
-        add(saver, "hypostasis_control_circuit_pickup", own("alloy_hypostasis_pickup"), PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT);
-        add(saver, "psycheonic_metal_pickup", own("hypostasis_gem_pickup"), PsitweaksItems.PSYCHEONIC_METAL_INGOT);
-        add(saver, "psycheonic_metal_assembly_pickup", own("psycheonic_metal_pickup"), PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL);
+        AdvancementHolder antinite = add(saver, "antinite_pickup", heavyPsimetal, PsitweaksItems.RAW_ANTINITE, PsitweaksItems.ANTINITE_INGOT);
+        AdvancementHolder hypostasisGem = add(saver, "hypostasis_gem_pickup", antinite, PsitweaksItems.HYPOSTASIS_GEM);
+        AdvancementHolder alloyHypostasis = add(saver, "alloy_hypostasis_pickup", hypostasisGem, PsitweaksItems.ALLOY_HYPOSTASIS);
+        add(saver, "hypostasis_control_circuit_pickup", alloyHypostasis, PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT);
+        AdvancementHolder psycheonicMetal = add(saver, "psycheonic_metal_pickup", hypostasisGem, PsitweaksItems.PSYCHEONIC_METAL_INGOT);
+        add(saver, "psycheonic_metal_assembly_pickup", psycheonicMetal, PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL);
     }
 
-    /**
-     * Saves {@code psitweaks:main/<id>}, completed by holding any one of {@code items}; the first is the icon.
-     * The parent is set by id because the data run cannot see Psi's advancements to check it.
-     */
-    private static void add(Consumer<AdvancementHolder> saver, String id, ResourceLocation parent, ItemLike... items) {
+    /** Saves {@code psitweaks:main/<id>}, completed by holding any one of {@code items}; the first is the icon. */
+    private static AdvancementHolder add(Consumer<AdvancementHolder> saver, String id, AdvancementHolder parent, ItemLike... items) {
         String key = "advancement.psitweaks:" + id;
         // Not Builder.advancement(), which turns on the telemetry event vanilla sends for its own advancements.
-        new Advancement.Builder()
+        return new Advancement.Builder()
                 .parent(parent)
                 .display(items[0], Component.translatable(key), Component.translatable(key + ".desc"),
                         null, AdvancementType.TASK, true, true, false)
@@ -131,8 +132,9 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
                 .save(saver, own(id).toString());
     }
 
-    private static ResourceLocation psi(String id) {
-        return ResourceLocation.fromNamespaceAndPath("psi", "main/" + id);
+    /** A parent known only by its id, which is all {@link Advancement.Builder#parent(AdvancementHolder)} reads. */
+    private static AdvancementHolder byId(ResourceLocation id) {
+        return new AdvancementHolder(id, null);
     }
 
     private static ResourceLocation own(String id) {
