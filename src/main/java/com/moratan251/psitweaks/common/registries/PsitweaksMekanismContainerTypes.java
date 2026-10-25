@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
@@ -25,6 +26,12 @@ public final class PsitweaksMekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTranscendentEnergyCube>> TRANSCENDENT_ENERGY_CUBE =
             CONTAINER_TYPES.custom(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE, TileEntityTranscendentEnergyCube.class)
                     .armorSideBar(180, 41, 0)
+                    .build();
+
+    /** 操作行とステータス表示のために縦を 74 px 伸ばす（プレイヤーインベントリは y=158）。 */
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<AutonomousCasterBlockEntity>> AUTONOMOUS_CASTER =
+            CONTAINER_TYPES.custom(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER, AutonomousCasterBlockEntity.class)
+                    .offset(0, 74)
                     .build();
 
     private PsitweaksMekanismContainerTypes() {

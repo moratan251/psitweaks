@@ -9,6 +9,7 @@ final class PsitweaksDatagenBlocks {
             customModelMachine("sculk_eroder", "Sculk Eroder", "スカルク侵食機"),
             machine("material_mutator", "Material Mutator", "物質変成機", "material_mutator"),
             customModelMachine("psionic_generator", "Psi-Link Generator", "サイリンク発電機"),
+            machine("autonomous_caster", "Autonomous Caster", "自律詠唱機", "autonomous_casting_machine"),
             block("transcendent_universal_cable", "Transcendent Universal Cable", "超越ユニバーサルケーブル"),
             block("transcendent_energy_cube", "Transcendent Energy Cube", "超越エネルギーキューブ"),
             block("ore_antinite", "Antinite Ore", "アンティナイト鉱石", "antinite_ore"),

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.registries;
 
+import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
@@ -42,6 +43,7 @@ public final class PsitweaksMekanismBlockTypes {
     private static final ILangEntry DESCRIPTION_PSIONIC_GENERATOR = () -> "description.psitweaks.psionic_generator";
     private static final ILangEntry DESCRIPTION_TRANSCENDENT_CABLE = () -> "description.psitweaks.transcendent_universal_cable";
     private static final ILangEntry DESCRIPTION_TRANSCENDENT_ENERGY_CUBE = () -> "description.psitweaks.transcendent_energy_cube";
+    private static final ILangEntry DESCRIPTION_AUTONOMOUS_CASTER = () -> "description.psitweaks.autonomous_caster";
     // Matches models/block/machine/program_researcher.json (facing north): plinth, legs, desk and the tilted monitor.
     private static final VoxelShape[] PROGRAM_RESEARCHER_SHAPES = horizontalShapes(VoxelShapeUtils.combine(
             Block.box(1, 0, 1, 15, 2, 15),
@@ -129,6 +131,26 @@ public final class PsitweaksMekanismBlockTypes {
                     .withGui(() -> PsitweaksMekanismContainerTypes.PSIONIC_GENERATOR)
                     .withSound(MekanismSounds.LASER)
                     .withEnergyConfig(() -> PSIONIC_GENERATOR_MAX_OUTPUT, PsionicGeneratorBlockEntity::getEnergyCapacityJoules)
+                    .build();
+
+    /**
+     * 自律詠唱機。レッドストーン入力は詠唱トリガーとして独自に扱うため、Mekanism のレッドストーン制御（REDSTONE）は付けない。
+     * エネルギーは使わず、気化サイオニックエコーから内部 Psi を作る。
+     */
+    public static final BlockTypeTile<AutonomousCasterBlockEntity> AUTONOMOUS_CASTER =
+            BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.AUTONOMOUS_CASTER, DESCRIPTION_AUTONOMOUS_CASTER)
+                    .with(
+                            Attributes.ACTIVE_LIGHT,
+                            new AttributeStateFacing(),
+                            Attributes.INVENTORY,
+                            Attributes.SECURITY,
+                            Attributes.COMPARATOR,
+                            AttributeSideConfig.create(TransmissionType.ITEM, TransmissionType.CHEMICAL),
+                            new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.CHEMICAL))
+                    )
+                    .with(new AttributeParticleFX()
+                            .add(new SparkleParticleData(0.35F, 0.6F, 1.0F, 1.0F, 10, 0.0D, 0.01D, 0.0D), PsitweaksMekanismBlockTypes::machineFrontParticleOffset))
+                    .withGui(() -> PsitweaksMekanismContainerTypes.AUTONOMOUS_CASTER)
                     .build();
 
     public static final BlockTypeTile<TileEntityTranscendentCable> TRANSCENDENT_CABLE =

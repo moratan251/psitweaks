@@ -1,0 +1,34 @@
+{
+  "name": "block.psitweaks.autonomous_caster",
+  "category": "psi:psitweaks_machines",
+  "flag": "mod:mekanism",
+  "icon": "psitweaks:autonomous_caster",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster",
+      "item": "psitweaks:autonomous_caster",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.3"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.4"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.5"
+    }
+  ]
+}

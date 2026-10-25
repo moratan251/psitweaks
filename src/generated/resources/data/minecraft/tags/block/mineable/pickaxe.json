@@ -30,6 +30,10 @@
       "required": false
     },
     {
+      "id": "psitweaks:autonomous_caster",
+      "required": false
+    },
+    {
       "id": "psitweaks:transcendent_energy_cube",
       "required": false
     }

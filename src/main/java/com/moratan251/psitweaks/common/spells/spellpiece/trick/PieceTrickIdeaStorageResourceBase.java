@@ -13,12 +13,14 @@ import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageEnergyTransfer;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageResourceTransfers;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import com.moratan251.psitweaks.common.storage.idea.PlayerIdeaStorage;
 import com.moratan251.psitweaks.common.tile.IdeaspaceConnectorBlockEntity;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -141,19 +143,20 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
         if (!finite(pos) || !finite(face)) throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         if (!context.isInRadius(pos)) throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         if (!(context.caster instanceof ServerPlayer player)) return null;
+        var owner = IdeaStorageOwnerResolver.requireOwner(player);
         var level = player.serverLevel();
         var blockPos = pos.toBlockPos();
         Direction facing = Direction.getNearest(face.x, face.y, face.z);
         if (kind() == Kind.ENERGY) {
-            transferEnergy(context, player, blockPos, facing, amount);
+            transferEnergy(context, player, owner, blockPos, facing, amount);
             return null;
         }
         if (!level.hasChunkAt(blockPos)) return null;
         if (!level.mayInteract(player, blockPos) || PieceTrickItemTransferBase.isProtectedFromInteraction(player, blockPos, facing))
             throw new SpellRuntimeException("psitweaks.spellerror.accessdenyed");
-        if (level.getBlockEntity(blockPos) instanceof IdeaspaceConnectorBlockEntity connector && player.getUUID().equals(connector.owner()))
+        if (level.getBlockEntity(blockPos) instanceof IdeaspaceConnectorBlockEntity connector && owner.equals(connector.owner()))
             return null;
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var storage = IdeaStorageService.get(player.server, owner);
         long maximum = IdeaStorageResourceTransfers.amountForPower(amount, kind() == Kind.ITEM ? 1 : 1000,
                 kind() == Kind.CHEMICAL ? Long.MAX_VALUE : Integer.MAX_VALUE);
         long moved;
@@ -168,12 +171,12 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
     }
 
     /** FE keeps the rules of the former FE Absorb/Supply tricks: Power * 4000 FE, and no effect where you may not interact. */
-    private void transferEnergy(SpellContext context, ServerPlayer player, BlockPos blockPos, Direction facing, double power) {
+    private void transferEnergy(SpellContext context, ServerPlayer player, UUID owner, BlockPos blockPos, Direction facing, double power) {
         var level = player.serverLevel();
         if (!level.hasChunkAt(blockPos) || !level.mayInteract(player, blockPos)) return;
         var handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, blockPos, facing);
         if (handler == null) return;
-        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var storage = IdeaStorageService.get(player.server, owner);
         int amount = IdeaStorageEnergyTransfer.amountForPower(power);
         int moved = deposit()
                 ? IdeaStorageEnergyTransfer.absorb(storage, handler, amount)

@@ -2,8 +2,10 @@ package com.moratan251.psitweaks.common.registries;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.blocks.transmitter.BlockTranscendentCable;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterSettings;
 import com.moratan251.psitweaks.common.items.block.ItemBlockTranscendentCable;
 import com.moratan251.psitweaks.common.items.block.ItemBlockTranscendentEnergyCube;
+import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.MaterialMutatorBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.ProgramResearcherBlockEntity;
 import com.moratan251.psitweaks.common.tile.machine.PsionicGeneratorBlockEntity;
@@ -95,6 +97,26 @@ public final class PsitweaksMekanismBlocks {
                     .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addEnergy()
                             .build()));
+
+    /** 自律詠唱機の初期側面設定: 左右・上・背面からアイテム搬入、底面はエコー補充スロット、気体は全面から搬入。前面は Caster の視点側なので空ける。 */
+    private static final AttachedSideConfig AUTONOMOUS_CASTER_SIDE_CONFIG = new AttachedSideConfig(Map.of(
+            TransmissionType.ITEM, new AttachedSideConfig.LightConfigInfo(AutonomousCasterBlockEntity.defaultItemSides(), false),
+            TransmissionType.CHEMICAL, AttachedSideConfig.LightConfigInfo.INPUT_ONLY));
+
+    public static final BlockRegistryObject<BlockTile.BlockTileModel<AutonomousCasterBlockEntity, BlockTypeTile<AutonomousCasterBlockEntity>>, ItemBlockTooltip<BlockTile.BlockTileModel<AutonomousCasterBlockEntity, BlockTypeTile<AutonomousCasterBlockEntity>>>> AUTONOMOUS_CASTER =
+            BLOCKS.register("autonomous_caster",
+                    () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.AUTONOMOUS_CASTER, properties -> properties),
+                    (block, properties) -> new ItemBlockTooltip<>(block, true, withDefaultSideConfig(properties, AUTONOMOUS_CASTER_SIDE_CONFIG)))
+                    // The echo tank, and bullets, CAD components, the nine hotbar slots and the echo fill slot: the slots of AutonomousCasterBlockEntity.
+                    .forItemHolder(holder -> holder
+                            .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                                    .addBasic(AutonomousCasterSettings::echoTankCapacity, ANY_CHEMICAL)
+                                    .build())
+                            .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                                    .addBasic(AutonomousCasterBlockEntity.BULLET_SLOTS + AutonomousCasterBlockEntity.COMPONENT_SLOTS
+                                            + AutonomousCasterBlockEntity.ITEM_SLOTS)
+                                    .addChemicalFillSlot(0)
+                                    .build()));
 
     public static final BlockRegistryObject<BlockTranscendentCable, ItemBlockTranscendentCable> TRANSCENDENT_CABLE =
             BLOCKS.register("transcendent_universal_cable", BlockTranscendentCable::new, ItemBlockTranscendentCable::new);
