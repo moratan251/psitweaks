@@ -78,6 +78,7 @@ final class AutonomousCasterTranslations {
                 "選択中の術式弾をテストとして1回詠唱します。クールダウン中は終わってから詠唱します");
         put(GUI + "log", "Log", "ログ");
         put(GUI + "log.tooltip", "Open the activity log", "作動ログを開きます");
+        put(GUI + "sight", "Line of Sight Visuals: %s", "視線の可視化: %s");
         put(GUI + "signal_on", "ON", "ON");
         put(GUI + "signal_off", "OFF", "OFF");
         put(GUI + "status.idle", "Signal %s | Waiting", "信号 %s ｜ 待機中");
@@ -180,10 +181,12 @@ final class AutonomousCasterTranslations {
                         + "$(li)GUIの$(item)詠唱$(0)ボタンで1回だけテスト詠唱できます."
                         + "$(p)クールダウン中の信号は無視されます. 詠唱間隔は4tick未満にできません.");
         put(BOOK + ".2",
-                "The caster stands at the front face and looks where $(item)Yaw$(0) and $(item)Pitch$(0) point.$(p)"
+                "The caster stands at the front face and looks where $(item)Yaw$(0) and $(item)Pitch$(0) point. "
+                        + "The $(item)Line of Sight Visuals$(0) tab on the left of the GUI shows that line in the world.$(p)"
                         + "A $(item)Loopcast Spell Bullet$(0) runs once per trigger. "
                         + "Each bullet slot counts its successful casts, and $(item)Selector: Loopcast Index$(0) reads that count.",
-                "詠唱主体は正面に立ち, $(item)Yaw$(0)と$(item)Pitch$(0)の方向を向いて詠唱します.$(p)"
+                "詠唱主体は正面に立ち, $(item)Yaw$(0)と$(item)Pitch$(0)の方向を向いて詠唱します. "
+                        + "GUI左の$(item)視線の可視化$(0)タブで, その視線をワールドに表示できます.$(p)"
                         + "$(item)ループ型術式弾$(0)はトリガー1回につき1回だけ実行されます. "
                         + "術式弾スロットごとに成功回数を数えており, $(item)取得子: ループ回数$(0)でその値を読めます.");
         put(BOOK + ".3",

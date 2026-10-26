@@ -1003,6 +1003,15 @@ public final class AutonomousCasterGameTests {
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterShowsWhereTheCasterLooks(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.showsWhereTheCasterLooks(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void autonomousCasterKeepsPsiReturnedAfterTheCast(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {
             helper.succeed();

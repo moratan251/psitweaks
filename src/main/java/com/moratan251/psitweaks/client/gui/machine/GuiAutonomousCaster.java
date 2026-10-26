@@ -116,6 +116,8 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
 
         addRenderableWidget(button(146, 4, 24, 11, () -> Component.translatable(KEY + "log"), this::openLog))
                 .setTooltip(Tooltip.create(Component.translatable(KEY + "log.tooltip")));
+
+        addRenderableWidget(new GuiAutonomousCasterSightTab(this, tile));
     }
 
     private MekanismButton button(int x, int y, int width, int height, Supplier<Component> text, Runnable onClick) {

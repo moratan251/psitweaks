@@ -7,9 +7,11 @@ import com.moratan251.psitweaks.client.gui.machine.GuiPsionicGenerator;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
+import com.moratan251.psitweaks.client.render.tile.RenderAutonomousCaster;
 import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
+import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
@@ -21,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -35,6 +38,7 @@ public final class MekanismClientIntegration {
         modEventBus.addListener(MekanismClientIntegration::onRegisterClientReloadListeners);
         modEventBus.addListener(MekanismClientIntegration::onRegisterClientExtensions);
         modEventBus.addListener(MekanismClientIntegration::onRegisterItemDecorations);
+        modEventBus.addListener(MekanismClientIntegration::onRegisterRenderers);
         MekanismMaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
     }
 
@@ -48,6 +52,10 @@ public final class MekanismClientIntegration {
                 PsitweaksMekanismContainerTypes.TRANSCENDENT_ENERGY_CUBE.get(),
                 GuiTranscendentEnergyCube::new
         );
+    }
+
+    private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(PsitweaksMekanismTileEntityTypes.AUTONOMOUS_CASTER.get(), RenderAutonomousCaster::new);
     }
 
     private static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {

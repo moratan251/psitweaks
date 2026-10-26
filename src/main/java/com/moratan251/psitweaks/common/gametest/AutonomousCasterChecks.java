@@ -278,6 +278,30 @@ final class AutonomousCasterChecks {
         });
     }
 
+    /** 視線の表示に使う目の位置と向きが詠唱主体と一致し、向きは GUI を閉じた後の表示のためにブロックの更新でも送られる。 */
+    static void showsWhereTheCasterLooks(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        FakePlayer player = player(helper);
+        // Caster は最初の tick に作られ、そのときの向きを向く。
+        caster.applySetting(Action.SET_YAW, 30, player);
+        caster.applySetting(Action.SET_PITCH, -20, player);
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine has no caster");
+            helper.assertTrue(fake.getEyePosition().distanceTo(caster.eyePosition()) < 1.0E-6,
+                    "The shown eye position " + caster.eyePosition() + " is not the caster's " + fake.getEyePosition());
+            helper.assertTrue(fake.getLookAngle().distanceTo(caster.lookVector()) < 1.0E-6,
+                    "The shown line of sight " + caster.lookVector() + " is not the caster's " + fake.getLookAngle());
+            CompoundTag update = caster.getReducedUpdateTag(helper.getLevel().registryAccess());
+            helper.assertTrue(update.getInt("YawOffset") == 30 && update.getInt("Pitch") == -20,
+                    "The block update does not carry the look angles: " + update);
+            helper.assertTrue(!caster.isClientRendering(), "The line of sight is shown before the tab is used");
+            caster.toggleClientRendering();
+            helper.assertTrue(caster.isClientRendering(), "The tab did not turn the line of sight on");
+            helper.succeed();
+        });
+    }
+
     static void keepsContentsWhenBroken(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
         ItemStack bullet = AutonomousCasterTestSpells.debugBullet(5);

@@ -48,6 +48,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.ChatFormatting;
@@ -88,7 +89,7 @@ import vazkii.psi.common.item.ItemCAD;
  * 詠唱コストは気化サイオニックエコーから回復する内部 Psi だけで払う。機械の9スロットは Caster の hotbar 0〜8 へ
  * 写像し、術式による消費・変化を毎 tick 書き戻す。Caster 宛てのメッセージは作動ログへ集める。
  */
-public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost {
+public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost, IHasVisualization {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     /** 術式弾スロットの数。内蔵 CAD の装弾数と同じで、選択中のスロットは内蔵 CAD の選択ソケットと同期する。 */
@@ -211,6 +212,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private int clientMinCastInterval = AutonomousCasterSettings.minCastInterval();
     @Nullable
     private CasterLog clientLog;
+    /** GUI の左のタブで切り替える、視線の表示。クライアントだけの状態で保存しない。 */
+    private boolean clientRendering;
 
     public AutonomousCasterBlockEntity(BlockPos pos, BlockState state) {
         super(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER, pos, state);
@@ -454,19 +457,44 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     /** 視点を機械の前面に置き、設定された向きを向かせる。 */
     private void positionCaster(AutonomousCasterPlayer target) {
-        Direction facing = getDirection();
-        Vec3 eye = Vec3.atCenterOf(worldPosition).add(
-                facing.getStepX() * EYE_FORWARD_OFFSET,
-                facing.getStepY() * EYE_FORWARD_OFFSET,
-                facing.getStepZ() * EYE_FORWARD_OFFSET);
-        float yaw = Mth.wrapDegrees(facing.toYRot() + yawOffset);
-        float xRot = Mth.clamp(pitch, MIN_PITCH, MAX_PITCH);
+        Vec3 eye = eyePosition();
+        float yaw = lookYaw();
+        float xRot = lookPitch();
         target.moveTo(eye.x, eye.y - target.getEyeHeight(), eye.z, yaw, xRot);
         target.setYHeadRot(yaw);
         target.yHeadRotO = yaw;
         target.yBodyRot = yaw;
         target.yBodyRotO = yaw;
         target.setDeltaMovement(Vec3.ZERO);
+    }
+
+    /** 詠唱主体の目の位置。機械の前面から少し前に出たところ。視線の表示もここから引く。 */
+    public Vec3 eyePosition() {
+        Direction facing = getDirection();
+        return Vec3.atCenterOf(worldPosition).add(
+                facing.getStepX() * EYE_FORWARD_OFFSET,
+                facing.getStepY() * EYE_FORWARD_OFFSET,
+                facing.getStepZ() * EYE_FORWARD_OFFSET);
+    }
+
+    /** 詠唱主体の水平の向き（正面からの Yaw を足した角度）。 */
+    public float lookYaw() {
+        return Mth.wrapDegrees(getDirection().toYRot() + yawOffset);
+    }
+
+    public float lookPitch() {
+        return Mth.clamp(pitch, MIN_PITCH, MAX_PITCH);
+    }
+
+    /**
+     * 詠唱主体の視線の向き（長さ1）。Entity#calculateViewVector と同じ式で求め、詠唱主体の getLookAngle と一致させる。
+     * Vec3.directionFromRotation は Mth の sin/cos の表引きがずれ、1.0E-4 ほど違う向きになる。
+     */
+    public Vec3 lookVector() {
+        float xRot = lookPitch() * Mth.DEG_TO_RAD;
+        float yRot = -lookYaw() * Mth.DEG_TO_RAD;
+        float horizontal = Mth.cos(xRot);
+        return new Vec3(Mth.sin(yRot) * horizontal, -Mth.sin(xRot), Mth.cos(yRot) * horizontal);
     }
 
     /** Psi 回復。1 tick に回復1回分を、コンフィグの比率で気化サイオニックエコーを使って回復する。アップグレードは載せられない。 */
@@ -951,8 +979,14 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             }
             case SET_TRIGGER_MODE -> triggerMode = TriggerMode.byIndex(value);
             case SET_INTERVAL -> castInterval = AutonomousCasterSettings.clampCastInterval(value);
-            case SET_YAW -> yawOffset = Mth.clamp(value, MIN_YAW, MAX_YAW);
-            case SET_PITCH -> pitch = Mth.clamp(value, MIN_PITCH, MAX_PITCH);
+            case SET_YAW -> {
+                yawOffset = Mth.clamp(value, MIN_YAW, MAX_YAW);
+                sendUpdatePacket();
+            }
+            case SET_PITCH -> {
+                pitch = Mth.clamp(value, MIN_PITCH, MAX_PITCH);
+                sendUpdatePacket();
+            }
             case RESET_LOOP_COUNTER -> loopCounters[Mth.clamp(value, 0, BULLET_SLOTS - 1)] = 0;
             case CLEAR_LOG -> {
                 log.clear();
@@ -965,6 +999,23 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     // ---- 保存・同期 ----
+
+    @NotNull
+    @Override
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+        // 視線の表示は GUI を閉じた後も描くので、向きは画面の同期とは別にブロックの更新でも送る。
+        updateTag.putInt(TAG_YAW, yawOffset);
+        updateTag.putInt(TAG_PITCH, pitch);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        yawOffset = Mth.clamp(tag.getInt(TAG_YAW), MIN_YAW, MAX_YAW);
+        pitch = Mth.clamp(tag.getInt(TAG_PITCH), MIN_PITCH, MAX_PITCH);
+    }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
@@ -1178,6 +1229,18 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     public int getRecoveryPerTick() {
         return recoveryPerTick;
+    }
+
+    // ---- 視線の表示（クライアント） ----
+
+    @Override
+    public boolean isClientRendering() {
+        return clientRendering;
+    }
+
+    @Override
+    public void toggleClientRendering() {
+        clientRendering = !clientRendering;
     }
 
     // ---- GameTest 用 ----
