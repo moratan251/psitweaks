@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
 import com.moratan251.psitweaks.client.render.tile.RenderAutonomousCaster;
 import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismTileEntityTypes;
@@ -16,12 +17,15 @@ import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.MekanismRenderer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
@@ -40,6 +44,16 @@ public final class MekanismClientIntegration {
         modEventBus.addListener(MekanismClientIntegration::onRegisterItemDecorations);
         modEventBus.addListener(MekanismClientIntegration::onRegisterRenderers);
         MekanismMaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
+        NeoForge.EVENT_BUS.addListener(MekanismClientIntegration::onItemTooltip);
+    }
+
+    /** 回収した自律詠唱機のブロックアイテムに、残っている内部 Psi を出す。 */
+    private static void onItemTooltip(ItemTooltipEvent event) {
+        Integer psi = event.getItemStack().get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
+        if (psi != null) {
+            event.getToolTip().add(Component.translatable("tooltip.psitweaks.autonomous_caster.psi", psi)
+                    .withStyle(ChatFormatting.GRAY));
+        }
     }
 
     private static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {

@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.common.caster.AutonomousCasterSettings;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
+import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterLog;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
@@ -56,6 +57,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -69,6 +71,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -1053,6 +1056,33 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         super.handleUpdateTag(tag, provider);
         yawOffset = Mth.clamp(tag.getInt(TAG_YAW), MIN_YAW, MAX_YAW);
         pitch = Mth.clamp(tag.getInt(TAG_PITCH), MIN_PITCH, MAX_PITCH);
+    }
+
+    /** 回収したブロックアイテムに内部 Psi を残す。空なら付けず、新品の機械と重ねられるようにする。 */
+    @Override
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        if (psi > 0) {
+            builder.set(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get(), psi);
+        }
+    }
+
+    /** 置き直したときに、ブロックアイテムに残した内部 Psi を戻す。 */
+    @Override
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        Integer stored = input.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
+        if (stored != null) {
+            psi = Mth.clamp(stored, 0, AutonomousCasterSettings.psiCapacity());
+            markDirtyComparator();
+            markForSave();
+        }
+    }
+
+    @Override
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(TAG_PSI);
     }
 
     @Override

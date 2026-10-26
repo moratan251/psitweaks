@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.common.caster.AutonomousCasterSettings;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
+import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
@@ -344,6 +345,9 @@ final class AutonomousCasterChecks {
                     .findFirst().orElse(ItemStack.EMPTY);
             helper.assertTrue(!machine.isEmpty(), "Breaking the machine did not drop it");
             helper.assertTrue(drops.size() == 1, "Breaking the machine scattered its contents: " + drops.size() + " drops");
+            Integer storedPsi = machine.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
+            helper.assertTrue(storedPsi != null && storedPsi == AutonomousCasterSettings.psiCapacity(),
+                    "The internal Psi was not stored on the machine item: " + storedPsi);
             AttachedItems items = machine.get(MekanismDataComponents.ATTACHED_ITEMS);
             helper.assertTrue(items != null && items.containers().stream().anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, bullet)),
                     "The bullet was not stored on the machine item");
@@ -366,7 +370,12 @@ final class AutonomousCasterChecks {
                             + AutonomousCasterBlockEntity.HOTBAR_SLOTS) instanceof ChemicalInventorySlot,
                     "The echo fill slot moved, so machines saved before would load their items into the wrong slots");
             helper.assertTrue(restored.getEchoTank().getStored() == 2000, "The echo gas did not come back");
-            helper.assertTrue(restored.getPsi() == 0 && restored.getLog().isEmpty(), "Psi or the log was carried over");
+            helper.assertTrue(restored.getPsi() == AutonomousCasterSettings.psiCapacity(), "The internal Psi did not come back");
+            helper.assertTrue(restored.getLog().isEmpty(), "The log was carried over");
+            // 空の機械は Psi を付けずに回収し、新品の機械と重ねられるようにする。
+            restored.setPsi(0);
+            helper.assertTrue(!restored.collectComponents().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get()),
+                    "A machine without Psi kept the Psi component");
             helper.succeed();
         });
     }

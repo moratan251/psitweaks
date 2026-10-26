@@ -38,6 +38,7 @@ final class AutonomousCasterTranslations {
 
     private void addBlock() {
         put("container.psitweaks.autonomous_caster", "Autonomous Caster", "自律詠唱機");
+        put("tooltip.psitweaks.autonomous_caster.psi", "Stored Psi: %s", "内部Psi: %s");
         put("description.psitweaks.autonomous_caster",
                 "Casts the selected Spell Bullet on a redstone signal, using internal Psi restored from Psionic Echo Gas",
                 "レッドストーン信号で選択中の術式弾を詠唱します。内部Psiは気化サイオニックエコーから回復します");
@@ -226,10 +227,10 @@ final class AutonomousCasterTranslations {
         put(BOOK + ".5",
                 "Spells that use the Ideaspace Storage use the storage of the machine's owner.$(p)"
                         + "Debug output, spell errors and spell warnings go to the $(item)Activity Log$(0) in the GUI instead of your chat. "
-                        + "Breaking the machine keeps its items and gas, but resets its Psi, settings, log and the internal CAD's memory.",
+                        + "Breaking the machine keeps its items, gas and Psi, but resets its settings, log and the internal CAD's memory.",
                 "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)"
                         + "デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. "
-                        + "機械を回収するとアイテムと気体は残りますが, Psi・設定・ログと内部CADのメモリは初期化されます.");
+                        + "機械を回収するとアイテム・気体・Psiは残りますが, 設定・ログと内部CADのメモリは初期化されます.");
         put(BOOK + ".6",
                 "$(item)Trick: Spin Chamber$(0) and $(item)Trick: Russian Roulette$(0) switch the machine's selected "
                         + "Spell Bullet slot, as they switch a CAD's selected bullet.$(p)"

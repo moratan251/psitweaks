@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.datagen.providers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,8 @@ public class PsiTweaksLootTableProvider implements DataProvider {
             JsonObject lootTable = switch (block.id()) {
                 case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
                 // Only exists with Mekanism; skip the table otherwise instead of failing to parse it.
-                case "autonomous_caster" -> RecipeConditionHelper.requireMod(dropMekanismMachine(block.id()), "mekanism");
+                case "autonomous_caster" -> RecipeConditionHelper.requireMod(
+                        dropMekanismMachine(block.id(), PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.getId().toString()), "mekanism");
                 default -> MEKANISM_MACHINES.contains(block.id()) ? dropMekanismMachine(block.id()) : dropSelf(block.id());
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));
@@ -69,7 +71,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         return table;
     }
 
-    private static JsonObject dropMekanismMachine(String blockId) {
+    private static JsonObject dropMekanismMachine(String blockId, String... extraComponents) {
         JsonObject table = dropSelf(blockId);
         JsonObject entry = table.getAsJsonArray("pools").get(0).getAsJsonObject().getAsJsonArray("entries").get(0).getAsJsonObject();
         JsonArray functions = new JsonArray();
@@ -83,6 +85,9 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         copyComponents.addProperty("function", "minecraft:copy_components");
         copyComponents.addProperty("source", "block_entity");
         MEKANISM_MACHINE_COMPONENTS.forEach(include::add);
+        for (String component : extraComponents) {
+            include.add(component);
+        }
         copyComponents.add("include", include);
         functions.add(copyComponents);
         entry.add("functions", functions);

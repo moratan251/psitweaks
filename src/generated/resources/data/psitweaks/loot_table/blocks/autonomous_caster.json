@@ -33,7 +33,8 @@
                 "mekanism:upgrades",
                 "mekanism:energy",
                 "mekanism:items",
-                "mekanism:chemicals"
+                "mekanism:chemicals",
+                "psitweaks:autonomous_caster_psi"
               ],
               "source": "block_entity"
             }

@@ -3,6 +3,8 @@ package com.moratan251.psitweaks.common.items;
 import com.moratan251.psitweaks.Psitweaks;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -21,6 +23,12 @@ public final class PsitweaksDataComponents {
                     .persistent(ItemContainerContents.CODEC)
                     .networkSynchronized(ItemContainerContents.STREAM_CODEC)
                     .cacheEncoding());
+
+    /** The internal Psi of an Autonomous Caster that was broken, put back when the machine is placed again. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> AUTONOMOUS_CASTER_PSI =
+            DATA_COMPONENTS.registerComponentType("autonomous_caster_psi", builder -> builder
+                    .persistent(ExtraCodecs.NON_NEGATIVE_INT)
+                    .networkSynchronized(ByteBufCodecs.VAR_INT));
 
     private PsitweaksDataComponents() {
     }
