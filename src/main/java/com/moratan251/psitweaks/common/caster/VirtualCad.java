@@ -34,8 +34,8 @@ import vazkii.psi.common.item.data.CADDataValue;
  * そのまま機械のスロットになる。
  */
 public final class VirtualCad {
-    /** 内蔵 CAD の装弾数。機械の術式弾スロットの数と同じ。 */
-    public static final int SOCKETS = 8;
+    /** 内蔵 CAD の装弾数。機械の術式弾スロットの数と同じで、Psi の CAD が持てる上限にする。 */
+    public static final int SOCKETS = ISocketable.MAX_ASSEMBLER_SLOTS;
     /** 内蔵 CAD の性能値。容量（バッテリーなしで 0）は使わない。 */
     public static final Map<EnumCADStat, Integer> FIXED_STATS = fixedStats();
     /** 内蔵 CAD の目印。{@link #onCadStat} はこれが付いた CAD の性能値だけを置き換える。 */

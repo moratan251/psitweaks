@@ -15,6 +15,7 @@ import com.moratan251.psitweaks.common.network.MessageAutonomousCasterLog;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,11 +28,13 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -59,6 +62,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -108,17 +112,20 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     public static final int MAX_PITCH = 90;
 
     // GUI 上のスロット位置（アイテム描画位置）
-    public static final int SLOT_ROW_Y = 18;
+    /** 術式弾スロットは左上に横6個×2段で並べる。 */
+    public static final int BULLET_COLUMNS = 6;
     public static final int BULLET_X = 8;
+    public static final int BULLET_Y = 18;
     public static final int ITEM_X = 8;
     /** ホットバー以外の27スロット（3段）の上端。 */
-    public static final int ITEM_Y = 40;
+    public static final int ITEM_Y = 58;
     /** ホットバーの段。プレイヤーのインベントリと同じく、上の3段から 4 px 離す。 */
-    public static final int HOTBAR_Y = 98;
-    public static final int ECHO_SLOT_X = 8;
-    public static final int ECHO_SLOT_Y = 120;
+    public static final int HOTBAR_Y = 116;
+    /** エコー補充スロットと着色器スロットは、右上のゲージの右に縦に並べる。 */
+    public static final int ECHO_SLOT_X = 152;
+    public static final int ECHO_SLOT_Y = 18;
     public static final int DYE_SLOT_X = 152;
-    public static final int DYE_SLOT_Y = 120;
+    public static final int DYE_SLOT_Y = 36;
 
     /** 詠唱に成功した後、稼働表示を続ける tick 数。 */
     private static final int ACTIVE_TICKS_AFTER_CAST = 10;
@@ -144,6 +151,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private static final String TAG_OWNER_LANGUAGE = "OwnerLanguage";
     private static final String TAG_OWNER_NAME = "OwnerName";
     private static final String TAG_OWNER_NAME_OF = "OwnerNameOf";
+    private static final String TAG_BULLET_SLOTS = "BulletSlots";
+    /** 保存時の術式弾スロットの数を記録していなかった頃（術式弾が8個だった頃）の数。 */
+    private static final int UNRECORDED_BULLET_SLOTS = 8;
 
     private static final String ERROR_PREFIX = "psitweaks.autonomous_caster.error.";
 
@@ -265,7 +275,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         List<IInventorySlot> bullets = new ArrayList<>(BULLET_SLOTS);
         for (int i = 0; i < BULLET_SLOTS; i++) {
             bullets.add(builder.addSlot(BasicInventorySlot.at(AutonomousCasterBlockEntity::isBulletCandidate, bulletListener,
-                    BULLET_X + i * 18, SLOT_ROW_Y, 1)));
+                    bulletSlotX(i), bulletSlotY(i), 1)));
         }
         bulletSlots = List.copyOf(bullets);
 
@@ -1085,10 +1095,41 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         tag.remove(TAG_PSI);
     }
 
+    /** 術式弾スロットが今より少なかった頃に回収した機械は、足りない術式弾スロットの分だけ空きを挟んで番号を合わせる。 */
+    @Override
+    public void applyInventorySlots(@NotNull BlockEntity.DataComponentInput input, @NotNull List<IInventorySlot> slots,
+            @NotNull AttachedItems attachedItems) {
+        int missing = slots.size() - attachedItems.size();
+        if (missing > 0 && missing < BULLET_SLOTS) {
+            List<ItemStack> stacks = new ArrayList<>(attachedItems.containers());
+            stacks.addAll(BULLET_SLOTS - missing, Collections.nCopies(missing, ItemStack.EMPTY));
+            attachedItems = new AttachedItems(stacks);
+        }
+        super.applyInventorySlots(input, slots, attachedItems);
+    }
+
+    /** 術式弾スロットが今より少なかった頃に保存した機械は、術式弾より後ろのスロットの番号を増えた分だけずらして読む。 */
+    private static CompoundTag withCurrentSlotNumbers(CompoundTag tag) {
+        int saved = tag.contains(TAG_BULLET_SLOTS) ? tag.getInt(TAG_BULLET_SLOTS) : UNRECORDED_BULLET_SLOTS;
+        if (saved >= BULLET_SLOTS || !tag.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
+            return tag;
+        }
+        CompoundTag moved = tag.copy();
+        for (Tag entry : moved.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND)) {
+            CompoundTag item = (CompoundTag) entry;
+            int slot = item.getByte(SerializationConstants.SLOT);
+            if (slot >= saved) {
+                item.putByte(SerializationConstants.SLOT, (byte) (slot + BULLET_SLOTS - saved));
+            }
+        }
+        return moved;
+    }
+
     @Override
     public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt(TAG_PSI, psi);
+        tag.putInt(TAG_BULLET_SLOTS, BULLET_SLOTS);
         tag.putInt(TAG_SELECTED_BULLET, selectedBullet);
         tag.putInt(TAG_SELECTED_ITEM, selectedItemSlot);
         tag.putInt(TAG_TRIGGER_MODE, triggerMode.ordinal());
@@ -1127,7 +1168,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     @Override
     public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+        super.loadAdditional(withCurrentSlotNumbers(tag), registries);
         psi = Math.max(0, tag.getInt(TAG_PSI));
         selectedBullet = Mth.clamp(tag.getInt(TAG_SELECTED_BULLET), 0, BULLET_SLOTS - 1);
         selectedItemSlot = Mth.clamp(tag.getInt(TAG_SELECTED_ITEM), 0, HOTBAR_SLOTS - 1);
@@ -1224,6 +1265,14 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     // ---- GUI 用 ----
+
+    public static int bulletSlotX(int slot) {
+        return BULLET_X + slot % BULLET_COLUMNS * 18;
+    }
+
+    public static int bulletSlotY(int slot) {
+        return BULLET_Y + slot / BULLET_COLUMNS * 18;
+    }
 
     public IChemicalTank getEchoTank() {
         return echoTank;

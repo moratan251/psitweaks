@@ -172,10 +172,10 @@ final class AutonomousCasterTranslations {
     private void addBook() {
         put(BOOK,
                 "A machine that casts Spell Bullets by itself, using its own Psi instead of yours.$(p)"
-                        + "Put Spell Bullets in the top row of slots, pick one in the $(item)Config$(0) window, and send a redstone signal. "
+                        + "Put Spell Bullets in the 12 slots at the top left, pick one in the $(item)Config$(0) window, and send a redstone signal. "
                         + "Internal Psi is restored from $(item)Psionic Echo Gas$(0).",
                 "術式弾を自分のPsiで自律的に詠唱する機械です. 使用者のPsiは消費しません.$(p)"
-                        + "上段のスロットに術式弾を入れて$(item)設定$(0)ウィンドウで選択し, レッドストーン信号を送ると詠唱します. "
+                        + "左上の12スロットに術式弾を入れて$(item)設定$(0)ウィンドウで選択し, レッドストーン信号を送ると詠唱します. "
                         + "内部Psiは$(item)気化サイオニックエコー$(0)から回復します.");
         put(BOOK + ".1",
                 "$(li)$(item)Pulse$(0): casts once when the redstone signal turns on."
@@ -208,20 +208,20 @@ final class AutonomousCasterTranslations {
                         + "$(p)術式によるスロットの切り替えでは引き継がれます.");
         put(BOOK + ".3",
                 fixedStats("The internal CAD has fixed stats: Efficiency %d, Potency %d, Complexity %d, Projection %d, "
-                        + "Bandwidth %d, Memory %d. A colorizer in the slot right of the gauges changes the spell color.$(p)")
+                        + "Bandwidth %d, Memory %d. A colorizer in the lower slot right of the gauges changes the spell color.$(p)")
                         + "The 36 slots below are the caster's inventory with its hotbar in the bottom row, "
                         + "and the selected hotbar slot counts as the held item. Items that do not fit drop in front of the machine.",
                 fixedStats("内部CADの性能値は固定で, 効率%d・規模%d・複雑性%d・作動量%d・帯域幅%d・メモリ%dです. "
-                        + "ゲージ右のスロットに着色器を入れると術式の色が変わります.$(p)")
+                        + "ゲージ右の下のスロットに着色器を入れると術式の色が変わります.$(p)")
                         + "下の36スロットは詠唱主体のインベントリで, 最下段がホットバーです. "
                         + "選択中のホットバーのスロットが手に持っている扱いになります. 入りきらないアイテムは機械の正面に落ちます.");
         put(BOOK + ".4",
                 "By default, 250 mB of $(item)Psionic Echo Gas$(0) restores 25 Psi, up to 10,000 Psi. "
-                        + "Feed the gas from any side, or use the slot left of the gauges. "
+                        + "Feed the gas from any side, or use the upper slot right of the gauges. "
                         + "A side set to $(item)Input (2)$(0) in the side config feeds Spell Bullets into empty bullet slots.$(p)"
                         + "Upgrades cannot be installed. A comparator reads the internal Psi.",
                 "初期設定では, $(item)気化サイオニックエコー$(0)250mBでPsiが25回復し, 最大10,000まで貯まります. "
-                        + "気体はどの面からでも搬入でき, ゲージ左のスロットに気体入りアイテムを入れても補充できます. "
+                        + "気体はどの面からでも搬入でき, ゲージ右の上のスロットに気体入りアイテムを入れても補充できます. "
                         + "側面設定を$(item)搬入(2)$(0)にした面からは, 術式弾を空いている術式弾スロットに搬入できます.$(p)"
                         + "アップグレードは搭載できません. コンパレーターで内部Psiの残量を読み取れます.");
         put(BOOK + ".5",

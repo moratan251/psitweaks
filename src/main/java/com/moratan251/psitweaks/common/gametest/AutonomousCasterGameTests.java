@@ -986,6 +986,15 @@ public final class AutonomousCasterGameTests {
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterReadsMachinesSavedWithEightBullets(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.readsMachinesSavedWithEightBullets(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void autonomousCasterIgnoresActionsFromOtherMenus(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {
             helper.succeed();

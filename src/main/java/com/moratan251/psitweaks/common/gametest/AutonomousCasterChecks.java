@@ -12,6 +12,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -31,9 +33,11 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -51,6 +55,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.api.cad.ISocketable;
+import vazkii.psi.api.capability.PsiCapabilities;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.base.ModCADComponents;
@@ -365,7 +371,7 @@ final class AutonomousCasterChecks {
             helper.assertTrue(restored.getItemSlots().get(3).getStack().getCount() == 9
                     && restored.getItemSlots().get(35).getStack().is(Items.BRICK)
                     && restored.getItemSlots().get(35).getStack().getCount() == 6, "The held items did not come back");
-            // 9スロットだった頃の機械と保存の番号を合わせるため、エコー補充スロットはホットバーの直後（19番目）のまま。
+            // 9スロットだった頃の機械と保存の番号を合わせるため、エコー補充スロットはホットバーの直後のまま。
             helper.assertTrue(restored.getInventorySlots(null).get(AutonomousCasterBlockEntity.BULLET_SLOTS + 1
                             + AutonomousCasterBlockEntity.HOTBAR_SLOTS) instanceof ChemicalInventorySlot,
                     "The echo fill slot moved, so machines saved before would load their items into the wrong slots");
@@ -378,6 +384,79 @@ final class AutonomousCasterChecks {
                     "A machine without Psi kept the Psi component");
             helper.succeed();
         });
+    }
+
+    /** 術式弾スロットが8個だった頃に保存・回収した機械を読んでも、中身が元のスロットに戻る。 */
+    static void readsMachinesSavedWithEightBullets(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        ItemStack bullet = AutonomousCasterTestSpells.debugBullet(5);
+        ItemStack dye = new ItemStack(ModCADComponents.cadColorizerRed.get());
+        caster.getBulletSlots().get(7).setStack(bullet.copy());
+        caster.getDyeSlot().setStack(dye.copy());
+        caster.getItemSlots().get(0).setStack(new ItemStack(Items.STONE, 3));
+        caster.getItemSlots().get(35).setStack(new ItemStack(Items.BRICK, 6));
+        helper.runAfterDelay(2, () -> {
+            ISocketable sockets = PsiCapabilities.socketable(caster.getVirtualCad());
+            helper.assertTrue(AutonomousCasterBlockEntity.BULLET_SLOTS == ISocketable.MAX_ASSEMBLER_SLOTS
+                            && sockets != null && sockets.getLastSlot() == AutonomousCasterBlockEntity.BULLET_SLOTS - 1,
+                    "The internal CAD does not have one socket per bullet slot");
+            readsOldSaves(helper, caster, bullet, dye);
+            helper.succeed();
+        });
+    }
+
+    private static void readsOldSaves(GameTestHelper helper, AutonomousCasterBlockEntity caster, ItemStack bullet, ItemStack dye) {
+        HolderLookup.Provider registries = helper.getLevel().registryAccess();
+        List<IInventorySlot> slots = caster.getInventorySlots(null);
+        int oldBullets = 8;
+        int added = AutonomousCasterBlockEntity.BULLET_SLOTS - oldBullets;
+
+        // 今の保存データはそのまま読む。
+        CompoundTag current = caster.saveWithoutMetadata(registries);
+        slots.forEach(IInventorySlot::setEmpty);
+        caster.loadWithComponents(current, registries);
+        assertRestored(helper, caster, bullet, dye, "a machine saved now");
+
+        // 8個だった頃の保存データ: 術式弾より後ろの番号が4つ小さく、術式弾の数を記録していない。
+        CompoundTag old = current.copy();
+        old.remove("BulletSlots");
+        for (Tag entry : old.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND)) {
+            CompoundTag item = (CompoundTag) entry;
+            int slot = item.getByte(SerializationConstants.SLOT);
+            if (slot >= oldBullets) {
+                item.putByte(SerializationConstants.SLOT, (byte) (slot - added));
+            }
+        }
+        slots.forEach(IInventorySlot::setEmpty);
+        caster.loadWithComponents(old, registries);
+        assertRestored(helper, caster, bullet, dye, "a machine saved with 8 bullet slots");
+
+        // 8個だった頃に回収したブロックアイテム: 増えた術式弾スロットの分だけ短い。
+        List<ItemStack> oldStacks = new ArrayList<>();
+        for (int i = 0; i < slots.size(); i++) {
+            if (i < oldBullets || i >= AutonomousCasterBlockEntity.BULLET_SLOTS) {
+                oldStacks.add(slots.get(i).getStack().copy());
+            }
+        }
+        ItemStack machine = new ItemStack(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.asItem());
+        machine.set(MekanismDataComponents.ATTACHED_ITEMS, new AttachedItems(oldStacks));
+        slots.forEach(IInventorySlot::setEmpty);
+        caster.applyComponentsFromItemStack(machine);
+        assertRestored(helper, caster, bullet, dye, "a machine item picked up with 8 bullet slots");
+    }
+
+    private static void assertRestored(GameTestHelper helper, AutonomousCasterBlockEntity caster, ItemStack bullet, ItemStack dye,
+            String source) {
+        List<IInventorySlot> bullets = caster.getBulletSlots();
+        helper.assertTrue(ItemStack.isSameItemSameComponents(bullets.get(7).getStack(), bullet)
+                        && bullets.subList(8, bullets.size()).stream().allMatch(IInventorySlot::isEmpty),
+                "The bullets of " + source + " came back in the wrong slots");
+        helper.assertTrue(ItemStack.isSameItem(caster.getDyeSlot().getStack(), dye),
+                "The colorizer of " + source + " did not come back");
+        helper.assertTrue(caster.getItemSlots().get(0).getStack().is(Items.STONE)
+                        && caster.getItemSlots().get(35).getStack().is(Items.BRICK)
+                        && caster.getItemSlots().get(35).getStack().getCount() == 6,
+                "The items of " + source + " came back in the wrong slots");
     }
 
     static void ignoresActionsFromOtherMenus(GameTestHelper helper) {

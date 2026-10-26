@@ -12,7 +12,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
-import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.Color;
@@ -51,7 +50,8 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new GuiBar.IBarInfoHandler() {
+        // ゲージは術式弾スロットと、右端のエコー補充スロット・着色器スロットの間に縦に置く。
+        addRenderableWidget(new GuiDynamicVerticalRateBar(this, new GuiBar.IBarInfoHandler() {
             @Override
             public Component getTooltip() {
                 return Component.translatable(KEY + "psi", tile.getPsi(), tile.getPsiCapacity(), tile.getRecoveryPerTick());
@@ -62,12 +62,11 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
                 int capacity = tile.getPsiCapacity();
                 return capacity <= 0 ? 0.0D : Math.min(1.0D, tile.getPsi() / (double) capacity);
             }
-        }, 27, 118, 122, Color.ColorFunction.scale(Color.rgb(0x2E4BFF), Color.rgb(0x8FE0FF))));
-        // ゲージは左のエコー補充スロットと右の着色器スロットの間に置く。
+        }, 119, 17, 10, 34, Color.ColorFunction.scale(Color.rgb(0x2E4BFF), Color.rgb(0x8FE0FF))));
         addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(tile.getEchoTank(), tile.getChemicalTanks(null)),
-                27, 128, 122, 8, true));
+                135, 17, 10, 34, false));
 
-        addRenderableWidget(new GuiInnerScreen(this, 7, 140, 162, 12, () -> List.of(statusLine()))
+        addRenderableWidget(new GuiInnerScreen(this, 7, 138, 162, 12, () -> List.of(statusLine()))
                 .tooltip(this::statusDetails)
                 .clearFormat()
                 .padding(3)
@@ -152,8 +151,9 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         renderTitleTextWithOffset(guiGraphics, 0, SETTINGS_BUTTON_X - 2);
         renderInventoryText(guiGraphics);
 
-        int bulletX = AutonomousCasterBlockEntity.BULLET_X + tile.getSelectedBullet() * 18 - 1;
-        guiGraphics.renderOutline(bulletX, AutonomousCasterBlockEntity.SLOT_ROW_Y - 1, 18, 18, BULLET_OUTLINE);
+        int bullet = tile.getSelectedBullet();
+        guiGraphics.renderOutline(AutonomousCasterBlockEntity.bulletSlotX(bullet) - 1, AutonomousCasterBlockEntity.bulletSlotY(bullet) - 1,
+                18, 18, BULLET_OUTLINE);
         int itemX = AutonomousCasterBlockEntity.ITEM_X + tile.getSelectedItemSlot() * 18 - 1;
         guiGraphics.renderOutline(itemX, AutonomousCasterBlockEntity.HOTBAR_Y - 1, 18, 18, ITEM_OUTLINE);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
