@@ -293,7 +293,7 @@ public final class AutonomousCasterGameTests {
         try {
             ItemStack cad = VirtualCad.rebuild(helper.getLevel().registryAccess(), ItemStack.EMPTY, ItemStack.EMPTY);
             helper.assertTrue(VirtualCad.isUsable(cad), "The default virtual CAD is not usable");
-            caster.getInventory().items.set(AutonomousCasterPlayer.CAD_SLOT, cad);
+            caster.getInventory().setItem(AutonomousCasterPlayer.CAD_SLOT, cad);
             Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
             caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
 
@@ -482,7 +482,7 @@ public final class AutonomousCasterGameTests {
         BlockPos chestPos = helper.absolutePos(new BlockPos(1, 1, 1));
         ChestBlockEntity chest = (ChestBlockEntity) helper.getLevel().getBlockEntity(chestPos);
         chest.setItem(0, new ItemStack(Items.DIRT, 64));
-        for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+        for (int i = 0; i < Inventory.INVENTORY_SIZE; i++) {
             caster.getInventory().setItem(i, new ItemStack(Items.STONE, 64));
         }
         var pull = new PieceTrickPullItem(new Spell()) {
@@ -500,14 +500,15 @@ public final class AutonomousCasterGameTests {
                 threw = true;
             }
             helper.assertTrue(threw && chest.getItem(0).getCount() == 64 && caster.getInventory().countItem(Items.DIRT) == 0,
-                    "Pull Item filled the slots that the machine does not show");
-            caster.getInventory().setItem(4, ItemStack.EMPTY);
+                    "Pull Item moved items although the machine slots were full");
+            // ホットバー以外の27枠も機械のスロットなので、そこが空けば引き出す。
+            caster.getInventory().setItem(30, ItemStack.EMPTY);
             try {
                 pull.execute(context);
             } catch (SpellRuntimeException e) {
                 throw new IllegalStateException("Pull Item did not use the free machine slot", e);
             }
-            helper.assertTrue(chest.getItem(0).isEmpty() && caster.getInventory().getItem(4).is(Items.DIRT),
+            helper.assertTrue(chest.getItem(0).isEmpty() && caster.getInventory().getItem(30).is(Items.DIRT),
                     "Pull Item did not move the stack into the free machine slot");
             helper.succeed();
         } finally {
@@ -958,12 +959,12 @@ public final class AutonomousCasterGameTests {
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
-    public static void autonomousCasterMirrorsItsHotbar(GameTestHelper helper) {
+    public static void autonomousCasterMirrorsItsInventory(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {
             helper.succeed();
             return;
         }
-        AutonomousCasterChecks.mirrorsItsHotbar(helper);
+        AutonomousCasterChecks.mirrorsItsInventory(helper);
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)

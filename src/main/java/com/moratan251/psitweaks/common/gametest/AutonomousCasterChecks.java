@@ -22,6 +22,7 @@ import mekanism.api.RelativeSide;
 import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -36,6 +37,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -46,6 +48,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
@@ -200,26 +203,35 @@ final class AutonomousCasterChecks {
         });
     }
 
-    static void mirrorsItsHotbar(GameTestHelper helper) {
+    static void mirrorsItsInventory(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
+        helper.assertTrue(caster.getItemSlots().size() == Inventory.INVENTORY_SIZE, "The machine does not have 36 item slots");
         caster.getItemSlots().get(2).setStack(new ItemStack(Items.STONE, 5));
+        caster.getItemSlots().get(30).setStack(new ItemStack(Items.BRICK, 4));
         helper.runAfterDelay(2, () -> {
             AutonomousCasterPlayer fake = caster.getCaster();
             helper.assertTrue(fake != null, "The machine did not prepare its caster");
             var inventory = fake.getInventory();
             helper.assertTrue(inventory.getItem(2).is(Items.STONE) && inventory.getItem(2).getCount() == 5,
                     "Machine items were not mirrored to the caster's hotbar");
-            helper.assertTrue(inventory.getItem(AutonomousCasterPlayer.CAD_SLOT).getItem() instanceof ICAD,
-                    "The virtual CAD is not in the caster's inventory");
-            // 術式がアイテムを使い、ホットバー外に別のアイテムを受け取り、CAD 枠を空けた場合
+            helper.assertTrue(inventory.getItem(30).is(Items.BRICK) && inventory.getItem(30).getCount() == 4,
+                    "Machine items were not mirrored to the caster's inventory outside the hotbar");
+            helper.assertTrue(inventory.getItem(AutonomousCasterPlayer.CAD_SLOT).getItem() instanceof ICAD
+                            && PsiAPI.getPlayerCADSlot(fake) == AutonomousCasterPlayer.CAD_SLOT,
+                    "Psi does not find the virtual CAD in the caster's inventory");
+            // 術式がアイテムを使い、ホットバー外とオフハンドに別のアイテムを受け取り、CAD 枠を空けた場合
             inventory.getItem(2).shrink(2);
             inventory.setItem(20, new ItemStack(Items.APPLE, 3));
+            inventory.offhand.set(0, new ItemStack(Items.BREAD, 2));
             inventory.setItem(AutonomousCasterPlayer.CAD_SLOT, ItemStack.EMPTY);
             helper.runAfterDelay(2, () -> {
                 helper.assertTrue(caster.getItemSlots().get(2).getStack().getCount() == 3,
                         "Items used by the caster were not taken from the machine");
-                helper.assertTrue(inventory.getItem(20).isEmpty() && count(caster.getItemSlots(), Items.APPLE) == 3,
-                        "Items given to the caster were not stored in the machine");
+                helper.assertTrue(inventory.getItem(20).is(Items.APPLE) && caster.getItemSlots().get(20).getStack().is(Items.APPLE)
+                                && count(caster.getItemSlots(), Items.APPLE) == 3,
+                        "Items given to the caster outside the hotbar did not stay in the same machine slot");
+                helper.assertTrue(inventory.offhand.get(0).isEmpty() && count(caster.getItemSlots(), Items.BREAD) == 2,
+                        "Items given to the caster's off hand were not stored in the machine");
                 helper.assertTrue(inventory.getItem(AutonomousCasterPlayer.CAD_SLOT) == caster.getVirtualCad(),
                         "The virtual CAD was not put back");
                 helper.assertTrue(!caster.getItemSlots().get(0).isItemValid(caster.getVirtualCad().copy()),
@@ -318,6 +330,7 @@ final class AutonomousCasterChecks {
         caster.getBulletSlots().get(1).setStack(bullet.copy());
         caster.getDyeSlot().setStack(dye.copy());
         caster.getItemSlots().get(3).setStack(new ItemStack(Items.STONE, 9));
+        caster.getItemSlots().get(35).setStack(new ItemStack(Items.BRICK, 6));
         caster.setPsi(AutonomousCasterSettings.psiCapacity());
         caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(2000), mekanism.api.Action.EXECUTE,
                 AutomationType.INTERNAL);
@@ -345,7 +358,13 @@ final class AutonomousCasterChecks {
                     "The bullet did not come back");
             helper.assertTrue(ItemStack.isSameItem(restored.getDyeSlot().getStack(), dye),
                     "The colorizer did not come back");
-            helper.assertTrue(restored.getItemSlots().get(3).getStack().getCount() == 9, "The held items did not come back");
+            helper.assertTrue(restored.getItemSlots().get(3).getStack().getCount() == 9
+                    && restored.getItemSlots().get(35).getStack().is(Items.BRICK)
+                    && restored.getItemSlots().get(35).getStack().getCount() == 6, "The held items did not come back");
+            // 9スロットだった頃の機械と保存の番号を合わせるため、エコー補充スロットはホットバーの直後（19番目）のまま。
+            helper.assertTrue(restored.getInventorySlots(null).get(AutonomousCasterBlockEntity.BULLET_SLOTS + 1
+                            + AutonomousCasterBlockEntity.HOTBAR_SLOTS) instanceof ChemicalInventorySlot,
+                    "The echo fill slot moved, so machines saved before would load their items into the wrong slots");
             helper.assertTrue(restored.getEchoTank().getStored() == 2000, "The echo gas did not come back");
             helper.assertTrue(restored.getPsi() == 0 && restored.getLog().isEmpty(), "Psi or the log was carried over");
             helper.succeed();
@@ -380,6 +399,9 @@ final class AutonomousCasterChecks {
                             && caster.getSelectedBullet() == AutonomousCasterBlockEntity.BULLET_SLOTS - 1
                             && caster.getSelectedItemSlot() == 0,
                     "Out-of-range settings were not clamped");
+            AutonomousCasterBlockEntity.handleAction(player, containerId, Action.SELECT_ITEM_SLOT, 20);
+            helper.assertTrue(caster.getSelectedItemSlot() == AutonomousCasterBlockEntity.HOTBAR_SLOTS - 1,
+                    "A slot outside the hotbar was selected as the held item");
             AutonomousCasterBlockEntity.handleAction(player, containerId, Action.CLEAR_LOG, 0);
             helper.assertTrue(caster.getLog().isEmpty(), "Clearing the log from the menu did not work");
         } finally {

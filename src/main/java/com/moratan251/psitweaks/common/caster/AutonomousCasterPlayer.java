@@ -10,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +30,11 @@ import vazkii.psi.common.network.message.MessageSpellError;
 public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStorageOwnerProvider {
     /** Psi と多くの Mod が FakePlayer とみなす角括弧付きの名前。 */
     public static final String NAME = "[PsiAutoCaster]";
-    /** 仮想 CAD を置く通常インベントリ枠。hotbar 外なので機械のアイテム枠と重ならない。 */
-    public static final int CAD_SLOT = 9;
+    /**
+     * 仮想 CAD を置く枠（{@link Inventory#getItem} の番号）。通常インベントリの36枠は
+     * すべて機械のアイテム枠に写すので、頭の防具枠に置く。術式の対象スロット（ホットバー・オフハンド）にもならない。
+     */
+    public static final int CAD_SLOT = Inventory.INVENTORY_SIZE + EquipmentSlot.HEAD.getIndex();
 
     private final UUID casterKey;
     @Nullable

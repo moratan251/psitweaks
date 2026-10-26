@@ -1,14 +1,10 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import java.util.function.Predicate;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
-import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
@@ -23,8 +19,9 @@ public class PieceTrickPullItem extends PieceTrickItemTransferBase {
     protected boolean transfer(SpellContext context, IItemHandler handler, Predicate<ItemStack> filter, int limit)
             throws SpellRuntimeException {
         // Inventory.add はクリエイティブでは失敗時にスタックを消去する仕様のため、
-        // IItemHandler 経由のシミュレート→コミットで正確に移動量を確定する
-        IItemHandler playerHandler = receiver(context.caster);
+        // IItemHandler 経由のシミュレート→コミットで正確に移動量を確定する。
+        // 自律詠唱機の詠唱主体も、通常インベントリの36枠がそのまま機械のアイテムスロットに写る。
+        IItemHandler playerHandler = new PlayerMainInvWrapper(context.caster.getInventory());
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack slotStack = handler.getStackInSlot(slot);
             if (slotStack.isEmpty() || !filter.test(slotStack)) {
@@ -47,14 +44,5 @@ public class PieceTrickPullItem extends PieceTrickItemTransferBase {
             return true;
         }
         return false;
-    }
-
-    /**
-     * 引き出し先。自律詠唱機の詠唱主体は、機械のアイテム枠に写るホットバーだけを使う。残りの枠は毎 tick 機械へ戻され、
-     * 入らない分は前面に落ちるので、そこへ入れると満杯で止まらず、箱の中身を床へ出し続けてしまう。
-     */
-    private static IItemHandler receiver(Player caster) {
-        PlayerMainInvWrapper main = new PlayerMainInvWrapper(caster.getInventory());
-        return caster instanceof AutonomousCasterPlayer ? new RangedWrapper(main, 0, Inventory.getSelectionSize()) : main;
     }
 }

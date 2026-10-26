@@ -49,8 +49,8 @@ final class AutonomousCasterTranslations {
         put(GUI + "bullet.tooltip", "Select the Spell Bullet to cast", "詠唱する術式弾を選びます");
         put(GUI + "item", "Slot %s", "スロット %s");
         put(GUI + "item.tooltip",
-                "Select the slot the spell treats as the held item. The 9 slots act as the caster's hotbar",
-                "術式が手に持っているとみなすスロットを選びます。9個のスロットは詠唱主体のホットバーです");
+                "Select the slot the spell treats as the held item. The bottom row of 9 slots is the caster's hotbar",
+                "術式が手に持っているとみなすスロットを選びます。最下段の9個のスロットが詠唱主体のホットバーです");
         put(GUI + "interval", "Interval: %st", "間隔: %st");
         put(GUI + "interval.tooltip",
                 "Minimum ticks between casts (4 or more). Press Enter to apply",
@@ -74,6 +74,11 @@ final class AutonomousCasterTranslations {
         put(GUI + "cast_now.tooltip",
                 "Cast the selected bullet once for testing. Waits for the cooldown",
                 "選択中の術式弾をテストとして1回詠唱します。クールダウン中は終わってから詠唱します");
+        put(GUI + "settings", "Config", "設定");
+        put(GUI + "settings.tooltip",
+                "Open the window for the selected bullet and held slot, the cast interval, the look angles, the trigger and the loop counter",
+                "選択中の術式弾・手に持つスロット、詠唱間隔、視線の角度、トリガー、ループカウンタを設定するウィンドウを開きます");
+        put(GUI + "settings_window.title", "Config", "設定");
         put(GUI + "log", "Log", "ログ");
         put(GUI + "log.tooltip", "Open the activity log", "作動ログを開きます");
         put(GUI + "sight", "Line of Sight Visuals: %s", "視線の可視化: %s");
@@ -166,19 +171,19 @@ final class AutonomousCasterTranslations {
     private void addBook() {
         put(BOOK,
                 "A machine that casts Spell Bullets by itself, using its own Psi instead of yours.$(p)"
-                        + "Put Spell Bullets in the top row of slots, pick one, and send a redstone signal. "
+                        + "Put Spell Bullets in the top row of slots, pick one in the $(item)Config$(0) window, and send a redstone signal. "
                         + "Internal Psi is restored from $(item)Psionic Echo Gas$(0).",
                 "術式弾を自分のPsiで自律的に詠唱する機械です. 使用者のPsiは消費しません.$(p)"
-                        + "上段のスロットに術式弾を入れて選択し, レッドストーン信号を送ると詠唱します. "
+                        + "上段のスロットに術式弾を入れて$(item)設定$(0)ウィンドウで選択し, レッドストーン信号を送ると詠唱します. "
                         + "内部Psiは$(item)気化サイオニックエコー$(0)から回復します.");
         put(BOOK + ".1",
                 "$(li)$(item)Pulse$(0): casts once when the redstone signal turns on."
                         + "$(li)$(item)Level$(0): casts at the cast interval while powered."
-                        + "$(li)The $(item)Cast$(0) button in the GUI casts once for testing."
+                        + "$(li)The $(item)Cast$(0) button in the $(item)Config$(0) window casts once for testing."
                         + "$(p)Signals during the cooldown are ignored. The interval cannot go below 4 ticks.",
                 "$(li)$(item)パルス$(0): レッドストーン信号が入った瞬間に1回詠唱します."
                         + "$(li)$(item)レベル$(0): 信号が入っている間, 詠唱間隔ごとに詠唱します."
-                        + "$(li)GUIの$(item)詠唱$(0)ボタンで1回だけテスト詠唱できます."
+                        + "$(li)$(item)設定$(0)ウィンドウの$(item)詠唱$(0)ボタンで1回だけテスト詠唱できます."
                         + "$(p)クールダウン中の信号は無視されます. 詠唱間隔は4tick未満にできません.");
         put(BOOK + ".2",
                 "The caster stands at the front face and looks where $(item)Yaw$(0) and $(item)Pitch$(0) point. "
@@ -203,12 +208,12 @@ final class AutonomousCasterTranslations {
         put(BOOK + ".3",
                 fixedStats("The internal CAD has fixed stats: Efficiency %d, Potency %d, Complexity %d, Projection %d, "
                         + "Bandwidth %d, Memory %d. A colorizer in the slot right of the gauges changes the spell color.$(p)")
-                        + "The nine slots below are the caster's hotbar, and the selected one counts as the held item. "
-                        + "Items that do not fit drop in front of the machine.",
+                        + "The 36 slots below are the caster's inventory with its hotbar in the bottom row, "
+                        + "and the selected hotbar slot counts as the held item. Items that do not fit drop in front of the machine.",
                 fixedStats("内部CADの性能値は固定で, 効率%d・規模%d・複雑性%d・作動量%d・帯域幅%d・メモリ%dです. "
                         + "ゲージ右のスロットに着色器を入れると術式の色が変わります.$(p)")
-                        + "下段の9スロットは詠唱主体のホットバーで, 選択中のスロットが手に持っている扱いになります. "
-                        + "入りきらないアイテムは機械の正面に落ちます.");
+                        + "下の36スロットは詠唱主体のインベントリで, 最下段がホットバーです. "
+                        + "選択中のホットバーのスロットが手に持っている扱いになります. 入りきらないアイテムは機械の正面に落ちます.");
         put(BOOK + ".4",
                 "By default, 250 mB of $(item)Psionic Echo Gas$(0) restores 25 Psi, up to 10,000 Psi. "
                         + "Feed the gas from any side, or use the slot left of the gauges. "

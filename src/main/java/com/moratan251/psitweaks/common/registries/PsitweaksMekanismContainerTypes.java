@@ -28,10 +28,10 @@ public final class PsitweaksMekanismContainerTypes {
                     .armorSideBar(180, 41, 0)
                     .build();
 
-    /** 操作行とステータス表示のために縦を 74 px 伸ばす（プレイヤーインベントリは y=158）。 */
+    /** 36個のアイテムスロットとステータス表示のために縦を 84 px 伸ばす（プレイヤーインベントリは y=168）。 */
     public static final ContainerTypeRegistryObject<MekanismTileContainer<AutonomousCasterBlockEntity>> AUTONOMOUS_CASTER =
             CONTAINER_TYPES.custom(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER, AutonomousCasterBlockEntity.class)
-                    .offset(0, 74)
+                    .offset(0, 84)
                     .build();
 
     private PsitweaksMekanismContainerTypes() {

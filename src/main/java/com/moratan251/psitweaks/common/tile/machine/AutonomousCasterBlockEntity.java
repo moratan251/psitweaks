@@ -87,15 +87,18 @@ import vazkii.psi.common.item.ItemLoopcastSpellBullet;
 /**
  * 自律詠唱機。レッドストーン入力をトリガーに、選択した術式弾を専用 Caster と内蔵仮想 CAD で詠唱する。
  * <p>
- * 詠唱コストは気化サイオニックエコーから回復する内部 Psi だけで払う。機械の9スロットは Caster の hotbar 0〜8 へ
- * 写像し、術式による消費・変化を毎 tick 書き戻す。Caster 宛てのメッセージは作動ログへ集める。
+ * 詠唱コストは気化サイオニックエコーから回復する内部 Psi だけで払う。機械の36スロットは Caster の通常インベントリ
+ * （ホットバーと残りの27枠）へ写像し、術式による消費・変化を毎 tick 書き戻す。Caster 宛てのメッセージは作動ログへ集める。
  */
 public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost, IHasVisualization {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     /** 術式弾スロットの数。内蔵 CAD の装弾数と同じで、選択中のスロットは内蔵 CAD の選択ソケットと同期する。 */
     public static final int BULLET_SLOTS = VirtualCad.SOCKETS;
-    public static final int ITEM_SLOTS = 9;
+    /** アイテムスロットの数。Caster の通常インベントリと同じで、番号も同じ（0〜8 がホットバー）。 */
+    public static final int ITEM_SLOTS = Inventory.INVENTORY_SIZE;
+    /** 手に持つスロットとして選べるホットバーの数。 */
+    public static final int HOTBAR_SLOTS = Inventory.getSelectionSize();
     public static final int MIN_YAW = -180;
     public static final int MAX_YAW = 180;
     public static final int MIN_PITCH = -90;
@@ -105,11 +108,14 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     public static final int SLOT_ROW_Y = 18;
     public static final int BULLET_X = 8;
     public static final int ITEM_X = 8;
+    /** ホットバー以外の27スロット（3段）の上端。 */
     public static final int ITEM_Y = 40;
+    /** ホットバーの段。プレイヤーのインベントリと同じく、上の3段から 4 px 離す。 */
+    public static final int HOTBAR_Y = 98;
     public static final int ECHO_SLOT_X = 8;
-    public static final int ECHO_SLOT_Y = 63;
+    public static final int ECHO_SLOT_Y = 120;
     public static final int DYE_SLOT_X = 152;
-    public static final int DYE_SLOT_Y = 63;
+    public static final int DYE_SLOT_Y = 120;
 
     /** 詠唱に成功した後、稼働表示を続ける tick 数。 */
     private static final int ACTIVE_TICKS_AFTER_CAST = 10;
@@ -267,14 +273,20 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         dyeSlot = builder.addSlot(BasicInventorySlot.at(stack -> VirtualCad.acceptsDye(registriesOrNull(), stack),
                 dyeListener, DYE_SLOT_X, DYE_SLOT_Y, 1));
 
+        // 9スロットだった頃の機械の保存データと番号が合うよう、ホットバー・エコー補充スロット・残りの27スロットの順に足す。
         List<IInventorySlot> items = new ArrayList<>(ITEM_SLOTS);
-        for (int i = 0; i < ITEM_SLOTS; i++) {
+        for (int i = 0; i < HOTBAR_SLOTS; i++) {
             items.add(builder.addSlot(BasicInventorySlot.at(AutonomousCasterBlockEntity::isMirrorableItem, listener,
-                    ITEM_X + i * 18, ITEM_Y)));
+                    ITEM_X + i * 18, HOTBAR_Y)));
+        }
+        echoSlot = builder.addSlot(ChemicalInventorySlot.fill(echoTank, listener, ECHO_SLOT_X, ECHO_SLOT_Y));
+        for (int i = HOTBAR_SLOTS; i < ITEM_SLOTS; i++) {
+            int row = i / HOTBAR_SLOTS - 1;
+            int column = i % HOTBAR_SLOTS;
+            items.add(builder.addSlot(BasicInventorySlot.at(AutonomousCasterBlockEntity::isMirrorableItem, listener,
+                    ITEM_X + column * 18, ITEM_Y + row * 18)));
         }
         itemSlots = List.copyOf(items);
-
-        echoSlot = builder.addSlot(ChemicalInventorySlot.fill(echoTank, listener, ECHO_SLOT_X, ECHO_SLOT_Y));
         return builder.build();
     }
 
@@ -402,7 +414,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         VirtualCad.select(virtualCad, selectedBullet);
         AutonomousCasterPlayer current = caster;
         if (current != null) {
-            current.getInventory().items.set(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
+            current.getInventory().setItem(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
         }
         markForSave();
     }
@@ -439,7 +451,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             inventory.items.set(i, stack.copy());
             mirrorSnapshot[i] = stack.copy();
         }
-        inventory.items.set(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
+        inventory.setItem(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
         inventory.selected = selectedItemSlot;
         positionCaster(created);
         caster = created;
@@ -670,8 +682,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     // ---- Caster inventory の写像 ----
 
     /**
-     * 機械の9スロットと Caster の hotbar を突き合わせる。片方だけ変わった側を正とし、両方が同じ種類で変わった場合は
-     * 増減を合算する。収まらないアイテムは空きスロットへ移し、それでも残れば前面に落とす。
+     * 機械の36スロットと Caster の通常インベントリを突き合わせる。片方だけ変わった側を正とし、両方が同じ種類で変わった場合は
+     * 増減を合算する。防具枠（CAD の枠を除く）・オフハンドに入ったものと収まらないアイテムは空きスロットへ移し、
+     * それでも残れば前面に落とす。
      */
     private void reconcileMirror() {
         AutonomousCasterPlayer current = caster;
@@ -684,20 +697,17 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             reconcileSlot(i, inventory, overflow);
         }
 
-        ItemStack cadSlot = inventory.items.get(AutonomousCasterPlayer.CAD_SLOT);
+        ItemStack cadSlot = inventory.getItem(AutonomousCasterPlayer.CAD_SLOT);
         if (cadSlot != virtualCad) {
             if (!cadSlot.isEmpty() && !ItemStack.isSameItemSameComponents(cadSlot, virtualCad)) {
                 overflow.add(cadSlot);
             }
-            inventory.items.set(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
-        }
-        for (int i = ITEM_SLOTS; i < inventory.items.size(); i++) {
-            if (i != AutonomousCasterPlayer.CAD_SLOT) {
-                collectForeign(inventory.items, i, overflow);
-            }
+            inventory.setItem(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
         }
         for (int i = 0; i < inventory.armor.size(); i++) {
-            collectForeign(inventory.armor, i, overflow);
+            if (Inventory.INVENTORY_SIZE + i != AutonomousCasterPlayer.CAD_SLOT) {
+                collectForeign(inventory.armor, i, overflow);
+            }
         }
         for (int i = 0; i < inventory.offhand.size(); i++) {
             collectForeign(inventory.offhand, i, overflow);
@@ -1000,7 +1010,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
                 VirtualCad.select(virtualCad, selectedBullet);
             }
             case SELECT_ITEM_SLOT -> {
-                selectedItemSlot = Mth.clamp(value, 0, ITEM_SLOTS - 1);
+                selectedItemSlot = Mth.clamp(value, 0, HOTBAR_SLOTS - 1);
                 if (caster != null) {
                     caster.getInventory().selected = selectedItemSlot;
                 }
@@ -1090,7 +1100,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         super.loadAdditional(tag, registries);
         psi = Math.max(0, tag.getInt(TAG_PSI));
         selectedBullet = Mth.clamp(tag.getInt(TAG_SELECTED_BULLET), 0, BULLET_SLOTS - 1);
-        selectedItemSlot = Mth.clamp(tag.getInt(TAG_SELECTED_ITEM), 0, ITEM_SLOTS - 1);
+        selectedItemSlot = Mth.clamp(tag.getInt(TAG_SELECTED_ITEM), 0, HOTBAR_SLOTS - 1);
         triggerMode = TriggerMode.byIndex(tag.getInt(TAG_TRIGGER_MODE));
         castInterval = tag.contains(TAG_CAST_INTERVAL)
                 ? AutonomousCasterSettings.clampCastInterval(tag.getInt(TAG_CAST_INTERVAL))
@@ -1128,7 +1138,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         container.track(SyncableInt.create(AutonomousCasterSettings::psiCapacity, value -> clientPsiCapacity = Math.max(1, value)));
         container.track(SyncableInt.create(AutonomousCasterSettings::minCastInterval, value -> clientMinCastInterval = value));
         container.track(SyncableInt.create(() -> selectedBullet, value -> selectedBullet = Mth.clamp(value, 0, BULLET_SLOTS - 1)));
-        container.track(SyncableInt.create(() -> selectedItemSlot, value -> selectedItemSlot = Mth.clamp(value, 0, ITEM_SLOTS - 1)));
+        container.track(SyncableInt.create(() -> selectedItemSlot, value -> selectedItemSlot = Mth.clamp(value, 0, HOTBAR_SLOTS - 1)));
         container.track(SyncableEnum.create(TriggerMode::byIndex, TriggerMode.PULSE, () -> triggerMode, value -> triggerMode = value));
         container.track(SyncableInt.create(() -> castInterval, value -> castInterval = value));
         container.track(SyncableInt.create(() -> yawOffset, value -> yawOffset = value));
