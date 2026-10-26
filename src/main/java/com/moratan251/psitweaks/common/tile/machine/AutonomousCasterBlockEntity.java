@@ -91,7 +91,8 @@ import vazkii.psi.common.item.ItemCAD;
 public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final int BULLET_SLOTS = 8;
+    /** 術式弾スロットの数。内蔵 CAD の装弾数と同じで、選択中のスロットは内蔵 CAD の選択ソケットと同期する。 */
+    public static final int BULLET_SLOTS = VirtualCad.SOCKETS;
     public static final int ITEM_SLOTS = 9;
     public static final int MIN_YAW = -180;
     public static final int MAX_YAW = 180;
@@ -286,6 +287,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             refreshVirtualCad();
         }
         ensureCaster();
+        adoptSelectedSlot();
         if (virtualCad.getItem() instanceof ICAD cad) {
             cad.incrementTime(virtualCad);
             markForSave();
@@ -386,6 +388,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private void refreshVirtualCad() {
         virtualCadDirty = false;
         virtualCad = VirtualCad.rebuild(registriesOrNull(), dyeSlot.getStack(), virtualCad);
+        VirtualCad.select(virtualCad, selectedBullet);
         AutonomousCasterPlayer current = caster;
         if (current != null) {
             current.getInventory().items.set(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
@@ -430,6 +433,23 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         positionCaster(created);
         caster = created;
         casterPsiWritten = -1;
+    }
+
+    /**
+     * 術式（Trick: Spin Chamber・Trick: Russian Roulette）が内蔵 CAD の選択ソケットを変えていたら、選択中の術式弾スロットに
+     * 取り込む。術式円など後から動く術式の分も拾えるよう、詠唱の後と毎 tick に見る。
+     */
+    private void adoptSelectedSlot() {
+        int selected = VirtualCad.selectedSlot(virtualCad);
+        if (selected < 0 || selected == selectedBullet) {
+            return;
+        }
+        if (selected < BULLET_SLOTS) {
+            selectedBullet = selected;
+            markForSave();
+        } else {
+            VirtualCad.select(virtualCad, selectedBullet);
+        }
     }
 
     /** 視点を機械の前面に置き、設定された向きを向かせる。 */
@@ -507,9 +527,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         if (level == null) {
             return;
         }
-        ItemStack bullet = bulletSlots.get(selectedBullet).getStack();
+        // 術式が Trick: Spin Chamber などで選択スロットを変えても、この詠唱の分はこのスロットとして数える。
+        int slot = selectedBullet;
+        ItemStack bullet = bulletSlots.get(slot).getStack();
         if (bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {
-            fail(error("no_spell", selectedBullet + 1));
+            fail(error("no_spell", slot + 1));
             return;
         }
         if (psi <= 0) {
@@ -537,7 +559,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         resetLoopcast(data);
 
         long revisionBefore = log.revision();
-        int loopIndex = loopCounters[selectedBullet];
+        int loopIndex = loopCounters[slot];
+        VirtualCad.select(virtualCad, slot);
         Optional<ArrayList<Entity>> result;
         boolean crashed = false;
         try {
@@ -562,10 +585,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         resetLoopcast(data);
         markDirtyComparator();
         reconcileMirror();
+        adoptSelectedSlot();
 
         if (result.isPresent()) {
-            if (loopCounters[selectedBullet] < Integer.MAX_VALUE) {
-                loopCounters[selectedBullet]++;
+            if (loopCounters[slot] < Integer.MAX_VALUE) {
+                loopCounters[slot]++;
             }
             lastOutcome = Outcome.SUCCESS;
             activeTicks = ACTIVE_TICKS_AFTER_CAST;
@@ -915,7 +939,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     private void applyAction(Player player, MessageAutonomousCasterAction.Action action, int value) {
         switch (action) {
-            case SELECT_BULLET -> selectedBullet = Mth.clamp(value, 0, BULLET_SLOTS - 1);
+            case SELECT_BULLET -> {
+                selectedBullet = Mth.clamp(value, 0, BULLET_SLOTS - 1);
+                VirtualCad.select(virtualCad, selectedBullet);
+            }
             case SELECT_ITEM_SLOT -> {
                 selectedItemSlot = Mth.clamp(value, 0, ITEM_SLOTS - 1);
                 if (caster != null) {

@@ -209,6 +209,23 @@ final class AutonomousCasterTranslations {
                 "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)"
                         + "デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. "
                         + "機械を回収するとアイテムと気体は残りますが, Psi・設定・ログと内部CADのメモリは初期化されます.");
+        put(BOOK + ".6",
+                "$(item)Trick: Spin Chamber$(0) and $(item)Trick: Russian Roulette$(0) switch the machine's selected "
+                        + "Spell Bullet slot, as they switch a CAD's selected bullet.$(p)"
+                        + "Spells that need a screen, the caster's recorded movement or a CAD battery do nothing in the machine. "
+                        + "They are listed on the next page.",
+                "$(item)Trick: Spin Chamber$(0)と$(item)Trick: Russian Roulette$(0)は, CADの選択中の術式弾と同じように, "
+                        + "機械の選択中の術式弾スロットを切り替えます.$(p)"
+                        + "画面・術者の動きの記録・CADのバッテリーを使う術式は, 機械では効果がありません. 一覧は次のページにあります.");
+        put(BOOK + ".7",
+                "These do nothing when the machine casts them:"
+                        + "$(li)Trick: Eidos Anchor$(li)Trick: Eidos Reversal$(li)Selector: Eidos Changelog"
+                        + "$(li)Selector: Caster Battery"
+                        + "$(li)Trick: Ender Chest$(li)Trick: Crafting Table$(li)Trick: View Ideaspace Storage",
+                "次の術式は, 機械で詠唱しても効果がありません:"
+                        + "$(li)作動式: エイドスアンカー$(li)作動式: エイドスリバーサル$(li)取得子: エイドス変更履歴"
+                        + "$(li)Selector: Caster Battery"
+                        + "$(li)作動式: エンダーチェスト$(li)作動式: 作業台$(li)作動式: イデアストレージ閲覧");
     }
 
     /** 内蔵 CAD の固定性能値を、効率・規模・複雑性・作動量・帯域幅・メモリの順に埋め込む。 */

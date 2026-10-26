@@ -15,6 +15,8 @@ import vazkii.psi.api.cad.CADStatEvent;
 import vazkii.psi.api.cad.EnumCADComponent;
 import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.api.cad.ISocketable;
+import vazkii.psi.api.capability.PsiCapabilities;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.base.ModCADComponents;
 import vazkii.psi.common.item.base.ModDataComponents;
@@ -26,9 +28,15 @@ import vazkii.psi.common.item.data.CADDataValue;
  * 性能値は部品に依らず {@link #FIXED_STATS} に固定する。CAD として組み立てるための素体・コア・弾倉は隠し部品で、
  * 機械のスロットに入れられるのは着色器だけ。バッテリーは持たず、詠唱コストは機械の内部 Psi だけから払う。
  * 時刻・ベクトル記憶・Psitweaks の記憶領域は組み替えても引き継ぐ。
+ * <p>
+ * 装弾数は機械の術式弾スロットの数（{@link #SOCKETS}）に固定する。弾倉に弾は入れず、選択ソケット（{@link #selectedSlot}）を
+ * 機械の選択中の術式弾スロットと同じにしておくので、Trick: Spin Chamber・Trick: Russian Roulette が選ぶソケットは
+ * そのまま機械のスロットになる。
  */
 public final class VirtualCad {
-    /** 内蔵 CAD の性能値。装弾数（術式弾は機械の8スロット）と容量（バッテリーなしで 0）は使わない。 */
+    /** 内蔵 CAD の装弾数。機械の術式弾スロットの数と同じ。 */
+    public static final int SOCKETS = 8;
+    /** 内蔵 CAD の性能値。容量（バッテリーなしで 0）は使わない。 */
     public static final Map<EnumCADStat, Integer> FIXED_STATS = fixedStats();
     /** 内蔵 CAD の目印。{@link #onCadStat} はこれが付いた CAD の性能値だけを置き換える。 */
     private static final String TAG_VIRTUAL_CAD = "psitweaks_autonomous_caster_cad";
@@ -76,6 +84,20 @@ public final class VirtualCad {
         return custom != null && custom.contains(TAG_VIRTUAL_CAD);
     }
 
+    /** 内蔵 CAD の選択ソケット（機械の選択中の術式弾スロットに対応する）。CAD でなければ -1。 */
+    public static int selectedSlot(ItemStack cad) {
+        ISocketable sockets = cad.isEmpty() ? null : PsiCapabilities.socketable(cad);
+        return sockets == null ? -1 : sockets.getSelectedSlot();
+    }
+
+    /** 内蔵 CAD の選択ソケットを、機械の選択中の術式弾スロットに合わせる。 */
+    public static void select(ItemStack cad, int slot) {
+        ISocketable sockets = PsiCapabilities.socketable(cad);
+        if (sockets != null && sockets.getSelectedSlot() != slot) {
+            sockets.setSelectedSlot(slot);
+        }
+    }
+
     /** Psi の CADStatEvent handler。内蔵 CAD の性能値を固定値に置き換える。 */
     public static void onCadStat(CADStatEvent event) {
         Integer fixed = FIXED_STATS.get(event.getStat());
@@ -91,6 +113,7 @@ public final class VirtualCad {
         stats.put(EnumCADStat.COMPLEXITY, 46);
         stats.put(EnumCADStat.PROJECTION, 10);
         stats.put(EnumCADStat.BANDWIDTH, 9);
+        stats.put(EnumCADStat.SOCKETS, SOCKETS);
         stats.put(EnumCADStat.SAVED_VECTORS, 21);
         return Collections.unmodifiableMap(stats);
     }

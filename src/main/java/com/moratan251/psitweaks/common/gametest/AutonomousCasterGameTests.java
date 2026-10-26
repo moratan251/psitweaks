@@ -1011,6 +1011,24 @@ public final class AutonomousCasterGameTests {
         AutonomousCasterChecks.keepsPsiReturnedAfterTheCast(helper);
     }
 
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterSpinChamberMovesTheBulletSlot(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.spinChamberMovesTheSelectedBulletSlot(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 160)
+    public static void autonomousCasterRussianRouletteReselectsTheBulletSlot(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.russianRouletteReselectsTheBulletSlot(helper);
+    }
+
     /** 機械の代わりに Caster の問い合わせへ答える。 */
     private static final class StubHost implements AutonomousCasterHost {
         private final List<Component> messages = new ArrayList<>();

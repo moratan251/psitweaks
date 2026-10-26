@@ -611,6 +611,8 @@
   "psi.book.page.psitweaks_machine.autonomous_caster.3": "内部CADの性能値は固定で, 効率175・規模1500・複雑性46・作動量10・帯域幅9・メモリ21です. ゲージ右のスロットに着色器を入れると術式の色が変わります.$(p)下段の9スロットは詠唱主体のホットバーで, 選択中のスロットが手に持っている扱いになります. 入りきらないアイテムは機械の正面に落ちます.",
   "psi.book.page.psitweaks_machine.autonomous_caster.4": "初期設定では, $(item)気化サイオニックエコー$(0)250mBでPsiが25回復し, 最大10,000まで貯まります. 気体はどの面からでも搬入でき, ゲージ左のスロットに気体入りアイテムを入れても補充できます.$(p)アップグレードは搭載できません. コンパレーターで内部Psiの残量を読み取れます.",
   "psi.book.page.psitweaks_machine.autonomous_caster.5": "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. 機械を回収するとアイテムと気体は残りますが, Psi・設定・ログと内部CADのメモリは初期化されます.",
+  "psi.book.page.psitweaks_machine.autonomous_caster.6": "$(item)Trick: Spin Chamber$(0)と$(item)Trick: Russian Roulette$(0)は, CADの選択中の術式弾と同じように, 機械の選択中の術式弾スロットを切り替えます.$(p)画面・術者の動きの記録・CADのバッテリーを使う術式は, 機械では効果がありません. 一覧は次のページにあります.",
+  "psi.book.page.psitweaks_machine.autonomous_caster.7": "次の術式は, 機械で詠唱しても効果がありません:$(li)作動式: エイドスアンカー$(li)作動式: エイドスリバーサル$(li)取得子: エイドス変更履歴$(li)Selector: Caster Battery$(li)作動式: エンダーチェスト$(li)作動式: 作業台$(li)作動式: イデアストレージ閲覧",
   "psi.book.page.psitweaks_machine.cad_disassembler": "CADを解体して部品を回収するための作業台です. CADを持ってスニーク右クリックすると, 装着されている構成部品と装填済みの術式弾を取り出してCADを分解します.",
   "psi.book.page.psitweaks_machine.material_mutator": "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます.",
   "psi.book.page.psitweaks_machine.program_researcher": "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究のtickあたりの消費電力と時間はJEIで確認できます.",

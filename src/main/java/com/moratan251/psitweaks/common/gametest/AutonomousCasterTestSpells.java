@@ -42,6 +42,26 @@ final class AutonomousCasterTestSpells {
         return bullet(spell);
     }
 
+    /** Trick: Spin Chamber で選択スロットを {@code offset} の向きへ1つ動かす術式。 */
+    static ItemStack spinChamberBullet(double offset) {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_spin_chamber";
+        SpellPiece constant = number(spell, offset);
+        SpellPiece spin = piece(spell, "trick_spin_chamber");
+        connect(spin, SpellParam.GENERIC_NAME_NUMBER, SpellParam.Side.LEFT);
+        place(spell, constant, 3, 4);
+        place(spell, spin, 4, 4);
+        return bullet(spell);
+    }
+
+    /** Trick: Russian Roulette で選択スロットをランダムに選び直す術式。 */
+    static ItemStack russianRouletteBullet() {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_russian_roulette";
+        place(spell, piece(spell, "trick_russian_roulette"), 4, 4);
+        return bullet(spell);
+    }
+
     private static ItemStack bullet(Spell spell) {
         ItemStack bullet = new ItemStack(ModItems.spellBullet.get());
         ItemSpellDrive.setSpell(bullet, spell);

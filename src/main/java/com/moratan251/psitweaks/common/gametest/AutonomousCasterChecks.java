@@ -11,8 +11,10 @@ import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import mekanism.api.AutomationType;
@@ -380,5 +382,60 @@ final class AutonomousCasterChecks {
                             "The caster did not use the owner's Ideaspace Storage");
                 })
                 .thenSucceed();
+    }
+
+    /**
+     * Trick: Spin Chamber は機械の選択中の術式弾スロットを1つ動かす（最後の次は最初、最初の前は最後）。
+     * 動かしても、その詠唱は撃ったスロットの回数として数える。
+     */
+    static void spinChamberMovesTheSelectedBulletSlot(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        FakePlayer player = player(helper);
+        int last = AutonomousCasterBlockEntity.BULLET_SLOTS - 1;
+        caster.setPsi(10_000);
+        caster.getBulletSlots().get(last).setStack(AutonomousCasterTestSpells.spinChamberBullet(1));
+        caster.getBulletSlots().get(0).setStack(AutonomousCasterTestSpells.spinChamberBullet(-1));
+        caster.applySetting(Action.SELECT_BULLET, last, player);
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(caster.getLastOutcome() == AutonomousCasterBlockEntity.Outcome.SUCCESS
+                            && caster.getLoopCounter(last) == 1, "The machine did not cast the Spin Chamber bullet");
+                    helper.assertTrue(caster.getSelectedBullet() == 0,
+                            "Trick: Spin Chamber did not move the last slot on to the first, got " + caster.getSelectedBullet());
+                })
+                .thenExecuteAfter(caster.getCastInterval() + 1, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(caster.getLoopCounter(0) == 1, "The machine did not cast from the new slot");
+                    helper.assertTrue(caster.getSelectedBullet() == last,
+                            "Trick: Spin Chamber did not move the first slot back to the last, got " + caster.getSelectedBullet());
+                })
+                .thenSucceed();
+    }
+
+    /** Trick: Russian Roulette は機械の選択中の術式弾スロットを8つの中からランダムに選び直す。 */
+    static void russianRouletteReselectsTheBulletSlot(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        FakePlayer player = player(helper);
+        caster.setPsi(10_000);
+        for (int i = 0; i < AutonomousCasterBlockEntity.BULLET_SLOTS; i++) {
+            caster.getBulletSlots().get(i).setStack(AutonomousCasterTestSpells.russianRouletteBullet());
+        }
+        caster.applySetting(Action.SET_TRIGGER_MODE, AutonomousCasterBlockEntity.TriggerMode.LEVEL.ordinal(), player);
+        caster.applySetting(Action.SET_INTERVAL, 1, player);
+        Set<Integer> seen = new HashSet<>();
+        helper.onEachTick(() -> seen.add(caster.getSelectedBullet()));
+        helper.setBlock(POS.east(), Blocks.REDSTONE_BLOCK);
+        // 最短間隔で 20 回ほど詠唱する。同じスロットのままである確率は (1/8)^19 未満。
+        helper.runAfterDelay(80, () -> {
+            int casts = 0;
+            for (int i = 0; i < AutonomousCasterBlockEntity.BULLET_SLOTS; i++) {
+                casts += caster.getLoopCounter(i);
+            }
+            helper.assertTrue(casts >= 10, "The machine cast the Russian Roulette bullets only " + casts + " times");
+            helper.assertTrue(seen.size() > 1 && seen.stream().allMatch(slot -> slot >= 0 && slot < AutonomousCasterBlockEntity.BULLET_SLOTS),
+                    "Trick: Russian Roulette did not reselect the machine's bullet slot: " + seen);
+            helper.succeed();
+        });
     }
 }
