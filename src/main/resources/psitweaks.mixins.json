@@ -17,6 +17,7 @@
     "MessageSpamlessChatMixin",
     "PieceOperatorEntityPositionParadeMixin",
     "PieceTrickMassExodusMixin",
+    "ProjectileAutonomousCasterMixin",
     "PsiNetworkAutonomousCasterMixin",
     "RadiationUtilMixin",
     "SpellContextParadeMixin",

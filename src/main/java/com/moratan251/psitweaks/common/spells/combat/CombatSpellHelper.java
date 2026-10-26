@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import java.util.UUID;
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -56,9 +58,12 @@ public final class CombatSpellHelper {
     }
 
     /**
-     * Whether a combat trick of this caster may damage the entity at all: the caster, spectators, armor stands,
-     * the caster's own pets and team mates are never hit; players only when PvP is allowed (and never with the
-     * Safe to Players option).
+     * Whether an attack trick of this caster may hit the entity. Every attack trick uses this one rule, both to pick
+     * targets and to hit them, close to Ars Nouveau's: spectators, armor stands, the caster, the caster's pets and the
+     * caster's allies (the same scoreboard team whatever its friendly fire, and the team mates' pets) are never hit.
+     * Players are never hit with the Safe to Players option (PvP off); otherwise the player decides like a vanilla
+     * hit ({@link Player#canHarmPlayer}: PvP and the player's team). An autonomous caster has its machine owner's UUID
+     * and team, so it spares the owner, the owner's pets and the owner's team mates too.
      */
     public static boolean canHarm(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
         if (!(entity instanceof LivingEntity living) || !living.isAlive() || living.isSpectator()) {
@@ -67,31 +72,54 @@ public final class CombatSpellHelper {
         if (living instanceof ArmorStand) {
             return false;
         }
-        if (caster != null) {
-            if (living == caster || living.getUUID().equals(caster.getUUID())) {
-                return false;
-            }
-            if (caster.isAlliedTo(living)) {
-                return false;
-            }
-            if (living instanceof OwnableEntity ownable) {
-                UUID owner = ownable.getOwnerUUID();
-                if (owner != null && owner.equals(caster.getUUID())) {
-                    return false;
-                }
-            }
+        if (caster != null && (isCasterOrTheirPet(caster, living) || isAlly(caster, living))) {
+            return false;
         }
         if (living instanceof Player player) {
             if (safeToPlayers || player.isCreative()) {
                 return false;
             }
             if (caster instanceof Player casterPlayer) {
-                return casterPlayer.canHarmPlayer(player);
+                return player.canHarmPlayer(casterPlayer);
             }
             // A caster that is gone (logged out, unloaded) only hits players where PvP is on.
-            return caster != null || (player.getServer() != null && player.getServer().isPvpAllowed());
+            return player.getServer() != null && player.getServer().isPvpAllowed();
         }
         return true;
+    }
+
+    /**
+     * For an attack trick's projectile ({@code canHitEntity}): creatures are hit by {@link #canHarm} as the caster who
+     * shot it, so the caster's side lets it pass instead of only the moment after the shot; other entities as vanilla.
+     * The client keeps vanilla's rule, as it does not know the Safe to Players option.
+     */
+    public static boolean canProjectileHarm(Projectile projectile, Entity target, boolean safeToPlayers) {
+        if (projectile.level().isClientSide || !(target instanceof LivingEntity)) {
+            return true;
+        }
+        return canHarm(projectile.getOwner() instanceof LivingEntity owner ? owner : null, target, safeToPlayers);
+    }
+
+    /**
+     * Whether the entity is on the caster's side: the same scoreboard team (whatever its friendly fire), or allied to
+     * the caster by its own rule (a tamed pet whose owner is the caster or on the caster's team, another mod's summon).
+     */
+    public static boolean isAlly(LivingEntity caster, Entity entity) {
+        return caster.isAlliedTo(entity) || entity.isAlliedTo(caster);
+    }
+
+    /**
+     * Whether the entity is the caster or one of the caster's pets, which a caster's own attacks never hit. Matched by
+     * UUID: an autonomous caster has its machine owner's UUID, so the owner and the owner's pets count too.
+     */
+    public static boolean isCasterOrTheirPet(@Nullable LivingEntity caster, @Nullable Entity entity) {
+        if (caster == null || entity == null) {
+            return false;
+        }
+        if (entity == caster || entity.getUUID().equals(caster.getUUID())) {
+            return true;
+        }
+        return entity instanceof OwnableEntity ownable && caster.getUUID().equals(ownable.getOwnerUUID());
     }
 
     /**
@@ -209,6 +237,12 @@ public final class CombatSpellHelper {
     public static LivingEntity findLiving(Level level, @Nullable UUID uuid) {
         if (uuid == null || !(level instanceof ServerLevel serverLevel)) {
             return null;
+        }
+        // 自律詠唱機の詠唱主体はワールドにもプレイヤー一覧にも入らず、所有者の UUID を名乗る。
+        // 術者は CasterIds.idOf（機械ごとの内部キー）で保存するので、本物の所有者より先に引く。
+        Player autonomous = AutonomousCasterRegistry.find(level, uuid);
+        if (autonomous != null) {
+            return autonomous;
         }
         Entity entity = serverLevel.getEntity(uuid);
         if (entity instanceof LivingEntity living) {

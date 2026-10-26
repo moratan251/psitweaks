@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 import vazkii.psi.common.network.message.MessageSpellError;
@@ -17,7 +18,10 @@ import vazkii.psi.common.network.message.MessageSpellError;
 /**
  * 自律詠唱機専用の Caster。
  * <p>
- * 機械ごとのランダム UUID を GameProfile に使い、所有者本人には成り済まさない。
+ * GameProfile の UUID は機械の所有者の UUID（所有者がいなければ機械ごとのランダムな内部キー）にする。
+ * 保護 Mod やキル・ドロップの帰属は所有者として扱う。名前は FakePlayer とわかる {@link #NAME} のまま。
+ * 所有者がオンラインでも術者として本人と取り違えないよう、術者を後から引き直すための保存と
+ * {@link AutonomousCasterRegistry} は機械ごとの内部キー {@link #casterKey()} を使う（{@link CasterIds}）。
  * Psi の FakePlayer 拒否はこのクラスだけを mixin で許可し、Caster 宛てのメッセージは
  * 実プレイヤーへ送らず機械の作動ログへ渡す。
  */
@@ -27,13 +31,24 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
     /** 仮想 CAD を置く通常インベントリ枠。hotbar 外なので機械のアイテム枠と重ならない。 */
     public static final int CAD_SLOT = 9;
 
+    private final UUID casterKey;
     @Nullable
     private AutonomousCasterHost host;
 
-    public AutonomousCasterPlayer(ServerLevel level, UUID casterId, AutonomousCasterHost host) {
-        super(level, new GameProfile(casterId, NAME));
+    /**
+     * @param casterKey 機械ごとのランダムな内部キー。実プレイヤーの UUID とは重ならない
+     * @param owner     名乗る UUID。機械の所有者。不明なら null で、内部キーを名乗る
+     */
+    public AutonomousCasterPlayer(ServerLevel level, UUID casterKey, @Nullable UUID owner, AutonomousCasterHost host) {
+        super(level, new GameProfile(owner != null ? owner : casterKey, NAME));
+        this.casterKey = casterKey;
         this.host = host;
         AutonomousCasterRegistry.register(this);
+    }
+
+    /** 機械ごとの内部キー。術者を UUID で引き直す保存とレジストリに使う。{@link #getUUID()} は所有者の UUID。 */
+    public UUID casterKey() {
+        return casterKey;
     }
 
     /** 機械の撤去・unload 後に呼ぶ。以降の遅延術式や術式エンティティは所有者もログ先も持たない。 */
@@ -63,6 +78,26 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
     public Optional<UUID> ideaStorageOwner() {
         AutonomousCasterHost current = host;
         return current == null ? Optional.empty() : current.ideaStorageOwner();
+    }
+
+    /** 表示名などの言語。FakePlayer の既定（en_us）ではなく、機械所有者の言語を使う。 */
+    @Override
+    public String getLanguage() {
+        AutonomousCasterHost current = host;
+        Optional<String> language = current == null ? Optional.empty() : current.ownerLanguage();
+        return language.orElseGet(super::getLanguage);
+    }
+
+    /**
+     * 所有者のスコアボードのチーム。攻撃術式の味方の判定（{@code isAlliedTo}）と、攻撃を受けるプレイヤー側の判定
+     * （{@code canHarmPlayer}）で、機械を所有者のチームの一員として扱う。所有者が不明なら自分の名前のチーム（通常はなし）。
+     */
+    @Override
+    @Nullable
+    public PlayerTeam getTeam() {
+        AutonomousCasterHost current = host;
+        Optional<String> owner = current == null ? Optional.empty() : current.ownerName();
+        return owner.isPresent() ? level().getScoreboard().getPlayersTeam(owner.get()) : super.getTeam();
     }
 
     /** ワールドスポーン周辺の安全地点探索を省く。位置は詠唱前に必ず設定し直す。 */

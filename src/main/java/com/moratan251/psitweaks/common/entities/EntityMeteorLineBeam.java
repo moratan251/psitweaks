@@ -1,8 +1,10 @@
 package com.moratan251.psitweaks.common.entities;
 
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -12,14 +14,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -50,7 +50,7 @@ public class EntityMeteorLineBeam extends Entity {
 
     public EntityMeteorLineBeam(Level level, LivingEntity caster, Vec3 start, Vec3 direction, double maxDistance) {
         this(PsitweaksEntities.METEOR_LINE_BEAM.get(), level);
-        this.casterUUID = caster.getUUID();
+        this.casterUUID = CasterIds.idOf(caster);
         this.ticksRemaining = DEFAULT_DURATION_TICKS;
         this.totalDuration = DEFAULT_DURATION_TICKS;
         setBeamPositions(caster, start, direction, maxDistance);
@@ -125,13 +125,8 @@ public class EntityMeteorLineBeam extends Entity {
         if (casterUUID == null) {
             return null;
         }
-        if (level() instanceof ServerLevel serverLevel) {
-            Entity entity = serverLevel.getEntity(casterUUID);
-            if (entity instanceof LivingEntity living) {
-                return living;
-            }
-        }
-        return null;
+        // 自律詠唱機の詠唱主体はワールドに入らないため、UUID で引くのは findLiving に任せる。
+        return CombatSpellHelper.findLiving(level(), casterUUID);
     }
 
     private DamageSource createMeteorLineDamageSource(@Nullable LivingEntity caster) {
@@ -147,18 +142,9 @@ public class EntityMeteorLineBeam extends Entity {
         AABB bounds = new AABB(start, end).inflate(1.0D);
         DamageSource damageSource = createMeteorLineDamageSource(caster);
 
-        List<Entity> entities = level().getEntities(this, bounds, entity -> {
-            if (!(entity instanceof LivingEntity living)) {
-                return false;
-            }
-            if (casterUUID != null && living.getUUID().equals(casterUUID)) {
-                return false;
-            }
-            if (safeToPlayers && living instanceof Player) {
-                return false;
-            }
-            return living.getBoundingBox().inflate(HIT_RADIUS).clip(start, end).isPresent();
-        });
+        // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
+        List<Entity> entities = level().getEntities(this, bounds, entity -> CombatSpellHelper.canHarm(caster, entity, safeToPlayers)
+                && entity.getBoundingBox().inflate(HIT_RADIUS).clip(start, end).isPresent());
 
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity living) {

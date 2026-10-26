@@ -396,8 +396,8 @@ public class PsitweaksConfig {
                     .defineInRange("echoPerOperation", 250, 1, 1_000_000);
 
             autonomousCasterPsiPerOperation = builder
-                    .comment("1回のPsi回復で得られるPsi量（スピードアップグレードなしで1tickに1回）",
-                            "Psi restored by one recovery operation (one operation per tick without speed upgrades)")
+                    .comment("1回のPsi回復で得られるPsi量（1tickに1回）",
+                            "Psi restored by one recovery operation (one operation per tick)")
                     .translation("psitweaks.configuration.autonomous_caster.psi_per_operation")
                     .defineInRange("psiPerOperation", 25, 1, 1_000_000);
 

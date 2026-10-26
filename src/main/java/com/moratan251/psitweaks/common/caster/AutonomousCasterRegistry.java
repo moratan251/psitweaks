@@ -10,8 +10,8 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * 稼働中の専用 Caster を UUID から引く弱参照表。
- * 専用 Caster はワールドのプレイヤー一覧に入らないため、術式円などが UUID で術者を探す経路だけに使う。
+ * 稼働中の専用 Caster を機械ごとの内部キー（{@link AutonomousCasterPlayer#casterKey()}）から引く弱参照表。
+ * 専用 Caster はワールドのプレイヤー一覧に入らず、UUID は所有者のものを名乗るため、術式円などが術者を探す経路で使う。
  */
 public final class AutonomousCasterRegistry {
     private static final Map<UUID, WeakReference<AutonomousCasterPlayer>> CASTERS = new ConcurrentHashMap<>();
@@ -20,13 +20,14 @@ public final class AutonomousCasterRegistry {
     }
 
     static void register(AutonomousCasterPlayer caster) {
-        CASTERS.put(caster.getUUID(), new WeakReference<>(caster));
+        CASTERS.put(caster.casterKey(), new WeakReference<>(caster));
     }
 
     static void unregister(AutonomousCasterPlayer caster) {
-        CASTERS.computeIfPresent(caster.getUUID(), (id, reference) -> reference.get() == caster ? null : reference);
+        CASTERS.computeIfPresent(caster.casterKey(), (id, reference) -> reference.get() == caster ? null : reference);
     }
 
+    /** 内部キーの専用 Caster。所有者の UUID では見つからない。 */
     @Nullable
     public static Player find(@Nullable Level level, @Nullable UUID casterId) {
         if (level == null || casterId == null || level.isClientSide) {
@@ -43,7 +44,7 @@ public final class AutonomousCasterRegistry {
         return caster.isAttached() && caster.level() == level ? caster : null;
     }
 
-    /** 構造物のコピーなどで同じ Caster UUID を持つ機械が並んだ時に、後から来た側が UUID を作り直すために使う。 */
+    /** 構造物のコピーなどで同じ内部キーを持つ機械が並んだ時に、後から来た側がキーを作り直すために使う。 */
     public static boolean isInUse(@Nullable UUID casterId) {
         if (casterId == null) {
             return false;

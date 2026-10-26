@@ -1,5 +1,7 @@
 package com.moratan251.psitweaks.common.entities.SpellGram;
 
+import com.moratan251.psitweaks.common.caster.CasterIds;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -157,15 +159,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     protected void applyAreaDamage() {
         LivingEntity caster = getCaster();
         AABB area = getBoundingBox().inflate(getDamageRadius());
-        List<LivingEntity> targets = level().getEntitiesOfClass(LivingEntity.class, area, target -> {
-            if (!target.isAlive()) {
-                return false;
-            }
-            if (caster != null && target.getUUID().equals(caster.getUUID())) {
-                return false;
-            }
-            return canDamageEntity(target);
-        });
+        List<LivingEntity> targets = level().getEntitiesOfClass(LivingEntity.class, area, target -> canDamageEntity(caster, target));
 
         if (targets.isEmpty()) {
             return;
@@ -188,8 +182,9 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return this.damageSources().magic();
     }
 
-    protected boolean canDamageEntity(LivingEntity target) {
-        return true;
+    /** 攻撃術式で共通の命中判定（{@link CombatSpellHelper#canHarm}）。 */
+    protected boolean canDamageEntity(@Nullable LivingEntity caster, LivingEntity target) {
+        return CombatSpellHelper.canHarm(caster, target, false);
     }
 
     protected void onAreaDamageApplied(LivingEntity target, float damage, DamageSource source) {
@@ -345,7 +340,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
             return;
         }
 
-        followTargetUuid = target.getUUID();
+        followTargetUuid = CasterIds.idOf(target);
         setFollowTargetEntityId(target.getId());
     }
 
@@ -370,11 +365,12 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
             return resolvedById;
         }
 
-        if (followTargetUuid == null || !(level() instanceof ServerLevel serverLevel)) {
+        if (followTargetUuid == null || !(level() instanceof ServerLevel)) {
             return null;
         }
 
-        Entity resolvedByUuid = serverLevel.getEntity(followTargetUuid);
+        // 自律詠唱機の詠唱主体はワールドに入らないため、ID では引けず内部キーで引き直す。
+        Entity resolvedByUuid = CasterIds.find(level(), followTargetUuid);
         if (!isValidFollowTarget(resolvedByUuid)) {
             return null;
         }
@@ -401,7 +397,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     }
 
     public void setCaster(@Nullable LivingEntity caster) {
-        this.casterUuid = caster == null ? null : caster.getUUID();
+        this.casterUuid = caster == null ? null : CasterIds.idOf(caster);
     }
 
     @Nullable
@@ -415,13 +411,8 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
             return null;
         }
 
-        if (level() instanceof ServerLevel serverLevel) {
-            Entity entity = serverLevel.getEntity(casterUuid);
-            if (entity instanceof LivingEntity living) {
-                return living;
-            }
-        }
-        return null;
+        // 自律詠唱機の詠唱主体はワールドに入らないため、UUID で引くのは findLiving に任せる。
+        return CombatSpellHelper.findLiving(level(), casterUuid);
     }
 
     @Override
@@ -456,8 +447,8 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         setEntityFollowMode(tag.getBoolean(NBT_ENTITY_FOLLOW_MODE));
         if (tag.hasUUID(NBT_FOLLOW_TARGET_UUID)) {
             followTargetUuid = tag.getUUID(NBT_FOLLOW_TARGET_UUID);
-            if (level() instanceof ServerLevel serverLevel) {
-                Entity followTarget = serverLevel.getEntity(followTargetUuid);
+            if (level() instanceof ServerLevel) {
+                Entity followTarget = CasterIds.find(level(), followTargetUuid);
                 setFollowTargetEntityId(followTarget != null ? followTarget.getId() : NO_FOLLOW_TARGET_ENTITY_ID);
             } else {
                 setFollowTargetEntityId(NO_FOLLOW_TARGET_ENTITY_ID);

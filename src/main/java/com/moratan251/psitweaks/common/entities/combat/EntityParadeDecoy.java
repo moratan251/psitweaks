@@ -1,5 +1,8 @@
 package com.moratan251.psitweaks.common.entities.combat;
 
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -115,7 +118,8 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
 
     /** Copies the owner's look and gear and sets how many hits and ticks the lookalike lasts. */
     public void configure(Player owner, int hits, int lifetimeTicks, int color) {
-        entityData.set(OWNER, Optional.of(owner.getUUID()));
+        // An autonomous caster has its machine owner's UUID; the clients would hide that real player behind this lookalike.
+        entityData.set(OWNER, Optional.of(CasterIds.idOf(owner)));
         entityData.set(COLOR, color & 0xFFFFFF);
         ownerRef = new WeakReference<>(owner);
         setCustomName(owner.getName());
@@ -145,18 +149,25 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     }
 
     public boolean isOwnedBy(Entity entity) {
-        return entity.getUUID().equals(getOwnerUUID());
+        return CasterIds.matches(entity, getOwnerUUID());
     }
 
     /** The owner while it is alive in this level; also finds owners that are not in the world (fake players). */
     @Nullable
     public Player getOwnerPlayer() {
         Player cached = ownerRef != null ? ownerRef.get() : null;
-        if (cached != null && !cached.isRemoved() && cached.level() == level()) {
+        // The autonomous caster's player is never added to the world, so it is never removed either; it is detached instead.
+        boolean detached = cached instanceof AutonomousCasterPlayer caster && !caster.isAttached();
+        if (cached != null && !detached && !cached.isRemoved() && cached.level() == level()) {
             return cached;
         }
         UUID owner = getOwnerUUID();
-        return owner != null ? level().getPlayerByUUID(owner) : null;
+        if (owner == null) {
+            return null;
+        }
+        // An autonomous caster is stored by its machine key, not by the owner's UUID it carries.
+        Player caster = AutonomousCasterRegistry.find(level(), owner);
+        return caster != null ? caster : level().getPlayerByUUID(owner);
     }
 
     public int getColor() {

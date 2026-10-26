@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.*;
@@ -45,7 +46,8 @@ public class PieceTrickStoreEntityUUID extends PieceTrick {
             return null;
         }
 
-        CadPlainMemory.store(context, internalSlot, target.getUUID().toString());
+        // Selector: Stored Entity finds an autonomous caster by its machine key, not by its owner's UUID.
+        CadPlainMemory.store(context, internalSlot, CasterIds.idOf(target).toString());
         CadPlainMemory.markSlotLocked(context, internalSlot);
         return null;
     }

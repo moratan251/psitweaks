@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import mekanism.api.AutomationType;
 import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -35,6 +36,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.common.core.handler.PlayerData;
+import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.base.ModCADComponents;
 
 /** 自律詠唱機ブロックの確認。Mekanism がある時だけ呼ばれ、GameTest holder としては走査されない。 */
@@ -232,6 +235,7 @@ final class AutonomousCasterChecks {
 
     static void restoresPsiFromEcho(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
+        helper.assertTrue(!caster.supportsUpgrades(), "The machine accepts upgrades");
         var hydrogen = ConnectorMekanism.stack(ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen"), 100);
         helper.assertTrue(hydrogen.isEmpty() || !caster.getEchoTank().isValid(hydrogen), "The echo tank accepted another gas");
         caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(1000), mekanism.api.Action.EXECUTE,
@@ -248,12 +252,36 @@ final class AutonomousCasterChecks {
         });
     }
 
+    /** 休眠の後の返却など、詠唱の外で Caster の Psi が増えた分も機械に残る。返却の上限（最大 Psi）は機械の容量。 */
+    static void keepsPsiReturnedAfterTheCast(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        int capacity = AutonomousCasterSettings.psiCapacity();
+        int start = capacity * 4 / 5;
+        int returned = capacity / 10;
+        caster.setPsi(start);
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine has no caster");
+            PlayerData data = PlayerDataHandler.get(fake);
+            helper.assertTrue(data.getTotalPsi() == capacity,
+                    "The caster's max Psi is " + data.getTotalPsi() + " instead of the machine's " + capacity);
+            helper.assertTrue(data.getAvailablePsi() == start, "The caster's Psi does not follow the machine");
+            data.deductPsi(-returned, 0, false, true);
+            helper.runAfterDelay(2, () -> {
+                helper.assertTrue(caster.getPsi() == start + returned,
+                        "Psi returned outside a cast was lost: " + caster.getPsi() + " instead of " + (start + returned));
+                helper.assertTrue(data.getAvailablePsi() == caster.getPsi(), "The caster's Psi does not follow the machine");
+                helper.succeed();
+            });
+        });
+    }
+
     static void keepsContentsWhenBroken(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
         ItemStack bullet = AutonomousCasterTestSpells.debugBullet(5);
-        ItemStack assembly = new ItemStack(ModCADComponents.cadAssemblyPsimetal.get());
+        ItemStack dye = new ItemStack(ModCADComponents.cadColorizerRed.get());
         caster.getBulletSlots().get(1).setStack(bullet.copy());
-        caster.getComponentSlots().get(0).setStack(assembly.copy());
+        caster.getDyeSlot().setStack(dye.copy());
         caster.getItemSlots().get(3).setStack(new ItemStack(Items.STONE, 9));
         caster.setPsi(AutonomousCasterSettings.psiCapacity());
         caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(2000), mekanism.api.Action.EXECUTE,
@@ -280,8 +308,8 @@ final class AutonomousCasterChecks {
             restored.applyComponentsFromItemStack(machine);
             helper.assertTrue(ItemStack.isSameItemSameComponents(restored.getBulletSlots().get(1).getStack(), bullet),
                     "The bullet did not come back");
-            helper.assertTrue(ItemStack.isSameItem(restored.getComponentSlots().get(0).getStack(), assembly),
-                    "The CAD component did not come back");
+            helper.assertTrue(ItemStack.isSameItem(restored.getDyeSlot().getStack(), dye),
+                    "The colorizer did not come back");
             helper.assertTrue(restored.getItemSlots().get(3).getStack().getCount() == 9, "The held items did not come back");
             helper.assertTrue(restored.getEchoTank().getStored() == 2000, "The echo gas did not come back");
             helper.assertTrue(restored.getPsi() == 0 && restored.getLog().isEmpty(), "Psi or the log was carried over");
@@ -326,20 +354,31 @@ final class AutonomousCasterChecks {
         helper.succeed();
     }
 
+    /** 所有者のいない機械の Caster は内部キーを名乗り、所有者が決まると同じキーのまま所有者の UUID を名乗り直す。 */
     static void lendsItsOwnersIdeaStorage(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
         UUID owner = UUID.randomUUID();
-        // GameTestServer にはプロフィールキャッシュが無く、setOwnerUUID は所有者名の解決で落ちるため、保存データとして読み込ませる
-        CompoundTag security = new CompoundTag();
-        security.putUUID("owner", owner);
-        caster.getSecurity().deserialize(security, helper.getLevel().registryAccess());
-        helper.assertTrue(owner.equals(caster.getOwnerUUID()), "The test could not set the machine owner");
-        helper.runAfterDelay(2, () -> {
-            AutonomousCasterPlayer fake = caster.getCaster();
-            helper.assertTrue(fake != null && !fake.getUUID().equals(owner), "The caster impersonated the owner");
-            helper.assertTrue(IdeaStorageOwnerResolver.resolve(fake).equals(Optional.of(owner)),
-                    "The caster did not use the owner's Ideaspace Storage");
-            helper.succeed();
-        });
+        AtomicReference<AutonomousCasterPlayer> ownerless = new AtomicReference<>();
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> {
+                    AutonomousCasterPlayer fake = caster.getCaster();
+                    helper.assertTrue(fake != null && fake.getUUID().equals(fake.casterKey()),
+                            "The caster of an ownerless machine did not carry the machine key");
+                    ownerless.set(fake);
+                    // GameTestServer にはプロフィールキャッシュが無く、setOwnerUUID は所有者名の解決で落ちるため、保存データとして読み込ませる
+                    CompoundTag security = new CompoundTag();
+                    security.putUUID("owner", owner);
+                    caster.getSecurity().deserialize(security, helper.getLevel().registryAccess());
+                    helper.assertTrue(owner.equals(caster.getOwnerUUID()), "The test could not set the machine owner");
+                })
+                .thenExecuteAfter(2, () -> {
+                    AutonomousCasterPlayer fake = caster.getCaster();
+                    helper.assertTrue(fake != null && fake.getUUID().equals(owner), "The caster did not carry its owner's UUID");
+                    helper.assertTrue(fake.casterKey().equals(ownerless.get().casterKey()) && !ownerless.get().isAttached(),
+                            "The caster was not remade under the same machine key");
+                    helper.assertTrue(IdeaStorageOwnerResolver.resolve(fake).equals(Optional.of(owner)),
+                            "The caster did not use the owner's Ideaspace Storage");
+                })
+                .thenSucceed();
     }
 }

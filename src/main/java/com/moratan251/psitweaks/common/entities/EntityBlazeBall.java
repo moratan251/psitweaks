@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -63,6 +64,12 @@ public class EntityBlazeBall extends SmallFireball {
     @Override
     public boolean displayFireAnimation() {
         return true;
+    }
+
+    /** 術者側（術者・術者のペット・味方）と、プレイヤーに安全のときのプレイヤーはすり抜ける。 */
+    @Override
+    protected boolean canHitEntity(Entity target) {
+        return super.canHitEntity(target) && CombatSpellHelper.canProjectileHarm(this, target, safeToPlayers);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities.combat;
 
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.lang.ref.WeakReference;
@@ -38,7 +39,7 @@ public abstract class CombatSpellEntity extends Entity {
 
     /** Sets who cast it, the damage per hit and the colour of its glow. */
     public void configure(LivingEntity caster, boolean safeToPlayers, float damage, int color) {
-        this.casterUuid = caster.getUUID();
+        this.casterUuid = CasterIds.idOf(caster);
         this.casterRef = new WeakReference<>(caster);
         this.safeToPlayers = safeToPlayers;
         this.damage = damage;

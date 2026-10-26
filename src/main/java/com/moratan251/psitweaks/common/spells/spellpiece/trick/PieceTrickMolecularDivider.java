@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityMolecularDivider;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,7 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -116,7 +116,8 @@ public class PieceTrickMolecularDivider extends PieceTrick {
 
         boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
         for (Entity entity : entities) {
-            if (entity instanceof Player && safeToPlayers) {
+            // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
+            if (!CombatSpellHelper.canHarm(context.caster, entity, safeToPlayers)) {
                 continue;
             }
 

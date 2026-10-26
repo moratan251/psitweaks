@@ -2,6 +2,8 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.DropEntry;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.StackAccumulator;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.mojang.logging.LogUtils;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public final class MassBlockBreakScheduler {
             return;
         }
 
-        UUID uuid = player.getUUID();
+        UUID uuid = CasterIds.idOf(player);
         int current = QUEUED_BLOCK_COUNTS.getOrDefault(uuid, 0);
         if (current + positions.size() > MAX_QUEUED_BLOCKS_PER_PLAYER) {
             throw new SpellRuntimeException(MassBlockBreakHelper.ERROR_TOO_MANY_PENDING_BLOCKS);
@@ -114,8 +116,19 @@ public final class MassBlockBreakScheduler {
         QUEUED_BLOCK_COUNTS.clear();
     }
 
+    /**
+     * The caster. The autonomous caster's player is not in the level's player list and carries its machine owner's
+     * UUID, so it is stored by its machine key ({@link CasterIds#idOf}) and looked up by that first.
+     */
+    private static ServerPlayer findPlayer(ServerLevel level, UUID uuid) {
+        if (AutonomousCasterRegistry.find(level, uuid) instanceof ServerPlayer caster) {
+            return caster;
+        }
+        return level.getPlayerByUUID(uuid) instanceof ServerPlayer player ? player : null;
+    }
+
     private static boolean tickBreaking(PendingBreak task, long deadline) {
-        ServerPlayer player = (ServerPlayer) task.level.getPlayerByUUID(task.playerUuid);
+        ServerPlayer player = findPlayer(task.level, task.playerUuid);
         if (player == null) {
             return true;
         }
@@ -182,7 +195,7 @@ public final class MassBlockBreakScheduler {
     }
 
     private static boolean tickGivingDrops(PendingBreak task, long deadline) {
-        ServerPlayer player = (ServerPlayer) task.level.getPlayerByUUID(task.playerUuid);
+        ServerPlayer player = findPlayer(task.level, task.playerUuid);
         if (player == null) {
             return true;
         }
@@ -226,7 +239,7 @@ public final class MassBlockBreakScheduler {
     }
 
     private static boolean tickDropping(PendingBreak task, long deadline) {
-        ServerPlayer player = (ServerPlayer) task.level.getPlayerByUUID(task.playerUuid);
+        ServerPlayer player = findPlayer(task.level, task.playerUuid);
         if (player == null) {
             return true;
         }
@@ -338,7 +351,7 @@ public final class MassBlockBreakScheduler {
 
 
     private static void finish(PendingBreak task) {
-        ServerPlayer player = (ServerPlayer) task.level.getPlayerByUUID(task.playerUuid);
+        ServerPlayer player = findPlayer(task.level, task.playerUuid);
         if (player != null) {
             MassBlockBreakHelper.spawnRandomBlockParticles(task.level, task.brokenPositions, task.brokenStates, 10);
         }
@@ -388,7 +401,7 @@ public final class MassBlockBreakScheduler {
                      List<BlockPos> positions,
                      ItemStack effectiveTool,
                      Predicate<BlockState> filter) {
-            this.playerUuid = player.getUUID();
+            this.playerUuid = CasterIds.idOf(player);
             this.playerName = player.getName().getString();
             this.level = level;
             this.focalPoint = focalPoint;
@@ -400,7 +413,7 @@ public final class MassBlockBreakScheduler {
         }
 
         boolean isValid() {
-            ServerPlayer player = (ServerPlayer) level.getPlayerByUUID(playerUuid);
+            ServerPlayer player = findPlayer(level, playerUuid);
             return player != null && !player.isRemoved() && player.level() == level;
         }
     }

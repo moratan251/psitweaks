@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.api.value.MatrixValue;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamMatrix;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.RegionMatrix;
@@ -10,7 +11,10 @@ import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -106,10 +110,22 @@ public class PieceTrickShowRegion extends PieceTrick implements PsitweaksModeCon
         for (Vector3[] edge : edges) {
             Vector3 direction = edge[1].copy().sub(edge[0]);
             // The trail stops a quarter block short of its length, so extend it to reach the far corner.
-            PsiNetwork.sendToPlayersTrackingAndSelf(context.caster, new MessageParticleTrail(edge[0].toVec3D(),
+            send(context.caster, new MessageParticleTrail(edge[0].toVec3D(),
                     direction.toVec3D(), direction.mag() + 0.25, ticks / 6, cad));
         }
         return null;
+    }
+
+    /**
+     * Sends the outline to the players who see the caster. The autonomous caster's player is not in the world, so
+     * nobody tracks it; the players who see its chunk get the outline instead.
+     */
+    private static void send(Player caster, MessageParticleTrail message) {
+        if (caster instanceof AutonomousCasterPlayer && caster.level() instanceof ServerLevel level) {
+            PacketDistributor.sendToPlayersTrackingChunk(level, caster.chunkPosition(), message);
+        } else {
+            PsiNetwork.sendToPlayersTrackingAndSelf(caster, message);
+        }
     }
 
     /** The 12 edges as {from, to} pairs: four along each edge vector of the region. */

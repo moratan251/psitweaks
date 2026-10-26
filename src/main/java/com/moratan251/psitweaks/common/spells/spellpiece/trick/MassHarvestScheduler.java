@@ -13,8 +13,9 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 /**
  * Harvests the crops of Trick: Mass Harvest over the following server ticks, in the time per tick it shares with
  * Trick: Mass Block Break ({@link MassWorkBudget}), so that a large field does not stall the server. The caster gets
- * the whole harvest after the last crop. If the caster dies, leaves or changes dimension first, the crops not reached
- * stay as they are and the harvest the caster has not got drops at the focal point.
+ * the whole harvest after the last crop. If the caster dies, leaves or changes dimension first (or, for an autonomous
+ * caster, its machine is removed or unloaded), the crops not reached stay as they are and the harvest the caster has
+ * not got drops at the focal point.
  */
 public final class MassHarvestScheduler {
     public static final String ERROR_TOO_MANY_PENDING = "psitweaks.spellerror.mass_harvest_too_many_pending";
@@ -70,7 +71,8 @@ public final class MassHarvestScheduler {
     public static void onServerStopping(ServerStoppingEvent event) {
         // The crops not reached stay ripe, and what was harvested is not lost.
         for (PendingHarvest task : ACTIVE) {
-            if (task.harvest().isCasterPresent()) {
+            // A machine does not tick again to move the harvest from its caster into its slots.
+            if (task.harvest().isCasterPresent() && !task.harvest().isCastByMachine()) {
                 task.harvest().finish();
             } else {
                 task.harvest().abandon(task.dropPos());

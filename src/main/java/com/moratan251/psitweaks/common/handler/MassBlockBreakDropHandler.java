@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.handler;
 
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.ActiveBreakContext;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.MassBreakDrops;
@@ -29,7 +30,8 @@ public final class MassBlockBreakDropHandler {
             return;
         }
         ActiveBreakContext context = MassBlockBreakHelper.getActiveBreakContext();
-        if (context == null || !player.getUUID().equals(context.breakerUuid())) {
+        // The breaker is stored as CasterIds.idOf: an autonomous caster carries its owner's UUID but is keyed by its machine.
+        if (context == null || !CasterIds.matches(player, context.breakerUuid())) {
             return;
         }
         if (player.level().isClientSide()) {

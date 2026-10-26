@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
@@ -98,7 +99,7 @@ public class PieceTrickIceCircle extends PieceTrick {
         double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
         float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
 
-        removeExistingIceCircleByCaster(serverLevel, context.caster.getUUID());
+        removeExistingIceCircleByCaster(serverLevel, CasterIds.idOf(context.caster));
 
         Vec3 effectPosition = SableRangeCompat.projectForEffect(serverLevel, positionVal);
         EntityIceCircle iceCircle = new EntityIceCircle(serverLevel);

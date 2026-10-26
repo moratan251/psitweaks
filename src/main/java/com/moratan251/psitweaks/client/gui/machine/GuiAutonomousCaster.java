@@ -1,7 +1,6 @@
 package com.moratan251.psitweaks.client.gui.machine;
 
 import com.moratan251.psitweaks.common.caster.CasterLog;
-import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
@@ -22,15 +21,12 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vazkii.psi.api.cad.EnumCADComponent;
-import vazkii.psi.common.item.base.ModCADComponents;
 
 /** 自律詠唱機の運転画面。作動ログは {@link GuiAutonomousCasterLog} の別ウィンドウで開く。 */
 public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlockEntity, MekanismTileContainer<AutonomousCasterBlockEntity>> {
@@ -66,9 +62,10 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
                 int capacity = tile.getPsiCapacity();
                 return capacity <= 0 ? 0.0D : Math.min(1.0D, tile.getPsi() / (double) capacity);
             }
-        }, 27, 61, 141, Color.ColorFunction.scale(Color.rgb(0x2E4BFF), Color.rgb(0x8FE0FF))));
+        }, 27, 61, 122, Color.ColorFunction.scale(Color.rgb(0x2E4BFF), Color.rgb(0x8FE0FF))));
+        // ゲージは左のエコー補充スロットと右の着色器スロットの間に置く。
         addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(tile.getEchoTank(), tile.getChemicalTanks(null)),
-                27, 71, 141, 8, true));
+                27, 71, 122, 8, true));
 
         // 選択中の弾・参照アイテムスロット
         addRenderableWidget(button(8, 84, 10, 12, () -> Component.literal("<"),
@@ -204,7 +201,6 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         drawLabel(guiGraphics, Component.translatable(KEY + "pitch", tile.getPitch()), 116, 97);
         drawLabel(guiGraphics, Component.translatable(KEY + "loop", tile.getLoopCounter(tile.getSelectedBullet())), 72, 121);
 
-        drawGhostComponents(guiGraphics);
         int bulletX = AutonomousCasterBlockEntity.BULLET_X + tile.getSelectedBullet() * 18 - 1;
         guiGraphics.renderOutline(bulletX, AutonomousCasterBlockEntity.SLOT_ROW_Y - 1, 18, 18, BULLET_OUTLINE);
         int itemX = AutonomousCasterBlockEntity.ITEM_X + tile.getSelectedItemSlot() * 18 - 1;
@@ -212,47 +208,17 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    /** 空の部品スロットに、既定で使われる部品を薄く描く。カラーライザーには既定部品が無いので描かない。 */
-    private void drawGhostComponents(GuiGraphics guiGraphics) {
-        for (int i = 0; i < AutonomousCasterBlockEntity.COMPONENT_SLOTS; i++) {
-            if (!tile.getComponentSlots().get(i).isEmpty()) {
-                continue;
-            }
-            ItemStack ghost = ghostComponent(VirtualCad.SLOT_TYPES.get(i));
-            if (ghost.isEmpty()) {
-                continue;
-            }
-            int x = AutonomousCasterBlockEntity.COMPONENT_X + i * 18;
-            int y = AutonomousCasterBlockEntity.SLOT_ROW_Y;
-            guiGraphics.renderFakeItem(ghost, x, y);
-            guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), x, y, x + 16, y + 16, 0x80_8B8B8B);
-        }
-    }
-
-    private static ItemStack ghostComponent(EnumCADComponent type) {
-        return switch (type) {
-            case ASSEMBLY -> new ItemStack(ModCADComponents.cadAssemblyIron.get());
-            case CORE -> new ItemStack(ModCADComponents.cadCoreBasic.get());
-            case SOCKET -> new ItemStack(ModCADComponents.cadSocketBasic.get());
-            default -> ItemStack.EMPTY;
-        };
-    }
-
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        if (menu.getCarried().isEmpty() && windows.isEmpty()) {
-            for (int i = 0; i < AutonomousCasterBlockEntity.COMPONENT_SLOTS; i++) {
-                int x = leftPos + AutonomousCasterBlockEntity.COMPONENT_X + i * 18;
-                int y = topPos + AutonomousCasterBlockEntity.SLOT_ROW_Y;
-                if (tile.getComponentSlots().get(i).isEmpty() && mouseX >= x && mouseX < x + 16 && mouseY >= y && mouseY < y + 16) {
-                    EnumCADComponent type = VirtualCad.SLOT_TYPES.get(i);
-                    String fallback = type == EnumCADComponent.DYE ? "component.default.dye" : "component.default";
-                    // 既定部品の薄い表示は Mekanism が一段上の層で描くため、ツールチップは後回しにしてその上に描かせる。
-                    setTooltipForNextRenderPass(List.of(
-                            Component.translatable(KEY + "component", Component.translatable(type.getName())).getVisualOrderText(),
-                            Component.translatable(KEY + fallback).withStyle(ChatFormatting.GRAY).getVisualOrderText()));
-                }
+        if (menu.getCarried().isEmpty() && windows.isEmpty() && tile.getDyeSlot().isEmpty()) {
+            int x = leftPos + AutonomousCasterBlockEntity.DYE_SLOT_X;
+            int y = topPos + AutonomousCasterBlockEntity.DYE_SLOT_Y;
+            if (mouseX >= x && mouseX < x + 16 && mouseY >= y && mouseY < y + 16) {
+                // 空の着色器スロットに、何を入れる枠かを示す。
+                setTooltipForNextRenderPass(List.of(
+                        Component.translatable(KEY + "component", Component.translatable(EnumCADComponent.DYE.getName())).getVisualOrderText(),
+                        Component.translatable(KEY + "component.default.dye").withStyle(ChatFormatting.GRAY).getVisualOrderText()));
             }
         }
     }

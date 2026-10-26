@@ -82,7 +82,8 @@ public class PieceTrickGuillotine extends PieceTrick {
             return null;
         }
 
-        if (livingEntity instanceof Player && SpellSafetyUtils.hasSafeToPlayers(context)) {
+        // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
+        if (!CombatSpellHelper.canHarm(context.caster, livingEntity, SpellSafetyUtils.hasSafeToPlayers(context))) {
             return null;
         }
 

@@ -1,10 +1,12 @@
 package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -12,7 +14,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -20,7 +21,6 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -62,7 +62,7 @@ public class EntityPhononMaserBeam extends Entity {
         this.power = power;
         this.ticksRemaining = durationTicks;
         this.totalDuration = durationTicks;
-        this.casterUUID = caster.getUUID();
+        this.casterUUID = CasterIds.idOf(caster);
 
         // 初期位置を設定
         updateBeamPositions(caster);
@@ -201,13 +201,8 @@ public class EntityPhononMaserBeam extends Entity {
         if (casterUUID == null) {
             return null;
         }
-        if (level() instanceof ServerLevel serverLevel) {
-            Entity entity = serverLevel.getEntity(casterUUID);
-            if (entity instanceof LivingEntity living) {
-                return living;
-            }
-        }
-        return null;
+        // 自律詠唱機の詠唱主体はワールドに入らないため、UUID で引くのは findLiving に任せる。
+        return CombatSpellHelper.findLiving(level(), casterUUID);
     }
 
     /**
@@ -230,21 +225,9 @@ public class EntityPhononMaserBeam extends Entity {
 
         AABB laserBounds = new AABB(start, end).inflate(0.5);
 
-        List<Entity> entities = level().getEntities(this, laserBounds, entity -> {
-            if (casterUUID != null && entity.getUUID().equals(casterUUID)) {
-                return false;
-            }
-            if (entity == this) {
-                return false;
-            }
-            if (!(entity instanceof LivingEntity)) {
-                return false;
-            }
-            if (safeToPlayers && entity instanceof Player) {
-                return false;
-            }
-            return isEntityOnLaserPath(entity, start, end);
-        });
+        // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
+        List<Entity> entities = level().getEntities(this, laserBounds, entity ->
+                CombatSpellHelper.canHarm(caster, entity, safeToPlayers) && isEntityOnLaserPath(entity, start, end));
 
         if (entities.isEmpty()) {
             return;

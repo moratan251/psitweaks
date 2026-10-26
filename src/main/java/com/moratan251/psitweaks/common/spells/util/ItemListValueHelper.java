@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.util;
 
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.item.BlockInventorySlotSource;
 import com.moratan251.psitweaks.common.spells.item.EntityEquipmentSource;
 import com.moratan251.psitweaks.common.spells.item.EntityHandSource;
@@ -10,6 +11,7 @@ import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -76,10 +78,12 @@ public final class ItemListValueHelper {
         }
 
         List<SpellItemValue> result = new ArrayList<>();
-        add(result, living.getMainHandItem(), new EntityHandSource(living.getUUID(), InteractionHand.MAIN_HAND));
-        add(result, living.getOffhandItem(), new EntityHandSource(living.getUUID(), InteractionHand.OFF_HAND));
+        // These sources carry no entity id, and an autonomous caster has its owner's UUID: tell them apart by its machine key.
+        UUID id = CasterIds.idOf(living);
+        add(result, living.getMainHandItem(), new EntityHandSource(id, InteractionHand.MAIN_HAND));
+        add(result, living.getOffhandItem(), new EntityHandSource(id, InteractionHand.OFF_HAND));
         for (EquipmentSlot slot : ARMOR_SLOTS) {
-            add(result, living.getItemBySlot(slot), new EntityEquipmentSource(living.getUUID(), slot));
+            add(result, living.getItemBySlot(slot), new EntityEquipmentSource(id, slot));
         }
         return SpellItemListWrapper.make(result);
     }

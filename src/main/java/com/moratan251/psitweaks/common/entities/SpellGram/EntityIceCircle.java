@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.entities.SpellGram;
 
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -62,8 +63,8 @@ public class EntityIceCircle extends SpellGramObject {
     }
 
     @Override
-    protected boolean canDamageEntity(LivingEntity target) {
-        return !(isSafeToPlayers() && target instanceof Player);
+    protected boolean canDamageEntity(@Nullable LivingEntity caster, LivingEntity target) {
+        return CombatSpellHelper.canHarm(caster, target, isSafeToPlayers());
     }
 
     @Override
@@ -90,13 +91,7 @@ public class EntityIceCircle extends SpellGramObject {
         );
 
         List<LivingEntity> targets = level().getEntitiesOfClass(LivingEntity.class, area, target -> {
-            if (!target.isAlive()) {
-                return false;
-            }
-            if (caster != null && target.getUUID().equals(caster.getUUID())) {
-                return false;
-            }
-            if (!canDamageEntity(target)) {
+            if (!canDamageEntity(caster, target)) {
                 return false;
             }
 

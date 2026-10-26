@@ -135,7 +135,7 @@ public final class PsitweaksMekanismBlockTypes {
 
     /**
      * 自律詠唱機。レッドストーン入力は詠唱トリガーとして独自に扱うため、Mekanism のレッドストーン制御（REDSTONE）は付けない。
-     * エネルギーは使わず、気化サイオニックエコーから内部 Psi を作る。
+     * エネルギーは使わず、気化サイオニックエコーから内部 Psi を作る。内蔵 CAD と Psi 回復は固定性能で、アップグレードは載せない。
      */
     public static final BlockTypeTile<AutonomousCasterBlockEntity> AUTONOMOUS_CASTER =
             BlockTileBuilder.createBlock(() -> PsitweaksMekanismTileEntityTypes.AUTONOMOUS_CASTER, DESCRIPTION_AUTONOMOUS_CASTER)
@@ -145,8 +145,7 @@ public final class PsitweaksMekanismBlockTypes {
                             Attributes.INVENTORY,
                             Attributes.SECURITY,
                             Attributes.COMPARATOR,
-                            AttributeSideConfig.create(TransmissionType.ITEM, TransmissionType.CHEMICAL),
-                            new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.CHEMICAL))
+                            AttributeSideConfig.create(TransmissionType.ITEM, TransmissionType.CHEMICAL)
                     )
                     .with(new AttributeParticleFX()
                             .add(new SparkleParticleData(0.35F, 0.6F, 1.0F, 1.0F, 10, 0.0D, 0.01D, 0.0D), PsitweaksMekanismBlockTypes::machineFrontParticleOffset))

@@ -1,6 +1,10 @@
 package com.moratan251.psitweaks.datagen.providers;
 
 import com.google.gson.JsonObject;
+import com.moratan251.psitweaks.common.caster.VirtualCad;
+import java.util.Locale;
+import java.util.Map;
+import vazkii.psi.api.cad.EnumCADStat;
 
 /** 自律詠唱機の翻訳。ブロック名は {@link PsitweaksDatagenBlocks} 側で出力する。 */
 final class AutonomousCasterTranslations {
@@ -89,9 +93,6 @@ final class AutonomousCasterTranslations {
         put(GUI + "detail.loop", "Loop counter of bullet %s: %s", "術式弾 %s のループカウンタ: %s");
         put(GUI + "detail.recovery", "Psi recovery: %s/t", "Psi回復: %s/t");
         put(GUI + "component", "CAD component slot: %s", "CAD部品スロット: %s");
-        put(GUI + "component.default",
-                "When empty, a basic component is used",
-                "空のときは基本部品として扱います");
         put(GUI + "component.default.dye",
                 "When empty, the default spell color is used",
                 "空のときは既定の術式の色になります");
@@ -134,8 +135,8 @@ final class AutonomousCasterTranslations {
                 "Psionic Echo Gas (mB) consumed by one Psi recovery operation.",
                 "Psi回復1回で消費する気化サイオニックエコーの量（mB）です。");
         configValue("psi_per_operation", "Psi per Recovery", "回復1回あたりのPsi",
-                "Psi restored by one recovery operation. One operation runs per tick without Speed Upgrades.",
-                "Psi回復1回で得られるPsiです。スピードアップグレードがなければ1tickに1回回復します。");
+                "Psi restored by one recovery operation. One operation runs per tick.",
+                "Psi回復1回で得られるPsiです。1tickに1回回復します。");
         configValue("echo_tank_capacity", "Echo Tank Capacity", "エコータンク容量",
                 "Psionic Echo Gas tank capacity (mB). Applies after the machine is reloaded.",
                 "気化サイオニックエコータンクの容量（mB）です。機械の再読み込み後に反映されます。");
@@ -164,10 +165,10 @@ final class AutonomousCasterTranslations {
     private void addBook() {
         put(BOOK,
                 "A machine that casts Spell Bullets by itself, using its own Psi instead of yours.$(p)"
-                        + "Put Spell Bullets in the top-left slots, pick one, and send a redstone signal. "
+                        + "Put Spell Bullets in the top row of slots, pick one, and send a redstone signal. "
                         + "Internal Psi is restored from $(item)Psionic Echo Gas$(0).",
                 "術式弾を自分のPsiで自律的に詠唱する機械です. 使用者のPsiは消費しません.$(p)"
-                        + "左上のスロットに術式弾を入れて選択し, レッドストーン信号を送ると詠唱します. "
+                        + "上段のスロットに術式弾を入れて選択し, レッドストーン信号を送ると詠唱します. "
                         + "内部Psiは$(item)気化サイオニックエコー$(0)から回復します.");
         put(BOOK + ".1",
                 "$(li)$(item)Pulse$(0): casts once when the redstone signal turns on."
@@ -186,28 +187,35 @@ final class AutonomousCasterTranslations {
                         + "$(item)ループ型術式弾$(0)はトリガー1回につき1回だけ実行されます. "
                         + "術式弾スロットごとに成功回数を数えており, $(item)取得子: ループ回数$(0)でその値を読めます.");
         put(BOOK + ".3",
-                "The four slots on the right take CAD components and build the internal CAD. "
-                        + "Empty slots count as basic parts, and the colorizer may be left out.$(p)"
+                fixedStats("The internal CAD has fixed stats: Efficiency %d, Potency %d, Complexity %d, Projection %d, "
+                        + "Bandwidth %d, Memory %d. A colorizer in the slot right of the gauges changes the spell color.$(p)")
                         + "The nine slots below are the caster's hotbar, and the selected one counts as the held item. "
                         + "Items that do not fit drop in front of the machine.",
-                "右側の4スロットにCADの部品を入れると, 内部CADが組み上がります. 空のスロットは基本部品として扱われ, 着色器は無くても動きます.$(p)"
+                fixedStats("内部CADの性能値は固定で, 効率%d・規模%d・複雑性%d・作動量%d・帯域幅%d・メモリ%dです. "
+                        + "ゲージ右のスロットに着色器を入れると術式の色が変わります.$(p)")
                         + "下段の9スロットは詠唱主体のホットバーで, 選択中のスロットが手に持っている扱いになります. "
                         + "入りきらないアイテムは機械の正面に落ちます.");
         put(BOOK + ".4",
                 "By default, 250 mB of $(item)Psionic Echo Gas$(0) restores 25 Psi, up to 10,000 Psi. "
                         + "Feed the gas from any side, or use the slot left of the gauges.$(p)"
-                        + "$(item)Speed Upgrades$(0) speed up recovery, and $(item)Chemical Upgrades$(0) reduce the gas used. "
-                        + "A comparator reads the internal Psi.",
+                        + "Upgrades cannot be installed. A comparator reads the internal Psi.",
                 "初期設定では, $(item)気化サイオニックエコー$(0)250mBでPsiが25回復し, 最大10,000まで貯まります. "
                         + "気体はどの面からでも搬入でき, ゲージ左のスロットに気体入りアイテムを入れても補充できます.$(p)"
-                        + "$(item)スピードアップグレード$(0)で回復が速くなり, $(item)化学アップグレード$(0)で気体の消費が減ります. "
-                        + "コンパレーターで内部Psiの残量を読み取れます.");
+                        + "アップグレードは搭載できません. コンパレーターで内部Psiの残量を読み取れます.");
         put(BOOK + ".5",
                 "Spells that use the Ideaspace Storage use the storage of the machine's owner.$(p)"
                         + "Debug output, spell errors and spell warnings go to the $(item)Activity Log$(0) in the GUI instead of your chat. "
-                        + "Breaking the machine keeps its items, gas and upgrades, but resets its Psi, settings and log.",
+                        + "Breaking the machine keeps its items and gas, but resets its Psi, settings, log and the internal CAD's memory.",
                 "イデアストレージを使う術式は, 機械の所有者のストレージを使います.$(p)"
                         + "デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます. "
-                        + "機械を回収するとアイテム・気体・アップグレードは残りますが, Psi・設定・ログは初期化されます.");
+                        + "機械を回収するとアイテムと気体は残りますが, Psi・設定・ログと内部CADのメモリは初期化されます.");
+    }
+
+    /** 内蔵 CAD の固定性能値を、効率・規模・複雑性・作動量・帯域幅・メモリの順に埋め込む。 */
+    private static String fixedStats(String format) {
+        Map<EnumCADStat, Integer> stats = VirtualCad.FIXED_STATS;
+        return String.format(Locale.ROOT, format, stats.get(EnumCADStat.EFFICIENCY), stats.get(EnumCADStat.POTENCY),
+                stats.get(EnumCADStat.COMPLEXITY), stats.get(EnumCADStat.PROJECTION), stats.get(EnumCADStat.BANDWIDTH),
+                stats.get(EnumCADStat.SAVED_VECTORS));
     }
 }

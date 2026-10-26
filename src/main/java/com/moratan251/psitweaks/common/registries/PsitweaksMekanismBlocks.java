@@ -107,14 +107,13 @@ public final class PsitweaksMekanismBlocks {
             BLOCKS.register("autonomous_caster",
                     () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.AUTONOMOUS_CASTER, properties -> properties),
                     (block, properties) -> new ItemBlockTooltip<>(block, true, withDefaultSideConfig(properties, AUTONOMOUS_CASTER_SIDE_CONFIG)))
-                    // The echo tank, and bullets, CAD components, the nine hotbar slots and the echo fill slot: the slots of AutonomousCasterBlockEntity.
+                    // The echo tank, and bullets, the dye slot, the nine hotbar slots and the echo fill slot: the slots of AutonomousCasterBlockEntity.
                     .forItemHolder(holder -> holder
                             .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                                     .addBasic(AutonomousCasterSettings::echoTankCapacity, ANY_CHEMICAL)
                                     .build())
                             .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                                    .addBasic(AutonomousCasterBlockEntity.BULLET_SLOTS + AutonomousCasterBlockEntity.COMPONENT_SLOTS
-                                            + AutonomousCasterBlockEntity.ITEM_SLOTS)
+                                    .addBasic(AutonomousCasterBlockEntity.BULLET_SLOTS + 1 + AutonomousCasterBlockEntity.ITEM_SLOTS)
                                     .addChemicalFillSlot(0)
                                     .build()));
 

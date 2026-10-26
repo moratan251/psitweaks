@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -71,6 +72,12 @@ public class EntityDryIceProjectile extends ThrowableItemProjectile {
             playBlockImpactEffect(getX(), getY(), getZ());
             discard();
         }
+    }
+
+    /** 術者側（術者・術者のペット・味方）と、プレイヤーに安全のときのプレイヤーはすり抜ける。 */
+    @Override
+    protected boolean canHitEntity(Entity target) {
+        return super.canHitEntity(target) && CombatSpellHelper.canProjectileHarm(this, target, safeToPlayers);
     }
 
     @Override

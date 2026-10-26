@@ -13,7 +13,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -118,9 +117,8 @@ public class PieceTrickActiveAirMine extends PieceTrick {
         List<LivingEntity> targets = level.getEntitiesOfClass(
                 LivingEntity.class,
                 searchArea,
-                target -> target.isAlive()
-                        && target != context.caster
-                        && !(target instanceof Player && safeToPlayers)
+                // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
+                target -> CombatSpellHelper.canHarm(context.caster, target, safeToPlayers)
                         && target.getBoundingBox().distanceToSqr(center) <= radiusSq
         );
 

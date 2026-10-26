@@ -5,23 +5,38 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterHost;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
+import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
+import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageAmount;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageLastTransfer;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.HarvestHelper;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassHarvestScheduler;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickInteractBlock;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPullItem;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -30,19 +45,42 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.api.cad.CADComponentLookup;
+import vazkii.psi.api.cad.EnumCADStat;
+import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.CompiledSpell;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.entity.EntitySpellCircle;
+import vazkii.psi.common.entity.EntitySpellProjectile;
+import vazkii.psi.common.entity.ModEntities;
 import vazkii.psi.common.item.ItemCAD;
+import vazkii.psi.common.item.base.ModCADComponents;
 import vazkii.psi.common.network.message.MessageSpellError;
 
 /**
@@ -53,6 +91,8 @@ import vazkii.psi.common.network.message.MessageSpellError;
 @PrefixGameTestTemplate(false)
 public final class AutonomousCasterGameTests {
     private static final String TEMPLATE = "connector_empty";
+    /** 所有者役をワールドに入れるテストは、他のテストと同時に動かさない。 */
+    private static final String OWNER_ONLINE_BATCH = "autonomous_caster_owner_online";
 
     // ---- 作動ログ ----
 
@@ -207,15 +247,51 @@ public final class AutonomousCasterGameTests {
         return false;
     }
 
+    // ---- 内蔵 CAD ----
+
+    @GameTest(template = TEMPLATE)
+    public static void virtualCadHasFixedStatsAndOnlyTakesAColorizer(GameTestHelper helper) throws Exception {
+        HolderLookup.Provider registries = helper.getLevel().registryAccess();
+        ItemStack dye = new ItemStack(ModCADComponents.cadColorizerRed.get());
+        helper.assertTrue(VirtualCad.acceptsDye(registries, dye), "The dye slot refused a colorizer");
+        helper.assertTrue(!VirtualCad.acceptsDye(registries, new ItemStack(ModCADComponents.cadAssemblyPsimetal.get())),
+                "The dye slot accepted an assembly");
+
+        ItemStack cad = VirtualCad.rebuild(registries, dye, ItemStack.EMPTY);
+        ICAD item = (ICAD) cad.getItem();
+        VirtualCad.FIXED_STATS.forEach((stat, value) -> helper.assertTrue(item.getStatValue(cad, stat) == value,
+                "The internal CAD's " + stat + " is " + item.getStatValue(cad, stat) + " instead of " + value));
+        helper.assertTrue(item.getStatValue(cad, EnumCADStat.OVERFLOW) == 0, "The internal CAD has a battery");
+        helper.assertTrue(item.getSpellColor(cad) == CADComponentLookup.color(registries, dye),
+                "The colorizer did not set the spell color");
+
+        // メモリの最後の枠まで使え、着色器を外して組み直しても中身と固定性能が残る。
+        int lastSlot = VirtualCad.FIXED_STATS.get(EnumCADStat.SAVED_VECTORS) - 1;
+        item.setStoredVector(cad, lastSlot, new Vector3(1, 2, 3));
+        ItemStack rebuilt = VirtualCad.rebuild(registries, ItemStack.EMPTY, cad);
+        Vector3 kept = item.getStoredVector(rebuilt, lastSlot);
+        helper.assertTrue(kept.x == 1 && kept.y == 2 && kept.z == 3, "The memory was lost when the CAD was rebuilt");
+        helper.assertTrue(item.getStatValue(rebuilt, EnumCADStat.POTENCY) == VirtualCad.FIXED_STATS.get(EnumCADStat.POTENCY),
+                "The rebuilt CAD lost its fixed stats");
+
+        // プレイヤーの CAD の性能値は変えない。
+        ItemStack assembly = new ItemStack(ModCADComponents.cadAssemblyIron.get());
+        ItemStack playerCad = ItemCAD.makeCADWithAssembly(registries, assembly, List.of(assembly,
+                new ItemStack(ModCADComponents.cadCoreBasic.get()), new ItemStack(ModCADComponents.cadSocketBasic.get())));
+        helper.assertTrue(!VirtualCad.isVirtualCad(playerCad)
+                        && ((ICAD) playerCad.getItem()).getStatValue(playerCad, EnumCADStat.POTENCY) == 100,
+                "A player's CAD got the internal CAD's stats");
+        helper.succeed();
+    }
+
     // ---- 専用 Caster ----
 
     @GameTest(template = TEMPLATE)
     public static void dedicatedCasterCastsWithItsHostsPsi(GameTestHelper helper) {
         StubHost host = new StubHost();
-        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), host);
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
         try {
-            ItemStack cad = VirtualCad.rebuild(helper.getLevel().registryAccess(),
-                    Collections.nCopies(VirtualCad.SLOT_TYPES.size(), ItemStack.EMPTY), ItemStack.EMPTY);
+            ItemStack cad = VirtualCad.rebuild(helper.getLevel().registryAccess(), ItemStack.EMPTY, ItemStack.EMPTY);
             helper.assertTrue(VirtualCad.isUsable(cad), "The default virtual CAD is not usable");
             caster.getInventory().items.set(AutonomousCasterPlayer.CAD_SLOT, cad);
             Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
@@ -247,13 +323,13 @@ public final class AutonomousCasterGameTests {
                             && contents.getArgs().length == 2 && "B".equals(contents.getArgs()[0]),
                     "The spell error position was not converted to a grid column");
 
-            helper.assertTrue(AutonomousCasterRegistry.find(helper.getLevel(), caster.getUUID()) == caster,
-                    "The attached caster could not be found by UUID");
+            helper.assertTrue(AutonomousCasterRegistry.find(helper.getLevel(), caster.casterKey()) == caster,
+                    "The attached caster could not be found by its key");
             caster.detach();
             int count = host.messages.size();
             caster.sendSystemMessage(Component.literal("after detach"));
             helper.assertTrue(host.messages.size() == count, "A detached caster still reported to its host");
-            helper.assertTrue(AutonomousCasterRegistry.find(helper.getLevel(), caster.getUUID()) == null,
+            helper.assertTrue(AutonomousCasterRegistry.find(helper.getLevel(), caster.casterKey()) == null,
                     "A detached caster was still registered");
             Optional<ArrayList<Entity>> detached = cast(helper, caster, host, AutonomousCasterTestSpells.debugBullet(1), cad);
             helper.assertTrue(detached.isEmpty(), "A detached caster could still cast");
@@ -266,7 +342,7 @@ public final class AutonomousCasterGameTests {
     @GameTest(template = TEMPLATE)
     public static void dedicatedCasterLogsSpellWarningsWithTheirPosition(GameTestHelper helper) {
         StubHost host = new StubHost();
-        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), host);
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
         try {
             Spell spell = new Spell();
             var piece = new PieceSelectorIdeaStorageLastTransfer(spell);
@@ -295,6 +371,504 @@ public final class AutonomousCasterGameTests {
         helper.succeed();
     }
 
+    /** 術者を UUID で引き直す術式エンティティ（フォノンメーザーの光線など）も、専用 Caster を術者として見つける。 */
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void phononMaserFromTheDedicatedCasterKeepsFiring(GameTestHelper helper) {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0, 2.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        Husk target = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(3.5, 1.0, 2.5));
+        target.setNoAi(true);
+        caster.lookAt(EntityAnchorArgument.Anchor.EYES, target.position().add(0.0, target.getBbHeight() / 2.0, 0.0));
+        helper.assertTrue(CombatSpellHelper.findLiving(helper.getLevel(), caster.casterKey()) == caster,
+                "The dedicated caster could not be found by its key");
+
+        EntityPhononMaserBeam beam = new EntityPhononMaserBeam(helper.getLevel(), caster, 1, 40);
+        helper.getLevel().addFreshEntity(beam);
+        float health = target.getHealth();
+        helper.runAfterDelay(5, () -> {
+            try {
+                helper.assertTrue(beam.isAlive(), "The beam vanished because it lost its caster");
+                helper.assertTrue(!target.isAlive() || target.getHealth() < health, "The beam did not hurt the target");
+                caster.detach();
+                helper.assertTrue(CombatSpellHelper.findLiving(helper.getLevel(), caster.casterKey()) == null,
+                        "A detached caster was still found by its key");
+                helper.succeed();
+            } finally {
+                caster.detach();
+                beam.discard();
+            }
+        });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void massBlockBreakFromTheDedicatedCasterCollectsDrops(GameTestHelper helper) throws SpellRuntimeException {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0, 0.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        BlockPos relative = new BlockPos(2, 1, 2);
+        BlockPos target = helper.absolutePos(relative);
+        helper.setBlock(relative, Blocks.STONE);
+        Vector3 focal = new Vector3(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5);
+        MassBlockBreakScheduler.schedule(caster, helper.getLevel(), focal, 1.0, List.of(target),
+                new ItemStack(Items.DIAMOND_PICKAXE), state -> true);
+        helper.runAfterDelay(10, () -> {
+            try {
+                helper.assertBlockPresent(Blocks.AIR, relative);
+                helper.assertTrue(caster.getInventory().countItem(Items.COBBLESTONE) == 1,
+                        "The broken block's drop did not reach the dedicated caster");
+                helper.succeed();
+            } finally {
+                caster.detach();
+            }
+        });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void paradeDecoyFollowsTheDedicatedCasterUntilDetached(GameTestHelper helper) {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        EntityParadeDecoy decoy = new EntityParadeDecoy(helper.getLevel(), helper.absoluteVec(new Vec3(2.5, 1.0, 2.5)));
+        try {
+            decoy.configure(caster, 3, 200, 0xFFFFFF);
+            helper.assertTrue(decoy.getOwnerPlayer() == caster, "The decoy lost the dedicated caster");
+            caster.detach();
+            helper.assertTrue(decoy.getOwnerPlayer() == null, "The decoy kept following a detached caster");
+            helper.succeed();
+        } finally {
+            caster.detach();
+            decoy.discard();
+        }
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void massHarvestDropsAtTheFocalPointOnceTheMachineIsGone(GameTestHelper helper) throws SpellRuntimeException {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 3.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        BlockPos reached = new BlockPos(1, 1, 1);
+        BlockPos notReached = new BlockPos(3, 1, 1);
+        for (BlockPos pos : List.of(reached, notReached)) {
+            helper.setBlock(pos.below(), Blocks.FARMLAND);
+            helper.setBlock(pos, ((CropBlock) Blocks.WHEAT).getStateForAge(7));
+        }
+        HarvestHelper.Harvest harvest = HarvestHelper.begin(new SpellContext().setPlayer(caster));
+        helper.assertTrue(harvest != null && harvest.harvest(helper.absolutePos(reached)), "The first crop was not harvested");
+        BlockPos focalPoint = helper.absolutePos(new BlockPos(2, 1, 3));
+        MassHarvestScheduler.schedule(harvest, List.of(helper.absolutePos(notReached)), focalPoint);
+        // The machine is removed before the scheduler reaches the second crop.
+        caster.detach();
+        helper.succeedWhen(() -> {
+            var dropped = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(focalPoint).inflate(2));
+            helper.assertTrue(dropped.stream().anyMatch(item -> item.getItem().is(Items.WHEAT)),
+                    "The harvest so far did not drop at the focal point");
+            helper.assertBlockState(notReached, state -> state.getValue(CropBlock.AGE) == 7,
+                    () -> "A detached caster kept harvesting");
+            helper.assertTrue(caster.getInventory().isEmpty(), "The harvest went to a detached caster");
+            helper.killAllEntitiesOfClass(ItemEntity.class);
+        });
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void pullItemFromTheDedicatedCasterStopsWhenTheMachineSlotsAreFull(GameTestHelper helper) {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        helper.setBlock(new BlockPos(1, 1, 1), Blocks.CHEST);
+        BlockPos chestPos = helper.absolutePos(new BlockPos(1, 1, 1));
+        ChestBlockEntity chest = (ChestBlockEntity) helper.getLevel().getBlockEntity(chestPos);
+        chest.setItem(0, new ItemStack(Items.DIRT, 64));
+        for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+            caster.getInventory().setItem(i, new ItemStack(Items.STONE, 64));
+        }
+        var pull = new PieceTrickPullItem(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return param.name.equals(PsitweaksSpellParams.MAX) ? null : IdeaLogisticsGameTests.paramValue(param, chestPos, 0, null);
+            }
+        };
+        SpellContext context = new SpellContext().setPlayer(caster);
+        try {
+            boolean threw = false;
+            try {
+                pull.execute(context);
+            } catch (SpellRuntimeException e) {
+                threw = true;
+            }
+            helper.assertTrue(threw && chest.getItem(0).getCount() == 64 && caster.getInventory().countItem(Items.DIRT) == 0,
+                    "Pull Item filled the slots that the machine does not show");
+            caster.getInventory().setItem(4, ItemStack.EMPTY);
+            try {
+                pull.execute(context);
+            } catch (SpellRuntimeException e) {
+                throw new IllegalStateException("Pull Item did not use the free machine slot", e);
+            }
+            helper.assertTrue(chest.getItem(0).isEmpty() && caster.getInventory().getItem(4).is(Items.DIRT),
+                    "Pull Item did not move the stack into the free machine slot");
+            helper.succeed();
+        } finally {
+            caster.detach();
+        }
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void interactBlockFromTheDedicatedCasterUsesTheSelectedSlot(GameTestHelper helper) {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        BlockPos relative = new BlockPos(1, 1, 1);
+        helper.setBlock(relative, Blocks.CAULDRON);
+        BlockPos cauldron = helper.absolutePos(relative);
+        caster.getInventory().selected = 0;
+        caster.getInventory().setItem(0, new ItemStack(Items.WATER_BUCKET));
+        var interact = new PieceTrickInteractBlock(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return new Vector3(cauldron.getX(), cauldron.getY(), cauldron.getZ());
+            }
+        };
+        try {
+            interact.execute(new SpellContext().setPlayer(caster));
+            helper.assertBlockPresent(Blocks.WATER_CAULDRON, relative);
+            helper.assertTrue(caster.getInventory().getItem(0).is(Items.BUCKET), "The water bucket in the selected slot was not used");
+            helper.succeed();
+        } catch (SpellRuntimeException e) {
+            throw new IllegalStateException("Interact Block failed from the dedicated caster", e);
+        } finally {
+            caster.detach();
+        }
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void theDedicatedCasterUsesTheOwnersLanguage(GameTestHelper helper) {
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
+        try {
+            String fallback = caster.getLanguage();
+            host.language = "ja_jp";
+            helper.assertTrue("ja_jp".equals(caster.getLanguage()), "The caster did not use the owner's language");
+            host.language = null;
+            helper.assertTrue(fallback.equals(caster.getLanguage()), "The caster lost its default language");
+            host.language = "ja_jp";
+            caster.detach();
+            helper.assertTrue(fallback.equals(caster.getLanguage()), "A detached caster still used the machine's language");
+            helper.succeed();
+        } finally {
+            caster.detach();
+        }
+    }
+
+    // ---- 所有者の UUID ----
+
+    /** 専用 Caster は所有者の UUID を名乗り、レジストリは機械ごとの内部キーで引く。同じ所有者の機械も別々に引ける。 */
+    @GameTest(template = TEMPLATE)
+    public static void theDedicatedCasterCarriesItsOwnersUuid(GameTestHelper helper) {
+        UUID owner = UUID.randomUUID();
+        StubHost host = new StubHost();
+        host.owner = owner;
+        AutonomousCasterPlayer first = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner, host);
+        AutonomousCasterPlayer second = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner, host);
+        AutonomousCasterPlayer ownerless = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, new StubHost());
+        try {
+            helper.assertTrue(first.getUUID().equals(owner) && second.getUUID().equals(owner)
+                            && first.getGameProfile().getId().equals(owner),
+                    "The dedicated caster did not carry its owner's UUID");
+            helper.assertTrue(AutonomousCasterPlayer.NAME.equals(first.getGameProfile().getName()),
+                    "The dedicated caster lost its fake player name");
+            helper.assertTrue(!first.casterKey().equals(owner) && !first.casterKey().equals(second.casterKey())
+                            && CasterIds.idOf(first).equals(first.casterKey()),
+                    "The machine key was not kept apart from the owner's UUID");
+            helper.assertTrue(AutonomousCasterRegistry.find(helper.getLevel(), first.casterKey()) == first
+                            && AutonomousCasterRegistry.find(helper.getLevel(), second.casterKey()) == second,
+                    "Two machines of the same owner were not found separately");
+            helper.assertTrue(AutonomousCasterRegistry.find(helper.getLevel(), owner) == null,
+                    "The owner's UUID found a dedicated caster");
+            helper.assertTrue(ownerless.getUUID().equals(ownerless.casterKey()), "An ownerless machine did not carry its own key");
+            helper.succeed();
+        } finally {
+            first.detach();
+            second.detach();
+            ownerless.detach();
+        }
+    }
+
+    /** 専用 Caster は所有者の UUID を名乗るので、戦闘魔法は所有者と所有者のペットを巻き込まない。 */
+    @GameTest(template = TEMPLATE)
+    public static void combatSpellsFromTheMachineSpareItsOwnerAndTheirPets(GameTestHelper helper) {
+        FakePlayer owner = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "[psitweaks_owner]"));
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), new StubHost());
+        Wolf pet = helper.spawnWithNoFreeWill(EntityType.WOLF, new BlockPos(1, 1, 1));
+        pet.setTame(true, false);
+        pet.setOwnerUUID(owner.getUUID());
+        Wolf stray = helper.spawnWithNoFreeWill(EntityType.WOLF, new BlockPos(3, 1, 1));
+        Wolf angry = helper.spawnWithNoFreeWill(EntityType.WOLF, new BlockPos(3, 1, 3));
+        angry.setPersistentAngerTarget(owner.getUUID());
+        try {
+            helper.assertTrue(!CombatSpellHelper.canHarm(caster, pet, false), "A combat spell of the machine would hit its owner's pet");
+            helper.assertTrue(!CombatSpellHelper.canHarm(caster, owner, false), "A combat spell of the machine would hit its owner");
+            helper.assertTrue(CombatSpellHelper.canHarm(caster, stray, false), "The machine spared a wolf that nobody owns");
+            helper.assertTrue(CombatSpellHelper.isHostileTarget(caster, angry, false),
+                    "A wolf angry at the owner is not a target of the owner's machine");
+            helper.succeed();
+        } finally {
+            caster.detach();
+            helper.killAllEntitiesOfClass(Wolf.class);
+        }
+    }
+
+    /** 所有者がオンラインでも、Psi の術式円と術式弾は保存・再読み込みの後まで専用 Caster を術者にし、本人を術者にしない。 */
+    @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH)
+    public static void psiSpellEntitiesKeepTheDedicatedCasterWhileItsOwnerIsOnline(GameTestHelper helper) {
+        FakePlayer owner = onlineOwner(helper, new Vec3(4.5, 1.0, 4.5));
+        StubHost host = new StubHost();
+        AutonomousCasterPlayer first = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), host);
+        AutonomousCasterPlayer second = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), host);
+        try {
+            helper.assertTrue(helper.getLevel().getPlayerByUUID(owner.getUUID()) == owner, "The test owner is not online");
+            EntitySpellCircle circle = new EntitySpellCircle(ModEntities.spellCircle.get(), helper.getLevel())
+                    .setInfo(first, ItemStack.EMPTY, ItemStack.EMPTY);
+            EntitySpellCircle otherCircle = new EntitySpellCircle(ModEntities.spellCircle.get(), helper.getLevel())
+                    .setInfo(second, ItemStack.EMPTY, ItemStack.EMPTY);
+            helper.assertTrue(circle.getCaster() == first && otherCircle.getCaster() == second,
+                    "A spell circle cast by the machine found someone else: " + circle.getCaster());
+            helper.assertTrue(reload(helper, circle) instanceof EntitySpellCircle loaded && loaded.getCaster() == first,
+                    "A reloaded spell circle lost the machine");
+
+            EntitySpellProjectile projectile = new EntitySpellProjectile(helper.getLevel(), first)
+                    .setInfo(first, ItemStack.EMPTY, ItemStack.EMPTY);
+            helper.assertTrue(projectile.getOwner() == first, "A spell projectile cast by the machine has another owner");
+            Entity reloaded = reload(helper, projectile);
+            helper.assertTrue(reloaded instanceof EntitySpellProjectile loaded && loaded.getOwner() == first,
+                    "A reloaded spell projectile took someone else as its caster: "
+                            + (reloaded instanceof Projectile loaded ? loaded.getOwner() : null));
+
+            first.detach();
+            helper.assertTrue(circle.getCaster() == null && ((Projectile) reloaded).getOwner() == null,
+                    "The spell entities of a removed machine fell back to its owner");
+            helper.succeed();
+        } finally {
+            first.detach();
+            second.detach();
+            removeOwner(helper, owner);
+        }
+    }
+
+    /** 所有者がオンラインでも、術者を UUID で引き直す Psitweaks の術式エンティティは本人ではなく専用 Caster を見つける。 */
+    @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH, timeoutTicks = 100)
+    public static void spellEntitiesFollowTheMachineNotItsOnlineOwner(GameTestHelper helper) {
+        FakePlayer owner = onlineOwner(helper, new Vec3(4.5, 1.0, 4.5));
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), new StubHost());
+        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0, 2.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        Husk target = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(3.5, 1.0, 2.5));
+        target.setNoAi(true);
+        caster.lookAt(EntityAnchorArgument.Anchor.EYES, target.position().add(0.0, target.getBbHeight() / 2.0, 0.0));
+        EntityFlareCircle circle = new EntityFlareCircle(helper.getLevel());
+        EntityParadeDecoy decoy = new EntityParadeDecoy(helper.getLevel(), helper.absoluteVec(new Vec3(2.5, 1.0, 0.5)));
+        EntityPhononMaserBeam beam = new EntityPhononMaserBeam(helper.getLevel(), caster, 1, 40);
+        Runnable cleanup = () -> {
+            caster.detach();
+            beam.discard();
+            decoy.discard();
+            removeOwner(helper, owner);
+        };
+        try {
+            UUID key = CasterIds.idOf(caster);
+            helper.assertTrue(CombatSpellHelper.findLiving(helper.getLevel(), key) == caster
+                            && CasterIds.find(helper.getLevel(), key) == caster,
+                    "The machine key did not find the dedicated caster");
+            helper.assertTrue(CombatSpellHelper.findLiving(helper.getLevel(), owner.getUUID()) == owner,
+                    "The real owner could no longer be found by their UUID");
+
+            circle.setCaster(caster);
+            circle.setFollowTarget(caster, true);
+            helper.assertTrue(circle.getCaster() == caster && circle.getFollowTargetEntity() == caster,
+                    "A Flare Circle cast by the machine followed someone else");
+
+            decoy.configure(caster, 3, 200, 0xFFFFFF);
+            helper.assertTrue(!owner.getUUID().equals(decoy.getOwnerUUID()) && !decoy.isOwnedBy(owner)
+                            && decoy.isOwnedBy(caster) && decoy.getOwnerPlayer() == caster,
+                    "The Parade lookalike of the machine stands for its owner, who would be hidden");
+
+            helper.getLevel().addFreshEntity(beam);
+        } catch (RuntimeException e) {
+            cleanup.run();
+            throw e;
+        }
+        float health = target.getHealth();
+        helper.runAfterDelay(5, () -> {
+            try {
+                // The start is synced as floats, which are a whole block apart this far out where the tests are placed.
+                Vec3 start = beam.getStartPos();
+                helper.assertTrue(beam.isAlive() && start.distanceTo(caster.getEyePosition()) < 1.5
+                                && start.distanceTo(caster.getEyePosition()) < start.distanceTo(owner.getEyePosition()),
+                        "The Phonon Maser beam of the machine followed its owner: " + start);
+                helper.assertTrue(!target.isAlive() || target.getHealth() < health, "The beam did not hurt the target in front of the machine");
+                helper.succeed();
+            } finally {
+                cleanup.run();
+            }
+        });
+    }
+
+    /** 所有者がオンラインでも、機械が一括破壊したブロックのドロップは本人ではなく機械に届く。 */
+    @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH)
+    public static void massBlockBreakFromTheMachineIgnoresItsOnlineOwner(GameTestHelper helper) throws SpellRuntimeException {
+        FakePlayer owner = onlineOwner(helper, new Vec3(4.5, 1.0, 4.5));
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), new StubHost());
+        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0, 0.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        BlockPos relative = new BlockPos(2, 1, 2);
+        BlockPos target = helper.absolutePos(relative);
+        helper.setBlock(relative, Blocks.STONE);
+        Vector3 focal = new Vector3(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5);
+        try {
+            MassBlockBreakScheduler.schedule(caster, helper.getLevel(), focal, 1.0, List.of(target),
+                    new ItemStack(Items.DIAMOND_PICKAXE), state -> true);
+        } catch (SpellRuntimeException | RuntimeException e) {
+            caster.detach();
+            removeOwner(helper, owner);
+            throw e;
+        }
+        helper.runAfterDelay(10, () -> {
+            try {
+                helper.assertBlockPresent(Blocks.AIR, relative);
+                helper.assertTrue(caster.getInventory().countItem(Items.COBBLESTONE) == 1
+                                && owner.getInventory().countItem(Items.COBBLESTONE) == 0,
+                        "The broken block's drop did not reach the machine");
+                helper.succeed();
+            } finally {
+                caster.detach();
+                removeOwner(helper, owner);
+            }
+        });
+    }
+
+    /**
+     * 機械が撃った作動式: フォノンメーザーと作動式: 流星群の光線は、PvP が有効でも所有者と所有者のペットに当たらない。
+     * 同じ線上の奥にいるハスクと野良のオオカミには当たる。
+     */
+    @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH, timeoutTicks = 200)
+    public static void beamsFromTheMachineSpareItsOwnerAndTheirPets(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        boolean pvp = level.getServer().isPvpAllowed();
+        // 線は2本: z=1 に所有者と奥のハスク、z=3 にペットと奥の野良のオオカミ。光線はそれぞれの胴の高さを通す。
+        // 光線の始点・終点は float で同期されるので、ずれないよう線の z は整数の座標にする（docs/pitfalls.md PIT-055）。
+        ServerPlayer owner = survivalOwner(helper, new Vec3(2.5, 1.0, 1.0));
+        Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(4.0, 1.0, 1.0));
+        husk.setNoAi(true);
+        Wolf pet = helper.spawnWithNoFreeWill(EntityType.WOLF, new Vec3(2.5, 1.0, 3.0));
+        pet.setNoAi(true);
+        pet.setTame(true, false);
+        pet.setOwnerUUID(owner.getUUID());
+        Wolf stray = helper.spawnWithNoFreeWill(EntityType.WOLF, new Vec3(4.0, 1.0, 3.0));
+        // 落ちて光線の高さから外れないよう、その場に止める。
+        stray.setNoAi(true);
+        AutonomousCasterPlayer ownerLine = beamCaster(helper, owner.getUUID(), 1.0, owner.getBbHeight() / 2.0);
+        AutonomousCasterPlayer petLine = beamCaster(helper, owner.getUUID(), 3.0, pet.getBbHeight() / 2.0);
+        List<Entity> beams = new ArrayList<>();
+        float ownerHealth = owner.getHealth();
+        float petHealth = pet.getHealth();
+        float huskHealth = husk.getHealth();
+        float strayHealth = stray.getHealth();
+        Runnable cleanup = () -> {
+            beams.forEach(Entity::discard);
+            ownerLine.detach();
+            petLine.detach();
+            removeOwner(helper, owner);
+            level.getServer().setPvpAllowed(pvp);
+            helper.killAllEntitiesOfClass(Wolf.class);
+        };
+        // 入った直後のプレイヤーの無敵（60 tick）が切れてから、PvP を有効にして撃つ。PvP は後始末で元に戻す。
+        helper.runAfterDelay(61, guarded(cleanup, () -> {
+            level.getServer().setPvpAllowed(true);
+            helper.assertTrue(!owner.isCreative() && !owner.isSpectator() && owner.canHarmPlayer(ownerLine),
+                    "The test owner could not be hurt by another player");
+            for (AutonomousCasterPlayer caster : List.of(ownerLine, petLine)) {
+                EntityPhononMaserBeam beam = new EntityPhononMaserBeam(level, caster, 1, 40);
+                level.addFreshEntity(beam);
+                beams.add(beam);
+            }
+        }));
+        helper.runAfterDelay(66, guarded(cleanup, () -> {
+            helper.assertTrue(husk.getHealth() < huskHealth && (!stray.isAlive() || stray.getHealth() < strayHealth),
+                    "The Phonon Maser beams missed their lines");
+            helper.assertTrue(owner.getHealth() == ownerHealth, "The Phonon Maser beam of the machine hit its owner");
+            helper.assertTrue(pet.getHealth() == petHealth, "The Phonon Maser beam of the machine hit its owner's pet");
+            beams.forEach(Entity::discard);
+            beams.clear();
+            for (AutonomousCasterPlayer caster : List.of(ownerLine, petLine)) {
+                EntityMeteorLineBeam beam = new EntityMeteorLineBeam(level, caster, caster.getEyePosition(),
+                        new Vec3(1.0, 0.0, 0.0), 4.0);
+                level.addFreshEntity(beam);
+                beams.add(beam);
+            }
+        }));
+        helper.runAfterDelay(70, guarded(cleanup, () -> {
+            helper.assertTrue(!husk.isAlive() && !stray.isAlive(), "The Meteor beams missed their lines");
+            helper.assertTrue(owner.isAlive() && owner.getHealth() == ownerHealth, "The Meteor beam of the machine hit its owner");
+            helper.assertTrue(pet.isAlive() && pet.getHealth() == petHealth, "The Meteor beam of the machine hit its owner's pet");
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /** 失敗したら後始末をしてから、その失敗を GameTest へ伝える。 */
+    private static Runnable guarded(Runnable cleanup, Runnable step) {
+        return () -> {
+            try {
+                step.run();
+            } catch (RuntimeException | Error e) {
+                cleanup.run();
+                throw e;
+            }
+        };
+    }
+
+    /**
+     * 所有者役。ワールドのプレイヤー一覧に入れ、UUID での検索で本人が見つかる状態にする。
+     * 他のテストの敵や選択子に拾われないよう、スペクテイターにして専用のバッチで動かす。
+     */
+    private static FakePlayer onlineOwner(GameTestHelper helper, Vec3 relative) {
+        FakePlayer owner = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "[psitweaks_owner]"));
+        Vec3 at = helper.absoluteVec(relative);
+        owner.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        owner.setGameMode(GameType.SPECTATOR);
+        helper.getLevel().addNewPlayer(owner);
+        return owner;
+    }
+
+    private static void removeOwner(GameTestHelper helper, ServerPlayer owner) {
+        GameTestPlayers.remove(helper, owner);
+    }
+
+    /** 光線を受ける所有者役。FakePlayer はダメージを受けないので、普通の ServerPlayer（サバイバル）をワールドに入れる。 */
+    private static ServerPlayer survivalOwner(GameTestHelper helper, Vec3 relative) {
+        return GameTestPlayers.inLevel(helper, "psitweaks_owner", relative);
+    }
+
+    /** 東（+x）を向き、目の高さが床から {@code height} の専用 Caster。光線を床と平行に撃たせる。 */
+    private static AutonomousCasterPlayer beamCaster(GameTestHelper helper, UUID owner, double z, double height) {
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner, new StubHost());
+        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0 + height, z));
+        caster.moveTo(at.x, at.y - caster.getEyeHeight(), at.z, -90.0F, 0.0F);
+        caster.setYHeadRot(-90.0F);
+        return caster;
+    }
+
+    /** 保存して、ワールドに入れない別のエンティティとして読み込み直す。 */
+    private static Entity reload(GameTestHelper helper, Entity entity) {
+        CompoundTag tag = new CompoundTag();
+        helper.assertTrue(entity.save(tag), "The entity could not be saved");
+        return EntityType.create(tag, helper.getLevel())
+                .orElseThrow(() -> new GameTestAssertException("The entity could not be loaded"));
+    }
+
     private static Optional<ArrayList<Entity>> cast(GameTestHelper helper, AutonomousCasterPlayer caster, StubHost host,
                                                     ItemStack bullet, ItemStack cad) {
         var data = PlayerDataHandler.get(caster);
@@ -311,7 +885,7 @@ public final class AutonomousCasterGameTests {
     public static void ideaStorageOwnerFollowsTheMachineOwner(GameTestHelper helper) throws Exception {
         StubHost host = new StubHost();
         host.owner = UUID.randomUUID();
-        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), host);
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
         var ownerStorage = IdeaStorageService.get(helper.getLevel().getServer(), host.owner);
         long inserted = ownerStorage.insertEnergy(4_000L, false);
         var energy = new PieceSelectorIdeaStorageAmount(new Spell());
@@ -428,6 +1002,15 @@ public final class AutonomousCasterGameTests {
         AutonomousCasterChecks.lendsItsOwnersIdeaStorage(helper);
     }
 
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterKeepsPsiReturnedAfterTheCast(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.keepsPsiReturnedAfterTheCast(helper);
+    }
+
     /** 機械の代わりに Caster の問い合わせへ答える。 */
     private static final class StubHost implements AutonomousCasterHost {
         private final List<Component> messages = new ArrayList<>();
@@ -435,6 +1018,8 @@ public final class AutonomousCasterGameTests {
         private int insufficientCost = -1;
         private int insufficientAvailable = -1;
         private UUID owner;
+        private String language;
+        private String ownerName;
 
         @Override
         public void onCasterMessage(Component message) {
@@ -460,6 +1045,16 @@ public final class AutonomousCasterGameTests {
         @Override
         public Optional<UUID> ideaStorageOwner() {
             return Optional.ofNullable(owner);
+        }
+
+        @Override
+        public Optional<String> ownerLanguage() {
+            return Optional.ofNullable(language);
+        }
+
+        @Override
+        public Optional<String> ownerName() {
+            return Optional.ofNullable(ownerName);
         }
     }
 }

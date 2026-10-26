@@ -49,6 +49,7 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterSpellHandler;
+import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
@@ -210,6 +211,7 @@ public class Psitweaks {
         // 自律詠唱機の Psi 不足判定は他の handler が確定させたコストを見るため最後に登録する。
         PsiEvents.register(PreSpellCastEvent.class, AutonomousCasterSpellHandler::onPreSpellCast);
         PsiEvents.register(SpellCastEvent.class, DimensionalCrystalDropHandler::onSpellCast);
+        PsiEvents.register(vazkii.psi.api.cad.CADStatEvent.class, VirtualCad::onCadStat);
         PsiEvents.register(PieceKnowledgeEvent.class, SpellUnlockHandler::onPieceKnowledge);
         PsiEvents.register(vazkii.psi.api.exosuit.PsiArmorEvent.class, PlayerPsiEventHandler::onPsiCurioEvent);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);

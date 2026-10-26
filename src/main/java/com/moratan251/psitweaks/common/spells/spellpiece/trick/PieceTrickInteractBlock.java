@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -80,13 +81,14 @@ public class PieceTrickInteractBlock extends PieceTrick {
         );
 
         try {
-            //オフハンドで右クリック
-            ItemStack offhandStack = player.getItemInHand(InteractionHand.OFF_HAND);
+            //オフハンドで右クリック。自律詠唱機はオフハンドを持たないので、選択中の機械のスロット（メインハンド）を使う
+            InteractionHand hand = player instanceof AutonomousCasterPlayer ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            ItemStack heldStack = player.getItemInHand(hand);
             ItemInteractionResult itemResult = blockState.useItemOn(
-                    offhandStack,
+                    heldStack,
                     world,
                     player,
-                    InteractionHand.OFF_HAND,
+                    hand,
                     hitResult
             );
             InteractionResult result = itemResult.result();

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.tile.machine;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterHost;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
@@ -25,7 +26,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -35,7 +35,6 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -63,6 +62,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -74,10 +74,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import vazkii.psi.api.cad.EnumCADComponent;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.Spell;
+import vazkii.psi.common.attribute.base.ModAttributes;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.ItemCAD;
@@ -91,9 +91,8 @@ import vazkii.psi.common.item.ItemCAD;
 public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final int BULLET_SLOTS = 5;
+    public static final int BULLET_SLOTS = 8;
     public static final int ITEM_SLOTS = 9;
-    public static final int COMPONENT_SLOTS = VirtualCad.SLOT_TYPES.size();
     public static final int MIN_YAW = -180;
     public static final int MAX_YAW = 180;
     public static final int MIN_PITCH = -90;
@@ -102,11 +101,12 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     // GUI 上のスロット位置（アイテム描画位置）
     public static final int SLOT_ROW_Y = 18;
     public static final int BULLET_X = 8;
-    public static final int COMPONENT_X = 98;
     public static final int ITEM_X = 8;
     public static final int ITEM_Y = 40;
     public static final int ECHO_SLOT_X = 8;
     public static final int ECHO_SLOT_Y = 63;
+    public static final int DYE_SLOT_X = 152;
+    public static final int DYE_SLOT_Y = 63;
 
     /** 詠唱に成功した後、稼働表示を続ける tick 数。 */
     private static final int ACTIVE_TICKS_AFTER_CAST = 10;
@@ -129,6 +129,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private static final String TAG_LOG = "Log";
     private static final String TAG_LAST_OUTCOME = "LastOutcome";
     private static final String TAG_LAST_FAILURE = "LastFailure";
+    private static final String TAG_OWNER_LANGUAGE = "OwnerLanguage";
+    private static final String TAG_OWNER_NAME = "OwnerName";
+    private static final String TAG_OWNER_NAME_OF = "OwnerNameOf";
 
     private static final String ERROR_PREFIX = "psitweaks.autonomous_caster.error.";
 
@@ -157,7 +160,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     // getInitial* はスーパークラスのコンストラクタから呼ばれるため、そこで代入するフィールドに初期化子を付けない。
     private List<IInventorySlot> bulletSlots;
-    private List<IInventorySlot> componentSlots;
+    private IInventorySlot dyeSlot;
     private List<IInventorySlot> itemSlots;
     private ChemicalInventorySlot echoSlot;
     private IChemicalTank echoTank;
@@ -179,6 +182,13 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private final CasterLog log = new CasterLog(AutonomousCasterSettings::logCapacity, AutonomousCasterSettings::maxLogMessageLength);
     private Outcome lastOutcome = Outcome.NONE;
     private long lastFailureSequence;
+    @Nullable
+    private String ownerLanguage;
+    /** 最後に見えた所有者の名前と、その時の所有者。所有者のチームを引くのに使う。 */
+    @Nullable
+    private String ownerName;
+    @Nullable
+    private UUID ownerNameOf;
 
     // 保存しない状態
     private boolean pendingPulse;
@@ -191,6 +201,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private final ItemStack[] mirrorSnapshot = emptyStacks(ITEM_SLOTS);
     private int activeTicks;
     private int recoveryPerTick;
+    /** 最後に Caster の Psi へ書いた値。休眠の後の返却など、詠唱の外で増減した分を機械に足すのに使う。 */
+    private int casterPsiWritten = -1;
     private final Map<UUID, Long> viewerRevisions = new HashMap<>();
 
     // クライアントへ同期する値（サーバーのコンフィグを正とする）
@@ -238,17 +250,12 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
         bulletSlots = List.copyOf(bullets);
 
-        IContentsListener componentListener = () -> {
+        IContentsListener dyeListener = () -> {
             listener.onContentsChanged();
             virtualCadDirty = true;
         };
-        List<IInventorySlot> components = new ArrayList<>(COMPONENT_SLOTS);
-        for (int i = 0; i < COMPONENT_SLOTS; i++) {
-            EnumCADComponent type = VirtualCad.SLOT_TYPES.get(i);
-            components.add(builder.addSlot(BasicInventorySlot.at(stack -> VirtualCad.accepts(registriesOrNull(), stack, type),
-                    componentListener, COMPONENT_X + i * 18, SLOT_ROW_Y, 1)));
-        }
-        componentSlots = List.copyOf(components);
+        dyeSlot = builder.addSlot(BasicInventorySlot.at(stack -> VirtualCad.acceptsDye(registriesOrNull(), stack),
+                dyeListener, DYE_SLOT_X, DYE_SLOT_Y, 1));
 
         List<IInventorySlot> items = new ArrayList<>(ITEM_SLOTS);
         for (int i = 0; i < ITEM_SLOTS; i++) {
@@ -284,6 +291,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             markForSave();
         }
         reconcileMirror();
+        syncCasterPsi();
+        if (gameTime() % 20 == 0) {
+            refreshOwnerLanguage();
+        }
 
         recoveryPerTick = recoverPsi();
         if (cooldown > 0) {
@@ -374,11 +385,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     private void refreshVirtualCad() {
         virtualCadDirty = false;
-        List<ItemStack> installed = new ArrayList<>(COMPONENT_SLOTS);
-        for (IInventorySlot slot : componentSlots) {
-            installed.add(slot.getStack());
-        }
-        virtualCad = VirtualCad.rebuild(registriesOrNull(), installed, virtualCad);
+        virtualCad = VirtualCad.rebuild(registriesOrNull(), dyeSlot.getStack(), virtualCad);
         AutonomousCasterPlayer current = caster;
         if (current != null) {
             current.getInventory().items.set(AutonomousCasterPlayer.CAD_SLOT, virtualCad);
@@ -386,10 +393,19 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         markForSave();
     }
 
+    /**
+     * 専用 Caster を用意する。Caster は所有者の UUID を名乗り（保護 Mod やキルの帰属のため）、
+     * {@link #casterId} は術者を引き直すための機械ごとの内部キーにする。
+     */
     private void ensureCaster() {
         AutonomousCasterPlayer current = caster;
+        UUID owner = getOwnerUUID();
         if (current != null && current.isAttached() && current.level() == level) {
-            return;
+            if (current.getUUID().equals(owner != null ? owner : current.casterKey())) {
+                return;
+            }
+            // 所有者が後から決まった・変わった時は名乗る UUID を合わせて作り直す。手持ちは先に機械へ戻す。
+            reconcileMirror();
         }
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
@@ -398,11 +414,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             current.detach();
         }
         if (casterId == null || AutonomousCasterRegistry.isInUse(casterId)) {
-            // 構造物コピーなどで同じ UUID の機械が並んだ場合も、Caster ごとの状態を分けるため作り直す。
+            // 構造物コピーなどで同じキーの機械が並んだ場合も、Caster ごとの状態を分けるため作り直す。
             casterId = UUID.randomUUID();
             markForSave();
         }
-        AutonomousCasterPlayer created = new AutonomousCasterPlayer(serverLevel, casterId, this);
+        AutonomousCasterPlayer created = new AutonomousCasterPlayer(serverLevel, casterId, owner, this);
         Inventory inventory = created.getInventory();
         for (int i = 0; i < ITEM_SLOTS; i++) {
             ItemStack stack = itemSlots.get(i).getStack();
@@ -413,6 +429,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         inventory.selected = selectedItemSlot;
         positionCaster(created);
         caster = created;
+        casterPsiWritten = -1;
     }
 
     /** 視点を機械の前面に置き、設定された向きを向かせる。 */
@@ -432,10 +449,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         target.setDeltaMovement(Vec3.ZERO);
     }
 
-    /**
-     * Psi 回復。SPEED アップグレードで1 tick の回復量、CHEMICAL アップグレードで Psi あたりのエコー消費量を
-     * Mekanism の他の機械と同じ指数カーブで変える。
-     */
+    /** Psi 回復。1 tick に回復1回分を、コンフィグの比率で気化サイオニックエコーを使って回復する。アップグレードは載せられない。 */
     private int recoverPsi() {
         int capacity = AutonomousCasterSettings.psiCapacity();
         if (psi > capacity) {
@@ -448,13 +462,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         if (missing <= 0 || echo <= 0) {
             return 0;
         }
-        double maxMultiplier = MekanismConfig.general.maxUpgradeMultiplier.get();
-        double speed = Math.pow(maxMultiplier, MekanismUtils.fractionUpgrades(this, Upgrade.SPEED));
-        double echoPerPsi = (double) AutonomousCasterSettings.echoPerOperation() / AutonomousCasterSettings.psiPerOperation()
-                * Math.pow(maxMultiplier, -MekanismUtils.fractionUpgrades(this, Upgrade.CHEMICAL));
-        long bySpeed = (long) Math.floor(AutonomousCasterSettings.psiPerOperation() * speed);
+        int perOperation = AutonomousCasterSettings.psiPerOperation();
+        double echoPerPsi = (double) AutonomousCasterSettings.echoPerOperation() / perOperation;
         long byEcho = (long) Math.floor(echo / echoPerPsi + 1.0E-9D);
-        int gain = (int) Math.max(0L, Math.min(Math.min(bySpeed, missing), byEcho));
+        int gain = (int) Math.max(0L, Math.min(Math.min(perOperation, missing), byEcho));
         if (gain <= 0) {
             return 0;
         }
@@ -464,6 +475,30 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         markDirtyComparator();
         markForSave();
         return gain;
+    }
+
+    /**
+     * Caster の Psi を機械に合わせる。前回書いた後に Caster 側で増減した分（休眠の後の返却など）は機械に足す。
+     * Psi の返却は Caster の最大 Psi までなので、最大 Psi も機械の容量に合わせる。
+     */
+    private void syncCasterPsi() {
+        AutonomousCasterPlayer current = caster;
+        if (current == null) {
+            return;
+        }
+        int capacity = AutonomousCasterSettings.psiCapacity();
+        AttributeInstance totalPsi = current.getAttribute(ModAttributes.TOTAL_PSI.holder());
+        if (totalPsi != null && totalPsi.getBaseValue() != capacity) {
+            totalPsi.setBaseValue(capacity);
+        }
+        PlayerData data = PlayerDataHandler.get(current);
+        if (casterPsiWritten >= 0 && data.availablePsi != casterPsiWritten) {
+            psi = (int) Mth.clamp((long) psi + data.availablePsi - casterPsiWritten, 0L, capacity);
+            markDirtyComparator();
+            markForSave();
+        }
+        data.availablePsi = psi;
+        casterPsiWritten = psi;
     }
 
     // ---- 詠唱 ----
@@ -494,8 +529,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         reconcileMirror();
         positionCaster(current);
         current.getInventory().selected = selectedItemSlot;
+        syncCasterPsi();
         PlayerData data = PlayerDataHandler.get(current);
-        data.availablePsi = psi;
         data.overflowed = false;
         data.regenCooldown = 0;
         data.deductions.clear();
@@ -519,6 +554,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
 
         psi = Mth.clamp(data.availablePsi, 0, AutonomousCasterSettings.psiCapacity());
+        data.availablePsi = psi;
+        casterPsiWritten = psi;
         data.overflowed = false;
         data.deductions.clear();
         // ループ型は1トリガー1回だけ。持続 loopcast 状態は残さない。
@@ -756,6 +793,55 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return Optional.ofNullable(getOwnerUUID());
     }
 
+    @Override
+    public Optional<String> ownerLanguage() {
+        refreshOwnerLanguage();
+        return Optional.ofNullable(ownerLanguage);
+    }
+
+    /** 所有者がオンラインなら、その言語を覚える。オフラインの間は最後に覚えた言語を使う。 */
+    private void refreshOwnerLanguage() {
+        UUID owner = getOwnerUUID();
+        if (owner == null || level == null || level.getServer() == null) {
+            return;
+        }
+        ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
+        String language = player == null ? null : player.getLanguage();
+        if (language != null && !language.isBlank() && !language.equals(ownerLanguage)) {
+            ownerLanguage = language;
+            markForSave();
+        }
+    }
+
+    /**
+     * 所有者の名前。Caster が所有者のチームに入るのに使う。オンラインなら今の名前を覚え、オフラインの間は覚えた名前、
+     * 覚えていなければサーバーのプロフィールキャッシュから引く。覚えた名前は所有者が変わったら使わない。
+     */
+    @Override
+    public Optional<String> ownerName() {
+        UUID owner = getOwnerUUID();
+        if (owner == null || level == null || level.getServer() == null) {
+            return Optional.empty();
+        }
+        ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
+        String name = player != null ? player.getScoreboardName() : null;
+        if (name == null && owner.equals(ownerNameOf) && ownerName != null) {
+            return Optional.of(ownerName);
+        }
+        if (name == null && level.getServer().getProfileCache() != null) {
+            name = level.getServer().getProfileCache().get(owner).map(GameProfile::getName).orElse(null);
+        }
+        if (name == null || name.isBlank()) {
+            return Optional.empty();
+        }
+        if (!name.equals(ownerName) || !owner.equals(ownerNameOf)) {
+            ownerName = name;
+            ownerNameOf = owner;
+            markForSave();
+        }
+        return Optional.of(name);
+    }
+
     private long gameTime() {
         return level == null ? 0L : level.getGameTime();
     }
@@ -884,6 +970,13 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         tag.put(TAG_LOG, logTag);
         tag.putInt(TAG_LAST_OUTCOME, lastOutcome.ordinal());
         tag.putLong(TAG_LAST_FAILURE, lastFailureSequence);
+        if (ownerLanguage != null) {
+            tag.putString(TAG_OWNER_LANGUAGE, ownerLanguage);
+        }
+        if (ownerName != null && ownerNameOf != null) {
+            tag.putString(TAG_OWNER_NAME, ownerName);
+            tag.putUUID(TAG_OWNER_NAME_OF, ownerNameOf);
+        }
     }
 
     @Override
@@ -916,6 +1009,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         log.load(tag.getCompound(TAG_LOG), registries);
         lastOutcome = Outcome.byIndex(tag.getInt(TAG_LAST_OUTCOME));
         lastFailureSequence = tag.getLong(TAG_LAST_FAILURE);
+        ownerLanguage = tag.contains(TAG_OWNER_LANGUAGE) ? tag.getString(TAG_OWNER_LANGUAGE) : null;
+        boolean hasOwnerName = tag.contains(TAG_OWNER_NAME) && tag.hasUUID(TAG_OWNER_NAME_OF);
+        ownerName = hasOwnerName ? tag.getString(TAG_OWNER_NAME) : null;
+        ownerNameOf = hasOwnerName ? tag.getUUID(TAG_OWNER_NAME_OF) : null;
         virtualCadDirty = true;
         bulletsDirty = true;
         signalChecked = false;
@@ -988,8 +1085,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return bulletSlots;
     }
 
-    public List<IInventorySlot> getComponentSlots() {
-        return componentSlots;
+    public IInventorySlot getDyeSlot() {
+        return dyeSlot;
     }
 
     public List<IInventorySlot> getItemSlots() {

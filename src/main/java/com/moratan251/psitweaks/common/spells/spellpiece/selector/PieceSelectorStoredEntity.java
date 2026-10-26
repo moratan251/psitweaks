@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -59,7 +60,7 @@ public class PieceSelectorStoredEntity extends PieceSelector {
 
         try {
             UUID uuid = UUID.fromString(uuidStr);
-            return ((ServerLevel) context.caster.level()).getEntity(uuid);
+            return CasterIds.find((ServerLevel) context.caster.level(), uuid);
         } catch (Exception e) {
             return null;
         }

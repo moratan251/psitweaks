@@ -23,4 +23,10 @@ public interface AutonomousCasterHost {
 
     /** 詠唱時点の機械所有者。未設定や機械の撤去後は空。 */
     Optional<UUID> ideaStorageOwner();
+
+    /** 機械所有者の言語コード。オンラインならその設定、オフラインなら最後に見えた値。一度も見ていなければ空。 */
+    Optional<String> ownerLanguage();
+
+    /** 機械所有者のプレイヤー名（スコアボードのチームを引く名前）。オンラインなら今の名前、オフラインなら最後に見えた名前。不明なら空。 */
+    Optional<String> ownerName();
 }

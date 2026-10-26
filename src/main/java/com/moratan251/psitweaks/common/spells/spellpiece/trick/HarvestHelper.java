@@ -1,5 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.DropEntry;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHelper.StackAccumulator;
 import java.util.ArrayList;
@@ -162,12 +164,21 @@ public final class HarvestHelper {
         }
 
         UUID casterId() {
-            return caster.getUUID();
+            return CasterIds.idOf(caster);
         }
 
         /** Whether the caster can still take the harvest: alive, online and in the level of the crops. */
         public boolean isCasterPresent() {
+            // The autonomous caster's player never disconnects; it is detached when its machine is removed or unloaded.
+            if (caster instanceof AutonomousCasterPlayer autonomous && !autonomous.isAttached()) {
+                return false;
+            }
             return caster.isAlive() && !caster.hasDisconnected() && caster.level() == level;
+        }
+
+        /** Whether an autonomous caster cast it; its machine moves what its player gets into its slots as it ticks. */
+        boolean isCastByMachine() {
+            return caster instanceof AutonomousCasterPlayer;
         }
 
         /** Ends a harvest whose caster is gone: what the caster has not got yet drops at {@code pos}. */
