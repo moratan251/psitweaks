@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
@@ -77,14 +77,14 @@ public class PieceTrickKamaitachi extends PieceTrick {
         }
 
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
-        float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
+        float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.kamaitachiDamageMultiplier.get(), context.caster);
         float width = (float) Math.min(MAX_WIDTH, BASE_WIDTH + powerVal * WIDTH_PER_POWER);
         Vec3 start = positionVal.toVec3D();
         Vec3 dir = directionVal.toVec3D();
 
         EntityKamaitachiBlade blade = new EntityKamaitachiBlade(level, start, dir, width);
-        blade.configure(context.caster, SpellSafetyUtils.hasSafeToPlayers(context), damage,
+        blade.configure(context.caster, AttackRules.Options.from(context), damage,
                 CombatSpellHelper.spellColor(context.caster));
         level.addFreshEntity(blade);
 

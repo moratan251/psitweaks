@@ -1,15 +1,14 @@
 package com.moratan251.psitweaks.common.entities.combat;
 
-import com.moratan251.psitweaks.common.caster.CasterIds;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackCaster;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
-import java.lang.ref.WeakReference;
-import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,18 +16,15 @@ import net.minecraft.world.level.Level;
 
 /**
  * Base of the short-lived entities the combat tricks spawn (shockwaves, blades, meteors, gravity wells).
- * They have no collision, no gravity, are never saved, and remember who cast them.
+ * They have no collision, no gravity, are never saved, and remember who cast them ({@link AttackCaster}). A subclass
+ * picks its targets with {@link #canAffect} (or {@link AttackRules}) and hurts them only through {@link #harm}.
  */
 public abstract class CombatSpellEntity extends Entity {
     private static final EntityDataAccessor<Integer> COLOR =
             SynchedEntityData.defineId(CombatSpellEntity.class, EntityDataSerializers.INT);
 
-    @Nullable
-    private UUID casterUuid;
     /** The caster as it was when cast; also finds casters that are not in the world (fake players). */
-    @Nullable
-    private WeakReference<LivingEntity> casterRef;
-    private boolean safeToPlayers;
+    private final AttackCaster caster = AttackCaster.byReference();
     private float damage;
 
     protected CombatSpellEntity(EntityType<?> type, Level level) {
@@ -37,13 +33,17 @@ public abstract class CombatSpellEntity extends Entity {
         setNoGravity(true);
     }
 
-    /** Sets who cast it, the damage per hit and the colour of its glow. */
-    public void configure(LivingEntity caster, boolean safeToPlayers, float damage, int color) {
-        this.casterUuid = CasterIds.idOf(caster);
-        this.casterRef = new WeakReference<>(caster);
-        this.safeToPlayers = safeToPlayers;
+    /** Sets who cast it and how ({@link AttackRules.Options#from}), the damage per hit and the colour of its glow. */
+    public void configure(LivingEntity caster, AttackRules.Options options, float damage, int color) {
+        this.caster.set(caster, options);
         this.damage = damage;
         entityData.set(COLOR, color & 0xFFFFFF);
+    }
+
+    /** @deprecated use {@link #configure(LivingEntity, AttackRules.Options, float, int)}; kept for the existing GameTests. */
+    @Deprecated
+    public void configure(LivingEntity caster, boolean safeToPlayers, float damage, int color) {
+        configure(caster, AttackRules.Options.of(safeToPlayers), damage, color);
     }
 
     @Override
@@ -57,15 +57,21 @@ public abstract class CombatSpellEntity extends Entity {
 
     @Nullable
     protected LivingEntity getCaster() {
-        LivingEntity cached = casterRef != null ? casterRef.get() : null;
-        if (cached != null && !cached.isRemoved() && cached.level() == level()) {
-            return cached;
-        }
-        return CombatSpellHelper.findLiving(level(), casterUuid);
+        return caster.get(level());
     }
 
-    protected boolean isSafeToPlayers() {
-        return safeToPlayers;
+    protected AttackRules.Options options() {
+        return caster.options();
+    }
+
+    /** Whether an attack of {@code caster} (this entity's, looked up once by the caller) may hit the entity. */
+    protected boolean canAffect(@Nullable LivingEntity caster, @Nullable Entity target) {
+        return AttackRules.canHarm(caster, target, options());
+    }
+
+    /** Hurts the entity as an attack of {@code caster} ({@link AttackRules#harm}). */
+    protected boolean harm(@Nullable LivingEntity caster, Entity target, DamageSource source, float amount) {
+        return AttackRules.harm(caster, target, options(), source, amount);
     }
 
     protected float getDamage() {
@@ -94,19 +100,13 @@ public abstract class CombatSpellEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.hasUUID("Caster")) {
-            casterUuid = tag.getUUID("Caster");
-        }
-        safeToPlayers = tag.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS);
+        caster.load(tag, "Caster");
         damage = tag.getFloat("Damage");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
-        if (casterUuid != null) {
-            tag.putUUID("Caster", casterUuid);
-        }
-        tag.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, safeToPlayers);
+        caster.save(tag, "Caster");
         tag.putFloat("Damage", damage);
     }
 }

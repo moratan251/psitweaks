@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
@@ -84,12 +84,12 @@ public class PieceTrickGravityCollapse extends PieceTrick {
         }
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         float radiusVal = (float) Mth.clamp(getParamValue(context, radius).doubleValue(), MIN_RADIUS, MAX_RADIUS);
-        float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
+        float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.gravityCollapseDamageMultiplier.get(), context.caster);
 
         Vec3 center = positionVal.toVec3D();
         EntityGravityWell well = new EntityGravityWell(level, center, radiusVal);
-        well.configure(context.caster, SpellSafetyUtils.hasSafeToPlayers(context), damage,
+        well.configure(context.caster, AttackRules.Options.from(context), damage,
                 CombatSpellHelper.spellColor(context.caster));
         level.addFreshEntity(well);
         CombatEffects.sound(level, center, SoundEvents.PORTAL_TRIGGER, 0.6F, 1.8F);

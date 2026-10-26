@@ -1,12 +1,11 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -101,10 +100,7 @@ public class PieceTrickActiveAirMine extends PieceTrick {
         double radius = calculateRadius(clampedPower);
         float damage = calculateDamage(clampedPower);
 
-        double perSpellDamageMultiplier = PsitweaksConfig.COMMON.activeAirMineDamageMultiplier.get();
-        double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float finalDamage = (float) (damage * perSpellDamageMultiplier * globalDamageMultiplier * spellDamageFactor);
+        float finalDamage = AttackRules.scale(damage, PsitweaksConfig.COMMON.activeAirMineDamageMultiplier.get(), context.caster);
 
         Vec3 center = SableRangeCompat.projectForEffect(level, positionVal);
         double radiusSq = radius * radius;
@@ -113,12 +109,12 @@ public class PieceTrickActiveAirMine extends PieceTrick {
                 center.x + radius, center.y + radius, center.z + radius
         );
 
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
+        AttackRules.Options options = AttackRules.Options.from(context);
         List<LivingEntity> targets = level.getEntitiesOfClass(
                 LivingEntity.class,
                 searchArea,
                 // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
-                target -> CombatSpellHelper.canHarm(context.caster, target, safeToPlayers)
+                target -> AttackRules.canHarm(context.caster, target, options)
                         && target.getBoundingBox().distanceToSqr(center) <= radiusSq
         );
 
@@ -133,8 +129,8 @@ public class PieceTrickActiveAirMine extends PieceTrick {
                 continue;
             }
 
-            target.hurt(CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.ACTIVE_AIR_MINE, context.caster, context.caster),
-                    distanceDamage);
+            AttackRules.harm(context.caster, target, options,
+                    AttackRules.source(level, PsitweaksDamageTypes.ACTIVE_AIR_MINE, context.caster, context.caster), distanceDamage);
         }
 
         if (level instanceof ServerLevel serverLevel) {

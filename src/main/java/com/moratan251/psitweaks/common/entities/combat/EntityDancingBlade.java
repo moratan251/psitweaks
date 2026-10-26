@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.SwordStrikes;
 import java.util.HashMap;
@@ -193,9 +194,9 @@ public class EntityDancingBlade extends CombatSpellEntity {
         ItemStack sword = SwordStrikes.swingCopy(getSword());
         DamageSource source = SwordStrikes.weaponSource(level, PsitweaksDamageTypes.DANCING_BLADES, caster, sword);
         // A swing of the sword, scaled like every attack spell (global and per-spell multipliers, Phenomenon Interference).
-        float damage = CombatSpellHelper.scaleDamage(SwordStrikes.meleeDamage(level, sword, target, source),
+        float damage = AttackRules.scale(SwordStrikes.meleeDamage(level, sword, target, source),
                 PsitweaksConfig.COMMON.dancingBladesDamageMultiplier.get(), caster);
-        if (CombatSpellHelper.canHarm(caster, target, isSafeToPlayers()) && target.hurt(source, damage)) {
+        if (harm(caster, target, source, damage)) {
             CombatSpellHelper.push(target, new Vec3(direction.x, 0.0, direction.z).scale(0.3).add(0.0, 0.08, 0.0));
             SwordStrikes.afterHit(level, caster, sword, target, source, direction);
         }
@@ -237,7 +238,7 @@ public class EntityDancingBlade extends CombatSpellEntity {
         double bestScore = Double.MAX_VALUE;
         Vec3 from = position();
         for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (!CombatSpellHelper.isAutoTarget(caster, candidate, isSafeToPlayers(), indiscriminate)) {
+            if (!AttackRules.isAutoTarget(caster, candidate, options(), indiscriminate)) {
                 continue;
             }
             Vec3 center = CombatSpellHelper.center(candidate);

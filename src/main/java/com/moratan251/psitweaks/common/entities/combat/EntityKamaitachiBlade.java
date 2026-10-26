@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.entities.combat;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.HashSet;
 import java.util.Set;
@@ -117,9 +118,9 @@ public class EntityKamaitachiBlade extends CombatSpellEntity {
         double halfWidth = getWidth() * 0.5;
         double length = to.subtract(from).length();
         AABB area = new AABB(from, to).inflate(halfWidth + 1.0, VERTICAL_REACH + 1.0, halfWidth + 1.0);
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.KAMAITACHI, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.KAMAITACHI, this, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (struck.contains(living.getUUID()) || !CombatSpellHelper.canHarm(caster, living, isSafeToPlayers())) {
+            if (struck.contains(living.getUUID()) || !canAffect(caster, living)) {
                 continue;
             }
             Vec3 offset = CombatSpellHelper.center(living).subtract(from);
@@ -132,7 +133,7 @@ public class EntityKamaitachiBlade extends CombatSpellEntity {
                 continue;
             }
             struck.add(living.getUUID());
-            if (living.hurt(source, getDamage())) {
+            if (harm(caster, living, source, getDamage())) {
                 CombatSpellHelper.push(living, new Vec3(direction.x, 0.0, direction.z).scale(0.4).add(0.0, 0.1, 0.0));
                 Vec3 center = CombatSpellHelper.center(living);
                 level.sendParticles(ParticleTypes.SWEEP_ATTACK, center.x, center.y, center.z, 1, 0.0, 0.0, 0.0, 0.0);

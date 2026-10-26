@@ -3,7 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.items.BladePouches;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.List;
@@ -63,8 +63,8 @@ public class PieceTrickDancingBlades extends PieceTrick {
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
         }
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
-        boolean anyCreature = CombatSpellHelper.isIndiscriminate(getParamValue(context, indiscriminate));
+        AttackRules.Options options = AttackRules.Options.from(context);
+        boolean anyCreature = AttackRules.isIndiscriminate(getParamValue(context, indiscriminate));
         int color = CombatSpellHelper.spellColor(context.caster);
         // Recasting replaces the caster's earlier blades instead of piling more up.
         for (EntityDancingBlade old : EntityDancingBlade.bladesOf(level, context.caster)) {
@@ -72,7 +72,7 @@ public class PieceTrickDancingBlades extends PieceTrick {
         }
         for (int i = 0; i < swords.size(); i++) {
             EntityDancingBlade blade = new EntityDancingBlade(level, context.caster, i, swords.size());
-            blade.configure(context.caster, safeToPlayers, 0.0F, color);
+            blade.configure(context.caster, options, 0.0F, color);
             blade.setSword(swords.get(i));
             blade.setIndiscriminate(anyCreature);
             level.addFreshEntity(blade);

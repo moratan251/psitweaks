@@ -1,9 +1,9 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityDryIceProjectile;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -50,13 +50,7 @@ public class PieceTrickDryMeteor extends PieceTrick {
             return null;
         }
 
-        double perSpellDamageMultiplier = PsitweaksConfig.COMMON.dryMeteorDamageMultiplier.get();
-        double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float finalDamage = (float) (BASE_DAMAGE
-                * perSpellDamageMultiplier
-                * globalDamageMultiplier
-                * spellDamageFactor);
+        float finalDamage = AttackRules.scale(BASE_DAMAGE, PsitweaksConfig.COMMON.dryMeteorDamageMultiplier.get(), context.caster);
 
         EntityDryIceProjectile projectile = new EntityDryIceProjectile(level, context.caster);
         Vec3 look = context.caster.getLookAngle();

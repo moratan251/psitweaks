@@ -4,7 +4,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -77,7 +77,7 @@ public class EntityDryIceProjectile extends ThrowableItemProjectile {
     /** 術者側（術者・術者のペット・味方）と、プレイヤーに安全のときのプレイヤーはすり抜ける。 */
     @Override
     protected boolean canHitEntity(Entity target) {
-        return super.canHitEntity(target) && CombatSpellHelper.canProjectileHarm(this, target, safeToPlayers);
+        return super.canHitEntity(target) && AttackRules.canProjectileHarm(this, target, AttackRules.Options.of(safeToPlayers));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class EntityDryIceProjectile extends ThrowableItemProjectile {
 
         Entity target = result.getEntity();
         if (!(safeToPlayers && target instanceof Player) && target instanceof LivingEntity livingTarget) {
-            livingTarget.hurt(createDryMeteorDamageSource(), damage);
+            AttackRules.harmByProjectile(this, livingTarget, AttackRules.Options.of(safeToPlayers), createDryMeteorDamageSource(), damage);
             if (livingTarget.isAlive()) {
                 livingTarget.addEffect(
                         new MobEffectInstance(PsitweaksEffects.CARBON_POISONING, CARBON_POISONING_DURATION_TICKS),

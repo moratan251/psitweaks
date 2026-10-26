@@ -7,11 +7,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -69,7 +68,7 @@ public class EntityBlazeBall extends SmallFireball {
     /** 術者側（術者・術者のペット・味方）と、プレイヤーに安全のときのプレイヤーはすり抜ける。 */
     @Override
     protected boolean canHitEntity(Entity target) {
-        return super.canHitEntity(target) && CombatSpellHelper.canProjectileHarm(this, target, safeToPlayers);
+        return super.canHitEntity(target) && AttackRules.canProjectileHarm(this, target, AttackRules.Options.of(safeToPlayers));
     }
 
     @Override
@@ -88,7 +87,7 @@ public class EntityBlazeBall extends SmallFireball {
 
         int originalFireTicks = target.getRemainingFireTicks();
         target.igniteForSeconds(5);
-        if (!target.hurt(source, damage)) {
+        if (!AttackRules.harmByProjectile(this, target, AttackRules.Options.of(safeToPlayers), source, damage)) {
             target.setRemainingFireTicks(originalFireTicks);
         } else if (level() instanceof ServerLevel serverLevel) {
             EnchantmentHelper.doPostAttackEffects(serverLevel, target, source);

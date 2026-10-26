@@ -3,6 +3,8 @@ package com.moratan251.psitweaks.common.caster;
 import java.util.UUID;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,5 +36,28 @@ public final class CasterIds {
         }
         Entity caster = AutonomousCasterRegistry.find(level, id);
         return caster != null ? caster : serverLevel.getEntity(id);
+    }
+
+    /**
+     * {@link #idOf} で保存した術者を引く。専用 Caster のキーを先に見て、次にワールドの生き物、最後に同じワールドにいる
+     * プレイヤー一覧のプレイヤー。サーバー側だけ。
+     */
+    @Nullable
+    public static LivingEntity findLiving(@Nullable Level level, @Nullable UUID id) {
+        if (id == null || !(level instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+        // 自律詠唱機の詠唱主体はワールドにもプレイヤー一覧にも入らず、所有者の UUID を名乗る。
+        // 術者は idOf（機械ごとの内部キー）で保存するので、本物の所有者より先に引く。
+        Player autonomous = AutonomousCasterRegistry.find(level, id);
+        if (autonomous != null) {
+            return autonomous;
+        }
+        Entity entity = serverLevel.getEntity(id);
+        if (entity instanceof LivingEntity living) {
+            return living;
+        }
+        Player player = serverLevel.getServer().getPlayerList().getPlayer(id);
+        return player != null && player.level() == level ? player : null;
     }
 }

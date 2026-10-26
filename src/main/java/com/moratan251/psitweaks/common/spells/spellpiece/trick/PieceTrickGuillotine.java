@@ -1,9 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
@@ -70,7 +68,7 @@ public class PieceTrickGuillotine extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity targetVal = getParamValue(context, target);
-        CombatSpellHelper.verifyTarget(context, targetVal);
+        AttackRules.verifyTarget(context, targetVal);
 
         if (!(targetVal instanceof LivingEntity livingEntity)) {
             throw new SpellRuntimeException("psi.spellerror.nulltarget");
@@ -83,17 +81,16 @@ public class PieceTrickGuillotine extends PieceTrick {
         }
 
         // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
-        if (!CombatSpellHelper.canHarm(context.caster, livingEntity, SpellSafetyUtils.hasSafeToPlayers(context))) {
+        AttackRules.Options options = AttackRules.Options.from(context);
+        if (!AttackRules.canHarm(context.caster, livingEntity, options)) {
             return null;
         }
 
-        double perSpellDamageMultiplier = PsitweaksConfig.COMMON.guillotineDamageMultiplier.get();
-        double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float damage = (float) (BASE_DAMAGE * perSpellDamageMultiplier * globalDamageMultiplier * spellDamageFactor);
+        float damage = AttackRules.scale(BASE_DAMAGE, PsitweaksConfig.COMMON.guillotineDamageMultiplier.get(), context.caster);
         playSlashEffect(livingEntity);
         boolean wasAlive = livingEntity.isAlive();
-        boolean damaged = livingEntity.hurt(context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
+        boolean damaged = AttackRules.harm(context.caster, livingEntity, options,
+                context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
         if (damaged && wasAlive && !livingEntity.isAlive()) {
             ItemStack headStack = resolveHeadDrop(livingEntity);
             if (!headStack.isEmpty()) {

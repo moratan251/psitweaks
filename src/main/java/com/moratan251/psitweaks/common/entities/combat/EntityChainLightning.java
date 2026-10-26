@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.entities.combat;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,9 @@ public class EntityChainLightning extends CombatSpellEntity {
     /**
      * Strikes one target of the chain: extra damage in water or rain, and a crackle that rises in pitch along the chain.
      */
-    public static void strike(ServerLevel level, LivingEntity target, DamageSource source, float damage, int jump) {
-        target.hurt(source, target.isInWaterOrRain() ? damage * WET_DAMAGE_FACTOR : damage);
+    public static void strike(ServerLevel level, @Nullable LivingEntity caster, AttackRules.Options options, LivingEntity target,
+                              DamageSource source, float damage, int jump) {
+        AttackRules.harm(caster, target, options, source, target.isInWaterOrRain() ? damage * WET_DAMAGE_FACTOR : damage);
         if (jump > 0) {
             CombatEffects.sound(level, CombatSpellHelper.center(target), SoundEvents.LIGHTNING_BOLT_IMPACT, 0.45F,
                     Math.min(2.0F, 1.6F + 0.06F * jump));
@@ -74,10 +76,10 @@ public class EntityChainLightning extends CombatSpellEntity {
                 casterLooked = true;
             }
             LivingEntity target = jump.target;
-            if (target.isRemoved() || target.level() != level || !CombatSpellHelper.canHarm(caster, target, isSafeToPlayers())) {
+            if (target.isRemoved() || target.level() != level || !canAffect(caster, target)) {
                 continue;
             }
-            strike(level, target, source(level, caster), jump.damage, jump.jump);
+            strike(level, caster, options(), target, source(level, caster), jump.damage, jump.jump);
         }
         if (jumps.stream().allMatch(jump -> jump.done)) {
             discard();
@@ -85,7 +87,7 @@ public class EntityChainLightning extends CombatSpellEntity {
     }
 
     private static DamageSource source(ServerLevel level, @Nullable LivingEntity caster) {
-        return CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.CHAIN_LIGHTNING, caster, caster);
+        return AttackRules.source(level, PsitweaksDamageTypes.CHAIN_LIGHTNING, caster, caster);
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
@@ -88,19 +88,19 @@ public class PieceTrickChainLightning extends PieceTrick {
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
         }
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
-        boolean anyCreature = CombatSpellHelper.isIndiscriminate(getParamValue(context, indiscriminate));
+        AttackRules.Options options = AttackRules.Options.from(context);
+        boolean anyCreature = AttackRules.isIndiscriminate(getParamValue(context, indiscriminate));
         LivingEntity caster = context.caster;
-        LivingEntity first = firstTarget(level, context, caster, safeToPlayers, anyCreature);
-        if (CombatSpellHelper.skipFallenTarget(context, first)) {
+        LivingEntity first = firstTarget(level, context, caster, options, anyCreature);
+        if (AttackRules.skipFallenTarget(context, first)) {
             return null;
         }
-        CombatSpellHelper.verifyTarget(context, first);
+        AttackRules.verifyTarget(context, first);
 
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
-        float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
+        float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.chainLightningDamageMultiplier.get(), caster);
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.CHAIN_LIGHTNING, caster, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.CHAIN_LIGHTNING, caster, caster);
 
         int color = CombatSpellHelper.spellColor(caster);
         List<Vec3> points = new ArrayList<>();
@@ -114,20 +114,20 @@ public class PieceTrickChainLightning extends PieceTrick {
             struck.add(current.getUUID());
             float dealt = jumpDamage(damage, jump);
             if (jump == 0) {
-                if (CombatSpellHelper.canHarm(caster, current, safeToPlayers)) {
-                    EntityChainLightning.strike(level, current, source, dealt, jump);
+                if (AttackRules.canHarm(caster, current, options)) {
+                    EntityChainLightning.strike(level, caster, options, current, source, dealt, jump);
                 }
             } else {
                 if (jumps == null) {
                     jumps = new EntityChainLightning(level, points.get(1));
-                    jumps.configure(caster, safeToPlayers, damage, color);
+                    jumps.configure(caster, options, damage, color);
                 }
                 jumps.schedule(current, jump, dealt);
             }
             if (jump >= MAX_CHAINS) {
                 break;
             }
-            current = nextTarget(level, context, caster, current, struck, safeToPlayers, anyCreature);
+            current = nextTarget(level, context, caster, current, struck, options, anyCreature);
         }
         if (jumps != null) {
             level.addFreshEntity(jumps);
@@ -154,7 +154,7 @@ public class PieceTrickChainLightning extends PieceTrick {
      */
     @Nullable
     private static LivingEntity firstTarget(ServerLevel level, SpellContext context, LivingEntity caster,
-                                            boolean safeToPlayers, boolean anyCreature) {
+                                            AttackRules.Options options, boolean anyCreature) {
         Vec3 eye = caster.getEyePosition();
         Vec3 look = caster.getLookAngle();
         double range = SpellContext.MAX_DISTANCE;
@@ -170,9 +170,9 @@ public class PieceTrickChainLightning extends PieceTrick {
             Vec3 center = CombatSpellHelper.center(candidate);
             Vec3 offset = center.subtract(eye);
             double distance = offset.lengthSqr();
-            boolean fell = CombatSpellHelper.hasFallen(candidate);
+            boolean fell = AttackRules.hasFallen(candidate);
             boolean wanted = fell ? distance <= fallenDistance
-                    : distance <= bestDistance && CombatSpellHelper.isAutoTarget(caster, candidate, safeToPlayers, anyCreature)
+                    : distance <= bestDistance && AttackRules.isAutoTarget(caster, candidate, options, anyCreature)
                     && Parades.decoyFacing(candidate, caster) == null;
             boolean inFront = offset.dot(look) >= FRONT_COS * Math.sqrt(distance)
                     || candidate.getBoundingBox().clip(eye, reach).isPresent();
@@ -197,13 +197,13 @@ public class PieceTrickChainLightning extends PieceTrick {
      */
     @Nullable
     private static LivingEntity nextTarget(ServerLevel level, SpellContext context, LivingEntity caster, LivingEntity from,
-                                           Set<UUID> struck, boolean safeToPlayers, boolean anyCreature) {
+                                           Set<UUID> struck, AttackRules.Options options, boolean anyCreature) {
         Vec3 origin = CombatSpellHelper.center(from);
         AABB area = new AABB(origin, origin).inflate(JUMP_RANGE);
         LivingEntity best = null;
         double bestDistance = JUMP_RANGE * JUMP_RANGE;
         for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (struck.contains(candidate.getUUID()) || !CombatSpellHelper.isAutoTarget(caster, candidate, safeToPlayers, anyCreature)
+            if (struck.contains(candidate.getUUID()) || !AttackRules.isAutoTarget(caster, candidate, options, anyCreature)
                     || !context.isInRadius(candidate)) {
                 continue;
             }

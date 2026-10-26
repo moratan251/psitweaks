@@ -1,12 +1,10 @@
 package com.moratan251.psitweaks.common.entities;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
-import com.moratan251.psitweaks.common.caster.CasterIds;
+import com.moratan251.psitweaks.common.spells.combat.AttackCaster;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -31,7 +29,6 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
 
 public class EntityPhononMaserBeam extends Entity {
 
@@ -47,9 +44,9 @@ public class EntityPhononMaserBeam extends Entity {
     private int ticksRemaining = 20;
     private int totalDuration = 20;
     private int power = 1;
-    private UUID casterUUID;
+    /** 術者と攻撃の設定。術者は保存した ID だけで引き直し、撤去された機械やいなくなった術者なら光線は消える。 */
+    private final AttackCaster attackCaster = AttackCaster.byId();
     private boolean soundPlayed = false;
-    private boolean safeToPlayers = false;
 
     public EntityPhononMaserBeam(EntityType<?> type, Level level) {
         super(type, level);
@@ -62,7 +59,7 @@ public class EntityPhononMaserBeam extends Entity {
         this.power = power;
         this.ticksRemaining = durationTicks;
         this.totalDuration = durationTicks;
-        this.casterUUID = CasterIds.idOf(caster);
+        this.attackCaster.set(caster);
 
         // 初期位置を設定
         updateBeamPositions(caster);
@@ -198,11 +195,8 @@ public class EntityPhononMaserBeam extends Entity {
 
     @Nullable
     private LivingEntity getCaster() {
-        if (casterUUID == null) {
-            return null;
-        }
-        // 自律詠唱機の詠唱主体はワールドに入らないため、UUID で引くのは findLiving に任せる。
-        return CombatSpellHelper.findLiving(level(), casterUUID);
+        // 自律詠唱機の詠唱主体はワールドに入らないため、保存した ID で引き直す（AttackCaster）。
+        return attackCaster.get(level());
     }
 
     /**
@@ -227,17 +221,14 @@ public class EntityPhononMaserBeam extends Entity {
 
         // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
         List<Entity> entities = level().getEntities(this, laserBounds, entity ->
-                CombatSpellHelper.canHarm(caster, entity, safeToPlayers) && isEntityOnLaserPath(entity, start, end));
+                AttackRules.canHarm(caster, entity, attackCaster.options()) && isEntityOnLaserPath(entity, start, end));
 
         if (entities.isEmpty()) {
             return;
         }
 
         // 1tick当たりのダメージ（個別倍率 x 全体倍率 x SpellDamageFactor）
-        double perSpellDamageMul = PsitweaksConfig.COMMON.phononMaserDamageMultiplier.get();
-        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = caster != null ? caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR) : 1.0;
-        double damageMul = perSpellDamageMul * globalDamageMul * spellDamageFactor;
+        double damageMul = AttackRules.multiplier(PsitweaksConfig.COMMON.phononMaserDamageMultiplier.get(), caster);
         float damagePerTick = (float) power * 2.0f * (float) damageMul;
         DamageSource damageSource = createLaserDamageSource(caster);
 
@@ -246,7 +237,7 @@ public class EntityPhononMaserBeam extends Entity {
                 Vec3 oldDeltaMovement = living.getDeltaMovement();
 
                 living.invulnerableTime = 0;
-                living.hurt(damageSource, damagePerTick);
+                AttackRules.harm(caster, living, attackCaster.options(), damageSource, damagePerTick);
 
                 // ノックバックを無効化
                 living.setDeltaMovement(oldDeltaMovement);
@@ -312,7 +303,7 @@ public class EntityPhononMaserBeam extends Entity {
     }
 
     public void setSafeToPlayers(boolean safeToPlayers) {
-        this.safeToPlayers = safeToPlayers;
+        this.attackCaster.setOptions(AttackRules.Options.of(safeToPlayers));
     }
 
     public int getPower() {
@@ -329,10 +320,7 @@ public class EntityPhononMaserBeam extends Entity {
         this.totalDuration = tag.getInt("TotalDuration");
         this.power = tag.getInt("Power");
         this.soundPlayed = tag.getBoolean("SoundPlayed");
-        this.safeToPlayers = tag.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS);
-        if (tag.hasUUID("CasterUUID")) {
-            this.casterUUID = tag.getUUID("CasterUUID");
-        }
+        this.attackCaster.load(tag, "CasterUUID");
     }
 
     @Override
@@ -341,9 +329,6 @@ public class EntityPhononMaserBeam extends Entity {
         tag.putInt("TotalDuration", this.totalDuration);
         tag.putInt("Power", this.power);
         tag.putBoolean("SoundPlayed", this.soundPlayed);
-        tag.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, this.safeToPlayers);
-        if (this.casterUUID != null) {
-            tag.putUUID("CasterUUID", this.casterUUID);
-        }
+        this.attackCaster.save(tag, "CasterUUID");
     }
 }

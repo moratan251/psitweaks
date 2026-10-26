@@ -2,11 +2,11 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -94,10 +94,7 @@ public class PieceTrickIceCircle extends PieceTrick {
         double clampedPower = Math.max(MIN_POWER, powerVal);
         float baseDamage = calculateDamage(clampedPower);
 
-        double spellPowerMultiplier = PsitweaksConfig.COMMON.iceCircleDamageMultiplier.get();
-        double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
+        float finalDamage = AttackRules.scale(baseDamage, PsitweaksConfig.COMMON.iceCircleDamageMultiplier.get(), context.caster);
 
         removeExistingIceCircleByCaster(serverLevel, CasterIds.idOf(context.caster));
 

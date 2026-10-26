@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -100,7 +101,7 @@ public class EntityGravityWell extends CombatSpellEntity {
         double radius = getRadius();
         Vec3 center = position();
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(radius))) {
-            if (!CombatSpellHelper.canHarm(caster, living, isSafeToPlayers()) || CombatSpellHelper.isSpellImmune(living)) {
+            if (!canAffect(caster, living) || AttackRules.isSpellImmune(living)) {
                 continue;
             }
             Vec3 offset = center.subtract(CombatSpellHelper.center(living));
@@ -122,14 +123,14 @@ public class EntityGravityWell extends CombatSpellEntity {
     private void collapse(ServerLevel level, LivingEntity caster) {
         double collapseRadius = getCollapseRadius();
         Vec3 center = position();
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.GRAVITY_COLLAPSE, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.GRAVITY_COLLAPSE, this, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(collapseRadius + 1.0))) {
-            if (!CombatSpellHelper.canHarm(caster, living, isSafeToPlayers())) {
+            if (!canAffect(caster, living)) {
                 continue;
             }
             double distance = Math.max(0.0, CombatSpellHelper.center(living).distanceTo(center) - living.getBbWidth() * 0.5);
             if (distance <= collapseRadius) {
-                living.hurt(source, CombatSpellHelper.falloff(getDamage(), distance, collapseRadius, EDGE_DAMAGE_FACTOR));
+                harm(caster, living, source, CombatSpellHelper.falloff(getDamage(), distance, collapseRadius, EDGE_DAMAGE_FACTOR));
             }
         }
         level.sendParticles(ParticleTypes.REVERSE_PORTAL, center.x, center.y, center.z, 80, 0.3, 0.3, 0.3, 0.6);

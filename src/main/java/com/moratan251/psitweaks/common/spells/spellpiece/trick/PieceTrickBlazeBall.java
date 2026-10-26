@@ -2,10 +2,10 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityBlazeBall;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -75,10 +75,7 @@ public class PieceTrickBlazeBall extends PieceTrick {
         }
 
         float baseDamage = BASE_DAMAGE + (float) (powerVal * DAMAGE_PER_POWER);
-        double perSpellDamageMul = PsitweaksConfig.COMMON.blazeBallDamageMultiplier.get();
-        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float finalDamage = (float) (baseDamage * perSpellDamageMul * globalDamageMul * spellDamageFactor);
+        float finalDamage = AttackRules.scale(baseDamage, PsitweaksConfig.COMMON.blazeBallDamageMultiplier.get(), context.caster);
         float speed = BASE_SPEED + (float) (powerVal * SPEED_PER_POWER);
 
         EntityBlazeBall projectile = new EntityBlazeBall(PsitweaksEntities.BLAZE_BALL.get(), level);

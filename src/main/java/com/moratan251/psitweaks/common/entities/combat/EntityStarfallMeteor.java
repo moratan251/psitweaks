@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -127,10 +128,10 @@ public class EntityStarfallMeteor extends CombatSpellEntity {
     private void impact(ServerLevel level) {
         Vec3 at = getTarget();
         LivingEntity caster = getCaster();
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.STARFALL, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.STARFALL, this, caster);
         AABB area = new AABB(at, at).inflate(IMPACT_RADIUS + 1.0);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (!CombatSpellHelper.canHarm(caster, living, isSafeToPlayers())) {
+            if (!canAffect(caster, living)) {
                 continue;
             }
             Vec3 center = CombatSpellHelper.center(living);
@@ -138,7 +139,7 @@ public class EntityStarfallMeteor extends CombatSpellEntity {
             if (distance > IMPACT_RADIUS) {
                 continue;
             }
-            if (living.hurt(source, CombatSpellHelper.falloff(getDamage(), distance, IMPACT_RADIUS, EDGE_DAMAGE_FACTOR))) {
+            if (harm(caster, living, source, CombatSpellHelper.falloff(getDamage(), distance, IMPACT_RADIUS, EDGE_DAMAGE_FACTOR))) {
                 living.igniteForSeconds(BURN_SECONDS);
                 Vec3 away = center.subtract(at);
                 Vec3 horizontal = new Vec3(away.x, 0.0, away.z);

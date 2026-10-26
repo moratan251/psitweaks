@@ -4,7 +4,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.registries.PsitweaksTags;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
@@ -71,33 +71,33 @@ public class PieceTrickBurst extends PieceTrick {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         LivingEntity living = CombatSpellHelper.aimedCreature(context);
-        if (CombatSpellHelper.skipFallenTarget(context, living)) {
+        if (AttackRules.skipFallenTarget(context, living)) {
             return null;
         }
-        CombatSpellHelper.verifyTarget(context, living);
+        AttackRules.verifyTarget(context, living);
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
         }
         LivingEntity caster = context.caster;
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
-        if (!CombatSpellHelper.canHarm(caster, living, safeToPlayers)) {
+        AttackRules.Options options = AttackRules.Options.from(context);
+        if (!AttackRules.canHarm(caster, living, options)) {
             return null;
         }
 
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
-        float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
+        float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.burstDamageMultiplier.get(), caster);
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.BURST, caster, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.BURST, caster, caster);
         Vec3 center = CombatSpellHelper.center(living);
         float size = Math.max(living.getBbWidth(), living.getBbHeight());
         int color = CombatSpellHelper.spellColor(caster);
 
         boolean wasAlive = living.isAlive();
-        living.hurt(source, damage * damageFactor(living));
+        AttackRules.harm(caster, living, options, source, damage * damageFactor(living));
         burstEffects(level, center, size, color, false);
 
         if (wasAlive && !living.isAlive()) {
-            splash(level, caster, living, center, damage * SPLASH_FACTOR, safeToPlayers, source);
+            splash(level, caster, living, center, damage * SPLASH_FACTOR, options, source);
             burstEffects(level, center, size, color, true);
         }
         return null;
@@ -108,15 +108,15 @@ public class PieceTrickBurst extends PieceTrick {
     }
 
     private static void splash(ServerLevel level, LivingEntity caster, LivingEntity origin, Vec3 center, float damage,
-                               boolean safeToPlayers, DamageSource source) {
+                               AttackRules.Options options, DamageSource source) {
         AABB area = new AABB(center, center).inflate(SPLASH_RADIUS);
         for (LivingEntity nearby : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (nearby == origin || !CombatSpellHelper.isHostileTarget(caster, nearby, safeToPlayers)) {
+            if (nearby == origin || !AttackRules.isHostileTarget(caster, nearby, options)) {
                 continue;
             }
             double distance = CombatSpellHelper.center(nearby).distanceTo(center);
             if (distance <= SPLASH_RADIUS) {
-                nearby.hurt(source, CombatSpellHelper.falloff(damage * damageFactor(nearby), distance, SPLASH_RADIUS, 0.5));
+                AttackRules.harm(caster, nearby, options, source, CombatSpellHelper.falloff(damage * damageFactor(nearby), distance, SPLASH_RADIUS, 0.5));
             }
         }
     }

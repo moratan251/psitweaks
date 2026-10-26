@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.entities.SpellGram;
 
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -63,8 +63,8 @@ public class EntityFlareCircle extends SpellGramObject {
     }
 
     @Override
-    protected boolean canDamageEntity(@Nullable LivingEntity caster, LivingEntity target) {
-        return CombatSpellHelper.canHarm(caster, target, isSafeToPlayers());
+    protected AttackRules.Options attackOptions() {
+        return AttackRules.Options.of(isSafeToPlayers());
     }
 
     @Override
@@ -115,7 +115,7 @@ public class EntityFlareCircle extends SpellGramObject {
             }
 
             target.invulnerableTime = 0;
-            if (target.hurt(source, damage)) {
+            if (AttackRules.harm(caster, target, attackOptions(), source, damage)) {
                 onAreaDamageApplied(target, damage, source);
             }
         }

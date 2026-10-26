@@ -2,10 +2,10 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityAquaCutterProjectile;
 import com.moratan251.psitweaks.common.handler.AquaCutterProjectileHandler;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -70,10 +70,7 @@ public class PieceTrickAquaCutter extends PieceTrick {
         }
 
         float damage = (float) (BASE_DAMAGE + powerVal * DAMAGE_PER_POWER);
-        double perSpellDamageMul = PsitweaksConfig.COMMON.aquaCutterDamageMultiplier.get();
-        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float finalDamage = (float) (damage * perSpellDamageMul * globalDamageMul * spellDamageFactor);
+        float finalDamage = AttackRules.scale(damage, PsitweaksConfig.COMMON.aquaCutterDamageMultiplier.get(), context.caster);
         float velocity = 1.8F + (float) (powerVal * 0.3);
 
         EntityAquaCutterProjectile projectile = new EntityAquaCutterProjectile(level, context.caster);

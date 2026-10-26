@@ -1,13 +1,11 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
 import com.mojang.logging.LogUtils;
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityMolecularDivider;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.minecraft.core.particles.ParticleTypes;
@@ -105,24 +103,19 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         AABB boundingBox = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
         List<Entity> entities = world.getEntities(context.caster, boundingBox, entity -> entity instanceof LivingEntity);
 
-        // Configからダメージ倍率を取得（個別倍率 x 全体倍率）
-        double perSpellDamageMul = PsitweaksConfig.COMMON.molecularDividerDamageMultiplier.get();
-        double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        double damageMul = perSpellDamageMul * globalDamageMul * spellDamageFactor;
+        // 個別倍率 x 全体倍率 x 事象干渉力
+        double damageMul = AttackRules.multiplier(PsitweaksConfig.COMMON.molecularDividerDamageMultiplier.get(), context.caster);
         float damage = (float) (60.0 * powerVal * damageMul);
-     //   LOGGER.debug("Molecular Divider Damage: {} (Power: {}, PerSpell: {}, Global: {})",
-       //         damage, powerVal, perSpellDamageMul, globalDamageMul);
 
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
+        AttackRules.Options options = AttackRules.Options.from(context);
         for (Entity entity : entities) {
             // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
-            if (!CombatSpellHelper.canHarm(context.caster, entity, safeToPlayers)) {
+            if (!AttackRules.canHarm(context.caster, entity, options)) {
                 continue;
             }
 
             if (doesHitboxIntersectTriangle(entity.getBoundingBox(), v1, v2, v3)) {
-                entity.hurt(context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
+                AttackRules.harm(context.caster, entity, options, context.caster.damageSources().indirectMagic(context.caster, context.caster), damage);
 
                 // ヒット時のパーティクル
                 if (world instanceof ServerLevel serverLevel) {

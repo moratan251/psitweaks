@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.entities.combat;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.HashSet;
 import java.util.Set;
@@ -105,9 +106,9 @@ public class EntityGroundShockwave extends CombatSpellEntity {
 
     private void hitEntities(ServerLevel level, LivingEntity caster, float inner, float outer) {
         AABB area = new AABB(getX() - outer, getY() - 2.0, getZ() - outer, getX() + outer, getY() + 3.0, getZ() + outer);
-        DamageSource source = CombatSpellHelper.damageSource(level, PsitweaksDamageTypes.MINE_GENESIS, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.MINE_GENESIS, this, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            if (struck.contains(living.getUUID()) || !CombatSpellHelper.canHarm(caster, living, isSafeToPlayers())) {
+            if (struck.contains(living.getUUID()) || !canAffect(caster, living)) {
                 continue;
             }
             double dx = living.getX() - getX();
@@ -118,7 +119,7 @@ public class EntityGroundShockwave extends CombatSpellEntity {
             }
             struck.add(living.getUUID());
             float dealt = CombatSpellHelper.falloff(getDamage(), distance, getMaxRadius(), EDGE_DAMAGE_FACTOR);
-            if (living.hurt(source, dealt)) {
+            if (harm(caster, living, source, dealt)) {
                 Vec3 outward = distance > 0.01 ? new Vec3(dx / distance, 0.0, dz / distance).scale(0.25) : Vec3.ZERO;
                 CombatSpellHelper.push(living, outward.add(0.0, launch, 0.0));
             }

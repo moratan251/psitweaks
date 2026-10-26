@@ -2,11 +2,11 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -99,10 +99,7 @@ public class PieceTrickFlareCircle extends PieceTrick {
         float visualScale = FIXED_VISUAL_SCALE;
         int lifetimeTicks = LIFETIME_TICKS;
 
-        double spellPowerMultiplier = PsitweaksConfig.COMMON.flareCircleDamageMultiplier.get();
-        double globalDamageMultiplier = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double spellDamageFactor = context.caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
-        float finalDamage = (float) (baseDamage * spellPowerMultiplier * globalDamageMultiplier * spellDamageFactor);
+        float finalDamage = AttackRules.scale(baseDamage, PsitweaksConfig.COMMON.flareCircleDamageMultiplier.get(), context.caster);
 
         removeExistingFlareCircleByCaster(serverLevel, CasterIds.idOf(context.caster));
 

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.handler;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -52,7 +53,8 @@ public class AquaCutterProjectileHandler {
 
             Entity owner = projectile.getOwner();
             DamageSource source = projectile.damageSources().thrown(projectile, owner);
-            target.hurt(source, damage);
+            AttackRules.harmByProjectile(projectile, target,
+                    AttackRules.Options.of(data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)), source, damage);
 
             playSplashEffect(projectile,
                     target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ());

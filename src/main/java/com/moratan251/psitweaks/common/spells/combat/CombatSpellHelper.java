@@ -1,29 +1,15 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
-import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
-import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
-import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.spells.SpellWarning;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -37,189 +23,18 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
-import vazkii.psi.api.capability.PsiCapabilities;
-import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
-/** Rules shared by the combat tricks: damage scaling, who may be hit, damage sources and small physics helpers. */
+/**
+ * Small helpers shared by the combat tricks: spell colour, geometry, aiming and physics. Who an attack may hit and how
+ * it deals damage are in {@link AttackRules}.
+ */
 public final class CombatSpellHelper {
     /** Psi's default spell colour, used when the caster has no CAD. */
     public static final int DEFAULT_SPELL_COLOR = 0x13C5FF;
 
     private CombatSpellHelper() {
-    }
-
-    /** Base damage x per-spell config multiplier x global multiplier x the caster's spell damage factor. */
-    public static float scaleDamage(double baseDamage, double perSpellMultiplier, @Nullable LivingEntity caster) {
-        double global = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double factor = caster != null ? caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR) : 1.0;
-        return (float) (baseDamage * perSpellMultiplier * global * factor);
-    }
-
-    /**
-     * Whether an attack trick of this caster may hit the entity. Every attack trick uses this one rule, both to pick
-     * targets and to hit them, close to Ars Nouveau's: spectators, armor stands, the caster, the caster's pets and the
-     * caster's allies (the same scoreboard team whatever its friendly fire, and the team mates' pets) are never hit.
-     * Players are never hit with the Safe to Players option (PvP off); otherwise the player decides like a vanilla
-     * hit ({@link Player#canHarmPlayer}: PvP and the player's team). An autonomous caster has its machine owner's UUID
-     * and team, so it spares the owner, the owner's pets and the owner's team mates too.
-     */
-    public static boolean canHarm(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
-        if (!(entity instanceof LivingEntity living) || !living.isAlive() || living.isSpectator()) {
-            return false;
-        }
-        if (living instanceof ArmorStand) {
-            return false;
-        }
-        if (caster != null && (isCasterOrTheirPet(caster, living) || isAlly(caster, living))) {
-            return false;
-        }
-        if (living instanceof Player player) {
-            if (safeToPlayers || player.isCreative()) {
-                return false;
-            }
-            if (caster instanceof Player casterPlayer) {
-                return player.canHarmPlayer(casterPlayer);
-            }
-            // A caster that is gone (logged out, unloaded) only hits players where PvP is on.
-            return player.getServer() != null && player.getServer().isPvpAllowed();
-        }
-        return true;
-    }
-
-    /**
-     * For an attack trick's projectile ({@code canHitEntity}): creatures are hit by {@link #canHarm} as the caster who
-     * shot it, so the caster's side lets it pass instead of only the moment after the shot; other entities as vanilla.
-     * The client keeps vanilla's rule, as it does not know the Safe to Players option.
-     */
-    public static boolean canProjectileHarm(Projectile projectile, Entity target, boolean safeToPlayers) {
-        if (projectile.level().isClientSide || !(target instanceof LivingEntity)) {
-            return true;
-        }
-        return canHarm(projectile.getOwner() instanceof LivingEntity owner ? owner : null, target, safeToPlayers);
-    }
-
-    /**
-     * Whether the entity is on the caster's side: the same scoreboard team (whatever its friendly fire), or allied to
-     * the caster by its own rule (a tamed pet whose owner is the caster or on the caster's team, another mod's summon).
-     */
-    public static boolean isAlly(LivingEntity caster, Entity entity) {
-        return caster.isAlliedTo(entity) || entity.isAlliedTo(caster);
-    }
-
-    /**
-     * Whether the entity is the caster or one of the caster's pets, which a caster's own attacks never hit. Matched by
-     * UUID: an autonomous caster has its machine owner's UUID, so the owner and the owner's pets count too.
-     */
-    public static boolean isCasterOrTheirPet(@Nullable LivingEntity caster, @Nullable Entity entity) {
-        if (caster == null || entity == null) {
-            return false;
-        }
-        if (entity == caster || entity.getUUID().equals(caster.getUUID())) {
-            return true;
-        }
-        return entity instanceof OwnableEntity ownable && caster.getUUID().equals(ownable.getOwnerUUID());
-    }
-
-    /**
-     * Whether the target has already fallen (health 0, playing its death animation) or is gone. Psi's
-     * {@code verifyEntity} reports such a target as immune and stops the spell, which only gets in the way when a
-     * spell keeps aiming at a creature it has just killed, so the targeted combat tricks skip it instead.
-     */
-    public static boolean hasFallen(@Nullable Entity entity) {
-        return entity != null && !entity.isAlive();
-    }
-
-    /**
-     * Skips a fallen target (see {@link #hasFallen}): the spell goes on, and the caster gets a {@link SpellWarning} so
-     * the trick does not look like it misfired for no reason.
-     *
-     * @return whether the trick should do nothing because the target has fallen
-     */
-    public static boolean skipFallenTarget(SpellContext context, @Nullable Entity target) {
-        if (!hasFallen(target)) {
-            return false;
-        }
-        SpellWarning.warn(context, SpellWarning.TARGET_FALLEN);
-        return true;
-    }
-
-    /**
-     * Whether the entity opted out of spells through Psi's spell-immune capability (a mod's own boss, for example).
-     * Unlike {@link ISpellImmune#isImmune}, bosses, riders and sleepers are not immune here: Psi rules them out because
-     * they cannot use a portal, which suits tricks that move or rewrite entities but leaves attack spells powerless
-     * against the Wither and the Ender Dragon.
-     */
-    public static boolean isSpellImmune(Entity entity) {
-        ISpellImmune immune = PsiCapabilities.spellImmune(entity);
-        return immune != null && immune.isImmune();
-    }
-
-    /**
-     * Psi's {@code verifyEntity} for attack tricks: the target must exist, must not opt out of spells and must not be
-     * hiding behind a Trick: Parade lookalike from this caster.
-     */
-    public static void verifyTarget(SpellContext context, @Nullable Entity entity) throws SpellRuntimeException {
-        if (entity == null) {
-            throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
-        }
-        if (isSpellImmune(entity)) {
-            throw new SpellRuntimeException(SpellRuntimeException.IMMUNE_TARGET);
-        }
-        if (Parades.decoyFacing(entity, context.caster) != null) {
-            throw new SpellRuntimeException(Parades.ERROR_DISGUISED);
-        }
-    }
-
-    /**
-     * Targets that auto-aimed attacks (chain jumps, dancing blades) may pick by themselves: monsters, mobs that
-     * target or are angry at the caster, and anything that recently hurt the caster. Entities that opt out of
-     * spells are skipped ({@link #isSpellImmune}); bosses are fair game.
-     */
-    public static boolean isHostileTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
-        if (!canHarm(caster, entity, safeToPlayers) || isSpellImmune(entity)) {
-            return false;
-        }
-        if (entity instanceof Enemy) {
-            return true;
-        }
-        if (caster == null) {
-            return false;
-        }
-        if (entity instanceof Mob mob && mob.getTarget() == caster) {
-            return true;
-        }
-        if (entity instanceof NeutralMob neutral && caster.getUUID().equals(neutral.getPersistentAngerTarget())) {
-            return true;
-        }
-        return caster.getLastHurtByMob() == entity;
-    }
-
-    /**
-     * What an auto-targeting trick in indiscriminate mode may pick: any creature it may harm ({@link #canHarm}, so
-     * never the caster, allies, the caster's pets, armour stands, creative players, or players spared by Safe to
-     * Players) that is not immune to spells. Villagers and wandering traders are fair game.
-     */
-    public static boolean isIndiscriminateTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
-        return canHarm(caster, entity, safeToPlayers) && !isSpellImmune(entity);
-    }
-
-    /** {@link #isIndiscriminateTarget} when {@code indiscriminate}, else {@link #isHostileTarget}. */
-    public static boolean isAutoTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers,
-                                       boolean indiscriminate) {
-        return indiscriminate ? isIndiscriminateTarget(caster, entity, safeToPlayers) : isHostileTarget(caster, entity, safeToPlayers);
-    }
-
-    /** Whether an optional Indiscriminate input was given a non-zero number (an unconnected input reads as null). */
-    public static boolean isIndiscriminate(@Nullable Number value) {
-        return value != null && value.doubleValue() != 0.0;
-    }
-
-    public static DamageSource damageSource(Level level, ResourceKey<DamageType> key,
-                                            @Nullable Entity directEntity, @Nullable Entity attacker) {
-        Holder<DamageType> type = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key);
-        return new DamageSource(type, directEntity, attacker);
     }
 
     /** The colour of the caster's CAD colorizer, or Psi's default colour. */
@@ -231,25 +46,6 @@ public final class CombatSpellHelper {
             }
         }
         return DEFAULT_SPELL_COLOR;
-    }
-
-    @Nullable
-    public static LivingEntity findLiving(Level level, @Nullable UUID uuid) {
-        if (uuid == null || !(level instanceof ServerLevel serverLevel)) {
-            return null;
-        }
-        // 自律詠唱機の詠唱主体はワールドにもプレイヤー一覧にも入らず、所有者の UUID を名乗る。
-        // 術者は CasterIds.idOf（機械ごとの内部キー）で保存するので、本物の所有者より先に引く。
-        Player autonomous = AutonomousCasterRegistry.find(level, uuid);
-        if (autonomous != null) {
-            return autonomous;
-        }
-        Entity entity = serverLevel.getEntity(uuid);
-        if (entity instanceof LivingEntity living) {
-            return living;
-        }
-        Player player = serverLevel.getServer().getPlayerList().getPlayer(uuid);
-        return player != null && player.level() == level ? player : null;
     }
 
     /**
@@ -333,5 +129,58 @@ public final class CombatSpellHelper {
         }
         double normalized = Mth.clamp(distance / radius, 0.0, 1.0);
         return (float) (damage * (1.0 - (1.0 - edgeFactor) * normalized));
+    }
+
+    // ---- Deprecated: the rules moved to AttackRules. Kept so the existing GameTests stay unchanged as the behaviour
+    // guard of that move; new code calls AttackRules (and CasterIds.findLiving) directly. ----
+
+    /** @deprecated use {@link AttackRules#canHarm} */
+    @Deprecated
+    public static boolean canHarm(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
+        return AttackRules.canHarm(caster, entity, AttackRules.Options.of(safeToPlayers));
+    }
+
+    /** @deprecated use {@link AttackRules#canProjectileHarm} */
+    @Deprecated
+    public static boolean canProjectileHarm(Projectile projectile, Entity target, boolean safeToPlayers) {
+        return AttackRules.canProjectileHarm(projectile, target, AttackRules.Options.of(safeToPlayers));
+    }
+
+    /** @deprecated use {@link AttackRules#isHostileTarget} */
+    @Deprecated
+    public static boolean isHostileTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
+        return AttackRules.isHostileTarget(caster, entity, AttackRules.Options.of(safeToPlayers));
+    }
+
+    /** @deprecated use {@link AttackRules#isIndiscriminateTarget} */
+    @Deprecated
+    public static boolean isIndiscriminateTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers) {
+        return AttackRules.isIndiscriminateTarget(caster, entity, AttackRules.Options.of(safeToPlayers));
+    }
+
+    /** @deprecated use {@link AttackRules#isAutoTarget} */
+    @Deprecated
+    public static boolean isAutoTarget(@Nullable LivingEntity caster, @Nullable Entity entity, boolean safeToPlayers,
+                                       boolean indiscriminate) {
+        return AttackRules.isAutoTarget(caster, entity, AttackRules.Options.of(safeToPlayers), indiscriminate);
+    }
+
+    /** @deprecated use {@link AttackRules#isIndiscriminate} */
+    @Deprecated
+    public static boolean isIndiscriminate(@Nullable Number value) {
+        return AttackRules.isIndiscriminate(value);
+    }
+
+    /** @deprecated use {@link AttackRules#verifyTarget} */
+    @Deprecated
+    public static void verifyTarget(SpellContext context, @Nullable Entity entity) throws SpellRuntimeException {
+        AttackRules.verifyTarget(context, entity);
+    }
+
+    /** @deprecated use {@link CasterIds#findLiving} */
+    @Deprecated
+    @Nullable
+    public static LivingEntity findLiving(Level level, @Nullable UUID uuid) {
+        return CasterIds.findLiving(level, uuid);
     }
 }

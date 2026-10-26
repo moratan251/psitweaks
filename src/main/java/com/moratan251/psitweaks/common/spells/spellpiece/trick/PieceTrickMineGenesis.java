@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
@@ -93,13 +93,13 @@ public class PieceTrickMineGenesis extends PieceTrick {
 
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         float radiusVal = (float) Mth.clamp(getParamValue(context, radius).doubleValue(), MIN_RADIUS, MAX_RADIUS);
-        float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
+        float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.mineGenesisDamageMultiplier.get(), context.caster);
         float launch = (float) Math.min(0.9, 0.45 + 0.05 * powerVal);
 
         Vec3 center = new Vec3(positionVal.x, groundY, positionVal.z);
         EntityGroundShockwave shockwave = new EntityGroundShockwave(level, center, radiusVal, launch);
-        shockwave.configure(context.caster, SpellSafetyUtils.hasSafeToPlayers(context), damage,
+        shockwave.configure(context.caster, AttackRules.Options.from(context), damage,
                 CombatSpellHelper.spellColor(context.caster));
         level.addFreshEntity(shockwave);
 

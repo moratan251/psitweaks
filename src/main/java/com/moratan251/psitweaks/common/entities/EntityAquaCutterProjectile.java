@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.entities;
 
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,6 +28,7 @@ public class EntityAquaCutterProjectile extends ThrowableItemProjectile {
     /** 術者側（術者・術者のペット・味方）と、プレイヤーに安全のときのプレイヤーはすり抜ける。 */
     @Override
     protected boolean canHitEntity(Entity target) {
-        return super.canHitEntity(target) && CombatSpellHelper.canProjectileHarm(this, target, getPersistentData().getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS));
+        return super.canHitEntity(target) && AttackRules.canProjectileHarm(this, target,
+                AttackRules.Options.of(getPersistentData().getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)));
     }
 }

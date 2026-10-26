@@ -1,7 +1,8 @@
 package com.moratan251.psitweaks.common.entities.SpellGram;
 
 import com.moratan251.psitweaks.common.caster.CasterIds;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackCaster;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -59,8 +60,8 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     private static final int NO_FOLLOW_TARGET_ENTITY_ID = -1;
 
     private int aoeTickCounter;
-    @Nullable
-    private UUID casterUuid;
+    /** 術者。保存した ID（CasterIds）だけで引き直す。攻撃の設定は {@link #attackOptions()}。 */
+    private final AttackCaster attackCaster = AttackCaster.byId();
     @Nullable
     private UUID followTargetUuid;
 
@@ -169,7 +170,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         float damage = getAoEDamage();
         for (LivingEntity target : targets) {
             target.invulnerableTime = 0;
-            if (target.hurt(source, damage)) {
+            if (AttackRules.harm(caster, target, attackOptions(), source, damage)) {
                 onAreaDamageApplied(target, damage, source);
             }
         }
@@ -182,9 +183,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return this.damageSources().magic();
     }
 
-    /** 攻撃術式で共通の命中判定（{@link CombatSpellHelper#canHarm}）。 */
+    /** 攻撃術式で共通の命中判定（{@link AttackRules#canHarm}）。 */
     protected boolean canDamageEntity(@Nullable LivingEntity caster, LivingEntity target) {
-        return CombatSpellHelper.canHarm(caster, target, false);
+        return AttackRules.canHarm(caster, target, attackOptions());
+    }
+
+    /** 攻撃の設定。プレイヤーに安全の扱いを持つ術式円は上書きする。 */
+    protected AttackRules.Options attackOptions() {
+        return AttackRules.Options.DEFAULT;
     }
 
     protected void onAreaDamageApplied(LivingEntity target, float damage, DamageSource source) {
@@ -397,22 +403,18 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     }
 
     public void setCaster(@Nullable LivingEntity caster) {
-        this.casterUuid = caster == null ? null : CasterIds.idOf(caster);
+        this.attackCaster.set(caster);
     }
 
     @Nullable
     public UUID getCasterUuid() {
-        return casterUuid;
+        return attackCaster.id();
     }
 
     @Nullable
     public LivingEntity getCaster() {
-        if (casterUuid == null) {
-            return null;
-        }
-
-        // 自律詠唱機の詠唱主体はワールドに入らないため、UUID で引くのは findLiving に任せる。
-        return CombatSpellHelper.findLiving(level(), casterUuid);
+        // 自律詠唱機の詠唱主体はワールドに入らないため、保存した ID で引き直す（AttackCaster）。
+        return attackCaster.get(level());
     }
 
     @Override
@@ -438,11 +440,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
         aoeTickCounter = Math.max(0, tag.getInt(NBT_AOE_COUNTER));
 
-        if (tag.hasUUID(NBT_CASTER_UUID)) {
-            casterUuid = tag.getUUID(NBT_CASTER_UUID);
-        } else {
-            casterUuid = null;
-        }
+        attackCaster.loadId(tag, NBT_CASTER_UUID);
 
         setEntityFollowMode(tag.getBoolean(NBT_ENTITY_FOLLOW_MODE));
         if (tag.hasUUID(NBT_FOLLOW_TARGET_UUID)) {
@@ -470,9 +468,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         tag.putFloat(NBT_MOTION_DAMPING, getMotionDamping());
         tag.putInt(NBT_AOE_COUNTER, aoeTickCounter);
         tag.putBoolean(NBT_ENTITY_FOLLOW_MODE, isEntityFollowMode());
-        if (casterUuid != null) {
-            tag.putUUID(NBT_CASTER_UUID, casterUuid);
-        }
+        attackCaster.saveId(tag, NBT_CASTER_UUID);
         if (followTargetUuid != null) {
             tag.putUUID(NBT_FOLLOW_TARGET_UUID, followTargetUuid);
         }

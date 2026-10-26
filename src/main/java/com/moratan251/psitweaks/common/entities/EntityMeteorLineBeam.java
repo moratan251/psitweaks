@@ -1,12 +1,10 @@
 package com.moratan251.psitweaks.common.entities;
 
-import com.moratan251.psitweaks.common.caster.CasterIds;
+import com.moratan251.psitweaks.common.spells.combat.AttackCaster;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -38,9 +36,9 @@ public class EntityMeteorLineBeam extends Entity {
 
     private int ticksRemaining = DEFAULT_DURATION_TICKS;
     private int totalDuration = DEFAULT_DURATION_TICKS;
-    private UUID casterUUID;
+    /** 術者と攻撃の設定。術者は保存した ID だけで引き直し、いなくなったら光線は消える。 */
+    private final AttackCaster attackCaster = AttackCaster.byId();
     private boolean soundPlayed = false;
-    private boolean safeToPlayers = false;
 
     public EntityMeteorLineBeam(EntityType<?> type, Level level) {
         super(type, level);
@@ -50,7 +48,7 @@ public class EntityMeteorLineBeam extends Entity {
 
     public EntityMeteorLineBeam(Level level, LivingEntity caster, Vec3 start, Vec3 direction, double maxDistance) {
         this(PsitweaksEntities.METEOR_LINE_BEAM.get(), level);
-        this.casterUUID = CasterIds.idOf(caster);
+        this.attackCaster.set(caster);
         this.ticksRemaining = DEFAULT_DURATION_TICKS;
         this.totalDuration = DEFAULT_DURATION_TICKS;
         setBeamPositions(caster, start, direction, maxDistance);
@@ -122,11 +120,8 @@ public class EntityMeteorLineBeam extends Entity {
 
     @Nullable
     private LivingEntity getCaster() {
-        if (casterUUID == null) {
-            return null;
-        }
-        // 自律詠唱機の詠唱主体はワールドに入らないため、UUID で引くのは findLiving に任せる。
-        return CombatSpellHelper.findLiving(level(), casterUUID);
+        // 自律詠唱機の詠唱主体はワールドに入らないため、保存した ID で引き直す（AttackCaster）。
+        return attackCaster.get(level());
     }
 
     private DamageSource createMeteorLineDamageSource(@Nullable LivingEntity caster) {
@@ -143,12 +138,12 @@ public class EntityMeteorLineBeam extends Entity {
         DamageSource damageSource = createMeteorLineDamageSource(caster);
 
         // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
-        List<Entity> entities = level().getEntities(this, bounds, entity -> CombatSpellHelper.canHarm(caster, entity, safeToPlayers)
+        List<Entity> entities = level().getEntities(this, bounds, entity -> AttackRules.canHarm(caster, entity, attackCaster.options())
                 && entity.getBoundingBox().inflate(HIT_RADIUS).clip(start, end).isPresent());
 
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity living) {
-                living.hurt(damageSource, DAMAGE);
+                AttackRules.harm(caster, living, attackCaster.options(), damageSource, DAMAGE);
             }
         }
     }
@@ -170,7 +165,7 @@ public class EntityMeteorLineBeam extends Entity {
     }
 
     public void setSafeToPlayers(boolean safeToPlayers) {
-        this.safeToPlayers = safeToPlayers;
+        this.attackCaster.setOptions(AttackRules.Options.of(safeToPlayers));
     }
 
     public int getTicksRemaining() {
@@ -186,10 +181,7 @@ public class EntityMeteorLineBeam extends Entity {
         this.ticksRemaining = tag.getInt("TicksRemaining");
         this.totalDuration = tag.getInt("TotalDuration");
         this.soundPlayed = tag.getBoolean("SoundPlayed");
-        this.safeToPlayers = tag.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS);
-        if (tag.hasUUID("CasterUUID")) {
-            this.casterUUID = tag.getUUID("CasterUUID");
-        }
+        this.attackCaster.load(tag, "CasterUUID");
     }
 
     @Override
@@ -197,9 +189,6 @@ public class EntityMeteorLineBeam extends Entity {
         tag.putInt("TicksRemaining", ticksRemaining);
         tag.putInt("TotalDuration", totalDuration);
         tag.putBoolean("SoundPlayed", soundPlayed);
-        tag.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, safeToPlayers);
-        if (casterUUID != null) {
-            tag.putUUID("CasterUUID", casterUUID);
-        }
+        attackCaster.save(tag, "CasterUUID");
     }
 }

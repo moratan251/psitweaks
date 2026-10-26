@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
@@ -95,9 +95,9 @@ public class PieceTrickStarfall extends PieceTrick {
         }
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         int meteors = Mth.clamp(getParamValue(context, count).intValue(), 1, MAX_METEORS);
-        float damage = CombatSpellHelper.scaleDamage(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
+        float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.starfallDamageMultiplier.get(), context.caster);
-        boolean safeToPlayers = SpellSafetyUtils.hasSafeToPlayers(context);
+        AttackRules.Options options = AttackRules.Options.from(context);
         int color = CombatSpellHelper.spellColor(context.caster);
 
         Vec3 center = positionVal.toVec3D();
@@ -116,7 +116,7 @@ public class PieceTrickStarfall extends PieceTrick {
             Vec3 start = impact.add(behind.scale(SKY_OFFSET)).add((random.nextDouble() - 0.5) * 3.0, SKY_HEIGHT,
                     (random.nextDouble() - 0.5) * 3.0);
             EntityStarfallMeteor meteor = new EntityStarfallMeteor(level, start, impact, WARNING_TICKS + i * INTERVAL_TICKS);
-            meteor.configure(context.caster, safeToPlayers, damage, color);
+            meteor.configure(context.caster, options, damage, color);
             level.addFreshEntity(meteor);
         }
         CombatEffects.sound(level, center, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.6F);

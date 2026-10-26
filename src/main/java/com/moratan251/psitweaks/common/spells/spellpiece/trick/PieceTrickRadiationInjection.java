@@ -1,9 +1,8 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import mekanism.api.radiation.IRadiationManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -78,7 +77,7 @@ public class PieceTrickRadiationInjection extends PieceTrick {
         }
 
         // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
-        if (!CombatSpellHelper.canHarm(context.caster, livingEntity, SpellSafetyUtils.hasSafeToPlayers(context))) {
+        if (!AttackRules.canHarm(context.caster, livingEntity, AttackRules.Options.from(context))) {
             return null;
         }
         if (!IRadiationManager.INSTANCE.isRadiationEnabled()) {
