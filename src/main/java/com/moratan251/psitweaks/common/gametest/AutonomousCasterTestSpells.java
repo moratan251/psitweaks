@@ -54,12 +54,64 @@ final class AutonomousCasterTestSpells {
         return bullet(spell);
     }
 
+    /** 「取得子: ループ回数」の値を「作動式: デバッグ」で出力するだけの術式（コスト 0）。 */
+    static ItemStack loopIndexBullet() {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_loop_index";
+        placeLoopIndexDebug(spell);
+        return bullet(spell);
+    }
+
+    /** ループ回数を出力し、Trick: Spin Chamber で選択スロットを {@code offset} の向きへ1つ動かす術式。 */
+    static ItemStack loopIndexSpinChamberBullet(double offset) {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_loop_index_spin_chamber";
+        placeLoopIndexDebug(spell);
+        SpellPiece constant = number(spell, offset);
+        SpellPiece spin = piece(spell, "trick_spin_chamber");
+        connect(spin, SpellParam.GENERIC_NAME_NUMBER, SpellParam.Side.LEFT);
+        place(spell, constant, 3, 5);
+        place(spell, spin, 4, 5);
+        return bullet(spell);
+    }
+
+    /** ループ回数を出力し、Trick: Break Loop を 0 で実行する術式。 */
+    static ItemStack loopIndexBreakLoopBullet() {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_loop_index_break_loop";
+        placeLoopIndexDebug(spell);
+        SpellPiece constant = number(spell, 0);
+        SpellPiece breakLoop = piece(spell, "trick_break_loop");
+        connect(breakLoop, SpellParam.GENERIC_NAME_NUMBER, SpellParam.Side.LEFT);
+        place(spell, constant, 3, 5);
+        place(spell, breakLoop, 4, 5);
+        return bullet(spell);
+    }
+
+    /** ループ回数を出力する術式を書き込んだループ型術式弾。 */
+    static ItemStack loopcastBullet() {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_loopcast";
+        placeLoopIndexDebug(spell);
+        ItemStack bullet = new ItemStack(ModItems.loopSpellBullet.get());
+        ItemSpellDrive.setSpell(bullet, spell);
+        return bullet;
+    }
+
     /** Trick: Russian Roulette で選択スロットをランダムに選び直す術式。 */
     static ItemStack russianRouletteBullet() {
         Spell spell = new Spell();
         spell.name = "autonomous_caster_russian_roulette";
         place(spell, piece(spell, "trick_russian_roulette"), 4, 4);
         return bullet(spell);
+    }
+
+    private static void placeLoopIndexDebug(Spell spell) {
+        SpellPiece index = piece(spell, "selector_loopcast_index");
+        SpellPiece debug = piece(spell, "trick_debug");
+        connect(debug, SpellParam.GENERIC_NAME_TARGET, SpellParam.Side.LEFT);
+        place(spell, index, 3, 4);
+        place(spell, debug, 4, 4);
     }
 
     private static ItemStack bullet(Spell spell) {

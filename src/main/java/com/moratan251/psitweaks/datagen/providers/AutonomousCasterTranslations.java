@@ -64,9 +64,7 @@ final class AutonomousCasterTranslations {
                 "Vertical look angle (-90 is straight up, 90 is straight down). Press Enter to apply",
                 "垂直方向の視線角度です（-90で真上、90で真下）。Enterで確定します");
         put(GUI + "loop", "Loop: %s", "ループ: %s");
-        put(GUI + "loop.reset",
-                "Reset the loop counter of the selected bullet to 0",
-                "選択中の術式弾のループカウンタを0に戻します");
+        put(GUI + "loop.reset", "Reset the loop counter to 0", "ループカウンタを0に戻します");
         put(GUI + "trigger.pulse", "Pulse", "パルス");
         put(GUI + "trigger.level", "Level", "レベル");
         put(GUI + "trigger.tooltip",
@@ -91,7 +89,7 @@ final class AutonomousCasterTranslations {
         put(GUI + "outcome.none", "Not cast yet", "未実行");
         put(GUI + "outcome.success", "Succeeded", "成功");
         put(GUI + "outcome.failure", "Failed", "失敗");
-        put(GUI + "detail.loop", "Loop counter of bullet %s: %s", "術式弾 %s のループカウンタ: %s");
+        put(GUI + "detail.loop", "Loop counter: %s", "ループカウンタ: %s");
         put(GUI + "detail.recovery", "Psi recovery: %s/t", "Psi回復: %s/t");
         put(GUI + "component", "CAD component slot: %s", "CAD部品スロット: %s");
         put(GUI + "component.default.dye",
@@ -112,6 +110,8 @@ final class AutonomousCasterTranslations {
 
     private void addErrors() {
         put(ERROR + "no_spell", "Spell Bullet slot %s has no spell", "術式弾スロット%sに術式がありません");
+        put(ERROR + "loopcast_bullet", "Spell Bullet slot %s holds a Loopcast Spell Bullet, which the machine cannot cast",
+                "術式弾スロット%sはループ型術式弾のため詠唱できません");
         put(ERROR + "no_psi", "The internal Psi is empty", "内部Psiが空です");
         put(ERROR + "not_enough_psi",
                 "Not enough internal Psi (needs %s, has %s)",
@@ -183,12 +183,23 @@ final class AutonomousCasterTranslations {
         put(BOOK + ".2",
                 "The caster stands at the front face and looks where $(item)Yaw$(0) and $(item)Pitch$(0) point. "
                         + "The $(item)Line of Sight Visuals$(0) tab on the left of the GUI shows that line in the world.$(p)"
-                        + "A $(item)Loopcast Spell Bullet$(0) runs once per trigger. "
-                        + "Each bullet slot counts its successful casts, and $(item)Selector: Loopcast Index$(0) reads that count.",
+                        + "$(item)Loopcast Spell Bullets$(0) cannot be placed in the machine.",
                 "詠唱主体は正面に立ち, $(item)Yaw$(0)と$(item)Pitch$(0)の方向を向いて詠唱します. "
                         + "GUI左の$(item)視線の可視化$(0)タブで, その視線をワールドに表示できます.$(p)"
-                        + "$(item)ループ型術式弾$(0)はトリガー1回につき1回だけ実行されます. "
-                        + "術式弾スロットごとに成功回数を数えており, $(item)取得子: ループ回数$(0)でその値を読めます.");
+                        + "$(item)ループ型術式弾$(0)は機械に入れられません.");
+        put(BOOK + ".loop",
+                "The machine has one loop count. Each successful cast adds 1, "
+                        + "and $(item)Selector: Loopcast Index$(0) reads the count before the cast.$(p)"
+                        + "It goes back to 0 when:"
+                        + "$(li)another slot is selected in the GUI$(li)the selected bullet is changed"
+                        + "$(li)the $(item)0$(0) button is pressed$(li)the machine casts $(item)Trick: Break Loop$(0)"
+                        + "$(p)Slot changes made by spells keep the count.",
+                "機械はループ回数を1つ持ち, 詠唱が成立するたびに1増えます. "
+                        + "$(item)取得子: ループ回数$(0)は詠唱前の値を読みます.$(p)"
+                        + "次のときは0に戻ります:"
+                        + "$(li)GUIで別のスロットを選ぶ$(li)選択中の術式弾を替える"
+                        + "$(li)GUIの$(item)0$(0)ボタンを押す$(li)機械が$(item)Trick: Break Loop$(0)を実行する"
+                        + "$(p)術式によるスロットの切り替えでは引き継がれます.");
         put(BOOK + ".3",
                 fixedStats("The internal CAD has fixed stats: Efficiency %d, Potency %d, Complexity %d, Projection %d, "
                         + "Bandwidth %d, Memory %d. A colorizer in the slot right of the gauges changes the spell color.$(p)")
@@ -200,10 +211,12 @@ final class AutonomousCasterTranslations {
                         + "入りきらないアイテムは機械の正面に落ちます.");
         put(BOOK + ".4",
                 "By default, 250 mB of $(item)Psionic Echo Gas$(0) restores 25 Psi, up to 10,000 Psi. "
-                        + "Feed the gas from any side, or use the slot left of the gauges.$(p)"
+                        + "Feed the gas from any side, or use the slot left of the gauges. "
+                        + "A side set to $(item)Input (2)$(0) in the side config feeds Spell Bullets into empty bullet slots.$(p)"
                         + "Upgrades cannot be installed. A comparator reads the internal Psi.",
                 "初期設定では, $(item)気化サイオニックエコー$(0)250mBでPsiが25回復し, 最大10,000まで貯まります. "
-                        + "気体はどの面からでも搬入でき, ゲージ左のスロットに気体入りアイテムを入れても補充できます.$(p)"
+                        + "気体はどの面からでも搬入でき, ゲージ左のスロットに気体入りアイテムを入れても補充できます. "
+                        + "側面設定を$(item)搬入(2)$(0)にした面からは, 術式弾を空いている術式弾スロットに搬入できます.$(p)"
                         + "アップグレードは搭載できません. コンパレーターで内部Psiの残量を読み取れます.");
         put(BOOK + ".5",
                 "Spells that use the Ideaspace Storage use the storage of the machine's owner.$(p)"

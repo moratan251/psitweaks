@@ -82,6 +82,7 @@ import vazkii.psi.common.attribute.base.ModAttributes;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.ItemCAD;
+import vazkii.psi.common.item.ItemLoopcastSpellBullet;
 
 /**
  * 自律詠唱機。レッドストーン入力をトリガーに、選択した術式弾を専用 Caster と内蔵仮想 CAD で詠唱する。
@@ -122,7 +123,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private static final String TAG_CAST_INTERVAL = "CastInterval";
     private static final String TAG_YAW = "YawOffset";
     private static final String TAG_PITCH = "Pitch";
-    private static final String TAG_LOOP_COUNTERS = "LoopCounters";
+    private static final String TAG_LOOP_COUNTER = "LoopCounter";
     private static final String TAG_LOOP_SPELLS = "LoopSpells";
     private static final String TAG_SIGNAL = "Signal";
     private static final String TAG_COOLDOWN = "Cooldown";
@@ -174,7 +175,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private int castInterval = AutonomousCasterSettings.defaultCastInterval();
     private int yawOffset;
     private int pitch;
-    private final int[] loopCounters = new int[BULLET_SLOTS];
+    /** 機械に1つのループ回数。詠唱が成立するたびに増え、「取得子: ループ回数」に渡す。 */
+    private int loopCounter;
     private final UUID[] loopSpellIds = new UUID[BULLET_SLOTS];
     private boolean signal;
     private int cooldown;
@@ -198,6 +200,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private boolean virtualCadDirty = true;
     private boolean bulletsDirty = true;
     private boolean manualCastRequested;
+    /** 今回の詠唱で Trick: Break Loop がループ回数を 0 に戻した。 */
+    private boolean loopBroken;
     @Nullable
     private AutonomousCasterPlayer caster;
     private final ItemStack[] mirrorSnapshot = emptyStacks(ITEM_SLOTS);
@@ -224,6 +228,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, itemSlots));
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, itemSlots));
             itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, List.of(echoSlot)));
+            // 術式弾スロットは搬入(2)の面からだけ搬入でき、搬出はしない。
+            itemConfig.addSlotInfo(DataType.INPUT_2, new InventorySlotInfo(true, false, bulletSlots));
         }
         configComponent.setupInputConfig(TransmissionType.CHEMICAL, echoTank);
         ejectorComponent = new TileComponentEjector(this).setOutputData(configComponent, TransmissionType.ITEM);
@@ -362,14 +368,16 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
     }
 
-    /** 弾や術式を差し替えたスロットのループカウンタを 0 に戻す。 */
+    /** 選択中のスロットの弾や術式を差し替えたら、ループ回数を 0 に戻す。ほかのスロットの差し替えでは戻さない。 */
     private void refreshBulletState() {
         bulletsDirty = false;
         for (int i = 0; i < BULLET_SLOTS; i++) {
             UUID spellId = spellIdOf(bulletSlots.get(i).getStack());
             if (!Objects.equals(spellId, loopSpellIds[i])) {
                 loopSpellIds[i] = spellId;
-                loopCounters[i] = 0;
+                if (i == selectedBullet) {
+                    loopCounter = 0;
+                }
                 markForSave();
             }
         }
@@ -555,11 +563,15 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         if (level == null) {
             return;
         }
-        // 術式が Trick: Spin Chamber などで選択スロットを変えても、この詠唱の分はこのスロットとして数える。
         int slot = selectedBullet;
         ItemStack bullet = bulletSlots.get(slot).getStack();
         if (bullet.isEmpty() || !ISpellAcceptor.hasSpell(bullet)) {
             fail(error("no_spell", slot + 1));
+            return;
+        }
+        if (isLoopcastBullet(bullet)) {
+            // 入れられないが、以前のワールドで入っていた弾は撃たない。
+            fail(error("loopcast_bullet", slot + 1));
             return;
         }
         if (psi <= 0) {
@@ -587,7 +599,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         resetLoopcast(data);
 
         long revisionBefore = log.revision();
-        int loopIndex = loopCounters[slot];
+        int loopIndex = loopCounter;
+        loopBroken = false;
         VirtualCad.select(virtualCad, slot);
         Optional<ArrayList<Entity>> result;
         boolean crashed = false;
@@ -609,15 +622,16 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         casterPsiWritten = psi;
         data.overflowed = false;
         data.deductions.clear();
-        // ループ型は1トリガー1回だけ。持続 loopcast 状態は残さない。
+        // Psi の持続 loopcast 状態は残さない。
         resetLoopcast(data);
         markDirtyComparator();
         reconcileMirror();
         adoptSelectedSlot();
 
         if (result.isPresent()) {
-            if (loopCounters[slot] < Integer.MAX_VALUE) {
-                loopCounters[slot]++;
+            // Trick: Spin Chamber などで選択スロットが変わっても、ループ回数は引き継ぐ。
+            if (!loopBroken && loopCounter < Integer.MAX_VALUE) {
+                loopCounter++;
             }
             lastOutcome = Outcome.SUCCESS;
             activeTicks = ACTIVE_TICKS_AFTER_CAST;
@@ -812,6 +826,15 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     // ---- AutonomousCasterHost ----
 
     @Override
+    public void onBreakLoop() {
+        if (level != null && !level.isClientSide) {
+            loopCounter = 0;
+            loopBroken = true;
+            markForSave();
+        }
+    }
+
+    @Override
     public void onCasterMessage(Component message) {
         if (level != null && !level.isClientSide) {
             log.add(CasterLog.Source.CASTER_MESSAGE, message, gameTime());
@@ -968,7 +991,12 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private void applyAction(Player player, MessageAutonomousCasterAction.Action action, int value) {
         switch (action) {
             case SELECT_BULLET -> {
-                selectedBullet = Mth.clamp(value, 0, BULLET_SLOTS - 1);
+                int selected = Mth.clamp(value, 0, BULLET_SLOTS - 1);
+                if (selected != selectedBullet) {
+                    // 手で切り替えたときだけ 0 に戻す。術式による切り替え（adoptSelectedSlot）では引き継ぐ。
+                    loopCounter = 0;
+                }
+                selectedBullet = selected;
                 VirtualCad.select(virtualCad, selectedBullet);
             }
             case SELECT_ITEM_SLOT -> {
@@ -987,7 +1015,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
                 pitch = Mth.clamp(value, MIN_PITCH, MAX_PITCH);
                 sendUpdatePacket();
             }
-            case RESET_LOOP_COUNTER -> loopCounters[Mth.clamp(value, 0, BULLET_SLOTS - 1)] = 0;
+            case RESET_LOOP_COUNTER -> loopCounter = 0;
             case CLEAR_LOG -> {
                 log.clear();
                 lastFailureSequence = 0L;
@@ -1027,7 +1055,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         tag.putInt(TAG_CAST_INTERVAL, castInterval);
         tag.putInt(TAG_YAW, yawOffset);
         tag.putInt(TAG_PITCH, pitch);
-        tag.putIntArray(TAG_LOOP_COUNTERS, loopCounters.clone());
+        tag.putInt(TAG_LOOP_COUNTER, loopCounter);
         CompoundTag spells = new CompoundTag();
         for (int i = 0; i < BULLET_SLOTS; i++) {
             if (loopSpellIds[i] != null) {
@@ -1069,10 +1097,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
                 : AutonomousCasterSettings.defaultCastInterval();
         yawOffset = Mth.clamp(tag.getInt(TAG_YAW), MIN_YAW, MAX_YAW);
         pitch = Mth.clamp(tag.getInt(TAG_PITCH), MIN_PITCH, MAX_PITCH);
-        int[] counters = tag.getIntArray(TAG_LOOP_COUNTERS);
-        for (int i = 0; i < BULLET_SLOTS; i++) {
-            loopCounters[i] = i < counters.length ? Math.max(0, counters[i]) : 0;
-        }
+        loopCounter = Math.max(0, tag.getInt(TAG_LOOP_COUNTER));
         CompoundTag spells = tag.getCompound(TAG_LOOP_SPELLS);
         for (int i = 0; i < BULLET_SLOTS; i++) {
             String key = Integer.toString(i);
@@ -1108,7 +1133,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         container.track(SyncableInt.create(() -> castInterval, value -> castInterval = value));
         container.track(SyncableInt.create(() -> yawOffset, value -> yawOffset = value));
         container.track(SyncableInt.create(() -> pitch, value -> pitch = value));
-        container.trackArray(loopCounters);
+        container.track(SyncableInt.create(() -> loopCounter, value -> loopCounter = value));
         container.track(SyncableInt.create(() -> cooldown, value -> cooldown = value));
         container.track(SyncableBoolean.create(() -> signal, value -> signal = value));
         container.track(SyncableEnum.create(Outcome::byIndex, Outcome.NONE, () -> lastOutcome, value -> lastOutcome = value));
@@ -1132,9 +1157,14 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return stack.is(PsitweaksChemicals.GAS_PSIONIC_ECHO.get());
     }
 
-    /** 弾スロット: ソケットから詠唱できる術式容器（弾）だけ。CAD 自体は入れない。 */
+    /** 弾スロット: ソケットから詠唱できる術式容器（弾）だけ。CAD 自体とループ型術式弾は入れない。 */
     public static boolean isBulletCandidate(ItemStack stack) {
-        return !stack.isEmpty() && !(stack.getItem() instanceof ICAD) && ISpellAcceptor.isContainer(stack);
+        return !stack.isEmpty() && !(stack.getItem() instanceof ICAD) && !isLoopcastBullet(stack)
+                && ISpellAcceptor.isContainer(stack);
+    }
+
+    private static boolean isLoopcastBullet(ItemStack stack) {
+        return stack.getItem() instanceof ItemLoopcastSpellBullet;
     }
 
     /** Caster へ写すスロット: CAD を入れると Caster が CAD を一意に特定できなくなるため拒否する。 */
@@ -1207,8 +1237,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return pitch;
     }
 
-    public int getLoopCounter(int bullet) {
-        return loopCounters[Mth.clamp(bullet, 0, BULLET_SLOTS - 1)];
+    public int getLoopCounter() {
+        return loopCounter;
     }
 
     public int getCooldown() {

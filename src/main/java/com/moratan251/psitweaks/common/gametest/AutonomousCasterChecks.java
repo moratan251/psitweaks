@@ -18,11 +18,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import mekanism.api.AutomationType;
+import mekanism.api.RelativeSide;
 import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +42,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
@@ -88,21 +97,21 @@ final class AutonomousCasterChecks {
         helper.runAfterDelay(2, () -> {
             AutonomousCasterPlayer fake = caster.getCaster();
             helper.assertTrue(fake != null && fake.isAttached(), "The machine did not prepare its caster");
-            helper.assertTrue(caster.getLog().isEmpty() && caster.getLoopCounter(0) == 0, "The machine cast without a signal");
+            helper.assertTrue(caster.getLog().isEmpty() && caster.getLoopCounter() == 0, "The machine cast without a signal");
             helper.setBlock(power, Blocks.REDSTONE_BLOCK);
             helper.runAfterDelay(2, () -> {
                 assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "42");
-                helper.assertTrue(caster.getLastOutcome() == AutonomousCasterBlockEntity.Outcome.SUCCESS && caster.getLoopCounter(0) == 1,
+                helper.assertTrue(caster.getLastOutcome() == AutonomousCasterBlockEntity.Outcome.SUCCESS && caster.getLoopCounter() == 1,
                         "A redstone pulse did not cast the selected bullet once");
                 helper.assertTrue(caster.getPsi() == 1000, "A free spell spent Psi");
                 helper.runAfterDelay(caster.getCastInterval() + 4, () -> {
-                    helper.assertTrue(caster.getLoopCounter(0) == 1, "Pulse mode cast again while the signal stayed on");
+                    helper.assertTrue(caster.getLoopCounter() == 1, "Pulse mode cast again while the signal stayed on");
                     helper.setBlock(power, Blocks.AIR);
                     helper.runAfterDelay(2, () -> {
                         helper.setBlock(power, Blocks.REDSTONE_BLOCK);
                         helper.runAfterDelay(2, () -> {
                             List<CasterLog.Entry> entries = caster.getLog().entries();
-                            helper.assertTrue(caster.getLoopCounter(0) == 2, "A second pulse did not cast again");
+                            helper.assertTrue(caster.getLoopCounter() == 2, "A second pulse did not cast again");
                             helper.assertTrue(entries.size() == 1 && entries.get(0).repeatCount() == 2,
                                     "Repeated debug output was not merged into one entry");
                             helper.succeed();
@@ -125,16 +134,16 @@ final class AutonomousCasterChecks {
                 "The cast interval was not clamped to the minimum");
         helper.setBlock(POS.east(), Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(21, () -> {
-            int casts = caster.getLoopCounter(2);
+            int casts = caster.getLoopCounter();
             helper.assertTrue(casts >= 4 && casts <= 6, "Level mode cast " + casts + " times in 20 ticks at a 4 tick interval");
             helper.setBlock(POS.east(), Blocks.AIR);
             helper.runAfterDelay(2, () -> {
-                int stopped = caster.getLoopCounter(2);
+                int stopped = caster.getLoopCounter();
                 helper.runAfterDelay(10, () -> {
-                    helper.assertTrue(caster.getLoopCounter(2) == stopped, "Level mode kept casting without a signal");
+                    helper.assertTrue(caster.getLoopCounter() == stopped, "Level mode kept casting without a signal");
                     caster.getBulletSlots().get(2).setStack(AutonomousCasterTestSpells.debugBullet(8));
                     helper.runAfterDelay(2, () -> {
-                        helper.assertTrue(caster.getLoopCounter(2) == 0, "Changing the bullet did not reset its loop counter");
+                        helper.assertTrue(caster.getLoopCounter() == 0, "Changing the bullet did not reset its loop counter");
                         helper.succeed();
                     });
                 });
@@ -178,13 +187,13 @@ final class AutonomousCasterChecks {
         caster.setPsi(1000);
         caster.getBulletSlots().get(0).setStack(AutonomousCasterTestSpells.debugBullet(3));
         helper.runAfterDelay(5, () -> {
-            helper.assertTrue(caster.hasSignal() && caster.getLoopCounter(0) == 0 && caster.getLog().isEmpty(),
+            helper.assertTrue(caster.hasSignal() && caster.getLoopCounter() == 0 && caster.getLog().isEmpty(),
                     "A signal that was already on when the machine was placed caused a cast");
             helper.setBlock(POS.east(), Blocks.AIR);
             helper.runAfterDelay(2, () -> {
                 helper.setBlock(POS.east(), Blocks.REDSTONE_BLOCK);
                 helper.runAfterDelay(2, () -> {
-                    helper.assertTrue(caster.getLoopCounter(0) == 1, "A new pulse after placement did not cast");
+                    helper.assertTrue(caster.getLoopCounter() == 1, "A new pulse after placement did not cast");
                     helper.succeed();
                 });
             });
@@ -410,7 +419,7 @@ final class AutonomousCasterChecks {
 
     /**
      * Trick: Spin Chamber は機械の選択中の術式弾スロットを1つ動かす（最後の次は最初、最初の前は最後）。
-     * 動かしても、その詠唱は撃ったスロットの回数として数える。
+     * 術式による切り替えなので、ループ回数は引き継ぐ。
      */
     static void spinChamberMovesTheSelectedBulletSlot(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
@@ -424,13 +433,13 @@ final class AutonomousCasterChecks {
                 .thenExecuteAfter(2, () -> caster.applySetting(Action.CAST_NOW, 0, player))
                 .thenExecuteAfter(2, () -> {
                     helper.assertTrue(caster.getLastOutcome() == AutonomousCasterBlockEntity.Outcome.SUCCESS
-                            && caster.getLoopCounter(last) == 1, "The machine did not cast the Spin Chamber bullet");
+                            && caster.getLoopCounter() == 1, "The machine did not cast the Spin Chamber bullet");
                     helper.assertTrue(caster.getSelectedBullet() == 0,
                             "Trick: Spin Chamber did not move the last slot on to the first, got " + caster.getSelectedBullet());
                 })
                 .thenExecuteAfter(caster.getCastInterval() + 1, () -> caster.applySetting(Action.CAST_NOW, 0, player))
                 .thenExecuteAfter(2, () -> {
-                    helper.assertTrue(caster.getLoopCounter(0) == 1, "The machine did not cast from the new slot");
+                    helper.assertTrue(caster.getLoopCounter() == 2, "The loop count was not carried over to the new slot");
                     helper.assertTrue(caster.getSelectedBullet() == last,
                             "Trick: Spin Chamber did not move the first slot back to the last, got " + caster.getSelectedBullet());
                 })
@@ -452,14 +461,136 @@ final class AutonomousCasterChecks {
         helper.setBlock(POS.east(), Blocks.REDSTONE_BLOCK);
         // 最短間隔で 20 回ほど詠唱する。同じスロットのままである確率は (1/8)^19 未満。
         helper.runAfterDelay(80, () -> {
-            int casts = 0;
-            for (int i = 0; i < AutonomousCasterBlockEntity.BULLET_SLOTS; i++) {
-                casts += caster.getLoopCounter(i);
-            }
+            int casts = caster.getLoopCounter();
             helper.assertTrue(casts >= 10, "The machine cast the Russian Roulette bullets only " + casts + " times");
             helper.assertTrue(seen.size() > 1 && seen.stream().allMatch(slot -> slot >= 0 && slot < AutonomousCasterBlockEntity.BULLET_SLOTS),
                     "Trick: Russian Roulette did not reselect the machine's bullet slot: " + seen);
             helper.succeed();
         });
+    }
+
+    /**
+     * ループ回数は機械に1つで、成立した詠唱ごとに増える。手で別のスロットを選ぶ・選択中の弾を替える・0 ボタンで 0 に戻り、
+     * 同じスロットの選び直しやほかのスロットの差し替えでは戻らない。
+     */
+    static void sharesOneLoopCountAndResetsItByHand(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        FakePlayer player = player(helper);
+        caster.setPsi(10_000);
+        caster.getBulletSlots().get(0).setStack(AutonomousCasterTestSpells.loopIndexBullet());
+        caster.getBulletSlots().get(1).setStack(AutonomousCasterTestSpells.loopIndexBullet());
+        int wait = caster.getCastInterval() + 1;
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "0.0");
+                    helper.assertTrue(caster.getLoopCounter() == 1, "A successful cast did not add 1 to the loop count");
+                })
+                .thenExecuteAfter(wait, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "1.0");
+                    helper.assertTrue(caster.getLoopCounter() == 2, "The second cast did not read and add to the loop count");
+                    caster.getBulletSlots().get(3).setStack(AutonomousCasterTestSpells.debugBullet(5));
+                    caster.applySetting(Action.SELECT_BULLET, 0, player);
+                })
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(caster.getLoopCounter() == 2,
+                            "Reselecting the same slot or changing another slot reset the loop count");
+                    caster.applySetting(Action.SELECT_BULLET, 1, player);
+                    helper.assertTrue(caster.getLoopCounter() == 0, "Selecting another slot by hand did not reset the loop count");
+                })
+                .thenExecuteAfter(wait, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "0.0");
+                    helper.assertTrue(caster.getLoopCounter() == 1, "The cast after selecting a slot did not start from 0");
+                    caster.getBulletSlots().get(1).setStack(AutonomousCasterTestSpells.loopIndexBullet());
+                })
+                .thenExecuteAfter(2, () -> helper.assertTrue(caster.getLoopCounter() == 0,
+                        "Changing the selected bullet did not reset the loop count"))
+                .thenExecuteAfter(wait, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(caster.getLoopCounter() == 1, "The cast after changing the bullet did not count");
+                    caster.applySetting(Action.RESET_LOOP_COUNTER, 0, player);
+                    helper.assertTrue(caster.getLoopCounter() == 0, "The 0 button did not reset the loop count");
+                })
+                .thenSucceed();
+    }
+
+    /**
+     * 機械が実行した Trick: Break Loop はループ回数を 0 に戻し、その詠唱の分も数えない。
+     * その前の Trick: Spin Chamber の切り替えでは、移った先のスロットがループ回数を引き継ぐ。
+     */
+    static void breakLoopResetsTheLoopCount(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        FakePlayer player = player(helper);
+        caster.setPsi(10_000);
+        caster.getBulletSlots().get(0).setStack(AutonomousCasterTestSpells.loopIndexSpinChamberBullet(1));
+        caster.getBulletSlots().get(1).setStack(AutonomousCasterTestSpells.loopIndexBreakLoopBullet());
+        int wait = caster.getCastInterval() + 1;
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "0.0");
+                    helper.assertTrue(caster.getSelectedBullet() == 1 && caster.getLoopCounter() == 1,
+                            "Trick: Spin Chamber did not move on with the loop count, got slot " + caster.getSelectedBullet()
+                                    + " and count " + caster.getLoopCounter());
+                })
+                .thenExecuteAfter(wait, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "1.0");
+                    helper.assertTrue(caster.getLastOutcome() == AutonomousCasterBlockEntity.Outcome.SUCCESS
+                            && caster.getLoopCounter() == 0, "Trick: Break Loop did not reset the loop count, got " + caster.getLoopCounter());
+                })
+                .thenExecuteAfter(wait, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatest(helper, caster, CasterLog.Source.CASTER_MESSAGE, "0.0");
+                    helper.assertTrue(caster.getLoopCounter() == 0, "The cast after Trick: Break Loop did not start from 0");
+                })
+                .thenSucceed();
+    }
+
+    /** ループ型術式弾は弾スロットに入らない。以前から入っていた弾は撃たずに、エラーを残す。 */
+    static void refusesLoopcastBullets(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        FakePlayer player = player(helper);
+        caster.setPsi(1000);
+        ItemStack loopcast = AutonomousCasterTestSpells.loopcastBullet();
+        IInventorySlot slot = caster.getBulletSlots().get(0);
+        helper.assertTrue(!AutonomousCasterBlockEntity.isBulletCandidate(loopcast) && !slot.isItemValid(loopcast),
+                "A Loopcast Spell Bullet fits in a bullet slot");
+        ((BasicInventorySlot) slot).setStackUnchecked(loopcast);
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> caster.applySetting(Action.CAST_NOW, 0, player))
+                .thenExecuteAfter(2, () -> {
+                    assertLatestError(helper, caster, "loopcast_bullet");
+                    helper.assertTrue(caster.getLoopCounter() == 0, "The refused Loopcast Spell Bullet counted as a cast");
+                })
+                .thenSucceed();
+    }
+
+    /**
+     * 側面設定を搬入(2)にした面からは、術式弾が空いている術式弾スロットに入る。
+     * ループ型術式弾とほかのアイテムは入らず、アイテム欄にも回らない。
+     */
+    static void feedsBulletsFromAnInput2Side(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        ConfigInfo items = caster.getConfig().getConfig(TransmissionType.ITEM);
+        helper.assertTrue(items != null && items.supports(DataType.INPUT_2), "The item side config has no Input (2) for bullets");
+        items.setDataType(DataType.INPUT_2, RelativeSide.TOP);
+        caster.getConfig().sideChanged(TransmissionType.ITEM, RelativeSide.TOP);
+        IItemHandler top = helper.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, helper.absolutePos(POS), Direction.UP);
+        helper.assertTrue(top != null, "The Input (2) side has no item handler");
+        ItemStack first = ItemHandlerHelper.insertItem(top, AutonomousCasterTestSpells.debugBullet(1), false);
+        ItemStack second = ItemHandlerHelper.insertItem(top, AutonomousCasterTestSpells.debugBullet(2), false);
+        helper.assertTrue(first.isEmpty() && second.isEmpty()
+                        && !caster.getBulletSlots().get(0).isEmpty() && !caster.getBulletSlots().get(1).isEmpty(),
+                "Spell Bullets from the Input (2) side did not fill the empty bullet slots");
+        ItemStack loopcast = ItemHandlerHelper.insertItem(top, AutonomousCasterTestSpells.loopcastBullet(), false);
+        ItemStack log = ItemHandlerHelper.insertItem(top, new ItemStack(Items.OAK_LOG), false);
+        helper.assertTrue(!loopcast.isEmpty() && !log.isEmpty(),
+                "The Input (2) side took a Loopcast Spell Bullet or a non-bullet item");
+        helper.assertTrue(caster.getBulletSlots().get(2).isEmpty() && caster.getItemSlots().stream().allMatch(IInventorySlot::isEmpty),
+                "Items from the Input (2) side went somewhere other than the bullet slots");
+        helper.succeed();
     }
 }

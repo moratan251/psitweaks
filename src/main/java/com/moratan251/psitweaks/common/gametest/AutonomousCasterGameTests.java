@@ -1038,6 +1038,42 @@ public final class AutonomousCasterGameTests {
         AutonomousCasterChecks.russianRouletteReselectsTheBulletSlot(helper);
     }
 
+    @GameTest(template = TEMPLATE, timeoutTicks = 200)
+    public static void autonomousCasterSharesOneLoopCount(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.sharesOneLoopCountAndResetsItByHand(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 160)
+    public static void autonomousCasterBreakLoopResetsTheLoopCount(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.breakLoopResetsTheLoopCount(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 60)
+    public static void autonomousCasterRefusesLoopcastBullets(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.refusesLoopcastBullets(helper);
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void autonomousCasterFeedsBulletsFromAnInput2Side(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.feedsBulletsFromAnInput2Side(helper);
+    }
+
     /** 機械の代わりに Caster の問い合わせへ答える。 */
     private static final class StubHost implements AutonomousCasterHost {
         private final List<Component> messages = new ArrayList<>();
@@ -1061,6 +1097,10 @@ public final class AutonomousCasterGameTests {
         @Override
         public int availablePsi() {
             return psi;
+        }
+
+        @Override
+        public void onBreakLoop() {
         }
 
         @Override

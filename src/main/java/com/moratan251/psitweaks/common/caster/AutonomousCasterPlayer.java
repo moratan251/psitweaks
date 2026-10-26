@@ -66,6 +66,14 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
         return current == null ? 0 : Math.max(0, current.availablePsi());
     }
 
+    /** Trick: Break Loop の mixin から呼ばれる。機械のループ回数を 0 に戻す。 */
+    public void breakLoop() {
+        AutonomousCasterHost current = host;
+        if (current != null) {
+            current.onBreakLoop();
+        }
+    }
+
     /** {@link AutonomousCasterSpellHandler} から呼ばれる。 */
     void reportInsufficientPsi(int cost) {
         AutonomousCasterHost current = host;

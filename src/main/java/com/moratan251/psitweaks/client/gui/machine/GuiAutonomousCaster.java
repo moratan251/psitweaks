@@ -102,7 +102,7 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
                         : AutonomousCasterBlockEntity.TriggerMode.PULSE.ordinal())))
                 .setTooltip(Tooltip.create(Component.translatable(KEY + "trigger.tooltip")));
         addRenderableWidget(button(112, 118, 14, 12, () -> Component.literal("0"),
-                () -> send(Action.RESET_LOOP_COUNTER, tile.getSelectedBullet())))
+                () -> send(Action.RESET_LOOP_COUNTER, 0)))
                 .setTooltip(Tooltip.create(Component.translatable(KEY + "loop.reset")));
         addRenderableWidget(button(130, 118, 38, 12, () -> Component.translatable(KEY + "cast_now"),
                 () -> send(Action.CAST_NOW, 0)))
@@ -175,7 +175,7 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         if (tile.getLastOutcome() == AutonomousCasterBlockEntity.Outcome.FAILURE) {
             lines.add(failureReason());
         }
-        lines.add(Component.translatable(KEY + "detail.loop", tile.getSelectedBullet() + 1, tile.getLoopCounter(tile.getSelectedBullet())));
+        lines.add(Component.translatable(KEY + "detail.loop", tile.getLoopCounter()));
         lines.add(Component.translatable(KEY + "detail.recovery", tile.getRecoveryPerTick()));
         return lines;
     }
@@ -201,7 +201,7 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         drawLabel(guiGraphics, Component.translatable(KEY + "interval", tile.getCastInterval()), 8, 97);
         drawLabel(guiGraphics, Component.translatable(KEY + "yaw", tile.getYawOffset()), 62, 97);
         drawLabel(guiGraphics, Component.translatable(KEY + "pitch", tile.getPitch()), 116, 97);
-        drawLabel(guiGraphics, Component.translatable(KEY + "loop", tile.getLoopCounter(tile.getSelectedBullet())), 72, 121);
+        drawLabel(guiGraphics, Component.translatable(KEY + "loop", tile.getLoopCounter()), 72, 121);
 
         int bulletX = AutonomousCasterBlockEntity.BULLET_X + tile.getSelectedBullet() * 18 - 1;
         guiGraphics.renderOutline(bulletX, AutonomousCasterBlockEntity.SLOT_ROW_Y - 1, 18, 18, BULLET_OUTLINE);

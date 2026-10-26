@@ -18,6 +18,9 @@ public interface AutonomousCasterHost {
     /** 詠唱コストの支払いに使える内部 Psi。 */
     int availablePsi();
 
+    /** 詠唱主体を焦点とする「Trick: Break Loop」が止める値（-1 より大きく 1 より小さい）で実行されたとき。 */
+    void onBreakLoop();
+
     /** 確定した詠唱コストが内部 Psi を超えたため、詠唱を取り消したとき。 */
     void onInsufficientPsi(int cost, int available);
 

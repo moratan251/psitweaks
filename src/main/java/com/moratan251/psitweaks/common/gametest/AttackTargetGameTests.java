@@ -407,6 +407,10 @@ public final class AttackTargetGameTests {
         }
 
         @Override
+        public void onBreakLoop() {
+        }
+
+        @Override
         public void onInsufficientPsi(int cost, int available) {
         }
 
