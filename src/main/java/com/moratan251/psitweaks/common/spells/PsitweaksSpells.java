@@ -53,6 +53,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_stored_value", PieceSelectorStoredValue.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_NEARBY_SPELLGRAM =
             registerPiece("selector_nearby_spellgram", PieceSelectorNearbySpellGram.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_AUTONOMOUS_CASTER_POSITION =
+            MekanismCompat.isMekanismLoaded() ? registerPiece("selector_autonomous_caster_position", PieceSelectorAutonomousCasterPosition.class) : null;
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DISPEL =
             registerPiece("trick_dispel", PieceTrickDispel.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DISPEL_BENEFICIAL =

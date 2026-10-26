@@ -995,6 +995,15 @@ public final class AutonomousCasterGameTests {
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterSelectorGivesTheMachinePosition(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.selectorGivesTheMachinePosition(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void autonomousCasterIgnoresActionsFromOtherMenus(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {
             helper.succeed();
@@ -1093,6 +1102,11 @@ public final class AutonomousCasterGameTests {
         private UUID owner;
         private String language;
         private String ownerName;
+
+        @Override
+        public BlockPos machinePos() {
+            return BlockPos.ZERO;
+        }
 
         @Override
         public void onCasterMessage(Component message) {

@@ -35,6 +35,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "trick_store_value", "trick_store_value");
         group(output, saves, "selector_stored_value", "selector_stored_value");
         group(output, saves, "selector_nearby_spellgram", "selector_nearby_spellgram");
+        group(output, saves, "selector_autonomous_caster_position", "selector_autonomous_caster_position");
         group(output, saves, "trick_dispel", "trick_dispel");
         group(output, saves, "trick_dispel_beneficial", "trick_dispel_beneficial");
         group(output, saves, "trick_dispel_non_beneficial", "trick_dispel_non_beneficial");
@@ -129,7 +130,8 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         json.add("pieces", pieces);
         // These definitions use IDs only; optional pieces need not be loaded during datagen.
         String requiredMod = switch (id) {
-            case "trick_radiation_injection", "trick_radiation_filter", "trick_cure_radiation" -> "mekanism";
+            case "trick_radiation_injection", "trick_radiation_filter", "trick_cure_radiation",
+                    "selector_autonomous_caster_position" -> "mekanism";
             case "trick_physical_propulsion" -> "sable";
             default -> null;
         };

@@ -34,7 +34,7 @@ public final class Psi110CompatibilityGameTests {
                         .orElseThrow().key().location().equals(id), "Wrong group for " + member);
             }
         }
-        int expected = 87 + (ModList.get().isLoaded("mekanism") ? 3 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
+        int expected = 87 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
         helper.assertTrue(count == expected, "Expected " + expected + " groups, got " + count);
         helper.succeed();
     }

@@ -375,6 +375,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "指定位置の下に地面がありません";
             default -> "No ground below the position";
         });
+        root.addProperty("psitweaks.spellerror.not_autonomous_caster", switch (locale) {
+            case "ja_jp" -> "エラー: 自律詠唱機からの詠唱ではありません。";
+            default -> "Error: Not cast from an Autonomous Caster.";
+        });
         root.addProperty("psitweaks.spellerror.no_jump_anchor", switch (locale) {
             case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
             default -> "No matching Jump Anchor found ahead";
@@ -1564,6 +1568,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_store_value", "Trick: Store Value", "Store a Plain Value (Number, Vector, String ... ) in CAD memory. Strings are stored up to 128 characters.", "作動式: 値を保存", "Plain Value (Number, Vector, String ... )をCADメモリに保存する。Stringは最大128文字まで保存します。");
         addSpellPiece(root, "selector_stored_value", "Selector: Stored Value", "Retrieve a Plain Value from CAD memory", "取得子: 保存された値", "CADメモリに保存されたPlain Valueを取得する");
         addSpellPiece(root, "selector_nearby_spellgram", "Selector: Nearby SpellGram Object", "Retrieve SpellGram objects around the specified position", "取得子: 近くの魔法式オブジェクト", "指定座標の周囲にある魔法式オブジェクトを取得する");
+        addSpellPiece(root, "selector_autonomous_caster_position", "Selector: Autonomous Caster Position", "Gets the center of the Autonomous Caster casting the spell", "取得子: 詠唱機位置", "詠唱している自律詠唱機のブロックの中心を取得する");
         addSpellPiece(root, "trick_dispel", "Trick: Dispel", "Remove effects from target entity", "作動式: 解呪", "対象からエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_beneficial", "Trick: Dispel Beneficial", "Remove beneficial effects from target entity", "作動式: 良性解呪", "対象から有益なエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_non_beneficial", "Trick: Dispel Non Beneficial", "Remove non beneficial effects from target entity", "作動式: 悪性解呪", "対象から有益でないエフェクトを除去する");
@@ -1781,6 +1786,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_store_value", "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot. String values longer than 128 characters are truncated when stored, and a warning is shown in the caster's chat.", "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます. 128文字を超えるStringは保存時に切り捨てられ, 術者のチャット欄に警告が表示されます.");
         addBookPage(root, "selector_stored_value", "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.", "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.");
         addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
+        addBookPage(root, "selector_autonomous_caster_position",
+                "Outputs the center of the $(thing)Autonomous Caster$(0) block casting the spell, as a Vector. Tricks that work on blocks treat it as the machine's own block, and adding (0, 1, 0) gives the block above. "
+                        + "The caster stands in front of the machine, so the position of $(thing)Selector: Caster$(0) is the block in front. It fails when cast from anything but an Autonomous Caster.",
+                "詠唱している$(thing)自律詠唱機$(0)のブロックの中心を Vector として出力します. ブロックを扱う作動式ではそのまま機械のブロックになり, (0, 1, 0) を足すと真上のブロックになります. "
+                        + "詠唱主体は機械の前に立つので, $(thing)取得子: 術者$(0)の位置は前のブロックになります. 自律詠唱機以外から詠唱するとエラーになります.");
         addBookPage(root, "trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects.", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です.");
         addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");

@@ -849,6 +849,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     // ---- AutonomousCasterHost ----
 
     @Override
+    public BlockPos machinePos() {
+        return worldPosition;
+    }
+
+    @Override
     public void onBreakLoop() {
         if (level != null && !level.isClientSide) {
             loopCounter = 0;

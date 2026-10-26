@@ -49,6 +49,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_stored_value");
     public static final DeferredHolder<Material, Material> SELECTOR_NEARBY_SPELLGRAM =
             registerPieceMaterial("selector_nearby_spellgram");
+    public static final DeferredHolder<Material, Material> SELECTOR_AUTONOMOUS_CASTER_POSITION =
+            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("selector_autonomous_caster_position") : null;
     public static final DeferredHolder<Material, Material> TRICK_DISPEL =
             registerPieceMaterial("trick_dispel");
     public static final DeferredHolder<Material, Material> TRICK_DISPEL_BENEFICIAL =

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
@@ -391,6 +392,11 @@ public final class AttackTargetGameTests {
         OwnerHost(ServerPlayer owner) {
             this.owner = owner.getUUID();
             this.name = owner.getScoreboardName();
+        }
+
+        @Override
+        public BlockPos machinePos() {
+            return BlockPos.ZERO;
         }
 
         @Override

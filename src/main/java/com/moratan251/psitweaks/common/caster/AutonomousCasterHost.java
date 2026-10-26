@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.caster;
 
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -9,6 +10,9 @@ import net.minecraft.network.chat.Component;
  * Mekanism 型を含めないため、common 側から参照できる。
  */
 public interface AutonomousCasterHost {
+    /** 機械のブロックの位置。 */
+    BlockPos machinePos();
+
     /** Caster 宛てのチャット相当メッセージ（デバッグ出力、詠唱エラーなど）。 */
     void onCasterMessage(Component message);
 

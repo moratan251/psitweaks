@@ -188,10 +188,12 @@ final class AutonomousCasterTranslations {
                         + "$(p)クールダウン中の信号は無視されます. 詠唱間隔は4tick未満にできません.");
         put(BOOK + ".2",
                 "The caster stands at the front face and looks where $(item)Yaw$(0) and $(item)Pitch$(0) point. "
-                        + "The $(item)Line of Sight Visuals$(0) tab on the left of the GUI shows that line in the world.$(p)"
+                        + "The $(item)Line of Sight Visuals$(0) tab on the left of the GUI shows that line in the world. "
+                        + "$(item)Selector: Autonomous Caster Position$(0) gives the position of the machine itself.$(p)"
                         + "$(item)Loopcast Spell Bullets$(0) cannot be placed in the machine.",
                 "詠唱主体は正面に立ち, $(item)Yaw$(0)と$(item)Pitch$(0)の方向を向いて詠唱します. "
-                        + "GUI左の$(item)視線の可視化$(0)タブで, その視線をワールドに表示できます.$(p)"
+                        + "GUI左の$(item)視線の可視化$(0)タブで, その視線をワールドに表示できます. "
+                        + "機械そのものの位置は$(item)取得子: 詠唱機位置$(0)で取得できます.$(p)"
                         + "$(item)ループ型術式弾$(0)は機械に入れられません.");
         put(BOOK + ".loop",
                 "The machine has one loop count. Each successful cast adds 1, "

@@ -1,0 +1,12 @@
+{
+  "name": "psitweaks.spellpiece.selector_autonomous_caster_position",
+  "category": "psi:psitweaks_spell_pieces",
+  "flag": "mod:mekanism",
+  "icon": "psitweaks:textures/spell/selector_autonomous_caster_position.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_autonomous_caster_position"
+    }
+  ]
+}

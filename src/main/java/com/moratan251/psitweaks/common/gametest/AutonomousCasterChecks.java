@@ -10,6 +10,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorAutonomousCasterPosition;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -57,6 +59,10 @@ import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.capability.PsiCapabilities;
+import vazkii.psi.api.internal.Vector3;
+import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellContext;
+import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.base.ModCADComponents;
@@ -457,6 +463,32 @@ final class AutonomousCasterChecks {
                         && caster.getItemSlots().get(35).getStack().is(Items.BRICK)
                         && caster.getItemSlots().get(35).getStack().getCount() == 6,
                 "The items of " + source + " came back in the wrong slots");
+    }
+
+    /** 「取得子: 詠唱機位置」は機械のブロックの中心を返し、機械以外からの詠唱ではエラーになる。 */
+    static void selectorGivesTheMachinePosition(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine did not prepare its caster");
+            PieceSelectorAutonomousCasterPosition selector = new PieceSelectorAutonomousCasterPosition(new Spell());
+            Vec3 center = Vec3.atCenterOf(helper.absolutePos(POS));
+            try {
+                Object value = selector.execute(new SpellContext().setPlayer(fake));
+                helper.assertTrue(value instanceof Vector3 vector && vector.x == center.x && vector.y == center.y && vector.z == center.z,
+                        "The selector did not give the center of the machine: " + value);
+            } catch (SpellRuntimeException e) {
+                throw new GameTestAssertException("The selector failed in the machine: " + e.getMessage());
+            }
+            try {
+                selector.execute(new SpellContext().setPlayer(player(helper)));
+                throw new GameTestAssertException("The selector worked for a player's CAD");
+            } catch (SpellRuntimeException e) {
+                helper.assertTrue("psitweaks.spellerror.not_autonomous_caster".equals(e.getMessage()),
+                        "A player's CAD got another error: " + e.getMessage());
+            }
+            helper.succeed();
+        });
     }
 
     static void ignoresActionsFromOtherMenus(GameTestHelper helper) {

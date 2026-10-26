@@ -39,6 +39,8 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
     private final UUID casterKey;
     @Nullable
     private AutonomousCasterHost host;
+    /** 機械のブロックの位置。機械を撤去した後も、遅延中の術式が読めるように残す。 */
+    private final BlockPos machinePos;
 
     /**
      * @param casterKey 機械ごとのランダムな内部キー。実プレイヤーの UUID とは重ならない
@@ -48,7 +50,13 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
         super(level, new GameProfile(owner != null ? owner : casterKey, NAME));
         this.casterKey = casterKey;
         this.host = host;
+        this.machinePos = host.machinePos().immutable();
         AutonomousCasterRegistry.register(this);
+    }
+
+    /** 「取得子: 詠唱機位置」が読む、機械のブロックの位置。 */
+    public BlockPos machinePos() {
+        return machinePos;
     }
 
     /** 機械ごとの内部キー。術者を UUID で引き直す保存とレジストリに使う。{@link #getUUID()} は所有者の UUID。 */
