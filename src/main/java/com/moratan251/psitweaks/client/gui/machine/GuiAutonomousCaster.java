@@ -106,6 +106,16 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
         addWindow(settingsWindow);
     }
 
+    /** Mekanism のピン留めしたウィンドウと同じく、画面を開いたとき（まだ窓がないとき）だけ設定ウィンドウを開き直す。 */
+    @Override
+    protected void initPinnedWindows() {
+        boolean noWindows = windows.isEmpty();
+        super.initPinnedWindows();
+        if (noWindows && GuiAutonomousCasterSettings.wasPinned()) {
+            openSettings();
+        }
+    }
+
     void send(Action action, int value) {
         PacketDistributor.sendToServer(new MessageAutonomousCasterAction(menu.containerId, action, value));
     }

@@ -546,6 +546,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Barrier Shield Bar", "障壁シールドのバー",
                 "Show the remaining shield and time of Trick: Barrier above the health bar.",
                 "作動式: 障壁のシールド残量と残り時間を体力ゲージの上に表示します。");
+        addConfigLabel(root, "psitweaks.configuration.windows", "Window Positions", "ウィンドウの位置");
+        addConfigLabel(root, "psitweaks.configuration.windows.autonomous_caster_settings",
+                "Autonomous Caster Settings Window", "自律詠唱機の設定ウィンドウ");
+        addConfigValue(root, "psitweaks.configuration.windows.x",
+                "X Position", "X 座標",
+                "Last x position of the window, relative to the machine screen.",
+                "最後に閉じたときのウィンドウの X 座標です。機械の画面の左上からの位置です。");
+        addConfigValue(root, "psitweaks.configuration.windows.y",
+                "Y Position", "Y 座標",
+                "Last y position of the window, relative to the machine screen.",
+                "最後に閉じたときのウィンドウの Y 座標です。機械の画面の左上からの位置です。");
+        addConfigValue(root, "psitweaks.configuration.windows.pinned",
+                "Pinned", "ピン留め",
+                "Open the window together with the machine screen.",
+                "機械の画面を開いたときに、このウィンドウも開きます。");
 
         addConfigLabel(root, "psitweaks.configuration.spells", "Spell Settings", "スペル設定");
         addConfigValue(root, "psitweaks.configuration.spells.global_spell_power_multiplier",

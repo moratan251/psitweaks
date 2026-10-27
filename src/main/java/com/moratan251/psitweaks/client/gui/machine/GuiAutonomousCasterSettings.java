@@ -1,20 +1,27 @@
 package com.moratan251.psitweaks.client.gui.machine;
 
+import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
+import com.moratan251.psitweaks.client.config.PsitweaksClientConfig.WindowPosition;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import java.util.function.Supplier;
+import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.button.GuiPinButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 /**
  * 自律詠唱機の設定窓。選択中の術式弾・手に持つスロット、詠唱間隔、視線の向き、トリガー、ループ回数、テスト詠唱をまとめる。
  * 運転画面はアイテムスロットに場所を譲り、設定はここで変える。
+ * Mekanism のウィンドウと同じく、閉じたときの位置とピン留めをクライアント設定に覚え、ピン留めしていれば運転画面と一緒に開く。
  */
 public class GuiAutonomousCasterSettings extends GuiWindow {
     private static final String KEY = "gui.psitweaks.autonomous_caster.";
@@ -27,13 +34,17 @@ public class GuiAutonomousCasterSettings extends GuiWindow {
     private final GuiTextField intervalField;
     private final GuiTextField yawField;
     private final GuiTextField pitchField;
+    private boolean pinned;
 
     public GuiAutonomousCasterSettings(GuiAutonomousCaster gui, int x, int y, AutonomousCasterBlockEntity tile) {
-        super(gui, x, y, WIDTH, HEIGHT, SelectedWindowData.WindowType.UNSPECIFIED);
+        // Mekanism の WindowType は列挙で足せないので、位置とピン留めは GuiWindow の外で覚える
+        super(gui, openX(gui, x), openY(gui, y), WIDTH, HEIGHT, SelectedWindowData.WindowType.UNSPECIFIED);
         this.parent = gui;
         this.tile = tile;
+        this.pinned = wasPinned();
         // 設定を変えながら機械のスロットや運転画面のボタンも触れるようにする
         interactionStrategy = InteractionStrategy.ALL;
+        addChild(new GuiPinButton(gui, relativeX + 16, relativeY + 6, this));
 
         // 選択中の弾・手に持つスロット
         button(6, 18, 10, 12, () -> Component.literal("<"),
@@ -75,6 +86,52 @@ public class GuiAutonomousCasterSettings extends GuiWindow {
         button(126, 56, 32, 12, () -> Component.translatable(KEY + "cast_now"),
                 () -> parent.send(Action.CAST_NOW, 0))
                 .setTooltip(Tooltip.create(Component.translatable(KEY + "cast_now.tooltip")));
+    }
+
+    private static WindowPosition savedPosition() {
+        return PsitweaksClientConfig.CLIENT.autonomousCasterSettingsWindow;
+    }
+
+    static boolean wasPinned() {
+        return savedPosition().pinned.get();
+    }
+
+    /** 覚えた位置。画面からはみ出す分は、Mekanism と同じく画面の端まで寄せる。 */
+    private static int openX(IGuiWrapper gui, int defaultX) {
+        int x = savedPosition().x.get();
+        if (x == WindowPosition.UNSET) {
+            return defaultX;
+        }
+        return Mth.clamp(x, -gui.getGuiLeft(), Minecraft.getInstance().getWindow().getGuiScaledWidth() - gui.getGuiLeft() - WIDTH);
+    }
+
+    private static int openY(IGuiWrapper gui, int defaultY) {
+        int y = savedPosition().y.get();
+        if (y == WindowPosition.UNSET) {
+            return defaultY;
+        }
+        return Mth.clamp(y, -gui.getGuiTop(), Minecraft.getInstance().getWindow().getGuiScaledHeight() - gui.getGuiTop() - HEIGHT);
+    }
+
+    @Override
+    public void togglePinned() {
+        pinned = !pinned;
+    }
+
+    @Override
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        savedPosition().save(relativeX, relativeY, pinned);
+    }
+
+    @Override
+    protected int getTitlePadStart() {
+        return 14 + GuiPinButton.WIDTH;
     }
 
     private MekanismButton button(int x, int y, int width, int height, Supplier<Component> text, Runnable onClick) {
