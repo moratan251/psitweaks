@@ -9,22 +9,25 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "psi:psimetal"
+      "item": "psitweaks:hypostasis_control_circuit"
     },
     "B": {
-      "item": "psitweaks:alloy_psionic_echo"
+      "item": "psitweaks:cad_assembly_psycheonic_metal"
     },
     "C": {
-      "item": "mekanism:steel_casing"
+      "item": "psitweaks:nano_reactor"
     },
     "D": {
-      "item": "psi:cad_assembly_psimetal"
+      "item": "psitweaks:spellmachinery_casing"
+    },
+    "E": {
+      "item": "mekanism:robit"
     }
   },
   "pattern": [
     "ABA",
     "CDC",
-    "ABA"
+    "AEA"
   ],
   "result": {
     "count": 1,

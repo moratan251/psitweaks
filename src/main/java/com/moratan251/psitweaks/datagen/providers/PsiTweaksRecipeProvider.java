@@ -21,7 +21,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import vazkii.psi.common.item.base.ModCADComponents;
 import vazkii.psi.common.item.base.ModItems;
 
 public class PsiTweaksRecipeProvider implements DataProvider {
@@ -313,12 +312,13 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 ),
                 PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get(), 1));
         recipe(recipes, "autonomous_caster", shaped(
-                List.of("ABA", "CDC", "ABA"),
+                List.of("ABA", "CDC", "AEA"),
                 Map.of(
-                        'A', ingredientItem(ModItems.psimetal.get()),
-                        'B', ingredientItem(PsitweaksItems.ALLOY_PSIONIC_ECHO),
-                        'C', ingredientItem(MekanismBlocks.STEEL_CASING),
-                        'D', ingredientItem(ModCADComponents.cadAssemblyPsimetal.get())
+                        'A', ingredientItem(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT),
+                        'B', ingredientItem(PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL),
+                        'C', ingredientItem(PsitweaksItems.NANO_REACTOR),
+                        'D', ingredientItem(PsitweaksBlocks.SPELLMACHINERY_CASING),
+                        'E', ingredientItem(MekanismItems.ROBIT)
                 ),
                 PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.get(), 1));
         recipe(recipes, "transcendent_universal_cable", shaped("redstone",
