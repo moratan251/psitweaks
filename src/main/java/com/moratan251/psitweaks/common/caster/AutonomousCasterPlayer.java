@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
@@ -116,9 +117,24 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
     @Override
     @Nullable
     public PlayerTeam getTeam() {
-        AutonomousCasterHost current = host;
-        Optional<String> owner = current == null ? Optional.empty() : current.ownerName();
+        Optional<String> owner = ownerName();
         return owner.isPresent() ? level().getScoreboard().getPlayersTeam(owner.get()) : super.getTeam();
+    }
+
+    /** 機械の所有者の名前。チームを引くのと、作動式: 仮装行列の分身が名乗るのに使う。所有者が不明なら空。 */
+    public Optional<String> ownerName() {
+        AutonomousCasterHost current = host;
+        return current == null ? Optional.empty() : current.ownerName();
+    }
+
+    /**
+     * 機械から外れた後は、手と防具の枠に物を受け取らない。Trick: Break Block などは壊す間だけ手を内蔵 CAD に持ち替え、
+     * 終わってから元の物を戻すので、壊したのが機械自身だと、機械のアイテムと一緒に落ちた物の写しがここへ戻ってくる。
+     * 遅延中の術式がその写しを使えないよう、内蔵 CAD 以外は空にする。
+     */
+    @Override
+    public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
+        super.setItemSlot(slot, isAttached() || VirtualCad.isVirtualCad(stack) ? stack : ItemStack.EMPTY);
     }
 
     /** ワールドスポーン周辺の安全地点探索を省く。位置は詠唱前に必ず設定し直す。 */

@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.gametest;
 
+import com.moratan251.psitweaks.Psitweaks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.PsiAPI;
@@ -98,6 +99,18 @@ final class AutonomousCasterTestSpells {
         return bullet;
     }
 
+    /** 「取得子: 詠唱機位置」の位置を Trick: Break Block で壊す術式。機械が自分自身を壊す。Mekanism が必要。 */
+    static ItemStack breakMachineBullet() {
+        Spell spell = new Spell();
+        spell.name = "autonomous_caster_break_machine";
+        SpellPiece position = piece(spell, Psitweaks.MOD_ID, "selector_autonomous_caster_position");
+        SpellPiece breakBlock = piece(spell, "trick_break_block");
+        connect(breakBlock, SpellParam.GENERIC_NAME_POSITION, SpellParam.Side.LEFT);
+        place(spell, position, 3, 4);
+        place(spell, breakBlock, 4, 4);
+        return bullet(spell);
+    }
+
     /** Trick: Russian Roulette で選択スロットをランダムに選び直す術式。 */
     static ItemStack russianRouletteBullet() {
         Spell spell = new Spell();
@@ -127,7 +140,11 @@ final class AutonomousCasterTestSpells {
     }
 
     private static SpellPiece piece(Spell spell, String id) {
-        return PsiAPI.SPELL_PIECE_REGISTRY.get(ResourceLocation.fromNamespaceAndPath("psi", id)).create(spell);
+        return piece(spell, "psi", id);
+    }
+
+    private static SpellPiece piece(Spell spell, String namespace, String id) {
+        return PsiAPI.SPELL_PIECE_REGISTRY.get(ResourceLocation.fromNamespaceAndPath(namespace, id)).create(spell);
     }
 
     private static void connect(SpellPiece piece, String param, SpellParam.Side side) {

@@ -9,7 +9,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 
-/** Turns mobs that go for a Trick: Parade caster onto the lookalike instead. */
+/** Turns mobs that go for a Trick: Parade caster (or the placer of an autonomous caster that cast it) onto the lookalike. */
 @EventBusSubscriber(modid = Psitweaks.MOD_ID)
 public final class ParadeHandler {
     private ParadeHandler() {

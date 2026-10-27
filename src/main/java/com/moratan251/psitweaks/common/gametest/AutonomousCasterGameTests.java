@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
@@ -50,9 +51,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -443,6 +446,118 @@ public final class AutonomousCasterGameTests {
         }
     }
 
+    /**
+     * 専用 Caster が出す分身は、機械の所有者の姿と名前で機械の手持ちを持つ。頭の内蔵 CAD は写さず、Trick: Break Block が
+     * 手を内蔵 CAD に持ち替えている間も写さない。分身の持ち主は機械ごとの内部キーのまま（所有者本人を隠さない）。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void paradeDecoyOfTheDedicatedCasterLooksLikeTheMachineOwner(GameTestHelper helper) {
+        UUID owner = UUID.randomUUID();
+        StubHost host = new StubHost();
+        host.ownerName = "psitweaks_owner";
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner, host);
+        AutonomousCasterPlayer ownerless = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, new StubHost());
+        ItemStack cad = VirtualCad.rebuild(helper.getLevel().registryAccess(), ItemStack.EMPTY, ItemStack.EMPTY);
+        caster.getInventory().setItem(AutonomousCasterPlayer.CAD_SLOT, cad);
+        caster.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        EntityParadeDecoy decoy = new EntityParadeDecoy(helper.getLevel(), at);
+        EntityParadeDecoy anonymous = new EntityParadeDecoy(helper.getLevel(), at);
+        boolean ticking = false;
+        try {
+            decoy.configure(caster, 3, 200, 0xFFFFFF);
+            helper.assertTrue(decoy.getItemBySlot(EquipmentSlot.HEAD).isEmpty(), "The decoy wears the internal CAD");
+            helper.assertTrue(decoy.getMainHandItem().is(Items.IRON_SWORD), "The decoy does not hold the machine's item");
+            helper.assertTrue(decoy.getCustomName() != null && "psitweaks_owner".equals(decoy.getCustomName().getString()),
+                    "The decoy is not named after the machine owner: " + decoy.getCustomName());
+            helper.assertTrue(owner.equals(decoy.getLookUUID()), "The decoy does not wear the machine owner's skin");
+            helper.assertTrue(caster.casterKey().equals(decoy.getOwnerUUID()), "The decoy is not kept by the machine's key");
+
+            anonymous.configure(ownerless, 3, 200, 0xFFFFFF);
+            helper.assertTrue(anonymous.getCustomName() == null && ownerless.casterKey().equals(anonymous.getLookUUID()),
+                    "The decoy of an ownerless machine took a name or someone's skin");
+
+            // 分身は毎 tick 持ち主の装備を写し直す。
+            caster.setItemInHand(InteractionHand.MAIN_HAND, cad);
+            helper.getLevel().addFreshEntity(decoy);
+            ticking = true;
+            helper.runAfterDelay(2, () -> {
+                try {
+                    helper.assertTrue(decoy.isAlive() && decoy.getMainHandItem().isEmpty()
+                                    && decoy.getItemBySlot(EquipmentSlot.HEAD).isEmpty(),
+                            "The decoy copied the internal CAD held while breaking a block");
+                    helper.succeed();
+                } finally {
+                    caster.detach();
+                    decoy.discard();
+                }
+            });
+        } finally {
+            ownerless.detach();
+            anonymous.discard();
+            if (!ticking) {
+                caster.detach();
+                decoy.discard();
+            }
+        }
+    }
+
+    /**
+     * 機械から外れた専用 Caster は、手と防具の枠に物を受け取らない。機械自身を壊した Trick: Break Block が持ち替えを
+     * 戻しても、機械のアイテムと一緒に落ちた物の写しが残らない。内蔵 CAD への持ち替えだけは受け取る。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void aDetachedCasterTakesNothingBackIntoItsHands(GameTestHelper helper) {
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, new StubHost());
+        ItemStack cad = VirtualCad.rebuild(helper.getLevel().registryAccess(), ItemStack.EMPTY, ItemStack.EMPTY);
+        try {
+            caster.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+            helper.assertTrue(caster.getMainHandItem().is(Items.IRON_SWORD), "An attached caster could not hold an item");
+            caster.detach();
+            caster.setItemInHand(InteractionHand.MAIN_HAND, cad);
+            helper.assertTrue(caster.getMainHandItem() == cad, "A detached caster could not take the internal CAD in hand");
+            caster.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+            caster.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.BREAD));
+            caster.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
+            helper.assertTrue(caster.getMainHandItem().isEmpty() && caster.getOffhandItem().isEmpty()
+                            && caster.getItemBySlot(EquipmentSlot.CHEST).isEmpty(),
+                    "A detached caster took items back into its hands");
+            helper.succeed();
+        } finally {
+            caster.detach();
+        }
+    }
+
+    /** 機械の外へ出た内蔵 CAD は、プレイヤーの持ち物に入ると消える。プレイヤーの CAD と専用 Caster の内蔵 CAD は残る。 */
+    @GameTest(template = TEMPLATE)
+    public static void anEscapedInternalCadVanishesFromAPlayersInventory(GameTestHelper helper) {
+        HolderLookup.Provider registries = helper.getLevel().registryAccess();
+        FakePlayer player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "[psitweaks_test]"));
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, new StubHost());
+        try {
+            ItemStack escaped = VirtualCad.rebuild(registries, ItemStack.EMPTY, ItemStack.EMPTY);
+            player.getInventory().setItem(0, escaped);
+            escaped.inventoryTick(helper.getLevel(), player, 0, true);
+            helper.assertTrue(escaped.isEmpty() && player.getInventory().getItem(0).isEmpty(),
+                    "An internal CAD stayed in a player's inventory");
+
+            ItemStack assembly = new ItemStack(ModCADComponents.cadAssemblyIron.get());
+            ItemStack playerCad = ItemCAD.makeCADWithAssembly(registries, assembly, List.of(assembly,
+                    new ItemStack(ModCADComponents.cadCoreBasic.get()), new ItemStack(ModCADComponents.cadSocketBasic.get())));
+            playerCad.inventoryTick(helper.getLevel(), player, 1, false);
+            helper.assertTrue(!playerCad.isEmpty(), "A player's own CAD vanished");
+
+            ItemStack kept = VirtualCad.rebuild(registries, ItemStack.EMPTY, ItemStack.EMPTY);
+            caster.getInventory().setItem(AutonomousCasterPlayer.CAD_SLOT, kept);
+            kept.inventoryTick(helper.getLevel(), caster, AutonomousCasterPlayer.CAD_SLOT, false);
+            helper.assertTrue(!kept.isEmpty(), "The dedicated caster lost its internal CAD");
+            helper.succeed();
+        } finally {
+            caster.detach();
+        }
+    }
+
     @GameTest(template = TEMPLATE)
     public static void massHarvestDropsAtTheFocalPointOnceTheMachineIsGone(GameTestHelper helper) throws SpellRuntimeException {
         StubHost host = new StubHost();
@@ -717,6 +832,47 @@ public final class AutonomousCasterGameTests {
         });
     }
 
+    /**
+     * 機械の分身は設置者の代わりに敵を引きつける。設置者を狙う敵も、狙う相手のいない敵対 mob も分身へ向かい、中立の mob は
+     * 挑発しない。設置者自身の分身ではないので、設置者は分身に隠れた扱いにならない。
+     */
+    @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH)
+    public static void paradeDecoyOfTheMachineDrawsMobsInItsPlacersStead(GameTestHelper helper) {
+        FakePlayer owner = onlineOwner(helper, new Vec3(4.5, 1.0, 4.5));
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), new StubHost());
+        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0, 0.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        Husk afterPlacer = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 1.0, 4.5));
+        Husk idle = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(4.5, 1.0, 1.5));
+        ZombifiedPiglin neutral = helper.spawnWithNoFreeWill(EntityType.ZOMBIFIED_PIGLIN, new Vec3(3.5, 1.0, 0.5));
+        EntityParadeDecoy decoy = null;
+        try {
+            afterPlacer.setTarget(owner);
+            helper.assertTrue(afterPlacer.getTarget() == owner, "The husk did not go for the placer to begin with");
+            decoy = Parades.conjure(helper.getLevel(), caster, helper.absoluteVec(new Vec3(2.5, 1.0, 2.5)), 3, 200);
+            helper.assertTrue(afterPlacer.getTarget() == decoy, "A mob after the placer did not turn to the machine's lookalike");
+            helper.assertTrue(idle.getTarget() == decoy, "A hostile mob with no target did not notice the machine's lookalike");
+            helper.assertTrue(neutral.getTarget() == null, "The machine's lookalike provoked a neutral mob");
+            afterPlacer.setTarget(owner);
+            helper.assertTrue(afterPlacer.getTarget() == decoy, "A mob that picks the placer again did not get the lookalike");
+            helper.assertTrue(Parades.activeDecoy(owner) == null, "The placer counts as hiding behind the machine's lookalike");
+            decoy.vanish(false);
+            afterPlacer.setTarget(owner);
+            helper.assertTrue(afterPlacer.getTarget() == owner, "Once the lookalike is gone the placer can be targeted");
+            helper.succeed();
+        } finally {
+            caster.detach();
+            if (decoy != null) {
+                decoy.discard();
+            }
+            // kill() would drop loot that other tests' "nothing dropped" checks could see.
+            afterPlacer.discard();
+            idle.discard();
+            neutral.discard();
+            removeOwner(helper, owner);
+        }
+    }
+
     /** 所有者がオンラインでも、機械が一括破壊したブロックのドロップは本人ではなく機械に届く。 */
     @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH)
     public static void massBlockBreakFromTheMachineIgnoresItsOnlineOwner(GameTestHelper helper) throws SpellRuntimeException {
@@ -983,6 +1139,24 @@ public final class AutonomousCasterGameTests {
             return;
         }
         AutonomousCasterChecks.keepsContentsWhenBroken(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterBreaksItselfWithoutComingBackOrDroppingItsCad(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.breaksItselfWithoutComingBackOrDroppingItsCad(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterMassBreakOfItselfKeepsTheHeldItem(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.massBreakOfItselfKeepsTheHeldItem(helper);
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)

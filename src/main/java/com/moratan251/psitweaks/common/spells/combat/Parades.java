@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -9,7 +11,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
@@ -19,6 +24,8 @@ import net.neoforged.neoforge.common.Tags;
  * for it instead. While it stands, hostile mobs nearby target it rather than the caster, and other players' spells
  * that name the caster directly act on the dummy and achieve nothing; Operator: Entity Position reports where the
  * lookalike is, and other players no longer see the caster at all. The caster and their team mates are unaffected.
+ * Cast from an autonomous caster, the lookalike is the phantom of whoever placed the machine and draws mobs in their
+ * stead; the placer is not hidden and spells that name them are not deflected.
  */
 public final class Parades {
     public static final String ERROR_DISGUISED = "psitweaks.spellerror.parade_disguised";
@@ -52,18 +59,64 @@ public final class Parades {
      * Turns the mobs near the lookalike that are after its owner onto the lookalike. Done when it appears and then
      * every so often, for mobs that pick their target without going through the target change event (a warden's
      * anger, for example).
+     * <p>
+     * An autonomous caster is never in the world, so no mob goes for it: its lookalike stands in for whoever placed the
+     * machine instead. Mobs after the placer turn to it, and hostile mobs with nothing to go for pick it up as they would
+     * pick up a player standing there ({@link #noticesAsAPlayer}).
      */
     public static void lureFrom(ServerLevel level, Player owner, EntityParadeDecoy decoy) {
+        boolean machine = owner instanceof AutonomousCasterPlayer;
+        Player placer = machine ? placerOf(level, decoy) : null;
         for (Mob mob : level.getEntitiesOfClass(Mob.class, decoy.getBoundingBox().inflate(LURE_RANGE), Parades::canBeLured)) {
-            if (mob.getTarget() == owner) {
+            LivingEntity target = mob.getTarget();
+            if (target == owner || (placer != null && target == placer)
+                    || (machine && target == null && noticesAsAPlayer(mob, decoy))) {
                 mob.setTarget(decoy);
             }
             // Brain-driven mobs (piglins, wardens) keep their target in memory; asking for an unregistered memory throws.
-            if (mob.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)
-                    && mob.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) == owner) {
-                mob.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, decoy);
+            if (mob.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)) {
+                LivingEntity remembered = mob.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+                if (remembered == owner || (placer != null && remembered == placer)) {
+                    mob.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, decoy);
+                }
             }
         }
+    }
+
+    /** The player who placed the autonomous caster that conjured this lookalike, while they are in this level. */
+    @Nullable
+    private static Player placerOf(ServerLevel level, EntityParadeDecoy decoy) {
+        UUID look = decoy.getLookUUID();
+        Player placer = look != null ? level.getPlayerByUUID(look) : null;
+        return placer != null && decoy.standsInForPlacer(placer) ? placer : null;
+    }
+
+    /**
+     * Whether a hostile mob would go for the machine's lookalike as it would for a player standing there: within its
+     * follow range and in sight. Neutral mobs (endermen, zombified piglins) are not provoked.
+     */
+    private static boolean noticesAsAPlayer(Mob mob, EntityParadeDecoy decoy) {
+        if (!(mob instanceof Enemy) || mob instanceof NeutralMob) {
+            return false;
+        }
+        double range = Math.min(LURE_RANGE, mob.getAttributeValue(Attributes.FOLLOW_RANGE));
+        return mob.distanceToSqr(decoy) <= range * range && mob.getSensing().hasLineOfSight(decoy);
+    }
+
+    /** The lookalike an autonomous caster of this player conjured nearest to {@code mob}, within reach of it. */
+    @Nullable
+    private static EntityParadeDecoy machineLookalikeOf(Mob mob, Player placer) {
+        EntityParadeDecoy nearest = null;
+        double best = LURE_RANGE * LURE_RANGE;
+        for (EntityParadeDecoy decoy : mob.level().getEntitiesOfClass(EntityParadeDecoy.class, mob.getBoundingBox().inflate(LURE_RANGE),
+                decoy -> decoy.isAlive() && decoy.standsInForPlacer(placer))) {
+            double distance = mob.distanceToSqr(decoy);
+            if (distance <= best) {
+                best = distance;
+                nearest = decoy;
+            }
+        }
+        return nearest;
     }
 
     /** The lookalike standing in for this entity right now, if any. Server side. */
@@ -104,13 +157,19 @@ public final class Parades {
         return !mob.getType().is(Tags.EntityTypes.BOSSES);
     }
 
-    /** The lookalike a mob should go for instead of {@code newTarget}, or null to leave the target alone. */
+    /**
+     * The lookalike a mob should go for instead of {@code newTarget}, or null to leave the target alone: the target's own
+     * lookalike, else one an autonomous caster of theirs conjured nearby.
+     */
     @Nullable
     public static EntityParadeDecoy lureTarget(LivingEntity attacker, @Nullable LivingEntity newTarget) {
         if (!(attacker instanceof Mob mob) || !canBeLured(mob)) {
             return null;
         }
         EntityParadeDecoy decoy = activeDecoy(newTarget);
+        if (decoy == null && newTarget instanceof Player placer && !(placer instanceof AutonomousCasterPlayer)) {
+            decoy = machineLookalikeOf(mob, placer);
+        }
         if (decoy == null || decoy.level() != mob.level() || mob.distanceToSqr(decoy) > LURE_RANGE * LURE_RANGE) {
             return null;
         }

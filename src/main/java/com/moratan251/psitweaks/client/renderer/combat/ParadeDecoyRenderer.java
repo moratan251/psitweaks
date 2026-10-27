@@ -26,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Draws the Trick: Parade lookalike as its owner: the owner's skin (slim or wide arms), armour, held items and name.
+ * An autonomous caster's lookalike wears the skin of whoever placed the machine.
  * The owner sees it as a faint ghost without gear or name, so they can tell it from a real player; it wavers the same
  * way for everyone when it takes a hit.
  */
@@ -90,19 +91,21 @@ public class ParadeDecoyRenderer extends LivingEntityRenderer<EntityParadeDecoy,
         return isOwnerView(entity) || entity.getWaver(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false)) > 0.0F;
     }
 
+    /** The owner, and whoever placed the autonomous caster that conjured it: it is their own lookalike. */
     private static boolean isOwnerView(EntityParadeDecoy entity) {
         Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.player != null && entity.isOwnedBy(minecraft.player);
+        return minecraft.player != null
+                && (entity.isOwnedBy(minecraft.player) || minecraft.player.getUUID().equals(entity.getLookUUID()));
     }
 
     private static PlayerSkin skin(EntityParadeDecoy entity) {
-        UUID owner = entity.getOwnerUUID();
-        if (owner == null) {
+        UUID look = entity.getLookUUID();
+        if (look == null) {
             return DefaultPlayerSkin.get(entity.getUUID());
         }
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
-        PlayerInfo info = connection != null ? connection.getPlayerInfo(owner) : null;
-        return info != null ? info.getSkin() : DefaultPlayerSkin.get(owner);
+        PlayerInfo info = connection != null ? connection.getPlayerInfo(look) : null;
+        return info != null ? info.getSkin() : DefaultPlayerSkin.get(look);
     }
 
     /** A layer drawn only while the lookalike looks solid: no floating armour on the see-through ghost. */

@@ -350,6 +350,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
                 // クールダウン中のパルスは捨てる（レート制限）。手動詠唱だけはクールダウン明けまで待つ。
                 manualCastRequested = false;
                 performCast();
+                if (isRemoved()) {
+                    // 術式が機械自身を壊した。Mekanism の稼働表示の切り替え（setActive）は覚えている元のブロックで
+                    // 置き直すので、残りは何もしない。
+                    return false;
+                }
                 cooldown = AutonomousCasterSettings.clampCastInterval(castInterval);
                 markForSave();
             }
@@ -698,6 +703,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
      * 機械の36スロットと Caster の通常インベントリを突き合わせる。片方だけ変わった側を正とし、両方が同じ種類で変わった場合は
      * 増減を合算する。防具枠（CAD の枠を除く）・オフハンドに入ったものと収まらないアイテムは空きスロットへ移し、
      * それでも残れば前面に落とす。
+     * <p>
+     * Trick: Break Block と作動式: 大規模ブロック破壊は、壊す間だけ手を内蔵 CAD（とその写し）に持ち替え、終わってから
+     * 元の物を戻す。壊したのが機械自身だと持ち替えの途中でここへ来るので、内蔵 CAD を持っている枠は機械側を正として触らない。
      */
     private void reconcileMirror() {
         AutonomousCasterPlayer current = caster;
@@ -736,6 +744,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         IInventorySlot slot = itemSlots.get(index);
         ItemStack machine = slot.getStack();
         ItemStack mirrored = inventory.items.get(index);
+        if (VirtualCad.isVirtualCad(mirrored)) {
+            // 術式が持ち替えている間。持ち替えが戻った後で突き合わせる。
+            return;
+        }
         ItemStack snapshot = mirrorSnapshot[index];
         boolean machineChanged = !ItemStack.matches(machine, snapshot);
         boolean casterChanged = !ItemStack.matches(mirrored, snapshot);
@@ -797,6 +809,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     private void storeOverflow(ItemStack stack) {
+        if (VirtualCad.isVirtualCad(stack)) {
+            // 内蔵 CAD とその写しは機械の外へ出さない。拾うと固定の性能のまま使えてしまう。
+            return;
+        }
         ItemStack remaining = stack;
         for (IInventorySlot slot : itemSlots) {
             if (remaining.isEmpty()) {
@@ -825,7 +841,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     public void blockRemoved() {
         super.blockRemoved();
         if (!isRemote()) {
-            // ドロップ計算の前に、Caster 側の変化を機械のスロットへ戻しておく。
+            // ドロップ計算の前に、Caster 側の変化を機械のスロットへ戻しておく。術式が機械自身を壊した時は、
+            // 詠唱で払った Psi もここで機械に反映する（詠唱の後で書き戻すより先に、回収したアイテムが作られる）。
+            syncCasterPsi();
             reconcileMirror();
         }
     }

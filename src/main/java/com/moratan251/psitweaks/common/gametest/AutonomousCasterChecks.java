@@ -11,6 +11,7 @@ import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Act
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorAutonomousCasterPosition;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import java.util.ArrayList;
@@ -390,6 +391,79 @@ final class AutonomousCasterChecks {
                     "A machine without Psi kept the Psi component");
             helper.succeed();
         });
+    }
+
+    /**
+     * 術式（Trick: Break Block）で機械自身を壊しても、機械は置き直されず、内蔵 CAD は落ちない。選択中のホットバーの物は
+     * 機械のアイテムに入って落ち、詠唱で払った Psi も回収したアイテムに残らない。詠唱の後に稼働表示へ切り替わる、
+     * 休止中の機械で確かめる。
+     */
+    static void breaksItselfWithoutComingBackOrDroppingItsCad(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        int start = 1000;
+        caster.setPsi(start);
+        caster.getBulletSlots().get(0).setStack(AutonomousCasterTestSpells.breakMachineBullet());
+        caster.getItemSlots().get(0).setStack(new ItemStack(Items.IRON_SWORD));
+        caster.getItemSlots().get(20).setStack(new ItemStack(Items.BRICK, 6));
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null && fake.getMainHandItem().is(Items.IRON_SWORD), "The caster does not hold the sword");
+            helper.assertTrue(!caster.getActive(), "The machine is not idle, so the switch to active is not tested");
+            caster.applySetting(Action.CAST_NOW, 0, player(helper));
+            helper.runAfterDelay(4, () -> {
+                ItemStack machine = takeOnlyTheMachineDrop(helper);
+                helper.assertBlockPresent(Blocks.AIR, POS);
+                AttachedItems items = machine.get(MekanismDataComponents.ATTACHED_ITEMS);
+                helper.assertTrue(items != null && items.containers().stream().anyMatch(stack -> stack.is(Items.IRON_SWORD))
+                                && items.containers().stream().anyMatch(stack -> stack.is(Items.BRICK) && stack.getCount() == 6),
+                        "The held sword or the other items were not stored on the machine item");
+                Integer storedPsi = machine.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
+                helper.assertTrue(storedPsi != null && storedPsi > 0 && storedPsi < start,
+                        "The machine item kept " + storedPsi + " Psi; the spell that broke it should have cost some of " + start);
+                helper.assertTrue(!fake.isAttached() && fake.getMainHandItem().isEmpty(),
+                        "The detached caster got a copy of the sword back");
+                helper.succeed();
+            });
+        });
+    }
+
+    /** 作動式: 大規模ブロック破壊で機械自身を壊しても、内蔵 CAD の写しは落ちず、選択中のホットバーの物は機械のアイテムに残る。 */
+    static void massBreakOfItselfKeepsTheHeldItem(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        caster.getItemSlots().get(0).setStack(new ItemStack(Items.IRON_SWORD));
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null && fake.getMainHandItem().is(Items.IRON_SWORD), "The caster does not hold the sword");
+            BlockPos absolute = helper.absolutePos(POS);
+            Vector3 focal = new Vector3(absolute.getX() + 0.5, absolute.getY() + 0.5, absolute.getZ() + 0.5);
+            try {
+                MassBlockBreakScheduler.schedule(fake, helper.getLevel(), focal, 1.0, List.of(absolute),
+                        caster.getVirtualCad().copy(), state -> true);
+            } catch (SpellRuntimeException e) {
+                throw new GameTestAssertException("The mass break could not be scheduled: " + e.getMessage());
+            }
+            helper.runAfterDelay(10, () -> {
+                ItemStack machine = takeOnlyTheMachineDrop(helper);
+                helper.assertBlockPresent(Blocks.AIR, POS);
+                AttachedItems items = machine.get(MekanismDataComponents.ATTACHED_ITEMS);
+                helper.assertTrue(items != null && items.containers().stream().anyMatch(stack -> stack.is(Items.IRON_SWORD)),
+                        "The held sword was not stored on the machine item");
+                helper.assertTrue(fake.getMainHandItem().isEmpty(), "The detached caster got a copy of the sword back");
+                helper.succeed();
+            });
+        });
+    }
+
+    /** 機械の周りに落ちた物が機械のアイテム1つだけで、内蔵 CAD が落ちていないことを確かめ、機械のアイテムを返す。 */
+    private static ItemStack takeOnlyTheMachineDrop(GameTestHelper helper) {
+        List<ItemEntity> drops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(POS)).inflate(3));
+        List<ItemStack> stacks = drops.stream().map(drop -> drop.getItem().copy()).toList();
+        // 同時に動く他のテストの「何も落ちていない」確認に掛からないよう、確かめる前に片付ける。
+        drops.forEach(Entity::discard);
+        helper.assertTrue(stacks.stream().noneMatch(stack -> stack.getItem() instanceof ICAD), "A CAD was dropped: " + stacks);
+        helper.assertTrue(stacks.size() == 1 && stacks.get(0).is(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.asItem()),
+                "Breaking the machine dropped something else than the machine: " + stacks);
+        return stacks.get(0);
     }
 
     /** 術式弾スロットが8個だった頃に保存・回収した機械を読んでも、中身が元のスロットに戻る。 */
