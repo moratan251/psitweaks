@@ -78,7 +78,8 @@ public final class ProgrammerOverlayInputGuard {
 
     private static boolean isPsitweaksOverlayActive(GuiProgrammer screen) {
         return SpellPieceModeButtonOverlay.isActive(screen)
-                || EditableStringInputOverlay.isActive(screen);
+                || EditableStringInputOverlay.isActive(screen)
+                || SpellNameFromTrickController.isPicking(screen);
     }
 
     private static boolean isMouseOverPsiPanel(GuiProgrammer screen, double mouseX, double mouseY) {

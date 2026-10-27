@@ -7,6 +7,7 @@
   "client": [
     "client.GuiButtonSpellPieceBookmarkMixin",
     "client.GuiProgrammerOverlayInputMixin",
+    "client.GuiProgrammerSpellNameSyncMixin",
     "client.PiecePanelWidgetBookmarkMixin",
     "client.PiecePanelWidgetEnglishSearchMixin"
   ],

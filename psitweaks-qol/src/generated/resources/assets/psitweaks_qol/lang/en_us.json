@@ -1,6 +1,11 @@
 {
   "gui.psitweaks_qol.spell_programmer.bookmarks.show": "Show only spell pieces bookmarked with Ctrl + click",
   "gui.psitweaks_qol.spell_programmer.bookmarks.show_all": "Show all spell pieces",
+  "psitweaks_qol.gui.spell_name_from_trick": "Name Spell After Trick",
+  "psitweaks_qol.gui.spell_name_from_trick.multiple": "Then click the trick to take the name from",
+  "psitweaks_qol.gui.spell_name_from_trick.none": "This spell has no tricks",
+  "psitweaks_qol.gui.spell_name_from_trick.pick": "Click a trick to name the spell (Esc: cancel)",
+  "psitweaks_qol.gui.spell_name_from_trick.single": "Renames the spell to \"%s\"",
   "psitweaks_qol.gui.spell_piece_mode": "Mode: %s",
   "psitweaks_qol.gui.spell_piece_mode.title": "Mode Select",
   "psitweaks_qol.gui.string_constant_input.button.clear_all": "Clear",

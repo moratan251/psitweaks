@@ -1,6 +1,11 @@
 {
   "gui.psitweaks_qol.spell_programmer.bookmarks.show": "ブックマーク (Ctrl + クリック) したピースのみ表示",
   "gui.psitweaks_qol.spell_programmer.bookmarks.show_all": "すべてのピースを表示",
+  "psitweaks_qol.gui.spell_name_from_trick": "作動式の名前を術式名にする",
+  "psitweaks_qol.gui.spell_name_from_trick.multiple": "押したあと、名前にする作動式をクリックで選びます",
+  "psitweaks_qol.gui.spell_name_from_trick.none": "この術式には作動式がありません",
+  "psitweaks_qol.gui.spell_name_from_trick.pick": "術式名にする作動式をクリック (Esc: 中止)",
+  "psitweaks_qol.gui.spell_name_from_trick.single": "術式名を「%s」にします",
   "psitweaks_qol.gui.spell_piece_mode": "モード: %s",
   "psitweaks_qol.gui.spell_piece_mode.title": "モード選択",
   "psitweaks_qol.gui.string_constant_input.button.clear_all": "全削除",

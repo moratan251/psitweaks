@@ -5,6 +5,7 @@ import com.moratan251.psitweaksqol.client.gui.EditableStringInputOverlay;
 import com.moratan251.psitweaksqol.client.gui.PieceBookmarkManager;
 import com.moratan251.psitweaksqol.client.gui.ProgrammerOverlayInputGuard;
 import com.moratan251.psitweaksqol.client.gui.SpellGridMultiSelectionController;
+import com.moratan251.psitweaksqol.client.gui.SpellNameFromTrickController;
 import com.moratan251.psitweaksqol.client.gui.SpellPieceModeButtonOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.bus.api.IEventBus;
@@ -17,6 +18,7 @@ public final class PsitweaksQolClientGuiEvents {
     }
 
     public static void register(IEventBus eventBus) {
+        eventBus.addListener(PsitweaksQolClientGuiEvents::onScreenInitPost);
         eventBus.addListener(PsitweaksQolClientGuiEvents::onScreenRenderPost);
         eventBus.addListener(PsitweaksQolClientGuiEvents::onKeyPressedPre);
         eventBus.addListener(PsitweaksQolClientGuiEvents::onCharacterTypedPre);
@@ -28,9 +30,16 @@ public final class PsitweaksQolClientGuiEvents {
         eventBus.addListener(PsitweaksQolClientGuiEvents::onScreenClosing);
     }
 
+    private static void onScreenInitPost(ScreenEvent.Init.Post event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            SpellNameFromTrickController.onScreenInit(screen, event::addListener);
+        }
+    }
+
     private static void onScreenRenderPost(ScreenEvent.Render.Post event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellGridMultiSelectionController.render(screen, event.getGuiGraphics());
+            SpellNameFromTrickController.render(screen, event.getGuiGraphics(), event.getMouseX(), event.getMouseY());
             SpellPieceModeButtonOverlay.render(screen, event.getGuiGraphics(), event.getMouseX(), event.getMouseY());
             EditableStringInputOverlay.render(screen, event.getGuiGraphics());
         }
@@ -38,7 +47,8 @@ public final class PsitweaksQolClientGuiEvents {
 
     private static void onKeyPressedPre(ScreenEvent.KeyPressed.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && (SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
+                && (SpellNameFromTrickController.handleKeyPressedPre(screen, event.getKeyCode())
+                || SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
                 || EditableStringInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())
                 || SpellGridMultiSelectionController.handleKeyPressedPre(screen, event.getKeyCode()))) {
             event.setCanceled(true);
@@ -60,10 +70,16 @@ public final class PsitweaksQolClientGuiEvents {
                     event.getMouseY(),
                     event.getButton());
             SpellGridMultiSelectionController.prepareMousePressed(event.getButton());
-            boolean handled = handlePieceBookmarkClick(screen,
+            boolean handled = SpellNameFromTrickController.handleMousePressedPre(screen,
                     event.getMouseX(),
                     event.getMouseY(),
                     event.getButton());
+            if (!handled) {
+                handled = handlePieceBookmarkClick(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton());
+            }
             if (!handled) {
                 handled = SpellPieceModeButtonOverlay.handleMousePressedPre(screen,
                     event.getMouseX(),
@@ -187,6 +203,7 @@ public final class PsitweaksQolClientGuiEvents {
     private static void onScreenClosing(ScreenEvent.Closing event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellPieceModeButtonOverlay.deactivate();
+            SpellNameFromTrickController.deactivate();
             EditableStringInputOverlay.deactivate(screen);
             SpellGridMultiSelectionController.resetScreenState();
             ProgrammerOverlayInputGuard.reset();

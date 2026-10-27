@@ -71,6 +71,26 @@ public class PsitweaksQolLanguageProvider implements DataProvider {
             case "ja_jp" -> "貼付";
             default -> "Paste";
         });
+        root.addProperty("psitweaks_qol.gui.spell_name_from_trick", switch (locale) {
+            case "ja_jp" -> "作動式の名前を術式名にする";
+            default -> "Name Spell After Trick";
+        });
+        root.addProperty("psitweaks_qol.gui.spell_name_from_trick.single", switch (locale) {
+            case "ja_jp" -> "術式名を「%s」にします";
+            default -> "Renames the spell to \"%s\"";
+        });
+        root.addProperty("psitweaks_qol.gui.spell_name_from_trick.multiple", switch (locale) {
+            case "ja_jp" -> "押したあと、名前にする作動式をクリックで選びます";
+            default -> "Then click the trick to take the name from";
+        });
+        root.addProperty("psitweaks_qol.gui.spell_name_from_trick.none", switch (locale) {
+            case "ja_jp" -> "この術式には作動式がありません";
+            default -> "This spell has no tricks";
+        });
+        root.addProperty("psitweaks_qol.gui.spell_name_from_trick.pick", switch (locale) {
+            case "ja_jp" -> "術式名にする作動式をクリック (Esc: 中止)";
+            default -> "Click a trick to name the spell (Esc: cancel)";
+        });
 
         return root;
     }
