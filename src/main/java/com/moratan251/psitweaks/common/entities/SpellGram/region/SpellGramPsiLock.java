@@ -39,7 +39,7 @@ public final class SpellGramPsiLock {
 
     public static int lockOf(Player player) {
         if (player.level().isClientSide) {
-            return clientLock;
+            return player.isLocalPlayer() ? clientLock : 0;
         }
         return LOCKS.getOrDefault(player.getUUID(), 0);
     }
