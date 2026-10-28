@@ -384,8 +384,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Error: The target is not your own SpellGram object.";
         });
         root.addProperty("psitweaks.spellgram_region.replaced", switch (locale) {
-            case "ja_jp" -> "置ける数を超えたため、いちばん古い魔法式を解きました";
-            default -> "Too many SpellGram regions: the oldest one was released";
+            case "ja_jp" -> "置ける数か枠を超えたため、いちばん古い魔法式を解きました";
+            default -> "No room for another SpellGram region: the oldest one was released";
         });
         root.addProperty("psitweaks.spellgram_region.recalled", switch (locale) {
             case "ja_jp" -> "魔法式を %s 個回収しました";

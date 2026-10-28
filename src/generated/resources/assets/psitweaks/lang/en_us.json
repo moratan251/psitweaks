@@ -1107,7 +1107,7 @@
   "psitweaks.spellgram_region.load": "Load %s/%s",
   "psitweaks.spellgram_region.recalled": "Recalled %s SpellGram region(s)",
   "psitweaks.spellgram_region.recalled_none": "You have no SpellGram regions to recall",
-  "psitweaks.spellgram_region.replaced": "Too many SpellGram regions: the oldest one was released",
+  "psitweaks.spellgram_region.replaced": "No room for another SpellGram region: the oldest one was released",
   "psitweaks.spellparam.count": "Count",
   "psitweaks.spellparam.element1": "Element 1",
   "psitweaks.spellparam.element2": "Element 2",
