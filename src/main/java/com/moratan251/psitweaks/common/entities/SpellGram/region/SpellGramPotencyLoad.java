@@ -33,7 +33,7 @@ public final class SpellGramPotencyLoad {
 
     public static int loadOf(Player player) {
         if (player.level().isClientSide) {
-            return clientLoad;
+            return player.isLocalPlayer() ? clientLoad : 0;
         }
         return LOADS.getOrDefault(player.getUUID(), 0);
     }
