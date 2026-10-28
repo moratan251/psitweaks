@@ -1173,7 +1173,7 @@
   "psitweaks.spellerror.safety_insufficient_psi": "安全装置が作動しました: Psiが不足しています",
   "psitweaks.spellgram_region.recalled": "魔法式を %s 個回収しました",
   "psitweaks.spellgram_region.recalled_none": "回収する魔法式がありません",
-  "psitweaks.spellgram_region.replaced": "置ける数を超えたため、いちばん古い魔法式を解きました",
+  "psitweaks.spellgram_region.replaced": "置ける数か枠を超えたため、いちばん古い魔法式を解きました",
   "psitweaks.spellparam.count": "数",
   "psitweaks.spellparam.element1": "要素1",
   "psitweaks.spellparam.element2": "要素2",
