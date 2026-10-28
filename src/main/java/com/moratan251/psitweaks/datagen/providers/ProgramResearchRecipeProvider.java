@@ -159,6 +159,13 @@ public final class ProgramResearchRecipeProvider {
                 input(Items.TNT, 16)
         ), PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK, 10_000L, 1_200);
 
+        research(recipes, "program_mass_harvest", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(ModItems.psigem.get(), 16),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16),
+                input(Items.HAY_BLOCK, 16)
+        ), PsitweaksItems.PROGRAM_MASS_HARVEST, 10_000L, 1_200);
+
         research(recipes, "program_idea_storage", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(PsitweaksItems.QUANTIZED_PLATE, 16),

@@ -84,6 +84,7 @@ final class PsitweaksDatagenItems {
             item("program_switch_flex", "Program: Flexible Switch", "プログラム: 柔軟スイッチ", "program_trick_switch_flex"),
             item("program_material_mutation", "Program: Material Mutation", "プログラム: 物質変成", "program_trick_material_mutation"),
             item("program_mass_block_break", "Program: Mass Block Break", "プログラム: 大規模ブロック破壊", "program_trick_mass_block_break"),
+            item("program_mass_harvest", "Program: Mass Harvest", "プログラム: 大規模収穫", "program_trick_mass_harvest"),
             item("program_idea_storage", "Program: Ideaspace Storage", "プログラム: イデアストレージ", "program_trick_idea_storage"),
             item("program_chain_lightning", "Program: Chain Lightning", "プログラム: 連鎖電光", "program_trick_chain_lightning"),
             item("program_mine_genesis", "Program: Mine Genesis", "プログラム: 地雷原", "program_trick_mine_genesis"),

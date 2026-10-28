@@ -43,6 +43,7 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "switch_flex", "trick_switch_flex", PsitweaksItems.PROGRAM_SWITCH_FLEX);
         spellUnlock(entries, "material_mutation", "trick_material_mutation", PsitweaksItems.PROGRAM_MATERIAL_MUTATION);
         spellUnlock(entries, "mass_block_break", "trick_mass_block_break", PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK);
+        spellUnlock(entries, "mass_harvest", "trick_mass_harvest", PsitweaksItems.PROGRAM_MASS_HARVEST);
         spellUnlock(entries, "chain_lightning", "trick_chain_lightning", PsitweaksItems.PROGRAM_CHAIN_LIGHTNING);
         spellUnlock(entries, "mine_genesis", "trick_mine_genesis", PsitweaksItems.PROGRAM_MINE_GENESIS);
         spellUnlock(entries, "dancing_blades", "trick_dancing_blades", PsitweaksItems.PROGRAM_DANCING_BLADES);

@@ -108,6 +108,7 @@ public final class SpellUnlockHandler {
             definition("switch_flex", "trick_switch_flex", "program_switch_flex"),
             definition("material_mutation", "trick_material_mutation", "program_material_mutation"),
             definition("mass_block_break", "trick_mass_block_break", "program_mass_block_break"),
+            definition("mass_harvest", "trick_mass_harvest", "program_mass_harvest"),
             definition("chain_lightning", "trick_chain_lightning", "program_chain_lightning"),
             definition("mine_genesis", "trick_mine_genesis", "program_mine_genesis"),
             definition("dancing_blades", "trick_dancing_blades", "program_dancing_blades"),

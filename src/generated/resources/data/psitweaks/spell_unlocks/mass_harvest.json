@@ -1,0 +1,6 @@
+{
+  "command_id": "mass_harvest",
+  "piece": "psitweaks:trick_mass_harvest",
+  "unlock_item": "psitweaks:program_mass_harvest",
+  "unlock_tag": "psitweaks.unlock.trick_mass_harvest"
+}

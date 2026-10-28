@@ -4,7 +4,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.handler.SpellUnlockHandler.SpellUnlockDefinition;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.network.MessageSpellUnlockSync;
 import com.moratan251.psitweaks.common.recipe.EnchantedBookIngredient;
 import com.moratan251.psitweaks.common.recipe.ProgramResearchRecipe;
@@ -27,12 +29,13 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.common.core.handler.PlayerDataHandler;
 import vazkii.psi.common.item.base.ModItems;
 
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SpellUnlockGameTests {
-    private static final int SHIPPED_DEFINITIONS = 32;
+    private static final int SHIPPED_DEFINITIONS = 33;
     /** The combat tricks unlocked by research (Parade included); Kamaitachi is free. */
     private static final List<String> COMBAT_UNLOCKS = List.of(
             "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "gravity_collapse", "parade");
@@ -114,6 +117,42 @@ public final class SpellUnlockGameTests {
                     .is(BuiltInRegistries.ITEM.get(Psitweaks.location("program_" + id))), "No recipe " + recipe);
         }
         helper.assertTrue(isNotUnlockDefinition(player, "kamaitachi"), "Kamaitachi must stay free");
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void massHarvestIsResearchedWhileTheRestOfItsGroupStaysFree(GameTestHelper helper) throws Exception {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "unlock-harvest"));
+        var data = PlayerDataHandler.get(player);
+        var group = Psitweaks.location("trick_harvest");
+        var massHarvest = Psitweaks.location("trick_mass_harvest");
+        helper.assertTrue(data.isPieceGroupUnlocked(group, massHarvest) == !PsitweaksConfig.COMMON.requireSpellUnlocks.get(),
+                "Mass Harvest must start locked");
+        // Harvest and Harvest Sequence share the group but stay free.
+        for (String free : List.of("trick_harvest", "trick_harvest_sequence")) {
+            helper.assertTrue(data.isPieceGroupUnlocked(group, Psitweaks.location(free)), free + " must stay free");
+        }
+        helper.assertTrue(run(player, "mass_harvest grant @s") == 1, "Mass Harvest must be grantable");
+        helper.assertTrue(data.isPieceGroupUnlocked(group, massHarvest), "Granting did not unlock Mass Harvest");
+
+        var hayBale = new ItemStack(Items.HAY_BLOCK);
+        var recipes = helper.getLevel().getRecipeManager();
+        if (MekanismCompat.isMekanismLoaded()) {
+            // Mass Block Break's research with its TNT swapped for hay bales.
+            var holder = recipes.byKey(Psitweaks.location("program_research/program_mass_harvest"));
+            helper.assertTrue(holder.isPresent() && holder.get().value() instanceof ProgramResearchRecipe, "Mass Harvest research missing");
+            var research = (ProgramResearchRecipe) holder.get().value();
+            helper.assertTrue(research.getOutput().is(PsitweaksItems.PROGRAM_MASS_HARVEST.get()), "Research makes the wrong program");
+            helper.assertTrue(research.getInputs().stream().anyMatch(input -> input.ingredient().test(hayBale) && input.count() == 16)
+                    && research.getInputs().stream().noneMatch(input -> input.ingredient().test(new ItemStack(Items.TNT))),
+                    "Research must take 16 hay bales instead of TNT: " + research.getInputs());
+        } else {
+            var holder = recipes.byKey(Psitweaks.location("fallback/program_mass_harvest"));
+            helper.assertTrue(holder.isPresent() && holder.get().value().getResultItem(helper.getLevel().registryAccess())
+                    .is(PsitweaksItems.PROGRAM_MASS_HARVEST.get()), "Mass Harvest fallback recipe missing");
+            helper.assertTrue(holder.get().value().getIngredients().stream().anyMatch(ingredient -> ingredient.test(hayBale)),
+                    "Fallback recipe must take hay bales");
+        }
         helper.succeed();
     }
 

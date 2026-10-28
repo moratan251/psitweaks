@@ -309,6 +309,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_SWITCH_FLEX = registerProgram("program_switch_flex", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MATERIAL_MUTATION = registerProgram("program_material_mutation", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MASS_BLOCK_BREAK = registerProgram("program_mass_block_break", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MASS_HARVEST = registerProgram("program_mass_harvest", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_IDEA_STORAGE = registerProgram("program_idea_storage", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CHAIN_LIGHTNING = registerProgram("program_chain_lightning", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MINE_GENESIS = registerProgram("program_mine_genesis", false);

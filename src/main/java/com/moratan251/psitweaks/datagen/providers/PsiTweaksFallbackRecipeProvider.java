@@ -399,6 +399,10 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.TNT, 4),
                 counted(ModItems.psigem.get(), 2),
                 counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_MASS_HARVEST, List.of(
+                counted(Items.HAY_BLOCK, 4),
+                counted(ModItems.psigem.get(), 2),
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_IDEA_STORAGE, List.of(
                 counted(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2),
                 counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
