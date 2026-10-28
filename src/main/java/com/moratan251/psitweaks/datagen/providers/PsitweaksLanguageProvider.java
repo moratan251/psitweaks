@@ -645,6 +645,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Max Regions per Caster", "術者1人あたりの最大数",
                 "How many SpellGram regions one caster can keep at once. Placing more ends the oldest.",
                 "1人の術者が同時に置ける領域型の魔法式オブジェクトの数です。超えると古いものから解けます。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram_region.psi_lock_max_ratio",
+                "Max Locked Psi Ratio", "確保できる Psi の上限 (割合)",
+                "The most of your Psi pool that SpellGram regions may keep locked. Going over ends the oldest region.",
+                "領域型の魔法式オブジェクトに確保できる Psi の合計の上限を、Psi の上限に対する割合で指定します。超える分は古いものから解けます。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram_region.psi_lock_regen_scale",
+                "Regen Slowdown While Locked", "確保中の回復の遅さ",
+                "1 slows Psi regeneration by the share of Psi that is locked; 0 leaves regeneration as is.",
+                "1 で、確保している割合だけ Psi の回復が遅くなります。0 で遅くなりません。");
 
         addConfigLabel(root, "psitweaks.configuration.spells.radiation_injection",
                 "Radiation Injection", "放射線注入");

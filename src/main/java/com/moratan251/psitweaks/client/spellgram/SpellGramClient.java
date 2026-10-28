@@ -11,7 +11,7 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-/** 領域型の魔法式オブジェクト（試作）のクライアント側: 回収キー。初期状態では割り当てない。 */
+/** 領域型の魔法式オブジェクト（試作）のクライアント側: 回収キー（初期状態では割り当てない）と、確保した Psi の表示。 */
 public final class SpellGramClient {
     public static final String KEY_CATEGORY = "key.categories.psitweaks";
     public static final KeyMapping RECALL_KEY = new KeyMapping("key.psitweaks.recall_spellgrams",
@@ -23,6 +23,7 @@ public final class SpellGramClient {
     public static void registerEvents(IEventBus modEventBus) {
         modEventBus.addListener(SpellGramClient::onRegisterKeyMappings);
         NeoForge.EVENT_BUS.addListener(SpellGramClient::onClientTick);
+        SpellGramPsiLockHud.registerEvents();
     }
 
     private static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {

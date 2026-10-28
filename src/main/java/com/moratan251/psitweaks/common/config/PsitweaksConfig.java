@@ -43,6 +43,8 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue spellGramFireDamageMultiplier;
         public final ModConfigSpec.DoubleValue spellGramIceDamageMultiplier;
         public final ModConfigSpec.IntValue spellGramMaxRegions;
+        public final ModConfigSpec.DoubleValue spellGramPsiLockMaxRatio;
+        public final ModConfigSpec.DoubleValue spellGramPsiLockRegenScale;
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ModConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
@@ -344,6 +346,18 @@ public class PsitweaksConfig {
                             "How many SpellGram regions one caster can keep at once; placing more ends the oldest")
                     .translation("psitweaks.configuration.spells.spellgram_region.max_regions")
                     .defineInRange("maxRegions", 4, 1, 16);
+
+            spellGramPsiLockMaxRatio = builder
+                    .comment("領域型の魔法式に確保できる Psi の合計の上限（Psi の上限に対する割合）。超える分は古いものから解ける",
+                            "Most of the Psi pool that SpellGram regions may keep locked; going over ends the oldest")
+                    .translation("psitweaks.configuration.spells.spellgram_region.psi_lock_max_ratio")
+                    .defineInRange("psiLockMaxRatio", 0.75, 0.1, 1.0);
+
+            spellGramPsiLockRegenScale = builder
+                    .comment("Psi を確保している間の回復の遅さ。1 で確保していない割合どおりに遅く、0 で遅くしない",
+                            "How much locked Psi slows regeneration: 1 scales it by the unlocked share, 0 leaves it as is")
+                    .translation("psitweaks.configuration.spells.spellgram_region.psi_lock_regen_scale")
+                    .defineInRange("psiLockRegenScale", 1.0, 0.0, 1.0);
 
             builder.pop(); // spellgram_region カテゴリ終了
 

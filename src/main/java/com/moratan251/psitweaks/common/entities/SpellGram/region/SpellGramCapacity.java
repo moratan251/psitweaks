@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  * 術者ごとに置ける領域型の数と枠（試作）。枠の数え方は試作ブランチごとに違い、ここだけを差し替える。
- * 共通部分では置ける数（{@code spellGramRegion.maxRegions}）だけを見て、超えたら古いものから解く。
+ * この版（Psi を確保する版）では、枠 = 確保した Psi（{@link SpellGramPsiLock}）。置ける数の上限（{@code maxRegions}）も見る。
  */
 public final class SpellGramCapacity {
     private SpellGramCapacity() {
@@ -28,18 +28,41 @@ public final class SpellGramCapacity {
      */
     public static int reserve(SpellContext context, int pieceCost, int piecePotency,
                               @Nullable EntitySpellGramRegion target) throws SpellRuntimeException {
+        UUID caster = CasterIds.idOf(context.caster);
         if (target == null) {
-            evictOverCount(CasterIds.idOf(context.caster), maxRegions() - 1, null);
+            evictOverCount(caster, maxRegions() - 1, null);
         }
-        return 0;
+        if (!SpellGramPsiLock.locksPsi(context.caster)) {
+            return 0;
+        }
+        int lock = SpellGramPsiLock.realCost(context.caster, pieceCost);
+        int limit = SpellGramPsiLock.maxLock(context.caster);
+        evictOverUse(caster, limit - lock, target);
+        // 足す相手だけでも上限を超えるときは、上限まで確保する。
+        return Math.max(0, Math.min(lock, limit - SpellGramRegionIndex.totalUse(caster)));
     }
 
     /** 術者の領域型の使う枠が変わった（置いた・解いた・性質を足した）。 */
     public static void onChanged(Level level, @Nullable UUID caster) {
+        SpellGramPsiLock.refresh(level.getServer(), caster);
     }
 
     public static int maxRegions() {
         return PsitweaksConfig.COMMON.spellGramMaxRegions.get();
+    }
+
+    /** 古いものから解いて、使う枠の合計を {@code keep} 以下にする。{@code exclude} は解かない。 */
+    static void evictOverUse(UUID caster, int keep, @Nullable EntitySpellGramRegion exclude) {
+        int total = SpellGramRegionIndex.totalUse(caster);
+        for (EntitySpellGramRegion region : SpellGramRegionIndex.objectsOf(caster)) {
+            if (total <= keep) {
+                return;
+            }
+            if (region != exclude) {
+                total -= region.getCapacityUse();
+                region.end(EntitySpellGramRegion.EndReason.REPLACED);
+            }
+        }
     }
 
     /** 古いものから解いて、{@code keep} 個以下にする。{@code exclude} は解かない。 */
