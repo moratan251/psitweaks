@@ -57,6 +57,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.entities.SpellGram.region.SpellGramPotencyLoad;
 import com.moratan251.psitweaks.common.entities.SpellGram.region.SpellGramRegionIndex;
 import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
 import com.moratan251.psitweaks.common.handler.FallConversionHandler;
@@ -224,6 +225,7 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.addListener(MassHarvestScheduler::onServerStopping);
         NeoForge.EVENT_BUS.addListener(AutonomousCasterRegistry::onServerStopped);
         NeoForge.EVENT_BUS.addListener(SpellGramRegionIndex::onServerStopped);
+        NeoForge.EVENT_BUS.addListener(SpellGramPotencyLoad::onServerStopped);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityJoinLevel);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityTick);
         NeoForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onPlayerTick);

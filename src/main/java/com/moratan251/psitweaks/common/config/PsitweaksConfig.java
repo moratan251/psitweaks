@@ -43,6 +43,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue spellGramFireDamageMultiplier;
         public final ModConfigSpec.DoubleValue spellGramIceDamageMultiplier;
         public final ModConfigSpec.IntValue spellGramMaxRegions;
+        public final ModConfigSpec.DoubleValue spellGramCapacityMultiplier;
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ModConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
@@ -344,6 +345,12 @@ public class PsitweaksConfig {
                             "How many SpellGram regions one caster can keep at once; placing more ends the oldest")
                     .translation("psitweaks.configuration.spells.spellgram_region.max_regions")
                     .defineInRange("maxRegions", 4, 1, 16);
+
+            spellGramCapacityMultiplier = builder
+                    .comment("領域型の魔法式の枠の大きさ（CAD の規模に対する倍率）。置いた作動式の規模の合計がこれを超えると古いものから解ける",
+                            "Size of the SpellGram region load as a multiple of the CAD's potency; going over ends the oldest")
+                    .translation("psitweaks.configuration.spells.spellgram_region.capacity_multiplier")
+                    .defineInRange("capacityMultiplier", 1.0, 0.1, 10.0);
 
             builder.pop(); // spellgram_region カテゴリ終了
 

@@ -94,5 +94,6 @@ public final class PsitweaksNetwork {
                 MessageIdeaStorageFillBucket::handle
         );
         registrar.playToServer(MessageRecallSpellGrams.TYPE, MessageRecallSpellGrams.STREAM_CODEC, MessageRecallSpellGrams::handle);
+        registrar.playToClient(MessageSpellGramLoad.TYPE, MessageSpellGramLoad.STREAM_CODEC, MessageSpellGramLoad::handle);
     }
 }

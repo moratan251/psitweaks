@@ -395,6 +395,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "回収する魔法式がありません";
             default -> "You have no SpellGram regions to recall";
         });
+        root.addProperty("psitweaks.spellgram_region.load", switch (locale) {
+            case "ja_jp" -> "枠 %s/%s";
+            default -> "Load %s/%s";
+        });
         root.addProperty("key.categories.psitweaks", switch (locale) {
             case "ja_jp" -> "Psitweaks";
             default -> "Psitweaks";
@@ -645,6 +649,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Max Regions per Caster", "術者1人あたりの最大数",
                 "How many SpellGram regions one caster can keep at once. Placing more ends the oldest.",
                 "1人の術者が同時に置ける領域型の魔法式オブジェクトの数です。超えると古いものから解けます。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram_region.capacity_multiplier",
+                "Load Capacity Multiplier", "枠の大きさの倍率",
+                "Size of the SpellGram region load as a multiple of the CAD's potency. When the potency of the placed regions adds up to more, the oldest ends.",
+                "領域型の魔法式オブジェクトの枠の大きさを、CAD の規模に対する倍率で指定します。置いた作動式の規模の合計がこれを超えると、古いものから解けます。");
 
         addConfigLabel(root, "psitweaks.configuration.spells.radiation_injection",
                 "Radiation Injection", "放射線注入");
