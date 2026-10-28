@@ -94,6 +94,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "重力の井戸";
             default -> "Gravity Well";
         });
+        root.addProperty("entity.psitweaks.spellgram_region", switch (locale) {
+            case "ja_jp" -> "領域型の魔法式";
+            default -> "SpellGram Region";
+        });
         root.addProperty("entity.psitweaks.chain_lightning", switch (locale) {
             case "ja_jp" -> "連鎖電光";
             default -> "Chain Lightning";
@@ -367,6 +371,38 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "数";
             default -> "Count";
         });
+        root.addProperty("psitweaks.spellerror.not_spellgram_object", switch (locale) {
+            case "ja_jp" -> "エラー: 対象は魔法式オブジェクトではありません。";
+            default -> "Error: The target is not a SpellGram object.";
+        });
+        root.addProperty("psitweaks.spellerror.not_spellgram_region", switch (locale) {
+            case "ja_jp" -> "エラー: 対象は領域型の魔法式オブジェクトではありません。";
+            default -> "Error: The target is not a SpellGram region.";
+        });
+        root.addProperty("psitweaks.spellerror.not_own_spellgram", switch (locale) {
+            case "ja_jp" -> "エラー: 対象は自分の魔法式オブジェクトではありません。";
+            default -> "Error: The target is not your own SpellGram object.";
+        });
+        root.addProperty("psitweaks.spellgram_region.replaced", switch (locale) {
+            case "ja_jp" -> "置ける数を超えたため、いちばん古い魔法式を解きました";
+            default -> "Too many SpellGram regions: the oldest one was released";
+        });
+        root.addProperty("psitweaks.spellgram_region.recalled", switch (locale) {
+            case "ja_jp" -> "魔法式を %s 個回収しました";
+            default -> "Recalled %s SpellGram region(s)";
+        });
+        root.addProperty("psitweaks.spellgram_region.recalled_none", switch (locale) {
+            case "ja_jp" -> "回収する魔法式がありません";
+            default -> "You have no SpellGram regions to recall";
+        });
+        root.addProperty("key.categories.psitweaks", switch (locale) {
+            case "ja_jp" -> "Psitweaks";
+            default -> "Psitweaks";
+        });
+        root.addProperty("key.psitweaks.recall_spellgrams", switch (locale) {
+            case "ja_jp" -> "魔法式をすべて回収";
+            default -> "Recall All SpellGram Regions";
+        });
         root.addProperty("psitweaks.spellerror.parade_disguised", switch (locale) {
             case "ja_jp" -> "エラー: 対象の情報は偽装されています。";
             default -> "ERROR: The target's information is disguised.";
@@ -595,6 +631,20 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Shield Multiplier", "シールド量倍率",
                 "Multiplier applied to the shield of Trick: Barrier (10 per point of Power).",
                 "作動式: 障壁のシールド量 (威力1につき10) に適用する倍率です。");
+        addConfigLabel(root, "psitweaks.configuration.spells.spellgram_region",
+                "SpellGram Regions (prototype)", "領域型の魔法式オブジェクト (試作)");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram_region.fire_damage_multiplier",
+                "Scorching Damage Multiplier", "灼熱のダメージ倍率",
+                "Multiplier applied to the damage of the Scorching property of SpellGram regions.",
+                "領域型の魔法式オブジェクトの性質「灼熱」のダメージに適用する倍率です。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram_region.ice_damage_multiplier",
+                "Freezing Damage Multiplier", "凍結のダメージ倍率",
+                "Multiplier applied to the damage of the Freezing property of SpellGram regions.",
+                "領域型の魔法式オブジェクトの性質「凍結」のダメージに適用する倍率です。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram_region.max_regions",
+                "Max Regions per Caster", "術者1人あたりの最大数",
+                "How many SpellGram regions one caster can keep at once. Placing more ends the oldest.",
+                "1人の術者が同時に置ける領域型の魔法式オブジェクトの数です。超えると古いものから解けます。");
 
         addConfigLabel(root, "psitweaks.configuration.spells.radiation_injection",
                 "Radiation Injection", "放射線注入");
@@ -1612,6 +1662,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a flare Spell Gram Circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える");
         addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Spell Gram Circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
         addSpellPiece(root, "trick_set_spellgram_follow_target", "Trick: Set SpellGram Follow Target", "Sets the follow target entity for a SpellGram object", "作動式: 魔法式追従", "魔法式オブジェクトの追従対象エンティティを設定する");
+        // 領域型の魔法式オブジェクト（試作）
+        addSpellPiece(root, "trick_spellgram_deploy", "Trick: Deploy SpellGram", "Places a bare SpellGram region with no property; Power sets its strength", "作動式: 魔法式展開", "性質を持たない素の領域型の魔法式オブジェクトを置く。威力は強度に効く");
+        addSpellPiece(root, "trick_fire_region", "Trick: Scorching Region", "Places a SpellGram region that keeps burning living beings inside it", "作動式: 灼熱領域", "内部の生物を焼き続ける領域型の魔法式オブジェクトを置く");
+        addSpellPiece(root, "trick_ice_region", "Trick: Freezing Region", "Places a SpellGram region that freezes living beings inside it and ices over water", "作動式: 凍結領域", "内部の生物を凍えさせ、水面を薄氷にする領域型の魔法式オブジェクトを置く");
+        addSpellPiece(root, "trick_wet_region", "Trick: Wet Region", "Places a SpellGram region that soaks everything inside it and puts out fire", "作動式: 湿潤領域", "内部のものを濡らし、火を消す領域型の魔法式オブジェクトを置く");
+        addSpellPiece(root, "trick_spellgram_imbue_fire", "Trick: Imbue Scorching", "Adds the Scorching property to your own SpellGram region", "作動式: 灼熱付与", "自分の領域型の魔法式オブジェクトに性質「灼熱」を足す");
+        addSpellPiece(root, "trick_spellgram_imbue_ice", "Trick: Imbue Freezing", "Adds the Freezing property to your own SpellGram region", "作動式: 凍結付与", "自分の領域型の魔法式オブジェクトに性質「凍結」を足す");
+        addSpellPiece(root, "trick_spellgram_imbue_wet", "Trick: Imbue Wetness", "Adds the Wet property to your own SpellGram region", "作動式: 湿潤付与", "自分の領域型の魔法式オブジェクトに性質「湿潤」を足す");
+        addSpellPiece(root, "trick_spellgram_recall", "Trick: Recall SpellGrams", "Releases your own SpellGram region, or all of them when no target is given", "作動式: 魔法式回収", "自分の領域型の魔法式オブジェクトを解く。対象をつながないとすべて解く");
         addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops the spell when given a number whose absolute value is below 1, and refunds the Psi of the pieces not yet run. In spells cast every tick, the Psi display may briefly desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると停止し、未実行分のPsiを返却します。毎tick詠唱では、Psi表示が一時的にずれることがあります。");
         addSpellPiece(root, "trick_jump", "Trick: Jump", "If the target number is unset or its absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.", "作動式: ジャンプ", "対象数値が未入力、または絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。");
         addSpellPiece(root, "trick_jump_flex", "Trick: Flexible Jump", "Behaves like Trick: Jump and refunds the Psi of the pieces it skips.", "作動式: 柔軟ジャンプ", "作動式: ジャンプと同じ動作をし、飛ばしたピースのPsiを返却します。");

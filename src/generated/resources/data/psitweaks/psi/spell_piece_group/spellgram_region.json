@@ -1,0 +1,12 @@
+{
+  "main": "psitweaks:trick_spellgram_deploy",
+  "pieces": [
+    "psitweaks:trick_fire_region",
+    "psitweaks:trick_ice_region",
+    "psitweaks:trick_wet_region",
+    "psitweaks:trick_spellgram_imbue_fire",
+    "psitweaks:trick_spellgram_imbue_ice",
+    "psitweaks:trick_spellgram_imbue_wet",
+    "psitweaks:trick_spellgram_recall"
+  ]
+}

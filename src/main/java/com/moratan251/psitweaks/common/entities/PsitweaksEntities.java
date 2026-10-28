@@ -10,6 +10,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.region.EntitySpellGramRegion;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -100,6 +101,15 @@ public class PsitweaksEntities {
                             .updateInterval(1)
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":ice_circle"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntitySpellGramRegion>> SPELLGRAM_REGION =
+            ENTITY_TYPES.register("spellgram_region",
+                    () -> EntityType.Builder.<EntitySpellGramRegion>of(EntitySpellGramRegion::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(64)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":spellgram_region"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
             ENTITY_TYPES.register("tunneler_arrow",

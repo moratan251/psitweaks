@@ -89,6 +89,22 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_ice_circle");
     public static final DeferredHolder<Material, Material> TRICK_SET_SPELLGRAM_FOLLOW_TARGET =
             registerPieceMaterial("trick_set_spellgram_follow_target");
+    public static final DeferredHolder<Material, Material> TRICK_FIRE_REGION =
+            registerPieceMaterial("trick_fire_region");
+    public static final DeferredHolder<Material, Material> TRICK_ICE_REGION =
+            registerPieceMaterial("trick_ice_region");
+    public static final DeferredHolder<Material, Material> TRICK_WET_REGION =
+            registerPieceMaterial("trick_wet_region");
+    public static final DeferredHolder<Material, Material> TRICK_SPELLGRAM_DEPLOY =
+            registerPieceMaterial("trick_spellgram_deploy");
+    public static final DeferredHolder<Material, Material> TRICK_SPELLGRAM_IMBUE_FIRE =
+            registerPieceMaterial("trick_spellgram_imbue_fire");
+    public static final DeferredHolder<Material, Material> TRICK_SPELLGRAM_IMBUE_ICE =
+            registerPieceMaterial("trick_spellgram_imbue_ice");
+    public static final DeferredHolder<Material, Material> TRICK_SPELLGRAM_IMBUE_WET =
+            registerPieceMaterial("trick_spellgram_imbue_wet");
+    public static final DeferredHolder<Material, Material> TRICK_SPELLGRAM_RECALL =
+            registerPieceMaterial("trick_spellgram_recall");
     public static final DeferredHolder<Material, Material> TRICK_DIE_FLEX =
             registerPieceMaterial("trick_die_flex");
     public static final DeferredHolder<Material, Material> TRICK_JUMP =

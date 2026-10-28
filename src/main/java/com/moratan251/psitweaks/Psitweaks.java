@@ -32,6 +32,8 @@ import com.moratan251.psitweaks.client.renderer.DryIceProjectileRenderer;
 import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
 import com.moratan251.psitweaks.client.renderer.FlareCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.IceCircleRenderer;
+import com.moratan251.psitweaks.client.renderer.SpellGramRegionRenderer;
+import com.moratan251.psitweaks.client.spellgram.SpellGramClient;
 import com.moratan251.psitweaks.client.renderer.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
@@ -55,6 +57,7 @@ import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.entities.SpellGram.region.SpellGramRegionIndex;
 import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
 import com.moratan251.psitweaks.common.handler.FallConversionHandler;
 import com.moratan251.psitweaks.common.handler.FlightPsiCostCaptureHandler;
@@ -193,6 +196,7 @@ public class Psitweaks {
             FilterCardClient.registerEvents();
             BladePouchClient.registerEvents();
             CombatEffectsClient.registerEvents(modEventBus);
+            SpellGramClient.registerEvents(modEventBus);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
@@ -219,6 +223,7 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.addListener(MassHarvestScheduler::onServerTick);
         NeoForge.EVENT_BUS.addListener(MassHarvestScheduler::onServerStopping);
         NeoForge.EVENT_BUS.addListener(AutonomousCasterRegistry::onServerStopped);
+        NeoForge.EVENT_BUS.addListener(SpellGramRegionIndex::onServerStopped);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityJoinLevel);
         NeoForge.EVENT_BUS.addListener(FallConversionHandler::onEntityTick);
         NeoForge.EVENT_BUS.addListener(CadBatteryAttributeHandler::onPlayerTick);
@@ -360,6 +365,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.BLAZE_BALL.get(), context -> new ThrownItemRenderer<>(context, 0.75F, true));
             event.registerEntityRenderer(PsitweaksEntities.FLARE_CIRCLE.get(), FlareCircleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(), IceCircleRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.SPELLGRAM_REGION.get(), SpellGramRegionRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.KAMAITACHI_BLADE.get(), KamaitachiBladeRenderer::new);

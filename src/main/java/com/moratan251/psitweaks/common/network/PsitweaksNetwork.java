@@ -9,7 +9,7 @@ public final class PsitweaksNetwork {
     }
 
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("24");
+        PayloadRegistrar registrar = event.registrar(Psitweaks.MOD_ID).versioned("25");
         registrar.playToClient(MessageSpellUnlockSync.TYPE, MessageSpellUnlockSync.STREAM_CODEC, MessageSpellUnlockSync::handle);
         registrar.playToServer(MessagePortableSpellProgrammerEdit.TYPE, MessagePortableSpellProgrammerEdit.STREAM_CODEC,
                 MessagePortableSpellProgrammerEdit::handle);
@@ -93,5 +93,6 @@ public final class PsitweaksNetwork {
                 MessageIdeaStorageFillBucket.STREAM_CODEC,
                 MessageIdeaStorageFillBucket::handle
         );
+        registrar.playToServer(MessageRecallSpellGrams.TYPE, MessageRecallSpellGrams.STREAM_CODEC, MessageRecallSpellGrams::handle);
     }
 }

@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.entities.combat;
 
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.entities.SpellGram.region.SpellGramWetness;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
@@ -50,7 +51,7 @@ public class EntityChainLightning extends CombatSpellEntity {
      */
     public static void strike(ServerLevel level, @Nullable LivingEntity caster, AttackRules.Options options, LivingEntity target,
                               DamageSource source, float damage, int jump) {
-        AttackRules.harm(caster, target, options, source, target.isInWaterOrRain() ? damage * WET_DAMAGE_FACTOR : damage);
+        AttackRules.harm(caster, target, options, source, SpellGramWetness.isWet(target) ? damage * WET_DAMAGE_FACTOR : damage);
         if (jump > 0) {
             CombatEffects.sound(level, CombatSpellHelper.center(target), SoundEvents.LIGHTNING_BOLT_IMPACT, 0.45F,
                     Math.min(2.0F, 1.6F + 0.06F * jump));

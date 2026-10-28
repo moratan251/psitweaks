@@ -93,6 +93,23 @@ public final class PsitweaksSpells {
             registerPiece("trick_ice_circle", PieceTrickIceCircle.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SET_SPELLGRAM_FOLLOW_TARGET =
             registerPiece("trick_set_spellgram_follow_target", PieceTrickSetSpellGramFollowTarget.class);
+    // 領域型の魔法式オブジェクト（試作）
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_FIRE_REGION =
+            registerPiece("trick_fire_region", PieceTrickFireRegion.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_ICE_REGION =
+            registerPiece("trick_ice_region", PieceTrickIceRegion.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_WET_REGION =
+            registerPiece("trick_wet_region", PieceTrickWetRegion.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SPELLGRAM_DEPLOY =
+            registerPiece("trick_spellgram_deploy", PieceTrickSpellGramDeploy.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SPELLGRAM_IMBUE_FIRE =
+            registerPiece("trick_spellgram_imbue_fire", PieceTrickSpellGramImbueFire.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SPELLGRAM_IMBUE_ICE =
+            registerPiece("trick_spellgram_imbue_ice", PieceTrickSpellGramImbueIce.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SPELLGRAM_IMBUE_WET =
+            registerPiece("trick_spellgram_imbue_wet", PieceTrickSpellGramImbueWet.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SPELLGRAM_RECALL =
+            registerPiece("trick_spellgram_recall", PieceTrickSpellGramRecall.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DIE_FLEX =
             registerPiece("trick_die_flex", PieceTrickDieFlex.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_JUMP =

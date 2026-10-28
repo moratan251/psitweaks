@@ -39,6 +39,10 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue starfallDamageMultiplier;
         public final ModConfigSpec.DoubleValue gravityCollapseDamageMultiplier;
         public final ModConfigSpec.DoubleValue barrierShieldMultiplier;
+        // 領域型の魔法式オブジェクト（試作）
+        public final ModConfigSpec.DoubleValue spellGramFireDamageMultiplier;
+        public final ModConfigSpec.DoubleValue spellGramIceDamageMultiplier;
+        public final ModConfigSpec.IntValue spellGramMaxRegions;
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
         public final ModConfigSpec.LongValue gasBurningGeneratorEnergyCapacity;
@@ -317,6 +321,31 @@ public class PsitweaksConfig {
                     .defineInRange("shieldMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // barrier カテゴリ終了
+
+            // --- 領域型の魔法式オブジェクト（試作） ---
+            builder.comment("SpellGram Region Settings (prototype)")
+                    .translation("psitweaks.configuration.spells.spellgram_region")
+                    .push("spellgram_region");
+
+            spellGramFireDamageMultiplier = builder
+                    .comment("領域型の魔法式オブジェクトの性質「灼熱」のダメージ倍率",
+                            "Damage multiplier for the Scorching property of SpellGram regions")
+                    .translation("psitweaks.configuration.spells.spellgram_region.fire_damage_multiplier")
+                    .defineInRange("fireDamageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            spellGramIceDamageMultiplier = builder
+                    .comment("領域型の魔法式オブジェクトの性質「凍結」のダメージ倍率",
+                            "Damage multiplier for the Freezing property of SpellGram regions")
+                    .translation("psitweaks.configuration.spells.spellgram_region.ice_damage_multiplier")
+                    .defineInRange("iceDamageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            spellGramMaxRegions = builder
+                    .comment("1人の術者が同時に置ける領域型の魔法式オブジェクトの数。超えると古いものから解ける",
+                            "How many SpellGram regions one caster can keep at once; placing more ends the oldest")
+                    .translation("psitweaks.configuration.spells.spellgram_region.max_regions")
+                    .defineInRange("maxRegions", 4, 1, 16);
+
+            builder.pop(); // spellgram_region カテゴリ終了
 
             builder.pop(); // spells カテゴリ終了
 
