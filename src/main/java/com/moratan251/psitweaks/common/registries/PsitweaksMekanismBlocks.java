@@ -107,8 +107,8 @@ public final class PsitweaksMekanismBlocks {
             BLOCKS.register("autonomous_caster",
                     () -> new BlockTile.BlockTileModel<>(PsitweaksMekanismBlockTypes.AUTONOMOUS_CASTER, properties -> properties),
                     (block, properties) -> new ItemBlockTooltip<>(block, true, withDefaultSideConfig(properties, AUTONOMOUS_CASTER_SIDE_CONFIG)))
-                    // The echo tank, and bullets, the dye slot, the nine hotbar slots, the echo fill slot and the other 27 inventory
-                    // slots: the slots of AutonomousCasterBlockEntity, in its order.
+                    // The echo tank, and bullets, the dye slot, the nine hotbar slots, the echo fill slot, the other 27 inventory
+                    // slots and the upgrade slots: the slots of AutonomousCasterBlockEntity, in its order.
                     .forItemHolder(holder -> holder
                             .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                                     .addBasic(AutonomousCasterSettings::echoTankCapacity, ANY_CHEMICAL)
@@ -117,6 +117,7 @@ public final class PsitweaksMekanismBlocks {
                                     .addBasic(AutonomousCasterBlockEntity.BULLET_SLOTS + 1 + AutonomousCasterBlockEntity.HOTBAR_SLOTS)
                                     .addChemicalFillSlot(0)
                                     .addBasic(AutonomousCasterBlockEntity.ITEM_SLOTS - AutonomousCasterBlockEntity.HOTBAR_SLOTS)
+                                    .addBasic(AutonomousCasterBlockEntity.UPGRADE_SLOTS)
                                     .build()));
 
     public static final BlockRegistryObject<BlockTranscendentCable, ItemBlockTranscendentCable> TRANSCENDENT_CABLE =

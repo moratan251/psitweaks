@@ -32,6 +32,29 @@
     },
     {
       "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.upgrades"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.upgrades.2"
+    },
+    {
+      "type": "crafting_multi",
+      "text": "psi.book.page.psitweaks_machine.autonomous_caster.upgrades.recipe",
+      "recipes": [
+        "psitweaks:autonomous_caster_upgrade_potency",
+        "psitweaks:autonomous_caster_upgrade_efficiency",
+        "psitweaks:autonomous_caster_upgrade_complexity",
+        "psitweaks:autonomous_caster_upgrade_projection",
+        "psitweaks:autonomous_caster_upgrade_memory",
+        "psitweaks:autonomous_caster_upgrade_psi_capacity",
+        "psitweaks:autonomous_caster_upgrade_conversion_speed",
+        "psitweaks:autonomous_caster_upgrade_conversion_efficiency",
+        "psitweaks:autonomous_caster_upgrade_interference"
+      ]
+    },
+    {
+      "type": "text",
       "text": "psi.book.page.psitweaks_machine.autonomous_caster.5"
     },
     {

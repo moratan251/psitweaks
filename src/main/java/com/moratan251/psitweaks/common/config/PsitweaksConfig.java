@@ -51,6 +51,15 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue autonomousCasterCastVolume;
         public final ModConfigSpec.IntValue autonomousCasterLogCapacity;
         public final ModConfigSpec.IntValue autonomousCasterMaxLogMessageLength;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradePotency;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradeEfficiency;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradeComplexity;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradeProjection;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradeMemory;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradePsiCapacity;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradeConversionSpeed;
+        public final ModConfigSpec.DoubleValue autonomousCasterUpgradeConversionEfficiency;
+        public final ModConfigSpec.DoubleValue autonomousCasterUpgradeInterference;
         // イデアストレージ関連
         public final ModConfigSpec.IntValue ideaStorageMaxItemTypes;
         public final ModConfigSpec.IntValue ideaStorageItemStacksPerType;
@@ -436,6 +445,60 @@ public class PsitweaksConfig {
                             "Maximum characters per operation log entry. Longer messages are truncated")
                     .translation("psitweaks.configuration.autonomous_caster.max_log_message_length")
                     .defineInRange("maxLogMessageLength", 2_048, 64, 32_767);
+
+            autonomousCasterUpgradePotency = builder
+                    .comment("演算規模アップグレードで上がる内蔵CADの規模",
+                            "Potency added by the Calculation Potency Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_potency")
+                    .defineInRange("upgradePotency", 500, 0, 100_000);
+
+            autonomousCasterUpgradeEfficiency = builder
+                    .comment("演算効率アップグレードで上がる内蔵CADの効率",
+                            "Efficiency added by the Calculation Efficiency Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_efficiency")
+                    .defineInRange("upgradeEfficiency", 50, 0, 10_000);
+
+            autonomousCasterUpgradeComplexity = builder
+                    .comment("オーバークロックアップグレードで上がる内蔵CADの複雑性",
+                            "Complexity added by the Overclock Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_complexity")
+                    .defineInRange("upgradeComplexity", 15, 0, 10_000);
+
+            autonomousCasterUpgradeProjection = builder
+                    .comment("マルチステップアップグレードで上がる内蔵CADの作動量",
+                            "Projection added by the Multi-Step Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_projection")
+                    .defineInRange("upgradeProjection", 3, 0, 1_000);
+
+            autonomousCasterUpgradeMemory = builder
+                    .comment("メモリアップグレードで上がる内蔵CADのメモリ",
+                            "Memory added by the Memory Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_memory")
+                    .defineInRange("upgradeMemory", 7, 0, 200);
+
+            autonomousCasterUpgradePsiCapacity = builder
+                    .comment("サイオン容量アップグレードで増える内部Psi容量",
+                            "Internal Psi capacity added by the Psyon Capacity Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_psi_capacity")
+                    .defineInRange("upgradePsiCapacity", 5_000, 0, 10_000_000);
+
+            autonomousCasterUpgradeConversionSpeed = builder
+                    .comment("サイオン変換速度アップグレードで増える、1tickに回復するPsi",
+                            "Psi per tick added to the recovery by the Psyon Conversion Speed Upgrade")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_conversion_speed")
+                    .defineInRange("upgradeConversionSpeed", 10, 0, 1_000_000);
+
+            autonomousCasterUpgradeConversionEfficiency = builder
+                    .comment("サイオン変換効率アップグレードで減る、Psi 1あたりの気化サイオニックエコー消費量（mB）。基本値の1割より少なくはなりません",
+                            "Psionic Echo Gas (mB) per Psi saved by the Psyon Conversion Efficiency Upgrade. The cost never drops below a tenth of the base")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_conversion_efficiency")
+                    .defineInRange("upgradeConversionEfficiency", 3.0D, 0.0D, 1_000_000.0D);
+
+            autonomousCasterUpgradeInterference = builder
+                    .comment("事象干渉力アップグレードで詠唱主体の事象干渉力に足す値（0.3で+30%）",
+                            "Phenomenon Interference added to the machine's caster by the Phenomenon Interference Upgrade (0.3 is +30%)")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_interference")
+                    .defineInRange("upgradeInterference", 0.3D, 0.0D, 100.0D);
 
             builder.pop(); // autonomousCaster カテゴリ終了
 

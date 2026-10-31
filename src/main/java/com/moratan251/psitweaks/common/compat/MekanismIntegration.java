@@ -69,6 +69,7 @@ final class MekanismIntegration {
         output.accept(PsitweaksMekanismBlocks.MATERIAL_MUTATOR.get());
         output.accept(PsitweaksMekanismBlocks.PSIONIC_GENERATOR.get());
         output.accept(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.get());
+        PsitweaksMekanismItems.AUTONOMOUS_CASTER_UPGRADES.values().forEach(item -> output.accept(item.get()));
         output.accept(PsitweaksMekanismBlocks.TRANSCENDENT_CABLE.get());
         output.accept(PsitweaksMekanismBlocks.TRANSCENDENT_ENERGY_CUBE.get());
         output.accept(StorageUtils.getFilledEnergyVariant(

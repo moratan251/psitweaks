@@ -4,9 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import vazkii.psi.common.item.base.ModCADComponents;
 import vazkii.psi.common.item.base.ModItems;
 
 public class PsiTweaksRecipeProvider implements DataProvider {
@@ -321,6 +324,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'E', ingredientItem(MekanismItems.ROBIT)
                 ),
                 PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.get(), 1));
+        addAutonomousCasterUpgradeRecipes(recipes);
         recipe(recipes, "transcendent_universal_cable", shaped("redstone",
                 List.of("APA", "PNP", "APA"),
                 Map.of(
@@ -653,6 +657,28 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         recipe(recipes, materialId + "_nugget_from_ingot", shapeless(
                 List.of(ingredientItem(ingot)),
                 nugget, 9));
+    }
+
+    /** 自律詠唱機のアップグレード。上下にガラス、左右に位格合金、中央に種類ごとの素材。 */
+    private static void addAutonomousCasterUpgradeRecipes(Map<ResourceLocation, JsonObject> recipes) {
+        Map<AutonomousCasterUpgrade, ItemLike> materials = new EnumMap<>(AutonomousCasterUpgrade.class);
+        materials.put(AutonomousCasterUpgrade.POTENCY, PsitweaksItems.HEAVY_PSIMETAL);
+        materials.put(AutonomousCasterUpgrade.EFFICIENCY, PsitweaksItems.ANTINITE_INGOT);
+        materials.put(AutonomousCasterUpgrade.COMPLEXITY, PsitweaksItems.CAD_CORE_ULTRACLOCKED);
+        materials.put(AutonomousCasterUpgrade.PROJECTION, PsitweaksItems.CAD_CORE_ABSORPTIVE);
+        materials.put(AutonomousCasterUpgrade.MEMORY, ModCADComponents.cadSocketHuge.get());
+        materials.put(AutonomousCasterUpgrade.PSI_CAPACITY, PsitweaksItems.CAD_BATTERY_QUANTUM);
+        materials.put(AutonomousCasterUpgrade.CONVERSION_SPEED, PsitweaksItems.NANO_REACTOR);
+        materials.put(AutonomousCasterUpgrade.CONVERSION_EFFICIENCY, PsitweaksItems.DIMENSIONAL_CRYSTAL);
+        materials.put(AutonomousCasterUpgrade.INTERFERENCE, PsitweaksItems.SORCERY_BOOSTER);
+        materials.forEach((upgrade, material) -> recipe(recipes, upgrade.itemId(), shaped(
+                List.of(" G ", "AMA", " G "),
+                Map.of(
+                        'G', ingredientTag("c:glass_blocks/colorless"),
+                        'A', ingredientItem(PsitweaksItems.ALLOY_HYPOSTASIS),
+                        'M', ingredientItem(material)
+                ),
+                PsitweaksMekanismItems.autonomousCasterUpgrade(upgrade).get(), 1)));
     }
 
     private static void addSpellBulletRecipes(Map<ResourceLocation, JsonObject> recipes) {

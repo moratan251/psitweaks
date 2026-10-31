@@ -23,7 +23,8 @@ final class RecipeConditionHelper {
         String path = id.getPath();
         if (path.equals("program_researcher")
                 || path.equals("material_mutator")
-                || path.startsWith("sculk_eroder/")) {
+                || path.startsWith("sculk_eroder/")
+                || path.startsWith("autonomous_caster_upgrade_")) {
             requireMod(recipe, MEKANISM);
         }
     }

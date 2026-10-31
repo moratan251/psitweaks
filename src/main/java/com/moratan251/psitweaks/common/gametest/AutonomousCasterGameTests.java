@@ -30,6 +30,7 @@ import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
@@ -262,20 +263,29 @@ public final class AutonomousCasterGameTests {
 
         ItemStack cad = VirtualCad.rebuild(registries, dye, ItemStack.EMPTY);
         ICAD item = (ICAD) cad.getItem();
-        VirtualCad.FIXED_STATS.forEach((stat, value) -> helper.assertTrue(item.getStatValue(cad, stat) == value,
+        VirtualCad.BASE_STATS.forEach((stat, value) -> helper.assertTrue(item.getStatValue(cad, stat) == value,
                 "The internal CAD's " + stat + " is " + item.getStatValue(cad, stat) + " instead of " + value));
         helper.assertTrue(item.getStatValue(cad, EnumCADStat.OVERFLOW) == 0, "The internal CAD has a battery");
         helper.assertTrue(item.getSpellColor(cad) == CADComponentLookup.color(registries, dye),
                 "The colorizer did not set the spell color");
 
         // メモリの最後の枠まで使え、着色器を外して組み直しても中身と固定性能が残る。
-        int lastSlot = VirtualCad.FIXED_STATS.get(EnumCADStat.SAVED_VECTORS) - 1;
+        int lastSlot = VirtualCad.BASE_STATS.get(EnumCADStat.SAVED_VECTORS) - 1;
         item.setStoredVector(cad, lastSlot, new Vector3(1, 2, 3));
         ItemStack rebuilt = VirtualCad.rebuild(registries, ItemStack.EMPTY, cad);
         Vector3 kept = item.getStoredVector(rebuilt, lastSlot);
         helper.assertTrue(kept.x == 1 && kept.y == 2 && kept.z == 3, "The memory was lost when the CAD was rebuilt");
-        helper.assertTrue(item.getStatValue(rebuilt, EnumCADStat.POTENCY) == VirtualCad.FIXED_STATS.get(EnumCADStat.POTENCY),
+        helper.assertTrue(item.getStatValue(rebuilt, EnumCADStat.POTENCY) == VirtualCad.BASE_STATS.get(EnumCADStat.POTENCY),
                 "The rebuilt CAD lost its fixed stats");
+
+        // アップグレードの分は組み直すたびに書き直し、前の CAD の分を引き継がない。
+        ItemStack upgraded = VirtualCad.rebuild(registries, ItemStack.EMPTY, rebuilt, Map.of(EnumCADStat.POTENCY, 500));
+        helper.assertTrue(item.getStatValue(upgraded, EnumCADStat.POTENCY) == VirtualCad.BASE_STATS.get(EnumCADStat.POTENCY) + 500
+                        && item.getStatValue(upgraded, EnumCADStat.EFFICIENCY) == VirtualCad.BASE_STATS.get(EnumCADStat.EFFICIENCY),
+                "The bonus did not raise only the Potency");
+        ItemStack removed = VirtualCad.rebuild(registries, ItemStack.EMPTY, upgraded);
+        helper.assertTrue(item.getStatValue(removed, EnumCADStat.POTENCY) == VirtualCad.BASE_STATS.get(EnumCADStat.POTENCY),
+                "The bonus stayed after the upgrade was removed");
 
         // プレイヤーの CAD の性能値は変えない。
         ItemStack assembly = new ItemStack(ModCADComponents.cadAssemblyIron.get());
@@ -1130,6 +1140,24 @@ public final class AutonomousCasterGameTests {
             return;
         }
         AutonomousCasterChecks.restoresPsiFromEcho(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterUpgradesRaiseOneValueEach(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.upgradesRaiseOneValueEach(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterUpgradesSpeedUpAndCheapenPsiRecovery(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.upgradesSpeedUpAndCheapenPsiRecovery(helper);
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)

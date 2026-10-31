@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +28,8 @@ import vazkii.psi.common.item.data.CADDataValue;
 /**
  * 自律詠唱機の内蔵仮想 CAD。
  * <p>
- * 性能値は部品に依らず {@link #FIXED_STATS} に固定する。CAD として組み立てるための素体・コア・弾倉は隠し部品で、
+ * 性能値は部品に依らず、{@link #BASE_STATS} に機械のアップグレードの分（{@link #rebuild} の bonuses）を足した値にする。
+ * CAD として組み立てるための素体・コア・弾倉は隠し部品で、
  * 機械のスロットに入れられるのは着色器だけ。バッテリーは持たず、詠唱コストは機械の内部 Psi だけから払う。
  * 時刻・ベクトル記憶・Psitweaks の記憶領域は組み替えても引き継ぐ。
  * <p>
@@ -36,10 +40,12 @@ import vazkii.psi.common.item.data.CADDataValue;
 public final class VirtualCad {
     /** 内蔵 CAD の装弾数。機械の術式弾スロットの数と同じで、Psi の CAD が持てる上限にする。 */
     public static final int SOCKETS = ISocketable.MAX_ASSEMBLER_SLOTS;
-    /** 内蔵 CAD の性能値。容量（バッテリーなしで 0）は使わない。 */
-    public static final Map<EnumCADStat, Integer> FIXED_STATS = fixedStats();
+    /** アップグレードなしの内蔵 CAD の性能値。容量（バッテリーなしで 0）は使わない。 */
+    public static final Map<EnumCADStat, Integer> BASE_STATS = baseStats();
     /** 内蔵 CAD の目印。{@link #onCadStat} はこれが付いた CAD の性能値だけを置き換える。 */
     private static final String TAG_VIRTUAL_CAD = "psitweaks_autonomous_caster_cad";
+    /** アップグレードで足す性能値。性能値の名前（小文字）ごとに足す量を持つ。 */
+    private static final String TAG_STAT_BONUS = "psitweaks_autonomous_caster_stat_bonus";
 
     private VirtualCad() {
     }
@@ -49,13 +55,20 @@ public final class VirtualCad {
                 && CADComponentLookup.isComponent(registries, stack, EnumCADComponent.DYE);
     }
 
+    /** アップグレードなしで組み立て直す。 */
+    public static ItemStack rebuild(@Nullable HolderLookup.Provider registries, ItemStack dye, ItemStack previous) {
+        return rebuild(registries, dye, previous, Map.of());
+    }
+
     /**
-     * 着色器スロットの内容から仮想 CAD を組み立て直す。
+     * 着色器スロットの内容とアップグレードから仮想 CAD を組み立て直す。
      *
      * @param dye      着色器スロットの中身。空や着色器以外なら既定の術式の色になる
      * @param previous 引き継ぎ元の仮想 CAD。初回は空
+     * @param bonuses  アップグレードで {@link #BASE_STATS} に足す量
      */
-    public static ItemStack rebuild(@Nullable HolderLookup.Provider registries, ItemStack dye, ItemStack previous) {
+    public static ItemStack rebuild(@Nullable HolderLookup.Provider registries, ItemStack dye, ItemStack previous,
+                                    Map<EnumCADStat, Integer> bonuses) {
         ItemStack assembly = new ItemStack(ModCADComponents.cadAssemblyIron.get());
         List<ItemStack> components = new ArrayList<>(4);
         components.add(assembly);
@@ -70,7 +83,21 @@ public final class VirtualCad {
             cad = ItemCAD.makeCAD(registries, components);
         }
         carryRuntimeState(previous, cad);
-        CustomData.update(DataComponents.CUSTOM_DATA, cad, tag -> tag.putBoolean(TAG_VIRTUAL_CAD, true));
+        CustomData.update(DataComponents.CUSTOM_DATA, cad, tag -> {
+            tag.putBoolean(TAG_VIRTUAL_CAD, true);
+            // 引き継いだ前の CAD の分は捨て、今のアップグレードの分で書き直す
+            CompoundTag bonusTag = new CompoundTag();
+            bonuses.forEach((stat, value) -> {
+                if (value != 0 && BASE_STATS.containsKey(stat)) {
+                    bonusTag.putInt(statKey(stat), value);
+                }
+            });
+            if (bonusTag.isEmpty()) {
+                tag.remove(TAG_STAT_BONUS);
+            } else {
+                tag.put(TAG_STAT_BONUS, bonusTag);
+            }
+        });
         return cad;
     }
 
@@ -98,15 +125,29 @@ public final class VirtualCad {
         }
     }
 
-    /** Psi の CADStatEvent handler。内蔵 CAD の性能値を固定値に置き換える。 */
+    /** Psi の CADStatEvent handler。内蔵 CAD の性能値を、基本値とアップグレードの分の和に置き換える。 */
+    @SuppressWarnings("deprecation") // 性能値は頻繁に読まれるので、タグを写さずに読む
     public static void onCadStat(CADStatEvent event) {
-        Integer fixed = FIXED_STATS.get(event.getStat());
-        if (fixed != null && isVirtualCad(event.getCad())) {
-            event.setStatValue(fixed);
+        Integer base = BASE_STATS.get(event.getStat());
+        CustomData custom = base == null ? null : event.getCad().get(DataComponents.CUSTOM_DATA);
+        if (custom == null) {
+            return;
         }
+        CompoundTag tag = custom.getUnsafe();
+        if (!tag.contains(TAG_VIRTUAL_CAD)) {
+            return;
+        }
+        int bonus = tag.contains(TAG_STAT_BONUS, Tag.TAG_COMPOUND)
+                ? tag.getCompound(TAG_STAT_BONUS).getInt(statKey(event.getStat()))
+                : 0;
+        event.setStatValue(base + bonus);
     }
 
-    private static Map<EnumCADStat, Integer> fixedStats() {
+    private static String statKey(EnumCADStat stat) {
+        return stat.name().toLowerCase(Locale.ROOT);
+    }
+
+    private static Map<EnumCADStat, Integer> baseStats() {
         Map<EnumCADStat, Integer> stats = new EnumMap<>(EnumCADStat.class);
         stats.put(EnumCADStat.EFFICIENCY, 175);
         stats.put(EnumCADStat.POTENCY, 1500);

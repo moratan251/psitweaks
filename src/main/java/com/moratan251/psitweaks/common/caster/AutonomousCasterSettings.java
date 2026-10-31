@@ -29,6 +29,43 @@ public final class AutonomousCasterSettings {
         return Math.max(1, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterPsiPerOperation.get(), 25));
     }
 
+    /** 回復で Psi 1 を作るのに使う気化サイオニックエコー（mB）。アップグレードの分は含まない。 */
+    public static double echoPerPsi() {
+        return (double) echoPerOperation() / psiPerOperation();
+    }
+
+    /** アップグレード1つで上がる内蔵 CAD の性能値。CAD の性能値を上げない種類は 0。 */
+    public static int cadStatBonus(AutonomousCasterUpgrade upgrade) {
+        return switch (upgrade) {
+            case POTENCY -> Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradePotency.get(), 500));
+            case EFFICIENCY -> Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeEfficiency.get(), 50));
+            case COMPLEXITY -> Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeComplexity.get(), 15));
+            case PROJECTION -> Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeProjection.get(), 3));
+            case MEMORY -> Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeMemory.get(), 7));
+            default -> 0;
+        };
+    }
+
+    /** サイオン容量アップグレードで増える内部 Psi の容量。 */
+    public static int upgradePsiCapacity() {
+        return Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradePsiCapacity.get(), 5_000));
+    }
+
+    /** サイオン変換速度アップグレードで増える、1 tick に回復する Psi。 */
+    public static int upgradeConversionSpeed() {
+        return Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeConversionSpeed.get(), 10));
+    }
+
+    /** サイオン変換効率アップグレードで減る、Psi 1 あたりのエコー消費（mB）。 */
+    public static double upgradeConversionEfficiency() {
+        return Math.max(0.0D, safeDouble(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeConversionEfficiency.get(), 3.0D));
+    }
+
+    /** 事象干渉力アップグレードで詠唱主体の事象干渉力に足す値（0.3 で +30%）。 */
+    public static double upgradeInterference() {
+        return Math.max(0.0D, safeDouble(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeInterference.get(), 0.3D));
+    }
+
     public static long echoTankCapacity() {
         return Math.max(1L, safeLong(() -> PsitweaksConfig.COMMON.autonomousCasterEchoTankCapacity.get(), 8_000L));
     }

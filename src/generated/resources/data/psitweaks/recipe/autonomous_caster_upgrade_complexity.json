@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "M": {
+      "item": "psitweaks:cad_core_ultraclocked"
+    }
+  },
+  "pattern": [
+    " G ",
+    "AMA",
+    " G "
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:autonomous_caster_upgrade_complexity"
+  }
+}

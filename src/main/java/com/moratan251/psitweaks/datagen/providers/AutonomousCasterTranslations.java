@@ -27,6 +27,7 @@ final class AutonomousCasterTranslations {
         translations.addBlock();
         translations.addGui();
         translations.addLogWindow();
+        translations.addUpgrades();
         translations.addErrors();
         translations.addConfig();
         translations.addBook();
@@ -114,6 +115,37 @@ final class AutonomousCasterTranslations {
         put(LOG + "clear.confirm", "Clear the activity log?", "作動ログを消去しますか？");
     }
 
+    private void addUpgrades() {
+        String window = GUI + "upgrades.";
+        put(window + "tab.tooltip", "Upgrades", "アップグレード");
+        put(window + "title", "Upgrades", "アップグレード");
+        put(window + "stat.potency", "Potency: %s", "規模: %s");
+        put(window + "stat.efficiency", "Efficiency: %s", "効率: %s");
+        put(window + "stat.complexity", "Complexity: %s", "複雑性: %s");
+        put(window + "stat.projection", "Projection: %s", "作動量: %s");
+        put(window + "stat.memory", "Memory: %s", "メモリ: %s");
+        put(window + "stat.psi_capacity", "Max Psi: %s", "最大Psi: %s");
+        put(window + "stat.conversion_speed", "Psi Conversion: %s/t", "Psi変換速度: %s/t");
+        put(window + "stat.conversion_efficiency", "Echo per Psi: %s mB", "Psi変換効率: %s mB/Psi");
+        put(window + "stat.interference", "Interference: %s%%", "事象干渉力: %s%%");
+        put(window + "increase", "(+%s)", "(+%s)");
+        put(window + "decrease", "(-%s)", "(-%s)");
+
+        String tooltip = "tooltip.psitweaks.autonomous_caster_upgrade.";
+        put(tooltip + "potency", "Potency +%s", "規模 +%s");
+        put(tooltip + "efficiency", "Efficiency +%s", "効率 +%s");
+        put(tooltip + "complexity", "Complexity +%s", "複雑性 +%s");
+        put(tooltip + "projection", "Projection +%s", "作動量 +%s");
+        put(tooltip + "memory", "Memory +%s", "メモリ +%s");
+        put(tooltip + "psi_capacity", "Max Psi +%s", "最大Psi +%s");
+        put(tooltip + "conversion_speed", "Psi conversion +%s/t", "Psi変換速度 +%s/t");
+        put(tooltip + "conversion_efficiency", "Echo per Psi -%s mB", "Psi 1あたりのエコー消費 -%s mB");
+        put(tooltip + "interference", "Phenomenon Interference +%s%%", "事象干渉力 +%s%%");
+        put(tooltip + "usage",
+                "Install from the Upgrades tab of an Autonomous Caster. One of each kind per machine",
+                "自律詠唱機のアップグレードタブから搭載します。同じ種類は1台に1つまでです");
+    }
+
     private void addErrors() {
         put(ERROR + "no_spell", "Spell Bullet slot %s has no spell", "術式弾スロット%sに術式がありません");
         put(ERROR + "loopcast_bullet", "Spell Bullet slot %s holds a Loopcast Spell Bullet, which the machine cannot cast",
@@ -162,6 +194,33 @@ final class AutonomousCasterTranslations {
         configValue("max_log_message_length", "Max Log Entry Length", "ログ1件の最大文字数",
                 "Maximum characters per activity log entry. Longer messages are cut off.",
                 "作動ログ1件あたりの最大文字数です。超えた分は省略されます。");
+        configValue("upgrade_potency", "Calculation Potency Upgrade", "演算規模アップグレード",
+                "Potency the upgrade adds to the internal CAD.",
+                "アップグレードで上がる内部CADの規模です。");
+        configValue("upgrade_efficiency", "Calculation Efficiency Upgrade", "演算効率アップグレード",
+                "Efficiency the upgrade adds to the internal CAD.",
+                "アップグレードで上がる内部CADの効率です。");
+        configValue("upgrade_complexity", "Overclock Upgrade", "オーバークロックアップグレード",
+                "Complexity the upgrade adds to the internal CAD.",
+                "アップグレードで上がる内部CADの複雑性です。");
+        configValue("upgrade_projection", "Multi-Step Upgrade", "マルチステップアップグレード",
+                "Projection the upgrade adds to the internal CAD.",
+                "アップグレードで上がる内部CADの作動量です。");
+        configValue("upgrade_memory", "Memory Upgrade", "メモリアップグレード",
+                "Memory the upgrade adds to the internal CAD.",
+                "アップグレードで上がる内部CADのメモリです。");
+        configValue("upgrade_psi_capacity", "Psyon Capacity Upgrade", "サイオン容量アップグレード",
+                "Internal Psi capacity the upgrade adds.",
+                "アップグレードで増える内部Psi容量です。");
+        configValue("upgrade_conversion_speed", "Psyon Conversion Speed Upgrade", "サイオン変換速度アップグレード",
+                "Psi per tick the upgrade adds to the recovery.",
+                "アップグレードで増える、1tickに回復するPsiです。");
+        configValue("upgrade_conversion_efficiency", "Psyon Conversion Efficiency Upgrade", "サイオン変換効率アップグレード",
+                "Psionic Echo Gas (mB) per Psi the upgrade saves. The cost never drops below a tenth of the base.",
+                "アップグレードで減る、Psi 1あたりの気化サイオニックエコーの量（mB）です。基本値の1割より少なくはなりません。");
+        configValue("upgrade_interference", "Phenomenon Interference Upgrade", "事象干渉力アップグレード",
+                "Phenomenon Interference the upgrade adds to the machine's caster (0.3 is +30%%).",
+                "アップグレードで詠唱主体の事象干渉力に足す値です（0.3で+30%%）。");
     }
 
     private void configValue(String id, String enUs, String jaJp, String enUsTooltip, String jaJpTooltip) {
@@ -209,11 +268,11 @@ final class AutonomousCasterTranslations {
                         + "$(li)GUIの$(item)0$(0)ボタンを押す$(li)機械が$(item)Trick: Break Loop$(0)を実行する"
                         + "$(p)術式によるスロットの切り替えでは引き継がれます.");
         put(BOOK + ".3",
-                fixedStats("The internal CAD has fixed stats: Efficiency %d, Potency %d, Complexity %d, Projection %d, "
-                        + "Bandwidth %d, Memory %d. A colorizer in the lower slot right of the gauges changes the spell color.$(p)")
+                baseStats("Without upgrades, the internal CAD has Efficiency %d, Potency %d, Complexity %d, Projection %d, "
+                        + "Bandwidth %d and Memory %d. A colorizer in the lower slot right of the gauges changes the spell color.$(p)")
                         + "The 36 slots below are the caster's inventory with its hotbar in the bottom row, "
                         + "and the selected hotbar slot counts as the held item. Items that do not fit drop in front of the machine.",
-                fixedStats("内部CADの性能値は固定で, 効率%d・規模%d・複雑性%d・作動量%d・帯域幅%d・メモリ%dです. "
+                baseStats("アップグレードなしの内部CADの性能値は, 効率%d・規模%d・複雑性%d・作動量%d・帯域幅%d・メモリ%dです. "
                         + "ゲージ右の下のスロットに着色器を入れると術式の色が変わります.$(p)")
                         + "下の36スロットは詠唱主体のインベントリで, 最下段がホットバーです. "
                         + "選択中のホットバーのスロットが手に持っている扱いになります. 入りきらないアイテムは機械の正面に落ちます.");
@@ -221,11 +280,38 @@ final class AutonomousCasterTranslations {
                 "By default, 250 mB of $(item)Psionic Echo Gas$(0) restores 25 Psi, up to 10,000 Psi. "
                         + "Feed the gas from any side, or use the upper slot right of the gauges. "
                         + "A side set to $(item)Input (2)$(0) in the side config feeds Spell Bullets into empty bullet slots.$(p)"
-                        + "Upgrades cannot be installed. A comparator reads the internal Psi.",
+                        + "A comparator reads the internal Psi.",
                 "初期設定では, $(item)気化サイオニックエコー$(0)250mBでPsiが25回復し, 最大10,000まで貯まります. "
                         + "気体はどの面からでも搬入でき, ゲージ右の上のスロットに気体入りアイテムを入れても補充できます. "
                         + "側面設定を$(item)搬入(2)$(0)にした面からは, 術式弾を空いている術式弾スロットに搬入できます.$(p)"
-                        + "アップグレードは搭載できません. コンパレーターで内部Psiの残量を読み取れます.");
+                        + "コンパレーターで内部Psiの残量を読み取れます.");
+        put(BOOK + ".upgrades",
+                "The $(item)Upgrades$(0) tab on the right of the GUI holds three upgrades. "
+                        + "Each raises one value with no drawback, and a machine takes only one of each kind. By default:"
+                        + "$(li)$(item)Calculation Potency$(0): Potency +500$(li)$(item)Calculation Efficiency$(0): Efficiency +50"
+                        + "$(li)$(item)Overclock$(0): Complexity +15$(li)$(item)Multi-Step$(0): Projection +3"
+                        + "$(li)$(item)Memory$(0): Memory +7",
+                "GUI右の$(item)アップグレード$(0)タブに, アップグレードを3つまで搭載できます. "
+                        + "どれも1つの性能だけを上げ, 下がる性能はありません. 同じ種類は1台に1つまでです. 初期設定では:"
+                        + "$(li)$(item)演算規模$(0): 規模+500$(li)$(item)演算効率$(0): 効率+50"
+                        + "$(li)$(item)オーバークロック$(0): 複雑性+15$(li)$(item)マルチステップ$(0): 作動量+3"
+                        + "$(li)$(item)メモリ$(0): メモリ+7");
+        put(BOOK + ".upgrades.2",
+                "$(li)$(item)Psyon Capacity$(0): max Psi +5000"
+                        + "$(li)$(item)Psyon Conversion Speed$(0): +10 Psi per tick"
+                        + "$(li)$(item)Psyon Conversion Efficiency$(0): 3 mB less Echo per Psi"
+                        + "$(li)$(item)Phenomenon Interference$(0): the caster's Phenomenon Interference +30%%"
+                        + "$(p)The upgrade window lists the current values. "
+                        + "Removing a Psyon Capacity Upgrade discards the Psi above the capacity.",
+                "$(li)$(item)サイオン容量$(0): 最大Psi+5000"
+                        + "$(li)$(item)サイオン変換速度$(0): 1tickの回復+10"
+                        + "$(li)$(item)サイオン変換効率$(0): Psi 1あたりのエコー消費-3mB"
+                        + "$(li)$(item)事象干渉力$(0): 詠唱主体の事象干渉力+30%%"
+                        + "$(p)アップグレードのウィンドウで今の性能値を確認できます. "
+                        + "サイオン容量アップグレードを外すと, 容量を超えた分のPsiは失われます.");
+        put(BOOK + ".upgrades.recipe",
+                "Glass above and below, Hypostasis Alloy on both sides and a material for each kind in the center.",
+                "上下にガラス, 左右に位格合金, 中央に種類ごとの素材を置きます.");
         put(BOOK + ".5",
                 "Spells that use the Ideaspace Storage use the storage of the machine's owner.$(p)"
                         + "Debug output, spell errors and spell warnings go to the $(item)Activity Log$(0) in the GUI instead of your chat. "
@@ -252,9 +338,9 @@ final class AutonomousCasterTranslations {
                         + "$(li)作動式: エンダーチェスト$(li)作動式: 作業台$(li)作動式: イデアストレージ閲覧");
     }
 
-    /** 内蔵 CAD の固定性能値を、効率・規模・複雑性・作動量・帯域幅・メモリの順に埋め込む。 */
-    private static String fixedStats(String format) {
-        Map<EnumCADStat, Integer> stats = VirtualCad.FIXED_STATS;
+    /** アップグレードなしの内蔵 CAD の性能値を、効率・規模・複雑性・作動量・帯域幅・メモリの順に埋め込む。 */
+    private static String baseStats(String format) {
+        Map<EnumCADStat, Integer> stats = VirtualCad.BASE_STATS;
         return String.format(Locale.ROOT, format, stats.get(EnumCADStat.EFFICIENCY), stats.get(EnumCADStat.POTENCY),
                 stats.get(EnumCADStat.COMPLEXITY), stats.get(EnumCADStat.PROJECTION), stats.get(EnumCADStat.BANDWIDTH),
                 stats.get(EnumCADStat.SAVED_VECTORS));

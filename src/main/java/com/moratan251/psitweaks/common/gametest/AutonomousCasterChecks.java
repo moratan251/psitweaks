@@ -1,12 +1,16 @@
 package com.moratan251.psitweaks.common.gametest;
 
 import com.mojang.authlib.GameProfile;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterSettings;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.caster.CasterLog;
+import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.compat.ConnectorMekanism;
 import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
+import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
@@ -14,6 +18,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorA
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
+import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterUpgradeSlot;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +62,7 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import vazkii.psi.api.PsiAPI;
+import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.capability.PsiCapabilities;
@@ -272,7 +278,7 @@ final class AutonomousCasterChecks {
 
     static void restoresPsiFromEcho(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
-        helper.assertTrue(!caster.supportsUpgrades(), "The machine accepts upgrades");
+        helper.assertTrue(!caster.supportsUpgrades(), "The machine accepts Mekanism's upgrades");
         var hydrogen = ConnectorMekanism.stack(ResourceLocation.fromNamespaceAndPath("mekanism", "hydrogen"), 100);
         helper.assertTrue(hydrogen.isEmpty() || !caster.getEchoTank().isValid(hydrogen), "The echo tank accepted another gas");
         caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(1000), mekanism.api.Action.EXECUTE,
@@ -345,7 +351,10 @@ final class AutonomousCasterChecks {
         caster.getDyeSlot().setStack(dye.copy());
         caster.getItemSlots().get(3).setStack(new ItemStack(Items.STONE, 9));
         caster.getItemSlots().get(35).setStack(new ItemStack(Items.BRICK, 6));
-        caster.setPsi(AutonomousCasterSettings.psiCapacity());
+        // 容量のアップグレードを入れて満タンにし、置き直したときに Psi を容量で削らないことも確かめる。
+        caster.getCasterUpgradeSlots().get(2).setStack(upgrade(AutonomousCasterUpgrade.PSI_CAPACITY));
+        int capacity = AutonomousCasterSettings.psiCapacity() + AutonomousCasterSettings.upgradePsiCapacity();
+        caster.setPsi(capacity);
         caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(2000), mekanism.api.Action.EXECUTE,
                 AutomationType.INTERNAL);
         caster.getLog().add(CasterLog.Source.CASTER_MESSAGE, net.minecraft.network.chat.Component.literal("before"), 0);
@@ -359,7 +368,7 @@ final class AutonomousCasterChecks {
             helper.assertTrue(!machine.isEmpty(), "Breaking the machine did not drop it");
             helper.assertTrue(drops.size() == 1, "Breaking the machine scattered its contents: " + drops.size() + " drops");
             Integer storedPsi = machine.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
-            helper.assertTrue(storedPsi != null && storedPsi == AutonomousCasterSettings.psiCapacity(),
+            helper.assertTrue(storedPsi != null && storedPsi == capacity,
                     "The internal Psi was not stored on the machine item: " + storedPsi);
             AttachedItems items = machine.get(MekanismDataComponents.ATTACHED_ITEMS);
             helper.assertTrue(items != null && items.containers().stream().anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, bullet)),
@@ -382,8 +391,10 @@ final class AutonomousCasterChecks {
             helper.assertTrue(restored.getInventorySlots(null).get(AutonomousCasterBlockEntity.BULLET_SLOTS + 1
                             + AutonomousCasterBlockEntity.HOTBAR_SLOTS) instanceof ChemicalInventorySlot,
                     "The echo fill slot moved, so machines saved before would load their items into the wrong slots");
+            helper.assertTrue(restored.hasCasterUpgrade(AutonomousCasterUpgrade.PSI_CAPACITY)
+                    && restored.getCasterUpgradeSlots().get(2).getCount() == 1, "The upgrade did not come back");
             helper.assertTrue(restored.getEchoTank().getStored() == 2000, "The echo gas did not come back");
-            helper.assertTrue(restored.getPsi() == AutonomousCasterSettings.psiCapacity(), "The internal Psi did not come back");
+            helper.assertTrue(restored.getPsi() == capacity, "The internal Psi did not come back: " + restored.getPsi());
             helper.assertTrue(restored.getLog().isEmpty(), "The log was carried over");
             // 空の機械は Psi を付けずに回収し、新品の機械と重ねられるようにする。
             restored.setPsi(0);
@@ -511,18 +522,32 @@ final class AutonomousCasterChecks {
         caster.loadWithComponents(old, registries);
         assertRestored(helper, caster, bullet, dye, "a machine saved with 8 bullet slots");
 
-        // 8個だった頃に回収したブロックアイテム: 増えた術式弾スロットの分だけ短い。
+        // アップグレードスロットがなかった頃に回収したブロックアイテム: 最後のアップグレードスロットの分だけ短い。
+        int withoutUpgrades = slots.size() - AutonomousCasterBlockEntity.UPGRADE_SLOTS;
+        List<ItemStack> beforeUpgrades = new ArrayList<>();
+        for (int i = 0; i < withoutUpgrades; i++) {
+            beforeUpgrades.add(slots.get(i).getStack().copy());
+        }
+        slots.forEach(IInventorySlot::setEmpty);
+        caster.applyComponentsFromItemStack(machineItem(beforeUpgrades));
+        assertRestored(helper, caster, bullet, dye, "a machine item picked up before upgrades");
+
+        // 8個だった頃に回収したブロックアイテム: 増えた術式弾スロットとアップグレードスロットの分だけ短い。
         List<ItemStack> oldStacks = new ArrayList<>();
-        for (int i = 0; i < slots.size(); i++) {
+        for (int i = 0; i < withoutUpgrades; i++) {
             if (i < oldBullets || i >= AutonomousCasterBlockEntity.BULLET_SLOTS) {
                 oldStacks.add(slots.get(i).getStack().copy());
             }
         }
-        ItemStack machine = new ItemStack(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.asItem());
-        machine.set(MekanismDataComponents.ATTACHED_ITEMS, new AttachedItems(oldStacks));
         slots.forEach(IInventorySlot::setEmpty);
-        caster.applyComponentsFromItemStack(machine);
+        caster.applyComponentsFromItemStack(machineItem(oldStacks));
         assertRestored(helper, caster, bullet, dye, "a machine item picked up with 8 bullet slots");
+    }
+
+    private static ItemStack machineItem(List<ItemStack> stacks) {
+        ItemStack machine = new ItemStack(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.asItem());
+        machine.set(MekanismDataComponents.ATTACHED_ITEMS, new AttachedItems(stacks));
+        return machine;
     }
 
     private static void assertRestored(GameTestHelper helper, AutonomousCasterBlockEntity caster, ItemStack bullet, ItemStack dye,
@@ -537,6 +562,107 @@ final class AutonomousCasterChecks {
                         && caster.getItemSlots().get(35).getStack().is(Items.BRICK)
                         && caster.getItemSlots().get(35).getStack().getCount() == 6,
                 "The items of " + source + " came back in the wrong slots");
+        helper.assertTrue(caster.getCasterUpgradeSlots().stream().allMatch(IInventorySlot::isEmpty),
+                "Something came back in the upgrade slots of " + source);
+    }
+
+    // ---- アップグレード ----
+
+    private static ItemStack upgrade(AutonomousCasterUpgrade upgrade) {
+        return new ItemStack(PsitweaksMekanismItems.autonomousCasterUpgrade(upgrade).get());
+    }
+
+    private static int stat(ItemStack cad, EnumCADStat stat) {
+        return ((ICAD) cad.getItem()).getStatValue(cad, stat);
+    }
+
+    /**
+     * アップグレードスロットには手でだけ入れられ、同じ種類は1台に1つまで。アイテムスロットには入らない。
+     * 入れた種類の性能だけが上がり、外すと戻る（容量を超えた Psi は捨てる）。
+     */
+    static void upgradesRaiseOneValueEach(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        List<AutonomousCasterUpgradeSlot> slots = caster.getCasterUpgradeSlots();
+        helper.assertTrue(slots.size() == AutonomousCasterBlockEntity.UPGRADE_SLOTS, "The machine has " + slots.size() + " upgrade slots");
+        ItemStack potency = upgrade(AutonomousCasterUpgrade.POTENCY);
+        helper.assertTrue(slots.get(0).insertItem(potency.copyWithCount(2), mekanism.api.Action.EXECUTE, AutomationType.MANUAL).getCount() == 1
+                        && slots.get(0).getCount() == 1, "An upgrade slot took more than one upgrade");
+        helper.assertTrue(slots.get(1).insertItem(potency.copy(), mekanism.api.Action.EXECUTE, AutomationType.MANUAL).getCount() == 1,
+                "A second upgrade of the same kind was installed");
+        ItemStack capacityUpgrade = upgrade(AutonomousCasterUpgrade.PSI_CAPACITY);
+        helper.assertTrue(slots.get(1).insertItem(capacityUpgrade, mekanism.api.Action.EXECUTE, AutomationType.EXTERNAL).getCount() == 1,
+                "An upgrade was piped into the machine");
+        helper.assertTrue(slots.get(1).insertItem(capacityUpgrade, mekanism.api.Action.EXECUTE, AutomationType.MANUAL).isEmpty(),
+                "The capacity upgrade was refused");
+        helper.assertTrue(slots.get(2).insertItem(new ItemStack(Items.STONE), mekanism.api.Action.EXECUTE, AutomationType.MANUAL).getCount() == 1,
+                "An upgrade slot took something that is not an upgrade");
+        helper.assertTrue(slots.get(2).insertItem(upgrade(AutonomousCasterUpgrade.INTERFERENCE), mekanism.api.Action.EXECUTE,
+                AutomationType.MANUAL).isEmpty(), "The interference upgrade was refused");
+        helper.assertTrue(slots.get(0).extractItem(1, mekanism.api.Action.SIMULATE, AutomationType.EXTERNAL).isEmpty(),
+                "An upgrade can be piped out of the machine");
+        helper.assertTrue(!caster.getItemSlots().get(0).isItemValid(potency), "An item slot takes upgrades");
+
+        int baseCapacity = AutonomousCasterSettings.psiCapacity();
+        int capacity = baseCapacity + AutonomousCasterSettings.upgradePsiCapacity();
+        helper.runAfterDelay(2, () -> {
+            ItemStack cad = caster.getVirtualCad();
+            int potencyBonus = AutonomousCasterSettings.cadStatBonus(AutonomousCasterUpgrade.POTENCY);
+            helper.assertTrue(stat(cad, EnumCADStat.POTENCY) == VirtualCad.BASE_STATS.get(EnumCADStat.POTENCY) + potencyBonus,
+                    "The internal CAD's Potency is " + stat(cad, EnumCADStat.POTENCY));
+            helper.assertTrue(stat(cad, EnumCADStat.EFFICIENCY) == VirtualCad.BASE_STATS.get(EnumCADStat.EFFICIENCY),
+                    "An upgrade raised a stat it does not raise");
+            helper.assertTrue(caster.getStatBonus(AutonomousCasterUpgrade.POTENCY) == potencyBonus
+                            && caster.getStatValue(AutonomousCasterUpgrade.POTENCY) == stat(cad, EnumCADStat.POTENCY)
+                            && caster.getStatBonus(AutonomousCasterUpgrade.EFFICIENCY) == 0,
+                    "The upgrade window would show other values than the internal CAD has");
+
+            caster.setPsi(Integer.MAX_VALUE);
+            helper.assertTrue(caster.getPsiCapacity() == capacity && caster.getPsi() == capacity,
+                    "The capacity upgrade did not raise the capacity: " + caster.getPsi() + " / " + caster.getPsiCapacity());
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine has no caster");
+            double interference = 1.0D + AutonomousCasterSettings.upgradeInterference();
+            helper.assertTrue(Math.abs(fake.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR) - interference) < 1.0E-9,
+                    "The caster's Phenomenon Interference is " + fake.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR));
+
+            slots.get(1).setEmpty();
+            slots.get(2).setEmpty();
+            helper.runAfterDelay(2, () -> {
+                helper.assertTrue(caster.getPsi() == baseCapacity && caster.getPsiCapacity() == baseCapacity,
+                        "The Psi above the capacity stayed after the upgrade was removed: " + caster.getPsi());
+                helper.assertTrue(PlayerDataHandler.get(fake).getTotalPsi() == baseCapacity, "The caster's max Psi did not go back");
+                helper.assertTrue(fake.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR) == 1.0D,
+                        "The caster kept the interference after the upgrade was removed");
+                helper.assertTrue(stat(caster.getVirtualCad(), EnumCADStat.POTENCY)
+                                == VirtualCad.BASE_STATS.get(EnumCADStat.POTENCY) + potencyBonus,
+                        "Removing other upgrades took the Potency back");
+                helper.succeed();
+            });
+        });
+    }
+
+    /** 変換速度と変換効率のアップグレードで、1 tick の回復が増え、Psi 1 あたりのエコー消費が減る。 */
+    static void upgradesSpeedUpAndCheapenPsiRecovery(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        caster.getCasterUpgradeSlots().get(0).setStack(upgrade(AutonomousCasterUpgrade.CONVERSION_SPEED));
+        caster.getCasterUpgradeSlots().get(1).setStack(upgrade(AutonomousCasterUpgrade.CONVERSION_EFFICIENCY));
+        caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(1000), mekanism.api.Action.EXECUTE,
+                AutomationType.INTERNAL);
+        int perTick = AutonomousCasterSettings.psiPerOperation() + AutonomousCasterSettings.upgradeConversionSpeed();
+        double echoPerPsi = AutonomousCasterSettings.echoPerPsi() - AutonomousCasterSettings.upgradeConversionEfficiency();
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(caster.getRecoveryPerTick() == perTick,
+                    "The machine restored " + caster.getRecoveryPerTick() + " Psi per tick instead of " + perTick);
+            helper.runAfterDelay(20, () -> {
+                int expected = (int) Math.floor(1000 / echoPerPsi + 1.0E-9D);
+                helper.assertTrue(caster.getPsi() == expected,
+                        "1000 mB of echo restored " + caster.getPsi() + " Psi instead of " + expected);
+                helper.assertTrue(caster.getStatValue(AutonomousCasterUpgrade.CONVERSION_EFFICIENCY) == Math.round(echoPerPsi * 100.0D)
+                                && caster.getStatValue(AutonomousCasterUpgrade.CONVERSION_SPEED) == perTick,
+                        "The upgrade window would show other recovery values");
+                helper.succeed();
+            });
+        });
     }
 
     /** 「取得子: 詠唱機位置」は機械のブロックの中心を返し、機械以外からの詠唱ではエラーになる。 */

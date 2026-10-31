@@ -2,13 +2,17 @@ package com.moratan251.psitweaks.common.tile.machine;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
+import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterHost;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterSettings;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
+import com.moratan251.psitweaks.common.items.ItemAutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterLog;
@@ -16,6 +20,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,12 +69,14 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -82,6 +89,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.Spell;
@@ -96,6 +104,9 @@ import vazkii.psi.common.item.ItemLoopcastSpellBullet;
  * <p>
  * 詠唱コストは気化サイオニックエコーから回復する内部 Psi だけで払う。機械の36スロットは Caster の通常インベントリ
  * （ホットバーと残りの27枠）へ写像し、術式による消費・変化を毎 tick 書き戻す。Caster 宛てのメッセージは作動ログへ集める。
+ * <p>
+ * アップグレードスロット（{@link #UPGRADE_SLOTS} 個）に入れた {@link AutonomousCasterUpgrade} が、内蔵 CAD の性能値・内部 Psi の
+ * 容量と回復・詠唱主体の事象干渉力を上げる。
  */
 public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost, IHasVisualization {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -106,6 +117,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     public static final int ITEM_SLOTS = Inventory.INVENTORY_SIZE;
     /** 手に持つスロットとして選べるホットバーの数。 */
     public static final int HOTBAR_SLOTS = Inventory.getSelectionSize();
+    /** アップグレードスロットの数。同じ種類のアップグレードは1つまで。 */
+    public static final int UPGRADE_SLOTS = 3;
     public static final int MIN_YAW = -180;
     public static final int MAX_YAW = 180;
     public static final int MIN_PITCH = -90;
@@ -131,6 +144,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private static final int ACTIVE_TICKS_AFTER_CAST = 10;
     /** Caster の目の位置。ブロック中心から前面方向へずらす距離（前面から 0.25 ブロック外）。 */
     private static final double EYE_FORWARD_OFFSET = 0.75D;
+    /** サイオン変換効率アップグレードを入れても、Psi 1 あたりのエコー消費はアップグレードなしの値のこの割合より下げない。 */
+    private static final double MIN_ECHO_PER_PSI_RATIO = 0.1D;
+    /** 事象干渉力アップグレードで詠唱主体に付ける属性修飾の ID。 */
+    private static final ResourceLocation INTERFERENCE_MODIFIER_ID = Psitweaks.location("autonomous_caster_interference_upgrade");
 
     private static final String TAG_PSI = "Psi";
     private static final String TAG_SELECTED_BULLET = "SelectedBullet";
@@ -185,6 +202,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private IInventorySlot dyeSlot;
     private List<IInventorySlot> itemSlots;
     private ChemicalInventorySlot echoSlot;
+    private List<AutonomousCasterUpgradeSlot> upgradeSlots;
     private IChemicalTank echoTank;
 
     private int psi;
@@ -233,6 +251,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     // クライアントへ同期する値（サーバーのコンフィグを正とする）
     private int clientPsiCapacity = AutonomousCasterSettings.psiCapacity();
     private int clientMinCastInterval = AutonomousCasterSettings.minCastInterval();
+    /** アップグレード窓に出す値（{@link #statValue}・{@link #statBonus}）。種類の順に並べる。 */
+    private final int[] clientStatValues = new int[AutonomousCasterUpgrade.values().length];
+    private final int[] clientStatBonuses = new int[AutonomousCasterUpgrade.values().length];
     @Nullable
     private CasterLog clientLog;
     /** GUI の左のタブで切り替える、視線の表示。クライアントだけの状態で保存しない。 */
@@ -300,7 +321,28 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
                     ITEM_X + column * 18, ITEM_Y + row * 18)));
         }
         itemSlots = List.copyOf(items);
+
+        // アップグレードスロットは後から足したので最後に置き、ほかのスロットの番号を変えない。
+        IContentsListener upgradeListener = () -> {
+            listener.onContentsChanged();
+            virtualCadDirty = true;
+            markDirtyComparator();
+        };
+        List<AutonomousCasterUpgradeSlot> upgrades = new ArrayList<>(UPGRADE_SLOTS);
+        for (int i = 0; i < UPGRADE_SLOTS; i++) {
+            upgrades.add(builder.addSlot(new AutonomousCasterUpgradeSlot(upgradeListener, this::installedElsewhere)));
+        }
+        upgradeSlots = List.copyOf(upgrades);
         return builder.build();
+    }
+
+    private boolean installedElsewhere(AutonomousCasterUpgradeSlot slot, AutonomousCasterUpgrade upgrade) {
+        for (AutonomousCasterUpgradeSlot other : upgradeSlots) {
+            if (other != slot && other.upgrade() == upgrade) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ---- tick ----
@@ -328,6 +370,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
         reconcileMirror();
         syncCasterPsi();
+        syncCasterInterference();
         if (gameTime() % 20 == 0) {
             refreshOwnerLanguage();
         }
@@ -428,7 +471,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     private void refreshVirtualCad() {
         virtualCadDirty = false;
-        virtualCad = VirtualCad.rebuild(registriesOrNull(), dyeSlot.getStack(), virtualCad);
+        virtualCad = VirtualCad.rebuild(registriesOrNull(), dyeSlot.getStack(), virtualCad, cadStatBonuses());
         VirtualCad.select(virtualCad, selectedBullet);
         AutonomousCasterPlayer current = caster;
         if (current != null) {
@@ -535,9 +578,12 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return new Vec3(Mth.sin(yRot) * horizontal, -Mth.sin(xRot), Mth.cos(yRot) * horizontal);
     }
 
-    /** Psi 回復。1 tick に回復1回分を、コンフィグの比率で気化サイオニックエコーを使って回復する。アップグレードは載せられない。 */
+    /**
+     * Psi 回復。1 tick に {@link #psiPerTick} まで、{@link #echoPerPsi} の比率で気化サイオニックエコーを使って回復する。
+     * サイオン容量アップグレードを外して容量を超えた分は捨てる。
+     */
     private int recoverPsi() {
-        int capacity = AutonomousCasterSettings.psiCapacity();
+        int capacity = psiCapacity();
         if (psi > capacity) {
             psi = capacity;
             markDirtyComparator();
@@ -548,8 +594,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         if (missing <= 0 || echo <= 0) {
             return 0;
         }
-        int perOperation = AutonomousCasterSettings.psiPerOperation();
-        double echoPerPsi = (double) AutonomousCasterSettings.echoPerOperation() / perOperation;
+        int perOperation = psiPerTick();
+        double echoPerPsi = echoPerPsi();
         long byEcho = (long) Math.floor(echo / echoPerPsi + 1.0E-9D);
         int gain = (int) Math.max(0L, Math.min(Math.min(perOperation, missing), byEcho));
         if (gain <= 0) {
@@ -572,7 +618,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         if (current == null) {
             return;
         }
-        int capacity = AutonomousCasterSettings.psiCapacity();
+        int capacity = psiCapacity();
         AttributeInstance totalPsi = current.getAttribute(ModAttributes.TOTAL_PSI.holder());
         if (totalPsi != null && totalPsi.getBaseValue() != capacity) {
             totalPsi.setBaseValue(capacity);
@@ -585,6 +631,107 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
         data.availablePsi = psi;
         casterPsiWritten = psi;
+    }
+
+    /** 事象干渉力アップグレードの分を詠唱主体の事象干渉力に足す。外したら戻す。 */
+    private void syncCasterInterference() {
+        AutonomousCasterPlayer current = caster;
+        AttributeInstance factor = current == null ? null : current.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
+        if (factor == null) {
+            return;
+        }
+        double bonus = interferenceBonus();
+        AttributeModifier applied = factor.getModifier(INTERFERENCE_MODIFIER_ID);
+        if (bonus <= 0.0D) {
+            if (applied != null) {
+                factor.removeModifier(INTERFERENCE_MODIFIER_ID);
+            }
+        } else if (applied == null || applied.amount() != bonus) {
+            factor.addOrUpdateTransientModifier(new AttributeModifier(INTERFERENCE_MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_VALUE));
+        }
+    }
+
+    // ---- アップグレード ----
+
+    public boolean hasCasterUpgrade(AutonomousCasterUpgrade upgrade) {
+        for (AutonomousCasterUpgradeSlot slot : upgradeSlots) {
+            if (slot.upgrade() == upgrade) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 入っているアップグレードで内蔵 CAD の性能値に足す分。 */
+    private Map<EnumCADStat, Integer> cadStatBonuses() {
+        Map<EnumCADStat, Integer> bonuses = new EnumMap<>(EnumCADStat.class);
+        for (AutonomousCasterUpgradeSlot slot : upgradeSlots) {
+            AutonomousCasterUpgrade upgrade = slot.upgrade();
+            if (upgrade != null && upgrade.cadStat() != null) {
+                bonuses.merge(upgrade.cadStat(), AutonomousCasterSettings.cadStatBonus(upgrade), Integer::sum);
+            }
+        }
+        return bonuses;
+    }
+
+    /** 内部 Psi の容量。サイオン容量アップグレードの分を足す。 */
+    private int psiCapacity() {
+        long capacity = AutonomousCasterSettings.psiCapacity();
+        if (hasCasterUpgrade(AutonomousCasterUpgrade.PSI_CAPACITY)) {
+            capacity += AutonomousCasterSettings.upgradePsiCapacity();
+        }
+        return (int) Math.min(Integer.MAX_VALUE, capacity);
+    }
+
+    /** 1 tick に回復する Psi の上限。サイオン変換速度アップグレードの分を足す。 */
+    private int psiPerTick() {
+        long perTick = AutonomousCasterSettings.psiPerOperation();
+        if (hasCasterUpgrade(AutonomousCasterUpgrade.CONVERSION_SPEED)) {
+            perTick += AutonomousCasterSettings.upgradeConversionSpeed();
+        }
+        return (int) Math.min(Integer.MAX_VALUE, perTick);
+    }
+
+    /** Psi 1 を回復するのに使う気化サイオニックエコー（mB）。サイオン変換効率アップグレードの分を引く。 */
+    private double echoPerPsi() {
+        double base = AutonomousCasterSettings.echoPerPsi();
+        if (!hasCasterUpgrade(AutonomousCasterUpgrade.CONVERSION_EFFICIENCY)) {
+            return base;
+        }
+        return Math.max(base - AutonomousCasterSettings.upgradeConversionEfficiency(), base * MIN_ECHO_PER_PSI_RATIO);
+    }
+
+    /** 事象干渉力アップグレードで詠唱主体の事象干渉力に足す値。入っていなければ 0。 */
+    private double interferenceBonus() {
+        return hasCasterUpgrade(AutonomousCasterUpgrade.INTERFERENCE) ? AutonomousCasterSettings.upgradeInterference() : 0.0D;
+    }
+
+    /**
+     * アップグレード窓に出す、種類が上げる性能の今の値。CAD の性能値・内部 Psi の容量・1 tick の回復量はそのまま、
+     * Psi 1 あたりのエコー消費は mB の100倍、事象干渉力は百分率にする。
+     */
+    private int statValue(AutonomousCasterUpgrade upgrade) {
+        return switch (upgrade) {
+            case PSI_CAPACITY -> psiCapacity();
+            case CONVERSION_SPEED -> psiPerTick();
+            case CONVERSION_EFFICIENCY -> (int) Math.round(echoPerPsi() * 100.0D);
+            case INTERFERENCE -> (int) Math.round((1.0D + interferenceBonus()) * 100.0D);
+            default -> VirtualCad.BASE_STATS.getOrDefault(upgrade.cadStat(), 0) + statBonus(upgrade);
+        };
+    }
+
+    /** {@link #statValue} のうち、アップグレードで変わった分（変換効率は減った分）。入っていなければ 0。 */
+    private int statBonus(AutonomousCasterUpgrade upgrade) {
+        if (!hasCasterUpgrade(upgrade)) {
+            return 0;
+        }
+        return switch (upgrade) {
+            case PSI_CAPACITY -> psiCapacity() - AutonomousCasterSettings.psiCapacity();
+            case CONVERSION_SPEED -> psiPerTick() - AutonomousCasterSettings.psiPerOperation();
+            case CONVERSION_EFFICIENCY -> (int) Math.round((AutonomousCasterSettings.echoPerPsi() - echoPerPsi()) * 100.0D);
+            case INTERFERENCE -> (int) Math.round(interferenceBonus() * 100.0D);
+            default -> AutonomousCasterSettings.cadStatBonus(upgrade);
+        };
     }
 
     // ---- 詠唱 ----
@@ -647,7 +794,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             crashed = true;
         }
 
-        psi = Mth.clamp(data.availablePsi, 0, AutonomousCasterSettings.psiCapacity());
+        psi = Mth.clamp(data.availablePsi, 0, psiCapacity());
         data.availablePsi = psi;
         casterPsiWritten = psi;
         data.overflowed = false;
@@ -1100,13 +1247,13 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
     }
 
-    /** 置き直したときに、ブロックアイテムに残した内部 Psi を戻す。 */
+    /** 置き直したときに、ブロックアイテムに残した内部 Psi を戻す。容量は先に戻したアップグレードの分を含める。 */
     @Override
     protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
         Integer stored = input.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
         if (stored != null) {
-            psi = Mth.clamp(stored, 0, AutonomousCasterSettings.psiCapacity());
+            psi = Mth.clamp(stored, 0, psiCapacity());
             markDirtyComparator();
             markForSave();
         }
@@ -1118,14 +1265,18 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         tag.remove(TAG_PSI);
     }
 
-    /** 術式弾スロットが今より少なかった頃に回収した機械は、足りない術式弾スロットの分だけ空きを挟んで番号を合わせる。 */
+    /**
+     * アップグレードスロットがなかった頃に回収した機械は、最後に空のアップグレードスロットを足す。
+     * 術式弾スロットが今より少なかった頃のものは、足りない術式弾スロットの分だけ空きを挟んで番号を合わせる。
+     */
     @Override
     public void applyInventorySlots(@NotNull BlockEntity.DataComponentInput input, @NotNull List<IInventorySlot> slots,
             @NotNull AttachedItems attachedItems) {
-        int missing = slots.size() - attachedItems.size();
-        if (missing > 0 && missing < BULLET_SLOTS) {
+        int missingBullets = slots.size() - UPGRADE_SLOTS - attachedItems.size();
+        if (attachedItems.size() < slots.size() && missingBullets >= 0 && missingBullets < BULLET_SLOTS) {
             List<ItemStack> stacks = new ArrayList<>(attachedItems.containers());
-            stacks.addAll(BULLET_SLOTS - missing, Collections.nCopies(missing, ItemStack.EMPTY));
+            stacks.addAll(BULLET_SLOTS - missingBullets, Collections.nCopies(missingBullets, ItemStack.EMPTY));
+            stacks.addAll(Collections.nCopies(UPGRADE_SLOTS, ItemStack.EMPTY));
             attachedItems = new AttachedItems(stacks);
         }
         super.applyInventorySlots(input, slots, attachedItems);
@@ -1229,7 +1380,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> psi, value -> psi = value));
-        container.track(SyncableInt.create(AutonomousCasterSettings::psiCapacity, value -> clientPsiCapacity = Math.max(1, value)));
+        container.track(SyncableInt.create(this::psiCapacity, value -> clientPsiCapacity = Math.max(1, value)));
         container.track(SyncableInt.create(AutonomousCasterSettings::minCastInterval, value -> clientMinCastInterval = value));
         container.track(SyncableInt.create(() -> selectedBullet, value -> selectedBullet = Mth.clamp(value, 0, BULLET_SLOTS - 1)));
         container.track(SyncableInt.create(() -> selectedItemSlot, value -> selectedItemSlot = Mth.clamp(value, 0, HOTBAR_SLOTS - 1)));
@@ -1243,6 +1394,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         container.track(SyncableEnum.create(Outcome::byIndex, Outcome.NONE, () -> lastOutcome, value -> lastOutcome = value));
         container.track(SyncableLong.create(() -> lastFailureSequence, value -> lastFailureSequence = value));
         container.track(SyncableInt.create(() -> recoveryPerTick, value -> recoveryPerTick = value));
+        for (AutonomousCasterUpgrade upgrade : AutonomousCasterUpgrade.values()) {
+            int index = upgrade.ordinal();
+            container.track(SyncableInt.create(() -> statValue(upgrade), value -> clientStatValues[index] = value));
+            container.track(SyncableInt.create(() -> statBonus(upgrade), value -> clientStatBonuses[index] = value));
+        }
     }
 
     @Override
@@ -1252,7 +1408,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(psi, AutonomousCasterSettings.psiCapacity());
+        return MekanismUtils.redstoneLevelFromContents(psi, psiCapacity());
     }
 
     // ---- 判定 ----
@@ -1271,9 +1427,12 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return stack.getItem() instanceof ItemLoopcastSpellBullet;
     }
 
-    /** Caster へ写すスロット: CAD を入れると Caster が CAD を一意に特定できなくなるため拒否する。 */
+    /**
+     * Caster へ写すスロット: CAD を入れると Caster が CAD を一意に特定できなくなるため拒否する。
+     * アップグレードも拒否し、Shift クリックでアップグレード窓のスロットへ入るようにする。
+     */
     public static boolean isMirrorableItem(ItemStack stack) {
-        return !(stack.getItem() instanceof ICAD);
+        return !(stack.getItem() instanceof ICAD) && !(stack.getItem() instanceof ItemAutonomousCasterUpgrade);
     }
 
     @Nullable
@@ -1313,12 +1472,26 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         return itemSlots;
     }
 
+    public List<AutonomousCasterUpgradeSlot> getCasterUpgradeSlots() {
+        return upgradeSlots;
+    }
+
+    /** アップグレード窓の表示用。単位は {@link #statValue} と同じ。 */
+    public int getStatValue(AutonomousCasterUpgrade upgrade) {
+        return isRemote() ? clientStatValues[upgrade.ordinal()] : statValue(upgrade);
+    }
+
+    /** アップグレード窓の表示用。単位は {@link #statBonus} と同じ。 */
+    public int getStatBonus(AutonomousCasterUpgrade upgrade) {
+        return isRemote() ? clientStatBonuses[upgrade.ordinal()] : statBonus(upgrade);
+    }
+
     public int getPsi() {
         return psi;
     }
 
     public int getPsiCapacity() {
-        return isRemote() ? clientPsiCapacity : AutonomousCasterSettings.psiCapacity();
+        return isRemote() ? clientPsiCapacity : psiCapacity();
     }
 
     public int getMinCastInterval() {
@@ -1401,7 +1574,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     public void setPsi(int psi) {
-        this.psi = Mth.clamp(psi, 0, AutonomousCasterSettings.psiCapacity());
+        this.psi = Mth.clamp(psi, 0, psiCapacity());
         markDirtyComparator();
         markForSave();
     }

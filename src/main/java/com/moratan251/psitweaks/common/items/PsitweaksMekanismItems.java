@@ -1,7 +1,11 @@
 package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.registries.PsitweaksModules;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.item.ItemModule;
@@ -27,12 +31,28 @@ public final class PsitweaksMekanismItems {
             "module_phenomenon_interference_enhancement_unit",
             () -> PsitweaksModules.PHENOMENON_INTERFERENCE_ENHANCEMENT_UNIT
     );
+    /** 自律詠唱機のアップグレード。種類ごとに1アイテム。 */
+    public static final Map<AutonomousCasterUpgrade, DeferredItem<ItemAutonomousCasterUpgrade>> AUTONOMOUS_CASTER_UPGRADES =
+            registerAutonomousCasterUpgrades();
 
     private PsitweaksMekanismItems() {
     }
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+    }
+
+    public static DeferredItem<ItemAutonomousCasterUpgrade> autonomousCasterUpgrade(AutonomousCasterUpgrade upgrade) {
+        return AUTONOMOUS_CASTER_UPGRADES.get(upgrade);
+    }
+
+    private static Map<AutonomousCasterUpgrade, DeferredItem<ItemAutonomousCasterUpgrade>> registerAutonomousCasterUpgrades() {
+        Map<AutonomousCasterUpgrade, DeferredItem<ItemAutonomousCasterUpgrade>> items = new EnumMap<>(AutonomousCasterUpgrade.class);
+        for (AutonomousCasterUpgrade upgrade : AutonomousCasterUpgrade.values()) {
+            items.put(upgrade, ITEMS.register(upgrade.itemId(),
+                    () -> new ItemAutonomousCasterUpgrade(upgrade, new Item.Properties().rarity(Rarity.UNCOMMON))));
+        }
+        return Collections.unmodifiableMap(items);
     }
 
     private static DeferredItem<ItemModule> registerModule(String id, Supplier<Holder<ModuleData<?>>> module) {

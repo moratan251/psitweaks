@@ -27,7 +27,8 @@ import vazkii.psi.api.cad.EnumCADComponent;
 
 /**
  * 自律詠唱機の運転画面。プレイヤーのインベントリと同じ並びのアイテムスロットを見せ、操作は
- * {@link GuiAutonomousCasterSettings}、作動ログは {@link GuiAutonomousCasterLog} の別ウィンドウで開く。
+ * {@link GuiAutonomousCasterSettings}、作動ログは {@link GuiAutonomousCasterLog}、アップグレードは右のタブから
+ * {@link GuiAutonomousCasterUpgrades} の別ウィンドウで開く。
  */
 public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlockEntity, MekanismTileContainer<AutonomousCasterBlockEntity>> {
     private static final String KEY = "gui.psitweaks.autonomous_caster.";
@@ -39,6 +40,7 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
     private GuiAutonomousCasterSettings settingsWindow;
     @Nullable
     private GuiAutonomousCasterLog logWindow;
+    private GuiAutonomousCasterUpgradeTab upgradeTab;
 
     public GuiAutonomousCaster(MekanismTileContainer<AutonomousCasterBlockEntity> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -78,6 +80,7 @@ public class GuiAutonomousCaster extends GuiConfigurableTile<AutonomousCasterBlo
                 .setTooltip(Tooltip.create(Component.translatable(KEY + "log.tooltip")));
 
         addRenderableWidget(new GuiAutonomousCasterSightTab(this, tile));
+        upgradeTab = addRenderableWidget(new GuiAutonomousCasterUpgradeTab(this, tile, () -> upgradeTab));
     }
 
     private MekanismButton button(int x, int y, int width, int height, Supplier<Component> text, Runnable onClick) {
