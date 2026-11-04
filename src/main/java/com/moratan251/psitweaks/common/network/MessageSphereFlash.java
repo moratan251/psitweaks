@@ -9,8 +9,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
- * A short-lived spherical flash drawn on clients: the honeycomb shield of Trick: Barrier and the shock spheres of
- * the combat tricks. When {@code entityId} is set the flash follows that entity; otherwise it stays at the position.
+ * A short-lived spherical flash drawn on clients: the honeycomb shield of Trick: Barrier, the shock spheres of
+ * the combat tricks and the water splash of Aqua Cutter. When {@code entityId} is set the flash follows that
+ * entity; otherwise it stays at the position.
  */
 public record MessageSphereFlash(int entityId, Vec3 position, float radius, int color, Style style,
                                  Vec3 impactDirection, float strength) implements CustomPacketPayload {
@@ -32,7 +33,12 @@ public record MessageSphereFlash(int entityId, Vec3 position, float radius, int 
         /** An expanding plain shock sphere (Burst, Starfall impact). */
         SHOCKWAVE,
         /** A contracting sphere followed by a flash (Gravity Collapse). */
-        IMPLOSION;
+        IMPLOSION,
+        /**
+         * Drops of water flying apart and falling (Aqua Cutter). {@code radius} is about how far they fly and
+         * {@code impactDirection} the side they mostly spray towards.
+         */
+        WATER_SPLASH;
 
         private static final Style[] VALUES = values();
 

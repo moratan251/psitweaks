@@ -6,20 +6,29 @@ import com.moratan251.psitweaks.common.network.MessageSphereFlash.Style;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-/** One running sphere flash: the honeycomb shield of Trick: Barrier, or a plain shock sphere. */
+/** One running sphere flash: the honeycomb shield of Trick: Barrier, a plain shock sphere, or a water splash. */
 final class SphereFlashEffect {
     /** How far the cell edges reach into each cell; the inner part is the dim fill. */
     private static final float EDGE_INSET = 0.80F;
+    private static final int SPLASH_DROPS = 24;
+    /** Blocks per tick squared the splash drops fall with. */
+    private static final float SPLASH_GRAVITY = 0.03F;
+    /** The deep blue mixed into the body of the drops; their highlights take the message colour. */
+    private static final int SPLASH_WATER = 0x1E5FB0;
 
     private final MessageSphereFlash message;
     private final int duration;
     private final int color;
     private final Vector3f impact;
+    /** The starting velocity (blocks per tick) and size of each drop of a water splash; empty for other styles. */
+    private final Vector3f[] dropVelocities;
+    private final float[] dropSizes;
     private int age;
 
     SphereFlashEffect(MessageSphereFlash message) {
@@ -30,6 +39,33 @@ final class SphereFlashEffect {
         this.impact = direction.lengthSqr() > 1.0E-6
                 ? new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize()
                 : null;
+        if (message.style() == Style.WATER_SPLASH) {
+            dropVelocities = new Vector3f[SPLASH_DROPS];
+            dropSizes = new float[SPLASH_DROPS];
+            throwDrops(message.radius());
+        } else {
+            dropVelocities = new Vector3f[0];
+            dropSizes = new float[0];
+        }
+    }
+
+    /** Drops fly out in every direction but mostly towards the spray side, a little upward, at varied speeds. */
+    private void throwDrops(float reach) {
+        RandomSource random = RandomSource.create();
+        Vector3f spray = impact != null ? impact : new Vector3f(0.0F, 1.0F, 0.0F);
+        for (int i = 0; i < SPLASH_DROPS; i++) {
+            Vector3f direction = new Vector3f((float) random.nextGaussian(), (float) random.nextGaussian(),
+                    (float) random.nextGaussian());
+            if (direction.lengthSquared() < 1.0E-4F) {
+                direction.set(spray);
+            }
+            direction.normalize().add(new Vector3f(spray).mul(1.1F)).add(0.0F, 0.35F, 0.0F);
+            if (direction.lengthSquared() < 1.0E-4F) {
+                direction.set(0.0F, 1.0F, 0.0F);
+            }
+            dropVelocities[i] = direction.normalize().mul(reach * (0.13F + 0.2F * random.nextFloat()));
+            dropSizes[i] = 0.05F + 0.07F * random.nextFloat();
+        }
     }
 
     private static int durationOf(Style style) {
@@ -40,6 +76,7 @@ final class SphereFlashEffect {
             case BARRIER_FADE -> 12;
             case SHOCKWAVE -> 10;
             case IMPLOSION -> 16;
+            case WATER_SPLASH -> 12;
         };
     }
 
@@ -57,6 +94,7 @@ final class SphereFlashEffect {
         switch (message.style()) {
             case SHOCKWAVE -> renderShockwave(buffers, pose, center, t, strength);
             case IMPLOSION -> renderImplosion(buffers, pose, center, t, strength);
+            case WATER_SPLASH -> renderWaterSplash(buffers, pose, center, age + partialTick, t, strength);
             default -> renderHoneycomb(buffers, pose, center, t, strength);
         }
     }
@@ -97,6 +135,45 @@ final class SphereFlashEffect {
             float fade = (1.0F - phase) * strength;
             int white = GlowDrawing.whiten(color, 0.7F);
             GlowDrawing.rimSphere(consumer, pose, center, radius, white, 0.6F * fade, 1.2F * fade, 255);
+        }
+    }
+
+    /**
+     * Drops of water fly apart and fall, each drawn as a streak stretched along its motion: a see-through blue body
+     * with a bright highlight. A brief glow marks where the water broke.
+     */
+    private void renderWaterSplash(MultiBufferSource buffers, Matrix4f pose, Vector3f center, float time, float t,
+                                   float strength) {
+        float fade = (float) Math.pow(1.0F - t, 1.2);
+        float shrink = 1.0F - 0.4F * t;
+        int body = GlowDrawing.mix(color, SPLASH_WATER, 0.45F);
+        int highlight = GlowDrawing.whiten(color, 0.65F);
+        Vector3f[] heads = new Vector3f[SPLASH_DROPS];
+        Vector3f[] tails = new Vector3f[SPLASH_DROPS];
+        for (int i = 0; i < SPLASH_DROPS; i++) {
+            Vector3f start = dropVelocities[i];
+            float fall = 0.5F * SPLASH_GRAVITY * time * time;
+            heads[i] = new Vector3f(start).mul(time).add(center).sub(0.0F, fall, 0.0F);
+            Vector3f velocity = new Vector3f(start).sub(0.0F, SPLASH_GRAVITY * time, 0.0F);
+            tails[i] = new Vector3f(heads[i]).sub(velocity.mul(1.4F));
+        }
+
+        VertexConsumer water = buffers.getBuffer(PsitweaksRenderTypes.TRANSLUCENT_COLOR);
+        int alpha = Mth.clamp((int) (190 * fade * Math.min(1.0F, strength)), 0, 255);
+        for (int i = 0; i < SPLASH_DROPS; i++) {
+            float size = dropSizes[i] * shrink;
+            GlowDrawing.ribbon(water, pose, tails[i], heads[i], size * 0.3F, size, body, 1.0F, 1.0F, alpha);
+        }
+
+        VertexConsumer light = buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR);
+        if (t < 0.3F) {
+            GlowDrawing.glowDisc(light, pose, center, message.radius() * 0.7F, highlight,
+                    0.8F * (1.0F - t / 0.3F) * strength, 255);
+        }
+        for (int i = 0; i < SPLASH_DROPS; i++) {
+            float size = dropSizes[i] * shrink;
+            GlowDrawing.ribbon(light, pose, tails[i], heads[i], size * 0.15F, size * 0.45F, highlight,
+                    0.1F * fade * strength, 0.55F * fade * strength, 255);
         }
     }
 

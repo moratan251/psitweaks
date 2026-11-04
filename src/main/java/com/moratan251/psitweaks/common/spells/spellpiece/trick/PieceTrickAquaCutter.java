@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityAquaCutterProjectile;
 import com.moratan251.psitweaks.common.handler.AquaCutterProjectileHandler;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -77,6 +78,7 @@ public class PieceTrickAquaCutter extends PieceTrick {
         Vec3 look = context.caster.getLookAngle();
         projectile.setPos(context.caster.getX(), context.caster.getEyeY() - 0.1, context.caster.getZ());
         projectile.shoot(look.x, look.y, look.z, velocity, 0.0F);
+        projectile.setColor(CombatSpellHelper.spellColor(context.caster));
 
         CompoundTag data = projectile.getPersistentData();
         data.putBoolean(AquaCutterProjectileHandler.TAG_AQUA_CUTTER, true);
@@ -88,8 +90,10 @@ public class PieceTrickAquaCutter extends PieceTrick {
                 SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 0.6F, 1.3F);
 
         if (level instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ParticleTypes.SPLASH, context.caster.getX(), context.caster.getEyeY(), context.caster.getZ(),
-                    8, 0.15, 0.15, 0.15, 0.05);
+            // Spray where the blade leaves, a little in front of the caster's face.
+            Vec3 muzzle = context.caster.getEyePosition().add(look.scale(0.8));
+            serverLevel.sendParticles(ParticleTypes.SPLASH, muzzle.x, muzzle.y, muzzle.z,
+                    10, 0.15, 0.15, 0.15, 0.05);
         }
 
         return null;

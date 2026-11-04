@@ -20,8 +20,14 @@ public final class CombatEffects {
 
     public static void sphereFlash(ServerLevel level, Vec3 position, float radius, int color,
                                    MessageSphereFlash.Style style, float strength) {
+        sphereFlash(level, position, radius, color, style, Vec3.ZERO, strength);
+    }
+
+    /** A flash that leans towards {@code direction} (the side a hit came from, or where a splash sprays). */
+    public static void sphereFlash(ServerLevel level, Vec3 position, float radius, int color,
+                                   MessageSphereFlash.Style style, Vec3 direction, float strength) {
         PacketDistributor.sendToPlayersNear(level, null, position.x, position.y, position.z, EFFECT_RANGE,
-                new MessageSphereFlash(MessageSphereFlash.NO_ENTITY, position, radius, color, style, Vec3.ZERO, strength));
+                new MessageSphereFlash(MessageSphereFlash.NO_ENTITY, position, radius, color, style, direction, strength));
     }
 
     public static void lightningArcs(ServerLevel level, List<Vec3> points, int color, long seed) {
