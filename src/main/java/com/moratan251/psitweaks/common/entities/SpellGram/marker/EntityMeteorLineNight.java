@@ -226,7 +226,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
                     MeteorLineTuning.SPREAD_PITCH);
         }
         int sinceFall = age - MeteorLineTuning.FALL_START;
-        if (sinceFall >= 0 && age < MeteorLineTuning.CLEAR_START && sinceFall % MeteorLineTuning.VOLLEY_INTERVAL == 0) {
+        if (sinceFall >= 0 && sinceFall < MeteorLineTuning.FALL_TICKS && sinceFall % MeteorLineTuning.VOLLEY_INTERVAL == 0) {
             volley(level, caster, sinceFall / MeteorLineTuning.VOLLEY_INTERVAL);
         }
         if (age == MeteorLineTuning.CLEAR_START) {

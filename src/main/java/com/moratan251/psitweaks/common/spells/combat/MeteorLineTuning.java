@@ -24,10 +24,12 @@ public final class MeteorLineTuning {
     public static final int SPREAD_TICKS = 20;
     /** 光条が降る。 */
     public static final int FALL_TICKS = 20;
+    /** 光条が降り終わってから晴れ始めるまで、星空の夜だけが残る（2026-11-04 夜の時間を 0.5 秒延ばした分）。 */
+    public static final int HOLD_TICKS = 10;
     /** 線が消え、星が散って夜が晴れる。 */
     public static final int CLEAR_TICKS = 20;
     public static final int FALL_START = SPREAD_TICKS;
-    public static final int CLEAR_START = FALL_START + FALL_TICKS;
+    public static final int CLEAR_START = FALL_START + FALL_TICKS + HOLD_TICKS;
     public static final int TOTAL_TICKS = CLEAR_START + CLEAR_TICKS;
 
     // ---- 夜 ----
