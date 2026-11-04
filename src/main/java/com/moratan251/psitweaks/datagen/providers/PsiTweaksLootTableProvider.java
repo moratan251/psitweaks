@@ -40,7 +40,9 @@ public class PsiTweaksLootTableProvider implements DataProvider {
                 case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
                 // Only exists with Mekanism; skip the table otherwise instead of failing to parse it.
                 case "autonomous_caster" -> RecipeConditionHelper.requireMod(
-                        dropMekanismMachine(block.id(), PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.getId().toString()), "mekanism");
+                        dropMekanismMachine(block.id(), PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.getId().toString(),
+                                PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.getId().toString(),
+                                PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.getId().toString()), "mekanism");
                 default -> MEKANISM_MACHINES.contains(block.id()) ? dropMekanismMachine(block.id()) : dropSelf(block.id());
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));

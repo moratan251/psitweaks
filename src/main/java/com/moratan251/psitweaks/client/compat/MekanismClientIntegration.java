@@ -8,6 +8,7 @@ import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
 import com.moratan251.psitweaks.client.render.tile.RenderAutonomousCaster;
+import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
@@ -47,11 +48,21 @@ public final class MekanismClientIntegration {
         NeoForge.EVENT_BUS.addListener(MekanismClientIntegration::onItemTooltip);
     }
 
-    /** 回収した自律詠唱機のブロックアイテムに、残っている内部 Psi を出す。 */
+    /** 回収した自律詠唱機のブロックアイテムに、残っている内部 Psi・設定・メモリを出す。 */
     private static void onItemTooltip(ItemTooltipEvent event) {
         Integer psi = event.getItemStack().get(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get());
         if (psi != null) {
             event.getToolTip().add(Component.translatable("tooltip.psitweaks.autonomous_caster.psi", psi)
+                    .withStyle(ChatFormatting.GRAY));
+        }
+        if (event.getItemStack().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.get())) {
+            event.getToolTip().add(Component.translatable("tooltip.psitweaks.autonomous_caster.settings")
+                    .withStyle(ChatFormatting.GRAY));
+        }
+        VirtualCad.Memory memory = event.getItemStack().get(PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.get());
+        int storedValues = memory == null ? 0 : memory.storedValueCount();
+        if (storedValues > 0) {
+            event.getToolTip().add(Component.translatable("tooltip.psitweaks.autonomous_caster.memory", storedValues)
                     .withStyle(ChatFormatting.GRAY));
         }
     }

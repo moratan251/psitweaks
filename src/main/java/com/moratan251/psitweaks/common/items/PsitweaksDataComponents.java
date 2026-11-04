@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.items;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterStoredSettings;
+import com.moratan251.psitweaks.common.caster.VirtualCad;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -29,6 +31,19 @@ public final class PsitweaksDataComponents {
             DATA_COMPONENTS.registerComponentType("autonomous_caster_psi", builder -> builder
                     .persistent(ExtraCodecs.NON_NEGATIVE_INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    /** The settings of an Autonomous Caster that was broken. Only set when they differ from a new machine's. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<AutonomousCasterStoredSettings>> AUTONOMOUS_CASTER_SETTINGS =
+            DATA_COMPONENTS.registerComponentType("autonomous_caster_settings", builder -> builder
+                    .persistent(AutonomousCasterStoredSettings.CODEC)
+                    .networkSynchronized(AutonomousCasterStoredSettings.STREAM_CODEC));
+
+    /** The time and memory of a broken Autonomous Caster's internal CAD. Not set for a machine that never ran. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<VirtualCad.Memory>> AUTONOMOUS_CASTER_MEMORY =
+            DATA_COMPONENTS.registerComponentType("autonomous_caster_memory", builder -> builder
+                    .persistent(VirtualCad.Memory.CODEC)
+                    .networkSynchronized(VirtualCad.Memory.STREAM_CODEC)
+                    .cacheEncoding());
 
     private PsitweaksDataComponents() {
     }

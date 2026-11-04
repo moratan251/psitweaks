@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client.gui.machine;
 
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig.WindowPosition;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.tile.machine.AutonomousCasterBlockEntity;
 import java.util.function.Supplier;
@@ -9,6 +10,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.GuiPinButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.window.GuiConfirmationDialog;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.util.text.InputValidator;
@@ -19,14 +21,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 /**
- * 自律詠唱機の設定窓。選択中の術式弾・手に持つスロット、詠唱間隔、視線の向き、トリガー、ループ回数、テスト詠唱をまとめる。
+ * 自律詠唱機の設定窓。選択中の術式弾・手に持つスロット、詠唱間隔、視線の向き、トリガー、ループ回数、テスト詠唱、
+ * 内蔵 CAD のメモリの消去をまとめる。
  * 運転画面はアイテムスロットに場所を譲り、設定はここで変える。
  * Mekanism のウィンドウと同じく、閉じたときの位置とピン留めをクライアント設定に覚え、ピン留めしていれば運転画面と一緒に開く。
  */
 public class GuiAutonomousCasterSettings extends GuiWindow {
     private static final String KEY = "gui.psitweaks.autonomous_caster.";
     static final int WIDTH = 164;
-    private static final int HEIGHT = 74;
+    private static final int HEIGHT = 90;
     private static final float LABEL_SCALE = 0.75F;
 
     private final GuiAutonomousCaster parent;
@@ -86,6 +89,12 @@ public class GuiAutonomousCasterSettings extends GuiWindow {
         button(126, 56, 32, 12, () -> Component.translatable(KEY + "cast_now"),
                 () -> parent.send(Action.CAST_NOW, 0))
                 .setTooltip(Tooltip.create(Component.translatable(KEY + "cast_now.tooltip")));
+
+        // 内蔵 CAD のメモリ。回収しても残るので、空にしたいときはここで消す。
+        button(118, 72, 40, 12, () -> Component.translatable(KEY + "memory.clear"),
+                () -> GuiConfirmationDialog.show(gui, Component.translatable(KEY + "memory.clear.confirm"),
+                        () -> parent.send(Action.CLEAR_MEMORY, 0), GuiConfirmationDialog.DialogType.DANGER))
+                .setTooltip(Tooltip.create(Component.translatable(KEY + "memory.clear.tooltip")));
     }
 
     private static WindowPosition savedPosition() {
@@ -165,6 +174,8 @@ public class GuiAutonomousCasterSettings extends GuiWindow {
         drawLabel(guiGraphics, Component.translatable(KEY + "yaw", tile.getYawOffset()), 60, 33);
         drawLabel(guiGraphics, Component.translatable(KEY + "pitch", tile.getPitch()), 114, 33);
         drawLabel(guiGraphics, Component.translatable(KEY + "loop", tile.getLoopCounter()), 70, 59);
+        drawLabel(guiGraphics, Component.translatable(KEY + "memory", tile.getMemoryUsed(),
+                tile.getStatValue(AutonomousCasterUpgrade.MEMORY)), 6, 75);
     }
 
     private void drawCentered(GuiGraphics guiGraphics, Component text, int centerX, int y) {

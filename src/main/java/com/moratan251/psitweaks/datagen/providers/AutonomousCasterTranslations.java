@@ -40,6 +40,8 @@ final class AutonomousCasterTranslations {
     private void addBlock() {
         put("container.psitweaks.autonomous_caster", "Autonomous Caster", "自律詠唱機");
         put("tooltip.psitweaks.autonomous_caster.psi", "Stored Psi: %s", "内部Psi: %s");
+        put("tooltip.psitweaks.autonomous_caster.settings", "Keeps its settings", "設定を保持");
+        put("tooltip.psitweaks.autonomous_caster.memory", "Memory: %s stored values", "メモリ: 値%s個");
         put("description.psitweaks.autonomous_caster",
                 "Casts the selected Spell Bullet on a redstone signal, using internal Psi restored from Psionic Echo Gas",
                 "レッドストーン信号で選択中の術式弾を詠唱します。内部Psiは気化サイオニックエコーから回復します");
@@ -67,6 +69,12 @@ final class AutonomousCasterTranslations {
                 "垂直方向の視線角度です（-90で真上、90で真下）。Enterで確定します");
         put(GUI + "loop", "Loop: %s", "ループ: %s");
         put(GUI + "loop.reset", "Reset the loop counter to 0", "ループカウンタを0に戻します");
+        put(GUI + "memory", "Memory: %s/%s", "メモリ: %s/%s");
+        put(GUI + "memory.clear", "Clear", "消去");
+        put(GUI + "memory.clear.tooltip",
+                "Clear every value stored in the internal CAD's memory. The memory is kept when the machine is broken",
+                "内蔵CADのメモリに保存した値をすべて消します。メモリは機械を回収しても残ります");
+        put(GUI + "memory.clear.confirm", "Clear the internal CAD's memory?", "内蔵CADのメモリを消去しますか？");
         put(GUI + "trigger.pulse", "Pulse", "パルス");
         put(GUI + "trigger.level", "Level", "レベル");
         put(GUI + "trigger.tooltip",
@@ -304,10 +312,12 @@ final class AutonomousCasterTranslations {
                         + "それぞれの効果はアイテムのツールチップで, 今の性能値はアップグレードのウィンドウで確認できます.");
         put(BOOK + ".5",
                 "Debug output, spell errors and spell warnings go to the $(item)Activity Log$(0) in the GUI instead of your chat.$(p)"
-                        + "Breaking the machine keeps its items, gas and Psi, but resets its settings, log and the internal CAD's memory.$(p)"
+                        + "Breaking the machine keeps everything except its log and loop counter. "
+                        + "Clear the internal CAD's memory in the $(item)Config$(0) window.$(p)"
                         + "Spells that use the Ideaspace Storage use the storage of the machine's owner.",
                 "デバッグ出力や術式のエラー・警告はチャットではなく, GUIの$(item)作動ログ$(0)に記録されます.$(p)"
-                        + "機械を回収するとアイテム・気体・Psiは残りますが, 設定・ログと内部CADのメモリは初期化されます.$(p)"
+                        + "機械を回収しても, アイテム・化学物質・Psi・設定・内部CADのメモリは残り, 作動ログとループカウンタだけが初期化されます. "
+                        + "メモリは$(item)設定$(0)ウィンドウで消去できます.$(p)"
                         + "イデアストレージを使う術式は, 機械の所有者のストレージを使います.");
         put(BOOK + ".6",
                 "$(item)Trick: Spin Chamber$(0) and $(item)Trick: Russian Roulette$(0) switch the machine's selected "

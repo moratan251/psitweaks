@@ -345,6 +345,10 @@ final class AutonomousCasterChecks {
 
     static void keepsContentsWhenBroken(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);
+        // 新品（既定の設定・一度も動いていない）なら設定もメモリも付けず、新品の機械と重ねられるようにする。
+        helper.assertTrue(!caster.collectComponents().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.get())
+                        && !caster.collectComponents().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.get()),
+                "A new machine already carries settings or memory");
         ItemStack bullet = AutonomousCasterTestSpells.debugBullet(5);
         ItemStack dye = new ItemStack(ModCADComponents.cadColorizerRed.get());
         caster.getBulletSlots().get(1).setStack(bullet.copy());
@@ -358,8 +362,31 @@ final class AutonomousCasterChecks {
         caster.getEchoTank().insert(PsitweaksChemicals.GAS_PSIONIC_ECHO.asStack(2000), mekanism.api.Action.EXECUTE,
                 AutomationType.INTERNAL);
         caster.getLog().add(CasterLog.Source.CASTER_MESSAGE, net.minecraft.network.chat.Component.literal("before"), 0);
+        // 設定は残る。信号がないので、レベルにしても詠唱しない。
+        FakePlayer player = player(helper);
+        caster.applySetting(Action.SELECT_BULLET, 1, player);
+        caster.applySetting(Action.SELECT_ITEM_SLOT, 4, player);
+        caster.applySetting(Action.SET_TRIGGER_MODE, AutonomousCasterBlockEntity.TriggerMode.LEVEL.ordinal(), player);
+        caster.applySetting(Action.SET_INTERVAL, 37, player);
+        caster.applySetting(Action.SET_YAW, -45, player);
+        caster.applySetting(Action.SET_PITCH, 30, player);
+        Vector3 saved = new Vector3(1, 2, 3);
+        int[] timeBefore = new int[1];
+        helper.runAfterDelay(1, () -> {
+            // 内蔵 CAD は最初の tick に組み立てる。メモリ（ベクトル記憶）も残る。
+            ItemStack cad = caster.getVirtualCad();
+            helper.assertTrue(cad.getItem() instanceof ICAD, "The internal CAD was not built");
+            try {
+                ((ICAD) cad.getItem()).setStoredVector(cad, 2, saved.copy());
+            } catch (SpellRuntimeException e) {
+                throw new GameTestAssertException("Saving a vector to the internal CAD failed: " + e.getMessage());
+            }
+        });
         helper.runAfterDelay(2, () -> {
             BlockPos absolute = helper.absolutePos(POS);
+            ItemStack cadBefore = caster.getVirtualCad();
+            timeBefore[0] = ((ICAD) cadBefore.getItem()).getTime(cadBefore);
+            helper.assertTrue(timeBefore[0] > 0, "The internal CAD's time did not advance");
             helper.getLevel().destroyBlock(absolute, true);
             List<ItemEntity> drops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(absolute).inflate(2));
             ItemStack machine = drops.stream().map(ItemEntity::getItem)
@@ -373,6 +400,11 @@ final class AutonomousCasterChecks {
             AttachedItems items = machine.get(MekanismDataComponents.ATTACHED_ITEMS);
             helper.assertTrue(items != null && items.containers().stream().anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, bullet)),
                     "The bullet was not stored on the machine item");
+            helper.assertTrue(machine.has(PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.get()),
+                    "The settings were not stored on the machine item");
+            VirtualCad.Memory memory = machine.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.get());
+            helper.assertTrue(memory != null && memory.storedValueCount() == 1,
+                    "The internal CAD's memory was not stored on the machine item: " + memory);
             drops.forEach(Entity::discard);
 
             helper.setBlock(POS, PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.defaultState());
@@ -396,11 +428,49 @@ final class AutonomousCasterChecks {
             helper.assertTrue(restored.getEchoTank().getStored() == 2000, "The echo gas did not come back");
             helper.assertTrue(restored.getPsi() == capacity, "The internal Psi did not come back: " + restored.getPsi());
             helper.assertTrue(restored.getLog().isEmpty(), "The log was carried over");
-            // 空の機械は Psi を付けずに回収し、新品の機械と重ねられるようにする。
-            restored.setPsi(0);
-            helper.assertTrue(!restored.collectComponents().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get()),
-                    "A machine without Psi kept the Psi component");
-            helper.succeed();
+            helper.assertTrue(restored.getSelectedBullet() == 1 && restored.getSelectedItemSlot() == 4
+                            && restored.getTriggerMode() == AutonomousCasterBlockEntity.TriggerMode.LEVEL
+                            && restored.getCastInterval() == 37 && restored.getYawOffset() == -45 && restored.getPitch() == 30,
+                    "The settings did not come back: bullet " + restored.getSelectedBullet() + ", slot " + restored.getSelectedItemSlot()
+                            + ", " + restored.getTriggerMode() + ", interval " + restored.getCastInterval() + ", yaw "
+                            + restored.getYawOffset() + ", pitch " + restored.getPitch());
+            ItemStack restoredCad = restored.getVirtualCad();
+            helper.assertTrue(restoredCad.getItem() instanceof ICAD && VirtualCad.isVirtualCad(restoredCad),
+                    "The internal CAD was not rebuilt from the stored memory");
+            ICAD restoredIcad = (ICAD) restoredCad.getItem();
+            try {
+                helper.assertTrue(saved.equals(restoredIcad.getStoredVector(restoredCad, 2)),
+                        "The saved vector did not come back: " + restoredIcad.getStoredVector(restoredCad, 2));
+            } catch (SpellRuntimeException e) {
+                throw new GameTestAssertException("Reading the restored memory failed: " + e.getMessage());
+            }
+            helper.assertTrue(restoredIcad.getTime(restoredCad) >= timeBefore[0], "The internal CAD's time went back to 0");
+            helper.assertTrue(restored.getMemoryUsed() == 1, "The memory count is " + restored.getMemoryUsed());
+            helper.runAfterDelay(1, () -> {
+                // 組み立て直した後もメモリは残り、選択中の術式弾は内蔵 CAD の選択ソケットに合う。
+                ItemStack rebuilt = restored.getVirtualCad();
+                helper.assertTrue(VirtualCad.selectedSlot(rebuilt) == 1, "The internal CAD selects socket " + VirtualCad.selectedSlot(rebuilt));
+                helper.assertTrue(restored.getMemoryUsed() == 1, "The memory was lost when the CAD was rebuilt");
+                // 設定ウィンドウの消去でメモリは空になるが、時刻は残る。
+                restored.applySetting(Action.CLEAR_MEMORY, 0, player);
+                helper.assertTrue(restored.getMemoryUsed() == 0, "Clearing left " + restored.getMemoryUsed() + " values");
+                VirtualCad.Memory cleared = restored.collectComponents().get(PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.get());
+                helper.assertTrue(cleared != null && cleared.storedValueCount() == 0 && cleared.cad().time() > 0,
+                        "After clearing, the item would carry " + cleared);
+                // 既定の設定に戻すと設定は付けない。空の機械は Psi を付けずに回収し、新品の機械と重ねられるようにする。
+                restored.applySetting(Action.SELECT_BULLET, 0, player);
+                restored.applySetting(Action.SELECT_ITEM_SLOT, 0, player);
+                restored.applySetting(Action.SET_TRIGGER_MODE, AutonomousCasterBlockEntity.TriggerMode.PULSE.ordinal(), player);
+                restored.applySetting(Action.SET_INTERVAL, AutonomousCasterSettings.defaultCastInterval(), player);
+                restored.applySetting(Action.SET_YAW, 0, player);
+                restored.applySetting(Action.SET_PITCH, 0, player);
+                helper.assertTrue(!restored.collectComponents().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.get()),
+                        "A machine with the default settings kept the settings component");
+                restored.setPsi(0);
+                helper.assertTrue(!restored.collectComponents().has(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get()),
+                        "A machine without Psi kept the Psi component");
+                helper.succeed();
+            });
         });
     }
 

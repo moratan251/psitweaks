@@ -34,7 +34,9 @@
                 "mekanism:energy",
                 "mekanism:items",
                 "mekanism:chemicals",
-                "psitweaks:autonomous_caster_psi"
+                "psitweaks:autonomous_caster_psi",
+                "psitweaks:autonomous_caster_settings",
+                "psitweaks:autonomous_caster_memory"
               ],
               "source": "block_entity"
             }

@@ -1,15 +1,22 @@
 package com.moratan251.psitweaks.common.caster;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +27,7 @@ import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.cad.ISocketable;
 import vazkii.psi.api.capability.PsiCapabilities;
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.common.item.ItemCAD;
 import vazkii.psi.common.item.base.ModCADComponents;
 import vazkii.psi.common.item.base.ModDataComponents;
@@ -31,7 +39,7 @@ import vazkii.psi.common.item.data.CADDataValue;
  * 性能値は部品に依らず、{@link #BASE_STATS} に機械のアップグレードの分（{@link #rebuild} の bonuses）を足した値にする。
  * CAD として組み立てるための素体・コア・弾倉は隠し部品で、
  * 機械のスロットに入れられるのは着色器だけ。バッテリーは持たず、詠唱コストは機械の内部 Psi だけから払う。
- * 時刻・ベクトル記憶・Psitweaks の記憶領域は組み替えても引き継ぐ。
+ * 時刻・ベクトル記憶・Psitweaks の記憶領域（{@link Memory}）は組み替えても引き継ぎ、機械を回収したときはブロックアイテムに残す。
  * <p>
  * 装弾数は機械の術式弾スロットの数（{@link #SOCKETS}）に固定する。弾倉に弾は入れず、選択ソケット（{@link #selectedSlot}）を
  * 機械の選択中の術式弾スロットと同じにしておくので、Trick: Spin Chamber・Trick: Russian Roulette が選ぶソケットは
@@ -69,6 +77,15 @@ public final class VirtualCad {
      */
     public static ItemStack rebuild(@Nullable HolderLookup.Provider registries, ItemStack dye, ItemStack previous,
                                     Map<EnumCADStat, Integer> bonuses) {
+        return rebuild(registries, dye, memoryOf(previous), bonuses);
+    }
+
+    /**
+     * 着色器スロットの内容とアップグレードから仮想 CAD を組み立て、{@code memory} の時刻と記憶を持たせる。
+     * 回収したブロックアイテムに残したメモリを、置き直した機械に戻すときにも使う。
+     */
+    public static ItemStack rebuild(@Nullable HolderLookup.Provider registries, ItemStack dye, Memory memory,
+                                    Map<EnumCADStat, Integer> bonuses) {
         ItemStack assembly = new ItemStack(ModCADComponents.cadAssemblyIron.get());
         List<ItemStack> components = new ArrayList<>(4);
         components.add(assembly);
@@ -82,10 +99,13 @@ public final class VirtualCad {
         if (!(cad.getItem() instanceof ICAD)) {
             cad = ItemCAD.makeCAD(registries, components);
         }
-        carryRuntimeState(previous, cad);
+        cad.set(ModDataComponents.CAD_DATA.get(), memory.cad().withBattery(0));
+        if (!memory.data().isEmpty()) {
+            cad.set(DataComponents.CUSTOM_DATA, memory.data());
+        }
         CustomData.update(DataComponents.CUSTOM_DATA, cad, tag -> {
             tag.putBoolean(TAG_VIRTUAL_CAD, true);
-            // 引き継いだ前の CAD の分は捨て、今のアップグレードの分で書き直す
+            // 前の CAD の分は引き継がず、今のアップグレードの分で書き直す
             CompoundTag bonusTag = new CompoundTag();
             bonuses.forEach((stat, value) -> {
                 if (value != 0 && BASE_STATS.containsKey(stat)) {
@@ -99,6 +119,49 @@ public final class VirtualCad {
             }
         });
         return cad;
+    }
+
+    /**
+     * 仮想 CAD の時刻と記憶（ベクトル記憶・Psitweaks の記憶領域）。組み立て直しで引き継ぐもので、
+     * 機械を回収したときはブロックアイテムに残す。仮想 CAD の目印とアップグレードの分は含めない。
+     */
+    public static Memory memoryOf(ItemStack cad) {
+        if (cad.isEmpty()) {
+            return Memory.EMPTY;
+        }
+        CADDataValue data = cad.get(ModDataComponents.CAD_DATA.get());
+        CustomData custom = cad.get(DataComponents.CUSTOM_DATA);
+        CustomData kept = CustomData.EMPTY;
+        if (custom != null && !custom.isEmpty()) {
+            CompoundTag tag = custom.copyTag();
+            tag.remove(TAG_VIRTUAL_CAD);
+            tag.remove(TAG_STAT_BONUS);
+            kept = tag.isEmpty() ? CustomData.EMPTY : CustomData.of(tag);
+        }
+        return new Memory(data == null ? CADDataValue.EMPTY : data.withBattery(0), kept);
+    }
+
+    /** 値が入っているメモリの数。ベクトル記憶と Psitweaks の記憶領域の、どちらかに値がある番号を数える。 */
+    public static int storedValueCount(ItemStack cad) {
+        return cad.isEmpty() ? 0 : memoryOf(cad).storedValueCount();
+    }
+
+    /** メモリ（ベクトル記憶と Psitweaks の記憶領域）を消す。時刻は残す。消したものがあれば true。 */
+    public static boolean clearMemory(ItemStack cad) {
+        if (cad.isEmpty()) {
+            return false;
+        }
+        boolean changed = false;
+        CADDataValue data = cad.get(ModDataComponents.CAD_DATA.get());
+        if (data != null && data.vectors().stream().anyMatch(vector -> vector != null && !vector.isZero())) {
+            List<Vector3> cleared = new ArrayList<>(data.vectors().size());
+            for (int i = 0; i < data.vectors().size(); i++) {
+                cleared.add(new Vector3());
+            }
+            cad.set(ModDataComponents.CAD_DATA.get(), new CADDataValue(data.time(), data.battery(), cleared));
+            changed = true;
+        }
+        return CadPlainMemory.clear(cad) || changed;
     }
 
     /** 詠唱前の確認用。仮想 CAD として使えない stack を弾く。 */
@@ -159,12 +222,38 @@ public final class VirtualCad {
         return Collections.unmodifiableMap(stats);
     }
 
-    private static void carryRuntimeState(ItemStack previous, ItemStack cad) {
-        CADDataValue data = previous.isEmpty() ? null : previous.get(ModDataComponents.CAD_DATA.get());
-        cad.set(ModDataComponents.CAD_DATA.get(), (data == null ? CADDataValue.EMPTY : data).withBattery(0));
-        CustomData custom = previous.isEmpty() ? null : previous.get(DataComponents.CUSTOM_DATA);
-        if (custom != null && !custom.isEmpty()) {
-            cad.set(DataComponents.CUSTOM_DATA, custom);
+    /**
+     * 仮想 CAD の時刻と記憶。{@link #memoryOf} で取り出し、{@link #rebuild(HolderLookup.Provider, ItemStack, Memory, Map)} で戻す。
+     *
+     * @param cad  時刻とベクトル記憶（バッテリーは使わないので 0）
+     * @param data Psitweaks の記憶領域などの CUSTOM_DATA（仮想 CAD の目印とアップグレードの分を除く）
+     */
+    public record Memory(CADDataValue cad, CustomData data) {
+        public static final Memory EMPTY = new Memory(CADDataValue.EMPTY, CustomData.EMPTY);
+        public static final Codec<Memory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                CADDataValue.CODEC.optionalFieldOf("cad", CADDataValue.EMPTY).forGetter(Memory::cad),
+                CustomData.CODEC.optionalFieldOf("data", CustomData.EMPTY).forGetter(Memory::data)
+        ).apply(instance, Memory::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, Memory> STREAM_CODEC = StreamCodec.composite(
+                CADDataValue.STREAM_CODEC, Memory::cad,
+                CustomData.STREAM_CODEC, Memory::data,
+                Memory::new);
+
+        /** 値が入っているメモリの数。ベクトル記憶と Psitweaks の記憶領域の、どちらかに値がある番号を数える。 */
+        public int storedValueCount() {
+            Set<Integer> slots = new HashSet<>(CadPlainMemory.storedSlots(data));
+            List<Vector3> vectors = cad.vectors();
+            for (int i = 0; i < vectors.size(); i++) {
+                if (vectors.get(i) != null && !vectors.get(i).isZero()) {
+                    slots.add(i);
+                }
+            }
+            return slots.size();
+        }
+
+        /** 時刻も記憶もなければ空。設置してから一度も動いていない機械がこれになる。 */
+        public boolean isEmpty() {
+            return cad.time() == 0 && data.isEmpty() && cad.vectors().stream().allMatch(vector -> vector == null || vector.isZero());
         }
     }
 }

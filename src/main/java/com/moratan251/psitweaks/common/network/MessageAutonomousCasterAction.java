@@ -25,7 +25,8 @@ public record MessageAutonomousCasterAction(int containerId, Action action, int 
         CLEAR_LOG,
         /** クライアント側の作動ログが差分を反映できなかった時に、全体の再送を頼む。 */
         REQUEST_LOG,
-        CAST_NOW
+        CAST_NOW,
+        CLEAR_MEMORY
     }
 
     @Override

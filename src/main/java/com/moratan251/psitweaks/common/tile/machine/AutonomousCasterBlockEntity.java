@@ -8,6 +8,7 @@ import com.moratan251.psitweaks.common.caster.AutonomousCasterHost;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterRegistry;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterSettings;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterStoredSettings;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterUpgrade;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
@@ -237,6 +238,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     private boolean virtualCadDirty = true;
     private boolean bulletsDirty = true;
     private boolean manualCastRequested;
+    /** 回収したブロックアイテムから向きを戻したので、視線の表示用にブロックの更新を送る。 */
+    private boolean aimSyncPending;
     /** 今回の詠唱で Trick: Break Loop がループ回数を 0 に戻した。 */
     private boolean loopBroken;
     @Nullable
@@ -251,6 +254,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     // クライアントへ同期する値（サーバーのコンフィグを正とする）
     private int clientPsiCapacity = AutonomousCasterSettings.psiCapacity();
     private int clientMinCastInterval = AutonomousCasterSettings.minCastInterval();
+    private int clientMemoryUsed;
     /** アップグレード窓に出す値（{@link #statValue}・{@link #statBonus}）。種類の順に並べる。 */
     private final int[] clientStatValues = new int[AutonomousCasterUpgrade.values().length];
     private final int[] clientStatBonuses = new int[AutonomousCasterUpgrade.values().length];
@@ -350,6 +354,10 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
+        if (aimSyncPending) {
+            aimSyncPending = false;
+            sendUpdatePacket = true;
+        }
         if (!signalChecked) {
             // 読み込み直後の信号は記録だけして、チャンク読み込みで詠唱しない。
             refreshSignal(false);
@@ -1215,6 +1223,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             }
             case REQUEST_LOG -> viewerRevisions.put(player.getUUID(), 0L);
             case CAST_NOW -> manualCastRequested = true;
+            case CLEAR_MEMORY -> VirtualCad.clearMemory(virtualCad);
         }
         markForSave();
     }
@@ -1238,16 +1247,30 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         pitch = Mth.clamp(tag.getInt(TAG_PITCH), MIN_PITCH, MAX_PITCH);
     }
 
-    /** 回収したブロックアイテムに内部 Psi を残す。空なら付けず、新品の機械と重ねられるようにする。 */
+    /**
+     * 回収したブロックアイテムに内部 Psi・設定・内蔵 CAD のメモリを残す。作動ログとループ回数などの実行中の状態は残さない。
+     * どれも新品と同じ（Psi 0、既定の設定、一度も動いていない）なら付けず、新品の機械と重ねられるようにする。
+     */
     @Override
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         if (psi > 0) {
             builder.set(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get(), psi);
         }
+        AutonomousCasterStoredSettings settings = storedSettings();
+        if (settings != null) {
+            builder.set(PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.get(), settings);
+        }
+        VirtualCad.Memory memory = VirtualCad.memoryOf(virtualCad);
+        if (!memory.isEmpty()) {
+            builder.set(PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.get(), memory);
+        }
     }
 
-    /** 置き直したときに、ブロックアイテムに残した内部 Psi を戻す。容量は先に戻したアップグレードの分を含める。 */
+    /**
+     * 置き直したときに、ブロックアイテムに残した内部 Psi・設定・メモリを戻す。
+     * Psi の容量と内蔵 CAD の性能値は、先に戻したアップグレードの分を含める。
+     */
     @Override
     protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
@@ -1257,12 +1280,56 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             markDirtyComparator();
             markForSave();
         }
+        AutonomousCasterStoredSettings settings = input.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.get());
+        if (settings != null) {
+            applyStoredSettings(settings);
+            markForSave();
+        }
+        VirtualCad.Memory memory = input.get(PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.get());
+        if (memory != null) {
+            virtualCad = VirtualCad.rebuild(registriesOrNull(), dyeSlot.getStack(), memory, cadStatBonuses());
+            virtualCadDirty = true;
+            markForSave();
+        }
     }
 
     @Override
     public void removeComponentsFromTag(@NotNull CompoundTag tag) {
         super.removeComponentsFromTag(tag);
         tag.remove(TAG_PSI);
+        tag.remove(TAG_SELECTED_BULLET);
+        tag.remove(TAG_SELECTED_ITEM);
+        tag.remove(TAG_TRIGGER_MODE);
+        tag.remove(TAG_CAST_INTERVAL);
+        tag.remove(TAG_YAW);
+        tag.remove(TAG_PITCH);
+        tag.remove(TAG_VIRTUAL_CAD);
+    }
+
+    /** ブロックアイテムに残す設定。新しく置いた機械と同じなら null。 */
+    @Nullable
+    private AutonomousCasterStoredSettings storedSettings() {
+        if (selectedBullet == 0 && selectedItemSlot == 0 && triggerMode == TriggerMode.PULSE
+                && castInterval == AutonomousCasterSettings.defaultCastInterval() && yawOffset == 0 && pitch == 0) {
+            return null;
+        }
+        return new AutonomousCasterStoredSettings(selectedBullet, selectedItemSlot, triggerMode.ordinal(), castInterval,
+                yawOffset, pitch);
+    }
+
+    private void applyStoredSettings(AutonomousCasterStoredSettings settings) {
+        selectedBullet = Mth.clamp(settings.bullet(), 0, BULLET_SLOTS - 1);
+        selectedItemSlot = Mth.clamp(settings.itemSlot(), 0, HOTBAR_SLOTS - 1);
+        triggerMode = TriggerMode.byIndex(settings.trigger());
+        castInterval = AutonomousCasterSettings.clampCastInterval(settings.interval());
+        yawOffset = Mth.clamp(settings.yaw(), MIN_YAW, MAX_YAW);
+        pitch = Mth.clamp(settings.pitch(), MIN_PITCH, MAX_PITCH);
+        // 内蔵 CAD の選択ソケットと Caster の手は、次の tick の組み立て直しと Caster の用意で合わせる
+        virtualCadDirty = true;
+        if (caster != null) {
+            caster.getInventory().selected = selectedItemSlot;
+        }
+        aimSyncPending = true;
     }
 
     /**
@@ -1394,6 +1461,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         container.track(SyncableEnum.create(Outcome::byIndex, Outcome.NONE, () -> lastOutcome, value -> lastOutcome = value));
         container.track(SyncableLong.create(() -> lastFailureSequence, value -> lastFailureSequence = value));
         container.track(SyncableInt.create(() -> recoveryPerTick, value -> recoveryPerTick = value));
+        container.track(SyncableInt.create(() -> VirtualCad.storedValueCount(virtualCad), value -> clientMemoryUsed = value));
         for (AutonomousCasterUpgrade upgrade : AutonomousCasterUpgrade.values()) {
             int index = upgrade.ordinal();
             container.track(SyncableInt.create(() -> statValue(upgrade), value -> clientStatValues[index] = value));
@@ -1524,6 +1592,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     public int getLoopCounter() {
         return loopCounter;
+    }
+
+    /** 内蔵 CAD のメモリで値が入っている数。 */
+    public int getMemoryUsed() {
+        return isRemote() ? clientMemoryUsed : VirtualCad.storedValueCount(virtualCad);
     }
 
     public int getCooldown() {

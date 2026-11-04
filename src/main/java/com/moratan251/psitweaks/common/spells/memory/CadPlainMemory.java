@@ -5,7 +5,9 @@ import com.moratan251.psitweaks.api.value.PlainMemoryValue;
 import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaksqol.api.StringSpellHelper;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -74,6 +76,39 @@ public final class CadPlainMemory {
         }
 
         return PlainMemoryValue.deserialize(memory.getCompound(slotKey));
+    }
+
+    /** CAD の CUSTOM_DATA のうち、記憶領域に値が入っているメモリ番号（0 始まり）。 */
+    public static Set<Integer> storedSlots(CustomData custom) {
+        Set<Integer> slots = new HashSet<>();
+        if (custom == null || !custom.contains(TAG_MEMORY)) {
+            return slots;
+        }
+        CompoundTag memory = custom.copyTag().getCompound(TAG_MEMORY);
+        for (String key : memory.getAllKeys()) {
+            try {
+                slots.add(Integer.parseInt(key));
+            } catch (NumberFormatException ignored) {
+                // 番号でないキーは数えない
+            }
+        }
+        return slots;
+    }
+
+    /** 記憶領域（と古い形式のエンティティ記憶）を消す。消したものがあれば true。 */
+    public static boolean clear(ItemStack cadStack) {
+        if (cadStack == null || cadStack.isEmpty()) {
+            return false;
+        }
+        CustomData custom = cadStack.get(DataComponents.CUSTOM_DATA);
+        if (custom == null || !(custom.contains(TAG_MEMORY) || custom.contains(TAG_LEGACY_ENTITY_MAP))) {
+            return false;
+        }
+        CustomData.update(DataComponents.CUSTOM_DATA, cadStack, root -> {
+            root.remove(TAG_MEMORY);
+            root.remove(TAG_LEGACY_ENTITY_MAP);
+        });
+        return true;
     }
 
     public static void storeVectorFromPsi(ItemStack cadStack, int internalSlot, Vector3 value) {
