@@ -13,10 +13,10 @@ public final class MeteorLineTuning {
     // ---- 半径 ----
 
     /** 半径を省略したとき。 */
-    public static final double DEFAULT_RADIUS = 8.0;
-    public static final double MAX_RADIUS = 12.0;
-    /** 星と光条の本数は、この半径で最少、{@link #MAX_RADIUS} で最多になる。 */
-    private static final double SMALL_RADIUS = 4.0;
+    public static final double DEFAULT_RADIUS = 16.0;
+    /** 入力の半径はこの範囲にそろえる（0 以下はピースが先に弾く）。星と光条の本数は最小で最少、最大で最多になる。 */
+    public static final double MIN_RADIUS = 16.0;
+    public static final double MAX_RADIUS = 32.0;
 
     // ---- 流れ（tick） ----
 
@@ -61,12 +61,12 @@ public final class MeteorLineTuning {
 
     // ---- 星 ----
 
-    public static final int MIN_STARS = 24;
-    public static final int MAX_STARS = 48;
+    public static final int MIN_STARS = 48;
+    public static final int MAX_STARS = 96;
     /** 青みの白。 */
     public static final int STAR_COLOR = 0xD8E6FF;
-    /** 星の光の大きさ（ブロック）。 */
-    public static final float STAR_SIZE = 0.35F;
+    /** 半径 {@link #MIN_RADIUS} の夜の星の光の大きさ（ブロック）。半径に比例して大きくし、地上からの見かけの大きさをそろえる。 */
+    public static final float STAR_SIZE = 0.6F;
     /** 星が並ぶ、中心からの距離（半径に対する割合）と仰角の範囲（度）。 */
     public static final double STAR_DISTANCE = 0.9;
     public static final double STAR_MIN_ELEVATION = 30.0;
@@ -79,8 +79,8 @@ public final class MeteorLineTuning {
     /** 斉射の間隔（tick）。 */
     public static final int VOLLEY_INTERVAL = 2;
     /** 一回で降らせる本数。狙う相手がこれより多ければ、その分増える。 */
-    public static final int MIN_BEAMS = 16;
-    public static final int MAX_BASE_BEAMS = 24;
+    public static final int MIN_BEAMS = 24;
+    public static final int MAX_BASE_BEAMS = 48;
     /** 狙う分も含めた本数の上限。 */
     public static final int MAX_BEAMS = 64;
     /**
@@ -97,8 +97,8 @@ public final class MeteorLineTuning {
     /** 白い芯と淡い水色の縁。 */
     public static final int BEAM_CORE_COLOR = 0xFFFFFF;
     public static final int BEAM_EDGE_COLOR = 0x9FE6FF;
-    public static final float BEAM_CORE_WIDTH = 0.08F;
-    public static final float BEAM_EDGE_WIDTH = 0.36F;
+    public static final float BEAM_CORE_WIDTH = 0.1F;
+    public static final float BEAM_EDGE_WIDTH = 0.45F;
     /** 光条が地面や壁に入った点の印（穴の印）が残る時間（tick）と大きさ（ブロック）。 */
     public static final int MARK_TICKS = 60;
     public static final float MARK_SIZE = 0.3F;
@@ -120,8 +120,9 @@ public final class MeteorLineTuning {
 
     // ---- 音（仮。本番の音は後で作る） ----
 
-    /** 夜が広がる間の低い持続音。 */
+    /** 夜が広がる間の低い持続音。音量 1 を超える分は聞こえる距離（音量 × 16 ブロック）だけを広げ、夜の端まで届かせる。 */
     public static final SoundEvent SPREAD_SOUND = SoundEvents.BEACON_ACTIVATE;
+    public static final float SPREAD_VOLUME = 3.0F;
     public static final float SPREAD_PITCH = 0.5F;
     /**
      * 光条が降るときの短い澄んだ高音。音程は MIN〜MAX の間で散らす。光条1本ごとに鳴らすとクライアントが同時に鳴らせる
@@ -134,6 +135,7 @@ public final class MeteorLineTuning {
     public static final int BEAM_SOUNDS_PER_VOLLEY = 2;
     /** 夜が晴れ始める音。 */
     public static final SoundEvent CLEAR_SOUND = SoundEvents.BEACON_DEACTIVATE;
+    public static final float CLEAR_VOLUME = 3.0F;
     public static final float CLEAR_PITCH = 0.7F;
     /** 強度が尽きて夜がつぶれる音。 */
     public static final SoundEvent COLLAPSE_SOUND = SoundEvents.AMETHYST_BLOCK_BREAK;
@@ -141,9 +143,14 @@ public final class MeteorLineTuning {
     private MeteorLineTuning() {
     }
 
-    /** 半径を上限までに収める（0 以下はピースが先に弾く）。 */
+    /** 半径を {@link #MIN_RADIUS}〜{@link #MAX_RADIUS} に収める（0 以下はピースが先に弾く）。 */
     public static double clampRadius(double radius) {
-        return Math.min(MAX_RADIUS, radius);
+        return Mth.clamp(radius, MIN_RADIUS, MAX_RADIUS);
+    }
+
+    /** この半径の夜の星の光の大きさ。 */
+    public static float starSize(double radius) {
+        return (float) (STAR_SIZE * radius / MIN_RADIUS);
     }
 
     public static int stars(double radius) {
@@ -161,7 +168,7 @@ public final class MeteorLineTuning {
     }
 
     private static int byRadius(double radius, int min, int max) {
-        double t = Mth.clamp((radius - SMALL_RADIUS) / (MAX_RADIUS - SMALL_RADIUS), 0.0, 1.0);
+        double t = Mth.clamp((radius - MIN_RADIUS) / (MAX_RADIUS - MIN_RADIUS), 0.0, 1.0);
         return (int) Math.round(Mth.lerp(t, min, max));
     }
 }

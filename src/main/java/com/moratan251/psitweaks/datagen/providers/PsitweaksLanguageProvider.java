@@ -1826,8 +1826,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
         addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration.", "超音波振動による高威力の熱線を放ちます.");
         addBookPage(root, "trick_meteor_line.0",
-                "Spreads a hemisphere of night over the position, with a radius of $(thing)Radius$(0) blocks (8 if left out, at most 12). Stars light up in its dome, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
-                "指定位置を中心に、$(thing)半径$(0) ブロック (省略時は8、上限12) の半球の夜を広げます. 夜の天井に星が灯り、1秒後から1秒間、星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい、残りは地面に落ちます.");
+                "Spreads a hemisphere of night over the position, with a radius of $(thing)Radius$(0) blocks (16 to 32, 16 if left out). Stars light up in its dome, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
+                "指定位置を中心に、$(thing)半径$(0) ブロック (16〜32、省略時は16) の半球の夜を広げます. 夜の天井に星が灯り、1秒後から1秒間、星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい、残りは地面に落ちます.");
         addBookPage(root, "trick_meteor_line.1",
                 "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object: if its integrity runs out, it collapses and its streaks vanish with it.",
                 "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、強度が尽きるとつぶれ、光条も一緒に消えます.");

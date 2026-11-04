@@ -22,7 +22,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 /**
  * Spreads a hemisphere of night over the position, lights stars inside its dome and rains streaks of light from them
  * onto every creature inside that the caster may harm ({@link EntityMeteorLineNight}). The optional Radius defaults to
- * {@link MeteorLineTuning#DEFAULT_RADIUS} and is capped at {@link MeteorLineTuning#MAX_RADIUS}.
+ * {@link MeteorLineTuning#DEFAULT_RADIUS} and is kept within {@link MeteorLineTuning#MIN_RADIUS} to
+ * {@link MeteorLineTuning#MAX_RADIUS}; zero or less does not compile.
  */
 public class PieceTrickMeteorLine extends PieceTrick {
     private static final int POTENCY = 1428;

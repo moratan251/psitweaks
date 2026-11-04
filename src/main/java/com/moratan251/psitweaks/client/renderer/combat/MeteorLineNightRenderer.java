@@ -48,6 +48,7 @@ public class MeteorLineNightRenderer extends CombatGlowRenderer<EntityMeteorLine
         GlowDrawing.ring(glow, pose, new Vector3f(center).add(0.0F, 0.05F, 0.0F), UP, Math.max(0.0F, radius - 0.12F), radius,
                 96, MeteorLineTuning.DOME_RIM_COLOR, 0.0F, 0.6F * strength, 255);
 
+        float starSize = MeteorLineTuning.starSize(entity.getRadius());
         int accent = GlowDrawing.glowColor(entity.getColor());
         int starColor = GlowDrawing.mix(MeteorLineTuning.STAR_COLOR, accent, MeteorLineTuning.STAR_ACCENT);
         float clear = Mth.clamp((age - MeteorLineTuning.CLEAR_START) / MeteorLineTuning.CLEAR_TICKS, 0.0F, 1.0F);
@@ -62,10 +63,10 @@ public class MeteorLineNightRenderer extends CombatGlowRenderer<EntityMeteorLine
             }
             Vec3 offset = star.offset().scale(scale);
             Vector3f at = new Vector3f(center).add((float) offset.x, (float) offset.y, (float) offset.z);
-            GlowDrawing.glowDisc(glow, pose, at, MeteorLineTuning.STAR_SIZE * MeteorLineTuning.STAR_HALO_SCALE, accent,
+            GlowDrawing.glowDisc(glow, pose, at, starSize * MeteorLineTuning.STAR_HALO_SCALE, accent,
                     brightness * MeteorLineTuning.STAR_HALO_BRIGHTNESS, 255);
-            GlowDrawing.glowDisc(glow, pose, at, MeteorLineTuning.STAR_SIZE, starColor, brightness, 255);
-            GlowDrawing.glowDisc(glow, pose, at, MeteorLineTuning.STAR_SIZE * 0.35F, 0xFFFFFF, brightness, 255);
+            GlowDrawing.glowDisc(glow, pose, at, starSize, starColor, brightness, 255);
+            GlowDrawing.glowDisc(glow, pose, at, starSize * 0.35F, 0xFFFFFF, brightness, 255);
         }
     }
 }

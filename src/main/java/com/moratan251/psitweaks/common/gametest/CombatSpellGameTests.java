@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
@@ -42,6 +43,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickStarfall;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -1221,6 +1223,18 @@ public final class CombatSpellGameTests {
                 .thenSucceed();
     }
 
+    /**
+     * A Meteor Line night placed directly. The trick keeps the radius within 16 to 32, which would reach far beyond a test
+     * structure, so the tests of how the night strikes place smaller nights; the trick's own range is checked by
+     * {@link #meteorLineKeepsTheRadiusWithinItsRange}.
+     */
+    private static EntityMeteorLineNight night(GameTestHelper helper, LivingEntity caster, Vec3 center, double radius) {
+        EntityMeteorLineNight night = new EntityMeteorLineNight(helper.getLevel(), center, radius);
+        night.configure(caster, AttackRules.Options.DEFAULT);
+        helper.getLevel().addFreshEntity(night);
+        return night;
+    }
+
     /** Runs {@code step}; if it fails, cleans up first and then fails the test. */
     private static Runnable guarded(Runnable cleanup, CastAction step) {
         return () -> {
@@ -1246,6 +1260,38 @@ public final class CombatSpellGameTests {
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_VALUE.equals(compileError(
                 () -> stats(meteorLine(Map.of(POSITION, at, RADIUS, 0.0))))), "A radius of 0 must not compile");
         helper.succeed();
+    }
+
+    /** The trick keeps the night's radius within 16 to 32, and uses 16 when the radius is left out. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_radius")
+    public static void meteorLineKeepsTheRadiusWithinItsRange(GameTestHelper helper) throws Exception {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_radius_caster", new Vec3(0.5, 0.0, 0.5));
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        // {given radius (0 = left out), expected radius}
+        double[][] cases = {{0.0, MeteorLineTuning.MIN_RADIUS}, {5.0, MeteorLineTuning.MIN_RADIUS}, {20.0, 20.0},
+                {40.0, MeteorLineTuning.MAX_RADIUS}};
+        try {
+            for (double[] radiusCase : cases) {
+                Map<String, Object> values = new HashMap<>();
+                values.put(POSITION, vector(center));
+                if (radiusCase[0] > 0.0) {
+                    values.put(RADIUS, radiusCase[0]);
+                }
+                meteorLine(values).execute(new SpellContext().setPlayer(player));
+                List<EntityMeteorLineNight> nights = level.getEntitiesOfClass(EntityMeteorLineNight.class,
+                        new AABB(center, center).inflate(0.5));
+                helper.assertTrue(nights.size() == 1, "One night expected, found " + nights.size());
+                // End it before it ticks, so a night this wide never rains on other tests.
+                double radius = nights.get(0).getRadius();
+                nights.get(0).end(SpellGramMarker.EndReason.DISPELLED);
+                helper.assertTrue(near(radius, radiusCase[1]), "A radius of " + radiusCase[0] + " must become "
+                        + radiusCase[1] + ", got " + radius);
+            }
+            helper.succeed();
+        } finally {
+            GameTestPlayers.remove(helper, player);
+        }
     }
 
     /**
@@ -1277,7 +1323,7 @@ public final class CombatSpellGameTests {
         // Cast once the player's join invulnerability is over, with PvP on, so only the trick's own rule spares the caster.
         helper.runAfterDelay(61, guarded(cleanup, () -> {
             level.getServer().setPvpAllowed(true);
-            meteorLine(Map.of(POSITION, vector(center), RADIUS, 2.0)).execute(new SpellContext().setPlayer(player));
+            night(helper, player, center, 2.0);
         }));
         helper.runAfterDelay(61 + MeteorLineTuning.TOTAL_TICKS + 2, guarded(cleanup, () -> {
             helper.assertTrue(!target.isAlive(), "The husk inside the night must fall");
@@ -1306,8 +1352,7 @@ public final class CombatSpellGameTests {
         Husk husk = husk(helper, new Vec3(2.5, 0.0, 2.5), false);
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
-        guarded(cleanup, () -> meteorLine(Map.of(POSITION, vector(center), RADIUS, 3.0))
-                .execute(new SpellContext().setPlayer(player))).run();
+        night(helper, player, center, 3.0);
         helper.runAfterDelay(MeteorLineTuning.TOTAL_TICKS + 2, guarded(cleanup, () -> {
             helper.assertTrue(!husk.isAlive(), "The husk under the roof must fall");
             for (BlockPos pos : roof) {
@@ -1409,8 +1454,7 @@ public final class CombatSpellGameTests {
         }
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
-        guarded(cleanup, () -> meteorLine(Map.of(POSITION, vector(center), RADIUS, 3.0))
-                .execute(new SpellContext().setPlayer(player))).run();
+        night(helper, player, center, 3.0);
         List<EntityMeteorLineNight> nights = SpellGramIndex.near(level, center, 0.5, EntityMeteorLineNight.class);
         if (nights.size() != 1) {
             cleanup.run();
@@ -1442,8 +1486,7 @@ public final class CombatSpellGameTests {
         ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_integrity_caster", new Vec3(0.5, 0.0, 0.5));
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
-        guarded(cleanup, () -> meteorLine(Map.of(POSITION, vector(center), RADIUS, 3.0))
-                .execute(new SpellContext().setPlayer(player))).run();
+        night(helper, player, center, 3.0);
         helper.runAfterDelay(MeteorLineTuning.FALL_START + 4, guarded(cleanup, () -> {
             List<EntityMeteorLineNight> nights = SpellGramIndex.near(level, center, 0.5, EntityMeteorLineNight.class);
             helper.assertTrue(nights.size() == 1, "The night must be in the SpellGram index, found " + nights.size());

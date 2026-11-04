@@ -196,14 +196,16 @@ public class EntityMeteorLineNight extends SpellGramMarker {
             return;
         }
         if (age == 0) {
-            CombatEffects.sound(level, position(), MeteorLineTuning.SPREAD_SOUND, 1.5F, MeteorLineTuning.SPREAD_PITCH);
+            CombatEffects.sound(level, position(), MeteorLineTuning.SPREAD_SOUND, MeteorLineTuning.SPREAD_VOLUME,
+                    MeteorLineTuning.SPREAD_PITCH);
         }
         int sinceFall = age - MeteorLineTuning.FALL_START;
         if (sinceFall >= 0 && age < MeteorLineTuning.CLEAR_START && sinceFall % MeteorLineTuning.VOLLEY_INTERVAL == 0) {
             volley(level, caster, sinceFall / MeteorLineTuning.VOLLEY_INTERVAL);
         }
         if (age == MeteorLineTuning.CLEAR_START) {
-            CombatEffects.sound(level, position(), MeteorLineTuning.CLEAR_SOUND, 1.2F, MeteorLineTuning.CLEAR_PITCH);
+            CombatEffects.sound(level, position(), MeteorLineTuning.CLEAR_SOUND, MeteorLineTuning.CLEAR_VOLUME,
+                    MeteorLineTuning.CLEAR_PITCH);
         }
         age++;
     }

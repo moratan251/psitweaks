@@ -176,7 +176,7 @@ public final class GlowDrawing {
      */
     public static void rimDome(VertexConsumer consumer, Matrix4f pose, Vector3f center, float radius,
                                int color, float core, float rim, int alpha) {
-        int stacks = Mth.clamp(Mth.ceil(radius * 2.0F), 8, 24);
+        int stacks = Mth.clamp(Mth.ceil(radius * 2.0F), 8, 32);
         rimSection(consumer, pose, center, radius, color, core, rim, alpha, stacks, stacks * 4, Mth.HALF_PI);
     }
 
