@@ -57,16 +57,17 @@ public class MeteorLineNightRenderer extends CombatGlowRenderer<EntityMeteorLine
         for (EntityMeteorLineNight.Star star : entity.getStars()) {
             float lit = Mth.clamp((age - star.appear()) / STAR_LIGHT_TICKS, 0.0F, 1.0F);
             float twinkle = 0.65F + 0.35F * Mth.sin(age * star.speed() + star.phase());
-            float brightness = lit * twinkle * (1.0F - clear);
+            float brightness = lit * twinkle * (1.0F - clear) * star.brightness();
             if (brightness <= 0.01F) {
                 continue;
             }
             Vec3 offset = star.offset().scale(scale);
             Vector3f at = new Vector3f(center).add((float) offset.x, (float) offset.y, (float) offset.z);
-            GlowDrawing.glowDisc(glow, pose, at, starSize * MeteorLineTuning.STAR_HALO_SCALE, accent,
+            float size = starSize * star.scale();
+            GlowDrawing.glowDisc(glow, pose, at, size * MeteorLineTuning.STAR_HALO_SCALE, accent,
                     brightness * MeteorLineTuning.STAR_HALO_BRIGHTNESS, 255);
-            GlowDrawing.glowDisc(glow, pose, at, starSize, starColor, brightness, 255);
-            GlowDrawing.glowDisc(glow, pose, at, starSize * 0.35F, 0xFFFFFF, brightness, 255);
+            GlowDrawing.glowDisc(glow, pose, at, size, starColor, brightness, 255);
+            GlowDrawing.glowDisc(glow, pose, at, size * 0.35F, 0xFFFFFF, brightness, 255);
         }
     }
 }

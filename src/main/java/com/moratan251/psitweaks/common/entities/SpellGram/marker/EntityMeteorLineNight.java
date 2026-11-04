@@ -39,7 +39,6 @@ import java.util.UUID;
  * 強度が尽きると夜がつぶれ、まだ降っていない光条も、残っている光条も消える。
  */
 public class EntityMeteorLineNight extends SpellGramMarker {
-    private static final double GOLDEN_ANGLE = Math.PI * (3.0 - Math.sqrt(5.0));
     /** 狙う相手ごとに、星をいくつ比べて一番まっすぐ降らせられるものを選ぶか。 */
     private static final int STAR_CANDIDATES = 3;
     /** 地面を探すとき、中心より上の坂を何ブロックまで登るか。 */
@@ -58,9 +57,10 @@ public class EntityMeteorLineNight extends SpellGramMarker {
             SynchedEntityData.defineId(EntityMeteorLineNight.class, EntityDataSerializers.LONG);
 
     /**
-     * 星1つ。{@code offset} は中心からの位置、{@code phase}・{@code speed} は瞬き、{@code appear} は灯る時刻（tick）。
+     * 星1つ。{@code offset} は中心からの位置、{@code phase}・{@code speed} は瞬き、{@code appear} は灯る時刻（tick）、
+     * {@code brightness}・{@code scale} はその星の明るさと大きさの倍率。
      */
-    public record Star(Vec3 offset, float phase, float speed, float appear) {
+    public record Star(Vec3 offset, float phase, float speed, float appear, float brightness, float scale) {
     }
 
     private final List<EntityMeteorLineBeam> beams = new ArrayList<>();
@@ -162,17 +162,43 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         int count = MeteorLineTuning.stars(radius);
         double minSin = Math.sin(Math.toRadians(MeteorLineTuning.STAR_MIN_ELEVATION));
         double maxSin = Math.sin(Math.toRadians(MeteorLineTuning.STAR_MAX_ELEVATION));
-        double azimuth = random.nextDouble() * Mth.TWO_PI;
+        // 単位球の上の帯の面積を星の数で割ると、均等に並んだときの間隔がわかる。隣の星とはその STAR_SPACING 倍は離す。
+        double area = Mth.TWO_PI * (maxSin - minSin);
+        double spacing = Math.sqrt(area / count) * MeteorLineTuning.STAR_SPACING;
+        List<Vec3> directions = new ArrayList<>(count);
         Star[] result = new Star[count];
         for (int i = 0; i < count; i++) {
-            // 仰角の正弦を等分すると、星は半球の面に均等に散る。方位は黄金角ずつ回して重ならないようにする。
-            double sin = Mth.lerp((i + random.nextDouble()) / count, minSin, maxSin);
-            double cos = Math.sqrt(1.0 - sin * sin);
-            azimuth += GOLDEN_ANGLE;
+            // 帯の中の一様にランダムな向き（仰角の正弦と方位が一様なら、面に偏りなく散る）。近すぎる候補は選び直し、
+            // 選び直しきれなければ一番離れていた候補を使う。
+            Vec3 best = null;
+            double bestGap = -1.0;
+            for (int attempt = 0; attempt < MeteorLineTuning.STAR_PLACE_ATTEMPTS; attempt++) {
+                double sin = Mth.lerp(random.nextDouble(), minSin, maxSin);
+                double cos = Math.sqrt(1.0 - sin * sin);
+                double azimuth = random.nextDouble() * Mth.TWO_PI;
+                Vec3 candidate = new Vec3(Math.cos(azimuth) * cos, sin, Math.sin(azimuth) * cos);
+                double gap = Double.MAX_VALUE;
+                for (Vec3 placed : directions) {
+                    gap = Math.min(gap, placed.distanceTo(candidate));
+                }
+                if (gap > bestGap) {
+                    best = candidate;
+                    bestGap = gap;
+                }
+                if (gap >= spacing) {
+                    break;
+                }
+            }
+            directions.add(best);
             double distance = radius * MeteorLineTuning.STAR_DISTANCE * (0.94 + 0.06 * random.nextDouble());
-            Vec3 offset = new Vec3(Math.cos(azimuth) * cos * distance, sin * distance, Math.sin(azimuth) * cos * distance);
-            result[i] = new Star(offset, random.nextFloat() * Mth.TWO_PI, 0.15F + random.nextFloat() * 0.25F,
-                    random.nextFloat() * MeteorLineTuning.SPREAD_TICKS * 0.75F);
+            // 二乗で暗く小さい側に寄せる。大きさは明るさにおおむね合わせ、少しだけ揺らす。
+            float magnitude = random.nextFloat();
+            magnitude *= magnitude;
+            float brightness = Mth.lerp(magnitude, MeteorLineTuning.STAR_MIN_BRIGHTNESS, MeteorLineTuning.STAR_MAX_BRIGHTNESS);
+            float scale = Mth.lerp(magnitude, MeteorLineTuning.STAR_MIN_SCALE, MeteorLineTuning.STAR_MAX_SCALE)
+                    * (0.85F + 0.3F * random.nextFloat());
+            result[i] = new Star(best.scale(distance), random.nextFloat() * Mth.TWO_PI, 0.15F + random.nextFloat() * 0.25F,
+                    random.nextFloat() * MeteorLineTuning.SPREAD_TICKS * 0.75F, brightness, scale);
         }
         return result;
     }

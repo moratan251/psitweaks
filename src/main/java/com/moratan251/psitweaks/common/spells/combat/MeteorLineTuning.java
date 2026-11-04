@@ -73,6 +73,17 @@ public final class MeteorLineTuning {
     public static final double STAR_MAX_ELEVATION = 85.0;
     /** 晴れるときに星が外へ散る距離（半径に対する割合）。 */
     public static final double STAR_SCATTER = 0.25;
+    /**
+     * 星はランダムに置くが、隣の星とはこれ以上離す（星が均等に並んだときの間隔に対する割合）。大きいほど均等に、
+     * 小さいほど固まりやすくなる。置き場所の候補は1個につき {@link #STAR_PLACE_ATTEMPTS} 回まで選び直す。
+     */
+    public static final double STAR_SPACING = 0.6;
+    public static final int STAR_PLACE_ATTEMPTS = 30;
+    /** 星ごとの明るさと大きさの幅（倍率）。暗く小さい星が多く、明るく大きい星は少ない。 */
+    public static final float STAR_MIN_BRIGHTNESS = 0.4F;
+    public static final float STAR_MAX_BRIGHTNESS = 1.0F;
+    public static final float STAR_MIN_SCALE = 0.55F;
+    public static final float STAR_MAX_SCALE = 1.5F;
 
     // ---- 光条 ----
 
