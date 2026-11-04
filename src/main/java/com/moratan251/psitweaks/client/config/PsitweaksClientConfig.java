@@ -20,6 +20,7 @@ public final class PsitweaksClientConfig {
         public final ModConfigSpec.BooleanValue cameraShake;
         public final ModConfigSpec.DoubleValue cameraShakeStrength;
         public final ModConfigSpec.BooleanValue barrierHud;
+        public final ModConfigSpec.BooleanValue meteorLineNight;
         public final WindowPosition autonomousCasterSettingsWindow;
 
         private Client(ModConfigSpec.Builder builder) {
@@ -46,6 +47,11 @@ public final class PsitweaksClientConfig {
                     .comment("Show the remaining shield and time of Trick: Barrier above the health bar")
                     .translation("psitweaks.configuration.effects.barrier_hud")
                     .define("barrierHud", true);
+
+            meteorLineNight = builder
+                    .comment("Darken the view while you stand in the night of Trick: Meteor Line")
+                    .translation("psitweaks.configuration.effects.meteor_line_night")
+                    .define("meteorLineNight", true);
 
             builder.pop();
 

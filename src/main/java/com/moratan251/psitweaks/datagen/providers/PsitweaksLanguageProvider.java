@@ -90,6 +90,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "スターフォールの流星";
             default -> "Starfall Meteor";
         });
+        root.addProperty("entity.psitweaks.meteor_line_night", switch (locale) {
+            case "ja_jp" -> "流星群の夜";
+            default -> "Meteor Line Night";
+        });
         root.addProperty("entity.psitweaks.gravity_well", switch (locale) {
             case "ja_jp" -> "重力の井戸";
             default -> "Gravity Well";
@@ -546,6 +550,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Barrier Shield Bar", "障壁シールドのバー",
                 "Show the remaining shield and time of Trick: Barrier above the health bar.",
                 "作動式: 障壁のシールド残量と残り時間を体力ゲージの上に表示します。");
+        addConfigValue(root, "psitweaks.configuration.effects.meteor_line_night",
+                "Meteor Line Night", "流星群の夜",
+                "Darken the view while you stand in the night of Trick: Meteor Line.",
+                "作動式: 流星群の夜の中にいる間、画面を暗くします。");
         addConfigLabel(root, "psitweaks.configuration.windows", "Window Positions", "ウィンドウの位置");
         addConfigLabel(root, "psitweaks.configuration.windows.autonomous_caster_settings",
                 "Autonomous Caster Settings Window", "自律詠唱機の設定ウィンドウ");
@@ -1591,7 +1599,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_supply_fe", "Trick: FE Charge", "Supplies FE to blocks. Direction can be specified.", "作動式: FE供給", "ブロックにFEを供給します。方向の指定が可能です。");
         addSpellPiece(root, "trick_time_accelerate", "Trick: Time Accelerate", "Accelerates the time of the target block", "作動式: 時間加速", "対象のブロックの時を加速させます。");
         addSpellPiece(root, "trick_phonon_maser", "Trick: Phonon Maser", "Vibrates ultrasonic waves to emit heat rays", "作動式: フォノンメーザー", "超音波を振動させ熱線を放出する");
-        addSpellPiece(root, "trick_meteor_line", "Trick: Meteor Line", "Creates a line that permeates light and pierces living beings on its path", "作動式: 流星群", "光を透過させるラインを作り出し経路上の生物を穿つ");
+        addSpellPiece(root, "trick_meteor_line", "Trick: Meteor Line", "Covers the position in a night and rains streaks of light from its stars on the creatures inside", "作動式: 流星群", "指定位置を夜で覆い、星から光条を降らせて中の生物を穿つ");
         addSpellPiece(root, "trick_supreme_infusion", "Trick: Supreme Infusion", "Infuse Echo Shards into Psionic Echoes", "作動式: 超位注入", "残響の欠片に注入してサイオニックエコーにします");
         addSpellPiece(root, "trick_molecular_divider", "Trick: Molecular Divider", "divide the living creatures within the area", "作動式: 分子ディバイダー", "三点で作られた平面で生物を切断する");
         addSpellPiece(root, "trick_aqua_cutter", "Trick: Aqua Cutter", "Launches a water blade projectile that damages on hit", "作動式: アクアカッター", "水刃の発射体を前方に放ち、命中した対象にダメージを与える");
@@ -1817,7 +1825,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_send_item.1", "The filter modes and the optional Max input behave like Trick: Pull Item, including Item Lists in both Item modes. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様で, Item と Item (Strict) モードでは Item List も接続できます. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
         addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration.", "超音波振動による高威力の熱線を放ちます.");
-        addBookPage(root, "trick_meteor_line", "Creates a beam from the specified position in the direction of the Ray vector, dealing special and lethally massive damage to living beings along its path.", "指定位置からRayベクトル方向へ光線を生み出し、経路上の生物に特殊かつ致死的な大ダメージを与えます。");
+        addBookPage(root, "trick_meteor_line.0",
+                "Spreads a hemisphere of night over the position, with a radius of $(thing)Radius$(0) blocks (8 if left out, at most 12). Stars light up in its dome, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
+                "指定位置を中心に、$(thing)半径$(0) ブロック (省略時は8、上限12) の半球の夜を広げます. 夜の天井に星が灯り、1秒後から1秒間、星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい、残りは地面に落ちます.");
+        addBookPage(root, "trick_meteor_line.1",
+                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object: if its integrity runs out, it collapses and its streaks vanish with it.",
+                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、強度が尽きるとつぶれ、光条も一緒に消えます.");
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
         addBookPage(root, "trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick.", "前方へ水刃の発射体を放つ序盤用の攻撃術式です.");

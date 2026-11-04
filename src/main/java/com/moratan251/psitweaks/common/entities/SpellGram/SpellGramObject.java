@@ -243,6 +243,29 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     protected void onSpellGramDamaged(DamageSource source, float amount, float remainingIntegrity) {
     }
 
+    /**
+     * 魔法式オブジェクト用の受け口: 強度を {@code amount} だけ減らし、尽きたら {@link #onIntegrityDepleted}。
+     * 剣や矢などのダメージ（{@link #hurt}）とは別の入口で、術式でオブジェクトを削るときに使う。
+     *
+     * @return 強度が減ったか
+     */
+    public boolean reduceIntegrity(float amount) {
+        if (isRemoved() || level().isClientSide || amount <= 0.0F) {
+            return false;
+        }
+        float integrity = Math.max(0.0F, getIntegrity() - amount);
+        setIntegrity(integrity);
+        if (integrity <= 0.0F) {
+            onIntegrityDepleted();
+        }
+        return true;
+    }
+
+    /** 受け口で強度が尽きたとき。領域型（サークル）は解体される。 */
+    protected void onIntegrityDepleted() {
+        destroyBySpell();
+    }
+
     public void destroyBySpell() {
         destroyBySpell(null);
     }
@@ -512,6 +535,22 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     }
 
     protected void readSpellGramSpawnData(RegistryFriendlyByteBuf buffer) {
+    }
+
+    @Override
+    public void onAddedToLevel() {
+        super.onAddedToLevel();
+        if (!level().isClientSide) {
+            SpellGramIndex.add(this);
+        }
+    }
+
+    @Override
+    public void onRemovedFromLevel() {
+        super.onRemovedFromLevel();
+        if (!level().isClientSide) {
+            SpellGramIndex.remove(this);
+        }
     }
 
     @Override

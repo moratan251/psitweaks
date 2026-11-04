@@ -34,6 +34,15 @@ public final class GlowDrawing {
         return r << 16 | g << 8 | b;
     }
 
+    /** Mixes two colours; 0 is {@code from}, 1 is {@code to}. */
+    public static int mix(int from, int to, float amount) {
+        float t = Mth.clamp(amount, 0.0F, 1.0F);
+        int r = (int) Mth.lerp(t, red(from), red(to));
+        int g = (int) Mth.lerp(t, green(from), green(to));
+        int b = (int) Mth.lerp(t, blue(from), blue(to));
+        return r << 16 | g << 8 | b;
+    }
+
     /** Brightens a dark CAD colour so additive glows stay visible; keeps the hue. */
     public static int glowColor(int color) {
         int max = Math.max(red(color), Math.max(green(color), blue(color)));
@@ -158,11 +167,26 @@ public final class GlowDrawing {
                                  int color, float core, float rim, int alpha) {
         // Finer for large spheres, so the facets of a wide flash do not show.
         int stacks = Mth.clamp(Mth.ceil(radius * 6.0F), 14, 64);
-        int slices = stacks * 2;
+        rimSection(consumer, pose, center, radius, color, core, rim, alpha, stacks, stacks * 2, Mth.PI);
+    }
+
+    /**
+     * The upper half of {@link #rimSphere}, standing on the horizontal plane through {@code center}. It is coarser,
+     * as it is meant for wide, faint domes rather than bright flashes.
+     */
+    public static void rimDome(VertexConsumer consumer, Matrix4f pose, Vector3f center, float radius,
+                               int color, float core, float rim, int alpha) {
+        int stacks = Mth.clamp(Mth.ceil(radius * 2.0F), 8, 24);
+        rimSection(consumer, pose, center, radius, color, core, rim, alpha, stacks, stacks * 4, Mth.HALF_PI);
+    }
+
+    /** A sphere from its top down to the polar angle {@code maxPhi}, shaded like {@link #rimSphere}. */
+    private static void rimSection(VertexConsumer consumer, Matrix4f pose, Vector3f center, float radius,
+                                   int color, float core, float rim, int alpha, int stacks, int slices, float maxPhi) {
         Vector3f[] previous = null;
         float[] previousBrightness = null;
         for (int stack = 0; stack <= stacks; stack++) {
-            float phi = Mth.PI * stack / stacks;
+            float phi = maxPhi * stack / stacks;
             Vector3f[] ring = new Vector3f[slices + 1];
             float[] brightness = new float[slices + 1];
             for (int slice = 0; slice <= slices; slice++) {

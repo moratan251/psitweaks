@@ -11,6 +11,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +27,7 @@ import org.joml.Matrix4f;
 
 /**
  * Client side of the combat spell effects that are not entities: sphere flashes (barrier honeycomb, shock spheres),
- * chain lightning arcs, camera shake and the barrier HUD bar.
+ * chain lightning arcs, camera shake, the barrier HUD bar and the darkened view inside a Meteor Line night.
  */
 public final class CombatEffectsClient {
     private static final int MAX_FLASHES = 64;
@@ -47,6 +48,7 @@ public final class CombatEffectsClient {
         NeoForge.EVENT_BUS.addListener(CameraShake::onComputeCameraAngles);
         NeoForge.EVENT_BUS.addListener(CombatEffectsClient::onLoggingOut);
         CocytusIceRenderer.registerEvents();
+        MeteorLineNightView.registerEvents();
         ParadeHiddenPlayers.registerEvents();
     }
 
@@ -91,6 +93,10 @@ public final class CombatEffectsClient {
         CameraShake.tick();
         if (minecraft.player != null) {
             rumble(level, minecraft.player);
+        }
+        Entity camera = minecraft.getCameraEntity() != null ? minecraft.getCameraEntity() : minecraft.player;
+        if (camera != null) {
+            MeteorLineNightView.tick(level, camera);
         }
         FLASHES.removeIf(flash -> !flash.tick());
         for (Iterator<LightningArcEffect> iterator = ARCS.iterator(); iterator.hasNext(); ) {
@@ -158,5 +164,6 @@ public final class CombatEffectsClient {
         FLASHES.clear();
         ARCS.clear();
         CameraShake.clear();
+        MeteorLineNightView.clear();
     }
 }

@@ -4,6 +4,9 @@ import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
@@ -17,10 +20,12 @@ import com.moratan251.psitweaks.common.menu.BladePouchMenu;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShields;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.MeteorLineTuning;
 import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.combat.SwordStrikes;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorBarrierAmount;
@@ -31,6 +36,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLi
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancingBlades;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityCollapse;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickKamaitachi;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorLine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickStarfall;
@@ -41,18 +47,24 @@ import java.util.Map;
 import java.util.UUID;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
@@ -64,6 +76,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -261,6 +274,13 @@ public final class CombatSpellGameTests {
 
     private static PieceTrickStarfall starfall(Map<String, ?> values) {
         return new PieceTrickStarfall(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
+            @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
+        };
+    }
+
+    private static PieceTrickMeteorLine meteorLine(Map<String, ?> values) {
+        return new PieceTrickMeteorLine(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
             @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
         };
@@ -1199,5 +1219,253 @@ public final class CombatSpellGameTests {
                 .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 110 - EPSILON,
                         "The collapse hits once, health " + husk.getHealth()))
                 .thenSucceed();
+    }
+
+    /** Runs {@code step}; if it fails, cleans up first and then fails the test. */
+    private static Runnable guarded(Runnable cleanup, CastAction step) {
+        return () -> {
+            try {
+                step.run();
+            } catch (SpellRuntimeException failure) {
+                cleanup.run();
+                throw new GameTestAssertException("Casting failed: " + failure.getMessage());
+            } catch (RuntimeException | Error failure) {
+                cleanup.run();
+                throw failure;
+            }
+        };
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void meteorLineTakesAnOptionalPositiveRadius(GameTestHelper helper) throws Exception {
+        Vector3 at = vector(helper.absoluteVec(new Vec3(2.5, 0.0, 2.5)));
+        int[] stats = stats(meteorLine(Map.of(POSITION, at)));
+        helper.assertTrue(stats[0] == 1428 && stats[1] == 12_000, "Meteor Line must cost 1428 / 12000, got " + stats[0] + "/" + stats[1]);
+        helper.assertTrue(compileError(() -> stats(meteorLine(Map.of(POSITION, at, RADIUS, 4.0)))) == null,
+                "A positive radius must compile");
+        helper.assertTrue(SpellCompilationException.NON_POSITIVE_VALUE.equals(compileError(
+                () -> stats(meteorLine(Map.of(POSITION, at, RADIUS, 0.0))))), "A radius of 0 must not compile");
+        helper.succeed();
+    }
+
+    /**
+     * The night aims a streak at every creature inside it that the caster may harm. The caster, the caster's pet, a team
+     * mate and a husk outside the night are left alone. Each Meteor Line test has a batch of its own, so its streaks
+     * never reach another test's creatures.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line", timeoutTicks = 200)
+    public static void meteorLineStrikesOnlyTargetsInsideTheNight(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        boolean pvp = level.getServer().isPvpAllowed();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_caster", new Vec3(1.0, 0.0, 1.0));
+        Husk target = husk(helper, new Vec3(2.5, 0.0, 1.0), false);
+        Husk mate = husk(helper, new Vec3(2.5, 0.0, 2.5), false);
+        Husk outside = husk(helper, new Vec3(4.5, 0.0, 4.5), false);
+        Wolf pet = GameTestPlayers.pet(helper, player.getUUID(), new Vec3(1.0, 0.0, 2.5));
+        PlayerTeam team = GameTestPlayers.team(helper, "meteor_line_team", false, player.getScoreboardName(), mate.getScoreboardName());
+        float playerHealth = player.getHealth();
+        float mateHealth = mate.getHealth();
+        float outsideHealth = outside.getHealth();
+        float petHealth = pet.getHealth();
+        // A night of radius 2 holds the caster, the target, the mate and the pet; the outside husk is 4.2 blocks away.
+        Vec3 center = helper.absoluteVec(new Vec3(1.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            GameTestPlayers.removeTeam(helper, team);
+            GameTestPlayers.remove(helper, player);
+            level.getServer().setPvpAllowed(pvp);
+        };
+        // Cast once the player's join invulnerability is over, with PvP on, so only the trick's own rule spares the caster.
+        helper.runAfterDelay(61, guarded(cleanup, () -> {
+            level.getServer().setPvpAllowed(true);
+            meteorLine(Map.of(POSITION, vector(center), RADIUS, 2.0)).execute(new SpellContext().setPlayer(player));
+        }));
+        helper.runAfterDelay(61 + MeteorLineTuning.TOTAL_TICKS + 2, guarded(cleanup, () -> {
+            helper.assertTrue(!target.isAlive(), "The husk inside the night must fall");
+            helper.assertTrue(outside.isAlive() && near(outside.getHealth(), outsideHealth), "The husk outside the night must be spared");
+            helper.assertTrue(player.isAlive() && near(player.getHealth(), playerHealth), "The caster must be spared");
+            helper.assertTrue(pet.isAlive() && near(pet.getHealth(), petHealth), "The caster's pet must be spared");
+            helper.assertTrue(mate.isAlive() && near(mate.getHealth(), mateHealth), "The caster's team mate must be spared");
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /** Streaks pass through blocks without breaking them, so a roof gives no cover. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_roof", timeoutTicks = 200)
+    public static void meteorLineReachesUnderARoof(GameTestHelper helper) {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_roof_caster", new Vec3(0.5, 0.0, 0.5));
+        // The roof covers every star: with the centre 1 block up, the lowest stars of a radius-3 night sit 2.3 blocks up.
+        List<BlockPos> roof = new ArrayList<>();
+        for (int x = 0; x < 5; x++) {
+            for (int z = 0; z < 5; z++) {
+                BlockPos pos = new BlockPos(x, 2, z);
+                helper.setBlock(pos, Blocks.STONE);
+                roof.add(pos);
+            }
+        }
+        Husk husk = husk(helper, new Vec3(2.5, 0.0, 2.5), false);
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
+        guarded(cleanup, () -> meteorLine(Map.of(POSITION, vector(center), RADIUS, 3.0))
+                .execute(new SpellContext().setPlayer(player))).run();
+        helper.runAfterDelay(MeteorLineTuning.TOTAL_TICKS + 2, guarded(cleanup, () -> {
+            helper.assertTrue(!husk.isAlive(), "The husk under the roof must fall");
+            for (BlockPos pos : roof) {
+                helper.assertBlockPresent(Blocks.STONE, pos);
+            }
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /**
+     * However long a streak stays, it hits a creature only once: a creature that never falls (like a target dummy) is
+     * not hit again every tick, which flooded the client with hurt sounds.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_once", timeoutTicks = 100)
+    public static void meteorLineStreakHitsAnUndyingCreatureOnce(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_once_caster", new Vec3(0.5, 0.0, 0.5));
+        int[] hits = {0};
+        Husk dummy = new Husk(EntityType.HUSK, level) {
+            @Override
+            public boolean hurt(DamageSource source, float amount) {
+                hits[0]++;
+                return true;
+            }
+        };
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
+        dummy.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        dummy.setNoAi(true);
+        level.addFreshEntity(dummy);
+        Vec3 body = CombatSpellHelper.center(dummy);
+        EntityMeteorLineBeam beam = new EntityMeteorLineBeam(level, body.add(0.0, 3.0, 0.0), body.add(0.0, -1.0, 0.0));
+        beam.configure(player, AttackRules.Options.DEFAULT, MeteorLineTuning.DAMAGE, CombatSpellHelper.DEFAULT_SPELL_COLOR);
+        level.addFreshEntity(beam);
+        helper.runAfterDelay(MeteorLineTuning.BEAM_TICKS + 4, () -> {
+            try {
+                helper.assertTrue(hits[0] == 1, "One streak must hit a creature that never falls once, hit " + hits[0] + " times");
+                helper.succeed();
+            } finally {
+                beam.discard();
+                dummy.discard();
+                GameTestPlayers.remove(helper, player);
+            }
+        });
+    }
+
+    /** A streak brings the creature down to 1 health before it hits, so a creature with a million health falls to one streak. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_health", timeoutTicks = 100)
+    public static void meteorLineStreakFellsACreatureWithAMillionHealth(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_health_caster", new Vec3(0.5, 0.0, 0.5));
+        // The maximum health attribute stops at 1024 in vanilla, so the giant reports a bigger one itself, as it would with
+        // a mod that raises the cap.
+        final float health = 1_000_000.0F;
+        Husk giant = new Husk(EntityType.HUSK, level) {
+            @Override
+            public double getAttributeValue(Holder<Attribute> attribute) {
+                return attribute.is(Attributes.MAX_HEALTH) ? health : super.getAttributeValue(attribute);
+            }
+        };
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
+        giant.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
+        giant.setNoAi(true);
+        giant.setHealth(health);
+        if (giant.getHealth() < health) {
+            GameTestPlayers.remove(helper, player);
+            throw new GameTestAssertException("The giant must start with a million health, got " + giant.getHealth());
+        }
+        level.addFreshEntity(giant);
+        Vec3 body = CombatSpellHelper.center(giant);
+        EntityMeteorLineBeam beam = new EntityMeteorLineBeam(level, body.add(0.0, 3.0, 0.0), body.add(0.0, -1.0, 0.0));
+        beam.configure(player, AttackRules.Options.DEFAULT, MeteorLineTuning.DAMAGE, CombatSpellHelper.DEFAULT_SPELL_COLOR);
+        level.addFreshEntity(beam);
+        helper.runAfterDelay(MeteorLineTuning.BEAM_TICKS + 4, () -> {
+            try {
+                helper.assertTrue(!giant.isAlive(), "One streak must fell a creature with a million health, health "
+                        + giant.getHealth());
+                helper.succeed();
+            } finally {
+                beam.discard();
+                giant.discard();
+                GameTestPlayers.remove(helper, player);
+            }
+        });
+    }
+
+    /**
+     * When many creatures are inside, a volley aims at no more than {@link MeteorLineTuning#AIMED_PER_VOLLEY} of them, so
+     * the aimed streaks rain down over the whole second; every creature still falls.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_spread", timeoutTicks = 200)
+    public static void meteorLineSpreadsAimedStreaksOverTheVolleys(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_spread_caster", new Vec3(0.5, 0.0, 2.5));
+        List<Husk> husks = new ArrayList<>();
+        for (int x = 0; x < 5; x++) {
+            husks.add(husk(helper, new Vec3(x + 0.5, 0.0, 0.5), false));
+            husks.add(husk(helper, new Vec3(x + 0.5, 0.0, 4.5), false));
+        }
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
+        guarded(cleanup, () -> meteorLine(Map.of(POSITION, vector(center), RADIUS, 3.0))
+                .execute(new SpellContext().setPlayer(player))).run();
+        List<EntityMeteorLineNight> nights = SpellGramIndex.near(level, center, 0.5, EntityMeteorLineNight.class);
+        if (nights.size() != 1) {
+            cleanup.run();
+            throw new GameTestAssertException("The night must be in the SpellGram index, found " + nights.size());
+        }
+        EntityMeteorLineNight night = nights.get(0);
+        int[] firstVolley = {0};
+        helper.onEachTick(() -> {
+            if (firstVolley[0] == 0) {
+                firstVolley[0] = night.getFiredCount();
+            }
+        });
+        helper.runAfterDelay(MeteorLineTuning.TOTAL_TICKS + 2, guarded(cleanup, () -> {
+            helper.assertTrue(firstVolley[0] == MeteorLineTuning.AIMED_PER_VOLLEY, "The first volley must aim at "
+                    + MeteorLineTuning.AIMED_PER_VOLLEY + " of the 10 husks, fired " + firstVolley[0]);
+            helper.assertTrue(husks.stream().noneMatch(Husk::isAlive), "Every husk inside the night must fall");
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /**
+     * The night is a marker SpellGram object: an ordinary attack does not wear it, but once its integrity is worn away
+     * through the SpellGram receiver it collapses, and the streaks that are still there vanish with it.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_integrity", timeoutTicks = 200)
+    public static void meteorLineNightCollapsesWhenItsIntegrityRunsOut(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "meteor_integrity_caster", new Vec3(0.5, 0.0, 0.5));
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
+        guarded(cleanup, () -> meteorLine(Map.of(POSITION, vector(center), RADIUS, 3.0))
+                .execute(new SpellContext().setPlayer(player))).run();
+        helper.runAfterDelay(MeteorLineTuning.FALL_START + 4, guarded(cleanup, () -> {
+            List<EntityMeteorLineNight> nights = SpellGramIndex.near(level, center, 0.5, EntityMeteorLineNight.class);
+            helper.assertTrue(nights.size() == 1, "The night must be in the SpellGram index, found " + nights.size());
+            EntityMeteorLineNight night = nights.get(0);
+            List<EntityMeteorLineBeam> beams = night.getBeams();
+            helper.assertTrue(!beams.isEmpty(), "Streaks must be falling by now");
+            float integrity = night.getMaxIntegrity();
+            helper.assertTrue(integrity > 0.0F && near(night.getIntegrity(), integrity), "The night must start at full integrity");
+            helper.assertTrue(!night.hurt(level.damageSources().playerAttack(player), 1_000.0F)
+                    && near(night.getIntegrity(), integrity), "An ordinary attack must not wear the night");
+            helper.assertTrue(night.reduceIntegrity(integrity * 0.5F) && !night.isRemoved(),
+                    "Half of the integrity must leave the night standing");
+            night.reduceIntegrity(integrity);
+            helper.assertTrue(night.isRemoved(), "The night must collapse when its integrity runs out");
+            helper.assertTrue(beams.stream().allMatch(Entity::isRemoved), "The streaks must vanish with the night");
+            helper.assertTrue(SpellGramIndex.near(level, center, 0.5).isEmpty(), "A collapsed night must leave the index");
+        }));
+        helper.runAfterDelay(MeteorLineTuning.FALL_START + 10, guarded(cleanup, () -> {
+            helper.assertTrue(level.getEntitiesOfClass(EntityMeteorLineBeam.class, new AABB(center, center).inflate(4.0)).isEmpty(),
+                    "No streak may fall after the night collapsed");
+            cleanup.run();
+            helper.succeed();
+        }));
     }
 }

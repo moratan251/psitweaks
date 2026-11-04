@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.trick_meteor_line"
+      "text": "psi.book.page.psitweaks_spellpiece.trick_meteor_line.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_meteor_line.1"
     }
   ]
 }

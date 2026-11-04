@@ -10,6 +10,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -44,10 +45,22 @@ public class PsitweaksEntities {
             ENTITY_TYPES.register("meteor_line_beam",
                     () -> EntityType.Builder.<EntityMeteorLineBeam>of(EntityMeteorLineBeam::new, MobCategory.MISC)
                             .sized(0.1f, 0.1f)
-                            .clientTrackingRange(64)
-                            .updateInterval(1)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
                             .fireImmune()
+                            .noSave()
                             .build(Psitweaks.MOD_ID + ":meteor_line_beam"));
+
+    /** The night of Trick: Meteor Line: a marker SpellGram object at the centre that drops the beams. */
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityMeteorLineNight>> METEOR_LINE_NIGHT =
+            ENTITY_TYPES.register("meteor_line_night",
+                    () -> EntityType.Builder.<EntityMeteorLineNight>of(EntityMeteorLineNight::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(2)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":meteor_line_night"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityMolecularDivider>> MOLECULAR_DIVIDER =
             ENTITY_TYPES.register("molecular_divider",

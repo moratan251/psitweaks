@@ -9,11 +9,14 @@ import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.caster.CasterLog;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
-import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.MeteorLineTuning;
 import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
@@ -917,8 +920,8 @@ public final class AutonomousCasterGameTests {
     }
 
     /**
-     * 機械が撃った作動式: フォノンメーザーと作動式: 流星群の光線は、PvP が有効でも所有者と所有者のペットに当たらない。
-     * 同じ線上の奥にいるハスクと野良のオオカミには当たる。
+     * 機械が撃った作動式: フォノンメーザーの光線と、機械が広げた作動式: 流星群の夜の光条は、PvP が有効でも所有者と
+     * 所有者のペットに当たらない。同じ線上の奥・同じ夜の中にいるハスクと野良のオオカミには当たる。
      */
     @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH, timeoutTicks = 200)
     public static void beamsFromTheMachineSpareItsOwnerAndTheirPets(GameTestHelper helper) {
@@ -939,12 +942,14 @@ public final class AutonomousCasterGameTests {
         AutonomousCasterPlayer ownerLine = beamCaster(helper, owner.getUUID(), 1.0, owner.getBbHeight() / 2.0);
         AutonomousCasterPlayer petLine = beamCaster(helper, owner.getUUID(), 3.0, pet.getBbHeight() / 2.0);
         List<Entity> beams = new ArrayList<>();
+        List<EntityMeteorLineNight> nights = new ArrayList<>();
         float ownerHealth = owner.getHealth();
         float petHealth = pet.getHealth();
         float huskHealth = husk.getHealth();
         float strayHealth = stray.getHealth();
         Runnable cleanup = () -> {
             beams.forEach(Entity::discard);
+            nights.forEach(night -> night.end(SpellGramMarker.EndReason.DISPELLED));
             ownerLine.detach();
             petLine.detach();
             removeOwner(helper, owner);
@@ -969,17 +974,16 @@ public final class AutonomousCasterGameTests {
             helper.assertTrue(pet.getHealth() == petHealth, "The Phonon Maser beam of the machine hit its owner's pet");
             beams.forEach(Entity::discard);
             beams.clear();
-            for (AutonomousCasterPlayer caster : List.of(ownerLine, petLine)) {
-                EntityMeteorLineBeam beam = new EntityMeteorLineBeam(level, caster, caster.getEyePosition(),
-                        new Vec3(1.0, 0.0, 0.0), 4.0);
-                level.addFreshEntity(beam);
-                beams.add(beam);
-            }
+            // 夜（半径 3）は4体の真ん中に置く。光条は夜の中の攻撃対象をそれぞれ狙って降る。
+            EntityMeteorLineNight night = new EntityMeteorLineNight(level, helper.absoluteVec(new Vec3(3.0, 1.0, 2.0)), 3.0);
+            night.configure(ownerLine, AttackRules.Options.DEFAULT);
+            level.addFreshEntity(night);
+            nights.add(night);
         }));
-        helper.runAfterDelay(70, guarded(cleanup, () -> {
-            helper.assertTrue(!husk.isAlive() && !stray.isAlive(), "The Meteor beams missed their lines");
-            helper.assertTrue(owner.isAlive() && owner.getHealth() == ownerHealth, "The Meteor beam of the machine hit its owner");
-            helper.assertTrue(pet.isAlive() && pet.getHealth() == petHealth, "The Meteor beam of the machine hit its owner's pet");
+        helper.runAfterDelay(66 + MeteorLineTuning.TOTAL_TICKS + 2, guarded(cleanup, () -> {
+            helper.assertTrue(!husk.isAlive() && !stray.isAlive(), "The Meteor Line streaks missed the husk or the stray");
+            helper.assertTrue(owner.isAlive() && owner.getHealth() == ownerHealth, "A Meteor Line streak of the machine hit its owner");
+            helper.assertTrue(pet.isAlive() && pet.getHealth() == petHealth, "A Meteor Line streak of the machine hit its owner's pet");
             cleanup.run();
             helper.succeed();
         }));
