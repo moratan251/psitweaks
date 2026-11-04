@@ -36,7 +36,7 @@ import vazkii.psi.common.item.base.ModItems;
 @PrefixGameTestTemplate(false)
 public final class SpellUnlockGameTests {
     private static final int SHIPPED_DEFINITIONS = 33;
-    /** The combat tricks unlocked by research (Parade included); Kamaitachi is free. */
+    /** The combat tricks unlocked by research (Parade included); Air Bullet is free. */
     private static final List<String> COMBAT_UNLOCKS = List.of(
             "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "gravity_collapse", "parade");
 
@@ -116,7 +116,7 @@ public final class SpellUnlockGameTests {
             helper.assertTrue(holder.isPresent() && holder.get().value().getResultItem(helper.getLevel().registryAccess())
                     .is(BuiltInRegistries.ITEM.get(Psitweaks.location("program_" + id))), "No recipe " + recipe);
         }
-        helper.assertTrue(isNotUnlockDefinition(player, "kamaitachi"), "Kamaitachi must stay free");
+        helper.assertTrue(isNotUnlockDefinition(player, "air_bullet"), "Air Bullet must stay free");
         helper.succeed();
     }
 

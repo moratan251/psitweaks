@@ -74,9 +74,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "地雷原の衝撃波";
             default -> "Ground Shockwave";
         });
-        root.addProperty("entity.psitweaks.kamaitachi_blade", switch (locale) {
-            case "ja_jp" -> "鎌鼬の刃";
-            default -> "Kamaitachi Blade";
+        root.addProperty("entity.psitweaks.air_bullet", switch (locale) {
+            case "ja_jp" -> "空気弾";
+            default -> "Air Bullet";
         });
         root.addProperty("entity.psitweaks.dancing_blade", switch (locale) {
             case "ja_jp" -> "舞う刃";
@@ -594,7 +594,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
         addDamageMultiplierConfig(root, "burst", "Burst", "爆裂");
-        addDamageMultiplierConfig(root, "kamaitachi", "Kamaitachi", "鎌鼬");
+        addDamageMultiplierConfig(root, "air_bullet", "Air Bullet", "エア・ブリット");
         addDamageMultiplierConfig(root, "dancing_blades", "Dancing Blades", "ダンシングブレイズ");
         addDamageMultiplierConfig(root, "starfall", "Starfall", "スターフォール");
         addDamageMultiplierConfig(root, "gravity_collapse", "Gravity Collapse", "重力崩壊");
@@ -766,17 +766,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sは%2$sが%3$sで放った爆裂で内側から弾け飛んだ";
             default -> "%1$s was blown apart from within by %2$s using %3$s";
         });
-        root.addProperty("death.attack.psitweaks.kamaitachi", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの鎌鼬に切り裂かれた";
-            default -> "%1$s was sliced by %2$s's Kamaitachi";
+        root.addProperty("death.attack.psitweaks.air_bullet", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのエア・ブリットに撃ち抜かれた";
+            default -> "%1$s was shot through by %2$s's Air Bullet";
         });
-        root.addProperty("death.attack.psitweaks.kamaitachi.player", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの鎌鼬に切り裂かれた";
-            default -> "%1$s was sliced by %2$s's Kamaitachi";
+        root.addProperty("death.attack.psitweaks.air_bullet.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのエア・ブリットに撃ち抜かれた";
+            default -> "%1$s was shot through by %2$s's Air Bullet";
         });
-        root.addProperty("death.attack.psitweaks.kamaitachi.item", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが%3$sで放った鎌鼬に切り裂かれた";
-            default -> "%1$s was sliced by Kamaitachi cast by %2$s using %3$s";
+        root.addProperty("death.attack.psitweaks.air_bullet.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放ったエア・ブリットに撃ち抜かれた";
+            default -> "%1$s was shot through by Air Bullet cast by %2$s using %3$s";
         });
         root.addProperty("death.attack.psitweaks.dancing_blades", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sの舞う刃に斬り伏せられた";
@@ -1612,7 +1612,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Strikes the nearest hostile creature in front of you with lightning that jumps to nearby hostile creatures", "作動式: 連鎖電光", "前方の最も近い敵対的な生物に雷撃を放ち、近くの敵対的な生物へ連鎖させる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
         addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the creature you are aiming at so it bursts from within", "作動式: 爆裂", "照準を合わせた生物の体内の液体を気化させ、内側から破裂させる");
-        addSpellPiece(root, "trick_kamaitachi", "Trick: Kamaitachi", "Fires a crescent blade of wind that cuts through everything in its path", "作動式: 鎌鼬", "三日月形の風の刃を飛ばし、通り道の生物をまとめて切り裂く");
+        addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes everything in its path", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、通り道の生物をまとめて撃ち抜く");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
         addSpellPiece(root, "trick_gravity_collapse", "Trick: Gravity Collapse", "Opens a gravity well that pulls creatures in, then collapses", "作動式: 重力崩壊", "生物を引き寄せる重力の井戸を開き、最後に崩壊させる");
@@ -1872,12 +1872,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_burst.1",
                 "If the target dies from it, its body bursts and hits hostile creatures within 3 blocks for up to 40%% of the damage.",
                 "この術式で対象が倒れると体が破裂し、3ブロック以内の敵対的な生物に最大でダメージの40%%を与えます.");
-        addBookPage(root, "trick_kamaitachi.0",
-                "Fires a crescent blade of wind from the position in the direction. It flies 24 blocks, cutting every creature in its path once, and breaks apart when it hits a solid block.",
-                "指定位置から方向へ三日月形の風の刃を放ちます. 刃は24ブロック飛び、通り道の生物をそれぞれ一度ずつ切り裂き、固いブロックに当たると砕けます.");
-        addBookPage(root, "trick_kamaitachi.1",
-                "Each cut deals $(thing)4.5 + 4.5 × Power$(0) damage.",
-                "1回の斬撃のダメージは $(thing)4.5 + 4.5×威力$(0) です.");
+        addBookPage(root, "trick_air_bullet.0",
+                "Fires a bullet of compressed air from the position in the direction. It flies 24 blocks, striking every creature in its path once, and bursts when it hits a solid block.",
+                "指定位置から方向へ圧縮した空気の弾を撃ち出します. 弾は24ブロック飛び、通り道の生物にそれぞれ一度ずつ当たり、固いブロックに当たると弾けます.");
+        addBookPage(root, "trick_air_bullet.1",
+                "Each hit deals $(thing)4.5 + 4.5 × Power$(0) damage. The pressure wave around the bullet strikes creatures within a width of $(thing)1.5 + 0.25 × Power$(0) blocks (at most 4).",
+                "1回の命中のダメージは $(thing)4.5 + 4.5×威力$(0) です. 弾の周りの圧力波は、幅 $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) の範囲の生物に当たります.");
         addBookPage(root, "trick_dancing_blades.0",
                 "Deploys every sword in the caster's $(l:items/psitweaks_blade_pouch)$(o)$(item)Blade Pouch$(0)$(/l) (up to 8) as spectral blades that circle the caster. Each blade darts at a hostile creature within 16 blocks, cuts it and comes back. A blade fades after three cuts, and all of them fade after 15 seconds.",
                 "術者の $(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l) に入っている剣をすべて (最大8本) 幻影の刃として展開し, 術者の周りを回らせます. 刃は16ブロック以内の敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回斬ると消え, 15秒経つとすべて消えます.");

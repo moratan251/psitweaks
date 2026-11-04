@@ -147,7 +147,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String tunneler = damageType("tunneler");
         String mineGenesis = damageType("mine_genesis");
         String burst = damageType("burst");
-        String kamaitachi = damageType("kamaitachi");
+        String airBullet = damageType("air_bullet");
         String dancingBlades = damageType("dancing_blades");
         String starfall = damageType("starfall");
         String gravityCollapse = damageType("gravity_collapse");
@@ -164,7 +164,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "minecraft", "is_explosion", starfall);
         tag(tags, "minecraft", "is_freezing", dryMeteor);
         // These tricks push their targets themselves.
-        tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, kamaitachi, dancingBlades,
+        tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, airBullet, dancingBlades,
                 starfall, gravityCollapse);
         // Trick: Barrier does not absorb these: damage from inside the body or the world, not from an attack.
         tag(tags, "psitweaks", "bypasses_barrier",

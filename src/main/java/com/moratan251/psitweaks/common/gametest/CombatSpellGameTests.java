@@ -12,7 +12,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
-import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.items.BladePouches;
@@ -36,7 +36,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancingBlades;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityCollapse;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickKamaitachi;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickAirBullet;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorLine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
@@ -260,8 +260,8 @@ public final class CombatSpellGameTests {
         };
     }
 
-    private static PieceTrickKamaitachi kamaitachi(Map<String, ?> values) {
-        return new PieceTrickKamaitachi(new Spell()) {
+    private static PieceTrickAirBullet airBullet(Map<String, ?> values) {
+        return new PieceTrickAirBullet(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
             @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
         };
@@ -455,8 +455,8 @@ public final class CombatSpellGameTests {
         helper.assertTrue(burst[0] == 1240 && burst[1] == 1050, "Burst P1, got " + burst[0] + "/" + burst[1]);
         int[] parade = stats(parade(Map.of(POWER, 2.0, TIME, 30.0)));
         helper.assertTrue(parade[0] == 660 && parade[1] == 900, "Parade P2 T30: 300+150P+2T / 400+100P+10T, got " + parade[0] + "/" + parade[1]);
-        int[] kamaitachi = stats(kamaitachi(Map.of(POWER, 1.0)));
-        helper.assertTrue(kamaitachi[0] == 120 && kamaitachi[1] == 420, "Kamaitachi P1, got " + kamaitachi[0] + "/" + kamaitachi[1]);
+        int[] airBullet = stats(airBullet(Map.of(POWER, 1.0)));
+        helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
         int[] starfall = stats(starfall(Map.of(POWER, 1.0, COUNT, 13.0)));
@@ -961,29 +961,29 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void kamaitachiCutsEveryCreatureInItsPathOnce(GameTestHelper helper) throws Exception {
+    public static void airBulletHitsEveryCreatureInItsPathOnce(GameTestHelper helper) throws Exception {
         for (int y = 0; y < 4; y++) {
             for (int z = 0; z < 5; z++) {
                 helper.setBlock(new BlockPos(4, y, z), Blocks.STONE);
             }
         }
-        var player = caster(helper, new BlockPos(0, 0, 0), "kamaitachi-caster");
+        var player = caster(helper, new BlockPos(0, 0, 0), "air-bullet-caster");
         var near = husk(helper, new BlockPos(1, 0, 2), false);
         var far = husk(helper, new BlockPos(2, 0, 2), false);
         var aside = husk(helper, new BlockPos(2, 0, 0), false);
-        kamaitachi(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(0.5, 1.0, 2.5))), DIRECTION, new Vector3(1, 0, 0),
+        airBullet(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(0.5, 1.0, 2.5))), DIRECTION, new Vector3(1, 0, 0),
                 POWER, 1.0)).execute(new SpellContext().setPlayer(player));
         helper.startSequence()
                 .thenWaitUntil(() -> {
                     helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11),
-                            "Both husks in the path must be cut once for 4.5 + 4.5 x Power: " + near.getHealth() + ", " + far.getHealth());
-                    helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityKamaitachiBlade.class,
-                            helper.getBounds().inflate(4)).isEmpty(), "The blade must break on the wall");
+                            "Both husks in the path must be hit once for 4.5 + 4.5 x Power: " + near.getHealth() + ", " + far.getHealth());
+                    helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityAirBullet.class,
+                            helper.getBounds().inflate(4)).isEmpty(), "The bullet must burst on the wall");
                 })
                 .thenIdle(5)
                 .thenExecute(() -> {
-                    helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11), "Each creature is cut only once");
-                    helper.assertTrue(near(aside.getHealth(), 20), "A husk 2 blocks to the side of a 1.75-wide blade is missed");
+                    helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11), "Each creature is hit only once");
+                    helper.assertTrue(near(aside.getHealth(), 20), "A husk 2 blocks to the side of a 1.75-wide shot is missed");
                     helper.assertTrue(player.isAlive(), "Caster gone");
                 })
                 .thenSucceed();

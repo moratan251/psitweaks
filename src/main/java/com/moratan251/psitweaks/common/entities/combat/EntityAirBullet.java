@@ -25,28 +25,28 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * The wind blade of Trick: Kamaitachi: a wide crescent that flies straight ahead, cuts through every creature in
- * its way once and breaks apart on the first solid block.
+ * The bullet of Trick: Air Bullet: a ball of compressed air that flies straight ahead. The pressure wave around it
+ * strikes every creature in its way once (as wide as {@link #getWidth()}), and it bursts on the first solid block.
  */
-public class EntityKamaitachiBlade extends CombatSpellEntity {
+public class EntityAirBullet extends CombatSpellEntity {
     public static final float SPEED = 1.6F;
     public static final int MAX_LIFETIME = 15;
-    /** How far above and below the blade's line a creature can be and still be cut. */
+    /** How far above and below the bullet's line a creature can be and still be struck. */
     private static final double VERTICAL_REACH = 0.7;
 
-    private static final EntityDataAccessor<Float> DIR_X = SynchedEntityData.defineId(EntityKamaitachiBlade.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DIR_Y = SynchedEntityData.defineId(EntityKamaitachiBlade.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DIR_Z = SynchedEntityData.defineId(EntityKamaitachiBlade.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> WIDTH = SynchedEntityData.defineId(EntityKamaitachiBlade.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DIR_X = SynchedEntityData.defineId(EntityAirBullet.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DIR_Y = SynchedEntityData.defineId(EntityAirBullet.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DIR_Z = SynchedEntityData.defineId(EntityAirBullet.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> WIDTH = SynchedEntityData.defineId(EntityAirBullet.class, EntityDataSerializers.FLOAT);
 
     private final Set<UUID> struck = new HashSet<>();
 
-    public EntityKamaitachiBlade(EntityType<?> type, Level level) {
+    public EntityAirBullet(EntityType<?> type, Level level) {
         super(type, level);
     }
 
-    public EntityKamaitachiBlade(Level level, Vec3 start, Vec3 direction, float width) {
-        this(PsitweaksEntities.KAMAITACHI_BLADE.get(), level);
+    public EntityAirBullet(Level level, Vec3 start, Vec3 direction, float width) {
+        this(PsitweaksEntities.AIR_BULLET.get(), level);
         Vec3 dir = direction.normalize();
         setPos(start.x, start.y, start.z);
         entityData.set(DIR_X, (float) dir.x);
@@ -74,7 +74,7 @@ public class EntityKamaitachiBlade extends CombatSpellEntity {
         return entityData.get(WIDTH);
     }
 
-    /** Horizontal unit vector across the blade. */
+    /** Horizontal unit vector across the bullet's path. */
     public Vec3 getSide() {
         Vec3 side = getFlightDirection().cross(new Vec3(0.0, 1.0, 0.0));
         return side.lengthSqr() < 1.0E-6 ? new Vec3(1.0, 0.0, 0.0) : side.normalize();
@@ -99,9 +99,9 @@ public class EntityKamaitachiBlade extends CombatSpellEntity {
             BlockHitResult blockHit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER,
                     ClipContext.Fluid.NONE, this));
             Vec3 reach = blockHit.getType() == HitResult.Type.MISS ? end : blockHit.getLocation();
-            cut(level, start, reach);
+            strike(level, start, reach);
             if (blockHit.getType() != HitResult.Type.MISS) {
-                shatter(level, reach);
+                burst(level, reach);
                 discard();
                 return;
             }
@@ -111,14 +111,14 @@ public class EntityKamaitachiBlade extends CombatSpellEntity {
         setPos(end.x, end.y, end.z);
     }
 
-    private void cut(ServerLevel level, Vec3 from, Vec3 to) {
+    private void strike(ServerLevel level, Vec3 from, Vec3 to) {
         LivingEntity caster = getCaster();
         Vec3 direction = getFlightDirection();
         Vec3 side = getSide();
         double halfWidth = getWidth() * 0.5;
         double length = to.subtract(from).length();
         AABB area = new AABB(from, to).inflate(halfWidth + 1.0, VERTICAL_REACH + 1.0, halfWidth + 1.0);
-        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.KAMAITACHI, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.AIR_BULLET, this, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, area)) {
             if (struck.contains(living.getUUID()) || !canAffect(caster, living)) {
                 continue;
@@ -136,15 +136,15 @@ public class EntityKamaitachiBlade extends CombatSpellEntity {
             if (harm(caster, living, source, getDamage())) {
                 CombatSpellHelper.push(living, new Vec3(direction.x, 0.0, direction.z).scale(0.4).add(0.0, 0.1, 0.0));
                 Vec3 center = CombatSpellHelper.center(living);
-                level.sendParticles(ParticleTypes.SWEEP_ATTACK, center.x, center.y, center.z, 1, 0.0, 0.0, 0.0, 0.0);
-                CombatEffects.sound(level, center, SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.6F);
+                level.sendParticles(ParticleTypes.SMALL_GUST, center.x, center.y, center.z, 1, 0.0, 0.0, 0.0, 0.0);
+                CombatEffects.sound(level, center, SoundEvents.PLAYER_ATTACK_STRONG, 0.7F, 1.4F);
             }
         }
     }
 
-    private void shatter(ServerLevel level, Vec3 at) {
+    private void burst(ServerLevel level, Vec3 at) {
         level.sendParticles(ParticleTypes.CLOUD, at.x, at.y, at.z, 10, 0.4, 0.2, 0.4, 0.05);
-        level.sendParticles(ParticleTypes.SWEEP_ATTACK, at.x, at.y, at.z, 2, 0.3, 0.2, 0.3, 0.0);
+        level.sendParticles(ParticleTypes.GUST, at.x, at.y, at.z, 1, 0.0, 0.0, 0.0, 0.0);
         CombatEffects.sound(level, at, SoundEvents.WIND_CHARGE_BURST, 0.6F, 1.5F);
     }
 }

@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -22,8 +22,11 @@ import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
-/** Fires a wide crescent of wind from the position in the direction; it cuts through every creature in its path. */
-public class PieceTrickKamaitachi extends PieceTrick {
+/**
+ * Fires a bullet of compressed air from the position in the direction; its pressure wave strikes every creature in
+ * its path.
+ */
+public class PieceTrickAirBullet extends PieceTrick {
     private static final double MIN_POWER = 0.5;
     private static final float BASE_DAMAGE = 4.5F;
     private static final float DAMAGE_PER_POWER = 4.5F;
@@ -39,7 +42,7 @@ public class PieceTrickKamaitachi extends PieceTrick {
     private SpellParam<Vector3> direction;
     private SpellParam<Number> power;
 
-    public PieceTrickKamaitachi(Spell spell) {
+    public PieceTrickAirBullet(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER)
                 .mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
@@ -78,18 +81,18 @@ public class PieceTrickKamaitachi extends PieceTrick {
 
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
-                PsitweaksConfig.COMMON.kamaitachiDamageMultiplier.get(), context.caster);
+                PsitweaksConfig.COMMON.airBulletDamageMultiplier.get(), context.caster);
         float width = (float) Math.min(MAX_WIDTH, BASE_WIDTH + powerVal * WIDTH_PER_POWER);
         Vec3 start = positionVal.toVec3D();
         Vec3 dir = directionVal.toVec3D();
 
-        EntityKamaitachiBlade blade = new EntityKamaitachiBlade(level, start, dir, width);
-        blade.configure(context.caster, AttackRules.Options.from(context), damage,
+        EntityAirBullet bullet = new EntityAirBullet(level, start, dir, width);
+        bullet.configure(context.caster, AttackRules.Options.from(context), damage,
                 CombatSpellHelper.spellColor(context.caster));
-        level.addFreshEntity(blade);
+        level.addFreshEntity(bullet);
 
         CombatEffects.sound(level, start, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 1.4F);
-        CombatEffects.sound(level, start, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 1.2F);
+        CombatEffects.sound(level, start, SoundEvents.WIND_CHARGE_THROW, 1.0F, 0.8F);
         return null;
     }
 }

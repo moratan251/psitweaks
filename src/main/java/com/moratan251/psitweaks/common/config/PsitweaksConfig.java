@@ -34,7 +34,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
         public final ModConfigSpec.DoubleValue mineGenesisDamageMultiplier;
         public final ModConfigSpec.DoubleValue burstDamageMultiplier;
-        public final ModConfigSpec.DoubleValue kamaitachiDamageMultiplier;
+        public final ModConfigSpec.DoubleValue airBulletDamageMultiplier;
         public final ModConfigSpec.DoubleValue dancingBladesDamageMultiplier;
         public final ModConfigSpec.DoubleValue starfallDamageMultiplier;
         public final ModConfigSpec.DoubleValue gravityCollapseDamageMultiplier;
@@ -262,18 +262,18 @@ public class PsitweaksConfig {
 
             builder.pop(); // burst カテゴリ終了
 
-            // --- 鎌鼬 ---
-            builder.comment("Kamaitachi Settings")
-                    .translation("psitweaks.configuration.spells.kamaitachi")
-                    .push("kamaitachi");
+            // --- エア・ブリット ---
+            builder.comment("Air Bullet Settings")
+                    .translation("psitweaks.configuration.spells.air_bullet")
+                    .push("air_bullet");
 
-            kamaitachiDamageMultiplier = builder
-                    .comment("作動式: 鎌鼬 のダメージ倍率",
-                            "Damage multiplier for Trick: Kamaitachi")
-                    .translation("psitweaks.configuration.spells.kamaitachi.damage_multiplier")
+            airBulletDamageMultiplier = builder
+                    .comment("作動式: エア・ブリット のダメージ倍率",
+                            "Damage multiplier for Trick: Air Bullet")
+                    .translation("psitweaks.configuration.spells.air_bullet.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
-            builder.pop(); // kamaitachi カテゴリ終了
+            builder.pop(); // air_bullet カテゴリ終了
 
             // --- ダンシングブレイズ ---
             builder.comment("Dancing Blades Settings")

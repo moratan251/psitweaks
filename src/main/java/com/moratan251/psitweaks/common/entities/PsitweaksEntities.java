@@ -6,7 +6,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
-import com.moratan251.psitweaks.common.entities.combat.EntityKamaitachiBlade;
+import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
@@ -134,15 +134,15 @@ public class PsitweaksEntities {
                             .noSave()
                             .build(Psitweaks.MOD_ID + ":ground_shockwave"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<EntityKamaitachiBlade>> KAMAITACHI_BLADE =
-            ENTITY_TYPES.register("kamaitachi_blade",
-                    () -> EntityType.Builder.<EntityKamaitachiBlade>of(EntityKamaitachiBlade::new, MobCategory.MISC)
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityAirBullet>> AIR_BULLET =
+            ENTITY_TYPES.register("air_bullet",
+                    () -> EntityType.Builder.<EntityAirBullet>of(EntityAirBullet::new, MobCategory.MISC)
                             .sized(0.25f, 0.25f)
                             .clientTrackingRange(8)
                             .updateInterval(1)
                             .fireImmune()
                             .noSave()
-                            .build(Psitweaks.MOD_ID + ":kamaitachi_blade"));
+                            .build(Psitweaks.MOD_ID + ":air_bullet"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityDancingBlade>> DANCING_BLADE =
             ENTITY_TYPES.register("dancing_blade",

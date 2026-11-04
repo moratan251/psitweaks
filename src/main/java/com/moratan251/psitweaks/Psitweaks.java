@@ -39,7 +39,7 @@ import com.moratan251.psitweaks.client.renderer.combat.DancingBladeRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.GravityWellRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.ParadeDecoyRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.GroundShockwaveRenderer;
-import com.moratan251.psitweaks.client.renderer.combat.KamaitachiBladeRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.AirBulletRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.MeteorLineNightRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.StarfallMeteorRenderer;
@@ -366,7 +366,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(), IceCircleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
-            event.registerEntityRenderer(PsitweaksEntities.KAMAITACHI_BLADE.get(), KamaitachiBladeRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.DANCING_BLADE.get(), DancingBladeRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.PARADE_DECOY.get(), ParadeDecoyRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.STARFALL_METEOR.get(), StarfallMeteorRenderer::new);
