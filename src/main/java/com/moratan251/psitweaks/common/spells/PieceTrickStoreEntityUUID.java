@@ -14,6 +14,7 @@ public class PieceTrickStoreEntityUUID extends PieceTrick {
 
     public PieceTrickStoreEntityUUID(Spell spell) {
         super(spell);
+        setStatLabel(EnumSpellStat.PROJECTION, new StatLabel(0.0D));
     }
 
     public void initParams() {

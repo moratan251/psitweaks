@@ -10,6 +10,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
@@ -19,6 +20,7 @@ public class PieceTrickStoreValue extends PieceTrick {
 
     public PieceTrickStoreValue(Spell spell) {
         super(spell);
+        setStatLabel(EnumSpellStat.PROJECTION, new StatLabel(0.0D));
     }
 
     @Override

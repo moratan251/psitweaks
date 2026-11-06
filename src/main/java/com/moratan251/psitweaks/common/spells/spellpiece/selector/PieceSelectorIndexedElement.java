@@ -19,7 +19,7 @@ public class PieceSelectorIndexedElement extends PieceOperatorModeListBase {
 
     public PieceSelectorIndexedElement(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.COMPLEXITY, new StatLabel(1.0D));
+        setStatLabel(EnumSpellStat.COMPLEXITY, new StatLabel(2.0D));
     }
 
     @Override
