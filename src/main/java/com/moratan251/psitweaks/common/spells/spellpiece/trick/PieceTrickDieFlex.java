@@ -20,6 +20,7 @@ public class PieceTrickDieFlex extends PieceTrick {
     public PieceTrickDieFlex(Spell spell) {
         super(spell);
         this.setStatLabel(EnumSpellStat.COMPLEXITY, new StatLabel(1.0D));
+        this.setStatLabel(EnumSpellStat.PROJECTION, new StatLabel(0.0D));
     }
 
     @Override

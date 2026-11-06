@@ -21,7 +21,6 @@ import vazkii.psi.common.block.BlockConjured;
 public class PieceTrickConjurePulsar extends PieceTrick {
     private static final int POTENCY = 20;
     private static final int COST = 30;
-    private static final int COMPLEXITY = 2;
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> time;
@@ -30,7 +29,6 @@ public class PieceTrickConjurePulsar extends PieceTrick {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(POTENCY));
         setStatLabel(EnumSpellStat.COST, new StatLabel(COST));
-        setStatLabel(EnumSpellStat.COMPLEXITY, new StatLabel(COMPLEXITY));
     }
 
     @Override
@@ -44,7 +42,6 @@ public class PieceTrickConjurePulsar extends PieceTrick {
         super.addToMetadata(meta);
         meta.addStat(EnumSpellStat.POTENCY, POTENCY);
         meta.addStat(EnumSpellStat.COST, COST);
-        meta.addStat(EnumSpellStat.COMPLEXITY, COMPLEXITY);
     }
 
     @Override
