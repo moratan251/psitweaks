@@ -18,15 +18,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * The later jumps of Trick: Chain Lightning. The bolt reaches each target a little after the previous one, in step
- * with the arcs the client draws, so this invisible entity deals those hits on schedule. It is never sent to clients.
+ * The branches of Trick: Chain Lightning. Each stage of branches reaches its targets a little after the one before, in
+ * step with the arcs the client draws, so this invisible entity deals those hits on schedule. It is never sent to
+ * clients.
  */
 public class EntityChainLightning extends CombatSpellEntity {
-    /** Ticks between one jump and the next. The client arcs light up at the same pace. */
+    /** Ticks between one stage of the bolt and the next. The client arcs light up at the same pace. */
     public static final int STAGGER = 2;
     private static final float WET_DAMAGE_FACTOR = 1.5F;
 
-    private final List<Jump> jumps = new ArrayList<>();
+    private final List<Hit> hits = new ArrayList<>();
     /** Game time of the cast; counting from it keeps the pace whether the entity first ticks this tick or the next. */
     private long castTime;
 
@@ -40,20 +41,24 @@ public class EntityChainLightning extends CombatSpellEntity {
         castTime = level.getGameTime();
     }
 
-    /** Schedules the hit of jump number {@code jump} (the first target is jump 0), {@code jump × STAGGER} ticks from now. */
-    public void schedule(LivingEntity target, int jump, float damage) {
-        jumps.add(new Jump(target, jump, damage));
+    /**
+     * Schedules a hit at stage {@code stage} of the bolt (the first target is stage 0), {@code stage × STAGGER} ticks
+     * from now.
+     */
+    public void schedule(LivingEntity target, int stage, float damage) {
+        hits.add(new Hit(target, stage, damage));
     }
 
     /**
-     * Strikes one target of the chain: extra damage in water or rain, and a crackle that rises in pitch along the chain.
+     * Strikes one target of the bolt: extra damage in water or rain, and for a branch a crackle that rises in pitch
+     * with the stage.
      */
     public static void strike(ServerLevel level, @Nullable LivingEntity caster, AttackRules.Options options, LivingEntity target,
-                              DamageSource source, float damage, int jump) {
+                              DamageSource source, float damage, int stage) {
         AttackRules.harm(caster, target, options, source, target.isInWaterOrRain() ? damage * WET_DAMAGE_FACTOR : damage);
-        if (jump > 0) {
+        if (stage > 0) {
             CombatEffects.sound(level, CombatSpellHelper.center(target), SoundEvents.LIGHTNING_BOLT_IMPACT, 0.45F,
-                    Math.min(2.0F, 1.6F + 0.06F * jump));
+                    Math.min(2.0F, 1.6F + 0.15F * stage));
         }
     }
 
@@ -66,22 +71,22 @@ public class EntityChainLightning extends CombatSpellEntity {
         long elapsed = level.getGameTime() - castTime;
         LivingEntity caster = null;
         boolean casterLooked = false;
-        for (Jump jump : jumps) {
-            if (jump.done || elapsed < (long) jump.jump * STAGGER) {
+        for (Hit hit : hits) {
+            if (hit.done || elapsed < (long) hit.stage * STAGGER) {
                 continue;
             }
-            jump.done = true;
+            hit.done = true;
             if (!casterLooked) {
                 caster = getCaster();
                 casterLooked = true;
             }
-            LivingEntity target = jump.target;
+            LivingEntity target = hit.target;
             if (target.isRemoved() || target.level() != level || !canAffect(caster, target)) {
                 continue;
             }
-            strike(level, caster, options(), target, source(level, caster), jump.damage, jump.jump);
+            strike(level, caster, options(), target, source(level, caster), hit.damage, hit.stage);
         }
-        if (jumps.stream().allMatch(jump -> jump.done)) {
+        if (hits.stream().allMatch(hit -> hit.done)) {
             discard();
         }
     }
@@ -95,15 +100,15 @@ public class EntityChainLightning extends CombatSpellEntity {
         return false;
     }
 
-    private static final class Jump {
+    private static final class Hit {
         final LivingEntity target;
-        final int jump;
+        final int stage;
         final float damage;
         boolean done;
 
-        Jump(LivingEntity target, int jump, float damage) {
+        Hit(LivingEntity target, int stage, float damage) {
             this.target = target;
-            this.jump = jump;
+            this.stage = stage;
             this.damage = damage;
         }
     }

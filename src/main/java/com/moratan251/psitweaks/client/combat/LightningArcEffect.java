@@ -13,9 +13,12 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-/** The arcs of one Trick: Chain Lightning cast. Each jump lights up a little after the previous one. */
+/**
+ * The arcs of one Trick: Chain Lightning cast, a tree of bolts. The arcs of each stage light up together, a little
+ * after the arcs that reached their parents.
+ */
 final class LightningArcEffect {
-    /** Ticks between one jump and the next, the same pace as the hits on the server. */
+    /** Ticks between one stage and the next, the same pace as the hits on the server. */
     static final int STAGGER = EntityChainLightning.STAGGER;
     /** How long each arc stays visible. */
     private static final int ARC_LIFETIME = 9;
@@ -23,6 +26,9 @@ final class LightningArcEffect {
     private static final int FLICKER_TICKS = 2;
 
     private final List<Vec3> points;
+    private final List<Integer> parents;
+    /** When the arc into each point lights up, in ticks from the cast. Point 0 is where the bolt starts and has none. */
+    private final int[] delays;
     private final int color;
     private final long seed;
     private final int lifetime;
@@ -30,23 +36,32 @@ final class LightningArcEffect {
 
     LightningArcEffect(MessageLightningArcs message) {
         this.points = message.points();
+        this.parents = message.parents();
         this.color = GlowDrawing.glowColor(message.color());
         this.seed = message.seed();
-        this.lifetime = Math.max(0, points.size() - 2) * STAGGER + ARC_LIFETIME;
+        this.delays = new int[points.size()];
+        int last = 0;
+        for (int i = 1; i < points.size(); i++) {
+            // Parents always come first, so their delays are known by now.
+            int parent = parents.get(i);
+            delays[i] = parent == 0 ? 0 : delays[parent] + STAGGER;
+            last = Math.max(last, delays[i]);
+        }
+        this.lifetime = last + ARC_LIFETIME;
     }
 
     /** Returns false when every arc has faded. */
     boolean tick(ClientLevel level) {
-        for (int jump = 0; jump + 1 < points.size(); jump++) {
-            if (age == jump * STAGGER) {
-                sparks(level, points.get(jump + 1), jump);
+        for (int i = 1; i < points.size(); i++) {
+            if (age == delays[i]) {
+                sparks(level, points.get(i), i);
             }
         }
         return ++age < lifetime;
     }
 
-    private void sparks(ClientLevel level, Vec3 at, int jump) {
-        RandomSource random = RandomSource.create(seed * 7919L + jump);
+    private void sparks(ClientLevel level, Vec3 at, int index) {
+        RandomSource random = RandomSource.create(seed * 7919L + index);
         for (int i = 0; i < 10; i++) {
             level.addParticle(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z,
                     (random.nextDouble() - 0.5) * 0.6, random.nextDouble() * 0.4, (random.nextDouble() - 0.5) * 0.6);
@@ -56,16 +71,16 @@ final class LightningArcEffect {
     void render(MultiBufferSource buffers, Matrix4f pose, Vec3 camera, float partialTick) {
         VertexConsumer consumer = buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR);
         float time = age + partialTick;
-        for (int jump = 0; jump + 1 < points.size(); jump++) {
-            float local = time - jump * STAGGER;
+        for (int i = 1; i < points.size(); i++) {
+            float local = time - delays[i];
             if (local < 0.0F || local >= ARC_LIFETIME) {
                 continue;
             }
             float brightness = local < 2.0F ? 1.0F : 1.0F - (local - 2.0F) / (ARC_LIFETIME - 2.0F);
-            Vector3f from = relative(points.get(jump), camera);
-            Vector3f to = relative(points.get(jump + 1), camera);
+            Vector3f from = relative(points.get(parents.get(i)), camera);
+            Vector3f to = relative(points.get(i), camera);
             long frame = (long) (local / FLICKER_TICKS);
-            RandomSource random = RandomSource.create(seed * 31L + jump * 977L + frame * 104_729L);
+            RandomSource random = RandomSource.create(seed * 31L + i * 977L + frame * 104_729L);
             drawBolt(consumer, pose, from, to, random, color, brightness, 1.0F);
         }
     }

@@ -30,13 +30,14 @@ public final class CombatEffects {
                 new MessageSphereFlash(MessageSphereFlash.NO_ENTITY, position, radius, color, style, direction, strength));
     }
 
-    public static void lightningArcs(ServerLevel level, List<Vec3> points, int color, long seed) {
+    /** The arcs of a Trick: Chain Lightning cast, as the tree {@link MessageLightningArcs} describes. */
+    public static void lightningArcs(ServerLevel level, List<Vec3> points, List<Integer> parents, int color, long seed) {
         if (points.size() < 2) {
             return;
         }
         Vec3 anchor = points.get(1);
         PacketDistributor.sendToPlayersNear(level, null, anchor.x, anchor.y, anchor.z, EFFECT_RANGE,
-                new MessageLightningArcs(points, color, seed));
+                new MessageLightningArcs(points, parents, color, seed));
     }
 
     public static void sound(ServerLevel level, Vec3 at, SoundEvent sound, float volume, float pitch) {

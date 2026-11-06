@@ -157,9 +157,19 @@ public final class CombatSpellGameTests {
         return Math.abs(actual - expected) < EPSILON;
     }
 
-    /** Turns the caster to look at the centre of {@code target}, as Burst and Chain Lightning aim by the caster's view. */
+    /** Turns the caster to look at the centre of {@code target}, as Burst aims by the caster's view. */
     private static void lookAt(Player caster, Entity target) {
         caster.lookAt(EntityAnchorArgument.Anchor.EYES, CombatSpellHelper.center(target));
+    }
+
+    /** The direction from the caster's eyes to the centre of {@code target}, for Chain Lightning's Direction input. */
+    private static Vector3 toward(Player caster, Entity target) {
+        return vector(CombatSpellHelper.center(target).subtract(caster.getEyePosition()));
+    }
+
+    /** How many of the creatures lost {@code damage} health from {@link #TOUGH_HEALTH}. */
+    private static long tookDamage(List<? extends LivingEntity> creatures, float damage) {
+        return creatures.stream().filter(creature -> near(TOUGH_HEALTH - creature.getHealth(), damage)).count();
     }
 
     /** Turns the caster to look straight up, where no creature stands. */
@@ -516,42 +526,50 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH + "_chain")
-    public static void chainLightningJumpsBetweenHostilesOnly(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 4), "chain-caster");
+    public static void chainLightningBranchesToThreeThenTwoEach(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "chain-caster");
         // 9 + 9 x Power would nearly kill a plain husk, so give them room to show each hit.
         var first = tough(husk(helper, new BlockPos(1, 0, 1), false));
-        var second = tough(husk(helper, new BlockPos(3, 0, 1), false));
-        var third = tough(husk(helper, new BlockPos(3, 0, 3), false));
-        var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(1, 0, 3));
+        // Ten more husks, all within a branch of each other: three for the first branches, six for the second, one spare.
+        List<Husk> others = new ArrayList<>();
+        for (BlockPos spot : List.of(new BlockPos(2, 0, 1), new BlockPos(1, 0, 2), new BlockPos(2, 0, 2),
+                new BlockPos(3, 0, 1), new BlockPos(1, 0, 3), new BlockPos(3, 0, 3), new BlockPos(4, 0, 2),
+                new BlockPos(2, 0, 4), new BlockPos(4, 0, 4), new BlockPos(0, 0, 3))) {
+            others.add(tough(husk(helper, spot, false)));
+        }
+        var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(1, 0, 0));
         pig.setNoAi(true);
 
-        lookAt(player, first);
-        chainLightning(Map.of(POWER, 1.0)).execute(new SpellContext().setPlayer(player));
+        // The caster looks away: only the Direction input aims the bolt.
+        lookUp(player);
+        chainLightning(Map.of(DIRECTION, toward(player, first), POWER, 1.0)).execute(new SpellContext().setPlayer(player));
         float d1 = TOUGH_HEALTH - first.getHealth();
         helper.assertTrue(near(d1, 18) || near(d1, 27), "The first hit must deal 9 + 9 x Power (x1.5 when wet): " + d1);
-        helper.assertTrue(near(second.getHealth(), TOUGH_HEALTH) && near(third.getHealth(), TOUGH_HEALTH),
-                "The jumps must land after the first hit, not with it");
+        helper.assertTrue(tookDamage(others, 0.0F) == others.size(), "The branches must land after the first hit, not with it");
+        float firstBranch = d1 * 0.4F;
+        float secondBranch = d1 * 0.2F;
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(second.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must jump to the second husk"))
-                .thenExecute(() -> helper.assertTrue(near(third.getHealth(), TOUGH_HEALTH), "The third husk must be hit after the second"))
-                .thenWaitUntil(() -> helper.assertTrue(third.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must jump to the third husk"))
+                .thenWaitUntil(() -> helper.assertTrue(tookDamage(others, firstBranch) == 3,
+                        "The bolt must branch to three husks for 40% of the first hit"))
+                .thenExecute(() -> helper.assertTrue(tookDamage(others, secondBranch) == 0,
+                        "The second branches must land after the first"))
+                .thenWaitUntil(() -> helper.assertTrue(tookDamage(others, secondBranch) == 6,
+                        "Each of the three must branch to two more husks for 20% of the first hit"))
                 .thenExecute(() -> {
-                    float d2 = TOUGH_HEALTH - second.getHealth();
-                    float d3 = TOUGH_HEALTH - third.getHealth();
-                    helper.assertTrue(near(d2 / d1, 0.5) && near(d3 / d1, 0.25),
-                            "Each jump must deal half of the one before: " + d1 + ", " + d2 + ", " + d3);
-                    helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "The bolt must not jump to animals");
+                    helper.assertTrue(tookDamage(others, firstBranch) == 3 && tookDamage(others, 0.0F) == 1,
+                            "No husk may be struck twice, and the eleventh must be left over");
+                    helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "The bolt must not branch to animals");
                 })
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class,
-                        helper.getBounds().inflate(4)).isEmpty(), "The chain must be gone once every jump has landed"))
+                        helper.getBounds().inflate(4)).isEmpty(), "The branches must be gone once every one has landed"))
                 .thenSucceed();
     }
 
-    @GameTest(template = TEMPLATE, batch = BATCH + "_chain")
-    public static void indiscriminateChainLightningJumpsToAnyCreatureButPets(GameTestHelper helper) throws Exception {
+    @GameTest(template = TEMPLATE, batch = BATCH + "_chain_indiscriminate")
+    public static void indiscriminateChainLightningBranchesToAnyCreatureButPets(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 4), "chain-indiscriminate");
         var first = tough(husk(helper, new BlockPos(1, 0, 1), false));
-        // Nearest first: the villager, then the husk and the pig. The pet and the armor stand in between are skipped.
+        // The villager is struck first, then the husk and the pig. The pet and the armor stand in between are skipped.
         var villager = helper.spawnWithNoFreeWill(EntityType.VILLAGER, new BlockPos(1, 0, 2));
         villager.setNoAi(true);
         var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(3, 0, 1));
@@ -572,17 +590,17 @@ public final class CombatSpellGameTests {
         helper.assertTrue(CombatSpellHelper.isIndiscriminate(1) && !CombatSpellHelper.isIndiscriminate(0)
                 && !CombatSpellHelper.isIndiscriminate(null), "Only a non-zero number turns it on");
 
-        // Looking at the husk, the villager in between is the nearest creature in front, so it is struck first.
-        lookAt(player, first);
-        chainLightning(Map.of(POWER, 1.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0)).execute(new SpellContext().setPlayer(player));
+        // Aimed at the husk, the villager in between is the nearest creature that way, so it is struck first.
+        chainLightning(Map.of(DIRECTION, toward(player, first), POWER, 1.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0))
+                .execute(new SpellContext().setPlayer(player));
         helper.assertTrue(!villager.isAlive() || villager.getHealth() < villager.getMaxHealth() - EPSILON,
-                "An indiscriminate bolt must strike the nearest creature in front, the villager");
-        helper.assertTrue(near(first.getHealth(), TOUGH_HEALTH), "The husk behind the villager must be reached by a jump");
+                "An indiscriminate bolt must strike the nearest creature in the direction, the villager");
+        helper.assertTrue(near(first.getHealth(), TOUGH_HEALTH), "The husk behind the villager must be reached by a branch");
         float petHealth = pet.getHealth();
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(first.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must jump to the husk"))
+                .thenWaitUntil(() -> helper.assertTrue(first.getHealth() < TOUGH_HEALTH - EPSILON, "The bolt must branch to the husk"))
                 .thenWaitUntil(() -> helper.assertTrue(!pig.isAlive() || pig.getHealth() < pig.getMaxHealth() - EPSILON,
-                        "The bolt must jump on to the pig"))
+                        "The bolt must branch to the pig too"))
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class,
                         helper.getBounds().inflate(4)).isEmpty(), "The chain must finish"))
                 .thenExecute(() -> helper.assertTrue(near(pet.getHealth(), petHealth), "The pet must be spared"))
@@ -590,31 +608,81 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH + "_chain_front")
-    public static void chainLightningStrikesTheNearestHostileInFront(GameTestHelper helper) throws Exception {
+    public static void chainLightningStrikesTheNearestHostileInTheDirection(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 2), "chain-front");
         var context = new SpellContext().setPlayer(player);
-        // The caster looks along +x. Nearer than anything ahead, but to the side.
+        // The bolt is aimed along +x while the caster looks up. Nearer than anything ahead, but to the side.
         var beside = tough(husk(helper, new BlockPos(0, 0, 0), false));
         // Nearest ahead, but not hostile.
         var pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(1, 0, 2));
         pig.setNoAi(true);
         var ahead = tough(husk(helper, new BlockPos(4, 0, 2), false));
-        // About 20 degrees off the line of sight and nearer than the husk straight ahead.
+        // About 20 degrees off the direction and nearer than the husk straight ahead.
         var offAxis = tough(husk(helper, new BlockPos(3, 0, 3), false));
-        player.lookAt(EntityAnchorArgument.Anchor.EYES, player.getEyePosition().add(1.0, 0.0, 0.0));
-
-        chainLightning(Map.of(POWER, 1.0)).execute(context);
-        helper.assertTrue(offAxis.getHealth() < TOUGH_HEALTH - EPSILON,
-                "The bolt must strike the nearest hostile within 30 degrees of the view, not just what is straight ahead");
-        helper.assertTrue(near(ahead.getHealth(), TOUGH_HEALTH) && near(beside.getHealth(), TOUGH_HEALTH),
-                "The others may only be reached by later jumps");
-        helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "The pig in front must be passed over");
-
         lookUp(player);
-        helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> chainLightning(Map.of(POWER, 1.0)).execute(context))),
-                "With nothing in front the spell must fail as with no target");
+
+        chainLightning(Map.of(DIRECTION, new Vector3(1.0, 0.0, 0.0), POWER, 1.0)).execute(context);
+        helper.assertTrue(offAxis.getHealth() < TOUGH_HEALTH - EPSILON,
+                "The bolt must strike the nearest hostile within 30 degrees of the direction, not just what is straight ahead");
+        helper.assertTrue(near(ahead.getHealth(), TOUGH_HEALTH) && near(beside.getHealth(), TOUGH_HEALTH),
+                "The others may only be reached by later branches");
+        helper.assertTrue(near(pig.getHealth(), pig.getMaxHealth()), "The pig in the way must be passed over");
+        var branches = helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4));
+        helper.assertTrue(branches.size() == 1, "The bolt must branch from the first target, got " + branches.size());
+
+        // Straight up, where no creature stands: the bolt discharges into the air and the spell goes on.
+        float offAxisHealth = offAxis.getHealth();
+        helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, new Vector3(0.0, 1.0, 0.0), POWER, 1.0))
+                .execute(context)) == null, "With nothing in the direction the bolt must discharge without an error");
+        helper.assertTrue(near(offAxis.getHealth(), offAxisHealth) && near(ahead.getHealth(), TOUGH_HEALTH)
+                && near(beside.getHealth(), TOUGH_HEALTH), "A discharge into the air must hurt nothing");
+        helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).size() == 1,
+                "A discharge into the air must not branch");
+        helper.assertTrue(SpellRuntimeException.NULL_VECTOR.equals(castError(() -> chainLightning(
+                        Map.of(DIRECTION, new Vector3(0.0, 0.0, 0.0), POWER, 1.0)).execute(context))),
+                "A zero direction must fail");
         helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).forEach(Entity::discard);
         helper.succeed();
+    }
+
+    /**
+     * The test space is walled in by barriers, so the long reaches are measured straight up in the open air above its
+     * ceiling: the caster stands on the ceiling and aims the bolt at the sky.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_chain_range")
+    public static void chainLightningReachesSixteenBlocksAndBranchesEight(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 5, 2), "chain-range");
+        var context = new SpellContext().setPlayer(player);
+        Vector3 up = new Vector3(0.0, 1.0, 0.0);
+        // Its centre is about 17.4 blocks above the caster's eyes, beyond the bolt's reach of 16.
+        var far = tough(husk(helper, new Vec3(2.5, 23.0, 2.5), false));
+        helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, up, POWER, 1.0)).execute(context)) == null
+                && near(far.getHealth(), TOUGH_HEALTH), "A creature beyond 16 blocks must be out of reach");
+        far.discard();
+        // About 14.4 blocks up: within reach. The next husks are 7.5 and 8.5 blocks from it, too far up to be struck
+        // first. Only the nearer one is within a branch of it; the other is within a branch of the nearer one.
+        var first = tough(husk(helper, new Vec3(2.5, 20.0, 2.5), false));
+        var inBranch = tough(husk(helper, new Vec3(2.5, 27.5, 2.5), false));
+        var outOfBranch = tough(husk(helper, new Vec3(0.5, 20.0 + Math.sqrt(8.5 * 8.5 - 8.0), 0.5), false));
+        chainLightning(Map.of(DIRECTION, up, POWER, 1.0)).execute(context);
+        float d1 = TOUGH_HEALTH - first.getHealth();
+        helper.assertTrue(d1 > EPSILON, "A creature 14 blocks away must be struck");
+        AABB area = first.getBoundingBox().inflate(20.0);
+        helper.startSequence()
+                .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, area).isEmpty(),
+                        "The branches must land"))
+                .thenExecute(() -> {
+                    helper.assertTrue(tookDamage(List.of(inBranch), d1 * 0.4F) == 1,
+                            "A creature 7.5 blocks away must be a first branch: " + (TOUGH_HEALTH - inBranch.getHealth()));
+                    helper.assertTrue(tookDamage(List.of(outOfBranch), d1 * 0.2F) == 1,
+                            "A creature 8.5 blocks away must be out of the first target's reach, and only reached by a second"
+                                    + " branch: " + (TOUGH_HEALTH - outOfBranch.getHealth()));
+                    // They float outside the test space: take them away so that no later test finds them.
+                    first.discard();
+                    inBranch.discard();
+                    outOfBranch.discard();
+                })
+                .thenSucceed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
@@ -631,11 +699,12 @@ public final class CombatSpellGameTests {
         // Health 0: the husk is playing its death animation, which Psi's verifyEntity would call immune.
         var fallen = husk(helper, new BlockPos(1, 0, 1), false);
         fallen.setHealth(0.0F);
-        // Off to the side, out of Chain Lightning's view, but within a jump of the fallen husk.
+        // Off to the side, out of Chain Lightning's direction, but within a branch of the fallen husk.
         var bystander = husk(helper, new BlockPos(4, 0, 4), false);
         lookAt(player, fallen);
-        helper.assertTrue(castError(() -> chainLightning(Map.of(POWER, 1.0)).execute(context)) == null,
-                "Chain Lightning must skip a fallen creature in front without an error");
+        // Chain Lightning picks its own targets: a fallen creature is no target, so the bolt discharges without a warning.
+        helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, toward(player, fallen), POWER, 1.0))
+                .execute(context)) == null, "Chain Lightning must discharge past a fallen creature without an error");
         helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null,
                 "Burst must skip a fallen target without an error");
         helper.assertTrue(castError(() -> barrier(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
@@ -643,8 +712,8 @@ public final class CombatSpellGameTests {
         helper.assertTrue(near(bystander.getHealth(), 20) && shield(fallen) == 0.0F,
                 "Nothing must happen when the target has fallen");
         helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).isEmpty(),
-                "No chain must start from a fallen target");
-        helper.assertTrue(messages.size() == 3 && messages.stream().allMatch(message -> message.getContents()
+                "No branches must start from a fallen target");
+        helper.assertTrue(messages.size() == 2 && messages.stream().allMatch(message -> message.getContents()
                         instanceof TranslatableContents contents && SpellWarning.TARGET_FALLEN.equals(contents.getKey())),
                 "Each skip must warn the caster, got " + messages);
 
@@ -712,8 +781,8 @@ public final class CombatSpellGameTests {
                     "Burst must accept the Wither");
             helper.assertTrue(wither.getHealth() < witherHealth, "Burst must hurt the Wither");
             float afterBurst = wither.getHealth();
-            helper.assertTrue(castError(() -> chainLightning(Map.of(POWER, 1.0)).execute(context)) == null,
-                    "Chain Lightning must accept the Wither");
+            helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, toward(player, wither), POWER, 1.0))
+                    .execute(context)) == null, "Chain Lightning must accept the Wither");
             helper.assertTrue(wither.getHealth() < afterBurst, "Chain Lightning must hurt the Wither");
             lookAt(player, rider);
             helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null
@@ -855,13 +924,11 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void chainLightningJumpsHalveDownToOne(GameTestHelper helper) {
-        helper.assertTrue(near(PieceTrickChainLightning.jumpDamage(18.0F, 0), 18) && near(PieceTrickChainLightning.jumpDamage(18.0F, 1), 9)
-                && near(PieceTrickChainLightning.jumpDamage(18.0F, 3), 2.25), "Each jump must halve the damage");
-        helper.assertTrue(near(PieceTrickChainLightning.jumpDamage(18.0F, 5), 1) && near(PieceTrickChainLightning.jumpDamage(18.0F, 8), 1),
-                "The jumps must not fall below 1");
-        helper.assertTrue(near(PieceTrickChainLightning.jumpDamage(0.6F, 3), 0.6),
-                "A first hit weaker than 1 must not grow along the chain");
+    public static void chainLightningBranchesDealFortyAndTwentyPercent(GameTestHelper helper) {
+        helper.assertTrue(near(PieceTrickChainLightning.branchDamage(18.0F, 0), 18)
+                && near(PieceTrickChainLightning.branchDamage(18.0F, 1), 7.2)
+                && near(PieceTrickChainLightning.branchDamage(18.0F, 2), 3.6),
+                "The first branches must deal 40% and the second 20% of the first hit");
         helper.succeed();
     }
 

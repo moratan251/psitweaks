@@ -1609,7 +1609,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_radiation_filter", "Trick: Radiation Filter", "Applies a radiation filter effect to the target", "作動式: 放射線フィルタ", "対象に放射線防護効果を付与する");
         addSpellPiece(root, "trick_cure_radiation", "Trick: Cure Radiation", "Removes radiation exposure from the target", "作動式: 放射線除去", "対象の被ばく量を除去する");
         addSpellPiece(root, "trick_guillotine", "Trick: Guillotine", "Deals a heavy slash to the target and drops a head on kill", "作動式: ギロチン", "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる");
-        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Strikes the nearest hostile creature in front of you with lightning that jumps to nearby hostile creatures", "作動式: 連鎖電光", "前方の最も近い敵対的な生物に雷撃を放ち、近くの敵対的な生物へ連鎖させる");
+        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Discharges lightning from the focal point in the direction; it strikes the nearest hostile creature and branches to nearby ones", "作動式: 連鎖電光", "焦点から方向へ雷撃を放ち、最も近い敵対的な生物に当てて近くの敵対的な生物へ枝分かれさせる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
         addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the creature you are aiming at so it bursts from within", "作動式: 爆裂", "照準を合わせた生物の体内の液体を気化させ、内側から破裂させる");
         addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
@@ -1852,14 +1852,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
         addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         addBookPage(root, "trick_chain_lightning.0",
-                "Strikes the nearest hostile creature within 32 blocks in front of the caster with a bolt of lightning; no precise aim is needed. The bolt then jumps up to 10 times, each time to a hostile creature within 6 blocks of the last target that it has not hit yet.",
-                "術者の前方32ブロック以内で最も近い敵対的な生物へ雷撃を放ちます. 正確に狙う必要はありません. 雷撃はさらに、直前の対象から6ブロック以内でまだ当たっていない敵対的な生物へ、最大10回まで飛び移ります.");
+                "Discharges a bolt of lightning from the spell's focal point in the $(thing)Direction$(0). It strikes the nearest hostile creature within 16 blocks that way; no precise aim is needed. With none there, the bolt simply discharges into the air, and the spell does not fail.",
+                "術式の焦点から $(thing)方向$(0) へ雷撃を放ち、その方向の16ブロック以内で最も近い敵対的な生物に当てます. 正確に狙う必要はありません. 該当する生物がいなくても術式は失敗せず、雷撃はそのまま空中へ放電されます.");
         addBookPage(root, "trick_chain_lightning.1",
-                "The first hit deals $(thing)9 + 9 × Power$(0) damage, and each jump deals half as much as the one before (but at least 1). Creatures in water or rain take 50%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone. With no hostile creature in front, the spell fails.",
-                "最初の一撃のダメージは $(thing)9 + 9×威力$(0) で、飛び移るたびに直前の半分になります (最低1). 水中や雨の中にいる生物には50%%増しになります. 最初の対象も連鎖先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません. 前方に敵対的な生物がいなければ術式は失敗します.");
+                "From the first target, the bolt branches to up to 3 hostile creatures within 8 blocks, and from each of those to up to 2 more within 8 blocks. It never strikes the same creature twice. The first hit deals $(thing)9 + 9 × Power$(0) damage, the first branches 40%% of it and the second branches 20%%.",
+                "雷撃は最初の対象から8ブロック以内の敵対的な生物最大3体へ枝分かれし、さらにそれぞれから8ブロック以内の最大2体へ枝分かれします. 同じ生物に二度当たることはありません. ダメージは最初の一撃が $(thing)9 + 9×威力$(0)、1段目の枝分かれがその40%%、2段目が20%%です.");
         addBookPage(root, "trick_chain_lightning.2",
-                "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt strikes and jumps to any creature, animals and villagers included. It still never strikes you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
-                "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物を狙い、飛び移ります. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
+                "Creatures in water or rain take 50%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
+                "水中や雨の中にいる生物には50%%増しになります. 最初の対象も枝分かれの先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+        addBookPage(root, "trick_chain_lightning.3",
+                "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt strikes and branches to any creature, animals and villagers included. It still never strikes you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
+                "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物を狙い、枝分かれします. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
         addBookPage(root, "trick_mine_genesis.0",
                 "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
                 "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
