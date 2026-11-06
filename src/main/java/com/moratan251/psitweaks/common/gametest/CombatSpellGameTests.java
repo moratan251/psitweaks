@@ -450,7 +450,7 @@ public final class CombatSpellGameTests {
                 () -> stats(chainLightning(Map.of(POWER, 0.0))))), "Chain Lightning Power must be positive");
 
         int[] mine = stats(mineGenesis(Map.of(POWER, 1.0, RADIUS, 3.0)));
-        helper.assertTrue(mine[0] == 185 && mine[1] == 630, "Mine Genesis P1 R3, got " + mine[0] + "/" + mine[1]);
+        helper.assertTrue(mine[0] == 185 && mine[1] == 990, "Mine Genesis P1 R3: 100+40P+15R / 300+150P+60R², got " + mine[0] + "/" + mine[1]);
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
         helper.assertTrue(burst[0] == 1240 && burst[1] == 1050, "Burst P1, got " + burst[0] + "/" + burst[1]);
         int[] parade = stats(parade(Map.of(POWER, 2.0, TIME, 30.0)));
@@ -940,8 +940,8 @@ public final class CombatSpellGameTests {
                 "A position more than 3 blocks above the ground must fail");
         mineGenesis(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 3.0)).execute(context);
         double groundY = grounded.getY();
-        // 28 at the centre, falling to 70% at the radius: 1 block of 3 out.
-        float expected = 28.0F * (1.0F - 0.3F / 3.0F);
+        // 28 at the centre, falling to 40% at the radius: 1 block of 3 out.
+        float expected = 28.0F * (1.0F - 0.6F / 3.0F);
         helper.startSequence()
                 .thenWaitUntil(() -> {
                     helper.assertTrue(near(TOUGH_HEALTH - grounded.getHealth(), expected), "Grounded husk must take " + expected
@@ -961,29 +961,39 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void airBulletHitsEveryCreatureInItsPathOnce(GameTestHelper helper) throws Exception {
+    public static void airBulletStopsAtTheFirstCreatureItHitsDirectly(GameTestHelper helper) throws Exception {
         for (int y = 0; y < 4; y++) {
             for (int z = 0; z < 5; z++) {
                 helper.setBlock(new BlockPos(4, y, z), Blocks.STONE);
             }
         }
         var player = caster(helper, new BlockPos(0, 0, 0), "air-bullet-caster");
-        var near = husk(helper, new BlockPos(1, 0, 2), false);
-        var far = husk(helper, new BlockPos(2, 0, 2), false);
+        // The pressure wave reaches 0.7 blocks sideways past a husk's half width (0.3): 1.0 from the line to its centre.
+        // The ball itself reaches 0.35 past it (0.65); between the two, the husk is only grazed for a third.
+        var grazed = husk(helper, new Vec3(1.5, 0.0, 2.5 + 0.9), false);
+        var clear = husk(helper, new Vec3(1.5, 0.0, 2.5 - 1.1), false);
         var aside = husk(helper, new BlockPos(2, 0, 0), false);
+        var hit = husk(helper, new BlockPos(2, 0, 2), false);
+        // Right behind the first creature hit directly, before the wall: the bullet must never get here.
+        var behind = husk(helper, new BlockPos(3, 0, 2), false);
         airBullet(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(0.5, 1.0, 2.5))), DIRECTION, new Vector3(1, 0, 0),
                 POWER, 1.0)).execute(new SpellContext().setPlayer(player));
         helper.startSequence()
                 .thenWaitUntil(() -> {
-                    helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11),
-                            "Both husks in the path must be hit once for 4.5 + 4.5 x Power: " + near.getHealth() + ", " + far.getHealth());
+                    helper.assertTrue(near(hit.getHealth(), 11),
+                            "The husk the bullet hits directly must take 4.5 + 4.5 x Power: " + hit.getHealth());
                     helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityAirBullet.class,
-                            helper.getBounds().inflate(4)).isEmpty(), "The bullet must burst on the wall");
+                            helper.getBounds().inflate(4)).isEmpty(), "The bullet must stop at the husk it hits directly");
                 })
                 .thenIdle(5)
                 .thenExecute(() -> {
-                    helper.assertTrue(near(near.getHealth(), 11) && near(far.getHealth(), 11), "Each creature is hit only once");
-                    helper.assertTrue(near(aside.getHealth(), 20), "A husk 2 blocks to the side of a 1.75-wide shot is missed");
+                    helper.assertTrue(near(hit.getHealth(), 11), "The husk hit directly is hit only once");
+                    helper.assertTrue(near(behind.getHealth(), 20), "A husk behind the first direct hit must be left alone: "
+                            + behind.getHealth());
+                    helper.assertTrue(near(grazed.getHealth(), 17), "A husk the bullet passes by is grazed for a third (3): "
+                            + grazed.getHealth());
+                    helper.assertTrue(near(clear.getHealth(), 20), "A husk whose body is 0.8 blocks to the side is missed: " + clear.getHealth());
+                    helper.assertTrue(near(aside.getHealth(), 20), "A husk 2 blocks to the side is missed");
                     helper.assertTrue(player.isAlive(), "Caster gone");
                 })
                 .thenSucceed();

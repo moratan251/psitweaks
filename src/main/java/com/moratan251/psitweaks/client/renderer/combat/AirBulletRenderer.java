@@ -42,8 +42,9 @@ public class AirBulletRenderer extends CombatGlowRenderer<EntityAirBullet> {
         Vec3 side = entity.getSide();
         Vec3 up = side.cross(direction).normalize();
         Vector3f axis = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z);
-        float halfWidth = entity.getWidth() * 0.5F;
-        float radius = bulletRadius(entity.getWidth());
+        float halfWidth = EntityAirBullet.HIT_REACH;
+        // The drawn ball is as big as a direct hit reaches.
+        float radius = EntityAirBullet.DIRECT_REACH;
         // The trail never reaches back past where the bullet was fired.
         float travelled = age * EntityAirBullet.SPEED;
         float trail = Math.min(TRAIL_LENGTH, travelled + 0.3F);
@@ -84,10 +85,5 @@ public class AirBulletRenderer extends CombatGlowRenderer<EntityAirBullet> {
         GlowDrawing.glowDisc(consumer, pose, center, radius * 2.6F, color, 0.45F * fade, 255);
         GlowDrawing.rimSphere(consumer, pose, center, radius, shell, 0.06F * fade, 0.9F * fade, 255);
         GlowDrawing.glowDisc(consumer, pose, center, radius * 0.8F, core, 1.0F * fade, 255);
-    }
-
-    /** The drawn radius grows a little with the struck width: about 0.35 blocks at the narrowest, 0.54 at the widest. */
-    private static float bulletRadius(float width) {
-        return 0.22F + 0.08F * width;
     }
 }

@@ -23,16 +23,13 @@ import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Fires a bullet of compressed air from the position in the direction; its pressure wave strikes every creature in
- * its path.
+ * Fires a bullet of compressed air from the position in the direction. It stops at the first creature it hits
+ * directly; the pressure wave around it grazes the creatures it passes on the way for a third of the damage.
  */
 public class PieceTrickAirBullet extends PieceTrick {
     private static final double MIN_POWER = 0.5;
     private static final float BASE_DAMAGE = 4.5F;
     private static final float DAMAGE_PER_POWER = 4.5F;
-    private static final float BASE_WIDTH = 1.5F;
-    private static final float WIDTH_PER_POWER = 0.25F;
-    private static final float MAX_WIDTH = 4.0F;
     private static final double POTENCY_BASE = 60.0;
     private static final double POTENCY_PER_POWER = 60.0;
     private static final double COST_BASE = 200.0;
@@ -82,11 +79,10 @@ public class PieceTrickAirBullet extends PieceTrick {
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
                 PsitweaksConfig.COMMON.airBulletDamageMultiplier.get(), context.caster);
-        float width = (float) Math.min(MAX_WIDTH, BASE_WIDTH + powerVal * WIDTH_PER_POWER);
         Vec3 start = positionVal.toVec3D();
         Vec3 dir = directionVal.toVec3D();
 
-        EntityAirBullet bullet = new EntityAirBullet(level, start, dir, width);
+        EntityAirBullet bullet = new EntityAirBullet(level, start, dir);
         bullet.configure(context.caster, AttackRules.Options.from(context), damage,
                 CombatSpellHelper.spellColor(context.caster));
         level.addFreshEntity(bullet);

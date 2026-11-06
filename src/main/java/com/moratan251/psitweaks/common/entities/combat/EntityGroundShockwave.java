@@ -35,7 +35,8 @@ public class EntityGroundShockwave extends CombatSpellEntity {
     public static final float SPEED = 0.8F;
     /** Ticks the ring keeps fading after reaching its full radius. */
     public static final int FADE_TICKS = 8;
-    private static final double EDGE_DAMAGE_FACTOR = 0.7;
+    /** Damage at the edge of the ring, as a share of the damage at the centre. */
+    private static final double EDGE_DAMAGE_FACTOR = 0.4;
     /** How high above the ground something may be and still count as standing on it. */
     private static final double GROUND_TOLERANCE = 1.0;
 

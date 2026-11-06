@@ -5,11 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.trick_air_bullet.0"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.trick_air_bullet.1"
+      "text": "psi.book.page.psitweaks_spellpiece.trick_air_bullet"
     }
   ]
 }

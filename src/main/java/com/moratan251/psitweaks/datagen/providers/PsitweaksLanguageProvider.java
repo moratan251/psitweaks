@@ -1612,7 +1612,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Strikes the nearest hostile creature in front of you with lightning that jumps to nearby hostile creatures", "作動式: 連鎖電光", "前方の最も近い敵対的な生物に雷撃を放ち、近くの敵対的な生物へ連鎖させる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
         addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the creature you are aiming at so it bursts from within", "作動式: 爆裂", "照準を合わせた生物の体内の液体を気化させ、内側から破裂させる");
-        addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes everything in its path", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、通り道の生物をまとめて撃ち抜く");
+        addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
         addSpellPiece(root, "trick_gravity_collapse", "Trick: Gravity Collapse", "Opens a gravity well that pulls creatures in, then collapses", "作動式: 重力崩壊", "生物を引き寄せる重力の井戸を開き、最後に崩壊させる");
@@ -1864,20 +1864,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
                 "指定位置の地面を打ち、$(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ、すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
         addBookPage(root, "trick_mine_genesis.1",
-                "Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 70%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
-                "ダメージは中心で $(thing)16 + 12×威力$(0)、外縁では70%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
+                "Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 40%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
+                "ダメージは中心で $(thing)16 + 12×威力$(0)、外縁では40%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
         addBookPage(root, "trick_burst.0",
                 "Vaporizes the liquid inside the creature under the caster's crosshair, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. The range is 32 blocks, and with nothing in the sights the spell fails. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
                 "照準を合わせた生物の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. 射程は32ブロックで、照準の先に生物がいなければ術式は失敗します. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
         addBookPage(root, "trick_burst.1",
-                "If the target dies from it, its body bursts and hits hostile creatures within 3 blocks for up to 40%% of the damage.",
-                "この術式で対象が倒れると体が破裂し、3ブロック以内の敵対的な生物に最大でダメージの40%%を与えます.");
-        addBookPage(root, "trick_air_bullet.0",
-                "Fires a bullet of compressed air from the position in the direction. It flies 24 blocks, striking every creature in its path once, and bursts when it hits a solid block.",
-                "指定位置から方向へ圧縮した空気の弾を撃ち出します. 弾は24ブロック飛び、通り道の生物にそれぞれ一度ずつ当たり、固いブロックに当たると弾けます.");
-        addBookPage(root, "trick_air_bullet.1",
-                "Each hit deals $(thing)4.5 + 4.5 × Power$(0) damage. The pressure wave around the bullet strikes creatures within a width of $(thing)1.5 + 0.25 × Power$(0) blocks (at most 4).",
-                "1回の命中のダメージは $(thing)4.5 + 4.5×威力$(0) です. 弾の周りの圧力波は、幅 $(thing)1.5 + 0.25×威力$(0) ブロック (最大4) の範囲の生物に当たります.");
+                "If the target dies from it, its body bursts and hits nearby hostile creatures for up to 40%% of the damage.",
+                "この術式で対象が倒れると体が破裂し、付近の敵対的な生物に最大でダメージの40%%を与えます.");
+        addBookPage(root, "trick_air_bullet",
+                "Fires a bullet of compressed air from the position in the direction. The bullet's range is 24 blocks.$(br)"
+                        + "A creature the bullet hits directly takes $(thing)4.5 + 4.5 × Power$(0) damage, and the bullet stops there. A graze from the pressure wave around the bullet deals a third of a direct hit's damage, and the bullet flies on.",
+                "指定位置から方向へ圧縮した空気の弾を撃ち出します. 弾丸の射程は24ブロックです.$(br)"
+                        + "弾が直撃した生物には $(thing)4.5 + 4.5×威力$(0) のダメージを与え, 弾はそこで消えます. 弾の周りの圧力波にかすったときのダメージは直撃の1/3で, 弾はそのまま飛び続けます.");
         addBookPage(root, "trick_dancing_blades.0",
                 "Deploys every sword in the caster's $(l:items/psitweaks_blade_pouch)$(o)$(item)Blade Pouch$(0)$(/l) (up to 8) as spectral blades that circle the caster. Each blade darts at a hostile creature within 16 blocks, cuts it and comes back. A blade fades after three cuts, and all of them fade after 15 seconds.",
                 "術者の $(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l) に入っている剣をすべて (最大8本) 幻影の刃として展開し, 術者の周りを回らせます. 刃は16ブロック以内の敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回斬ると消え, 15秒経つとすべて消えます.");
@@ -1891,14 +1890,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Calls $(thing)Count$(0) meteors (at most 12) down around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
                 "指定位置の周りに $(thing)数$(0) 個 (上限12) の流星を降らせます. 着弾点は地面の輪で示され、1秒後から流星が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
         addBookPage(root, "trick_starfall.1",
-                "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within 2.5 blocks (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
-                "流星は着弾と同時に爆発し、2.5ブロック以内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
+                "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within its blast (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
+                "流星は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
         addBookPage(root, "trick_gravity_collapse.0",
                 "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
                 "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
         addBookPage(root, "trick_gravity_collapse.1",
-                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. It reaches 60%% of the radius (at least 3 blocks). While being pulled, creatures build up no fall damage.",
-                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 崩壊が届くのは半径の60%% (最低3ブロック) です. 引き寄せられている間は落下ダメージが溜まりません.");
+                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage.",
+                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");

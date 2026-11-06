@@ -42,7 +42,8 @@ public class PieceTrickMineGenesis extends PieceTrick {
     private static final double POTENCY_PER_RADIUS = 15.0;
     private static final double COST_BASE = 300.0;
     private static final double COST_PER_POWER = 150.0;
-    private static final double COST_PER_RADIUS = 60.0;
+    /** The cost grows with the square of the radius: a wider ring is much harder to sustain. */
+    private static final double COST_PER_RADIUS_SQUARED = 60.0;
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;
@@ -54,7 +55,7 @@ public class PieceTrickMineGenesis extends PieceTrick {
                 .add(new StatLabel(SpellParam.GENERIC_NAME_RADIUS, true).max(MIN_RADIUS).min(MAX_RADIUS).mul(POTENCY_PER_RADIUS))
                 .add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER).mul(COST_PER_POWER)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_RADIUS, true).max(MIN_RADIUS).min(MAX_RADIUS).mul(COST_PER_RADIUS))
+                .add(new StatLabel(SpellParam.GENERIC_NAME_RADIUS, true).max(MIN_RADIUS).min(MAX_RADIUS).square().mul(COST_PER_RADIUS_SQUARED))
                 .add(COST_BASE).floor());
     }
 
@@ -71,7 +72,8 @@ public class PieceTrickMineGenesis extends PieceTrick {
         double powerVal = Math.max(MIN_POWER, CombatTrickStats.positive(getParamEvaluation(power), x, y));
         double radiusVal = Mth.clamp(CombatTrickStats.positive(getParamEvaluation(radius), x, y), MIN_RADIUS, MAX_RADIUS);
         meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + powerVal * POTENCY_PER_POWER + radiusVal * POTENCY_PER_RADIUS));
-        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(COST_BASE + powerVal * COST_PER_POWER + radiusVal * COST_PER_RADIUS));
+        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(COST_BASE + powerVal * COST_PER_POWER
+                + radiusVal * radiusVal * COST_PER_RADIUS_SQUARED));
     }
 
     @Override
