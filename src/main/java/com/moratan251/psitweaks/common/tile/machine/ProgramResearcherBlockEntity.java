@@ -9,6 +9,7 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.energy.IEnergyConversionHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -129,7 +130,8 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
 
         boolean changed = validateActiveInputs(recipe);
         maxProgress = Math.max(1, recipe.getTime());
-        long energyCost = recipe.getEnergyPerTick();
+        // レシピの値は JEI・EMI と同じく FE/t。Mekanism の機械は J で持つので換算する（1.20.1 と同じ）。
+        long energyCost = IEnergyConversionHelper.INSTANCE.feConversion().convertFrom(recipe.getEnergyPerTick());
         currentEnergyCost = energyCost;
         if (energyContainer.getEnergy() < energyCost) {
             return sendUpdate || setActiveState(false);

@@ -40,7 +40,7 @@ public class PieceTrickBlazeBall extends PieceTrick {
     public PieceTrickBlazeBall(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
-        setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(0.1).mul(200).add(200).floor());
+        setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).max(MIN_POWER).mul(COST_PER_POWER).add(COST_BASE).floor());
     }
 
     @Override

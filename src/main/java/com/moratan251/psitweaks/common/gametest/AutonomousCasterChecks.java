@@ -866,6 +866,35 @@ final class AutonomousCasterChecks {
         helper.succeed();
     }
 
+    /** F-012: 持ち主（とそのチーム）以外は、Mekanism の公開設定でも詠唱と設定の変更ができない。ログを見るのはよい。 */
+    static void onlyItsOwnerChangesItsSettings(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        UUID owner = UUID.randomUUID();
+        // GameTestServer にはプロフィールキャッシュが無く、setOwnerUUID は所有者名の解決で落ちるため、保存データとして読み込ませる
+        CompoundTag security = new CompoundTag();
+        security.putUUID("owner", owner);
+        caster.getSecurity().deserialize(security, helper.getLevel().registryAccess());
+        int interval = caster.getCastInterval();
+        FakePlayer stranger = player(helper);
+        helper.assertTrue(!caster.mayOperate(stranger), "A stranger may operate someone else's machine");
+        caster.applySetting(Action.SET_INTERVAL, interval + 7, stranger);
+        caster.applySetting(Action.SELECT_ITEM_SLOT, 5, stranger);
+        helper.assertTrue(caster.getCastInterval() == interval && caster.getSelectedItemSlot() == 0,
+                "A stranger changed the settings of someone else's machine");
+        FakePlayer ownerPlayer = new FakePlayer(helper.getLevel(), new GameProfile(owner, "[psitweaks_caster_owner]"));
+        helper.assertTrue(caster.mayOperate(ownerPlayer), "The owner may not operate their own machine");
+        caster.applySetting(Action.SET_INTERVAL, interval + 7, ownerPlayer);
+        helper.assertTrue(caster.getCastInterval() == interval + 7, "The owner could not change the settings");
+
+        // Mekanism の公開設定でも、ほかの人は GUI を開けない（術式弾スロットを入れ替えられないように）。
+        caster.getSecurity().setMode(mekanism.api.security.SecurityMode.PUBLIC);
+        helper.assertTrue(caster.openGui(stranger) == net.minecraft.world.InteractionResult.FAIL,
+                "A stranger opened a public machine's screen");
+        helper.assertTrue(caster.openGui(ownerPlayer) != net.minecraft.world.InteractionResult.FAIL,
+                "The owner could not open their own machine's screen");
+        helper.succeed();
+    }
+
     /** 所有者のいない機械の Caster は内部キーを名乗り、所有者が決まると同じキーのまま所有者の UUID を名乗り直す。 */
     static void lendsItsOwnersIdeaStorage(GameTestHelper helper) {
         AutonomousCasterBlockEntity caster = place(helper);

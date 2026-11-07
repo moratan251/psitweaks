@@ -165,6 +165,12 @@ final class AutonomousCasterTranslations {
         put(ERROR + "no_cad", "The internal CAD could not be assembled", "内部CADを組み立てられません");
         put(ERROR + "no_caster", "The caster is not ready", "詠唱主体の準備ができていません");
         put(ERROR + "cast_failed", "The spell was not cast", "術式を詠唱できませんでした");
+        put("psitweaks.autonomous_caster.owner_only",
+                "Only the owner and their team can cast or change settings",
+                "詠唱と設定の変更は、持ち主とそのチームだけができます");
+        put("psitweaks.autonomous_caster.owner_only_gui",
+                "Only the owner and their team can open this Autonomous Caster",
+                "この自律詠唱機の画面は、持ち主とそのチームだけが開けます");
         put(ERROR + "exception",
                 "An error occurred while casting. See the server log",
                 "詠唱中にエラーが発生しました。サーバーログを確認してください");

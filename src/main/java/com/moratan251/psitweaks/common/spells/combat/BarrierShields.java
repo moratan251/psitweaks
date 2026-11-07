@@ -46,8 +46,16 @@ public final class BarrierShields {
     private BarrierShields() {
     }
 
-    /** Raises (or replaces) the shield on the entity. */
-    public static void raise(LivingEntity entity, float amount, int durationTicks, int color) {
+    /**
+     * Raises the shield on the entity, or replaces a weaker one. A shield with at least as many points left stays as
+     * it is, so a weak barrier (anyone may raise one on others in range) cannot overwrite a strong one.
+     *
+     * @return whether the new shield was raised
+     */
+    public static boolean raise(LivingEntity entity, float amount, int durationTicks, int color) {
+        if (amount(entity) >= amount) {
+            return false;
+        }
         long expiresAt = entity.level().getGameTime() + Math.max(1, durationTicks);
         BarrierShield shield = new BarrierShield(amount, amount, expiresAt, color & 0xFFFFFF);
         entity.setData(PsitweaksAttachments.BARRIER_SHIELD, shield);
@@ -57,6 +65,7 @@ public final class BarrierShields {
         flash(entity, shield, Style.BARRIER_RAISE, Vec3.ZERO, 1.0F);
         playSound(entity, SoundEvents.BEACON_ACTIVATE, 0.5F, 1.8F);
         playSound(entity, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
+        return true;
     }
 
     /** Shield points the entity has left, or 0 without a shield. Works on both sides, as the shield is synced. */

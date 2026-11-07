@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.gametest;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.OptionalSpellPieceCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -72,6 +73,27 @@ public final class Psi110CompatibilityGameTests {
             var restored = SpellPiece.createFromNBT(new Spell(), tag);
             helper.assertTrue(restored != null && Psitweaks.location(rename[1]).equals(restored.getRegistryKey()),
                     rename[0] + " did not load as " + rename[1]);
+        }
+        helper.succeed();
+    }
+
+    /** F-037: without Mekanism, its pieces load as a removal marker instead of failing the whole spell. */
+    @GameTest(template = "psi110_empty")
+    public static void mekanismPiecesAreRemovedWithoutMekanism(GameTestHelper helper) {
+        for (String path : new String[] {"trick_radiation_filter", "trick_radiation_injection", "trick_cure_radiation",
+                "selector_autonomous_caster_position"}) {
+            var id = Psitweaks.location(path);
+            var tag = new CompoundTag();
+            if (ModList.get().isLoaded("mekanism")) {
+                PsiAPI.SPELL_PIECE_REGISTRY.get(id).create(new Spell()).writeToNBT(tag);
+                var restored = SpellPiece.createFromNBT(new Spell(), tag);
+                helper.assertTrue(restored != null && id.equals(restored.getRegistryKey()), path + " did not load with Mekanism");
+            } else {
+                tag.putString("key", id.toString());
+                var restored = SpellPiece.createFromNBT(new Spell(), tag);
+                helper.assertTrue(OptionalSpellPieceCompat.isRemovalMarker(restored),
+                        path + " should be removed without Mekanism, got " + restored);
+            }
         }
         helper.succeed();
     }

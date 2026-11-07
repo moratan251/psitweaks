@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.compat;
 
 import com.moratan251.psitweaks.Psitweaks;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +16,12 @@ public final class OptionalSpellPieceCompat {
     private static final String TAG_KEY = "key";
     private static final ResourceLocation PHYSICAL_PROPULSION_ID = Psitweaks.location("trick_physical_propulsion");
     private static final String REMOVAL_MARKER_COMMENT = "psitweaks:remove_optional_physical_propulsion";
+    /** Pieces registered only with Mekanism (see {@code PsitweaksSpells}). */
+    private static final List<ResourceLocation> MEKANISM_PIECE_IDS = List.of(
+            Psitweaks.location("selector_autonomous_caster_position"),
+            Psitweaks.location("trick_radiation_injection"),
+            Psitweaks.location("trick_radiation_filter"),
+            Psitweaks.location("trick_cure_radiation"));
 
     /**
      * Pieces whose ID changed during 1.0.0 development (old ID → new ID). Psi cannot read an unknown namespaced ID
@@ -45,12 +52,28 @@ public final class OptionalSpellPieceCompat {
         return null;
     }
 
-    public static boolean shouldRemoveMissingPhysicalPropulsion(CompoundTag cmp) {
-        if (SablePhysicsCompat.isLoaded() || cmp == null) {
+    /**
+     * Whether the piece belongs to an optional mod that is not loaded (Sable for Trick: Physical Propulsion, Mekanism
+     * for the radiation tricks and Selector: Autonomous Caster Position). Such a piece is not registered, and Psi would
+     * fail the whole spell (or the player holding it), so it is read as a marker and removed from the grid. A spell
+     * saved while the mod is missing keeps the piece removed.
+     */
+    public static boolean shouldRemoveMissingOptionalPiece(CompoundTag cmp) {
+        if (cmp == null) {
             return false;
         }
-
-        return matchesSpellPieceId(getSpellPieceId(cmp), PHYSICAL_PROPULSION_ID);
+        String id = getSpellPieceId(cmp);
+        if (!SablePhysicsCompat.isLoaded() && matchesSpellPieceId(id, PHYSICAL_PROPULSION_ID)) {
+            return true;
+        }
+        if (!MekanismCompat.isMekanismLoaded()) {
+            for (ResourceLocation mekanismPiece : MEKANISM_PIECE_IDS) {
+                if (matchesSpellPieceId(id, mekanismPiece)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void rewriteSpellPieceId(CompoundTag cmp, ResourceLocation oldId, ResourceLocation newId) {

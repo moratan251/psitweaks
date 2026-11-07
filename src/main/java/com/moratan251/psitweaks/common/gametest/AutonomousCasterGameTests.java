@@ -1137,6 +1137,15 @@ public final class AutonomousCasterGameTests {
         AutonomousCasterChecks.mirrorsItsInventory(helper);
     }
 
+    @GameTest(template = TEMPLATE)
+    public static void autonomousCasterLetsOnlyItsOwnerChangeItsSettings(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.onlyItsOwnerChangesItsSettings(helper);
+    }
+
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void autonomousCasterDoesNotDoubleItemsWhileTheCopiesDisagree(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {

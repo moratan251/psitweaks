@@ -44,7 +44,7 @@ public class PieceTrickMolecularDivider extends PieceTrick {
         this.setStatLabel(EnumSpellStat.POTENCY,
                 (new StatLabel("psi.spellparam.power", true)).max(0.1).mul(200.0).add(800.0).floor());
         this.setStatLabel(EnumSpellStat.COST,
-                (new StatLabel("psi.spellparam.power", true)).floor().add(0.0).add(1200.0));
+                (new StatLabel("psi.spellparam.power", true)).mul(1200.0).floor());
     }
 
     @Override

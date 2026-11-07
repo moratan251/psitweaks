@@ -81,6 +81,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -1226,6 +1227,12 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     private void applyAction(Player player, MessageAutonomousCasterAction.Action action, int value) {
+        // Mekanism の公開設定でも、詠唱と設定は持ち主とそのチームだけ。ほかの人の術式も持ち主として動くため。
+        if (action != MessageAutonomousCasterAction.Action.REQUEST_LOG && !mayOperate(player)) {
+            player.displayClientMessage(Component.translatable("psitweaks.autonomous_caster.owner_only")
+                    .withStyle(ChatFormatting.RED), true);
+            return;
+        }
         switch (action) {
             case SELECT_BULLET -> {
                 int selected = Mth.clamp(value, 0, BULLET_SLOTS - 1);
@@ -1262,6 +1269,37 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             case CLEAR_MEMORY -> VirtualCad.clearMemory(virtualCad);
         }
         markForSave();
+    }
+
+    /**
+     * GUI は持ち主とそのチームだけが開ける（Mekanism の公開設定でも）。GUI で入れた術式弾は、次の信号で持ち主として
+     * 動くため、ほかの人に術式弾スロットを触らせない。パイプなどでの搬入出は Mekanism の設定のまま。
+     */
+    @Override
+    public InteractionResult openGui(Player player) {
+        if (!isRemote() && !player.isShiftKeyDown() && !mayOperate(player)) {
+            player.displayClientMessage(Component.translatable("psitweaks.autonomous_caster.owner_only_gui")
+                    .withStyle(ChatFormatting.RED), true);
+            return InteractionResult.FAIL;
+        }
+        return super.openGui(player);
+    }
+
+    /**
+     * 詠唱と設定を変えてよい人: 持ち主と、持ち主のスコアボードのチームの人。持ち主のいない機械は誰でもよい
+     * （名乗る相手がいないため）。
+     */
+    public boolean mayOperate(Player player) {
+        UUID owner = getOwnerUUID();
+        if (owner == null || owner.equals(player.getUUID())) {
+            return true;
+        }
+        if (level == null || player.getTeam() == null) {
+            return false;
+        }
+        return ownerName().map(name -> level.getScoreboard().getPlayersTeam(name))
+                .filter(team -> team == player.getTeam())
+                .isPresent();
     }
 
     // ---- 保存・同期 ----

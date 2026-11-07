@@ -25,7 +25,9 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
     public PieceTrickTimeAccelerate(Spell spell) {
         super(spell);
 
-        this.setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).mul(200).floor());
+        // 実際のコスト（addToMetadata）と同じ 2^威力 × 秒 × 4
+        this.setStatLabel(EnumSpellStat.COST, new StatLabel(2).pow("psi.spellparam.power", true)
+                .mul("psi.spellparam.time", true).mul(4).floor());
         this.setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).mul(150).add(50).floor());
     }
 
@@ -95,14 +97,15 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
 
         int durationTicks = seconds * 20;
 
-        // 既存があるなら remainingTime を最大化
+        // 既存があるなら、倍率も残り時間も今回の詠唱のものにする。長いほうの時間を残すと、弱い倍率で長くかけてから
+        // 強い倍率で短くかけ直すだけで、強い倍率を安いコストで長く続けられてしまう。
         Optional<EntityTimeAccelerator> existing =
                 level.getEntitiesOfClass(EntityTimeAccelerator.class, new AABB(pos)).stream().findFirst();
 
         if (existing.isPresent()) {
             EntityTimeAccelerator entity = existing.get();
             entity.setTimeRate(rate);
-            entity.setRemainingTime(Math.max(entity.getRemainingTime(), durationTicks));
+            entity.setRemainingTime(durationTicks);
         } else {
             EntityTimeAccelerator entity = new EntityTimeAccelerator(level, pos);
             entity.setTimeRate(rate);

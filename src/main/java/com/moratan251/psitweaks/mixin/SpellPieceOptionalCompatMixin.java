@@ -14,7 +14,7 @@ import vazkii.psi.api.spell.SpellPiece;
 public abstract class SpellPieceOptionalCompatMixin {
     @Inject(method = "createFromNBT", at = @At("HEAD"), cancellable = true)
     private static void psitweaks$handleOptionalSpellPieceCompat(Spell spell, CompoundTag cmp, CallbackInfoReturnable<SpellPiece> cir) {
-        if (OptionalSpellPieceCompat.shouldRemoveMissingPhysicalPropulsion(cmp)) {
+        if (OptionalSpellPieceCompat.shouldRemoveMissingOptionalPiece(cmp)) {
             cir.setReturnValue(OptionalSpellPieceCompat.createRemovalMarker(spell));
             return;
         }

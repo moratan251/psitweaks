@@ -916,7 +916,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID in CAD memory."},
             {"psi.book.page.psitweaks_spellpiece.trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi."},
             {"psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo."},
-            {"psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed."},
+            {"psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed. Casting it again on the same block replaces both the rate and the remaining time."},
             {"psi.book.title.psitweaks_material.chaotic_psimetal", "Chaotic Psimetal Ingot"},
             {"psi.book.title.psitweaks_material.psycheonic_metal_ingot", "Psycheonic Metal Ingot"},
             {"psi.book.title.psitweaks_mekanism_integration.infusing", "Metallurgic Infusing"},
@@ -1028,7 +1028,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをCADメモリに保存します."},
             {"psi.book.page.psitweaks_spellpiece.trick_supply_fe", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです."},
             {"psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "残響の欠片をサイオニックエコーへ注入変換します."},
-            {"psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで."},
+            {"psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで. 同じブロックにかけ直すと, 倍率も残り時間も新しい詠唱のものになります."},
             {"psi.book.page.spellProgrammer.0", "If the $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) is the heart of $(thing)Psi$(0), then the $(item)Spell Programmer$(0) is the brains of the mod. It's where $(thing)Spells$(0) are written and compiled, and eventually copied into $(item)Spell Bullets$(0) to be cast.$(p)When placed and opened ($(k:use)), it displays a large 9x9 grid; see $(l:basics/tutorial_1)the tutorial entries$(/l) for more in-depth knowledge on using this grid."},
             {"psi.book.page.spellProgrammer.1", "Hour Of Code"},
             {"psi.book.page.vectorPrimer.0", "$(thing)Psi$(0) uses the concept of a Vector extensively. Therefore, if you haven't the foggiest idea what a vector is, I strongly recommend you watch the video below.$(p)The explanation in the next few pages is $(l)simplified$() for beginners. Don't take it as definitive."},
@@ -1592,6 +1592,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_stored_value", "Selector: Stored Value", "Retrieve a Plain Value from CAD memory", "取得子: 保存された値", "CADメモリに保存されたPlain Valueを取得する");
         addSpellPiece(root, "selector_nearby_spellgram", "Selector: Nearby SpellGram Object", "Retrieve SpellGram objects around the specified position", "取得子: 近くの魔法式オブジェクト", "指定座標の周囲にある魔法式オブジェクトを取得する");
         addSpellPiece(root, "selector_autonomous_caster_position", "Selector: Autonomous Caster Position", "Gets the center of the Autonomous Caster casting the spell", "取得子: 詠唱機位置", "詠唱している自律詠唱機のブロックの中心を取得します。");
+        // 解説書の項目名だけ短くする（英語の名前は見出しがページの枠からはみ出すため）。ピース名はそのまま。
+        root.addProperty("psitweaks.spellpiece.selector_autonomous_caster_position.book_title",
+                locale.equals("ja_jp") ? "取得子: 詠唱機位置" : "Selector: Auto. Caster Position");
         addSpellPiece(root, "trick_dispel", "Trick: Dispel", "Remove effects from target entity", "作動式: 解呪", "対象からエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_beneficial", "Trick: Dispel Beneficial", "Remove beneficial effects from target entity", "作動式: 良性解呪", "対象から有益なエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_non_beneficial", "Trick: Dispel Non Beneficial", "Remove non beneficial effects from target entity", "作動式: 悪性解呪", "対象から有益でないエフェクトを除去する");
@@ -1783,8 +1786,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for one minute. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
                 "対象を $(thing)威力×10$(0) のシールドで1分間包みます. シールドがある間、対象が受けるダメージは体力の代わりにシールドから差し引かれ、対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り、シールドは砕けます.");
         addBookPage(root, "trick_barrier.1",
-                "Casting it again replaces the current shield. While shielded, the target does not catch fire. It does not absorb falling, drowning, poison and the like. A bar above your health shows the shield you have left and the seconds remaining.",
-                "もう一度かけると今のシールドと置き換わります. シールドがある間、対象は炎上しません. 落下、溺れ、毒などのダメージは防げません. 自分のシールドの残量と残り秒数は体力ゲージの上のバーに表示されます.");
+                "Casting it again replaces the shield only if the new one is stronger. While shielded, the target does not catch fire. It does not absorb falling, drowning, poison and the like. A bar above your health shows the shield you have left and the seconds remaining.",
+                "もう一度かけると、新しいシールドのほうが多いときだけ置き換わります. シールドがある間、対象は炎上しません. 落下、溺れ、毒などのダメージは防げません. 自分のシールドの残量と残り秒数は体力ゲージの上のバーに表示されます.");
         addBookPage(root, "selector_barrier_amount",
                 "Outputs the shield points the target's $(thing)Trick: Barrier$(0) has left, as a Number. It outputs 0 when the target has no shield or is not a living entity.",
                 "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");

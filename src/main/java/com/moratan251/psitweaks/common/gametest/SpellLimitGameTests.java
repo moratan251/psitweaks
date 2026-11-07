@@ -3,10 +3,12 @@ package com.moratan251.psitweaks.common.gametest;
 import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
+import com.moratan251.psitweaks.common.entities.EntityTimeAccelerator;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorFormatString;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorStoredEntity;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPhononMaser;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTimeAccelerate;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellListLimits;
@@ -20,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -201,6 +206,35 @@ public final class SpellLimitGameTests {
         helper.assertTrue(after == 1.0D, "Radiation Filter should make the resistance 1.0, got " + after
                 + " (the mixin on RadiationUtil did not apply)");
         helper.succeed();
+    }
+
+    /** F-029: casting Time Accelerate again takes both the new rate and the new time, not the longer time. */
+    @GameTest(template = TEMPLATE)
+    public static void timeAccelerateRecastTakesTheNewRateAndTime(GameTestHelper helper) throws Exception {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "time-accelerate"));
+        BlockPos chest = new BlockPos(1, 1, 1);
+        helper.setBlock(chest, Blocks.CHEST);
+        BlockPos absolute = helper.absolutePos(chest);
+        player.moveTo(absolute.getX() + 0.5, absolute.getY(), absolute.getZ() + 1.5);
+        var context = new SpellContext().setPlayer(player);
+        Vector3 target = new Vector3(absolute.getX() + 0.5, absolute.getY() + 0.5, absolute.getZ() + 0.5);
+        timeAccelerate(target, 1, 10).execute(context);
+        timeAccelerate(target, 3, 1).execute(context);
+        var accelerators = helper.getLevel().getEntitiesOfClass(EntityTimeAccelerator.class, new AABB(absolute));
+        helper.assertTrue(accelerators.size() == 1, "Casting again should reuse the accelerator, found " + accelerators.size());
+        EntityTimeAccelerator accelerator = accelerators.get(0);
+        helper.assertTrue(accelerator.getTimeRate() == 8 && accelerator.getRemainingTime() == 20,
+                "A short strong recast kept the long time: rate " + accelerator.getTimeRate() + ", ticks " + accelerator.getRemainingTime());
+        accelerator.discard();
+        helper.succeed();
+    }
+
+    private static PieceTrickTimeAccelerate timeAccelerate(Vector3 position, double power, double seconds) {
+        Map<String, Object> values = Map.of(SpellParam.GENERIC_NAME_POSITION, position, "psi.spellparam.power", power,
+                "psi.spellparam.time", seconds);
+        return new PieceTrickTimeAccelerate(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
+        };
     }
 
     private static <T> List<T> doubled(List<T> values) {

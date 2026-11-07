@@ -333,7 +333,11 @@ public final class CombatSpellGameTests {
 
         husk.invulnerableTime = 0;
         barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(context);
-        helper.assertTrue(near(shield(husk), 10), "Casting again must replace the shield, not add to it: " + shield(husk));
+        helper.assertTrue(near(shield(husk), 12), "A weaker barrier must leave the stronger shield: " + shield(husk));
+        // The rest starts from a fresh 10-point shield.
+        husk.removeData(PsitweaksAttachments.BARRIER_SHIELD);
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(context);
+        helper.assertTrue(near(shield(husk), 10), "Power 1 must raise a shield of 10: " + shield(husk));
 
         husk.hurt(sources.generic(), 15.0F);
         helper.assertTrue(near(husk.getHealth(), 15) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
@@ -364,11 +368,30 @@ public final class CombatSpellGameTests {
         long lasts = raised == null ? 0L : raised.expiresAt() - helper.getLevel().getGameTime();
         helper.assertTrue(lasts == 1200L, "The shield must last one minute, got " + lasts + " ticks");
 
-        // A minute is too long to wait for here, so a one-second shield stands in for the timer.
+        // A minute is too long to wait for here, so a one-second shield stands in for the timer. A shield as strong
+        // stays as it is, so the minute shield is taken off first.
+        helper.assertTrue(!BarrierShields.raise(husk, 10.0F, 20, 0xFFFFFF), "An equal shield must not replace the one there");
+        husk.removeData(PsitweaksAttachments.BARRIER_SHIELD);
         BarrierShields.raise(husk, 10.0F, 20, 0xFFFFFF);
         helper.runAtTickTime(10, () -> helper.assertTrue(near(shield(husk), 10), "The shield faded too early"));
         helper.succeedWhen(() -> helper.assertTrue(husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
                 "A one-second shield must be gone after its time"));
+    }
+
+    /** F-018: casting a weaker barrier again leaves the stronger shield; a stronger one replaces it. */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void weakerBarrierLeavesTheStrongerShield(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-keep");
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        var context = new SpellContext().setPlayer(player);
+        barrier(Map.of(TARGET, husk, POWER, 3.0)).execute(context);
+        float strong = shield(husk);
+        barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(context);
+        helper.assertTrue(near(shield(husk), strong), "A weaker barrier replaced the stronger shield: " + shield(husk));
+        barrier(Map.of(TARGET, husk, POWER, 5.0)).execute(context);
+        helper.assertTrue(near(shield(husk), strong * 5.0 / 3.0),
+                "A stronger barrier must replace the shield, not add to it: " + shield(husk));
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
