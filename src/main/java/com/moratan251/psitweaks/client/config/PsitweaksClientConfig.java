@@ -34,7 +34,7 @@ public final class PsitweaksClientConfig {
                     .push("effects");
 
             cameraShake = builder
-                    .comment("Shake the camera for ground shockwaves, meteor impacts and gravity collapses")
+                    .comment("Shake the camera for ground shockwaves, meteor impacts and micro black hole collapses")
                     .translation("psitweaks.configuration.effects.camera_shake")
                     .define("cameraShake", true);
 

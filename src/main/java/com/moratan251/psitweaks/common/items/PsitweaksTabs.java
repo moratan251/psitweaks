@@ -210,7 +210,7 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_DANCING_BLADES.get());
         output.accept(PsitweaksItems.PROGRAM_STARFALL.get());
         output.accept(PsitweaksItems.PROGRAM_BURST.get());
-        output.accept(PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE.get());
+        output.accept(PsitweaksItems.PROGRAM_MICRO_BLACK_HOLE.get());
         output.accept(PsitweaksItems.PROGRAM_PARADE.get());
     }
 }

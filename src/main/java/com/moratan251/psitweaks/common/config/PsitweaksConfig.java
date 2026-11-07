@@ -37,7 +37,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue airBulletDamageMultiplier;
         public final ModConfigSpec.DoubleValue dancingBladesDamageMultiplier;
         public final ModConfigSpec.DoubleValue starfallDamageMultiplier;
-        public final ModConfigSpec.DoubleValue gravityCollapseDamageMultiplier;
+        public final ModConfigSpec.DoubleValue microBlackHoleDamageMultiplier;
         public final ModConfigSpec.DoubleValue barrierShieldMultiplier;
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
         public final ModConfigSpec.DoubleValue tunnelerMinimumDamage;
@@ -301,18 +301,18 @@ public class PsitweaksConfig {
 
             builder.pop(); // starfall カテゴリ終了
 
-            // --- 重力崩壊 ---
-            builder.comment("Gravity Collapse Settings")
-                    .translation("psitweaks.configuration.spells.gravity_collapse")
-                    .push("gravity_collapse");
+            // --- マイクロブラックホール ---
+            builder.comment("Micro Black Hole Settings")
+                    .translation("psitweaks.configuration.spells.micro_black_hole")
+                    .push("micro_black_hole");
 
-            gravityCollapseDamageMultiplier = builder
-                    .comment("作動式: 重力崩壊 のダメージ倍率",
-                            "Damage multiplier for Trick: Gravity Collapse")
-                    .translation("psitweaks.configuration.spells.gravity_collapse.damage_multiplier")
+            microBlackHoleDamageMultiplier = builder
+                    .comment("作動式: マイクロブラックホール のダメージ倍率",
+                            "Damage multiplier for Trick: Micro Black Hole")
+                    .translation("psitweaks.configuration.spells.micro_black_hole.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
-            builder.pop(); // gravity_collapse カテゴリ終了
+            builder.pop(); // micro_black_hole カテゴリ終了
 
             // --- 障壁 ---
             builder.comment("Barrier Settings")

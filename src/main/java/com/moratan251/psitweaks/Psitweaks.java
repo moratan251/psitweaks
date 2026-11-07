@@ -36,7 +36,7 @@ import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.AquaCutterRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.DancingBladeRenderer;
-import com.moratan251.psitweaks.client.renderer.combat.GravityWellRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.MicroBlackHoleRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.ParadeDecoyRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.GroundShockwaveRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.AirBulletRenderer;
@@ -370,7 +370,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.DANCING_BLADE.get(), DancingBladeRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.PARADE_DECOY.get(), ParadeDecoyRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.STARFALL_METEOR.get(), StarfallMeteorRenderer::new);
-            event.registerEntityRenderer(PsitweaksEntities.GRAVITY_WELL.get(), GravityWellRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.MICRO_BLACK_HOLE.get(), MicroBlackHoleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.CHAIN_LIGHTNING.get(), NoopRenderer::new);
         }
 

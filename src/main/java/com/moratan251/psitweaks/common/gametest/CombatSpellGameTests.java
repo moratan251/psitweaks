@@ -10,7 +10,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLin
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
-import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
+import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
@@ -35,7 +35,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancingBlades;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityCollapse;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMicroBlackHole;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickAirBullet;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorLine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
@@ -298,8 +298,8 @@ public final class CombatSpellGameTests {
         };
     }
 
-    private static PieceTrickGravityCollapse gravityCollapse(Map<String, ?> values) {
-        return new PieceTrickGravityCollapse(new Spell()) {
+    private static PieceTrickMicroBlackHole microBlackHole(Map<String, ?> values) {
+        return new PieceTrickMicroBlackHole(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
             @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
         };
@@ -471,16 +471,16 @@ public final class CombatSpellGameTests {
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
         int[] starfall = stats(starfall(Map.of(POWER, 1.0, COUNT, 13.0)));
         helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
-        int[] gravity = stats(gravityCollapse(Map.of(POWER, 1.0, RADIUS, 30.0)));
+        int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 30.0)));
         helper.assertTrue(gravity[0] == 1340 && gravity[1] == 10350, "Gravity radius must be capped at 24, got " + gravity[0] + "/" + gravity[1]);
-        int widest = stats(gravityCollapse(Map.of(POWER, 0.5, RADIUS, 24.0)))[0];
-        helper.assertTrue(widest <= 1500, "The widest Gravity Collapse must still fit a psycheonic metal CAD, got " + widest);
+        int widest = stats(microBlackHole(Map.of(POWER, 0.5, RADIUS, 24.0)))[0];
+        helper.assertTrue(widest <= 1500, "The widest Micro Black Hole must still fit a psycheonic metal CAD, got " + widest);
         helper.succeed();
     }
 
     /**
      * The smallest Dancing Blades and Starfall need a heavy psimetal CAD (more than flashmetal's 800, within the beta's
-     * 1000); the smallest Burst and Gravity Collapse need a psycheonic metal CAD (more than the heavy alpha's 1200,
+     * 1000); the smallest Burst and Micro Black Hole need a psycheonic metal CAD (more than the heavy alpha's 1200,
      * within 1500).
      */
     @GameTest(template = TEMPLATE, batch = BATCH)
@@ -491,8 +491,8 @@ public final class CombatSpellGameTests {
         helper.assertTrue(starfall > 800 && starfall <= 1000, "Smallest Starfall must need heavy psimetal, got " + starfall);
         int burst = stats(burst(Map.of(POWER, 0.5)))[0];
         helper.assertTrue(burst > 1200 && burst <= 1500, "Smallest Burst must need psycheonic metal, got " + burst);
-        int gravity = stats(gravityCollapse(Map.of(POWER, 0.5, RADIUS, 3.0)))[0];
-        helper.assertTrue(gravity > 1200 && gravity <= 1500, "Smallest Gravity Collapse must need psycheonic metal, got " + gravity);
+        int gravity = stats(microBlackHole(Map.of(POWER, 0.5, RADIUS, 3.0)))[0];
+        helper.assertTrue(gravity > 1200 && gravity <= 1500, "Smallest Micro Black Hole must need psycheonic metal, got " + gravity);
         helper.succeed();
     }
 
@@ -1278,23 +1278,23 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 200)
-    public static void gravityCollapsePullsInThenCrushes(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 4), "gravity-caster");
+    public static void microBlackHolePullsInThenCrushes(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "black-hole-caster");
         // 60 + 50 x Power would kill a plain husk, so give it room to show the collapse hits only once.
         var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
         husk.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
         double startX = husk.getX();
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
-        gravityCollapse(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 4.0)).execute(new SpellContext().setPlayer(player));
+        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 4.0)).execute(new SpellContext().setPlayer(player));
         helper.startSequence()
                 .thenExecuteAfter(15, () -> {
-                    helper.assertTrue(husk.getX() < startX - 0.4, "The well must drag the husk in: moved " + (startX - husk.getX()));
+                    helper.assertTrue(husk.getX() < startX - 0.4, "The black hole must drag the husk in: moved " + (startX - husk.getX()));
                     helper.assertTrue(near(husk.getHealth(), TOUGH_HEALTH), "No damage before the collapse");
                 })
                 .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - 55 + EPSILON,
                         "The collapse must crush through armor for at least half of 60 + 50 x Power, health " + husk.getHealth()))
-                .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityGravityWell.class,
-                        helper.getBounds().inflate(4)).isEmpty(), "The well must close after collapsing"))
+                .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class,
+                        helper.getBounds().inflate(4)).isEmpty(), "The black hole must close after collapsing"))
                 .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 110 - EPSILON,
                         "The collapse hits once, health " + husk.getHealth()))
                 .thenSucceed();

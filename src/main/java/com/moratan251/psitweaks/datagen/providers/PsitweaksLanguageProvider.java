@@ -94,9 +94,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "流星群の夜";
             default -> "Meteor Line Night";
         });
-        root.addProperty("entity.psitweaks.gravity_well", switch (locale) {
-            case "ja_jp" -> "重力の井戸";
-            default -> "Gravity Well";
+        root.addProperty("entity.psitweaks.micro_black_hole", switch (locale) {
+            case "ja_jp" -> "マイクロブラックホール";
+            default -> "Micro Black Hole";
         });
         root.addProperty("entity.psitweaks.chain_lightning", switch (locale) {
             case "ja_jp" -> "連鎖電光";
@@ -540,8 +540,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigLabel(root, "psitweaks.configuration.effects", "Spell Effects", "術式エフェクト");
         addConfigValue(root, "psitweaks.configuration.effects.camera_shake",
                 "Camera Shake", "画面の揺れ",
-                "Shake the camera for ground shockwaves, meteor impacts and gravity collapses.",
-                "地雷原の衝撃波、流星の着弾、重力崩壊などで画面を揺らします。");
+                "Shake the camera for ground shockwaves, meteor impacts and micro black hole collapses.",
+                "地雷原の衝撃波、流星の着弾、マイクロブラックホールの崩壊などで画面を揺らします。");
         addConfigValue(root, "psitweaks.configuration.effects.camera_shake_strength",
                 "Camera Shake Strength", "画面の揺れの強さ",
                 "Strength of the camera shake. 1.0 is the default.",
@@ -597,7 +597,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "air_bullet", "Air Bullet", "エア・ブリット");
         addDamageMultiplierConfig(root, "dancing_blades", "Dancing Blades", "ダンシングブレイズ");
         addDamageMultiplierConfig(root, "starfall", "Starfall", "スターフォール");
-        addDamageMultiplierConfig(root, "gravity_collapse", "Gravity Collapse", "重力崩壊");
+        addDamageMultiplierConfig(root, "micro_black_hole", "Micro Black Hole", "マイクロブラックホール");
         addConfigLabel(root, "psitweaks.configuration.spells.barrier", "Barrier", "障壁");
         addConfigValue(root, "psitweaks.configuration.spells.barrier.shield_multiplier",
                 "Shield Multiplier", "シールド量倍率",
@@ -802,17 +802,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sは%2$sが%3$sで呼んだ流星に押し潰された";
             default -> "%1$s was crushed by a meteor %2$s called down using %3$s";
         });
-        root.addProperty("death.attack.psitweaks.gravity_collapse", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの重力崩壊に押し潰された";
-            default -> "%1$s was crushed by %2$s's gravity collapse";
+        root.addProperty("death.attack.psitweaks.micro_black_hole", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのマイクロブラックホールに押し潰された";
+            default -> "%1$s was crushed by %2$s's Micro Black Hole";
         });
-        root.addProperty("death.attack.psitweaks.gravity_collapse.player", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの重力崩壊に押し潰された";
-            default -> "%1$s was crushed by %2$s's gravity collapse";
+        root.addProperty("death.attack.psitweaks.micro_black_hole.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのマイクロブラックホールに押し潰された";
+            default -> "%1$s was crushed by %2$s's Micro Black Hole";
         });
-        root.addProperty("death.attack.psitweaks.gravity_collapse.item", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした重力崩壊に押し潰された";
-            default -> "%1$s was crushed by a gravity collapse %2$s caused using %3$s";
+        root.addProperty("death.attack.psitweaks.micro_black_hole.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで生み出したマイクロブラックホールに押し潰された";
+            default -> "%1$s was crushed by a Micro Black Hole %2$s created using %3$s";
         });
         root.addProperty("death.attack.psitweaks.active_air_mine", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sの衝撃波に粉砕された";
@@ -1615,7 +1615,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
-        addSpellPiece(root, "trick_gravity_collapse", "Trick: Gravity Collapse", "Opens a gravity well that pulls creatures in, then collapses", "作動式: 重力崩壊", "生物を引き寄せる重力の井戸を開き、最後に崩壊させる");
+        addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せる極小のブラックホールを生み出し、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a flare Spell Gram Circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える");
         addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Spell Gram Circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
@@ -1895,10 +1895,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_starfall.1",
                 "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within its blast (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
                 "流星は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
-        addBookPage(root, "trick_gravity_collapse.0",
-                "Opens a gravity well at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
-                "指定位置に重力の井戸を開きます. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
-        addBookPage(root, "trick_gravity_collapse.1",
+        addBookPage(root, "trick_micro_black_hole.0",
+                "Creates a micro black hole at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
+                "指定位置にマイクロブラックホールを生み出します. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
+        addBookPage(root, "trick_micro_black_hole.1",
                 "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage.",
                 "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");

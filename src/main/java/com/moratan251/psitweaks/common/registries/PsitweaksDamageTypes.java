@@ -26,8 +26,8 @@ public final class PsitweaksDamageTypes {
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("dancing_blades"));
     public static final ResourceKey<DamageType> STARFALL =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("starfall"));
-    public static final ResourceKey<DamageType> GRAVITY_COLLAPSE =
-            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("gravity_collapse"));
+    public static final ResourceKey<DamageType> MICRO_BLACK_HOLE =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("micro_black_hole"));
     public static final ResourceKey<DamageType> ACTIVE_AIR_MINE =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("active_air_mine"));
 

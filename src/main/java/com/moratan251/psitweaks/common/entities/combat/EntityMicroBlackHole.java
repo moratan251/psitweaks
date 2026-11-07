@@ -20,10 +20,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * The singularity of Trick: Gravity Collapse. For three seconds it drags creatures within its radius towards the
+ * The singularity of Trick: Micro Black Hole. For three seconds it drags creatures within its radius towards the
  * centre, then collapses: everything close to the centre takes armour-piercing damage.
  */
-public class EntityGravityWell extends CombatSpellEntity {
+public class EntityMicroBlackHole extends CombatSpellEntity {
     public static final int CHARGE_TICKS = 60;
     private static final int LINGER_TICKS = 4;
     /** Pull acceleration per tick at the edge; wider wells pull harder so the edge still reaches the centre in time. */
@@ -37,14 +37,14 @@ public class EntityGravityWell extends CombatSpellEntity {
     private static final double EDGE_DAMAGE_FACTOR = 0.5;
 
     private static final EntityDataAccessor<Float> RADIUS =
-            SynchedEntityData.defineId(EntityGravityWell.class, EntityDataSerializers.FLOAT);
+            SynchedEntityData.defineId(EntityMicroBlackHole.class, EntityDataSerializers.FLOAT);
 
-    public EntityGravityWell(EntityType<?> type, Level level) {
+    public EntityMicroBlackHole(EntityType<?> type, Level level) {
         super(type, level);
     }
 
-    public EntityGravityWell(Level level, Vec3 center, float radius) {
-        this(PsitweaksEntities.GRAVITY_WELL.get(), level);
+    public EntityMicroBlackHole(Level level, Vec3 center, float radius) {
+        this(PsitweaksEntities.MICRO_BLACK_HOLE.get(), level);
         setPos(center.x, center.y, center.z);
         entityData.set(RADIUS, radius);
     }
@@ -123,7 +123,7 @@ public class EntityGravityWell extends CombatSpellEntity {
     private void collapse(ServerLevel level, LivingEntity caster) {
         double collapseRadius = getCollapseRadius();
         Vec3 center = position();
-        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.GRAVITY_COLLAPSE, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.MICRO_BLACK_HOLE, this, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(collapseRadius + 1.0))) {
             if (!canAffect(caster, living)) {
                 continue;

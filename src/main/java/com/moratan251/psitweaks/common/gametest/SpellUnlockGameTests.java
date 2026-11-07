@@ -38,7 +38,7 @@ public final class SpellUnlockGameTests {
     private static final int SHIPPED_DEFINITIONS = 33;
     /** The combat tricks unlocked by research (Parade included); Air Bullet is free. */
     private static final List<String> COMBAT_UNLOCKS = List.of(
-            "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "gravity_collapse", "parade");
+            "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "micro_black_hole", "parade");
 
     @GameTest(template = "psi110_empty")
     public static void allCommandCountsDefinitionsLikeStatus(GameTestHelper helper) throws Exception {

@@ -150,22 +150,22 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String airBullet = damageType("air_bullet");
         String dancingBlades = damageType("dancing_blades");
         String starfall = damageType("starfall");
-        String gravityCollapse = damageType("gravity_collapse");
+        String microBlackHole = damageType("micro_black_hole");
         String activeAirMine = damageType("active_air_mine");
         // Active Air Mine keeps what it had as a sonic boom: armour and protection enchantments do not help.
-        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, gravityCollapse, activeAirMine);
+        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine);
         // Meteors and blades are separate hits, so each one counts even right after the previous.
         tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler, dancingBlades, starfall);
         tag(tags, "minecraft", "bypasses_effects", meteorLine, tunneler);
         tag(tags, "minecraft", "bypasses_enchantments", meteorLine, tunneler, activeAirMine);
         tag(tags, "minecraft", "bypasses_invulnerability", meteorLine);
         tag(tags, "minecraft", "bypasses_resistance", meteorLine);
-        tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler, mineGenesis, burst, gravityCollapse);
+        tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler, mineGenesis, burst, microBlackHole);
         tag(tags, "minecraft", "is_explosion", starfall);
         tag(tags, "minecraft", "is_freezing", dryMeteor);
         // These tricks push their targets themselves.
         tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, airBullet, dancingBlades,
-                starfall, gravityCollapse);
+                starfall, microBlackHole);
         // Trick: Barrier does not absorb these: damage from inside the body or the world, not from an attack.
         tag(tags, "psitweaks", "bypasses_barrier",
                 tagRef("minecraft:bypasses_invulnerability"),

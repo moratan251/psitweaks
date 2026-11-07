@@ -1,0 +1,6 @@
+{
+  "command_id": "micro_black_hole",
+  "piece": "psitweaks:trick_micro_black_hole",
+  "unlock_item": "psitweaks:program_micro_black_hole",
+  "unlock_tag": "psitweaks.unlock.trick_micro_black_hole"
+}

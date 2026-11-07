@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
+import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -24,10 +24,10 @@ import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Opens a gravity well at the position: for three seconds creatures within Radius are dragged to the centre, then
+ * Opens a micro black hole at the position: for three seconds creatures within Radius are dragged to the centre, then
  * it collapses and crushes everything near the centre with armour-piercing damage.
  */
-public class PieceTrickGravityCollapse extends PieceTrick {
+public class PieceTrickMicroBlackHole extends PieceTrick {
     private static final double MIN_POWER = 0.5;
     private static final float BASE_DAMAGE = 60.0F;
     private static final float DAMAGE_PER_POWER = 50.0F;
@@ -44,7 +44,7 @@ public class PieceTrickGravityCollapse extends PieceTrick {
     private SpellParam<Number> power;
     private SpellParam<Number> radius;
 
-    public PieceTrickGravityCollapse(Spell spell) {
+    public PieceTrickMicroBlackHole(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER).mul(POTENCY_PER_POWER)
                 .add(new StatLabel(SpellParam.GENERIC_NAME_RADIUS, true).max(MIN_RADIUS).min(MAX_RADIUS).mul(POTENCY_PER_RADIUS))
@@ -85,10 +85,10 @@ public class PieceTrickGravityCollapse extends PieceTrick {
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         float radiusVal = (float) Mth.clamp(getParamValue(context, radius).doubleValue(), MIN_RADIUS, MAX_RADIUS);
         float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
-                PsitweaksConfig.COMMON.gravityCollapseDamageMultiplier.get(), context.caster);
+                PsitweaksConfig.COMMON.microBlackHoleDamageMultiplier.get(), context.caster);
 
         Vec3 center = positionVal.toVec3D();
-        EntityGravityWell well = new EntityGravityWell(level, center, radiusVal);
+        EntityMicroBlackHole well = new EntityMicroBlackHole(level, center, radiusVal);
         well.configure(context.caster, AttackRules.Options.from(context), damage,
                 CombatSpellHelper.spellColor(context.caster));
         level.addFreshEntity(well);

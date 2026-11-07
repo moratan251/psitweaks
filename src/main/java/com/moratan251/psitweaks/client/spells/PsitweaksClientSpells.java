@@ -123,8 +123,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_dancing_blades");
     public static final DeferredHolder<Material, Material> TRICK_STARFALL =
             registerPieceMaterial("trick_starfall");
-    public static final DeferredHolder<Material, Material> TRICK_GRAVITY_COLLAPSE =
-            registerPieceMaterial("trick_gravity_collapse");
+    public static final DeferredHolder<Material, Material> TRICK_MICRO_BLACK_HOLE =
+            registerPieceMaterial("trick_micro_black_hole");
     public static final DeferredHolder<Material, Material> TRICK_MATERIAL_MUTATION =
             registerPieceMaterial("trick_material_mutation");
     public static final DeferredHolder<Material, Material> TRICK_PULL_ITEM =

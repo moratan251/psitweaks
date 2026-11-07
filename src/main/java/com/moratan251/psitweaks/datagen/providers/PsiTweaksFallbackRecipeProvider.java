@@ -433,7 +433,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.GHAST_TEAR, 2),
                 counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
                 counted(Items.NETHER_STAR, 1)));
-        addProgram(recipes, PsitweaksItems.PROGRAM_GRAVITY_COLLAPSE, List.of(
+        addProgram(recipes, PsitweaksItems.PROGRAM_MICRO_BLACK_HOLE, List.of(
                 counted(Items.HEAVY_CORE, 1),
                 counted(PsitweaksItems.GRAVITIZED_PLATE, 3),
                 counted(Items.NETHER_STAR, 2),

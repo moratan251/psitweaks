@@ -25,7 +25,7 @@ public final class PsitweaksRenderTypes {
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false));
 
-    /** Alpha-blended, untextured: used for the dark core of Gravity Collapse. */
+    /** Alpha-blended, untextured: used for the dark core of Micro Black Hole. */
     public static final RenderType TRANSLUCENT_COLOR = RenderType.create(
             "psitweaks_translucent_color",
             DefaultVertexFormat.POSITION_COLOR,

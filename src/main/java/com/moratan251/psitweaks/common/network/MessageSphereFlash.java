@@ -32,7 +32,7 @@ public record MessageSphereFlash(int entityId, Vec3 position, float radius, int 
         BARRIER_FADE,
         /** An expanding plain shock sphere (Burst, Starfall impact). */
         SHOCKWAVE,
-        /** A contracting sphere followed by a flash (Gravity Collapse). */
+        /** A contracting sphere followed by a flash (Micro Black Hole). */
         IMPLOSION,
         /**
          * Drops of water flying apart and falling (Aqua Cutter). {@code radius} is about how far they fly and

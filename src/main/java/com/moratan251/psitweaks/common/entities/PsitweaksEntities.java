@@ -4,7 +4,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
-import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
+import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
@@ -164,15 +164,15 @@ public class PsitweaksEntities {
                             .noSave()
                             .build(Psitweaks.MOD_ID + ":starfall_meteor"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<EntityGravityWell>> GRAVITY_WELL =
-            ENTITY_TYPES.register("gravity_well",
-                    () -> EntityType.Builder.<EntityGravityWell>of(EntityGravityWell::new, MobCategory.MISC)
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityMicroBlackHole>> MICRO_BLACK_HOLE =
+            ENTITY_TYPES.register("micro_black_hole",
+                    () -> EntityType.Builder.<EntityMicroBlackHole>of(EntityMicroBlackHole::new, MobCategory.MISC)
                             .sized(0.25f, 0.25f)
                             .clientTrackingRange(8)
                             .updateInterval(20)
                             .fireImmune()
                             .noSave()
-                            .build(Psitweaks.MOD_ID + ":gravity_well"));
+                            .build(Psitweaks.MOD_ID + ":micro_black_hole"));
 
     /** Deals the later jumps of Trick: Chain Lightning; it is never sent to clients. */
     public static final DeferredHolder<EntityType<?>, EntityType<EntityChainLightning>> CHAIN_LIGHTNING =

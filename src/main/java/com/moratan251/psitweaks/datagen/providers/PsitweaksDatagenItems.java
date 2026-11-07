@@ -91,7 +91,7 @@ final class PsitweaksDatagenItems {
             item("program_dancing_blades", "Program: Dancing Blades", "プログラム: ダンシングブレイズ", "program_trick_dancing_blades"),
             item("program_starfall", "Program: Starfall", "プログラム: スターフォール", "program_trick_starfall"),
             item("program_burst", "Program: Burst", "プログラム: 爆裂", "program_trick_burst"),
-            item("program_gravity_collapse", "Program: Gravity Collapse", "プログラム: 重力崩壊", "program_trick_gravity_collapse"),
+            item("program_micro_black_hole", "Program: Micro Black Hole", "プログラム: マイクロブラックホール", "program_trick_micro_black_hole"),
             item("program_parade", "Program: Parade", "プログラム: 仮装行列", "program_trick_parade"),
             item("philosophers_stone", "Philosopher's Stone", "賢者の石"),
             item("spell_magazine", "Spell Magazine", "スペルマガジン", "spell_magazine_huge"),

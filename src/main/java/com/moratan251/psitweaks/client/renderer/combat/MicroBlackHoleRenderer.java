@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moratan251.psitweaks.client.combat.GlowDrawing;
 import com.moratan251.psitweaks.client.combat.PsitweaksRenderTypes;
-import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
+import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -13,24 +13,24 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
- * Trick: Gravity Collapse. A black core with a glowing horizon grows while two tilted accretion rings turn and
+ * Trick: Micro Black Hole. A black core with a glowing horizon grows while two tilted accretion rings turn and
  * streaks of light spiral into it; a faint ring on the ground plane shows how far the pull reaches.
  */
-public class GravityWellRenderer extends CombatGlowRenderer<EntityGravityWell> {
+public class MicroBlackHoleRenderer extends CombatGlowRenderer<EntityMicroBlackHole> {
     private static final int STREAKS = 12;
     private static final int STREAK_POINTS = 7;
     private static final float COLLAPSE_TICKS = 4.0F;
 
-    public GravityWellRenderer(EntityRendererProvider.Context context) {
+    public MicroBlackHoleRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public void render(@NotNull EntityGravityWell entity, float entityYaw, float partialTick,
+    public void render(@NotNull EntityMicroBlackHole entity, float entityYaw, float partialTick,
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffers, int packedLight) {
         float age = entity.tickCount + partialTick;
         float charge = entity.getCharge(partialTick);
-        float collapse = Mth.clamp((age - EntityGravityWell.CHARGE_TICKS) / COLLAPSE_TICKS, 0.0F, 1.0F);
+        float collapse = Mth.clamp((age - EntityMicroBlackHole.CHARGE_TICKS) / COLLAPSE_TICKS, 0.0F, 1.0F);
         float core = (0.35F + 0.65F * charge) * Mth.clamp(age / 5.0F, 0.0F, 1.0F) * (1.0F - collapse);
         if (core <= 0.01F) {
             return;

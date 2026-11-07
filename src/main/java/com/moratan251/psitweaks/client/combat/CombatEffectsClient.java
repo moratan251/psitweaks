@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.client.combat;
 
 import com.moratan251.psitweaks.Psitweaks;
-import com.moratan251.psitweaks.common.entities.combat.EntityGravityWell;
+import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.network.MessageLightningArcs;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
@@ -106,7 +106,7 @@ public final class CombatEffectsClient {
         }
     }
 
-    /** Keeps the camera trembling while a ground shockwave front or a charging gravity well is close by. */
+    /** Keeps the camera trembling while a ground shockwave front or a charging micro black hole is close by. */
     private static void rumble(ClientLevel level, Player player) {
         AABB area = player.getBoundingBox().inflate(RUMBLE_SEARCH);
         for (EntityGroundShockwave wave : level.getEntitiesOfClass(EntityGroundShockwave.class, area)) {
@@ -120,8 +120,8 @@ public final class CombatEffectsClient {
                 CameraShake.sustain((float) (0.55 * (1.0 - fromFront / SHOCKWAVE_RUMBLE_RANGE)));
             }
         }
-        for (EntityGravityWell well : level.getEntitiesOfClass(EntityGravityWell.class, area)) {
-            if (well.tickCount >= EntityGravityWell.CHARGE_TICKS) {
+        for (EntityMicroBlackHole well : level.getEntitiesOfClass(EntityMicroBlackHole.class, area)) {
+            if (well.tickCount >= EntityMicroBlackHole.CHARGE_TICKS) {
                 continue;
             }
             double range = well.getRadius() + 6.0;

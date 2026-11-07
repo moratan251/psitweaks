@@ -316,7 +316,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DANCING_BLADES = registerProgram("program_dancing_blades", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_STARFALL = registerProgram("program_starfall", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BURST = registerProgram("program_burst", false);
-    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_GRAVITY_COLLAPSE = registerProgram("program_gravity_collapse", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MICRO_BLACK_HOLE = registerProgram("program_micro_black_hole", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PARADE = registerProgram("program_parade", false);
     public static final DeferredItem<ItemPhilosophersStone> PHILOSOPHERS_STONE = ITEMS.register(
             "philosophers_stone",

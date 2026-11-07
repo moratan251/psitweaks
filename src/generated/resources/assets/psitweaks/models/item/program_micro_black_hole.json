@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "psitweaks:item/program_trick_gravity_collapse"
+    "layer0": "psitweaks:item/program_trick_micro_black_hole"
   }
 }

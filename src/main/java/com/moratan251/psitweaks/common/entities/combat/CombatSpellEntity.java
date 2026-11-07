@@ -15,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 /**
- * Base of the short-lived entities the combat tricks spawn (shockwaves, blades, meteors, gravity wells).
+ * Base of the short-lived entities the combat tricks spawn (shockwaves, blades, meteors, micro black holes).
  * They have no collision, no gravity, are never saved, and remember who cast them ({@link AttackCaster}). A subclass
  * picks its targets with {@link #canAffect} (or {@link AttackRules}) and hurts them only through {@link #harm}.
  */
