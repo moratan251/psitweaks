@@ -1138,6 +1138,24 @@ public final class AutonomousCasterGameTests {
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterDoesNotDoubleItemsWhileTheCopiesDisagree(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.doesNotDoubleItemsWhileTheCopiesDisagree(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterKeepsTheCastersLastChangeWhenSavedOrBroken(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.keepsTheCastersLastChangeWhenSavedOrBroken(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void autonomousCasterRestoresPsiFromEcho(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {
             helper.succeed();

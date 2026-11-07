@@ -192,6 +192,11 @@ public class ItemGravstringer extends BowItem {
                 }
                 // 低速の矢でも左右が見た目で分かれるよう、左右の矢は射線の垂直方向にずらして発射する
                 if (i != 0) {
+                    // 消費する弾は1本なので、拾える矢も中央の1本だけにする（バニラの拡散と同じ）。
+                    // 左右も拾えると、跳ね返りで止まったそれぞれが矢を落とし、1本が3本になる。
+                    if (projectile instanceof AbstractArrow arrow && arrow.pickup == AbstractArrow.Pickup.ALLOWED) {
+                        arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                    }
                     double offset = i * FAN_LATERAL_OFFSET;
                     projectile.setPos(
                             projectile.getX() - Mth.cos(yawRad) * offset,

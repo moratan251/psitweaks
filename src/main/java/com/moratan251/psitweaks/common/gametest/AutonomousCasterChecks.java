@@ -266,6 +266,71 @@ final class AutonomousCasterChecks {
         });
     }
 
+    /**
+     * F-010: 機械のスロットと Caster の持ち物の片方だけが変わった直後に、もう片方から取り出しても増えない
+     * （遅れて動く術式が使った直後の GUI・エジェクター、GUI で取り出した直後の遅れて動く術式）。
+     */
+    static void doesNotDoubleItemsWhileTheCopiesDisagree(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        caster.getItemSlots().get(3).setStack(new ItemStack(Items.DIAMOND, 64));
+        caster.getItemSlots().get(5).setStack(new ItemStack(Items.DIRT, 10));
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine has no caster");
+            var inventory = fake.getInventory();
+            helper.assertTrue(inventory.getItem(3).getCount() == 64, "The diamonds were not mirrored to the caster");
+            // 遅れて動く術式が Caster 側から預け入れた直後、同じ tick のうちに機械から取り出す。
+            inventory.getItem(3).shrink(64);
+            ItemStack taken = caster.getItemSlots().get(3).extractItem(64, mekanism.api.Action.EXECUTE, AutomationType.EXTERNAL);
+            helper.assertTrue(taken.isEmpty(), "Items a spell had already used were taken again from the machine: " + taken);
+            // 機械から取り出した直後に、遅れて動く術式が Caster 側を読む。
+            ItemStack dirt = caster.getItemSlots().get(5).extractItem(10, mekanism.api.Action.EXECUTE, AutomationType.EXTERNAL);
+            helper.assertTrue(dirt.getCount() == 10, "The dirt could not be taken out of the machine");
+            helper.assertTrue(inventory.getItem(5).isEmpty(),
+                    "The caster still held what was taken out of the machine: " + inventory.getItem(5));
+            helper.runAfterDelay(2, () -> {
+                helper.assertTrue(caster.getItemSlots().get(3).getStack().isEmpty() && inventory.getItem(3).isEmpty(),
+                        "The used diamonds came back");
+                helper.assertTrue(caster.getItemSlots().get(5).getStack().isEmpty() && inventory.getItem(5).isEmpty(),
+                        "The dirt taken out came back");
+                helper.succeed();
+            });
+        });
+    }
+
+    /** F-011: Caster 側を変えた直後に保存しても、destroyBlock で壊しても、最後の変化が保存と回収アイテムに入る。 */
+    static void keepsTheCastersLastChangeWhenSavedOrBroken(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        caster.getItemSlots().get(6).setStack(new ItemStack(Items.APPLE, 8));
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine has no caster");
+            var inventory = fake.getInventory();
+            // 術式が Caster 側の物を入れ替えた直後（次の tick の突き合わせより前）に保存する。チャンクのアンロードと同じ順番。
+            inventory.setItem(6, new ItemStack(Items.GOLD_INGOT, 5));
+            String saved = caster.saveWithoutMetadata(helper.getLevel().registryAccess()).toString();
+            helper.assertTrue(saved.contains("minecraft:gold_ingot") && !saved.contains("minecraft:apple"),
+                    "The save missed the caster's last change: " + saved);
+
+            // destroyBlock・爆発・設定ツールは、ブロックを消す前に回収アイテムを作る。
+            inventory.setItem(6, new ItemStack(Items.EMERALD, 3));
+            BlockPos absolute = helper.absolutePos(POS);
+            helper.getLevel().destroyBlock(absolute, true);
+            List<ItemEntity> drops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(absolute).inflate(2));
+            ItemStack machine = drops.stream().map(ItemEntity::getItem)
+                    .filter(stack -> stack.is(PsitweaksMekanismBlocks.AUTONOMOUS_CASTER.asItem()))
+                    .findFirst().orElse(ItemStack.EMPTY);
+            AttachedItems items = machine.get(MekanismDataComponents.ATTACHED_ITEMS);
+            List<ItemStack> held = items == null ? List.of() : items.containers();
+            drops.forEach(Entity::discard);
+            helper.assertTrue(!machine.isEmpty(), "Breaking the machine did not drop it");
+            helper.assertTrue(held.stream().anyMatch(stack -> stack.is(Items.EMERALD) && stack.getCount() == 3)
+                            && held.stream().noneMatch(stack -> stack.is(Items.GOLD_INGOT)),
+                    "The recovered machine missed the caster's last change: " + held);
+            helper.succeed();
+        });
+    }
+
     private static int count(List<IInventorySlot> slots, Item item) {
         int total = 0;
         for (IInventorySlot slot : slots) {

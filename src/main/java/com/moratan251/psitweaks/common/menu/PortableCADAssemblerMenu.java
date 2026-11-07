@@ -40,7 +40,10 @@ public class PortableCADAssemblerMenu extends AbstractContainerMenu {
             new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     public final TileCADAssembler assembler;
+    private final Player player;
     private final UUID portableId;
+    /** What the item last got. The item is updated whenever this changes, not only when the screen closes. */
+    private CompoundTag savedData;
     private final int cadComponentStart;
     private final int socketableStart;
     private final int socketableEnd;
@@ -62,11 +65,13 @@ public class PortableCADAssemblerMenu extends AbstractContainerMenu {
         super(ModMenuTypes.PORTABLE_CAD_ASSEMBLER.get(), windowId);
         this.portableId = portableId;
         Player player = playerInventory.player;
+        this.player = player;
         int playerSize = playerInventory.getContainerSize();
 
         this.assembler = createVirtualAssembler(player, hand, portableId);
         Container assemblerInv = assembler.getInventory();
         assembler.clearCachedCAD();
+        this.savedData = player.level().isClientSide ? null : assembler.getUpdateTag(player.registryAccess());
 
         InventoryAssemblerOutput output = new InventoryAssemblerOutput(player, assembler);
         InventorySocketable bullets = new InventorySocketable(assembler::setChanged, assembler.getSocketableStack());
@@ -217,13 +222,37 @@ public class PortableCADAssemblerMenu extends AbstractContainerMenu {
         super.clicked(slotId, dragType, clickType, player);
     }
 
+    /**
+     * Writes the contents back to the item as soon as they change (after every click and every tick). Saving only in
+     * {@link #removed} lost or doubled parts: on logout the player is saved before the screen closes, and on death the
+     * item drops with the old contents.
+     */
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        saveIfChanged();
+    }
+
     @Override
     public void removed(Player player) {
         super.removed(player);
-        if (!player.level().isClientSide) {
-            findPortableStack(player, portableId).ifPresent(stack -> saveAssemblerData(player, stack));
-        }
+        saveIfChanged();
         this.assembler.clearCachedCAD();
+    }
+
+    private void saveIfChanged() {
+        if (player.level().isClientSide) {
+            return;
+        }
+        CompoundTag data = this.assembler.getUpdateTag(player.registryAccess());
+        if (data.equals(savedData)) {
+            return;
+        }
+        findPortableStack(player, portableId).ifPresent(stack -> {
+            CustomData.update(DataComponents.CUSTOM_DATA, stack,
+                    root -> root.put(ItemPortableCADAssembler.TAG_ASSEMBLER_DATA, data));
+            savedData = data;
+        });
     }
 
     private static TileCADAssembler createVirtualAssembler(Player player, InteractionHand hand, UUID portableId) {
@@ -251,12 +280,6 @@ public class PortableCADAssemblerMenu extends AbstractContainerMenu {
         if (root.contains(ItemPortableCADAssembler.TAG_ASSEMBLER_DATA, Tag.TAG_COMPOUND)) {
             assembler.readPacketNBT(root.getCompound(ItemPortableCADAssembler.TAG_ASSEMBLER_DATA).copy(), player.registryAccess());
         }
-    }
-
-    private void saveAssemblerData(Player player, ItemStack stack) {
-        CompoundTag data = this.assembler.getUpdateTag(player.registryAccess());
-        CustomData.update(DataComponents.CUSTOM_DATA, stack,
-                root -> root.put(ItemPortableCADAssembler.TAG_ASSEMBLER_DATA, data));
     }
 
     private static Optional<ItemStack> findPortableStack(Player player, UUID portableId) {

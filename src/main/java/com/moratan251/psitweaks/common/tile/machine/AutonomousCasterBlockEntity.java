@@ -38,6 +38,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.item.AttachedItems;
@@ -245,6 +246,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     @Nullable
     private AutonomousCasterPlayer caster;
     private final ItemStack[] mirrorSnapshot = emptyStacks(ITEM_SLOTS);
+    /** 突き合わせの途中。スロットの読み書きから突き合わせを呼び直さない。 */
+    private boolean mirrorBusy;
     private int activeTicks;
     private int recoveryPerTick;
     /** 最後に Caster の Psi へ書いた値。休眠の後の返却など、詠唱の外で増減した分を機械に足すのに使う。 */
@@ -314,15 +317,13 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         // 9スロットだった頃の機械の保存データと番号が合うよう、ホットバー・エコー補充スロット・残りの27スロットの順に足す。
         List<IInventorySlot> items = new ArrayList<>(ITEM_SLOTS);
         for (int i = 0; i < HOTBAR_SLOTS; i++) {
-            items.add(builder.addSlot(BasicInventorySlot.at(AutonomousCasterBlockEntity::isMirrorableItem, listener,
-                    ITEM_X + i * 18, HOTBAR_Y)));
+            items.add(builder.addSlot(new MirroredItemSlot(this, i, listener, ITEM_X + i * 18, HOTBAR_Y)));
         }
         echoSlot = builder.addSlot(ChemicalInventorySlot.fill(echoTank, listener, ECHO_SLOT_X, ECHO_SLOT_Y));
         for (int i = HOTBAR_SLOTS; i < ITEM_SLOTS; i++) {
             int row = i / HOTBAR_SLOTS - 1;
             int column = i % HOTBAR_SLOTS;
-            items.add(builder.addSlot(BasicInventorySlot.at(AutonomousCasterBlockEntity::isMirrorableItem, listener,
-                    ITEM_X + column * 18, ITEM_Y + row * 18)));
+            items.add(builder.addSlot(new MirroredItemSlot(this, i, listener, ITEM_X + column * 18, ITEM_Y + row * 18)));
         }
         itemSlots = List.copyOf(items);
 
@@ -861,16 +862,25 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
      * <p>
      * Trick: Break Block と作動式: 大規模ブロック破壊は、壊す間だけ手を内蔵 CAD（とその写し）に持ち替え、終わってから
      * 元の物を戻す。壊したのが機械自身だと持ち替えの途中でここへ来るので、内蔵 CAD を持っている枠は機械側を正として触らない。
+     * <p>
+     * 毎 tick のこの突き合わせだけだと、片方だけ変わった間にもう片方を読むと古い中身が見えて増える（遅れて動く術式が Caster 側を
+     * 減らした直後に GUI やエジェクターが機械側から取り出すなど）。そのため機械のスロットは {@link MirroredItemSlot} にして、
+     * 読み書きのたびにその1枠を {@link #syncMirroredSlot} で突き合わせる。ここは保険として残す。
      */
     private void reconcileMirror() {
         AutonomousCasterPlayer current = caster;
-        if (current == null) {
+        if (current == null || mirrorBusy) {
             return;
         }
         Inventory inventory = current.getInventory();
         List<ItemStack> overflow = new ArrayList<>();
-        for (int i = 0; i < ITEM_SLOTS; i++) {
-            reconcileSlot(i, inventory, overflow);
+        mirrorBusy = true;
+        try {
+            for (int i = 0; i < ITEM_SLOTS; i++) {
+                reconcileSlot(i, inventory, overflow);
+            }
+        } finally {
+            mirrorBusy = false;
         }
 
         ItemStack cadSlot = inventory.getItem(AutonomousCasterPlayer.CAD_SLOT);
@@ -890,6 +900,27 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
         }
         inventory.selected = selectedItemSlot;
 
+        for (ItemStack stack : overflow) {
+            storeOverflow(stack);
+        }
+    }
+
+    /**
+     * 機械のスロット {@code index} を読む前・変えた後に、その1枠だけ Caster 側と突き合わせる。
+     * 機械側を読む前に Caster 側の変化を取り込み、機械側の変化はすぐ Caster 側へ写すので、2つの写しがずれたまま読まれない。
+     */
+    private void syncMirroredSlot(int index) {
+        AutonomousCasterPlayer current = caster;
+        if (mirrorBusy || current == null || !current.isAttached() || level == null || level.isClientSide) {
+            return;
+        }
+        List<ItemStack> overflow = new ArrayList<>();
+        mirrorBusy = true;
+        try {
+            reconcileSlot(index, current.getInventory(), overflow);
+        } finally {
+            mirrorBusy = false;
+        }
         for (ItemStack stack : overflow) {
             storeOverflow(stack);
         }
@@ -995,9 +1026,14 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     @Override
     public void blockRemoved() {
         super.blockRemoved();
-        if (!isRemote()) {
-            // ドロップ計算の前に、Caster 側の変化を機械のスロットへ戻しておく。術式が機械自身を壊した時は、
-            // 詠唱で払った Psi もここで機械に反映する（詠唱の後で書き戻すより先に、回収したアイテムが作られる）。
+        // プレイヤーが壊す時はドロップ計算の前にここへ来る。術式が機械自身を壊した時は、詠唱で払った Psi もここで機械に
+        // 反映する（詠唱の後で書き戻すより先に、回収したアイテムが作られる）。ほかの壊し方は collectImplicitComponents で戻す。
+        settleCaster();
+    }
+
+    /** Caster 側の変化（持ち物と Psi）を機械へ戻す。サーバーで Caster がいる時だけ。 */
+    private void settleCaster() {
+        if (level != null && !isRemote() && caster != null) {
             syncCasterPsi();
             reconcileMirror();
         }
@@ -1253,6 +1289,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
      */
     @Override
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        // 回収アイテムはどの壊し方（プレイヤー、設定ツール、destroyBlock、爆発）でもここで作られる。blockRemoved より先に
+        // 呼ばれる壊し方もあるので、ここで Caster 側の最後の変化（持ち物と、詠唱で払った Psi）を機械へ戻す。
+        settleCaster();
         super.collectImplicitComponents(builder);
         if (psi > 0) {
             builder.set(PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.get(), psi);
@@ -1368,6 +1407,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
 
     @Override
     public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
+        // チャンクのアンロードは保存の後で Caster を捨てるので、保存する前に Caster 側の最後の変化を戻しておく。
+        settleCaster();
         super.saveAdditional(tag, registries);
         tag.putInt(TAG_PSI, psi);
         tag.putInt(TAG_BULLET_SLOTS, BULLET_SLOTS);
@@ -1665,5 +1706,93 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
                 RelativeSide.TOP, DataType.INPUT,
                 RelativeSide.BACK, DataType.INPUT,
                 RelativeSide.BOTTOM, DataType.EXTRA);
+    }
+
+    /**
+     * Caster の通常インベントリの同じ番号の枠と写し合う機械のスロット。GUI、パイプ、エジェクター、保存、回収のどれから
+     * 読み書きしても、先にその1枠を Caster 側と突き合わせ、変えた後はすぐ Caster 側へ写す（{@link #syncMirroredSlot}）。
+     */
+    private static final class MirroredItemSlot extends BasicInventorySlot {
+        private static final int LIMIT = 99;
+
+        private final AutonomousCasterBlockEntity machine;
+        private final int index;
+
+        MirroredItemSlot(AutonomousCasterBlockEntity machine, int index, IContentsListener listener, int x, int y) {
+            super(LIMIT, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(),
+                    AutonomousCasterBlockEntity::isMirrorableItem, listener, x, y);
+            this.machine = machine;
+            this.index = index;
+        }
+
+        private void sync() {
+            machine.syncMirroredSlot(index);
+        }
+
+        @Override
+        public ItemStack getStack() {
+            sync();
+            return super.getStack();
+        }
+
+        @Override
+        public void setStack(ItemStack stack) {
+            sync();
+            super.setStack(stack);
+        }
+
+        @Override
+        public void setStackUnchecked(ItemStack stack) {
+            sync();
+            super.setStackUnchecked(stack);
+        }
+
+        @Override
+        public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
+            sync();
+            return super.insertItem(stack, action, automationType);
+        }
+
+        @Override
+        public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
+            sync();
+            return super.extractItem(amount, action, automationType);
+        }
+
+        @Override
+        public int setStackSize(int amount, Action action) {
+            sync();
+            return super.setStackSize(amount, action);
+        }
+
+        @Override
+        public int growStack(int amount, Action action) {
+            sync();
+            return super.growStack(amount, action);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            sync();
+            return super.isEmpty();
+        }
+
+        @Override
+        public int getCount() {
+            sync();
+            return super.getCount();
+        }
+
+        @Override
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+            sync();
+            return super.serializeNBT(provider);
+        }
+
+        @Override
+        public void onContentsChanged() {
+            super.onContentsChanged();
+            sync();
+        }
     }
 }

@@ -419,8 +419,13 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
         }
     }
 
-    /** Menu 終了時: マトリクス残りをストレージ → インベントリ → ドロップの順で回収する。 */
+    /**
+     * Menu 終了時: マトリクス残りをストレージ → インベントリ → ドロップの順で回収する。
+     * 切断中と死亡後はインベントリに入れない（切断ではプレイヤーを保存した後に画面が閉じるので、入れた分が消える）。
+     * バニラのクラフト欄・持っている物と同じく、その場に落とす。
+     */
     private void returnCraftMatrixContents(ServerPlayer serverPlayer) {
+        boolean canHold = serverPlayer.isAlive() && !serverPlayer.hasDisconnected();
         for (int i = 0; i < craftMatrix.getContainerSize(); i++) {
             ItemStack stack = craftMatrix.removeItemNoUpdate(i);
             if (stack.isEmpty()) {
@@ -430,7 +435,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
             if (storage != null && !storage.isLoadFailed()) {
                 leftover -= storage.insert(stack, leftover);
             }
-            if (leftover > 0) {
+            if (leftover > 0 && canHold) {
                 leftover = addToPlayerInventory(serverPlayer, stack, leftover, stack.getMaxStackSize());
             }
             if (leftover > 0) {

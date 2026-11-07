@@ -188,6 +188,20 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
                 SIDE_BUTTON_WIDTH, INFO_BUTTON_Y + SIDE_BUTTON_HEIGHT - CRAFT_BUTTON_Y);
     }
 
+    /**
+     * 左のサイドボタン列と、開いているクラフトパネルは画面の外に描いているが、画面の一部として扱う。
+     * バニラはここを押すと「画面の外を押した」として持っている物を足元に捨てる（無効の i ボタンやクラフト欄の空き）。
+     */
+    @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
+        int x = (int) Math.floor(mouseX);
+        int y = (int) Math.floor(mouseY);
+        if (getSideButtonArea().contains(x, y) || (this.menu.isCraftOpen() && getCraftPanelArea().contains(x, y))) {
+            return false;
+        }
+        return super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton);
+    }
+
     /** 行数変更要求。サーバーが Menu を閉じて新しい行数で開き直すため、ここでは送信のみ。 */
     private void changeRows(int delta) {
         int current = gridRows();
