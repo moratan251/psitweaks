@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.caster.CasterIds;
+import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.*;
@@ -28,7 +29,7 @@ public class PieceTrickStoreEntityUUID extends PieceTrick {
         meta.addStat(EnumSpellStat.COMPLEXITY, 1);
         Double numberVal = (Double)this.getParamEvaluation(this.number);
         if (numberVal != null && !(numberVal <= (double)0.0F) && numberVal == (double)numberVal.intValue()) {
-            meta.addStat(EnumSpellStat.POTENCY, numberVal.intValue() * 8);
+            meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(numberVal * 8.0));
         } else {
             throw new SpellCompilationException("psi.spellerror.nonpositiveinteger", this.x, this.y);
         }

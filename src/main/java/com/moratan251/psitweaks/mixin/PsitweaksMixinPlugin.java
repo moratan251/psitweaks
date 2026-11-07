@@ -43,12 +43,21 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
     }
 
+    /**
+     * Looks for the class file without loading the class. Loading it here (Class.forName) would load the target
+     * before Mixin transforms it, so the mixin would silently never apply.
+     */
     private static boolean isClassPresent(String className) {
-        try {
-            Class.forName(className, false, PsitweaksMixinPlugin.class.getClassLoader());
-            return true;
-        } catch (ClassNotFoundException | LinkageError ignored) {
-            return false;
+        String classResource = className.replace('.', '/') + ".class";
+        ClassLoader[] classLoaders = {
+                Thread.currentThread().getContextClassLoader(),
+                PsitweaksMixinPlugin.class.getClassLoader()
+        };
+        for (ClassLoader classLoader : classLoaders) {
+            if (classLoader != null && classLoader.getResource(classResource) != null) {
+                return true;
+            }
         }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import com.moratan251.psitweaks.common.spells.param.SpellParamPlainValue;
@@ -36,7 +37,7 @@ public class PieceTrickStoreValue extends PieceTrick {
         meta.addStat(EnumSpellStat.COMPLEXITY, 1);
         Double numberVal = (Double) getParamEvaluation(number);
         if (numberVal != null && numberVal > 0D && numberVal == numberVal.intValue()) {
-            meta.addStat(EnumSpellStat.POTENCY, numberVal.intValue() * 8);
+            meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(numberVal * 8.0));
         } else {
             throw new SpellCompilationException("psi.spellerror.nonpositiveinteger", x, y);
         }

@@ -7,6 +7,7 @@ import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.value.PlainValueType;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
+import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import java.util.List;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,7 +43,7 @@ public class PieceSelectorStoredValue extends PieceSelector implements Psitweaks
         super.addToMetadata(meta);
         Double numberVal = (Double) getParamEvaluation(number);
         if (numberVal != null && numberVal > 0D && numberVal == numberVal.intValue()) {
-            meta.addStat(EnumSpellStat.POTENCY, numberVal.intValue() * 6);
+            meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(numberVal * 6.0));
         } else {
             throw new SpellCompilationException("psi.spellerror.nonpositiveinteger", x, y);
         }

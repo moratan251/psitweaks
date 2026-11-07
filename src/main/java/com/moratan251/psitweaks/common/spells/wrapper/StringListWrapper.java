@@ -21,10 +21,19 @@ public final class StringListWrapper implements Iterable<String>, PsitweaksListL
             return EMPTY;
         }
 
-        List<String> result = new ArrayList<>(values.size());
+        List<String> result = new ArrayList<>(Math.min(values.size(), SpellListLimits.MAX_ELEMENTS));
+        int characters = 0;
         for (String value : values) {
+            if (result.size() >= SpellListLimits.MAX_ELEMENTS) {
+                break;
+            }
             if (value != null) {
-                result.add(StringSpellHelper.sanitize(value));
+                String sanitized = StringSpellHelper.sanitize(value);
+                if (sanitized.length() > SpellListLimits.MAX_STRING_LIST_CHARACTERS - characters) {
+                    break;
+                }
+                characters += sanitized.length();
+                result.add(sanitized);
             }
         }
 

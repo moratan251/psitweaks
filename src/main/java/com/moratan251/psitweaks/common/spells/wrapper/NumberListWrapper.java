@@ -20,8 +20,11 @@ public final class NumberListWrapper implements Iterable<Double>, PsitweaksListL
             return EMPTY;
         }
 
-        List<Double> result = new ArrayList<>(values.size());
+        List<Double> result = new ArrayList<>(Math.min(values.size(), SpellListLimits.MAX_ELEMENTS));
         for (Number value : values) {
+            if (result.size() >= SpellListLimits.MAX_ELEMENTS) {
+                break;
+            }
             if (value != null) {
                 double number = value.doubleValue();
                 if (Double.isFinite(number)) {

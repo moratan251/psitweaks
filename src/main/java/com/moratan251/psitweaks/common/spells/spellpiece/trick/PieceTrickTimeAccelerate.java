@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 
 import com.moratan251.psitweaks.common.entities.EntityTimeAccelerator;
+import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -54,7 +55,7 @@ public class PieceTrickTimeAccelerate extends PieceTrick {
 
         // ざっくり：倍率と秒数に比例して重くなるのでコストも比例
         meta.addStat(EnumSpellStat.COST, (int) (Math.pow(2,rate) * seconds * 4));
-        meta.addStat(EnumSpellStat.POTENCY, 50 + rate * 150);
+        meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(50.0 + rate * 150.0));
     }
 
     @Override

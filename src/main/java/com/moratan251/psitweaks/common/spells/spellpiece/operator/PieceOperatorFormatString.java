@@ -50,11 +50,43 @@ public class PieceOperatorFormatString extends PieceOperator implements Editable
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        String result = value
-                .replace("{1}", formatArgument(context, getParamValue(context, typed(value1))))
-                .replace("{2}", formatArgument(context, getParamValue(context, typed(value2))))
-                .replace("{3}", formatArgument(context, getParamValue(context, typed(value3))));
-        return StringSpellHelper.sanitize(result);
+        String[] arguments = {
+                formatArgument(context, getParamValue(context, typed(value1))),
+                formatArgument(context, getParamValue(context, typed(value2))),
+                formatArgument(context, getParamValue(context, typed(value3)))
+        };
+        return StringSpellHelper.sanitize(format(value, arguments));
+    }
+
+    /**
+     * Replaces {1}, {2} and {3} in one pass over the template, so text an argument brings in is never replaced
+     * again, and stops at the string length limit instead of building the whole result first.
+     */
+    public static String format(String template, String[] arguments) {
+        int limit = StringSpellHelper.MAX_STRING_LENGTH;
+        StringBuilder result = new StringBuilder(Math.min(template.length(), limit));
+        int i = 0;
+        while (i < template.length() && result.length() < limit) {
+            int index = placeholderIndex(template, i);
+            if (index >= 0 && index < arguments.length) {
+                String argument = arguments[index] == null ? "" : arguments[index];
+                result.append(argument, 0, Math.min(argument.length(), limit - result.length()));
+                i += 3;
+            } else {
+                result.append(template.charAt(i));
+                i++;
+            }
+        }
+        return result.toString();
+    }
+
+    /** 0 for {1}, 1 for {2}, 2 for {3} starting at {@code start}; -1 otherwise. */
+    private static int placeholderIndex(String template, int start) {
+        if (start + 2 >= template.length() || template.charAt(start) != '{' || template.charAt(start + 2) != '}') {
+            return -1;
+        }
+        char digit = template.charAt(start + 1);
+        return digit >= '1' && digit <= '3' ? digit - '1' : -1;
     }
 
     private String formatArgument(SpellContext context, Object argument) throws SpellRuntimeException {

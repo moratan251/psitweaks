@@ -21,8 +21,11 @@ public final class VectorListWrapper implements Iterable<Vector3>, PsitweaksList
             return EMPTY;
         }
 
-        List<Vector3> result = new ArrayList<>(values.size());
+        List<Vector3> result = new ArrayList<>(Math.min(values.size(), SpellListLimits.MAX_ELEMENTS));
         for (Vector3 value : values) {
+            if (result.size() >= SpellListLimits.MAX_ELEMENTS) {
+                break;
+            }
             if (value != null) {
                 result.add(value.copy());
             }

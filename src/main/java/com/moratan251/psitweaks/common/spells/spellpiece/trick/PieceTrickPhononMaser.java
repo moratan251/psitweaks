@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
+import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 
 import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,13 +49,13 @@ public class PieceTrickPhononMaser extends PieceTrick {
             throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_INTEGER, this.x, this.y);
         }
 
-        int intPower = powerVal.intValue();
-        int intTime = timeVal.intValue();
+        double doublePower = powerVal;
+        double doubleTime = timeVal;
 
-        // コスト計算: 威力 * 時間(秒) * 500
-        int cost = intPower * intTime * 700;
+        // コスト計算: 威力 * 時間(秒) * 700。int に入らない値は組み立てを止める（負になってほかのコストを打ち消さないように）
+        int cost = CombatTrickStats.stat(doublePower * doubleTime * 700.0);
         // ポテンシー計算: 威力 * 100 + 650
-        int potency = intPower * 100 + 650;
+        int potency = CombatTrickStats.stat(doublePower * 100.0 + 650.0);
 
         meta.addStat(EnumSpellStat.POTENCY, potency);
         meta.addStat(EnumSpellStat.COST, cost);
