@@ -34,6 +34,13 @@ public final class ComparisonValueHelper {
         if (left instanceof Vector3 leftVector && right instanceof Vector3 rightVector) {
             return leftVector.equals(rightVector);
         }
+        // 解説書どおり、Block と Vector はブロックの座標で比べる（ベクトルが入っているブロックの位置）。
+        if (left instanceof BlockValue block && right instanceof Vector3 vector) {
+            return block.blockPos().equals(vector.toBlockPos());
+        }
+        if (left instanceof Vector3 vector && right instanceof BlockValue block) {
+            return block.blockPos().equals(vector.toBlockPos());
+        }
         if (left instanceof SpellItemValue leftItem && right instanceof SpellItemValue rightItem) {
             return SpellItemValue.equivalent(leftItem, rightItem);
         }

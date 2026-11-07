@@ -376,8 +376,12 @@ public final class SpellGridMultiSelectionController {
     }
 
     private static boolean isTextInputFocused(GuiProgrammer screen) {
+        // ピース一覧（の検索欄）を開いている間のキーは一覧のもの。見ないと、検索欄での Ctrl+V・Ctrl+X・Ctrl+C が盤面の
+        // 貼り付け・切り取り・写しになっていた。
         return (screen.spellNameField != null && screen.spellNameField.isFocused())
-                || (screen.commentField != null && screen.commentField.isFocused());
+                || (screen.commentField != null && screen.commentField.isFocused())
+                || (screen.panelWidget != null && (screen.panelWidget.panelEnabled
+                        || (screen.panelWidget.searchField != null && screen.panelWidget.searchField.isFocused())));
     }
 
     private static Set<GridPosition> positionsInCurrentRectangle(GuiProgrammer screen) {

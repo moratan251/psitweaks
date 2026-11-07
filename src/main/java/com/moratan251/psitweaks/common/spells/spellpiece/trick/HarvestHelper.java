@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakHel
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -69,7 +70,9 @@ public final class HarvestHelper {
         if (!(context.caster instanceof ServerPlayer caster) || !(context.focalPoint.level() instanceof ServerLevel level)) {
             return null;
         }
-        return new Harvest(caster, level, harvestTool(context));
+        // 縦に伸びる作物は上へたどるので、術式の射程の外まで取らないよう、ブロックごとに射程を確かめる。
+        return new Harvest(caster, level, harvestTool(context),
+                pos -> context.isInRadius(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
     }
 
     /** The tool the loot tables see (its Fortune counts); a caster without a CAD harvests by hand. */
@@ -113,16 +116,18 @@ public final class HarvestHelper {
         private final ServerPlayer caster;
         private final ServerLevel level;
         private final ItemStack tool;
+        private final Predicate<BlockPos> inReach;
         private final StackAccumulator drops = new StackAccumulator();
         private final List<Effect> effects = new ArrayList<>();
         private int harvested;
         @Nullable
         private Delivery delivery;
 
-        private Harvest(ServerPlayer caster, ServerLevel level, ItemStack tool) {
+        private Harvest(ServerPlayer caster, ServerLevel level, ItemStack tool, Predicate<BlockPos> inReach) {
             this.caster = caster;
             this.level = level;
             this.tool = tool;
+            this.inReach = inReach;
         }
 
         /** Harvests the crop at {@code pos}; false when nothing there is ripe or the caster may not harvest it. */
@@ -264,7 +269,8 @@ public final class HarvestHelper {
             for (BlockPos cursor = bottom.above(); column.size() < MAX_COLUMN_LENGTH && !level.isOutsideBuildHeight(cursor);
                     cursor = cursor.above()) {
                 BlockState state = level.getBlockState(cursor);
-                if (!state.is(block)) {
+                // 射程の外に出たらそこで止める（下の株は残り、浮いた所は残らない）。
+                if (!state.is(block) || !inReach.test(cursor)) {
                     break;
                 }
                 column.add(cursor);

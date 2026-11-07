@@ -21,8 +21,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -32,6 +30,7 @@ public final class MekanismMaterialMutationRecipeHandler {
     private static final Gson GSON = new GsonBuilder().create();
     private static final String MACHINE_RECIPE_DIRECTORY = "material_mutation/machine";
     private static final MachineRecipeReloadListener RELOAD_LISTENER = new MachineRecipeReloadListener();
+    /** サーバーのデータパックから読む表（{@link MaterialMutationRecipeHandler} と同じく、クライアントの資源の再読み込みには登録しない）。 */
     private static volatile Map<Item, MachineRecipe> recipesByInputItem = Map.of();
 
     private MekanismMaterialMutationRecipeHandler() {
@@ -39,14 +38,6 @@ public final class MekanismMaterialMutationRecipeHandler {
 
     public static void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(RELOAD_LISTENER);
-    }
-
-    public static void registerClientReloadListeners(IEventBus modEventBus) {
-        modEventBus.addListener(MekanismMaterialMutationRecipeHandler::onRegisterClientReloadListeners);
-    }
-
-    private static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(RELOAD_LISTENER);
     }
 
     @Nullable

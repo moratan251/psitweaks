@@ -491,9 +491,8 @@ public class IdeaStorageScreen extends AbstractContainerScreen<IdeaStorageMenu> 
             return;
         }
         String text = IdeaStorageAmountFormatter.formatGrid(entry.amount(), entry.displayAmountScale());
-        float scale = entry.kind() == IdeaStorageDisplayEntry.Kind.ENERGY
-                ? Math.min(COUNT_SCALE, (CELL - 2F) / Math.max(1, this.font.width(text)))
-                : COUNT_SCALE;
+        // どの種類も、量の文字がマスに収まるまで縮める（液体・化学物質の長い量が隣のマスに重なっていた）。
+        float scale = Math.min(COUNT_SCALE, (CELL - 2F) / Math.max(1, this.font.width(text)));
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 300.0F);
         guiGraphics.pose().scale(scale, scale, 1.0F);

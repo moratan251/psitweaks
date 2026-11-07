@@ -30,6 +30,12 @@ public final class PsitweaksDamageTypes {
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("micro_black_hole"));
     public static final ResourceKey<DamageType> ACTIVE_AIR_MINE =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("active_air_mine"));
+    /** 作動式: ファイアサークルの円の中のダメージ。火属性で、術者を攻撃者に持つ（障壁で防げる）。 */
+    public static final ResourceKey<DamageType> FLARE_CIRCLE =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("flare_circle"));
+    /** 作動式: アイスサークルの円の中のダメージ。凍結属性で、術者を攻撃者に持つ（障壁で防げる）。 */
+    public static final ResourceKey<DamageType> ICE_CIRCLE =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("ice_circle"));
 
     private PsitweaksDamageTypes() {
     }

@@ -395,6 +395,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "エラー: 保護されたブロックにアクセスを試みました。";
             default -> "Error: Attempted to access a protected block.";
         });
+        // 毎朝レビュー F-043: コードで使っているのに訳がなかったキー。
+        root.addProperty("psitweaks.spellerror.not_spellgram_object", switch (locale) {
+            case "ja_jp" -> "エラー: 対象が魔法式オブジェクトではありません。";
+            default -> "Error: The target is not a spellgram object.";
+        });
+        root.addProperty("psitweaks.spellerror.failedToInteract", switch (locale) {
+            case "ja_jp" -> "エラー: ブロックに作用できませんでした。";
+            default -> "Error: Could not interact with the block.";
+        });
+        root.addProperty("psitweaks.event.custom_tick", switch (locale) {
+            case "ja_jp" -> "§bイベント§7: カスタムtick";
+            default -> "§bEvent§7: Custom Tick";
+        });
         root.addProperty("psitweaks.spellerror.safety_insufficient_psi", switch (locale) {
             case "ja_jp" -> "安全装置が作動しました: Psiが不足しています";
             default -> "Safety activated: not enough Psi";
@@ -825,6 +838,31 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.active_air_mine.item", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sが%3$sで放った衝撃波に粉砕された";
             default -> "%1$s was shattered by a shockwave %2$s unleashed using %3$s";
+        });
+        // 術者がいなくなった後の円は攻撃者がないので、基本の文は %2$s を使わない。
+        root.addProperty("death.attack.psitweaks.flare_circle", switch (locale) {
+            case "ja_jp" -> "%1$sはファイアサークルに焼かれた";
+            default -> "%1$s was burned by a Flare Circle";
+        });
+        root.addProperty("death.attack.psitweaks.flare_circle.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのファイアサークルに焼かれた";
+            default -> "%1$s was burned by %2$s's Flare Circle";
+        });
+        root.addProperty("death.attack.psitweaks.flare_circle.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで張ったファイアサークルに焼かれた";
+            default -> "%1$s was burned by a Flare Circle %2$s cast using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.ice_circle", switch (locale) {
+            case "ja_jp" -> "%1$sはアイスサークルに凍らされた";
+            default -> "%1$s was frozen by an Ice Circle";
+        });
+        root.addProperty("death.attack.psitweaks.ice_circle.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのアイスサークルに凍らされた";
+            default -> "%1$s was frozen by %2$s's Ice Circle";
+        });
+        root.addProperty("death.attack.psitweaks.ice_circle.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで張ったアイスサークルに凍らされた";
+            default -> "%1$s was frozen by an Ice Circle %2$s cast using %3$s";
         });
     }
 
@@ -1284,6 +1322,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("gui.psitweaks.idea_storage.craft_window", switch (locale) {
             case "ja_jp" -> "作業台を開く";
             default -> "Open Crafting Table";
+        });
+        root.addProperty("jei.psitweaks.idea_storage.craft_window_closed", switch (locale) {
+            case "ja_jp" -> "先に左の「作業台を開く」でクラフト欄を開いてください";
+            default -> "Open the crafting grid with the Open Crafting Table button on the left first";
         });
         root.addProperty("gui.psitweaks.idea_storage.craft_clear", switch (locale) {
             case "ja_jp" -> "クラフトグリッドをストレージへ戻す";

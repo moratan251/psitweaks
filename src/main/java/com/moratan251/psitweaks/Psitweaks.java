@@ -61,7 +61,6 @@ import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
 import com.moratan251.psitweaks.common.handler.FallConversionHandler;
 import com.moratan251.psitweaks.common.handler.FlightPsiCostCaptureHandler;
 import com.moratan251.psitweaks.common.handler.MassBlockBreakDropHandler;
-import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.handler.SafetySpellCastHandler;
 import com.moratan251.psitweaks.common.handler.SpellPsiRefundCaptureHandler;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
@@ -187,7 +186,6 @@ public class Psitweaks {
             PsitweaksConfigScreenRegistration.register(modContainer);
             PsitweaksClientSpells.register(modEventBus);
             PsitweaksClientModels.register(modEventBus);
-            MaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
             MekanismCompat.registerClient(modEventBus);

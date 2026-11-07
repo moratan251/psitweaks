@@ -19,10 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -34,6 +32,11 @@ public final class MaterialMutationRecipeHandler {
     private static final String TRICK_RECIPE_DIRECTORY = "material_mutation/trick";
     private static final TrickRecipeReloadListener TRICK_RELOAD_LISTENER = new TrickRecipeReloadListener();
 
+    /**
+     * サーバーのデータパックから読む表。クライアントの資源の再読み込み（F3+T、資源パック・言語の切り替え）には登録しない。
+     * 同じ表を使っていたため、シングルプレイでは資源の再読み込みでサーバー側の表まで空になっていた（資源側にファイルはない）。
+     * シングルプレイの JEI・EMI はこの表を読む。
+     */
     private static volatile Map<Block, ItemStack> trickRecipesByInputBlock = Map.of();
 
     private MaterialMutationRecipeHandler() {
@@ -42,16 +45,6 @@ public final class MaterialMutationRecipeHandler {
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(TRICK_RELOAD_LISTENER);
-    }
-
-    public static void registerClientReloadListeners(IEventBus modEventBus) {
-        modEventBus.addListener(ClientReloadEvents::onRegisterClientReloadListeners);
-    }
-
-    private static final class ClientReloadEvents {
-        private static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-            event.registerReloadListener(TRICK_RELOAD_LISTENER);
-        }
     }
 
     public static ItemStack getMutationOutput(Block inputBlock) {

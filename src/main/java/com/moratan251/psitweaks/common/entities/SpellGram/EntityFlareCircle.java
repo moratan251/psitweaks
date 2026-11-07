@@ -8,6 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,8 +59,8 @@ public class EntityFlareCircle extends SpellGramObject {
 
     @Override
     protected DamageSource createAreaDamageSource(@Nullable LivingEntity caster) {
-        // フレアサークルの本体ダメージは火属性として扱う
-        return this.damageSources().onFire();
+        // 火属性（is_fire）で、術者を攻撃者に持つ。バニラの on_fire は継続ダメージとして障壁を素通りし、攻撃者も付かなかった。
+        return AttackRules.source(level(), PsitweaksDamageTypes.FLARE_CIRCLE, this, caster);
     }
 
     @Override

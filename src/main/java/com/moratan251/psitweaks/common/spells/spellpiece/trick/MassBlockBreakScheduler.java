@@ -31,6 +31,8 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
 
 public final class MassBlockBreakScheduler {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -215,9 +217,10 @@ public final class MassBlockBreakScheduler {
             ItemStack stack = entry.copyStack(stackCount);
             task.dropEntryOffset += stackCount;
 
-            player.getInventory().add(stack);
-            if (!stack.isEmpty()) {
-                task.overflow.add(stack);
+            // Inventory.add はクリエイティブで入りきらない分を消してしまうので、PlayerMainInvWrapper で入れて残りを落とす（PIT-029）。
+            ItemStack rest = ItemHandlerHelper.insertItemStacked(new PlayerMainInvWrapper(player.getInventory()), stack, false);
+            if (!rest.isEmpty()) {
+                task.overflow.add(rest);
             }
             if (task.dropEntryOffset >= entry.count()) {
                 task.dropIndex++;

@@ -66,7 +66,7 @@ public abstract class CombatSpellEntity extends Entity {
 
     /** Whether an attack of {@code caster} (this entity's, looked up once by the caller) may hit the entity. */
     protected boolean canAffect(@Nullable LivingEntity caster, @Nullable Entity target) {
-        return AttackRules.canHarm(caster, target, options());
+        return this.caster.canHarm(caster, target, options());
     }
 
     /** Hurts the entity as an attack of {@code caster} ({@link AttackRules#harm}). */

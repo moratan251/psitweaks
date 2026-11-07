@@ -58,6 +58,11 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
                 damageType("psitweaks.micro_black_hole", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.ACTIVE_AIR_MINE.location(),
                 damageType("psitweaks.active_air_mine", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.FLARE_CIRCLE.location(),
+                damageType("psitweaks.flare_circle", "never", 0.1F));
+        JsonObject iceCircle = damageType("psitweaks.ice_circle", "never", 0.1F);
+        iceCircle.addProperty("effects", "freezing");
+        damageTypes.put(PsitweaksDamageTypes.ICE_CIRCLE.location(), iceCircle);
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {

@@ -472,6 +472,15 @@ public final class PsitweaksListAdapterRegistration {
         return VectorListWrapper.make(result);
     }
 
+    /**
+     * Psi's {@code Vector3.toString} keeps 5 significant digits, so (123456.7, 64, 0) came back as x = 123460. Every
+     * component is written in full, in the same {@code Vector[x, y, z]} form, which reads back exactly.
+     */
+    static String vectorToString(Vector3 vector) {
+        return "Vector[" + StringSpellHelper.numberToString(vector.x) + ", " + StringSpellHelper.numberToString(vector.y)
+                + ", " + StringSpellHelper.numberToString(vector.z) + "]";
+    }
+
     private static String debugString(Object value) {
         return StringSpellHelper.sanitize(String.valueOf(value));
     }
@@ -603,6 +612,9 @@ public final class PsitweaksListAdapterRegistration {
         public String elementToString(Object value) {
             if (value == null) {
                 return "";
+            }
+            if (value instanceof Vector3 vector) {
+                return vectorToString(vector);
             }
             return debugString(value);
         }

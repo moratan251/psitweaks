@@ -9,7 +9,6 @@ import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
 import com.moratan251.psitweaks.client.render.tile.RenderAutonomousCaster;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
-import com.moratan251.psitweaks.common.handler.MekanismMaterialMutationRecipeHandler;
 import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
@@ -44,7 +43,6 @@ public final class MekanismClientIntegration {
         modEventBus.addListener(MekanismClientIntegration::onRegisterClientExtensions);
         modEventBus.addListener(MekanismClientIntegration::onRegisterItemDecorations);
         modEventBus.addListener(MekanismClientIntegration::onRegisterRenderers);
-        MekanismMaterialMutationRecipeHandler.registerClientReloadListeners(modEventBus);
         NeoForge.EVENT_BUS.addListener(MekanismClientIntegration::onItemTooltip);
     }
 

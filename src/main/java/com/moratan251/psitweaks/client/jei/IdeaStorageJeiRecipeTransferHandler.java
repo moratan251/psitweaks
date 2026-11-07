@@ -52,7 +52,8 @@ public class IdeaStorageJeiRecipeTransferHandler
     public @Nullable IRecipeTransferError transferRecipe(IdeaStorageMenu container, RecipeHolder<CraftingRecipe> recipe,
             IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         if (!container.isCraftOpen()) {
-            return null;
+            // null は「移せる」の意味なので、閉じている間も + が押せるように見えて何も起きなかった。
+            return helper.createUserErrorWithTooltip(Component.translatable("jei.psitweaks.idea_storage.craft_window_closed"));
         }
         List<IRecipeSlotView> inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
         if (inputSlots.size() > MessageIdeaStorageFillCrafting.CRAFT_SLOT_COUNT) {

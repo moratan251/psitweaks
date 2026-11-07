@@ -8,6 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,7 +60,8 @@ public class EntityIceCircle extends SpellGramObject {
 
     @Override
     protected DamageSource createAreaDamageSource(@Nullable LivingEntity caster) {
-        return this.damageSources().freeze();
+        // 凍結属性（is_freezing）で、術者を攻撃者に持つ。バニラの freeze は継続ダメージとして障壁を素通りし、攻撃者も付かなかった。
+        return AttackRules.source(level(), PsitweaksDamageTypes.ICE_CIRCLE, this, caster);
     }
 
     @Override
@@ -69,7 +71,10 @@ public class EntityIceCircle extends SpellGramObject {
 
     @Override
     protected void onAreaDamageApplied(LivingEntity target, float damage, DamageSource source) {
-        target.setTicksFrozen(target.getTicksFrozen() + FREEZE_TICKS_PER_HIT);
+        // 当てるたびに足すが、凍り切る量（getTicksRequiredToFreeze）に1回分を足した所で止める。上限がないと、円が消えた後も
+        // 当てた回数だけ長く凍ったままになっていた。
+        int cap = target.getTicksRequiredToFreeze() + FREEZE_TICKS_PER_HIT;
+        target.setTicksFrozen(Math.min(cap, target.getTicksFrozen() + FREEZE_TICKS_PER_HIT));
     }
 
     @Override

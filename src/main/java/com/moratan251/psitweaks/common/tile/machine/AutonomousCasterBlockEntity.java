@@ -508,6 +508,9 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             return;
         }
         if (current != null) {
+            // 古い Caster の手持ちは機械へ戻してから空にする。残すと、古い Caster を覚えている術式がその写しを使えてしまう。
+            reconcileMirror();
+            current.getInventory().clearContent();
             current.detach();
         }
         if (casterId == null || AutonomousCasterRegistry.isInUse(casterId)) {

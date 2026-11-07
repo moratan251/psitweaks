@@ -20,6 +20,8 @@ public class PsiTweaksLootTableProvider implements DataProvider {
     /** Mekanism machines: the dropped item keeps the machine's contents and settings, as Mekanism's own machines do. */
     private static final Set<String> MEKANISM_MACHINES = Set.of("sculk_eroder", "program_researcher", "material_mutator",
             "psionic_generator", "transcendent_energy_cube", "autonomous_caster");
+    /** Other blocks registered only with Mekanism ({@code PsitweaksMekanismBlocks}). */
+    private static final Set<String> MEKANISM_BLOCKS = Set.of("transcendent_universal_cable");
     /** The components Mekanism's machine loot tables copy from the block entity; ones a machine lacks are skipped. */
     private static final List<String> MEKANISM_MACHINE_COMPONENTS = List.of("mekanism:ejector", "mekanism:owner",
             "mekanism:redstone_control", "mekanism:security", "mekanism:side_config", "mekanism:upgrades", "mekanism:energy",
@@ -38,12 +40,16 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             JsonObject lootTable = switch (block.id()) {
                 case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
-                // Only exists with Mekanism; skip the table otherwise instead of failing to parse it.
+                // The Mekanism machines only exist with Mekanism; skip their tables otherwise instead of failing to parse them.
                 case "autonomous_caster" -> RecipeConditionHelper.requireMod(
                         dropMekanismMachine(block.id(), PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.getId().toString(),
                                 PsitweaksDataComponents.AUTONOMOUS_CASTER_SETTINGS.getId().toString(),
                                 PsitweaksDataComponents.AUTONOMOUS_CASTER_MEMORY.getId().toString()), "mekanism");
-                default -> MEKANISM_MACHINES.contains(block.id()) ? dropMekanismMachine(block.id()) : dropSelf(block.id());
+                default -> MEKANISM_MACHINES.contains(block.id())
+                        ? RecipeConditionHelper.requireMod(dropMekanismMachine(block.id()), "mekanism")
+                        : MEKANISM_BLOCKS.contains(block.id())
+                        ? RecipeConditionHelper.requireMod(dropSelf(block.id()), "mekanism")
+                        : dropSelf(block.id());
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));
         }

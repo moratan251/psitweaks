@@ -152,8 +152,12 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String starfall = damageType("starfall");
         String microBlackHole = damageType("micro_black_hole");
         String activeAirMine = damageType("active_air_mine");
+        String flareCircle = damageType("flare_circle");
+        String iceCircle = damageType("ice_circle");
         // Active Air Mine keeps what it had as a sonic boom: armour and protection enchantments do not help.
-        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine);
+        // The circles keep what they had as burning and freezing (vanilla's on_fire and freeze bypass armour).
+        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine, flareCircle,
+                iceCircle);
         // Meteors and blades are separate hits, so each one counts even right after the previous.
         tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler, dancingBlades, starfall);
         tag(tags, "minecraft", "bypasses_effects", meteorLine, tunneler);
@@ -162,10 +166,11 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "minecraft", "bypasses_resistance", meteorLine);
         tag(tags, "minecraft", "bypasses_shield", meteorLine, tunneler, mineGenesis, burst, microBlackHole);
         tag(tags, "minecraft", "is_explosion", starfall);
-        tag(tags, "minecraft", "is_freezing", dryMeteor);
+        tag(tags, "minecraft", "is_fire", flareCircle);
+        tag(tags, "minecraft", "is_freezing", dryMeteor, iceCircle);
         // These tricks push their targets themselves.
         tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, airBullet, dancingBlades,
-                starfall, microBlackHole);
+                starfall, microBlackHole, flareCircle, iceCircle);
         // Trick: Barrier does not absorb these: damage from inside the body or the world, not from an attack.
         tag(tags, "psitweaks", "bypasses_barrier",
                 tagRef("minecraft:bypasses_invulnerability"),

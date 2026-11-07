@@ -185,7 +185,8 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     /** 攻撃術式で共通の命中判定（{@link AttackRules#canHarm}）。 */
     protected boolean canDamageEntity(@Nullable LivingEntity caster, LivingEntity target) {
-        return AttackRules.canHarm(caster, target, attackOptions());
+        // 術者がいなくなっても、詠唱したときの術者の側（本人、ペット、チーム）には当てない。
+        return attackCaster.canHarm(caster, target, attackOptions());
     }
 
     /** 攻撃の設定。プレイヤーに安全の扱いを持つ術式円は上書きする。 */

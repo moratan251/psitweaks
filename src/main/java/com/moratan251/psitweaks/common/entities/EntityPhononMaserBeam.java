@@ -221,7 +221,7 @@ public class EntityPhononMaserBeam extends Entity {
 
         // 攻撃術式で共通の命中判定（術者側・防具立て・プレイヤーに安全・受ける側の PvP）。
         List<Entity> entities = level().getEntities(this, laserBounds, entity ->
-                AttackRules.canHarm(caster, entity, attackCaster.options()) && isEntityOnLaserPath(entity, start, end));
+                attackCaster.canHarm(caster, entity, attackCaster.options()) && isEntityOnLaserPath(entity, start, end));
 
         if (entities.isEmpty()) {
             return;
