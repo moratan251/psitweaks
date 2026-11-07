@@ -18,6 +18,12 @@ public abstract class SpellPieceOptionalCompatMixin {
             cir.setReturnValue(OptionalSpellPieceCompat.createRemovalMarker(spell));
             return;
         }
+        // Pieces renamed during 1.0.0 development load under their new ID (the copy has the new ID, so this ends).
+        CompoundTag renamed = OptionalSpellPieceCompat.renamedCopy(cmp);
+        if (renamed != null) {
+            cir.setReturnValue(SpellPiece.createFromNBT(spell, renamed));
+            return;
+        }
         // Ideaspace pieces saved before the merge load from a migrated copy; the copy no longer matches, so this
         // recursion ends after one step.
         CompoundTag migrated = IdeaStoragePieceMigration.migrate(cmp);

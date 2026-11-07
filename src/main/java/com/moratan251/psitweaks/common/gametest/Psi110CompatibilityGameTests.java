@@ -56,6 +56,26 @@ public final class Psi110CompatibilityGameTests {
         helper.succeed();
     }
 
+    /** Spells saved before a piece was renamed load under its new ID instead of failing the whole player. */
+    @GameTest(template = "psi110_empty")
+    public static void renamedPiecesLoadUnderTheirNewId(GameTestHelper helper) {
+        String[][] renames = {
+                {"psitweaks:trick_kamaitachi", "trick_air_bullet"},
+                {"psitweaks:trick_gravity_collapse", "trick_micro_black_hole"},
+                {"trick_gravity_collapse", "trick_micro_black_hole"}
+        };
+        for (String[] rename : renames) {
+            var tag = new CompoundTag();
+            PsiAPI.SPELL_PIECE_REGISTRY.get(Psitweaks.location(rename[1])).create(new Spell()).writeToNBT(tag);
+            helper.assertTrue(tag.contains("key"), "Psi no longer saves the piece ID under 'key': " + tag);
+            tag.putString("key", rename[0]);
+            var restored = SpellPiece.createFromNBT(new Spell(), tag);
+            helper.assertTrue(restored != null && Psitweaks.location(rename[1]).equals(restored.getRegistryKey()),
+                    rename[0] + " did not load as " + rename[1]);
+        }
+        helper.succeed();
+    }
+
     @GameTest(template = "psi110_empty")
     public static void researchUnlockUsesPsiEvents(GameTestHelper helper) {
         var player = helper.makeMockPlayer(GameType.SURVIVAL);

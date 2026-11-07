@@ -1,12 +1,14 @@
 package com.moratan251.psitweaks.common.compat;
 
 import com.moratan251.psitweaks.Psitweaks;
+import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellGrid;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.common.spell.trick.PieceTrickDie;
+import org.jetbrains.annotations.Nullable;
 
 public final class OptionalSpellPieceCompat {
     private static final String TAG_KEY_LEGACY = "spellKey";
@@ -14,7 +16,33 @@ public final class OptionalSpellPieceCompat {
     private static final ResourceLocation PHYSICAL_PROPULSION_ID = Psitweaks.location("trick_physical_propulsion");
     private static final String REMOVAL_MARKER_COMMENT = "psitweaks:remove_optional_physical_propulsion";
 
+    /**
+     * Pieces whose ID changed during 1.0.0 development (old ID → new ID). Psi cannot read an unknown namespaced ID
+     * (it fails the whole player or chunk), so spells saved before the rename load under the new ID.
+     */
+    private static final Map<ResourceLocation, ResourceLocation> RENAMED_PIECES = Map.of(
+            Psitweaks.location("trick_kamaitachi"), Psitweaks.location("trick_air_bullet"),
+            Psitweaks.location("trick_gravity_collapse"), Psitweaks.location("trick_micro_black_hole"));
+
     private OptionalSpellPieceCompat() {
+    }
+
+    /** A copy of {@code cmp} under the piece's new ID when it was saved under a renamed one, otherwise null. */
+    @Nullable
+    public static CompoundTag renamedCopy(CompoundTag cmp) {
+        String tagKey = getSpellPieceIdTag(cmp);
+        if (tagKey == null) {
+            return null;
+        }
+        String id = cmp.getString(tagKey);
+        for (Map.Entry<ResourceLocation, ResourceLocation> rename : RENAMED_PIECES.entrySet()) {
+            if (matchesSpellPieceId(id, rename.getKey())) {
+                CompoundTag copy = cmp.copy();
+                copy.putString(tagKey, rename.getValue().toString());
+                return copy;
+            }
+        }
+        return null;
     }
 
     public static boolean shouldRemoveMissingPhysicalPropulsion(CompoundTag cmp) {
