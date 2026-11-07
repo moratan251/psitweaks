@@ -1,0 +1,709 @@
+## Changelog
+
+#### v0.10.10-hotfix
+
+- (1.21.1) Fixed a crash when holding Shift over the item of a Sculk Eroder, Program Research Table, Material Mutator, Psi-Link Generator or Transcendent Energy Cube that has contents
+
+
+- (1.21.1) Fixed a server crash when such an item burns up in lava, fire, etc.
+
+
+- (1.21.1) Fixed these machines losing their items, energy, upgrades and other contents when broken
+
+
+#### v0.10.10
+
+- Updated the Ideaspace Connector
+  + Added redstone control
+  + Added a target stock setting for automatic output destinations
+  + Added an input filter
+  + Settings can now be copied and pasted through the clipboard (Ctrl+C / Ctrl+V also work)
+
+
+- Added the Filter Card
+  + Register up to 9 sample items and read them in spells with Selector: Filter Card
+  + Works in a Curios slot, in either hand or in the inventory
+
+
+- Added new spell pieces
+  + Trick: Ideaspace Storage - Deposit
+  + Trick: Ideaspace Storage - Withdraw
+  + Trick: Ideaspace Storage - Slot Deposit
+  + Trick: Ideaspace Storage - Slot Withdraw
+  + Selector: Ideaspace Storage - Free Capacity
+  + Selector: Ideaspace Storage - Type Count
+  + Selector: Ideaspace Storage - Last Transfer Amount
+  + Selector: Filter Card
+  + Operator: Strict Item
+  + Operator: Block Item
+  + Operator: Dropped Items
+  + Operator: Block Resource Amount
+  + Operator: Block Free Capacity
+  + Operator: Caster Basis Matrix
+  + Operator: Rotation Matrix
+  + Operator: Translation Matrix
+  + Trick: Show Region
+
+
+- Merged Ideaspace Storage spell pieces into pieces with modes (items, fluids, chemicals, FE)
+  + Selector: Ideaspace Storage Energy / Item Amount / Fluid Amount / Chemical Amount -> Selector: Ideaspace Storage - Amount
+  + Trick: Ideaspace Storage - FE Absorb -> Trick: Ideaspace Storage - Deposit (FE mode)
+  + Trick: Ideaspace Storage - FE Supply -> Trick: Ideaspace Storage - Withdraw (FE mode)
+  + Spells that use the old pieces are converted automatically when loaded
+
+
+- The item filters of the Ideaspace Storage tricks now match according to the connected value
+  + String: item ID with wildcards / Item: item type / Item List: any of the items / Operator: Strict Item: also compares NBT
+
+
+- Changed existing spell pieces
+  + Operator: Inside Region / Outside Region: added Entity, Vector and Block List modes (existing spells use Entity)
+  + Operator: Matrix Transform Vector: added a mode that transforms every vector of a Vector List or Block List
+  + Selector: Main-Hand Item / Carried Items now also work on dropped items
+  + Item filter inputs, such as those of Trick: Pull Item and Trick: Send Item, now also accept an Item List (matches any of the items)
+  + Vector List inputs, such as that of Trick: Mass Block Break, now also accept a Block List
+  + Renamed Operator: List Search / List Search Exclude to Operator: List Keep Matches / List Remove Matches
+
+
+- Shortened and clarified the descriptions in the guide book
+  + Pages with several recipes now show the name of the recipe currently displayed
+
+
+- Fixed incorrect unlock settings for Ideaspace Storage spell pieces
+
+
+- Fixed multi-selection paste (QoL) allowing spell pieces that have not been researched
+
+
+- Fixed spell unlock settings changed by datapacks not being applied on multiplayer clients
+
+
+- Fixed datapacks with invalid spell unlock settings (spell_unlocks) removing some unlock restrictions
+  + If any setting is invalid, loading is aborted and the previous settings are kept
+
+
+- Fixed the /psitweaks spellunlock command
+  + Now uses the latest unlock settings after a datapack reload
+  + all grant / all revoke now report change counts consistent with all status
+  + Players unlocked with the legacy format can now have their unlocks revoked
+
+
+#### v0.10.9
+
+- Added the Portable Spell Programmer
+
+
+- Added new spell pieces
+  + Trick: Ideaspace Connector
+  + Selector: Ideaspace Storage Energy
+  + Selector: Ideaspace Storage - Item Amount
+  + Selector: Ideaspace Storage - Fluid Amount
+  + Selector: Ideaspace Storage - Chemical Amount
+
+
+- Changed the Tunneler to also deal damage to the Wither when its health is at or below 50%
+
+
+- Empty buckets can now be stored one at a time by right-clicking in Ideaspace Storage
+
+
+#### v0.10.8-hotfix
+
+- (1.21.1) Compatible with Psi 1.21.1-110
+
+
+#### v0.10.8
+
+- Ported spell pieces from 1.12.2 Random PSIdeas
+  + Trick: Conjure Pulsar
+  + Trick: Conjure Pulsar Sequence
+  + Trick: Conjure Pulsar Light
+
+
+- (1.21.1) Changed Trick: Antipersonnel Explode so that experience orbs and dropped items are not destroyed
+
+
+- Added the new Ideaspace Storage system (WIP)
+  + A virtual storage feature with a UI similar to AE2 and Mekanism QIO
+
+
+- Fixed an item duplication bug when the count input of Trick: Send Item was omitted
+
+#### v0.10.7-hotfix
+
+- (1.20.1) Fixed a crash caused by a mixin conflict with NuclearCraft: Neoteric
+
+
+#### v0.10.7
+
+- Added CAD batteries
+  + Quantum CAD Battery
+  + Reactive CAD Battery
+
+
+- Added spell pieces
+  + Trick: Send Item
+  + Trick: Pull Item
+
+
+- (1.21.1) Changed the `material_mutator` recipe directory to avoid conflicts with Potions Master (#3)
+
+
+- Added a JEI description for the Graviton Factor
+
+
+- Moved client-only features to Psitweaks: QoL
+  + As a result, spell-piece bookmarks are reset once
+  + Psitweaks: QoL is included in Psi: Tweaks and Additions, so users do not need to install it separately.
+
+#### v0.10.6
+
+- Made the attack damage of the Gravstringer and Tunneler configurable
+
+
+- Added spell pieces
+  + Macro: Face Axial Offset
+  + Macro: Face Axial Rotation
+
+
+- Fixed an issue where the `minecraft:mineable/pickaxe` tag was broken when Mekanism was not installed (#2)
+
+
+- Fixed an issue where the mining tag for the Transcendent Energy Cube was not set
+
+
+- Changed the mining tier of the Psycheonic Metal Crux to Diamond
+
+
+- Changed the crafting recipes for the Ultraclocked CAD Core and Absorptive CAD Core
+
+#### v0.10.5
+
+- Added Russian translation (#1)
+
+
+- Ported spell pieces from 1.12.2 Random PSIdeas
+  + Macro: Caster Raycast
+  + Macro: Strong Caster Raycast
+  + Macro: Weak Caster Raycast
+  + Macro: Axis Caster Raycast
+  + Macro: Strong Axis Caster Raycast
+  + Macro: Weak Axis Caster Raycast
+
+- Added spell pieces
+  + Macro: Caster Axial Offset
+  + Macro: Caster Axial Offset (3D)
+  + Macro: Caster Axial Rotation
+  + Macro: Caster Axial Rotation (3D)
+  + Operator: Alive
+
+
+- Added CAD cores
+  + Absorptive CAD Core
+  + Ultraclocked CAD Core
+
+- Added material items (including items that currently have no use)
+  + Flash Coil
+  + Flash Chip
+  + Hardened Capsule
+  + Nano Reactor
+  + Unfathomable Component
+  + Quantized Plate
+  + Gravitized Plate
+  + String?
+  + Superstring
+  + Photon Glitter
+  + Wave Fragment
+  + Quantum Factor
+  + Graviton Factor
+  + Quantized Arrowhead
+
+- Added weapons
+  + Gravstringer
+    * A significantly enhanced version of the Psimetal Bow.
+  + Tunneler
+    * An arrow exclusive to the Gravstringer. It can pierce blocks and mobs, and ignores armor and invulnerability frames.
+
+- Fixed an issue where the output quantity of the Chaotic Psimetal crafting recipe was too low when Mekanism was not installed
+
+
+- Fixed an issue where casting a Projectile Spell Bullet with the Psimetal Bow did not cause it to fire correctly
+
+
+- (1.21.1) Fixed an issue where the Auto Caster played a sound every time it cast a spell
+
+
+
+#### v0.10.4
+
+- (1.21.1) Changed the behavior of Trick: Flight
+  + It now continuously consumes Psi during creative flight in exchange for a lower activation cost
+
+
+- Adjusted the Program: Flight recipe
+
+
+- Added spell pieces
+  + Selector: Effect List
+  + Trick: Dry Meteor
+
+
+- Added the Carbon Poisoning status effect
+  + It is applied by attacks from Trick: Dry Meteor
+
+
+- Adjusted Trick: Aqua Cutter
+  + Improved its appearance
+  + Changed its damage type from magic to physical (`minecraft:thrown`)
+
+
+- Added a spell-piece bookmarking feature
+
+
+- Adjusted Psionic Utilities integration
+  + Fixed an issue where moving Psionic Utilities pieces with Ctrl + drag was unavailable because its controls conflicted with Psitweaks' functionality
+  + Prevented Psionic Utilities' drag-based connector creation from being triggered over piece-selection windows and similar screens
+  + Made drag-based connector creation and piece movement in Psionic Utilities undoable with Ctrl + Z
+
+
+#### v0.10.3
+
+- Added spell pieces
+  + Safety
+  + Trick: Flexible Jump
+  + Trick: Flexible Switch
+
+
+- Adjusted the power consumption of the Program Research Table
+  + Changed it to use power consumption per tick instead of total power consumption as the basis
+
+
+- Made the research recipes for Trick: Flexible Die, Trick: Cocytus, and Trick: Meteor Line more difficult
+
+
+- Added material items
+  + Psimetal Nugget
+  + Ivory Psimetal Nugget
+  + Ebony Psimetal Nugget
+  + Chaotic Psimetal Nugget
+  + Flashmetal Nugget
+  + Heavy Psimetal Nugget
+  + Antinite Nugget
+  + Psycheonic Metal Block
+  + Hypostasis Gem Block
+
+
+- Added integrations with Mystical Agriculture, Mystical Agradditions, and Productive Bees
+  + Enabled crafting of Psi and PsiTweaks materials
+
+
+- Improved Psi refund handling for Trick: Flexible Die
+
+
+#### v0.10.2
+
+- (1.20.1) Fixed an issue where capacity changes for gas-burning generators were not being applied correctly
+
+
+- (1.21.1) Fixed an issue where ΨE-O fuel was not functioning correctly
+
+
+#### v0.10.1
+
+- Fixed an issue where connectors could be pulled by dragging while a Psitweaks text input window or similar screen was open when using Psionic Utilities
+
+
+- Added the ability to select multiple spell pieces with Shift + drag or Ctrl + click in the Spell Programmer screen, then copy, cut, and paste them
+
+
+- Changed the mod so that it can launch even when Mekanism and Mekanism Generators are not installed
+  + Without Mekanism, material recipes are simplified, and machine blocks that depend on Mekanism are not added.
+  + This change is primarily intended for modpack developers; installing Mekanism is strongly recommended for normal play.
+
+
+- Adjusted Material Mutation processing recipes
+
+
+- Made the Third-Eye Device crafting recipe more difficult
+
+
+- Added the Interference Range Extender
+  + A lower-tier device than the Third-Eye Device. Extends spell range and raycast range up to 64 blocks.
+
+
+- Added config options to control whether Psi consumption when taking damage and the Psi regeneration cooldown after consuming Psi are disabled
+
+
+- Implemented an in-game configuration screen
+
+
+- Hardened Psi-Link Generator setting synchronization so only the valid, currently open owner menu can update the machine
+
+
+- (1.20.1) Changed the specifications of the Program Research Table to the Mekanism base (same design as 1.21.1)
+
+
+- (1.20.1) Made the Transcendent Spell Bullet crafting recipe more difficult (same as 1.21.1)
+
+
+#### v0.10.0
+
+- Added value types available in spell programming
+  + Item
+  + Block
+    * Contains Vector information and can be auto-boxed to and unboxed from Vector
+  + String
+  + Matrix
+
+
+- Defined Contextual Value
+  * A collective term for complex in-game values such as Entity, Item, and Block.
+
+
+- Defined Plain Value
+  * A collective term for simple values such as String, Number, and Vector.
+
+
+- Added List support for types other than Entity
+
+
+- CAD memory can now store Plain Values
+  * In addition to Vectors that Psi itself can read and write, String, Number, and Matrix values can now be stored.
+
+
+- Added spell pieces
+  * Constant: String
+
+  * Operator: Block Position
+  * Operator: Block State
+  * Operator: Block State Entries
+  * Operator: Block State Value
+  * Operator: Equal
+  * Operator: Partial Match
+  * Operator: From String List
+  * Operator: From String
+  * Operator: To String List
+  * Operator: To String
+  * Operator: String Concatenation
+  * Operator: String Trim
+  * Operator: String Slice
+  * Operator: String Length
+  * Operator: String Replace
+  * Operator: Format String
+  * Operator: Starts With
+  * Operator: Ends With
+  * Operator: String List Join
+  * Operator: String Split
+  * Operator: Registry ID
+  * Operator: Registry ID List
+  * Operator: Greater Than
+  * Operator: Greater Than or Equal
+  * Operator: Item Count
+  * Operator: Item Total Count
+  * Operator: Add to List (PT)
+  * Operator: Remove from List (PT)
+  * Operator: List Concatenation (PT)
+  * Operator: List Exclusion (PT)
+  * Operator: List Intersection (PT)
+  * Operator: List Search
+  * Operator: List Search Exclude
+  * Operator: List Insert
+  * Operator: Remove Indices
+  * Operator: List Size
+  * Operator: Random Element
+  * Operator: Player Name
+  * Operator: Tag List
+  * Operator: Block State
+  * Operator: Block State Entries
+  * Operator: Block State Value
+  * Operator: Number List to Vector
+  * Operator: Vector to Number List
+  * Operator: Matrix Transform Vector
+  * Operator: Matrix Linear Part
+  * Operator: Matrix Replace Element
+  * Operator: Matrix Delete Row
+  * Operator: Matrix Delete Column
+  * Operator: Matrix Cuboid Region
+  * Operator: Region Vector List
+  * Operator: Block Position List
+  * Operator: Matrix Add
+  * Operator: Matrix Subtract
+  * Operator: Matrix Multiply
+  * Operator: Matrix Scalar Multiply
+  * Operator: Matrix Transpose
+  * Operator: Matrix Determinant
+  * Operator: Matrix Inverse
+  * Operator: Matrix Extract Row
+  * Operator: Matrix Extract Column
+  * Operator: Matrix Element
+  * Operator: Matrix Row Count
+  * Operator: Matrix Column Count
+  * Operator: Matrix Multiply Vector
+  * Operator: Column Matrix From List
+  * Operator: Matrix Flatten
+  * Operator: Identity Matrix
+  * Operator: Zero Matrix
+  * Operator: Diagonal Matrix
+  * Operator: Matrix Replace Column
+  * Operator: Matrix Replace Row
+  * Operator: Outside Region
+  * Operator: Inside Region
+
+  * Selector: Block
+  * Selector: Display Name
+  * Selector: Display Name List
+  * Selector: Held Item
+  * Selector: Held Items
+  * Selector: Internal Items
+  * Selector: Internal Slot Item
+  * Selector: Selected Slot Item
+  * Selector: Entity Slot Item
+  * Selector: Indexed Element (PT)
+  * Selector: NBT
+  * Selector: NBT Keys
+  * Selector: NBT Value
+  * Selector: Online Players
+  * Selector: Stored Value
+  * Selector: Block List
+
+  * Trick: Store Value
+  * Trick: Switch
+  * Trick: Jump
+  * Trick: Mass Block Break
+  * Jump Anchor
+
+
+- Fixed bugs in the block breaking process for Trick: Block Break (Fortune) and Trick: Block Break (Silk Touch)
+
+#### v0.9.5
+
+- Added spell pieces
+  * Trick: Meteor Line
+  * Trick: Block Melt
+  * Trick: Block Freeze
+  * Operator: Tangent
+  * Operator: Arc Tangent
+  * Operator: Hyperbolic Sine
+  * Operator: Hyperbolic Cosine
+  * Operator: Hyperbolic Tangent
+
+
+- Fixed Molecular Divider's hit detection not behaving as intended
+
+
+- Made the Program: Cocytus recipe harder
+
+
+- Changed the Material Mutator so Gas Upgrades can no longer be installed
+
+
+
+- (1.20.1) Changed Magician villager trades to match 1.21.1
+
+
+- (1.20.1) Fixed unintended Psi refund amounts when combining High-efficiency Computation with Trick: Flexible Die
+
+
+- (1.21.1) Fixed the Material Mutator's Psionic Echo consumption amount
+
+
+- (1.21.1) Fixed Program Research Station research progress resetting unexpectedly
+
+
+- (1.21.1) Fixed the Sculk Eroder crafting recipe
+
+
+- (1.21.1) Added Create Aeronautics (Sable) compat features
+    * Simulated Contraptions are no longer treated as out of range when using spells that refer to block positions
+    * Added Trick: Physical Propulsion
+
+
+
+
+#### v0.9.4
+
+- Added Psi-Link Generator
+  * An early-game generator that produces power while consuming the owner's remaining Psi
+  * Generates 25 FE/Psi
+
+
+- Added Transcendent Universal Cable and Transcendent Energy Cube
+  * 128x the performance of the Ultimate tier
+
+
+- Added PsiTweaks documentation to Encyclopaedia Psionica
+
+
+
+#### v0.9.3
+
+- Added attributes: Spell Damage Multiplier, Psi Regeneration Rate, and Psi Capacity
+
+
+- Added Spell Damage Multiplier, Psi Regeneration Rate, and Psi Capacity bonuses to the M.O.V.A.L Suit and Psi's psimetal exosuit armor
+
+
+- Added Spell Magazine
+  * Stores up to 12 spell bullets, and can swap its stored spell bullet with the one in a CAD by right-clicking while holding a CAD
+  * Inspired by the item of the same name from 1.12.2 Random PSIdeas (by kamefrede123)
+
+
+- Added Sorcery Booster
+  * Increases Spell Damage Multiplier by 30% when equipped in the Magic Calculation Area
+
+
+- Added Inline Caster
+  * Has a single internal socket slot and can store a Spell Bullet via the CAD Assembler and similar methods
+  * Casts the currently selected spell bullet when right-clicked while holding a CAD
+  * Treated as casting through the CAD being carried
+  * Inspired by the item of the same name from 1.12.2 Random PSIdeas (by kamefrede123)
+
+
+- Added Secondary Caster and Parallel Caster
+  * 5-slot and 11-slot variants of the Inline Caster
+
+#### v0.9.2
+
+- Fixed Recipe Error
+
+#### v0.9.1
+
+- Antinite and Psycheonic Metal can now be melted in Tinkers' Construct
+
+
+- Added Trick: Fire Circle
+  * Places a fire spell object that deals fire damage to entities inside it
+
+
+- Added Selector: Nearby SpellGram Object
+
+
+- Added Trick: Set SpellGram Follow Target
+  * Sets a spellgram object to follow a specified entity
+
+
+- Added Trick: Ice Circle
+  * Places an ice spell object that deals freezing damage to entities inside it
+
+
+- Added Trick: Cure Radiation
+
+
+- On multiplayer servers, Psitweaks offensive spells no longer hit players when pvp=false in server.properties
+
+
+- Changed Trick: Radiation Injection to scale exposure amount exponentially based on power
+
+
+#### v0.9.0
+
+- Added Trick: Material Mutation
+  * Breaks specific blocks and transmutes them into different items
+
+
+- Added Trick: Radiation Filter
+  * Protects the target from radiation exposure
+
+
+- Added Material Mutator
+  * A machine that performs Trick: Material Mutation processing using power and Psionic Echo Gas
+
+
+- Added Polonium Block and Plutonium Block
+
+
+- Added intermediate materials
+  * Americium Pellet
+  * Neptunium Pellet
+  * Hypostasis Gem
+  * Enriched Hypostasis Gem
+  * Hypostasis Alloy
+  * Hypostasis Control Circuit
+  * Psycheonic Metal Nugget
+  * Psycheonic Metal Ingot
+  * Jade
+  * Magatama
+  * Spellmachinery Casing
+
+
+- Added Philosopher's Stone
+  * Enables item-transmutation-style crafting inspired by ProjectE (similar concept, different implementation)
+
+
+- Added Psycheonic Metal CAD Assembly
+
+
+#### v0.8.3
+
+- Added Antinite Ore
+  * Rarely generates outside the End main island; currently has no use
+
+
+- Added Chaotic Psimetal Block, Flashmetal Block, and Heavy Psimetal Block
+
+
+- Spell pieces can now be searched in English during spell programming regardless of the current language setting
+
+
+#### v0.8.2
+
+- Program items can now be duplicated by crafting them with a Blank Program
+
+
+- Added Trick: Flexible Die
+  * In addition to Psi's Trick: Die behavior, refunds Psi cost for unexecuted spell pieces
+  * Known minor issue: when used in spells that run every tick, Psi display can become desynced
+
+
+- Added Auto Caster: custom tick
+  * Cast interval can be configured in ticks
+
+
+- Increased Auto Caster socket count to 7
+
+#### v0.8.1
+
+- Added TiC compat molten psimetals, tools, modifiers
+  * some modifiers are inspired by PlusTiC
+
+
+- Backported Mekanism QIO recipes from 1.21.1
+
+
+#### v0.8.0 
+
+- Added Program Research Station
+    * Unlock new spell pieces by spending items, power, and time
+    * Existing powerful spells from this mod now also require unlocking
+    * Whether research is required can be changed in the config
+
+
+- Added Trick: Blaze Ball
+    * Launches a fireball forward to attack.
+
+
+- Added Trick: Radiation Injection
+    * Exposes the target to radiation
+
+
+- Added Trick: Guillotine
+    * Deals damage and drops the target's head on kill
+
+
+- Added Trick: Active Air Mine
+    * Creates a spherical shockwave at the specified coordinates to attack
+
+
+- Added tags to items
+
+
+- Reduced cast cost of Molecular Divider
+
+
+- Added "Spellcaster" villager job
+
+
+- Added Portable CAD Assembler
+
+
+- Fixed an issue when using PsiEX:TiCCAD with CADDisassembler
