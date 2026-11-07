@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
+import com.moratan251.psitweaks.common.spells.SpellBlockProtection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -21,6 +22,7 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * スペルピース：対象座標のブロックに右クリック動作を実行
  */
 public class PieceTrickInteractBlock extends PieceTrick {
+    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.accessdenyed";
 
     ParamVector position;
 
@@ -49,18 +51,19 @@ public class PieceTrickInteractBlock extends PieceTrick {
 
         if (positionVal == null) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
-        }//else if (!context.isInRadius(positionVal)) {
-        //    throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
-      //  }
+        }
+        if (!context.isInRadius(positionVal)) {
+            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
+        }
 
         Level world = context.caster.level();
         Player player = context.caster;
         BlockPos pos = positionVal.toBlockPos();
 
-        // ワールドの範囲チェック
-        //if (!world.isLoaded(targetPos)) {
-        //    throw new SpellRuntimeException("psitweaks.spellerror.chunkNotLoaded");
-       // }
+        // 読み込まれていないチャンクを読み込み・生成しない
+        if (!world.isLoaded(pos)) {
+            return null;
+        }
 
         BlockState blockState = world.getBlockState(pos);
 
@@ -80,9 +83,14 @@ public class PieceTrickInteractBlock extends PieceTrick {
                 false
         );
 
+        //オフハンドで右クリック。自律詠唱機はオフハンドを持たないので、選択中の機械のスロット（メインハンド）を使う
+        InteractionHand hand = player instanceof AutonomousCasterPlayer ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        // 保護 Mod は右クリックのイベントでブロックの使用を止める。バニラが右クリックの前に送るのと同じイベントで問い合わせる
+        if (!SpellBlockProtection.mayUse(world, player, hand, hitResult)) {
+            throw new SpellRuntimeException(ERROR_ACCESS_DENIED);
+        }
+
         try {
-            //オフハンドで右クリック。自律詠唱機はオフハンドを持たないので、選択中の機械のスロット（メインハンド）を使う
-            InteractionHand hand = player instanceof AutonomousCasterPlayer ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             ItemStack heldStack = player.getItemInHand(hand);
             ItemInteractionResult itemResult = blockState.useItemOn(
                     heldStack,

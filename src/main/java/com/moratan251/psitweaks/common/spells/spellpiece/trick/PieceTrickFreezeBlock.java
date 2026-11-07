@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.spells.SpellBlockProtection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -57,7 +58,8 @@ public class PieceTrickFreezeBlock extends PieceTrick {
         if (!level.isLoaded(pos)) {
             return null;
         }
-        if (!level.mayInteract(context.caster, pos)) {
+        // mayInteract はスポーン保護とワールドの境界しか見ない。保護区域 Mod が見る破壊のイベントでも問い合わせる
+        if (!SpellBlockProtection.mayChange(level, context.caster, pos)) {
             return null;
         }
 
