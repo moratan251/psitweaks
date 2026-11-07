@@ -1897,8 +1897,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
         addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         addBookPage(root, "trick_chain_lightning.0",
-                "Discharges a bolt of lightning from the spell's focal point in the $(thing)Direction$(0). It strikes the nearest hostile creature within 16 blocks that way; no precise aim is needed. With none there, the bolt simply discharges into the air, and the spell does not fail.",
-                "術式の焦点から $(thing)方向$(0) へ雷撃を放ち、その方向の16ブロック以内で最も近い敵対的な生物に当てます. 正確に狙う必要はありません. 該当する生物がいなくても術式は失敗せず、雷撃はそのまま空中へ放電されます.");
+                "Discharges a bolt of lightning from the spell's focal point in the $(thing)Direction$(0). It strikes the nearest hostile creature within 24 blocks that way; no precise aim is needed. With none there, the bolt simply discharges into the air, and the spell does not fail.",
+                "術式の焦点から $(thing)方向$(0) へ雷撃を放ち、その方向の24ブロック以内で最も近い敵対的な生物に当てます. 正確に狙う必要はありません. 該当する生物がいなくても術式は失敗せず、雷撃はそのまま空中へ放電されます.");
         addBookPage(root, "trick_chain_lightning.1",
                 "From the first target, the bolt branches to up to 3 hostile creatures within 8 blocks, and from each of those to up to 2 more within 8 blocks. It never strikes the same creature twice. The first hit deals $(thing)9 + 9 × Power$(0) damage, the first branches 40%% of it and the second branches 20%%.",
                 "雷撃は最初の対象から8ブロック以内の敵対的な生物最大3体へ枝分かれし、さらにそれぞれから8ブロック以内の最大2体へ枝分かれします. 同じ生物に二度当たることはありません. ダメージは最初の一撃が $(thing)9 + 9×威力$(0)、1段目の枝分かれがその40%%、2段目が20%%です.");

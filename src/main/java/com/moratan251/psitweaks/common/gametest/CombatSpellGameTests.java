@@ -673,23 +673,24 @@ public final class CombatSpellGameTests {
      * ceiling: the caster stands on the ceiling and aims the bolt at the sky.
      */
     @GameTest(template = TEMPLATE, batch = BATCH + "_chain_range")
-    public static void chainLightningReachesSixteenBlocksAndBranchesEight(GameTestHelper helper) throws Exception {
+    public static void chainLightningReachesTwentyFourBlocksAndBranchesEight(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 5, 2), "chain-range");
         var context = new SpellContext().setPlayer(player);
         Vector3 up = new Vector3(0.0, 1.0, 0.0);
-        // Its centre is about 17.4 blocks above the caster's eyes, beyond the bolt's reach of 16.
-        var far = tough(husk(helper, new Vec3(2.5, 23.0, 2.5), false));
+        // Its centre is about 25.4 blocks above the caster's eyes, beyond the bolt's reach of 24.
+        var far = tough(husk(helper, new Vec3(2.5, 31.0, 2.5), false));
         helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, up, POWER, 1.0)).execute(context)) == null
-                && near(far.getHealth(), TOUGH_HEALTH), "A creature beyond 16 blocks must be out of reach");
+                && near(far.getHealth(), TOUGH_HEALTH), "A creature beyond 24 blocks must be out of reach");
         far.discard();
-        // About 14.4 blocks up: within reach. The next husks are 7.5 and 8.5 blocks from it, too far up to be struck
-        // first. Only the nearer one is within a branch of it; the other is within a branch of the nearer one.
-        var first = tough(husk(helper, new Vec3(2.5, 20.0, 2.5), false));
-        var inBranch = tough(husk(helper, new Vec3(2.5, 27.5, 2.5), false));
-        var outOfBranch = tough(husk(helper, new Vec3(0.5, 20.0 + Math.sqrt(8.5 * 8.5 - 8.0), 0.5), false));
+        // About 21.4 blocks up: within reach. The next husks are 7.5 and 8.5 blocks from it, too far up to be struck
+        // first. Only the nearer one is within a branch of it; the other is within a branch of the nearer one. All stay
+        // within Psi's 32 blocks of the caster.
+        var first = tough(husk(helper, new Vec3(2.5, 27.0, 2.5), false));
+        var inBranch = tough(husk(helper, new Vec3(2.5, 34.5, 2.5), false));
+        var outOfBranch = tough(husk(helper, new Vec3(0.5, 27.0 + Math.sqrt(8.5 * 8.5 - 8.0), 0.5), false));
         chainLightning(Map.of(DIRECTION, up, POWER, 1.0)).execute(context);
         float d1 = TOUGH_HEALTH - first.getHealth();
-        helper.assertTrue(d1 > EPSILON, "A creature 14 blocks away must be struck");
+        helper.assertTrue(d1 > EPSILON, "A creature 21 blocks away must be struck");
         AABB area = first.getBoundingBox().inflate(20.0);
         helper.startSequence()
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, area).isEmpty(),

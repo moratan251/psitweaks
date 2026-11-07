@@ -53,7 +53,7 @@ public class PieceTrickChainLightning extends PieceTrick {
     private static final float BASE_DAMAGE = 9.0F;
     private static final float DAMAGE_PER_POWER = 9.0F;
     /** How far the bolt reaches from the focal point: the first target, or the end of a discharge into the air. */
-    public static final double RANGE = 16.0;
+    public static final double RANGE = 24.0;
     /** How far a branch reaches from the creature it leaves. */
     public static final double BRANCH_RANGE = 8.0;
     /** How many creatures the first target branches to. */
