@@ -170,10 +170,16 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
         return null;
     }
 
-    /** FE keeps the rules of the former FE Absorb/Supply tricks: Power * 4000 FE, and no effect where you may not interact. */
-    private void transferEnergy(SpellContext context, ServerPlayer player, UUID owner, BlockPos blockPos, Direction facing, double power) {
+    /**
+     * FE keeps the amount of the former FE Absorb/Supply tricks (Power * 4000 FE). Protection is asked as for the other
+     * modes: the right-click event protection mods listen to, not only vanilla's spawn protection.
+     */
+    private void transferEnergy(SpellContext context, ServerPlayer player, UUID owner, BlockPos blockPos, Direction facing, double power)
+            throws SpellRuntimeException {
         var level = player.serverLevel();
-        if (!level.hasChunkAt(blockPos) || !level.mayInteract(player, blockPos)) return;
+        if (!level.hasChunkAt(blockPos)) return;
+        if (!level.mayInteract(player, blockPos) || PieceTrickItemTransferBase.isProtectedFromInteraction(player, blockPos, facing))
+            throw new SpellRuntimeException("psitweaks.spellerror.accessdenyed");
         var handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, blockPos, facing);
         if (handler == null) return;
         var storage = IdeaStorageService.get(player.server, owner);

@@ -892,7 +892,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.1", "Upgrading a spell bullet requires four bullets from the previous tier, making it very expensive."},
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
-            {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory."},
+            {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
             {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune."},
@@ -1004,7 +1004,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.1", "術式弾の強化は前段階の術式弾を4つ必要とするため、非常に高コストです."},
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
-            {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. "},
+            {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します."},
@@ -2428,12 +2428,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                             + "Itemはそのアイテムの種類に、Item Listはそのいずれかに一致します。演算子: 厳密一致アイテムの出力をつなぐと、"
                             + "エンチャントや耐久値などのデータコンポーネントまで一致するものだけが対象です。");
             addBookPage(root, id + ".3",
-                    "Follows the block's per-face input and output. For items, fluids and chemicals, casting fails with an error if the block is protected,"
-                            + " and nothing happens on blocks in unloaded chunks or on your own Ideaspace Connector."
-                            + " FE mode does nothing where you may not interact. Chemical mode requires Mekanism and does nothing without it.",
-                    "ブロックの面ごとの入出力に従います。アイテム・液体・化学物質では、保護されたブロックを対象にするとエラーになり、"
-                            + "読み込まれていないチャンクのブロックや、自分のイデアコネクターには作用しません。"
-                            + "FEモードは、操作できない場所では何もしません。化学物質モードにはMekanismが必要で、導入されていない場合は何もしません。");
+                    "Follows the block's per-face input and output. Casting fails with an error if the block is protected,"
+                            + " and nothing happens on blocks in unloaded chunks. Items, fluids and chemicals are not moved on your own Ideaspace Connector either."
+                            + " Chemical mode requires Mekanism and does nothing without it.",
+                    "ブロックの面ごとの入出力に従います。保護されたブロックを対象にするとエラーになり、"
+                            + "読み込まれていないチャンクのブロックには作用しません。アイテム・液体・化学物質は、自分のイデアコネクターにも作用しません。"
+                            + "化学物質モードにはMekanismが必要で、導入されていない場合は何もしません。");
             addBookPage(root, id + ".4",
                     "Exact Transfer (I=, F=, C=; the badge turns white): moves exactly the full amount of one resource type, or nothing at all."
                             + " Both sides are simulated first, including the storage's per-type and type limits."

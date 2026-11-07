@@ -59,11 +59,15 @@ public class PieceSelectorStoredEntity extends PieceSelector {
             return null;
         }
 
+        Entity entity;
         try {
             UUID uuid = UUID.fromString(uuidStr);
-            return CasterIds.find((ServerLevel) context.caster.level(), uuid);
+            entity = CasterIds.find((ServerLevel) context.caster.level(), uuid);
         } catch (Exception e) {
             return null;
         }
+        // ほかの取得子と同じく術式の射程の中だけで見つかる。射程の外まで取れると、位置・持ち物・NBT を読む演算子で
+        // 同じ次元のどこにいる相手でも追えてしまう（サードアイデバイスを着けていれば今までどおり遠くも取れる）。
+        return entity != null && context.isInRadius(entity) ? entity : null;
     }
 }

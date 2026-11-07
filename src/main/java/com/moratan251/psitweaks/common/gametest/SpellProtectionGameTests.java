@@ -3,17 +3,24 @@ package com.moratan251.psitweaks.common.gametest;
 import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.handler.MaterialMutationRecipeHandler;
+import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
+import com.moratan251.psitweaks.common.spells.mode.BlockResourceModes;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorStoredEntity;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickFreezeBlock;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickInteractBlock;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMaterialMutation;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeltBlock;
+import com.moratan251.psitweaks.common.storage.connector.ConnectorResource;
+import com.moratan251.psitweaks.common.storage.idea.IdeaStorageService;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,6 +38,9 @@ import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.common.item.ItemCAD;
+import vazkii.psi.common.item.base.ModCADComponents;
+import vazkii.psi.common.item.base.ModItems;
 
 /**
  * Tricks that use or change a block must stay within the spell's range, must not load far chunks, and must ask the
@@ -181,6 +191,65 @@ public final class SpellProtectionGameTests {
         helper.assertBlockNotPresent(input, mutable);
         boolean dropped = !helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(mutableAbs).inflate(1.5)).isEmpty();
         helper.assertTrue(dropped, "Material Mutation dropped nothing once allowed");
+        helper.succeed();
+    }
+
+    /** F-031: the FE mode of the Ideaspace Storage tricks asks the right-click event like the other modes. */
+    @GameTest(template = TEMPLATE)
+    public static void ideaStorageFeModeAsksProtection(GameTestHelper helper) throws Exception {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "protected-fe"));
+        var connector = IdeaLogisticsGameTests.place(helper, new BlockPos(1, 1, 1), UUID.randomUUID());
+        connector.setResource(0, ConnectorResource.ENERGY);
+        connector.storage().insertEnergy(8_000, false);
+        BlockPos pos = connector.getBlockPos();
+        player.setPos(Vec3.atCenterOf(pos));
+        var context = new SpellContext().setPlayer(player);
+        var storage = IdeaStorageService.get(player.server, player.getUUID());
+        var absorb = IdeaLogisticsGameTests.trick(true, BlockResourceModes.ENERGY,
+                param -> IdeaLogisticsGameTests.paramValue(param, pos, 1, null));
+
+        Consumer<PlayerInteractEvent.RightClickBlock> deny = event -> {
+            if (event.getPos().equals(pos)) {
+                event.setCanceled(true);
+            }
+        };
+        NeoForge.EVENT_BUS.addListener(deny);
+        String denied;
+        try {
+            denied = castError(() -> absorb.execute(context));
+        } finally {
+            NeoForge.EVENT_BUS.unregister(deny);
+        }
+        helper.assertTrue(ACCESS_DENIED.equals(denied), "A protected machine should refuse the FE mode, got " + denied);
+        helper.assertTrue(storage.energy() == 0 && connector.storage().energy() == 8_000,
+                "FE moved out of a protected machine: " + storage.energy());
+
+        absorb.execute(context);
+        helper.assertTrue(storage.energy() > 0, "FE did not move once allowed");
+        helper.succeed();
+    }
+
+    /** F-025: Selector: Stored Entity finds the entity only within the spell range. */
+    @GameTest(template = TEMPLATE)
+    public static void storedEntityIsOnlyFoundWithinTheRange(GameTestHelper helper) throws Exception {
+        var player = caster(helper, "stored-entity");
+        player.getInventory().setItem(0, ItemCAD.makeCAD(player.registryAccess(),
+                new ItemStack(ModItems.cadAssemblyPsimetal.get()), new ItemStack(ModCADComponents.cadCoreBasic.get()),
+                new ItemStack(ModItems.cadSocketHuge.get())));
+        var context = new SpellContext().setPlayer(player);
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 2, 1, 3);
+        zombie.setNoAi(true);
+        CadPlainMemory.store(context, 0, zombie.getUUID().toString());
+        var selector = new PieceSelectorStoredEntity(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return 1.0D; }
+        };
+        helper.assertTrue(selector.execute(context) == zombie, "A stored entity nearby was not found");
+
+        Vec3 home = player.position();
+        player.moveTo(home.add(64, 0, 0));
+        var farContext = new SpellContext().setPlayer(player);
+        helper.assertTrue(selector.execute(farContext) == null, "A stored entity outside the spell range was found");
+        player.moveTo(home);
         helper.succeed();
     }
 }
