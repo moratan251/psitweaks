@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.attachments;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreeze;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -38,6 +39,15 @@ public final class PsitweaksAttachments {
             ATTACHMENT_TYPES.register("cocytus_freeze", () -> AttachmentType.builder(() -> CocytusFreeze.DEFAULT)
                     .serialize(CocytusFreeze.CODEC)
                     .sync(CocytusFreeze.STREAM_CODEC)
+                    .build());
+
+    /**
+     * Game time the wet state of Trick: Aqua Cutter dries (see {@code CombatStatuses}). Synced, so clients agree on
+     * {@code isInWaterOrRain} and draw the drops; not saved, as it lasts only seconds.
+     */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> SOAK =
+            ATTACHMENT_TYPES.register("soak", () -> AttachmentType.builder(() -> 0L)
+                    .sync(ByteBufCodecs.VAR_LONG)
                     .build());
 
     /** Entity id of the player's Trick: Parade lookalike. Server-side bookkeeping only: neither saved nor synced. */

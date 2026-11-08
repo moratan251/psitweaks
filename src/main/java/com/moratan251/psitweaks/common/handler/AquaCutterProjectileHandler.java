@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -33,6 +34,8 @@ public class AquaCutterProjectileHandler {
 
     /** How far the drops of the burst fly. */
     private static final float SPLASH_SIZE = 1.1F;
+    /** Extra damage to a burning creature: the water flashes into steam on it. */
+    public static final float BURNING_FACTOR = 1.25F;
 
     @SubscribeEvent
     public static void onProjectileImpact(ProjectileImpactEvent event) {
@@ -53,15 +56,8 @@ public class AquaCutterProjectileHandler {
                 event.setCanceled(true);
                 return;
             }
-            float damage = Math.max(0.0F, data.getFloat(TAG_AQUA_CUTTER_DAMAGE));
-            if (target.isSensitiveToWater()) {
-                damage *= 2.0F;
-            }
-
-            Entity owner = projectile.getOwner();
-            DamageSource source = projectile.damageSources().thrown(projectile, owner);
-            AttackRules.harmByProjectile(projectile, target,
-                    AttackRules.Options.of(data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)), source, damage);
+            strike(projectile, target, Math.max(0.0F, data.getFloat(TAG_AQUA_CUTTER_DAMAGE)),
+                    AttackRules.Options.of(data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)));
 
             // The water breaks on the side of the creature it struck and splashes back off it.
             Vec3 flight = flightDirection(projectile);
@@ -75,6 +71,27 @@ public class AquaCutterProjectileHandler {
 
         projectile.discard();
         event.setCanceled(true);
+    }
+
+    /**
+     * The water blade's hit on a creature: double damage to creatures hurt by water, and {@link #BURNING_FACTOR} to a
+     * burning one. The blade leaves the creature wet (see {@link CombatStatuses}), even when the hurt cooldown took the
+     * damage; on a burning creature the water flashes into steam instead, so the fire keeps burning and it stays dry.
+     */
+    public static void strike(Projectile projectile, LivingEntity target, float damage, AttackRules.Options options) {
+        boolean burning = target.isOnFire();
+        if (target.isSensitiveToWater()) {
+            damage *= 2.0F;
+        }
+        if (burning) {
+            damage *= BURNING_FACTOR;
+        }
+        Entity owner = projectile.getOwner();
+        DamageSource source = projectile.damageSources().thrown(projectile, owner);
+        AttackRules.harmByProjectile(projectile, target, options, source, damage);
+        if (!burning && target.isAlive() && AttackRules.canProjectileHarm(projectile, target, options)) {
+            CombatStatuses.soak(target, CombatStatuses.AQUA_CUTTER_WET_TICKS);
+        }
     }
 
     /** Where the blade was heading when it hit. */

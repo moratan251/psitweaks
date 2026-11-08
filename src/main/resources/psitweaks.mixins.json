@@ -8,6 +8,7 @@
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
     "EntityBarrierFireMixin",
+    "EntityCombatStatusMixin",
     "EntityParadeInvisibleMixin",
     "EntitySpellCircleAutonomousCasterMixin",
     "EntitySpellProjectileAutonomousCasterMixin",

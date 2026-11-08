@@ -931,7 +931,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
-            {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick."},
+            {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam, so it keeps burning and stays dry."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "Breaks the target block with Silk Touch."},
@@ -1043,7 +1043,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
-            {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です."},
+            {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火は消えず, 濡れもしません."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "対象ブロックをシルクタッチ付きで破壊します."},
@@ -1878,7 +1878,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、強度が尽きるとつぶれ、光条も一緒に消えます.");
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
-        addBookPage(root, "trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick.", "前方へ水刃の発射体を放つ序盤用の攻撃術式です.");
+        addBookPage(root, "trick_aqua_cutter",
+                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam, so it keeps burning and stays dry.",
+                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火は消えず, 濡れもしません.");
         addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
@@ -1903,8 +1905,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "From the first target, the bolt branches to up to 3 hostile creatures within 8 blocks, and from each of those to up to 2 more within 8 blocks. It never strikes the same creature twice. The first hit deals $(thing)9 + 9 × Power$(0) damage, the first branches 40%% of it and the second branches 20%%.",
                 "雷撃は最初の対象から8ブロック以内の敵対的な生物最大3体へ枝分かれし、さらにそれぞれから8ブロック以内の最大2体へ枝分かれします. 同じ生物に二度当たることはありません. ダメージは最初の一撃が $(thing)9 + 9×威力$(0)、1段目の枝分かれがその40%%、2段目が20%%です.");
         addBookPage(root, "trick_chain_lightning.2",
-                "Creatures in water or rain take 50%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
-                "水中や雨の中にいる生物には50%%増しになります. 最初の対象も枝分かれの先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+                "Wet creatures (in water or rain, or soaked by $(thing)Trick: Aqua Cutter$(0)) take 50%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
+                "水中や雨の中にいる生物や, $(thing)作動式: アクアカッター$(0) で濡れた生物には50%%増しになります. 最初の対象も枝分かれの先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
         addBookPage(root, "trick_chain_lightning.3",
                 "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt strikes and branches to any creature, animals and villagers included. It still never strikes you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
                 "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物を狙い、枝分かれします. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
