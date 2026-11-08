@@ -196,6 +196,11 @@ dependencies {
     runtimeOnly "curse.maven:geckolib-388172:7023453"
     // Ars Nouveau: checks that Trick: Dancing Blades triggers other mods' swords (Enchanter's Sword) on hit.
     runtimeOnly "curse.maven:ars-nouveau-401955:9052154"
+    // Iron's Spells 'n Spellbooks: for designing how combat status effects interact with other magic mods.
+    // Its other requirements, GeckoLib and Curios, are declared above.
+    runtimeOnly "curse.maven:irons-spells-n-spellbooks-855414:8680204"
+    runtimeOnly "curse.maven:irons-lib-1492763:9328060"
+    runtimeOnly "curse.maven:playeranimator-658587:7389814"
     //runtimeOnly "curse.maven:nuclearcraft-neoteric-840010:8754140"
     //runtimeOnly "curse.maven:nuclear-radiation-1148833:8745596"
 
