@@ -5,6 +5,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.network.MessageRegionOutline;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.BlockInventorySlotSource;
@@ -49,6 +50,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -534,6 +537,20 @@ public final class ItemBlockMatrixGameTests {
         matrix[0] = cube(vector(helper.absolutePos(new BlockPos(1, 1, 1))), 0);
         helper.assertTrue(MassBlockBreakHelper.ERROR_DEGENERATE_EDGES.equals(error(() -> show.execute(context))),
                 "A flat region must fail");
+
+        // The outline goes out as one payload of the 12 edges with the spell colour (0xRRGGBB) and the sparkle lifetime.
+        var outlineEdges = PieceTrickShowRegion.outline(area, true);
+        List<Vec3> from = new ArrayList<>();
+        List<Vec3> to = new ArrayList<>();
+        for (Vector3[] edge : outlineEdges) {
+            from.add(edge[0].toVec3D());
+            to.add(edge[1].toVec3D());
+        }
+        var outline = new MessageRegionOutline(from, to, 0xFFFFFF, 20);
+        var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
+        MessageRegionOutline.STREAM_CODEC.encode(buf, outline);
+        helper.assertTrue(MessageRegionOutline.STREAM_CODEC.decode(buf).equals(outline), "The region outline payload changed in transit");
+        helper.assertTrue(new MessageRegionOutline(from, to, 0, 0).lifetime() == 1, "The sparkles must live at least one tick");
 
         var saved = (PieceTrickShowRegion) create("trick_show_region");
         saved.setModeOption(PsitweaksModeOptions.VECTOR);

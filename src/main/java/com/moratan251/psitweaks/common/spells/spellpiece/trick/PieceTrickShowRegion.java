@@ -2,6 +2,8 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
+import com.moratan251.psitweaks.common.network.MessageRegionOutline;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamMatrix;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.RegionMatrix;
@@ -13,9 +15,8 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
@@ -27,11 +28,9 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
-import vazkii.psi.common.network.PsiNetwork;
-import vazkii.psi.common.network.message.MessageParticleTrail;
 
 /**
- * Draws the 12 edges of a region matrix with Psi's particle trail in the CAD colour. Block mode moves the outline by
+ * Draws the 12 edges of a region matrix with Psi's sparkles in the CAD colour ({@link MessageRegionOutline}). Block mode moves the outline by
  * half a block so it wraps the blocks whose positions are in the region, which are exactly the blocks Operator: Region
  * Vector List and the Block mode of Operator: Inside Region pick.
  */
@@ -106,13 +105,14 @@ public class PieceTrickShowRegion extends PieceTrick implements PsitweaksModeCon
             }
         }
 
-        ItemStack cad = PsiAPI.getPlayerCAD(context.caster);
+        List<Vec3> from = new ArrayList<>(edges.size());
+        List<Vec3> to = new ArrayList<>(edges.size());
         for (Vector3[] edge : edges) {
-            Vector3 direction = edge[1].copy().sub(edge[0]);
-            // The trail stops a quarter block short of its length, so extend it to reach the far corner.
-            send(context.caster, new MessageParticleTrail(edge[0].toVec3D(),
-                    direction.toVec3D(), direction.mag() + 0.25, ticks / 6, cad));
+            from.add(edge[0].toVec3D());
+            to.add(edge[1].toVec3D());
         }
+        // The sparkles live a sixth of the Time, as in Psi's particle trail.
+        send(context.caster, new MessageRegionOutline(from, to, CombatSpellHelper.spellColor(context.caster), ticks / 6));
         return null;
     }
 
@@ -120,11 +120,11 @@ public class PieceTrickShowRegion extends PieceTrick implements PsitweaksModeCon
      * Sends the outline to the players who see the caster. The autonomous caster's player is not in the world, so
      * nobody tracks it; the players who see its chunk get the outline instead.
      */
-    private static void send(Player caster, MessageParticleTrail message) {
+    private static void send(Player caster, MessageRegionOutline message) {
         if (caster instanceof AutonomousCasterPlayer && caster.level() instanceof ServerLevel level) {
             PacketDistributor.sendToPlayersTrackingChunk(level, caster.chunkPosition(), message);
-        } else {
-            PsiNetwork.sendToPlayersTrackingAndSelf(caster, message);
+        } else if (caster.level() instanceof ServerLevel) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(caster, message);
         }
     }
 
