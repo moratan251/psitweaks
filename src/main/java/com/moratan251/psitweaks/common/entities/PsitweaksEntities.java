@@ -10,6 +10,8 @@ import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -113,6 +115,24 @@ public class PsitweaksEntities {
                             .updateInterval(1)
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":ice_circle"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntitySoakZone>> SOAK_ZONE =
+            ENTITY_TYPES.register("soak_zone",
+                    () -> EntityType.Builder.<EntitySoakZone>of(EntitySoakZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":soak_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityGravityZone>> GRAVITY_ZONE =
+            ENTITY_TYPES.register("gravity_zone",
+                    () -> EntityType.Builder.<EntityGravityZone>of(EntityGravityZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":gravity_zone"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
             ENTITY_TYPES.register("tunneler_arrow",

@@ -90,6 +90,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "スターフォールの流星";
             default -> "Starfall Meteor";
         });
+        root.addProperty("entity.psitweaks.soak_zone", switch (locale) {
+            case "ja_jp" -> "湿潤領域";
+            default -> "Soak Zone";
+        });
+        root.addProperty("entity.psitweaks.gravity_zone", switch (locale) {
+            case "ja_jp" -> "加重領域";
+            default -> "Gravity Zone";
+        });
         root.addProperty("entity.psitweaks.meteor_line_night", switch (locale) {
             case "ja_jp" -> "流星群の夜";
             default -> "Meteor Line Night";
@@ -399,6 +407,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellerror.not_spellgram_object", switch (locale) {
             case "ja_jp" -> "エラー: 対象が魔法式オブジェクトではありません。";
             default -> "Error: The target is not a spellgram object.";
+        });
+        root.addProperty("psitweaks.spellerror.zone_empty", switch (locale) {
+            case "ja_jp" -> "エラー: 領域の範囲にブロックがありません。";
+            default -> "Error: The zone contains no blocks.";
         });
         root.addProperty("psitweaks.spellerror.failedToInteract", switch (locale) {
             case "ja_jp" -> "エラー: ブロックに作用できませんでした。";
@@ -1765,7 +1777,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_replace_element", "Operator: Matrix Replace Element", "Replaces the element at the zero-based [row, column] indices with the input number.", "演算子: 行列要素置換", "0始まりの [行, 列] で指定した成分を入力数値で置換します。");
         addSpellPiece(root, "operator_matrix_delete_row", "Operator: Matrix Delete Row", "Deletes the specified row from the matrix and shifts the remaining rows up.", "演算子: 行削除", "指定した行を行列から削除し、残りの行を詰めます。");
         addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し、残りの列を詰めます。");
-        addSpellPiece(root, "operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis.", "演算子: 直方体領域", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。");
+        addSpellPiece(root, "operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis. Number mode makes a cube from one size.", "演算子: 直方体領域", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。Number モードでは1つの数値で立方体を作ります。");
         addSpellPiece(root, "operator_region_vector_list", "Operator: Region Vector List", "Returns block position vectors inside a matrix-defined region.", "演算子: 領域ベクトルリスト化", "行列で定義された領域内のブロック座標を Vector List として返します。");
         addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the elements of an Entity, Vector or Block List that are inside the matrix region. Choose the list type in the mode menu.", "演算子: 領域内", "Entity・Vector・Block の List のうち、行列の領域内にあるものだけを残します。リストの種類はモードで選びます。");
         addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the elements of an Entity, Vector or Block List that are outside the matrix region. Choose the list type in the mode menu.", "演算子: 領域外", "Entity・Vector・Block の List のうち、行列の領域外にあるものだけを残します。リストの種類はモードで選びます。");
@@ -2038,7 +2050,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_replace_element", "Replaces the element at the zero-based [row, column] indices with the input number. The indices list must contain exactly two numbers.", "0始まりの [行, 列] で指定した成分を入力数値で置換します. 成分指定用のリストは必ず2つの数値を含む必要があります.");
         addBookPage(root, "operator_matrix_delete_row", "Deletes the row at the zero-based index from the matrix. The matrix must have at least 2 rows so that the result is not empty.", "0始まりのインデックスで指定した行を行列から削除します. 結果が空にならないよう、元の行列は2行以上である必要があります.");
         addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう、元の行列は2列以上である必要があります.");
-        addBookPage(root, "operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts: odd counts are centered on the input position, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します.");
+        addBookPage(root, "operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts: odd counts are centered on the input position, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break. In Number mode the Size is one number used for all three axes, so a Size of 5 makes a 5x5x5 cube.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します. Number モードではサイズを1つの数値で受け取り, 3軸すべてに使うので, サイズ5なら5×5×5の立方体になります.");
         addBookPage(root, "operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された平行六面体の内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
         String regionModesEn = "Choose the list type in the mode menu. Entity (default) tests the center of each bounding box, Vector tests each vector as given, and Block tests block positions, the same points Operator: Region Vector List returns.";
         String regionModesJa = "リストの種類はモードで選びます. Entity（既定）は当たり判定の中心、Vector はそのベクトル、Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.";
@@ -2678,6 +2690,40 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "演算子: 行列積で領域行列の左に置くと領域を移動でき、演算子: 行列でベクトル変換で使うと座標を移動できます。"
                         + "演算子: 回転行列と組み合わせると、任意の点の周りで領域を回転できます。");
 
+        addSpellPiece(root, "trick_soak_zone", "Trick: Soak Zone",
+                "Places a SpellGram zone that keeps living beings inside it soaked",
+                "作動式: 湿潤領域", "範囲の中の生物を濡らし続ける魔法式オブジェクトを置く");
+        addBookPage(root, "trick_soak_zone.0",
+                "Places a zone that lasts 30 seconds over the region given by the Matrix (a region matrix) and the Size (a constant)."
+                        + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 65)."
+                        + " A living being is inside when the block holding the center of its hitbox is."
+                        + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning.",
+                "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、30秒間残る領域を置きます。"
+                        + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大65）。"
+                        + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
+                        + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。");
+        addBookPage(root, "trick_soak_zone.1",
+                "Cost and Potency depend only on the Size, and grow with the area of the zone."
+                        + " You can keep one zone of each kind; placing another ends the old one. The zone also ends when its caster logs out or changes dimension."
+                        + " Trick: Show Region (Block mode) draws exactly the blocks the zone covers.",
+                "コストと規模はサイズだけで決まり、範囲が広いほど増えます。"
+                        + "同じ種類の領域は1人1つまでで、置き直すと古いものが消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
+                        + "範囲の確認には、作動式: 領域表示（ブロックモード）が使えます。");
+        addSpellPiece(root, "trick_gravity_zone", "Trick: Gravity Zone",
+                "Places a SpellGram zone that keeps pushing living beings inside it in the given direction",
+                "作動式: 加重領域", "範囲の中の生物を指定した向きへ押し続ける魔法式オブジェクトを置く");
+        addBookPage(root, "trick_gravity_zone.0",
+                "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
+                        + " Every tick it adds motion toward the Direction to the living beings inside, more with a higher Power; only the direction of the Direction is used."
+                        + " A Power of about 4 balances gravity. While the zone pushes upward, beings inside take no fall damage. The caster is pushed too.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
+                        + "中の生物に、「方向」の向きへ「威力」に応じた運動を毎tick足し続けます。方向は向きだけを使います。"
+                        + "威力4でおよそ重力と釣り合います。上向きに押している間は、中の生物は落下ダメージを受けません。術者自身も押されます。");
+        addBookPage(root, "trick_gravity_zone.1",
+                "The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
+                        + " You can keep one zone of each kind; placing another ends the old one.",
+                "威力は最大10の定数です。コストと規模は、範囲の広さ×威力で増えます。"
+                        + "同じ種類の領域は1人1つまでで、置き直すと古いものが消えます。");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を、CADの色のパーティクルで描きます。");

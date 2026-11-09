@@ -54,6 +54,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "trick_active_air_mine", "trick_active_air_mine");
         group(output, saves, "trick_flare_circle", "trick_flare_circle");
         group(output, saves, "trick_ice_circle", "trick_ice_circle");
+        group(output, saves, "spellgram_zone", "trick_soak_zone", "trick_gravity_zone");
         group(output, saves, "trick_die_flex", "trick_die_flex");
         group(output, saves, "trick_jump", "trick_jump");
         group(output, saves, "trick_jump_flex", "trick_jump_flex");

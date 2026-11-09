@@ -30,6 +30,7 @@ import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.renderer.DryIceProjectileRenderer;
 import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
 import com.moratan251.psitweaks.client.renderer.SpellGramCircleRenderer;
+import com.moratan251.psitweaks.client.renderer.SpellGramZoneRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
@@ -363,6 +364,8 @@ public class Psitweaks {
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.FLARE_COLOR));
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(),
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.ICE_COLOR));
+            event.registerEntityRenderer(PsitweaksEntities.SOAK_ZONE.get(), SpellGramZoneRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.GRAVITY_ZONE.get(), SpellGramZoneRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);

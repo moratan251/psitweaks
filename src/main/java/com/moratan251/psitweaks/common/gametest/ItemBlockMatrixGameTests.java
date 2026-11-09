@@ -485,6 +485,46 @@ public final class ItemBlockMatrixGameTests {
         helper.succeed();
     }
 
+    /** Operator: Cuboid Region: Number mode makes the cube that Vector mode makes from the same size on all axes. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidRegionNumberModeMakesACube(GameTestHelper helper) throws Exception {
+        var player = fakeCaster(helper, new BlockPos(2, 1, 2), "cuboid-cube");
+        var context = new SpellContext().setPlayer(player);
+        Vector3 center = new Vector3(10, 64, 5);
+        Object[] size = {new Vector3(3, 3, 3)};
+        var cuboid = new PieceOperatorMatrixCuboidRegion(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return param.name.equals(POSITION) ? center : size[0];
+            }
+        };
+        helper.assertTrue(cuboid.getModeOption().id().equals(PsitweaksModeOptions.VECTOR.id()), "Vector mode must be the default");
+        var byVector = (MatrixValue) cuboid.execute(context);
+        cuboid.setModeOption(PsitweaksModeOptions.NUMBER);
+        size[0] = 3.0;
+        var byNumber = (MatrixValue) cuboid.execute(context);
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                helper.assertTrue(byVector.get(row, col) == byNumber.get(row, col),
+                        "Number mode must match Vector mode with the same size on every axis at " + row + "," + col);
+            }
+        }
+        helper.assertTrue(new HashSet<>(MassBlockBreakHelper.collectRegionPositions(byNumber)).size() == 27,
+                "A Size of 3 must make a 3x3x3 cube");
+
+        var saved = (PieceOperatorMatrixCuboidRegion) create("operator_matrix_cuboid_region");
+        var oldTag = new CompoundTag();
+        saved.writeToNBT(oldTag);
+        oldTag.remove("psitweaksMode");
+        helper.assertTrue(((PieceOperatorMatrixCuboidRegion) SpellPiece.createFromNBT(new Spell(), oldTag)).getModeOption().id()
+                .equals(PsitweaksModeOptions.VECTOR.id()), "Spells saved before the modes must load in Vector mode");
+        saved.setModeOption(PsitweaksModeOptions.NUMBER);
+        var tag = new CompoundTag();
+        saved.writeToNBT(tag);
+        helper.assertTrue(((PieceOperatorMatrixCuboidRegion) SpellPiece.createFromNBT(new Spell(), tag)).isNumberMode(),
+                "Number mode lost on reload");
+        helper.succeed();
+    }
+
     @GameTest(template = "connector_empty")
     public static void showRegionOutlinesTheBlocksOfTheRegion(GameTestHelper helper) throws Exception {
         var area = RegionMatrix.parse(cube(new Vector3(-0.5, -0.5, -0.5), 3));

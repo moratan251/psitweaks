@@ -1,0 +1,6 @@
+{
+  "main": "psitweaks:trick_soak_zone",
+  "pieces": [
+    "psitweaks:trick_gravity_zone"
+  ]
+}
