@@ -17,6 +17,8 @@
     "LivingEntityAccessor",
     "MessageSpamlessChatMixin",
     "PieceOperatorEntityPositionParadeMixin",
+    "PieceTrickAddMotionSpellGramMixin",
+    "PieceTrickBlinkSpellGramMixin",
     "PieceTrickBreakLoopAutonomousCasterMixin",
     "PieceTrickMassExodusMixin",
     "ProjectileAutonomousCasterMixin",

@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.client.renderer;
 
-import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramCircle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -9,16 +9,25 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.client.render.entity.RenderSpellCircle;
 
-public class IceCircleRenderer extends EntityRenderer<EntityIceCircle> {
+/** 円の魔法式オブジェクト（{@link SpellGramCircle}）を Psi の魔法陣で、円ごとの色で描く。 */
+public class SpellGramCircleRenderer<T extends SpellGramCircle> extends EntityRenderer<T> {
 
-    private static final int FIXED_CYAN_COLOR = 0x00CCFF;
+    /** ファイアサークルの色。 */
+    public static final int FLARE_COLOR = 0xFF0000;
+    /** アイスサークルの色。 */
+    public static final int ICE_COLOR = 0x00CCFF;
 
-    public IceCircleRenderer(EntityRendererProvider.Context context) {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("psi", "textures/misc/spell_circle0.png");
+
+    private final int color;
+
+    public SpellGramCircleRenderer(EntityRendererProvider.Context context, int color) {
         super(context);
+        this.color = color;
     }
 
     @Override
-    public void render(EntityIceCircle entity, float entityYaw, float partialTicks,
+    public void render(T entity, float entityYaw, float partialTicks,
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight) {
         float horizontalScale = entity.getVisualScale();
         if (horizontalScale <= 0.0F) {
@@ -33,7 +42,7 @@ public class IceCircleRenderer extends EntityRenderer<EntityIceCircle> {
                 0.0F,
                 1.0F,
                 0.0F,
-                FIXED_CYAN_COLOR,
+                color,
                 poseStack,
                 buffer
         );
@@ -42,7 +51,7 @@ public class IceCircleRenderer extends EntityRenderer<EntityIceCircle> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull EntityIceCircle entity) {
-        return ResourceLocation.fromNamespaceAndPath("psi", "textures/misc/spell_circle0.png");
+    public @NotNull ResourceLocation getTextureLocation(@NotNull T entity) {
+        return TEXTURE;
     }
 }

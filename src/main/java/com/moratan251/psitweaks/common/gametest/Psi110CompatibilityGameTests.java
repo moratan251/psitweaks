@@ -35,7 +35,7 @@ public final class Psi110CompatibilityGameTests {
                         .orElseThrow().key().location().equals(id), "Wrong group for " + member);
             }
         }
-        int expected = 87 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
+        int expected = 86 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
         helper.assertTrue(count == expected, "Expected " + expected + " groups, got " + count);
         helper.succeed();
     }
@@ -73,6 +73,21 @@ public final class Psi110CompatibilityGameTests {
             var restored = SpellPiece.createFromNBT(new Spell(), tag);
             helper.assertTrue(restored != null && Psitweaks.location(rename[1]).equals(restored.getRegistryKey()),
                     rename[0] + " did not load as " + rename[1]);
+        }
+        helper.succeed();
+    }
+
+    /** Spells saved with a piece removed from the mod load with that piece taken out instead of failing the whole player. */
+    @GameTest(template = "psi110_empty")
+    public static void removedPiecesLoadAsRemovalMarker(GameTestHelper helper) {
+        for (String key : new String[] {"psitweaks:trick_set_spellgram_follow_target", "trick_set_spellgram_follow_target"}) {
+            helper.assertFalse(PsiAPI.SPELL_PIECE_REGISTRY.containsKey(Psitweaks.location("trick_set_spellgram_follow_target")),
+                    "Trick: Set SpellGram Follow Target should no longer be registered");
+            var tag = new CompoundTag();
+            tag.putString("key", key);
+            var restored = SpellPiece.createFromNBT(new Spell(), tag);
+            helper.assertTrue(OptionalSpellPieceCompat.isRemovalMarker(restored),
+                    key + " should load as a removal marker, got " + restored);
         }
         helper.succeed();
     }

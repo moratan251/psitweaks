@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities.SpellGram;
 
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.combat.AttackCaster;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
@@ -14,7 +15,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
@@ -24,23 +27,50 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * SpellGram系オブジェクトの基底クラス。
- * 数秒間の存続、周囲ダメージ、外部スペルによる移動/破壊を共通化する。
+ * 魔法式オブジェクト（SpellGram）の基底。円（{@link SpellGramCircle}）と目印型（{@code SpellGramMarker}）が継ぐ。
+ * 存続時間、耐久値（{@link #getIntegrity}）、周囲へのダメージ、追従を共通にする。
+ * <p>
+ * 魔法式オブジェクトは物ではない: 剣や矢、爆発などふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に
+ * 保存しない。存続時間が尽きると消える（{@link EndReason#FINISHED}）。耐久値は時間とともに一定の割合で減り（存続時間の
+ * 間に減る分は耐久値の {@link #getTimeShare} 倍。既定の 1 なら存続時間の終わりにちょうど 0）、術式解体などの術式からは
+ * 受け口 {@link #reduceIntegrity} で削られる。尽きると存続時間が残っていても消える（{@link EndReason#DESTROYED}）。
+ * 解体される・術者がいなくなると {@link #end} で消える。Psi の運動追加・瞬間移動・大移動では、置いた術者のものも含めて動かない
+ * （{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。動かす仕組みは専用の作動式として
+ * 後で作る予定（保留中）。
  */
 public abstract class SpellGramObject extends Entity implements IEntityWithComplexSpawn {
+
+    /** 魔法式オブジェクトが消えた理由。 */
+    public enum EndReason {
+        /** 存続時間が尽きた、または作動式の役目を終えた。 */
+        FINISHED,
+        /** ほかの術式で解体された（張り直しで古いものが解けたときも）。 */
+        DISPELLED,
+        /** 強度が尽きた。 */
+        DESTROYED,
+        /** 術者がいなくなった（ログアウト、別のディメンション、自律詠唱機が読み込まれていない）。 */
+        CASTER_GONE
+    }
 
     private static final String NBT_REMAINING_TICKS = "SpellGramRemainingTicks";
     private static final String NBT_DAMAGE_RADIUS = "SpellGramDamageRadius";
     private static final String NBT_AOE_DAMAGE = "SpellGramAoeDamage";
     private static final String NBT_DAMAGE_INTERVAL = "SpellGramDamageInterval";
     private static final String NBT_INTEGRITY = "SpellGramIntegrity";
+    private static final String NBT_LIFETIME_TICKS = "SpellGramLifetimeTicks";
+    private static final String NBT_MAX_INTEGRITY = "SpellGramMaxIntegrity";
+    private static final String NBT_WORN = "SpellGramWorn";
+    private static final String NBT_TIME_SHARE = "SpellGramTimeShare";
     private static final String NBT_MOTION_DAMPING = "SpellGramMotionDamping";
     private static final String NBT_CASTER_UUID = "SpellGramCaster";
     private static final String NBT_AOE_COUNTER = "SpellGramAoeCounter";
     private static final String NBT_ENTITY_FOLLOW_MODE = "SpellGramEntityFollowMode";
     private static final String NBT_FOLLOW_TARGET_UUID = "SpellGramFollowTarget";
 
-    private static final EntityDataAccessor<Integer> DATA_REMAINING_TICKS =
+    /** 残りの存続時間（tick）。 */
+    private static final EntityDataAccessor<Float> DATA_REMAINING_TICKS =
+            SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_LIFETIME_TICKS =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_DAMAGE_RADIUS =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
@@ -48,7 +78,13 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_DAMAGE_INTERVAL =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> DATA_INTEGRITY =
+    private static final EntityDataAccessor<Float> DATA_MAX_INTEGRITY =
+            SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
+    /** 術式で削られた耐久値の合計。 */
+    private static final EntityDataAccessor<Float> DATA_WORN =
+            SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
+    /** 存続時間の間に時間で減る耐久値の、置いたときの耐久値に対する割合。 */
+    private static final EntityDataAccessor<Float> DATA_TIME_SHARE =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_MOTION_DAMPING =
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.FLOAT);
@@ -58,12 +94,15 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
             SynchedEntityData.defineId(SpellGramObject.class, EntityDataSerializers.INT);
 
     private static final int NO_FOLLOW_TARGET_ENTITY_ID = -1;
+    /** 置いたときの耐久値に対して、これより少ない耐久値は 0 とみなす（丸めで 0 のすぐ上に残らないように）。 */
+    private static final float INTEGRITY_EPSILON = 1.0E-5F;
 
     private int aoeTickCounter;
     /** 術者。保存した ID（CasterIds）だけで引き直す。攻撃の設定は {@link #attackOptions()}。 */
     private final AttackCaster attackCaster = AttackCaster.byId();
     @Nullable
     private UUID followTargetUuid;
+    private boolean ended;
 
     protected SpellGramObject(EntityType<? extends SpellGramObject> type, Level level) {
         super(type, level);
@@ -73,11 +112,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     @Override
     protected final void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DATA_REMAINING_TICKS, 40);
+        builder.define(DATA_REMAINING_TICKS, 40.0F);
+        builder.define(DATA_LIFETIME_TICKS, 40);
         builder.define(DATA_DAMAGE_RADIUS, 0.0F);
         builder.define(DATA_AOE_DAMAGE, 0.0F);
         builder.define(DATA_DAMAGE_INTERVAL, 20);
-        builder.define(DATA_INTEGRITY, 1.0F);
+        builder.define(DATA_MAX_INTEGRITY, 1.0F);
+        builder.define(DATA_WORN, 0.0F);
+        builder.define(DATA_TIME_SHARE, 1.0F);
         builder.define(DATA_MOTION_DAMPING, 0.85F);
         builder.define(DATA_ENTITY_FOLLOW_MODE, false);
         builder.define(DATA_FOLLOW_TARGET_ID, NO_FOLLOW_TARGET_ENTITY_ID);
@@ -96,7 +138,15 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
             return;
         }
 
+        if (getCasterUuid() != null && getCaster() == null) {
+            // ダメージの帰属と持ち主の確かめに術者が要るので、術者を引き直せなくなったら消える。
+            end(EndReason.CASTER_GONE);
+            return;
+        }
         onSpellGramTickServer();
+        if (isEnded()) {
+            return;
+        }
         tickAreaDamage();
         tickLifetime();
     }
@@ -197,92 +247,74 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     protected void onAreaDamageApplied(LivingEntity target, float damage, DamageSource source) {
     }
 
+    /** 存続時間を 1 tick 進める（耐久値も時間の分だけ減る）。存続時間が尽きたら役目を終え、先に耐久値が尽きたら壊れる。 */
     protected void tickLifetime() {
-        int remaining = getRemainingTicks() - 1;
-        setRemainingTicks(remaining);
-        if (remaining <= 0) {
-            onLifetimeExpired();
-            discard();
+        float remaining = getRemaining() - 1.0F;
+        setRemaining(remaining);
+        if (remaining <= 0.0F) {
+            end(EndReason.FINISHED);
+        } else if (isIntegrityDepleted()) {
+            onIntegrityDepleted();
         }
-    }
-
-    protected void onLifetimeExpired() {
     }
 
     protected void onSpellGramTickServer() {
     }
 
+    public boolean isEnded() {
+        return ended || isRemoved();
+    }
+
+    /** 魔法式オブジェクトを消す（サーバー側）。何度呼んでも {@link #onEnd} は一度だけ。 */
+    public void end(EndReason reason) {
+        if (isEnded() || level().isClientSide) {
+            return;
+        }
+        ended = true;
+        onEnd(reason);
+        discard();
+    }
+
+    /** 消える直前（サーバー側）。 */
+    protected void onEnd(EndReason reason) {
+    }
+
+    /** ふつうの攻撃（剣、矢、爆発など）では壊れない。耐久値は {@link #reduceIntegrity} でだけ減る。 */
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (isInvulnerableTo(source) || isRemoved()) {
-            return false;
-        }
-        if (!canBeDamagedBy(source, amount)) {
-            return false;
-        }
-        if (level().isClientSide) {
-            return true;
-        }
-
-        markHurt();
-
-        float effectiveAmount = Math.max(0.0F, amount);
-        float integrity = Math.max(0.0F, getIntegrity() - effectiveAmount);
-        setIntegrity(integrity);
-        onSpellGramDamaged(source, effectiveAmount, integrity);
-
-        if (integrity <= 0.0F) {
-            destroyBySpell(source);
-        }
-        return true;
-    }
-
-    protected boolean canBeDamagedBy(DamageSource source, float amount) {
-        return true;
-    }
-
-    protected void onSpellGramDamaged(DamageSource source, float amount, float remainingIntegrity) {
+        return false;
     }
 
     /**
-     * 魔法式オブジェクト用の受け口: 強度を {@code amount} だけ減らし、尽きたら {@link #onIntegrityDepleted}。
-     * 剣や矢などのダメージ（{@link #hurt}）とは別の入口で、術式でオブジェクトを削るときに使う。
+     * 魔法式オブジェクト用の受け口: 耐久値を {@code amount} だけ減らし、尽きたら {@link #onIntegrityDepleted}。
+     * 剣や矢などのダメージ（{@link #hurt}）とは別の入口。術式で削るときは {@link SpellGramIntegrity#reduce}
+     * （減らす側の事象干渉力とイベントを通す）を使う。
      *
-     * @return 強度が減ったか
+     * @return 耐久値が減ったか
      */
     public boolean reduceIntegrity(float amount) {
-        if (isRemoved() || level().isClientSide || amount <= 0.0F) {
+        if (isEnded() || level().isClientSide || amount <= 0.0F) {
             return false;
         }
-        float integrity = Math.max(0.0F, getIntegrity() - amount);
-        setIntegrity(integrity);
-        if (integrity <= 0.0F) {
+        this.entityData.set(DATA_WORN, getWorn() + amount);
+        if (isIntegrityDepleted()) {
             onIntegrityDepleted();
         }
         return true;
     }
 
-    /** 受け口で強度が尽きたとき。領域型（サークル）は解体される。 */
+    private boolean isIntegrityDepleted() {
+        return getIntegrity() <= getMaxIntegrity() * INTEGRITY_EPSILON;
+    }
+
+    /** 受け口で耐久値が尽きたとき。 */
     protected void onIntegrityDepleted() {
-        destroyBySpell();
+        end(EndReason.DESTROYED);
     }
 
+    /** ほかの術式で解体する（{@link EndReason#DISPELLED}）。 */
     public void destroyBySpell() {
-        destroyBySpell(null);
-    }
-
-    public void destroyBySpell(@Nullable DamageSource source) {
-        if (isRemoved()) {
-            return;
-        }
-
-        if (!level().isClientSide) {
-            onSpellGramDestroyed(source);
-            discard();
-        }
-    }
-
-    protected void onSpellGramDestroyed(@Nullable DamageSource source) {
+        end(EndReason.DISPELLED);
     }
 
     public void moveBySpell(Vec3 offset) {
@@ -293,16 +325,34 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         setDeltaMovement(getDeltaMovement().add(velocity));
     }
 
+    /** 残りの存続時間（tick）。 */
     public int getRemainingTicks() {
+        return (int) Math.ceil(getRemaining());
+    }
+
+    /** 置いてから自然に消えるまでの時間（tick）。 */
+    public int getLifetimeTicks() {
+        return this.entityData.get(DATA_LIFETIME_TICKS);
+    }
+
+    /** 置く前に呼ぶ。存続時間を {@code ticks} にし、耐久値を満たす。 */
+    public void setLifetimeTicks(int ticks) {
+        int lifetime = Math.max(1, ticks);
+        this.entityData.set(DATA_LIFETIME_TICKS, lifetime);
+        setRemaining(lifetime);
+    }
+
+    /** 存続時間の残りの割合（0〜1）。 */
+    public float getRemainingFraction() {
+        return Math.min(1.0F, getRemaining() / getLifetimeTicks());
+    }
+
+    private float getRemaining() {
         return this.entityData.get(DATA_REMAINING_TICKS);
     }
 
-    public void setRemainingTicks(int ticks) {
-        this.entityData.set(DATA_REMAINING_TICKS, Math.max(0, ticks));
-    }
-
-    public void setLifetimeTicks(int ticks) {
-        setRemainingTicks(ticks);
+    private void setRemaining(float ticks) {
+        this.entityData.set(DATA_REMAINING_TICKS, Math.max(0.0F, ticks));
     }
 
     public float getDamageRadius() {
@@ -335,12 +385,53 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         setDamageIntervalTicks(intervalTicks);
     }
 
+    /**
+     * 耐久値。置いたときの耐久値（{@link #getMaxIntegrity}）から、時間とともに一定の割合で減り（存続時間の間に減る分は
+     * {@link #getTimeShare} 倍）、術式で削った分（{@link #reduceIntegrity}）も減る。
+     */
     public float getIntegrity() {
-        return this.entityData.get(DATA_INTEGRITY);
+        float max = getMaxIntegrity();
+        float elapsed = 1.0F - getRemainingFraction();
+        return Math.max(0.0F, max * (1.0F - getTimeShare() * elapsed) - getWorn());
     }
 
+    /** 耐久値を {@code integrity} にする（術式で削った分を変える）。 */
     public void setIntegrity(float integrity) {
-        this.entityData.set(DATA_INTEGRITY, Math.max(0.0F, integrity));
+        float untouched = getIntegrity() + getWorn();
+        this.entityData.set(DATA_WORN, Math.max(0.0F, untouched - Math.max(0.0F, integrity)));
+    }
+
+    /** 術式で削られた耐久値の合計。 */
+    public float getWorn() {
+        return this.entityData.get(DATA_WORN);
+    }
+
+    /**
+     * 存続時間の間に時間で減る耐久値の、置いたときの耐久値に対する割合（0〜1）。1 なら存続時間の終わりにちょうど 0、
+     * 0.2 なら置いたときの耐久値は時間で減る分の 5 倍。
+     */
+    public float getTimeShare() {
+        return this.entityData.get(DATA_TIME_SHARE);
+    }
+
+    /** 置く前に呼ぶ。{@link #getTimeShare}。 */
+    public void setTimeShare(float share) {
+        this.entityData.set(DATA_TIME_SHARE, Math.max(0.0F, Math.min(1.0F, share)));
+    }
+
+    /** 置いたときの耐久値。 */
+    public float getMaxIntegrity() {
+        return this.entityData.get(DATA_MAX_INTEGRITY);
+    }
+
+    /** 置く前に呼ぶ。置いたときの耐久値（{@link SpellGramIntegrity#initial}）。 */
+    public void setMaxIntegrity(float integrity) {
+        this.entityData.set(DATA_MAX_INTEGRITY, Math.max(0.0F, integrity));
+    }
+
+    /** 術者の事象干渉力（置いた時点の値を使う）。 */
+    public static double interferenceOf(@Nullable LivingEntity caster) {
+        return caster != null ? caster.getAttributeValue(PsitweaksAttributes.SPELL_DAMAGE_FACTOR) : 1.0D;
     }
 
     public float getMotionDamping() {
@@ -444,7 +535,11 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     @Override
     protected final void readAdditionalSaveData(CompoundTag tag) {
         if (tag.contains(NBT_REMAINING_TICKS)) {
-            setRemainingTicks(tag.getInt(NBT_REMAINING_TICKS));
+            // 存続時間のない古い保存では、残りの時間を存続時間とみなす。
+            float remaining = tag.getFloat(NBT_REMAINING_TICKS);
+            int lifetime = tag.contains(NBT_LIFETIME_TICKS) ? tag.getInt(NBT_LIFETIME_TICKS) : (int) Math.ceil(remaining);
+            setLifetimeTicks(lifetime);
+            setRemaining(remaining);
         }
         if (tag.contains(NBT_DAMAGE_RADIUS)) {
             setDamageRadius(tag.getFloat(NBT_DAMAGE_RADIUS));
@@ -455,8 +550,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         if (tag.contains(NBT_DAMAGE_INTERVAL)) {
             setDamageIntervalTicks(tag.getInt(NBT_DAMAGE_INTERVAL));
         }
-        if (tag.contains(NBT_INTEGRITY)) {
-            setIntegrity(tag.getFloat(NBT_INTEGRITY));
+        if (tag.contains(NBT_MAX_INTEGRITY)) {
+            setMaxIntegrity(tag.getFloat(NBT_MAX_INTEGRITY));
+        } else if (tag.contains(NBT_INTEGRITY)) {
+            setMaxIntegrity(tag.getFloat(NBT_INTEGRITY));
+        }
+        this.entityData.set(DATA_WORN, Math.max(0.0F, tag.getFloat(NBT_WORN)));
+        if (tag.contains(NBT_TIME_SHARE)) {
+            setTimeShare(tag.getFloat(NBT_TIME_SHARE));
         }
         if (tag.contains(NBT_MOTION_DAMPING)) {
             setMotionDamping(tag.getFloat(NBT_MOTION_DAMPING));
@@ -484,11 +585,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     @Override
     protected final void addAdditionalSaveData(CompoundTag tag) {
-        tag.putInt(NBT_REMAINING_TICKS, getRemainingTicks());
+        tag.putFloat(NBT_REMAINING_TICKS, getRemaining());
+        tag.putInt(NBT_LIFETIME_TICKS, getLifetimeTicks());
         tag.putFloat(NBT_DAMAGE_RADIUS, getDamageRadius());
         tag.putFloat(NBT_AOE_DAMAGE, getAoEDamage());
         tag.putInt(NBT_DAMAGE_INTERVAL, getDamageIntervalTicks());
-        tag.putFloat(NBT_INTEGRITY, getIntegrity());
+        tag.putFloat(NBT_MAX_INTEGRITY, getMaxIntegrity());
+        tag.putFloat(NBT_WORN, getWorn());
+        tag.putFloat(NBT_TIME_SHARE, getTimeShare());
         tag.putFloat(NBT_MOTION_DAMPING, getMotionDamping());
         tag.putInt(NBT_AOE_COUNTER, aoeTickCounter);
         tag.putBoolean(NBT_ENTITY_FOLLOW_MODE, isEntityFollowMode());
@@ -508,11 +612,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
-        buffer.writeInt(getRemainingTicks());
+        buffer.writeFloat(getRemaining());
+        buffer.writeInt(getLifetimeTicks());
         buffer.writeFloat(getDamageRadius());
         buffer.writeFloat(getAoEDamage());
         buffer.writeInt(getDamageIntervalTicks());
-        buffer.writeFloat(getIntegrity());
+        buffer.writeFloat(getMaxIntegrity());
+        buffer.writeFloat(getWorn());
+        buffer.writeFloat(getTimeShare());
         buffer.writeFloat(getMotionDamping());
         buffer.writeBoolean(isEntityFollowMode());
         buffer.writeInt(getFollowTargetEntityId());
@@ -521,11 +628,15 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
-        setRemainingTicks(additionalData.readInt());
+        float remaining = additionalData.readFloat();
+        setLifetimeTicks(additionalData.readInt());
+        setRemaining(remaining);
         setDamageRadius(additionalData.readFloat());
         setAoEDamage(additionalData.readFloat());
         setDamageIntervalTicks(additionalData.readInt());
-        setIntegrity(additionalData.readFloat());
+        setMaxIntegrity(additionalData.readFloat());
+        this.entityData.set(DATA_WORN, additionalData.readFloat());
+        setTimeShare(additionalData.readFloat());
         setMotionDamping(additionalData.readFloat());
         setEntityFollowMode(additionalData.readBoolean());
         setFollowTargetEntityId(additionalData.readInt());
@@ -556,12 +667,33 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     @Override
     public boolean isPickable() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
+    public boolean ignoreExplosion(Explosion explosion) {
         return true;
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction() {
+        return PushReaction.IGNORE;
+    }
+
+    /** チャンクと一緒には保存しない（術者がいないと続けられないため）。 */
+    @Override
+    public boolean shouldBeSaved() {
+        return false;
     }
 
     @Override

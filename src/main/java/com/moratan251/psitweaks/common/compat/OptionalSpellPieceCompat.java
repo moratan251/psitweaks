@@ -31,6 +31,14 @@ public final class OptionalSpellPieceCompat {
             Psitweaks.location("trick_kamaitachi"), Psitweaks.location("trick_air_bullet"),
             Psitweaks.location("trick_gravity_collapse"), Psitweaks.location("trick_micro_black_hole"));
 
+    /**
+     * Pieces removed from the mod. Spells saved while they existed load with the piece taken out of the grid, like a
+     * missing optional piece, instead of failing the whole player or chunk.
+     */
+    private static final List<ResourceLocation> REMOVED_PIECE_IDS = List.of(
+            // Trick: Set SpellGram Follow Target (removed in 1.0.0 with the SpellGram rework).
+            Psitweaks.location("trick_set_spellgram_follow_target"));
+
     private OptionalSpellPieceCompat() {
     }
 
@@ -56,13 +64,19 @@ public final class OptionalSpellPieceCompat {
      * Whether the piece belongs to an optional mod that is not loaded (Sable for Trick: Physical Propulsion, Mekanism
      * for the radiation tricks and Selector: Autonomous Caster Position). Such a piece is not registered, and Psi would
      * fail the whole spell (or the player holding it), so it is read as a marker and removed from the grid. A spell
-     * saved while the mod is missing keeps the piece removed.
+     * saved while the mod is missing keeps the piece removed. Pieces removed from the mod ({@link #REMOVED_PIECE_IDS})
+     * are taken out the same way.
      */
     public static boolean shouldRemoveMissingOptionalPiece(CompoundTag cmp) {
         if (cmp == null) {
             return false;
         }
         String id = getSpellPieceId(cmp);
+        for (ResourceLocation removedPiece : REMOVED_PIECE_IDS) {
+            if (matchesSpellPieceId(id, removedPiece)) {
+                return true;
+            }
+        }
         if (!SablePhysicsCompat.isLoaded() && matchesSpellPieceId(id, PHYSICAL_PROPULSION_ID)) {
             return true;
         }

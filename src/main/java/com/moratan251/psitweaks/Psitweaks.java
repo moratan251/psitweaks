@@ -29,8 +29,7 @@ import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.renderer.DryIceProjectileRenderer;
 import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
-import com.moratan251.psitweaks.client.renderer.FlareCircleRenderer;
-import com.moratan251.psitweaks.client.renderer.IceCircleRenderer;
+import com.moratan251.psitweaks.client.renderer.SpellGramCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
@@ -360,8 +359,10 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.AQUA_CUTTER_PROJECTILE.get(), AquaCutterRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.DRY_ICE_PROJECTILE.get(), DryIceProjectileRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.BLAZE_BALL.get(), context -> new ThrownItemRenderer<>(context, 0.75F, true));
-            event.registerEntityRenderer(PsitweaksEntities.FLARE_CIRCLE.get(), FlareCircleRenderer::new);
-            event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(), IceCircleRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.FLARE_CIRCLE.get(),
+                    context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.FLARE_COLOR));
+            event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(),
+                    context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.ICE_COLOR));
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);

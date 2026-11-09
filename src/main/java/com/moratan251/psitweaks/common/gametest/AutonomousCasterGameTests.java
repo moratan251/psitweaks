@@ -12,7 +12,7 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
-import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -949,7 +949,7 @@ public final class AutonomousCasterGameTests {
         float strayHealth = stray.getHealth();
         Runnable cleanup = () -> {
             beams.forEach(Entity::discard);
-            nights.forEach(night -> night.end(SpellGramMarker.EndReason.DISPELLED));
+            nights.forEach(night -> night.end(SpellGramObject.EndReason.DISPELLED));
             ownerLine.detach();
             petLine.detach();
             removeOwner(helper, owner);

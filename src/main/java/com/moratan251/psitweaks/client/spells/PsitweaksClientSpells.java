@@ -87,8 +87,6 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_flare_circle");
     public static final DeferredHolder<Material, Material> TRICK_ICE_CIRCLE =
             registerPieceMaterial("trick_ice_circle");
-    public static final DeferredHolder<Material, Material> TRICK_SET_SPELLGRAM_FOLLOW_TARGET =
-            registerPieceMaterial("trick_set_spellgram_follow_target");
     public static final DeferredHolder<Material, Material> TRICK_DIE_FLEX =
             registerPieceMaterial("trick_die_flex");
     public static final DeferredHolder<Material, Material> TRICK_JUMP =

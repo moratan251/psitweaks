@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.entities.SpellGram.marker;
 
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -87,10 +88,13 @@ public class EntityMeteorLineNight extends SpellGramMarker {
     }
 
     /**
-     * 置く前に呼ぶ。強度は {@link MeteorLineTuning#BASE_INTEGRITY} × 置いた時点の術者の事象干渉力、色は術者の CAD の色。
+     * 置く前に呼ぶ。耐久値は時間で減る分（{@link MeteorLineTuning#BASE_INTEGRITY}、{@link SpellGramIntegrity#initial}）の
+     * 5 倍（{@link MeteorLineTuning#INTEGRITY_TIME_SHARE}）、色は術者の CAD の色。
      */
     public void configure(LivingEntity caster, AttackRules.Options options) {
-        configureMarker(caster, options, (float) (MeteorLineTuning.BASE_INTEGRITY * interferenceOf(caster)));
+        configureMarker(caster, options, SpellGramIntegrity.initial(
+                MeteorLineTuning.BASE_INTEGRITY / MeteorLineTuning.INTEGRITY_TIME_SHARE, caster, 1.0D));
+        setTimeShare(MeteorLineTuning.INTEGRITY_TIME_SHARE);
         entityData.set(COLOR, CombatSpellHelper.spellColor(caster) & 0xFFFFFF);
     }
 

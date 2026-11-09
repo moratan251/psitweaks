@@ -91,8 +91,6 @@ public final class PsitweaksSpells {
             registerPiece("trick_flare_circle", PieceTrickFlareCircle.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_ICE_CIRCLE =
             registerPiece("trick_ice_circle", PieceTrickIceCircle.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SET_SPELLGRAM_FOLLOW_TARGET =
-            registerPiece("trick_set_spellgram_follow_target", PieceTrickSetSpellGramFollowTarget.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DIE_FLEX =
             registerPiece("trick_die_flex", PieceTrickDieFlex.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_JUMP =

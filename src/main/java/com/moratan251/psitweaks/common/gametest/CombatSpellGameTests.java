@@ -7,7 +7,7 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
-import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
@@ -1385,7 +1385,7 @@ public final class CombatSpellGameTests {
                 helper.assertTrue(nights.size() == 1, "One night expected, found " + nights.size());
                 // End it before it ticks, so a night this wide never rains on other tests.
                 double radius = nights.get(0).getRadius();
-                nights.get(0).end(SpellGramMarker.EndReason.DISPELLED);
+                nights.get(0).end(SpellGramObject.EndReason.DISPELLED);
                 helper.assertTrue(near(radius, radiusCase[1]), "A radius of " + radiusCase[0] + " must become "
                         + radiusCase[1] + ", got " + radius);
             }
@@ -1594,13 +1594,18 @@ public final class CombatSpellGameTests {
             EntityMeteorLineNight night = nights.get(0);
             List<EntityMeteorLineBeam> beams = night.getBeams();
             helper.assertTrue(!beams.isEmpty(), "Streaks must be falling by now");
-            float integrity = night.getMaxIntegrity();
-            helper.assertTrue(integrity > 0.0F && near(night.getIntegrity(), integrity), "The night must start at full integrity");
+            // 耐久値は時間とともに一定の割合で減るが、夜が 3.5 秒で減らす分は置いたときの耐久値の 5 分の 1 だけ。
+            float max = night.getMaxIntegrity();
+            float integrity = night.getIntegrity();
+            float expected = max * (1.0F - MeteorLineTuning.INTEGRITY_TIME_SHARE * (1.0F - night.getRemainingFraction()));
+            helper.assertTrue(night.getTimeShare() == MeteorLineTuning.INTEGRITY_TIME_SHARE && max > 0.0F
+                            && integrity < max && integrity > max * 0.8F && near(integrity, expected),
+                    "The night's integrity must drain a fifth over its lifetime: " + integrity + " of " + max);
             helper.assertTrue(!night.hurt(level.damageSources().playerAttack(player), 1_000.0F)
                     && near(night.getIntegrity(), integrity), "An ordinary attack must not wear the night");
             helper.assertTrue(night.reduceIntegrity(integrity * 0.5F) && !night.isRemoved(),
                     "Half of the integrity must leave the night standing");
-            night.reduceIntegrity(integrity);
+            night.reduceIntegrity(max);
             helper.assertTrue(night.isRemoved(), "The night must collapse when its integrity runs out");
             helper.assertTrue(beams.stream().allMatch(Entity::isRemoved), "The streaks must vanish with the night");
             helper.assertTrue(SpellGramIndex.near(level, center, 0.5).isEmpty(), "A collapsed night must leave the index");

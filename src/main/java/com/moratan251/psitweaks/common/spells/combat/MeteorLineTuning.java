@@ -128,8 +128,14 @@ public final class MeteorLineTuning {
 
     // ---- 魔法式オブジェクト ----
 
-    /** 夜の強度 = これ × 置いた時点の事象干渉力。 */
+    /**
+     * 夜が 3.5 秒の間に時間で減らす耐久値の固有値（× 置いた時点の事象干渉力）。夜は終盤の魔法なので、置いたときの耐久値は
+     * この {@code 1 / INTEGRITY_TIME_SHARE} 倍（5 倍）と高めにする。夜は耐久値が残っていても 3.5 秒で晴れる。
+     * どちらも仮の値で、術式解体などを作るときに決め直す（2026-11-09 ユーザー）。
+     */
     public static final float BASE_INTEGRITY = 100.0F;
+    /** 存続時間の間に時間で減る耐久値の、置いたときの耐久値に対する割合（{@code SpellGramObject#getTimeShare}）。 */
+    public static final float INTEGRITY_TIME_SHARE = 0.2F;
 
     // ---- 音（仮。本番の音は後で作る） ----
 

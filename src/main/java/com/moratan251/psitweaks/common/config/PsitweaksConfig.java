@@ -29,6 +29,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue activeAirMineDamageMultiplier;
         public final ModConfigSpec.DoubleValue flareCircleDamageMultiplier;
         public final ModConfigSpec.DoubleValue iceCircleDamageMultiplier;
+        public final ModConfigSpec.DoubleValue spellGramIntegrityMultiplier;
         public final ModConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ModConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
@@ -171,14 +172,14 @@ public class PsitweaksConfig {
 
             builder.pop(); // active_air_mine カテゴリ終了
 
-            // --- フレアサークル ---
-            builder.comment("Flare Circle Settings")
+            // --- ファイアサークル ---
+            builder.comment("Fire Circle Settings")
                     .translation("psitweaks.configuration.spells.flare_circle")
                     .push("flare_circle");
 
             flareCircleDamageMultiplier = builder
-                    .comment("作動式: フレアサークル の威力倍率（与ダメージ倍率）",
-                            "Power (damage) multiplier for Trick: Flare Circle")
+                    .comment("作動式: ファイアサークル の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for Trick: Fire Circle")
                     .translation("psitweaks.configuration.spells.flare_circle.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
@@ -196,6 +197,19 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // ice_circle カテゴリ終了
+
+            // --- 魔法式オブジェクト ---
+            builder.comment("SpellGram Object Settings")
+                    .translation("psitweaks.configuration.spells.spellgram")
+                    .push("spellgram");
+
+            spellGramIntegrityMultiplier = builder
+                    .comment("魔法式オブジェクト（ファイアサークル・アイスサークル・流星群の夜など）の耐久値に適用する倍率",
+                            "Multiplier for the integrity of SpellGram objects (Fire Circle, Ice Circle, Meteor Line night, ...)")
+                    .translation("psitweaks.configuration.spells.spellgram.integrity_multiplier")
+                    .defineInRange("integrityMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // spellgram カテゴリ終了
 
             // --- 放射線注入 ---
             builder.comment("Radiation Injection Settings")

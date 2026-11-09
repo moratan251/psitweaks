@@ -9,6 +9,8 @@ import com.moratan251.psitweaks.common.entities.EntityPhononMaserBeam;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityFlareCircle;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.spells.combat.AttackCaster;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShields;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
@@ -293,47 +295,37 @@ public final class AttackTargetGameTests {
         }));
     }
 
-    /** F-015: 術者がいなくなった後の術式円も、詠唱したときの術者のペットとチームメイトには当たらない。 */
-    @GameTest(template = TEMPLATE, batch = "psitweaks_targets_circle_gone", timeoutTicks = 200)
-    public static void circlesSpareTheSideOfACasterWhoIsGone(GameTestHelper helper) {
+    /**
+     * F-015: 術者がいなくなった後も、攻撃は詠唱したときの術者のペットとチームメイトには当たらない（{@link AttackCaster}）。
+     * 術式円は術者がいなくなると消えるようになったので（{@code SpellGramGameTests}）、判定そのものを確かめる。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_targets_circle_gone", timeoutTicks = 100)
+    public static void attacksSpareTheSideOfACasterWhoIsGone(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         boolean pvp = level.getServer().isPvpAllowed();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "tgt_g_caster", new Vec3(0.5, 1.0, 0.5));
-        ServerPlayer mate = GameTestPlayers.tough(GameTestPlayers.inLevel(helper, "tgt_g_mate", new Vec3(3.0, 1.0, 3.0)), TOUGH);
+        ServerPlayer mate = GameTestPlayers.inLevel(helper, "tgt_g_mate", new Vec3(3.0, 1.0, 3.0));
         PlayerTeam team = GameTestPlayers.team(helper, "tgt_g_team", true, caster.getScoreboardName(), mate.getScoreboardName());
-        Wolf ownPet = GameTestPlayers.tough(GameTestPlayers.pet(helper, caster.getUUID(), new Vec3(2.0, 1.0, 2.0)), TOUGH);
-        Husk husk = GameTestPlayers.tough(frozenHusk(helper, new Vec3(3.0, 1.0, 2.0)), TOUGH);
-        EntityFlareCircle circle = new EntityFlareCircle(level);
-        Runnable cleanup = () -> {
-            circle.discard();
+        try {
+            Wolf ownPet = GameTestPlayers.pet(helper, caster.getUUID(), new Vec3(2.0, 1.0, 2.0));
+            Husk husk = frozenHusk(helper, new Vec3(3.0, 1.0, 2.0));
+            level.getServer().setPvpAllowed(true);
+            AttackCaster attack = AttackCaster.byId();
+            attack.set(caster, AttackRules.Options.DEFAULT);
+            // 術者がログアウトしたのと同じ: 術者を引き直せなくなる。
+            GameTestPlayers.remove(helper, caster);
+            LivingEntity found = attack.get(level);
+            helper.assertTrue(found == null, "The caster should be gone for this test");
+            helper.assertTrue(attack.canHarm(found, husk, attack.options()), "The gone caster's attack spared the monster");
+            helper.assertFalse(attack.canHarm(found, ownPet, attack.options()), "The gone caster's attack hit their pet");
+            helper.assertFalse(attack.canHarm(found, mate, attack.options()), "The gone caster's attack hit their team mate");
+            helper.succeed();
+        } finally {
             level.getServer().setPvpAllowed(pvp);
             GameTestPlayers.removeTeam(helper, team);
-            GameTestPlayers.remove(helper, mate);
+            List.of(caster, mate).forEach(player -> GameTestPlayers.remove(helper, player));
             helper.killAllEntitiesOfClass(Wolf.class);
-        };
-        float petHealth = ownPet.getHealth();
-        float mateHealth = mate.getHealth();
-        float huskHealth = husk.getHealth();
-        helper.runAfterDelay(AFTER_SPAWN_INVULNERABILITY, guarded(cleanup, () -> {
-            level.getServer().setPvpAllowed(true);
-            Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
-            circle.setPos(center.x, center.y + 0.01, center.z);
-            circle.setCaster(caster);
-            circle.setSafeToPlayers(false);
-            circle.setLifetimeTicks(40);
-            circle.configureAreaDamage(2.0F, 2.0F, 2);
-            level.addFreshEntity(circle);
-            // 術者がログアウトしたのと同じ: 円は術者を引き直せなくなる。
-            GameTestPlayers.remove(helper, caster);
-        }));
-        helper.runAfterDelay(AFTER_SPAWN_INVULNERABILITY + 6, guarded(cleanup, () -> {
-            helper.assertTrue(circle.getCaster() == null, "The caster should be gone for this test");
-            helper.assertTrue(husk.getHealth() < huskHealth, "The Flare Circle did not burn the monster");
-            helper.assertTrue(ownPet.getHealth() == petHealth, "The Flare Circle burned the gone caster's pet");
-            helper.assertTrue(mate.getHealth() == mateHealth, "The Flare Circle burned the gone caster's team mate");
-            cleanup.run();
-            helper.succeed();
-        }));
+        }
     }
 
     /** F-016・F-017: 術式円のダメージは術者の攻撃として数え、障壁で防げる。アイスサークルの凍結には上限がある。 */
