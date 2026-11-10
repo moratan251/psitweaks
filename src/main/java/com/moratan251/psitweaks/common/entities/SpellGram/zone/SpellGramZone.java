@@ -53,6 +53,8 @@ public abstract class SpellGramZone extends SpellGramObject {
     private ZoneArea area = ZoneArea.EMPTY;
     /** 氷炎地獄を続けるゲーム時刻（これより前なら起きている）。サーバー側だけ。 */
     private long infernoUntil = Long.MIN_VALUE;
+    /** 氷炎地獄の強さ（両側の威力のうち小さいほう）。サーバー側だけ。 */
+    private float infernoPower;
     private int color = 0xFFFFFF;
     /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
     private int floorCircleLevel = -1;
@@ -209,14 +211,20 @@ public abstract class SpellGramZone extends SpellGramObject {
         return entityData.get(DATA_INFERNO);
     }
 
+    /** 氷炎地獄の強さ（両側の威力のうち小さいほう、サーバー側）。 */
+    float getInfernoPower() {
+        return infernoPower;
+    }
+
     /** ゲーム時刻 {@code gameTime} に氷炎地獄が起きているか（サーバー側）。 */
     boolean isInfernoAt(long gameTime) {
         return gameTime < infernoUntil;
     }
 
     /** 氷炎地獄を {@code until}（ゲーム時刻）まで続ける（サーバー側）。 */
-    void extendInferno(long until) {
+    void extendInferno(long until, float power) {
         infernoUntil = Math.max(infernoUntil, until);
+        infernoPower = power;
         if (!isInferno() && isInfernoAt(level().getGameTime())) {
             entityData.set(DATA_INFERNO, true);
         }

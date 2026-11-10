@@ -21,14 +21,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 /**
- * 作動式: 加熱領域（仮）の範囲。中の生物に火をつける（出てからも {@link #BURN_SECONDS} 秒は燃える。濡れている生物は
+ * 作動式: 加熱領域（仮）の範囲。中の生物に火をつける（出てからも 威力 × 0.6 秒は燃える。濡れている生物は
  * 燃えない、{@code CombatStatuses}）。術者自身は燃やさない（{@link #sparesCaster}）。
  * <p>
  * 範囲の中の氷と薄氷を水に戻す（ネザーのような水の置けないディメンションでは消える。氷塊・青氷はそのまま）。
  * <p>
  * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括燻製する。Mekanism があるときは、
  * 範囲の中の熱を受け取るブロックに、薪木ストーブ 1 台ぶん（{@link #HEAT_PER_TICK}）の熱を毎 tick 送る。どちらも速さは
- * 置いた時点の事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。熱は {@link #MAX_TEMPERATURE} K までしか
+ * 置いた時点の事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。熱は 威力 × 100 K までしか
  * 上げない（核分裂炉が損傷する 1200 K を越えさせない）。
  * <p>
  * 同じ術者の凍結領域と 1 つの直方体を二分すると、氷炎地獄の「灼熱」側になる（{@link InfernoZones}、隠し要素）。
@@ -42,12 +42,14 @@ import net.minecraft.world.phys.AABB;
  * 先に判定するので、熱乱流・吹雪も起きない。2026-11-11 ユーザー）。
  */
 public class EntityHeatZone extends SpellGramZone {
-    /** 範囲の中の生物が燃え続ける長さ（出てから消えるまで、秒、仮）。 */
-    public static final float BURN_SECONDS = 3.0F;
+    /** 威力 1 あたりの、範囲の中の生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
+    public static final float BURN_SECONDS_PER_POWER = 0.6F;
+    /** 威力 1 あたりの、Mekanism の機械を温める上限の温度（K、仮）。威力 10 で 1000 K（核分裂炉が損傷する 1200 K より下）。 */
+    public static final double TEMPERATURE_PER_POWER = 100.0;
+    /** 威力の既定値（置く前に設定しなかったとき）。 */
+    public static final float DEFAULT_POWER = 5.0F;
     /** Mekanism の熱: 基準の速さで 1 tick に送る熱（薪木ストーブ 1 台が燃料を燃やしている間と同じ、仮）。 */
     public static final double HEAT_PER_TICK = 400.0;
-    /** Mekanism の熱: これより熱いブロックには送らない（K）。 */
-    public static final double MAX_TEMPERATURE = 1000.0;
     /** 氷炎地獄の灼熱の間、Mekanism へ送る熱の倍率（2026-11-11 ユーザー）。上限の温度は変えない。 */
     public static final double INFERNO_HEAT_FACTOR = 4.0;
     private static final int INTERVAL = 10;
@@ -72,6 +74,28 @@ public class EntityHeatZone extends SpellGramZone {
 
     public EntityHeatZone(Level level) {
         this(PsitweaksEntities.HEAT_ZONE.get(), level);
+    }
+
+    /** 威力（領域の温度、2026-11-11 ユーザー）。燃やす長さ・Mekanism の上限温度・氷炎地獄の強さを決める。 */
+    private float power = DEFAULT_POWER;
+
+    /** 置く前に呼ぶ。 */
+    public void setPower(float power) {
+        this.power = Math.max(0.0F, power);
+    }
+
+    public float getPower() {
+        return power;
+    }
+
+    /** 範囲の中の生物が燃え続ける長さ（秒）: 威力 × 0.6。 */
+    public float burnSeconds() {
+        return power * BURN_SECONDS_PER_POWER;
+    }
+
+    /** Mekanism の熱: これより熱いブロックには送らない（K）: 威力 × 100。 */
+    public double maxTemperature() {
+        return power * TEMPERATURE_PER_POWER;
     }
 
     /** 凍結領域と重なったブロックでは効かない（打ち消し合う）。 */
@@ -108,7 +132,7 @@ public class EntityHeatZone extends SpellGramZone {
     @Override
     protected void affect(Entity target) {
         if (target instanceof LivingEntity living) {
-            living.igniteForSeconds(BURN_SECONDS);
+            living.igniteForSeconds(burnSeconds());
         }
     }
 
@@ -120,6 +144,7 @@ public class EntityHeatZone extends SpellGramZone {
         }
         if (tickCount % InfernoZones.INTERVAL == 0) {
             InfernoZones.link(level, this);
+            InfernoZones.showHints(level, this);
             if (isInfernoAt(level.getGameTime())) {
                 InfernoZones.harm(level, this, PsitweaksDamageTypes.INFERNO_HEAT,
                         target -> target.igniteForSeconds(INFERNO_BURN_SECONDS));
@@ -154,12 +179,12 @@ public class EntityHeatZone extends SpellGramZone {
         }
         double heat = heatPerTick(getMachineSpeed(), inferno);
         if (heat > 0.0) {
-            MekanismGameplayCompat.supplyZoneHeat(level, getArea().blockEntities(level), heat, MAX_TEMPERATURE,
+            MekanismGameplayCompat.supplyZoneHeat(level, getArea().blockEntities(level), heat, maxTemperature(),
                     pos -> isActiveAt(pos) && mayUseMachine(level, caster, pos));
             if (storm) {
                 for (EntityTurbulenceZone turbulence : overlappingStorms()) {
                     MekanismGameplayCompat.supplyZoneHeat(level, getArea().blockEntities(level),
-                            heat * stormBoost(turbulence.getPower()), MAX_TEMPERATURE,
+                            heat * stormBoost(turbulence.getPower()), maxTemperature(),
                             pos -> stormAt(pos) == turbulence && mayUseMachine(level, caster, pos));
                 }
             }

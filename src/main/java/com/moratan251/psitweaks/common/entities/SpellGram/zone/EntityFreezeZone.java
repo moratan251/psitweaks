@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
  * 作動式: 凍結領域（仮）の範囲。中の生物を、粉雪に埋まったときと同じように凍えさせる（凍えの値をためる。たまりきると
  * バニラと同じく動きが遅くなり、凍えのダメージを受ける）。凍えない生物（革の防具を着ている、ストレイなど）はバニラと同じく
  * 凍えない。術者自身は凍えさせない（{@link #sparesCaster}）。濡れている生物（湿潤領域を重ねるなど）は、凍えきるまでの
- * 時間が半分になる（{@link #SOAKED_FREEZE_PER_INTERVAL}）。
+ * 時間が半分になる（{@link #freezeAmount}）。
  * <p>
  * 範囲の中の水源の水のうち、真上が空気のものを氷にする（氷渡りと同じ条件）。中にエンティティがいる水は凍らせない。
  * <p>
@@ -37,16 +37,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
  */
 public class EntityFreezeZone extends SpellGramZone {
     private static final int INTERVAL = 10;
-    /**
-     * {@link #INTERVAL} ごとに足す凍えの値（仮）。粉雪の外では毎 tick 2 ずつ抜けるので、差し引き毎 tick 2 たまり、
-     * 3.5 秒で凍えきる（粉雪は 7 秒）。
-     */
-    public static final int FREEZE_PER_INTERVAL = 40;
-    /**
-     * 濡れている生物（湿潤領域・作動式: アクアカッター）に {@link #INTERVAL} ごとに足す凍えの値。差し引き毎 tick 4 たまり、
-     * 凍えきるまでの時間がふだんの半分（1.75 秒）になる（2026-11-11 ユーザー、湿潤と凍結の組み合わせ）。
-     */
-    public static final int SOAKED_FREEZE_PER_INTERVAL = 60;
     /** 粉雪の外で {@link #INTERVAL} の間に抜ける凍えの値（毎 tick 2）。 */
     private static final int THAW_PER_INTERVAL = 20;
     private static final int MAX_FLAKES_PER_TICK = 5;
@@ -64,6 +54,23 @@ public class EntityFreezeZone extends SpellGramZone {
 
     public EntityFreezeZone(Level level) {
         this(PsitweaksEntities.FREEZE_ZONE.get(), level);
+    }
+
+    /** 威力の既定値（置く前に設定しなかったとき）。 */
+    public static final float DEFAULT_POWER = 5.0F;
+    /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
+    public static final int NET_FREEZE_PER_POWER = 4;
+
+    /** 威力（冷やす強さ、2026-11-11 ユーザー）。凍えのたまる速さと氷炎地獄の強さを決める。 */
+    private float power = DEFAULT_POWER;
+
+    /** 置く前に呼ぶ。 */
+    public void setPower(float power) {
+        this.power = Math.max(0.0F, power);
+    }
+
+    public float getPower() {
+        return power;
     }
 
     /** 加熱領域と重なったブロックでは効かない（打ち消し合う）。 */
@@ -127,17 +134,17 @@ public class EntityFreezeZone extends SpellGramZone {
             // 凍えきった後も、次に足すまで（毎 tick 2 ずつ抜ける間）凍えきったままでいられる分だけ上乗せしておく。
             int cap = living.getTicksRequiredToFreeze() + INTERVAL * 2;
             living.setTicksFrozen(Math.min(cap, living.getTicksFrozen()
-                    + freezeAmount(CombatStatuses.isSoaked(living),
+                    + freezeAmount(power, CombatStatuses.isSoaked(living),
                     stormPowerAt(BlockPos.containing(living.getBoundingBox().getCenter())))));
         }
     }
 
     /**
-     * {@link #INTERVAL} ごとに足す凍えの値。差し引き（足す − 抜ける）が、濡れていれば 2 倍、吹雪なら乱流の威力に応じて
-     * 1 + 威力 × 0.1 倍になる（ふだん 40、濡れていれば 60、威力 10 の吹雪で 60、両方で 100）。
+     * {@link #INTERVAL} ごとに足す凍えの値。差し引き（足す − 抜ける）は 凍結の威力 × 4 で、濡れていれば 2 倍、吹雪なら乱流の
+     * 威力に応じて 1 + 威力 × 0.1 倍になる（凍結の威力 5 で: ふだん 40、濡れていれば 60、威力 10 の吹雪で 60、両方で 100）。
      */
-    public static int freezeAmount(boolean soaked, float stormPower) {
-        double net = (FREEZE_PER_INTERVAL - THAW_PER_INTERVAL) * (soaked ? 2 : 1) * (1.0 + stormBoost(stormPower));
+    public static int freezeAmount(float power, boolean soaked, float stormPower) {
+        double net = NET_FREEZE_PER_POWER * Math.max(0.0F, power) * (soaked ? 2 : 1) * (1.0 + stormBoost(stormPower));
         return THAW_PER_INTERVAL + (int) Math.round(net);
     }
 

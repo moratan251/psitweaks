@@ -2832,38 +2832,38 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 加熱領域", "範囲の中の生物に火をつけ、氷を溶かす魔法式オブジェクトを置く");
         addBookPage(root, "trick_heat_zone.0",
                 "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
-                        + " Living beings inside catch fire and keep burning for 3 seconds after leaving. The caster does not burn, nor do wet beings."
+                        + " The Power (a constant of at most 10) is how hot the zone is: living beings inside catch fire and keep burning for 0.6 seconds per Power after leaving. The caster does not burn, nor do wet beings."
                         + " Ice and Frosted Ice inside melt into water; Packed Ice and Blue Ice stay.",
                 "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
-                        + "中の生物に火がつき、出てから3秒は燃え続けます。術者自身と、濡れている生物は燃えません。"
+                        + "「威力」（最大10の定数）は領域の温度で、中の生物に火がつき、出てから威力×0.6秒は燃え続けます。術者自身と、濡れている生物は燃えません。"
                         + "範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。");
         addBookPage(root, "trick_heat_zone.1",
                 "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside."
-                        + " With Mekanism installed, it sends heat to the blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), but never above 1000 K."
+                        + " With Mekanism installed, it sends heat to the blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), but never above 100 K per Power (1000 K at 10)."
                         + " Both run at a speed set by the caster's interference when placed: at 2, as fast as an Encased Fan and as much heat as one Fuelwood Heater; half at 1, and at most twice."
-                        + " Cost and Potency depend only on the Size. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                        + " Cost and Potency grow with the area of the zone times the Power. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
                 "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。"
-                        + "Mekanism が入っているときは、範囲の中の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし 1000K より上には温めません。"
+                        + "Mekanism が入っているときは、範囲の中の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし威力×100K（威力10で1000K）より上には温めません。"
                         + "どちらも速さは置いた時点の事象干渉力で決まり、干渉力2で一括燻製はケース入りファンと同じ、熱は薪木ストーブ1台ぶんです。1 でその半分、最大で2倍です。"
-                        + "コストと規模はサイズだけで決まります。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+                        + "コストと規模は、範囲の広さ×威力で増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_freeze_zone", "Trick: Freeze Zone",
                 "Places a SpellGram zone that freezes living beings inside it and turns open water into ice",
                 "作動式: 凍結領域", "範囲の中の生物を凍えさせ、水を氷にする魔法式オブジェクトを置く");
         addBookPage(root, "trick_freeze_zone.0",
                 "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
-                        + " Living beings inside freeze as if stuck in Powder Snow, only faster; once fully frozen they slow down and take freezing damage."
+                        + " Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at most 10) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast."
                         + " The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor."
                         + " Water sources inside with air right above them turn into ice.",
                 "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
-                        + "中の生物は粉雪に埋まったときと同じように、それより速く凍え、凍えきると動きが遅くなってダメージを受けます。"
+                        + "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（最大10の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さです。"
                         + "術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。"
                         + "範囲の中の水源の水のうち、真上が空気のものは氷になります。");
         addBookPage(root, "trick_freeze_zone.1",
                 "Wet beings, such as those in a Soak Zone, freeze in half the time."
-                        + " Cost and Potency depend only on the Size, and grow with the area of the zone."
+                        + " Cost and Potency grow with the area of the zone times the Power."
                         + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
                 "湿潤領域の中などで濡れている生物は、半分の時間で凍えきります。"
-                        + "コストと規模はサイズだけで決まり、範囲が広いほど増えます。"
+                        + "コストと規模は、範囲の広さ×威力で増えます。"
                         + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_turbulence_zone", "Trick: Turbulence Zone",
                 "Places a SpellGram zone where a gale turns projectiles aside and strengthens your other zones",

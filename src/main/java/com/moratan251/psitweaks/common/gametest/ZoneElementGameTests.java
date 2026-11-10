@@ -78,7 +78,7 @@ public final class ZoneElementGameTests {
         basin(helper, THIRD, Blocks.PACKED_ICE);
         Runnable cleanup = () -> cleanup(helper, caster);
         try {
-            cast(caster, heat(helper), 5.0, 0.0);
+            cast(caster, heat(helper), 5.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -122,7 +122,7 @@ public final class ZoneElementGameTests {
         try {
             // 事象干渉力 4 → 速さは上限の 2 倍（Create の処理時間 150 tick を 75 tick ほどで）。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
-            cast(caster, heat(helper), 5.0, 0.0);
+            cast(caster, heat(helper), 5.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -156,7 +156,7 @@ public final class ZoneElementGameTests {
         };
         try {
             helper.assertTrue(!Double.isNaN(before), "The Resistive Heater must hold heat");
-            cast(caster, heat(helper), 5.0, 0.0);
+            cast(caster, heat(helper), 5.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -184,7 +184,7 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            cast(caster, freeze(helper), 5.0, 0.0);
+            cast(caster, freeze(helper), 5.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -206,6 +206,12 @@ public final class ZoneElementGameTests {
     /** 凍結領域に湿潤領域を重ねると、濡れた生物は凍えきるまでの時間が半分になる（凍えの値が倍の速さでたまる）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_soak", timeoutTicks = 100)
     public static void soakedBeingsFreezeTwiceAsFast(GameTestHelper helper) {
+        // 凍えの差し引きは 凍結の威力 × 4（威力 5 で 20、10 で 40）、濡れていれば 2 倍、威力 10 の吹雪で 2 倍。
+        helper.assertTrue(EntityFreezeZone.freezeAmount(5.0F, false, 0.0F) == 40
+                        && EntityFreezeZone.freezeAmount(10.0F, false, 0.0F) == 60
+                        && EntityFreezeZone.freezeAmount(5.0F, true, 0.0F) == 60
+                        && EntityFreezeZone.freezeAmount(5.0F, true, 10.0F) == 100,
+                "The freezing speed must follow the Power, wetness and the Blizzard");
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_freeze_soak_caster", new Vec3(8.5, 1.0, 2.5));
         Husk wet = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 1.0, 2.5));
         Husk dry = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(3.5, 1.0, 2.5));
@@ -213,7 +219,7 @@ public final class ZoneElementGameTests {
         try {
             // 凍結領域は x 0〜4、湿潤領域は x 0〜2 だけ（濡れるのは片方の生物）。
             cast(caster, soak(helper, new BlockPos(1, 1, 2)), 3.0, 0.0);
-            cast(caster, freeze(helper, CENTER), 5.0, 0.0);
+            cast(caster, freeze(helper, CENTER), 5.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -368,7 +374,7 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            cast(caster, heat ? heat(helper, CENTER) : freeze(helper, CENTER), 3.0, 0.0);
+            cast(caster, heat ? heat(helper, CENTER) : freeze(helper, CENTER), 3.0, 5.0);
             castTurbulenceOver(caster, helper.absolutePos(new BlockPos(1, 0, 1)), 2, 3, 3);
             // 同じところに弱い乱流（威力 1）も重ねる: 強さは最も強い乱流（威力 10）で決まる。
             castTurbulenceOver(caster, helper.absolutePos(new BlockPos(1, 0, 1)), 2, 3, 3, 1.0);
@@ -416,8 +422,8 @@ public final class ZoneElementGameTests {
         float blazeBefore = blaze.getHealth();
         Runnable cleanup = () -> cleanup(helper, caster);
         try {
-            cast(caster, heat(helper, CENTER), 3.0, 0.0);
-            cast(caster, freeze(helper, CENTER), 3.0, 0.0);
+            cast(caster, heat(helper, CENTER), 3.0, 5.0);
+            cast(caster, freeze(helper, CENTER), 3.0, 5.0);
             cast(caster, soak(helper, CENTER), 3.0, 0.0);
             castTurbulenceOver(caster, helper.absolutePos(new BlockPos(1, 0, 1)), 3, 3, 3);
         } catch (RuntimeException | SpellRuntimeException e) {
@@ -566,6 +572,15 @@ public final class ZoneElementGameTests {
                 "Zones of different sizes must not count");
         helper.assertFalse(InfernoZones.splitsOneBox(ZoneArea.cube(hot, 3), ZoneArea.cube(cold.north(), 3)),
                 "Zones sliding past each other must not count");
+        // 面で触れ合うかの判定（相殺・接触の演出用）: 大きさ違いでも、ずれていても、面で触れていれば触れ合う。
+        helper.assertTrue(InfernoZones.contactFace(ZoneArea.cube(hot, 3).bounds(), ZoneArea.cube(cold, 3).bounds()) != null,
+                "Two halves of one box touch");
+        helper.assertTrue(InfernoZones.contactFace(ZoneArea.cube(hot, 3).bounds(), ZoneArea.cube(cold.east(), 5).bounds()) != null,
+                "Zones of different sizes side by side touch");
+        helper.assertTrue(InfernoZones.contactFace(ZoneArea.cube(hot, 3).bounds(), ZoneArea.cube(cold.east(2), 3).bounds()) == null,
+                "Zones with a gap do not touch");
+        helper.assertTrue(InfernoZones.contactFace(ZoneArea.cube(hot, 3).bounds(), ZoneArea.cube(cold.west(), 3).bounds()) == null,
+                "Overlapping zones do not merely touch");
 
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_inferno_caster", new Vec3(8.5, 1.0, 2.5));
         Husk scorched = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 1.0, 2.5)), 100.0F);
@@ -574,8 +589,8 @@ public final class ZoneElementGameTests {
         float frozenBefore = frozen.getHealth();
         Runnable cleanup = () -> cleanup(helper, caster);
         try {
-            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 0.0);
-            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 0.0);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -623,8 +638,8 @@ public final class ZoneElementGameTests {
         try {
             // 事象干渉力 4 → 速さは上限の 2 倍（Create の処理時間 150 tick を 75 tick ほどで）。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
-            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 0.0);
-            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 0.0);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);

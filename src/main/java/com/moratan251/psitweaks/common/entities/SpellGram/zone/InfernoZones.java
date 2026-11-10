@@ -33,8 +33,11 @@ import java.util.function.Consumer;
 public final class InfernoZones {
     /** ダメージの間隔（tick）。 */
     public static final int INTERVAL = 10;
-    /** 1 回のダメージ（倍率を掛ける前、仮）。 */
-    public static final float BASE_DAMAGE = 4.0F;
+    /**
+     * 両側の威力のうち小さいほう 1 あたりの、1 回のダメージ（倍率を掛ける前、仮）。威力 10 で 4。片方から減らした運動エネルギーを
+     * もう片方へ逃がすので、強さは弱い側でそろう（2026-11-11 ユーザー）。
+     */
+    public static final float DAMAGE_PER_POWER = 0.4F;
     /** 加熱領域が組み合わせを確かめる間隔より少し長く、氷炎地獄を続けておく長さ（tick）。 */
     private static final int LINK_TICKS = INTERVAL * 2 + 5;
     private static final int BURST_PARTICLES = 60;
@@ -79,8 +82,9 @@ public final class InfernoZones {
                     && splitsOneBox(heat.getArea(), freeze.getArea())
                     && freeze.isActiveAt(freeze.getArea().center())) {
                 boolean starting = !heat.isInfernoAt(now) || !freeze.isInfernoAt(now);
-                heat.extendInferno(now + LINK_TICKS);
-                freeze.extendInferno(now + LINK_TICKS);
+                float power = Math.min(heat.getPower(), freeze.getPower());
+                heat.extendInferno(now + LINK_TICKS, power);
+                freeze.extendInferno(now + LINK_TICKS, power);
                 if (starting) {
                     ignite(level, heat, freeze);
                 }
@@ -89,9 +93,100 @@ public final class InfernoZones {
         }
     }
 
+    /** 相殺・接触の音を鳴らす間隔（tick）。 */
+    private static final int HINT_SOUND_INTERVAL = 40;
+
+    /**
+     * 箱 {@code a} と {@code b} が面で触れ合っているときの、触れ合っている面（厚さ 0 の箱）。重なっている・離れている・
+     * 辺や角だけで接しているときは null。
+     */
+    @org.jetbrains.annotations.Nullable
+    public static AABB contactFace(AABB a, AABB b) {
+        double minX = Math.max(a.minX, b.minX);
+        double maxX = Math.min(a.maxX, b.maxX);
+        double minY = Math.max(a.minY, b.minY);
+        double maxY = Math.min(a.maxY, b.maxY);
+        double minZ = Math.max(a.minZ, b.minZ);
+        double maxZ = Math.min(a.maxZ, b.maxZ);
+        // ちょうど 1 つの軸で厚さ 0（面）、残り 2 つの軸で広がりがあるときだけ。
+        int flat = (minX == maxX ? 1 : 0) + (minY == maxY ? 1 : 0) + (minZ == maxZ ? 1 : 0);
+        if (flat != 1 || minX > maxX || minY > maxY || minZ > maxZ) {
+            return null;
+        }
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    /**
+     * 加熱領域が {@link #INTERVAL} tick ごとに呼ぶ: 凍結領域との関わりを見せる（2026-11-11 ユーザー）。
+     * <ul>
+     * <li>重なっている（術者は問わない）: 加熱と凍結が打ち消し合っているので、重なったところから湯気が立ち、ジュッと鳴る。</li>
+     * <li>同じ術者の凍結領域と面で触れ合っているが、二分にはなっていない（大きさ違い・ずれ）: 触れ合う面で炎と雪がぶつかり、
+     * 共鳴する音が鳴る（氷炎地獄のヒント）。</li>
+     * </ul>
+     */
+    static void showHints(ServerLevel level, EntityHeatZone heat) {
+        if (heat.isEnded() || heat.getArea().isEmpty()) {
+            return;
+        }
+        AABB hot = heat.getArea().bounds();
+        boolean sound = heat.tickCount % HINT_SOUND_INTERVAL == 0;
+        for (EntityFreezeZone freeze : SpellGramIndex.all(level, EntityFreezeZone.class)) {
+            if (freeze.isEnded() || freeze.getArea().isEmpty()) {
+                continue;
+            }
+            AABB cold = freeze.getArea().bounds();
+            AABB overlap = ZoneAttacks.overlap(hot, cold);
+            if (overlap != null && overlap.getSize() > 0.0) {
+                steam(level, overlap, sound);
+                continue;
+            }
+            boolean sameCaster = heat.getCasterUuid() != null && heat.getCasterUuid().equals(freeze.getCasterUuid());
+            AABB face = contactFace(hot, cold);
+            if (face != null && sameCaster && !splitsOneBox(heat.getArea(), freeze.getArea())) {
+                clash(level, face, hot, cold, sound);
+            }
+        }
+    }
+
+    /** 相殺: 重なったところから湯気が立つ。 */
+    private static void steam(ServerLevel level, AABB overlap, boolean sound) {
+        Vec3 center = overlap.getCenter();
+        int count = (int) Math.max(4, Math.min(30, overlap.getSize() * 2.0));
+        level.sendParticles(ParticleTypes.CLOUD, center.x, center.y, center.z, count,
+                overlap.getXsize() * 0.3, overlap.getYsize() * 0.3, overlap.getZsize() * 0.3, 0.02);
+        level.sendParticles(ParticleTypes.WHITE_SMOKE, center.x, center.y, center.z, Math.max(2, count / 3),
+                overlap.getXsize() * 0.3, overlap.getYsize() * 0.3, overlap.getZsize() * 0.3, 0.01);
+        if (sound) {
+            level.playSound(null, center.x, center.y, center.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.7F, 0.8F);
+        }
+    }
+
+    /** 接触: 触れ合う面の熱い側に炎、冷たい側に雪、面に火花。 */
+    private static void clash(ServerLevel level, AABB face, AABB hot, AABB cold, boolean sound) {
+        Vec3 center = face.getCenter();
+        // 面から少しだけ、それぞれの領域の側へずらす。
+        Vec3 toHot = hot.getCenter().subtract(center).normalize().scale(0.25);
+        Vec3 toCold = cold.getCenter().subtract(center).normalize().scale(0.25);
+        double dx = face.getXsize() * 0.3;
+        double dy = face.getYsize() * 0.3;
+        double dz = face.getZsize() * 0.3;
+        int count = (int) Math.max(3, Math.min(16, (face.getXsize() + face.getYsize() + face.getZsize())));
+        level.sendParticles(ParticleTypes.FLAME, center.x + toHot.x, center.y + toHot.y, center.z + toHot.z, count,
+                dx, dy, dz, 0.01);
+        level.sendParticles(ParticleTypes.SNOWFLAKE, center.x + toCold.x, center.y + toCold.y, center.z + toCold.z, count,
+                dx, dy, dz, 0.01);
+        level.sendParticles(ParticleTypes.ELECTRIC_SPARK, center.x, center.y, center.z, Math.max(2, count / 3),
+                dx, dy, dz, 0.05);
+        if (sound) {
+            level.playSound(null, center.x, center.y, center.z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS,
+                    1.0F, 0.6F);
+        }
+    }
+
     /** 氷炎地獄の中の生物にダメージを与える（加熱側・凍結側の両方から、{@link #INTERVAL} tick ごとに呼ぶ）。 */
     static void harm(ServerLevel level, SpellGramZone zone, ResourceKey<DamageType> type, Consumer<LivingEntity> afterHit) {
-        ZoneAttacks.harm(level, zone, type, BASE_DAMAGE, PsitweaksConfig.COMMON.infernoDamageMultiplier.get(),
+        ZoneAttacks.harm(level, zone, type, DAMAGE_PER_POWER * zone.getInfernoPower(),
+                PsitweaksConfig.COMMON.infernoDamageMultiplier.get(),
                 pos -> true, afterHit);
     }
 

@@ -68,6 +68,34 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
     protected void addZoneParams() {
     }
 
+    /** 威力の上限（加熱・凍結、仮）。 */
+    public static final double MAX_ZONE_POWER = 10.0;
+
+    /** 「威力」の入力（定数、コストを決めるため）を足す。 */
+    protected SpellParam<Number> addPowerParam() {
+        ParamNumber power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true);
+        addParam(power);
+        return power;
+    }
+
+    /** 術式を組んだ時点の威力（正の定数、{@link #MAX_ZONE_POWER} で頭打ち）。 */
+    protected double constantPower(SpellParam<Number> power) throws SpellCompilationException {
+        Object value = getParamEvaluation(power);
+        if (!(value instanceof Number number) || number.doubleValue() <= 0.0) {
+            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
+        }
+        return Math.min(MAX_ZONE_POWER, number.doubleValue());
+    }
+
+    /** 唱えた時点の威力（正、{@link #MAX_ZONE_POWER} で頭打ち）。 */
+    protected float powerValue(SpellContext context, SpellParam<Number> power) throws SpellRuntimeException {
+        double value = getNotNullParamValue(context, power).doubleValue();
+        if (value <= 0.0) {
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
+        }
+        return (float) Math.min(MAX_ZONE_POWER, value);
+    }
+
     /** 範囲の広さのラベル: サイズ²。 */
     protected static StatLabel areaLabel() {
         return new StatLabel(PsitweaksSpellParams.SIZE, true).square();
