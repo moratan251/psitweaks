@@ -1,0 +1,19 @@
+{
+  "name": "psitweaks.spellpiece.trick_turbulence_zone",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_turbulence_zone.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_turbulence_zone.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_turbulence_zone.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_turbulence_zone.2"
+    }
+  ]
+}

@@ -29,7 +29,13 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue activeAirMineDamageMultiplier;
         public final ModConfigSpec.DoubleValue flareCircleDamageMultiplier;
         public final ModConfigSpec.DoubleValue iceCircleDamageMultiplier;
+        public final ModConfigSpec.DoubleValue infernoDamageMultiplier;
+        public final ModConfigSpec.DoubleValue heatStormDamageMultiplier;
+        public final ModConfigSpec.DoubleValue blizzardDamageMultiplier;
+        public final ModConfigSpec.DoubleValue rainstormDamageMultiplier;
         public final ModConfigSpec.DoubleValue spellGramIntegrityMultiplier;
+        public final ModConfigSpec.IntValue spellGramMaxObjectsPerPlayer;
+        public final ModConfigSpec.IntValue spellGramMaxObjectsPerAutonomousCaster;
         public final ModConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ModConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
@@ -198,6 +204,58 @@ public class PsitweaksConfig {
 
             builder.pop(); // ice_circle カテゴリ終了
 
+            // --- 氷炎地獄（加熱領域と凍結領域の組み合わせ） ---
+            builder.comment("Inferno Settings")
+                    .translation("psitweaks.configuration.spells.inferno")
+                    .push("inferno");
+
+            infernoDamageMultiplier = builder
+                    .comment("氷炎地獄（加熱領域と凍結領域の組み合わせ）の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for the Inferno (a Heat Zone and a Freeze Zone together)")
+                    .translation("psitweaks.configuration.spells.inferno.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // inferno カテゴリ終了
+
+            // --- 熱乱流（乱流領域と加熱領域の組み合わせ） ---
+            builder.comment("Heat Storm Settings")
+                    .translation("psitweaks.configuration.spells.heat_storm")
+                    .push("heat_storm");
+
+            heatStormDamageMultiplier = builder
+                    .comment("熱乱流（乱流領域と加熱領域の組み合わせ）の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for the Heat Storm (a Turbulence Zone and a Heat Zone together)")
+                    .translation("psitweaks.configuration.spells.heat_storm.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // heat_storm カテゴリ終了
+
+            // --- 吹雪（乱流領域と凍結領域の組み合わせ） ---
+            builder.comment("Blizzard Settings")
+                    .translation("psitweaks.configuration.spells.blizzard")
+                    .push("blizzard");
+
+            blizzardDamageMultiplier = builder
+                    .comment("吹雪（乱流領域と凍結領域の組み合わせ）の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for the Blizzard (a Turbulence Zone and a Freeze Zone together)")
+                    .translation("psitweaks.configuration.spells.blizzard.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // blizzard カテゴリ終了
+
+            // --- 暴風雨（乱流領域と湿潤領域の組み合わせ） ---
+            builder.comment("Rainstorm Settings")
+                    .translation("psitweaks.configuration.spells.rainstorm")
+                    .push("rainstorm");
+
+            rainstormDamageMultiplier = builder
+                    .comment("暴風雨（乱流領域と湿潤領域の組み合わせ）が水に弱い生物に与えるダメージの倍率",
+                            "Damage multiplier for the Rainstorm (a Turbulence Zone and a Soak Zone together) against beings hurt by water")
+                    .translation("psitweaks.configuration.spells.rainstorm.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // rainstorm カテゴリ終了
+
             // --- 魔法式オブジェクト ---
             builder.comment("SpellGram Object Settings")
                     .translation("psitweaks.configuration.spells.spellgram")
@@ -208,6 +266,18 @@ public class PsitweaksConfig {
                             "Multiplier for the integrity of SpellGram objects (Fire Circle, Ice Circle, Meteor Line night, ...)")
                     .translation("psitweaks.configuration.spells.spellgram.integrity_multiplier")
                     .defineInRange("integrityMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            spellGramMaxObjectsPerPlayer = builder
+                    .comment("プレイヤー1人が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）。超えて置くと古いものから消える",
+                            "How many SpellGram objects (circles and zones together) one player can keep at once. Placing more ends the oldest")
+                    .translation("psitweaks.configuration.spells.spellgram.max_objects_per_player")
+                    .defineInRange("maxObjectsPerPlayer", 32, 1, 256);
+
+            spellGramMaxObjectsPerAutonomousCaster = builder
+                    .comment("自律詠唱機1台が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）。機械ごとに数え、持ち主のプレイヤーの数とは別",
+                            "How many SpellGram objects (circles and zones together) one Autonomous Caster can keep at once. Each machine counts on its own, apart from its owner")
+                    .translation("psitweaks.configuration.spells.spellgram.max_objects_per_autonomous_caster")
+                    .defineInRange("maxObjectsPerAutonomousCaster", 32, 1, 256);
 
             builder.pop(); // spellgram カテゴリ終了
 

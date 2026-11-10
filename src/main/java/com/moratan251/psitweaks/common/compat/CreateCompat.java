@@ -9,10 +9,20 @@ import net.neoforged.fml.ModList;
 import java.util.function.Predicate;
 
 /**
- * Create との連携の入口。Create のクラスは {@link CreateWashingIntegration} にだけ置き、Create がないときは読み込まない。
+ * Create との連携の入口。Create のクラスは {@link CreateFanIntegration} にだけ置き、Create がないときは読み込まない。
  */
 public final class CreateCompat {
     private static final String CREATE_MOD_ID = "create";
+
+    /** 領域がする Create の扇風機の加工。 */
+    public enum FanProcess {
+        /** 一括洗浄（作動式: 湿潤領域）。 */
+        WASHING,
+        /** 一括燻製（作動式: 加熱領域）。 */
+        SMOKING,
+        /** 一括製錬（氷炎地獄の灼熱になった加熱領域）。 */
+        BLASTING
+    }
 
     private CreateCompat() {
     }
@@ -22,22 +32,24 @@ public final class CreateCompat {
     }
 
     /**
-     * 範囲の中を 1 tick ぶん一括洗浄する（Create の扇風機の水と同じ）。落ちているアイテムと、デポ・ベルトの上のアイテムが対象。
-     * {@code mayUse} が偽のブロック（保護された場所）のデポ・ベルトは洗わない。Create がなければ何もしない。
+     * 範囲の中を 1 tick ぶん加工する（Create の扇風機の風と同じ）。落ちているアイテムと、デポ・ベルトの上のアイテムが対象。
+     * 落ちているアイテムはそのブロックで {@code itemsAt} が真のものだけ、デポ・ベルトは {@code machinesAt} が真のブロック
+     * （保護されていない、他者の領域干渉で止められていない）のものだけ。Create がなければ何もしない。
      */
-    public static void washZone(ServerLevel level, ZoneArea area, Predicate<BlockPos> mayUse) {
+    public static void processZone(ServerLevel level, ZoneArea area, FanProcess process, Predicate<BlockPos> itemsAt,
+                                   Predicate<BlockPos> machinesAt) {
         if (isCreateLoaded()) {
-            CreateWashingIntegration.wash(level, area, mayUse);
+            CreateFanIntegration.process(level, area, process, itemsAt, machinesAt);
         }
     }
 
     /**
-     * クライアント側、毎 tick: ケース入りファンの水を当てたときと同じ一括洗浄のパーティクルを、範囲の中の落ちているアイテムと
+     * クライアント側、毎 tick: ケース入りファンの風を当てたときと同じ加工のパーティクルを、範囲の中の落ちているアイテムと
      * デポ・ベルトの上のアイテムに出す（Create と同じく、出るかどうかは Create の側で毎回くじを引く）。Create がなければ何もしない。
      */
-    public static void spawnWashingParticles(Level level, ZoneArea area) {
+    public static void spawnProcessingParticles(Level level, ZoneArea area, FanProcess process) {
         if (isCreateLoaded()) {
-            CreateWashingIntegration.spawnParticles(level, area);
+            CreateFanIntegration.spawnParticles(level, area, process);
         }
     }
 }

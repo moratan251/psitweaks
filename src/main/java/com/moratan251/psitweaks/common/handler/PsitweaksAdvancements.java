@@ -10,6 +10,8 @@ public final class PsitweaksAdvancements {
     public static final String CODE_TRIGGERED = "code_triggered";
     /** Hidden: Trick: Phonon Maser lit a Fusion Reactor. Loads only with Mekanism Generators. */
     public static final ResourceLocation PHONON_MASER_FUSION_IGNITION = Psitweaks.location("main/phonon_maser_fusion_ignition");
+    /** Hidden: a Heat Zone and a Freeze Zone of one caster split one box and started the Inferno. */
+    public static final ResourceLocation INFERNO = Psitweaks.location("main/inferno");
 
     private PsitweaksAdvancements() {
     }

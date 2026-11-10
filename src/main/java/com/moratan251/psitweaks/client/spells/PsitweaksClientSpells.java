@@ -366,6 +366,14 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_soak_zone");
     public static final DeferredHolder<Material, Material> TRICK_GRAVITY_ZONE =
             registerPieceMaterial("trick_gravity_zone");
+    public static final DeferredHolder<Material, Material> TRICK_HEAT_ZONE =
+            registerPieceMaterial("trick_heat_zone");
+    public static final DeferredHolder<Material, Material> TRICK_FREEZE_ZONE =
+            registerPieceMaterial("trick_freeze_zone");
+    public static final DeferredHolder<Material, Material> TRICK_TURBULENCE_ZONE =
+            registerPieceMaterial("trick_turbulence_zone");
+    public static final DeferredHolder<Material, Material> TRICK_INTERFERENCE_ZONE =
+            registerPieceMaterial("trick_interference_zone");
     public static final DeferredHolder<Material, Material> OPERATOR_ALIVE =
             registerPieceMaterial("operator_alive");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =

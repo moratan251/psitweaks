@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.compat;
 
 import com.moratan251.psitweaks.common.handler.PsitweaksAdvancements;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -11,6 +12,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 /** Mekanism Generators classes; only reached when Mekanism Generators is loaded. */
 final class MekanismGeneratorsGameplayIntegration {
     private MekanismGeneratorsGameplayIntegration() {
+    }
+
+    static double windMultiplierOf(BlockEntity blockEntity) {
+        return blockEntity instanceof TileEntityWindGenerator wind ? wind.getCurrentMultiplier() : Double.NaN;
     }
 
     /**

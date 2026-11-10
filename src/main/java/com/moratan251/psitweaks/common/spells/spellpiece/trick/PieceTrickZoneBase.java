@@ -1,9 +1,8 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.api.value.MatrixValue;
-import com.moratan251.psitweaks.common.caster.CasterIds;
-import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramLimits;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
@@ -27,14 +26,14 @@ import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
-import java.util.UUID;
-
 /**
- * 領域型の魔法式オブジェクト（○○ Zone）を置く作動式の基底（試作）。共通の入力は「範囲」（領域行列）と「サイズ」（定数）。
+ * 領域型の魔法式オブジェクト（○○ Zone）を置く作動式の基底（試作）。共通の入力は「範囲」（領域行列、省略できる）と
+ * 「サイズ」（定数）。行列を省くと、術者（術式の焦点）のいるブロックを中心にした一辺サイズの立方体になる。
  * <p>
  * 範囲は行列の中のブロックのうち、行列の中心のブロックを中心にした一辺サイズのブロックの立方体に入るもの（{@link ZoneArea}、
  * 数え方は演算子: 直方体領域と同じ）。コストと規模はサイズだけで
- * 決まる（術式を組んだ時点で分かるのは定数の大きさだけのため）。1 人が置けるのは種類ごとに 1 つで、置き直すと古いものが解ける。
+ * 決まる（術式を組んだ時点で分かるのは定数の大きさだけのため）。同じ種類をいくつも置け、1 人が置ける数はサークルと合わせて
+ * {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。
  * 干渉力は効き目に効かず、耐久値にだけ効く。
  */
 public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceTrick {
@@ -60,7 +59,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     @Override
     public void initParams() {
-        addParam(region = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, false, false));
+        addParam(region = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, true, false));
         addParam(size = new ParamNumber(PsitweaksSpellParams.SIZE, SpellParam.GREEN, false, true));
         addZoneParams();
     }
@@ -96,7 +95,17 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        ZoneArea area = ZoneArea.of(getNotNullParamValue(context, region), clampSize(getNotNullParamValue(context, size)));
+        int sizeValue = clampSize(getNotNullParamValue(context, size));
+        MatrixValue matrix = getParamValue(context, region);
+        ZoneArea area;
+        if (matrix != null) {
+            area = ZoneArea.of(matrix, sizeValue);
+        } else if (context.focalPoint != null) {
+            // 行列を省いたとき: 術者（術式の焦点）のいるブロックを中心にした、一辺サイズの立方体。
+            area = ZoneArea.cube(context.focalPoint.blockPosition(), sizeValue);
+        } else {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
+        }
         if (area.isEmpty()) {
             throw new SpellRuntimeException(ERROR_EMPTY_ZONE);
         }
@@ -110,8 +119,13 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
         T zone = createZone(level);
         zone.configureZone(area, CombatSpellHelper.spellColor(context.caster));
+        // 他 mod の機械を動かす速さ（一括洗浄・一括燻製・熱）は置いた時点の事象干渉力で決まる。
+        double interference = SpellGramObject.interferenceOf(context.caster);
+        zone.setMachineSpeed(SpellGramZone.machineSpeedFor(interference));
+        // 領域干渉と比べるための、置いた人の側（自律詠唱機は所有者の UUID を名乗る）と事象干渉力。
+        zone.setPlacement(context.caster.getUUID(), interference);
         configure(zone, context);
-        removeExistingZones(level, CasterIds.idOf(context.caster));
+        SpellGramLimits.makeRoom(level, context.caster);
         zone.setCaster(context.caster);
         zone.setLifetimeTicks(LIFETIME_TICKS);
         zone.setMaxIntegrity(SpellGramIntegrity.initial(BASE_INTEGRITY, context.caster, 1.0D));
@@ -137,16 +151,5 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
     /** サイズ {@code size} の範囲のいちばん広い面のブロック数。 */
     public static int areaOf(int size) {
         return size * size;
-    }
-
-    /** 同じ術者が置いていた同じ種類の範囲を、読み込まれているすべてのディメンションで解く。 */
-    private void removeExistingZones(ServerLevel castingLevel, UUID casterUuid) {
-        for (ServerLevel level : castingLevel.getServer().getAllLevels()) {
-            for (SpellGramObject object : SpellGramIndex.ofCaster(level, casterUuid)) {
-                if (zoneType.isInstance(object)) {
-                    object.end(SpellGramObject.EndReason.DISPELLED);
-                }
-            }
-        }
     }
 }

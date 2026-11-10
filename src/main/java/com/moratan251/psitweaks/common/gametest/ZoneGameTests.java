@@ -4,15 +4,21 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.compat.CreateCompat;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.api.value.MatrixValue;
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramLimits;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickSoakZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -82,7 +88,7 @@ public final class ZoneGameTests {
         helper.succeed();
     }
 
-    /** 湿潤領域の中の生物は濡れ、外の生物は濡れない。置き直すと古い領域は消える（1 人 1 つ）。 */
+    /** 湿潤領域の中の生物は濡れ、外の生物は濡れない。同じ種類の領域を重ねて置ける（2026-11-11 から）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak", timeoutTicks = 100)
     public static void soakZoneSoaksOnlyTheBeingsInside(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -101,7 +107,7 @@ public final class ZoneGameTests {
             castSoak(caster, cube(vector(center).add(-3.5, -3.5, -3.5), 7), 3.0);
             castSoak(caster, cube(vector(center).add(-3.5, -3.5, -3.5), 7), 3.0);
             List<EntitySoakZone> zones = SpellGramIndex.near(level, Vec3.atCenterOf(center), 0.5, EntitySoakZone.class);
-            helper.assertTrue(zones.size() == 1, "Placing a Soak Zone again must end the old one, found " + zones.size());
+            helper.assertTrue(zones.size() == 2, "Two Soak Zones of one caster must both stay, found " + zones.size());
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -114,6 +120,44 @@ public final class ZoneGameTests {
             helper.assertFalse(outsideWet, "The husk outside the Soak Zone must stay dry");
             helper.succeed();
         });
+    }
+
+    /**
+     * 1 人が置ける魔法式オブジェクトは、サークルと領域を合わせて上限（既定 32）まで。超えて置くといちばん古いものが解ける。
+     * 流星群の夜は数えない。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_limit", timeoutTicks = 40)
+    public static void placingBeyondTheLimitEndsTheOldest(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_limit_caster", new Vec3(2.5, 1.0, 2.5));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            int max = SpellGramLimits.maxFor(caster);
+            helper.assertTrue(max == SpellGramLimits.maxPerPlayer() && max == SpellGramLimits.DEFAULT_MAX_PER_CASTER
+                            && SpellGramLimits.maxPerAutonomousCaster() == SpellGramLimits.DEFAULT_MAX_PER_CASTER,
+                    "Players and Autonomous Casters must each default to 32, player limit was " + max);
+            helper.assertTrue(SpellGramLimits.counts(new EntityIceCircle(level)) && SpellGramLimits.counts(new EntitySoakZone(level))
+                            && !SpellGramLimits.counts(new EntityMeteorLineNight(level, Vec3.ZERO, 1.0)),
+                    "Circles and zones count toward the limit, the Meteor Line night does not");
+            castSoak(caster, null, 1.0);
+            List<SpellGramObject> first = SpellGramLimits.placedBy(level, caster.getUUID());
+            helper.assertTrue(first.size() == 1, "The first zone must be placed, found " + first.size());
+            SpellGramObject oldest = first.get(0);
+            for (int i = 1; i <= max; i++) {
+                castSoak(caster, null, 1.0);
+            }
+            List<SpellGramObject> placed = SpellGramLimits.placedBy(level, caster.getUUID());
+            helper.assertTrue(placed.size() == max, "Only " + max + " objects may stay, found " + placed.size());
+            helper.assertTrue(oldest.isEnded() && !placed.contains(oldest), "The oldest zone must end first");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
     }
 
     /** サイズの上限は 32（2026-11-10）。それより大きいサイズで置くと、一辺 32 の範囲に切り詰める。 */
@@ -138,6 +182,43 @@ public final class ZoneGameTests {
         }
         SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
         GameTestPlayers.remove(helper, caster);
+        helper.succeed();
+    }
+
+    /** 行列を省くと、術者のいるブロックを中心にした一辺サイズの立方体になる（偶数は正の向きに 1 つ多い）。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_no_matrix", timeoutTicks = 40)
+    public static void zoneWithoutMatrixIsTheCubeAroundTheCaster(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_no_matrix_caster", new Vec3(2.5, 1.0, 2.5));
+        BlockPos at = helper.absolutePos(new BlockPos(2, 1, 2));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            helper.assertTrue(caster.blockPosition().equals(at), "The caster must stand in " + at + ": " + caster.blockPosition());
+            castSoak(caster, null, 3.0);
+            List<EntitySoakZone> zones = SpellGramIndex.near(level, Vec3.atCenterOf(at), 0.5, EntitySoakZone.class);
+            helper.assertTrue(zones.size() == 1, "A Soak Zone without a matrix must be placed around the caster, found " + zones.size());
+            ZoneArea area = zones.get(0).getArea();
+            helper.assertTrue(area.center().equals(at), "The center must be the caster's block: " + area.center());
+            helper.assertTrue(area.contains(at.offset(-1, -1, -1)) && area.contains(at.offset(1, 1, 1)),
+                    "The 3-block cube around the caster must be inside");
+            helper.assertFalse(area.contains(at.offset(2, 0, 0)) || area.contains(at.offset(0, -2, 0)),
+                    "Blocks farther than the Size must be outside");
+            var outline = zones.get(0).getOutline();
+            helper.assertTrue(outline.getXsize() == 3 && outline.getYsize() == 3 && outline.getZsize() == 3,
+                    "The outline must wrap 3 blocks per axis: " + outline);
+
+            ZoneArea even = ZoneArea.cube(at, 4);
+            helper.assertTrue(even.contains(at.offset(-1, 0, 0)) && even.contains(at.offset(2, 0, 0))
+                            && !even.contains(at.offset(-2, 0, 0)) && !even.contains(at.offset(3, 0, 0)),
+                    "An even Size must reach one block farther on the positive side, like Operator: Cuboid Region");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
         helper.succeed();
     }
 
@@ -269,9 +350,9 @@ public final class ZoneGameTests {
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             castSoak(caster, cube(vector(center).add(-2.5, -2.5, -2.5), 5), 5.0);
             List<EntitySoakZone> zones = SpellGramIndex.near(level, Vec3.atCenterOf(center), 0.5, EntitySoakZone.class);
-            helper.assertTrue(zones.size() == 1 && zones.get(0).getWashSpeed() == EntitySoakZone.MAX_WASH_SPEED,
+            helper.assertTrue(zones.size() == 1 && zones.get(0).getMachineSpeed() == SpellGramZone.MAX_MACHINE_SPEED,
                     "The washing speed must come from the caster's interference, capped at twice a fan");
-            helper.assertTrue(EntitySoakZone.washSpeedFor(1.0) == 0.5F && EntitySoakZone.washSpeedFor(2.0) == 1.0F,
+            helper.assertTrue(SpellGramZone.machineSpeedFor(1.0) == 0.5F && SpellGramZone.machineSpeedFor(2.0) == 1.0F,
                     "Interference 1 washes at half a fan, 2 at a fan");
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
@@ -287,7 +368,7 @@ public final class ZoneGameTests {
         });
     }
 
-    private static void castSoak(ServerPlayer caster, MatrixValue matrix, double size) throws SpellRuntimeException {
+    private static void castSoak(ServerPlayer caster, @Nullable MatrixValue matrix, double size) throws SpellRuntimeException {
         var piece = new PieceTrickSoakZone(new Spell()) {
             @Override
             public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {

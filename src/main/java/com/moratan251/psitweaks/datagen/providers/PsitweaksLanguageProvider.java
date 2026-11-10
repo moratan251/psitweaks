@@ -98,6 +98,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "加重領域";
             default -> "Gravity Zone";
         });
+        root.addProperty("entity.psitweaks.heat_zone", switch (locale) {
+            case "ja_jp" -> "加熱領域";
+            default -> "Heat Zone";
+        });
+        root.addProperty("entity.psitweaks.freeze_zone", switch (locale) {
+            case "ja_jp" -> "凍結領域";
+            default -> "Freeze Zone";
+        });
+        root.addProperty("entity.psitweaks.turbulence_zone", switch (locale) {
+            case "ja_jp" -> "乱流領域";
+            default -> "Turbulence Zone";
+        });
+        root.addProperty("entity.psitweaks.interference_zone", switch (locale) {
+            case "ja_jp" -> "領域干渉";
+            default -> "Interference Zone";
+        });
         root.addProperty("entity.psitweaks.meteor_line_night", switch (locale) {
             case "ja_jp" -> "流星群の夜";
             default -> "Meteor Line Night";
@@ -626,9 +642,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "active_air_mine", "Active Air Mine", "能動空中機雷");
         addDamageMultiplierConfig(root, "flare_circle", "Fire Circle", "ファイアサークル");
         addDamageMultiplierConfig(root, "ice_circle", "Ice Circle", "アイスサークル");
+        addDamageMultiplierConfig(root, "inferno", "Inferno", "氷炎地獄");
+        addDamageMultiplierConfig(root, "heat_storm", "Heat Storm", "熱乱流");
+        addDamageMultiplierConfig(root, "blizzard", "Blizzard", "吹雪");
+        addDamageMultiplierConfig(root, "rainstorm", "Rainstorm", "暴風雨");
         addConfigLabel(root, "psitweaks.configuration.spells.spellgram", "SpellGram Objects", "魔法式オブジェクト");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.integrity_multiplier", "Integrity Multiplier", "耐久値の倍率",
                 "Multiplier applied to the integrity of SpellGram objects.", "魔法式オブジェクトの耐久値に適用する倍率です。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram.max_objects_per_player", "Objects per Player", "プレイヤー1人が置ける数",
+                "How many SpellGram objects (circles and zones together) one player can keep at once. Placing more ends the oldest.",
+                "プレイヤー1人が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）です。超えて置くと古いものから消えます。");
+        addConfigValue(root, "psitweaks.configuration.spells.spellgram.max_objects_per_autonomous_caster", "Objects per Autonomous Caster", "自律詠唱機1台が置ける数",
+                "How many SpellGram objects (circles and zones together) one Autonomous Caster can keep at once, counted apart from its owner.",
+                "自律詠唱機1台が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）です。持ち主のプレイヤーの数とは別に数えます。");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
@@ -890,6 +916,66 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sは%2$sが%3$sで張ったアイスサークルに凍らされた";
             default -> "%1$s was frozen by an Ice Circle %2$s cast using %3$s";
         });
+        root.addProperty("death.attack.psitweaks.inferno_heat", switch (locale) {
+            case "ja_jp" -> "%1$sは氷炎地獄の灼熱に焼き尽くされた";
+            default -> "%1$s was burned away in the scorching half of an Inferno";
+        });
+        root.addProperty("death.attack.psitweaks.inferno_heat.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの氷炎地獄の灼熱に焼き尽くされた";
+            default -> "%1$s was burned away in the scorching half of %2$s's Inferno";
+        });
+        root.addProperty("death.attack.psitweaks.inferno_heat.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした氷炎地獄の灼熱に焼き尽くされた";
+            default -> "%1$s was burned away in the scorching half of an Inferno %2$s raised using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.heat_storm", switch (locale) {
+            case "ja_jp" -> "%1$sは熱乱流に焼かれた";
+            default -> "%1$s was burned by a Heat Storm";
+        });
+        root.addProperty("death.attack.psitweaks.heat_storm.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの熱乱流に焼かれた";
+            default -> "%1$s was burned by %2$s's Heat Storm";
+        });
+        root.addProperty("death.attack.psitweaks.heat_storm.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした熱乱流に焼かれた";
+            default -> "%1$s was burned by a Heat Storm %2$s raised using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.blizzard", switch (locale) {
+            case "ja_jp" -> "%1$sは吹雪に凍えた";
+            default -> "%1$s froze in a Blizzard";
+        });
+        root.addProperty("death.attack.psitweaks.blizzard.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの吹雪に凍えた";
+            default -> "%1$s froze in %2$s's Blizzard";
+        });
+        root.addProperty("death.attack.psitweaks.blizzard.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした吹雪に凍えた";
+            default -> "%1$s froze in a Blizzard %2$s raised using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.rainstorm", switch (locale) {
+            case "ja_jp" -> "%1$sは暴風雨に打たれて力尽きた";
+            default -> "%1$s was beaten down by a Rainstorm";
+        });
+        root.addProperty("death.attack.psitweaks.rainstorm.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの暴風雨に打たれて力尽きた";
+            default -> "%1$s was beaten down by %2$s's Rainstorm";
+        });
+        root.addProperty("death.attack.psitweaks.rainstorm.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした暴風雨に打たれて力尽きた";
+            default -> "%1$s was beaten down by a Rainstorm %2$s raised using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.inferno_cold", switch (locale) {
+            case "ja_jp" -> "%1$sは氷炎地獄の極寒に凍りついた";
+            default -> "%1$s froze solid in the freezing half of an Inferno";
+        });
+        root.addProperty("death.attack.psitweaks.inferno_cold.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの氷炎地獄の極寒に凍りついた";
+            default -> "%1$s froze solid in the freezing half of %2$s's Inferno";
+        });
+        root.addProperty("death.attack.psitweaks.inferno_cold.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした氷炎地獄の極寒に凍りついた";
+            default -> "%1$s froze solid in the freezing half of an Inferno %2$s raised using %3$s";
+        });
     }
 
     private static final String[][] LEGACY_PATCHOULI_BOOK_EN_US = {
@@ -967,11 +1053,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact."},
             {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast."},
-            {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds, or until its caster logs out or moves to another dimension."},
+            {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds, or until its caster logs out or moves to another dimension. One caster can keep up to 32 circles and zones in all; placing more ends the oldest."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively."},
             {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "Freezes the target block one stage. Water becomes ice, ice becomes packed ice, packed ice becomes blue ice, lava becomes magma block, and magma block becomes obsidian."},
             {"psi.book.page.psitweaks_spellpiece.trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2)."},
-            {"psi.book.page.psitweaks_spellpiece.trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control and remains for 60 seconds or until its caster is gone."},
+            {"psi.book.page.psitweaks_spellpiece.trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control and remains for 60 seconds or until its caster is gone. One caster can keep up to 32 circles and zones in all; placing more ends the oldest."},
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava."},
@@ -1078,11 +1164,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います."},
             {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません."},
-            {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けますが, 術者がログアウトしたり別のディメンションへ移ったりすると消えます."},
+            {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けますが, 術者がログアウトしたり別のディメンションへ移ったりすると消えます. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です."},
             {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります."},
             {"psi.book.page.psitweaks_spellpiece.trick_hardening", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます."},
-            {"psi.book.page.psitweaks_spellpiece.trick_ice_circle", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いており, 60秒か術者がいなくなるまで残ります."},
+            {"psi.book.page.psitweaks_spellpiece.trick_ice_circle", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いており, 60秒か術者がいなくなるまで残ります. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます."},
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります."},
@@ -1907,8 +1993,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
-        addBookPage(root, "trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds, or until its caster logs out or moves to another dimension.", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けますが, 術者がログアウトしたり別のディメンションへ移ったりすると消えます.");
-        addBookPage(root, "trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control and remains for 60 seconds or until its caster is gone.", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いており, 60秒か術者がいなくなるまで残ります.");
+        addBookPage(root, "trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds, or until its caster logs out or moves to another dimension. One caster can keep up to 32 circles and zones in all; placing more ends the oldest.", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けますが, 術者がログアウトしたり別のディメンションへ移ったりすると消えます. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます.");
+        addBookPage(root, "trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control and remains for 60 seconds or until its caster is gone. One caster can keep up to 32 circles and zones in all; placing more ends the oldest.", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いており, 60秒か術者がいなくなるまで残ります. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます.");
         addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
         addBookPage(root, "trick_jump", "Jumps forward to the next Jump Anchor with the same label when the target number is unset, or when its absolute value is less than 1. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. It cannot jump to Jump Anchors behind it.", "対象数値が未入力、または絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 後方のジャンプアンカーには飛ぶことができません.");
         addBookPage(root, "trick_jump_flex", "Uses the same conditions as Trick: Jump to jump to a Jump Anchor, then refunds the Psi cost of the spell pieces actually skipped by the jump. With high-frequency casting, the client-side Psi display may temporarily desync.", "作動式: ジャンプと同じ条件でジャンプアンカーまでジャンプし, ジャンプによって実際にスキップしたスペルピースのPsiコストを返却します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
@@ -2707,22 +2793,24 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_soak_zone.0",
                 "Places a zone that lasts 30 seconds over the region given by the Matrix (a region matrix) and the Size (a constant)."
                         + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 32)."
+                        + " The Matrix may be left out; the zone is then the cube of Size blocks on each edge around the block the caster stands in."
                         + " A living being is inside when the block holding the center of its hitbox is."
                         + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning."
                         + " The zone also wets the blocks inside like a Splash Water Bottle: it puts out fire, campfires and candles, and turns concrete powder into concrete (where the caster may change blocks)."
                         + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast.",
                 "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、30秒間残る領域を置きます。"
                         + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大32）。"
+                        + "「行列」は省略でき、省略すると術者のいるブロックを中心にした一辺がサイズの立方体になります。"
                         + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
                         + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。"
                         + "範囲の中のブロックにも水をかけたように効き、水入りスプラッシュ瓶と同じく炎・焚き火・ろうそくを消し、コンクリートパウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。"
                         + "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。洗う速さは置いた時点の事象干渉力で決まり、1 でケース入りファンの半分、2 で同じ、最大で2倍です。");
         addBookPage(root, "trick_soak_zone.1",
                 "Cost and Potency depend only on the Size, and grow with the area of the zone."
-                        + " You can keep one zone of each kind; placing another ends the old one. The zone also ends when its caster logs out or changes dimension."
+                        + " You can place several zones of the same kind. One caster can keep up to 32 circles and zones in all (changeable in the config); placing more ends the oldest. The zone also ends when its caster logs out or changes dimension."
                         + " Trick: Show Region (Block mode) draws exactly the blocks the zone covers.",
                 "コストと規模はサイズだけで決まり、範囲が広いほど増えます。"
-                        + "同じ種類の領域は1人1つまでで、置き直すと古いものが消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
+                        + "同じ種類の領域をいくつも置けます。1人が置けるのはサークルと領域を合わせて32個まで（設定で変えられます）で、超えて置くと古いものから消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
                         + "範囲の確認には、作動式: 領域表示（ブロックモード）が使えます。");
         addSpellPiece(root, "trick_gravity_zone", "Trick: Gravity Zone",
                 "Places a SpellGram zone that keeps pushing entities inside it in the given direction",
@@ -2736,9 +2824,96 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。");
         addBookPage(root, "trick_gravity_zone.1",
                 "The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
-                        + " You can keep one zone of each kind; placing another ends the old one.",
+                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
                 "威力は最大10の定数です。コストと規模は、範囲の広さ×威力で増えます。"
-                        + "同じ種類の領域は1人1つまでで、置き直すと古いものが消えます。");
+                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+        addSpellPiece(root, "trick_heat_zone", "Trick: Heat Zone",
+                "Places a SpellGram zone that sets living beings inside it on fire and melts ice",
+                "作動式: 加熱領域", "範囲の中の生物に火をつけ、氷を溶かす魔法式オブジェクトを置く");
+        addBookPage(root, "trick_heat_zone.0",
+                "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
+                        + " Living beings inside catch fire and keep burning for 3 seconds after leaving. The caster does not burn, nor do wet beings."
+                        + " Ice and Frosted Ice inside melt into water; Packed Ice and Blue Ice stay.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
+                        + "中の生物に火がつき、出てから3秒は燃え続けます。術者自身と、濡れている生物は燃えません。"
+                        + "範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。");
+        addBookPage(root, "trick_heat_zone.1",
+                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside."
+                        + " With Mekanism installed, it sends heat to the blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), but never above 1000 K."
+                        + " Both run at a speed set by the caster's interference when placed: at 2, as fast as an Encased Fan and as much heat as one Fuelwood Heater; half at 1, and at most twice."
+                        + " Cost and Potency depend only on the Size. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。"
+                        + "Mekanism が入っているときは、範囲の中の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし 1000K より上には温めません。"
+                        + "どちらも速さは置いた時点の事象干渉力で決まり、干渉力2で一括燻製はケース入りファンと同じ、熱は薪木ストーブ1台ぶんです。1 でその半分、最大で2倍です。"
+                        + "コストと規模はサイズだけで決まります。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+        addSpellPiece(root, "trick_freeze_zone", "Trick: Freeze Zone",
+                "Places a SpellGram zone that freezes living beings inside it and turns open water into ice",
+                "作動式: 凍結領域", "範囲の中の生物を凍えさせ、水を氷にする魔法式オブジェクトを置く");
+        addBookPage(root, "trick_freeze_zone.0",
+                "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
+                        + " Living beings inside freeze as if stuck in Powder Snow, only faster; once fully frozen they slow down and take freezing damage."
+                        + " The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor."
+                        + " Water sources inside with air right above them turn into ice.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
+                        + "中の生物は粉雪に埋まったときと同じように、それより速く凍え、凍えきると動きが遅くなってダメージを受けます。"
+                        + "術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。"
+                        + "範囲の中の水源の水のうち、真上が空気のものは氷になります。");
+        addBookPage(root, "trick_freeze_zone.1",
+                "Wet beings, such as those in a Soak Zone, freeze in half the time."
+                        + " Cost and Potency depend only on the Size, and grow with the area of the zone."
+                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                "湿潤領域の中などで濡れている生物は、半分の時間で凍えきります。"
+                        + "コストと規模はサイズだけで決まり、範囲が広いほど増えます。"
+                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+        addSpellPiece(root, "trick_turbulence_zone", "Trick: Turbulence Zone",
+                "Places a SpellGram zone where a gale turns projectiles aside and strengthens your other zones",
+                "作動式: 乱流領域", "暴風で飛び道具をそらし、重ねた自分の領域を強める魔法式オブジェクトを置く");
+        addBookPage(root, "trick_turbulence_zone.0",
+                "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
+                        + " A gale blows inside: projectiles others shot (arrows, tridents, snowballs, fireballs and so on) are turned sharply aside as they enter, more with a higher Power. Magic projectiles are not."
+                        + " Clouds of lingering potions and dragon's breath are blown away and fade quickly.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
+                        + "中では暴風が吹き荒れ、他者が放った飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きを大きく曲げられます。「威力」が大きいほど大きく曲がります。魔法の弾は曲げません。"
+                        + "残留ポーションやドラゴンブレスの雲は吹き散らされ、早く消えます。");
+        addBookPage(root, "trick_turbulence_zone.1",
+                "Where it overlaps your own zones, it strengthens them."
+                        + " With a Heat Zone it becomes a Heat Storm: living beings inside take fire damage, and bulk smoking and the heat sent to Mekanism speed up."
+                        + " With a Freeze Zone it becomes a Blizzard: living beings inside take freezing damage and freeze faster."
+                        + " With a Soak Zone it becomes a Rainstorm: bulk washing speeds up, and beings hurt by water (Blazes, Endermen and so on) take damage."
+                        + " How strong these are follows the Power of the turbulence (the strongest one where several overlap): at 10, machines run twice as fast."
+                        + " Where a Heat Zone and a Freeze Zone overlap, the two cancel out, so neither works there.",
+                "自分のほかの領域と重ねると、重なったところが強まります。"
+                        + "加熱領域と重ねると熱乱流になり、中の生物に火のダメージを与え、一括燻製と Mekanism へ送る熱が増えます。"
+                        + "凍結領域と重ねると吹雪になり、中の生物に凍結のダメージを与え、凍えが速くたまります。"
+                        + "湿潤領域と重ねると暴風雨になり、一括洗浄が速くなり、ブレイズやエンダーマンなど水に弱い生物にダメージを与えます。"
+                        + "これらの強さは乱流の威力で決まり（重なっていれば最も強いもの）、威力10で加工などは2倍の速さです。"
+                        + "加熱領域と凍結領域が重なったところでは、両方が打ち消し合ってどちらも効きません。");
+        addBookPage(root, "trick_turbulence_zone.2",
+                "With Mekanism Generators installed, Wind Generators inside work even indoors, and their output rises with the Power (twice at 10)."
+                        + " The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
+                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がります（威力10で2倍）。"
+                        + "威力は最大10の定数です。コストと規模は、範囲の広さ×威力で増えます。"
+                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+        addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
+                "Places a SpellGram zone that keeps weaker casters' Psi spells and zones out of it",
+                "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と領域を、範囲の中で効かなくする魔法式オブジェクトを置く");
+        addBookPage(root, "trick_interference_zone.0",
+                "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
+                        + " Other casters whose interference is lower than yours when you placed it cannot target blocks, positions or entities inside; their tricks fail as if out of range."
+                        + " Those standing inside cannot even target themselves."
+                        + " Their zones cannot be placed with the center inside, and zones they already placed stop working where they overlap.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
+                        + "置いた時点の自分の事象干渉力より事象干渉力の低い他者は、範囲の中のブロック・位置・エンティティを対象にできず、作動式は射程外と同じく失敗します。"
+                        + "範囲の中にいる相手は、自分自身も対象にできません。"
+                        + "相手の領域は中心を範囲の中に置けず、すでに置かれている領域は重なった部分で効かなくなります。");
+        addBookPage(root, "trick_interference_zone.1",
+                "Casters with interference equal to or higher than yours are not stopped. Your own spells, and those of your Autonomous Casters, are never stopped."
+                        + " It stops only Psi spells, not the magic of other mods."
+                        + " Cost and Potency depend only on the Size. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                "事象干渉力が同じか高い相手は止められません。自分と、自分の自律詠唱機の魔法は止まりません。"
+                        + "止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。"
+                        + "コストと規模はサイズだけで決まります。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を、CADの色のパーティクルで描きます。");
@@ -2792,6 +2967,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         // Mekanism Generators only, hidden
         addAdvancement(root, "phonon_maser_fusion_ignition", "Sonofusion", "Ignite a Fusion Reactor with Trick: Phonon Maser",
                 "音響核融合", "作動式: フォノンメーザーで核融合炉を点火する");
+        // Hidden
+        addAdvancement(root, "inferno", "Inferno", "Split one region into scorching heat and bitter cold",
+                "氷炎地獄", "ひとつの範囲を、灼熱と極寒に二分する");
         addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
                 "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",

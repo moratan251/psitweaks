@@ -28,6 +28,7 @@ public final class AdvancementGameTests {
     private static final Map<String, String> PARENTS = Map.ofEntries(
             Map.entry("alloy_psion_pickup", "psi:main/psigem_pickup"),
             Map.entry("alloy_psion_assembly_pickup", "alloy_psion_pickup"),
+            Map.entry("inferno", "alloy_psion_pickup"),
             Map.entry("psionic_control_circuit_pickup", "alloy_psion_pickup"),
             Map.entry("chaotic_psimetal_pickup", "alloy_psion_pickup"),
             Map.entry("chaotic_psimetal_assembly_pickup", "chaotic_psimetal_pickup"),

@@ -352,6 +352,14 @@ public final class PsitweaksSpells {
             registerPiece("trick_soak_zone", PieceTrickSoakZone.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_GRAVITY_ZONE =
             registerPiece("trick_gravity_zone", PieceTrickGravityZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_HEAT_ZONE =
+            registerPiece("trick_heat_zone", PieceTrickHeatZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_FREEZE_ZONE =
+            registerPiece("trick_freeze_zone", PieceTrickFreezeZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_TURBULENCE_ZONE =
+            registerPiece("trick_turbulence_zone", PieceTrickTurbulenceZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_INTERFERENCE_ZONE =
+            registerPiece("trick_interference_zone", PieceTrickInterferenceZone.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ALIVE =
             registerPiece("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_WEAK_RAYCAST =

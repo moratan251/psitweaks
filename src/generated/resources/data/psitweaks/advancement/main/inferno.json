@@ -1,0 +1,27 @@
+{
+  "parent": "psitweaks:main/alloy_psion_pickup",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:inferno.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:magma_block"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:inferno"
+    }
+  },
+  "requirements": [
+    [
+      "code_triggered"
+    ]
+  ]
+}

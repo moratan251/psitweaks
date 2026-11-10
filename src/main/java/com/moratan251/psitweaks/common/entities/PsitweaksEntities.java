@@ -10,8 +10,12 @@ import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityFreezeZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityHeatZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -133,6 +137,42 @@ public class PsitweaksEntities {
                             .updateInterval(20)
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":gravity_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityHeatZone>> HEAT_ZONE =
+            ENTITY_TYPES.register("heat_zone",
+                    () -> EntityType.Builder.<EntityHeatZone>of(EntityHeatZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":heat_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityFreezeZone>> FREEZE_ZONE =
+            ENTITY_TYPES.register("freeze_zone",
+                    () -> EntityType.Builder.<EntityFreezeZone>of(EntityFreezeZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":freeze_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityTurbulenceZone>> TURBULENCE_ZONE =
+            ENTITY_TYPES.register("turbulence_zone",
+                    () -> EntityType.Builder.<EntityTurbulenceZone>of(EntityTurbulenceZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":turbulence_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityInterferenceZone>> INTERFERENCE_ZONE =
+            ENTITY_TYPES.register("interference_zone",
+                    () -> EntityType.Builder.<EntityInterferenceZone>of(EntityInterferenceZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":interference_zone"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
             ENTITY_TYPES.register("tunneler_arrow",

@@ -6,6 +6,11 @@
     "psitweaks:micro_black_hole",
     "psitweaks:active_air_mine",
     "psitweaks:flare_circle",
-    "psitweaks:ice_circle"
+    "psitweaks:ice_circle",
+    "psitweaks:inferno_heat",
+    "psitweaks:inferno_cold",
+    "psitweaks:heat_storm",
+    "psitweaks:blizzard",
+    "psitweaks:rainstorm"
   ]
 }

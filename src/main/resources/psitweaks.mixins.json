@@ -32,6 +32,7 @@
     "SpellPieceParamConversionMixin",
     "SpellPieceOptionalCompatMixin",
     "SpellHelpersRangeLimitMixin",
+    "WindGeneratorTurbulenceMixin",
     "WitherBossMixin"
   ],
   "client": [

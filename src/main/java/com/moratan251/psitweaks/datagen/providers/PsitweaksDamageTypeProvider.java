@@ -63,6 +63,18 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
         JsonObject iceCircle = damageType("psitweaks.ice_circle", "never", 0.1F);
         iceCircle.addProperty("effects", "freezing");
         damageTypes.put(PsitweaksDamageTypes.ICE_CIRCLE.location(), iceCircle);
+        damageTypes.put(PsitweaksDamageTypes.INFERNO_HEAT.location(),
+                damageType("psitweaks.inferno_heat", "never", 0.1F));
+        JsonObject infernoCold = damageType("psitweaks.inferno_cold", "never", 0.1F);
+        infernoCold.addProperty("effects", "freezing");
+        damageTypes.put(PsitweaksDamageTypes.INFERNO_COLD.location(), infernoCold);
+        damageTypes.put(PsitweaksDamageTypes.HEAT_STORM.location(),
+                damageType("psitweaks.heat_storm", "never", 0.1F));
+        JsonObject blizzard = damageType("psitweaks.blizzard", "never", 0.1F);
+        blizzard.addProperty("effects", "freezing");
+        damageTypes.put(PsitweaksDamageTypes.BLIZZARD.location(), blizzard);
+        damageTypes.put(PsitweaksDamageTypes.RAINSTORM.location(),
+                damageType("psitweaks.rainstorm", "never", 0.1F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {

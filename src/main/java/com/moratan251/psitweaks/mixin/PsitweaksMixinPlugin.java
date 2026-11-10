@@ -11,6 +11,10 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
             "com.moratan251.psitweaks.mixin.RadiationUtilMixin";
     private static final String RADIATION_TARGET =
             "mekanism.common.lib.radiation.RadiationUtil";
+    private static final String WIND_GENERATOR_MIXIN =
+            "com.moratan251.psitweaks.mixin.WindGeneratorTurbulenceMixin";
+    private static final String WIND_GENERATOR_TARGET =
+            "mekanism.generators.common.tile.TileEntityWindGenerator";
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -23,7 +27,13 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return !RADIATION_MIXIN.equals(mixinClassName) || isClassPresent(RADIATION_TARGET);
+        if (RADIATION_MIXIN.equals(mixinClassName)) {
+            return isClassPresent(RADIATION_TARGET);
+        }
+        if (WIND_GENERATOR_MIXIN.equals(mixinClassName)) {
+            return isClassPresent(WIND_GENERATOR_TARGET);
+        }
+        return true;
     }
 
     @Override

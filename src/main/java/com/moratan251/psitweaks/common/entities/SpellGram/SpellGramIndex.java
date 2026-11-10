@@ -59,6 +59,21 @@ public final class SpellGramIndex {
         return found;
     }
 
+    /** {@code level} にある {@code type} の魔法式オブジェクトすべて（消えたものは除く）。 */
+    public static <T extends SpellGramObject> List<T> all(Level level, Class<T> type) {
+        Set<SpellGramObject> objects = BY_LEVEL.get(level.dimension());
+        if (objects == null) {
+            return List.of();
+        }
+        List<T> found = new ArrayList<>();
+        for (SpellGramObject object : objects) {
+            if (type.isInstance(object) && !object.isRemoved()) {
+                found.add(type.cast(object));
+            }
+        }
+        return found;
+    }
+
     /** {@code level} にある、術者（{@link CasterIds#idOf} の ID）の魔法式オブジェクト。 */
     public static List<SpellGramObject> ofCaster(Level level, @Nullable UUID caster) {
         Set<SpellGramObject> objects = BY_LEVEL.get(level.dimension());

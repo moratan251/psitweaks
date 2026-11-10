@@ -56,6 +56,8 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.chemicals.PsitweaksChemicals;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
+import com.moratan251.psitweaks.common.particles.PsitweaksParticles;
+import com.moratan251.psitweaks.client.particles.PsitweaksParticleProviders;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.handler.DimensionalCrystalDropHandler;
@@ -166,6 +168,7 @@ public class Psitweaks {
         PsitweaksDataComponents.register(modEventBus);
         PsitweaksBlocks.register(modEventBus);
         PsitweaksEffects.register(modEventBus);
+        PsitweaksParticles.register(modEventBus);
         PsitweaksAttributes.register(modEventBus);
         PsitweaksAttachments.register(modEventBus);
         PsitweaksSpells.register(modEventBus);
@@ -194,6 +197,7 @@ public class Psitweaks {
             FilterCardClient.registerEvents();
             BladePouchClient.registerEvents();
             CombatEffectsClient.registerEvents(modEventBus);
+            PsitweaksParticleProviders.register(modEventBus);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
         }
@@ -370,6 +374,14 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.SOAK_ZONE.get(),
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.GRAVITY_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.HEAT_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.FREEZE_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.TURBULENCE_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.INTERFERENCE_ZONE.get(),
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);

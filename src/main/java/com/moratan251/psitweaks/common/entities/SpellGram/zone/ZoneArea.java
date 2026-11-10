@@ -3,12 +3,19 @@ package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.RegionMatrix;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellRuntimeException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 領域型の魔法式オブジェクトの範囲: 領域行列（3×4 / 4×4、1〜3 列目が辺、4 列目が始点）の中にあるブロックのうち、
@@ -46,6 +53,20 @@ public final class ZoneArea {
         this.maxX = maxX;
         this.maxY = maxY;
         this.maxZ = maxZ;
+    }
+
+    /**
+     * ブロック {@code center} を中心にした一辺 {@code size} ブロックの立方体（演算子: 直方体領域の Number モードで同じサイズを
+     * 入れたときと同じ範囲）。領域型の作動式で行列を省いたときに使う。
+     */
+    public static ZoneArea cube(BlockPos center, int size) throws SpellRuntimeException {
+        int edge = Math.max(1, size);
+        int low = -((edge - 1) / 2);
+        return of(new MatrixValue(4, 4, new double[]{
+                edge, 0, 0, center.getX() + low - 0.5,
+                0, edge, 0, center.getY() + low - 0.5,
+                0, 0, edge, center.getZ() + low - 0.5,
+                0, 0, 0, 1}), edge);
     }
 
     /** 領域行列と一辺のブロック数から範囲を作る。行列の形が正しくなければ、領域行列の演算子と同じエラー。 */
@@ -101,6 +122,35 @@ public final class ZoneArea {
             return false;
         }
         return region.contains(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
+    }
+
+    /**
+     * 範囲の中のブロックエンティティ（デポ・ベルト、Mekanism の機械など）。範囲にかかる読み込み済みのチャンクの
+     * ブロックエンティティから探す（範囲の全ブロックは見ない）。
+     */
+    public List<BlockEntity> blockEntities(Level level) {
+        List<BlockEntity> found = new ArrayList<>();
+        if (isEmpty()) {
+            return found;
+        }
+        int minChunkX = SectionPos.blockToSectionCoord(minX);
+        int maxChunkX = SectionPos.blockToSectionCoord(maxX);
+        int minChunkZ = SectionPos.blockToSectionCoord(minZ);
+        int maxChunkZ = SectionPos.blockToSectionCoord(maxZ);
+        for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+                if (!level.hasChunk(chunkX, chunkZ)) {
+                    continue;
+                }
+                LevelChunk chunk = level.getChunk(chunkX, chunkZ);
+                for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+                    if (!blockEntity.isRemoved() && contains(blockEntity.getBlockPos())) {
+                        found.add(blockEntity);
+                    }
+                }
+            }
+        }
+        return found;
     }
 
     /** 行列の中心のブロック。 */

@@ -1,11 +1,9 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramCircle;
-import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
-import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramLimits;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.particles.ParticleOptions;
@@ -25,8 +23,6 @@ import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
-
-import java.util.UUID;
 
 /**
  * 円の魔法式オブジェクト（{@link SpellGramCircle}）を床に張る作動式の基底（作動式: ファイアサークル・アイスサークル）。
@@ -124,7 +120,8 @@ public abstract class PieceTrickSpellGramCircleBase<T extends SpellGramCircle> e
         float baseDamage = BASE_DAMAGE + (float) (clampedPower * DAMAGE_PER_POWER);
         float finalDamage = AttackRules.scale(baseDamage, damageMultiplier(), context.caster);
 
-        removeExistingCircles(serverLevel, CasterIds.idOf(context.caster));
+        // 同じ種類もいくつでも置け、1 人が置ける数は領域と合わせて上限まで（超えると古いものから解ける）。
+        SpellGramLimits.makeRoom(serverLevel, context.caster);
 
         Vec3 effectPosition = SableRangeCompat.projectForEffect(serverLevel, positionVal);
         T circle = createCircle(serverLevel);
@@ -153,16 +150,5 @@ public abstract class PieceTrickSpellGramCircleBase<T extends SpellGramCircle> e
         );
 
         return null;
-    }
-
-    /** 同じ術者が張っていた同じ種類の円を、読み込まれているすべてのディメンションで解く。 */
-    private void removeExistingCircles(ServerLevel castingLevel, UUID casterUuid) {
-        for (ServerLevel level : castingLevel.getServer().getAllLevels()) {
-            for (var object : SpellGramIndex.ofCaster(level, casterUuid)) {
-                if (circleType.isInstance(object)) {
-                    object.end(SpellGramObject.EndReason.DISPELLED);
-                }
-            }
-        }
     }
 }

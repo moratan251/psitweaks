@@ -1,6 +1,10 @@
 {
   "main": "psitweaks:trick_soak_zone",
   "pieces": [
-    "psitweaks:trick_gravity_zone"
+    "psitweaks:trick_gravity_zone",
+    "psitweaks:trick_heat_zone",
+    "psitweaks:trick_freeze_zone",
+    "psitweaks:trick_turbulence_zone",
+    "psitweaks:trick_interference_zone"
   ]
 }

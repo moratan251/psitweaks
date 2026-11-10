@@ -22,6 +22,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -100,6 +101,14 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
         // The data run cannot see Psi's advancements, so Psigem is named by id.
         AdvancementHolder alloyPsion = add(saver, "alloy_psion_pickup",
                 byId(ResourceLocation.fromNamespaceAndPath("psi", "main/psigem_pickup")), PsitweaksItems.ALLOY_PSION);
+        // Hidden; awarded from code when a Heat Zone and a Freeze Zone start the Inferno (InfernoZones).
+        String infernoKey = "advancement.psitweaks:" + PsitweaksAdvancements.INFERNO.getPath().substring("main/".length());
+        new Advancement.Builder()
+                .parent(alloyPsion)
+                .display(Items.MAGMA_BLOCK, Component.translatable(infernoKey), Component.translatable(infernoKey + ".desc"),
+                        null, AdvancementType.CHALLENGE, true, true, true)
+                .addCriterion(PsitweaksAdvancements.CODE_TRIGGERED, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+                .save(saver, PsitweaksAdvancements.INFERNO.toString());
         add(saver, "alloy_psion_assembly_pickup", alloyPsion, PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION);
         add(saver, "psionic_control_circuit_pickup", alloyPsion, PsitweaksItems.PSIONIC_CONTROL_CIRCUIT);
         AdvancementHolder chaoticPsimetal = add(saver, "chaotic_psimetal_pickup", alloyPsion, PsitweaksItems.CHAOTIC_PSIMETAL);
