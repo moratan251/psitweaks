@@ -31,6 +31,7 @@ import com.moratan251.psitweaks.client.renderer.DryIceProjectileRenderer;
 import com.moratan251.psitweaks.client.renderer.EntityTimeAcceleratorRenderer;
 import com.moratan251.psitweaks.client.renderer.SpellGramCircleRenderer;
 import com.moratan251.psitweaks.client.renderer.SpellGramZoneRenderer;
+import com.moratan251.psitweaks.client.renderer.circle.CircleDesigns;
 import com.moratan251.psitweaks.client.renderer.MolecularDividerRenderer;
 import com.moratan251.psitweaks.client.renderer.PhononMaserBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.TunnelerArrowRenderer;
@@ -364,8 +365,11 @@ public class Psitweaks {
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.FLARE_COLOR));
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(),
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.ICE_COLOR));
-            event.registerEntityRenderer(PsitweaksEntities.SOAK_ZONE.get(), SpellGramZoneRenderer::new);
-            event.registerEntityRenderer(PsitweaksEntities.GRAVITY_ZONE.get(), SpellGramZoneRenderer::new);
+            // 領域の床の魔法陣（図案は CircleDesigns から選ぶ）。
+            event.registerEntityRenderer(PsitweaksEntities.SOAK_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.CONSTRUCTION));
+            event.registerEntityRenderer(PsitweaksEntities.GRAVITY_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.CONSTRUCTION));
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);
