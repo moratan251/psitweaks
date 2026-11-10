@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -14,9 +15,10 @@ import java.util.List;
 
 /**
  * 領域型の魔法式オブジェクト（○○ Zone）の基底。範囲は {@link ZoneArea}（領域行列を、その中心のブロックから ±大きさの
- * 立方体で切り詰めたブロックの集まり）。生物は当たり判定の中心があるブロックで判定する。
+ * 立方体で切り詰めたブロックの集まり）。エンティティは当たり判定の中心があるブロックで判定する。
  * <p>
- * 範囲の中の生物への効き目は {@link #affect}（{@link #effectInterval} tick ごと）。描画は範囲を囲む箱
+ * 範囲の中のエンティティへの効き目は {@link #affect}（{@link #effectInterval} tick ごと）。何に効くかは種類ごと
+ * （{@link #affects}、既定は生き物だけ）で、魔法式オブジェクトにはどの領域も効かない。描画は範囲を囲む箱
  * （{@link #getOutline}）と、種類ごとの中の演出（{@link #spawnClientParticles}）。
  */
 public abstract class SpellGramZone extends SpellGramObject {
@@ -68,8 +70,13 @@ public abstract class SpellGramZone extends SpellGramObject {
         return 1;
     }
 
-    /** 範囲の中の生物 1 体への効き目（サーバー側）。 */
-    protected abstract void affect(LivingEntity target);
+    /** この領域が {@code entity} に効くか。既定は生きている生き物だけ。 */
+    protected boolean affects(Entity entity) {
+        return entity instanceof LivingEntity living && living.isAlive();
+    }
+
+    /** 範囲の中のエンティティ 1 体への効き目（サーバー側、{@link #affects} が真のものだけ）。 */
+    protected abstract void affect(Entity target);
 
     /** 範囲の中の演出（クライアント側、毎 tick）。 */
     protected void spawnClientParticles() {
@@ -88,15 +95,15 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (area.isEmpty() || tickCount % Math.max(1, effectInterval()) != 0) {
             return;
         }
-        for (LivingEntity target : livingInside()) {
+        for (Entity target : entitiesInside()) {
             affect(target);
         }
     }
 
-    /** 範囲の中にいる生物（当たり判定の中心があるブロックで判定）。 */
-    public List<LivingEntity> livingInside() {
-        return level().getEntitiesOfClass(LivingEntity.class, area.bounds(),
-                entity -> entity.isAlive() && area.contains(BlockPos.containing(entity.getBoundingBox().getCenter())));
+    /** 範囲の中にいて、この領域が効くエンティティ（当たり判定の中心があるブロックで判定）。魔法式オブジェクトは除く。 */
+    public List<Entity> entitiesInside() {
+        return level().getEntities(this, area.bounds(), entity -> !(entity instanceof SpellGramObject)
+                && affects(entity) && area.contains(BlockPos.containing(entity.getBoundingBox().getCenter())));
     }
 
     @Override

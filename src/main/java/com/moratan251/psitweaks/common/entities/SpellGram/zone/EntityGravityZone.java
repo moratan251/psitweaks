@@ -4,15 +4,17 @@ import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import vazkii.psi.common.core.handler.AdditiveMotionHandler;
 
 /**
- * 作動式: 加重領域（仮）の範囲。中の生物に、指定の向きへ毎 tick 運動を足し続ける（Psi の運動追加と同じ仕組み）。
+ * 作動式: 加重領域（仮）の範囲。中のエンティティ全般（生き物、落ちているアイテム、経験値、矢などの飛び道具、
+ * トロッコやボート）に、指定の向きへ毎 tick 運動を足し続ける（Psi の運動追加と同じ仕組み）。スペクテイターと、物理で
+ * 動かないもの（{@code noPhysics} の光線など）と魔法式オブジェクトは動かさない。
  * 足す量は 威力 × {@link #ACCELERATION_PER_POWER}（ブロック/tick²、仮）で、事象干渉力では変わらない。
  * 上向きに押している間は落下の距離を数えない（エレベーターのように使っても落下ダメージを受けない）。
  */
@@ -55,7 +57,12 @@ public class EntityGravityZone extends SpellGramZone {
     }
 
     @Override
-    protected void affect(LivingEntity target) {
+    protected boolean affects(Entity entity) {
+        return entity.isAlive() && !entity.isSpectator() && !entity.noPhysics;
+    }
+
+    @Override
+    protected void affect(Entity target) {
         Vec3 push = direction.scale(power * ACCELERATION_PER_POWER);
         if (push.lengthSqr() < 1.0E-12) {
             return;

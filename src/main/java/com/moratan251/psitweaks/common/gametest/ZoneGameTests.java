@@ -17,7 +17,10 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -133,18 +136,26 @@ public final class ZoneGameTests {
         helper.succeed();
     }
 
-    /** 加重領域は中の生物を指定の向きへ押し続ける（上向きなら持ち上がる）。外の生物は持ち上げない。 */
+    /** 加重領域は中のエンティティ（生物も落ちているアイテムも）を指定の向きへ押し続ける。外の生物は持ち上げない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_gravity", timeoutTicks = 100)
     public static void gravityZonePushesTheBeingsInside(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_gravity_caster", new Vec3(0.5, 1.0, 0.5));
         Husk inside = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 2.5));
         Husk outside = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(6.5, 1.0, 6.5));
+        // 落ちているアイテムも押す（エンティティ全般）。
+        Vec3 itemAt = helper.absoluteVec(new Vec3(3.5, 1.0, 2.5));
+        ItemEntity item = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.STICK));
+        item.setNeverPickUp();
+        item.setDeltaMovement(Vec3.ZERO);
+        level.addFreshEntity(item);
         BlockPos center = helper.absolutePos(new BlockPos(2, 2, 2));
         double insideY = inside.getY();
         double outsideY = outside.getY();
+        double itemY = item.getY();
         Runnable cleanup = () -> {
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+            item.discard();
             GameTestPlayers.remove(helper, caster);
         };
         try {
@@ -172,8 +183,10 @@ public final class ZoneGameTests {
         helper.runAfterDelay(12, () -> {
             double insideRise = inside.getY() - insideY;
             double outsideRise = outside.getY() - outsideY;
+            double itemRise = item.getY() - itemY;
             cleanup.run();
             helper.assertTrue(insideRise > 0.5, "The husk inside must be lifted, rose " + insideRise);
+            helper.assertTrue(itemRise > 0.5, "The dropped item inside must be lifted too, rose " + itemRise);
             helper.assertTrue(outsideRise < 0.1, "The husk outside must not be lifted, rose " + outsideRise);
             helper.succeed();
         });

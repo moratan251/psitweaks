@@ -2721,15 +2721,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "同じ種類の領域は1人1つまでで、置き直すと古いものが消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
                         + "範囲の確認には、作動式: 領域表示（ブロックモード）が使えます。");
         addSpellPiece(root, "trick_gravity_zone", "Trick: Gravity Zone",
-                "Places a SpellGram zone that keeps pushing living beings inside it in the given direction",
-                "作動式: 加重領域", "範囲の中の生物を指定した向きへ押し続ける魔法式オブジェクトを置く");
+                "Places a SpellGram zone that keeps pushing entities inside it in the given direction",
+                "作動式: 加重領域", "範囲の中のエンティティを指定した向きへ押し続ける魔法式オブジェクトを置く");
         addBookPage(root, "trick_gravity_zone.0",
                 "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
-                        + " Every tick it adds motion toward the Direction to the living beings inside, more with a higher Power; only the direction of the Direction is used."
-                        + " A Power of about 4 balances gravity. While the zone pushes upward, beings inside take no fall damage. The caster is pushed too.",
+                        + " Every tick it adds motion toward the Direction to the entities inside (living beings, dropped items, experience orbs, arrows and other projectiles, minecarts and boats), more with a higher Power; only the direction of the Direction is used."
+                        + " A Power of about 4 balances gravity. While the zone pushes upward, entities inside take no fall damage. The caster is pushed too.",
                 "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
-                        + "中の生物に、「方向」の向きへ「威力」に応じた運動を毎tick足し続けます。方向は向きだけを使います。"
-                        + "威力4でおよそ重力と釣り合います。上向きに押している間は、中の生物は落下ダメージを受けません。術者自身も押されます。");
+                        + "中のエンティティ（生物、落ちているアイテム、経験値オーブ、矢などの飛び道具、トロッコやボート）に、「方向」の向きへ「威力」に応じた運動を毎tick足し続けます。方向は向きだけを使います。"
+                        + "威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。");
         addBookPage(root, "trick_gravity_zone.1",
                 "The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
                         + " You can keep one zone of each kind; placing another ends the old one.",

@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -41,8 +42,10 @@ public class EntitySoakZone extends SpellGramZone {
     }
 
     @Override
-    protected void affect(LivingEntity target) {
-        CombatStatuses.soak(target, SOAK_TICKS);
+    protected void affect(Entity target) {
+        if (target instanceof LivingEntity living) {
+            CombatStatuses.soak(living, SOAK_TICKS);
+        }
     }
 
     @Override
