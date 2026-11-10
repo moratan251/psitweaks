@@ -38,8 +38,11 @@ import java.util.UUID;
  * 干渉力は効き目に効かず、耐久値にだけ効く。
  */
 public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceTrick {
-    /** サイズ（立方体の一辺のブロック数）の上限。範囲は最大 65×65×65 ブロック。 */
-    public static final int MAX_SIZE = 65;
+    /**
+     * サイズ（立方体の一辺のブロック数）の上限。範囲は最大 32×32×32 ブロック（2026-11-10 ユーザーの決定）。これより大きいサイズは
+     * 上限に切り詰める。演算子: 直方体領域そのものの上限（65）とは別。
+     */
+    public static final int MAX_SIZE = 32;
     public static final String ERROR_EMPTY_ZONE = "psitweaks.spellerror.zone_empty";
     /** 存続時間（仮、30 秒）。 */
     protected static final int LIFETIME_TICKS = 30 * 20;
