@@ -33,7 +33,10 @@ public final class CirclePen {
     private static final float CLIP_STEP = 0.4F;
     private static final float EPSILON = 1.0E-4F;
 
-    private final CircleMesh mesh;
+    private final CircleMesh colorMesh;
+    private final CircleMesh whiteMesh;
+    /** これから描く図形を入れる形（{@link #white()} / {@link #color()} で切り替える）。 */
+    private CircleMesh mesh;
     private final float lineScale;
     private float width = LINE;
     private boolean caps = true;
@@ -41,13 +44,35 @@ public final class CirclePen {
     private float keepRadius = -1.0F;
     private float keepHalf = -1.0F;
 
-    /** {@code lineScale} は線の太さとぼかしに掛ける倍率（小さく出す魔法陣では太くする）。 */
+    /** {@code lineScale} は線の太さとぼかしに掛ける倍率（小さく出す魔法陣では太くする）。白の図形も同じ形に入れる。 */
     public CirclePen(CircleMesh mesh, float lineScale) {
-        this.mesh = mesh;
+        this(mesh, mesh, lineScale);
+    }
+
+    /**
+     * CAD の色で描く図形を {@code colorMesh} に、{@link #white()} のあとに描く図形を {@code whiteMesh} に入れる
+     * （Psi の魔法陣のように、一部を白で描くため）。
+     */
+    public CirclePen(CircleMesh colorMesh, CircleMesh whiteMesh, float lineScale) {
+        this.colorMesh = colorMesh;
+        this.whiteMesh = whiteMesh;
+        this.mesh = colorMesh;
         this.lineScale = lineScale;
     }
 
     // ------------------------------------------------------------------ 状態
+
+    /** これから描く図形を白で描く（{@link #color()} で CAD の色に戻す。{@link #reset} では戻らない）。 */
+    public CirclePen white() {
+        this.mesh = whiteMesh;
+        return this;
+    }
+
+    /** これから描く図形を CAD の色で描く（はじめはこちら）。 */
+    public CirclePen color() {
+        this.mesh = colorMesh;
+        return this;
+    }
 
     /** これから描く線の芯の幅を、普通の線の何倍にするか。 */
     public CirclePen weight(float multiple) {

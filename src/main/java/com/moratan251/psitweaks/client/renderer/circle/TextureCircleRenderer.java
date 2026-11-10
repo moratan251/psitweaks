@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
@@ -21,12 +22,14 @@ import org.joml.Matrix4f;
  * 数式で組み立てた魔法陣（{@link CircleDesign}）を、層ごとに焼いた画像
  * （{@code textures/misc/magic_circle/<図案>_<層>_<大きさ>.png}）で描く。層ごとに四角形 1 枚を、その層の速さで回し、CAD の色を
  * 頂点色で掛けて加算合成で描く（{@link PsitweaksRenderTypes#additiveLinearTexture}）。毎フレームの仕事は四角形を数枚書くだけ。
+ * Psi の魔法陣のように白で描く図形（{@link CirclePen#white()}）は、同じ層の別の画像 {@code <図案>_<層>_white_<大きさ>.png} に
+ * あり、同じ回転で白を掛けて重ねる（白の図形がない層は 1 枚だけ）。
  * <p>
  * 画像は記録フォルダ（{@code .steering/202611100300-zone-vector-magic-circle/tools/}）の生成ツール CircleTextureGen で、
  * {@link CircleDesign} の形から作る。図案を直したら画像を作り直す。明るさは R = G = B の灰色（1 で頭打ち）。中心は画素の格子の
  * 中心で、層が持つ正方形の対称（左右・上下・対角の鏡映、90 度ごとの回転）は画素の単位で厳密にそろえてある。
  * <p>
- * 画像を焼いてある図案だけを渡すこと（今は {@link CircleDesigns#CONSTRUCTION}）。ミップマップは使わず、画面に映る大きさ以上の
+ * 画像を焼いてある図案だけを渡すこと（今は {@link CircleDesigns#CONSTRUCTION} と {@link CircleDesigns#HEX_CHAIN}）。ミップマップは使わず、画面に映る大きさ以上の
  * いちばん小さい段（1024 / 512 / 256 / 128 px）を選ぶ（縮小しすぎるとちらつくため）。
  * <p>
  * 内側の層の画像は、生成ツールが形の届く範囲だけに切り詰めてある（段の細かさは同じで、一辺が短い。例: F の中心の層は 1024 の段で
@@ -41,8 +44,12 @@ public final class TextureCircleRenderer {
     private static final float LAYER_GAP = 0.003F;
     /** 段を替えるときに境目からはみ出す割合（境目で段が行き来しないための幅）。 */
     private static final float HYSTERESIS = 0.1F;
-    /** 図案ごとの画像の場所（{@code [層][大きさ]}、{@link #SIZES} の順）。図案は決まった数なので増え続けない。 */
-    private static final Map<String, ResourceLocation[][]> TEXTURES = new ConcurrentHashMap<>();
+    /** 画像の役割（ファイル名の層の番号のあと）: CAD の色で描く図形と、白で描く図形。 */
+    private static final String[] ROLES = {"", "white_"};
+    /** 白の図形の明るさ（CAD の色の図形と同じ明るさを 1 とする）。 */
+    private static final float WHITE_BRIGHTNESS = 1.0F;
+    /** 図案ごとの画像の場所。図案は決まった数なので増え続けない。 */
+    private static final Map<String, Textures> TEXTURES = new ConcurrentHashMap<>();
 
     private TextureCircleRenderer() {
     }
@@ -64,34 +71,68 @@ public final class TextureCircleRenderer {
             return previous;
         }
         int glow = GlowDrawing.glowColor(color & 0xFFFFFF);
-        int red = Math.min(255, (int) (GlowDrawing.red(glow) * brightness));
-        int green = Math.min(255, (int) (GlowDrawing.green(glow) * brightness));
-        int blue = Math.min(255, (int) (GlowDrawing.blue(glow) * brightness));
+        // [0] CAD の色、[1] 白（Psi の魔法陣の白い層と同じく混ぜ物なしの白）。
+        int[][] tints = {
+                {Math.min(255, (int) (GlowDrawing.red(glow) * brightness)),
+                        Math.min(255, (int) (GlowDrawing.green(glow) * brightness)),
+                        Math.min(255, (int) (GlowDrawing.blue(glow) * brightness))},
+                {Math.min(255, (int) (255 * WHITE_BRIGHTNESS * brightness)),
+                        Math.min(255, (int) (255 * WHITE_BRIGHTNESS * brightness)),
+                        Math.min(255, (int) (255 * WHITE_BRIGHTNESS * brightness))}};
         float fullHalf = radius * EXTENT / 64.0F;
-        ResourceLocation[][] textures = TEXTURES.computeIfAbsent(design.id(), id -> locations(design));
+        Textures textures = TEXTURES.computeIfAbsent(design.id(), id -> Textures.of(design));
         int level = sizeIndex(fullHalf, distance, previous);
         int size = Math.max(level, maxSizeIndex());
         Matrix4f pose = poseStack.last().pose();
         for (int layer = 0; layer < design.layerCount(); layer++) {
-            ResourceLocation texture = textures[layer][size];
-            int side = side(texture);
-            if (side <= 0) {
-                continue;
-            }
-            // 内側の層の画像は、使う範囲だけに切り詰めてある（同じ細かさのまま一辺が短い）。
-            float half = fullHalf * side / SIZES[size];
-            VertexConsumer consumer = buffers.getBuffer(PsitweaksRenderTypes.additiveLinearTexture(texture));
             float angle = design.layer(layer).spin() * time % 360.0F * Mth.DEG_TO_RAD;
-            float cos = Mth.cos(angle) * half;
-            float sin = Mth.sin(angle) * half;
             float y = layer * LAYER_GAP;
-            // 画像の u は図面の +x、v は図面の +y（床では +z）。
-            vertex(consumer, pose, -1.0F, -1.0F, cos, sin, y, 0.0F, 0.0F, red, green, blue);
-            vertex(consumer, pose, -1.0F, 1.0F, cos, sin, y, 0.0F, 1.0F, red, green, blue);
-            vertex(consumer, pose, 1.0F, 1.0F, cos, sin, y, 1.0F, 1.0F, red, green, blue);
-            vertex(consumer, pose, 1.0F, -1.0F, cos, sin, y, 1.0F, 0.0F, red, green, blue);
+            for (int role = 0; role < ROLES.length; role++) {
+                if (!textures.present()[role][layer]) {
+                    continue;
+                }
+                ResourceLocation texture = textures.locations()[role][layer][size];
+                int side = side(texture);
+                if (side <= 0) {
+                    continue;
+                }
+                // 画像は形の届く範囲だけに切り詰めてある（同じ細かさのまま一辺が短い）。
+                float half = fullHalf * side / SIZES[size];
+                float cos = Mth.cos(angle) * half;
+                float sin = Mth.sin(angle) * half;
+                int[] tint = tints[role];
+                VertexConsumer consumer = buffers.getBuffer(PsitweaksRenderTypes.additiveLinearTexture(texture));
+                // 画像の u は図面の +x、v は図面の +y（床では +z）。
+                vertex(consumer, pose, -1.0F, -1.0F, cos, sin, y, 0.0F, 0.0F, tint);
+                vertex(consumer, pose, -1.0F, 1.0F, cos, sin, y, 0.0F, 1.0F, tint);
+                vertex(consumer, pose, 1.0F, 1.0F, cos, sin, y, 1.0F, 1.0F, tint);
+                vertex(consumer, pose, 1.0F, -1.0F, cos, sin, y, 1.0F, 0.0F, tint);
+            }
         }
         return level;
+    }
+
+    /**
+     * 図案の画像の場所 {@code locations[役割][層][大きさ]}（役割は {@link #ROLES} の順、大きさは {@link #SIZES} の順）と、
+     * その役割の画像があるか {@code present[役割][層]}（白の図形がない層には白の画像がない）。
+     */
+    private record Textures(ResourceLocation[][][] locations, boolean[][] present) {
+        static Textures of(CircleDesign design) {
+            ResourceManager resources = Minecraft.getInstance().getResourceManager();
+            int layers = design.layerCount();
+            ResourceLocation[][][] locations = new ResourceLocation[ROLES.length][layers][SIZES.length];
+            boolean[][] present = new boolean[ROLES.length][layers];
+            for (int role = 0; role < ROLES.length; role++) {
+                for (int layer = 0; layer < layers; layer++) {
+                    for (int s = 0; s < SIZES.length; s++) {
+                        locations[role][layer][s] = ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID,
+                                "textures/misc/magic_circle/" + design.id() + "_" + layer + "_" + ROLES[role] + SIZES[s] + ".png");
+                    }
+                    present[role][layer] = resources.getResource(locations[role][layer][0]).isPresent();
+                }
+            }
+            return new Textures(locations, present);
+        }
     }
 
     /**
@@ -111,20 +152,9 @@ public final class TextureCircleRenderer {
         return textures.getTexture(location, null) instanceof CircleLayerTexture layer ? layer.side() : 0;
     }
 
-    private static ResourceLocation[][] locations(CircleDesign design) {
-        ResourceLocation[][] locations = new ResourceLocation[design.layerCount()][SIZES.length];
-        for (int layer = 0; layer < locations.length; layer++) {
-            for (int s = 0; s < SIZES.length; s++) {
-                locations[layer][s] = ResourceLocation.fromNamespaceAndPath(Psitweaks.MOD_ID,
-                        "textures/misc/magic_circle/" + design.id() + "_" + layer + "_" + SIZES[s] + ".png");
-            }
-        }
-        return locations;
-    }
-
     private static void vertex(VertexConsumer consumer, Matrix4f pose, float x, float z, float cos, float sin, float y,
-                               float u, float v, int red, int green, int blue) {
-        consumer.addVertex(pose, x * cos - z * sin, y, x * sin + z * cos).setUv(u, v).setColor(red, green, blue, 255);
+                               float u, float v, int[] tint) {
+        consumer.addVertex(pose, x * cos - z * sin, y, x * sin + z * cos).setUv(u, v).setColor(tint[0], tint[1], tint[2], 255);
     }
 
     /**

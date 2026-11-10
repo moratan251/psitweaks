@@ -138,7 +138,9 @@ public final class CircleDesigns {
         for (int k = 0; k < count; k++) {
             float deg = 360.0F * k / count;
             float[] c = polar(rc, deg);
-            p.polygonAt(c[0], c[1], 6.5F, 6, deg, 1, FULL);
+            // 鎖の六角形はすべて白（2026-11-10 ユーザーの指定）。
+            p.white().polygonAt(c[0], c[1], 6.5F, 6, deg, 1, FULL);
+            p.color();
             if (k % 2 == 0) {
                 p.dot(c[0], c[1], 1.2F, FULL);
             } else {
@@ -148,8 +150,9 @@ public final class CircleDesigns {
         for (int k = 0; k < count; k++) {
             float mid = 360.0F * (k + 0.5F) / count;
             p.arc(rc, mid - 2.6F, mid + 2.6F, FULL);
-            p.arc(62.5F, mid - 6.0F, mid + 6.0F, MID);
-            p.arc(48.5F, mid - 6.0F, mid + 6.0F, MID);
+            // いちばん外の破線の輪は白（Psi の魔法陣の外の輪に合わせる）。
+            p.white().arc(62.5F, mid - 6.0F, mid + 6.0F, MID);
+            p.color().arc(48.5F, mid - 6.0F, mid + 6.0F, MID);
         }
     }
 
@@ -175,15 +178,16 @@ public final class CircleDesigns {
     }
 
     private static void hexChainInner(CirclePen p) {
-        p.polygonAt(0.0F, 0.0F, 30.0F, 6, 30.0F, 1, FULL);
-        p.polygonAt(0.0F, 0.0F, 27.0F, 6, 30.0F, 1, MID);
+        // 大きな六角形と、その頂点から外へ伸びる 6 本の線と先の点は白（2026-11-10 ユーザーの指定）。
+        p.white().polygonAt(0.0F, 0.0F, 30.0F, 6, 30.0F, 1, FULL);
+        p.color().polygonAt(0.0F, 0.0F, 27.0F, 6, 30.0F, 1, MID);
         p.polygonAt(0.0F, 0.0F, 18.0F, 6, 0.0F, 1, FULL);
         for (int k = 0; k < 6; k++) {
             float deg = 30.0F + 60.0F * k;
-            p.radial(30.0F, 39.2F, deg, FULL);
+            p.white().radial(30.0F, 39.2F, deg, FULL);
             float[] at = polar(40.5F, deg);
             p.dot(at[0], at[1], 1.4F, FULL);
-            p.radial(8.0F, 18.0F, 60.0F * k, MID);
+            p.color().radial(8.0F, 18.0F, 60.0F * k, MID);
         }
         p.polygonAt(0.0F, 0.0F, 7.0F, 6, 30.0F, 1, FULL);
         p.dot(0.0F, 0.0F, 1.0F, FULL);
@@ -513,8 +517,9 @@ public final class CircleDesigns {
             for (float off : new float[] {0.0F, 180.0F}) {
                 p.sector(n[0], n[1], 6.5F, 10.0F, toward + off - 45.0F, toward + off + 45.0F, DIM);
             }
-            p.ringAt(n[0], n[1], 10.5F, FULL);
-            p.ringAt(n[0], n[1], 6.0F, MID);
+            // 辺の真ん中の円の外の輪は白（Psi の魔法陣の白い小円に合わせる）。
+            p.white().ringAt(n[0], n[1], 10.5F, FULL);
+            p.color().ringAt(n[0], n[1], 6.0F, MID);
             float a = (float) Math.toRadians(toward + 90.0F);
             float cx = (float) Math.cos(a) * 10.0F;
             float cy = (float) Math.sin(a) * 10.0F;
@@ -538,6 +543,8 @@ public final class CircleDesigns {
     }
 
     private static void constructionGuide(CirclePen p) {
+        // 中心を囲む作図の輪（弧・目盛り・菱形）は白（Psi の魔法陣の白い外の輪に合わせる）。点の輪は CAD の色。
+        p.white();
         for (int k = 0; k < 4; k++) {
             float d = k * 90.0F;
             p.arc(30.5F, d + 5.0F, d + 85.0F, FULL);
@@ -545,6 +552,7 @@ public final class CircleDesigns {
             float[] at = polar(33.5F, d);
             diamond(p, at[0], at[1], FULL);
         }
+        p.color();
         p.dottedRing(28.0F, 40, 0.5F, MID, 0.0F);
     }
 

@@ -7,10 +7,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 数式で組み立てる魔法陣の図案: 重ねて描く層の並び。層ごとに形（{@link CirclePen} で描く手順）と回る速さを持つ。
+ * 数式で組み立てる魔法陣の図案: 重ねて描く層の並び。層ごとに形（{@link CirclePen} で描く手順）と回る速さを持つ。図形ごとに
+ * CAD の色か白か（{@link CirclePen#white()}）を選べる。
  * <p>
- * 形は線の太さの倍率ごとに 1 回だけ組み立てて取っておき、毎フレームは回して色を掛けるだけにする。倍率は呼び出す側が決まった
- * 値（定数）だけを使うので、取っておく数は増え続けない。
+ * ゲームは形から焼いた画像で描く（{@link TextureCircleRenderer}）。形そのものは画像の生成ツールとプレビューが使い、線の太さの
+ * 倍率ごとに 1 回だけ組み立てて取っておく（倍率は決まった値だけを使うので、取っておく数は増え続けない）。
  */
 public final class CircleDesign {
     /** 1 枚の層。{@code spin} は 1 tick に回る角度（度、正なら画面で時計回り）。 */
@@ -20,7 +21,8 @@ public final class CircleDesign {
     private final String id;
     private final boolean square;
     private final List<Layer> layers;
-    private final Map<Float, CircleMesh[]> meshes = new HashMap<>();
+    /** 線の太さの倍率ごとの形（[0] が CAD の色、[1] が白、それぞれ層ごと）。 */
+    private final Map<Float, CircleMesh[][]> meshes = new HashMap<>();
 
     private CircleDesign(String id, boolean square, List<Layer> layers) {
         this.id = id;
@@ -49,14 +51,25 @@ public final class CircleDesign {
         return layers.get(index);
     }
 
-    /** 線の太さの倍率 {@code lineScale} で組み立てた、層ごとの形。 */
-    public synchronized CircleMesh[] meshes(float lineScale) {
+    /** 線の太さの倍率 {@code lineScale} で組み立てた、層ごとの CAD の色で描く形。 */
+    public CircleMesh[] meshes(float lineScale) {
+        return built(lineScale)[0];
+    }
+
+    /** 線の太さの倍率 {@code lineScale} で組み立てた、層ごとの白で描く形（{@link CirclePen#white()}。ない層は頂点 0）。 */
+    public CircleMesh[] whiteMeshes(float lineScale) {
+        return built(lineScale)[1];
+    }
+
+    private synchronized CircleMesh[][] built(float lineScale) {
         return meshes.computeIfAbsent(lineScale, scale -> {
-            CircleMesh[] built = new CircleMesh[layers.size()];
-            for (int i = 0; i < built.length; i++) {
-                CircleMesh mesh = new CircleMesh();
-                layers.get(i).painter().accept(new CirclePen(mesh, scale));
-                built[i] = mesh.trim();
+            CircleMesh[][] built = new CircleMesh[2][layers.size()];
+            for (int i = 0; i < layers.size(); i++) {
+                CircleMesh color = new CircleMesh();
+                CircleMesh white = new CircleMesh();
+                layers.get(i).painter().accept(new CirclePen(color, white, scale));
+                built[0][i] = color.trim();
+                built[1][i] = white.trim();
             }
             return built;
         });
