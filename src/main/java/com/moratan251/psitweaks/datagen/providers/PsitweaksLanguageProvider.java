@@ -2708,11 +2708,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places a zone that lasts 30 seconds over the region given by the Matrix (a region matrix) and the Size (a constant)."
                         + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 32)."
                         + " A living being is inside when the block holding the center of its hitbox is."
-                        + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning.",
+                        + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning."
+                        + " The zone also wets the blocks inside like a Splash Water Bottle: it puts out fire, campfires and candles, and turns concrete powder into concrete (where the caster may change blocks)."
+                        + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast.",
                 "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、30秒間残る領域を置きます。"
                         + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大32）。"
                         + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
-                        + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。");
+                        + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。"
+                        + "範囲の中のブロックにも水をかけたように効き、水入りスプラッシュ瓶と同じく炎・焚き火・ろうそくを消し、コンクリートパウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。"
+                        + "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。洗う速さは置いた時点の事象干渉力で決まり、1 でケース入りファンの半分、2 で同じ、最大で2倍です。");
         addBookPage(root, "trick_soak_zone.1",
                 "Cost and Potency depend only on the Size, and grow with the area of the zone."
                         + " You can keep one zone of each kind; placing another ends the old one. The zone also ends when its caster logs out or changes dimension."

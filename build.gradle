@@ -168,6 +168,10 @@ dependencies {
 //    implementation "curse.maven:sable-1312371:8007005"
 
     compileOnly "curse.maven:create-328085:7963363"
+    // Create は開発時の実行にだけ入れる（作動式: 湿潤領域の一括洗浄の確認用）。-Ppsitweaks.includeCreateInRuns=false で外せる。
+    if (providers.gradleProperty("psitweaks.includeCreateInRuns").orElse("true").get().toBoolean()) {
+        runtimeOnly "curse.maven:create-328085:7963363"
+    }
     compileOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
     compileOnly "curse.maven:sable-1312371:8007005"
 

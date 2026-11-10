@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.gametest;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.CreateCompat;
+import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone;
@@ -19,6 +21,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -188,6 +193,96 @@ public final class ZoneGameTests {
             helper.assertTrue(insideRise > 0.5, "The husk inside must be lifted, rose " + insideRise);
             helper.assertTrue(itemRise > 0.5, "The dropped item inside must be lifted too, rose " + itemRise);
             helper.assertTrue(outsideRise < 0.1, "The husk outside must not be lifted, rose " + outsideRise);
+            helper.succeed();
+        });
+    }
+
+    /** 湿潤領域は中のブロックに水をかけたように効く: 炎・焚き火・ろうそくを消し、コンクリートパウダーを固める。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak_blocks", timeoutTicks = 100)
+    public static void soakZoneDousesFireAndSetsConcrete(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_soak_blocks", new Vec3(0.5, 1.0, 0.5));
+        BlockPos fire = new BlockPos(2, 1, 2);
+        BlockPos campfire = new BlockPos(3, 1, 2);
+        BlockPos candle = new BlockPos(1, 1, 2);
+        BlockPos powder = new BlockPos(2, 1, 3);
+        BlockPos outside = new BlockPos(6, 1, 6);
+        for (BlockPos below : List.of(fire, campfire, candle, powder, outside)) {
+            helper.setBlock(below.below(), Blocks.STONE);
+        }
+        helper.setBlock(fire, Blocks.FIRE);
+        helper.setBlock(campfire, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+        helper.setBlock(candle, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT, true));
+        helper.setBlock(powder, Blocks.WHITE_CONCRETE_POWDER);
+        helper.setBlock(outside, Blocks.WHITE_CONCRETE_POWDER);
+        BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            // 5×5×5（サイズ 5）。外のコンクリートパウダーは範囲の外。
+            castSoak(caster, cube(vector(center).add(-2.5, -2.5, -2.5), 5), 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(10, () -> {
+            boolean fireGone = !helper.getBlockState(fire).is(Blocks.FIRE);
+            boolean campfireOut = !helper.getBlockState(campfire).getValue(CampfireBlock.LIT);
+            boolean candleOut = !helper.getBlockState(candle).getValue(CandleBlock.LIT);
+            boolean concrete = helper.getBlockState(powder).is(Blocks.WHITE_CONCRETE);
+            boolean outsideKept = helper.getBlockState(outside).is(Blocks.WHITE_CONCRETE_POWDER);
+            cleanup.run();
+            helper.assertTrue(fireGone, "The Soak Zone must put out the fire inside");
+            helper.assertTrue(campfireOut, "The Soak Zone must douse the campfire inside");
+            helper.assertTrue(candleOut, "The Soak Zone must put out the candle inside");
+            helper.assertTrue(concrete, "The Soak Zone must turn the concrete powder inside into concrete");
+            helper.assertTrue(outsideKept, "Concrete powder outside the zone must stay powder");
+            helper.succeed();
+        });
+    }
+
+    /** Create があるとき、湿潤領域は中の落ちているアイテムを一括洗浄する（マグマブロック → 黒曜石）。Create がなければ飛ばす。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak_create", timeoutTicks = 400)
+    public static void soakZoneWashesItemsWithCreate(GameTestHelper helper) {
+        if (!CreateCompat.isCreateLoaded()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_soak_create", new Vec3(0.5, 1.0, 0.5));
+        helper.setBlock(new BlockPos(2, 0, 2), Blocks.STONE);
+        Vec3 itemAt = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        ItemEntity item = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.MAGMA_BLOCK));
+        item.setNeverPickUp();
+        item.setDeltaMovement(Vec3.ZERO);
+        level.addFreshEntity(item);
+        BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+            level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(center).inflate(4.0)).forEach(ItemEntity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            // 事象干渉力 4 → 洗う速さは上限の 2 倍。洗う速さは置いた時点の干渉力で決まる。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            castSoak(caster, cube(vector(center).add(-2.5, -2.5, -2.5), 5), 5.0);
+            List<EntitySoakZone> zones = SpellGramIndex.near(level, Vec3.atCenterOf(center), 0.5, EntitySoakZone.class);
+            helper.assertTrue(zones.size() == 1 && zones.get(0).getWashSpeed() == EntitySoakZone.MAX_WASH_SPEED,
+                    "The washing speed must come from the caster's interference, capped at twice a fan");
+            helper.assertTrue(EntitySoakZone.washSpeedFor(1.0) == 0.5F && EntitySoakZone.washSpeedFor(2.0) == 1.0F,
+                    "Interference 1 washes at half a fan, 2 at a fan");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        // Create の処理時間（既定 150 tick）を 2 倍の速さで進めるので、75 tick ほどで洗い上がる。
+        helper.runAfterDelay(110, () -> {
+            boolean washed = !level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(center).inflate(4.0),
+                    entity -> entity.getItem().is(Items.OBSIDIAN)).isEmpty();
+            cleanup.run();
+            helper.assertTrue(washed, "The Soak Zone must wash the magma block into obsidian with Create");
             helper.succeed();
         });
     }

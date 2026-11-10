@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
 import net.minecraft.server.level.ServerLevel;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -36,5 +37,6 @@ public class PieceTrickSoakZone extends PieceTrickZoneBase<EntitySoakZone> {
 
     @Override
     protected void configure(EntitySoakZone zone, SpellContext context) {
+        zone.setWashSpeed(EntitySoakZone.washSpeedFor(SpellGramObject.interferenceOf(context.caster)));
     }
 }
