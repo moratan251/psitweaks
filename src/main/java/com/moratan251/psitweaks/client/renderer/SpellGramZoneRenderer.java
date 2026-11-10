@@ -2,7 +2,7 @@ package com.moratan251.psitweaks.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.moratan251.psitweaks.client.renderer.circle.CircleDesign;
-import com.moratan251.psitweaks.client.renderer.circle.VectorCircleRenderer;
+import com.moratan251.psitweaks.client.renderer.circle.TextureCircleRenderer;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,13 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 領域型の魔法式オブジェクトの見た目（試作）: 範囲を囲む箱の 12 本の辺を領域の種類ごとの色の線で、床に数式で描いた魔法陣
- * （{@link CircleDesign}）を術者の CAD の色で描く。中心には CAD の色の核の魔法陣（{@link SpellGramCoreRenderer}）。
- * 耐久値が減るほど薄くなり、残りが 4 分の 1 を切るとちらつく。
+ * 領域型の魔法式オブジェクトの見た目（試作）: 範囲を囲む箱の 12 本の辺を領域の種類ごとの色の線で、床の魔法陣を術者の CAD の
+ * 色で描く。床の魔法陣は、数式で組み立てた図案（{@link CircleDesign}）から焼いた画像（{@link TextureCircleRenderer}）。中心には
+ * CAD の色の核の魔法陣（{@link SpellGramCoreRenderer}）。耐久値が減るほど薄くなり、残りが 4 分の 1 を切るとちらつく。
  * <p>
  * 床の魔法陣は、範囲の中心のブロックから下へたどって最初に当たる足場の上面に敷く（範囲は術者のまわりの立方体のことが多く、
  * 箱の底は地面の下に埋まりやすいため）。足場がなければ中心のブロックの底の高さに浮かべる。
@@ -73,12 +74,15 @@ public class SpellGramZoneRenderer<T extends SpellGramZone> extends EntityRender
         float grow = 1.0F - (1.0F - appear) * (1.0F - appear);
         float radius = half * (floorDesign.square() ? 1.0F : 0.98F) * (0.75F + 0.25F * grow);
         double floor = floorHeight(entity.level(), entity.getArea().center(), Mth.floor(world.minY));
+        // 画像の大きさを、カメラから床の中心までの距離で選ぶ。
+        float distance = (float) entityRenderDispatcher.camera.getPosition().distanceTo(
+                new Vec3((world.minX + world.maxX) * 0.5, floor, (world.minZ + world.maxZ) * 0.5));
 
         poseStack.pushPose();
         poseStack.translate((outline.minX + outline.maxX) * 0.5, floor - entity.getY() + FLOOR_LIFT,
                 (outline.minZ + outline.maxZ) * 0.5);
-        VectorCircleRenderer.render(floorDesign, 1.0F, poseStack, buffer, radius, time, entity.getColor(),
-                FLOOR_BRIGHTNESS * alpha * appear);
+        entity.setFloorCircleLevel(TextureCircleRenderer.render(floorDesign, poseStack, buffer, radius, distance,
+                entity.getFloorCircleLevel(), time, entity.getColor(), FLOOR_BRIGHTNESS * alpha * appear));
         poseStack.popPose();
     }
 

@@ -365,11 +365,12 @@ public class Psitweaks {
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.FLARE_COLOR));
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(),
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.ICE_COLOR));
-            // 領域の床の魔法陣（図案は CircleDesigns から選ぶ）。
+            // 領域の床の魔法陣（図案は CircleDesigns から選ぶ。画像を焼いてある図案だけ: CONSTRUCTION、HEX_CHAIN）。
+            // 2026-11-10 試しに B 案（HEX_CHAIN）にしている。F 案に戻すなら CircleDesigns.CONSTRUCTION。
             event.registerEntityRenderer(PsitweaksEntities.SOAK_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.CONSTRUCTION));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.GRAVITY_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.CONSTRUCTION));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);

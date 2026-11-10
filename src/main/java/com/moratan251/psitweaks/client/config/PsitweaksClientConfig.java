@@ -1,6 +1,9 @@
 package com.moratan251.psitweaks.client.config;
 
+import java.util.Locale;
+import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.TranslatableEnum;
 import org.apache.commons.lang3.tuple.Pair;
 
 public final class PsitweaksClientConfig {
@@ -21,6 +24,8 @@ public final class PsitweaksClientConfig {
         public final ModConfigSpec.DoubleValue cameraShakeStrength;
         public final ModConfigSpec.BooleanValue barrierHud;
         public final ModConfigSpec.BooleanValue meteorLineNight;
+        /** 領域の床の魔法陣の画質（使う画像の大きさの上限）。 */
+        public final ModConfigSpec.EnumValue<ZoneCircleQuality> zoneCircleQuality;
         public final WindowPosition autonomousCasterSettingsWindow;
 
         private Client(ModConfigSpec.Builder builder) {
@@ -53,6 +58,13 @@ public final class PsitweaksClientConfig {
                     .translation("psitweaks.configuration.effects.meteor_line_night")
                     .define("meteorLineNight", true);
 
+            zoneCircleQuality = builder
+                    .comment("Image quality of the magic circle on the floor of zone spellgrams: HIGH (1024 px), MEDIUM (512 px)",
+                            "or LOW (256 px). Lower uses less video memory, and the lines look a little blurry up close.",
+                            "Smaller images are still used when the circle looks small.")
+                    .translation("psitweaks.configuration.effects.zone_circle_quality")
+                    .defineEnum("zoneCircleQuality", ZoneCircleQuality.HIGH);
+
             builder.pop();
 
             builder.comment("Last positions of windows opened in machine screens, and whether they were pinned")
@@ -63,6 +75,32 @@ public final class PsitweaksClientConfig {
                     "Autonomous Caster settings window");
 
             builder.pop();
+        }
+    }
+
+    /**
+     * 領域の床の魔法陣の画質: {@code TextureCircleRenderer} が画面に映る大きさで選ぶ画像の段の上限。低いほど VRAM が減り、
+     * 近くで見たときの線が少しぼやける。小さく映るときは、これより小さい段を使う。
+     */
+    public enum ZoneCircleQuality implements TranslatableEnum {
+        HIGH(1024),
+        MEDIUM(512),
+        LOW(256);
+
+        private final int pixels;
+
+        ZoneCircleQuality(int pixels) {
+            this.pixels = pixels;
+        }
+
+        /** 上限の段の一辺（切り詰める前の画像の画素数）。 */
+        public int pixels() {
+            return pixels;
+        }
+
+        @Override
+        public Component getTranslatedName() {
+            return Component.translatable("psitweaks.configuration.effects.zone_circle_quality." + name().toLowerCase(Locale.ROOT));
         }
     }
 

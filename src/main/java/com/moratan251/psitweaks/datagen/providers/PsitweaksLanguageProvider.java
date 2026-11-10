@@ -579,6 +579,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Meteor Line Night", "流星群の夜",
                 "Darken the view while you stand in the night of Trick: Meteor Line.",
                 "作動式: 流星群の夜の中にいる間、画面を暗くします。");
+        addConfigValue(root, "psitweaks.configuration.effects.zone_circle_quality",
+                "Magic Circle Quality", "魔法陣の画質",
+                "Image quality of the magic circle on the floor of zone spellgrams."
+                        + " Lower uses less video memory, and the lines look a little blurry up close."
+                        + " Smaller images are still used when the circle looks small.",
+                "領域の床に出る魔法陣の画質です。"
+                        + "低くするとビデオメモリの使用量が減り、近くで見たときの線が少しぼやけます。"
+                        + "遠くで小さく見えるときは、どの画質でも小さい画像を使います。");
+        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.high", "High (1024 px)", "高（1024 px）");
+        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.medium", "Medium (512 px)", "中（512 px）");
+        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.low", "Low (256 px)", "低（256 px）");
         addConfigLabel(root, "psitweaks.configuration.windows", "Window Positions", "ウィンドウの位置");
         addConfigLabel(root, "psitweaks.configuration.windows.autonomous_caster_settings",
                 "Autonomous Caster Settings Window", "自律詠唱機の設定ウィンドウ");

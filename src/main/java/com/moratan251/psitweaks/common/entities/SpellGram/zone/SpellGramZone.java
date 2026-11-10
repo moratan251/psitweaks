@@ -22,9 +22,20 @@ import java.util.List;
 public abstract class SpellGramZone extends SpellGramObject {
     private ZoneArea area = ZoneArea.EMPTY;
     private int color = 0xFFFFFF;
+    /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
+    private int floorCircleLevel = -1;
 
     protected SpellGramZone(EntityType<? extends SpellGramZone> type, Level level) {
         super(type, level);
+    }
+
+    /** 床の魔法陣に前のフレームで選んだ画像の段（クライアントの描画用）。 */
+    public int getFloorCircleLevel() {
+        return floorCircleLevel;
+    }
+
+    public void setFloorCircleLevel(int level) {
+        this.floorCircleLevel = level;
     }
 
     /** 置く前に呼ぶ。範囲と、輪郭の色（術者の CAD の色）。位置は範囲の中心のブロックの中心にする。 */
