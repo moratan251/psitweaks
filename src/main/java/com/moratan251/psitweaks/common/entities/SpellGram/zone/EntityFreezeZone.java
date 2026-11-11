@@ -156,17 +156,21 @@ public class EntityFreezeZone extends SpellGramZone {
         if (fraction <= 0.0) {
             return;
         }
-        List<BlockEntity> blockEntities = getArea().blockEntities(level);
-        if (blockEntities.isEmpty()) {
-            return;
-        }
-        MekanismGameplayCompat.drainZoneHeat(level, blockEntities, fraction,
-                pos -> isActiveAt(pos) && mayUseMachine(level, caster, pos));
-        if (isStorm()) {
-            for (EntityTurbulenceZone turbulence : overlappingStorms()) {
-                MekanismGameplayCompat.drainZoneHeat(level, blockEntities,
-                        Math.min(MAX_COOL_FRACTION, fraction * stormBoost(turbulence.getPower())),
-                        pos -> stormAt(pos) == turbulence && mayUseMachine(level, caster, pos));
+        // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）。範囲・領域干渉・乱流は世界の位置で判定し、保護は
+        // 機械が本当にある位置で確かめる。
+        for (ZoneRegion region : regions()) {
+            List<BlockEntity> blockEntities = region.area().blockEntities(level);
+            if (blockEntities.isEmpty()) {
+                continue;
+            }
+            MekanismGameplayCompat.drainZoneHeat(level, blockEntities, fraction,
+                    pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+            if (isStorm()) {
+                for (EntityTurbulenceZone turbulence : overlappingStorms()) {
+                    MekanismGameplayCompat.drainZoneHeat(level, blockEntities,
+                            Math.min(MAX_COOL_FRACTION, fraction * stormBoost(turbulence.getPower())),
+                            pos -> stormAt(region.worldPos(pos)) == turbulence && mayUseMachine(level, caster, pos));
+                }
             }
         }
     }
@@ -204,6 +208,11 @@ public class EntityFreezeZone extends SpellGramZone {
     @Override
     protected boolean affectsBlocks() {
         return true;
+    }
+
+    @Override
+    protected boolean mayAffectState(BlockState state) {
+        return state.is(Blocks.WATER) && state.getFluidState().isSource();
     }
 
     /** 水源の水で、真上が空気のものを氷にする。 */

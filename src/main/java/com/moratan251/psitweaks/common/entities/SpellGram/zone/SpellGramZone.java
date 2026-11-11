@@ -16,6 +16,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +61,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
     private int floorCircleLevel = -1;
     /** 次にブロックを見る段（y）。範囲の外なら下の段から。サーバー側だけ。 */
-    private int scanY = Integer.MIN_VALUE;
+    private int scanStep;
     /** 他 mod の機械を動かす速さ（基準の何倍か）。置いた時点の事象干渉力で決まる。サーバー側だけ。 */
     private float machineSpeed = 1.0F;
     private float machineProgress;
@@ -347,10 +349,61 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
+     * {@link #affectBlock} が何かするかもしれないブロックの状態か（走査で先に確かめる。区画の中身の一覧にこれが 1 つもなければ、
+     * その区画は丸ごと飛ばす）。偽のブロックには affectBlock を呼ばないので、affectBlock が見る状態はすべて真にすること。
+     */
+    protected boolean mayAffectState(BlockState state) {
+        return true;
+    }
+
+    /**
      * 範囲の中の 1 ブロックへの効き目（サーバー側、術者がプレイヤーのときだけ）。読み込まれているブロックだけ。
-     * 保護（{@code SpellBlockProtection.mayChange}）は変えるときに確かめること。
+     * 保護（{@code SpellBlockProtection.mayChange}）は変えるときに確かめること。{@code pos} はブロックが本当にある位置
+     * （機体のブロックなら機体用の空間の座標）。
      */
     protected void affectBlock(ServerLevel level, Player caster, BlockPos pos, BlockState state) {
+    }
+
+    /** この tick の範囲の見え方（{@link #regions}）。作った tick と一緒に覚える。 */
+    private List<ZoneRegion> regionsCache;
+    private long regionsTick = Long.MIN_VALUE;
+
+    /**
+     * この tick の範囲の見え方: 世界の範囲と、範囲に重なった機体（Sable のサブレベル）ごとにその機体の座標へ写した範囲
+     * （2026-11-11 ユーザー: 機体の機械・ブロックにも効かせる）。機体は動くので tick ごとに作り直す。Sable がなければ世界の範囲
+     * だけ。機械・ブロックへの効き目は、これを全部回して、範囲の判定などには {@link ZoneRegion#worldPos} を使う。
+     */
+    protected List<ZoneRegion> regions() {
+        long now = level().getGameTime();
+        if (regionsCache == null || regionsTick != now) {
+            regionsCache = buildRegions();
+            regionsTick = now;
+        }
+        return regionsCache;
+    }
+
+    private List<ZoneRegion> buildRegions() {
+        List<ZoneRegion> regions = new java.util.ArrayList<>(1);
+        regions.add(ZoneRegion.world(area));
+        if (area.isEmpty()) {
+            return regions;
+        }
+        for (double[] pose : com.moratan251.psitweaks.common.compat.SableRangeCompat
+                .subLevelPosesIntersecting(level(), area.bounds())) {
+            double[] toSubLevel = com.moratan251.psitweaks.common.compat.SubLevelZoneMath.invertAffine(pose);
+            if (toSubLevel == null) {
+                continue;
+            }
+            try {
+                ZoneArea local = area.transformedBy(toSubLevel);
+                if (!local.isEmpty()) {
+                    regions.add(new ZoneRegion(local, pose));
+                }
+            } catch (vazkii.psi.api.spell.SpellRuntimeException ignored) {
+                // 潰れた姿勢の機体は飛ばす。
+            }
+        }
+        return regions;
     }
 
     /** 範囲の中の演出（クライアント側、毎 tick）。 */
@@ -379,32 +432,64 @@ public abstract class SpellGramZone extends SpellGramObject {
             }
         }
         if (affectsBlocks() && !isEnded() && level() instanceof ServerLevel level && getCaster() instanceof Player caster) {
-            scanLayer(level, caster);
+            for (ZoneRegion region : regions()) {
+                scanLayer(level, caster, region, scanStep);
+            }
+            scanStep++;
         }
     }
 
-    /** 範囲の 1 段ぶんのブロックに {@link #affectBlock} を呼ぶ。 */
-    private void scanLayer(ServerLevel level, Player caster) {
-        AABB box = area.bounds();
+    /**
+     * 範囲 {@code region} の 1 段ぶんのブロックに {@link #affectBlock} を呼ぶ（{@code step} 回目の走査は、下から
+     * {@code step} を段の数で割った余りの段）。16×16×16 の区画ごとに、空気だけの区画と、中身の一覧に
+     * {@link #mayAffectState} が真のブロックが 1 つもない区画は丸ごと飛ばし、残りは区画から直接ブロックを読む。範囲・領域干渉の
+     * 判定は、対象になりうるブロックにだけする（2026-11-11 の最適化。どのブロックをいつ見るかは前と同じ）。
+     */
+    private void scanLayer(ServerLevel level, Player caster, ZoneRegion region, int step) {
+        ZoneArea scanned = region.area();
+        if (scanned.isEmpty()) {
+            return;
+        }
+        AABB box = scanned.bounds();
         int minY = (int) Math.floor(box.minY);
         int maxY = (int) Math.floor(box.maxY) - 1;
-        if (scanY < minY || scanY > maxY) {
-            scanY = minY;
+        int y = minY + Math.floorMod(step, Math.max(1, maxY - minY + 1));
+        if (y < level.getMinBuildHeight() || y >= level.getMaxBuildHeight()) {
+            return;
         }
         int minX = (int) Math.floor(box.minX);
         int maxX = (int) Math.floor(box.maxX) - 1;
         int minZ = (int) Math.floor(box.minZ);
         int maxZ = (int) Math.floor(box.maxZ) - 1;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        for (int x = minX; x <= maxX; x++) {
-            for (int z = minZ; z <= maxZ; z++) {
-                pos.set(x, scanY, z);
-                if (area.contains(pos) && level.isLoaded(pos) && isActiveAt(pos)) {
-                    affectBlock(level, caster, pos.immutable(), level.getBlockState(pos));
+        for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {
+            for (int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; chunkZ++) {
+                if (!level.hasChunk(chunkX, chunkZ)) {
+                    continue;
+                }
+                LevelChunk chunk = level.getChunk(chunkX, chunkZ);
+                LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(y));
+                if (section.hasOnlyAir() || !section.maybeHas(this::mayAffectState)) {
+                    continue;
+                }
+                int fromX = Math.max(minX, chunkX << 4);
+                int toX = Math.min(maxX, (chunkX << 4) + 15);
+                int fromZ = Math.max(minZ, chunkZ << 4);
+                int toZ = Math.min(maxZ, (chunkZ << 4) + 15);
+                for (int x = fromX; x <= toX; x++) {
+                    for (int z = fromZ; z <= toZ; z++) {
+                        BlockState state = section.getBlockState(x & 15, y & 15, z & 15);
+                        if (!mayAffectState(state)) {
+                            continue;
+                        }
+                        pos.set(x, y, z);
+                        if (scanned.contains(pos) && isActiveAt(region.worldPos(pos))) {
+                            affectBlock(level, caster, pos.immutable(), state);
+                        }
+                    }
                 }
             }
         }
-        scanY++;
     }
 
     /** 範囲の中にいて、この領域が効くエンティティ（当たり判定の中心があるブロックで判定）。魔法式オブジェクトは除く。 */

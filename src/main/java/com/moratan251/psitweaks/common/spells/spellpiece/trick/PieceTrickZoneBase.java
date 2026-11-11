@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.api.value.MatrixValue;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramLimits;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
@@ -13,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -35,6 +37,9 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * 決まる（術式を組んだ時点で分かるのは定数の大きさだけのため）。同じ種類をいくつも置け、1 人が置ける数はサークルと合わせて
  * {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。
  * 干渉力は効き目に効かず、耐久値にだけ効く。
+ * <p>
+ * 機体（Sable のサブレベル）に向けて作った範囲は、置く時点の機体の位置と向きで世界の座標へ写してから置く
+ * （{@link #projectOutOfSubLevel}）。
  */
 public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceTrick {
     /**
@@ -137,6 +142,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         if (area.isEmpty()) {
             throw new SpellRuntimeException(ERROR_EMPTY_ZONE);
         }
+        area = projectOutOfSubLevel(context, area);
         BlockPos center = area.center();
         if (!context.isInRadius(new Vector3(center.getX() + 0.5, center.getY() + 0.5, center.getZ() + 0.5))) {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
@@ -162,6 +168,24 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         Vec3 at = zone.position();
         level.playSound(null, at.x, at.y, at.z, SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.6F, 1.6F);
         return null;
+    }
+
+    /**
+     * 範囲が機体（Sable のサブレベル、Create Aeronautics の機体など）の座標で作られていれば（機体に視線を向けたときなど）、置く時点の
+     * 機体の位置と向きで世界の座標へ写す（2026-11-11 ユーザーの決定: 方針 A）。写した領域はその場に残り、機体と一緒には動かない
+     * （サークルと同じ）。機体の座標のままだと、範囲が見た目の場所から遠く離れ、輪郭も描かれず生き物にも効かなかった。
+     */
+    private static ZoneArea projectOutOfSubLevel(SpellContext context, ZoneArea area) throws SpellRuntimeException {
+        Entity anchor = context.caster != null ? context.caster : context.focalPoint;
+        if (anchor == null) {
+            return area;
+        }
+        double[] pose = SableRangeCompat.subLevelPoseAt(anchor.level(), Vec3.atCenterOf(area.center()));
+        if (pose == null) {
+            return area;
+        }
+        ZoneArea projected = area.transformedBy(pose);
+        return projected.isEmpty() ? area : projected;
     }
 
     private int constantSize() throws SpellCompilationException {

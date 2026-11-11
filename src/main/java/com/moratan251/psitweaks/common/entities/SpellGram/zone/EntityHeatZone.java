@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
 import com.moratan251.psitweaks.common.compat.CreateCompat;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
@@ -17,8 +18,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+
+import java.util.List;
 
 /**
  * 作動式: 加熱領域（仮）の範囲。中の生物に火をつける（出てからも 威力 × 0.6 秒は燃える。濡れている生物は
@@ -99,9 +103,15 @@ public class EntityHeatZone extends SpellGramZone {
         if (!(level instanceof ServerLevel server)) {
             return 0;
         }
+        List<EntityHeatZone> zones = SpellGramIndex.all(level, EntityHeatZone.class);
+        if (zones.isEmpty()) {
+            return 0;
+        }
+        // 機体（Sable のサブレベル）の上のバーナーは、今見えている世界の位置で領域を探す（保護は本当の位置で確かめる）。
+        BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
         int heat = 0;
-        for (EntityHeatZone zone : SpellGramIndex.all(level, EntityHeatZone.class)) {
-            if (zone.isEnded() || !zone.isInsideAndActive(pos) || !(zone.getCaster() instanceof Player caster)
+        for (EntityHeatZone zone : zones) {
+            if (zone.isEnded() || !zone.isInsideAndActive(at) || !(zone.getCaster() instanceof Player caster)
                     || !zone.mayUseMachine(server, caster, pos)) {
                 continue;
             }
@@ -189,28 +199,42 @@ public class EntityHeatZone extends SpellGramZone {
         }
         boolean inferno = isInfernoAt(level.getGameTime());
         boolean storm = isStorm();
+        // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械にも効かせる）。範囲・領域干渉・乱流は世界の位置で判定し、
+        // 保護は機械が本当にある位置で確かめる。
+        List<ZoneRegion> regions = regions();
         for (int step = takeMachineSteps(); step > 0; step--) {
-            CreateCompat.processZone(level, getArea(), fanProcess(inferno), this::isActiveAt,
-                    pos -> isActiveAt(pos) && mayUseMachine(level, caster, pos));
+            for (ZoneRegion region : regions) {
+                CreateCompat.processZone(level, region.area(), fanProcess(inferno), pos -> isActiveAt(region.worldPos(pos)),
+                        pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+            }
         }
         if (storm) {
             // 熱乱流のところは、乱流の威力に応じて上乗せ（威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
             forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                 for (int i = 0; i < steps; i++) {
-                    CreateCompat.processZone(level, getArea(), fanProcess(inferno), pos -> stormAt(pos) == turbulence,
-                            pos -> stormAt(pos) == turbulence && mayUseMachine(level, caster, pos));
+                    for (ZoneRegion region : regions) {
+                        CreateCompat.processZone(level, region.area(), fanProcess(inferno),
+                                pos -> stormAt(region.worldPos(pos)) == turbulence,
+                                pos -> stormAt(region.worldPos(pos)) == turbulence && mayUseMachine(level, caster, pos));
+                    }
                 }
             });
         }
         double heat = heatPerTick(getMachineSpeed(), inferno);
         if (heat > 0.0) {
-            MekanismGameplayCompat.supplyZoneHeat(level, getArea().blockEntities(level), heat, maxTemperature(),
-                    pos -> isActiveAt(pos) && mayUseMachine(level, caster, pos));
-            if (storm) {
-                for (EntityTurbulenceZone turbulence : overlappingStorms()) {
-                    MekanismGameplayCompat.supplyZoneHeat(level, getArea().blockEntities(level),
-                            heat * stormBoost(turbulence.getPower()), maxTemperature(),
-                            pos -> stormAt(pos) == turbulence && mayUseMachine(level, caster, pos));
+            for (ZoneRegion region : regions) {
+                List<BlockEntity> machines = region.area().blockEntities(level);
+                if (machines.isEmpty()) {
+                    continue;
+                }
+                MekanismGameplayCompat.supplyZoneHeat(level, machines, heat, maxTemperature(),
+                        pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                if (storm) {
+                    for (EntityTurbulenceZone turbulence : overlappingStorms()) {
+                        MekanismGameplayCompat.supplyZoneHeat(level, machines,
+                                heat * stormBoost(turbulence.getPower()), maxTemperature(),
+                                pos -> stormAt(region.worldPos(pos)) == turbulence && mayUseMachine(level, caster, pos));
+                    }
                 }
             }
         }
@@ -229,6 +253,11 @@ public class EntityHeatZone extends SpellGramZone {
     @Override
     protected boolean affectsBlocks() {
         return true;
+    }
+
+    @Override
+    protected boolean mayAffectState(BlockState state) {
+        return state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE);
     }
 
     /** 氷と薄氷を溶かす（氷が自然に溶けるときと同じ）。 */
@@ -263,7 +292,10 @@ public class EntityHeatZone extends SpellGramZone {
             }
         }
         // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル。
-        CreateCompat.spawnProcessingParticles(level(), getArea(), fanProcess(isInferno()));
+        // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
+        for (ZoneRegion region : regions()) {
+            CreateCompat.spawnProcessingParticles(level(), region.area(), fanProcess(isInferno()));
+        }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
         int embers = (int) Math.min(MAX_EMBERS_PER_TICK, Math.max(1, volume / 150.0)) * (isInferno() ? 4 : 1);

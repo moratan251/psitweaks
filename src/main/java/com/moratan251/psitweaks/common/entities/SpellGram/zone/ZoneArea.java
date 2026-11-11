@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
 import com.moratan251.psitweaks.api.value.MatrixValue;
+import com.moratan251.psitweaks.common.compat.SubLevelZoneMath;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.RegionMatrix;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -25,7 +26,7 @@ import java.util.List;
  * モードと同じ）。
  */
 public final class ZoneArea {
-    static final ZoneArea EMPTY = new ZoneArea(null, null, BlockPos.ZERO, 0, 0, 0, 0, -1, -1, -1);
+    static final ZoneArea EMPTY = new ZoneArea(null, null, BlockPos.ZERO, false, 0, 0, 0, 0, -1, -1, -1);
     private static final double EPSILON = 1.0E-9;
 
     @Nullable
@@ -33,6 +34,8 @@ public final class ZoneArea {
     @Nullable
     private final RegionMatrix region;
     private final BlockPos center;
+    /** 中心のブロックを決めて渡したか（機体の座標から写した範囲。同期のときに中心も送る）。 */
+    private final boolean fixedCenter;
     private final int size;
     private final int minX;
     private final int minY;
@@ -41,11 +44,12 @@ public final class ZoneArea {
     private final int maxY;
     private final int maxZ;
 
-    private ZoneArea(@Nullable MatrixValue matrix, @Nullable RegionMatrix region, BlockPos center, int size,
-                     int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+    private ZoneArea(@Nullable MatrixValue matrix, @Nullable RegionMatrix region, BlockPos center, boolean fixedCenter,
+                     int size, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
         this.matrix = matrix;
         this.region = region;
         this.center = center;
+        this.fixedCenter = fixedCenter;
         this.size = size;
         this.minX = minX;
         this.minY = minY;
@@ -71,10 +75,15 @@ public final class ZoneArea {
 
     /** 領域行列と一辺のブロック数から範囲を作る。行列の形が正しくなければ、領域行列の演算子と同じエラー。 */
     public static ZoneArea of(MatrixValue matrix, int size) throws SpellRuntimeException {
+        return of(matrix, size, null);
+    }
+
+    /** {@code fixedCenter} が null でなければ、それを中心のブロックにする（サイズの立方体もそこを中心にする）。 */
+    private static ZoneArea of(MatrixValue matrix, int size, @Nullable BlockPos fixedCenter) throws SpellRuntimeException {
         RegionMatrix region = RegionMatrix.parse(matrix);
         Vector3 far = region.corner(true, true, true);
         Vector3 start = region.corner(false, false, false);
-        BlockPos center = BlockPos.containing(
+        BlockPos center = fixedCenter != null ? fixedCenter : BlockPos.containing(
                 Math.floor((start.x + far.x) * 0.5 + EPSILON),
                 Math.floor((start.y + far.y) * 0.5 + EPSILON),
                 Math.floor((start.z + far.z) * 0.5 + EPSILON));
@@ -98,13 +107,47 @@ public final class ZoneArea {
         // 演算子: 直方体領域と同じ: 中心から負の向きに (edge - 1) / 2、残りを正の向きに。
         int low = -((edge - 1) / 2);
         int high = low + edge - 1;
-        return new ZoneArea(matrix, region, center, edge,
+        return new ZoneArea(matrix, region, center, fixedCenter != null, edge,
                 Math.max(center.getX() + low, Mth.ceil(lowX - EPSILON)),
                 Math.max(center.getY() + low, Mth.ceil(lowY - EPSILON)),
                 Math.max(center.getZ() + low, Mth.ceil(lowZ - EPSILON)),
                 Math.min(center.getX() + high, Mth.floor(highX + EPSILON)),
                 Math.min(center.getY() + high, Mth.floor(highY + EPSILON)),
                 Math.min(center.getZ() + high, Mth.floor(highZ + EPSILON)));
+    }
+
+    /**
+     * 機体（Sable のサブレベル）の座標で作った範囲を、その機体の姿勢 {@code pose}（行優先 4×4、機体の座標の点 → 世界の座標の点）で
+     * 世界の座標へ写す（2026-11-11 ユーザーの決定: 方針 A）。写した範囲には、中心が機体の座標の範囲（見た目の箱）に入る世界の
+     * ブロックが入る。
+     * <p>
+     * 行列が軸にそっていれば（演算子: 直方体領域・行列を省いたとき）、サイズで切り詰めた後の箱をそのまま写す（傾いた範囲の角が
+     * 世界の立方体で欠けないよう、立方体は写した範囲が全部入る大きさにする）。軸にそっていない行列でも、サイズの立方体に全部
+     * 入っていれば（写した範囲をもう一度写すときなど）行列をそのまま写して同じ扱いにする。立方体からはみ出す傾いた行列だけは、
+     * 行列そのものを写し、サイズの立方体は写した先の座標で切る。
+     * <p>
+     * 世界の範囲を機体の座標へ写すとき（範囲に重なる機体のブロックにも効かせる）は、姿勢の逆行列を渡す。
+     */
+    public ZoneArea transformedBy(double[] pose) throws SpellRuntimeException {
+        if (isEmpty()) {
+            return this;
+        }
+        double[] source = new double[16];
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                source[row * 4 + col] = row < matrix.rows() ? matrix.get(row, col) : (col == 3 ? 1.0 : 0.0);
+            }
+        }
+        double[] toWorld = SubLevelZoneMath.cornerAffine(pose);
+        boolean exact = SubLevelZoneMath.isAxisAligned(source);
+        double[] world = SubLevelZoneMath.multiply(toWorld, exact
+                ? SubLevelZoneMath.cuboid(minX - 0.5, minY - 0.5, minZ - 0.5, maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1)
+                : source);
+        exact = exact || SubLevelZoneMath.enclosingEdge(source) <= size;
+        // 中心は、写した範囲の見た目の中心が入るブロック（ZoneArea の決め方のままだと、傾くと 1 ブロックずれることがある）。
+        int[] middle = SubLevelZoneMath.visualCenter(world);
+        int edge = exact ? SubLevelZoneMath.enclosingEdge(world, middle) : size;
+        return of(new MatrixValue(4, 4, world), edge, new BlockPos(middle[0], middle[1], middle[2]));
     }
 
     /** 範囲にブロックが 1 つもないか（囲む箱が空）。 */
@@ -184,6 +227,10 @@ public final class ZoneArea {
             }
         }
         buffer.writeVarInt(size);
+        buffer.writeBoolean(fixedCenter);
+        if (fixedCenter) {
+            buffer.writeBlockPos(center);
+        }
     }
 
     static ZoneArea read(RegistryFriendlyByteBuf buffer) {
@@ -200,8 +247,9 @@ public final class ZoneArea {
             values[i] = buffer.readDouble();
         }
         int size = buffer.readVarInt();
+        BlockPos fixedCenter = buffer.readBoolean() ? buffer.readBlockPos() : null;
         try {
-            return of(new MatrixValue(rows, cols, values), size);
+            return of(new MatrixValue(rows, cols, values), size, fixedCenter);
         } catch (SpellRuntimeException e) {
             return EMPTY;
         }

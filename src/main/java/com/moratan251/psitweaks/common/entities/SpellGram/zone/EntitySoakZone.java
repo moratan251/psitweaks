@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import java.util.List;
+
 /**
  * 作動式: 湿潤領域（仮）の範囲。中の生物を濡らす（作動式: アクアカッターと同じ濡れ）。出てからも
  * {@link #SOAK_TICKS} の間は濡れたまま。
@@ -98,17 +100,26 @@ public class EntitySoakZone extends SpellGramZone {
         }
         if (getCaster() instanceof Player caster) {
             // 洗う速さぶん進め、1 たまるごとに Create の洗浄を 1 回進める。
+            // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の上のデポ・ベルトも洗う）。範囲・領域干渉・乱流は世界の位置で
+            // 判定し、保護は機械が本当にある位置で確かめる。
+            List<ZoneRegion> regions = regions();
             for (int step = takeMachineSteps(); step > 0; step--) {
-                CreateCompat.processZone(level, getArea(), CreateCompat.FanProcess.WASHING, this::isActiveAt,
-                        pos -> isActiveAt(pos) && mayUseMachine(level, caster, pos));
+                for (ZoneRegion region : regions) {
+                    CreateCompat.processZone(level, region.area(), CreateCompat.FanProcess.WASHING,
+                            pos -> isActiveAt(region.worldPos(pos)),
+                            pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                }
             }
             if (isStorm()) {
                 // 暴風雨のところは、乱流の威力に応じて上乗せ（威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
                 forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                     for (int i = 0; i < steps; i++) {
-                        CreateCompat.processZone(level, getArea(), CreateCompat.FanProcess.WASHING,
-                                pos -> stormAt(pos) == turbulence,
-                                pos -> stormAt(pos) == turbulence && mayUseMachine(level, caster, pos));
+                        for (ZoneRegion region : regions) {
+                            CreateCompat.processZone(level, region.area(), CreateCompat.FanProcess.WASHING,
+                                    pos -> stormAt(region.worldPos(pos)) == turbulence,
+                                    pos -> stormAt(region.worldPos(pos)) == turbulence
+                                            && mayUseMachine(level, caster, pos));
+                        }
                     }
                 });
             }
@@ -118,6 +129,12 @@ public class EntitySoakZone extends SpellGramZone {
     @Override
     protected boolean affectsBlocks() {
         return true;
+    }
+
+    @Override
+    protected boolean mayAffectState(BlockState state) {
+        return state.is(BlockTags.FIRE) || CampfireBlock.isLitCampfire(state) || AbstractCandleBlock.isLit(state)
+                || state.getBlock() instanceof ConcretePowderBlock;
     }
 
     /** 1 ブロックに水をかける: 火を消すか、コンクリートパウダーを固める。それ以外は何もしない。 */
@@ -151,7 +168,10 @@ public class EntitySoakZone extends SpellGramZone {
     @Override
     protected void spawnClientParticles() {
         // Create があるとき: ケース入りファンの水を当てたときと同じ一括洗浄のパーティクル。
-        CreateCompat.spawnProcessingParticles(level(), getArea(), CreateCompat.FanProcess.WASHING);
+        // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
+        for (ZoneRegion region : regions()) {
+            CreateCompat.spawnProcessingParticles(level(), region.area(), CreateCompat.FanProcess.WASHING);
+        }
         if (isStorm()) {
             // 乱流と重なったところ: 水しぶきの竜巻（水しぶきは上向きの速さを 0 にすると横の速さが効く）。
             for (AABB storm : stormBoxes()) {
