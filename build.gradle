@@ -174,6 +174,13 @@ dependencies {
     }
     compileOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
     compileOnly "curse.maven:sable-1312371:8007005"
+    // Create Aeronautics と Sable も開発時の実行にだけ入れる（作動式: 加重領域・物理推進で機体を押す確認用）。
+    // Create が要るので、Create を入れないときは入れない。-Ppsitweaks.includeAeronauticsInRuns=false で外せる。
+    if (providers.gradleProperty("psitweaks.includeCreateInRuns").orElse("true").get().toBoolean()
+            && providers.gradleProperty("psitweaks.includeAeronauticsInRuns").orElse("true").get().toBoolean()) {
+        runtimeOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
+        runtimeOnly "curse.maven:sable-1312371:8007005"
+    }
 
     runtimeOnly "curse.maven:mmmmmmmmmmmm-225738:7943676"
     runtimeOnly "curse.maven:selene-499980:8031229"

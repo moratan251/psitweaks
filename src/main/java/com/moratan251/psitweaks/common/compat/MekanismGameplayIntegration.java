@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.compat;
 
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.capabilities.Capabilities;
@@ -50,14 +51,7 @@ final class MekanismGameplayIntegration {
             if (handler == null) {
                 continue;
             }
-            Object key = handler;
-            if (blockEntity instanceof IMultiblock<?> multiblock) {
-                MultiblockData data = multiblock.getMultiblock();
-                if (data != null && data.isFormed()) {
-                    key = data;
-                }
-            }
-            if (!heated.add(key) || !mayUse.test(blockEntity.getBlockPos())) {
+            if (!heated.add(heatKeyOf(blockEntity, handler)) || !mayUse.test(blockEntity.getBlockPos())) {
                 continue;
             }
             double temperature = handler.getTotalTemperature();
@@ -73,6 +67,46 @@ final class MekanismGameplayIntegration {
             }
         }
         return count;
+    }
+
+    /**
+     * 作動式: 凍結領域の冷却: 熱を持つブロックの温度を、周囲の温度に向けて温度差の {@code fraction} だけ近づける（取り除く熱 =
+     * 温度差 × 割合 × 熱容量）。周囲の温度より下には冷やさない。同じマルチブロックには 1 回だけ。取り除いた熱の合計を返す。
+     */
+    static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, double fraction,
+                                Predicate<BlockPos> mayUse) {
+        Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
+        double removed = 0.0;
+        for (BlockEntity blockEntity : blockEntities) {
+            IHeatHandler handler = heatHandlerOf(level, blockEntity);
+            if (handler == null) {
+                continue;
+            }
+            if (!cooled.add(heatKeyOf(blockEntity, handler)) || !mayUse.test(blockEntity.getBlockPos())) {
+                continue;
+            }
+            double ambient = HeatAPI.getAmbientTemp(level, blockEntity.getBlockPos());
+            double excess = handler.getTotalTemperature() - ambient;
+            if (excess <= 0.01) {
+                continue;
+            }
+            // handleHeat は負の値をそのまま受け取り下限を見ないので、取り除くのは必ず周囲との差まで（割合は 1 以下）。
+            double amount = excess * Math.min(1.0, fraction) * handler.getTotalHeatCapacity();
+            handler.handleHeat(-amount);
+            removed += amount;
+        }
+        return removed;
+    }
+
+    /** 熱を送る・取り除く相手の重複よけのキー: 組み上がったマルチブロックはマルチブロック全体、それ以外は熱の窓口。 */
+    private static Object heatKeyOf(BlockEntity blockEntity, IHeatHandler handler) {
+        if (blockEntity instanceof IMultiblock<?> multiblock) {
+            MultiblockData data = multiblock.getMultiblock();
+            if (data != null && data.isFormed()) {
+                return data;
+            }
+        }
+        return handler;
     }
 
     static double temperatureAt(ServerLevel level, BlockPos pos) {

@@ -33,6 +33,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue heatStormDamageMultiplier;
         public final ModConfigSpec.DoubleValue blizzardDamageMultiplier;
         public final ModConfigSpec.DoubleValue rainstormDamageMultiplier;
+        public final ModConfigSpec.DoubleValue gravityZoneContraptionMultiplier;
         public final ModConfigSpec.DoubleValue spellGramIntegrityMultiplier;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerPlayer;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerAutonomousCaster;
@@ -255,6 +256,19 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // rainstorm カテゴリ終了
+
+            // --- 加重領域 ---
+            builder.comment("Gravity Zone Settings")
+                    .translation("psitweaks.configuration.spells.gravity_zone")
+                    .push("gravity_zone");
+
+            gravityZoneContraptionMultiplier = builder
+                    .comment("加重領域が物理で動く構造物（Create Aeronautics の機体など）を押す強さの倍率。0 で無効",
+                            "Multiplier for how hard a Gravity Zone pushes physics contraptions (such as Create Aeronautics airships). 0 disables it")
+                    .translation("psitweaks.configuration.spells.gravity_zone.contraption_multiplier")
+                    .defineInRange("contraptionMultiplier", 1.0, 0.0, 10.0);
+
+            builder.pop(); // gravity_zone カテゴリ終了
 
             // --- 魔法式オブジェクト ---
             builder.comment("SpellGram Object Settings")

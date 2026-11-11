@@ -48,6 +48,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -651,6 +652,195 @@ public final class ZoneElementGameTests {
             helper.assertTrue(blasted, "The scorching Heat Zone must blast raw iron into an iron ingot with Create");
             helper.succeed();
         });
+    }
+
+    /**
+     * 設計 A: 凍結領域は中の Mekanism の熱を持つ設備を周囲の温度に向けて冷やす（外の設備より速く冷える、周囲の温度より下には
+     * 冷えない）。加熱領域と重なったブロックの設備は冷えない（打ち消し合う）。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_mekanism", timeoutTicks = 120)
+    public static void freezeZoneCoolsMekanismBlocks(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        helper.assertTrue(Math.abs(EntityFreezeZone.coolFractionPerTick(5.0F, 1.0F, false) - 0.01) < 1.0E-9
+                        && Math.abs(EntityFreezeZone.coolFractionPerTick(5.0F, 1.0F, true) - 0.04) < 1.0E-9
+                        && EntityFreezeZone.coolFractionPerTick(1000.0F, 1.0F, false) == EntityFreezeZone.MAX_COOL_FRACTION,
+                "The cooling fraction must be Power x 0.002 x machine speed, x4 in the Inferno, at most 0.5");
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_freeze_mekanism", new Vec3(4.5, 1.0, 0.5));
+        BlockPos cooled = new BlockPos(1, 1, 1);
+        BlockPos cancelled = new BlockPos(1, 1, 3);
+        BlockPos outside = new BlockPos(4, 1, 4);
+        List<BlockPos> heaters = List.of(cooled, cancelled, outside);
+        heaters.forEach(pos -> helper.setBlock(pos, heater.get()));
+        Runnable cleanup = () -> {
+            heaters.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            cleanup(helper, caster);
+        };
+        try {
+            // 3 台とも 800 K まで温める。
+            for (BlockPos pos : heaters) {
+                MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(pos))),
+                        1.0E9, 800.0, at -> true);
+            }
+            // 凍結領域は x 0〜2・z 1〜3（干渉力 4 → 速さ 2、威力 10 で毎 tick 4%）。cancelled の 1 ブロックだけ加熱領域も重ねる。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            cast(caster, freeze(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, heat(helper, cancelled), 1.0, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(42, () -> {
+            double cooledTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(cooled));
+            double cancelledTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(cancelled));
+            double outsideTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(outside));
+            cleanup.run();
+            String temps = "cooled " + cooledTemp + " K, cancelled " + cancelledTemp + " K, outside " + outsideTemp + " K";
+            helper.assertTrue(cooledTemp < outsideTemp - 50.0, "The Freeze Zone must cool the heater inside: " + temps);
+            helper.assertTrue(cooledTemp > 290.0, "It must not cool below the ambient temperature: " + temps);
+            helper.assertTrue(cancelledTemp > cooledTemp + 50.0,
+                    "A heater where the Heat Zone cancels the Freeze Zone must not be cooled: " + temps);
+            helper.succeed();
+        });
+    }
+
+    /** 設計 B: 加熱領域の中のブレイズバーナーは燃料なしで「加熱」になり、外のものは変わらない。Create がなければ飛ばす。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner", timeoutTicks = 100)
+    public static void heatZoneKindlesBlazeBurners(GameTestHelper helper) {
+        burnerTest(helper, BurnerCase.KINDLE);
+    }
+
+    /** 設計 B: 加熱領域が消えると、ブレイズバーナーは数 tick で元の段に戻る。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_revert", timeoutTicks = 100)
+    public static void heatZoneBurnerRevertsWhenTheZoneEnds(GameTestHelper helper) {
+        burnerTest(helper, BurnerCase.REVERT);
+    }
+
+    /** 設計 B: 氷炎地獄の灼熱の側のブレイズバーナーは「極度の加熱」になる。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_inferno", timeoutTicks = 100)
+    public static void scorchingHeatZoneSuperheatsBlazeBurners(GameTestHelper helper) {
+        burnerTest(helper, BurnerCase.INFERNO);
+    }
+
+    /** 設計 B: 凍結領域と重なって打ち消されたところのブレイズバーナーは変わらない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_cancel", timeoutTicks = 100)
+    public static void cancelledHeatZoneLeavesBlazeBurnersAlone(GameTestHelper helper) {
+        burnerTest(helper, BurnerCase.CANCEL);
+    }
+
+    private enum BurnerCase { KINDLE, REVERT, INFERNO, CANCEL }
+
+    /**
+     * ブレイズバーナーの段は、Create のクラスを使わずブロックの状態（{@code blaze} = smouldering・kindled・seething）で見る
+     * （Create がないときにこのテストのクラスが読めなくならないように）。
+     */
+    private static void burnerTest(GameTestHelper helper, BurnerCase mode) {
+        Optional<Block> burner = block("create:blaze_burner");
+        if (!CreateCompat.isCreateLoaded() || burner.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_burner_" + mode.name().toLowerCase(java.util.Locale.ROOT),
+                new Vec3(4.5, 1.0, 4.5));
+        BlockPos inside = new BlockPos(1, 1, 1);
+        BlockPos outside = new BlockPos(4, 1, 0);
+        helper.setBlock(inside, withProperty(burner.get().defaultBlockState(), "blaze", "smouldering"));
+        helper.setBlock(outside, withProperty(burner.get().defaultBlockState(), "blaze", "smouldering"));
+        Runnable cleanup = () -> {
+            helper.setBlock(inside, Blocks.AIR);
+            helper.setBlock(outside, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            switch (mode) {
+                case KINDLE, REVERT -> cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 5.0);
+                // 氷炎地獄: 加熱 x 0〜2、凍結 x 3〜5（同じ大きさで二分）。
+                case INFERNO -> {
+                    cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+                    cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+                }
+                case CANCEL -> {
+                    cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 5.0);
+                    cast(caster, freeze(helper, new BlockPos(1, 1, 2)), 3.0, 5.0);
+                }
+            }
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(mode == BurnerCase.INFERNO ? 25 : 8, () -> {
+            String insideLevel = propertyValue(helper.getBlockState(inside), "blaze");
+            String outsideLevel = propertyValue(helper.getBlockState(outside), "blaze");
+            if (mode == BurnerCase.REVERT) {
+                helper.assertTrue("kindled".equals(insideLevel), "The Blaze Burner must be kindled first, was " + insideLevel);
+                SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+                helper.runAfterDelay(8, () -> {
+                    String after = propertyValue(helper.getBlockState(inside), "blaze");
+                    cleanup.run();
+                    helper.assertTrue("smouldering".equals(after),
+                            "The Blaze Burner must go back once the zone ends, was " + after);
+                    helper.succeed();
+                });
+                return;
+            }
+            cleanup.run();
+            String expected = switch (mode) {
+                case KINDLE -> "kindled";
+                case INFERNO -> "seething";
+                default -> "smouldering";
+            };
+            helper.assertTrue(expected.equals(insideLevel),
+                    "The Blaze Burner inside must be " + expected + " (" + mode + "), was " + insideLevel);
+            helper.assertTrue("smouldering".equals(outsideLevel),
+                    "The Blaze Burner outside must stay smouldering, was " + outsideLevel);
+            helper.succeed();
+        });
+    }
+
+    private static net.minecraft.world.level.block.state.BlockState withProperty(
+            net.minecraft.world.level.block.state.BlockState state, String name, String value) {
+        var property = state.getBlock().getStateDefinition().getProperty(name);
+        return property == null ? state : withValue(state, property, value);
+    }
+
+    private static <T extends Comparable<T>> net.minecraft.world.level.block.state.BlockState withValue(
+            net.minecraft.world.level.block.state.BlockState state,
+            net.minecraft.world.level.block.state.properties.Property<T> property, String value) {
+        return property.getValue(value).map(v -> state.setValue(property, v)).orElse(state);
+    }
+
+    private static String propertyValue(net.minecraft.world.level.block.state.BlockState state, String name) {
+        var property = state.getBlock().getStateDefinition().getProperty(name);
+        return property == null ? "(none)" : valueName(state, property);
+    }
+
+    private static <T extends Comparable<T>> String valueName(net.minecraft.world.level.block.state.BlockState state,
+                                                              net.minecraft.world.level.block.state.properties.Property<T> property) {
+        return property.getName(state.getValue(property));
+    }
+
+    /**
+     * 設計 C: Sable があるとき、加重領域が機体を押すためのフックが今の Sable の版で揃い、機体のない場所では何も押さない。
+     * Sable がなければ飛ばす（機体の動きそのものはゲーム内で確かめる）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_gravity_sable", timeoutTicks = 40)
+    public static void gravityZoneSableLinkResolves(GameTestHelper helper) {
+        if (!com.moratan251.psitweaks.common.compat.SablePhysicsCompat.isLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AABB box = new AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(2.0);
+        int pushed = com.moratan251.psitweaks.common.compat.SablePhysicsCompat.accelerateSubLevels(helper.getLevel(), box,
+                new Vec3(0.0, 1.0, 0.0), 1.0, pos -> true);
+        helper.assertTrue(com.moratan251.psitweaks.common.compat.SablePhysicsCompat.zoneLinkAvailable(),
+                "The Gravity Zone's Sable hooks must resolve on this Sable version");
+        helper.assertTrue(pushed == 0, "Nothing may be pushed where there is no contraption, pushed " + pushed);
+        helper.succeed();
     }
 
     private static PieceTrickZoneBase<?> heat(GameTestHelper helper, BlockPos relativeCenter) {

@@ -11,6 +11,10 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
             "com.moratan251.psitweaks.mixin.RadiationUtilMixin";
     private static final String RADIATION_TARGET =
             "mekanism.common.lib.radiation.RadiationUtil";
+    private static final String BLAZE_BURNER_MIXIN =
+            "com.moratan251.psitweaks.mixin.BlazeBurnerHeatZoneMixin";
+    private static final String BLAZE_BURNER_TARGET =
+            "com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity";
     private static final String WIND_GENERATOR_MIXIN =
             "com.moratan251.psitweaks.mixin.WindGeneratorTurbulenceMixin";
     private static final String WIND_GENERATOR_TARGET =
@@ -29,6 +33,9 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (RADIATION_MIXIN.equals(mixinClassName)) {
             return isClassPresent(RADIATION_TARGET);
+        }
+        if (BLAZE_BURNER_MIXIN.equals(mixinClassName)) {
+            return isClassPresent(BLAZE_BURNER_TARGET);
         }
         if (WIND_GENERATOR_MIXIN.equals(mixinClassName)) {
             return isClassPresent(WIND_GENERATOR_TARGET);

@@ -1,9 +1,12 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
+import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -17,10 +20,16 @@ import vazkii.psi.common.core.handler.AdditiveMotionHandler;
  * 動かないもの（{@code noPhysics} の光線など）と魔法式オブジェクトは動かさない。
  * 足す量は 威力 × {@link #ACCELERATION_PER_POWER}（ブロック/tick²、仮）で、事象干渉力では変わらない。
  * 上向きに押している間は落下の距離を数えない（エレベーターのように使っても落下ダメージを受けない）。
+ * <p>
+ * Sable で物理で動く構造物（Simulated Contraption、Create Aeronautics の機体など）も、重心が範囲の中にある間、生物と同じ基準
+ * （威力 4 で重力と釣り合う）で押す（2026-11-11 の設計 C、{@link SablePhysicsCompat#accelerateSubLevels}）。重さによらず同じ
+ * 加速で、重心をまっすぐ押すので傾かない。設定 {@code gravity_zone.contraptionMultiplier}（0 で無効）で強さを変えられる。
  */
 public class EntityGravityZone extends SpellGramZone {
     /** 威力 1 あたりの毎 tick の加速（仮）。重力は 0.08 なので、威力 4 で上向きに釣り合う。 */
     public static final double ACCELERATION_PER_POWER = 0.02;
+    /** 物理で動く構造物（Sable のサブレベル）への加速: 威力 1 あたり、その場の重力の何倍か（仮）。威力 4 で釣り合う。 */
+    public static final double SUB_LEVEL_GRAVITY_FRACTION_PER_POWER = 0.25;
     private static final int MAX_STREAKS_PER_TICK = 4;
 
     private Vec3 direction = Vec3.ZERO;
@@ -71,6 +80,21 @@ public class EntityGravityZone extends SpellGramZone {
         if (push.y > 0.0) {
             target.resetFallDistance();
         }
+    }
+
+    @Override
+    protected void onSpellGramTickServer() {
+        super.onSpellGramTickServer();
+        if (isEnded() || power <= 0.0F || direction.lengthSqr() < 1.0E-12
+                || !(level() instanceof ServerLevel level) || !SablePhysicsCompat.isLoaded()) {
+            return;
+        }
+        double multiplier = PsitweaksConfig.COMMON.gravityZoneContraptionMultiplier.get();
+        if (multiplier <= 0.0) {
+            return;
+        }
+        SablePhysicsCompat.accelerateSubLevels(level, getOutline(), direction,
+                power * SUB_LEVEL_GRAVITY_FRACTION_PER_POWER * multiplier, this::isInsideAndActive);
     }
 
     @Override

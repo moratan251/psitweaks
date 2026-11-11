@@ -1,5 +1,7 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
@@ -15,9 +17,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
+
+import java.util.List;
 
 /**
  * 作動式: 凍結領域（仮）の範囲。中の生物を、粉雪に埋まったときと同じように凍えさせる（凍えの値をためる。たまりきると
@@ -58,11 +63,30 @@ public class EntityFreezeZone extends SpellGramZone {
 
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
+    /**
+     * Mekanism の冷却: 威力 1・機械を動かす速さ 1 あたりの、1 tick に温度差を縮める割合（仮）。威力 5・事象干渉力 2 で毎 tick 1%
+     * （1500 K の設備が約 12 秒で 400 K）。
+     */
+    public static final double COOL_FRACTION_PER_POWER = 0.002;
+    /** Mekanism の冷却: 氷炎地獄の極寒の間の倍率（灼熱側の熱が 4 倍になるのと対、仮）。 */
+    public static final double INFERNO_COOL_FACTOR = 4.0;
+    /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
+    public static final double MAX_COOL_FRACTION = 0.5;
     /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
     /** 威力（冷やす強さ、2026-11-11 ユーザー）。凍えのたまる速さと氷炎地獄の強さを決める。 */
     private float power = DEFAULT_POWER;
+
+    /**
+     * Mekanism の冷却で、1 tick に温度差を縮める割合: 威力 × 0.002 × 機械を動かす速さ（置いた時点の事象干渉力）、氷炎地獄の
+     * 極寒の間は 4 倍、上限 0.5。
+     */
+    public static double coolFractionPerTick(float power, float machineSpeed, boolean inferno) {
+        double fraction = Math.max(0.0F, power) * COOL_FRACTION_PER_POWER * Math.max(0.0F, machineSpeed)
+                * (inferno ? INFERNO_COOL_FACTOR : 1.0);
+        return Math.min(MAX_COOL_FRACTION, fraction);
+    }
 
     /** 置く前に呼ぶ。 */
     public void setPower(float power) {
@@ -115,6 +139,35 @@ public class EntityFreezeZone extends SpellGramZone {
                     target.setTicksFrozen(Math.max(target.getTicksFrozen(), target.getTicksRequiredToFreeze() + INTERVAL * 2));
                 }
             });
+        }
+        coolMekanismMachines();
+    }
+
+    /**
+     * Mekanism の熱を持つ設備を、周囲の温度に向けて冷やす（毎 tick、2026-11-11 の設計 A）。加熱領域と打ち消し合っているブロック・
+     * 領域干渉で止められたブロック・術者が機械を使えないブロックは冷やさない。吹雪のブロックは乱流の威力に応じて上乗せ。
+     */
+    private void coolMekanismMachines() {
+        if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level)
+                || !(getCaster() instanceof Player caster) || !MekanismCompat.isMekanismLoaded()) {
+            return;
+        }
+        double fraction = coolFractionPerTick(power, getMachineSpeed(), isInfernoAt(level.getGameTime()));
+        if (fraction <= 0.0) {
+            return;
+        }
+        List<BlockEntity> blockEntities = getArea().blockEntities(level);
+        if (blockEntities.isEmpty()) {
+            return;
+        }
+        MekanismGameplayCompat.drainZoneHeat(level, blockEntities, fraction,
+                pos -> isActiveAt(pos) && mayUseMachine(level, caster, pos));
+        if (isStorm()) {
+            for (EntityTurbulenceZone turbulence : overlappingStorms()) {
+                MekanismGameplayCompat.drainZoneHeat(level, blockEntities,
+                        Math.min(MAX_COOL_FRACTION, fraction * stormBoost(turbulence.getPower())),
+                        pos -> stormAt(pos) == turbulence && mayUseMachine(level, caster, pos));
+            }
         }
     }
 

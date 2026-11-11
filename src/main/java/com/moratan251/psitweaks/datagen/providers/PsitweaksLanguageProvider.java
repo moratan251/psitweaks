@@ -646,6 +646,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "heat_storm", "Heat Storm", "熱乱流");
         addDamageMultiplierConfig(root, "blizzard", "Blizzard", "吹雪");
         addDamageMultiplierConfig(root, "rainstorm", "Rainstorm", "暴風雨");
+        addConfigLabel(root, "psitweaks.configuration.spells.gravity_zone", "Gravity Zone", "加重領域");
+        addConfigValue(root, "psitweaks.configuration.spells.gravity_zone.contraption_multiplier", "Contraption Multiplier",
+                "物理で動く構造物への倍率",
+                "Multiplier for how hard a Gravity Zone pushes physics contraptions (such as Create Aeronautics airships). 0 disables it.",
+                "加重領域が物理で動く構造物（Create Aeronautics の機体など）を押す強さの倍率です。0 で無効になります。");
         addConfigLabel(root, "psitweaks.configuration.spells.spellgram", "SpellGram Objects", "魔法式オブジェクト");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.integrity_multiplier", "Integrity Multiplier", "耐久値の倍率",
                 "Multiplier applied to the integrity of SpellGram objects.", "魔法式オブジェクトの耐久値に適用する倍率です。");
@@ -2818,10 +2823,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_gravity_zone.0",
                 "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
                         + " Every tick it adds motion toward the Direction to the entities inside (living beings, dropped items, experience orbs, arrows and other projectiles, minecarts and boats), more with a higher Power; only the direction of the Direction is used."
-                        + " A Power of about 4 balances gravity. While the zone pushes upward, entities inside take no fall damage. The caster is pushed too.",
+                        + " A Power of about 4 balances gravity. While the zone pushes upward, entities inside take no fall damage. The caster is pushed too."
+                        + " A Simulated Contraption (such as a Create Aeronautics airship) is pushed just as hard while its center of mass is inside.",
                 "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
                         + "中のエンティティ（生物、落ちているアイテム、経験値オーブ、矢などの飛び道具、トロッコやボート）に、「方向」の向きへ「威力」に応じた運動を毎tick足し続けます。方向は向きだけを使います。"
-                        + "威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。");
+                        + "威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。"
+                        + "Simulated Contraption（Create Aeronautics の機体など）も、重心が範囲の中にあれば同じ強さで押されます。");
         addBookPage(root, "trick_gravity_zone.1",
                 "The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
                         + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
@@ -2839,10 +2846,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。");
         addBookPage(root, "trick_heat_zone.1",
                 "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside."
+                        + " Blaze Burners inside count as heated even without fuel."
                         + " With Mekanism installed, it sends heat to the blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), but never above 100 K per Power (1000 K at 10)."
                         + " Both run at a speed set by the caster's interference when placed: at 2, as fast as an Encased Fan and as much heat as one Fuelwood Heater; half at 1, and at most twice."
                         + " Cost and Potency grow with the area of the zone times the Power. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
                 "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。"
+                        + "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。"
                         + "Mekanism が入っているときは、範囲の中の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし威力×100K（威力10で1000K）より上には温めません。"
                         + "どちらも速さは置いた時点の事象干渉力で決まり、干渉力2で一括燻製はケース入りファンと同じ、熱は薪木ストーブ1台ぶんです。1 でその半分、最大で2倍です。"
                         + "コストと規模は、範囲の広さ×威力で増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
@@ -2860,9 +2869,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "範囲の中の水源の水のうち、真上が空気のものは氷になります。");
         addBookPage(root, "trick_freeze_zone.1",
                 "Wet beings, such as those in a Soak Zone, freeze in half the time."
+                        + " With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on) toward the ambient temperature. How fast depends on the Power and on the caster's interference when placed. It never cools below the ambient temperature."
                         + " Cost and Potency grow with the area of the zone times the Power."
                         + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
                 "湿潤領域の中などで濡れている生物は、半分の時間で凍えきります。"
+                        + "Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。冷える速さは威力と、置いた時点の事象干渉力で決まります。周囲の温度より下には冷えません。"
                         + "コストと規模は、範囲の広さ×威力で増えます。"
                         + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_turbulence_zone", "Trick: Turbulence Zone",

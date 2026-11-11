@@ -34,6 +34,8 @@ import net.minecraft.world.phys.AABB;
  * 同じ術者の凍結領域と 1 つの直方体を二分すると、氷炎地獄の「灼熱」側になる（{@link InfernoZones}、隠し要素）。
  * 灼熱の間は、Create の加工が一括燻製から一括製錬に変わり、Mekanism へ送る熱が 4 倍になる（2026-11-11 ユーザー）。
  * <p>
+ * Create のブレイズバーナーは、範囲の中なら燃料がなくても「加熱」、灼熱の中なら「極度の加熱」になる（{@link #burnerHeatAt}）。
+ * <p>
  * 同じ術者の乱流領域と重なったブロックは「熱乱流」（ヒート・ストーム）になる（2026-11-11 ユーザー）: 中の生物に
  * {@link #STORM_INTERVAL} tick ごとに火属性のダメージ（攻撃術式の共通ルール、設定 {@code heat_storm.damageMultiplier}）、
  * Create の加工と Mekanism へ送る熱が 2 倍。
@@ -86,6 +88,29 @@ public class EntityHeatZone extends SpellGramZone {
 
     public float getPower() {
         return power;
+    }
+
+    /**
+     * Create のブレイズバーナー（2026-11-11 の設計 B、{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} が
+     * 加熱領域の中なら 1（加熱）、氷炎地獄の灼熱の中なら 2（極度の加熱）、どちらでもなければ 0（サーバー側）。打ち消されている
+     * ブロック・領域干渉で止められたブロックと、術者が機械を使えないブロックは 0。重なっていれば強いほう。
+     */
+    public static int burnerHeatAt(Level level, BlockPos pos) {
+        if (!(level instanceof ServerLevel server)) {
+            return 0;
+        }
+        int heat = 0;
+        for (EntityHeatZone zone : SpellGramIndex.all(level, EntityHeatZone.class)) {
+            if (zone.isEnded() || !zone.isInsideAndActive(pos) || !(zone.getCaster() instanceof Player caster)
+                    || !zone.mayUseMachine(server, caster, pos)) {
+                continue;
+            }
+            if (zone.isInfernoAt(server.getGameTime())) {
+                return 2;
+            }
+            heat = 1;
+        }
+        return heat;
     }
 
     /** 範囲の中の生物が燃え続ける長さ（秒）: 威力 × 0.6。 */

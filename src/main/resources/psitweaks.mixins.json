@@ -5,6 +5,7 @@
   "plugin": "com.moratan251.psitweaks.mixin.PsitweaksMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlazeBurnerHeatZoneMixin",
     "ConcretePowderBlockAccessor",
     "DisableDamagePsiDeduction",
     "DisableRegenCooldown",
