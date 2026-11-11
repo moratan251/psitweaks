@@ -34,6 +34,8 @@
     "psitweaks:operator_player_name",
     "psitweaks:operator_list_search",
     "psitweaks:operator_list_search_exclude",
+    "psitweaks:operator_list_name_search",
+    "psitweaks:operator_list_name_search_exclude",
     "psitweaks:operator_random_element",
     "psitweaks:operator_list_add",
     "psitweaks:operator_list_remove",

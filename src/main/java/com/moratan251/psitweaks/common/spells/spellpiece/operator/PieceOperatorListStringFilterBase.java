@@ -64,7 +64,8 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         restoreParamSides(savedSides);
     }
 
-    private static String searchText(SpellContext context, Object value, boolean matchFullId)
+    /** The text the pattern is matched against. Subclasses may compare something else, such as the display name. */
+    protected String searchText(SpellContext context, Object value, boolean matchFullId)
             throws SpellRuntimeException {
         if (value instanceof Entity || value instanceof ContextualValue) {
             // Like the item transfer filters: a pattern without a namespace matches the ID path in any namespace.

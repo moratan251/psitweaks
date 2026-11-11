@@ -262,6 +262,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_search", PieceOperatorListSearch.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_SEARCH_EXCLUDE =
             registerPiece("operator_list_search_exclude", PieceOperatorListSearchExclude.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NAME_SEARCH =
+            registerPiece("operator_list_name_search", PieceOperatorListNameSearch.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NAME_SEARCH_EXCLUDE =
+            registerPiece("operator_list_name_search_exclude", PieceOperatorListNameSearchExclude.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_RANDOM_ELEMENT =
             registerPiece("operator_random_element", PieceOperatorRandomElement.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_ADD =
