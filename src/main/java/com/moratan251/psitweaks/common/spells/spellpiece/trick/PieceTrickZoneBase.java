@@ -38,6 +38,10 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。
  * 干渉力は効き目に効かず、耐久値にだけ効く。
  * <p>
+ * 「時間」（秒の定数、省略すると {@link #DEFAULT_TIME_SECONDS} 秒、2026-11-11 ユーザー）は存続時間で、置いたときの耐久値と
+ * コストも時間に比例する。耐久値は毎 tick 同じ量ずつ減るので、干渉力が同じなら減り方は時間によらず一定で、長く置いた領域ほど
+ * 術式解体などに強い。加重領域は入力の空きがないので {@link #hasTimeParam} で外し、30 秒のまま。
+ * <p>
  * 機体（Sable のサブレベル）に向けて作った範囲は、置く時点の機体の位置と向きで世界の座標へ写してから置く
  * （{@link #projectOutOfSubLevel}）。
  */
@@ -48,14 +52,19 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
      */
     public static final int MAX_SIZE = 32;
     public static final String ERROR_EMPTY_ZONE = "psitweaks.spellerror.zone_empty";
-    /** 存続時間（仮、30 秒）。 */
-    protected static final int LIFETIME_TICKS = 30 * 20;
-    /** 耐久値の固有値（仮）。耐久値 = これ × 置いた時点の事象干渉力。 */
+    /** 「時間」を省いたとき（と加重領域）の存続時間（秒）。 */
+    public static final int DEFAULT_TIME_SECONDS = 30;
+    /** 「時間」の上限（秒、仮）。 */
+    public static final int MAX_TIME_SECONDS = 120;
+    /** 「時間」の下限（秒）。 */
+    public static final int MIN_TIME_SECONDS = 1;
+    /** 耐久値の固有値（仮）。耐久値 = これ × 置いた時点の事象干渉力 × 時間 ÷ {@link #DEFAULT_TIME_SECONDS}。 */
     protected static final float BASE_INTEGRITY = 30.0F;
 
     private final Class<T> zoneType;
     private SpellParam<MatrixValue> region;
     private SpellParam<Number> size;
+    private SpellParam<Number> time;
 
     protected PieceTrickZoneBase(Spell spell, Class<T> zoneType) {
         super(spell);
@@ -67,10 +76,27 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         addParam(region = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, true, false));
         addParam(size = new ParamNumber(PsitweaksSpellParams.SIZE, SpellParam.GREEN, false, true));
         addZoneParams();
+        if (hasTimeParam()) {
+            addParam(time = new ParamNumber(SpellParam.GENERIC_NAME_TIME, SpellParam.BLUE, true, true));
+        }
     }
 
-    /** 種類ごとの入力（範囲・大きさのあと）。 */
+    /** 種類ごとの入力（範囲・大きさのあと、時間の前）。 */
     protected void addZoneParams() {
+    }
+
+    /** 「時間」の入力を持つか（入力の空きがない加重領域は持たない）。 */
+    protected boolean hasTimeParam() {
+        return true;
+    }
+
+    /** コストの表示: 時間を持つ領域は、種類ごとの式 × 時間 ÷ 30。 */
+    @Override
+    public void setStatLabel(EnumSpellStat stat, StatLabel label) {
+        if (stat == EnumSpellStat.COST && hasTimeParam()) {
+            label = label.parenthesize().mul(new StatLabel(SpellParam.GENERIC_NAME_TIME, true)).div(DEFAULT_TIME_SECONDS).ceil();
+        }
+        super.setStatLabel(stat, label);
     }
 
     /** 威力の上限（加熱・凍結、仮）。 */
@@ -111,7 +137,46 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         super.addToMetadata(meta);
         int area = areaOf(constantSize());
         meta.addStat(EnumSpellStat.POTENCY, potency(area));
-        meta.addStat(EnumSpellStat.COST, cost(area));
+        meta.addStat(EnumSpellStat.COST, timedCost(cost(area), constantSeconds()));
+    }
+
+    /** 時間に比例させたコスト: 種類ごとのコスト × 時間 ÷ 30（切り上げ）。 */
+    public static int timedCost(int cost, double seconds) {
+        return Math.max(1, (int) Math.ceil(cost * seconds / DEFAULT_TIME_SECONDS));
+    }
+
+    /** 術式を組んだ時点の時間（秒）。省けば 30、正の定数でなければエラー。 */
+    private double constantSeconds() throws SpellCompilationException {
+        if (time == null) {
+            return DEFAULT_TIME_SECONDS;
+        }
+        Object value = getParamEvaluation(time);
+        if (value == null) {
+            return DEFAULT_TIME_SECONDS;
+        }
+        if (!(value instanceof Number number) || number.doubleValue() <= 0.0) {
+            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
+        }
+        return clampSeconds(number.doubleValue());
+    }
+
+    /** 唱えた時点の時間（秒）。 */
+    private double secondsValue(SpellContext context) throws SpellRuntimeException {
+        if (time == null) {
+            return DEFAULT_TIME_SECONDS;
+        }
+        Number value = getParamValue(context, time);
+        if (value == null) {
+            return DEFAULT_TIME_SECONDS;
+        }
+        if (value.doubleValue() <= 0.0) {
+            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
+        }
+        return clampSeconds(value.doubleValue());
+    }
+
+    private static double clampSeconds(double seconds) {
+        return Math.max(MIN_TIME_SECONDS, Math.min(MAX_TIME_SECONDS, seconds));
     }
 
     /** 範囲の広さ（いちばん広い面のブロック数）から規模。 */
@@ -129,6 +194,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         int sizeValue = clampSize(getNotNullParamValue(context, size));
+        double seconds = secondsValue(context);
         MatrixValue matrix = getParamValue(context, region);
         ZoneArea area;
         if (matrix != null) {
@@ -161,8 +227,10 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         configure(zone, context);
         SpellGramLimits.makeRoom(level, context.caster);
         zone.setCaster(context.caster);
-        zone.setLifetimeTicks(LIFETIME_TICKS);
-        zone.setMaxIntegrity(SpellGramIntegrity.initial(BASE_INTEGRITY, context.caster, 1.0D));
+        // 時間に比例して、存続時間・置いたときの耐久値・コストが増える（耐久値の減り方は時間によらない）。
+        zone.setLifetimeTicks((int) Math.round(seconds * 20.0));
+        zone.setPlacementCost(timedCost(placementCost(sizeValue), seconds));
+        zone.setMaxIntegrity(SpellGramIntegrity.initial(BASE_INTEGRITY, context.caster, seconds / DEFAULT_TIME_SECONDS));
         level.addFreshEntity(zone);
 
         Vec3 at = zone.position();
@@ -186,6 +254,18 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         }
         ZoneArea projected = area.transformedBy(pose);
         return projected.isEmpty() ? area : projected;
+    }
+
+    /**
+     * 置いたときに払ったコストのうち、時間を掛ける前の分（作動式: 魔法式延長のため）。術式を組んだときと同じ式で求める。式の入力が読めないとき（術式の
+     * 盤面を持たない GameTest など）は、広さだけで見積もる。
+     */
+    private int placementCost(int size) {
+        try {
+            return cost(areaOf(size));
+        } catch (SpellCompilationException e) {
+            return Math.max(1, areaOf(size));
+        }
     }
 
     private int constantSize() throws SpellCompilationException {

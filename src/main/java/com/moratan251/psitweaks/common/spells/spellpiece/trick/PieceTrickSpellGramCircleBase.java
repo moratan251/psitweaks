@@ -131,6 +131,8 @@ public abstract class PieceTrickSpellGramCircleBase<T extends SpellGramCircle> e
         circle.setSafeToPlayers(SpellSafetyUtils.hasSafeToPlayers(context));
         circle.setVisualScale(FIXED_VISUAL_SCALE);
         circle.setLifetimeTicks(LIFETIME_TICKS);
+        // 置いたときに払ったコスト（術式を組んだときと同じ式。作動式: 魔法式延長のため）。
+        circle.setPlacementCost((float) (COST_BASE + clampedPower * COST_PER_POWER));
         circle.configureAreaDamage(FIXED_RADIUS, finalDamage, DAMAGE_INTERVAL_TICKS);
 
         serverLevel.addFreshEntity(circle);

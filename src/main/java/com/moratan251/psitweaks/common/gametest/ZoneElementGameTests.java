@@ -470,7 +470,10 @@ public final class ZoneElementGameTests {
                 if (param.name.equals(PsitweaksSpellParams.MATRIX)) {
                     return matrix;
                 }
-                return param.name.equals(PsitweaksSpellParams.SIZE) ? 32.0 : power;
+                if (param.name.equals(PsitweaksSpellParams.SIZE)) {
+                    return 32.0;
+                }
+                return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? power : null;
             }
         };
         piece.execute(new SpellContext().setPlayer(caster));

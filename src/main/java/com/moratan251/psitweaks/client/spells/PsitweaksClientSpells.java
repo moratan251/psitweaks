@@ -374,6 +374,12 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_turbulence_zone");
     public static final DeferredHolder<Material, Material> TRICK_INTERFERENCE_ZONE =
             registerPieceMaterial("trick_interference_zone");
+    public static final DeferredHolder<Material, Material> SELECTOR_OWN_SPELLGRAMS =
+            registerPieceMaterial("selector_own_spellgrams");
+    public static final DeferredHolder<Material, Material> TRICK_RECALL_SPELLGRAM =
+            registerPieceMaterial("trick_recall_spellgram");
+    public static final DeferredHolder<Material, Material> TRICK_EXTEND_SPELLGRAM =
+            registerPieceMaterial("trick_extend_spellgram");
     public static final DeferredHolder<Material, Material> OPERATOR_ALIVE =
             registerPieceMaterial("operator_alive");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSFORM_VECTOR =

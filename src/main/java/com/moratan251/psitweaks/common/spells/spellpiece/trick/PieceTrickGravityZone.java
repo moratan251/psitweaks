@@ -42,6 +42,12 @@ public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone>
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
     }
 
+    /** 範囲・サイズ・方向・威力で入力の 4 つが埋まるので、「時間」は持たない（30 秒のまま）。 */
+    @Override
+    protected boolean hasTimeParam() {
+        return false;
+    }
+
     @Override
     protected int potency(int area) throws SpellCompilationException {
         return POTENCY_BASE + (int) Math.floor(area * constantPower() / POTENCY_AREA_DIVISOR);

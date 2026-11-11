@@ -372,7 +372,10 @@ public final class ZoneGameTests {
         var piece = new PieceTrickSoakZone(new Spell()) {
             @Override
             public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return param.name.equals(PsitweaksSpellParams.MATRIX) ? matrix : size;
+                if (param.name.equals(PsitweaksSpellParams.MATRIX)) {
+                    return matrix;
+                }
+                return param.name.equals(PsitweaksSpellParams.SIZE) ? size : null;
             }
         };
         piece.execute(new SpellContext().setPlayer(caster));

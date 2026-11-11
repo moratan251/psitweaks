@@ -34,6 +34,9 @@ import java.util.UUID;
  * 保存しない。存続時間が尽きると消える（{@link EndReason#FINISHED}）。耐久値は時間とともに一定の割合で減り（存続時間の
  * 間に減る分は耐久値の {@link #getTimeShare} 倍。既定の 1 なら存続時間の終わりにちょうど 0）、術式解体などの術式からは
  * 受け口 {@link #reduceIntegrity} で削られる。尽きると存続時間が残っていても消える（{@link EndReason#DESTROYED}）。
+ * 時間で減る量は 1 tick あたり 置いたときの耐久値 × {@link #getTimeShare} ÷ 存続時間 で、置いたときの耐久値を存続時間に
+ * 比例させれば（領域の「時間」の入力）、干渉力が同じなら減り方は存続時間によらず一定になり、長く置いたものほど解体に強い。
+ * 作動式: 魔法式延長は {@link #restoreIntegrity} で耐久値を戻す（置いたときの耐久値を超えた分は、そのぶん長く残る）。
  * 解体される・術者がいなくなると {@link #end} で消える。Psi の運動追加・瞬間移動・大移動では、置いた術者のものも含めて動かない
  * （{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。動かす仕組みは専用の作動式として
  * 後で作る予定（保留中）。
@@ -49,7 +52,9 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         /** 強度が尽きた。 */
         DESTROYED,
         /** 術者がいなくなった（ログアウト、別のディメンション、自律詠唱機が読み込まれていない）。 */
-        CASTER_GONE
+        CASTER_GONE,
+        /** 術者が自分で回収した（作動式: 魔法式回収）。 */
+        RECALLED
     }
 
     private static final String NBT_REMAINING_TICKS = "SpellGramRemainingTicks";
@@ -335,6 +340,46 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return this.entityData.get(DATA_LIFETIME_TICKS);
     }
 
+    /** 置いたときに払ったコスト（作動式: 魔法式延長が、どれだけ回復できるかを決める）。サーバー側だけ。 */
+    private float placementCost = 1.0F;
+
+    /** 置く前に呼ぶ。置いたときに払ったコスト（その作動式の Psi のコスト）。 */
+    public void setPlacementCost(float cost) {
+        this.placementCost = Math.max(1.0F, cost);
+    }
+
+    /** 置いたときに払ったコスト（サーバー側）。 */
+    public float getPlacementCost() {
+        return placementCost;
+    }
+
+    /**
+     * 耐久値を {@code amount} だけ戻す（作動式: 魔法式延長、2026-11-11 ユーザー）。耐久値は 置いたときの耐久値 ×
+     * {@code maxFactor} までで、それを超える分は捨てる。術式で削られた分から先に戻し、残りは時間で減った分として残りの存続時間を
+     * 延ばす（耐久値は毎 tick 同じ量ずつ減るので、置いたときの耐久値を超えた分は、そのぶん長く残る）。時間で減らない魔法式
+     * （{@link #getTimeShare} が 0）は、削られた分しか戻らない。実際に戻った耐久値を返す。
+     */
+    public float restoreIntegrity(float amount, float maxFactor) {
+        if (isEnded() || amount <= 0.0F) {
+            return 0.0F;
+        }
+        float max = getMaxIntegrity();
+        float before = getIntegrity();
+        float target = Math.min(max * Math.max(1.0F, maxFactor), before + amount);
+        if (target <= before) {
+            return 0.0F;
+        }
+        float need = target - before;
+        float fromWorn = Math.min(getWorn(), need);
+        this.entityData.set(DATA_WORN, getWorn() - fromWorn);
+        float rest = need - fromWorn;
+        float share = getTimeShare();
+        if (rest > 0.0F && share > 0.0F && max > 0.0F) {
+            setRemaining(getRemaining() + rest * getLifetimeTicks() / (max * share));
+        }
+        return Math.max(0.0F, getIntegrity() - before);
+    }
+
     /** 置く前に呼ぶ。存続時間を {@code ticks} にし、耐久値を満たす。 */
     public void setLifetimeTicks(int ticks) {
         int lifetime = Math.max(1, ticks);
@@ -387,11 +432,12 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     /**
      * 耐久値。置いたときの耐久値（{@link #getMaxIntegrity}）から、時間とともに一定の割合で減り（存続時間の間に減る分は
-     * {@link #getTimeShare} 倍）、術式で削った分（{@link #reduceIntegrity}）も減る。
+     * {@link #getTimeShare} 倍）、術式で削った分（{@link #reduceIntegrity}）も減る。作動式: 魔法式延長で残りの存続時間が
+     * 元より長くなっていれば、置いたときの耐久値を超える（{@link #restoreIntegrity}）。
      */
     public float getIntegrity() {
         float max = getMaxIntegrity();
-        float elapsed = 1.0F - getRemainingFraction();
+        float elapsed = 1.0F - getRemaining() / getLifetimeTicks();
         return Math.max(0.0F, max * (1.0F - getTimeShare() * elapsed) - getWorn());
     }
 

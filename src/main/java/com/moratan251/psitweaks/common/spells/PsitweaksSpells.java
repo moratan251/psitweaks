@@ -360,6 +360,13 @@ public final class PsitweaksSpells {
             registerPiece("trick_turbulence_zone", PieceTrickTurbulenceZone.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_INTERFERENCE_ZONE =
             registerPiece("trick_interference_zone", PieceTrickInterferenceZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_OWN_SPELLGRAMS =
+            registerPiece("selector_own_spellgrams",
+                    com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorOwnSpellGrams.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_RECALL_SPELLGRAM =
+            registerPiece("trick_recall_spellgram", PieceTrickRecallSpellGram.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_EXTEND_SPELLGRAM =
+            registerPiece("trick_extend_spellgram", PieceTrickExtendSpellGram.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ALIVE =
             registerPiece("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_WEAK_RAYCAST =
