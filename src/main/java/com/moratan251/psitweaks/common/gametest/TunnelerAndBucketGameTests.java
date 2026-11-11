@@ -13,10 +13,12 @@ import com.moratan251.psitweaks.common.storage.idea.FluidResourceKey;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -51,6 +53,100 @@ public final class TunnelerAndBucketGameTests {
         helper.assertTrue(!wither.hurt(level.damageSources().arrow(arrow, null), 10.0F),
                 "Powered wither accepted an ordinary arrow");
         helper.succeed();
+    }
+
+    /**
+     * テンプレート（1×1×1）のブロックの中に、止まった矢を作る（ワールドには入れない）。{@code x} はブロックの中の位置（0〜1）。
+     * テンプレートの外に置くと、強制読み込みされていない隣のチャンクに入ってエンティティが tick しないことがある。
+     */
+    private static EntityTunnelerArrow restingArrow(GameTestHelper helper, double x) {
+        var arrow = new EntityTunnelerArrow(PsitweaksEntities.TUNNELER_ARROW.get(), helper.getLevel());
+        Vec3 at = helper.absoluteVec(new Vec3(x, 1.5, 0.5));
+        arrow.setPos(at.x, at.y, at.z);
+        arrow.setDeltaMovement(Vec3.ZERO);
+        return arrow;
+    }
+
+    /** 経過tick数は保存され、読み込んだ矢は続きから数える（tickCount のように 0 に戻らない）。 */
+    @GameTest(template = "psi110_empty")
+    public static void tunnelerAgeSurvivesSaveAndLoad(GameTestHelper helper) {
+        var arrow = restingArrow(helper, 0.5);
+        arrow.setAge(150);
+        CompoundTag tag = arrow.saveWithoutId(new CompoundTag());
+        var loaded = new EntityTunnelerArrow(PsitweaksEntities.TUNNELER_ARROW.get(), helper.getLevel());
+        loaded.load(tag);
+        helper.assertTrue(loaded.getAge() == 150, "Loaded tunneler age should be 150, got " + loaded.getAge());
+        helper.succeed();
+    }
+
+    /**
+     * 経過tick数を保存する前に保存された矢（"life" はあるが経過tick数がない）は最初の tick で消え、/summon で出した矢
+     * （どちらもない）は消えない。
+     */
+    @GameTest(template = "psi110_empty")
+    public static void tunnelerSavedWithoutAgeIsDiscarded(GameTestHelper helper) {
+        var level = helper.getLevel();
+        CompoundTag saved = restingArrow(helper, 0.2).saveWithoutId(new CompoundTag());
+        saved.remove("TunnelerAge");
+        saved.remove("UUID");
+        var legacy = new EntityTunnelerArrow(PsitweaksEntities.TUNNELER_ARROW.get(), level);
+        legacy.load(saved);
+        var summoned = new EntityTunnelerArrow(PsitweaksEntities.TUNNELER_ARROW.get(), level);
+        summoned.load(new CompoundTag());
+        Vec3 at = helper.absoluteVec(new Vec3(0.8, 1.5, 0.5));
+        summoned.setPos(at.x, at.y, at.z);
+        summoned.setDeltaMovement(Vec3.ZERO);
+        summoned.setNoGravity(true);
+        level.addFreshEntity(legacy);
+        level.addFreshEntity(summoned);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(legacy.isRemoved(), "A tunneler saved without its age should be discarded");
+            boolean summonedRemoved = summoned.isRemoved();
+            summoned.discard();
+            helper.assertTrue(!summonedRemoved, "A summoned tunneler should not be discarded");
+        });
+    }
+
+    /** 射手のそばに残る通常モードの矢も、{@link EntityTunnelerArrow#MAX_LIFETIME_TICKS} で消える。 */
+    @GameTest(template = "psi110_empty")
+    public static void tunnelerNearOwnerDespawnsAtMaxLifetime(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var owner = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "tunneler-lifetime"));
+        owner.setPos(helper.absoluteVec(new Vec3(0.5, 1.0, 0.5)));
+        var old = restingArrow(helper, 0.2);
+        old.setOwner(owner);
+        old.setAge(EntityTunnelerArrow.MAX_LIFETIME_TICKS - 1);
+        var young = restingArrow(helper, 0.8);
+        young.setOwner(owner);
+        young.setAge(300);
+        level.addFreshEntity(old);
+        level.addFreshEntity(young);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(old.isRemoved(), "A tunneler near its owner should despawn at the max lifetime");
+            boolean youngRemoved = young.isRemoved();
+            young.discard();
+            helper.assertTrue(!youngRemoved, "A tunneler near its owner should stay before the max lifetime");
+        });
+    }
+
+    /**
+     * エンティティが tick しないチャンクにいる矢は、その tick のうちに消える（シミュレーション距離の外で止まって保存されない）。
+     * tick するテストの場所の矢は消えない（対照）。どちらもワールドに入れずに 1 tick だけ回す。
+     */
+    @GameTest(template = "psi110_empty")
+    public static void tunnelerInNonTickingChunkIsDiscarded(GameTestHelper helper) {
+        var level = helper.getLevel();
+        helper.succeedWhen(() -> {
+            var inside = restingArrow(helper, 0.5);
+            helper.assertTrue(level.isPositionEntityTicking(inside.blockPosition()), "The test area does not tick entities yet");
+            var outside = restingArrow(helper, 0.5);
+            outside.setPos(outside.getX() + 65536.0, outside.getY(), outside.getZ());
+            helper.assertTrue(!level.isPositionEntityTicking(outside.blockPosition()), "65536 blocks away should not tick entities");
+            inside.tick();
+            outside.tick();
+            helper.assertTrue(!inside.isRemoved(), "A tunneler in a ticking chunk should stay");
+            helper.assertTrue(outside.isRemoved(), "A tunneler in a chunk that does not tick entities should be discarded");
+        });
     }
 
     @GameTest(template = "psi110_empty")

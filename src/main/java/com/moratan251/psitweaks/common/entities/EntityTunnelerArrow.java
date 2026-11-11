@@ -45,9 +45,15 @@ public class EntityTunnelerArrow extends AbstractArrow {
     /** デスポーンに必要な射手からの距離の二乗(64ブロック) */
     private static final double DESPAWN_DISTANCE_SQR = 64.0 * 64.0;
 
+    /** 低速モード以外の矢が、射手との距離に関係なくデスポーンする経過tick数(60秒) */
+    public static final int MAX_LIFETIME_TICKS = 1200;
+
+    /** 発射からの経過tick数の保存キー。tickCount は保存されず、チャンクを読み直すたびに 0 に戻るため自前で数える */
+    private static final String NBT_AGE = "TunnelerAge";
+
     /** 飛翔モード: 通常 */
     public static final int MODE_NORMAL = 0;
-    /** 飛翔モード: 低速（非常に低速・無期限の無重力・20秒で距離に関係なくデスポーン） */
+    /** 飛翔モード: 低速（非常に低速・無期限の無重力・60秒で距離に関係なくデスポーン） */
     public static final int MODE_SLOW = 1;
     /** 飛翔モード: 無慣性（速度一定・Psiの運動追加などで慣性なしに即転換）。現在未使用 */
     public static final int MODE_INERTIALESS = 2;
@@ -119,10 +125,28 @@ public class EntityTunnelerArrow extends AbstractArrow {
         super.push(x, y, z);
     }
 
+    /**
+     * 発射からの経過tick数（保存される）。デスポーンと無重力の終わりはこれで数える。ブロックを貫通する矢は、シミュレーション距離の
+     * 外で止まって保存され、読み直すたびに tickCount が 0 に戻るので、tickCount で数えると消えずにたまる（2026-11-11）。
+     */
+    private int age;
+
+    /** 経過tick数を持たない古い保存データから読み込まれた矢。最初の tick で消す（たまった矢の片付け）。 */
+    private boolean legacySave;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = Math.max(0, age);
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putByte("ArrowMode", (byte) this.getMode());
+        compound.putInt(NBT_AGE, this.age);
     }
 
     @Override
@@ -130,6 +154,13 @@ public class EntityTunnelerArrow extends AbstractArrow {
         super.readAdditionalSaveData(compound);
         if (compound.contains("ArrowMode")) {
             this.setMode(compound.getByte("ArrowMode"));
+        }
+        if (compound.contains(NBT_AGE)) {
+            this.setAge(compound.getInt(NBT_AGE));
+        } else {
+            // AbstractArrow は保存のたびに "life" を書くので、それがあって経過tick数がないものは、経過tick数を保存する前に
+            // 保存された矢。/summon（"life" を書かない）で出した矢は消さない。
+            this.legacySave = compound.contains("life");
         }
     }
 
@@ -150,6 +181,11 @@ public class EntityTunnelerArrow extends AbstractArrow {
 
     @Override
     public void tick() {
+        if (this.legacySave && !this.level().isClientSide) {
+            this.discard();
+            return;
+        }
+
         // 無慣性モード: tick前の速度を記録し、重力や抵抗による速度変化をtick後に打ち消して速さを一定に保つ
         double inertialessSpeed = -1.0;
         if (this.getMode() == MODE_INERTIALESS) {
@@ -175,18 +211,24 @@ public class EntityTunnelerArrow extends AbstractArrow {
             }
         }
 
+        if (this.age < Integer.MAX_VALUE) {
+            this.age++;
+        }
+
         // 低速モードは無期限で無重力のまま（5秒経っても落下しない）
-        if (this.isNoGravity() && this.getMode() != MODE_SLOW && this.tickCount >= NO_GRAVITY_TICKS) {
+        if (this.isNoGravity() && this.getMode() != MODE_SLOW && this.age >= NO_GRAVITY_TICKS) {
             this.setNoGravity(false);
         }
 
         // ブロックを貫通するため消えない代わりに、発射から一定時間経過し射手から十分離れた矢はデスポーンさせる。
-        // 低速モードは60秒経過で距離に関係なくデスポーンする
+        // 射手の近くに残る矢も60秒で消える。低速モードは60秒経過で距離に関係なくデスポーンする
         if (!this.level().isClientSide) {
             boolean despawn;
             if (this.getMode() == MODE_SLOW) {
-                despawn = this.tickCount >= SLOW_DESPAWN_TICKS;
-            } else if (this.tickCount >= DESPAWN_TICKS) {
+                despawn = this.age >= SLOW_DESPAWN_TICKS;
+            } else if (this.age >= MAX_LIFETIME_TICKS) {
+                despawn = true;
+            } else if (this.age >= DESPAWN_TICKS) {
                 Entity owner = this.getOwner();
                 despawn = owner == null || this.distanceToSqr(owner) >= DESPAWN_DISTANCE_SQR;
             } else {
@@ -219,6 +261,13 @@ public class EntityTunnelerArrow extends AbstractArrow {
                     this.onHitEntity(overlap);
                 }
             }
+        }
+
+        // エンティティが tick しないチャンク（シミュレーション距離の外）に入った矢は、そこで止まって保存され、次に近づいたときに
+        // また動き出してすぐ次の境目で止まるので、入った時点で消す。
+        if (!this.isRemoved() && this.level() instanceof ServerLevel server
+                && !server.isPositionEntityTicking(this.blockPosition())) {
+            this.discard();
         }
     }
 
