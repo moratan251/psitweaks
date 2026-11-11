@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityFreezeZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityHeatZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySilenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
@@ -173,6 +174,15 @@ public class PsitweaksEntities {
                             .updateInterval(20)
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":interference_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntitySilenceZone>> SILENCE_ZONE =
+            ENTITY_TYPES.register("silence_zone",
+                    () -> EntityType.Builder.<EntitySilenceZone>of(EntitySilenceZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":silence_zone"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
             ENTITY_TYPES.register("tunneler_arrow",

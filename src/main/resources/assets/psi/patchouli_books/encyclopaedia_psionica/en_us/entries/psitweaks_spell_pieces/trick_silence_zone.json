@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.trick_silence_zone",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/trick_silence_zone.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_silence_zone.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_silence_zone.1"
+    }
+  ]
+}

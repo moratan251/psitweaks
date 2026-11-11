@@ -364,6 +364,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_turbulence_zone", PieceTrickTurbulenceZone.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_INTERFERENCE_ZONE =
             registerPiece("trick_interference_zone", PieceTrickInterferenceZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SILENCE_ZONE =
+            registerPiece("trick_silence_zone", PieceTrickSilenceZone.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_OWN_SPELLGRAMS =
             registerPiece("selector_own_spellgrams",
                     com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorOwnSpellGrams.class);

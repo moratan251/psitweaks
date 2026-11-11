@@ -197,6 +197,7 @@ public class Psitweaks {
             FilterCardClient.registerEvents();
             BladePouchClient.registerEvents();
             CombatEffectsClient.registerEvents(modEventBus);
+            com.moratan251.psitweaks.client.SilenceZoneSounds.registerEvents();
             PsitweaksParticleProviders.register(modEventBus);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);
@@ -382,6 +383,8 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.TURBULENCE_ZONE.get(),
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.INTERFERENCE_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.SILENCE_ZONE.get(),
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);

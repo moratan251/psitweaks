@@ -114,6 +114,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "領域干渉";
             default -> "Interference Zone";
         });
+        root.addProperty("entity.psitweaks.silence_zone", switch (locale) {
+            case "ja_jp" -> "遮音領域";
+            default -> "Silence Zone";
+        });
         root.addProperty("entity.psitweaks.meteor_line_night", switch (locale) {
             case "ja_jp" -> "流星群の夜";
             default -> "Meteor Line Night";
@@ -2969,6 +2973,27 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "事象干渉力が同じか高い相手は止められません。自分と、自分の自律詠唱機の魔法は止まりません。"
                         + "止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。"
                         + "規模はサイズだけで決まり、コストはサイズと時間で増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+        addSpellPiece(root, "trick_silence_zone", "Trick: Silence Zone",
+                "Places a SpellGram zone where no sound is heard and no vibration gets through",
+                "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない魔法式オブジェクトを置く");
+        addBookPage(root, "trick_silence_zone.0",
+                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
+                        + " Sounds made inside are not heard: footsteps, breaking and placing blocks, opening chests, mobs and the caster alike. Music and other sounds heard everywhere are not affected."
+                        + " Vibrations cannot pass the zone, as with wool: those made inside, those heading for a listener inside, and those crossing it never arrive."
+                        + " Sculk Sensors, Calibrated Sculk Sensors, Sculk Shriekers and the Warden do not notice them.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
+                        + "範囲の中で鳴る音は聞こえなくなります。足音、ブロックの破壊や設置、チェストの開け閉め、モブの声も、術者自身の音も同じです。音楽や、どこにいても聞こえる音はそのままです。"
+                        + "振動は羊毛と同じように範囲を通れず、中で起きた振動も、中にいる聞き手へ向かう振動も、範囲を横切る振動も届きません。"
+                        + "スカルクセンサー、調律されたスカルクセンサー、スカルクシュリーカー、ウォーデンは気づきません。");
+        addBookPage(root, "trick_silence_zone.1",
+                "A Sculk Shrieker inside does not shriek even when stepped on, nor does one stepped on by someone standing inside."
+                        + " The zone hides sound, not smell: a Warden still sniffs out those close by."
+                        + " Potency depends only on the Size; Cost grows with the area and with the Time."
+                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                "範囲の中のスカルクシュリーカーは、踏まれても叫びません。範囲の中にいる人が踏んだシュリーカーも同じです。"
+                        + "消すのは音だけで、においは消せません。ウォーデンは近くにいる相手をかぎつけます。"
+                        + "規模はサイズだけで決まり、コストは範囲が広いほど、時間が長いほど増えます。"
+                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を、CADの色のパーティクルで描きます。");
