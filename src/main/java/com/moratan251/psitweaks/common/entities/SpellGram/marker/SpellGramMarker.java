@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 /**
- * 目印型の魔法式オブジェクトの基底。術者が最初に魔力を与えたきりで、作動式が発動する場所の目印になる。
+ * 目印型の魔法式オブジェクト（流星群の夜の核）の基底。常駐魔法式ではない（{@link SpellGramObject#isResident} は偽）。術者が最初に魔力を与えたきりで、作動式が発動する場所の目印になる。
  * CAD の枠は使わない。ふつうの攻撃では壊れない・保存しない・術者がいなくなると消えるのは、魔法式オブジェクト共通
  * （{@link SpellGramObject}）。
  */

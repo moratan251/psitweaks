@@ -424,12 +424,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "%s  Integrity %s / %s";
         });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
-            case "ja_jp" -> "エラー: 対象が魔法式オブジェクトではありません。";
-            default -> "Error: The target is not a SpellGram object.";
+            case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません。";
+            default -> "Error: The target is not a Resident SpellGram.";
         });
         root.addProperty("psitweaks.spellerror.not_own_spellgram", switch (locale) {
-            case "ja_jp" -> "エラー: 自分の魔法式オブジェクトではありません。";
-            default -> "Error: The target is not your own SpellGram object.";
+            case "ja_jp" -> "エラー: 自分の常駐魔法式ではありません。";
+            default -> "Error: The target is not your own Resident SpellGram.";
         });
         root.addProperty("psitweaks.spellerror.not_autonomous_caster", switch (locale) {
             case "ja_jp" -> "エラー: 自律詠唱機からの詠唱ではありません。";
@@ -688,11 +688,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.integrity_multiplier", "Integrity Multiplier", "耐久値の倍率",
                 "Multiplier applied to the integrity of SpellGram objects.", "魔法式オブジェクトの耐久値に適用する倍率です。");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.max_objects_per_player", "Objects per Player", "プレイヤー1人が置ける数",
-                "How many SpellGram objects (circles and zones together) one player can keep at once. Placing more ends the oldest.",
-                "プレイヤー1人が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）です。超えて置くと古いものから消えます。");
+                "How many Resident SpellGrams (circles and zones together) one player can keep at once. Placing more ends the oldest.",
+                "プレイヤー1人が同時に置ける常駐魔法式（サークルと領域を合わせた数）です。超えて置くと古いものから消えます。");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.max_objects_per_autonomous_caster", "Objects per Autonomous Caster", "自律詠唱機1台が置ける数",
-                "How many SpellGram objects (circles and zones together) one Autonomous Caster can keep at once, counted apart from its owner.",
-                "自律詠唱機1台が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）です。持ち主のプレイヤーの数とは別に数えます。");
+                "How many Resident SpellGrams (circles and zones together) one Autonomous Caster can keep at once, counted apart from its owner.",
+                "自律詠唱機1台が同時に置ける常駐魔法式（サークルと領域を合わせた数）です。持ち主のプレイヤーの数とは別に数えます。");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
@@ -1091,7 +1091,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available."},
             {"psi.book.page.psitweaks_spell_bullets.1", "Upgrading a spell bullet requires four bullets from the previous tier, making it very expensive."},
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams and the cores of Meteor Line nights) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
             {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam, so it keeps burning and stays dry."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick."},
@@ -1202,7 +1202,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています."},
             {"psi.book.page.psitweaks_spell_bullets.1", "術式弾の強化は前段階の術式弾を4つ必要とするため、非常に高コストです."},
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式と流星群の夜の核）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火は消えず, 濡れもしません."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です."},
@@ -1822,8 +1822,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
         addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せる極小のブラックホールを生み出し、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
-        addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a fire SpellGram circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の魔法式オブジェクトを設置して内部の生物に継続的な炎ダメージを与える");
-        addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice SpellGram circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の魔法式オブジェクトを設置して内部の生物に継続的な凍結ダメージを与える");
+        addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a fire Resident SpellGram circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の常駐魔法式を設置して内部の生物に継続的な炎ダメージを与える");
+        addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Resident SpellGram circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の常駐魔法式を設置して内部の生物に継続的な凍結ダメージを与える");
         addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops the spell when given a number whose absolute value is below 1, and refunds the Psi of the pieces not yet run. In spells cast every tick, the Psi display may briefly desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると停止し、未実行分のPsiを返却します。毎tick詠唱では、Psi表示が一時的にずれることがあります。");
         addSpellPiece(root, "trick_jump", "Trick: Jump", "If the target number is unset or its absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.", "作動式: ジャンプ", "対象数値が未入力、または絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。");
         addSpellPiece(root, "trick_jump_flex", "Trick: Flexible Jump", "Behaves like Trick: Jump and refunds the Psi of the pieces it skips.", "作動式: 柔軟ジャンプ", "作動式: ジャンプと同じ動作をし、飛ばしたピースのPsiを返却します。");
@@ -2014,7 +2014,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.", "CADメモリに保存されたUUIDからエンティティを取得します. ");
         addBookPage(root, "trick_store_value", "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot. String values longer than 128 characters are truncated when stored, and a warning is shown in the caster's chat.", "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます. 128文字を超えるStringは保存時に切り捨てられ, 術者のチャット欄に警告が表示されます.");
         addBookPage(root, "selector_stored_value", "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.", "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.");
-        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクトを取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
+        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams and the cores of Meteor Line nights) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式と流星群の夜の核）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
         addBookPage(root, "selector_autonomous_caster_position",
                 "Outputs the center of the $(thing)Autonomous Caster$(0) block casting the spell, as a Vector. "
                         + "The Autonomous Caster's caster is in front of the machine, so the position of $(thing)Selector: Caster$(0) is the block in front. It fails when cast from anything but an Autonomous Caster.",
@@ -2864,8 +2864,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "領域が効くのはいつも輪郭の線の中で、回した行列ではそれを囲む軸にそった箱になります。");
 
         addSpellPiece(root, "trick_soak_zone", "Trick: Soak Zone",
-                "Places a SpellGram zone that keeps living beings inside it soaked",
-                "作動式: 湿潤領域", "範囲の中の生物を濡らし続ける魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone that keeps living beings inside it soaked",
+                "作動式: 湿潤領域", "範囲の中の生物を濡らし続ける常駐魔法式を置く");
         addBookPage(root, "trick_soak_zone.0",
                 "Places a zone over the region given by the Matrix (a region matrix) and the Size (a constant), lasting for the Time (in seconds)."
                         + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 16). A tilted matrix counts as the axis-aligned box around it, so the zone always works exactly within its outline."
@@ -2893,8 +2893,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "同じ種類の領域をいくつも置けますが、効き目は足し算になりません。同じ種類が重なったところでは、一番強いもの（威力が高いもの、並べば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。1人が置けるのはサークルと領域を合わせて32個まで（設定で変えられます）で、超えて置くと古いものから消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
                         + "範囲の確認には、作動式: 領域表示（ブロックモード）が使えます。");
         addSpellPiece(root, "trick_gravity_zone", "Trick: Gravity Zone",
-                "Places a SpellGram zone that keeps pushing entities inside it in the given direction",
-                "作動式: 加重領域", "範囲の中のエンティティを指定した向きへ押し続ける魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone that keeps pushing entities inside it in the given direction",
+                "作動式: 加重領域", "範囲の中のエンティティを指定した向きへ押し続ける常駐魔法式を置く");
         addBookPage(root, "trick_gravity_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, like Trick: Soak Zone."
                         + " Every tick it adds motion toward the Direction to the entities inside (living beings, dropped items, experience orbs, arrows and other projectiles, minecarts and boats), more with a higher Power; only the direction of the Direction is used."
@@ -2919,8 +2919,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "加重領域どうしが重なったところでは押す向きが足し合わされますが、威力10を超えることはありません。"
                         + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_heat_zone", "Trick: Heat Zone",
-                "Places a SpellGram zone that sets living beings inside it on fire and melts ice",
-                "作動式: 加熱領域", "範囲の中の生物に火をつけ、氷を溶かす魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone that sets living beings inside it on fire and melts ice",
+                "作動式: 加熱領域", "範囲の中の生物に火をつけ、氷を溶かす常駐魔法式を置く");
         addBookPage(root, "trick_heat_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
                         + " The Power (a constant of at most 10) is how hot the zone is: living beings inside catch fire and keep burning for 0.6 seconds per Power after leaving. The caster does not burn, nor do wet beings."
@@ -2940,8 +2940,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "どちらも速さは置いた時点の事象干渉力で決まり、干渉力2で一括燻製はケース入りファンと同じ、熱は薪木ストーブ1台ぶんです。1 でその半分、最大で2倍です。"
                         + "規模は範囲の広さ×威力で増え、コストはさらに時間に比例します。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_freeze_zone", "Trick: Freeze Zone",
-                "Places a SpellGram zone that freezes living beings inside it and turns open water into ice",
-                "作動式: 凍結領域", "範囲の中の生物を凍えさせ、水を氷にする魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone that freezes living beings inside it and turns open water into ice",
+                "作動式: 凍結領域", "範囲の中の生物を凍えさせ、水を氷にする常駐魔法式を置く");
         addBookPage(root, "trick_freeze_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
                         + " Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at most 10) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast."
@@ -2961,8 +2961,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "規模は範囲の広さ×威力で増え、コストはさらに時間に比例します。"
                         + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_turbulence_zone", "Trick: Turbulence Zone",
-                "Places a SpellGram zone where a gale turns projectiles aside and strengthens your other zones",
-                "作動式: 乱流領域", "暴風で飛び道具をそらし、重ねた自分の領域を強める魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone where a gale turns projectiles aside and strengthens your other zones",
+                "作動式: 乱流領域", "暴風で飛び道具をそらし、重ねた自分の領域を強める常駐魔法式を置く");
         addBookPage(root, "trick_turbulence_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
                         + " A gale blows inside: projectiles others shot (arrows, tridents, snowballs, fireballs and so on) are turned sharply aside as they enter, more with a higher Power. Magic projectiles are not."
@@ -2992,37 +2992,37 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がります（威力10で2倍）。"
                         + "威力は最大10の定数です。規模は範囲の広さ×威力で増え、コストはさらに時間に比例します。"
                         + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
-        addSpellPiece(root, "selector_own_spellgrams", "Selector: Own SpellGram Objects",
-                "Lists your own SpellGram objects (circles and zones) in this dimension, in the order you placed them",
-                "取得子: 自分の魔法式オブジェクト", "このディメンションにある自分の魔法式オブジェクト（サークルと領域）を、置いた順のリストで返す");
+        addSpellPiece(root, "selector_own_spellgrams", "Selector: Own Resident SpellGrams",
+                "Lists your own Resident SpellGrams (circles and zones) in this dimension, in the order you placed them",
+                "取得子: 自分の常駐魔法式", "このディメンションにある自分の常駐魔法式（サークルと領域）を、置いた順のリストで返す");
         addBookPage(root, "selector_own_spellgrams",
-                "Lists the SpellGram objects (circles and zones) you placed in this dimension, however far away they are, oldest first."
-                        + " An Autonomous Caster gets only the ones it placed itself. The Meteor Line night is not included.",
-                "術者が置いた、このディメンションの魔法式オブジェクト（サークルと領域）を、距離に関係なく、置いた順（古い順）のリストで返します。"
-                        + "自律詠唱機は、その機械が置いたものだけを返します。流星群の夜は含みません。");
+                "Lists the Resident SpellGrams (circles and zones) you placed in this dimension, however far away they are, oldest first."
+                        + " An Autonomous Caster gets only the ones it placed itself. The core of a Meteor Line night is not a Resident SpellGram and is not included.",
+                "術者が置いた、このディメンションの常駐魔法式（サークルと領域）を、距離に関係なく、置いた順（古い順）のリストで返します。"
+                        + "自律詠唱機は、その機械が置いたものだけを返します。流星群の夜の核は常駐魔法式ではないので含みません。");
         addSpellPiece(root, "trick_recall_spellgram", "Trick: Recall SpellGram",
-                "Takes back your own SpellGram objects",
-                "作動式: 魔法式回収", "自分の魔法式オブジェクトを消す");
+                "Takes back your own Resident SpellGrams",
+                "作動式: 魔法式回収", "自分の常駐魔法式を消す");
         addBookPage(root, "trick_recall_spellgram",
-                "Ends your own SpellGram objects given as the Target (an entity or a list, such as Selector: Own SpellGram Objects), however far away they are."
+                "Ends your own Resident SpellGrams given as the Target (an entity or a list, such as Selector: Own Resident SpellGrams), however far away they are."
                         + " If anything else is in the target, nothing is ended and the spell errors. Psi is not refunded.",
-                "「対象」に入れた自分の魔法式オブジェクトを、距離に関係なく消します。エンティティでもリストでもよく、取得子: 自分の魔法式オブジェクトをそのまま渡せます。"
-                        + "自分のもの以外や魔法式オブジェクトでないものが混ざっているとエラーになり、何も消しません。Psi は戻りません。");
+                "「対象」に入れた自分の常駐魔法式を、距離に関係なく消します。エンティティでもリストでもよく、取得子: 自分の常駐魔法式をそのまま渡せます。"
+                        + "自分のもの以外や常駐魔法式でないもの（流星群の夜の核など）が混ざっているとエラーになり、何も消しません。Psi は戻りません。");
         addSpellPiece(root, "trick_extend_spellgram", "Trick: Extend SpellGram",
-                "Restores the integrity of your own SpellGram object, so it lasts longer",
-                "作動式: 魔法式延長", "自分の魔法式オブジェクトの耐久値を回復し、長く残す");
+                "Restores the integrity of your own Resident SpellGram, so it lasts longer",
+                "作動式: 魔法式延長", "自分の常駐魔法式の耐久値を回復し、長く残す");
         addBookPage(root, "trick_extend_spellgram",
-                "Restores the integrity of your own SpellGram object given as the Target, however far away it is. Its cost is 100 per Power (a constant of at most 100)."
+                "Restores the integrity of your own Resident SpellGram given as the Target, however far away it is. Its cost is 100 per Power (a constant of at most 100)."
                         + " It gives back the share of the integrity the object had when placed that this cost is of what the object cost when placed, so costly objects are harder to restore."
                         + " Integrity lost to spells comes back first. Integrity wears away at a steady rate, so anything restored beyond that makes the object last longer."
                         + " Integrity can reach twice what it had when placed.",
-                "「対象」に入れた自分の魔法式オブジェクトの耐久値を、距離に関係なく回復します。コストは威力（最大100の定数）×100です。"
+                "「対象」に入れた自分の常駐魔法式の耐久値を、距離に関係なく回復します。コストは威力（最大100の定数）×100です。"
                         + "置いたときのコストのうち、このコストが占める割合だけ、置いたときの耐久値が戻るので、多くコストを払ったものほど回復しにくくなります。"
                         + "術式で削られた分から先に戻ります。耐久値は一定の速さで減るので、それを超えて戻した分だけ長く残ります。"
                         + "耐久値は置いたときの2倍まで回復できます。");
         addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
-                "Places a SpellGram zone that keeps weaker casters' Psi spells and zones out of it",
-                "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と領域を、範囲の中で効かなくする魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone that keeps weaker casters' Psi spells and zones out of it",
+                "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と領域を、範囲の中で効かなくする常駐魔法式を置く");
         addBookPage(root, "trick_interference_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
                         + " Other casters whose interference is lower than yours when you placed it cannot target blocks, positions or entities inside; their tricks fail as if out of range."
@@ -3040,8 +3040,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。"
                         + "規模はサイズだけで決まり、コストはサイズと時間で増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_charged_zone", "Trick: Charged Zone",
-                "Places a SpellGram zone that slowly charges what the beings inside carry with FE",
-                "作動式: 荷電領域", "範囲の中の持ち物やアイテムに FE を少しずつ送る魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone that slowly charges what the beings inside carry with FE",
+                "作動式: 荷電領域", "範囲の中の持ち物やアイテムに FE を少しずつ送る常駐魔法式を置く");
         addBookPage(root, "trick_charged_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
                         + " It slowly sends FE to the entities inside: everything a player carries, what other living beings hold and wear,"
@@ -3062,8 +3062,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "雷撃の強さは乱流の威力で決まり（重なっていれば最も強いもの）、FE とチャージ加工も速くなります（威力10で2倍）。"
                         + "規模はサイズだけで決まり、コストは範囲が広いほど、時間が長いほど増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_silence_zone", "Trick: Silence Zone",
-                "Places a SpellGram zone where no sound is heard and no vibration gets through",
-                "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない魔法式オブジェクトを置く");
+                "Places a Resident SpellGram zone where no sound is heard and no vibration gets through",
+                "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない常駐魔法式を置く");
         addBookPage(root, "trick_silence_zone.0",
                 "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
                         + " Sounds made inside are not heard: footsteps, breaking and placing blocks, opening chests, mobs and the caster alike. Music and other sounds heard everywhere are not affected."

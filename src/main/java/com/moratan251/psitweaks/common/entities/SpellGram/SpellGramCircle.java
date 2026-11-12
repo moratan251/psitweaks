@@ -21,11 +21,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * 床に張る円の魔法式オブジェクト（ファイアサークル・アイスサークル）の基底。
+ * 床に張る円の常駐魔法式（ファイアサークル・アイスサークル）の基底。
  * 半径 {@link #getDamageRadius()} の円の中（上下 {@link #VERTICAL_RANGE}）にいる相手に、一定の間隔でダメージを与える。
  * 円ごとの違いは、ダメージの種類・当てたときの効果・パーティクルだけ。
  */
 public abstract class SpellGramCircle extends SpellGramObject {
+
+    @Override
+    public boolean isResident() {
+        return true;
+    }
 
     private static final String NBT_SAFE_TO_PLAYERS = "SafeToPlayers";
     private static final String NBT_VISUAL_SCALE = "VisualScale";

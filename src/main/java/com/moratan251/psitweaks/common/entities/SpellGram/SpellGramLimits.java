@@ -3,7 +3,6 @@ package com.moratan251.psitweaks.common.entities.SpellGram;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 
@@ -26,9 +25,9 @@ public final class SpellGramLimits {
     private SpellGramLimits() {
     }
 
-    /** 上限に数えるか: サークルと領域。 */
+    /** 上限に数えるか: 常駐魔法式（サークルと領域）。 */
     public static boolean counts(SpellGramObject object) {
-        return object instanceof SpellGramCircle || object instanceof SpellGramZone;
+        return object.isResident();
     }
 
     /** プレイヤー 1 人が同時に置ける数。 */

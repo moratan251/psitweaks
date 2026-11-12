@@ -3,7 +3,6 @@ package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
-import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.Spell;
@@ -16,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 取得子: 自分の魔法式オブジェクト（2026-11-11 ユーザー）。術者（自律詠唱機なら機械ごと）が置いた、術者のいるディメンションの
- * 魔法式オブジェクト（サークルと領域）を、距離に関係なくエンティティのリストで返す。目印型（流星群の夜）は別の扱いにする予定なので
- * 含めない。Psi のエンティティのリストはエンティティの番号の順に並び、番号は作られた順に増えるので、並びは置いた順（古い順）になる。
+ * 取得子: 自分の常駐魔法式（2026-11-11 ユーザー、2026-11-13 に「自分の魔法式オブジェクト」から改名）。術者（自律詠唱機なら機械ごと）が
+ * 置いた、術者のいるディメンションの常駐魔法式（サークルと領域）を、距離に関係なくエンティティのリストで返す。流星群の夜の核は
+ * 常駐魔法式ではないので含めない。Psi のエンティティのリストはエンティティの番号の順に並び、番号は作られた順に増えるので、並びは置いた順（古い順）になる。
  */
 public class PieceSelectorOwnSpellGrams extends PieceSelector {
     public PieceSelectorOwnSpellGrams(Spell spell) {
@@ -32,7 +31,7 @@ public class PieceSelectorOwnSpellGrams extends PieceSelector {
         }
         List<Entity> owned = new ArrayList<>();
         for (SpellGramObject object : SpellGramIndex.ofCaster(context.caster.level(), CasterIds.idOf(context.caster))) {
-            if (!(object instanceof SpellGramMarker) && !object.isEnded()) {
+            if (object.isResident() && !object.isEnded()) {
                 owned.add(object);
             }
         }

@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 魔法式オブジェクト（SpellGram）の基底。円（{@link SpellGramCircle}）と目印型（{@code SpellGramMarker}）が継ぐ。
+ * 魔法式オブジェクト（SpellGram Object）の基底: 耐久値を持つ魔法の実体すべて。2026-11-13 ユーザーの分類で、
+ * 常駐魔法式（Resident SpellGram: 円 {@link SpellGramCircle} と領域 {@code SpellGramZone}、{@link #isResident} が真）と、
+ * 流星群の夜の核（目印型 {@code SpellGramMarker}）に分かれる。
  * 存続時間、耐久値（{@link #getIntegrity}）、周囲へのダメージ、追従を共通にする。
  * <p>
  * 魔法式オブジェクトは物ではない: 剣や矢、爆発などふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に
@@ -42,6 +44,15 @@ import java.util.UUID;
  * 後で作る予定（保留中）。
  */
 public abstract class SpellGramObject extends Entity implements IEntityWithComplexSpawn {
+
+    /**
+     * 常駐魔法式か（2026-11-13 ユーザーの分類）: 置いたあとも残り続け、術者が手入れするもの（サークル・領域）。取得子: 自分の常駐魔法式・
+     * 作動式: 魔法式回収・魔法式延長・置ける数の上限は、常駐魔法式だけを扱う。流星群の夜の核（目印型）は常駐魔法式ではない。
+     * 新しい種類は、常駐魔法式なら上書きして真を返す。
+     */
+    public boolean isResident() {
+        return false;
+    }
 
     /** 魔法式オブジェクトが消えた理由。 */
     public enum EndReason {

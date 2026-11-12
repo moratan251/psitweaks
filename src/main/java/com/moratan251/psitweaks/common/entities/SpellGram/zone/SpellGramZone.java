@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * 領域型の魔法式オブジェクト（○○ Zone）の基底。範囲は {@link ZoneArea}（領域行列を、その中心のブロックから ±大きさの
+ * 領域型の常駐魔法式（○○ Zone）の基底。範囲は {@link ZoneArea}（領域行列を、その中心のブロックから ±大きさの
  * 立方体で切り詰めたブロックの集まり）。エンティティは当たり判定の中心があるブロックで判定する。
  * <p>
  * 範囲の中のエンティティへの効き目は {@link #affect}（{@link #effectInterval} tick ごと）。何に効くかは種類ごと
@@ -45,6 +45,11 @@ import java.util.UUID;
  * （{@link #isActiveAt}、{@link EntityInterferenceZone}）。
  */
 public abstract class SpellGramZone extends SpellGramObject {
+    @Override
+    public boolean isResident() {
+        return true;
+    }
+
     /** 氷炎地獄が起きているか（{@link InfernoZones}）。演出のためクライアントへ送る。 */
     private static final EntityDataAccessor<Boolean> DATA_INFERNO =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.BOOLEAN);

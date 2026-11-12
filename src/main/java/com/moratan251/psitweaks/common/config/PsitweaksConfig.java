@@ -296,14 +296,14 @@ public class PsitweaksConfig {
                     .defineInRange("integrityMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             spellGramMaxObjectsPerPlayer = builder
-                    .comment("プレイヤー1人が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）。超えて置くと古いものから消える",
-                            "How many SpellGram objects (circles and zones together) one player can keep at once. Placing more ends the oldest")
+                    .comment("プレイヤー1人が同時に置ける常駐魔法式（サークルと領域を合わせた数）。超えて置くと古いものから消える",
+                            "How many Resident SpellGrams (circles and zones together) one player can keep at once. Placing more ends the oldest")
                     .translation("psitweaks.configuration.spells.spellgram.max_objects_per_player")
                     .defineInRange("maxObjectsPerPlayer", 32, 1, 256);
 
             spellGramMaxObjectsPerAutonomousCaster = builder
-                    .comment("自律詠唱機1台が同時に置ける魔法式オブジェクト（サークルと領域を合わせた数）。機械ごとに数え、持ち主のプレイヤーの数とは別",
-                            "How many SpellGram objects (circles and zones together) one Autonomous Caster can keep at once. Each machine counts on its own, apart from its owner")
+                    .comment("自律詠唱機1台が同時に置ける常駐魔法式（サークルと領域を合わせた数）。機械ごとに数え、持ち主のプレイヤーの数とは別",
+                            "How many Resident SpellGrams (circles and zones together) one Autonomous Caster can keep at once. Each machine counts on its own, apart from its owner")
                     .translation("psitweaks.configuration.spells.spellgram.max_objects_per_autonomous_caster")
                     .defineInRange("maxObjectsPerAutonomousCaster", 32, 1, 256);
 
