@@ -184,6 +184,8 @@ public class EntityChargedZone extends SpellGramZone {
             chargeProgress.remove(item.getId());
             return;
         }
+        // 加工している間は消えるまでの時間を止める（2026-11-12 ユーザー）。
+        ZoneItemLifetimes.hold(item, level.getGameTime());
         float progress = chargeProgress.getOrDefault(item.getId(), 0.0F) + progressAdd;
         int done = (int) Math.min(stack.getCount(), Math.floor(progress));
         progress -= done;

@@ -2835,14 +2835,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " A living being is inside when the block holding the center of its hitbox is."
                         + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning."
                         + " The zone also wets the blocks inside like a Splash Water Bottle: it puts out fire, campfires and candles, and turns concrete powder into concrete (where the caster may change blocks)."
-                        + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast.",
+                        + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast. Dropped items do not despawn while being washed.",
                 "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、「時間」（秒）のあいだ残る領域を置きます。"
                         + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大16）。"
                         + "「行列」は省略でき、省略すると術者のいるブロックを中心にした一辺がサイズの立方体になります。"
                         + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
                         + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。"
                         + "範囲の中のブロックにも水をかけたように効き、水入りスプラッシュ瓶と同じく炎・焚き火・ろうそくを消し、コンクリートパウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。"
-                        + "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。洗う速さは置いた時点の事象干渉力で決まり、1 でケース入りファンの半分、2 で同じ、最大で2倍です。");
+                        + "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。洗う速さは置いた時点の事象干渉力で決まり、1 でケース入りファンの半分、2 で同じ、最大で2倍です。洗っている間、落ちているアイテムは消えません。");
         addBookPage(root, "trick_soak_zone.1",
                 "The Time is a constant of at most 120 seconds and may be left out (30 seconds)."
                         + " The zone's integrity grows with the Time but wears away at the same rate whatever the Time, so a longer zone stands up better to spells that break it."
@@ -2882,12 +2882,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "「威力」（最大10の定数）は領域の温度で、中の生物に火がつき、出てから威力×0.6秒は燃え続けます。術者自身と、濡れている生物は燃えません。"
                         + "範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。");
         addBookPage(root, "trick_heat_zone.1",
-                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside."
+                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside; dropped items do not despawn while being smoked."
                         + " Blaze Burners inside count as heated even without fuel."
                         + " With Mekanism installed, it sends heat to the blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), but never above 100 K per Power (1000 K at 10)."
                         + " Both run at a speed set by the caster's interference when placed: at 2, as fast as an Encased Fan and as much heat as one Fuelwood Heater; half at 1, and at most twice."
                         + " Potency grows with the area of the zone times the Power, and Cost also with the Time. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。"
+                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。燻製している間、落ちているアイテムは消えません。"
                         + "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。"
                         + "Mekanism が入っているときは、範囲の中の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし威力×100K（威力10で1000K）より上には温めません。"
                         + "どちらも速さは置いた時点の事象干渉力で決まり、干渉力2で一括燻製はケース入りファンと同じ、熱は薪木ストーブ1台ぶんです。1 でその半分、最大で2倍です。"
@@ -3006,11 +3006,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "送る量は置いた時点の事象干渉力で決まり、干渉力2でそれぞれに1 tick あたり20 FE、1でその半分、最大で2倍です。");
         addBookPage(root, "trick_charged_zone.1",
                 "With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger"
-                        + " (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), one item every 2 seconds at interference 2."
+                        + " (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), one item every 2 seconds at interference 2. Dropped items do not despawn while being charged."
                         + " Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it,"
                         + " harder with a higher Power of the turbulence (the strongest where several overlap), and FE and charging run faster (twice at Power 10)."
                         + " Potency depends only on the Size; Cost grows with the area and with the Time. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。干渉力2で2秒に1個です。"
+                "Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。干渉力2で2秒に1個です。チャージしている間、落ちているアイテムは消えません。"
                         + "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。"
                         + "雷撃の強さは乱流の威力で決まり（重なっていれば最も強いもの）、FE とチャージ加工も速くなります（威力10で2倍）。"
                         + "規模はサイズだけで決まり、コストは範囲が広いほど、時間が長いほど増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");

@@ -77,6 +77,8 @@ final class CreateFanIntegration {
         FanProcessingType type = typeOf(process);
         for (ItemEntity item : itemsInside(level, area)) {
             if (itemsAt.test(BlockPos.containing(item.getBoundingBox().getCenter())) && FanProcessing.canProcess(item, type)) {
+                // 加工している間は消えるまでの時間を止める（2026-11-12 ユーザー）。
+                com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneItemLifetimes.hold(item, level.getGameTime());
                 FanProcessing.applyProcessing(item, type);
             }
         }
