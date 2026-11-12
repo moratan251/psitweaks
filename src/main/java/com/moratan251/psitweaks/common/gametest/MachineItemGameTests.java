@@ -11,7 +11,14 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class MachineItemGameTests {
-    @GameTest(template = "psi110_empty")
+    /**
+     * 5x4x5, so every machine the checks place (up to (3, 1, 4)) stands inside the test area. A test only starts once
+     * the chunks of its area tick entities; a block placed outside it can fall into a neighbouring chunk whose entities
+     * are not visible yet, and the dropped machine item then cannot be found.
+     */
+    private static final String TEMPLATE = "connector_empty";
+
+    @GameTest(template = TEMPLATE)
     public static void machineItemsDescribeTheirSlots(GameTestHelper helper) {
         if (MekanismCompat.isMekanismLoaded()) {
             MachineItemSlotChecks.checkMachineItemsDescribeTheirSlots(helper);
@@ -19,7 +26,7 @@ public final class MachineItemGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "psi110_empty")
+    @GameTest(template = TEMPLATE)
     public static void brokenMachinesKeepTheirContents(GameTestHelper helper) {
         if (MekanismCompat.isMekanismLoaded()) {
             MachineItemSlotChecks.checkBrokenMachinesKeepTheirContents(helper);
