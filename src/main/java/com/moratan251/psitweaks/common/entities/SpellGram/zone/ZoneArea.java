@@ -24,6 +24,9 @@ import java.util.List;
  * （奇数は中心から対称、偶数は正の向きに 1 つ多い）なので、直方体領域の Number モードに同じサイズを入れると同じ範囲になる。
  * ブロックは整数の座標（ブロックの角）を点として行列で判定する（演算子: 領域ベクトルリスト化・作動式: 領域表示のブロックの
  * モードと同じ）。
+ * <p>
+ * 領域を置くときは {@link #boxed()} を通し、軸にそっていない行列も輪郭の箱（{@link #bounds()}）のとおりに効かせる
+ * （2026-11-12 ユーザー）。
  */
 public final class ZoneArea {
     static final ZoneArea EMPTY = new ZoneArea(null, null, BlockPos.ZERO, false, 0, 0, 0, 0, -1, -1, -1);
@@ -132,12 +135,7 @@ public final class ZoneArea {
         if (isEmpty()) {
             return this;
         }
-        double[] source = new double[16];
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-                source[row * 4 + col] = row < matrix.rows() ? matrix.get(row, col) : (col == 3 ? 1.0 : 0.0);
-            }
-        }
+        double[] source = matrix4x4();
         double[] toWorld = SubLevelZoneMath.cornerAffine(pose);
         boolean exact = SubLevelZoneMath.isAxisAligned(source);
         double[] world = SubLevelZoneMath.multiply(toWorld, exact
@@ -148,6 +146,34 @@ public final class ZoneArea {
         int[] middle = SubLevelZoneMath.visualCenter(world);
         int edge = exact ? SubLevelZoneMath.enclosingEdge(world, middle) : size;
         return of(new MatrixValue(4, 4, world), edge, new BlockPos(middle[0], middle[1], middle[2]));
+    }
+
+    /**
+     * 輪郭の箱（{@link #bounds()}）のブロックを全部入れた範囲（2026-11-12 ユーザー: 領域は輪郭の線のとおりに効く）。行列が軸に
+     * そっていないとき（演算子: 回転行列で回した行列、傾いた機体から写した範囲）は、行列の中だけを範囲にすると輪郭の箱の角が
+     * 欠けるので、輪郭の箱の行列に置き換える。中心のブロックとサイズは変えない。軸にそった行列はもともと輪郭のとおりなので、
+     * そのまま返す。
+     * <p>
+     * 置く範囲（世界の座標）に使う。機体の座標へ写した範囲（{@link #transformedBy} に姿勢の逆行列を渡したもの）は、世界の輪郭の
+     * 箱を機体の向きで表したものなので、これを通さない。
+     */
+    public ZoneArea boxed() throws SpellRuntimeException {
+        if (isEmpty() || SubLevelZoneMath.isAxisAligned(matrix4x4())) {
+            return this;
+        }
+        return of(new MatrixValue(4, 4, SubLevelZoneMath.cuboid(minX - 0.5, minY - 0.5, minZ - 0.5,
+                maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1)), size, center);
+    }
+
+    /** 行列を 4×4（行優先）にしたもの。3×4 なら 4 行目に 0 0 0 1 を足す。 */
+    private double[] matrix4x4() {
+        double[] values = new double[16];
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                values[row * 4 + col] = row < matrix.rows() ? matrix.get(row, col) : (col == 3 ? 1.0 : 0.0);
+            }
+        }
+        return values;
     }
 
     /** 範囲にブロックが 1 つもないか（囲む箱が空）。 */

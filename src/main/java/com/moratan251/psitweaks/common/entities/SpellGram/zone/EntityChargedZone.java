@@ -255,7 +255,8 @@ public class EntityChargedZone extends SpellGramZone {
         AABB bounds = getArea().bounds();
         List<LivingEntity> candidates = level.getEntitiesOfClass(LivingEntity.class, bounds, target -> target.isAlive()
                 && AttackRules.canHarm(caster, target, AttackRules.Options.DEFAULT)
-                && stormAt(BlockPos.containing(target.getBoundingBox().getCenter())) != null);
+                && stormAt(BlockPos.containing(target.getBoundingBox().getCenter())) != null
+                && isStrongestAt(BlockPos.containing(target.getBoundingBox().getCenter())));
         LivingEntity target = candidates.isEmpty() ? null : candidates.get(random.nextInt(candidates.size()));
         Vec3 end;
         if (target != null) {
@@ -265,7 +266,7 @@ public class EntityChargedZone extends SpellGramZone {
             for (int i = 0; i < 6 && end == null; i++) {
                 Vec3 point = new Vec3(bounds.minX + random.nextDouble() * bounds.getXsize(), bounds.minY + 0.05,
                         bounds.minZ + random.nextDouble() * bounds.getZsize());
-                if (stormAt(BlockPos.containing(point)) != null) {
+                if (stormAt(BlockPos.containing(point)) != null && isStrongestAt(BlockPos.containing(point))) {
                     end = point;
                 }
             }

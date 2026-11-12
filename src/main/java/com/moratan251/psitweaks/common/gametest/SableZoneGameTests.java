@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -140,6 +141,58 @@ public final class SableZoneGameTests {
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(SpellGramObject::discard);
             GameTestPlayers.remove(helper, caster);
             helper.assertTrue(burning, "The Heat Zone aimed at the ship must burn the husk standing on it");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 加重領域が機体の一部にだけかかると、入っている部分の割合だけ押し、入っている側を押して傾ける（2026-11-12、機体の外箱を
+     * 粗い格子で調べる）。3×3 の床の東半分だけを上へ押すと、床が回り始める。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_sable_tilt", timeoutTicks = 80)
+    public static void partialGravityTiltsTheShip(GameTestHelper helper) {
+        if (!ModList.get().isLoaded("sable")) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        Object ship;
+        try {
+            ship = assembleTurnedPlatform(helper, level, 0.0);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not assemble a Sable sub-level for the test", e);
+        }
+        // 加重領域と同じく毎 tick 押し続け、押している間に向きが一番大きく変わった角度で確かめる（1 回の力積だと、床に接した
+        // 機体の回り方がゆらぐ）。床に置いた機体は反対側が支点になるので、床から浮く強さで押す。
+        org.joml.Quaterniond[] start = new org.joml.Quaterniond[1];
+        int[] pushed = new int[1];
+        double[] turned = new double[1];
+        for (int tick = 10; tick < 22; tick++) {
+            int now = tick;
+            helper.runAtTickTime(tick, () -> {
+                try {
+                    Object pose = call(ship, "logicalPose");
+                    org.joml.Quaterniond orientation = new org.joml.Quaterniond((org.joml.Quaterniondc) call(pose, "orientation"));
+                    if (now == 10) {
+                        start[0] = orientation;
+                    } else {
+                        double angle = start[0].difference(orientation, new org.joml.Quaterniond()).angle();
+                        turned[0] = Math.max(turned[0], Math.min(angle, 2.0 * Math.PI - angle));
+                    }
+                    Vector3d center = (Vector3d) call(pose, "position");
+                    AABB box = new AABB(center.x - 4.0, center.y - 3.0, center.z - 4.0, center.x + 4.0, center.y + 3.0,
+                            center.z + 4.0);
+                    // 東側（中心より x が大きいところ）だけを上へ押す。
+                    pushed[0] += SablePhysicsCompat.accelerateSubLevels(level, box,
+                            pos -> pos.getX() + 0.5 > center.x ? new Vec3(0.0, 3.0, 0.0) : null);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        helper.runAtTickTime(23, () -> {
+            helper.assertTrue(pushed[0] > 0, "The half-covered ship must be pushed");
+            helper.assertTrue(turned[0] > 0.02, "Pushing only one side must tilt the ship, turned at most " + turned[0] + " rad");
             helper.succeed();
         });
     }

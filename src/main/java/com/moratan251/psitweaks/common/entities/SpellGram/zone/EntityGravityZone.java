@@ -70,9 +70,55 @@ public class EntityGravityZone extends SpellGramZone {
         return entity.isAlive() && !entity.isSpectator() && !entity.noPhysics;
     }
 
+    /** 重なった加重領域の押す力（向き × 威力）を足したものの大きさの上限（威力、2026-11-12 ユーザー）。 */
+    public static final float MAX_COMBINED_POWER = 10.0F;
+
+    /** 加重領域は重なると押す向きを足し合わせる（{@link #combinedPushAt}）。 */
+    @Override
+    protected boolean stacksWithSameType() {
+        return true;
+    }
+
+    /**
+     * ブロック {@code pos} で、重なった加重領域（術者は問わない）の「向き × 威力」を足したもの。大きさは威力
+     * {@link #MAX_COMBINED_POWER} で頭打ち。重なったうちエンティティの番号の一番小さい領域だけが代表として押し、ほかは null
+     * （同じ物を二度押さない）。この領域が効いていないブロックも null。
+     */
+    @org.jetbrains.annotations.Nullable
+    public Vec3 combinedPushAt(BlockPos pos) {
+        if (!isInsideAndActive(pos)) {
+            return null;
+        }
+        Vec3 sum = Vec3.ZERO;
+        for (EntityGravityZone zone : com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex.all(level(), EntityGravityZone.class)) {
+            if (zone.isEnded() || !zone.isInsideAndActive(pos)) {
+                continue;
+            }
+            if (zone.getId() < getId()) {
+                return null;
+            }
+            sum = sum.add(zone.unitDirection().scale(zone.power));
+        }
+        return capCombined(sum);
+    }
+
+    /** 足した押す力の大きさを威力 {@link #MAX_COMBINED_POWER} で頭打ちにする。 */
+    public static Vec3 capCombined(Vec3 sum) {
+        double length = sum.length();
+        return length > MAX_COMBINED_POWER ? sum.scale(MAX_COMBINED_POWER / length) : sum;
+    }
+
+    private Vec3 unitDirection() {
+        return direction.lengthSqr() < 1.0E-12 ? Vec3.ZERO : direction.normalize();
+    }
+
     @Override
     protected void affect(Entity target) {
-        Vec3 push = direction.scale(power * ACCELERATION_PER_POWER);
+        Vec3 combined = combinedPushAt(BlockPos.containing(target.getBoundingBox().getCenter()));
+        if (combined == null) {
+            return;
+        }
+        Vec3 push = combined.scale(ACCELERATION_PER_POWER);
         if (push.lengthSqr() < 1.0E-12) {
             return;
         }
@@ -93,8 +139,11 @@ public class EntityGravityZone extends SpellGramZone {
         if (multiplier <= 0.0) {
             return;
         }
-        SablePhysicsCompat.accelerateSubLevels(level, getOutline(), direction,
-                power * SUB_LEVEL_GRAVITY_FRACTION_PER_POWER * multiplier, this::isInsideAndActive);
+        // 機体も、重心のところで重なった加重領域の押す力を足して（威力 10 で頭打ち）、代表の領域だけが押す。
+        SablePhysicsCompat.accelerateSubLevels(level, getOutline(), pos -> {
+            Vec3 combined = combinedPushAt(pos);
+            return combined == null ? null : combined.scale(SUB_LEVEL_GRAVITY_FRACTION_PER_POWER * multiplier);
+        });
     }
 
     @Override

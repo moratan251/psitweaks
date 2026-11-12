@@ -2841,19 +2841,41 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "演算子: 行列積で領域行列の左に置くと領域を移動でき、演算子: 行列でベクトル変換で使うと座標を移動できます。"
                         + "演算子: 回転行列と組み合わせると、任意の点の周りで領域を回転できます。");
 
+        addSpellPiece(root, "operator_matrix_set_y_axis", "Operator: Matrix Set Y Axis",
+                "Turns a region matrix around its center so that its Y axis points along Direction.",
+                "演算子: Y軸方向指定", "領域行列をその中心のまわりに回し、Y 軸を「方向」へ向けます。");
+        addBookPage(root, "operator_matrix_set_y_axis.0",
+                "Turns a region matrix (3x4 or 4x4) around the center of its box so that its Y axis (column 2) points along Direction."
+                        + " The box keeps its size and center."
+                        + " It takes the smallest turn from the current Y axis, so it also works on a matrix that is already turned, and pointing straight up, straight down or exactly backwards works too."
+                        + " A zero Direction is an error."
+                        + " The turn is the same as Operator: Rotation Matrix, so quarter turns come out exact.",
+                "領域行列（3×4 か 4×4）を、その箱の中心のまわりに回して、Y 軸（2列目）を「方向」へ向けます。"
+                        + "箱の大きさと中心は変わりません。"
+                        + "今の Y 軸から方向へのいちばん小さい回転なので、すでに回してある行列にも使え、真上・真下やちょうど逆向きにも向けられます。"
+                        + "「方向」がゼロベクトルだとエラーです。"
+                        + "回し方は演算子: 回転行列と同じで、90度単位の回転は誤差なく計算されます。");
+        addBookPage(root, "operator_matrix_set_y_axis.1",
+                "Trick: Gravity Zone in Matrix mode pushes along the Y axis of its Matrix."
+                        + " To push where the caster looks, make Operator: Matrix Cuboid Region at the caster's position (Operator: Entity Position), turn it with this piece toward the caster's look (Operator: Entity Look), and pass it as the Matrix."
+                        + " A zone always works within its outline, which for a turned matrix is the axis-aligned box around it.",
+                "作動式: 加重領域の行列モードは、「行列」の Y 軸の向きへ押します。"
+                        + "術者の視線の向きへ押すには、術者の位置（演算子: エンティティ位置）に演算子: 直方体領域を作り、このピースで術者の視線（演算子: エンティティ視線方向）へ向けてから、「行列」に渡します。"
+                        + "領域が効くのはいつも輪郭の線の中で、回した行列ではそれを囲む軸にそった箱になります。");
+
         addSpellPiece(root, "trick_soak_zone", "Trick: Soak Zone",
                 "Places a SpellGram zone that keeps living beings inside it soaked",
                 "作動式: 湿潤領域", "範囲の中の生物を濡らし続ける魔法式オブジェクトを置く");
         addBookPage(root, "trick_soak_zone.0",
                 "Places a zone over the region given by the Matrix (a region matrix) and the Size (a constant), lasting for the Time (in seconds)."
-                        + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 16)."
+                        + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 16). A tilted matrix counts as the axis-aligned box around it, so the zone always works exactly within its outline."
                         + " The Matrix may be left out; the zone is then the cube of Size blocks on each edge around the block the caster stands in."
                         + " A living being is inside when the block holding the center of its hitbox is."
                         + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning."
                         + " The zone also wets the blocks inside like a Splash Water Bottle: it puts out fire, campfires and candles, and turns concrete powder into concrete (where the caster may change blocks)."
                         + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast. Dropped items do not despawn while being washed.",
                 "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、「時間」（秒）のあいだ残る領域を置きます。"
-                        + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大16）。"
+                        + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大16）。行列が傾いているときは、行列を囲む軸にそった箱で数えるので、効く範囲はいつも輪郭の線のとおりです。"
                         + "「行列」は省略でき、省略すると術者のいるブロックを中心にした一辺がサイズの立方体になります。"
                         + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
                         + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。"
@@ -2863,29 +2885,38 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "The Time is a constant of at most 120 seconds and may be left out (30 seconds)."
                         + " The zone's integrity grows with the Time but wears away at the same rate whatever the Time, so a longer zone stands up better to spells that break it."
                         + " Potency depends only on the Size and grows with the area of the zone; Cost grows with the area and with the Time."
-                        + " You can place several zones of the same kind. One caster can keep up to 32 circles and zones in all (changeable in the config); placing more ends the oldest. The zone also ends when its caster logs out or changes dimension."
+                        + " You can place several zones of the same kind, but they do not add up: where zones of one kind overlap, only the strongest works (the highest Power, then the higher interference, then the older one). One caster can keep up to 32 circles and zones in all (changeable in the config); placing more ends the oldest. The zone also ends when its caster logs out or changes dimension."
                         + " Trick: Show Region (Block mode) draws exactly the blocks the zone covers.",
                 "「時間」は最大120秒の定数で、省略すると30秒です。"
                         + "耐久値は時間に比例しますが、減る速さは時間によらず同じなので、長く置いた領域ほど術式で壊されにくくなります。"
                         + "規模はサイズだけで決まり、範囲が広いほど増えます。コストは範囲が広いほど、時間が長いほど増えます。"
-                        + "同じ種類の領域をいくつも置けます。1人が置けるのはサークルと領域を合わせて32個まで（設定で変えられます）で、超えて置くと古いものから消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
+                        + "同じ種類の領域をいくつも置けますが、効き目は足し算になりません。同じ種類が重なったところでは、一番強いもの（威力が高いもの、並べば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。1人が置けるのはサークルと領域を合わせて32個まで（設定で変えられます）で、超えて置くと古いものから消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
                         + "範囲の確認には、作動式: 領域表示（ブロックモード）が使えます。");
         addSpellPiece(root, "trick_gravity_zone", "Trick: Gravity Zone",
                 "Places a SpellGram zone that keeps pushing entities inside it in the given direction",
                 "作動式: 加重領域", "範囲の中のエンティティを指定した向きへ押し続ける魔法式オブジェクトを置く");
         addBookPage(root, "trick_gravity_zone.0",
-                "Places a zone that lasts 30 seconds over the region given by the Matrix and the Size, like Trick: Soak Zone."
+                "Places a zone over the region given by the Matrix and the Size, like Trick: Soak Zone."
                         + " Every tick it adds motion toward the Direction to the entities inside (living beings, dropped items, experience orbs, arrows and other projectiles, minecarts and boats), more with a higher Power; only the direction of the Direction is used."
                         + " A Power of about 4 balances gravity. While the zone pushes upward, entities inside take no fall damage. The caster is pushed too."
-                        + " A Simulated Contraption (such as a Create Aeronautics airship) is pushed just as hard while its center of mass is inside.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に30秒間残る領域を置きます。"
+                        + " A Simulated Contraption (such as a Create Aeronautics airship) is pushed as well, more the more of it is inside, and it tilts as the part inside is pushed.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に領域を置きます。"
                         + "中のエンティティ（生物、落ちているアイテム、経験値オーブ、矢などの飛び道具、トロッコやボート）に、「方向」の向きへ「威力」に応じた運動を毎tick足し続けます。方向は向きだけを使います。"
                         + "威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。"
-                        + "Simulated Contraption（Create Aeronautics の機体など）も、重心が範囲の中にあれば同じ強さで押されます。");
+                        + "Simulated Contraption（Create Aeronautics の機体など）も押されます。範囲に入っている部分が多いほど強く押され、入っている部分の側が押されるので傾きます。");
         addBookPage(root, "trick_gravity_zone.1",
-                "The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
+                "It has two modes. In Vector mode (the default) the inputs are Matrix, Size, Direction and Power, and the zone lasts 30 seconds."
+                        + " In Matrix mode they are Matrix, Size, Power and Time: it pushes along the Y axis of the Matrix (straight up if the Matrix is left out),"
+                        + " a negative Power pushes the other way, and it lasts for the Time like the other zones."
+                        + " Operator: Matrix Set Y Axis turns a matrix to push in any direction."
+                        + " The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
+                        + " Where Gravity Zones overlap, their pushes add up, but never beyond Power 10."
                         + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "威力は最大10の定数です。コストと規模は、範囲の広さ×威力で増えます。"
+                "モードが2つあります。ベクトルモード（既定）の入力は行列・サイズ・方向・威力で、30秒間残ります。"
+                        + "行列モードの入力は行列・サイズ・威力・時間です。行列のY軸の向き（行列を省けば真上）へ押し、威力を負にすると逆向きに押します。ほかの領域と同じく「時間」のあいだ残ります。"
+                        + "演算子: Y軸方向指定で行列を回せば、好きな向きへ押せます。"
+                        + "威力は最大10の定数です。コストと規模は、範囲の広さ×威力で増えます。"
+                        + "加重領域どうしが重なったところでは押す向きが足し合わされますが、威力10を超えることはありません。"
                         + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_heat_zone", "Trick: Heat Zone",
                 "Places a SpellGram zone that sets living beings inside it on fire and melts ice",

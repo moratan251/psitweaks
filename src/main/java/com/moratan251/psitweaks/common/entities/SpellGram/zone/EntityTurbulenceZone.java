@@ -70,6 +70,12 @@ public class EntityTurbulenceZone extends SpellGramZone {
         this.power = Math.max(0.0F, power);
     }
 
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
+    @Override
+    protected double stackStrength() {
+        return getPower();
+    }
+
     public float getPower() {
         return power;
     }

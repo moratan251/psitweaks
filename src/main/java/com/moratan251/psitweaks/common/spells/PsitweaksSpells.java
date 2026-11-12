@@ -350,6 +350,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_rotation", PieceOperatorMatrixRotation.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_TRANSLATION =
             registerPiece("operator_matrix_translation", PieceOperatorMatrixTranslation.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_SET_Y_AXIS =
+            registerPiece("operator_matrix_set_y_axis", PieceOperatorMatrixSetYAxis.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SHOW_REGION =
             registerPiece("trick_show_region", PieceTrickShowRegion.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_SOAK_ZONE =

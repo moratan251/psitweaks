@@ -492,11 +492,63 @@ public abstract class SpellGramZone extends SpellGramObject {
         }
     }
 
-    /** 範囲の中にいて、この領域が効くエンティティ（当たり判定の中心があるブロックで判定）。魔法式オブジェクトは除く。 */
+    /**
+     * 範囲の中にいて、この領域が効くエンティティ（当たり判定の中心があるブロックで判定）。魔法式オブジェクトは除く。同じ種類の
+     * 領域が重なっていれば、そこで一番強い領域だけが効く（{@link #isStrongestAt}）。
+     */
     public List<Entity> entitiesInside() {
-        return level().getEntities(this, area.bounds(), entity -> !(entity instanceof SpellGramObject)
-                && affects(entity) && !(sparesCaster() && CasterIds.matches(entity, getCasterUuid()))
-                && insideAndActive(BlockPos.containing(entity.getBoundingBox().getCenter())));
+        return level().getEntities(this, area.bounds(), entity -> {
+            if (entity instanceof SpellGramObject || !affects(entity) || (sparesCaster() && CasterIds.matches(entity, getCasterUuid()))) {
+                return false;
+            }
+            BlockPos pos = BlockPos.containing(entity.getBoundingBox().getCenter());
+            return insideAndActive(pos) && (stacksWithSameType() || isStrongestAt(pos));
+        });
+    }
+
+    /**
+     * 同じ種類の領域が重なったところで、どれが効くかを決める強さ（2026-11-12 ユーザー: 同じ種類は重ねても効き目は増えず、一番
+     * 威力が高いものだけが効く）。既定は他 mod の機械を動かす速さ（置いた時点の事象干渉力）。威力を持つ領域は威力を返す。
+     */
+    protected double stackStrength() {
+        return machineSpeed;
+    }
+
+    /**
+     * 同じ種類の領域どうしで効き目を自分で合わせるか（加重領域は押す向きを足して上限で止める）。偽なら、重なったところでは
+     * {@link #isStrongestAt} が真の領域だけが効く。
+     */
+    protected boolean stacksWithSameType() {
+        return false;
+    }
+
+    /**
+     * ブロック {@code pos}（世界の位置）で、この領域が同じ種類の領域のうち一番強いか（術者は問わない。他人の領域どうしも重ならない）。
+     * 強さ（{@link #stackStrength}）が並べば機械を動かす速さ、それも並べば古いもの（エンティティの番号の小さいもの）。領域干渉で
+     * 止められている領域は数えない。クライアントではいつも真。
+     */
+    public boolean isStrongestAt(BlockPos pos) {
+        if (level().isClientSide) {
+            return true;
+        }
+        for (SpellGramZone other : SpellGramIndex.all(level(), getClass())) {
+            if (other != this && !other.isEnded() && other.outranks(this) && other.isInsideAndActive(pos)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean outranks(SpellGramZone other) {
+        int strength = Double.compare(stackStrength(), other.stackStrength());
+        if (strength != 0) {
+            return strength > 0;
+        }
+        int speed = Float.compare(machineSpeed, other.machineSpeed);
+        if (speed != 0) {
+            return speed > 0;
+        }
+        return getId() < other.getId();
     }
 
     /** ブロック {@code pos} が範囲の中で、この領域が効いているか（{@link #isActiveAt}）。 */

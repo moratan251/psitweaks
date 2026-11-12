@@ -117,14 +117,27 @@ public final class SablePhysicsCompat {
     }
 
     /**
-     * 作動式: 加重領域（2026-11-11 の設計 C）: 重心が {@code inside} のブロックにあるサブレベル（Create Aeronautics の機体など）を、
+     * 作動式: 加重領域（2026-11-11 の設計 C、2026-11-12 から入っている部分の割合で押し、ある程度傾ける。{@link #samplePush}）:
+     * 重心が {@code inside} のブロックにあるサブレベル（Create Aeronautics の機体など）を、
      * 世界座標の向き {@code direction} へ加速する（サーバー側）。加速度は {@code gravityFraction} × その場の重力の大きさで、重さに
      * よらない。重心をまっすぐ押すので機体は傾かない。押した数を返す。Sable がない・API が合わないときは 0。
      */
     public static int accelerateSubLevels(Level level, AABB bounds, Vec3 direction, double gravityFraction,
                                           Predicate<BlockPos> inside) {
-        if (level == null || level.isClientSide || zoneDisabled || bounds == null || direction == null
-                || direction.lengthSqr() < MIN_DIRECTION_LENGTH_SQUARED || gravityFraction <= 0.0D || !isLoaded()) {
+        if (direction == null || direction.lengthSqr() < MIN_DIRECTION_LENGTH_SQUARED || gravityFraction <= 0.0D) {
+            return 0;
+        }
+        Vec3 push = direction.normalize().scale(gravityFraction);
+        return accelerateSubLevels(level, bounds, pos -> inside.test(pos) ? push : null);
+    }
+
+    /**
+     * {@link #accelerateSubLevels(Level, AABB, Vec3, double, Predicate)} の、機体ごとに押す力を決める形: {@code pushAt} は
+     * 重心のあるブロックで、向き × 重力に対する割合（大きさが割合）を返す。null か 0 ならその機体は押さない。重なった加重領域の
+     * 押す力を足すのに使う。
+     */
+    public static int accelerateSubLevels(Level level, AABB bounds, java.util.function.Function<BlockPos, Vec3> pushAt) {
+        if (level == null || level.isClientSide || zoneDisabled || bounds == null || !isLoaded()) {
             return 0;
         }
         ZoneHooks loaded = getZoneHooks();
@@ -132,8 +145,6 @@ public final class SablePhysicsCompat {
             return 0;
         }
         try {
-            Vec3 unit = direction.normalize();
-            Vector3d worldDirection = new Vector3d(unit.x, unit.y, unit.z);
             double gravity = gravityOf(loaded, level);
             Object box = loaded.boundingBoxFromAabb.newInstance(bounds);
             Iterable<?> subLevels = (Iterable<?>) loaded.getAllIntersecting.invoke(loaded.helper, level, box);
@@ -153,14 +164,16 @@ public final class SablePhysicsCompat {
                 if (localCenter == null) {
                     continue;
                 }
-                double mass = ((Number) loaded.getMass.invoke(massData)).doubleValue();
-                double impulse = SubLevelPushMath.impulsePerTick(mass, gravityFraction, gravity);
-                if (impulse <= 0.0D) {
-                    continue;
-                }
                 Object pose = loaded.logicalPose.invoke(subLevel);
                 Vector3d center = (Vector3d) loaded.transformPosition.invoke(pose, localCenter, new Vector3d());
-                if (!inside.test(BlockPos.containing(center.x, center.y, center.z))) {
+                ShipPush shipPush = samplePush(level, subLevel, pose, localCenter, center, pushAt);
+                if (shipPush == null) {
+                    continue;
+                }
+                Vec3 push = shipPush.force();
+                double mass = ((Number) loaded.getMass.invoke(massData)).doubleValue();
+                double impulse = SubLevelPushMath.impulsePerTick(mass, push.length(), gravity);
+                if (impulse <= 0.0D) {
                     continue;
                 }
                 Object handle = loaded.rigidBodyHandleOf.invoke(null, subLevel);
@@ -168,17 +181,149 @@ public final class SablePhysicsCompat {
                     continue;
                 }
                 // 力積はサブレベルの座標系で渡す（作動式: 物理推進と同じ直し方）。
+                Vec3 unit = push.normalize();
+                Vector3d worldDirection = new Vector3d(unit.x, unit.y, unit.z);
                 Vector3d local = (Vector3d) loaded.transformNormalInverse.invoke(pose, worldDirection, new Vector3d());
                 if (local.lengthSquared() < MIN_DIRECTION_LENGTH_SQUARED) {
                     continue;
                 }
-                loaded.applyLinearImpulse.invoke(handle, local.normalize().mul(impulse));
+                Vector3d localImpulse = local.normalize().mul(impulse);
+                TiltHooks tilt = getTiltHooks();
+                if (shipPush.localPoint() != null && tilt != null && spinsSlowly(tilt, handle)) {
+                    // 入っている部分の側を押して、ある程度傾ける。回す力積は 重心からの位置 × 力積。点に力積を加える Sable の
+                    // 窓口は止まっている機体を起こさないので、起こす窓口（直進と回転を一緒に渡す）を使う。
+                    Vector3d arm = new Vector3d(shipPush.localPoint()).sub(localCenter);
+                    Vector3d angular = arm.cross(localImpulse, new Vector3d());
+                    tilt.applyLinearAndAngularImpulse().invoke(handle, localImpulse, angular, true);
+                } else {
+                    loaded.applyLinearImpulse.invoke(handle, localImpulse);
+                }
                 pushed++;
             }
             return pushed;
         } catch (ReflectiveOperationException | LinkageError | ClassCastException e) {
             zoneDisabled = true;
             return 0;
+        }
+    }
+
+    /** 機体を押す力（向き × 重力に対する割合）と、押す点（サブレベルの座標、null なら重心をまっすぐ押す）。 */
+    private record ShipPush(Vec3 force, Vector3d localPoint) {
+    }
+
+    /** 機体の形を粗く調べる格子の、1 辺あたりの点の数の上限（最大 4 × 4 × 4 = 64 点）。 */
+    private static final int MAX_SAMPLES_PER_AXIS = 4;
+    /** 格子の 1 マスのおよその大きさ（ブロック）。小さい機体は点を減らす（一辺 2 ブロック以上なら 2 点以上）。 */
+    private static final double SAMPLE_CELL = 2.0D;
+    /** 押す点を、重心から「入っている部分の真ん中」へどれだけ寄せるか（1 で真ん中、0 で重心）。傾きを抑えるため半分（仮）。 */
+    private static final double TILT_SHARE = 0.5D;
+    /** これより速く回っている機体は、傾ける力をかけずに重心を押す（rad/s、仮）。 */
+    private static final double MAX_TILT_SPIN = 1.0D;
+
+    /**
+     * 機体を押す力と押す点を、機体の外箱（世界の座標）の中を最大 {@link #MAX_SAMPLES_PER_AXIS}³ 点だけ調べて粗く決める
+     * （2026-11-12 ユーザー: 傾きをある程度効かせたいが、軽さ優先で粗くてよい）。点のうち機体のブロックがあるものを数え、
+     * {@code pushAt} が力を返す点（領域に入っている部分）の力を足して、ブロックのある点の数で割る（入っている割合だけ押す）。押す点は
+     * 重心と、入っている点の真ん中の間（{@link #TILT_SHARE}）。粗く調べられないとき（Sable の版が合わない、薄い機体で点が当たらない）
+     * は、今までどおり重心のブロックで決めて重心を押す。
+     */
+    private static ShipPush samplePush(Level level, Object subLevel, Object pose, Vector3dc localCenter, Vector3d worldCenter,
+                                       java.util.function.Function<BlockPos, Vec3> pushAt) {
+        TiltHooks tilt = getTiltHooks();
+        if (tilt != null) {
+            try {
+                Object box = tilt.boundingBox().invoke(subLevel);
+                if (box != null) {
+                    double minX = (Double) tilt.minX().invoke(box);
+                    double minY = (Double) tilt.minY().invoke(box);
+                    double minZ = (Double) tilt.minZ().invoke(box);
+                    double sizeX = (Double) tilt.maxX().invoke(box) - minX;
+                    double sizeY = (Double) tilt.maxY().invoke(box) - minY;
+                    double sizeZ = (Double) tilt.maxZ().invoke(box) - minZ;
+                    int nx = samples(sizeX);
+                    int ny = samples(sizeY);
+                    int nz = samples(sizeZ);
+                    int solid = 0;
+                    int inside = 0;
+                    Vec3 sum = Vec3.ZERO;
+                    Vector3d centroid = new Vector3d();
+                    for (int i = 0; i < nx; i++) {
+                        for (int j = 0; j < ny; j++) {
+                            for (int k = 0; k < nz; k++) {
+                                Vec3 world = new Vec3(minX + (i + 0.5D) * sizeX / nx, minY + (j + 0.5D) * sizeY / ny,
+                                        minZ + (k + 0.5D) * sizeZ / nz);
+                                Vec3 local = (Vec3) tilt.transformPositionInverse().invoke(pose, world);
+                                if (level.getBlockState(BlockPos.containing(local)).isAir()) {
+                                    continue;
+                                }
+                                solid++;
+                                Vec3 push = pushAt.apply(BlockPos.containing(world));
+                                if (push == null || push.lengthSqr() < MIN_DIRECTION_LENGTH_SQUARED) {
+                                    continue;
+                                }
+                                inside++;
+                                sum = sum.add(push);
+                                centroid.add(local.x, local.y, local.z);
+                            }
+                        }
+                    }
+                    if (solid > 0) {
+                        if (inside == 0) {
+                            return null;
+                        }
+                        centroid.div(inside);
+                        Vector3d point = new Vector3d(localCenter).lerp(centroid, TILT_SHARE);
+                        return new ShipPush(sum.scale(1.0D / solid), point);
+                    }
+                }
+            } catch (ReflectiveOperationException | LinkageError | ClassCastException e) {
+                tiltHooksMissing = true;
+            }
+        }
+        Vec3 push = pushAt.apply(BlockPos.containing(worldCenter.x, worldCenter.y, worldCenter.z));
+        return push == null || push.lengthSqr() < MIN_DIRECTION_LENGTH_SQUARED ? null : new ShipPush(push, null);
+    }
+
+    private static int samples(double size) {
+        return Math.max(1, Math.min(MAX_SAMPLES_PER_AXIS, (int) Math.ceil(size / SAMPLE_CELL)));
+    }
+
+    private static boolean spinsSlowly(TiltHooks tilt, Object handle) throws ReflectiveOperationException {
+        Vector3dc angular = (Vector3dc) tilt.getAngularVelocity().invoke(handle);
+        return angular == null || angular.lengthSquared() <= MAX_TILT_SPIN * MAX_TILT_SPIN;
+    }
+
+    /** 機体の形を粗く調べて傾けるためのフック（無ければ傾けず、今までどおり重心を押す）。 */
+    private record TiltHooks(Method boundingBox, Method minX, Method minY, Method minZ, Method maxX, Method maxY, Method maxZ,
+                             Method transformPositionInverse, Method applyLinearAndAngularImpulse, Method getAngularVelocity) {
+    }
+
+    private static volatile TiltHooks tiltHooks;
+    private static volatile boolean tiltHooksMissing;
+
+    private static TiltHooks getTiltHooks() {
+        if (tiltHooks != null || tiltHooksMissing) {
+            return tiltHooks;
+        }
+        synchronized (INIT_LOCK) {
+            if (tiltHooks != null || tiltHooksMissing) {
+                return tiltHooks;
+            }
+            try {
+                Class<?> subLevelClass = Class.forName("dev.ryanhcode.sable.sublevel.SubLevel");
+                Class<?> boundsClass = Class.forName("dev.ryanhcode.sable.companion.math.BoundingBox3dc");
+                Class<?> poseClass = Class.forName("dev.ryanhcode.sable.companion.math.Pose3dc");
+                Class<?> handleClass = Class.forName("dev.ryanhcode.sable.api.physics.handle.RigidBodyHandle");
+                tiltHooks = new TiltHooks(subLevelClass.getMethod("boundingBox"),
+                        boundsClass.getMethod("minX"), boundsClass.getMethod("minY"), boundsClass.getMethod("minZ"),
+                        boundsClass.getMethod("maxX"), boundsClass.getMethod("maxY"), boundsClass.getMethod("maxZ"),
+                        poseClass.getMethod("transformPositionInverse", Vec3.class),
+                        handleClass.getMethod("applyLinearAndAngularImpulse", Vector3dc.class, Vector3dc.class, boolean.class),
+                        handleClass.getMethod("getAngularVelocity"));
+            } catch (ReflectiveOperationException | LinkageError e) {
+                tiltHooksMissing = true;
+            }
+            return tiltHooks;
         }
     }
 

@@ -364,6 +364,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_rotation");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_TRANSLATION =
             registerPieceMaterial("operator_matrix_translation");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_SET_Y_AXIS =
+            registerPieceMaterial("operator_matrix_set_y_axis");
     public static final DeferredHolder<Material, Material> TRICK_SHOW_REGION =
             registerPieceMaterial("trick_show_region");
     public static final DeferredHolder<Material, Material> TRICK_SOAK_ZONE =

@@ -58,7 +58,12 @@ final class ZoneAttacks {
         }
         DamageSource source = AttackRules.source(level, type, zone, caster);
         for (LivingEntity target : targets) {
-            double base = baseDamageAt.applyAsDouble(BlockPos.containing(target.getBoundingBox().getCenter()));
+            BlockPos at = BlockPos.containing(target.getBoundingBox().getCenter());
+            // 同じ種類の領域が重なっていれば、そこで一番強い領域だけが当てる（重ねてもダメージは増えない）。
+            if (!zone.isStrongestAt(at)) {
+                continue;
+            }
+            double base = baseDamageAt.applyAsDouble(at);
             if (base <= 0.0) {
                 continue;
             }

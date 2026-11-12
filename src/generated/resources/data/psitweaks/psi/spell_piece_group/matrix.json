@@ -32,6 +32,7 @@
     "psitweaks:operator_matrix_caster_basis",
     "psitweaks:operator_matrix_rotation",
     "psitweaks:operator_matrix_translation",
+    "psitweaks:operator_matrix_set_y_axis",
     "psitweaks:trick_show_region"
   ]
 }

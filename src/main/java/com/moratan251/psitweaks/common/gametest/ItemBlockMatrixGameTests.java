@@ -166,6 +166,7 @@ public final class ItemBlockMatrixGameTests {
         groups.put("operator_matrix_caster_basis", "matrix");
         groups.put("operator_matrix_rotation", "matrix");
         groups.put("operator_matrix_translation", "matrix");
+        groups.put("operator_matrix_set_y_axis", "matrix");
         groups.put("trick_show_region", "matrix");
         groups.put("operator_strict_item", "item");
         Map<String, Class<?>> outputs = Map.of(
@@ -176,7 +177,8 @@ public final class ItemBlockMatrixGameTests {
                 "operator_dropped_items", SpellItemListWrapper.class,
                 "operator_matrix_caster_basis", MatrixValue.class,
                 "operator_matrix_rotation", MatrixValue.class,
-                "operator_matrix_translation", MatrixValue.class);
+                "operator_matrix_translation", MatrixValue.class,
+                "operator_matrix_set_y_axis", MatrixValue.class);
         for (var entry : groups.entrySet()) {
             var id = Psitweaks.location(entry.getKey());
             helper.assertTrue(PsiAPI.SPELL_PIECE_REGISTRY.get(id) != null, "Piece is not registered: " + id);

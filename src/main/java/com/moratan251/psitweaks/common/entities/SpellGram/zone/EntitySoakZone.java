@@ -106,8 +106,8 @@ public class EntitySoakZone extends SpellGramZone {
             for (int step = takeMachineSteps(); step > 0; step--) {
                 for (ZoneRegion region : regions) {
                     CreateCompat.processZone(level, region.area(), CreateCompat.FanProcess.WASHING,
-                            pos -> isActiveAt(region.worldPos(pos)),
-                            pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                            pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)),
+                            pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                 }
             }
             if (isStorm()) {
@@ -116,8 +116,8 @@ public class EntitySoakZone extends SpellGramZone {
                     for (int i = 0; i < steps; i++) {
                         for (ZoneRegion region : regions) {
                             CreateCompat.processZone(level, region.area(), CreateCompat.FanProcess.WASHING,
-                                    pos -> stormAt(region.worldPos(pos)) == turbulence,
-                                    pos -> stormAt(region.worldPos(pos)) == turbulence
+                                    pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)),
+                                    pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos))
                                             && mayUseMachine(level, caster, pos));
                         }
                     }

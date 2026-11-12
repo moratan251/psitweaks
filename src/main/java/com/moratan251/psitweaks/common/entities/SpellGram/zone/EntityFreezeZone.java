@@ -93,6 +93,12 @@ public class EntityFreezeZone extends SpellGramZone {
         this.power = Math.max(0.0F, power);
     }
 
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
+    @Override
+    protected double stackStrength() {
+        return getPower();
+    }
+
     public float getPower() {
         return power;
     }
@@ -164,12 +170,12 @@ public class EntityFreezeZone extends SpellGramZone {
                 continue;
             }
             MekanismGameplayCompat.drainZoneHeat(level, blockEntities, fraction,
-                    pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                    pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
             if (isStorm()) {
                 for (EntityTurbulenceZone turbulence : overlappingStorms()) {
                     MekanismGameplayCompat.drainZoneHeat(level, blockEntities,
                             Math.min(MAX_COOL_FRACTION, fraction * stormBoost(turbulence.getPower())),
-                            pos -> stormAt(region.worldPos(pos)) == turbulence && mayUseMachine(level, caster, pos));
+                            pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                 }
             }
         }

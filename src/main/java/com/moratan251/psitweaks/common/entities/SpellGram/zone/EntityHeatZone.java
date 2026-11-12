@@ -100,6 +100,12 @@ public class EntityHeatZone extends SpellGramZone {
         this.power = Math.max(0.0F, power);
     }
 
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
+    @Override
+    protected double stackStrength() {
+        return getPower();
+    }
+
     public float getPower() {
         return power;
     }
@@ -214,8 +220,8 @@ public class EntityHeatZone extends SpellGramZone {
         List<ZoneRegion> regions = regions();
         for (int step = takeMachineSteps(); step > 0; step--) {
             for (ZoneRegion region : regions) {
-                CreateCompat.processZone(level, region.area(), fanProcess(inferno), pos -> isActiveAt(region.worldPos(pos)),
-                        pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                CreateCompat.processZone(level, region.area(), fanProcess(inferno), pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)),
+                        pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
             }
         }
         if (storm) {
@@ -224,8 +230,8 @@ public class EntityHeatZone extends SpellGramZone {
                 for (int i = 0; i < steps; i++) {
                     for (ZoneRegion region : regions) {
                         CreateCompat.processZone(level, region.area(), fanProcess(inferno),
-                                pos -> stormAt(region.worldPos(pos)) == turbulence,
-                                pos -> stormAt(region.worldPos(pos)) == turbulence && mayUseMachine(level, caster, pos));
+                                pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)),
+                                pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                     }
                 }
             });
@@ -247,12 +253,12 @@ public class EntityHeatZone extends SpellGramZone {
                     continue;
                 }
                 MekanismGameplayCompat.supplyZoneHeat(level, machines, heat, maxTemperature(),
-                        pos -> isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                        pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                 if (storm) {
                     for (EntityTurbulenceZone turbulence : overlappingStorms()) {
                         MekanismGameplayCompat.supplyZoneHeat(level, machines,
                                 heat * stormBoost(turbulence.getPower()), maxTemperature(),
-                                pos -> stormAt(region.worldPos(pos)) == turbulence && mayUseMachine(level, caster, pos));
+                                pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                     }
                 }
             }
@@ -265,7 +271,7 @@ public class EntityHeatZone extends SpellGramZone {
         for (ZoneRegion region : regions) {
             for (BlockEntity blockEntity : region.area().blockEntities(level)) {
                 BlockPos pos = blockEntity.getBlockPos();
-                if (CreateCompat.isBurnerNeedingSuperheat(blockEntity) && isActiveAt(region.worldPos(pos))
+                if (CreateCompat.isBurnerNeedingSuperheat(blockEntity) && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
                         && mayUseMachine(level, caster, pos)) {
                     count++;
                 }

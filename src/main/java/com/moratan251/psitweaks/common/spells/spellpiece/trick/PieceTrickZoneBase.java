@@ -33,7 +33,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * 「サイズ」（定数）。行列を省くと、術者（術式の焦点）のいるブロックを中心にした一辺サイズの立方体になる。
  * <p>
  * 範囲は行列の中のブロックのうち、行列の中心のブロックを中心にした一辺サイズのブロックの立方体に入るもの（{@link ZoneArea}、
- * 数え方は演算子: 直方体領域と同じ）。コストと規模はサイズだけで
+ * 数え方は演算子: 直方体領域と同じ）。行列が軸にそっていなければ、行列を囲む軸にそった箱で数え、効く範囲はいつも輪郭の線の
+ * とおりにする（{@link ZoneArea#boxed}、2026-11-12 ユーザー）。コストと規模はサイズだけで
  * 決まる（術式を組んだ時点で分かるのは定数の大きさだけのため）。同じ種類をいくつも置け、1 人が置ける数はサークルと合わせて
  * {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。
  * 干渉力は効き目に効かず、耐久値にだけ効く。
@@ -74,12 +75,18 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     @Override
     public void initParams() {
+        time = null;
         addParam(region = new ParamMatrix(PsitweaksSpellParams.MATRIX, PsitweaksSpellParams.MATRIX_COLOR, true, false));
         addParam(size = new ParamNumber(PsitweaksSpellParams.SIZE, SpellParam.GREEN, false, true));
         addZoneParams();
         if (hasTimeParam()) {
             addParam(time = new ParamNumber(SpellParam.GENERIC_NAME_TIME, SpellParam.BLUE, true, true));
         }
+    }
+
+    /** 唱えた時点の「範囲」（領域行列、省けば null）。 */
+    protected MatrixValue regionValue(SpellContext context) throws SpellRuntimeException {
+        return getParamValue(context, region);
     }
 
     /** 種類ごとの入力（範囲・大きさのあと、時間の前）。 */
@@ -209,7 +216,8 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         if (area.isEmpty()) {
             throw new SpellRuntimeException(ERROR_EMPTY_ZONE);
         }
-        area = projectOutOfSubLevel(context, area);
+        // 効く範囲は輪郭の線のとおり（2026-11-12 ユーザー）: 回した行列や傾いた機体から写した範囲は、輪郭の箱にする。
+        area = projectOutOfSubLevel(context, area).boxed();
         BlockPos center = area.center();
         if (!context.isInRadius(new Vector3(center.getX() + 0.5, center.getY() + 0.5, center.getZ() + 0.5))) {
             throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);

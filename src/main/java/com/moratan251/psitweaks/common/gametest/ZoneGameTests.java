@@ -88,6 +88,54 @@ public final class ZoneGameTests {
         helper.succeed();
     }
 
+    /**
+     * 効く範囲は輪郭の線のとおり（2026-11-12 ユーザー）: 回した行列は、行列の中だけだと輪郭の箱の角が欠けるので、{@link ZoneArea#boxed}
+     * で輪郭の箱にする。中心のブロックは変わらず、軸にそった行列はそのまま。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void tiltedZoneAreaFollowsItsOutline(GameTestHelper helper) throws SpellRuntimeException {
+        // 原点を中心にした 9×9×9 の立方体を Z 軸のまわりに 45° 回した行列。
+        MatrixValue tilted = turnedCube(9);
+        ZoneArea raw = ZoneArea.of(tilted, 9);
+        helper.assertTrue(raw.contains(BlockPos.ZERO) && !raw.contains(new BlockPos(4, 4, 0)),
+                "Inside the turned matrix alone, the outline's corners are cut off");
+        ZoneArea boxed = raw.boxed();
+        helper.assertTrue(boxed.center().equals(BlockPos.ZERO), "The center block must stay: " + boxed.center());
+        for (int x = -4; x <= 4; x++) {
+            for (int y = -4; y <= 4; y++) {
+                for (int z = -4; z <= 4; z++) {
+                    helper.assertTrue(boxed.contains(new BlockPos(x, y, z)), "Every block of the outline must be inside: " + x + "," + y + "," + z);
+                }
+            }
+        }
+        helper.assertFalse(boxed.contains(new BlockPos(5, 0, 0)) || boxed.contains(new BlockPos(0, -5, 0)),
+                "Blocks outside the outline must stay outside");
+        helper.assertTrue(boxed.bounds().equals(raw.bounds()) && boxed.bounds().getXsize() == 9,
+                "The outline must not change: " + boxed.bounds());
+
+        // 小さい立方体を回すと、輪郭はそれを囲む箱（サイズまで）で、範囲もその箱になる。
+        ZoneArea small = ZoneArea.of(turnedCube(3), 9).boxed();
+        helper.assertTrue(small.bounds().getXsize() == 5 && small.bounds().getYsize() == 5 && small.bounds().getZsize() == 3
+                        && small.contains(new BlockPos(2, 2, 1)) && small.contains(new BlockPos(-2, 2, -1)),
+                "A small turned cube must become the box around it: " + small.bounds());
+
+        ZoneArea straight = ZoneArea.of(cube(new Vector3(-0.5, -0.5, -0.5), 9), 5);
+        helper.assertTrue(straight.boxed() == straight, "An axis-aligned matrix must be kept as it is");
+        helper.succeed();
+    }
+
+    /** 原点を中心にした一辺 {@code edge} の立方体を、Z 軸のまわりに 45° 回した領域行列。 */
+    private static MatrixValue turnedCube(double edge) {
+        double c = Math.cos(Math.PI / 4) * edge;
+        double s = Math.sin(Math.PI / 4) * edge;
+        // 辺 a = (c, s, 0)、b = (-s, c, 0)、c = (0, 0, edge)。始点 = 中心 − (a + b + c) / 2。
+        return new MatrixValue(4, 4, new double[]{
+                c, -s, 0, -(c - s) * 0.5,
+                s, c, 0, -(s + c) * 0.5,
+                0, 0, edge, -edge * 0.5,
+                0, 0, 0, 1});
+    }
+
     /** 湿潤領域の中の生物は濡れ、外の生物は濡れない。同じ種類の領域を重ねて置ける（2026-11-11 から）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak", timeoutTicks = 100)
     public static void soakZoneSoaksOnlyTheBeingsInside(GameTestHelper helper) {
