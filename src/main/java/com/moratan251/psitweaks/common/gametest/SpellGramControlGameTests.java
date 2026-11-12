@@ -124,6 +124,31 @@ public final class SpellGramControlGameTests {
         helper.succeed();
     }
 
+    /** 魔法式回収は射程（術者から 32 ブロック）の外にある自分の魔法式オブジェクトも消せる（2026-11-13 ユーザー）。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_recall_far", timeoutTicks = 40)
+    public static void recallReachesOwnObjectsOutOfRange(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "spellgram_recall_far_caster", new Vec3(1.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            SpellGramObject zone = placeSoak(caster, 1.0);
+            Vec3 far = caster.position().add(0.0, 64.0, 0.0);
+            caster.setPos(far.x, far.y, far.z);
+            helper.assertTrue(!new SpellContext().setPlayer(caster).isInRadius(zone),
+                    "The zone must be out of the caster's range for this test to mean anything");
+            recall(caster, zone);
+            helper.assertTrue(zone.isEnded(), "Recall must end an own zone out of range");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
     /**
      * 魔法式延長は耐久値を 置いたときの耐久値 × このピースのコスト ÷ 置いたときのコストだけ戻す。術式で削られた分から先に戻り、
      * 残りは存続時間に足され、耐久値は置いたときの 2 倍まで。他人のものは回復できない。

@@ -37,15 +37,7 @@ public class ParamEntityOrEntityList extends SpellParam<Object> {
      * to spells and must be within the spell radius.
      */
     public static List<Entity> targets(SpellContext context, Object value) throws SpellRuntimeException {
-        List<Entity> entities;
-        if (value instanceof EntityListWrapper list) {
-            entities = new ArrayList<>(list.size());
-            list.forEach(entities::add);
-        } else if (value instanceof Entity entity) {
-            entities = List.of(entity);
-        } else {
-            throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
-        }
+        List<Entity> entities = entities(value);
         for (Entity entity : entities) {
             context.verifyEntity(entity);
             if (!context.isInRadius(entity)) {
@@ -53,5 +45,21 @@ public class ParamEntityOrEntityList extends SpellParam<Object> {
             }
         }
         return entities;
+    }
+
+    /**
+     * The entities of {@code value} as they are, without the checks of {@link #targets}, for a trick that checks its
+     * targets itself (Trick: Recall Spellgram takes back the caster's own objects at any distance).
+     */
+    public static List<Entity> entities(Object value) throws SpellRuntimeException {
+        if (value instanceof EntityListWrapper list) {
+            List<Entity> entities = new ArrayList<>(list.size());
+            list.forEach(entities::add);
+            return entities;
+        }
+        if (value instanceof Entity entity) {
+            return List.of(entity);
+        }
+        throw new SpellRuntimeException(SpellRuntimeException.NULL_TARGET);
     }
 }
