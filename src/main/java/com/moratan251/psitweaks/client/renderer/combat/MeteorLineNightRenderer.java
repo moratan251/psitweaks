@@ -35,15 +35,17 @@ public class MeteorLineNightRenderer extends CombatGlowRenderer<EntityMeteorLine
         }
         Vector3f center = new Vector3f();
         Matrix4f pose = cameraPose(entity, partialTick, poseStack, center);
+        // エンティティ（核）は球のてっぺんにあるので、球の中心はそこから半径ぶん下。
+        center.sub(0.0F, (float) entity.getRadius(), 0.0F);
         float radius = (float) entity.getCurrentRadius(partialTick);
         float age = entity.getAge(partialTick);
 
         VertexConsumer dark = buffers.getBuffer(PsitweaksRenderTypes.TRANSLUCENT_COLOR);
-        GlowDrawing.rimDome(dark, pose, center, radius, MeteorLineTuning.NIGHT_COLOR, 1.0F, 0.0F,
+        GlowDrawing.rimGlobe(dark, pose, center, radius, MeteorLineTuning.NIGHT_COLOR, 1.0F, 0.0F,
                 (int) (MeteorLineTuning.DOME_ALPHA * strength));
 
         VertexConsumer glow = buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR);
-        GlowDrawing.rimDome(glow, pose, center, radius * 1.005F, MeteorLineTuning.DOME_RIM_COLOR, 0.0F,
+        GlowDrawing.rimGlobe(glow, pose, center, radius * 1.005F, MeteorLineTuning.DOME_RIM_COLOR, 0.0F,
                 MeteorLineTuning.DOME_RIM_BRIGHTNESS * strength, 255);
         GlowDrawing.ring(glow, pose, new Vector3f(center).add(0.0F, 0.05F, 0.0F), UP, Math.max(0.0F, radius - 0.12F), radius,
                 96, MeteorLineTuning.DOME_RIM_COLOR, 0.0F, 0.6F * strength, 255);

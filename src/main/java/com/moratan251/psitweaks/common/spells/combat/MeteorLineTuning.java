@@ -34,11 +34,11 @@ public final class MeteorLineTuning {
 
     // ---- 夜 ----
 
-    /** 夜の色（半球と霧の色）。 */
+    /** 夜の色（球と霧の色）。 */
     public static final int NIGHT_COLOR = 0x060914;
-    /** 半球の暗さ（不透明度、0〜255）。表と裏の2枚が重なるので、外から見るとこれより暗い。 */
+    /** 球の暗さ（不透明度、0〜255）。表と裏の2枚が重なるので、外から見るとこれより暗い。 */
     public static final int DOME_ALPHA = 120;
-    /** 半球の縁にかすかに見える光。 */
+    /** 球の縁にかすかに見える光。 */
     public static final int DOME_RIM_COLOR = 0x5C7BC4;
     public static final float DOME_RIM_BRIGHTNESS = 0.3F;
     /** 夜の中にいるときの画面の暗さ。0 で暗くせず、1 で霧の色を夜の色にしきる。 */
@@ -47,7 +47,6 @@ public final class MeteorLineTuning {
     public static final float FOG_START = 2.0F;
     public static final float FOG_END = 32.0F;
     /** 中心より下でも、ここまでは夜の中とみなす（ブロック）。 */
-    public static final double BELOW_CENTER = 1.5;
 
     // ---- CAD の色 ----
 

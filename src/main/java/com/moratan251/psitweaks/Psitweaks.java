@@ -199,6 +199,7 @@ public class Psitweaks {
             BladePouchClient.registerEvents();
             CombatEffectsClient.registerEvents(modEventBus);
             com.moratan251.psitweaks.client.SilenceZoneSounds.registerEvents();
+            com.moratan251.psitweaks.client.SpellGramIntegrityHud.registerEvents(modEventBus);
             PsitweaksParticleProviders.register(modEventBus);
         } else {
             DisplayNameTranslationRepository.registerServerReloadListeners(NeoForge.EVENT_BUS);

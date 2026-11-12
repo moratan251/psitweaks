@@ -20,7 +20,7 @@ import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Spreads a hemisphere of night over the position, lights stars inside its dome and rains streaks of light from them
+ * Spreads a sphere of night around the position (its core sits at the top), lights stars in its upper half and rains streaks of light from them
  * onto every creature inside that the caster may harm ({@link EntityMeteorLineNight}). The optional Radius defaults to
  * {@link MeteorLineTuning#DEFAULT_RADIUS} and is kept within {@link MeteorLineTuning#MIN_RADIUS} to
  * {@link MeteorLineTuning#MAX_RADIUS}; zero or less does not compile.

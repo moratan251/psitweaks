@@ -18,7 +18,8 @@ import net.neoforged.neoforge.common.NeoForge;
  * off in the client config. The strength is in {@link MeteorLineTuning#SCREEN_DARKNESS}.
  */
 public final class MeteorLineNightView {
-    private static final double SEARCH = MeteorLineTuning.MAX_RADIUS + 2.0;
+    /** 夜の核（エンティティ）は球のてっぺんにあるので、球の下の端にいても見つかるよう直径ぶん探す。 */
+    private static final double SEARCH = MeteorLineTuning.MAX_RADIUS * 2.0 + 2.0;
     /** How much of the way to the target darkness is covered per tick, so walking in and out does not snap. */
     private static final float EASE = 0.3F;
     private static final float SKY_FOG_END = 1.0F;

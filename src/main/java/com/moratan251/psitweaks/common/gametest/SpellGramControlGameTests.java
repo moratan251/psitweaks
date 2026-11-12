@@ -13,6 +13,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickRecallS
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickSoakZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
@@ -229,6 +230,42 @@ public final class SpellGramControlGameTests {
             float restoreLonger = PieceTrickExtendSpellGram.restoreAmount(longer.getMaxIntegrity(), 1.0, longer.getPlacementCost());
             helper.assertTrue(Math.abs(restorePlain - restoreLonger) < restorePlain * 1.0E-3F,
                     "The same Power must restore the same integrity whatever the time: " + restorePlain + " vs " + restoreLonger);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /** 耐久値の表示の狙い: 視線の先の核を選び、目をそらすか間にブロックがあれば選ばない（2026-11-12）。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_aim", timeoutTicks = 40)
+    public static void aimFindsTheCoreInSightOnly(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "spellgram_aim_caster", new Vec3(1.5, 1.0, 1.5));
+        ServerPlayer viewer = GameTestPlayers.inLevel(helper, "spellgram_aim_viewer", new Vec3(4.5, 1.0, 4.5));
+        BlockPos wall = new BlockPos(3, 2, 3);
+        Runnable cleanup = () -> {
+            helper.setBlock(wall, net.minecraft.world.level.block.Blocks.AIR);
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+            GameTestPlayers.remove(helper, viewer);
+        };
+        try {
+            SpellGramObject zone = placeSoak(caster, 3.0, null);
+            viewer.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, zone.position());
+            helper.assertTrue(com.moratan251.psitweaks.common.entities.SpellGram.SpellGramAim.aimedAt(level, viewer, 1.0F) == zone,
+                    "Looking at the core must pick the zone");
+            viewer.setYRot(viewer.getYRot() + 90.0F);
+            viewer.yRotO = viewer.getYRot();
+            viewer.setYHeadRot(viewer.getYRot());
+            viewer.yHeadRotO = viewer.getYRot();
+            helper.assertTrue(com.moratan251.psitweaks.common.entities.SpellGram.SpellGramAim.aimedAt(level, viewer, 1.0F) == null,
+                    "Looking away must pick nothing");
+            viewer.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, zone.position());
+            helper.setBlock(wall, net.minecraft.world.level.block.Blocks.STONE);
+            helper.assertTrue(com.moratan251.psitweaks.common.entities.SpellGram.SpellGramAim.aimedAt(level, viewer, 1.0F) == null,
+                    "A block in between must hide the core");
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);

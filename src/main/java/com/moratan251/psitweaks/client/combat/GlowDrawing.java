@@ -180,6 +180,16 @@ public final class GlowDrawing {
         rimSection(consumer, pose, center, radius, color, core, rim, alpha, stacks, stacks * 4, Mth.HALF_PI);
     }
 
+    /**
+     * A whole sphere as coarse as {@link #rimDome} (twice its stacks, for both halves): for the wide, faint ball of
+     * the Meteor Line night.
+     */
+    public static void rimGlobe(VertexConsumer consumer, Matrix4f pose, Vector3f center, float radius,
+                                int color, float core, float rim, int alpha) {
+        int stacks = Mth.clamp(Mth.ceil(radius * 2.0F), 8, 32);
+        rimSection(consumer, pose, center, radius, color, core, rim, alpha, stacks * 2, stacks * 4, Mth.PI);
+    }
+
     /** A sphere from its top down to the polar angle {@code maxPhi}, shaded like {@link #rimSphere}. */
     private static void rimSection(VertexConsumer consumer, Matrix4f pose, Vector3f center, float radius,
                                    int color, float core, float rim, int alpha, int stacks, int slices, float maxPhi) {

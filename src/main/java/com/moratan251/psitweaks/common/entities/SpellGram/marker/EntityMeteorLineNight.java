@@ -32,8 +32,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * 作動式: 流星群の夜。中心に置く目印型の魔法式オブジェクトで、半径 R の半球の夜を広げて内側の上のほうに星を灯し、
- * 星から光条（{@link EntityMeteorLineBeam}）を降らせてから晴れる。流れと数は {@link MeteorLineTuning}。
+ * 作動式: 流星群の夜。目印型の魔法式オブジェクトで、半径 R の球の夜を広げて内側の上のほうに星を灯し、星から光条
+ * （{@link EntityMeteorLineBeam}）を降らせてから晴れる。流れと数は {@link MeteorLineTuning}。
+ * <p>
+ * エンティティ（核）は球のてっぺん（中心から R 上）に置く（2026-11-12 ユーザー: 半球から球に変え、核を球の表面の上部へ）。
+ * 夜の中心は {@link #getCenter}（核から R 下）で、範囲・星・狙い・描画はすべてそこを基準にする。
  * <p>
  * 光条は斉射ごとに、夜の中にいる攻撃対象の生物（{@link AttackRules#canHarm}）それぞれへ最低1本を、その tick の体の中心へ
  * 向けて通し、残りを夜の中の地面へ降らせる。狙いと線の端点はサーバーで決め、光条のエンティティで送る。
@@ -78,9 +81,10 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         super(type, level);
     }
 
+    /** {@code center} を中心にした半径 {@code radius} の夜。エンティティ（核）は中心から {@code radius} 上に置く。 */
     public EntityMeteorLineNight(Level level, Vec3 center, double radius) {
         this(PsitweaksEntities.METEOR_LINE_NIGHT.get(), level);
-        setPos(center.x, center.y, center.z);
+        setPos(center.x, center.y + radius, center.z);
         entityData.set(RADIUS, (float) radius);
         entityData.set(SEED, level.getRandom().nextLong());
         entityData.set(CAST_TIME, level.getGameTime());
@@ -110,6 +114,11 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         return entityData.get(RADIUS);
     }
 
+    /** 夜の球の中心: 核（このエンティティの位置、球のてっぺん）から半径ぶん下。 */
+    public Vec3 getCenter() {
+        return position().subtract(0.0, getRadius(), 0.0);
+    }
+
     /** 術者の CAD の色（CAD がなければ Psi の既定の色）。 */
     public int getColor() {
         return entityData.get(COLOR);
@@ -128,21 +137,20 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         return spread * (1.0F - clear);
     }
 
-    /** 今の半球の半径。広がる間は小さく、はじめ速く後でゆっくり広がる。 */
+    /** 今の球の半径。広がる間は小さく、はじめ速く後でゆっくり広がる。 */
     public double getCurrentRadius(float partialTick) {
         float spread = Mth.clamp(getAge(partialTick) / MeteorLineTuning.SPREAD_TICKS, 0.0F, 1.0F);
         float rest = 1.0F - spread;
         return getRadius() * (1.0F - rest * rest * rest);
     }
 
-    /** 点が夜の中か。中心からの距離が半径以内で、中心より下は {@link MeteorLineTuning#BELOW_CENTER} まで。 */
+    /** 点が夜の中か: 球の中心からの距離が半径以内（下半分も含む）。 */
     public boolean contains(Vec3 point) {
         return contains(point, getRadius());
     }
 
     public boolean contains(Vec3 point, double radius) {
-        Vec3 center = position();
-        return point.y >= center.y - MeteorLineTuning.BELOW_CENTER && point.distanceToSqr(center) <= radius * radius;
+        return point.distanceToSqr(getCenter()) <= radius * radius;
     }
 
     /** 星の並び。種と半径だけで決まるので、サーバーとクライアントで同じになる。 */
@@ -158,7 +166,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
     }
 
     public Vec3 starPosition(Star star) {
-        return position().add(star.offset());
+        return getCenter().add(star.offset());
     }
 
     private static Star[] makeStars(long seed, double radius) {
@@ -209,7 +217,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
 
     @Override
     public @NotNull AABB getBoundingBoxForCulling() {
-        return new AABB(position(), position()).inflate(getRadius() * (1.0 + MeteorLineTuning.STAR_SCATTER) + 1.0);
+        return new AABB(getCenter(), getCenter()).inflate(getRadius() * (1.0 + MeteorLineTuning.STAR_SCATTER) + 1.0);
     }
 
     // ---- サーバー ----
@@ -226,7 +234,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
             return;
         }
         if (age == 0) {
-            CombatEffects.sound(level, position(), MeteorLineTuning.SPREAD_SOUND, MeteorLineTuning.SPREAD_VOLUME,
+            CombatEffects.sound(level, getCenter(), MeteorLineTuning.SPREAD_SOUND, MeteorLineTuning.SPREAD_VOLUME,
                     MeteorLineTuning.SPREAD_PITCH);
         }
         int sinceFall = age - MeteorLineTuning.FALL_START;
@@ -234,7 +242,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
             volley(level, caster, sinceFall / MeteorLineTuning.VOLLEY_INTERVAL);
         }
         if (age == MeteorLineTuning.CLEAR_START) {
-            CombatEffects.sound(level, position(), MeteorLineTuning.CLEAR_SOUND, MeteorLineTuning.CLEAR_VOLUME,
+            CombatEffects.sound(level, getCenter(), MeteorLineTuning.CLEAR_SOUND, MeteorLineTuning.CLEAR_VOLUME,
                     MeteorLineTuning.CLEAR_PITCH);
         }
         age++;
@@ -278,7 +286,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
 
     /** 夜の中にいて、まだ狙っていない（狙った光条が消えても倒れていない）攻撃対象。 */
     private List<LivingEntity> targets(LivingEntity caster) {
-        AABB box = new AABB(position(), position()).inflate(getRadius());
+        AABB box = new AABB(getCenter(), getCenter()).inflate(getRadius());
         return level().getEntitiesOfClass(LivingEntity.class, box, living -> canDamageEntity(caster, living)
                 && contains(CombatSpellHelper.center(living)) && !recentlyAimed(living));
     }
@@ -308,9 +316,10 @@ public class EntityMeteorLineNight extends SpellGramMarker {
     private Vec3 groundPoint(ServerLevel level) {
         double angle = random.nextDouble() * Mth.TWO_PI;
         double distance = Math.sqrt(random.nextDouble()) * getRadius() * MeteorLineTuning.GROUND_SPREAD;
-        double x = getX() + Math.cos(angle) * distance;
-        double z = getZ() + Math.sin(angle) * distance;
-        return new Vec3(x, groundY(level, x, getY(), z), z);
+        Vec3 center = getCenter();
+        double x = center.x + Math.cos(angle) * distance;
+        double z = center.z + Math.sin(angle) * distance;
+        return new Vec3(x, groundY(level, x, center.y, z), z);
     }
 
     /**
@@ -340,7 +349,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
 
     /** {@code start}（球の中）から {@code direction}（長さ1）へ進んで、夜の球（半径 R）を出るまでの距離。 */
     private double exitDistance(Vec3 start, Vec3 direction) {
-        Vec3 relative = start.subtract(position());
+        Vec3 relative = start.subtract(getCenter());
         double radius = getRadius();
         double b = relative.dot(direction);
         double discriminant = b * b - (relative.lengthSqr() - radius * radius);
@@ -368,9 +377,10 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         }
         beams.clear();
         if (reason == EndReason.DESTROYED && level() instanceof ServerLevel level) {
-            CombatEffects.sound(level, position(), MeteorLineTuning.COLLAPSE_SOUND, 1.2F, 0.6F);
+            Vec3 center = getCenter();
+            CombatEffects.sound(level, center, MeteorLineTuning.COLLAPSE_SOUND, 1.2F, 0.6F);
             double spread = getRadius() * 0.4;
-            level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + getRadius() * 0.5, getZ(), 40, spread, spread * 0.5,
+            level.sendParticles(ParticleTypes.END_ROD, center.x, center.y + getRadius() * 0.5, center.z, 40, spread, spread * 0.5,
                     spread, 0.05);
         }
     }

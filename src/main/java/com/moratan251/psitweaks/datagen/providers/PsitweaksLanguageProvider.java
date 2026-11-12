@@ -114,6 +114,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "領域干渉";
             default -> "Interference Zone";
         });
+        root.addProperty("entity.psitweaks.flare_circle", switch (locale) {
+            case "ja_jp" -> "ファイアサークル";
+            default -> "Fire Circle";
+        });
+        root.addProperty("entity.psitweaks.ice_circle", switch (locale) {
+            case "ja_jp" -> "アイスサークル";
+            default -> "Ice Circle";
+        });
         root.addProperty("entity.psitweaks.charged_zone", switch (locale) {
             case "ja_jp" -> "荷電領域";
             default -> "Charged Zone";
@@ -411,6 +419,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "指定位置の下に地面がありません";
             default -> "No ground below the position";
         });
+        root.addProperty("psitweaks.hud.spellgram_integrity", switch (locale) {
+            case "ja_jp" -> "%s　耐久値 %s / %s";
+            default -> "%s  Integrity %s / %s";
+        });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が魔法式オブジェクトではありません。";
             default -> "Error: The target is not a SpellGram object.";
@@ -607,6 +619,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Barrier Shield Bar", "障壁シールドのバー",
                 "Show the remaining shield and time of Trick: Barrier above the health bar.",
                 "作動式: 障壁のシールド残量と残り時間を体力ゲージの上に表示します。");
+        addConfigValue(root, "psitweaks.configuration.effects.spellgram_integrity_hud",
+                "SpellGram Integrity", "魔法式オブジェクトの耐久値",
+                "Show the name and remaining integrity of the SpellGram object whose core you aim at, below the crosshair.",
+                "照準を合わせた魔法式オブジェクトの核の、名前と残りの耐久値をクロスヘアの下に表示します。");
         addConfigValue(root, "psitweaks.configuration.effects.meteor_line_night",
                 "Meteor Line Night", "流星群の夜",
                 "Darken the view while you stand in the night of Trick: Meteor Line.",
@@ -2016,11 +2032,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
         addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration.", "超音波振動による高威力の熱線を放ちます.");
         addBookPage(root, "trick_meteor_line.0",
-                "Spreads a hemisphere of night over the position, with a radius of $(thing)Radius$(0) blocks (16 to 32, 16 if left out). Stars light up in its dome, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
-                "指定位置を中心に、$(thing)半径$(0) ブロック (16〜32、省略時は16) の半球の夜を広げます. 夜の天井に星が灯り、1秒後から1秒間、星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい、残りは地面に落ちます.");
+                "Spreads a sphere of night around the position, with a radius of $(thing)Radius$(0) blocks (16 to 32, 16 if left out). Stars light up in its upper half, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
+                "指定位置を中心に、$(thing)半径$(0) ブロック (16〜32、省略時は16) の球の夜を広げます. 夜の上半分に星が灯り、1秒後から1秒間、星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい、残りは地面に落ちます.");
         addBookPage(root, "trick_meteor_line.1",
-                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object: if its integrity runs out, it collapses and its streaks vanish with it.",
-                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、強度が尽きるとつぶれ、光条も一緒に消えます.");
+                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object whose core sits at the top of the sphere: if its integrity runs out, it collapses and its streaks vanish with it.",
+                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、核は球のてっぺんにあります. 強度が尽きるとつぶれ、光条も一緒に消えます.");
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
         addBookPage(root, "trick_aqua_cutter",

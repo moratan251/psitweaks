@@ -1329,6 +1329,15 @@ public final class CombatSpellGameTests {
      * structure, so the tests of how the night strikes place smaller nights; the trick's own range is checked by
      * {@link #meteorLineKeepsTheRadiusWithinItsRange}.
      */
+    /**
+     * 中心が {@code center} の流星群の夜（台帳から）。夜のエンティティ（核）は球のてっぺんにあるので、エンティティの位置ではなく
+     * 球の中心で探す（2026-11-12）。
+     */
+    private static List<EntityMeteorLineNight> nightsAround(ServerLevel level, Vec3 center) {
+        return SpellGramIndex.all(level, EntityMeteorLineNight.class).stream()
+                .filter(night -> night.getCenter().distanceToSqr(center) <= 0.25).toList();
+    }
+
     private static EntityMeteorLineNight night(GameTestHelper helper, LivingEntity caster, Vec3 center, double radius) {
         EntityMeteorLineNight night = new EntityMeteorLineNight(helper.getLevel(), center, radius);
         night.configure(caster, AttackRules.Options.DEFAULT);
@@ -1380,8 +1389,7 @@ public final class CombatSpellGameTests {
                     values.put(RADIUS, radiusCase[0]);
                 }
                 meteorLine(values).execute(new SpellContext().setPlayer(player));
-                List<EntityMeteorLineNight> nights = level.getEntitiesOfClass(EntityMeteorLineNight.class,
-                        new AABB(center, center).inflate(0.5));
+                List<EntityMeteorLineNight> nights = nightsAround(level, center);
                 helper.assertTrue(nights.size() == 1, "One night expected, found " + nights.size());
                 // End it before it ticks, so a night this wide never rains on other tests.
                 double radius = nights.get(0).getRadius();
@@ -1556,7 +1564,7 @@ public final class CombatSpellGameTests {
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
         night(helper, player, center, 3.0);
-        List<EntityMeteorLineNight> nights = SpellGramIndex.near(level, center, 0.5, EntityMeteorLineNight.class);
+        List<EntityMeteorLineNight> nights = nightsAround(level, center);
         if (nights.size() != 1) {
             cleanup.run();
             throw new GameTestAssertException("The night must be in the SpellGram index, found " + nights.size());
@@ -1589,9 +1597,13 @@ public final class CombatSpellGameTests {
         Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
         night(helper, player, center, 3.0);
         helper.runAfterDelay(MeteorLineTuning.FALL_START + 4, guarded(cleanup, () -> {
-            List<EntityMeteorLineNight> nights = SpellGramIndex.near(level, center, 0.5, EntityMeteorLineNight.class);
+            List<EntityMeteorLineNight> nights = nightsAround(level, center);
             helper.assertTrue(nights.size() == 1, "The night must be in the SpellGram index, found " + nights.size());
             EntityMeteorLineNight night = nights.get(0);
+            // 夜は球で、核（エンティティ）は球のてっぺん（2026-11-12）。
+            helper.assertTrue(near(night.getY(), center.y + night.getRadius()) && night.contains(center.subtract(0.0, night.getRadius() * 0.8, 0.0))
+                            && !night.contains(center.subtract(0.0, night.getRadius() * 1.2, 0.0)),
+                    "The night must be a sphere with its core at the top: core y " + night.getY() + ", center y " + center.y);
             List<EntityMeteorLineBeam> beams = night.getBeams();
             helper.assertTrue(!beams.isEmpty(), "Streaks must be falling by now");
             // 耐久値は時間とともに一定の割合で減るが、夜が 3.5 秒で減らす分は置いたときの耐久値の 5 分の 1 だけ。
@@ -1608,7 +1620,7 @@ public final class CombatSpellGameTests {
             night.reduceIntegrity(max);
             helper.assertTrue(night.isRemoved(), "The night must collapse when its integrity runs out");
             helper.assertTrue(beams.stream().allMatch(Entity::isRemoved), "The streaks must vanish with the night");
-            helper.assertTrue(SpellGramIndex.near(level, center, 0.5).isEmpty(), "A collapsed night must leave the index");
+            helper.assertTrue(nightsAround(level, center).isEmpty(), "A collapsed night must leave the index");
         }));
         helper.runAfterDelay(MeteorLineTuning.FALL_START + 10, guarded(cleanup, () -> {
             helper.assertTrue(level.getEntitiesOfClass(EntityMeteorLineBeam.class, new AABB(center, center).inflate(4.0)).isEmpty(),
