@@ -66,6 +66,11 @@ public final class AutonomousCasterSettings {
         return Math.max(0.0D, safeDouble(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeInterference.get(), 0.3D));
     }
 
+    /** 干渉距離アップグレードで延びる、機械が詠唱する術式の射程（ブロック）。 */
+    public static int upgradeRange() {
+        return Math.max(0, safeInt(() -> PsitweaksConfig.COMMON.autonomousCasterUpgradeRange.get(), 32));
+    }
+
     public static long echoTankCapacity() {
         return Math.max(1L, safeLong(() -> PsitweaksConfig.COMMON.autonomousCasterEchoTankCapacity.get(), 8_000L));
     }

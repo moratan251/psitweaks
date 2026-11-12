@@ -22,6 +22,11 @@ public interface AutonomousCasterHost {
     /** 詠唱コストの支払いに使える内部 Psi。 */
     int availablePsi();
 
+    /** 干渉距離アップグレードで術式の射程に足すブロック数。入っていなければ 0。 */
+    default int spellRangeBonus() {
+        return 0;
+    }
+
     /** 詠唱主体を焦点とする「Trick: Break Loop」が止める値（-1 より大きく 1 より小さい）で実行されたとき。 */
     void onBreakLoop();
 

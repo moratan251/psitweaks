@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
 import com.moratan251.psitweaks.common.caster.CasterIds;
+import com.moratan251.psitweaks.common.spells.SpellRange;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
@@ -96,16 +97,16 @@ public final class CombatSpellHelper {
     }
 
     /**
-     * The creature under the caster's crosshair: the first living entity the caster's line of sight meets, out to Psi's
-     * spell range and within {@link SpellContext#isInRadius}. Solid blocks stop the line; blocks without collision
-     * (grass, flowers) and entities that are not alive in the first place (item frames, boats) do not. Null when there
-     * is none.
+     * The creature under the caster's crosshair: the first living entity the caster's line of sight meets, out to the
+     * caster's spell range ({@link SpellRange#maxDistance}) and within {@link SpellContext#isInRadius}. Solid blocks stop
+     * the line; blocks without collision (grass, flowers) and entities that are not alive in the first place (item
+     * frames, boats) do not. Null when there is none.
      */
     @Nullable
     public static LivingEntity aimedCreature(SpellContext context) {
-        LivingEntity caster = context.caster;
+        Player caster = context.caster;
         Vec3 eye = caster.getEyePosition();
-        Vec3 end = eye.add(caster.getLookAngle().scale(SpellContext.MAX_DISTANCE));
+        Vec3 end = eye.add(caster.getLookAngle().scale(SpellRange.maxDistance(caster)));
         HitResult block = caster.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
         if (block.getType() != HitResult.Type.MISS) {
             end = block.getLocation();

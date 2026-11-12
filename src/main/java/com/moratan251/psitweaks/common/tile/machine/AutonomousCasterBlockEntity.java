@@ -96,6 +96,7 @@ import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.cad.ICAD;
 import vazkii.psi.api.spell.ISpellAcceptor;
 import vazkii.psi.api.spell.Spell;
+import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.common.attribute.base.ModAttributes;
 import vazkii.psi.common.core.handler.PlayerData;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
@@ -109,7 +110,8 @@ import vazkii.psi.common.item.ItemLoopcastSpellBullet;
  * （ホットバーと残りの27枠）へ写像し、術式による消費・変化を毎 tick 書き戻す。Caster 宛てのメッセージは作動ログへ集める。
  * <p>
  * アップグレードスロット（{@link #UPGRADE_SLOTS} 個）に入れた {@link AutonomousCasterUpgrade} が、内蔵 CAD の性能値・内部 Psi の
- * 容量と回復・詠唱主体の事象干渉力を上げる。
+ * 容量と回復・詠唱主体の事象干渉力・術式の射程を上げる。射程は {@code SpellContextRangeMixin} が詠唱主体から
+ * {@link AutonomousCasterHost#spellRangeBonus} を引いて延ばす。
  */
 public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine implements AutonomousCasterHost, IHasVisualization {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -720,8 +722,8 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     /**
-     * アップグレード窓に出す、種類が上げる性能の今の値。CAD の性能値・内部 Psi の容量・1 tick の回復量はそのまま、
-     * Psi 1 あたりのエコー消費は mB の100倍、事象干渉力は百分率にする。
+     * アップグレード窓に出す、種類が上げる性能の今の値。CAD の性能値・内部 Psi の容量・1 tick の回復量・射程（ブロック）は
+     * そのまま、Psi 1 あたりのエコー消費は mB の100倍、事象干渉力は百分率にする。
      */
     private int statValue(AutonomousCasterUpgrade upgrade) {
         return switch (upgrade) {
@@ -729,6 +731,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             case CONVERSION_SPEED -> psiPerTick();
             case CONVERSION_EFFICIENCY -> (int) Math.round(echoPerPsi() * 100.0D);
             case INTERFERENCE -> (int) Math.round((1.0D + interferenceBonus()) * 100.0D);
+            case RANGE -> (int) SpellContext.MAX_DISTANCE + spellRangeBonus();
             default -> VirtualCad.BASE_STATS.getOrDefault(upgrade.cadStat(), 0) + statBonus(upgrade);
         };
     }
@@ -743,6 +746,7 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
             case CONVERSION_SPEED -> psiPerTick() - AutonomousCasterSettings.psiPerOperation();
             case CONVERSION_EFFICIENCY -> (int) Math.round((AutonomousCasterSettings.echoPerPsi() - echoPerPsi()) * 100.0D);
             case INTERFERENCE -> (int) Math.round(interferenceBonus() * 100.0D);
+            case RANGE -> spellRangeBonus();
             default -> AutonomousCasterSettings.cadStatBonus(upgrade);
         };
     }
@@ -1094,6 +1098,11 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     @Override
     public int availablePsi() {
         return psi;
+    }
+
+    @Override
+    public int spellRangeBonus() {
+        return hasCasterUpgrade(AutonomousCasterUpgrade.RANGE) ? AutonomousCasterSettings.upgradeRange() : 0;
     }
 
     @Override
@@ -1702,6 +1711,15 @@ public class AutonomousCasterBlockEntity extends TileEntityConfigurableMachine i
     }
 
     // ---- 視線の表示（クライアント） ----
+
+    /**
+     * 機械が詠唱する術式の射程（ブロック）。視線の線の長さに使う。クライアントでは GUI を開いたときに同期した値で、
+     * まだ届いていなければ基本の射程。
+     */
+    public double getSpellRange() {
+        int range = getStatValue(AutonomousCasterUpgrade.RANGE);
+        return range > 0 ? range : SpellContext.MAX_DISTANCE;
+    }
 
     @Override
     public boolean isClientRendering() {

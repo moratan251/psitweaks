@@ -26,7 +26,9 @@ public enum AutonomousCasterUpgrade {
     /** サイオン変換効率アップグレード（Psi 1 あたりのエコー消費を減らす）。 */
     CONVERSION_EFFICIENCY(null),
     /** 事象干渉力アップグレード（機械の詠唱主体の事象干渉力）。 */
-    INTERFERENCE(null);
+    INTERFERENCE(null),
+    /** 干渉距離アップグレード（機械が詠唱する術式の射程）。 */
+    RANGE(null);
 
     private static final String ITEM_PREFIX = "autonomous_caster_upgrade_";
 
@@ -46,7 +48,7 @@ public enum AutonomousCasterUpgrade {
         return ITEM_PREFIX + id();
     }
 
-    /** 上げる内蔵 CAD の性能値。Psi の回復や事象干渉力を上げる種類は null。 */
+    /** 上げる内蔵 CAD の性能値。Psi の回復・事象干渉力・射程を上げる種類は null。 */
     @Nullable
     public EnumCADStat cadStat() {
         return cadStat;

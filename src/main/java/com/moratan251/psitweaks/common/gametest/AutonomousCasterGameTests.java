@@ -1192,6 +1192,15 @@ public final class AutonomousCasterGameTests {
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void autonomousCasterRangeUpgradeExtendsSpellRange(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        AutonomousCasterChecks.rangeUpgradeExtendsSpellRange(helper);
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void autonomousCasterKeepsContentsWhenBroken(GameTestHelper helper) {
         if (!MekanismCompat.isMekanismLoaded()) {
             helper.succeed();

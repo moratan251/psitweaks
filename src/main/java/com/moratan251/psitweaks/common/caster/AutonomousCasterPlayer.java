@@ -80,6 +80,12 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
         return current == null ? 0 : Math.max(0, current.availablePsi());
     }
 
+    /** 干渉距離アップグレードで術式の射程に足すブロック数。機械から外れた後は 0（基本の射程に戻る）。 */
+    public int spellRangeBonus() {
+        AutonomousCasterHost current = host;
+        return current == null ? 0 : Math.max(0, current.spellRangeBonus());
+    }
+
     /** Trick: Break Loop の mixin から呼ばれる。機械のループ回数を 0 に戻す。 */
     public void breakLoop() {
         AutonomousCasterHost current = host;

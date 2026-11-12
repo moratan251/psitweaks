@@ -44,6 +44,7 @@ public class ItemAutonomousCasterUpgrade extends Item {
             case CONVERSION_SPEED -> Integer.toString(AutonomousCasterSettings.upgradeConversionSpeed());
             case CONVERSION_EFFICIENCY -> decimal(AutonomousCasterSettings.upgradeConversionEfficiency());
             case INTERFERENCE -> decimal(AutonomousCasterSettings.upgradeInterference() * 100.0D);
+            case RANGE -> Integer.toString(AutonomousCasterSettings.upgradeRange());
             default -> Integer.toString(AutonomousCasterSettings.cadStatBonus(upgrade));
         };
     }

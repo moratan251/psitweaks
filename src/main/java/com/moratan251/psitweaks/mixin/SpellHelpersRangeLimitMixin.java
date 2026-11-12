@@ -1,8 +1,6 @@
 package com.moratan251.psitweaks.mixin;
 
-import com.moratan251.psitweaks.common.items.curios.CuriosSlotChecker;
-import com.moratan251.psitweaks.common.items.curios.ItemInterferenceRangeExtender;
-import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
+import com.moratan251.psitweaks.common.spells.SpellRange;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -11,11 +9,9 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.api.spell.SpellParam;
 
+/** レイキャストのピースの長さの上限を、術者の射程（{@link SpellRange#reach}）まで延ばす。 */
 @Mixin(value = SpellHelpers.class, remap = false)
 public abstract class SpellHelpersRangeLimitMixin {
-    private static final double INTERFERENCE_RAYCAST_RANGE = 64.0D;
-    private static final double THIRD_EYE_RAYCAST_RANGE = 256.0D;
-
     @ModifyVariable(method = "rangeLimitParam", at = @At("HEAD"), index = 3, argsOnly = true)
     private static double psitweaks$extendRangeLimit(
             double defaultLimit,
@@ -27,12 +23,6 @@ public abstract class SpellHelpersRangeLimitMixin {
         if (context == null || context.caster == null) {
             return defaultLimit;
         }
-        if (CuriosSlotChecker.hasItemInMagicSlot(context.caster, ItemThirdEyeDevice.class)) {
-            return THIRD_EYE_RAYCAST_RANGE;
-        }
-        if (CuriosSlotChecker.hasItemInMagicSlot(context.caster, ItemInterferenceRangeExtender.class)) {
-            return INTERFERENCE_RAYCAST_RANGE;
-        }
-        return defaultLimit;
+        return SpellRange.reach(context.caster, defaultLimit);
     }
 }

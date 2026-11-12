@@ -20,7 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.Slot;
 
 /**
- * 自律詠唱機のアップグレード窓。アップグレードスロット3つと、アップグレードで上がる9つの性能の今の値を並べる。
+ * 自律詠唱機のアップグレード窓。アップグレードスロット3つと、アップグレードで上がる性能（種類ごとに1つ）の今の値を並べる。
  * アップグレードで上がった分は値の後ろに書き足す。
  */
 public class GuiAutonomousCasterUpgrades extends GuiWindow {

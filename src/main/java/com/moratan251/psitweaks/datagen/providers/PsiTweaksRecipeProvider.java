@@ -671,6 +671,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         materials.put(AutonomousCasterUpgrade.CONVERSION_SPEED, PsitweaksItems.NANO_REACTOR);
         materials.put(AutonomousCasterUpgrade.CONVERSION_EFFICIENCY, PsitweaksItems.DIMENSIONAL_CRYSTAL);
         materials.put(AutonomousCasterUpgrade.INTERFERENCE, PsitweaksItems.SORCERY_BOOSTER);
+        materials.put(AutonomousCasterUpgrade.RANGE, PsitweaksItems.INTERFERENCE_RANGE_EXTENDER);
         materials.forEach((upgrade, material) -> recipe(recipes, upgrade.itemId(), shaped(
                 List.of(" G ", "AMA", " G "),
                 Map.of(

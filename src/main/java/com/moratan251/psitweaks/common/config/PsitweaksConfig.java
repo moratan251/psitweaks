@@ -69,6 +69,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.IntValue autonomousCasterUpgradeConversionSpeed;
         public final ModConfigSpec.DoubleValue autonomousCasterUpgradeConversionEfficiency;
         public final ModConfigSpec.DoubleValue autonomousCasterUpgradeInterference;
+        public final ModConfigSpec.IntValue autonomousCasterUpgradeRange;
         // イデアストレージ関連
         public final ModConfigSpec.IntValue ideaStorageMaxItemTypes;
         public final ModConfigSpec.IntValue ideaStorageItemStacksPerType;
@@ -611,6 +612,13 @@ public class PsitweaksConfig {
                             "Phenomenon Interference added to the machine's caster by the Phenomenon Interference Upgrade (0.3 is +30%)")
                     .translation("psitweaks.configuration.autonomous_caster.upgrade_interference")
                     .defineInRange("upgradeInterference", 0.3D, 0.0D, 100.0D);
+
+            // 上限は、射程（基本 32）とレイキャストの長さがサードアイデバイスのレイキャスト（256）を超えない値にする。
+            autonomousCasterUpgradeRange = builder
+                    .comment("干渉距離アップグレードで延びる、機械が詠唱する術式の射程（ブロック）。基本の射程は32です",
+                            "Spell range (blocks) added by the Interference Range Upgrade. The base range is 32")
+                    .translation("psitweaks.configuration.autonomous_caster.upgrade_range")
+                    .defineInRange("upgradeRange", 32, 0, 224);
 
             builder.pop(); // autonomousCaster カテゴリ終了
 

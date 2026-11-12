@@ -2,9 +2,7 @@ package com.moratan251.psitweaks.mixin;
 
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
-import com.moratan251.psitweaks.common.items.curios.CuriosSlotChecker;
-import com.moratan251.psitweaks.common.items.curios.ItemInterferenceRangeExtender;
-import com.moratan251.psitweaks.common.items.curios.ItemThirdEyeDevice;
+import com.moratan251.psitweaks.common.spells.SpellRange;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -13,14 +11,16 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import vazkii.psi.api.internal.SpatialHelper;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 
+/**
+ * 術式の射程の判定。他者の領域干渉の中は対象にできず、射程は {@link SpellRange}（干渉距離延長デバイス・サードアイデバイス・
+ * 自律詠唱機の干渉距離アップグレード）で延びる。
+ */
 @Mixin(value = SpellContext.class, remap = false)
 public abstract class SpellContextRangeMixin {
-    private static final double INTERFERENCE_RANGE = 64.0D;
-    private static final double INTERFERENCE_RANGE_SQUARED = INTERFERENCE_RANGE * INTERFERENCE_RANGE;
-
     @Shadow
     public Player caster;
 
@@ -32,23 +32,7 @@ public abstract class SpellContextRangeMixin {
         if (vec == null) {
             return;
         }
-        if (psitweaks$interfered(vec.x, vec.y, vec.z)) {
-            cir.setReturnValue(false);
-            return;
-        }
-        if (psitweaks$hasThirdEyeDevice()) {
-            cir.setReturnValue(true);
-            return;
-        }
-        Boolean interferenceRangeResult = psitweaks$isInInterferenceRange(vec.x, vec.y, vec.z);
-        if (interferenceRangeResult != null) {
-            cir.setReturnValue(interferenceRangeResult);
-            return;
-        }
-        Boolean sableResult = SableRangeCompat.isInRadius(focalPoint, vec.x, vec.y, vec.z);
-        if (sableResult != null) {
-            cir.setReturnValue(sableResult);
-        }
+        psitweaks$checkRange(vec.x, vec.y, vec.z, cir);
     }
 
     @Inject(method = "isInRadius(Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
@@ -61,24 +45,29 @@ public abstract class SpellContextRangeMixin {
                 return;
             }
         }
-        if (entity != null && psitweaks$hasThirdEyeDevice()) {
+        if (entity != null && SpellRange.ignoresRange(caster)) {
             cir.setReturnValue(true);
         }
+        // ほかは Psi が isInRadius(DDD) へ回すので、延びた射程はそちらで見る。
     }
 
     @Inject(method = "isInRadius(DDD)Z", at = @At("HEAD"), cancellable = true)
     private void psitweaks$extendCoordinateRange(double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
+        psitweaks$checkRange(x, y, z, cir);
+    }
+
+    private void psitweaks$checkRange(double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
         if (psitweaks$interfered(x, y, z)) {
             cir.setReturnValue(false);
             return;
         }
-        if (psitweaks$hasThirdEyeDevice()) {
+        if (SpellRange.ignoresRange(caster)) {
             cir.setReturnValue(true);
             return;
         }
-        Boolean interferenceRangeResult = psitweaks$isInInterferenceRange(x, y, z);
-        if (interferenceRangeResult != null) {
-            cir.setReturnValue(interferenceRangeResult);
+        Boolean extended = psitweaks$isInExtendedRange(x, y, z);
+        if (extended != null) {
+            cir.setReturnValue(extended);
             return;
         }
         Boolean sableResult = SableRangeCompat.isInRadius(focalPoint, x, y, z);
@@ -96,20 +85,18 @@ public abstract class SpellContextRangeMixin {
                 && EntityInterferenceZone.blocks(caster.level(), x, y, z, caster);
     }
 
-    private boolean psitweaks$hasThirdEyeDevice() {
-        return caster != null && CuriosSlotChecker.hasItemInMagicSlot(caster, ItemThirdEyeDevice.class);
-    }
-
-    private Boolean psitweaks$isInInterferenceRange(double x, double y, double z) {
-        if (caster == null
-                || focalPoint == null
-                || !CuriosSlotChecker.hasItemInMagicSlot(caster, ItemInterferenceRangeExtender.class)) {
+    /**
+     * 射程が Psi の射程より延びているときの判定。距離は Psi と同じく焦点からで、Sable の機体の中の点も Psi と同じ
+     * {@link SpatialHelper} で測る。延びていなければ null（Psi の判定に任せる）。
+     */
+    private Boolean psitweaks$isInExtendedRange(double x, double y, double z) {
+        if (caster == null || focalPoint == null) {
             return null;
         }
-        Boolean sableResult = SableRangeCompat.isInRadius(focalPoint, x, y, z, INTERFERENCE_RANGE);
-        if (sableResult != null) {
-            return sableResult;
+        double range = SpellRange.maxDistance(caster);
+        if (range <= SpellContext.MAX_DISTANCE) {
+            return null;
         }
-        return focalPoint.distanceToSqr(x, y, z) <= INTERFERENCE_RANGE_SQUARED;
+        return SpatialHelper.distanceSquared(focalPoint.level(), x, y, z, focalPoint.position()) <= range * range;
     }
 }

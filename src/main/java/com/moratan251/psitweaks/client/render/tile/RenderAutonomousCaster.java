@@ -17,15 +17,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import vazkii.psi.api.spell.SpellContext;
 
 /**
  * 自律詠唱機の視線。GUI のタブで表示をオンにした機械だけ、詠唱主体の目の位置から視線の先へ線を引き、
  * 視線が当たったブロックを枠で囲む。
  */
 public class RenderAutonomousCaster extends MekanismTileEntityRenderer<AutonomousCasterBlockEntity> {
-    /** 線を引く長さ。術式が届く距離に合わせる。 */
-    private static final double RANGE = SpellContext.MAX_DISTANCE;
     private static final float RED = 0.37F;
     private static final float GREEN = 0.72F;
     private static final float BLUE = 1.0F;
@@ -42,7 +39,8 @@ public class RenderAutonomousCaster extends MekanismTileEntityRenderer<Autonomou
             return;
         }
         Vec3 eye = caster.eyePosition();
-        Vec3 end = eye.add(caster.lookVector().scale(RANGE));
+        // 線を引く長さは、機械が詠唱する術式の射程（干渉距離アップグレードで延びる）に合わせる。
+        Vec3 end = eye.add(caster.lookVector().scale(caster.getSpellRange()));
         BlockHitResult hit = level.clip(new ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE,
                 CollisionContext.empty()));
         boolean hitBlock = hit.getType() == HitResult.Type.BLOCK;
@@ -83,8 +81,8 @@ public class RenderAutonomousCaster extends MekanismTileEntityRenderer<Autonomou
     @Override
     public AABB getRenderBoundingBox(AutonomousCasterBlockEntity caster) {
         if (caster.isClientRendering()) {
-            // 視線は機械から最大 RANGE 先まで伸びる。
-            return new AABB(caster.getBlockPos()).inflate(RANGE + 1.0D);
+            // 視線は機械から最大で射程の先まで伸びる。
+            return new AABB(caster.getBlockPos()).inflate(caster.getSpellRange() + 1.0D);
         }
         return super.getRenderBoundingBox(caster);
     }

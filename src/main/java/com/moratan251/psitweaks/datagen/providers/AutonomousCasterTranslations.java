@@ -136,6 +136,7 @@ final class AutonomousCasterTranslations {
         put(window + "stat.conversion_speed", "Psi Conversion: %s/t", "Psi変換速度: %s/t");
         put(window + "stat.conversion_efficiency", "Echo per Psi: %s mB", "Psi変換効率: %s mB/Psi");
         put(window + "stat.interference", "Interference: %s%%", "事象干渉力: %s%%");
+        put(window + "stat.range", "Range: %s blocks", "射程: %sブロック");
         put(window + "increase", "(+%s)", "(+%s)");
         put(window + "decrease", "(-%s)", "(-%s)");
 
@@ -149,6 +150,7 @@ final class AutonomousCasterTranslations {
         put(tooltip + "conversion_speed", "Psi conversion +%s/t", "Psi変換速度 +%s/t");
         put(tooltip + "conversion_efficiency", "Echo per Psi -%s mB", "Psi 1あたりのエコー消費 -%s mB");
         put(tooltip + "interference", "Phenomenon Interference +%s%%", "事象干渉力 +%s%%");
+        put(tooltip + "range", "Spell range +%s blocks", "術式の射程 +%sブロック");
         put(tooltip + "usage",
                 "Install from the Upgrades tab of an Autonomous Caster. One of each kind per machine",
                 "自律詠唱機のアップグレードタブから搭載します。同じ種類は1台に1つまでです");
@@ -235,6 +237,9 @@ final class AutonomousCasterTranslations {
         configValue("upgrade_interference", "Phenomenon Interference Upgrade", "事象干渉力アップグレード",
                 "Phenomenon Interference the upgrade adds to the machine's caster (0.3 is +30%%).",
                 "アップグレードで詠唱主体の事象干渉力に足す値です（0.3で+30%%）。");
+        configValue("upgrade_range", "Interference Range Upgrade", "干渉距離アップグレード",
+                "Spell range (blocks) the upgrade adds to spells the machine casts. The base range is 32.",
+                "アップグレードで延びる、機械が詠唱する術式の射程（ブロック）です。基本の射程は32です。");
     }
 
     private void configValue(String id, String enUs, String jaJp, String enUsTooltip, String jaJpTooltip) {

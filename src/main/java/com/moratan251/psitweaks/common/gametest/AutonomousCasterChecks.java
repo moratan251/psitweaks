@@ -14,6 +14,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksMekanismItems;
 import com.moratan251.psitweaks.common.network.MessageAutonomousCasterAction.Action;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismContainerTypes;
+import com.moratan251.psitweaks.common.spells.SpellRange;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorAutonomousCasterPosition;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.MassBlockBreakScheduler;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
@@ -797,6 +798,52 @@ final class AutonomousCasterChecks {
                         "The upgrade window would show other recovery values");
                 helper.succeed();
             });
+        });
+    }
+
+    /**
+     * 干渉距離アップグレードで、機械の詠唱主体の術式の射程（射程の判定とレイキャストの長さ）が延び、外すと戻る。
+     * ほかの術者の射程は変わらない。
+     */
+    static void rangeUpgradeExtendsSpellRange(GameTestHelper helper) {
+        AutonomousCasterBlockEntity caster = place(helper);
+        helper.runAfterDelay(2, () -> {
+            AutonomousCasterPlayer fake = caster.getCaster();
+            helper.assertTrue(fake != null, "The machine did not prepare its caster");
+            double base = SpellContext.MAX_DISTANCE;
+            int bonus = AutonomousCasterSettings.upgradeRange();
+            helper.assertTrue(bonus >= 8, "The test expects the default range bonus, not " + bonus);
+            SpellContext context = new SpellContext().setPlayer(fake);
+            Vec3 origin = fake.position();
+            Vector3 justOutside = Vector3.fromVec3d(origin.add(base + 4.0D, 0.0D, 0.0D));
+            Vector3 nearTheEdge = Vector3.fromVec3d(origin.add(0.0D, 0.0D, -(base + bonus - 1.0D)));
+            Vector3 beyond = Vector3.fromVec3d(origin.add(base + bonus + 1.0D, 0.0D, 0.0D));
+            helper.assertTrue(!context.isInRadius(justOutside) && SpellRange.reach(fake, base) == base
+                            && caster.getStatValue(AutonomousCasterUpgrade.RANGE) == (int) base
+                            && caster.getStatBonus(AutonomousCasterUpgrade.RANGE) == 0,
+                    "The machine's spells reach past Psi's range without the upgrade");
+
+            caster.getCasterUpgradeSlots().get(0).setStack(upgrade(AutonomousCasterUpgrade.RANGE));
+            helper.assertTrue(context.isInRadius(justOutside)
+                            && context.isInRadius(nearTheEdge.x, nearTheEdge.y, nearTheEdge.z)
+                            && !context.isInRadius(beyond),
+                    "The range upgrade did not extend the range check to " + (base + bonus) + " blocks");
+            helper.assertTrue(SpellRange.reach(fake, base) == base + bonus && SpellRange.maxDistance(fake) == base + bonus,
+                    "The range upgrade did not lengthen raycasts: " + SpellRange.reach(fake, base));
+            helper.assertTrue(caster.getStatValue(AutonomousCasterUpgrade.RANGE) == (int) base + bonus
+                            && caster.getStatBonus(AutonomousCasterUpgrade.RANGE) == bonus
+                            && caster.getSpellRange() == base + bonus,
+                    "The upgrade window and the line of sight would show another range");
+
+            FakePlayer other = player(helper);
+            other.setPos(origin);
+            helper.assertTrue(!new SpellContext().setPlayer(other).isInRadius(justOutside),
+                    "Another caster got the machine's range");
+
+            caster.getCasterUpgradeSlots().get(0).setEmpty();
+            helper.assertTrue(!context.isInRadius(justOutside) && SpellRange.reach(fake, base) == base,
+                    "The range stayed after the upgrade was removed");
+            helper.succeed();
         });
     }
 

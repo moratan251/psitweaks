@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
+import com.moratan251.psitweaks.common.spells.SpellRange;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -70,7 +71,7 @@ final class CasterAxialBasis {
                 context.caster,
                 origin,
                 look,
-                SpellContext.MAX_DISTANCE,
+                SpellRange.maxDistance(context.caster),
                 RaycastHelper.Mode.NORMAL
         );
         if (hit.getType() == HitResult.Type.MISS) {

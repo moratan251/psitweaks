@@ -125,6 +125,7 @@ final class PsitweaksDatagenItems {
             item("autonomous_caster_upgrade_conversion_speed", "Psyon Conversion Speed Upgrade", "サイオン変換速度アップグレード"),
             item("autonomous_caster_upgrade_conversion_efficiency", "Psyon Conversion Efficiency Upgrade", "サイオン変換効率アップグレード"),
             item("autonomous_caster_upgrade_interference", "Phenomenon Interference Upgrade", "事象干渉力アップグレード"),
+            item("autonomous_caster_upgrade_range", "Interference Range Upgrade", "干渉距離アップグレード"),
             activeItem("advanced_spell_bullet", "Advanced Spell Bullet", "改良術式弾"),
             activeItem("advanced_spell_bullet_loop", "Advanced Loopcast Spell Bullet", "ループ型改良術式弾"),
             activeItem("advanced_spell_bullet_mine", "Advanced Mine Spell Bullet", "地雷型改良術式弾"),
