@@ -5,6 +5,7 @@ import vazkii.psi.common.item.base.ModDataComponents;
 import com.moratan251.psitweaks.common.handler.SpellUnlockHandler;
 import com.moratan251.psitweaks.common.handler.ParadeHandler;
 import com.moratan251.psitweaks.common.handler.PlayerPsiEventHandler;
+import com.moratan251.psitweaks.common.handler.RegenCooldownHandler;
 import com.moratan251.psitweaks.datagen.providers.PsitweaksSpellPieceGroupProvider;
 import vazkii.psi.api.spell.PreSpellCastEvent;
 import vazkii.psi.api.spell.SpellCastEvent;
@@ -220,6 +221,7 @@ public class Psitweaks {
         PsiEvents.register(vazkii.psi.api.cad.CADStatEvent.class, VirtualCad::onCadStat);
         PsiEvents.register(PieceKnowledgeEvent.class, SpellUnlockHandler::onPieceKnowledge);
         PsiEvents.register(vazkii.psi.api.exosuit.PsiArmorEvent.class, PlayerPsiEventHandler::onPsiCurioEvent);
+        PsiEvents.register(vazkii.psi.api.cad.RegenPsiEvent.class, RegenCooldownHandler::onRegenPsi);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerTick);
         NeoForge.EVENT_BUS.addListener(MassBlockBreakScheduler::onServerStopping);
         NeoForge.EVENT_BUS.addListener(MassHarvestScheduler::onServerTick);

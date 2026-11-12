@@ -17,6 +17,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
@@ -306,6 +307,25 @@ public class EntityTunnelerArrow extends AbstractArrow {
         return new ItemStack(PsitweaksItems.TUNNELER.get());
     }
 
+    /** トンネラーの矢のダメージソース。直接の攻撃者はこの矢、原因は射手（いなければこの矢）。 */
+    public DamageSource arrowDamageSource() {
+        Entity owner = this.getOwner();
+        return this.damageSources().source(PsitweaksDamageTypes.TUNNELER, this, owner != null ? owner : this);
+    }
+
+    /**
+     * {@code target} の {@code hurt} に渡すダメージソース。装甲を張ったウィザー（体力が半分以下）は、直接の攻撃者が矢の
+     * ダメージを {@link WitherBoss#hurt} で弾くので、そのときだけ直接の攻撃者を持たず矢の位置を持つソースにして装甲を貫く
+     * （種類と原因は {@code arrowSource} と同じ。ノックバックは矢の位置から離れる向き）。それ以外は {@code arrowSource} のまま。
+     * エンチャントとノックバックの処理には、バニラの矢と同じく {@code arrowSource} を渡す。
+     */
+    public DamageSource hurtSourceFor(Entity target, DamageSource arrowSource) {
+        if (target instanceof WitherBoss wither && wither.isPowered()) {
+            return new DamageSource(arrowSource.typeHolder(), null, arrowSource.getEntity(), this.position());
+        }
+        return arrowSource;
+    }
+
     /**
      * バニラの {@link AbstractArrow#onHitEntity} と同じ処理を、ダメージタイプだけ
      * {@code psitweaks:tunneler}（防具・エンチャント・エフェクト・盾・無敵時間貫通）に差し替えて行う。
@@ -322,7 +342,7 @@ public class EntityTunnelerArrow extends AbstractArrow {
         float velocity = (float) this.getDeltaMovement().length();
         double baseDamage = this.getBaseDamage();
         Entity owner = this.getOwner();
-        DamageSource damageSource = this.damageSources().source(PsitweaksDamageTypes.TUNNELER, this, owner != null ? owner : this);
+        DamageSource damageSource = this.arrowDamageSource();
         if (this.getWeaponItem() != null && this.level() instanceof ServerLevel serverLevel) {
             baseDamage = EnchantmentHelper.modifyDamage(serverLevel, this.getWeaponItem(), entity, damageSource, (float) baseDamage);
         }
@@ -344,7 +364,7 @@ public class EntityTunnelerArrow extends AbstractArrow {
             entity.igniteForSeconds(5.0F);
         }
 
-        if (entity.hurt(damageSource, (float) damage)) {
+        if (entity.hurt(this.hurtSourceFor(entity, damageSource), (float) damage)) {
             if (isEnderman) {
                 return;
             }

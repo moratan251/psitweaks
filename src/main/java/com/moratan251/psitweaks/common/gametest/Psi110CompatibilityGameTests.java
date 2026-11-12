@@ -6,11 +6,14 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.PsiAPI;
+import vazkii.psi.api.cad.RegenPsiEvent;
+import vazkii.psi.api.event.PsiEvents;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
@@ -124,6 +127,40 @@ public final class Psi110CompatibilityGameTests {
         helper.assertTrue(data.isPieceGroupUnlocked(flight, flight), "Research unlock tag is ignored");
         helper.assertTrue(data.isPieceGroupUnlocked(Psitweaks.location("string"), Psitweaks.location("constant_string")),
                 "Unrestricted group became locked");
+        helper.succeed();
+    }
+
+    /**
+     * The disableRegenCooldown config clears Psi's regen cooldown through RegenPsiEvent, so regen resumes the tick after
+     * Psi is spent. With the config off, Psi's cooldown counts down as usual.
+     */
+    @GameTest(template = "psi110_empty")
+    public static void regenCooldownConfigUsesRegenPsiEvent(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
+        var data = PlayerDataHandler.get(player);
+        boolean old = PsitweaksConfig.COMMON.disableRegenCooldown.get();
+        try {
+            for (boolean disabled : new boolean[] {true, false}) {
+                PsitweaksConfig.COMMON.disableRegenCooldown.set(disabled);
+                data.availablePsi = data.getTotalPsi() / 2;
+                data.regenCooldown = 0;
+                data.deductPsi(10, 40, false);
+                helper.assertTrue(data.regenCooldown == 40,
+                        "Spending Psi should set Psi's own cooldown, got " + data.regenCooldown);
+                var event = PsiEvents.post(new RegenPsiEvent(player, data, ItemStack.EMPTY));
+                int expected = disabled ? 0 : 39;
+                helper.assertTrue(event.getRegenCooldown() == expected, "With disableRegenCooldown=" + disabled
+                        + " the cooldown should be " + expected + ", got " + event.getRegenCooldown());
+                if (disabled) {
+                    helper.assertTrue(event.getRegenRate() <= 0 || event.getPlayerRegen() > 0,
+                            "Regen did not resume after the cooldown was cleared");
+                } else {
+                    helper.assertTrue(event.getPlayerRegen() == 0, "Psi regenerated during the cooldown");
+                }
+            }
+        } finally {
+            PsitweaksConfig.COMMON.disableRegenCooldown.set(old);
+        }
         helper.succeed();
     }
 }

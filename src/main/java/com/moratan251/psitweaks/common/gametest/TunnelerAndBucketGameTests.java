@@ -33,14 +33,26 @@ public final class TunnelerAndBucketGameTests {
         var owner = new FakePlayer(level, new GameProfile(UUID.randomUUID(), "tunneler-test"));
         var wither = EntityType.WITHER.create(level);
         var tunneler = new EntityTunnelerArrow(PsitweaksEntities.TUNNELER_ARROW.get(), level);
-        var source = level.damageSources().source(PsitweaksDamageTypes.TUNNELER, tunneler, owner);
+        tunneler.setOwner(owner);
+        var arrowSource = tunneler.arrowDamageSource();
+        helper.assertTrue(arrowSource.is(PsitweaksDamageTypes.TUNNELER) && arrowSource.getDirectEntity() == tunneler
+                && arrowSource.getEntity() == owner, "The arrow's damage source lost its type, arrow or shooter");
         for (float health : new float[] {wither.getMaxHealth(), wither.getMaxHealth() / 2, 50.0F}) {
             wither.setHealth(health);
+            var source = tunneler.hurtSourceFor(wither, arrowSource);
+            helper.assertTrue((source.getDirectEntity() == null) == wither.isPowered(),
+                    "Only a powered wither should get a source without the arrow, at health " + health);
+            helper.assertTrue(source.is(PsitweaksDamageTypes.TUNNELER) && source.getEntity() == owner,
+                    "The hurt source lost its type or shooter at health " + health);
             helper.assertTrue(wither.hurt(source, 10.0F), "Tunneler rejected at health " + health);
             helper.assertTrue(wither.getHealth() < health, "Tunneler did not damage wither");
         }
         wither.setInvulnerableTicks(100);
-        helper.assertTrue(!wither.hurt(source, 10.0F), "Tunneler bypassed spawn invulnerability");
+        helper.assertTrue(!wither.hurt(tunneler.hurtSourceFor(wither, arrowSource), 10.0F),
+                "Tunneler bypassed spawn invulnerability");
+        var zombie = EntityType.ZOMBIE.create(level);
+        helper.assertTrue(tunneler.hurtSourceFor(zombie, arrowSource) == arrowSource,
+                "Targets other than a powered wither should get the arrow's own damage source");
         helper.succeed();
     }
 
