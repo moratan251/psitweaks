@@ -139,12 +139,12 @@ public final class SpellGramControlGameTests {
             GameTestPlayers.remove(helper, other);
         };
         try {
-            // サイズ 20 の湿潤領域: 面積 400、コスト 440。威力 1（コスト 100）で 置いたときの耐久値 × 100 / 440 戻る。
-            SpellGramObject zone = placeSoak(caster, 20.0, null);
+            // サイズ 15 の湿潤領域: 面積 225、コスト 265。威力 1（コスト 100）で 置いたときの耐久値 × 100 / 265 戻る。
+            SpellGramObject zone = placeSoak(caster, 15.0, null);
             int lifetime = zone.getLifetimeTicks();
             float max = zone.getMaxIntegrity();
-            float share = PieceTrickExtendSpellGram.restoreAmount(max, 1.0, 440.0F);
-            helper.assertTrue(zone.getPlacementCost() == 440.0F, "The placement cost must be the zone's cost, was " + zone.getPlacementCost());
+            float share = PieceTrickExtendSpellGram.restoreAmount(max, 1.0, 265.0F);
+            helper.assertTrue(zone.getPlacementCost() == 265.0F, "The placement cost must be the zone's cost, was " + zone.getPlacementCost());
 
             // 術式で削られた分から先に戻る（存続時間は変わらない）。
             zone.reduceIntegrity(share * 0.5F);
@@ -173,7 +173,7 @@ public final class SpellGramControlGameTests {
                             > PieceTrickExtendSpellGram.restoreAmount(1.0F, 1.0, zone.getPlacementCost()),
                     "A cheaper object must be easier to restore");
 
-            SpellGramObject others = placeSoak(other, 20.0, null);
+            SpellGramObject others = placeSoak(other, 15.0, null);
             int othersBefore = others.getRemainingTicks();
             String error = extendError(caster, others, 1.0);
             helper.assertTrue(NOT_OWN.equals(error), "Restoring someone else's zone must fail, got " + error);

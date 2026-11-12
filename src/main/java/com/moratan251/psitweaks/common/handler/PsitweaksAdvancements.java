@@ -12,6 +12,8 @@ public final class PsitweaksAdvancements {
     public static final ResourceLocation PHONON_MASER_FUSION_IGNITION = Psitweaks.location("main/phonon_maser_fusion_ignition");
     /** Hidden: a Heat Zone and a Freeze Zone of one caster split one box and started the Inferno. */
     public static final ResourceLocation INFERNO = Psitweaks.location("main/inferno");
+    /** Hidden: the scorching half of an Inferno superheated a Create Blaze Burner. Loads only with Create. */
+    public static final ResourceLocation INFERNO_SUPERHEAT = Psitweaks.location("main/inferno_superheat");
 
     private PsitweaksAdvancements() {
     }

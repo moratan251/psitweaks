@@ -51,6 +51,9 @@ public final class PsitweaksDamageTypes {
     /** 暴風雨（乱流領域と湿潤領域）のダメージ。水に弱い生物だけに当たり、術者を攻撃者に持つ。 */
     public static final ResourceKey<DamageType> RAINSTORM =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("rainstorm"));
+    /** 雷雲（乱流領域と荷電領域）の雷撃のダメージ。術者を攻撃者に持つ。 */
+    public static final ResourceKey<DamageType> THUNDERCLOUD =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("thundercloud"));
 
     private PsitweaksDamageTypes() {
     }

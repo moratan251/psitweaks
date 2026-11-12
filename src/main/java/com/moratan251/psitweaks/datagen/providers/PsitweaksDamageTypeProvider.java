@@ -75,6 +75,8 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
         damageTypes.put(PsitweaksDamageTypes.BLIZZARD.location(), blizzard);
         damageTypes.put(PsitweaksDamageTypes.RAINSTORM.location(),
                 damageType("psitweaks.rainstorm", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.THUNDERCLOUD.location(),
+                damageType("psitweaks.thundercloud", "never", 0.1F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {

@@ -778,6 +778,20 @@ public final class ZoneElementGameTests {
         }
         helper.runAfterDelay(mode == BurnerCase.INFERNO ? 25 : 8, () -> {
             String insideLevel = propertyValue(helper.getBlockState(inside), "blaze");
+            if (mode == BurnerCase.INFERNO) {
+                // 灼熱で極度の加熱にしているバーナーの分だけ、加熱領域の耐久値が余分に減る（2026-11-12、案 C）。
+                float worn = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
+                        .filter(zone -> zone instanceof EntityHeatZone).map(zone -> zone.getWorn()).findFirst().orElse(0.0F);
+                helper.assertTrue(worn > 0.0F, "Superheating a Blaze Burner must wear the Heat Zone down, worn " + worn);
+                var superheat = level.getServer().getAdvancements()
+                        .get(com.moratan251.psitweaks.common.handler.PsitweaksAdvancements.INFERNO_SUPERHEAT);
+                helper.assertTrue(superheat != null && caster.getAdvancements().getOrStartProgress(superheat).isDone(),
+                        "Superheating a Blaze Burner must award the hidden advancement");
+                helper.assertTrue(EntityHeatZone.superheatWearPerTick(30.0F, 600, 1.0F, 3)
+                                == 3 * EntityHeatZone.superheatWearPerTick(30.0F, 600, 1.0F, 1)
+                                && EntityHeatZone.superheatWearPerTick(30.0F, 600, 1.0F, 1) == 30.0F / 600 * EntityHeatZone.SUPERHEAT_WEAR_SHARE,
+                        "Each superheated burner must wear as much as time does, times the share");
+            }
             String outsideLevel = propertyValue(helper.getBlockState(outside), "blaze");
             if (mode == BurnerCase.REVERT) {
                 helper.assertTrue("kindled".equals(insideLevel), "The Blaze Burner must be kindled first, was " + insideLevel);

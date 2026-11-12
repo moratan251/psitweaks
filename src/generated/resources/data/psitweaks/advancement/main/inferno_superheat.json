@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "parent": "psitweaks:main/inferno",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:inferno_superheat.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "create:blaze_burner"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:inferno_superheat"
+    }
+  },
+  "requirements": [
+    [
+      "code_triggered"
+    ]
+  ]
+}

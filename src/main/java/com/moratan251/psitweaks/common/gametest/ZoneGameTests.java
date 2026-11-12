@@ -160,21 +160,21 @@ public final class ZoneGameTests {
         helper.succeed();
     }
 
-    /** サイズの上限は 32（2026-11-10）。それより大きいサイズで置くと、一辺 32 の範囲に切り詰める。 */
+    /** サイズの上限は 16（2026-11-12、32 から変更）。それより大きいサイズで置くと、一辺 16 の範囲に切り詰める。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_size", timeoutTicks = 40)
     public static void zoneSizeIsClampedToTheMaximum(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_size_caster", new Vec3(0.5, 1.0, 0.5));
         BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
         try {
-            helper.assertTrue(PieceTrickZoneBase.MAX_SIZE == 32, "The largest Size of a zone must be 32");
-            // 行列は 49×49×49、サイズは 40。どちらも上限より大きいので、一辺 32 になる。
+            helper.assertTrue(PieceTrickZoneBase.MAX_SIZE == 16, "The largest Size of a zone must be 16");
+            // 行列は 49×49×49、サイズは 40。どちらも上限より大きいので、一辺 16 になる。
             castSoak(caster, cube(vector(center).add(-24.5, -24.5, -24.5), 49), 40.0);
             List<EntitySoakZone> zones = SpellGramIndex.near(level, Vec3.atCenterOf(center), 0.5, EntitySoakZone.class);
             helper.assertTrue(zones.size() == 1, "The Soak Zone must be placed, found " + zones.size());
             var outline = zones.get(0).getOutline();
-            helper.assertTrue(outline.getXsize() == 32 && outline.getYsize() == 32 && outline.getZsize() == 32,
-                    "A Size above the limit must give a 32-block cube: " + outline);
+            helper.assertTrue(outline.getXsize() == 16 && outline.getYsize() == 16 && outline.getZsize() == 16,
+                    "A Size above the limit must give a 16-block cube: " + outline);
         } catch (RuntimeException | SpellRuntimeException e) {
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
             GameTestPlayers.remove(helper, caster);

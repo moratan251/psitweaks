@@ -159,6 +159,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String heatStorm = damageType("heat_storm");
         String blizzard = damageType("blizzard");
         String rainstorm = damageType("rainstorm");
+        String thundercloud = damageType("thundercloud");
         // Active Air Mine keeps what it had as a sonic boom: armour and protection enchantments do not help.
         // The circles keep what they had as burning and freezing (vanilla's on_fire and freeze bypass armour).
         tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine, flareCircle,
@@ -175,7 +176,8 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "minecraft", "is_freezing", dryMeteor, iceCircle, infernoCold, blizzard);
         // These tricks push their targets themselves.
         tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, airBullet, dancingBlades,
-                starfall, microBlackHole, flareCircle, iceCircle, infernoHeat, infernoCold, heatStorm, blizzard, rainstorm);
+                starfall, microBlackHole, flareCircle, iceCircle, infernoHeat, infernoCold, heatStorm, blizzard, rainstorm,
+                thundercloud);
         // Trick: Barrier does not absorb these: damage from inside the body or the world, not from an attack.
         tag(tags, "psitweaks", "bypasses_barrier",
                 tagRef("minecraft:bypasses_invulnerability"),

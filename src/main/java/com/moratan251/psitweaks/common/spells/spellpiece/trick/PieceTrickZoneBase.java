@@ -47,10 +47,11 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  */
 public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceTrick {
     /**
-     * サイズ（立方体の一辺のブロック数）の上限。範囲は最大 32×32×32 ブロック（2026-11-10 ユーザーの決定）。これより大きいサイズは
+     * サイズ（立方体の一辺のブロック数）の上限。範囲は最大 16×16×16 ブロック（2026-11-12 ユーザーの決定で 32 から変更: コストは面積に
+     * 比例し効き目は体積に効くので、大きいほど割安になりすぎる。パーティクルが薄くなる・見て回る負荷も理由）。これより大きいサイズは
      * 上限に切り詰める。演算子: 直方体領域そのものの上限（65）とは別。
      */
-    public static final int MAX_SIZE = 32;
+    public static final int MAX_SIZE = 16;
     public static final String ERROR_EMPTY_ZONE = "psitweaks.spellerror.zone_empty";
     /** 「時間」を省いたとき（と加重領域）の存続時間（秒）。 */
     public static final int DEFAULT_TIME_SECONDS = 30;

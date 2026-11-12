@@ -6,6 +6,7 @@
     "psitweaks:trick_freeze_zone",
     "psitweaks:trick_turbulence_zone",
     "psitweaks:trick_interference_zone",
-    "psitweaks:trick_silence_zone"
+    "psitweaks:trick_silence_zone",
+    "psitweaks:trick_charged_zone"
   ]
 }

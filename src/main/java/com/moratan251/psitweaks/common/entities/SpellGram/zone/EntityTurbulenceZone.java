@@ -196,10 +196,11 @@ public class EntityTurbulenceZone extends SpellGramZone {
         deflected.clear();
     }
 
-    /** 竜巻の煙の色: 熱乱流（オレンジ）・乱流＋湿潤（青）・吹雪（水色）。 */
+    /** 竜巻の煙の色: 熱乱流（オレンジ）・乱流＋湿潤（青）・吹雪（水色）・雷雲（暗い紫がかった灰色）。 */
     private static final float[] HEAT_SMOKE = {1.0F, 0.55F, 0.16F};
     private static final float[] SOAK_SMOKE = {0.25F, 0.5F, 1.0F};
     private static final float[] FREEZE_SMOKE = {0.62F, 0.92F, 1.0F};
+    private static final float[] CHARGE_SMOKE = {0.42F, 0.4F, 0.56F};
 
     @Override
     protected void spawnClientParticles() {
@@ -214,20 +215,24 @@ public class EntityTurbulenceZone extends SpellGramZone {
         double heat = stormShare(box, EntityHeatZone.class);
         double soak = stormShare(box, EntitySoakZone.class);
         double freeze = stormShare(box, EntityFreezeZone.class);
-        double total = heat + soak + freeze;
+        double charge = stormShare(box, EntityChargedZone.class);
+        double total = heat + soak + freeze + charge;
         if (total > 1.0) {
             heat /= total;
             soak /= total;
             freeze /= total;
+            charge /= total;
         }
         int heatCount = (int) Math.round(count * heat);
         int soakCount = (int) Math.round(count * soak);
         int freezeCount = (int) Math.round(count * freeze);
-        int white = Math.max(0, count - heatCount - soakCount - freezeCount);
+        int chargeCount = (int) Math.round(count * charge);
+        int white = Math.max(0, count - heatCount - soakCount - freezeCount - chargeCount);
         ZoneParticles.vortex(level(), random, box, white, ParticleTypes.CLOUD, swirl, 0.06);
         tintedVortex(box, heatCount, HEAT_SMOKE, swirl, 0.08);
         tintedVortex(box, soakCount, SOAK_SMOKE, swirl, 0.05);
         tintedVortex(box, freezeCount, FREEZE_SMOKE, swirl, 0.04);
+        tintedVortex(box, chargeCount, CHARGE_SMOKE, swirl, 0.03);
         if (random.nextInt(3) == 0) {
             ZoneParticles.vortex(level(), random, box, 2, ParticleTypes.WHITE_SMOKE, swirl * 1.2, 0.04);
         }

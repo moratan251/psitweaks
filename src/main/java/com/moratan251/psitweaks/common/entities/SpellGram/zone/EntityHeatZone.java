@@ -39,6 +39,9 @@ import java.util.List;
  * 灼熱の間は、Create の加工が一括燻製から一括製錬に変わり、Mekanism へ送る熱が 4 倍になる（2026-11-11 ユーザー）。
  * <p>
  * Create のブレイズバーナーは、範囲の中なら燃料がなくても「加熱」、灼熱の中なら「極度の加熱」になる（{@link #burnerHeatAt}）。
+ * 極度の加熱はふつうブレイズケーキを食べさせ続けて保つ状態なので、灼熱で極度の加熱にしているバーナー 1 台ごとに、加熱領域の
+ * 耐久値が時間で減る分の {@link #SUPERHEAT_WEAR_SHARE} 倍だけ余分に減る（2026-11-12 ユーザー、案 C）。台数が多いほど早く消え、
+ * 長く保つには時間を長く取るか作動式: 魔法式延長で払い続けることになる。
  * <p>
  * 同じ術者の乱流領域と重なったブロックは「熱乱流」（ヒート・ストーム）になる（2026-11-11 ユーザー）: 中の生物に
  * {@link #STORM_INTERVAL} tick ごとに火属性のダメージ（攻撃術式の共通ルール、設定 {@code heat_storm.damageMultiplier}）、
@@ -73,6 +76,13 @@ public class EntityHeatZone extends SpellGramZone {
     public static final int STORM_INTERVAL = 10;
     /** 熱乱流で当たった生物が燃え続ける長さ（秒）。 */
     private static final float STORM_BURN_SECONDS = 4.0F;
+    /**
+     * 灼熱で極度の加熱にしているブレイズバーナー 1 台ごとの、耐久値の余分な減り: 時間で減る分の何倍か（仮）。1 なら 1 台で
+     * 半分の時間で消え、3 台なら 4 分の 1。
+     */
+    public static final float SUPERHEAT_WEAR_SHARE = 1.0F;
+    /** 極度の加熱にしているバーナーを数え直す間隔（tick）。 */
+    private static final int SUPERHEAT_INTERVAL = 10;
 
     public EntityHeatZone(EntityType<? extends EntityHeatZone> type, Level level) {
         super(type, level);
@@ -220,6 +230,15 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             });
         }
+        if (inferno && tickCount % SUPERHEAT_INTERVAL == 0 && CreateCompat.isCreateLoaded()) {
+            int burners = superheatedBurners(level, caster, regions);
+            if (burners > 0) {
+                reduceIntegrity(superheatWearPerTick(getMaxIntegrity(), getLifetimeTicks(), getTimeShare(), burners)
+                        * SUPERHEAT_INTERVAL);
+                // 隠し進捗（Create があるときだけ読み込まれる）。説明に耐久値を余分に使うことを書いてある。
+                InfernoZones.award(level, caster, com.moratan251.psitweaks.common.handler.PsitweaksAdvancements.INFERNO_SUPERHEAT);
+            }
+        }
         double heat = heatPerTick(getMachineSpeed(), inferno);
         if (heat > 0.0) {
             for (ZoneRegion region : regions) {
@@ -238,6 +257,33 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             }
         }
+    }
+
+    /** 灼熱でこの領域が極度の加熱にしているブレイズバーナーの数（自分の燃料で極度の加熱のものは数えない）。 */
+    private int superheatedBurners(ServerLevel level, Player caster, List<ZoneRegion> regions) {
+        int count = 0;
+        for (ZoneRegion region : regions) {
+            for (BlockEntity blockEntity : region.area().blockEntities(level)) {
+                BlockPos pos = blockEntity.getBlockPos();
+                if (CreateCompat.isBurnerNeedingSuperheat(blockEntity) && isActiveAt(region.worldPos(pos))
+                        && mayUseMachine(level, caster, pos)) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 極度の加熱にしているバーナー {@code burners} 台ぶんの、1 tick あたりの耐久値の余分な減り: 時間で減る分（置いたときの
+     * 耐久値 × timeShare ÷ 存続時間）× {@link #SUPERHEAT_WEAR_SHARE} × 台数。時間の入力や干渉力によらず、存続時間の割合で
+     * 同じだけ縮む。
+     */
+    public static float superheatWearPerTick(float maxIntegrity, int lifetimeTicks, float timeShare, int burners) {
+        if (lifetimeTicks <= 0 || burners <= 0) {
+            return 0.0F;
+        }
+        return maxIntegrity * timeShare / lifetimeTicks * SUPERHEAT_WEAR_SHARE * burners;
     }
 
     /** Mekanism へ 1 tick に送る熱: 薪木ストーブ 1 台ぶん × 速さ、灼熱の間は 4 倍。 */

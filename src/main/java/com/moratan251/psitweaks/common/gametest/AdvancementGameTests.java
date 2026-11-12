@@ -51,18 +51,25 @@ public final class AdvancementGameTests {
     /** Same as {@link #PARENTS}, for the advancements that load only with Mekanism Generators. */
     private static final Map<String, String> GENERATORS_PARENTS = Map.of(
             "phonon_maser_fusion_ignition", "program_researcher_pickup");
+    /** Same as {@link #PARENTS}, for the advancements that load only with Create. */
+    private static final Map<String, String> CREATE_PARENTS = Map.of(
+            "inferno_superheat", "inferno");
 
     @GameTest(template = "psi110_empty")
     public static void advancementsHangFromTheirParentsOnPsiTab(GameTestHelper helper) {
         var advancements = helper.getLevel().getServer().getAdvancements();
         boolean mekanism = MekanismCompat.isMekanismLoaded();
         boolean generators = MekanismCompat.isGeneratorsLoaded();
+        boolean create = com.moratan251.psitweaks.common.compat.CreateCompat.isCreateLoaded();
         Map<String, String> parents = new HashMap<>(PARENTS);
         if (mekanism) {
             parents.putAll(MEKANISM_PARENTS);
         }
         if (generators) {
             parents.putAll(GENERATORS_PARENTS);
+        }
+        if (create) {
+            parents.putAll(CREATE_PARENTS);
         }
         long loaded = advancements.getAllAdvancements().stream()
                 .filter(holder -> holder.id().getNamespace().equals(Psitweaks.MOD_ID) && holder.id().getPath().startsWith("main/"))
@@ -74,6 +81,9 @@ public final class AdvancementGameTests {
         GENERATORS_PARENTS.keySet().forEach(id -> helper.assertTrue(
                 (advancements.get(Psitweaks.location("main/" + id)) != null) == generators,
                 id + " must load only with Mekanism Generators (loaded: " + generators + ")"));
+        CREATE_PARENTS.keySet().forEach(id -> helper.assertTrue(
+                (advancements.get(Psitweaks.location("main/" + id)) != null) == create,
+                id + " must load only with Create (loaded: " + create + ")"));
         parents.forEach((id, parent) -> {
             AdvancementNode node = advancements.tree().get(Psitweaks.location("main/" + id));
             helper.assertTrue(node != null, "Advancement " + id + " is not in the tree (missing, or its parent did not load)");

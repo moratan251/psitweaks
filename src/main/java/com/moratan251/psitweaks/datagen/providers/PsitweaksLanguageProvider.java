@@ -114,6 +114,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "領域干渉";
             default -> "Interference Zone";
         });
+        root.addProperty("entity.psitweaks.charged_zone", switch (locale) {
+            case "ja_jp" -> "荷電領域";
+            default -> "Charged Zone";
+        });
         root.addProperty("entity.psitweaks.silence_zone", switch (locale) {
             case "ja_jp" -> "遮音領域";
             default -> "Silence Zone";
@@ -658,6 +662,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "heat_storm", "Heat Storm", "熱乱流");
         addDamageMultiplierConfig(root, "blizzard", "Blizzard", "吹雪");
         addDamageMultiplierConfig(root, "rainstorm", "Rainstorm", "暴風雨");
+        addDamageMultiplierConfig(root, "thundercloud", "Thundercloud", "雷雲");
         addConfigLabel(root, "psitweaks.configuration.spells.gravity_zone", "Gravity Zone", "加重領域");
         addConfigValue(root, "psitweaks.configuration.spells.gravity_zone.contraption_multiplier", "Contraption Multiplier",
                 "物理で動く構造物への倍率",
@@ -968,6 +973,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.blizzard.item", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sが%3$sで起こした吹雪に凍えた";
             default -> "%1$s froze in a Blizzard %2$s raised using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.thundercloud", switch (locale) {
+            case "ja_jp" -> "%1$sは雷雲の雷に打たれた";
+            default -> "%1$s was struck by a Thundercloud";
+        });
+        root.addProperty("death.attack.psitweaks.thundercloud.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの雷雲の雷に打たれた";
+            default -> "%1$s was struck by %2$s's Thundercloud";
+        });
+        root.addProperty("death.attack.psitweaks.thundercloud.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした雷雲の雷に打たれた";
+            default -> "%1$s was struck by a Thundercloud %2$s raised using %3$s";
         });
         root.addProperty("death.attack.psitweaks.rainstorm", switch (locale) {
             case "ja_jp" -> "%1$sは暴風雨に打たれて力尽きた";
@@ -2813,14 +2830,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 湿潤領域", "範囲の中の生物を濡らし続ける魔法式オブジェクトを置く");
         addBookPage(root, "trick_soak_zone.0",
                 "Places a zone over the region given by the Matrix (a region matrix) and the Size (a constant), lasting for the Time (in seconds)."
-                        + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 32)."
+                        + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 16)."
                         + " The Matrix may be left out; the zone is then the cube of Size blocks on each edge around the block the caster stands in."
                         + " A living being is inside when the block holding the center of its hitbox is."
                         + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning."
                         + " The zone also wets the blocks inside like a Splash Water Bottle: it puts out fire, campfires and candles, and turns concrete powder into concrete (where the caster may change blocks)."
                         + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast.",
                 "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、「時間」（秒）のあいだ残る領域を置きます。"
-                        + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大32）。"
+                        + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大16）。"
                         + "「行列」は省略でき、省略すると術者のいるブロックを中心にした一辺がサイズの立方体になります。"
                         + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
                         + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。"
@@ -2911,12 +2928,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " With a Heat Zone it becomes a Heat Storm: living beings inside take fire damage, and bulk smoking and the heat sent to Mekanism speed up."
                         + " With a Freeze Zone it becomes a Blizzard: living beings inside take freezing damage and freeze faster."
                         + " With a Soak Zone it becomes a Rainstorm: bulk washing speeds up, and beings hurt by water (Blazes, Endermen and so on) take damage."
+                        + " With a Charged Zone it becomes a Thundercloud: at random intervals a bolt strikes a living being inside, and FE and charging speed up."
                         + " How strong these are follows the Power of the turbulence (the strongest one where several overlap): at 10, machines run twice as fast."
                         + " Where a Heat Zone and a Freeze Zone overlap, the two cancel out, so neither works there.",
                 "自分のほかの領域と重ねると、重なったところが強まります。"
                         + "加熱領域と重ねると熱乱流になり、中の生物に火のダメージを与え、一括燻製と Mekanism へ送る熱が増えます。"
                         + "凍結領域と重ねると吹雪になり、中の生物に凍結のダメージを与え、凍えが速くたまります。"
                         + "湿潤領域と重ねると暴風雨になり、一括洗浄が速くなり、ブレイズやエンダーマンなど水に弱い生物にダメージを与えます。"
+                        + "荷電領域と重ねると雷雲になり、ランダムな間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。"
                         + "これらの強さは乱流の威力で決まり（重なっていれば最も強いもの）、威力10で加工などは2倍の速さです。"
                         + "加熱領域と凍結領域が重なったところでは、両方が打ち消し合ってどちらも効きません。");
         addBookPage(root, "trick_turbulence_zone.2",
@@ -2973,6 +2992,28 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "事象干渉力が同じか高い相手は止められません。自分と、自分の自律詠唱機の魔法は止まりません。"
                         + "止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。"
                         + "規模はサイズだけで決まり、コストはサイズと時間で増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
+        addSpellPiece(root, "trick_charged_zone", "Trick: Charged Zone",
+                "Places a SpellGram zone that slowly charges what the beings inside carry with FE",
+                "作動式: 荷電領域", "範囲の中の持ち物やアイテムに FE を少しずつ送る魔法式オブジェクトを置く");
+        addBookPage(root, "trick_charged_zone.0",
+                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
+                        + " It slowly sends FE to the entities inside: everything a player carries, what other living beings hold and wear,"
+                        + " dropped items, and entities that store FE themselves. Blocks (machines) get none; use Trick: FE Charge for those."
+                        + " How much follows the caster's interference when placed: 20 FE per tick to each at 2, half at 1, and at most twice.",
+                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
+                        + "範囲の中のエンティティに FE を少しずつ送ります。プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、落ちているアイテム、自分で FE をためるエンティティです。"
+                        + "ブロック（機械）には送りません。機械には作動式: FE供給を使います。"
+                        + "送る量は置いた時点の事象干渉力で決まり、干渉力2でそれぞれに1 tick あたり20 FE、1でその半分、最大で2倍です。");
+        addBookPage(root, "trick_charged_zone.1",
+                "With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger"
+                        + " (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), one item every 2 seconds at interference 2."
+                        + " Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it,"
+                        + " harder with a higher Power of the turbulence (the strongest where several overlap), and FE and charging run faster (twice at Power 10)."
+                        + " Potency depends only on the Size; Cost grows with the area and with the Time. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
+                "Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。干渉力2で2秒に1個です。"
+                        + "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。"
+                        + "雷撃の強さは乱流の威力で決まり（重なっていれば最も強いもの）、FE とチャージ加工も速くなります（威力10で2倍）。"
+                        + "規模はサイズだけで決まり、コストは範囲が広いほど、時間が長いほど増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_silence_zone", "Trick: Silence Zone",
                 "Places a SpellGram zone where no sound is heard and no vibration gets through",
                 "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない魔法式オブジェクトを置く");
@@ -3050,6 +3091,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         // Hidden
         addAdvancement(root, "inferno", "Inferno", "Split one region into scorching heat and bitter cold",
                 "氷炎地獄", "ひとつの範囲を、灼熱と極寒に二分する");
+        // Create only, hidden
+        addAdvancement(root, "inferno_superheat", "The Price of Heat",
+                "Superheat a Blaze Burner in the scorching half of an Inferno. Each superheated burner wears the Heat Zone down further",
+                "灼熱の対価", "氷炎地獄の灼熱でブレイズバーナーを極度の加熱にする。極度の加熱にしたバーナー1台ごとに、加熱領域の耐久値が追加で減る");
         addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
                 "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",

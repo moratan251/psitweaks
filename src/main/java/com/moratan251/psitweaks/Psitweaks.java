@@ -388,6 +388,8 @@ public class Psitweaks {
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.SILENCE_ZONE.get(),
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.CHARGED_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);

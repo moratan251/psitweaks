@@ -53,6 +53,7 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
             List<CompletableFuture<?>> saved = new ArrayList<>();
             AdvancementHolder programResearcher = generateMekanismOnly(requiringMod(output, lookup, saved, "mekanism"));
             generateMekanismGeneratorsOnly(requiringMod(output, lookup, saved, "mekanismgenerators"), programResearcher);
+            generateCreateOnly(requiringMod(output, lookup, saved, "create"));
             return CompletableFuture.allOf(saved.toArray(CompletableFuture[]::new));
         });
         return CompletableFuture.allOf(super.run(output), modOnly);
@@ -84,6 +85,20 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
         new Advancement.Builder()
                 .parent(programResearcher)
                 .display(modItem(ResourceLocation.fromNamespaceAndPath("mekanismgenerators", "fusion_reactor_controller")),
+                        Component.translatable(key), Component.translatable(key + ".desc"),
+                        null, AdvancementType.CHALLENGE, true, true, true)
+                .addCriterion(PsitweaksAdvancements.CODE_TRIGGERED, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+                .save(saver, id.toString());
+    }
+
+    /** Advancements about Create. */
+    private static void generateCreateOnly(Consumer<AdvancementHolder> saver) {
+        // Hidden; awarded from code when the scorching half of an Inferno superheats a Blaze Burner (EntityHeatZone).
+        ResourceLocation id = PsitweaksAdvancements.INFERNO_SUPERHEAT;
+        String key = "advancement.psitweaks:" + id.getPath().substring("main/".length());
+        new Advancement.Builder()
+                .parent(byId(PsitweaksAdvancements.INFERNO))
+                .display(modItem(ResourceLocation.fromNamespaceAndPath("create", "blaze_burner")),
                         Component.translatable(key), Component.translatable(key + ".desc"),
                         null, AdvancementType.CHALLENGE, true, true, true)
                 .addCriterion(PsitweaksAdvancements.CODE_TRIGGERED, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))

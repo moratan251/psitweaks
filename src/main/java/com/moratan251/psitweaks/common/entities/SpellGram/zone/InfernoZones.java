@@ -198,13 +198,19 @@ public final class InfernoZones {
         Vec3 cold = Vec3.atCenterOf(freeze.getArea().center());
         level.playSound(null, hot.x, hot.y, hot.z, SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 1.2F, 0.6F);
         level.playSound(null, cold.x, cold.y, cold.z, SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.2F, 0.5F);
-        // 自律詠唱機は持ち主の UUID を名乗るので、その UUID で本物のプレイヤー（ログインしていれば）に与える。
-        LivingEntity caster = heat.getCaster();
+        award(level, heat.getCaster(), PsitweaksAdvancements.INFERNO);
+    }
+
+    /**
+     * 術者 {@code caster} に進捗 {@code id} を与える。自律詠唱機は持ち主の UUID を名乗るので、その UUID で本物のプレイヤー
+     * （ログインしていれば）に与える。
+     */
+    static void award(ServerLevel level, @org.jetbrains.annotations.Nullable LivingEntity caster, net.minecraft.resources.ResourceLocation id) {
         ServerPlayer player = caster instanceof AutonomousCasterPlayer machine
                 ? level.getServer().getPlayerList().getPlayer(machine.getUUID())
                 : caster instanceof ServerPlayer serverPlayer ? serverPlayer : null;
         if (player != null) {
-            PsitweaksAdvancements.award(player, PsitweaksAdvancements.INFERNO);
+            PsitweaksAdvancements.award(player, id);
         }
     }
 

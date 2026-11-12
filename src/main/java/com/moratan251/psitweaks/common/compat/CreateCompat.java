@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
 
 import java.util.function.Predicate;
@@ -41,6 +42,14 @@ public final class CreateCompat {
         if (isCreateLoaded()) {
             CreateFanIntegration.process(level, area, process, itemsAt, machinesAt);
         }
+    }
+
+    /**
+     * {@code blockEntity} が、ブレイズの入ったブレイズバーナーで、自分の燃料では極度の加熱になっていない（ブレイズケーキでも
+     * クリエイティブでもない）か。氷炎地獄の灼熱が極度の加熱にしてやると、加熱領域の耐久値を余分に使う。Create がなければ偽。
+     */
+    public static boolean isBurnerNeedingSuperheat(BlockEntity blockEntity) {
+        return isCreateLoaded() && CreateFanIntegration.isBurnerNeedingSuperheat(blockEntity);
     }
 
     /**

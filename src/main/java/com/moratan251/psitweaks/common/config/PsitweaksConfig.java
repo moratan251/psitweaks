@@ -33,6 +33,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue heatStormDamageMultiplier;
         public final ModConfigSpec.DoubleValue blizzardDamageMultiplier;
         public final ModConfigSpec.DoubleValue rainstormDamageMultiplier;
+        public final ModConfigSpec.DoubleValue thundercloudDamageMultiplier;
         public final ModConfigSpec.DoubleValue gravityZoneContraptionMultiplier;
         public final ModConfigSpec.DoubleValue spellGramIntegrityMultiplier;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerPlayer;
@@ -256,6 +257,19 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // rainstorm カテゴリ終了
+
+            // --- 雷雲（乱流領域と荷電領域の組み合わせ） ---
+            builder.comment("Thundercloud Settings")
+                    .translation("psitweaks.configuration.spells.thundercloud")
+                    .push("thundercloud");
+
+            thundercloudDamageMultiplier = builder
+                    .comment("雷雲（乱流領域と荷電領域の組み合わせ）の雷撃の威力倍率（与ダメージ倍率）",
+                            "Power (damage) multiplier for the strikes of the Thundercloud (a Turbulence Zone and a Charged Zone together)")
+                    .translation("psitweaks.configuration.spells.thundercloud.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // thundercloud カテゴリ終了
 
             // --- 加重領域 ---
             builder.comment("Gravity Zone Settings")

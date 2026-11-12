@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackH
 import com.simibubi.create.content.kinetics.fan.processing.AllFanProcessingTypes;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessing;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +23,41 @@ import java.util.function.Predicate;
  * クライアントでは Create の AirCurrent と同じく加工しているアイテムの位置にパーティクルを出す。
  */
 final class CreateFanIntegration {
+    /** ブレイズバーナーのブロックエンティティ（燃料と、クリエイティブかを読む）。型の親が実行時にしかないので、リフレクションで読む。 */
+    private static final String BURNER_CLASS = "com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity";
+    private static Class<?> burnerClass;
+    private static java.lang.reflect.Method activeFuel;
+    private static java.lang.reflect.Method creative;
+    private static boolean burnerLookedUp;
+
+    /** {@link CreateCompat#isBurnerNeedingSuperheat}。 */
+    static boolean isBurnerNeedingSuperheat(BlockEntity blockEntity) {
+        if (!lookUpBurner() || !burnerClass.isInstance(blockEntity)
+                || BlazeBurnerBlock.getHeatLevelOf(blockEntity.getBlockState()) == BlazeBurnerBlock.HeatLevel.NONE) {
+            return false;
+        }
+        try {
+            Object fuel = activeFuel.invoke(blockEntity);
+            return !((Boolean) creative.invoke(blockEntity)) && !(fuel instanceof Enum<?> type && "SPECIAL".equals(type.name()));
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            return false;
+        }
+    }
+
+    private static synchronized boolean lookUpBurner() {
+        if (!burnerLookedUp) {
+            burnerLookedUp = true;
+            try {
+                burnerClass = Class.forName(BURNER_CLASS);
+                activeFuel = burnerClass.getMethod("getActiveFuel");
+                creative = burnerClass.getMethod("isCreative");
+            } catch (ReflectiveOperationException | LinkageError e) {
+                burnerClass = null;
+            }
+        }
+        return burnerClass != null;
+    }
+
     private CreateFanIntegration() {
     }
 
