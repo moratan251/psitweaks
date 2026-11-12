@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +15,7 @@ final class RegistryIdTargetHelper {
 
     static String getRegistryId(SpellContext context, Object target) throws SpellRuntimeException {
         if (target instanceof Entity entity) {
-            context.verifyEntity(entity);
+            ReadOnlyTargets.verify(context, entity);
             return StringSpellHelper.clamp(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
         }
         if (target instanceof SpellItemValue item) {

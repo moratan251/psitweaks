@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public final class DisplayNameTargetHelper {
 
     public static String getDisplayName(SpellContext context, Object target) throws SpellRuntimeException {
         if (target instanceof Entity entity) {
-            context.verifyEntity(entity);
+            ReadOnlyTargets.verify(context, entity);
             return entityName(context, entity);
         }
         if (target instanceof SpellItemValue item) {

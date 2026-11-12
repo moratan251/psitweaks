@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.api.value.ContextualValue;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import java.util.Collection;
 import java.util.Comparator;
@@ -27,7 +28,7 @@ final class TagTargetHelper {
     private static Collection<ResourceLocation> getTagIds(SpellContext context, Object target)
             throws SpellRuntimeException {
         if (target instanceof Entity entity) {
-            context.verifyEntity(entity);
+            ReadOnlyTargets.verify(context, entity);
             return entity.getType().builtInRegistryHolder().tags()
                     .map(TagKey::location)
                     .toList();

@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.moratan251.psitweaks.api.value.ContextualValue;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ final class NbtTargetHelper {
 
     static Optional<TargetData> getNbt(SpellContext context, Object target) throws SpellRuntimeException {
         if (target instanceof Entity entity) {
-            context.verifyEntity(entity);
+            ReadOnlyTargets.verify(context, entity);
             return Optional.of(new TargetData(NbtPredicate.getEntityTagToCompare(entity)));
         }
 

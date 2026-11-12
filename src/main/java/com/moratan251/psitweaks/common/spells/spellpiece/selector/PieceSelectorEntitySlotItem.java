@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +33,7 @@ public class PieceSelectorEntitySlotItem extends PieceSelector {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity entity = getNotNullParamValue(context, target);
-        context.verifyEntity(entity);
+        ReadOnlyTargets.verify(context, entity);
 
         int slot = getNotNullParamValue(context, number).intValue();
         if (entity instanceof Player player) {

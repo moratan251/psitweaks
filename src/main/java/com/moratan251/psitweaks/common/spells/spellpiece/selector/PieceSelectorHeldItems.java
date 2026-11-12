@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
 import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import java.util.List;
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,7 @@ public class PieceSelectorHeldItems extends PieceSelector {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity entity = getNotNullParamValue(context, target);
-        context.verifyEntity(entity);
+        ReadOnlyTargets.verify(context, entity);
 
         if (entity instanceof Player player) {
             return ItemListValueHelper.fromEntityContainer(player, player.getInventory());

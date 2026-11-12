@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import net.minecraft.world.entity.Entity;
 import vazkii.psi.api.spell.*;
 import vazkii.psi.api.spell.param.ParamEntity;
@@ -38,11 +39,8 @@ public class PieceTrickStoreEntityUUID extends PieceTrick {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         int internalSlot = CadPlainMemory.internalSlot(this.getParamValue(context, this.number));
         Entity target = this.getParamValue(context, this.target);
-        context.verifyEntity(target);
-
-        if (target == null) {
-            throw new SpellRuntimeException("psi.spellerror.nulltarget");
-        }
+        // Only remembers which entity it was, so bosses and riders may be stored too.
+        ReadOnlyTargets.verify(context, target);
 
         if (CadPlainMemory.isSlotLocked(context, internalSlot)) {
             return null;

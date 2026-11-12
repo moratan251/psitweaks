@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.spells.item.EntityHandSource;
 import com.moratan251.psitweaks.common.spells.item.EntityInventorySlotSource;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.util.ItemListValueHelper;
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +33,7 @@ public class PieceSelectorHeldItem extends PieceSelector {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity entity = getNotNullParamValue(context, target);
-        context.verifyEntity(entity);
+        ReadOnlyTargets.verify(context, entity);
 
         if (entity instanceof Player player) {
             int slot = player.getInventory().selected;

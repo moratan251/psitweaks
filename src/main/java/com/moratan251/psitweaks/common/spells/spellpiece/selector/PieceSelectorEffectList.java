@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
+import com.moratan251.psitweaks.common.spells.util.ReadOnlyTargets;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class PieceSelectorEffectList extends PieceSelector {
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Entity entity = getNotNullParamValue(context, target);
-        context.verifyEntity(entity);
+        ReadOnlyTargets.verify(context, entity);
 
         if (!(entity instanceof LivingEntity living)) {
             return StringListWrapper.EMPTY;
