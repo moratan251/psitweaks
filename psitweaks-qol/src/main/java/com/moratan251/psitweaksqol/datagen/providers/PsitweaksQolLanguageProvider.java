@@ -31,13 +31,105 @@ public class PsitweaksQolLanguageProvider implements DataProvider {
     private JsonObject translations() {
         JsonObject root = new JsonObject();
 
-        root.addProperty("gui.psitweaks_qol.spell_programmer.bookmarks.show", switch (locale) {
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.bookmark", switch (locale) {
             case "ja_jp" -> "ブックマーク (Ctrl + クリック) したピースのみ表示";
             default -> "Show only spell pieces bookmarked with Ctrl + click";
         });
-        root.addProperty("gui.psitweaks_qol.spell_programmer.bookmarks.show_all", switch (locale) {
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.recent", switch (locale) {
+            case "ja_jp" -> "最近使ったピースのみ表示 (新しい順)";
+            default -> "Show only recently used spell pieces (newest first)";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.selector", switch (locale) {
+            case "ja_jp" -> "取得子のみ表示";
+            default -> "Show only selectors";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.operator", switch (locale) {
+            case "ja_jp" -> "演算子のみ表示";
+            default -> "Show only operators";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.trick", switch (locale) {
+            case "ja_jp" -> "作動式のみ表示";
+            default -> "Show only tricks";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.other", switch (locale) {
+            case "ja_jp" -> "その他のピース (定数子、コネクタ、エラー抑止など) のみ表示";
+            default -> "Show only other spell pieces (constants, connectors, error suppressors, etc.)";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.show_all", switch (locale) {
             case "ja_jp" -> "すべてのピースを表示";
             default -> "Show all spell pieces";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.selector.label", switch (locale) {
+            case "ja_jp" -> "取";
+            default -> "S";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.operator.label", switch (locale) {
+            case "ja_jp" -> "演";
+            default -> "O";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.trick.label", switch (locale) {
+            case "ja_jp" -> "作";
+            default -> "T";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.tab.other.label", switch (locale) {
+            case "ja_jp" -> "他";
+            default -> "…";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings", switch (locale) {
+            case "ja_jp" -> "ピース一覧の設定";
+            default -> "Piece list settings";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.close", switch (locale) {
+            case "ja_jp" -> "ピース一覧に戻る";
+            default -> "Back to the piece list";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.title", switch (locale) {
+            case "ja_jp" -> "設定";
+            default -> "Settings";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.size", switch (locale) {
+            case "ja_jp" -> "大きさ";
+            default -> "Size";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.size.small", switch (locale) {
+            case "ja_jp" -> "小";
+            default -> "S";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.size.medium", switch (locale) {
+            case "ja_jp" -> "中";
+            default -> "M";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.size.large", switch (locale) {
+            case "ja_jp" -> "大";
+            default -> "L";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.size.tooltip", switch (locale) {
+            case "ja_jp" -> "1 ページに %s 列 × %s 行 (%s 個)";
+            default -> "%s columns × %s rows per page (%s pieces)";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.keep_search", switch (locale) {
+            case "ja_jp" -> "検索内容の保持";
+            default -> "Keep search text";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.keep_search.tooltip", switch (locale) {
+            case "ja_jp" -> "ピース一覧を閉じても、検索欄に入力した文字を残します";
+            default -> "Keeps the text in the search field after the piece list closes";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.right_click_clear", switch (locale) {
+            case "ja_jp" -> "右クリックで検索欄のクリア";
+            default -> "Right-click clears search";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.right_click_clear.tooltip", switch (locale) {
+            case "ja_jp" -> "検索欄を右クリックすると、入力した文字を消します";
+            default -> "Right-clicking the search field clears its text";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.english_sort", switch (locale) {
+            case "ja_jp" -> "英語名順に並べる";
+            default -> "Sort by English name";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.english_sort.tooltip", switch (locale) {
+            case "ja_jp" -> "言語設定に関係なく、ピースを英語名の順に並べます";
+            default -> "Sorts spell pieces by their English names regardless of the game language";
         });
         root.addProperty("psitweaks_qol.gui.spell_piece_mode", switch (locale) {
             case "ja_jp" -> "モード: %s";

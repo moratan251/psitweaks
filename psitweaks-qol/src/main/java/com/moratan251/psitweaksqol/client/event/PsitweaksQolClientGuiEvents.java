@@ -3,6 +3,8 @@ package com.moratan251.psitweaksqol.client.event;
 import com.moratan251.psitweaksqol.client.gui.ClientGuiSounds;
 import com.moratan251.psitweaksqol.client.gui.EditableStringInputOverlay;
 import com.moratan251.psitweaksqol.client.gui.PieceBookmarkManager;
+import com.moratan251.psitweaksqol.client.gui.PiecePanelSettings;
+import com.moratan251.psitweaksqol.client.gui.PieceRecentManager;
 import com.moratan251.psitweaksqol.client.gui.ProgrammerOverlayInputGuard;
 import com.moratan251.psitweaksqol.client.gui.SpellGridMultiSelectionController;
 import com.moratan251.psitweaksqol.client.gui.SpellNameFromTrickController;
@@ -76,6 +78,12 @@ public final class PsitweaksQolClientGuiEvents {
                     event.getButton());
             if (!handled) {
                 handled = handlePieceBookmarkClick(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton());
+            }
+            if (!handled) {
+                handled = PiecePanelSettings.handleSearchRightClick(screen,
                         event.getMouseX(),
                         event.getMouseY(),
                         event.getButton());
@@ -195,9 +203,37 @@ public final class PsitweaksQolClientGuiEvents {
                 || EditableStringInputOverlay.handleMouseScrolledPre(screen,
                         event.getMouseX(),
                         event.getMouseY(),
+                        event.getScrollDeltaY())
+                || handlePiecePanelScroll(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getScrollDeltaX(),
                         event.getScrollDeltaY()))) {
             event.setCanceled(true);
         }
+    }
+
+    /**
+     * ピース一覧の上のホイールを、必ず一覧へ渡す（ページ送り）。
+     * 画面はホイールを「カーソルの下にある最初の部品」にだけ渡す。一覧より先に足されているコスト表示などと
+     * 一覧が重なると（右端のマスで開いて一覧がグリッドの外へ出たとき）、そちらが受け取って何もしないので、
+     * Psi だけでもページが送れなくなる。ここで先に一覧へ渡して、その取りこぼしをなくす。
+     */
+    private static boolean handlePiecePanelScroll(
+            GuiProgrammer screen,
+            double mouseX,
+            double mouseY,
+            double scrollDeltaX,
+            double scrollDeltaY
+    ) {
+        if (screen.panelWidget == null
+                || !screen.panelWidget.panelEnabled
+                || !screen.panelWidget.isMouseOver(mouseX, mouseY)) {
+            return false;
+        }
+
+        screen.panelWidget.mouseScrolled(mouseX, mouseY, scrollDeltaX, scrollDeltaY);
+        return true;
     }
 
     private static void onScreenClosing(ScreenEvent.Closing event) {
@@ -207,6 +243,7 @@ public final class PsitweaksQolClientGuiEvents {
             EditableStringInputOverlay.deactivate(screen);
             SpellGridMultiSelectionController.resetScreenState();
             ProgrammerOverlayInputGuard.reset();
+            PieceRecentManager.flush();
         }
     }
 }

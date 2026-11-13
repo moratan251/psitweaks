@@ -6,10 +6,12 @@
   "mixins": [],
   "client": [
     "client.GuiButtonSpellPieceBookmarkMixin",
+    "client.GuiButtonSpellPieceRecentMixin",
+    "client.GuiButtonSpellPieceSortMixin",
     "client.GuiProgrammerOverlayInputMixin",
     "client.GuiProgrammerSpellNameSyncMixin",
-    "client.PiecePanelWidgetBookmarkMixin",
-    "client.PiecePanelWidgetEnglishSearchMixin"
+    "client.PiecePanelWidgetEnglishSearchMixin",
+    "client.PiecePanelWidgetTabMixin"
   ],
   "injectors": { "defaultRequire": 1 },
   "overwrites": { "requireAnnotations": true }

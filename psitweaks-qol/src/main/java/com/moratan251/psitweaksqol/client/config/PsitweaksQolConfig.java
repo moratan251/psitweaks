@@ -1,5 +1,7 @@
 package com.moratan251.psitweaksqol.client.config;
 
+import com.moratan251.psitweaksqol.client.gui.PiecePanelSize;
+import com.moratan251.psitweaksqol.client.gui.PieceSortOrder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,6 +23,11 @@ public final class PsitweaksQolConfig {
 
     public static final class Client {
         public final ModConfigSpec.ConfigValue<List<? extends String>> pieceBookmarks;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> recentPieces;
+        public final ModConfigSpec.EnumValue<PiecePanelSize> piecePanelSize;
+        public final ModConfigSpec.BooleanValue keepSearchText;
+        public final ModConfigSpec.BooleanValue rightClickClearsSearch;
+        public final ModConfigSpec.EnumValue<PieceSortOrder> pieceSortOrder;
 
         private Client(ModConfigSpec.Builder builder) {
             builder.comment("Psitweaks QoL client-only settings")
@@ -34,6 +41,33 @@ public final class PsitweaksQolConfig {
                             () -> "",
                             value -> value instanceof String id && ResourceLocation.tryParse(id) != null
                     );
+
+            recentPieces = builder
+                    .comment("Spell piece registry IDs recently placed from the Spell Programmer piece panel, newest first")
+                    .defineListAllowEmpty(
+                            "recentPieces",
+                            List.of(),
+                            () -> "",
+                            value -> value instanceof String id && ResourceLocation.tryParse(id) != null
+                    );
+
+            piecePanelSize = builder
+                    .comment("Size of one page of the Spell Programmer piece panel:",
+                            "SMALL = 5 x 5 (Psi default), MEDIUM = 7 x 6, LARGE = 9 x 7")
+                    .defineEnum("piecePanelSize", PiecePanelSize.SMALL);
+
+            keepSearchText = builder
+                    .comment("Keep the text typed in the piece panel search field after the panel closes")
+                    .define("keepSearchText", false);
+
+            rightClickClearsSearch = builder
+                    .comment("Right-clicking the piece panel search field clears its text")
+                    .define("rightClickClearsSearch", true);
+
+            pieceSortOrder = builder
+                    .comment("Order of spell pieces in the piece panel:",
+                            "NAME = name in the current language (Psi default), ENGLISH_NAME = English name")
+                    .defineEnum("pieceSortOrder", PieceSortOrder.NAME);
 
             builder.pop();
         }
