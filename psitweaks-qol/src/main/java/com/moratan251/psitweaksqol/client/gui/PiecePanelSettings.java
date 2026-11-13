@@ -1,6 +1,7 @@
 package com.moratan251.psitweaksqol.client.gui;
 
 import com.moratan251.psitweaksqol.client.config.PsitweaksQolConfig;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import vazkii.psi.client.gui.GuiProgrammer;
 
@@ -99,7 +100,8 @@ public final class PiecePanelSettings {
     }
 
     /**
-     * 「右クリックで一覧を閉じる」。一覧の上（タブの列や設定項目も含む）での右クリックなら一覧を閉じる。
+     * 「右クリックで一覧を閉じる」。一覧の上（タブの列も含む）での右クリックで 1 段戻る。
+     * 設定を開いているときは設定だけを閉じてピース一覧に戻り、ピース一覧のときは一覧を閉じる。
      * 検索欄の上は除く（そこは「右クリックで検索欄のクリア」の場所で、その設定が切なら何もしない）。
      * 一覧の外の右クリックは、Psi がもともと閉じる。
      *
@@ -115,8 +117,29 @@ public final class PiecePanelSettings {
             return false;
         }
 
-        screen.panelWidget.closePanel();
+        PiecePanelSettingsButton settingsButton = openSettingsButton(screen);
+        if (settingsButton != null) {
+            settingsButton.onPress();
+            ClientGuiSounds.playClick();
+        } else {
+            screen.panelWidget.closePanel();
+        }
         return true;
+    }
+
+    /** ピース一覧が開いていて、その中で設定を開いているか。 */
+    public static boolean isSettingsOpen(GuiProgrammer screen) {
+        return screen.panelWidget != null && screen.panelWidget.panelEnabled && openSettingsButton(screen) != null;
+    }
+
+    /** 設定を開いているときの歯車。押せば設定が閉じる。開いていなければ null。 */
+    private static PiecePanelSettingsButton openSettingsButton(GuiProgrammer screen) {
+        for (Button button : screen.panelWidget.panelButtons) {
+            if (button instanceof PiecePanelSettingsButton settingsButton) {
+                return settingsButton.isSelected() ? settingsButton : null;
+            }
+        }
+        return null;
     }
 
     /** 検索欄（左の虫眼鏡の絵と、上下の少しの余白を含む）の上か。 */

@@ -12,6 +12,7 @@ import com.moratan251.psitweaksqol.client.gui.SpellPieceModeButtonOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import org.lwjgl.glfw.GLFW;
 import vazkii.psi.client.gui.GuiProgrammer;
 import vazkii.psi.client.gui.button.GuiButtonSpellPiece;
 
@@ -52,9 +53,19 @@ public final class PsitweaksQolClientGuiEvents {
                 && (SpellNameFromTrickController.handleKeyPressedPre(screen, event.getKeyCode())
                 || SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
                 || EditableStringInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())
-                || SpellGridMultiSelectionController.handleKeyPressedPre(screen, event.getKeyCode()))) {
+                || SpellGridMultiSelectionController.handleKeyPressedPre(screen, event.getKeyCode())
+                || handlePiecePanelSettingsKey(screen, event.getKeyCode()))) {
             event.setCanceled(true);
         }
+    }
+
+    /**
+     * 設定を開いている間の Enter を止める。Psi は一覧が開いていれば Enter でカーソルのピースを置くので、
+     * 止めないと、設定の裏に隠れた見えないピースが置かれてしまう。
+     */
+    private static boolean handlePiecePanelSettingsKey(GuiProgrammer screen, int keyCode) {
+        return (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)
+                && PiecePanelSettings.isSettingsOpen(screen);
     }
 
     private static void onCharacterTypedPre(ScreenEvent.CharacterTyped.Pre event) {
@@ -238,7 +249,10 @@ public final class PsitweaksQolClientGuiEvents {
             return false;
         }
 
-        screen.panelWidget.mouseScrolled(mouseX, mouseY, scrollDeltaX, scrollDeltaY);
+        // 設定を開いている間はピースもページ番号も見えないので、ページは送らない（下の部品にも渡さない）。
+        if (!PiecePanelSettings.isSettingsOpen(screen)) {
+            screen.panelWidget.mouseScrolled(mouseX, mouseY, scrollDeltaX, scrollDeltaY);
+        }
         return true;
     }
 

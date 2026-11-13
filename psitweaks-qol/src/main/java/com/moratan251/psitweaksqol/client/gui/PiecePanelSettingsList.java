@@ -17,8 +17,8 @@ import java.util.function.BooleanSupplier;
  * <li>大きさ: 小・中・大 の 3 つから選ぶ</li>
  * <li>入り切りの項目: 検索内容の保持、右クリックで検索欄のクリア、右クリックで一覧を閉じる、英語名順に並べる</li>
  * </ul>
- * ピースを置く場所（検索欄の下からページ番号の行まで）を不透明に塗って、その上に描く。Psi が先に描いた
- * カーソルの枠とページ番号は、これで隠れる。
+ * 一覧の本体（検索欄の行からページ番号の行まで）を不透明に塗って、その上に描く。Psi が先に描いた
+ * 虫眼鏡の絵・カーソルの枠・ページ番号は、これで隠れる（検索欄そのものは mixin が見えなくする）。
  * 画面に載せる口が Button の一覧しかないので Button として作り、クリックの位置で項目を分ける。
  */
 public final class PiecePanelSettingsList extends Button {
@@ -27,6 +27,8 @@ public final class PiecePanelSettingsList extends Button {
     private static final Component SIZE_LABEL = Component.translatable(KEY_PREFIX + "size");
 
     private static final int BACKGROUND_COLOR = 0xFF141414;
+    /** 設定の面を描く奥行き。Psi の一覧（0 付近）より手前、ツールチップ（400）より奥。 */
+    private static final float COVER_Z = 50.0F;
     private static final int LABEL_COLOR = 0xD0D0D0;
     private static final int HOVERED_COLOR = 0xFFFFFF;
     private static final int BOX_COLOR = 0xFFA0A0A0;
@@ -69,10 +71,9 @@ public final class PiecePanelSettingsList extends Button {
         );
     }
 
-    /** 一覧の本体の位置と大きさから、自分の置き場所を決める。 */
+    /** 一覧の本体（検索欄の行からページ番号の行まで）の全体を覆う。 */
     public void place(int bodyX, int bodyY, int bodyWidth, int bodyHeight, int tabRowY) {
-        setRectangle(bodyWidth, bodyHeight - PiecePanelSize.SEARCH_ROW_HEIGHT,
-                bodyX, bodyY + PiecePanelSize.SEARCH_ROW_HEIGHT);
+        setRectangle(bodyWidth, bodyHeight, bodyX, bodyY);
         titleY = tabRowY;
     }
 
@@ -186,6 +187,9 @@ public final class PiecePanelSettingsList extends Button {
         boolean hovered = isMouseOver(mouseX, mouseY);
         Component tooltip = null;
 
+        // 手前に描く。文字は背景よりわずかに手前へ描かれるので、同じ奥行きで塗っても Psi のページ番号が透けて残る。
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0.0F, 0.0F, COVER_Z);
         guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), BACKGROUND_COLOR);
         guiGraphics.drawString(font, TITLE, getX() + PADDING, titleY + 4, HOVERED_COLOR);
 
@@ -222,6 +226,7 @@ public final class PiecePanelSettingsList extends Button {
         if (hoveredToggle >= 0) {
             tooltip = toggles.get(hoveredToggle).tooltip();
         }
+        guiGraphics.pose().popPose();
 
         // ツールチップはこのあと（AbstractWidget.render の最後）で出されるので、ここで差し替えれば同じフレームに間に合う。
         setTooltip(tooltip == null ? null : Tooltip.create(tooltip));

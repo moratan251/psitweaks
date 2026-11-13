@@ -30,6 +30,12 @@ public final class SpellNameFromTrickButton extends Button {
         if (screen.takingScreenshot) {
             return;
         }
+        // ピース一覧を開いている間は描かない。その間はもともと押せないうえ、右寄りのマスで開いた一覧（小）の
+        // ページ番号の行と重なり、次のページへの矢印を隠してしまう。
+        if (screen.panelWidget != null && screen.panelWidget.panelEnabled) {
+            active = false;
+            return;
+        }
 
         List<String> names = SpellNameFromTrickController.distinctTrickNames(screen);
         active = !names.isEmpty() && SpellNameFromTrickController.canUse(screen);

@@ -251,6 +251,12 @@ public abstract class PiecePanelWidgetTabMixin {
     @Unique
     private void psitweaks$toggleSettings() {
         psitweaks$settingsMode = !psitweaks$settingsMode;
+        // 設定中は検索欄を見えなくする（見えない欄は文字も受け取らない）。虫眼鏡の絵とページ番号は設定の面が覆う。
+        // 閉じるときは Psi が検索欄を隠し、開くときは Psi が見えるようにするので、ここでは切り替えのときだけ触る。
+        PiecePanelWidget self = (PiecePanelWidget) (Object) this;
+        if (self.searchField != null && panelEnabled) {
+            self.searchField.setVisible(!psitweaks$settingsMode);
+        }
         psitweaks$layoutPage();
         psitweaks$syncTabRow();
     }

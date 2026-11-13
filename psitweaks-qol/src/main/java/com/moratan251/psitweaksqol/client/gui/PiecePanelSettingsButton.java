@@ -20,6 +20,11 @@ public final class PiecePanelSettingsButton extends Button {
         this.selected = selected;
     }
 
+    /** 設定を開いている間は true。 */
+    public boolean isSelected() {
+        return selected;
+    }
+
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int color;
