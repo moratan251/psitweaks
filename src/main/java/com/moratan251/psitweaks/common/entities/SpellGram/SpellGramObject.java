@@ -364,19 +364,38 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return placementCost;
     }
 
+    /** 耐久値の上限を決めていないとき（サークル）の、置いたときの耐久値に対する倍率（2026-11-11 ユーザー）。 */
+    public static final float DEFAULT_INTEGRITY_CAP_FACTOR = 2.0F;
+
+    /** 耐久値の上限（作動式: 魔法式延長で戻せる上限）。0 なら置いたときの耐久値 × {@link #DEFAULT_INTEGRITY_CAP_FACTOR}。サーバー側だけ。 */
+    private float integrityCap;
+
     /**
-     * 耐久値を {@code amount} だけ戻す（作動式: 魔法式延長、2026-11-11 ユーザー）。耐久値は 置いたときの耐久値 ×
-     * {@code maxFactor} までで、それを超える分は捨てる。術式で削られた分から先に戻し、残りは時間で減った分として残りの存続時間を
-     * 延ばす（耐久値は毎 tick 同じ量ずつ減るので、置いたときの耐久値を超えた分は、そのぶん長く残る）。時間で減らない魔法式
-     * （{@link #getTimeShare} が 0）は、削られた分しか戻らない。実際に戻った耐久値を返す。
+     * 置く前に呼ぶ。耐久値の上限（2026-11-14 ユーザー: 領域は「時間」によらず一定で、「時間」を最大にして置いたときの上限と同じ。
+     * {@code PieceTrickZoneBase} が決める）。
      */
-    public float restoreIntegrity(float amount, float maxFactor) {
+    public void setIntegrityCap(float cap) {
+        this.integrityCap = Math.max(0.0F, cap);
+    }
+
+    /** 耐久値の上限（サーバー側）。決めていなければ 置いたときの耐久値 × {@link #DEFAULT_INTEGRITY_CAP_FACTOR}。 */
+    public float getIntegrityCap() {
+        return integrityCap > 0.0F ? integrityCap : getMaxIntegrity() * DEFAULT_INTEGRITY_CAP_FACTOR;
+    }
+
+    /**
+     * 耐久値を {@code amount} だけ戻す（作動式: 魔法式延長、2026-11-11 ユーザー）。耐久値は上限（{@link #getIntegrityCap}）までで、
+     * それを超える分は捨てる。術式で削られた分から先に戻し、残りは時間で減った分として残りの存続時間を延ばす（耐久値は毎 tick
+     * 同じ量ずつ減るので、置いたときの耐久値を超えた分は、そのぶん長く残る）。時間で減らない魔法式（{@link #getTimeShare} が 0）は、
+     * 削られた分しか戻らない。実際に戻った耐久値を返す。
+     */
+    public float restoreIntegrity(float amount) {
         if (isEnded() || amount <= 0.0F) {
             return 0.0F;
         }
         float max = getMaxIntegrity();
         float before = getIntegrity();
-        float target = Math.min(max * Math.max(1.0F, maxFactor), before + amount);
+        float target = Math.min(Math.max(max, getIntegrityCap()), before + amount);
         if (target <= before) {
             return 0.0F;
         }

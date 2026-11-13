@@ -28,13 +28,19 @@ public final class SpellGramAim {
         return new AABB(object.position(), object.position()).inflate(CORE_HALF);
     }
 
-    /** {@code viewer} の視線の先の、ブロックに遮られていない魔法式オブジェクトの核のうち最も近いもの。 */
+    /** {@code viewer} の視線の先の、ブロックに遮られていない魔法式オブジェクトの核のうち最も近いもの（{@link #RANGE} まで）。 */
     @Nullable
     public static SpellGramObject aimedAt(Level level, Entity viewer, float partialTicks) {
+        return aimedAt(level, viewer, partialTicks, RANGE);
+    }
+
+    /** {@link #aimedAt(Level, Entity, float)} を、視線が届く距離 {@code range} で探す。 */
+    @Nullable
+    public static SpellGramObject aimedAt(Level level, Entity viewer, float partialTicks, double range) {
         Vec3 eye = viewer.getEyePosition(partialTicks);
-        Vec3 end = eye.add(viewer.getViewVector(partialTicks).scale(RANGE));
+        Vec3 end = eye.add(viewer.getViewVector(partialTicks).scale(range));
         HitResult block = level.clip(new ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, viewer));
-        double limit = block.getType() == HitResult.Type.MISS ? RANGE * RANGE : eye.distanceToSqr(block.getLocation());
+        double limit = block.getType() == HitResult.Type.MISS ? range * range : eye.distanceToSqr(block.getLocation());
         SpellGramObject nearest = null;
         for (SpellGramObject object : level.getEntitiesOfClass(SpellGramObject.class, new AABB(eye, end).inflate(CORE_HALF + 1.0))) {
             if (object.isRemoved() || object.isEnded()) {

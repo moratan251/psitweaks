@@ -22,14 +22,17 @@ import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * 魔法式オブジェクト（サークル・領域・流星群の夜）の核に照準を合わせると、その名前と残りの耐久値をクロスヘアのすぐ下に出す
- * （2026-11-12 ユーザー）。術式解体などで削るときの目安。
+ * （2026-11-12 ユーザー）。術式解体などで削るときの目安。2026-11-14 ユーザー: 水色の文字で「加重領域  50」のように名前と今の
+ * 耐久値だけを出し（上限とバーは出さない）、核から {@link #RANGE} ブロック以内でだけ出す。
  * <p>
  * 狙いはクライアントの tick ごとに {@link SpellGramAim#aimedAt} で決める（ブロックに遮られていない、視線の先の核のうち最も近いもの）。
  * 覚えるのはエンティティの番号だけで、ログアウトで消す。
  */
 public final class SpellGramIntegrityHud {
-    private static final int TEXT_COLOR = 0xFFFFFF;
-    private static final int BAR_WIDTH = 60;
+    /** 文字の色（水色、ChatFormatting.AQUA と同じ）。 */
+    private static final int TEXT_COLOR = 0x55FFFF;
+    /** 出す距離（ブロック、目から核まで）。 */
+    public static final double RANGE = 5.0;
 
     /** 照準が合っている魔法式オブジェクトのエンティティの番号（なければ -1）。 */
     private static int targetId = -1;
@@ -59,7 +62,7 @@ public final class SpellGramIntegrityHud {
             targetId = -1;
             return;
         }
-        SpellGramObject target = SpellGramAim.aimedAt(level, camera, 1.0F);
+        SpellGramObject target = SpellGramAim.aimedAt(level, camera, 1.0F, RANGE);
         targetId = target == null ? -1 : target.getId();
     }
 
@@ -70,23 +73,9 @@ public final class SpellGramIntegrityHud {
             return;
         }
         Font font = minecraft.font;
-        float max = object.getMaxIntegrity();
-        float integrity = object.getIntegrity();
         Component text = Component.translatable("psitweaks.hud.spellgram_integrity", object.getName(),
-                format(integrity, max), format(max, max));
-        int centerX = graphics.guiWidth() / 2;
-        int top = graphics.guiHeight() / 2 + 10;
-        graphics.drawCenteredString(font, text, centerX, top, TEXT_COLOR);
-
-        // 耐久値の割合の細いバー（置いたときより多ければ満タン）。
-        float fraction = max > 0.0F ? Mth.clamp(integrity / max, 0.0F, 1.0F) : 1.0F;
-        int left = centerX - BAR_WIDTH / 2;
-        int barTop = top + font.lineHeight + 1;
-        graphics.fill(left, barTop, left + BAR_WIDTH, barTop + 2, 0xA0101418);
-        int filled = Mth.ceil(BAR_WIDTH * fraction);
-        if (filled > 0) {
-            graphics.fill(left, barTop, left + filled, barTop + 2, 0xFF000000 | barColor(fraction));
-        }
+                format(object.getIntegrity(), object.getMaxIntegrity()));
+        graphics.drawCenteredString(font, text, graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 10, TEXT_COLOR);
     }
 
     /** 置いたときの耐久値が 10 以上なら整数（切り上げ）、それより小さければ小数 1 桁。 */
@@ -94,11 +83,4 @@ public final class SpellGramIntegrityHud {
         return max >= 10.0F ? Integer.toString(Mth.ceil(value)) : String.format(java.util.Locale.ROOT, "%.1f", value);
     }
 
-    /** 多いと緑、減ると黄、少ないと赤。 */
-    private static int barColor(float fraction) {
-        if (fraction > 0.5F) {
-            return 0x55FF55;
-        }
-        return fraction > 0.25F ? 0xFFDD44 : 0xFF5555;
-    }
 }

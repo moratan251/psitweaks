@@ -187,6 +187,15 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         return Math.max(MIN_TIME_SECONDS, Math.min(MAX_TIME_SECONDS, seconds));
     }
 
+    /**
+     * 領域の耐久値の上限（作動式: 魔法式延長で戻せる上限）。「時間」によらず、「時間」を最大（{@link #MAX_TIME_SECONDS} 秒）にして
+     * 置いたときの耐久値 × {@link SpellGramObject#DEFAULT_INTEGRITY_CAP_FACTOR}（2026-11-14 ユーザー）。
+     */
+    public static float integrityCap(@org.jetbrains.annotations.Nullable net.minecraft.world.entity.LivingEntity caster) {
+        return SpellGramIntegrity.initial(BASE_INTEGRITY, caster, (double) MAX_TIME_SECONDS / DEFAULT_TIME_SECONDS)
+                * SpellGramObject.DEFAULT_INTEGRITY_CAP_FACTOR;
+    }
+
     /** 範囲の広さ（いちばん広い面のブロック数）から規模。 */
     protected abstract int potency(int area) throws SpellCompilationException;
 
@@ -240,6 +249,8 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         zone.setLifetimeTicks((int) Math.round(seconds * 20.0));
         zone.setPlacementCost(timedCost(placementCost(sizeValue), seconds));
         zone.setMaxIntegrity(SpellGramIntegrity.initial(BASE_INTEGRITY, context.caster, seconds / DEFAULT_TIME_SECONDS));
+        // 耐久値の上限は「時間」によらず一定（2026-11-14 ユーザー）: 「時間」を最大にして置いたときの上限（その耐久値の 2 倍）。
+        zone.setIntegrityCap(integrityCap(context.caster));
         level.addFreshEntity(zone);
 
         Vec3 at = zone.position();

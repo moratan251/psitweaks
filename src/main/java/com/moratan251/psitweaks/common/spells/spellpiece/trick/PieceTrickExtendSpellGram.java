@@ -23,7 +23,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * 作動式: 魔法式延長（2026-11-11 ユーザー）。対象の自分の魔法式オブジェクトの耐久値を回復する（同日、存続時間を延ばす形から
  * 変更）。考え方は「置いたときに払ったコストのうち、払った割合だけ耐久値が戻る」: このピースのコストは 威力 ×
  * {@link #COST_PER_POWER}、戻る耐久値は 置いたときの耐久値 × このピースのコスト ÷ 置いたときのコスト。多くコストを払ったもの
- * ほど回復しにくい。耐久値は置いたときの {@link #MAX_INTEGRITY_FACTOR} 倍まで。術式で削られた分から先に戻り、置いたときの
+ * ほど回復しにくい。耐久値は上限（{@link SpellGramObject#getIntegrityCap}、領域は「時間」を最大にして置いたときの耐久値の 2 倍、
+ * サークルは置いたときの 2 倍）まで。術式で削られた分から先に戻り、置いたときの
  * 耐久値を超えた分はそのぶん長く残る（{@link SpellGramObject#restoreIntegrity}）。対象は 1 つ（リストは受け付けない。コストを
  * 1 つぶんで決めるため）、距離は問わない。目印型（流星群の夜）は対象外。
  */
@@ -32,8 +33,6 @@ public class PieceTrickExtendSpellGram extends PieceTrick {
     public static final int COST_PER_POWER = 100;
     /** 威力の上限（仮）。 */
     public static final double MAX_POWER = 100.0;
-    /** 耐久値の上限: 置いたときの耐久値の何倍か（2026-11-11 ユーザー）。 */
-    public static final float MAX_INTEGRITY_FACTOR = 2.0F;
     // 仮の数値: 規模 = 威力
     private static final int POTENCY_PER_POWER = 1;
 
@@ -80,7 +79,7 @@ public class PieceTrickExtendSpellGram extends PieceTrick {
             throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
         float added = object.restoreIntegrity(
-                restoreAmount(object.getMaxIntegrity(), powerValue, object.getPlacementCost()), MAX_INTEGRITY_FACTOR);
+                restoreAmount(object.getMaxIntegrity(), powerValue, object.getPlacementCost()));
         if (added > 0.0F && object.level() instanceof ServerLevel level) {
             Vec3 at = object.position();
             level.playSound(null, at.x, at.y, at.z, SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.5F, 1.5F);

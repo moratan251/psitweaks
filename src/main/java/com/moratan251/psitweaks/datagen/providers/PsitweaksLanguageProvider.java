@@ -420,8 +420,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "No ground below the position";
         });
         root.addProperty("psitweaks.hud.spellgram_integrity", switch (locale) {
-            case "ja_jp" -> "%s　耐久値 %s / %s";
-            default -> "%s  Integrity %s / %s";
+            case "ja_jp" -> "%s  %s";
+            default -> "%s  %s";
         });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません。";
@@ -621,8 +621,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 障壁のシールド残量と残り時間を体力ゲージの上に表示します。");
         addConfigValue(root, "psitweaks.configuration.effects.spellgram_integrity_hud",
                 "SpellGram Integrity", "魔法式オブジェクトの耐久値",
-                "Show the name and remaining integrity of the SpellGram object whose core you aim at, below the crosshair.",
-                "照準を合わせた魔法式オブジェクトの核の、名前と残りの耐久値をクロスヘアの下に表示します。");
+                "Show the name and remaining integrity of the SpellGram object whose core you aim at within 5 blocks, below the crosshair.",
+                "5ブロック以内で照準を合わせた魔法式オブジェクトの核の、名前と残りの耐久値をクロスヘアの下に表示します。");
         addConfigValue(root, "psitweaks.configuration.effects.meteor_line_night",
                 "Meteor Line Night", "流星群の夜",
                 "Darken the view while you stand in the night of Trick: Meteor Line.",
@@ -3015,11 +3015,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Restores the integrity of your own Resident SpellGram given as the Target, however far away it is. Its cost is 100 per Power (a constant of at most 100)."
                         + " It gives back the share of the integrity the object had when placed that this cost is of what the object cost when placed, so costly objects are harder to restore."
                         + " Integrity lost to spells comes back first. Integrity wears away at a steady rate, so anything restored beyond that makes the object last longer."
-                        + " Integrity can reach twice what it had when placed.",
+                        + " Integrity can be restored up to a cap: for a zone, twice what it would have had if placed with the longest Time (120 seconds), whatever Time it was placed with; for a circle, twice what it had when placed.",
                 "「対象」に入れた自分の常駐魔法式の耐久値を、距離に関係なく回復します。コストは威力（最大100の定数）×100です。"
                         + "置いたときのコストのうち、このコストが占める割合だけ、置いたときの耐久値が戻るので、多くコストを払ったものほど回復しにくくなります。"
                         + "術式で削られた分から先に戻ります。耐久値は一定の速さで減るので、それを超えて戻した分だけ長く残ります。"
-                        + "耐久値は置いたときの2倍まで回復できます。");
+                        + "回復できる上限は、領域なら置いたときの「時間」によらず、「時間」を最大（120秒）にして置いたときの耐久値の2倍です。サークルは置いたときの耐久値の2倍です。");
         addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
                 "Places a Resident SpellGram zone that keeps weaker casters' Psi spells and zones out of it",
                 "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と領域を、範囲の中で効かなくする常駐魔法式を置く");

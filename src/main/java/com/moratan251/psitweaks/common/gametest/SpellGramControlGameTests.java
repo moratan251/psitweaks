@@ -151,7 +151,8 @@ public final class SpellGramControlGameTests {
 
     /**
      * 魔法式延長は耐久値を 置いたときの耐久値 × このピースのコスト ÷ 置いたときのコストだけ戻す。術式で削られた分から先に戻り、
-     * 残りは存続時間に足され、耐久値は置いたときの 2 倍まで。他人のものは回復できない。
+     * 残りは存続時間に足され、耐久値は上限まで（2026-11-14: 領域の上限は「時間」によらず、「時間」を最大にして置いたときの
+     * 耐久値の 2 倍）。他人のものは回復できない。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_extend", timeoutTicks = 40)
     public static void extendRestoresIntegrityByCostShareUpToTwice(GameTestHelper helper) {
@@ -189,9 +190,17 @@ public final class SpellGramControlGameTests {
                     "Power 1 must restore " + share + " integrity and add about " + expectedTicks + " ticks: "
                             + beforeTicks + " -> " + afterOne + ", integrity " + beforeIntegrity + " -> " + zone.getIntegrity());
 
+            // 上限は「時間」によらず一定: 「時間」を最大（120 秒）にして置いたときの耐久値の 2 倍なので、30 秒の領域では 8 倍。
+            float cap = zone.getIntegrityCap();
+            helper.assertTrue(Math.abs(cap - max * 8.0F) < max * 1.0E-3F,
+                    "The cap must be twice the integrity of the longest Time (8x for 30 s), was " + cap + " of " + max);
+            SpellGramObject longest = placeSoak(caster, 15.0, 120.0);
+            helper.assertTrue(Math.abs(longest.getIntegrityCap() - cap) < cap * 1.0E-3F
+                            && Math.abs(longest.getIntegrityCap() - longest.getMaxIntegrity() * 2.0F) < cap * 1.0E-3F,
+                    "The cap must not depend on the Time: " + cap + " vs " + longest.getIntegrityCap());
             extend(caster, zone, 100.0);
-            helper.assertTrue(Math.abs(zone.getIntegrity() - max * 2.0F) < max * 1.0E-3F && Math.abs(zone.getRemainingTicks() - lifetime * 2) <= 1,
-                    "Integrity must stop at twice the placed integrity, was " + zone.getIntegrity() + " of " + max
+            helper.assertTrue(Math.abs(zone.getIntegrity() - cap) < max * 1.0E-3F && Math.abs(zone.getRemainingTicks() - lifetime * 8) <= 1,
+                    "Integrity must stop at the cap, was " + zone.getIntegrity() + " of " + cap
                             + ", ticks " + zone.getRemainingTicks() + " of " + lifetime);
 
             SpellGramObject cheap = placeSoak(caster, 1.0, null);
