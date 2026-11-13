@@ -94,7 +94,11 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
+            // Own throw-away game folder; its world is deleted before every run (see runGameTestServer below).
+            gameDirectory = project.file('run/gametest')
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            // Start the test grid at x = z = 0 instead of a random spot up to 15M blocks away (Sable loses precision past 2^23).
+            systemProperty 'psitweaks.gametest.fixedOrigin', 'true'
         }
 
         data {
@@ -337,5 +341,15 @@ idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+// GameTests always start at x = z = 0 (GameTestServerOriginMixin), so they need a fresh superflat world every run:
+// old terrain or blocks left by earlier runs at the origin would bury the test areas.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    // Resolved here: the configuration cache does not allow script methods such as file() or delete() inside doFirst.
+    File gameTestWorld = file('run/gametest/world')
+    doFirst {
+        gameTestWorld.deleteDir()
     }
 }

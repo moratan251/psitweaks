@@ -83,6 +83,8 @@ public final class SableZoneGameTests {
      * テストの場所の x か z が、Sable が半ブロックを表せない遠さか（2026-11-13 ユーザー: その座標では Sable を使うテストの判定を
      * 緩める）。GameTest はテストを並べる場所を起動のたびに ±1500 万ブロックのどこかに選ぶので、よく当たる。その座標では機体の
      * 細かい位置や物理を確かめようがないので、機体の位置に頼る判定は飛ばし、組めた・置けた・押したことだけを確かめる。
+     * {@code runGameTestServer} では {@code GameTestServerOriginMixin} が場所を原点に固定するので、ここで飛ばすのは開発クライアントの
+     * {@code /test} を遠い場所で流したときなどだけ。固定が効いていないと毎回の実行で弱くなるので、飛ばすときは警告を出す。
      */
     static boolean beyondSablePrecision(GameTestHelper helper, String test) {
         AABB bounds = helper.getBounds();
@@ -90,7 +92,7 @@ public final class SableZoneGameTests {
                 Math.max(Math.abs(bounds.minZ), Math.abs(bounds.maxZ)));
         boolean beyond = far + SABLE_PRECISION_MARGIN >= SABLE_PRECISE_LIMIT;
         if (beyond) {
-            LOGGER.info("[GameTest] {}: the test area {} is beyond Sable's precision, so the checks that rely on the ship's"
+            LOGGER.warn("[GameTest] {}: the test area {} is beyond Sable's precision, so the checks that rely on the ship's"
                     + " exact position are skipped", test, bounds);
         }
         return beyond;

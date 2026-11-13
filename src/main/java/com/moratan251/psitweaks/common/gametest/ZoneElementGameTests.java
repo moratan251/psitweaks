@@ -59,6 +59,8 @@ import java.util.Optional;
 @PrefixGameTestTemplate(false)
 public final class ZoneElementGameTests {
     private static final String TEMPLATE = "connector_empty";
+    /** 風力発電機（高さ 5）を 3 台並べ、屋根もかける区画（12×6×5、ブロックなし）。 */
+    private static final String WIND_TEMPLATE = "zone_wind_generators";
     private static final BlockPos CENTER = new BlockPos(2, 1, 2);
     /** 水・氷を置く場所（石で囲む）。囲いの石が別の場所に重ならないよう 2 つおきにする。 */
     private static final BlockPos OPEN = new BlockPos(1, 1, 1);
@@ -292,8 +294,10 @@ public final class ZoneElementGameTests {
     /**
      * Mekanism Generators があるとき、乱流領域の中の風力発電機は屋根の下でも発電し、威力 10 なら空の下の 2 倍になる。
      * 外の風力発電機は屋根の下で止まったまま。Mekanism Generators がなければ飛ばす。
+     * 風力発電機は高さが 5 ブロックあり、5×4×5 の区画には収まらないので、専用の区画に 3 台と屋根を収める。空の下に置く 1 台が
+     * あるので、区画の天井（バリア）は付けない（skyAccess）。
      */
-    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_turbulence_wind", timeoutTicks = 200)
+    @GameTest(template = WIND_TEMPLATE, batch = "psitweaks_zone_turbulence_wind", timeoutTicks = 200, skyAccess = true)
     public static void turbulenceZoneRunsWindGeneratorsIndoors(GameTestHelper helper) {
         Optional<Block> windGenerator = block("mekanismgenerators:wind_generator");
         if (!MekanismCompat.isGeneratorsLoaded() || windGenerator.isEmpty()) {
@@ -303,12 +307,13 @@ public final class ZoneElementGameTests {
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_turbulence_wind", new Vec3(0.5, 1.0, 0.5));
         BlockPos inside = new BlockPos(2, 1, 2);
-        BlockPos outside = new BlockPos(9, 1, 2);
-        BlockPos openSky = new BlockPos(18, 1, 2);
-        // 風力発電機は 4 ブロック上から空が見えるかを見る。中と外の 2 台の上に広く屋根をかけ、3 台目は空の下に置く。
-        for (int x = -1; x <= 12; x++) {
-            for (int z = -1; z <= 5; z++) {
-                helper.setBlock(new BlockPos(x, 7, z), Blocks.STONE);
+        BlockPos outside = new BlockPos(6, 1, 2);
+        BlockPos openSky = new BlockPos(10, 1, 2);
+        // 風力発電機は 4 ブロック上（y 5、発電機のてっぺん）から空が見えるかを見る。中と外の 2 台の上（x 0〜7）に、すぐ上の y 6 で
+        // 屋根をかけ、3 台目は空の下に置く。乱流領域は x 0〜4 なので、外の 1 台（x 6）は入らない。
+        for (int x = 0; x <= 7; x++) {
+            for (int z = 0; z <= 4; z++) {
+                helper.setBlock(new BlockPos(x, 6, z), Blocks.STONE);
             }
         }
         helper.setBlock(inside, windGenerator.get());
@@ -318,9 +323,9 @@ public final class ZoneElementGameTests {
             helper.setBlock(inside, Blocks.AIR);
             helper.setBlock(outside, Blocks.AIR);
             helper.setBlock(openSky, Blocks.AIR);
-            for (int x = -1; x <= 12; x++) {
-                for (int z = -1; z <= 5; z++) {
-                    helper.setBlock(new BlockPos(x, 7, z), Blocks.AIR);
+            for (int x = 0; x <= 7; x++) {
+                for (int z = 0; z <= 4; z++) {
+                    helper.setBlock(new BlockPos(x, 6, z), Blocks.AIR);
                 }
             }
             cleanup(helper, caster);

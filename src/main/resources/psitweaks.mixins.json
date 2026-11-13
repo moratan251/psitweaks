@@ -13,6 +13,7 @@
     "EntityParadeInvisibleMixin",
     "EntitySpellCircleAutonomousCasterMixin",
     "EntitySpellProjectileAutonomousCasterMixin",
+    "GameTestServerOriginMixin",
     "ItemCADAutonomousCasterMixin",
     "ItemCADPlainMemoryMixin",
     "LivingEntityAccessor",
