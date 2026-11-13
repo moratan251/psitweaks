@@ -46,6 +46,15 @@ public final class PiecePanelSettings {
         PsitweaksQolConfig.CLIENT_SPEC.save();
     }
 
+    public static boolean rightClickClosesPanel() {
+        return PsitweaksQolConfig.CLIENT.rightClickClosesPanel.get();
+    }
+
+    public static void setRightClickClosesPanel(boolean close) {
+        PsitweaksQolConfig.CLIENT.rightClickClosesPanel.set(close);
+        PsitweaksQolConfig.CLIENT_SPEC.save();
+    }
+
     public static PieceSortOrder sortOrder() {
         return PsitweaksQolConfig.CLIENT.pieceSortOrder.get();
     }
@@ -73,19 +82,12 @@ public final class PiecePanelSettings {
         if (button != 1
                 || !rightClickClearsSearch()
                 || screen.panelWidget == null
-                || !screen.panelWidget.panelEnabled) {
+                || !screen.panelWidget.panelEnabled
+                || !isOverSearchField(screen, mouseX, mouseY)) {
             return false;
         }
 
         EditBox field = screen.panelWidget.searchField;
-        if (field == null || !field.isVisible()
-                || mouseX < field.getX() - SEARCH_ICON_WIDTH
-                || mouseX >= field.getX() + field.getWidth()
-                || mouseY < field.getY() - SEARCH_ROW_MARGIN
-                || mouseY >= field.getY() + field.getHeight() + SEARCH_ROW_MARGIN) {
-            return false;
-        }
-
         if (!field.getValue().isEmpty()) {
             // setValue は Psi の並べ直しを呼ばないので、ここで並べ直す。
             field.setValue("");
@@ -94,5 +96,36 @@ public final class PiecePanelSettings {
             ClientGuiSounds.playClick();
         }
         return true;
+    }
+
+    /**
+     * 「右クリックで一覧を閉じる」。一覧の上（タブの列や設定項目も含む）での右クリックなら一覧を閉じる。
+     * 検索欄の上は除く（そこは「右クリックで検索欄のクリア」の場所で、その設定が切なら何もしない）。
+     * 一覧の外の右クリックは、Psi がもともと閉じる。
+     *
+     * @return このクリックを使ったら true（Psi には渡さない）
+     */
+    public static boolean handlePanelRightClick(GuiProgrammer screen, double mouseX, double mouseY, int button) {
+        if (button != 1
+                || !rightClickClosesPanel()
+                || screen.panelWidget == null
+                || !screen.panelWidget.panelEnabled
+                || !screen.panelWidget.isMouseOver(mouseX, mouseY)
+                || isOverSearchField(screen, mouseX, mouseY)) {
+            return false;
+        }
+
+        screen.panelWidget.closePanel();
+        return true;
+    }
+
+    /** 検索欄（左の虫眼鏡の絵と、上下の少しの余白を含む）の上か。 */
+    private static boolean isOverSearchField(GuiProgrammer screen, double mouseX, double mouseY) {
+        EditBox field = screen.panelWidget.searchField;
+        return field != null && field.isVisible()
+                && mouseX >= field.getX() - SEARCH_ICON_WIDTH
+                && mouseX < field.getX() + field.getWidth()
+                && mouseY >= field.getY() - SEARCH_ROW_MARGIN
+                && mouseY < field.getY() + field.getHeight() + SEARCH_ROW_MARGIN;
     }
 }

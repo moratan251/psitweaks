@@ -7,6 +7,8 @@
   "gui.psitweaks_qol.spell_programmer.settings.keep_search.tooltip": "ピース一覧を閉じても、検索欄に入力した文字を残します",
   "gui.psitweaks_qol.spell_programmer.settings.right_click_clear": "右クリックで検索欄のクリア",
   "gui.psitweaks_qol.spell_programmer.settings.right_click_clear.tooltip": "検索欄を右クリックすると、入力した文字を消します",
+  "gui.psitweaks_qol.spell_programmer.settings.right_click_close": "右クリックで一覧を閉じる",
+  "gui.psitweaks_qol.spell_programmer.settings.right_click_close.tooltip": "ピース一覧の検索欄以外を右クリックすると、一覧を閉じます",
   "gui.psitweaks_qol.spell_programmer.settings.size": "大きさ",
   "gui.psitweaks_qol.spell_programmer.settings.size.large": "大",
   "gui.psitweaks_qol.spell_programmer.settings.size.medium": "中",

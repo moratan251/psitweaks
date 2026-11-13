@@ -7,6 +7,8 @@
   "gui.psitweaks_qol.spell_programmer.settings.keep_search.tooltip": "Keeps the text in the search field after the piece list closes",
   "gui.psitweaks_qol.spell_programmer.settings.right_click_clear": "Right-click clears search",
   "gui.psitweaks_qol.spell_programmer.settings.right_click_clear.tooltip": "Right-clicking the search field clears its text",
+  "gui.psitweaks_qol.spell_programmer.settings.right_click_close": "Right-click closes list",
+  "gui.psitweaks_qol.spell_programmer.settings.right_click_close.tooltip": "Right-clicking the piece list outside its search field closes it",
   "gui.psitweaks_qol.spell_programmer.settings.size": "Size",
   "gui.psitweaks_qol.spell_programmer.settings.size.large": "L",
   "gui.psitweaks_qol.spell_programmer.settings.size.medium": "M",

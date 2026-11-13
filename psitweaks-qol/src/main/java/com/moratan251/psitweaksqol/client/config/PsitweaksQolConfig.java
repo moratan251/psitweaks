@@ -27,6 +27,7 @@ public final class PsitweaksQolConfig {
         public final ModConfigSpec.EnumValue<PiecePanelSize> piecePanelSize;
         public final ModConfigSpec.BooleanValue keepSearchText;
         public final ModConfigSpec.BooleanValue rightClickClearsSearch;
+        public final ModConfigSpec.BooleanValue rightClickClosesPanel;
         public final ModConfigSpec.EnumValue<PieceSortOrder> pieceSortOrder;
 
         private Client(ModConfigSpec.Builder builder) {
@@ -63,6 +64,10 @@ public final class PsitweaksQolConfig {
             rightClickClearsSearch = builder
                     .comment("Right-clicking the piece panel search field clears its text")
                     .define("rightClickClearsSearch", true);
+
+            rightClickClosesPanel = builder
+                    .comment("Right-clicking the piece panel anywhere except its search field closes the panel")
+                    .define("rightClickClosesPanel", false);
 
             pieceSortOrder = builder
                     .comment("Order of spell pieces in the piece panel:",

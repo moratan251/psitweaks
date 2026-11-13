@@ -89,6 +89,12 @@ public final class PsitweaksQolClientGuiEvents {
                         event.getButton());
             }
             if (!handled) {
+                handled = PiecePanelSettings.handlePanelRightClick(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getButton());
+            }
+            if (!handled) {
                 handled = SpellPieceModeButtonOverlay.handleMousePressedPre(screen,
                     event.getMouseX(),
                     event.getMouseY(),

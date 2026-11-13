@@ -123,6 +123,14 @@ public class PsitweaksQolLanguageProvider implements DataProvider {
             case "ja_jp" -> "検索欄を右クリックすると、入力した文字を消します";
             default -> "Right-clicking the search field clears its text";
         });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.right_click_close", switch (locale) {
+            case "ja_jp" -> "右クリックで一覧を閉じる";
+            default -> "Right-click closes list";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.right_click_close.tooltip", switch (locale) {
+            case "ja_jp" -> "ピース一覧の検索欄以外を右クリックすると、一覧を閉じます";
+            default -> "Right-clicking the piece list outside its search field closes it";
+        });
         root.addProperty("gui.psitweaks_qol.spell_programmer.settings.english_sort", switch (locale) {
             case "ja_jp" -> "英語名順に並べる";
             default -> "Sort by English name";

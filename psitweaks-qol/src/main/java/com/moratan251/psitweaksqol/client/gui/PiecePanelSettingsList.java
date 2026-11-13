@@ -15,7 +15,7 @@ import java.util.function.BooleanSupplier;
  * 設定を開いている間、ピースの代わりに一覧の中へ出す設定項目の並び。
  * <ul>
  * <li>大きさ: 小・中・大 の 3 つから選ぶ</li>
- * <li>入り切りの項目: 検索内容の保持、右クリックで検索欄のクリア、英語名順に並べる</li>
+ * <li>入り切りの項目: 検索内容の保持、右クリックで検索欄のクリア、右クリックで一覧を閉じる、英語名順に並べる</li>
  * </ul>
  * ピースを置く場所（検索欄の下からページ番号の行まで）を不透明に塗って、その上に描く。Psi が先に描いた
  * カーソルの枠とページ番号は、これで隠れる。
@@ -33,8 +33,9 @@ public final class PiecePanelSettingsList extends Button {
     private static final int CHECK_COLOR = 0xFFFFFF55;
 
     private static final int PADDING = 5;
-    private static final int LINE_HEIGHT = 10;
-    private static final int ITEM_GAP = 5;
+    // 小の大きさ（高さ 105）に、4 項目が全部 2 行に折り返しても収まる詰め方（英語の表示がそうなる）。
+    private static final int LINE_HEIGHT = 9;
+    private static final int ITEM_GAP = 4;
     /** 大きさの選択肢 1 つ分の幅。タブと同じ。 */
     private static final int OPTION_WIDTH = PiecePanelTabButton.WIDTH;
     private static final int SIZE_ROW_HEIGHT = 13;
@@ -61,6 +62,8 @@ public final class PiecePanelSettingsList extends Button {
                 Toggle.of("keep_search", PiecePanelSettings::keepSearchText, this::toggleKeepSearchText),
                 Toggle.of("right_click_clear", PiecePanelSettings::rightClickClearsSearch,
                         this::toggleRightClickClearsSearch),
+                Toggle.of("right_click_close", PiecePanelSettings::rightClickClosesPanel,
+                        this::toggleRightClickClosesPanel),
                 Toggle.of("english_sort", () -> PiecePanelSettings.sortOrder() == PieceSortOrder.ENGLISH_NAME,
                         this::toggleEnglishSort)
         );
@@ -86,6 +89,10 @@ public final class PiecePanelSettingsList extends Button {
 
     public void toggleRightClickClearsSearch() {
         PiecePanelSettings.setRightClickClearsSearch(!PiecePanelSettings.rightClickClearsSearch());
+    }
+
+    public void toggleRightClickClosesPanel() {
+        PiecePanelSettings.setRightClickClosesPanel(!PiecePanelSettings.rightClickClosesPanel());
     }
 
     public void toggleEnglishSort() {
