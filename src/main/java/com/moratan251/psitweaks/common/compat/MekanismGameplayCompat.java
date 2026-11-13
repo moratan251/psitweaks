@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public final class MekanismGameplayCompat {
@@ -34,12 +35,13 @@ public final class MekanismGameplayCompat {
      * 作動式: 加熱領域の熱: 範囲の中の Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機、
      * ボイラーバルブなど）に、1 つあたり {@code heat} を送る。温度が {@code maxTemperature} 以上のものには送らず、
      * それを越えない分だけ送る（核分裂炉を損傷させないため）。同じマルチブロックには 1 回だけ。{@code mayUse} が偽の
-     * ブロック（保護された場所）には送らない。送った数を返す。Mekanism がなければ何もしない。
+     * ブロック（保護された場所）には送らない。送った数を返す。Mekanism がなければ何もしない。{@code sideCache} は、熱の窓口が
+     * どの面にあるかの覚え書き（領域が機械の一覧と一緒に持ち、一覧を作り直すときに空にする）。
      */
-    public static int supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, double heat, double maxTemperature,
-                                     Predicate<BlockPos> mayUse) {
+    public static int supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                                     double heat, double maxTemperature, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
-                ? MekanismGameplayIntegration.supplyZoneHeat(level, blockEntities, heat, maxTemperature, mayUse)
+                ? MekanismGameplayIntegration.supplyZoneHeat(level, blockEntities, sideCache, heat, maxTemperature, mayUse)
                 : 0;
     }
 
@@ -48,10 +50,10 @@ public final class MekanismGameplayCompat {
      * 冷やす（周囲の温度より下には冷やさない、同じマルチブロックには 1 回だけ、{@code mayUse} が偽のブロックは冷やさない）。
      * 取り除いた熱の合計を返す。Mekanism がなければ 0。
      */
-    public static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, double fraction,
-                                       Predicate<BlockPos> mayUse) {
+    public static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                                       double fraction, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
-                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, fraction, mayUse)
+                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, mayUse)
                 : 0.0;
     }
 

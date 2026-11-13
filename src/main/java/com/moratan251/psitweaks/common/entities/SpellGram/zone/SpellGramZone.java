@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -120,10 +121,10 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (level().isClientSide || !isInsideAndActive(pos)) {
             return null;
         }
+        refreshJudgement();
         EntityTurbulenceZone strongest = null;
-        for (SpellGramObject object : SpellGramIndex.ofCaster(level(), getCasterUuid())) {
-            if (object instanceof EntityTurbulenceZone turbulence && !turbulence.isEnded()
-                    && turbulence.isInsideAndActive(pos)
+        for (EntityTurbulenceZone turbulence : storms) {
+            if (!turbulence.isEnded() && turbulence.isInsideAndActive(pos)
                     && (strongest == null || turbulence.getPower() > strongest.getPower()
                     || (turbulence.getPower() == strongest.getPower() && turbulence.getId() < strongest.getId()))) {
                 strongest = turbulence;
@@ -153,14 +154,14 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     /** この領域と範囲が重なっている、同じ術者の乱流領域（サーバー側）。 */
     protected List<EntityTurbulenceZone> overlappingStorms() {
-        List<EntityTurbulenceZone> storms = new java.util.ArrayList<>();
-        for (SpellGramObject object : SpellGramIndex.ofCaster(level(), getCasterUuid())) {
-            if (object instanceof EntityTurbulenceZone turbulence && turbulence != this && !turbulence.isEnded()
-                    && turbulence.getArea().bounds().intersects(area.bounds())) {
-                storms.add(turbulence);
+        refreshJudgement();
+        List<EntityTurbulenceZone> overlapping = new java.util.ArrayList<>(storms.size());
+        for (EntityTurbulenceZone turbulence : storms) {
+            if (turbulence != this && !turbulence.isEnded()) {
+                overlapping.add(turbulence);
             }
         }
-        return storms;
+        return overlapping;
     }
 
     /**
@@ -200,14 +201,7 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     /** 同じ術者の乱流領域が重なっているかを確かめ直す（サーバー側、ときどき）。 */
     protected void refreshStorm() {
-        boolean storm = false;
-        for (SpellGramObject object : SpellGramIndex.ofCaster(level(), getCasterUuid())) {
-            if (object instanceof EntityTurbulenceZone turbulence && turbulence != this && !turbulence.isEnded()
-                    && turbulence.getArea().bounds().intersects(area.bounds())) {
-                storm = true;
-                break;
-            }
-        }
+        boolean storm = !overlappingStorms().isEmpty();
         if (storm != isStorm()) {
             entityData.set(DATA_STORM, storm);
         }
@@ -252,6 +246,7 @@ public abstract class SpellGramZone extends SpellGramObject {
         this.color = color & 0xFFFFFF;
         Vec3 center = Vec3.atCenterOf(area.center());
         setPos(center.x, center.y, center.z);
+        SpellGramIndex.touch();
     }
 
     public ZoneArea getArea() {
@@ -270,6 +265,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     public void setPlacement(UUID ownerSide, double interference) {
         this.ownerSide = ownerSide;
         this.placedInterference = interference;
+        SpellGramIndex.touch();
     }
 
     @org.jetbrains.annotations.Nullable
@@ -286,12 +282,120 @@ public abstract class SpellGramZone extends SpellGramObject {
      * （サーバー側。クライアントでは常に真）。
      */
     public boolean isActiveAt(BlockPos pos) {
-        return level().isClientSide || !EntityInterferenceZone.suppresses(level(), pos, ownerSide, placedInterference);
+        if (level().isClientSide) {
+            return true;
+        }
+        if (!area.withinBox(pos)) {
+            // 覚え書きは範囲の箱に重なるものだけなので、箱の外の位置は前と同じく全部から探す。
+            return !EntityInterferenceZone.suppresses(level(), pos, ownerSide, placedInterference) && !coveredByCanceller(pos);
+        }
+        refreshJudgement();
+        for (EntityInterferenceZone zone : suppressors) {
+            if (!zone.isEnded() && zone.getArea().contains(pos)) {
+                return false;
+            }
+        }
+        for (SpellGramZone zone : cancellers) {
+            if (!zone.isEnded() && zone.getArea().contains(pos)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * この領域と打ち消し合う種類（加熱と凍結、2026-11-11）。その種類の領域（術者は問わない）が重なったブロックでは、どちらも
+     * 効かない（{@link #isActiveAt}）。打ち消し合わない種類は null。
+     */
+    @org.jetbrains.annotations.Nullable
+    protected Class<? extends SpellGramZone> cancelledBy() {
+        return null;
+    }
+
+    /** ブロック {@code pos} に、打ち消し合う種類（{@link #cancelledBy}）の領域があるか（サーバー側）。 */
+    private boolean coveredByCanceller(BlockPos pos) {
+        Class<? extends SpellGramZone> type = cancelledBy();
+        if (type == null) {
+            return false;
+        }
+        for (SpellGramZone zone : SpellGramIndex.all(level(), type)) {
+            if (!zone.isEnded() && zone.getArea().contains(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ---- 判定の相手の覚え書き（2026-11-13 の軽量化 A2） ----
+    // 範囲の判定（isActiveAt・isStrongestAt・stormAt）は 1 tick に何百回も呼ばれる。そのたびに台帳の全オブジェクトを回さない
+    // よう、範囲の箱が重なる相手だけを tick ごとに 1 回集めて覚える。台帳の出し入れや設定の変更（SpellGramIndex#version）が
+    // あれば同じ tick の中でも作り直すので、効き目は前と変わらない。終わったか（isEnded）と、その位置が相手の範囲の中かは、
+    // 引くたびに確かめる。
+
+    /** 覚え書きを作った tick と台帳の番号。どちらかが変われば作り直す。 */
+    private long judgedTick = Long.MIN_VALUE;
+    private long judgedVersion = -1L;
+    /** この領域を止めうる他者の領域干渉: 置いた時点の事象干渉力がこれより高く、範囲の箱が重なるもの。 */
+    private List<EntityInterferenceZone> suppressors = List.of();
+    /** 打ち消し合う種類（{@link #cancelledBy}）の領域で、範囲の箱が重なるもの。 */
+    private List<SpellGramZone> cancellers = List.of();
+    /** 同じ種類で、この領域より強く（{@link #outranks}）、範囲の箱が重なるもの。 */
+    private List<SpellGramZone> rivals = List.of();
+    /** 同じ術者の乱流領域で、範囲の箱が重なるもの（自分が乱流領域なら自分も入る）。 */
+    private List<EntityTurbulenceZone> storms = List.of();
+
+    private void refreshJudgement() {
+        long now = level().getGameTime();
+        long version = SpellGramIndex.version();
+        if (judgedTick == now && judgedVersion == version) {
+            return;
+        }
+        judgedTick = now;
+        judgedVersion = version;
+        Level level = level();
+
+        List<EntityInterferenceZone> foundSuppressors = new java.util.ArrayList<>(0);
+        for (EntityInterferenceZone zone : SpellGramIndex.all(level, EntityInterferenceZone.class)) {
+            UUID owner = zone.getOwnerSide();
+            if (owner != null && !owner.equals(ownerSide) && placedInterference < zone.getPlacedInterference()
+                    && zone.getArea().boxOverlaps(area)) {
+                foundSuppressors.add(zone);
+            }
+        }
+        suppressors = foundSuppressors;
+
+        List<SpellGramZone> foundCancellers = new java.util.ArrayList<>(0);
+        Class<? extends SpellGramZone> cancelType = cancelledBy();
+        if (cancelType != null) {
+            for (SpellGramZone zone : SpellGramIndex.all(level, cancelType)) {
+                if (zone.getArea().boxOverlaps(area)) {
+                    foundCancellers.add(zone);
+                }
+            }
+        }
+        cancellers = foundCancellers;
+
+        List<SpellGramZone> foundRivals = new java.util.ArrayList<>(0);
+        for (SpellGramZone other : SpellGramIndex.all(level, getClass())) {
+            if (other != this && other.outranks(this) && other.getArea().boxOverlaps(area)) {
+                foundRivals.add(other);
+            }
+        }
+        rivals = foundRivals;
+
+        List<EntityTurbulenceZone> foundStorms = new java.util.ArrayList<>(0);
+        for (SpellGramObject object : SpellGramIndex.ofCaster(level, getCasterUuid())) {
+            if (object instanceof EntityTurbulenceZone turbulence && turbulence.getArea().boxOverlaps(area)) {
+                foundStorms.add(turbulence);
+            }
+        }
+        storms = foundStorms;
     }
 
     /** 置く前に呼ぶ。他 mod の機械を動かす速さ（{@link #machineSpeedFor}）。 */
     public void setMachineSpeed(float speed) {
         this.machineSpeed = Math.max(0.0F, speed);
+        SpellGramIndex.touch();
     }
 
     public float getMachineSpeed() {
@@ -411,6 +515,73 @@ public abstract class SpellGramZone extends SpellGramObject {
         return regions;
     }
 
+    // ---- 機械の一覧の覚え書き（2026-11-13 の軽量化 B1〜B3） ----
+    // 機械を動かす効き目（Create の加工、Mekanism の熱）は、範囲にかかるチャンクの全ブロックエンティティを 1 tick に何度も
+    // 調べ直していた。世界の範囲の一覧は MACHINE_REFRESH_TICKS ごとに作り直して使い回し、壊れたものは毎 tick 外す。新しく
+    // 置いた機械に効き始めるまでは最大 MACHINE_REFRESH_TICKS 遅れる（2026-11-12 ユーザー: 10 tick）。機体（Sable）の範囲は
+    // 機体が動くので tick ごとに作り、その tick の中だけ使い回す。
+
+    /** 世界の範囲の機械の一覧を作り直す間隔（tick）。 */
+    public static final int MACHINE_REFRESH_TICKS = 10;
+
+    private List<BlockEntity> worldMachines;
+    private long worldMachinesBuiltAt;
+    private long worldMachinesCleanedAt = Long.MIN_VALUE;
+    private final Map<ZoneRegion, List<BlockEntity>> subLevelMachines = new java.util.IdentityHashMap<>();
+    private long subLevelMachinesTick = Long.MIN_VALUE;
+    /** Mekanism の熱の窓口がどの面にあるかの覚え書き（ブロックエンティティごと）。機械の一覧と一緒に作り直す。 */
+    private final Map<BlockEntity, Integer> heatSides = new java.util.IdentityHashMap<>();
+
+    /**
+     * 範囲 {@code region}（この tick の {@link #regions} の 1 つ）の中のブロックエンティティ。壊れたものは入っていない。
+     * 呼ぶ側は一覧を書き換えないこと。
+     */
+    protected List<BlockEntity> machinesIn(ZoneRegion region) {
+        long now = level().getGameTime();
+        if (region.onSubLevel()) {
+            if (subLevelMachinesTick != now) {
+                subLevelMachines.clear();
+                subLevelMachinesTick = now;
+            }
+            return subLevelMachines.computeIfAbsent(region, r -> r.area().blockEntities(level()));
+        }
+        if (worldMachines == null || now - worldMachinesBuiltAt >= MACHINE_REFRESH_TICKS || now < worldMachinesBuiltAt) {
+            boolean first = worldMachines == null;
+            worldMachines = region.area().blockEntities(level());
+            // 作り直す tick を領域ごとにずらす（同じ tick に置いた領域が、そろって同じ tick に作り直さないように）。
+            worldMachinesBuiltAt = first ? now - Math.floorMod(getId(), MACHINE_REFRESH_TICKS) : now;
+            worldMachinesCleanedAt = now;
+            heatSides.clear();
+        } else if (worldMachinesCleanedAt != now) {
+            worldMachines.removeIf(BlockEntity::isRemoved);
+            worldMachinesCleanedAt = now;
+        }
+        return worldMachines;
+    }
+
+    /** Mekanism の熱の窓口の面の覚え書き（{@code MekanismGameplayCompat} に渡す）。 */
+    protected Map<BlockEntity, Integer> heatSideCache() {
+        return heatSides;
+    }
+
+    /** 粒が見える距離: 範囲の箱からこれより遠い（目の位置で）プレイヤーしかいなければ、中の演出を作らない。 */
+    private static final double PARTICLE_VIEW_DISTANCE = 40.0;
+
+    /**
+     * クライアント側: 演出を見る人が近くにいるか。Minecraft は 32 ブロックより遠い粒を出さないので、遠くの領域の演出の準備
+     * （位置の計算や、Create の加工の粒のための走査）を飛ばす（2026-11-13 の軽量化 B4）。カメラが体から離れる三人称の分を足して
+     * 40 ブロックで見る。
+     */
+    private boolean hasNearbyViewer() {
+        AABB box = getOutline();
+        for (Player player : level().players()) {
+            if (box.distanceToSqr(player.getEyePosition()) <= PARTICLE_VIEW_DISTANCE * PARTICLE_VIEW_DISTANCE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** 範囲の中の演出（クライアント側、毎 tick）。 */
     protected void spawnClientParticles() {
     }
@@ -418,7 +589,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide && !isRemoved()) {
+        if (level().isClientSide && !isRemoved() && hasNearbyViewer()) {
             spawnClientParticles();
         }
     }
@@ -536,8 +707,17 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (level().isClientSide) {
             return true;
         }
-        for (SpellGramZone other : SpellGramIndex.all(level(), getClass())) {
-            if (other != this && !other.isEnded() && other.outranks(this) && other.isInsideAndActive(pos)) {
+        if (!area.withinBox(pos)) {
+            for (SpellGramZone other : SpellGramIndex.all(level(), getClass())) {
+                if (other != this && !other.isEnded() && other.outranks(this) && other.isInsideAndActive(pos)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        refreshJudgement();
+        for (SpellGramZone other : rivals) {
+            if (!other.isEnded() && other.isInsideAndActive(pos)) {
                 return false;
             }
         }

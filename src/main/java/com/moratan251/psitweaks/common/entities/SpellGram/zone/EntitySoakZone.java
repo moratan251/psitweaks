@@ -105,7 +105,7 @@ public class EntitySoakZone extends SpellGramZone {
             List<ZoneRegion> regions = regions();
             for (int step = takeMachineSteps(); step > 0; step--) {
                 for (ZoneRegion region : regions) {
-                    CreateCompat.processZone(level, region.area(), CreateCompat.FanProcess.WASHING,
+                    CreateCompat.processZone(level, region.area(), machinesIn(region), CreateCompat.FanProcess.WASHING,
                             pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)),
                             pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                 }
@@ -115,7 +115,7 @@ public class EntitySoakZone extends SpellGramZone {
                 forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                     for (int i = 0; i < steps; i++) {
                         for (ZoneRegion region : regions) {
-                            CreateCompat.processZone(level, region.area(), CreateCompat.FanProcess.WASHING,
+                            CreateCompat.processZone(level, region.area(), machinesIn(region), CreateCompat.FanProcess.WASHING,
                                     pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)),
                                     pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos))
                                             && mayUseMachine(level, caster, pos));
@@ -170,7 +170,7 @@ public class EntitySoakZone extends SpellGramZone {
         // Create があるとき: ケース入りファンの水を当てたときと同じ一括洗浄のパーティクル。
         // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
         for (ZoneRegion region : regions()) {
-            CreateCompat.spawnProcessingParticles(level(), region.area(), CreateCompat.FanProcess.WASHING);
+            CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), CreateCompat.FanProcess.WASHING);
         }
         if (isStorm()) {
             // 乱流と重なったところ: 水しぶきの竜巻（水しぶきは上向きの速さを 0 にすると横の速さが効く）。

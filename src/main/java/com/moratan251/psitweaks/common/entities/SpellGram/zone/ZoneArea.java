@@ -181,6 +181,18 @@ public final class ZoneArea {
         return region == null || minX > maxX || minY > maxY || minZ > maxZ;
     }
 
+    /** ブロック {@code pos} が範囲を囲む箱（{@link #bounds}）の中か。新しいオブジェクトを作らずに確かめる。 */
+    public boolean withinBox(BlockPos pos) {
+        return !isEmpty() && pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
+                && pos.getZ() >= minZ && pos.getZ() <= maxZ;
+    }
+
+    /** 範囲を囲む箱どうしが、少なくとも 1 ブロック重なっているか。 */
+    public boolean boxOverlaps(ZoneArea other) {
+        return !isEmpty() && !other.isEmpty() && minX <= other.maxX && other.minX <= maxX && minY <= other.maxY
+                && other.minY <= maxY && minZ <= other.maxZ && other.minZ <= maxZ;
+    }
+
     /** ブロック {@code pos} が範囲の中か。 */
     public boolean contains(BlockPos pos) {
         if (isEmpty()) {

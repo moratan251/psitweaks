@@ -91,6 +91,7 @@ public class EntityFreezeZone extends SpellGramZone {
     /** 置く前に呼ぶ。 */
     public void setPower(float power) {
         this.power = Math.max(0.0F, power);
+        SpellGramIndex.touch();
     }
 
     /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
@@ -105,18 +106,8 @@ public class EntityFreezeZone extends SpellGramZone {
 
     /** 加熱領域と重なったブロックでは効かない（打ち消し合う）。 */
     @Override
-    public boolean isActiveAt(BlockPos pos) {
-        return super.isActiveAt(pos) && (level().isClientSide || !EntityHeatZone.coversAt(level(), pos));
-    }
-
-    /** {@code level} のブロック {@code pos} に凍結領域があるか（サーバー側、術者は問わない）。 */
-    static boolean coversAt(Level level, BlockPos pos) {
-        for (EntityFreezeZone zone : SpellGramIndex.all(level, EntityFreezeZone.class)) {
-            if (!zone.isEnded() && zone.getArea().contains(pos)) {
-                return true;
-            }
-        }
-        return false;
+    protected Class<? extends SpellGramZone> cancelledBy() {
+        return EntityHeatZone.class;
     }
 
     @Override
@@ -165,15 +156,15 @@ public class EntityFreezeZone extends SpellGramZone {
         // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）。範囲・領域干渉・乱流は世界の位置で判定し、保護は
         // 機械が本当にある位置で確かめる。
         for (ZoneRegion region : regions()) {
-            List<BlockEntity> blockEntities = region.area().blockEntities(level);
+            List<BlockEntity> blockEntities = machinesIn(region);
             if (blockEntities.isEmpty()) {
                 continue;
             }
-            MekanismGameplayCompat.drainZoneHeat(level, blockEntities, fraction,
+            MekanismGameplayCompat.drainZoneHeat(level, blockEntities, heatSideCache(), fraction,
                     pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
             if (isStorm()) {
                 for (EntityTurbulenceZone turbulence : overlappingStorms()) {
-                    MekanismGameplayCompat.drainZoneHeat(level, blockEntities,
+                    MekanismGameplayCompat.drainZoneHeat(level, blockEntities, heatSideCache(),
                             Math.min(MAX_COOL_FRACTION, fraction * stormBoost(turbulence.getPower())),
                             pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                 }

@@ -692,7 +692,7 @@ public final class ZoneElementGameTests {
             // 3 台とも 800 K まで温める。
             for (BlockPos pos : heaters) {
                 MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(pos))),
-                        1.0E9, 800.0, at -> true);
+                        new java.util.IdentityHashMap<>(), 1.0E9, 800.0, at -> true);
             }
             // 凍結領域は x 0〜2・z 1〜3（干渉力 4 → 速さ 2、威力 10 で毎 tick 4%）。cancelled の 1 ブロックだけ加熱領域も重ねる。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);

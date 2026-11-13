@@ -69,8 +69,8 @@ final class CreateFanIntegration {
         };
     }
 
-    static void process(ServerLevel level, ZoneArea area, CreateCompat.FanProcess process, Predicate<BlockPos> itemsAt,
-                        Predicate<BlockPos> mayUse) {
+    static void process(ServerLevel level, ZoneArea area, List<BlockEntity> blockEntities, CreateCompat.FanProcess process,
+                        Predicate<BlockPos> itemsAt, Predicate<BlockPos> mayUse) {
         if (area.isEmpty()) {
             return;
         }
@@ -83,13 +83,13 @@ final class CreateFanIntegration {
             }
         }
         // 集めてから加工する（加工でブロックエンティティの一覧が変わっても困らないように）。
-        for (TransportedItemStackHandlerBehaviour handler : handlersInside(level, area, mayUse)) {
+        for (TransportedItemStackHandlerBehaviour handler : handlersInside(blockEntities, mayUse)) {
             handler.handleProcessingOnAllItems(transported -> FanProcessing.applyProcessing(transported, level, type));
         }
     }
 
     /** クライアント側: Create の AirCurrent がクライアントでするのと同じく、範囲の中のアイテムの位置にパーティクルを出す。 */
-    static void spawnParticles(Level level, ZoneArea area, CreateCompat.FanProcess process) {
+    static void spawnParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities, CreateCompat.FanProcess process) {
         if (area.isEmpty()) {
             return;
         }
@@ -97,7 +97,7 @@ final class CreateFanIntegration {
         for (ItemEntity item : itemsInside(level, area)) {
             type.spawnProcessingParticles(level, item.position());
         }
-        for (TransportedItemStackHandlerBehaviour handler : handlersInside(level, area, pos -> true)) {
+        for (TransportedItemStackHandlerBehaviour handler : handlersInside(blockEntities, pos -> true)) {
             handler.handleProcessingOnAllItems(transported -> {
                 type.spawnProcessingParticles(level, handler.getWorldPositionOf(transported));
                 return TransportedItemStackHandlerBehaviour.TransportedResult.doNothing();
@@ -110,11 +110,14 @@ final class CreateFanIntegration {
                 entity -> entity.isAlive() && area.contains(BlockPos.containing(entity.getBoundingBox().getCenter())));
     }
 
-    /** デポ・ベルト: 範囲の中のブロックエンティティのうち、上にアイテムを載せて運ぶもの。 */
-    private static List<TransportedItemStackHandlerBehaviour> handlersInside(Level level, ZoneArea area,
+    /** デポ・ベルト: 範囲の中のブロックエンティティ（{@code blockEntities}）のうち、上にアイテムを載せて運ぶもの。 */
+    private static List<TransportedItemStackHandlerBehaviour> handlersInside(List<BlockEntity> blockEntities,
                                                                             Predicate<BlockPos> mayUse) {
         List<TransportedItemStackHandlerBehaviour> handlers = new ArrayList<>();
-        for (BlockEntity blockEntity : area.blockEntities(level)) {
+        for (BlockEntity blockEntity : blockEntities) {
+            if (blockEntity.isRemoved()) {
+                continue;
+            }
             TransportedItemStackHandlerBehaviour handler =
                     BlockEntityBehaviour.get(blockEntity, TransportedItemStackHandlerBehaviour.TYPE);
             if (handler != null && mayUse.test(blockEntity.getBlockPos())) {

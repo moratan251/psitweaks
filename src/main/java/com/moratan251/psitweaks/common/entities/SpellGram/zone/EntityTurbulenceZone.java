@@ -68,6 +68,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /** 置く前に呼ぶ。 */
     public void configureWind(float power) {
         this.power = Math.max(0.0F, power);
+        SpellGramIndex.touch();
     }
 
     /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */

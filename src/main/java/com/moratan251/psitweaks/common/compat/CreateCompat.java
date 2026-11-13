@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -35,12 +36,13 @@ public final class CreateCompat {
     /**
      * 範囲の中を 1 tick ぶん加工する（Create の扇風機の風と同じ）。落ちているアイテムと、デポ・ベルトの上のアイテムが対象。
      * 落ちているアイテムはそのブロックで {@code itemsAt} が真のものだけ、デポ・ベルトは {@code machinesAt} が真のブロック
-     * （保護されていない、他者の領域干渉で止められていない）のものだけ。Create がなければ何もしない。
+     * （保護されていない、他者の領域干渉で止められていない）のものだけ。デポ・ベルトは {@code blockEntities}（範囲の中の
+     * ブロックエンティティ、領域が覚えている一覧）から探す。Create がなければ何もしない。
      */
-    public static void processZone(ServerLevel level, ZoneArea area, FanProcess process, Predicate<BlockPos> itemsAt,
-                                   Predicate<BlockPos> machinesAt) {
+    public static void processZone(ServerLevel level, ZoneArea area, List<BlockEntity> blockEntities, FanProcess process,
+                                   Predicate<BlockPos> itemsAt, Predicate<BlockPos> machinesAt) {
         if (isCreateLoaded()) {
-            CreateFanIntegration.process(level, area, process, itemsAt, machinesAt);
+            CreateFanIntegration.process(level, area, blockEntities, process, itemsAt, machinesAt);
         }
     }
 
@@ -56,9 +58,9 @@ public final class CreateCompat {
      * クライアント側、毎 tick: ケース入りファンの風を当てたときと同じ加工のパーティクルを、範囲の中の落ちているアイテムと
      * デポ・ベルトの上のアイテムに出す（Create と同じく、出るかどうかは Create の側で毎回くじを引く）。Create がなければ何もしない。
      */
-    public static void spawnProcessingParticles(Level level, ZoneArea area, FanProcess process) {
+    public static void spawnProcessingParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities, FanProcess process) {
         if (isCreateLoaded()) {
-            CreateFanIntegration.spawnParticles(level, area, process);
+            CreateFanIntegration.spawnParticles(level, area, blockEntities, process);
         }
     }
 }

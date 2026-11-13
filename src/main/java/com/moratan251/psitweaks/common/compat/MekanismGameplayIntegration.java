@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -41,13 +42,13 @@ final class MekanismGameplayIntegration {
         }
     }
 
-    static int supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, double heat, double maxTemperature,
-                              Predicate<BlockPos> mayUse) {
+    static int supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                              double heat, double maxTemperature, Predicate<BlockPos> mayUse) {
         // 同じマルチブロック（ボイラー・加温蒸発濃縮・核分裂炉など）は、どのブロックから受け取っても 1 つとして 1 回だけ。
         Set<Object> heated = Collections.newSetFromMap(new IdentityHashMap<>());
         int count = 0;
         for (BlockEntity blockEntity : blockEntities) {
-            IHeatHandler handler = heatHandlerOf(level, blockEntity);
+            IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
                 continue;
             }
@@ -73,12 +74,12 @@ final class MekanismGameplayIntegration {
      * 作動式: 凍結領域の冷却: 熱を持つブロックの温度を、周囲の温度に向けて温度差の {@code fraction} だけ近づける（取り除く熱 =
      * 温度差 × 割合 × 熱容量）。周囲の温度より下には冷やさない。同じマルチブロックには 1 回だけ。取り除いた熱の合計を返す。
      */
-    static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, double fraction,
-                                Predicate<BlockPos> mayUse) {
+    static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                                double fraction, Predicate<BlockPos> mayUse) {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
         double removed = 0.0;
         for (BlockEntity blockEntity : blockEntities) {
-            IHeatHandler handler = heatHandlerOf(level, blockEntity);
+            IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
                 continue;
             }
@@ -129,5 +130,44 @@ final class MekanismGameplayIntegration {
             }
         }
         return level.getCapability(Capabilities.HEAT, pos, blockEntity.getBlockState(), blockEntity, null);
+    }
+
+    /** 覚え書きの値: 6 は面のない窓口、7 は窓口なし（0〜5 は Direction の番号）。 */
+    private static final int NULL_SIDE = 6;
+    private static final int NO_HANDLER = 7;
+
+    /**
+     * {@link #heatHandlerOf(ServerLevel, BlockEntity)} と同じ窓口を、どの面で見つかったかを {@code sideCache} に覚えて引く
+     * （2026-11-13 の軽量化 B3）。毎 tick、熱を持たないブロックエンティティにまで 7 回ずつ問い合わせないように。覚えた面で
+     * 見つからなくなったら（ブロックが変わったら）探し直す。壊れたブロックエンティティは null。
+     */
+    @Nullable
+    private static IHeatHandler heatHandlerOf(ServerLevel level, BlockEntity blockEntity, Map<BlockEntity, Integer> sideCache) {
+        if (blockEntity.isRemoved()) {
+            return null;
+        }
+        Integer remembered = sideCache.get(blockEntity);
+        if (remembered != null) {
+            if (remembered == NO_HANDLER) {
+                return null;
+            }
+            Direction side = remembered == NULL_SIDE ? null : Direction.from3DDataValue(remembered);
+            IHeatHandler handler = level.getCapability(Capabilities.HEAT, blockEntity.getBlockPos(), blockEntity.getBlockState(),
+                    blockEntity, side);
+            if (handler != null) {
+                return handler;
+            }
+        }
+        BlockPos pos = blockEntity.getBlockPos();
+        for (Direction side : Direction.values()) {
+            IHeatHandler handler = level.getCapability(Capabilities.HEAT, pos, blockEntity.getBlockState(), blockEntity, side);
+            if (handler != null) {
+                sideCache.put(blockEntity, side.get3DDataValue());
+                return handler;
+            }
+        }
+        IHeatHandler handler = level.getCapability(Capabilities.HEAT, pos, blockEntity.getBlockState(), blockEntity, null);
+        sideCache.put(blockEntity, handler != null ? NULL_SIDE : NO_HANDLER);
+        return handler;
     }
 }

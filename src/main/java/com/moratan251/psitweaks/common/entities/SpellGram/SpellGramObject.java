@@ -576,6 +576,8 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
 
     public void setCaster(@Nullable LivingEntity caster) {
         this.attackCaster.set(caster);
+        // 術者ごとの一覧を、ワールドに入ったあとで術者を変えても正しく引けるように作り直させる。
+        SpellGramIndex.changed(this);
     }
 
     @Nullable
