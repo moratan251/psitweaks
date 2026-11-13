@@ -67,7 +67,33 @@ public final class SableZoneGameTests {
     private static final BlockPos BURNER_ON_SHIP = new BlockPos(3, 2, 3);
     private static final BlockPos HEATER_ON_SHIP = new BlockPos(1, 2, 3);
 
+    /**
+     * Sable が機体の位置を半ブロックまで持てる座標の大きさ（2^23 = 8,388,608）。32 ビットの浮動小数はこれを超えると 1 刻みの値しか
+     * 持てず、機体の位置が 1 ブロック単位に丸まる（2026-11-13 毎朝レビュー F-057、Sable 側の精度の限界）。
+     */
+    private static final double SABLE_PRECISE_LIMIT = 8_388_608.0;
+    /** テストの場所から機体や領域がはみ出す分の余裕（ブロック）。 */
+    private static final double SABLE_PRECISION_MARGIN = 16.0;
+    private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
+
     private SableZoneGameTests() {
+    }
+
+    /**
+     * テストの場所の x か z が、Sable が半ブロックを表せない遠さか（2026-11-13 ユーザー: その座標では Sable を使うテストの判定を
+     * 緩める）。GameTest はテストを並べる場所を起動のたびに ±1500 万ブロックのどこかに選ぶので、よく当たる。その座標では機体の
+     * 細かい位置や物理を確かめようがないので、機体の位置に頼る判定は飛ばし、組めた・置けた・押したことだけを確かめる。
+     */
+    static boolean beyondSablePrecision(GameTestHelper helper, String test) {
+        AABB bounds = helper.getBounds();
+        double far = Math.max(Math.max(Math.abs(bounds.minX), Math.abs(bounds.maxX)),
+                Math.max(Math.abs(bounds.minZ), Math.abs(bounds.maxZ)));
+        boolean beyond = far + SABLE_PRECISION_MARGIN >= SABLE_PRECISE_LIMIT;
+        if (beyond) {
+            LOGGER.info("[GameTest] {}: the test area {} is beyond Sable's precision, so the checks that rely on the ship's"
+                    + " exact position are skipped", test, bounds);
+        }
+        return beyond;
     }
 
     /**
@@ -81,6 +107,7 @@ public final class SableZoneGameTests {
             return;
         }
         ServerLevel level = helper.getLevel();
+        boolean coarse = beyondSablePrecision(helper, "zoneAimedAtShipIsPlacedWhereTheShipIsSeen");
         Object ship;
         Object sable;
         try {
@@ -113,6 +140,9 @@ public final class SableZoneGameTests {
                     }
                 }
                 helper.assertTrue(zone[0] != null, "The Heat Zone must be placed");
+                if (coarse) {
+                    return;
+                }
                 Vec3 zoneCenter = Vec3.atCenterOf(zone[0].getArea().center());
                 helper.assertTrue(zoneCenter.distanceTo(seenHit) < 1.0,
                         "The zone must be centered where the ship is seen " + seenHit + ", got " + zoneCenter);
@@ -129,6 +159,9 @@ public final class SableZoneGameTests {
         });
 
         helper.runAtTickTime(12, () -> {
+            if (coarse) {
+                return;
+            }
             helper.assertTrue(zone[0].entitiesInside().contains(husk[0]),
                     "The husk standing on the ship must be inside the zone");
             int pushed = SablePhysicsCompat.accelerateSubLevels(level, zone[0].getOutline(), new Vec3(0.0, 1.0, 0.0),
@@ -140,7 +173,7 @@ public final class SableZoneGameTests {
             boolean burning = husk[0].getRemainingFireTicks() > 0;
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(SpellGramObject::discard);
             GameTestPlayers.remove(helper, caster);
-            helper.assertTrue(burning, "The Heat Zone aimed at the ship must burn the husk standing on it");
+            helper.assertTrue(coarse || burning, "The Heat Zone aimed at the ship must burn the husk standing on it");
             helper.succeed();
         });
     }
@@ -156,6 +189,7 @@ public final class SableZoneGameTests {
             return;
         }
         ServerLevel level = helper.getLevel();
+        boolean coarse = beyondSablePrecision(helper, "partialGravityTiltsTheShip");
         Object ship;
         try {
             ship = assembleTurnedPlatform(helper, level, 0.0);
@@ -192,7 +226,8 @@ public final class SableZoneGameTests {
         }
         helper.runAtTickTime(23, () -> {
             helper.assertTrue(pushed[0] > 0, "The half-covered ship must be pushed");
-            helper.assertTrue(turned[0] > 0.02, "Pushing only one side must tilt the ship, turned at most " + turned[0] + " rad");
+            // 遠い座標では機体の中心が 0.5 ずれて「東半分」の分け方が変わり、物理も粗くなるので、押したことだけを確かめる。
+            helper.assertTrue(coarse || turned[0] > 0.02, "Pushing only one side must tilt the ship, turned at most " + turned[0] + " rad");
             helper.succeed();
         });
     }
@@ -213,6 +248,7 @@ public final class SableZoneGameTests {
             return;
         }
         ServerLevel level = helper.getLevel();
+        boolean coarse = beyondSablePrecision(helper, "worldHeatZoneReachesMachinesOnShips");
         Map<BlockPos, BlockState> extra = new HashMap<>();
         if (withBurner) {
             extra.put(BURNER_ON_SHIP, withProperty(burner.get().defaultBlockState(), "blaze", "smouldering"));
@@ -252,8 +288,14 @@ public final class SableZoneGameTests {
         helper.runAtTickTime(60, () -> {
             String burnerLevel = withBurner ? propertyValue(level.getBlockState(burnerPlot), "blaze") : "kindled";
             double heaterAfter = withHeater ? MekanismGameplayCompat.temperatureAt(level, heaterPlot) : Double.NaN;
+            boolean placed = !SpellGramIndex.ofCaster(level, caster.getUUID()).isEmpty();
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(SpellGramObject::discard);
             GameTestPlayers.remove(helper, caster);
+            helper.assertTrue(placed, "The Heat Zone must be placed over the ship");
+            if (coarse) {
+                helper.succeed();
+                return;
+            }
             helper.assertTrue("kindled".equals(burnerLevel),
                     "The Heat Zone must kindle the Blaze Burner on the ship, was " + burnerLevel);
             if (withHeater) {
@@ -275,6 +317,7 @@ public final class SableZoneGameTests {
             return;
         }
         ServerLevel level = helper.getLevel();
+        boolean coarse = beyondSablePrecision(helper, "worldSoakZoneReachesBlocksOnShips");
         Object ship;
         BlockPos plotAnchor;
         try {
@@ -299,9 +342,11 @@ public final class SableZoneGameTests {
 
         helper.runAtTickTime(40, () -> {
             BlockState campfire = level.getBlockState(campfirePlot);
+            boolean placed = !SpellGramIndex.ofCaster(level, caster.getUUID()).isEmpty();
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(SpellGramObject::discard);
             GameTestPlayers.remove(helper, caster);
-            helper.assertTrue(campfire.is(Blocks.CAMPFIRE) && !CampfireBlock.isLitCampfire(campfire),
+            helper.assertTrue(placed, "The Soak Zone must be placed over the ship");
+            helper.assertTrue(coarse || campfire.is(Blocks.CAMPFIRE) && !CampfireBlock.isLitCampfire(campfire),
                     "The Soak Zone must put out the campfire on the ship, got " + campfire);
             helper.succeed();
         });
