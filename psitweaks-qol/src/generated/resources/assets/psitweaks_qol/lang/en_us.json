@@ -1,6 +1,8 @@
 {
   "gui.psitweaks_qol.spell_programmer.settings": "Piece list settings",
   "gui.psitweaks_qol.spell_programmer.settings.close": "Back to the piece list",
+  "gui.psitweaks_qol.spell_programmer.settings.english_names": "Show English names",
+  "gui.psitweaks_qol.spell_programmer.settings.english_names.tooltip": "Also shows the English name in piece list tooltips (pieces can be searched by it)",
   "gui.psitweaks_qol.spell_programmer.settings.english_sort": "Sort by English name",
   "gui.psitweaks_qol.spell_programmer.settings.english_sort.tooltip": "Sorts spell pieces by their English names regardless of the game language",
   "gui.psitweaks_qol.spell_programmer.settings.keep_search": "Keep search text",

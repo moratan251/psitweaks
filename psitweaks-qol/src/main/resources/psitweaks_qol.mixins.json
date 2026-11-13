@@ -6,6 +6,7 @@
   "mixins": [],
   "client": [
     "client.GuiButtonSpellPieceBookmarkMixin",
+    "client.GuiButtonSpellPieceEnglishNameMixin",
     "client.GuiButtonSpellPieceRecentMixin",
     "client.GuiButtonSpellPieceSortMixin",
     "client.GuiProgrammerOverlayInputMixin",

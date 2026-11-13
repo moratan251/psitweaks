@@ -3,6 +3,7 @@ package com.moratan251.psitweaksqol.client.event;
 import com.moratan251.psitweaksqol.client.gui.ClientGuiSounds;
 import com.moratan251.psitweaksqol.client.gui.EditableStringInputOverlay;
 import com.moratan251.psitweaksqol.client.gui.PieceBookmarkManager;
+import com.moratan251.psitweaksqol.client.gui.PiecePanelKeyboard;
 import com.moratan251.psitweaksqol.client.gui.PiecePanelSettings;
 import com.moratan251.psitweaksqol.client.gui.PieceRecentManager;
 import com.moratan251.psitweaksqol.client.gui.ProgrammerOverlayInputGuard;
@@ -54,7 +55,8 @@ public final class PsitweaksQolClientGuiEvents {
                 || SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
                 || EditableStringInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())
                 || SpellGridMultiSelectionController.handleKeyPressedPre(screen, event.getKeyCode())
-                || handlePiecePanelSettingsKey(screen, event.getKeyCode()))) {
+                || handlePiecePanelSettingsKey(screen, event.getKeyCode())
+                || PiecePanelKeyboard.handleKeyPressed(screen, event.getKeyCode()))) {
             event.setCanceled(true);
         }
     }

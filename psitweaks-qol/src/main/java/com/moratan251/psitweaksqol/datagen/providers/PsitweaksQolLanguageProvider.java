@@ -139,6 +139,14 @@ public class PsitweaksQolLanguageProvider implements DataProvider {
             case "ja_jp" -> "言語設定に関係なく、ピースを英語名の順に並べます";
             default -> "Sorts spell pieces by their English names regardless of the game language";
         });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.english_names", switch (locale) {
+            case "ja_jp" -> "英語名も表示する";
+            default -> "Show English names";
+        });
+        root.addProperty("gui.psitweaks_qol.spell_programmer.settings.english_names.tooltip", switch (locale) {
+            case "ja_jp" -> "ピース一覧のツールチップに、英語名も表示します (英語名でも検索できます)";
+            default -> "Also shows the English name in piece list tooltips (pieces can be searched by it)";
+        });
         root.addProperty("psitweaks_qol.gui.spell_piece_mode", switch (locale) {
             case "ja_jp" -> "モード: %s";
             default -> "Mode: %s";

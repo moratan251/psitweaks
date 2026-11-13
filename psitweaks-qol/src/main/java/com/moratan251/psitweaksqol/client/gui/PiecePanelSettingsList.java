@@ -15,7 +15,8 @@ import java.util.function.BooleanSupplier;
  * 設定を開いている間、ピースの代わりに一覧の中へ出す設定項目の並び。
  * <ul>
  * <li>大きさ: 小・中・大 の 3 つから選ぶ</li>
- * <li>入り切りの項目: 検索内容の保持、右クリックで検索欄のクリア、右クリックで一覧を閉じる、英語名順に並べる</li>
+ * <li>入り切りの項目: 検索内容の保持、右クリックで検索欄のクリア、右クリックで一覧を閉じる、英語名順に並べる、
+ * 英語名も表示する</li>
  * </ul>
  * 一覧の本体（検索欄の行からページ番号の行まで）を不透明に塗って、その上に描く。Psi が先に描いた
  * 虫眼鏡の絵・カーソルの枠・ページ番号は、これで隠れる（検索欄そのものは mixin が見えなくする）。
@@ -35,7 +36,7 @@ public final class PiecePanelSettingsList extends Button {
     private static final int CHECK_COLOR = 0xFFFFFF55;
 
     private static final int PADDING = 5;
-    // 小の大きさ（高さ 105）に、4 項目が全部 2 行に折り返しても収まる詰め方（英語の表示がそうなる）。
+    // 小の大きさ（本体の高さ 125）に、5 項目が全部 2 行に折り返しても収まる詰め方（英語の表示がそうなる）。
     private static final int LINE_HEIGHT = 9;
     private static final int ITEM_GAP = 4;
     /** 大きさの選択肢 1 つ分の幅。タブと同じ。 */
@@ -67,7 +68,8 @@ public final class PiecePanelSettingsList extends Button {
                 Toggle.of("right_click_close", PiecePanelSettings::rightClickClosesPanel,
                         this::toggleRightClickClosesPanel),
                 Toggle.of("english_sort", () -> PiecePanelSettings.sortOrder() == PieceSortOrder.ENGLISH_NAME,
-                        this::toggleEnglishSort)
+                        this::toggleEnglishSort),
+                Toggle.of("english_names", PiecePanelSettings::showEnglishNames, this::toggleShowEnglishNames)
         );
     }
 
@@ -101,6 +103,10 @@ public final class PiecePanelSettingsList extends Button {
                 ? PieceSortOrder.NAME
                 : PieceSortOrder.ENGLISH_NAME);
         onLayoutChanged.run();
+    }
+
+    public void toggleShowEnglishNames() {
+        PiecePanelSettings.setShowEnglishNames(!PiecePanelSettings.showEnglishNames());
     }
 
     // --- 並べ方（描くときとクリックのときで同じ計算を使う） ---

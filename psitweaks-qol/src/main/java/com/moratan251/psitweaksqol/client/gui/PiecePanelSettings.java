@@ -56,6 +56,15 @@ public final class PiecePanelSettings {
         PsitweaksQolConfig.CLIENT_SPEC.save();
     }
 
+    public static boolean showEnglishNames() {
+        return PsitweaksQolConfig.CLIENT.showEnglishNames.get();
+    }
+
+    public static void setShowEnglishNames(boolean show) {
+        PsitweaksQolConfig.CLIENT.showEnglishNames.set(show);
+        PsitweaksQolConfig.CLIENT_SPEC.save();
+    }
+
     public static PieceSortOrder sortOrder() {
         return PsitweaksQolConfig.CLIENT.pieceSortOrder.get();
     }

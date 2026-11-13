@@ -1,6 +1,8 @@
 {
   "gui.psitweaks_qol.spell_programmer.settings": "ピース一覧の設定",
   "gui.psitweaks_qol.spell_programmer.settings.close": "ピース一覧に戻る",
+  "gui.psitweaks_qol.spell_programmer.settings.english_names": "英語名も表示する",
+  "gui.psitweaks_qol.spell_programmer.settings.english_names.tooltip": "ピース一覧のツールチップに、英語名も表示します (英語名でも検索できます)",
   "gui.psitweaks_qol.spell_programmer.settings.english_sort": "英語名順に並べる",
   "gui.psitweaks_qol.spell_programmer.settings.english_sort.tooltip": "言語設定に関係なく、ピースを英語名の順に並べます",
   "gui.psitweaks_qol.spell_programmer.settings.keep_search": "検索内容の保持",

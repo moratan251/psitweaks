@@ -21,11 +21,16 @@ public abstract class PiecePanelWidgetEnglishSearchMixin {
     @Invoker("rankTextToken")
     protected abstract int psitweaks$invokeRankTextToken(String text, String token);
 
-    // If localized search misses, rerank with an English-name fallback.
+    /**
+     * 検索の点を、いまの言語の名前・説明と英語の名前・説明の両方で付け直し、高いほうを採る。
+     * 以前は「いまの言語で 1 点も当たらなかったピース」だけを付け直していた。それだと、いまの言語の説明文に
+     * たまたま同じ綴りがあるピースは、英語名がぴったり一致していても説明文の低い点のままで、下に沈んでいた。
+     * 付け直した点は語ごとに高いほうを採るので、いまの言語だけの点より低くなることはない。
+     */
     @Inject(method = "ranking", at = @At("RETURN"), cancellable = true)
     private void psitweaks$includeEnglishNameSearch(String searchText, SpellPiece piece, CallbackInfoReturnable<Integer> cir) {
         int currentRanking = cir.getReturnValue();
-        if (currentRanking > 0 || searchText == null || searchText.isBlank()) {
+        if (searchText == null || searchText.isBlank()) {
             return;
         }
 
@@ -54,7 +59,7 @@ public abstract class PiecePanelWidgetEnglishSearchMixin {
                 englishName,
                 englishDesc
         );
-        if (englishRanking > 0) {
+        if (englishRanking > currentRanking) {
             cir.setReturnValue(englishRanking);
         }
     }

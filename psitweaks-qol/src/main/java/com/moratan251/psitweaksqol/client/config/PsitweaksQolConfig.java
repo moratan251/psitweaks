@@ -28,6 +28,7 @@ public final class PsitweaksQolConfig {
         public final ModConfigSpec.BooleanValue keepSearchText;
         public final ModConfigSpec.BooleanValue rightClickClearsSearch;
         public final ModConfigSpec.BooleanValue rightClickClosesPanel;
+        public final ModConfigSpec.BooleanValue showEnglishNames;
         public final ModConfigSpec.EnumValue<PieceSortOrder> pieceSortOrder;
 
         private Client(ModConfigSpec.Builder builder) {
@@ -68,6 +69,11 @@ public final class PsitweaksQolConfig {
             rightClickClosesPanel = builder
                     .comment("Right-clicking the piece panel anywhere except its search field closes the panel")
                     .define("rightClickClosesPanel", false);
+
+            showEnglishNames = builder
+                    .comment("Add the English name to the tooltip of pieces in the piece panel",
+                            "(no effect when the game language is English)")
+                    .define("showEnglishNames", true);
 
             pieceSortOrder = builder
                     .comment("Order of spell pieces in the piece panel:",
