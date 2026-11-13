@@ -1,0 +1,11 @@
+{
+  "name": "psitweaks.spellpiece.selector_spellgram_integrity",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/selector_spellgram_integrity.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.selector_spellgram_integrity"
+    }
+  ]
+}

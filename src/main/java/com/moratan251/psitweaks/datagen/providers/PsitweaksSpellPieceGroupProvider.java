@@ -58,7 +58,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
                 "trick_freeze_zone", "trick_turbulence_zone", "trick_interference_zone", "trick_silence_zone",
                 "trick_charged_zone");
         group(output, saves, "spellgram_control", "selector_own_spellgrams", "trick_recall_spellgram",
-                "trick_extend_spellgram");
+                "trick_extend_spellgram", "selector_spellgram_integrity");
         group(output, saves, "trick_die_flex", "trick_die_flex");
         group(output, saves, "trick_jump", "trick_jump");
         group(output, saves, "trick_jump_flex", "trick_jump_flex");

@@ -450,7 +450,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         // 毎朝レビュー F-043: コードで使っているのに訳がなかったキー。
         root.addProperty("psitweaks.spellerror.not_spellgram_object", switch (locale) {
             case "ja_jp" -> "エラー: 対象が魔法式オブジェクトではありません。";
-            default -> "Error: The target is not a spellgram object.";
+            default -> "Error: The target is not a SpellGram object.";
         });
         root.addProperty("psitweaks.spellerror.zone_empty", switch (locale) {
             case "ja_jp" -> "エラー: 領域の範囲にブロックがありません。";
@@ -572,6 +572,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addSpellPieces(root);
         addSpellPiecesBook(root);
+        addZoneMagicBook(root);
         addLegacyPatchouliBookTranslations(root);
 
         return root;
@@ -1957,6 +1958,317 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_idea_storage_view", "Trick: View Ideaspace Storage", "Opens a GUI to view and manage your Ideaspace Storage. Only works when cast by a player.", "作動式: イデアストレージ閲覧", "自分のイデアストレージを閲覧・出し入れするGUIを開きます。プレイヤーの詠唱時のみ有効です。");
     }
 
+    /**
+     * 領域魔法の本（2026-11-14 ユーザー）: Psitweaks の分類に項目「領域魔法」を立てて共通の決まりをまとめ、各領域のピースの
+     * 項目はその領域だけの効き目にする。日本語は yomiyasu で推敲した（2026-11-14）。
+     */
+    private void addZoneMagicBook(JsonObject root) {
+        addLocalized(root, "psi.book.entry.psitweaks_zone_magic", "Zone Magic", "領域魔法");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.0",
+                "Zone Magic places Resident SpellGrams that keep working insi"
+                        + "de an area: Trick: Soak Zone, Gravity Zone, Heat Zone, Freez"
+                        + "e Zone, Turbulence Zone, Interference Zone, Silence Zone and"
+                        + " Charged Zone.$(p)Each takes a Matrix and a Size for its are"
+                        + "a and lasts for its Time. This entry covers what all zones s"
+                        + "hare; each piece's own entry covers only what that zone does"
+                        + ".",
+                "領域魔法は範囲の中で効き続ける常駐魔法式です。作動式: 湿潤領域・加重領域・加熱領域・凍結領域・乱流領域・領域干渉・遮音"
+                        + "領域・荷電領域があります。$(p)どれも「行列」と「サイズ」で範囲を決め、「時間」のあいだ残ります。この項目には領域に共"
+                        + "通の決まりをまとめ、各ピースの項目にはその領域だけの効き目を書いています。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.1",
+                "The area holds the blocks of the Matrix (a region matrix) th"
+                        + "at lie inside a cube of Size blocks on each edge (a constant"
+                        + ", at most 16) around the matrix's center block, counted like"
+                        + " Number mode of Operator: Matrix Cuboid Region. A tilted mat"
+                        + "rix counts as the axis-aligned box around it, so a zone alwa"
+                        + "ys works exactly within its outline.$(p)Leaving out the Matr"
+                        + "ix gives the cube around the block the caster stands in. A l"
+                        + "iving being is inside when the block holding the center of i"
+                        + "ts hitbox is. Trick: Show Region (Block mode) shows the area"
+                        + ".",
+                "範囲は「行列」（領域行列）の中のブロックのうち、行列の中心のブロックを中心にした一辺が「サイズ」（定数、最大16）の立方"
+                        + "体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです。行列が傾いていれば、それを囲む軸にそっ"
+                        + "た箱で数えるので、効く範囲はいつも輪郭の線のとおりです。$(p)「行列」を省くと、術者のいるブロックを中心にした立方体に"
+                        + "なります。生物が範囲の中にいるかどうかは、当たり判定の中心があるブロックで決まります。範囲は作動式: 領域表示（ブロック"
+                        + "モード）で確かめられます。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.2",
+                "The Time is a constant of at most 120 seconds, 30 when left "
+                        + "out (a Gravity Zone in Vector mode always lasts 30 seconds)."
+                        + "$(p)Potency and Cost grow with the area (the Size squared), "
+                        + "and with the Power for zones that take one. The Cost also gr"
+                        + "ows in proportion to the Time.",
+                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)規模とコストは範囲の"
+                        + "広さ（サイズの2乗）で増え、威力を持つ領域では威力にも比例します。コストはさらに時間に比例します。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.3",
+                "A zone has integrity, which wears away at a steady rate and "
+                        + "ends the zone when it runs out; spells can wear it down too."
+                        + " Integrity grows with the caster's interference when placed "
+                        + "and with the Time, while the rate it wears away does not dep"
+                        + "end on the Time, so a zone placed for longer is harder to br"
+                        + "eak.$(p)Aim at the core within 5 blocks to see its integrity"
+                        + ", or read it in a spell with Selector: SpellGram Integrity.",
+                "領域は耐久値を持ちます。耐久値は時間とともに一定の速さで減り、尽きると領域は消えます。術式で削られても減ります。耐久値は"
+                        + "置いた時点の事象干渉力と「時間」に比例し、減る速さは時間によらないので、長く置いた領域ほど壊されにくくなります。$(p)"
+                        + "耐久値は5ブロック以内で核に照準を合わせると表示され、取得子: 魔法式耐久値で術式から読めます。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.4",
+                "Select your zones with Selector: Own Resident SpellGrams, en"
+                        + "d them with Trick: Recall SpellGram, and restore their integ"
+                        + "rity with Trick: Extend SpellGram, up to twice the integrity"
+                        + " a zone placed with the longest Time has.$(p)One caster can "
+                        + "keep up to 32 circles and zones in all (changeable in the co"
+                        + "nfig); placing more ends the oldest. Zones also end when the"
+                        + " caster logs out or moves to another dimension.",
+                "自分の領域は取得子: 自分の常駐魔法式で選び、作動式: 魔法式回収で消し、作動式: 魔法式延長で耐久値を戻せます。延長で"
+                        + "戻せる上限は「時間」を最大にして置いたときの耐久値の2倍です。$(p)1人が置けるのはサークルと領域を合わせて32個まで"
+                        + "で、超えると古いものから消えます。この数は設定で変えられます。術者がログアウトしたり別のディメンションへ移ったりしたとき"
+                        + "も、領域は消えます。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.5",
+                "Overlapping zones of the same kind do not add up: where they"
+                        + " overlap, only the strongest one works (the highest Power, t"
+                        + "hen the higher interference, then the older one), whoever ca"
+                        + "st them. Only Gravity Zones add their pushes together, up to"
+                        + " Power 10.$(p)A zone cannot be centered inside another caste"
+                        + "r's Trick: Interference Zone placed with higher interference"
+                        + ", and does not work where it overlaps one.",
+                "同じ種類の領域を重ねても、効き目は足し算になりません。重なったところでは一番強いもの（威力が高いもの、並べば事象干渉力が"
+                        + "高いもの、それも並べば古いもの）だけが効きます。誰が置いた領域かは問いません。加重領域だけは押す向きを足し合わせ、威力1"
+                        + "0で頭打ちです。$(p)自分より事象干渉力の高い他者の作動式: 領域干渉の中には領域の中心を置けず、重なったところでは効"
+                        + "きません。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.6",
+                "Overlapping your own Turbulence Zone strengthens your other "
+                        + "zones there: with a Heat Zone it becomes a Heat Storm, with "
+                        + "a Freeze Zone a Blizzard, with a Soak Zone a Rainstorm, and "
+                        + "with a Charged Zone a Thundercloud (see Trick: Turbulence Zo"
+                        + "ne).$(p)Where a Heat Zone and a Freeze Zone overlap, they ca"
+                        + "ncel each other out. Beings soaked by a Soak Zone do not bur"
+                        + "n, and freeze in half the time.",
+                "自分の乱流領域に自分のほかの領域を重ねると、重なったところが強まります。加熱領域とは熱乱流、凍結領域とは吹雪、湿潤領域と"
+                        + "は暴風雨、荷電領域とは雷雲になります。詳しくは作動式: 乱流領域の項目にあります。$(p)加熱領域と凍結領域が重なったと"
+                        + "ころでは、両方が打ち消し合ってどちらも効きません。湿潤領域で濡れた生物は燃えず、凍結領域では半分の時間で凍えきります。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.7",
+                "Effects that run machines or process items of Create, Mekani"
+                        + "sm and Applied Energistics 2 (bulk washing, bulk smoking, he"
+                        + "at, FE, charging and so on) work at a speed set by the caste"
+                        + "r's interference when placed: the base speed at 2, half at 1"
+                        + ", and at most twice. Dropped items being processed do not de"
+                        + "spawn.$(p)A zone aimed at a Simulated Contraption (such as a"
+                        + " Create Aeronautics airship) stays in the world where the co"
+                        + "ntraption was when placed, and also works on the blocks and "
+                        + "machines of contraptions overlapping its area.",
+                "Create・Mekanism・Applied Energistics 2 の機械やアイテムへの効き目（一括洗浄・一括燻"
+                        + "製・熱・FE・チャージ加工など）は、置いた時点の事象干渉力で速さが決まります。干渉力2で基準、1でその半分、最大で2倍で"
+                        + "す。加工している間、落ちているアイテムは消えません。$(p)Simulated Contraption（Create A"
+                        + "eronautics の機体など）に向けて置いた領域は、置いた時点の機体の位置で世界に残ります。領域は範囲に重なった機体"
+                        + "の上のブロックや機械にも効きます。");
+
+        // 湿潤領域
+        addBookPage(root, "trick_soak_zone.0",
+                "Places a zone that keeps the living beings inside soaked. Se"
+                        + "e $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zone"
+                        + "s share.$(p)Living beings inside stay wet for 3 seconds afte"
+                        + "r leaving; wet beings do not burn and take 50% more damage f"
+                        + "rom Trick: Chain Lightning. The blocks inside are wetted lik"
+                        + "e with a Splash Water Bottle: fire, campfires and candles go"
+                        + " out, and concrete powder turns into concrete (where the cas"
+                        + "ter may change blocks).",
+                "範囲の中の生物を濡らし続ける領域を置きます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$("
+                        + "/l)の項目にあります。$(p)中の生物は範囲を出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光"
+                        + "のダメージが50%増えます。範囲のブロックには水入りスプラッシュ瓶のように効き、炎・焚き火・ろうそくを消し、コンクリート"
+                        + "パウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。");
+        addBookPage(root, "trick_soak_zone.1",
+                "With Create installed, it bulk-washes dropped items and the "
+                        + "items on Depots and Mechanical Belts inside, as fast as an E"
+                        + "ncased Fan at interference 2.",
+                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。"
+                        + "干渉力2でケース入りファンと同じ速さです。");
+
+        // 加重領域
+        addBookPage(root, "trick_gravity_zone.0",
+                "Every tick it adds motion to the entities inside (living bei"
+                        + "ngs, dropped items, experience orbs, projectiles, minecarts "
+                        + "and boats), more with a higher Power (a constant of at most "
+                        + "10). A Power of about 4 balances gravity; while the zone pus"
+                        + "hes upward, entities inside take no fall damage. The caster "
+                        + "is pushed too. See $(l:psitweaks/zone_magic)Zone Magic$(/l) "
+                        + "for what all zones share.",
+                "範囲の中のエンティティ（生物、落ちているアイテム、経験値オーブ、飛び道具、トロッコやボート）に、「威力」（最大10の定数"
+                        + "）に応じた運動を毎tick足し続けます。威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下"
+                        + "ダメージを受けません。術者自身も押されます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$("
+                        + "/l)の項目にあります。");
+        addBookPage(root, "trick_gravity_zone.1",
+                "It has two modes. In Vector mode (the default) the inputs ar"
+                        + "e Matrix, Size, Direction and Power; it pushes toward the Di"
+                        + "rection and lasts 30 seconds. In Matrix mode they are Matrix"
+                        + ", Size, Power and Time; it pushes along the Y axis of the Ma"
+                        + "trix (straight up if left out), the other way with a negativ"
+                        + "e Power. Operator: Matrix Set Y Axis turns a matrix to push "
+                        + "in any direction.",
+                "モードが2つあります。ベクトルモード（既定）は行列・サイズ・方向・威力を入力にとり、「方向」の向きへ押して30秒間残りま"
+                        + "す。行列モードは行列・サイズ・威力・時間を入力にとり、行列のY軸の向き（行列を省けば真上）へ押します。威力が負なら逆向き"
+                        + "です。演算子: Y軸方向指定で行列を回せば、好きな向きへ押せます。");
+        addBookPage(root, "trick_gravity_zone.2",
+                "A Simulated Contraption (such as a Create Aeronautics airshi"
+                        + "p) is pushed as well, more the more of it is inside, and it "
+                        + "tilts as the part inside is pushed. Where Gravity Zones over"
+                        + "lap, their pushes add up, but never beyond Power 10.",
+                "Simulated Contraption（Create Aeronautics の機体など）も押されます。範囲に入って"
+                        + "いる部分が多いほど強く押され、入っている部分の側が押されるので傾きます。加重領域どうしが重なったところでは押す向きが足し"
+                        + "合わされますが、威力10を超えることはありません。");
+
+        // 加熱領域
+        addBookPage(root, "trick_heat_zone.0",
+                "The Power (a constant of at most 10) is how hot the zone is:"
+                        + " living beings inside catch fire and keep burning for 0.6 se"
+                        + "conds per Power after leaving. The caster does not burn, nor"
+                        + " do wet beings. Ice and Frosted Ice inside melt into water; "
+                        + "Packed Ice and Blue Ice stay. See $(l:psitweaks/zone_magic)Z"
+                        + "one Magic$(/l) for what all zones share.",
+                "「威力」（最大10の定数）は領域の温度です。中の生物に火がつき、範囲を出てから威力×0.6秒は燃え続けます。術者自身と、"
+                        + "濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。共通の決まりは$(l:psitw"
+                        + "eaks/zone_magic)領域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_heat_zone.1",
+                "With Create installed, it bulk-smokes dropped items and the "
+                        + "items on Depots and Mechanical Belts inside, and Blaze Burne"
+                        + "rs inside count as heated even without fuel. With Mekanism i"
+                        + "nstalled, it sends heat to the blocks inside that take heat "
+                        + "(Resistive Heaters, Thermal Evaporation Valves, Heat Generat"
+                        + "ors and so on), but never above 100 K per Power. At interfer"
+                        + "ence 2, smoking is as fast as an Encased Fan and the heat ma"
+                        + "tches one Fuelwood Heater.",
+                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。"
+                        + "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。Mekanism が入っているときは、範囲の中の熱を受"
+                        + "け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし、威力×100Kより上には温めませ"
+                        + "ん。干渉力2で、一括燻製はケース入りファンと同じ速さ、熱は薪木ストーブ1台ぶんです。");
+
+        // 凍結領域
+        addBookPage(root, "trick_freeze_zone.0",
+                "Living beings inside freeze as if stuck in Powder Snow; once"
+                        + " fully frozen they slow down and take freezing damage. The P"
+                        + "ower (a constant of at most 10) is how cold it is: at 5 they"
+                        + " freeze in 3.5 seconds, at 10 twice as fast. The caster does"
+                        + " not freeze, nor does anything Powder Snow cannot freeze, su"
+                        + "ch as a being in leather armor. Water sources inside with ai"
+                        + "r right above them turn into ice. See $(l:psitweaks/zone_mag"
+                        + "ic)Zone Magic$(/l) for what all zones share.",
+                "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（最大10の定数）は"
+                        + "冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さです。術者自身と、革の防具を着ている生物のように粉"
+                        + "雪で凍えないものは凍えません。範囲の中の水源のうち、真上が空気のものは氷になります。共通の決まりは$(l:psitwea"
+                        + "ks/zone_magic)領域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_freeze_zone.1",
+                "Wet beings freeze in half the time. With Mekanism installed,"
+                        + " it cools the blocks inside that hold heat (Resistive Heater"
+                        + "s, Boiler Valves, Fission Reactor Ports and so on) toward th"
+                        + "e ambient temperature, faster with a higher Power, but never"
+                        + " below the ambient temperature.",
+                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器"
+                        + "、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。威力が高いほど速く冷え、周囲の温度より下には冷え"
+                        + "ません。");
+
+        // 乱流領域
+        addBookPage(root, "trick_turbulence_zone.0",
+                "A gale blows inside: projectiles others shot (arrows, triden"
+                        + "ts, snowballs, fireballs and so on) are turned sharply aside"
+                        + " as they enter, more with a higher Power (a constant of at m"
+                        + "ost 10). Magic projectiles are not. Clouds of lingering poti"
+                        + "ons and dragon's breath are blown away and fade quickly. See"
+                        + " $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones"
+                        + " share.",
+                "範囲の中では暴風が吹き荒れ、他者が放った飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きを大きく曲"
+                        + "げられます。「威力」（最大10の定数）が大きいほど大きく曲がります。魔法の弾は曲げません。残留ポーションやドラゴンブレス"
+                        + "の雲は吹き散らされ、早く消えます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項"
+                        + "目にあります。");
+        addBookPage(root, "trick_turbulence_zone.1",
+                "Where it overlaps your own zones, it strengthens them. Heat "
+                        + "Zone: a Heat Storm, dealing fire damage and speeding up bulk"
+                        + " smoking and Mekanism heat. Freeze Zone: a Blizzard, dealing"
+                        + " freezing damage and freezing faster. Soak Zone: a Rainstorm"
+                        + ", washing faster and hurting beings weak to water (Blazes, E"
+                        + "ndermen and so on). Charged Zone: a Thundercloud, striking l"
+                        + "iving beings inside at random and charging faster. They foll"
+                        + "ow the Power of the turbulence (the strongest where several "
+                        + "overlap): at 10, machines run twice as fast.",
+                "自分のほかの領域と重ねると、重なったところが強まります。加熱領域とは熱乱流になり、火のダメージを与え、一括燻製と Mek"
+                        + "anism へ送る熱が増えます。凍結領域とは吹雪になり、凍結のダメージを与え、凍えが速くたまります。湿潤領域とは暴風雨に"
+                        + "なり、一括洗浄が速くなり、ブレイズやエンダーマンなど水に弱い生物にダメージを与えます。荷電領域とは雷雲になり、ランダムな"
+                        + "間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
+                        + "威力10で加工などは2倍の速さです。");
+        addBookPage(root, "trick_turbulence_zone.2",
+                "With Mekanism Generators installed, Wind Generators inside w"
+                        + "ork even indoors, and their output rises with the Power (twi"
+                        + "ce at 10).",
+                "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がり"
+                        + "ます（威力10で2倍）。");
+
+        // 領域干渉
+        addBookPage(root, "trick_interference_zone.0",
+                "Other casters whose interference is lower than yours when yo"
+                        + "u placed it cannot target blocks, positions or entities insi"
+                        + "de; their tricks fail as if out of range. Those standing ins"
+                        + "ide cannot even target themselves. Their zones cannot be pla"
+                        + "ced with the center inside, and zones they already placed st"
+                        + "op working where they overlap. See $(l:psitweaks/zone_magic)"
+                        + "Zone Magic$(/l) for what all zones share.",
+                "置いた時点の自分の事象干渉力より事象干渉力の低い他者は、範囲の中のブロック・位置・エンティティを対象にできず、作動式は射"
+                        + "程外と同じく失敗します。範囲の中にいる相手は自分自身を対象にすることもできません。相手の領域は中心を範囲の中に置けず、す"
+                        + "でに置かれている領域は重なった部分で効かなくなります。共通の決まりは$(l:psitweaks/zone_magic)領"
+                        + "域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_interference_zone.1",
+                "Casters with interference equal to or higher than yours are "
+                        + "not stopped. Your own spells, and those of your Autonomous C"
+                        + "asters, are never stopped. It stops only Psi spells, not the"
+                        + " magic of other mods.",
+                "事象干渉力が同じか高い相手は止められません。自分と、自分の自律詠唱機の魔法は止まりません。止めるのは Psi の魔法だけ"
+                        + "で、ほかの mod の魔法は止めません。");
+
+        // 荷電領域
+        addBookPage(root, "trick_charged_zone.0",
+                "It slowly sends FE to the entities inside: everything a play"
+                        + "er carries, what other living beings hold and wear, dropped "
+                        + "items, and entities that store FE themselves. Blocks (machin"
+                        + "es) get none; use Trick: FE Charge for those. At interferenc"
+                        + "e 2 each gets 20 FE per tick. See $(l:psitweaks/zone_magic)Z"
+                        + "one Magic$(/l) for what all zones share.",
+                "範囲の中のエンティティに FE を少しずつ送ります。送る先は、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防"
+                        + "具、それに落ちているアイテムと、自分で FE をためるエンティティです。ブロック（機械）には送りません。機械には作動式:"
+                        + " FE供給を使います。干渉力2では、それぞれに1 tick あたり20 FE を送ります。共通の決まりは$(l:psit"
+                        + "weaks/zone_magic)領域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_charged_zone.1",
+                "With Applied Energistics 2 installed, dropped items inside g"
+                        + "o through the same process as a Charger (a Certus Quartz Cry"
+                        + "stal becomes a Charged Certus Quartz Crystal, and so on), on"
+                        + "e item every 2 seconds at interference 2. Where it overlaps "
+                        + "your own Turbulence Zone it becomes a Thundercloud: at rando"
+                        + "m intervals a bolt strikes one living being under it, harder"
+                        + " with a higher Power of the turbulence.",
+                "Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工を"
+                        + "します（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。干渉力2で2秒に1個です。自分の乱流領"
+                        + "域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。雷撃の強さは乱流の威力で決ま"
+                        + "ります。");
+
+        // 遮音領域
+        addBookPage(root, "trick_silence_zone.0",
+                "Sounds made inside are not heard: footsteps, breaking and pl"
+                        + "acing blocks, opening chests, mobs and the caster alike. Mus"
+                        + "ic and other sounds heard everywhere are not affected. Vibra"
+                        + "tions cannot pass the zone, as with wool: those made inside,"
+                        + " those heading for a listener inside, and those crossing it "
+                        + "never arrive. See $(l:psitweaks/zone_magic)Zone Magic$(/l) f"
+                        + "or what all zones share.",
+                "範囲の中で鳴る音は聞こえなくなります。足音、ブロックの破壊や設置、チェストの開け閉め、モブの声も、術者自身の音も同じです"
+                        + "。音楽や、どこにいても聞こえる音はそのままです。振動は羊毛と同じように範囲を通れず、中で起きた振動も、中にいる聞き手へ向"
+                        + "かう振動も、範囲を横切る振動も届きません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/"
+                        + "l)の項目にあります。");
+        addBookPage(root, "trick_silence_zone.1",
+                "Sculk Sensors, Calibrated Sculk Sensors, Sculk Shriekers and"
+                        + " the Warden do not notice them. A Sculk Shrieker inside does"
+                        + " not shriek even when stepped on, nor does one stepped on by"
+                        + " someone standing inside. The zone hides sound, not smell: a"
+                        + " Warden still sniffs out those close by.",
+                "スカルクセンサー、調律されたスカルクセンサー、スカルクシュリーカー、ウォーデンは、範囲を通れない振動に気づきません。範囲"
+                        + "の中のスカルクシュリーカーは踏まれても叫びません。範囲の中にいる人が踏んだシュリーカーも同じです。消すのは音だけで、にお"
+                        + "いは消せません。ウォーデンは近くにいる相手をかぎつけます。");
+    }
+
     private void addSpellPiecesBook(JsonObject root) {
         addIdeaResourceLogistics(root);
         addIdeaSlotLogistics(root);
@@ -2866,132 +3178,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_soak_zone", "Trick: Soak Zone",
                 "Places a Resident SpellGram zone that keeps living beings inside it soaked",
                 "作動式: 湿潤領域", "範囲の中の生物を濡らし続ける常駐魔法式を置く");
-        addBookPage(root, "trick_soak_zone.0",
-                "Places a zone over the region given by the Matrix (a region matrix) and the Size (a constant), lasting for the Time (in seconds)."
-                        + " The zone holds the blocks of the matrix inside a cube of Size blocks on each edge around the matrix's center block, counted like Number mode of Operator: Matrix Cuboid Region (Size is at most 16). A tilted matrix counts as the axis-aligned box around it, so the zone always works exactly within its outline."
-                        + " The Matrix may be left out; the zone is then the cube of Size blocks on each edge around the block the caster stands in."
-                        + " A living being is inside when the block holding the center of its hitbox is."
-                        + " Living beings inside are soaked and stay wet for 3 seconds after leaving; wet beings do not burn and take 50% more damage from Trick: Chain Lightning."
-                        + " The zone also wets the blocks inside like a Splash Water Bottle: it puts out fire, campfires and candles, and turns concrete powder into concrete (where the caster may change blocks)."
-                        + " With Create installed, it also bulk-washes dropped items and the items on Depots and Mechanical Belts inside. The washing speed is set by the caster's interference when placed: half an Encased Fan's at 1, the same at 2, and at most twice as fast. Dropped items do not despawn while being washed.",
-                "「行列」（領域行列）と「サイズ」（定数）で決まる範囲に、「時間」（秒）のあいだ残る領域を置きます。"
-                        + "範囲は、行列の中のブロックのうち、行列の中心のブロックを中心にした一辺がサイズのブロックの立方体に入るものです。数え方は演算子: 直方体領域の Number モードと同じです（サイズは最大16）。行列が傾いているときは、行列を囲む軸にそった箱で数えるので、効く範囲はいつも輪郭の線のとおりです。"
-                        + "「行列」は省略でき、省略すると術者のいるブロックを中心にした一辺がサイズの立方体になります。"
-                        + "生物は、当たり判定の中心があるブロックで範囲の中かを決めます。"
-                        + "中の生物は濡れ、出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光のダメージが50%増えます。"
-                        + "範囲の中のブロックにも水をかけたように効き、水入りスプラッシュ瓶と同じく炎・焚き火・ろうそくを消し、コンクリートパウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。"
-                        + "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。洗う速さは置いた時点の事象干渉力で決まり、1 でケース入りファンの半分、2 で同じ、最大で2倍です。洗っている間、落ちているアイテムは消えません。");
-        addBookPage(root, "trick_soak_zone.1",
-                "The Time is a constant of at most 120 seconds and may be left out (30 seconds)."
-                        + " The zone's integrity grows with the Time but wears away at the same rate whatever the Time, so a longer zone stands up better to spells that break it."
-                        + " Potency depends only on the Size and grows with the area of the zone; Cost grows with the area and with the Time."
-                        + " You can place several zones of the same kind, but they do not add up: where zones of one kind overlap, only the strongest works (the highest Power, then the higher interference, then the older one). One caster can keep up to 32 circles and zones in all (changeable in the config); placing more ends the oldest. The zone also ends when its caster logs out or changes dimension."
-                        + " Trick: Show Region (Block mode) draws exactly the blocks the zone covers.",
-                "「時間」は最大120秒の定数で、省略すると30秒です。"
-                        + "耐久値は時間に比例しますが、減る速さは時間によらず同じなので、長く置いた領域ほど術式で壊されにくくなります。"
-                        + "規模はサイズだけで決まり、範囲が広いほど増えます。コストは範囲が広いほど、時間が長いほど増えます。"
-                        + "同じ種類の領域をいくつも置けますが、効き目は足し算になりません。同じ種類が重なったところでは、一番強いもの（威力が高いもの、並べば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。1人が置けるのはサークルと領域を合わせて32個まで（設定で変えられます）で、超えて置くと古いものから消えます。術者がログアウトしたり別のディメンションへ移ったりしても消えます。"
-                        + "範囲の確認には、作動式: 領域表示（ブロックモード）が使えます。");
         addSpellPiece(root, "trick_gravity_zone", "Trick: Gravity Zone",
                 "Places a Resident SpellGram zone that keeps pushing entities inside it in the given direction",
                 "作動式: 加重領域", "範囲の中のエンティティを指定した向きへ押し続ける常駐魔法式を置く");
-        addBookPage(root, "trick_gravity_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, like Trick: Soak Zone."
-                        + " Every tick it adds motion toward the Direction to the entities inside (living beings, dropped items, experience orbs, arrows and other projectiles, minecarts and boats), more with a higher Power; only the direction of the Direction is used."
-                        + " A Power of about 4 balances gravity. While the zone pushes upward, entities inside take no fall damage. The caster is pushed too."
-                        + " A Simulated Contraption (such as a Create Aeronautics airship) is pushed as well, more the more of it is inside, and it tilts as the part inside is pushed.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に領域を置きます。"
-                        + "中のエンティティ（生物、落ちているアイテム、経験値オーブ、矢などの飛び道具、トロッコやボート）に、「方向」の向きへ「威力」に応じた運動を毎tick足し続けます。方向は向きだけを使います。"
-                        + "威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。"
-                        + "Simulated Contraption（Create Aeronautics の機体など）も押されます。範囲に入っている部分が多いほど強く押され、入っている部分の側が押されるので傾きます。");
-        addBookPage(root, "trick_gravity_zone.1",
-                "It has two modes. In Vector mode (the default) the inputs are Matrix, Size, Direction and Power, and the zone lasts 30 seconds."
-                        + " In Matrix mode they are Matrix, Size, Power and Time: it pushes along the Y axis of the Matrix (straight up if the Matrix is left out),"
-                        + " a negative Power pushes the other way, and it lasts for the Time like the other zones."
-                        + " Operator: Matrix Set Y Axis turns a matrix to push in any direction."
-                        + " The Power is a constant of at most 10. Cost and Potency grow with the area of the zone times the Power."
-                        + " Where Gravity Zones overlap, their pushes add up, but never beyond Power 10."
-                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "モードが2つあります。ベクトルモード（既定）の入力は行列・サイズ・方向・威力で、30秒間残ります。"
-                        + "行列モードの入力は行列・サイズ・威力・時間です。行列のY軸の向き（行列を省けば真上）へ押し、威力を負にすると逆向きに押します。ほかの領域と同じく「時間」のあいだ残ります。"
-                        + "演算子: Y軸方向指定で行列を回せば、好きな向きへ押せます。"
-                        + "威力は最大10の定数です。コストと規模は、範囲の広さ×威力で増えます。"
-                        + "加重領域どうしが重なったところでは押す向きが足し合わされますが、威力10を超えることはありません。"
-                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_heat_zone", "Trick: Heat Zone",
                 "Places a Resident SpellGram zone that sets living beings inside it on fire and melts ice",
                 "作動式: 加熱領域", "範囲の中の生物に火をつけ、氷を溶かす常駐魔法式を置く");
-        addBookPage(root, "trick_heat_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
-                        + " The Power (a constant of at most 10) is how hot the zone is: living beings inside catch fire and keep burning for 0.6 seconds per Power after leaving. The caster does not burn, nor do wet beings."
-                        + " Ice and Frosted Ice inside melt into water; Packed Ice and Blue Ice stay.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
-                        + "「威力」（最大10の定数）は領域の温度で、中の生物に火がつき、出てから威力×0.6秒は燃え続けます。術者自身と、濡れている生物は燃えません。"
-                        + "範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。");
-        addBookPage(root, "trick_heat_zone.1",
-                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside; dropped items do not despawn while being smoked."
-                        + " Blaze Burners inside count as heated even without fuel."
-                        + " With Mekanism installed, it sends heat to the blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), but never above 100 K per Power (1000 K at 10)."
-                        + " Both run at a speed set by the caster's interference when placed: at 2, as fast as an Encased Fan and as much heat as one Fuelwood Heater; half at 1, and at most twice."
-                        + " Potency grows with the area of the zone times the Power, and Cost also with the Time. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。燻製している間、落ちているアイテムは消えません。"
-                        + "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。"
-                        + "Mekanism が入っているときは、範囲の中の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし威力×100K（威力10で1000K）より上には温めません。"
-                        + "どちらも速さは置いた時点の事象干渉力で決まり、干渉力2で一括燻製はケース入りファンと同じ、熱は薪木ストーブ1台ぶんです。1 でその半分、最大で2倍です。"
-                        + "規模は範囲の広さ×威力で増え、コストはさらに時間に比例します。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_freeze_zone", "Trick: Freeze Zone",
                 "Places a Resident SpellGram zone that freezes living beings inside it and turns open water into ice",
                 "作動式: 凍結領域", "範囲の中の生物を凍えさせ、水を氷にする常駐魔法式を置く");
-        addBookPage(root, "trick_freeze_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
-                        + " Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at most 10) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast."
-                        + " The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor."
-                        + " Water sources inside with air right above them turn into ice.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
-                        + "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（最大10の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さです。"
-                        + "術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。"
-                        + "範囲の中の水源の水のうち、真上が空気のものは氷になります。");
-        addBookPage(root, "trick_freeze_zone.1",
-                "Wet beings, such as those in a Soak Zone, freeze in half the time."
-                        + " With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on) toward the ambient temperature. How fast depends on the Power and on the caster's interference when placed. It never cools below the ambient temperature."
-                        + " Potency grows with the area of the zone times the Power, and Cost also with the Time."
-                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "湿潤領域の中などで濡れている生物は、半分の時間で凍えきります。"
-                        + "Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。冷える速さは威力と、置いた時点の事象干渉力で決まります。周囲の温度より下には冷えません。"
-                        + "規模は範囲の広さ×威力で増え、コストはさらに時間に比例します。"
-                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_turbulence_zone", "Trick: Turbulence Zone",
                 "Places a Resident SpellGram zone where a gale turns projectiles aside and strengthens your other zones",
                 "作動式: 乱流領域", "暴風で飛び道具をそらし、重ねた自分の領域を強める常駐魔法式を置く");
-        addBookPage(root, "trick_turbulence_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
-                        + " A gale blows inside: projectiles others shot (arrows, tridents, snowballs, fireballs and so on) are turned sharply aside as they enter, more with a higher Power. Magic projectiles are not."
-                        + " Clouds of lingering potions and dragon's breath are blown away and fade quickly.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
-                        + "中では暴風が吹き荒れ、他者が放った飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きを大きく曲げられます。「威力」が大きいほど大きく曲がります。魔法の弾は曲げません。"
-                        + "残留ポーションやドラゴンブレスの雲は吹き散らされ、早く消えます。");
-        addBookPage(root, "trick_turbulence_zone.1",
-                "Where it overlaps your own zones, it strengthens them."
-                        + " With a Heat Zone it becomes a Heat Storm: living beings inside take fire damage, and bulk smoking and the heat sent to Mekanism speed up."
-                        + " With a Freeze Zone it becomes a Blizzard: living beings inside take freezing damage and freeze faster."
-                        + " With a Soak Zone it becomes a Rainstorm: bulk washing speeds up, and beings hurt by water (Blazes, Endermen and so on) take damage."
-                        + " With a Charged Zone it becomes a Thundercloud: at random intervals a bolt strikes a living being inside, and FE and charging speed up."
-                        + " How strong these are follows the Power of the turbulence (the strongest one where several overlap): at 10, machines run twice as fast."
-                        + " Where a Heat Zone and a Freeze Zone overlap, the two cancel out, so neither works there.",
-                "自分のほかの領域と重ねると、重なったところが強まります。"
-                        + "加熱領域と重ねると熱乱流になり、中の生物に火のダメージを与え、一括燻製と Mekanism へ送る熱が増えます。"
-                        + "凍結領域と重ねると吹雪になり、中の生物に凍結のダメージを与え、凍えが速くたまります。"
-                        + "湿潤領域と重ねると暴風雨になり、一括洗浄が速くなり、ブレイズやエンダーマンなど水に弱い生物にダメージを与えます。"
-                        + "荷電領域と重ねると雷雲になり、ランダムな間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。"
-                        + "これらの強さは乱流の威力で決まり（重なっていれば最も強いもの）、威力10で加工などは2倍の速さです。"
-                        + "加熱領域と凍結領域が重なったところでは、両方が打ち消し合ってどちらも効きません。");
-        addBookPage(root, "trick_turbulence_zone.2",
-                "With Mekanism Generators installed, Wind Generators inside work even indoors, and their output rises with the Power (twice at 10)."
-                        + " The Power is a constant of at most 10. Potency grows with the area of the zone times the Power, and Cost also with the Time."
-                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がります（威力10で2倍）。"
-                        + "威力は最大10の定数です。規模は範囲の広さ×威力で増え、コストはさらに時間に比例します。"
-                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "selector_own_spellgrams", "Selector: Own Resident SpellGrams",
                 "Lists your own Resident SpellGrams (circles and zones) in this dimension, in the order you placed them",
                 "取得子: 自分の常駐魔法式", "このディメンションにある自分の常駐魔法式（サークルと領域）を、置いた順のリストで返す");
@@ -3008,6 +3206,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " If anything else is in the target, nothing is ended and the spell errors. Psi is not refunded.",
                 "「対象」に入れた自分の常駐魔法式を、距離に関係なく消します。エンティティでもリストでもよく、取得子: 自分の常駐魔法式をそのまま渡せます。"
                         + "自分のもの以外や常駐魔法式でないもの（流星群の夜の核など）が混ざっているとエラーになり、何も消しません。Psi は戻りません。");
+        addSpellPiece(root, "selector_spellgram_integrity", "Selector: SpellGram Integrity",
+                "Returns the current integrity of a SpellGram object",
+                "取得子: 魔法式耐久値", "魔法式オブジェクトの今の耐久値を返す");
+        addBookPage(root, "selector_spellgram_integrity",
+                "Returns the current integrity of the Target, a SpellGram object (a Resident SpellGram or the core of a Meteor Line night), as a number."
+                        + " Any other entity is an error. It is the integrity shown when you aim at the core (the display rounds it up),"
+                        + " so a spell can tell how much is left before Trick: Extend SpellGram or before taking a SpellGram apart.",
+                "「対象」に入れた魔法式オブジェクト（常駐魔法式や流星群の夜の核）の、今の耐久値を数値で返します。"
+                        + "魔法式オブジェクトでないエンティティを入れるとエラーになります。"
+                        + "値は核に照準を合わせたときに表示される耐久値と同じで（表示は切り上げ）、作動式: 魔法式延長を使う前などに、残りを術式で確かめられます。");
         addSpellPiece(root, "trick_extend_spellgram", "Trick: Extend SpellGram",
                 "Restores the integrity of your own Resident SpellGram, so it lasts longer",
                 "作動式: 魔法式延長", "自分の常駐魔法式の耐久値を回復し、長く残す");
@@ -3023,65 +3231,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
                 "Places a Resident SpellGram zone that keeps weaker casters' Psi spells and zones out of it",
                 "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と領域を、範囲の中で効かなくする常駐魔法式を置く");
-        addBookPage(root, "trick_interference_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
-                        + " Other casters whose interference is lower than yours when you placed it cannot target blocks, positions or entities inside; their tricks fail as if out of range."
-                        + " Those standing inside cannot even target themselves."
-                        + " Their zones cannot be placed with the center inside, and zones they already placed stop working where they overlap.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
-                        + "置いた時点の自分の事象干渉力より事象干渉力の低い他者は、範囲の中のブロック・位置・エンティティを対象にできず、作動式は射程外と同じく失敗します。"
-                        + "範囲の中にいる相手は、自分自身も対象にできません。"
-                        + "相手の領域は中心を範囲の中に置けず、すでに置かれている領域は重なった部分で効かなくなります。");
-        addBookPage(root, "trick_interference_zone.1",
-                "Casters with interference equal to or higher than yours are not stopped. Your own spells, and those of your Autonomous Casters, are never stopped."
-                        + " It stops only Psi spells, not the magic of other mods."
-                        + " Potency depends only on the Size; Cost grows with the Size and the Time. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "事象干渉力が同じか高い相手は止められません。自分と、自分の自律詠唱機の魔法は止まりません。"
-                        + "止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。"
-                        + "規模はサイズだけで決まり、コストはサイズと時間で増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_charged_zone", "Trick: Charged Zone",
                 "Places a Resident SpellGram zone that slowly charges what the beings inside carry with FE",
                 "作動式: 荷電領域", "範囲の中の持ち物やアイテムに FE を少しずつ送る常駐魔法式を置く");
-        addBookPage(root, "trick_charged_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
-                        + " It slowly sends FE to the entities inside: everything a player carries, what other living beings hold and wear,"
-                        + " dropped items, and entities that store FE themselves. Blocks (machines) get none; use Trick: FE Charge for those."
-                        + " How much follows the caster's interference when placed: 20 FE per tick to each at 2, half at 1, and at most twice.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
-                        + "範囲の中のエンティティに FE を少しずつ送ります。プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、落ちているアイテム、自分で FE をためるエンティティです。"
-                        + "ブロック（機械）には送りません。機械には作動式: FE供給を使います。"
-                        + "送る量は置いた時点の事象干渉力で決まり、干渉力2でそれぞれに1 tick あたり20 FE、1でその半分、最大で2倍です。");
-        addBookPage(root, "trick_charged_zone.1",
-                "With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger"
-                        + " (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), one item every 2 seconds at interference 2. Dropped items do not despawn while being charged."
-                        + " Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it,"
-                        + " harder with a higher Power of the turbulence (the strongest where several overlap), and FE and charging run faster (twice at Power 10)."
-                        + " Potency depends only on the Size; Cost grows with the area and with the Time. Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。干渉力2で2秒に1個です。チャージしている間、落ちているアイテムは消えません。"
-                        + "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。"
-                        + "雷撃の強さは乱流の威力で決まり（重なっていれば最も強いもの）、FE とチャージ加工も速くなります（威力10で2倍）。"
-                        + "規模はサイズだけで決まり、コストは範囲が広いほど、時間が長いほど増えます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_silence_zone", "Trick: Silence Zone",
                 "Places a Resident SpellGram zone where no sound is heard and no vibration gets through",
                 "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない常駐魔法式を置く");
-        addBookPage(root, "trick_silence_zone.0",
-                "Places a zone over the region given by the Matrix and the Size, lasting for the Time, like Trick: Soak Zone."
-                        + " Sounds made inside are not heard: footsteps, breaking and placing blocks, opening chests, mobs and the caster alike. Music and other sounds heard everywhere are not affected."
-                        + " Vibrations cannot pass the zone, as with wool: those made inside, those heading for a listener inside, and those crossing it never arrive."
-                        + " Sculk Sensors, Calibrated Sculk Sensors, Sculk Shriekers and the Warden do not notice them.",
-                "作動式: 湿潤領域と同じく、「行列」と「サイズ」で決まる範囲に、「時間」のあいだ残る領域を置きます。"
-                        + "範囲の中で鳴る音は聞こえなくなります。足音、ブロックの破壊や設置、チェストの開け閉め、モブの声も、術者自身の音も同じです。音楽や、どこにいても聞こえる音はそのままです。"
-                        + "振動は羊毛と同じように範囲を通れず、中で起きた振動も、中にいる聞き手へ向かう振動も、範囲を横切る振動も届きません。"
-                        + "スカルクセンサー、調律されたスカルクセンサー、スカルクシュリーカー、ウォーデンは気づきません。");
-        addBookPage(root, "trick_silence_zone.1",
-                "A Sculk Shrieker inside does not shriek even when stepped on, nor does one stepped on by someone standing inside."
-                        + " The zone hides sound, not smell: a Warden still sniffs out those close by."
-                        + " Potency depends only on the Size; Cost grows with the area and with the Time."
-                        + " Up to 32 circles and zones per caster in all; placing more ends the oldest.",
-                "範囲の中のスカルクシュリーカーは、踏まれても叫びません。範囲の中にいる人が踏んだシュリーカーも同じです。"
-                        + "消すのは音だけで、においは消せません。ウォーデンは近くにいる相手をかぎつけます。"
-                        + "規模はサイズだけで決まり、コストは範囲が広いほど、時間が長いほど増えます。"
-                        + "1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を、CADの色のパーティクルで描きます。");

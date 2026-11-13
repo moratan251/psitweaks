@@ -2,6 +2,7 @@
   "main": "psitweaks:selector_own_spellgrams",
   "pieces": [
     "psitweaks:trick_recall_spellgram",
-    "psitweaks:trick_extend_spellgram"
+    "psitweaks:trick_extend_spellgram",
+    "psitweaks:selector_spellgram_integrity"
   ]
 }

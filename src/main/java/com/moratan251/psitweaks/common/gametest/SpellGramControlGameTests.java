@@ -380,6 +380,62 @@ public final class SpellGramControlGameTests {
         }
     }
 
+    /** 取得子: 魔法式耐久値（2026-11-14 ユーザー）は、魔法式オブジェクトの今の耐久値を返す。ほかのエンティティはエラー。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_integrity_selector", timeoutTicks = 40)
+    public static void integritySelectorReadsTheCurrentIntegrity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "spellgram_integrity_caster", new Vec3(1.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            var id = Psitweaks.location("selector_spellgram_integrity");
+            helper.assertTrue(vazkii.psi.api.PsiAPI.SPELL_PIECE_REGISTRY.get(id) != null, "The selector must be registered");
+            helper.assertTrue(vazkii.psi.api.PsiAPI.getPieceGroup(level.registryAccess(), id).orElseThrow().key().location()
+                    .equals(Psitweaks.location("spellgram_control")), "The selector must be researched with the SpellGram controls");
+
+            SpellGramObject zone = placeSoak(caster, 3.0, null);
+            double read = readIntegrity(caster, zone);
+            helper.assertTrue(Math.abs(read - zone.getIntegrity()) < 1.0E-4 && read > 0.0,
+                    "The selector must read the current integrity " + zone.getIntegrity() + ", got " + read);
+            zone.reduceIntegrity(zone.getIntegrity() * 0.25F);
+            double worn = readIntegrity(caster, zone);
+            helper.assertTrue(Math.abs(worn - zone.getIntegrity()) < 1.0E-4 && worn < read,
+                    "The selector must follow integrity lost to spells: " + read + " -> " + worn);
+
+            helper.assertTrue(com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrity
+                            .ERROR_NOT_SPELLGRAM_OBJECT.equals(readIntegrityError(caster, caster)),
+                    "Any other entity must be an error, got " + readIntegrityError(caster, caster));
+            helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(readIntegrityError(caster, null)),
+                    "No target must be an error, got " + readIntegrityError(caster, null));
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    private static double readIntegrity(ServerPlayer caster, Entity target) throws SpellRuntimeException {
+        var piece = new com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrity(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return target;
+            }
+        };
+        return ((Number) piece.execute(new SpellContext().setPlayer(caster))).doubleValue();
+    }
+
+    private static String readIntegrityError(ServerPlayer caster, Entity target) {
+        try {
+            readIntegrity(caster, target);
+            return "no error";
+        } catch (SpellRuntimeException e) {
+            return e.getMessage();
+        }
+    }
+
     private static List<Integer> ids(List<? extends Entity> entities) {
         return entities.stream().map(Entity::getId).toList();
     }

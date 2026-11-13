@@ -1,0 +1,40 @@
+{
+  "name": "psi.book.entry.psitweaks_zone_magic",
+  "category": "psi:psitweaks",
+  "icon": "psitweaks:textures/spell/trick_soak_zone.png",
+  "sortnum": -5,
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.3"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.4"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.5"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.6"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_zone_magic.7"
+    }
+  ]
+}
