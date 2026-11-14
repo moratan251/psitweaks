@@ -1124,7 +1124,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
-            {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam, so it keeps burning and stays dry."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "Breaks the target block with Silk Touch."},
@@ -1235,7 +1234,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式、流星群の夜の核、マイクロブラックホール）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
-            {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火は消えず, 濡れもしません."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "対象ブロックをシルクタッチ付きで破壊します."},
@@ -2411,8 +2409,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
         addBookPage(root, "trick_aqua_cutter",
-                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam, so it keeps burning and stays dry.",
-                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火は消えず, 濡れもしません.");
+                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
+                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
         addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");

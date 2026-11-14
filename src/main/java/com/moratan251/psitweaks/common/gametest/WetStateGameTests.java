@@ -23,8 +23,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * The wet state Trick: Aqua Cutter leaves ({@link CombatStatuses}): it counts as in water or rain, keeps fire off, dries
- * on time, and makes Trick: Chain Lightning hit harder; a burning creature takes more from the blade instead and stays
- * dry. Rain is allowed for, as it makes every creature wet.
+ * on time, and makes Trick: Chain Lightning hit harder; a burning creature takes more from the blade instead, has its
+ * fire put out and stays dry. Rain is allowed for, as it makes every creature wet.
  */
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -67,7 +67,7 @@ public final class WetStateGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void aquaCutterHitsBurningCreaturesHarderAndLeavesThemBurning(GameTestHelper helper) {
+    public static void aquaCutterHitsBurningCreaturesHarderAndPutsOutTheirFire(GameTestHelper helper) {
         var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "aqua-caster"));
         player.moveTo(Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(0, 0, 0))));
         var burning = husk(helper, new BlockPos(1, 0, 2));
@@ -78,8 +78,9 @@ public final class WetStateGameTests {
         AquaCutterProjectileHandler.strike(blade, plain, 10.0F, AttackRules.Options.DEFAULT);
         helper.assertTrue(Math.abs(HEALTH - burning.getHealth() - 10.0F * AquaCutterProjectileHandler.BURNING_FACTOR) < 1.0E-3F,
                 "Aqua Cutter must deal 25% more to a burning creature: " + (HEALTH - burning.getHealth()));
-        helper.assertTrue(burning.isOnFire() && !CombatStatuses.isSoaked(burning),
-                "A burning creature must keep burning and stay dry");
+        helper.assertTrue(!burning.isOnFire() && burning.getRemainingFireTicks() <= 0,
+                "Aqua Cutter must put out the fire of a burning creature it hits harder");
+        helper.assertTrue(!CombatStatuses.isSoaked(burning), "A burning creature hit by Aqua Cutter must stay dry");
         helper.assertTrue(Math.abs(HEALTH - plain.getHealth() - 10.0F) < 1.0E-3F && CombatStatuses.isSoaked(plain),
                 "A creature not on fire takes the plain damage and gets wet: " + (HEALTH - plain.getHealth()));
         helper.succeed();

@@ -76,9 +76,13 @@ public class AquaCutterProjectileHandler {
     /**
      * The water blade's hit on a creature: double damage to creatures hurt by water, and {@link #BURNING_FACTOR} to a
      * burning one. The blade leaves the creature wet (see {@link CombatStatuses}), even when the hurt cooldown took the
-     * damage; on a burning creature the water flashes into steam instead, so the fire keeps burning and it stays dry.
+     * damage; on a burning creature the water flashes into steam instead, which puts the fire out but leaves it dry.
+     * The fire goes out only after the hit, so a creature the blade kills still counts as burning for its drops.
      */
     public static void strike(Projectile projectile, LivingEntity target, float damage, AttackRules.Options options) {
+        if (!AttackRules.canProjectileHarm(projectile, target, options)) {
+            return;
+        }
         boolean burning = target.isOnFire();
         if (target.isSensitiveToWater()) {
             damage *= 2.0F;
@@ -89,9 +93,25 @@ public class AquaCutterProjectileHandler {
         Entity owner = projectile.getOwner();
         DamageSource source = projectile.damageSources().thrown(projectile, owner);
         AttackRules.harmByProjectile(projectile, target, options, source, damage);
-        if (!burning && target.isAlive() && AttackRules.canProjectileHarm(projectile, target, options)) {
+        if (burning) {
+            putOutFire(target);
+        } else if (target.isAlive()) {
             CombatStatuses.soak(target, CombatStatuses.AQUA_CUTTER_WET_TICKS);
         }
+    }
+
+    /** The steam puts out the creature's fire: it hisses like a creature stepping into water and a puff of steam rises. */
+    private static void putOutFire(LivingEntity target) {
+        target.clearFire();
+        double centerY = target.getY() + target.getBbHeight() * 0.5;
+        if (target.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.CLOUD,
+                    target.getX(), centerY, target.getZ(),
+                    8, target.getBbWidth() * 0.3, target.getBbHeight() * 0.3, target.getBbWidth() * 0.3, 0.02);
+        }
+        target.level().playSound(null, target.getX(), centerY, target.getZ(),
+                SoundEvents.GENERIC_EXTINGUISH_FIRE, target.getSoundSource(), 0.7F,
+                1.6F + (target.getRandom().nextFloat() - target.getRandom().nextFloat()) * 0.4F);
     }
 
     /** Where the blade was heading when it hit. */
