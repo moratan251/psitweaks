@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.entities.combat;
 
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.SpellGramMarker;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
@@ -22,10 +24,17 @@ import net.minecraft.world.phys.Vec3;
 /**
  * The singularity of Trick: Micro Black Hole. For three seconds it drags creatures within its radius towards the
  * centre, then collapses: everything close to the centre takes armour-piercing damage.
+ * <p>
+ * 魔法式オブジェクト（目印型、常駐魔法式ではない）。2026-11-14 ユーザー: 耐久値を持ち（仮に固有値 {@link #BASE_INTEGRITY}、
+ * ほかの魔法式オブジェクトと同じく置いた時点の事象干渉力と設定の倍率を掛ける）、時間では減らない。崩壊する前に耐久値が尽きると
+ * （術式解体など）、何も押し潰さずに消える。ふつうの攻撃では壊れない・保存しない・術者がいなくなると消える・Psi の作動式では
+ * 動かせないのは、魔法式オブジェクト共通。
  */
-public class EntityMicroBlackHole extends CombatSpellEntity {
+public class EntityMicroBlackHole extends SpellGramMarker {
     public static final int CHARGE_TICKS = 60;
     private static final int LINGER_TICKS = 4;
+    /** 耐久値の固有値（仮、2026-11-14 ユーザー）。 */
+    public static final float BASE_INTEGRITY = 150.0F;
     /** Pull acceleration per tick at the edge; wider wells pull harder so the edge still reaches the centre in time. */
     private static final double PULL_BASE = 0.15;
     private static final double PULL_PER_RADIUS = 0.008;
@@ -35,11 +44,19 @@ public class EntityMicroBlackHole extends CombatSpellEntity {
     private static final double MIN_COLLAPSE_RADIUS = 3.0;
     private static final double COLLAPSE_RADIUS_FACTOR = 0.6;
     private static final double EDGE_DAMAGE_FACTOR = 0.5;
+    /** 耐久値が尽きて消えるときのガラスの破壊音。 */
+    private static final float SHATTER_VOLUME = 1.5F;
+    private static final float SHATTER_PITCH = 0.7F;
 
     private static final EntityDataAccessor<Float> RADIUS =
             SynchedEntityData.defineId(EntityMicroBlackHole.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> COLOR =
+            SynchedEntityData.defineId(EntityMicroBlackHole.class, EntityDataSerializers.INT);
 
-    public EntityMicroBlackHole(EntityType<?> type, Level level) {
+    /** 崩壊のダメージ（サーバー側）。 */
+    private float damage;
+
+    public EntityMicroBlackHole(EntityType<? extends EntityMicroBlackHole> type, Level level) {
         super(type, level);
     }
 
@@ -47,16 +64,36 @@ public class EntityMicroBlackHole extends CombatSpellEntity {
         this(PsitweaksEntities.MICRO_BLACK_HOLE.get(), level);
         setPos(center.x, center.y, center.z);
         entityData.set(RADIUS, radius);
+        setLifetimeTicks(CHARGE_TICKS + LINGER_TICKS + 1);
+    }
+
+    /**
+     * 置く前に呼ぶ。術者と攻撃の設定、崩壊のダメージ、光の色。耐久値は {@link #BASE_INTEGRITY}（{@link SpellGramIntegrity#initial}）
+     * で、時間では減らない。
+     */
+    public void configure(LivingEntity caster, AttackRules.Options options, float damage, int color) {
+        configureMarker(caster, options, SpellGramIntegrity.initial(BASE_INTEGRITY, caster, 1.0D));
+        setTimeShare(0.0F);
+        this.damage = damage;
+        entityData.set(COLOR, color & 0xFFFFFF);
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
+    protected void defineSpellGramSynchedData(SynchedEntityData.Builder builder) {
         builder.define(RADIUS, 6.0F);
+        builder.define(COLOR, CombatSpellHelper.DEFAULT_SPELL_COLOR);
     }
 
     public float getRadius() {
         return entityData.get(RADIUS);
+    }
+
+    public int getColor() {
+        return entityData.get(COLOR);
+    }
+
+    protected float getDamage() {
+        return damage;
     }
 
     /** 0..1 over the pull phase. */
@@ -76,14 +113,14 @@ public class EntityMicroBlackHole extends CombatSpellEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!(level() instanceof ServerLevel level)) {
-            if (tickCount < CHARGE_TICKS) {
-                inflowParticles();
-            }
-            return;
+        if (level().isClientSide && tickCount < CHARGE_TICKS) {
+            inflowParticles();
         }
-        if (tickCount > CHARGE_TICKS + LINGER_TICKS) {
-            discard();
+    }
+
+    @Override
+    protected void onSpellGramTickServer() {
+        if (!(level() instanceof ServerLevel level)) {
             return;
         }
         LivingEntity caster = getCaster();
@@ -101,7 +138,7 @@ public class EntityMicroBlackHole extends CombatSpellEntity {
         double radius = getRadius();
         Vec3 center = position();
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(radius))) {
-            if (!canAffect(caster, living) || AttackRules.isSpellImmune(living)) {
+            if (!canDamageEntity(caster, living) || AttackRules.isSpellImmune(living)) {
                 continue;
             }
             Vec3 offset = center.subtract(CombatSpellHelper.center(living));
@@ -125,12 +162,13 @@ public class EntityMicroBlackHole extends CombatSpellEntity {
         Vec3 center = position();
         DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.MICRO_BLACK_HOLE, this, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(collapseRadius + 1.0))) {
-            if (!canAffect(caster, living)) {
+            if (!canDamageEntity(caster, living)) {
                 continue;
             }
             double distance = Math.max(0.0, CombatSpellHelper.center(living).distanceTo(center) - living.getBbWidth() * 0.5);
             if (distance <= collapseRadius) {
-                harm(caster, living, source, CombatSpellHelper.falloff(getDamage(), distance, collapseRadius, EDGE_DAMAGE_FACTOR));
+                AttackRules.harm(caster, living, attackOptions(), source,
+                        CombatSpellHelper.falloff(getDamage(), distance, collapseRadius, EDGE_DAMAGE_FACTOR));
             }
         }
         level.sendParticles(ParticleTypes.REVERSE_PORTAL, center.x, center.y, center.z, 80, 0.3, 0.3, 0.3, 0.6);
@@ -139,6 +177,14 @@ public class EntityMicroBlackHole extends CombatSpellEntity {
         CombatEffects.sphereFlash(level, center, getRadius(), getColor(), MessageSphereFlash.Style.IMPLOSION, 1.0F);
         CombatEffects.sound(level, center, SoundEvents.GENERIC_EXPLODE, 1.3F, 0.6F);
         CombatEffects.sound(level, center, SoundEvents.RESPAWN_ANCHOR_DEPLETE, 1.0F, 0.7F);
+    }
+
+    /** 耐久値が尽きて消えるとき、ガラスが割れる音を鳴らす（2026-11-14 ユーザー）。押し潰しはしない。 */
+    @Override
+    protected void onEnd(EndReason reason) {
+        if (reason == EndReason.DESTROYED && level() instanceof ServerLevel level) {
+            CombatEffects.sound(level, position(), SoundEvents.GLASS_BREAK, SHATTER_VOLUME, SHATTER_PITCH);
+        }
     }
 
     private void inflowParticles() {

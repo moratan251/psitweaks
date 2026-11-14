@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "psitweaks:item/spellgram_integrity_debugger"
+  }
+}

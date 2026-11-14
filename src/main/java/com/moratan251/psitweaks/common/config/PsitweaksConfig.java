@@ -44,6 +44,8 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue mineGenesisDamageMultiplier;
         public final ModConfigSpec.DoubleValue burstDamageMultiplier;
         public final ModConfigSpec.DoubleValue airBulletDamageMultiplier;
+        public final ModConfigSpec.DoubleValue psiBulletDamageMultiplier;
+        public final ModConfigSpec.DoubleValue gramDemolitionDamageMultiplier;
         public final ModConfigSpec.DoubleValue dancingBladesDamageMultiplier;
         public final ModConfigSpec.DoubleValue starfallDamageMultiplier;
         public final ModConfigSpec.DoubleValue microBlackHoleDamageMultiplier;
@@ -387,6 +389,32 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // air_bullet カテゴリ終了
+
+            // --- サイ・ブリット ---
+            builder.comment("Psi Bullet Settings")
+                    .translation("psitweaks.configuration.spells.psi_bullet")
+                    .push("psi_bullet");
+
+            psiBulletDamageMultiplier = builder
+                    .comment("作動式: サイ・ブリット のダメージ倍率（魔法式オブジェクトの耐久値を減らす量には掛からない）",
+                            "Damage multiplier for Trick: Psi Bullet (not applied to the integrity it removes from SpellGram objects)")
+                    .translation("psitweaks.configuration.spells.psi_bullet.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // psi_bullet カテゴリ終了
+
+            // --- 術式解体 ---
+            builder.comment("Gram Demolition Settings")
+                    .translation("psitweaks.configuration.spells.gram_demolition")
+                    .push("gram_demolition");
+
+            gramDemolitionDamageMultiplier = builder
+                    .comment("作動式: 術式解体 のダメージ倍率（魔法式オブジェクトの耐久値を減らす量には掛からない）",
+                            "Damage multiplier for Trick: Gram Demolition (not applied to the integrity it removes from SpellGram objects)")
+                    .translation("psitweaks.configuration.spells.gram_demolition.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // gram_demolition カテゴリ終了
 
             // --- ダンシングブレイズ ---
             builder.comment("Dancing Blades Settings")

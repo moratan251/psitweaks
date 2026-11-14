@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
+import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import com.moratan251.psitweaks.common.network.MessageLightningArcs;
+import com.moratan251.psitweaks.common.network.MessageMeteorNightShatter;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import java.util.List;
 import net.minecraft.core.Holder;
@@ -38,6 +40,14 @@ public final class CombatEffects {
         Vec3 anchor = points.get(1);
         PacketDistributor.sendToPlayersNear(level, null, anchor.x, anchor.y, anchor.z, EFFECT_RANGE,
                 new MessageLightningArcs(points, parents, color, seed));
+    }
+
+    /** The night of Trick: Meteor Line ran out of integrity: its dark sphere shatters, as it looks right now. */
+    public static void meteorNightShatter(ServerLevel level, EntityMeteorLineNight night) {
+        Vec3 center = night.getCenter();
+        PacketDistributor.sendToPlayersNear(level, null, center.x, center.y, center.z, EFFECT_RANGE,
+                new MessageMeteorNightShatter(center, (float) night.getRadius(), (float) night.getCurrentRadius(0.0F),
+                        night.getStrength(0.0F), night.getAge(0.0F), night.getStarSeed(), night.getColor()));
     }
 
     public static void sound(ServerLevel level, Vec3 at, SoundEvent sound, float volume, float pitch) {

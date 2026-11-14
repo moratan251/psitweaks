@@ -121,6 +121,10 @@ public final class PsitweaksSpells {
             registerPiece("trick_burst", PieceTrickBurst.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_AIR_BULLET =
             registerPiece("trick_air_bullet", PieceTrickAirBullet.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_PSI_BULLET =
+            registerPiece("trick_psi_bullet", PieceTrickPsiBullet.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_GRAM_DEMOLITION =
+            registerPiece("trick_gram_demolition", PieceTrickGramDemolition.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DANCING_BLADES =
             registerPiece("trick_dancing_blades", PieceTrickDancingBlades.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_STARFALL =

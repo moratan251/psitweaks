@@ -52,24 +52,46 @@ public class MeteorLineNightRenderer extends CombatGlowRenderer<EntityMeteorLine
 
         float starSize = MeteorLineTuning.starSize(entity.getRadius());
         int accent = GlowDrawing.glowColor(entity.getColor());
-        int starColor = GlowDrawing.mix(MeteorLineTuning.STAR_COLOR, accent, MeteorLineTuning.STAR_ACCENT);
-        float clear = Mth.clamp((age - MeteorLineTuning.CLEAR_START) / MeteorLineTuning.CLEAR_TICKS, 0.0F, 1.0F);
-        // Stars ride the dome while it spreads, and scatter outward as the night clears.
-        double scale = radius / entity.getRadius() * (1.0 + MeteorLineTuning.STAR_SCATTER * clear);
+        int starColor = starColor(accent);
+        double scale = starScale(entity.getRadius(), radius, age);
         for (EntityMeteorLineNight.Star star : entity.getStars()) {
-            float lit = Mth.clamp((age - star.appear()) / STAR_LIGHT_TICKS, 0.0F, 1.0F);
-            float twinkle = 0.65F + 0.35F * Mth.sin(age * star.speed() + star.phase());
-            float brightness = lit * twinkle * (1.0F - clear) * star.brightness();
+            float brightness = starBrightness(star, age);
             if (brightness <= 0.01F) {
                 continue;
             }
             Vec3 offset = star.offset().scale(scale);
             Vector3f at = new Vector3f(center).add((float) offset.x, (float) offset.y, (float) offset.z);
-            float size = starSize * star.scale();
-            GlowDrawing.glowDisc(glow, pose, at, size * MeteorLineTuning.STAR_HALO_SCALE, accent,
-                    brightness * MeteorLineTuning.STAR_HALO_BRIGHTNESS, 255);
-            GlowDrawing.glowDisc(glow, pose, at, size, starColor, brightness, 255);
-            GlowDrawing.glowDisc(glow, pose, at, size * 0.35F, 0xFFFFFF, brightness, 255);
+            drawStar(glow, pose, at, starSize * star.scale(), accent, starColor, brightness);
         }
+    }
+
+    /** How far the night has cleared at {@code age}: 0 before it starts to clear, 1 when it is gone. */
+    public static float clearProgress(float age) {
+        return Mth.clamp((age - MeteorLineTuning.CLEAR_START) / MeteorLineTuning.CLEAR_TICKS, 0.0F, 1.0F);
+    }
+
+    /** Stars ride the dome while it spreads, and scatter outward as the night clears. */
+    public static double starScale(double fullRadius, double currentRadius, float age) {
+        return currentRadius / fullRadius * (1.0 + MeteorLineTuning.STAR_SCATTER * clearProgress(age));
+    }
+
+    /** A star lights up at its own time, twinkles, and fades as the night clears. */
+    public static float starBrightness(EntityMeteorLineNight.Star star, float age) {
+        float lit = Mth.clamp((age - star.appear()) / STAR_LIGHT_TICKS, 0.0F, 1.0F);
+        float twinkle = 0.65F + 0.35F * Mth.sin(age * star.speed() + star.phase());
+        return lit * twinkle * (1.0F - clearProgress(age)) * star.brightness();
+    }
+
+    public static int starColor(int accent) {
+        return GlowDrawing.mix(MeteorLineTuning.STAR_COLOR, accent, MeteorLineTuning.STAR_ACCENT);
+    }
+
+    /** One star: a faint halo of the CAD colour, the star's glow and a white core. */
+    public static void drawStar(VertexConsumer glow, Matrix4f pose, Vector3f at, float size, int accent, int starColor,
+                                float brightness) {
+        GlowDrawing.glowDisc(glow, pose, at, size * MeteorLineTuning.STAR_HALO_SCALE, accent,
+                brightness * MeteorLineTuning.STAR_HALO_BRIGHTNESS, 255);
+        GlowDrawing.glowDisc(glow, pose, at, size, starColor, brightness, 255);
+        GlowDrawing.glowDisc(glow, pose, at, size * 0.35F, 0xFFFFFF, brightness, 255);
     }
 }

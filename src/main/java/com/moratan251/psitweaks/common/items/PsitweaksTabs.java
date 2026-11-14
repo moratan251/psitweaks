@@ -132,6 +132,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get());
                         output.accept(PsitweaksBlocks.SPELLMACHINERY_CASING.get());
                         output.accept(PsitweaksBlocks.PSYCHEONIC_METAL_CRUX_ITEM.get());
+                        output.accept(PsitweaksItems.SPELLGRAM_INTEGRITY_DEBUGGER.get());
                     })
                     .build()
     );

@@ -38,7 +38,8 @@ public final class Psi110CompatibilityGameTests {
                         .orElseThrow().key().location().equals(id), "Wrong group for " + member);
             }
         }
-        int expected = 88 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
+        // 2026-11-14: サイ・ブリットと術式解体で 2 つ増えた。
+        int expected = 90 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
         helper.assertTrue(count == expected, "Expected " + expected + " groups, got " + count);
         helper.succeed();
     }

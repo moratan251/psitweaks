@@ -50,6 +50,10 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
                 damageType("psitweaks.burst", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.AIR_BULLET.location(),
                 damageType("psitweaks.air_bullet", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.PSI_BULLET.location(),
+                damageType("psitweaks.psi_bullet", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.GRAM_DEMOLITION.location(),
+                damageType("psitweaks.gram_demolition", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.DANCING_BLADES.location(),
                 damageType("psitweaks.dancing_blades", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.STARFALL.location(),

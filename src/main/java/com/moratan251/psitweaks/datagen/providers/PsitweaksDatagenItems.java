@@ -108,6 +108,7 @@ final class PsitweaksDatagenItems {
             activeItem("blade_pouch", "Blade Pouch", "ブレードポーチ", "blade_pouch_idle", "blade_pouch"),
             item("interference_range_extender", "Interference Range Extender", "干渉距離延長デバイス"),
             item("third_eye_device", "Third-Eye Device", "サードアイデバイス"),
+            item("spellgram_integrity_debugger", "SpellGram Integrity Debugger", "魔法式耐久値デバッガー"),
             item("sorcery_booster", "Sorcery Booster", "ソーサリーブースター"),
             item("moval_suit_helmet", "M.O.V.A.L. Suit Helmet", "M.O.V.A.L. スーツヘルメット"),
             item("moval_suit_chestplate", "M.O.V.A.L. Suit Chestplate", "M.O.V.A.L. スーツチェストプレート"),

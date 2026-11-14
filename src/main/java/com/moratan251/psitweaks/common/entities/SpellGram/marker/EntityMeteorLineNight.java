@@ -9,7 +9,6 @@ import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import com.moratan251.psitweaks.common.spells.combat.MeteorLineTuning;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -40,7 +39,8 @@ import java.util.UUID;
  * <p>
  * 光条は斉射ごとに、夜の中にいる攻撃対象の生物（{@link AttackRules#canHarm}）それぞれへ最低1本を、その tick の体の中心へ
  * 向けて通し、残りを夜の中の地面へ降らせる。狙いと線の端点はサーバーで決め、光条のエンティティで送る。
- * 強度が尽きると夜がつぶれ、まだ降っていない光条も、残っている光条も消える。
+ * 強度が尽きると夜がつぶれ、まだ降っていない光条も、残っている光条も消える。そのときはガラスが割れる音とともに、闇の球が
+ * 破片になって砕け散る（{@code MessageMeteorNightShatter}、2026-11-14 ユーザー）。
  */
 public class EntityMeteorLineNight extends SpellGramMarker {
     /** 狙う相手ごとに、星をいくつ比べて一番まっすぐ降らせられるものを選ぶか。 */
@@ -92,13 +92,12 @@ public class EntityMeteorLineNight extends SpellGramMarker {
     }
 
     /**
-     * 置く前に呼ぶ。耐久値は時間で減る分（{@link MeteorLineTuning#BASE_INTEGRITY}、{@link SpellGramIntegrity#initial}）の
-     * 5 倍（{@link MeteorLineTuning#INTEGRITY_TIME_SHARE}）、色は術者の CAD の色。
+     * 置く前に呼ぶ。耐久値は {@link MeteorLineTuning#BASE_INTEGRITY}（{@link SpellGramIntegrity#initial}）で、時間では減らない
+     * （2026-11-14 ユーザー）。色は術者の CAD の色。
      */
     public void configure(LivingEntity caster, AttackRules.Options options) {
-        configureMarker(caster, options, SpellGramIntegrity.initial(
-                MeteorLineTuning.BASE_INTEGRITY / MeteorLineTuning.INTEGRITY_TIME_SHARE, caster, 1.0D));
-        setTimeShare(MeteorLineTuning.INTEGRITY_TIME_SHARE);
+        configureMarker(caster, options, SpellGramIntegrity.initial(MeteorLineTuning.BASE_INTEGRITY, caster, 1.0D));
+        setTimeShare(0.0F);
         entityData.set(COLOR, CombatSpellHelper.spellColor(caster) & 0xFFFFFF);
     }
 
@@ -169,7 +168,13 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         return getCenter().add(star.offset());
     }
 
-    private static Star[] makeStars(long seed, double radius) {
+    /** 星の並びの種（砕け散る演出で、夜が消えたあとも同じ星を描くため）。 */
+    public long getStarSeed() {
+        return entityData.get(SEED);
+    }
+
+    /** 種と半径から星の並びを作る（{@link #getStars} と同じ。エンティティがなくても描けるように）。 */
+    public static Star[] makeStars(long seed, double radius) {
         RandomSource random = RandomSource.create(seed);
         int count = MeteorLineTuning.stars(radius);
         double minSin = Math.sin(Math.toRadians(MeteorLineTuning.STAR_MIN_ELEVATION));
@@ -377,11 +382,13 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         }
         beams.clear();
         if (reason == EndReason.DESTROYED && level() instanceof ServerLevel level) {
+            // 耐久値が尽きた: ガラスが割れる音とともに、闇の球が破片になって砕け散る（2026-11-14 ユーザー）。
             Vec3 center = getCenter();
-            CombatEffects.sound(level, center, MeteorLineTuning.COLLAPSE_SOUND, 1.2F, 0.6F);
-            double spread = getRadius() * 0.4;
-            level.sendParticles(ParticleTypes.END_ROD, center.x, center.y + getRadius() * 0.5, center.z, 40, spread, spread * 0.5,
-                    spread, 0.05);
+            CombatEffects.sound(level, center, MeteorLineTuning.SHATTER_SOUND, MeteorLineTuning.SHATTER_VOLUME,
+                    MeteorLineTuning.SHATTER_LOW_PITCH);
+            CombatEffects.sound(level, center, MeteorLineTuning.SHATTER_SOUND, MeteorLineTuning.SHATTER_VOLUME,
+                    MeteorLineTuning.SHATTER_HIGH_PITCH);
+            CombatEffects.meteorNightShatter(level, this);
         }
     }
 }

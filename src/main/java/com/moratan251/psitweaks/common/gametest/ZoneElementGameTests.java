@@ -9,6 +9,9 @@ import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityFreezeZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityHeatZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.InfernoZones;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
@@ -863,6 +866,186 @@ public final class ZoneElementGameTests {
                 "The Gravity Zone's Sable hooks must resolve on this Sable version");
         helper.assertTrue(pushed == 0, "Nothing may be pushed where there is no contraption, pushed " + pushed);
         helper.succeed();
+    }
+
+    /**
+     * 他人どうしの奪い合い（2026-11-14 ユーザー、案 2）: 種類を問わず、重なったところでは事象干渉力の高い側の領域だけが効く。
+     * 他人の加熱と凍結は打ち消し合わず、奪い合いで決まる。重ならないところはそれぞれ効く。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contest", timeoutTicks = 40)
+    public static void othersZonesContestByInterference(GameTestHelper helper) {
+        ServerPlayer low = GameTestPlayers.inLevel(helper, "zone_contest_low", new Vec3(0.5, 1.0, 0.5));
+        ServerPlayer high = GameTestPlayers.inLevel(helper, "zone_contest_high", new Vec3(4.5, 1.0, 4.5));
+        Runnable cleanup = () -> {
+            cleanup(helper, low);
+            cleanup(helper, high);
+        };
+        try {
+            low.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            high.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(3.0D);
+            // 低い側の湿潤（x 0〜4）を先に置き、高い側の加熱（x 4〜6）を重ねる。重なりは x 4。
+            cast(low, soak(helper, CENTER), 5.0, 0.0);
+            cast(high, heat(helper, new BlockPos(5, 1, 2)), 3.0, 5.0);
+            SpellGramZone soak = only(helper, low, EntitySoakZone.class);
+            SpellGramZone heat = only(helper, high, EntityHeatZone.class);
+            BlockPos overlap = helper.absolutePos(new BlockPos(4, 1, 2));
+            helper.assertTrue(heat.isInsideAndActive(overlap) && !soak.isInsideAndActive(overlap),
+                    "Where others' zones overlap, only the higher interference side may work, whatever the kinds");
+            helper.assertTrue(soak.isInsideAndActive(helper.absolutePos(new BlockPos(1, 1, 2)))
+                            && heat.isInsideAndActive(helper.absolutePos(new BlockPos(6, 1, 2))),
+                    "Outside the overlap, both zones still work");
+
+            // 低い側の凍結を高い側の加熱に重ねても打ち消し合わず、高い側の加熱が効く。
+            cast(low, freeze(helper, new BlockPos(5, 1, 2)), 3.0, 5.0);
+            SpellGramZone freeze = only(helper, low, EntityFreezeZone.class);
+            BlockPos inHeat = helper.absolutePos(new BlockPos(5, 1, 2));
+            helper.assertTrue(heat.isInsideAndActive(inHeat) && !freeze.isInsideAndActive(inHeat),
+                    "Others' heat and freeze must not cancel out; the higher interference must win");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /** 他人どうしで事象干渉力が同じなら、先に置いた側の領域が重なったところで効く。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contest_equal", timeoutTicks = 40)
+    public static void equalInterferenceKeepsTheEarlierZone(GameTestHelper helper) {
+        ServerPlayer first = GameTestPlayers.inLevel(helper, "zone_contest_first", new Vec3(0.5, 1.0, 0.5));
+        ServerPlayer second = GameTestPlayers.inLevel(helper, "zone_contest_second", new Vec3(4.5, 1.0, 4.5));
+        Runnable cleanup = () -> {
+            cleanup(helper, first);
+            cleanup(helper, second);
+        };
+        try {
+            first.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            second.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            cast(first, soak(helper, CENTER), 5.0, 0.0);
+            cast(second, heat(helper, new BlockPos(5, 1, 2)), 3.0, 10.0);
+            SpellGramZone earlier = only(helper, first, EntitySoakZone.class);
+            SpellGramZone later = only(helper, second, EntityHeatZone.class);
+            BlockPos overlap = helper.absolutePos(new BlockPos(4, 1, 2));
+            helper.assertTrue(earlier.isInsideAndActive(overlap) && !later.isInsideAndActive(overlap),
+                    "With equal interference, the zone placed first must keep the overlap, however strong the later one is");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /**
+     * 領域干渉の威力は奪い合いの事象干渉力に 威力 × 5% を上乗せし、勝てば重なったところでは持ち主の側の領域（ほかの種類も）が
+     * 効く。干渉力 2・威力 10 の領域干渉（3.0）は、干渉力 2.8 の他人に勝つ。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contest_bonus", timeoutTicks = 40)
+    public static void interferenceZonePowerWinsTheContestForItsOwner(GameTestHelper helper) {
+        ServerPlayer owner = GameTestPlayers.inLevel(helper, "zone_contest_bonus_owner", new Vec3(0.5, 1.0, 0.5));
+        ServerPlayer rival = GameTestPlayers.inLevel(helper, "zone_contest_bonus_rival", new Vec3(4.5, 1.0, 4.5));
+        Runnable cleanup = () -> {
+            cleanup(helper, owner);
+            cleanup(helper, rival);
+        };
+        try {
+            owner.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            rival.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.8D);
+            cast(rival, soak(helper, CENTER), 5.0, 0.0);
+            cast(owner, soak(helper, new BlockPos(5, 1, 2)), 3.0, 0.0);
+            SpellGramZone rivalSoak = only(helper, rival, EntitySoakZone.class);
+            SpellGramZone ownerSoak = only(helper, owner, EntitySoakZone.class);
+            BlockPos overlap = helper.absolutePos(new BlockPos(4, 1, 2));
+            helper.assertTrue(rivalSoak.isInsideAndActive(overlap) && !ownerSoak.isInsideAndActive(overlap),
+                    "Precondition: the rival with higher interference holds the overlap");
+
+            cast(owner, interference(helper, new BlockPos(5, 1, 2)), 3.0, 10.0);
+            EntityInterferenceZone zone = only(helper, owner, EntityInterferenceZone.class);
+            helper.assertTrue(Math.abs(zone.contestInterference() - 3.0) < 1.0E-9,
+                    "Power 10 must add 50% to the interference in contests, got " + zone.contestInterference());
+            helper.assertTrue(ownerSoak.isInsideAndActive(overlap) && !rivalSoak.isInsideAndActive(overlap),
+                    "With the Interference Zone's bonus, the owner's zones must take the overlap");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /** 領域干渉の範囲では、術者以外のエンダー系のテレポートが、中から外へも外から中へも止まる。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_interference_teleport", timeoutTicks = 40)
+    public static void interferenceZoneStopsEnderTeleportsOfOthers(GameTestHelper helper) {
+        ServerPlayer owner = GameTestPlayers.inLevel(helper, "zone_teleport_owner", new Vec3(2.5, 1.0, 2.5));
+        ServerPlayer stranger = GameTestPlayers.inLevel(helper, "zone_teleport_stranger", new Vec3(2.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            cleanup(helper, owner);
+            cleanup(helper, stranger);
+        };
+        try {
+            cast(owner, interference(helper, CENTER), 5.0, 0.0);
+            var level = helper.getLevel();
+            Vec3 inside = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+            Vec3 outside = helper.absoluteVec(new Vec3(12.5, 1.0, 2.5));
+            Vec3 farther = helper.absoluteVec(new Vec3(14.5, 1.0, 2.5));
+            var enderman = helper.spawnWithNoFreeWill(EntityType.ENDERMAN, new Vec3(2.5, 1.0, 3.5));
+            helper.assertTrue(EntityInterferenceZone.blocksTeleport(level, enderman, inside, outside),
+                    "An Enderman must not teleport out of the zone");
+            helper.assertTrue(EntityInterferenceZone.blocksTeleport(level, enderman, outside, inside),
+                    "An Enderman must not teleport into the zone");
+            helper.assertFalse(EntityInterferenceZone.blocksTeleport(level, enderman, outside, farther),
+                    "Teleports that never touch the zone must work");
+            helper.assertTrue(EntityInterferenceZone.blocksTeleport(level, stranger, inside, outside),
+                    "Another player's Ender Pearl must not leave the zone");
+            helper.assertFalse(EntityInterferenceZone.blocksTeleport(level, owner, inside, outside),
+                    "The caster's own teleports must work");
+
+            var event = new net.neoforged.neoforge.event.entity.EntityTeleportEvent.EnderEntity(enderman, outside.x, outside.y, outside.z);
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(event);
+            helper.assertTrue(event.isCanceled(), "The Enderman's teleport event must be cancelled");
+            enderman.discard();
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /**
+     * 領域干渉の規模とコスト（2026-11-14 ユーザー、仮）: 規模 = 10 + 広さ / 5 ×（1 + 威力 / 10）、コスト = 50 + 広さ × 2 ×
+     * （1 + 威力 / 10）。威力を省けば今までと同じ。サイズ 5（広さ 25）で、威力なし 15・100、威力 10 で 20・150。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void interferenceZoneCostGrowsWithPower(GameTestHelper helper) throws Exception {
+        int[] none = interferenceStats(null);
+        int[] full = interferenceStats(10.0);
+        helper.assertTrue(none[0] == 15 && none[1] == 100, "Without a Power: Potency 15, Cost 100, got " + none[0] + ", " + none[1]);
+        helper.assertTrue(full[0] == 20 && full[1] == 150, "At Power 10: Potency 20, Cost 150, got " + full[0] + ", " + full[1]);
+        helper.succeed();
+    }
+
+    /** サイズ 5・威力 {@code power}（null なら省く）の領域干渉の {規模, コスト}。 */
+    private static int[] interferenceStats(Double power) throws Exception {
+        var piece = new com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickInterferenceZone(new Spell()) {
+            @Override
+            @SuppressWarnings("unchecked")
+            public <T> T getParamEvaluation(SpellParam<?> param) {
+                if (param.name.equals(PsitweaksSpellParams.SIZE)) {
+                    return (T) Double.valueOf(5.0);
+                }
+                return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? (T) power : null;
+            }
+        };
+        var meta = new vazkii.psi.api.spell.SpellMetadata();
+        piece.addToMetadata(meta);
+        return new int[]{meta.getStat(vazkii.psi.api.spell.EnumSpellStat.POTENCY), meta.getStat(vazkii.psi.api.spell.EnumSpellStat.COST)};
+    }
+
+    /** {@code caster} が置いた {@code type} の領域（1 つだけのはず）。 */
+    private static <T extends SpellGramZone> T only(GameTestHelper helper, ServerPlayer caster, Class<T> type) {
+        return SpellGramIndex.ofCaster(helper.getLevel(), caster.getUUID()).stream()
+                .filter(type::isInstance).map(type::cast).findFirst().orElseThrow();
     }
 
     private static PieceTrickZoneBase<?> heat(GameTestHelper helper, BlockPos relativeCenter) {

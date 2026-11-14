@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.network.MessageLightningArcs;
+import com.moratan251.psitweaks.common.network.MessageMeteorNightShatter;
 import com.moratan251.psitweaks.common.network.MessageSphereFlash;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,16 +28,19 @@ import org.joml.Matrix4f;
 
 /**
  * Client side of the combat spell effects that are not entities: sphere flashes (barrier honeycomb, shock spheres),
- * chain lightning arcs, camera shake, the barrier HUD bar and the darkened view inside a Meteor Line night.
+ * chain lightning arcs, the shattering of a Meteor Line night, camera shake, the barrier HUD bar and the darkened
+ * view inside a Meteor Line night.
  */
 public final class CombatEffectsClient {
     private static final int MAX_FLASHES = 64;
     private static final int MAX_ARCS = 32;
+    private static final int MAX_SHATTERS = 8;
     private static final double RUMBLE_SEARCH = 24.0;
     private static final double SHOCKWAVE_RUMBLE_RANGE = 10.0;
 
     private static final List<SphereFlashEffect> FLASHES = new ArrayList<>();
     private static final List<LightningArcEffect> ARCS = new ArrayList<>();
+    private static final List<MeteorNightShatterEffect> SHATTERS = new ArrayList<>();
 
     private CombatEffectsClient() {
     }
@@ -75,6 +79,14 @@ public final class CombatEffectsClient {
         ARCS.add(new LightningArcEffect(message));
     }
 
+    /** The night of Trick: Meteor Line ran out of integrity: its dark sphere shatters. */
+    public static void handleMeteorNightShatter(MessageMeteorNightShatter message) {
+        if (SHATTERS.size() >= MAX_SHATTERS) {
+            SHATTERS.remove(0);
+        }
+        SHATTERS.add(new MeteorNightShatterEffect(message));
+    }
+
     private static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, Psitweaks.location("barrier_shield"), BarrierHudLayer::render);
     }
@@ -99,6 +111,7 @@ public final class CombatEffectsClient {
             MeteorLineNightView.tick(level, camera);
         }
         FLASHES.removeIf(flash -> !flash.tick());
+        SHATTERS.removeIf(shatter -> !shatter.tick());
         for (Iterator<LightningArcEffect> iterator = ARCS.iterator(); iterator.hasNext(); ) {
             if (!iterator.next().tick(level)) {
                 iterator.remove();
@@ -133,7 +146,7 @@ public final class CombatEffectsClient {
     }
 
     private static void onRenderLevelStage(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES || (FLASHES.isEmpty() && ARCS.isEmpty())) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES || (FLASHES.isEmpty() && ARCS.isEmpty() && SHATTERS.isEmpty())) {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
@@ -152,6 +165,9 @@ public final class CombatEffectsClient {
         for (LightningArcEffect arc : ARCS) {
             arc.render(buffers, pose, camera, partialTick);
         }
+        for (MeteorNightShatterEffect shatter : SHATTERS) {
+            shatter.render(buffers, pose, camera, partialTick);
+        }
         buffers.endBatch(PsitweaksRenderTypes.TRANSLUCENT_COLOR);
         buffers.endBatch(PsitweaksRenderTypes.ADDITIVE_COLOR);
     }
@@ -163,6 +179,7 @@ public final class CombatEffectsClient {
     private static void clear() {
         FLASHES.clear();
         ARCS.clear();
+        SHATTERS.clear();
         CameraShake.clear();
         MeteorLineNightView.clear();
     }

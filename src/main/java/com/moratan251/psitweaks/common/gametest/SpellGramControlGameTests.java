@@ -417,6 +417,64 @@ public final class SpellGramControlGameTests {
         helper.succeed();
     }
 
+    /**
+     * デバッグ用の魔法式耐久値デバッガー（2026-11-14 ユーザー）: 見ている魔法式オブジェクト（自分のものも）の耐久値を量だけ減らす。
+     * 既定は 10、しゃがんで使うと次の量（25）に、名前を数にするとその量。耐久値が尽きれば壊れる。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_debugger", timeoutTicks = 40)
+    public static void integrityDebuggerReducesTheAimedObject(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "spellgram_debugger_caster", new Vec3(1.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            // 「時間」を最大の 120 秒にして、10 + 25 + 7 を減らしても残る耐久値にする（30 秒だと 30 しかない）。
+            SpellGramObject zone = placeSoak(caster, 3.0, 120.0);
+            Vec3 spot = helper.absoluteVec(new Vec3(4.5, 1.0, 4.5));
+            caster.moveTo(spot.x, spot.y, spot.z);
+            caster.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, zone.position());
+            helper.assertTrue(com.moratan251.psitweaks.common.entities.SpellGram.SpellGramAim.aimedAt(level, caster, 1.0F) == zone,
+                    "The player must be aiming at the zone's core");
+            var stack = new net.minecraft.world.item.ItemStack(
+                    com.moratan251.psitweaks.common.items.PsitweaksItems.SPELLGRAM_INTEGRITY_DEBUGGER.get());
+            caster.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, stack);
+            float start = zone.getIntegrity();
+            useDebugger(caster, level);
+            helper.assertTrue(Math.abs(zone.getIntegrity() - (start - 10.0F)) < 1.0E-3F,
+                    "The default amount must remove 10 from the caster's own zone: " + start + " -> " + zone.getIntegrity());
+
+            caster.setShiftKeyDown(true);
+            useDebugger(caster, level);
+            caster.setShiftKeyDown(false);
+            float before = zone.getIntegrity();
+            helper.assertTrue(Math.abs(before - (start - 10.0F)) < 1.0E-3F, "Changing the amount must not touch the zone");
+            useDebugger(caster, level);
+            helper.assertTrue(Math.abs(zone.getIntegrity() - (before - 25.0F)) < 1.0E-3F,
+                    "Sneak-using must move to the next amount (25), integrity " + before + " -> " + zone.getIntegrity());
+
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("7"));
+            before = zone.getIntegrity();
+            useDebugger(caster, level);
+            helper.assertTrue(Math.abs(zone.getIntegrity() - (before - 7.0F)) < 1.0E-3F,
+                    "A number as the name must be the amount, integrity " + before + " -> " + zone.getIntegrity());
+
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("100000"));
+            useDebugger(caster, level);
+            helper.assertTrue(zone.isEnded(), "Removing more than is left must break the zone");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    private static void useDebugger(ServerPlayer player, ServerLevel level) {
+        player.getMainHandItem().getItem().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
+    }
+
     private static double readIntegrity(ServerPlayer caster, Entity target) throws SpellRuntimeException {
         var piece = new com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrity(new Spell()) {
             @Override

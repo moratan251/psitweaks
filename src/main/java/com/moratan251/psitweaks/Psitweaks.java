@@ -42,6 +42,7 @@ import com.moratan251.psitweaks.client.renderer.combat.MicroBlackHoleRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.ParadeDecoyRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.GroundShockwaveRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.AirBulletRenderer;
+import com.moratan251.psitweaks.client.renderer.combat.PsiBulletRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.MeteorLineBeamRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.MeteorLineNightRenderer;
 import com.moratan251.psitweaks.client.renderer.combat.StarfallMeteorRenderer;
@@ -212,6 +213,7 @@ public class Psitweaks {
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onBlockDrops);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, MassBlockBreakDropHandler::onEntityJoinLevel);
+        NeoForge.EVENT_BUS.addListener(com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone::onEntityTeleport);
         PsiEvents.register(PreSpellCastEvent.class, SafetySpellCastHandler::onPreSpellCast);
         PsiEvents.register(PreSpellCastEvent.class, SpellPsiRefundCaptureHandler::onPreSpellCast);
         PsiEvents.register(PreSpellCastEvent.class, FlightPsiCostCaptureHandler::onPreSpellCast);
@@ -394,6 +396,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.PSI_BULLET.get(), PsiBulletRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.DANCING_BLADE.get(), DancingBladeRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.PARADE_DECOY.get(), ParadeDecoyRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.STARFALL_METEOR.get(), StarfallMeteorRenderer::new);

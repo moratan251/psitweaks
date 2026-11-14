@@ -22,6 +22,10 @@ public final class PsitweaksDamageTypes {
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("burst"));
     public static final ResourceKey<DamageType> AIR_BULLET =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("air_bullet"));
+    public static final ResourceKey<DamageType> PSI_BULLET =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("psi_bullet"));
+    public static final ResourceKey<DamageType> GRAM_DEMOLITION =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("gram_demolition"));
     public static final ResourceKey<DamageType> DANCING_BLADES =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("dancing_blades"));
     public static final ResourceKey<DamageType> STARFALL =

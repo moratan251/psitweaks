@@ -375,6 +375,11 @@ public final class PsitweaksItems {
             "third_eye_device",
             () -> new ItemThirdEyeDevice(new Item.Properties())
     );
+    /** デバッグ用: 見ている魔法式オブジェクトの耐久値を減らす（2026-11-14 ユーザー）。レシピはなく、クリエイティブのタブから取る。 */
+    public static final DeferredItem<ItemSpellGramIntegrityDebugger> SPELLGRAM_INTEGRITY_DEBUGGER = ITEMS.register(
+            "spellgram_integrity_debugger",
+            () -> new ItemSpellGramIntegrityDebugger(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC))
+    );
     public static final DeferredItem<ItemSorceryBooster> SORCERY_BOOSTER = ITEMS.register(
             "sorcery_booster",
             () -> new ItemSorceryBooster(new Item.Properties())

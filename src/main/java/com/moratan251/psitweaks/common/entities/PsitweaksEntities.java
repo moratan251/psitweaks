@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
+import com.moratan251.psitweaks.common.entities.combat.EntityPsiBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
@@ -223,6 +224,16 @@ public class PsitweaksEntities {
                             .fireImmune()
                             .noSave()
                             .build(Psitweaks.MOD_ID + ":air_bullet"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityPsiBullet>> PSI_BULLET =
+            ENTITY_TYPES.register("psi_bullet",
+                    () -> EntityType.Builder.<EntityPsiBullet>of(EntityPsiBullet::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(8)
+                            .updateInterval(1)
+                            .fireImmune()
+                            .noSave()
+                            .build(Psitweaks.MOD_ID + ":psi_bullet"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityDancingBlade>> DANCING_BLADE =
             ENTITY_TYPES.register("dancing_blade",

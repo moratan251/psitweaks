@@ -78,6 +78,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "空気弾";
             default -> "Air Bullet";
         });
+        root.addProperty("entity.psitweaks.psi_bullet", switch (locale) {
+            case "ja_jp" -> "想子弾";
+            default -> "Psi Bullet";
+        });
         root.addProperty("entity.psitweaks.dancing_blade", switch (locale) {
             case "ja_jp" -> "舞う刃";
             default -> "Dancing Blade";
@@ -131,8 +135,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Silence Zone";
         });
         root.addProperty("entity.psitweaks.meteor_line_night", switch (locale) {
-            case "ja_jp" -> "流星群の夜";
-            default -> "Meteor Line Night";
+            case "ja_jp" -> "流星群";
+            default -> "Meteor Line";
         });
         root.addProperty("entity.psitweaks.micro_black_hole", switch (locale) {
             case "ja_jp" -> "マイクロブラックホール";
@@ -699,6 +703,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
         addDamageMultiplierConfig(root, "burst", "Burst", "爆裂");
         addDamageMultiplierConfig(root, "air_bullet", "Air Bullet", "エア・ブリット");
+        addDamageMultiplierConfig(root, "psi_bullet", "Psi Bullet", "サイ・ブリット");
+        addDamageMultiplierConfig(root, "gram_demolition", "Gram Demolition", "術式解体");
         addDamageMultiplierConfig(root, "dancing_blades", "Dancing Blades", "ダンシングブレイズ");
         addDamageMultiplierConfig(root, "starfall", "Starfall", "スターフォール");
         addDamageMultiplierConfig(root, "micro_black_hole", "Micro Black Hole", "マイクロブラックホール");
@@ -881,6 +887,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.air_bullet.item", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sが%3$sで放ったエア・ブリットに撃ち抜かれた";
             default -> "%1$s was shot through by Air Bullet cast by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.psi_bullet", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのサイ・ブリットに撃ち抜かれた";
+            default -> "%1$s was shot by %2$s's Psi Bullet";
+        });
+        root.addProperty("death.attack.psitweaks.psi_bullet.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sのサイ・ブリットに撃ち抜かれた";
+            default -> "%1$s was shot by %2$s's Psi Bullet";
+        });
+        root.addProperty("death.attack.psitweaks.psi_bullet.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放ったサイ・ブリットに撃ち抜かれた";
+            default -> "%1$s was shot by Psi Bullet cast by %2$s using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.gram_demolition", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの術式解体に巻き込まれた";
+            default -> "%1$s was caught in %2$s's Gram Demolition";
+        });
+        root.addProperty("death.attack.psitweaks.gram_demolition.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの術式解体に巻き込まれた";
+            default -> "%1$s was caught in %2$s's Gram Demolition";
+        });
+        root.addProperty("death.attack.psitweaks.gram_demolition.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで放った術式解体に巻き込まれた";
+            default -> "%1$s was caught in Gram Demolition cast by %2$s using %3$s";
         });
         root.addProperty("death.attack.psitweaks.dancing_blades", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sの舞う刃に斬り伏せられた";
@@ -1092,7 +1122,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available."},
             {"psi.book.page.psitweaks_spell_bullets.1", "Upgrading a spell bullet requires four bullets from the previous tier, making it very expensive."},
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams and the cores of Meteor Line nights) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
             {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam, so it keeps burning and stays dry."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick."},
@@ -1203,7 +1233,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています."},
             {"psi.book.page.psitweaks_spell_bullets.1", "術式弾の強化は前段階の術式弾を4つ必要とするため、非常に高コストです."},
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し、強力な魔法を簡単に発動できるようになります."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式と流星群の夜の核）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式、流星群の夜の核、マイクロブラックホール）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_aqua_cutter", "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火は消えず, 濡れもしません."},
             {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です."},
@@ -1818,6 +1848,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Discharges lightning from the focal point in the direction; it strikes the nearest hostile creature and branches to nearby ones", "作動式: 連鎖電光", "焦点から方向へ雷撃を放ち、最も近い敵対的な生物に当てて近くの敵対的な生物へ枝分かれさせる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
         addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the creature you are aiming at so it bursts from within", "作動式: 爆裂", "照準を合わせた生物の体内の液体を気化させ、内側から破裂させる");
+        addSpellPiece(root, "trick_psi_bullet", "Trick: Psi Bullet",
+                "Fires a bullet of psions that strikes the first creature or SpellGram object it hits",
+                "作動式: サイ・ブリット", "想子の弾を撃ち出し、最初に当たった生物か魔法式オブジェクトに当てる");
+        addSpellPiece(root, "trick_gram_demolition", "Trick: Gram Demolition",
+                "Blasts the SpellGram objects in front of you with psions, wearing their integrity away all at once",
+                "作動式: 術式解体", "前方の魔法式オブジェクトに想子をぶつけ、耐久値をまとめて削る");
         addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
@@ -1964,6 +2000,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
      */
     private void addZoneMagicBook(JsonObject root) {
         addLocalized(root, "psi.book.entry.psitweaks_zone_magic", "Zone Magic", "領域魔法");
+        // デバッグ用: 魔法式耐久値デバッガー（2026-11-14 ユーザー）。
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.amount", "Amount to remove: %s", "減らす量: %s");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.no_target", "No SpellGram object in sight", "魔法式オブジェクトを見ていません");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.reduced", "Removed %2$s integrity from %1$s (%3$s left)",
+                "%1$s の耐久値を %2$s 減らしました（残り %3$s）");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.destroyed", "Removed %2$s integrity from %1$s; it broke",
+                "%1$s の耐久値を %2$s 減らし、壊しました");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.amount", "Amount: %s", "減らす量: %s");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.use",
+                "Right-click: remove integrity from the SpellGram object you look at (yours too)",
+                "右クリック: 見ている魔法式オブジェクト（自分のものも）の耐久値を減らす");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.cycle", "Sneak + right-click: change the amount",
+                "しゃがんで右クリック: 量を切り替える");
+        addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.rename", "Rename it to a number in an anvil to use that amount",
+                "金床で名前を数にすると、その量を使う");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.0",
                 "Zone Magic places Resident SpellGrams that keep working insi"
                         + "de an area: Trick: Soak Zone, Gravity Zone, Heat Zone, Freez"
@@ -2023,28 +2074,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "で、超えると古いものから消えます。この数は設定で変えられます。術者がログアウトしたり別のディメンションへ移ったりしたとき"
                         + "も、領域は消えます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.5",
-                "Overlapping zones of the same kind do not add up: where they"
-                        + " overlap, only the strongest one works (the highest Power, t"
-                        + "hen the higher interference, then the older one), whoever ca"
-                        + "st them. Only Gravity Zones add their pushes together, up to"
-                        + " Power 10.$(p)A zone cannot be centered inside another caste"
-                        + "r's Trick: Interference Zone placed with higher interference"
-                        + ", and does not work where it overlaps one.",
-                "同じ種類の領域を重ねても、効き目は足し算になりません。重なったところでは一番強いもの（威力が高いもの、並べば事象干渉力が"
-                        + "高いもの、それも並べば古いもの）だけが効きます。誰が置いた領域かは問いません。加重領域だけは押す向きを足し合わせ、威力1"
-                        + "0で頭打ちです。$(p)自分より事象干渉力の高い他者の作動式: 領域干渉の中には領域の中心を置けず、重なったところでは効"
-                        + "きません。");
+                "Your own zones of the same kind do not add up: where they ov"
+                        + "erlap, only the strongest one works (the highest Power, then"
+                        + " the higher interference, then the older one). Only Gravity "
+                        + "Zones add their pushes together, up to Power 10.$(p)Where an"
+                        + "other caster's zone overlaps, whatever the kinds, only the z"
+                        + "ones of the owner of the zone with the highest interference "
+                        + "when placed (the earliest one on a tie) work there. Trick: I"
+                        + "nterference Zone raises this interference with its Power.",
+                "自分の領域どうしでは、同じ種類を重ねても効き目は足し算になりません。重なったところでは一番強いもの（威力が高いもの、並べ"
+                        + "ば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。加重領域だけは押す向きを足し合わせ、威力10で頭打ちです。"
+                        + "$(p)他人の領域が重なったところでは、種類を問わず、置いた時点の事象干渉力が一番高い領域（同じなら先に置いたもの）の持"
+                        + "ち主の領域だけが効きます。作動式: 領域干渉は、威力に応じてこの事象干渉力を上乗せします。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.6",
                 "Overlapping your own Turbulence Zone strengthens your other "
                         + "zones there: with a Heat Zone it becomes a Heat Storm, with "
                         + "a Freeze Zone a Blizzard, with a Soak Zone a Rainstorm, and "
                         + "with a Charged Zone a Thundercloud (see Trick: Turbulence Zo"
-                        + "ne).$(p)Where a Heat Zone and a Freeze Zone overlap, they ca"
-                        + "ncel each other out. Beings soaked by a Soak Zone do not bur"
-                        + "n, and freeze in half the time.",
+                        + "ne).$(p)Where your own Heat Zone and Freeze Zone overlap, th"
+                        + "ey cancel each other out. Beings soaked by a Soak Zone do no"
+                        + "t burn, and freeze in half the time.",
                 "自分の乱流領域に自分のほかの領域を重ねると、重なったところが強まります。加熱領域とは熱乱流、凍結領域とは吹雪、湿潤領域と"
-                        + "は暴風雨、荷電領域とは雷雲になります。詳しくは作動式: 乱流領域の項目にあります。$(p)加熱領域と凍結領域が重なったと"
-                        + "ころでは、両方が打ち消し合ってどちらも効きません。湿潤領域で濡れた生物は燃えず、凍結領域では半分の時間で凍えきります。");
+                        + "は暴風雨、荷電領域とは雷雲になります。詳しくは作動式: 乱流領域の項目にあります。$(p)自分の加熱領域と凍結領域が重な"
+                        + "ったところでは、両方が打ち消し合ってどちらも効きません。湿潤領域で濡れた生物は燃えず、凍結領域では半分の時間で凍えきりま"
+                        + "す。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.7",
                 "Effects that run machines or process items of Create, Mekani"
                         + "sm and Applied Energistics 2 (bulk washing, bulk smoking, he"
@@ -2204,21 +2257,27 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Other casters whose interference is lower than yours when yo"
                         + "u placed it cannot target blocks, positions or entities insi"
                         + "de; their tricks fail as if out of range. Those standing ins"
-                        + "ide cannot even target themselves. Their zones cannot be pla"
-                        + "ced with the center inside, and zones they already placed st"
-                        + "op working where they overlap. See $(l:psitweaks/zone_magic)"
-                        + "Zone Magic$(/l) for what all zones share.",
+                        + "ide cannot even target themselves, and they cannot place a z"
+                        + "one centered inside. Casters with interference equal to or h"
+                        + "igher than yours are not stopped. See $(l:psitweaks/zone_mag"
+                        + "ic)Zone Magic$(/l) for what all zones share.",
                 "置いた時点の自分の事象干渉力より事象干渉力の低い他者は、範囲の中のブロック・位置・エンティティを対象にできず、作動式は射"
-                        + "程外と同じく失敗します。範囲の中にいる相手は自分自身を対象にすることもできません。相手の領域は中心を範囲の中に置けず、す"
-                        + "でに置かれている領域は重なった部分で効かなくなります。共通の決まりは$(l:psitweaks/zone_magic)領"
-                        + "域魔法$(/l)の項目にあります。");
+                        + "程外と同じく失敗します。範囲の中にいる相手は自分自身を対象にすることもできず、範囲の中に領域の中心を置くこともできません"
+                        + "。事象干渉力が同じか高い相手は止められません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$"
+                        + "(/l)の項目にあります。");
         addBookPage(root, "trick_interference_zone.1",
-                "Casters with interference equal to or higher than yours are "
-                        + "not stopped. Your own spells, and those of your Autonomous C"
-                        + "asters, are never stopped. It stops only Psi spells, not the"
-                        + " magic of other mods.",
-                "事象干渉力が同じか高い相手は止められません。自分と、自分の自律詠唱機の魔法は止まりません。止めるのは Psi の魔法だけ"
-                        + "で、ほかの mod の魔法は止めません。");
+                "Inside, ender teleports of anyone but the caster are stopped"
+                        + " (Endermen and Shulkers teleporting, Ender Pearls and Chorus"
+                        + " Fruit), both from inside to outside and from outside to ins"
+                        + "ide.$(p)The Power (an optional constant of at most 10) adds "
+                        + "5% per Power to the caster's interference when placed, in co"
+                        + "ntests with other casters' zones. Your own spells, and those"
+                        + " of your Autonomous Casters, are never stopped. It stops onl"
+                        + "y Psi spells, not the magic of other mods.",
+                "範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）が"
+                        + "止まります。範囲の中から外へも、外から中へも止まります。$(p)「威力」（省略できる最大10の定数）は、他人の領域との奪"
+                        + "い合いで、置いた時点の事象干渉力に威力×5%を上乗せします。自分と、自分の自律詠唱機の魔法は止まりません。止めるのは P"
+                        + "si の魔法だけで、ほかの mod の魔法は止めません。");
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",
@@ -2326,7 +2385,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.", "CADメモリに保存されたUUIDからエンティティを取得します. ");
         addBookPage(root, "trick_store_value", "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot. String values longer than 128 characters are truncated when stored, and a warning is shown in the caster's chat.", "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます. 128文字を超えるStringは保存時に切り捨てられ, 術者のチャット欄に警告が表示されます.");
         addBookPage(root, "selector_stored_value", "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.", "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.");
-        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams and the cores of Meteor Line nights) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式と流星群の夜の核）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
+        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式、流星群の夜の核、マイクロブラックホール）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
         addBookPage(root, "selector_autonomous_caster_position",
                 "Outputs the center of the $(thing)Autonomous Caster$(0) block casting the spell, as a Vector. "
                         + "The Autonomous Caster's caster is in front of the machine, so the position of $(thing)Selector: Caster$(0) is the block in front. It fails when cast from anything but an Autonomous Caster.",
@@ -2347,8 +2406,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Spreads a sphere of night around the position, with a radius of $(thing)Radius$(0) blocks (16 to 32, 16 if left out). Stars light up in its upper half, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
                 "指定位置を中心に、$(thing)半径$(0) ブロック (16〜32、省略時は16) の球の夜を広げます. 夜の上半分に星が灯り、1秒後から1秒間、星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい、残りは地面に落ちます.");
         addBookPage(root, "trick_meteor_line.1",
-                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object whose core sits at the top of the sphere: if its integrity runs out, it collapses and its streaks vanish with it.",
-                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、核は球のてっぺんにあります. 強度が尽きるとつぶれ、光条も一緒に消えます.");
+                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object whose core sits at the top of the sphere. Its integrity does not wear away over time; if it runs out, the night shatters and its streaks vanish with it.",
+                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き、触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット、味方には当たりません. 夜は魔法式オブジェクトで、核は球のてっぺんにあります. 耐久値は時間では減りません. 耐久値が尽きると夜は砕け散り、光条も一緒に消えます.");
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
         addBookPage(root, "trick_aqua_cutter",
@@ -2394,6 +2453,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_burst.1",
                 "If the target dies from it, its body bursts and hits nearby hostile creatures for up to 40%% of the damage.",
                 "この術式で対象が倒れると体が破裂し、付近の敵対的な生物に最大でダメージの40%%を与えます.");
+        addBookPage(root, "trick_psi_bullet",
+                "Fires a bullet of psions from the position in the direction. The bullet's range is 24 blocks, and it stops at the first creature, SpellGram object or block it hits.$(br)"
+                        + "A creature it hits takes $(thing)2 + Power$(0) damage. When it hits the core of a SpellGram object, it removes $(thing)8 + 2 × Power$(0) times the caster's Phenomenon Interference from that object's integrity. It flies through the caster's own SpellGram objects.",
+                "指定位置から方向へ想子の弾を撃ち出します. 弾丸の射程は24ブロックで, 最初に当たった生物, 魔法式オブジェクト, ブロックで消えます.$(br)"
+                        + "生物には $(thing)2 + 威力$(0) のダメージを与えます. 魔法式オブジェクトの核に当たると, その耐久値を $(thing)8 + 2×威力$(0) に術者の事象干渉力を掛けた分だけ減らします. 術者自身の魔法式オブジェクトはすり抜けます.");
+        addBookPage(root, "trick_gram_demolition",
+                "Takes no input. Blasts every SpellGram object whose core is within 16 blocks in front of the caster, inside a cone of 30 degrees around the line of sight, and removes $(thing)300$(0) times the caster's Phenomenon Interference from each one's integrity. Blocks do not stop it.$(br)"
+                        + "Creatures in the same range take $(thing)6$(0) damage. The caster's own SpellGram objects are left alone.",
+                "入力はありません. 術者の視線の先16ブロック以内で, 視線から30度の円錐の中に核がある魔法式オブジェクトすべての耐久値を, $(thing)300$(0) に術者の事象干渉力を掛けた分だけ減らします. ブロックは貫通します.$(br)"
+                        + "同じ範囲の生物には $(thing)6$(0) のダメージを与えます. 術者自身の魔法式オブジェクトは削りません.");
         addBookPage(root, "trick_air_bullet",
                 "Fires a bullet of compressed air from the position in the direction. The bullet's range is 24 blocks.$(br)"
                         + "A creature the bullet hits directly takes $(thing)4.5 + 4.5 × Power$(0) damage, and the bullet stops there. A graze from the pressure wave around the bullet deals a third of a direct hit's damage, and the bullet flies on.",
@@ -2418,8 +2487,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Creates a micro black hole at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
                 "指定位置にマイクロブラックホールを生み出します. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
         addBookPage(root, "trick_micro_black_hole.1",
-                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage.",
-                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません.");
+                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage."
+                        + " The black hole is a SpellGram object: it has integrity, which does not wear away over time. If its integrity runs out before the collapse, it vanishes without crushing anything.",
+                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません."
+                        + "ブラックホールは魔法式オブジェクトで、耐久値を持ちます. 耐久値は時間では減りません. 崩壊する前に耐久値が尽きると、何も押し潰さずに消えます.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");
@@ -3210,10 +3281,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Returns the current integrity of a SpellGram object",
                 "取得子: 魔法式耐久値", "魔法式オブジェクトの今の耐久値を返す");
         addBookPage(root, "selector_spellgram_integrity",
-                "Returns the current integrity of the Target, a SpellGram object (a Resident SpellGram or the core of a Meteor Line night), as a number."
+                "Returns the current integrity of the Target, a SpellGram object (a Resident SpellGram, the core of a Meteor Line night or a Micro Black Hole), as a number."
                         + " Any other entity is an error. It is the integrity shown when you aim at the core (the display rounds it up),"
                         + " so a spell can tell how much is left before Trick: Extend SpellGram or before taking a SpellGram apart.",
-                "「対象」に入れた魔法式オブジェクト（常駐魔法式や流星群の夜の核）の、今の耐久値を数値で返します。"
+                "「対象」に入れた魔法式オブジェクト（常駐魔法式、流星群の夜の核、マイクロブラックホール）の、今の耐久値を数値で返します。"
                         + "魔法式オブジェクトでないエンティティを入れるとエラーになります。"
                         + "値は核に照準を合わせたときに表示される耐久値と同じで（表示は切り上げ）、作動式: 魔法式延長を使う前などに、残りを術式で確かめられます。");
         addSpellPiece(root, "trick_extend_spellgram", "Trick: Extend SpellGram",
@@ -3229,8 +3300,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "術式で削られた分から先に戻ります。耐久値は一定の速さで減るので、それを超えて戻した分だけ長く残ります。"
                         + "回復できる上限は、領域なら置いたときの「時間」によらず、「時間」を最大（120秒）にして置いたときの耐久値の2倍です。サークルは置いたときの耐久値の2倍です。");
         addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
-                "Places a Resident SpellGram zone that keeps weaker casters' Psi spells and zones out of it",
-                "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と領域を、範囲の中で効かなくする常駐魔法式を置く");
+                "Places a Resident SpellGram zone that keeps weaker casters' Psi spells out of it and stops others' ender teleports",
+                "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と、術者以外のエンダー系のテレポートを、範囲の中で止める常駐魔法式を置く");
         addSpellPiece(root, "trick_charged_zone", "Trick: Charged Zone",
                 "Places a Resident SpellGram zone that slowly charges what the beings inside carry with FE",
                 "作動式: 荷電領域", "範囲の中の持ち物やアイテムに FE を少しずつ送る常駐魔法式を置く");

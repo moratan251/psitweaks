@@ -42,8 +42,8 @@ import java.util.UUID;
  * 他 mod の機械を動かす効き目（Create の加工、Mekanism の熱）の速さは、置いた時点の事象干渉力で決まる
  * （{@link #machineSpeedFor}）。事象干渉力はユーティリティの効き目に効かない方針の例外（2026-11-10 ユーザー、一括洗浄）。
  * <p>
- * 他者の領域干渉が重なったブロックでは、その領域干渉のほうが置いた時点の事象干渉力が高ければ、効き目が止まる
- * （{@link #isActiveAt}、{@link EntityInterferenceZone}）。
+ * 他人の領域が重なったブロックでは、種類を問わず、置いた時点の事象干渉力の一番高い領域（同じなら先に置いたもの）の
+ * 持ち主の領域だけが効く（{@link #isActiveAt}、2026-11-14 ユーザー、案 2。作動式: 領域干渉は威力で上乗せする）。
  */
 public abstract class SpellGramZone extends SpellGramObject {
     @Override
@@ -278,20 +278,50 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * ブロック {@code pos} でこの領域が効くか: 他者の、置いた時点の事象干渉力がこれより高い領域干渉が重なっていれば効かない
-     * （サーバー側。クライアントでは常に真）。
+     * 他人どうしの奪い合いで比べる事象干渉力（2026-11-14 ユーザー、案 2）: 置いた時点の事象干渉力。作動式: 領域干渉は威力に応じて
+     * 上乗せする（{@link EntityInterferenceZone#contestInterference}）。
+     */
+    public double contestInterference() {
+        return placedInterference;
+    }
+
+    /** 他人どうしの奪い合いで、この領域が {@code other} より優先されるか: 事象干渉力が高いほう、同じなら先に置いたほう。 */
+    public boolean winsContestAgainst(SpellGramZone other) {
+        int interference = Double.compare(contestInterference(), other.contestInterference());
+        return interference != 0 ? interference > 0 : getId() < other.getId();
+    }
+
+    /** {@code other} が同じ人の側の領域か（自律詠唱機の領域は持ち主の側）。 */
+    public boolean sameSideAs(SpellGramZone other) {
+        return java.util.Objects.equals(ownerSide, other.ownerSide);
+    }
+
+    /**
+     * ブロック {@code pos} でこの領域が効くか（サーバー側。クライアントでは常に真）。
+     * <ul>
+     *   <li>他人どうしの奪い合い（2026-11-14 ユーザー、案 2）: 他人の領域が重なったところでは、種類を問わず、事象干渉力の一番
+     *   高い領域（同じなら先に置いたもの）の持ち主の領域だけが効く。自分の側でその場所にある一番強い領域（自分とは限らない。
+     *   たとえば威力つきの領域干渉）が、他人の領域に負けていれば効かない。</li>
+     *   <li>打ち消し合う種類（加熱と凍結）: 自分の側の、打ち消し合う種類の領域が重なったところでは効かない。</li>
+     * </ul>
      */
     public boolean isActiveAt(BlockPos pos) {
         if (level().isClientSide) {
             return true;
         }
         if (!area.withinBox(pos)) {
-            // 覚え書きは範囲の箱に重なるものだけなので、箱の外の位置は前と同じく全部から探す。
-            return !EntityInterferenceZone.suppresses(level(), pos, ownerSide, placedInterference) && !coveredByCanceller(pos);
+            // 覚え書きは範囲の箱に重なるものだけなので、箱の外の位置は全部から探す。
+            return !lostContestAt(pos, SpellGramIndex.all(level(), SpellGramZone.class)) && !coveredByCanceller(pos);
         }
         refreshJudgement();
-        for (EntityInterferenceZone zone : suppressors) {
-            if (!zone.isEnded() && zone.getArea().contains(pos)) {
+        SpellGramZone champion = this;
+        for (SpellGramZone ally : allies) {
+            if (!ally.isEnded() && ally.getArea().contains(pos) && ally.winsContestAgainst(champion)) {
+                champion = ally;
+            }
+        }
+        for (SpellGramZone other : contenders) {
+            if (!other.isEnded() && other.getArea().contains(pos) && other.winsContestAgainst(champion)) {
                 return false;
             }
         }
@@ -303,9 +333,25 @@ public abstract class SpellGramZone extends SpellGramObject {
         return true;
     }
 
+    /** {@code zones} のうち {@code pos} を含むものの中で、他人の領域が自分の側の一番強い領域に勝っているか。 */
+    private boolean lostContestAt(BlockPos pos, List<SpellGramZone> zones) {
+        SpellGramZone champion = this;
+        for (SpellGramZone zone : zones) {
+            if (zone != this && !zone.isEnded() && sameSideAs(zone) && zone.getArea().contains(pos) && zone.winsContestAgainst(champion)) {
+                champion = zone;
+            }
+        }
+        for (SpellGramZone zone : zones) {
+            if (!zone.isEnded() && !sameSideAs(zone) && zone.getArea().contains(pos) && zone.winsContestAgainst(champion)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     * この領域と打ち消し合う種類（加熱と凍結、2026-11-11）。その種類の領域（術者は問わない）が重なったブロックでは、どちらも
-     * 効かない（{@link #isActiveAt}）。打ち消し合わない種類は null。
+     * この領域と打ち消し合う種類（加熱と凍結、2026-11-11）。自分の側のその種類の領域が重なったブロックでは、どちらも効かない
+     * （{@link #isActiveAt}）。他人の領域とは打ち消し合わず、奪い合いで決まる（2026-11-14）。打ち消し合わない種類は null。
      */
     @org.jetbrains.annotations.Nullable
     protected Class<? extends SpellGramZone> cancelledBy() {
@@ -319,7 +365,7 @@ public abstract class SpellGramZone extends SpellGramObject {
             return false;
         }
         for (SpellGramZone zone : SpellGramIndex.all(level(), type)) {
-            if (!zone.isEnded() && zone.getArea().contains(pos)) {
+            if (!zone.isEnded() && sameSideAs(zone) && zone.getArea().contains(pos)) {
                 return true;
             }
         }
@@ -335,9 +381,11 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** 覚え書きを作った tick と台帳の番号。どちらかが変われば作り直す。 */
     private long judgedTick = Long.MIN_VALUE;
     private long judgedVersion = -1L;
-    /** この領域を止めうる他者の領域干渉: 置いた時点の事象干渉力がこれより高く、範囲の箱が重なるもの。 */
-    private List<EntityInterferenceZone> suppressors = List.of();
-    /** 打ち消し合う種類（{@link #cancelledBy}）の領域で、範囲の箱が重なるもの。 */
+    /** 他人の領域（種類を問わない）で、範囲の箱が重なるもの（奪い合いの相手）。 */
+    private List<SpellGramZone> contenders = List.of();
+    /** 自分の側の、自分以外の領域（種類を問わない）で、範囲の箱が重なるもの（奪い合いで自分の側の一番強いものを選ぶ）。 */
+    private List<SpellGramZone> allies = List.of();
+    /** 自分の側の、打ち消し合う種類（{@link #cancelledBy}）の領域で、範囲の箱が重なるもの。 */
     private List<SpellGramZone> cancellers = List.of();
     /** 同じ種類で、この領域より強く（{@link #outranks}）、範囲の箱が重なるもの。 */
     private List<SpellGramZone> rivals = List.of();
@@ -354,21 +402,21 @@ public abstract class SpellGramZone extends SpellGramObject {
         judgedVersion = version;
         Level level = level();
 
-        List<EntityInterferenceZone> foundSuppressors = new java.util.ArrayList<>(0);
-        for (EntityInterferenceZone zone : SpellGramIndex.all(level, EntityInterferenceZone.class)) {
-            UUID owner = zone.getOwnerSide();
-            if (owner != null && !owner.equals(ownerSide) && placedInterference < zone.getPlacedInterference()
-                    && zone.getArea().boxOverlaps(area)) {
-                foundSuppressors.add(zone);
+        List<SpellGramZone> foundContenders = new java.util.ArrayList<>(0);
+        List<SpellGramZone> foundAllies = new java.util.ArrayList<>(0);
+        for (SpellGramZone zone : SpellGramIndex.all(level, SpellGramZone.class)) {
+            if (zone != this && zone.getArea().boxOverlaps(area)) {
+                (sameSideAs(zone) ? foundAllies : foundContenders).add(zone);
             }
         }
-        suppressors = foundSuppressors;
+        contenders = foundContenders;
+        allies = foundAllies;
 
         List<SpellGramZone> foundCancellers = new java.util.ArrayList<>(0);
         Class<? extends SpellGramZone> cancelType = cancelledBy();
         if (cancelType != null) {
             for (SpellGramZone zone : SpellGramIndex.all(level, cancelType)) {
-                if (zone.getArea().boxOverlaps(area)) {
+                if (sameSideAs(zone) && zone.getArea().boxOverlaps(area)) {
                     foundCancellers.add(zone);
                 }
             }

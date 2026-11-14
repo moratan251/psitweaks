@@ -128,13 +128,10 @@ public final class MeteorLineTuning {
     // ---- 魔法式オブジェクト ----
 
     /**
-     * 夜が 3.5 秒の間に時間で減らす耐久値の固有値（× 置いた時点の事象干渉力）。夜は終盤の魔法なので、置いたときの耐久値は
-     * この {@code 1 / INTEGRITY_TIME_SHARE} 倍（5 倍）と高めにする。夜は耐久値が残っていても 3.5 秒で晴れる。
-     * どちらも仮の値で、術式解体などを作るときに決め直す（2026-11-09 ユーザー）。
+     * 夜の耐久値の固有値（× 置いた時点の事象干渉力 × 設定の倍率）。時間では減らない（2026-11-14 ユーザー: 400、時間で減らさない。
+     * 前は 100 の 5 倍で、存続時間の間に 5 分の 1 が減っていた）。夜は耐久値が残っていても 3.5 秒で晴れる。
      */
-    public static final float BASE_INTEGRITY = 100.0F;
-    /** 存続時間の間に時間で減る耐久値の、置いたときの耐久値に対する割合（{@code SpellGramObject#getTimeShare}）。 */
-    public static final float INTEGRITY_TIME_SHARE = 0.2F;
+    public static final float BASE_INTEGRITY = 400.0F;
 
     // ---- 音（仮。本番の音は後で作る） ----
 
@@ -155,8 +152,39 @@ public final class MeteorLineTuning {
     public static final SoundEvent CLEAR_SOUND = SoundEvents.BEACON_DEACTIVATE;
     public static final float CLEAR_VOLUME = 3.0F;
     public static final float CLEAR_PITCH = 0.7F;
-    /** 強度が尽きて夜がつぶれる音。 */
-    public static final SoundEvent COLLAPSE_SOUND = SoundEvents.AMETHYST_BLOCK_BREAK;
+    /**
+     * 耐久値が尽きて夜が砕け散る音（2026-11-14 ユーザー: ガラスの破壊音）。低い音と少し高い音を重ね、大きなガラスが割れる
+     * ように聞かせる。音量 1 を超える分は聞こえる距離だけを広げる。
+     */
+    public static final SoundEvent SHATTER_SOUND = SoundEvents.GLASS_BREAK;
+    public static final float SHATTER_VOLUME = 3.0F;
+    public static final float SHATTER_LOW_PITCH = 0.5F;
+    public static final float SHATTER_HIGH_PITCH = 0.85F;
+
+    // ---- 砕け散る（耐久値が尽きたとき、クライアント） ----
+
+    /** 闇の球が割れて破片が飛び、消えるまで（tick）。 */
+    public static final int SHATTER_TICKS = 36;
+    /**
+     * ひびが核（球のてっぺん）から球の下の端まで走る時間（tick）。破片はひびが届くと縁が光り、
+     * {@link #SHATTER_HOLD_TICKS} の間その場に留まってから飛ぶ。
+     */
+    public static final int SHATTER_CRACK_TICKS = 6;
+    public static final int SHATTER_HOLD_TICKS = 2;
+    /** 球を割る細かさ（正二十面体を何回分けるか）。2 で 320 面、それぞれを2つに割って 640 枚の破片。 */
+    public static final int SHATTER_SUBDIVISIONS = 2;
+    /** 破片が外へ飛ぶ距離（半径に対する割合、破片ごとに MIN〜MAX）。 */
+    public static final float SHATTER_MIN_SPREAD = 0.25F;
+    public static final float SHATTER_MAX_SPREAD = 0.7F;
+    /** 破片が落ちる重さ（ブロック / tick²）。 */
+    public static final float SHATTER_GRAVITY = 0.025F;
+    /** 破片の回る速さの上限（ラジアン / tick）。 */
+    public static final float SHATTER_MAX_SPIN = 0.22F;
+    /** ひびの光の幅（半径 {@link #MIN_RADIUS} の夜のとき、ブロック。半径に比例）と明るさ。 */
+    public static final float SHATTER_CRACK_WIDTH = 0.12F;
+    public static final float SHATTER_CRACK_BRIGHTNESS = 1.4F;
+    /** 星が散る距離（半径に対する割合）。 */
+    public static final float SHATTER_STAR_SPREAD = 0.6F;
 
     private MeteorLineTuning() {
     }

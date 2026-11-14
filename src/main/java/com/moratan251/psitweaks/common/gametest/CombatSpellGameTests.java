@@ -1301,9 +1301,45 @@ public final class CombatSpellGameTests {
         });
     }
 
+    /**
+     * マイクロブラックホールは魔法式オブジェクト（目印型、常駐魔法式ではない）で、耐久値は 150 × 事象干渉力（時間では減らない）。
+     * 崩壊する前に耐久値が尽きると、何も押し潰さずに消える（2026-11-14 ユーザー）。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 120)
+    public static void microBlackHoleIsASpellGramObjectWithIntegrity(GameTestHelper helper) throws Exception {
+        // 魔法式オブジェクトは術者を ID で引き直すので、ワールドにいるプレイヤーで唱える（FakePlayer だとすぐ消える）。
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_integrity_caster", new Vec3(0.5, 0.0, 4.5));
+        var husk = tough(husk(helper, new BlockPos(2, 0, 2), true));
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
+        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 4.0)).execute(new SpellContext().setPlayer(player));
+        var wells = helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class, helper.getBounds().inflate(4));
+        helper.assertTrue(wells.size() == 1, "One black hole expected, found " + wells.size());
+        EntityMicroBlackHole well = wells.get(0);
+        float expected = com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity.initial(
+                EntityMicroBlackHole.BASE_INTEGRITY, player, 1.0D);
+        helper.assertTrue(com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex.all(helper.getLevel(),
+                        com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject.class).contains(well) && !well.isResident(),
+                "The black hole must be a SpellGram object that is not resident");
+        helper.assertTrue(Math.abs(well.getIntegrity() - expected) < 1.0E-3F,
+                "The integrity must be 150 x interference, expected " + expected + ", was " + well.getIntegrity());
+        helper.startSequence()
+                .thenExecuteAfter(20, () -> {
+                    helper.assertTrue(!well.isEnded(), "The black hole must still be there before collapsing");
+                    helper.assertTrue(Math.abs(well.getIntegrity() - expected) < 1.0E-3F,
+                            "The integrity must not wear away over time, was " + well.getIntegrity());
+                    well.reduceIntegrity(expected * 2.0F);
+                    helper.assertTrue(well.isEnded(), "Running out of integrity must end the black hole");
+                })
+                .thenExecuteAfter(50, () -> helper.assertTrue(near(husk.getHealth(), TOUGH_HEALTH),
+                        "A black hole that ended before collapsing must crush nothing, health " + husk.getHealth()))
+                .thenExecute(() -> GameTestPlayers.remove(helper, player))
+                .thenSucceed();
+    }
+
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 200)
     public static void microBlackHolePullsInThenCrushes(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 4), "black-hole-caster");
+        // 2026-11-14 からブラックホールは魔法式オブジェクト（術者を ID で引き直す）なので、ワールドにいるプレイヤーで唱える。
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_caster", new Vec3(0.5, 0.0, 4.5));
         // 60 + 50 x Power would kill a plain husk, so give it room to show the collapse hits only once.
         var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
         husk.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
@@ -1321,6 +1357,7 @@ public final class CombatSpellGameTests {
                         helper.getBounds().inflate(4)).isEmpty(), "The black hole must close after collapsing"))
                 .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 110 - EPSILON,
                         "The collapse hits once, health " + husk.getHealth()))
+                .thenExecute(() -> GameTestPlayers.remove(helper, player))
                 .thenSucceed();
     }
 
@@ -1606,13 +1643,15 @@ public final class CombatSpellGameTests {
                     "The night must be a sphere with its core at the top: core y " + night.getY() + ", center y " + center.y);
             List<EntityMeteorLineBeam> beams = night.getBeams();
             helper.assertTrue(!beams.isEmpty(), "Streaks must be falling by now");
-            // 耐久値は時間とともに一定の割合で減るが、夜が 3.5 秒で減らす分は置いたときの耐久値の 5 分の 1 だけ。
+            // 耐久値は 400 × 事象干渉力で、時間では減らない（2026-11-14 ユーザー）。
             float max = night.getMaxIntegrity();
             float integrity = night.getIntegrity();
-            float expected = max * (1.0F - MeteorLineTuning.INTEGRITY_TIME_SHARE * (1.0F - night.getRemainingFraction()));
-            helper.assertTrue(night.getTimeShare() == MeteorLineTuning.INTEGRITY_TIME_SHARE && max > 0.0F
-                            && integrity < max && integrity > max * 0.8F && near(integrity, expected),
-                    "The night's integrity must drain a fifth over its lifetime: " + integrity + " of " + max);
+            float expected = com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity.initial(
+                    MeteorLineTuning.BASE_INTEGRITY, player, 1.0D);
+            helper.assertTrue(MeteorLineTuning.BASE_INTEGRITY == 400.0F && night.getTimeShare() == 0.0F
+                            && near(max, expected) && near(integrity, max),
+                    "The night's integrity must be 400 x interference and not drain over time: " + integrity + " of " + max
+                            + ", expected " + expected);
             helper.assertTrue(!night.hurt(level.damageSources().playerAttack(player), 1_000.0F)
                     && near(night.getIntegrity(), integrity), "An ordinary attack must not wear the night");
             helper.assertTrue(night.reduceIntegrity(integrity * 0.5F) && !night.isRemoved(),
@@ -1628,5 +1667,24 @@ public final class CombatSpellGameTests {
             cleanup.run();
             helper.succeed();
         }));
+    }
+
+    /**
+     * 耐久値が尽きた夜が砕け散る演出の通信（2026-11-14 ユーザー）: 往復で変わらず、受け手は夜が消えたあとでも、種と半径から
+     * 夜と同じ星を作れる。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_shatter")
+    public static void meteorLineNightShatterPayloadKeepsTheNight(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        EntityMeteorLineNight night = new EntityMeteorLineNight(level, helper.absoluteVec(new Vec3(2.5, 1.0, 2.5)), 20.0);
+        var message = new com.moratan251.psitweaks.common.network.MessageMeteorNightShatter(night.getCenter(),
+                (float) night.getRadius(), 12.5F, 0.75F, 33.5F, night.getStarSeed(), 0x2040A0);
+        var buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), level.registryAccess());
+        com.moratan251.psitweaks.common.network.MessageMeteorNightShatter.STREAM_CODEC.encode(buf, message);
+        helper.assertTrue(com.moratan251.psitweaks.common.network.MessageMeteorNightShatter.STREAM_CODEC.decode(buf).equals(message),
+                "The shatter payload changed in transit");
+        helper.assertTrue(java.util.Arrays.equals(EntityMeteorLineNight.makeStars(night.getStarSeed(), night.getRadius()),
+                night.getStars()), "The seed and the radius must give the night's own stars");
+        helper.succeed();
     }
 }

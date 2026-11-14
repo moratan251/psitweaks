@@ -18,8 +18,14 @@ import java.util.UUID;
 /**
  * 作動式: 領域干渉（仮）の範囲。他者の Psi の作動式は、範囲の中のブロック・位置・エンティティを対象にできない
  * （{@code SpellContext.isInRadius} が偽になり、射程外と同じく失敗する。{@code SpellContextRangeMixin}）。範囲の中にいる
- * 他者は、自分を対象にする作動式も使えない。他者の領域は、範囲の中に中心を置けず、すでにある他者の領域は重なった
- * ブロックで効かない（{@link SpellGramZone#isActiveAt}）。
+ * 他者は、自分を対象にする作動式も使えない。他者の領域は、範囲の中に中心を置けない。
+ * <p>
+ * 他人の領域との奪い合い（{@link SpellGramZone#isActiveAt}、どの領域にも共通）では、置いた時点の事象干渉力に
+ * 威力 × {@link #CONTEST_BONUS_PER_POWER} を上乗せして比べる（2026-11-14 ユーザー）。勝てば、重なったところでは自分の側の
+ * 領域だけが効く。
+ * <p>
+ * 範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）を
+ * 止める。範囲の中から外へも、外から中へも（{@link #onEntityTeleport}、2026-11-14 ユーザー）。
  * <p>
  * 止めるのは、置いた時点の術者の事象干渉力より低い事象干渉力の他者だけ（2026-11-11 ユーザー、案 A）。同じか高い相手は
  * 止めない。「他者」かは術者の {@code getUUID()} で見分ける（自律詠唱機は所有者の UUID を名乗るので、自分の自律詠唱機は
@@ -30,6 +36,11 @@ public class EntityInterferenceZone extends SpellGramZone {
 
     /** 辺の色: 紫。 */
     public static final int OUTLINE_COLOR = 0xB57BFF;
+    /** 奪い合いの事象干渉力への上乗せ: 威力 1 あたり 5%（2026-11-14 ユーザー）。 */
+    public static final double CONTEST_BONUS_PER_POWER = 0.05;
+
+    /** 威力（0〜10、サーバー側）。他人の領域との奪い合いで事象干渉力に上乗せする。 */
+    private float power;
 
     public EntityInterferenceZone(EntityType<? extends EntityInterferenceZone> type, Level level) {
         super(type, level);
@@ -60,13 +71,53 @@ public class EntityInterferenceZone extends SpellGramZone {
         return false;
     }
 
+    /** 置く前に呼ぶ。威力（0〜10）。 */
+    public void configurePower(float power) {
+        this.power = Math.max(0.0F, power);
+        SpellGramIndex.touch();
+    }
+
+    public float getPower() {
+        return power;
+    }
+
+    /** 奪い合いの事象干渉力: 置いた時点の事象干渉力 ×（1 + 威力 × 5%）。 */
+    @Override
+    public double contestInterference() {
+        return getPlacedInterference() * (1.0 + power * CONTEST_BONUS_PER_POWER);
+    }
+
     /**
-     * 側 {@code side}・事象干渉力 {@code interference} で置かれた領域が、ブロック {@code pos} で他者の領域干渉に止められるか
-     * （サーバー側）。止めるかどうかは 1 段だけ見る（止める側の領域干渉が、さらに別の領域干渉に止められているかは見ない）。
+     * エンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）を、領域干渉の範囲の
+     * 中から外へも、外から中へも止める（サーバー側）。止めないのは、その領域干渉を置いた本人（自律詠唱機の領域なら持ち主）
+     * だけ。コマンドのテレポートは止めない。
      */
-    public static boolean suppresses(Level level, BlockPos pos, @Nullable UUID side, double interference) {
-        for (EntityInterferenceZone zone : SpellGramIndex.all(level, EntityInterferenceZone.class)) {
-            if (zone.stops(pos, side, interference)) {
+    public static void onEntityTeleport(net.neoforged.neoforge.event.entity.EntityTeleportEvent event) {
+        if (!(event instanceof net.neoforged.neoforge.event.entity.EntityTeleportEvent.EnderEntity
+                || event instanceof net.neoforged.neoforge.event.entity.EntityTeleportEvent.EnderPearl
+                || event instanceof net.neoforged.neoforge.event.entity.EntityTeleportEvent.ChorusFruit)) {
+            return;
+        }
+        Entity entity = event.getEntity();
+        if (!entity.level().isClientSide && blocksTeleport(entity.level(), entity, event.getPrev(), event.getTarget())) {
+            event.setCanceled(true);
+        }
+    }
+
+    /** {@code entity} の、点 {@code from} から {@code to} へのテレポートを、どれかの領域干渉が止めるか（サーバー側）。 */
+    public static boolean blocksTeleport(Level level, Entity entity, net.minecraft.world.phys.Vec3 from, net.minecraft.world.phys.Vec3 to) {
+        List<EntityInterferenceZone> zones = SpellGramIndex.all(level, EntityInterferenceZone.class);
+        if (zones.isEmpty()) {
+            return false;
+        }
+        BlockPos start = BlockPos.containing(from);
+        BlockPos end = BlockPos.containing(to);
+        UUID side = entity.getUUID();
+        for (EntityInterferenceZone zone : zones) {
+            if (zone.isEnded() || side.equals(zone.getOwnerSide())) {
+                continue;
+            }
+            if (zone.isInsideAndActive(start) || zone.isInsideAndActive(end)) {
                 return true;
             }
         }
