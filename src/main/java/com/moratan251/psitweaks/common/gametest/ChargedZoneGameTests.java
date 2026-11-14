@@ -129,6 +129,40 @@ public final class ChargedZoneGameTests {
         });
     }
 
+    /** 重なった自分の荷電領域は、それぞれが自分の充電能力を配る（足し算、2026-11-15 ユーザー、案 A）。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_stack", timeoutTicks = 120)
+    public static void overlappingChargedZonesAddTheirCapacity(GameTestHelper helper) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        if (tablet == null) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_stack_caster", new Vec3(4.5, 1.0, 4.5));
+        ItemEntity dropped = dropTablet(helper, tablet, new Vec3(0.5, 1.2, 0.5));
+        Runnable cleanup = () -> {
+            dropped.discard();
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        EntityChargedZone[] zones = new EntityChargedZone[2];
+        try {
+            zones[0] = placeCharged(caster, helper.absolutePos(new BlockPos(0, 1, 0)), 1, 5.0);
+            zones[1] = placeCharged(caster, helper.absolutePos(new BlockPos(0, 1, 0)), 1, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(41, () -> {
+            int total = stored(dropped.getItem());
+            double capacity = zones[0].capacityPerTick() + zones[1].capacityPerTick();
+            cleanup.run();
+            helper.assertTrue(total <= capacity * 40 + 1 && total >= capacity * 40 - 16,
+                    "Two overlapping Charged Zones must give both capacities (" + capacity * 40 + " FE in 40 ticks), got " + total);
+            helper.succeed();
+        });
+    }
+
     private static ItemEntity dropTablet(GameTestHelper helper, Item tablet, Vec3 relative) {
         Vec3 at = helper.absoluteVec(relative);
         ItemEntity dropped = new ItemEntity(helper.getLevel(), at.x, at.y, at.z, new ItemStack(tablet));

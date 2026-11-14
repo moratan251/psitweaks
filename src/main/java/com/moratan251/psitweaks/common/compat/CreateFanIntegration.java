@@ -100,7 +100,8 @@ final class CreateFanIntegration {
         }
         FanProcessingType type = typeOf(process);
         for (ItemEntity item : itemsInside(level, area)) {
-            if (itemsAt.test(BlockPos.containing(item.getBoundingBox().getCenter())) && FanProcessing.canProcess(item, type)) {
+            if (itemsAt.test(BlockPos.containing(item.getBoundingBox().getCenter())) && FanProcessing.canProcess(item, type)
+                    && safeToProcess(level, process, item.getItem())) {
                 // 加工している間は消えるまでの時間を止める（2026-11-12 ユーザー）。
                 com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneItemLifetimes.hold(item, level.getGameTime());
                 FanProcessing.applyProcessing(item, type);
@@ -108,22 +109,42 @@ final class CreateFanIntegration {
         }
         // 集めてから加工する（加工でブロックエンティティの一覧が変わっても困らないように）。
         for (TransportedItemStackHandlerBehaviour handler : handlersInside(blockEntities, mayUse)) {
-            handler.handleProcessingOnAllItems(transported -> FanProcessing.applyProcessing(transported, level, type));
+            handler.handleProcessingOnAllItems(transported -> safeToProcess(level, process, transported.stack)
+                    ? FanProcessing.applyProcessing(transported, level, type)
+                    : TransportedItemStackHandlerBehaviour.TransportedResult.doNothing());
         }
     }
 
+    /**
+     * 領域の加工で扱ってよいアイテムか（2026-11-15 ユーザー: ドロップアイテムが意図せず燃えないように）。Create の一括製錬は、
+     * 精錬・溶鉱炉のレシピがないアイテムを（耐火のもの以外）燃やして消すので、領域の一括製錬はレシピのあるアイテムだけにする。
+     * 一括洗浄・一括燻製はもともとレシピのあるアイテムにしか効かない。
+     */
+    static boolean safeToProcess(Level level, CreateCompat.FanProcess process, net.minecraft.world.item.ItemStack stack) {
+        if (process != CreateCompat.FanProcess.BLASTING || stack.isEmpty()) {
+            return true;
+        }
+        var input = new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
+        var recipes = level.getRecipeManager();
+        return recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING, input, level)
+                .filter(com.simibubi.create.AllRecipeTypes.CAN_BE_AUTOMATED).isPresent()
+                || recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.BLASTING, input, level)
+                .filter(com.simibubi.create.AllRecipeTypes.CAN_BE_AUTOMATED).isPresent();
+    }
+
     /** クライアント側: Create の AirCurrent がクライアントでするのと同じく、範囲の中のアイテムの位置にパーティクルを出す。 */
-    static void spawnParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities, CreateCompat.FanProcess process) {
+    static void spawnParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities,
+                               java.util.function.Function<BlockPos, CreateCompat.FanProcess> processAt) {
         if (area.isEmpty()) {
             return;
         }
-        FanProcessingType type = typeOf(process);
         for (ItemEntity item : itemsInside(level, area)) {
-            type.spawnProcessingParticles(level, item.position());
+            typeOf(processAt.apply(item.blockPosition())).spawnProcessingParticles(level, item.position());
         }
         for (TransportedItemStackHandlerBehaviour handler : handlersInside(blockEntities, pos -> true)) {
             handler.handleProcessingOnAllItems(transported -> {
-                type.spawnProcessingParticles(level, handler.getWorldPositionOf(transported));
+                net.minecraft.world.phys.Vec3 at = handler.getWorldPositionOf(transported);
+                typeOf(processAt.apply(BlockPos.containing(at))).spawnProcessingParticles(level, at);
                 return TransportedItemStackHandlerBehaviour.TransportedResult.doNothing();
             });
         }

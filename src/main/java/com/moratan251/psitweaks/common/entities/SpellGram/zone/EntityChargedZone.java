@@ -200,7 +200,8 @@ public class EntityChargedZone extends SpellGramZone {
      */
     private void supplyEnergy(ServerLevel level) {
         List<Receiver> receivers = new ArrayList<>();
-        for (Entity target : entitiesInside()) {
+        // 重なった自分の荷電領域は、それぞれが自分の充電能力を配る（2026-11-15 ユーザー、案 A）ので、一番強いかは問わない。
+        for (Entity target : entitiesReceiving()) {
             double boost = 1.0 + stormBoost(stormPowerAt(BlockPos.containing(target.getBoundingBox().getCenter())));
             int id = target.getId();
             addReceiver(receivers, target.getCapability(Capabilities.EnergyStorage.ENTITY, null), boost, receiverKey(id, 0));
@@ -285,7 +286,7 @@ public class EntityChargedZone extends SpellGramZone {
                         continue;
                     }
                     BlockPos world = region.worldPos(pos);
-                    if (!isActiveAt(world) || !isStrongestAt(world) || !mayUseMachine(level, caster, pos)) {
+                    if (!isActiveAt(world) || !mayUseMachine(level, caster, pos)) {
                         continue;
                     }
                     int side = blockEnergySide(level, blockEntity, energySides.getOrDefault(pos, -1));

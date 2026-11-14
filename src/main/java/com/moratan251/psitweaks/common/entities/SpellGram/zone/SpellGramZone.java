@@ -834,8 +834,21 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
+     * リソース（熱量・冷却量・充電能力・風量）を配る相手としての、範囲の中のエンティティ（2026-11-15 ユーザー、案 A）。
+     * 自分の同じ種類の領域が重なっていても、それぞれが自分のリソースを配る（足し算）ので、一番強いかは問わない。
+     */
+    public List<Entity> entitiesReceiving() {
+        return level().getEntities(this, area.bounds(), entity -> {
+            if (entity instanceof SpellGramObject || !affects(entity) || (sparesCaster() && CasterIds.matches(entity, getCasterUuid()))) {
+                return false;
+            }
+            return insideAndActive(BlockPos.containing(entity.getBoundingBox().getCenter()));
+        });
+    }
+
+    /**
      * 範囲の中にいて、この領域が効くエンティティ（当たり判定の中心があるブロックで判定）。魔法式オブジェクトは除く。同じ種類の
-     * 領域が重なっていれば、そこで一番強い領域だけが効く（{@link #isStrongestAt}）。
+     * 領域が重なっていれば、そこで一番強い領域だけが効く（{@link #isStrongestAt}）。1 体あたりの強さに使う。
      */
     public List<Entity> entitiesInside() {
         return level().getEntities(this, area.bounds(), entity -> {
@@ -850,6 +863,8 @@ public abstract class SpellGramZone extends SpellGramObject {
     /**
      * 同じ種類の領域が重なったところで、どれが効くかを決める強さ（2026-11-12 ユーザー: 同じ種類は重ねても効き目は増えず、一番
      * 威力が高いものだけが効く）。既定は他 mod の機械を動かす速さ（置いた時点の事象干渉力）。威力を持つ領域は威力を返す。
+     * 2026-11-15 ユーザー（案 A）: リソース（熱量・冷却量・充電能力・風量）はこれによらず足し算で、ここで決めるのは 1 か所あたりの
+     * 強さ（温度の上限・燃える長さ・凍える速さ・そらす角度・Create の加工の速さなど）だけ。
      */
     protected double stackStrength() {
         return machineSpeed;

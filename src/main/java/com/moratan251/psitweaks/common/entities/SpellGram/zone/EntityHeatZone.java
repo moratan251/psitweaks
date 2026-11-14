@@ -35,7 +35,8 @@ import java.util.List;
  * 範囲の中の氷と薄氷を水に戻す（ネザーのような水の置けないディメンションでは消える。氷塊・青氷はそのまま）。
  * <p>
  * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括燻製する（Create のケース入りファンと
- * 同じで上限なし、速さは置いた時点の事象干渉力、{@link SpellGramZone#machineSpeedFor}）。
+ * 同じで上限なし、速さは置いた時点の事象干渉力、{@link SpellGramZone#machineSpeedFor}）。自分の荷電領域が重なったところでは、
+ * 電気炉のように一括燻製の代わりに一括製錬をする（2026-11-15 ユーザー、精錬できるアイテムだけ）。
  * <p>
  * 熱の総量（2026-11-14 ユーザー）: 領域は 1 tick あたり決まった量の熱を持つ（{@link #heatTotalPerTick}: 置いたときのコスト ×
  * {@link #HEAT_PER_PSI} ÷ 存続時間 × 速さ）。燃料の代わりになるもの（消耗品・エネルギー）はこの総量から払う: Create の
@@ -267,11 +268,12 @@ public class EntityHeatZone extends SpellGramZone {
         // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械にも効かせる）。範囲・領域干渉・乱流は世界の位置で判定し、
         // 保護は機械が本当にある位置で確かめる。
         List<ZoneRegion> regions = regions();
+        // 自分の荷電領域が重なったところは一括製錬（電気炉、2026-11-15 ユーザー）。灼熱の間はどこも一括製錬。
+        List<EntityChargedZone> arcs = inferno || !CreateCompat.isCreateLoaded() ? List.of() : ownChargedZones(level);
         for (int step = takeMachineSteps(); step > 0; step--) {
             for (ZoneRegion region : regions) {
-                CreateCompat.processZone(level, region.area(), machinesIn(region), fanProcess(inferno),
-                        pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)),
-                        pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                processCreate(level, caster, region, inferno, arcs,
+                        world -> isActiveAt(world) && isStrongestAt(world));
             }
         }
         if (storm) {
@@ -279,9 +281,8 @@ public class EntityHeatZone extends SpellGramZone {
             forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                 for (int i = 0; i < steps; i++) {
                     for (ZoneRegion region : regions) {
-                        CreateCompat.processZone(level, region.area(), machinesIn(region), fanProcess(inferno),
-                                pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)),
-                                pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                        processCreate(level, caster, region, inferno, arcs,
+                                world -> stormAt(world) == turbulence && isStrongestAt(world));
                     }
                 }
             });
@@ -308,10 +309,10 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             }
             if (!machines.isEmpty()) {
+                // 重なった自分の加熱領域は、それぞれが自分の熱量を配る（足し算、2026-11-15 ユーザー、案 A）。上限の温度は領域ごと。
                 java.util.function.Predicate<BlockPos> mayHeat = pos -> {
                     ZoneRegion region = owners.get(pos);
-                    return region != null && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
-                            && mayUseMachine(level, caster, pos);
+                    return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
                 };
                 if (heat > 0.0) {
                     used += MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(), mayHeat);
@@ -326,7 +327,7 @@ public class EntityHeatZone extends SpellGramZone {
                                 maxTemperature(), pos -> {
                                     ZoneRegion region = owners.get(pos);
                                     return region != null && stormAt(region.worldPos(pos)) == turbulence
-                                            && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
+                                            && mayUseMachine(level, caster, pos);
                                 });
                     }
                 }
@@ -363,7 +364,9 @@ public class EntityHeatZone extends SpellGramZone {
                 }
                 BlockPos pos = blockEntity.getBlockPos();
                 BlockPos world = region.worldPos(pos);
-                if (isActiveAt(world) && isStrongestAt(world) && mayUseMachine(level, caster, pos)) {
+                // 重なった自分の加熱領域どうしでは、ほかの領域がもうその段以上で払っているバーナーは払わない（二度払いをしない、
+                // 2026-11-15 ユーザー）。ほかの領域が低い段で払っていれば、こちらが高い段で払い、相手は次の決め直しで手を引く。
+                if (isActiveAt(world) && mayUseMachine(level, caster, pos) && !paidByAnother(level, pos, wanted)) {
                     burners.add(new Burner(pos, world, wanted));
                 }
             }
@@ -386,6 +389,19 @@ public class EntityHeatZone extends SpellGramZone {
             // 隠し進捗（Create があるときだけ読み込まれる）。
             InfernoZones.award(level, caster, com.moratan251.psitweaks.common.handler.PsitweaksAdvancements.INFERNO_SUPERHEAT);
         }
+    }
+
+    /** ほかの加熱領域が、バーナー {@code pos} を段 {@code wanted} 以上で払っているか。 */
+    private boolean paidByAnother(ServerLevel level, BlockPos pos, int wanted) {
+        for (EntityHeatZone other : SpellGramIndex.all(level, EntityHeatZone.class)) {
+            if (other != this && !other.isEnded()) {
+                Integer paid = other.poweredBurners.get(pos);
+                if (paid != null && paid >= wanted) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /** 熱の総量で今加熱しているブレイズバーナーの数（GameTest 用）。 */
@@ -450,6 +466,50 @@ public class EntityHeatZone extends SpellGramZone {
         return inferno ? CreateCompat.FanProcess.BLASTING : CreateCompat.FanProcess.SMOKING;
     }
 
+    /**
+     * 範囲 {@code region} で Create の加工を 1 回進める。{@code where} は世界の位置で、加工してよいところ。灼熱の間はどこも一括製錬、
+     * そうでなければ自分の荷電領域 {@code arcs} が重なったところは一括製錬、ほかは一括燻製（2026-11-15 ユーザー: 電気炉）。
+     */
+    private void processCreate(ServerLevel level, Player caster, ZoneRegion region, boolean inferno, List<EntityChargedZone> arcs,
+                               java.util.function.Predicate<BlockPos> where) {
+        if (inferno || arcs.isEmpty()) {
+            CreateCompat.FanProcess process = fanProcess(inferno);
+            CreateCompat.processZone(level, region.area(), machinesIn(region), process,
+                    pos -> where.test(region.worldPos(pos)),
+                    pos -> where.test(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+            return;
+        }
+        java.util.function.Predicate<BlockPos> arcAt = world -> {
+            for (EntityChargedZone arc : arcs) {
+                if (arc.isInsideAndActive(world)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        CreateCompat.processZone(level, region.area(), machinesIn(region), CreateCompat.FanProcess.SMOKING,
+                pos -> where.test(region.worldPos(pos)) && !arcAt.test(region.worldPos(pos)),
+                pos -> where.test(region.worldPos(pos)) && !arcAt.test(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+        CreateCompat.processZone(level, region.area(), machinesIn(region), CreateCompat.FanProcess.BLASTING,
+                pos -> where.test(region.worldPos(pos)) && arcAt.test(region.worldPos(pos)),
+                pos -> where.test(region.worldPos(pos)) && arcAt.test(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+    }
+
+    /** 同じ術者の、終わっていない荷電領域（電気炉の判定用、サーバー側）。 */
+    private List<EntityChargedZone> ownChargedZones(ServerLevel level) {
+        java.util.UUID caster = getCasterUuid();
+        if (caster == null) {
+            return List.of();
+        }
+        List<EntityChargedZone> zones = new ArrayList<>();
+        for (var object : SpellGramIndex.ofCaster(level, caster)) {
+            if (object instanceof EntityChargedZone charged && !charged.isEnded()) {
+                zones.add(charged);
+            }
+        }
+        return zones;
+    }
+
     @Override
     protected boolean affectsBlocks() {
         return true;
@@ -491,10 +551,26 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             }
         }
-        // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル。
+        // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル（灼熱と、荷電領域が重なったところは
+        // 一括製錬のもの。クライアントでは術者を見分けない）。
         // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
-        for (ZoneRegion region : regions()) {
-            CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), fanProcess(isInferno()));
+        if (CreateCompat.isCreateLoaded()) {
+            boolean inferno = isInferno();
+            List<EntityChargedZone> arcs = inferno ? List.of() : level().getEntitiesOfClass(EntityChargedZone.class, getOutline());
+            for (ZoneRegion region : regions()) {
+                CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), pos -> {
+                    if (inferno) {
+                        return CreateCompat.FanProcess.BLASTING;
+                    }
+                    net.minecraft.world.phys.Vec3 at = net.minecraft.world.phys.Vec3.atCenterOf(region.worldPos(pos));
+                    for (EntityChargedZone arc : arcs) {
+                        if (arc.getOutline().contains(at)) {
+                            return CreateCompat.FanProcess.BLASTING;
+                        }
+                    }
+                    return CreateCompat.FanProcess.SMOKING;
+                });
+            }
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();

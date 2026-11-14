@@ -104,17 +104,23 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /**
      * {@code level} のブロック {@code pos} に吹いている乱流で、風力発電機の出力を何倍にするか（サーバー側、術者は問わない）。
-     * 吹いていなければ 0。重なっていればいちばん強いもの。上乗せは台数で分け合う（{@link #windShare}）。
+     * 吹いていなければ 0。各乱流は自分の風量を台数で分け合い（{@link #windShare}）、重なった乱流から受け取る WU は足し算
+     * （2026-11-15 ユーザー、案 A）。ただし 1 台が受け取れるのは合わせて {@link #MAX_WU_PER_GENERATOR} WU（出力 2 倍）まで。
      */
     public static double windBoostAt(Level level, BlockPos pos) {
-        double boost = 0.0;
+        boolean blowing = false;
+        double units = 0.0;
         for (EntityTurbulenceZone zone : SpellGramIndex.all(level, EntityTurbulenceZone.class)) {
             if (!zone.isEnded() && zone.isInsideAndActive(pos)) {
-                boost = Math.max(boost, 1.0 + (windBoostFor(zone.getPower()) - 1.0) * zone.windShare());
+                blowing = true;
+                units += zone.getPower() * zone.windShare();
             }
         }
-        return boost;
+        return blowing ? windBoostFor(Math.min(MAX_WU_PER_GENERATOR, units)) : 0.0;
     }
+
+    /** 風力発電機 1 台が、重なった乱流から合わせて受け取れる WU（出力 2 倍）。 */
+    public static final double MAX_WU_PER_GENERATOR = 10.0;
 
     /**
      * 風量（WU）: 範囲の床の広さ（輪郭の箱の X × Z）× 入れた威力 ÷ {@link #WIND_FOOTPRINT_DIVISOR}。Mekanism がなくても持つ。

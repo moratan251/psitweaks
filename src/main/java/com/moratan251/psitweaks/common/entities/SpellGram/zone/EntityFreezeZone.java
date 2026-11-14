@@ -209,10 +209,10 @@ public class EntityFreezeZone extends SpellGramZone {
         if (machines.isEmpty()) {
             return;
         }
+        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算、2026-11-15 ユーザー、案 A）。
         double removed = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(), fraction, cap, pos -> {
             ZoneRegion region = owners.get(pos);
-            return region != null && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
-                    && mayUseMachine(level, caster, pos);
+            return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
         });
         // 照準の表示: 使っている冷却量（吹雪の上乗せは入れない）。
         recordResourceUse(removed);
@@ -226,7 +226,7 @@ public class EntityFreezeZone extends SpellGramZone {
                         Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), pos -> {
                             ZoneRegion region = owners.get(pos);
                             return region != null && stormAt(region.worldPos(pos)) == turbulence
-                                    && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
+                                    && mayUseMachine(level, caster, pos);
                         });
             }
         }

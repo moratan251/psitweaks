@@ -22,7 +22,10 @@ public final class CreateCompat {
         WASHING,
         /** 一括燻製（作動式: 加熱領域）。 */
         SMOKING,
-        /** 一括製錬（氷炎地獄の灼熱になった加熱領域）。 */
+        /**
+         * 一括製錬（氷炎地獄の灼熱になった加熱領域と、自分の荷電領域が重なった加熱領域）。精錬・溶鉱炉のレシピがあるアイテムだけを扱う（Create のファンと違い、
+         * レシピのないアイテムを燃やさない、2026-11-15 ユーザー）。
+         */
         BLASTING
     }
 
@@ -68,8 +71,14 @@ public final class CreateCompat {
      * デポ・ベルトの上のアイテムに出す（Create と同じく、出るかどうかは Create の側で毎回くじを引く）。Create がなければ何もしない。
      */
     public static void spawnProcessingParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities, FanProcess process) {
+        spawnProcessingParticles(level, area, blockEntities, pos -> process);
+    }
+
+    /** クライアント側: アイテムのあるブロックごとに加工の種類を選んで、パーティクルを出す。 */
+    public static void spawnProcessingParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities,
+                                                java.util.function.Function<BlockPos, FanProcess> processAt) {
         if (isCreateLoaded()) {
-            CreateFanIntegration.spawnParticles(level, area, blockEntities, process);
+            CreateFanIntegration.spawnParticles(level, area, blockEntities, processAt);
         }
     }
 }

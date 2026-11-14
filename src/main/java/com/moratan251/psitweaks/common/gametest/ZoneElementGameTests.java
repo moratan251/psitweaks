@@ -782,6 +782,11 @@ public final class ZoneElementGameTests {
         item.setNeverPickUp();
         item.setDeltaMovement(Vec3.ZERO);
         level.addFreshEntity(item);
+        // レシピのない土は燃やさない（2026-11-15 ユーザー: ドロップアイテムが意図せず燃えないように）。
+        ItemEntity dirt = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.DIRT));
+        dirt.setNeverPickUp();
+        dirt.setDeltaMovement(Vec3.ZERO);
+        level.addFreshEntity(dirt);
         AABB around = new AABB(helper.absolutePos(CENTER)).inflate(5.0);
         Runnable cleanup = () -> {
             level.getEntitiesOfClass(ItemEntity.class, around).forEach(ItemEntity::discard);
@@ -799,8 +804,59 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(120, () -> {
             boolean blasted = !level.getEntitiesOfClass(ItemEntity.class, around,
                     entity -> entity.getItem().is(Items.IRON_INGOT)).isEmpty();
+            boolean dirtKept = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.DIRT)).isEmpty();
             cleanup.run();
             helper.assertTrue(blasted, "The scorching Heat Zone must blast raw iron into an iron ingot with Create");
+            helper.assertTrue(dirtKept, "Bulk blasting by a zone must not burn items without a smelting recipe, such as dirt");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 電気炉（2026-11-15 ユーザー）: 自分の荷電領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（原料の鉄 → 鉄インゴット）。
+     * レシピのない土は燃えない。Create がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_arc_furnace", timeoutTicks = 400)
+    public static void chargedHeatZoneBlastsItemsWithCreate(GameTestHelper helper) {
+        if (!CreateCompat.isCreateLoaded()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_arc_furnace", new Vec3(8.5, 1.0, 2.5));
+        helper.setBlock(new BlockPos(1, 0, 2), Blocks.STONE);
+        Vec3 itemAt = helper.absoluteVec(new Vec3(1.5, 1.0, 2.5));
+        ItemEntity iron = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.RAW_IRON));
+        iron.setNeverPickUp();
+        iron.setDeltaMovement(Vec3.ZERO);
+        level.addFreshEntity(iron);
+        ItemEntity dirt = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.DIRT));
+        dirt.setNeverPickUp();
+        dirt.setDeltaMovement(Vec3.ZERO);
+        level.addFreshEntity(dirt);
+        AABB around = new AABB(helper.absolutePos(CENTER)).inflate(5.0);
+        Runnable cleanup = () -> {
+            level.getEntitiesOfClass(ItemEntity.class, around).forEach(ItemEntity::discard);
+            cleanup(helper, caster);
+        };
+        try {
+            // 事象干渉力 4 → 速さは上限の 2 倍（Create の処理時間 150 tick を 75 tick ほどで）。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, charged(helper, new BlockPos(1, 1, 2)), 3.0, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(120, () -> {
+            boolean blasted = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.IRON_INGOT)).isEmpty();
+            boolean dirtKept = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.DIRT)).isEmpty();
+            cleanup.run();
+            helper.assertTrue(blasted, "A Heat Zone overlapped by your own Charged Zone must blast raw iron into an iron ingot");
+            helper.assertTrue(dirtKept, "It must not burn dirt, which has no smelting recipe");
             helper.succeed();
         });
     }
@@ -899,13 +955,22 @@ public final class ZoneElementGameTests {
         burnerTest(helper, BurnerCase.SMALL);
     }
 
+    /**
+     * 重なった自分の加熱領域（2026-11-15 ユーザー、案 A）: 熱量は足し算だが、同じバーナーを二度払いしない（どちらか 1 つだけが
+     * 払う）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_stacked", timeoutTicks = 100)
+    public static void overlappingHeatZonesPayForABurnerOnce(GameTestHelper helper) {
+        burnerTest(helper, BurnerCase.STACKED);
+    }
+
     /** 設計 B: 凍結領域と重なって打ち消されたところのブレイズバーナーは変わらない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_cancel", timeoutTicks = 100)
     public static void cancelledHeatZoneLeavesBlazeBurnersAlone(GameTestHelper helper) {
         burnerTest(helper, BurnerCase.CANCEL);
     }
 
-    private enum BurnerCase { KINDLE, REVERT, INFERNO, CANCEL, BUDGET, SMALL }
+    private enum BurnerCase { KINDLE, REVERT, INFERNO, CANCEL, BUDGET, SMALL, STACKED }
 
     /**
      * ブレイズバーナーの段は、Create のクラスを使わずブロックの状態（{@code blaze} = smouldering・kindled・seething）で見る
@@ -943,6 +1008,11 @@ public final class ZoneElementGameTests {
                 case KINDLE, REVERT, BUDGET -> cast(caster, heat(helper, new BlockPos(1, 1, 2)), 9.0, 10.0);
                 // 一辺 3（x 0〜2）・威力 100。外のバーナー (8, 1, 2) は外。
                 case SMALL -> cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 100.0);
+                // 同じ加熱領域を 2 つ重ねる（どちらもバーナー 1 台ぶん払える）。
+                case STACKED -> {
+                    cast(caster, heat(helper, new BlockPos(1, 1, 2)), 9.0, 10.0);
+                    cast(caster, heat(helper, new BlockPos(1, 1, 2)), 9.0, 10.0);
+                }
                 // 氷炎地獄: 加熱 x -3〜5、凍結 x 6〜14（同じ大きさで二分）。
                 case INFERNO -> {
                     cast(caster, heat(helper, new BlockPos(1, 1, 2)), 9.0, 10.0);
@@ -982,6 +1052,16 @@ public final class ZoneElementGameTests {
                 return;
             }
             String outsideLevel = propertyValue(helper.getBlockState(outside), "blaze");
+            if (mode == BurnerCase.STACKED) {
+                int powered = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
+                        .filter(zone -> zone instanceof EntityHeatZone).mapToInt(zone -> ((EntityHeatZone) zone).poweredBurnerCount())
+                        .sum();
+                cleanup.run();
+                helper.assertTrue("kindled".equals(insideLevel), "The Blaze Burner must be kindled, was " + insideLevel);
+                helper.assertTrue(powered == 1, "Two overlapping Heat Zones must pay for the burner once, paid " + powered);
+                helper.succeed();
+                return;
+            }
             if (mode == BurnerCase.SMALL) {
                 EntityHeatZone zone = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                         .filter(object -> object instanceof EntityHeatZone).map(object -> (EntityHeatZone) object).findFirst().orElse(null);
@@ -1247,6 +1327,16 @@ public final class ZoneElementGameTests {
     private static PieceTrickZoneBase<?> heat(GameTestHelper helper, BlockPos relativeCenter) {
         BlockPos center = helper.absolutePos(relativeCenter);
         return new PieceTrickHeatZone(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return paramValue(param, center);
+            }
+        };
+    }
+
+    private static PieceTrickZoneBase<?> charged(GameTestHelper helper, BlockPos relativeCenter) {
+        BlockPos center = helper.absolutePos(relativeCenter);
+        return new com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone(new Spell()) {
             @Override
             public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
                 return paramValue(param, center);
