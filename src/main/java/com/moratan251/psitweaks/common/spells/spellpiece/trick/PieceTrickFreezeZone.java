@@ -15,9 +15,7 @@ import vazkii.psi.api.spell.StatLabel;
  * 「威力」（定数、最大 10）は冷やす強さで、凍えのたまる速さと氷炎地獄の強さを決める（2026-11-11 ユーザー）。
  */
 public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
-    // 仮の数値: 規模 = 10 + 広さ × 威力 / 25、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²。威力 5 で 威力のなかった頃と同じ）
-    private static final int POTENCY_BASE = 10;
-    private static final int POTENCY_DIVISOR = 25;
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通、2026-11-14）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²。威力 5 で 威力のなかった頃と同じ）
     private static final int COST_BASE = 50;
     private static final int COST_MULTIPLIER = 2;
     private static final int COST_DIVISOR = 5;
@@ -26,10 +24,14 @@ public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
 
     public PieceTrickFreezeZone(Spell spell) {
         super(spell, EntityFreezeZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, areaLabel().mul(new StatLabel(SpellParam.GENERIC_NAME_POWER, true))
-                .div(POTENCY_DIVISOR).add(POTENCY_BASE).floor());
-        setStatLabel(EnumSpellStat.COST, areaLabel().mul(new StatLabel(SpellParam.GENERIC_NAME_POWER, true))
-                .mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel(MAX_RESOURCE_ZONE_POWER));
+        setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
+    }
+
+    /** 総量を持つ領域なので、威力は 10 より上も入れられる（2026-11-15 ユーザー）。 */
+    @Override
+    protected double maxPower() {
+        return MAX_RESOURCE_ZONE_POWER;
     }
 
     @Override
@@ -39,12 +41,22 @@ public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
 
     @Override
     protected int potency(int area) throws SpellCompilationException {
-        return POTENCY_BASE + (int) Math.floor(area * constantPower(power) / POTENCY_DIVISOR);
+        return poweredPotency(area, constantPower(power));
     }
 
     @Override
     protected int cost(int area) throws SpellCompilationException {
-        return COST_BASE + (int) Math.floor(area * constantPower(power) * COST_MULTIPLIER / COST_DIVISOR);
+        return costFor(area, constantPower(power));
+    }
+
+    /** コスト（30 秒）: 50 + ⌊広さ × 威力 × 2 / 5⌋。 */
+    public static int costFor(int area, double power) {
+        return COST_BASE + (int) Math.floor(area * power * COST_MULTIPLIER / COST_DIVISOR);
+    }
+
+    @Override
+    protected int runtimeCost(int size, SpellContext context) throws SpellRuntimeException {
+        return costFor(areaOf(size), powerValue(context, power));
     }
 
     @Override

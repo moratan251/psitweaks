@@ -107,8 +107,66 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         super.setStatLabel(stat, label);
     }
 
-    /** 威力の上限（加熱・凍結、仮）。 */
+    /** 威力の上限（加重領域・領域干渉）。 */
     public static final double MAX_ZONE_POWER = 10.0;
+    /**
+     * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）の威力の上限（2026-11-15 ユーザー: 小さい領域でも高いコストを
+     * 払えば多くのリソースを扱えるよう、10 より上も入れられる）。10 を超えた分は総量（コスト）だけを増やし、1 体・1 か所あたりの
+     * 強さは威力 10 で頭打ち（{@code SpellGramZone.MAX_EFFECT_POWER}）。上限はコストの桁あふれよけで、規模の上限より先には届かない。
+     */
+    public static final double MAX_RESOURCE_ZONE_POWER = 1000.0;
+    /**
+     * 威力の下限（2026-11-14 ユーザー）。威力は「広さあたりの強さ＝広さあたりのコスト」を決めるコストのつまみで、効くか効かないか
+     * だけの効き目（一括燻製・氷を溶かすなど）を一番安い威力で使えないよう、下限を 1 にする。0 より大きく 1 より小さい威力は 1、
+     * 10 より大きい威力は 10 として扱う（0 以下はエラー）。
+     */
+    public static final double MIN_ZONE_POWER = 1.0;
+    /**
+     * 威力のある領域の規模の係数（2026-11-14 ユーザー: 終盤なら最大の領域を 2 つ同時に置ける程度）: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋。
+     * サイズ 16・威力 10 で 701 になり、プシオニックメタルの CAD（規模 1500）で 2 つ置ける。
+     */
+    public static final double POWERED_POTENCY_FACTOR = 0.27;
+    /** 規模の固定分。 */
+    public static final int POTENCY_BASE = 10;
+
+    /** 威力を 1〜10 にそろえる。 */
+    public static double clampPower(double power) {
+        return Math.max(MIN_ZONE_POWER, Math.min(MAX_ZONE_POWER, power));
+    }
+
+    /** 威力のラベル（1〜10 にそろえた値）。 */
+    protected static StatLabel powerLabel() {
+        return powerLabel(MAX_ZONE_POWER);
+    }
+
+    /** 威力のラベル（1〜{@code max} にそろえた値）。 */
+    protected static StatLabel powerLabel(double max) {
+        return new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_ZONE_POWER).min(max);
+    }
+
+    /** このピースの威力の上限（{@link #MAX_ZONE_POWER}、総量を持つ領域は {@link #MAX_RESOURCE_ZONE_POWER}）。 */
+    protected double maxPower() {
+        return MAX_ZONE_POWER;
+    }
+
+    private double clampOwnPower(double power) {
+        return Math.max(MIN_ZONE_POWER, Math.min(maxPower(), power));
+    }
+
+    /** 威力のある領域の規模: 10 + ⌊広さ × 威力 × 0.27⌋。 */
+    public static int poweredPotency(int area, double power) {
+        return POTENCY_BASE + (int) Math.floor(area * power * POWERED_POTENCY_FACTOR);
+    }
+
+    /** {@link #poweredPotency} のラベル。 */
+    protected static StatLabel poweredPotencyLabel() {
+        return poweredPotencyLabel(MAX_ZONE_POWER);
+    }
+
+    /** {@link #poweredPotency} のラベル（威力の上限 {@code max}）。 */
+    protected static StatLabel poweredPotencyLabel(double max) {
+        return areaLabel().mul(powerLabel(max)).mul(POWERED_POTENCY_FACTOR).add(POTENCY_BASE).floor();
+    }
 
     /** 「威力」の入力（定数、コストを決めるため）を足す。 */
     protected SpellParam<Number> addPowerParam() {
@@ -117,26 +175,26 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         return power;
     }
 
-    /** 術式を組んだ時点の威力（正の定数、{@link #MAX_ZONE_POWER} で頭打ち）。 */
+    /** 術式を組んだ時点の威力（正の定数、1〜{@link #maxPower()} にそろえる）。 */
     protected double constantPower(SpellParam<Number> power) throws SpellCompilationException {
         Object value = getParamEvaluation(power);
         if (!(value instanceof Number number) || number.doubleValue() <= 0.0) {
             throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
         }
-        return Math.min(MAX_ZONE_POWER, number.doubleValue());
+        return clampOwnPower(number.doubleValue());
     }
 
-    /** 唱えた時点の威力（正、{@link #MAX_ZONE_POWER} で頭打ち）。 */
+    /** 唱えた時点の威力（正、1〜{@link #maxPower()} にそろえる）。 */
     protected float powerValue(SpellContext context, SpellParam<Number> power) throws SpellRuntimeException {
         double value = getNotNullParamValue(context, power).doubleValue();
         if (value <= 0.0) {
             throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
-        return (float) Math.min(MAX_ZONE_POWER, value);
+        return (float) clampOwnPower(value);
     }
 
     /** 範囲の広さのラベル: サイズ²。 */
-    protected static StatLabel areaLabel() {
+    public static StatLabel areaLabel() {
         return new StatLabel(PsitweaksSpellParams.SIZE, true).square();
     }
 
@@ -247,7 +305,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         zone.setCaster(context.caster);
         // 時間に比例して、存続時間・置いたときの耐久値・コストが増える（耐久値の減り方は時間によらない）。
         zone.setLifetimeTicks((int) Math.round(seconds * 20.0));
-        zone.setPlacementCost(timedCost(placementCost(sizeValue), seconds));
+        zone.setPlacementCost(timedCost(runtimeCost(sizeValue, context), seconds));
         zone.setMaxIntegrity(SpellGramIntegrity.initial(BASE_INTEGRITY, context.caster, seconds / DEFAULT_TIME_SECONDS));
         // 耐久値の上限は「時間」によらず一定（2026-11-14 ユーザー）: 「時間」を最大にして置いたときの上限（その耐久値の 2 倍）。
         zone.setIntegrityCap(integrityCap(context.caster));
@@ -281,11 +339,24 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
      * 盤面を持たない GameTest など）は、広さだけで見積もる。
      */
     private int placementCost(int size) {
+        return placementCostOf(size);
+    }
+
+    private int placementCostOf(int size) {
         try {
             return cost(areaOf(size));
         } catch (SpellCompilationException e) {
             return Math.max(1, areaOf(size));
         }
+    }
+
+    /**
+     * 置いたときに払ったコストのうち、時間を掛ける前の分を、唱えた時点の入力で求める（術式の盤面の定数と同じ値になる）。荷電領域の
+     * 充電能力や加熱領域の熱の総量はこのコストに比例する（2026-11-14 ユーザー）。威力を持つ領域は上書きして、唱えた時点の威力で
+     * 求める。既定は {@link #placementCost} と同じ。
+     */
+    protected int runtimeCost(int size, SpellContext context) throws SpellRuntimeException {
+        return placementCostOf(size);
     }
 
     private int constantSize() throws SpellCompilationException {

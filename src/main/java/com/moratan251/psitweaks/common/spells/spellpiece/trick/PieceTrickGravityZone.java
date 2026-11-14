@@ -37,9 +37,7 @@ import java.util.Map;
 public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone> implements PsitweaksModeConfigurable {
     /** 威力の上限（仮）。 */
     public static final double MAX_POWER = 10.0;
-    // 仮の数値: 規模 = 10 + 広さ × 威力 / 10、コスト = 40 + 広さ × 威力（広さ = サイズ²）
-    private static final int POTENCY_BASE = 10;
-    private static final int POTENCY_AREA_DIVISOR = 10;
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通、2026-11-14）、コスト = 40 + 広さ × 威力（広さ = サイズ²）
     private static final int COST_BASE = 40;
     private static final String TAG_MODE = "psitweaksMode";
     private static final List<PsitweaksModeOption> MODES = List.of(PsitweaksModeOptions.VECTOR, PsitweaksModeOptions.MATRIX);
@@ -54,10 +52,8 @@ public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone>
     }
 
     private void applyStatLabels() {
-        setStatLabel(EnumSpellStat.POTENCY, areaLabel().mul(new StatLabel(SpellParam.GENERIC_NAME_POWER, true))
-                .div(POTENCY_AREA_DIVISOR).add(POTENCY_BASE).floor());
-        setStatLabel(EnumSpellStat.COST, areaLabel().mul(new StatLabel(SpellParam.GENERIC_NAME_POWER, true))
-                .add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
+        setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel()).add(COST_BASE).floor());
     }
 
     @Override
@@ -139,12 +135,22 @@ public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone>
 
     @Override
     protected int potency(int area) throws SpellCompilationException {
-        return POTENCY_BASE + (int) Math.floor(area * constantPower() / POTENCY_AREA_DIVISOR);
+        return poweredPotency(area, constantPower());
     }
 
     @Override
     protected int cost(int area) throws SpellCompilationException {
-        return COST_BASE + (int) Math.floor(area * constantPower());
+        return costFor(area, constantPower());
+    }
+
+    /** コスト（30 秒）: 40 + ⌊広さ × |威力|⌋。 */
+    public static int costFor(int area, double power) {
+        return COST_BASE + (int) Math.floor(area * power);
+    }
+
+    @Override
+    protected int runtimeCost(int size, SpellContext context) throws SpellRuntimeException {
+        return costFor(areaOf(size), clampPower(Math.abs(getNotNullParamValue(context, power).doubleValue())));
     }
 
     /** 術式を組んだ時点の威力の大きさ。ベクトルモードは正、行列モードは 0 でなければよい（負は逆向き）。 */
@@ -153,7 +159,7 @@ public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone>
         if (!(value instanceof Number number) || (isMatrixMode() ? number.doubleValue() == 0.0 : number.doubleValue() <= 0.0)) {
             throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
         }
-        return Math.min(MAX_POWER, Math.abs(number.doubleValue()));
+        return clampPower(Math.abs(number.doubleValue()));
     }
 
     @Override
@@ -183,7 +189,7 @@ public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone>
             }
             push = dir.toVec3D();
         }
-        zone.configurePush(push, (float) Math.min(MAX_POWER, Math.abs(powerValue)));
+        zone.configurePush(push, (float) clampPower(Math.abs(powerValue)));
     }
 
     /** 行列の Y 軸（2 列目の上 3 行、長さは関係ない）。行列がない・Y 軸が潰れていれば真上。 */

@@ -32,7 +32,8 @@ import java.util.List;
  * <p>
  * 範囲の中の水源の水のうち、真上が空気のものを氷にする（氷渡りと同じ条件）。中にエンティティがいる水は凍らせない。
  * <p>
- * 同じ術者の加熱領域と 1 つの直方体を二分すると、氷炎地獄の「極寒」側になる（{@link InfernoZones}、隠し要素）。
+ * 同じ術者の加熱領域と 1 つの直方体を二分すると、氷炎地獄の「極寒」側になる（{@link InfernoZones}、隠し要素）。極寒の間に
+ * Mekanism の機械から奪った熱は、灼熱側の加熱領域へ移す（2026-11-15 ユーザー、案 A。前の「冷却 4 倍」は外した）。
  * <p>
  * 同じ術者の乱流領域と重なったブロックは「吹雪」になる（2026-11-11 ユーザー）: 中の生物に {@link #INTERVAL} tick ごとに
  * 凍結属性のダメージ（攻撃術式の共通ルール、設定 {@code blizzard.damageMultiplier}）、凍えも 2 倍の速さでたまる
@@ -68,36 +69,55 @@ public class EntityFreezeZone extends SpellGramZone {
      * （1500 K の設備が約 12 秒で 400 K）。
      */
     public static final double COOL_FRACTION_PER_POWER = 0.002;
-    /** Mekanism の冷却: 氷炎地獄の極寒の間の倍率（灼熱側の熱が 4 倍になるのと対、仮）。 */
-    public static final double INFERNO_COOL_FACTOR = 4.0;
     /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
     public static final double MAX_COOL_FRACTION = 0.5;
+    /**
+     * Mekanism の冷却の上限の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、2026-11-14 ユーザー: 冷却の合計の上限は
+     * コストに比例）。威力 10・サイズ 16（コスト 1074）の速さ 1 で約 1 MJ/t。
+     */
+    public static final double COOLING_PER_PSI = 560_000.0;
     /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
     /** 威力（冷やす強さ、2026-11-11 ユーザー）。凍えのたまる速さと氷炎地獄の強さを決める。 */
+    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
     private float power = DEFAULT_POWER;
+    /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
+    private float rawPower = DEFAULT_POWER;
 
     /**
      * Mekanism の冷却で、1 tick に温度差を縮める割合: 威力 × 0.002 × 機械を動かす速さ（置いた時点の事象干渉力）、氷炎地獄の
-     * 極寒の間は 4 倍、上限 0.5。
+     * 上限 0.5。
      */
-    public static double coolFractionPerTick(float power, float machineSpeed, boolean inferno) {
-        double fraction = Math.max(0.0F, power) * COOL_FRACTION_PER_POWER * Math.max(0.0F, machineSpeed)
-                * (inferno ? INFERNO_COOL_FACTOR : 1.0);
+    public static double coolFractionPerTick(float power, float machineSpeed) {
+        double fraction = Math.max(0.0F, power) * COOL_FRACTION_PER_POWER * Math.max(0.0F, machineSpeed);
         return Math.min(MAX_COOL_FRACTION, fraction);
+    }
+
+    /** 1 tick に取り除ける熱の合計の上限（J）: 置いたときのコスト × {@link #COOLING_PER_PSI} ÷ 存続時間 × 速さ。 */
+    public double coolingCapPerTick() {
+        return coolingCapPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
+    }
+
+    /** {@link #coolingCapPerTick()} を、置いたときのコスト・存続時間・速さから求める。時間によらない。 */
+    public static double coolingCapPerTick(float placementCost, int lifetimeTicks, float machineSpeed) {
+        if (lifetimeTicks <= 0) {
+            return 0.0;
+        }
+        return placementCost * COOLING_PER_PSI / lifetimeTicks * machineSpeed;
     }
 
     /** 置く前に呼ぶ。 */
     public void setPower(float power) {
-        this.power = Math.max(0.0F, power);
+        this.rawPower = Math.max(0.0F, power);
+        this.power = Math.min(rawPower, MAX_EFFECT_POWER);
         SpellGramIndex.touch();
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
     @Override
     protected double stackStrength() {
-        return getPower();
+        return rawPower;
     }
 
     public float getPower() {
@@ -149,26 +169,45 @@ public class EntityFreezeZone extends SpellGramZone {
                 || !(getCaster() instanceof Player caster) || !MekanismCompat.isMekanismLoaded()) {
             return;
         }
-        double fraction = coolFractionPerTick(power, getMachineSpeed(), isInfernoAt(level.getGameTime()));
+        double fraction = coolFractionPerTick(power, getMachineSpeed());
         if (fraction <= 0.0) {
             return;
         }
-        // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）。範囲・領域干渉・乱流は世界の位置で判定し、保護は
-        // 機械が本当にある位置で確かめる。
+        double cap = coolingCapPerTick();
+        // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）をまとめ、上限を一度に分ける。範囲・領域干渉・乱流は
+        // 世界の位置で判定し、保護は機械が本当にある位置で確かめる。
+        java.util.Map<BlockPos, ZoneRegion> owners = new java.util.HashMap<>();
+        List<BlockEntity> machines = new java.util.ArrayList<>();
         for (ZoneRegion region : regions()) {
-            List<BlockEntity> blockEntities = machinesIn(region);
-            if (blockEntities.isEmpty()) {
-                continue;
-            }
-            MekanismGameplayCompat.drainZoneHeat(level, blockEntities, heatSideCache(), fraction,
-                    pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
-            if (isStorm()) {
-                for (EntityTurbulenceZone turbulence : overlappingStorms()) {
-                    MekanismGameplayCompat.drainZoneHeat(level, blockEntities, heatSideCache(),
-                            Math.min(MAX_COOL_FRACTION, fraction * stormBoost(turbulence.getPower())),
-                            pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+            for (BlockEntity blockEntity : machinesIn(region)) {
+                if (owners.putIfAbsent(blockEntity.getBlockPos(), region) == null) {
+                    machines.add(blockEntity);
                 }
             }
+        }
+        if (machines.isEmpty()) {
+            return;
+        }
+        double removed = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(), fraction, cap, pos -> {
+            ZoneRegion region = owners.get(pos);
+            return region != null && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
+                    && mayUseMachine(level, caster, pos);
+        });
+        if (isStorm()) {
+            // 吹雪のところは、乱流の威力に応じて割合と上限を上乗せ（威力 10 で 2 倍）。
+            for (EntityTurbulenceZone turbulence : overlappingStorms()) {
+                double boost = stormBoost(turbulence.getPower());
+                removed += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
+                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost, pos -> {
+                            ZoneRegion region = owners.get(pos);
+                            return region != null && stormAt(region.worldPos(pos)) == turbulence
+                                    && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
+                        });
+            }
+        }
+        // 氷炎地獄の極寒: 奪った熱を灼熱側の加熱領域へ移す（2026-11-15 ユーザー、案 A）。
+        if (infernoPartner() instanceof EntityHeatZone hot) {
+            hot.acceptMovedHeat(removed);
         }
     }
 

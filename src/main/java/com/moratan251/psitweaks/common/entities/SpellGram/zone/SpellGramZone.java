@@ -63,6 +63,13 @@ public abstract class SpellGramZone extends SpellGramObject {
     private long infernoUntil = Long.MIN_VALUE;
     /** 氷炎地獄の強さ（両側の威力のうち小さいほう）。サーバー側だけ。 */
     private float infernoPower;
+    /**
+     * 1 体・1 か所あたりの強さに使う威力の上限（2026-11-15 ユーザー）。加熱・凍結・乱流・荷電の領域は威力を 10 より上にも
+     * できるが、上の分はコスト（熱・冷却・FE・風力の総量）だけを増やす。
+     */
+    public static final float MAX_EFFECT_POWER = 10.0F;
+    /** 氷炎地獄の相手の領域（エンティティの番号、まだなければ -1）。サーバー側だけ。 */
+    private int infernoPartner = -1;
     private int color = 0xFFFFFF;
     /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
     private int floorCircleLevel = -1;
@@ -222,13 +229,23 @@ public abstract class SpellGramZone extends SpellGramObject {
         return gameTime < infernoUntil;
     }
 
-    /** 氷炎地獄を {@code until}（ゲーム時刻）まで続ける（サーバー側）。 */
-    void extendInferno(long until, float power) {
+    /** 氷炎地獄を {@code until}（ゲーム時刻）まで、相手 {@code partner} と続ける（サーバー側）。 */
+    void extendInferno(long until, float power, SpellGramZone partner) {
         infernoUntil = Math.max(infernoUntil, until);
         infernoPower = power;
+        infernoPartner = partner.getId();
         if (!isInferno() && isInfernoAt(level().getGameTime())) {
             entityData.set(DATA_INFERNO, true);
         }
+    }
+
+    /** 氷炎地獄の相手（起きていない・相手が消えたなら null、サーバー側）。 */
+    @org.jetbrains.annotations.Nullable
+    SpellGramZone infernoPartner() {
+        if (infernoPartner < 0 || !isInfernoAt(level().getGameTime())) {
+            return null;
+        }
+        return level().getEntity(infernoPartner) instanceof SpellGramZone zone && !zone.isEnded() ? zone : null;
     }
 
     /** 床の魔法陣に前のフレームで選んだ画像の段（クライアントの描画用）。 */

@@ -22,8 +22,8 @@ public class PieceTrickSupplyFE extends PieceTrick {
     private static final double POTENCY_BASE = 20.0D;
     // powerVal 1.0 あたりの Psi Cost
     private static final double COST_PER_POWER = 200.0D;
-    // powerVal 1.0 あたりに供給する FE 量
-    private static final int FE_PER_POWER = 4000;
+    // powerVal 1.0 あたりに供給する FE 量（コスト 200 で 80 FE/Psi、サイリンク発電機の 0.8 倍。2026-11-15 ユーザー: 前の 4 倍）
+    private static final int FE_PER_POWER = 16000;
 
     SpellParam<Vector3> position;
     SpellParam<Number> power;

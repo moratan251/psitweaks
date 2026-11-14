@@ -44,6 +44,30 @@ final class CreateFanIntegration {
         }
     }
 
+    /** {@link CreateCompat#burnerOwnHeat}。 */
+    static int burnerOwnHeat(BlockEntity blockEntity) {
+        if (!lookUpBurner() || !burnerClass.isInstance(blockEntity)
+                || BlazeBurnerBlock.getHeatLevelOf(blockEntity.getBlockState()) == BlazeBurnerBlock.HeatLevel.NONE) {
+            return -1;
+        }
+        try {
+            if ((Boolean) creative.invoke(blockEntity)) {
+                return 2;
+            }
+            Object fuel = activeFuel.invoke(blockEntity);
+            if (fuel instanceof Enum<?> type) {
+                return switch (type.name()) {
+                    case "SPECIAL" -> 2;
+                    case "NORMAL" -> 1;
+                    default -> 0;
+                };
+            }
+            return 0;
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            return -1;
+        }
+    }
+
     private static synchronized boolean lookUpBurner() {
         if (!burnerLookedUp) {
             burnerLookedUp = true;

@@ -281,7 +281,9 @@ public final class SableZoneGameTests {
                     heaterBefore[0] = MekanismGameplayCompat.temperatureAt(level, heaterPlot);
                     helper.assertTrue(!Double.isNaN(heaterBefore[0]), "Precondition: the heater must be on the ship");
                 }
-                castOverShip(caster, ship, heatPiece(), 5.0);
+                // 熱の総量でブレイズバーナー 1 台（200 J/t）を払えるよう、干渉力 4（速さ 2）・一辺 9・威力 10（コスト 374 → 約 449 J/t）。
+                caster.getAttribute(com.moratan251.psitweaks.common.attributes.PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+                castOverShip(caster, ship, heatPiece(), 10.0, 9.0);
             } catch (ReflectiveOperationException | SpellRuntimeException e) {
                 throw new RuntimeException(e);
             }
@@ -367,8 +369,13 @@ public final class SableZoneGameTests {
     /** 世界の座標で、機体の今見えている場所を覆う一辺 7 の領域を {@code piece} で置く（威力の入力があれば {@code power}）。 */
     private static void castOverShip(ServerPlayer caster, Object ship, PieceTrickZoneBase<?> template, double power)
             throws ReflectiveOperationException, SpellRuntimeException {
+        castOverShip(caster, ship, template, power, 7.0);
+    }
+
+    private static void castOverShip(ServerPlayer caster, Object ship, PieceTrickZoneBase<?> template, double power, double size)
+            throws ReflectiveOperationException, SpellRuntimeException {
         Vector3d shipCenter = (Vector3d) call(call(ship, "logicalPose"), "position");
-        castZone(caster, template, BlockPos.containing(shipCenter.x, shipCenter.y, shipCenter.z), 7.0, power);
+        castZone(caster, template, BlockPos.containing(shipCenter.x, shipCenter.y, shipCenter.z), size, power);
     }
 
     /** テストの場所の (1..3, 1, 1..3) に石を並べて機体に組み、床の中心を回転の中心にして {@code yawDegrees} 度回す。 */

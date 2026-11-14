@@ -17,6 +17,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
+import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -35,7 +38,9 @@ import java.util.UUID;
  * 魔法の弾（Psi・Ars Nouveau・Iron's Spells 'n Spellbooks）はそらさない。</li>
  * <li>残留ポーションやドラゴンブレスの雲を吹き散らす（早く縮んで消える）。</li>
  * <li>Mekanism Generators の風力発電機は、範囲の中なら屋内でも動き、出力が 1 + 威力 × 0.1 倍になる
- * （{@code WindGeneratorTurbulenceMixin}）。</li>
+ * （{@code WindGeneratorTurbulenceMixin}）。上乗せの合計は「範囲の床の広さ ÷ {@link #FOOTPRINT_PER_WIND_GENERATOR}」台ぶんまで
+ * （2026-11-14 ユーザー: 上乗せは威力 × 広さ、つまりコストに比例）。台数が多ければ、各台の上乗せを
+ * 「許す台数 ÷ 台数」倍にする（{@link #windShare}）。屋内で動くことには台数の上限がない。</li>
  * <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は一括洗浄が 2 倍
  * （{@link #blowsFor}、それぞれの領域が見る）。</li>
  * </ul>
@@ -45,6 +50,10 @@ public class EntityTurbulenceZone extends SpellGramZone {
     public static final double DEFLECT_DEGREES_PER_POWER = 9.0;
     /** 威力 1 あたりの、風力発電機の出力の上乗せ（仮）。威力 10 で 2 倍。 */
     public static final double WIND_BOOST_PER_POWER = 0.1;
+    /** 風力発電機 1 台ぶんの上乗せを許す、範囲の床の広さ（ブロック、2026-11-14 ユーザー）。サイズ 8 で 1 台、16 で 4 台。 */
+    public static final double FOOTPRINT_PER_WIND_GENERATOR = 64.0;
+    /** 範囲の中の風力発電機を数え直す間隔（tick）。 */
+    public static final int WIND_COUNT_INTERVAL = 20;
     /** 雲が 1 tick に縮む半径（仮）。 */
     private static final float CLOUD_SHRINK_PER_TICK = 0.15F;
     /** そらさない魔法の弾の mod。 */
@@ -53,7 +62,12 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /** 辺の色: 風の薄緑。 */
     public static final int OUTLINE_COLOR = 0x9CF2C4;
 
+    /** 1 か所あたりの強さ（そらす角度・組み合わせの上乗せ・風力の倍率）に使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
     private float power;
+    /** 入れた威力（10 より上もそのまま。重なりの強さと、風力の上乗せを許す台数に使う）。 */
+    private float rawPower;
+    /** 範囲の中で風を当てている風力発電機の数（{@link #WIND_COUNT_INTERVAL} tick ごとに数え直す）。サーバー側だけ。 */
+    private int windGenerators;
     /** もう曲げた飛び道具（1 つにつき 1 回だけ曲げる）。サーバー側だけ。 */
     private final Set<UUID> deflected = new HashSet<>();
 
@@ -67,14 +81,15 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /** 置く前に呼ぶ。 */
     public void configureWind(float power) {
-        this.power = Math.max(0.0F, power);
+        this.rawPower = Math.max(0.0F, power);
+        this.power = Math.min(rawPower, MAX_EFFECT_POWER);
         SpellGramIndex.touch();
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
     @Override
     protected double stackStrength() {
-        return getPower();
+        return rawPower;
     }
 
     public float getPower() {
@@ -88,16 +103,50 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /**
      * {@code level} のブロック {@code pos} に吹いている乱流で、風力発電機の出力を何倍にするか（サーバー側、術者は問わない）。
-     * 吹いていなければ 0。重なっていればいちばん強いもの。
+     * 吹いていなければ 0。重なっていればいちばん強いもの。上乗せは台数で分け合う（{@link #windShare}）。
      */
     public static double windBoostAt(Level level, BlockPos pos) {
         double boost = 0.0;
         for (EntityTurbulenceZone zone : SpellGramIndex.all(level, EntityTurbulenceZone.class)) {
             if (!zone.isEnded() && zone.isInsideAndActive(pos)) {
-                boost = Math.max(boost, windBoostFor(zone.getPower()));
+                boost = Math.max(boost, 1.0 + (windBoostFor(zone.getPower()) - 1.0) * zone.windShare());
             }
         }
         return boost;
+    }
+
+    /**
+     * 上乗せを許す風力発電機の台数: 範囲の床の広さ（輪郭の箱の X × Z）÷ {@link #FOOTPRINT_PER_WIND_GENERATOR}。威力が 10 を
+     * 超えた分は、1 台の上乗せ（2 倍で頭打ち）の代わりに台数を増やす（入れた威力 ÷ 10 倍。上乗せの合計はコストに比例のまま）。
+     */
+    public double windAllowance() {
+        AABB box = getOutline();
+        double overPower = power > 0.0F ? Math.max(1.0, rawPower / power) : 1.0;
+        return box.getXsize() * box.getZsize() / FOOTPRINT_PER_WIND_GENERATOR * overPower;
+    }
+
+    /** 各風力発電機が受け取る上乗せの割合: 台数が許す台数以下なら 1、多ければ 許す台数 ÷ 台数。 */
+    public double windShare() {
+        double allowance = windAllowance();
+        return windGenerators <= allowance ? 1.0 : allowance / windGenerators;
+    }
+
+    /** 数え直した風力発電機の数（GameTest 用）。 */
+    public int windGeneratorCount() {
+        return windGenerators;
+    }
+
+    /** 範囲の中で風を当てている風力発電機を数え直す。 */
+    private void countWindGenerators() {
+        int count = 0;
+        for (ZoneRegion region : regions()) {
+            for (BlockEntity blockEntity : machinesIn(region)) {
+                if (MekanismGameplayCompat.isWindGenerator(blockEntity) && isInsideAndActive(region.worldPos(blockEntity.getBlockPos()))) {
+                    count++;
+                }
+            }
+        }
+        windGenerators = count;
     }
 
     /** {@code level} のブロック {@code pos} に乱流領域の風が吹いているか（サーバー側、術者は問わない）。 */
@@ -138,6 +187,9 @@ public class EntityTurbulenceZone extends SpellGramZone {
         super.onSpellGramTickServer();
         if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level)) {
             return;
+        }
+        if (tickCount % WIND_COUNT_INTERVAL == 1 && MekanismCompat.isGeneratorsLoaded()) {
+            countWindGenerators();
         }
         List<Entity> inside = level.getEntities(this, getArea().bounds(),
                 entity -> (entity instanceof Projectile || entity instanceof AreaEffectCloud) && entity.isAlive()

@@ -17,6 +17,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -42,11 +43,12 @@ final class MekanismGameplayIntegration {
         }
     }
 
-    static int supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                              double heat, double maxTemperature, Predicate<BlockPos> mayUse) {
+    static double supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                                 double total, double maxTemperature, Predicate<BlockPos> mayUse) {
         // 同じマルチブロック（ボイラー・加温蒸発濃縮・核分裂炉など）は、どのブロックから受け取っても 1 つとして 1 回だけ。
         Set<Object> heated = Collections.newSetFromMap(new IdentityHashMap<>());
-        int count = 0;
+        List<IHeatHandler> handlers = new ArrayList<>();
+        List<Double> rooms = new ArrayList<>();
         for (BlockEntity blockEntity : blockEntities) {
             IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
@@ -61,13 +63,37 @@ final class MekanismGameplayIntegration {
             }
             // 上限の温度を越えない分だけ送る（熱 = 温度差 × 熱容量）。
             double room = (maxTemperature - temperature) * handler.getTotalHeatCapacity();
-            double amount = Math.min(heat, room);
-            if (amount > 0.0) {
-                handler.handleHeat(amount);
-                count++;
+            if (room > 0.0) {
+                handlers.add(handler);
+                rooms.add(room);
             }
         }
-        return count;
+        if (handlers.isEmpty() || total <= 0.0) {
+            return 0.0;
+        }
+        // 総量を受け手で均等に分け、上限の温度で受け取りきれなかった分を、まだ入る受け手に分け直す（1 回だけ）。
+        double share = total / handlers.size();
+        double given = 0.0;
+        List<Integer> open = new ArrayList<>();
+        for (int i = 0; i < handlers.size(); i++) {
+            double amount = Math.min(share, rooms.get(i));
+            handlers.get(i).handleHeat(amount);
+            given += amount;
+            rooms.set(i, rooms.get(i) - amount);
+            if (rooms.get(i) > 1.0E-9) {
+                open.add(i);
+            }
+        }
+        double leftover = total - given;
+        if (leftover > 1.0E-9 && !open.isEmpty()) {
+            double extra = leftover / open.size();
+            for (int i : open) {
+                double amount = Math.min(extra, rooms.get(i));
+                handlers.get(i).handleHeat(amount);
+                given += amount;
+            }
+        }
+        return given;
     }
 
     /**
@@ -75,9 +101,11 @@ final class MekanismGameplayIntegration {
      * 温度差 × 割合 × 熱容量）。周囲の温度より下には冷やさない。同じマルチブロックには 1 回だけ。取り除いた熱の合計を返す。
      */
     static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                double fraction, Predicate<BlockPos> mayUse) {
+                                double fraction, double maxTotal, Predicate<BlockPos> mayUse) {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
-        double removed = 0.0;
+        List<IHeatHandler> handlers = new ArrayList<>();
+        List<Double> amounts = new ArrayList<>();
+        double wanted = 0.0;
         for (BlockEntity blockEntity : blockEntities) {
             IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
@@ -93,7 +121,16 @@ final class MekanismGameplayIntegration {
             }
             // handleHeat は負の値をそのまま受け取り下限を見ないので、取り除くのは必ず周囲との差まで（割合は 1 以下）。
             double amount = excess * Math.min(1.0, fraction) * handler.getTotalHeatCapacity();
-            handler.handleHeat(-amount);
+            handlers.add(handler);
+            amounts.add(amount);
+            wanted += amount;
+        }
+        // 取り除く合計に上限（2026-11-14 ユーザー: 冷却の上限は領域のコストに比例）。超えたら、どの受け手も同じ割合で減らす。
+        double scale = wanted > maxTotal && wanted > 0.0 ? Math.max(0.0, maxTotal) / wanted : 1.0;
+        double removed = 0.0;
+        for (int i = 0; i < handlers.size(); i++) {
+            double amount = amounts.get(i) * scale;
+            handlers.get(i).handleHeat(-amount);
             removed += amount;
         }
         return removed;

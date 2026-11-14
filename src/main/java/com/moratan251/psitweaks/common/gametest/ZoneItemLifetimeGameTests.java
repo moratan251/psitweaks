@@ -106,7 +106,7 @@ public final class ZoneItemLifetimeGameTests {
         wrap(pieceType.apply(new Spell()), matrix, size).execute(new SpellContext().setPlayer(caster));
     }
 
-    /** 入力を差し替えた同じ種類の作動式（湿潤領域・荷電領域は、行列・サイズ・時間だけを持つ）。 */
+    /** 入力を差し替えた同じ種類の作動式（湿潤領域は行列・サイズ・時間、荷電領域はさらに威力を持つ）。 */
     private static PieceTrickZoneBase<?> wrap(PieceTrickZoneBase<?> piece, MatrixValue matrix, int size) {
         if (piece instanceof PieceTrickSoakZone) {
             return new PieceTrickSoakZone(new Spell()) {
@@ -128,6 +128,10 @@ public final class ZoneItemLifetimeGameTests {
         if (param.name.equals(PsitweaksSpellParams.MATRIX)) {
             return matrix;
         }
-        return param.name.equals(PsitweaksSpellParams.SIZE) ? (double) size : null;
+        if (param.name.equals(PsitweaksSpellParams.SIZE)) {
+            return (double) size;
+        }
+        // 荷電領域の威力（2026-11-14 から必須）。湿潤領域は持たない。
+        return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? 5.0 : null;
     }
 }

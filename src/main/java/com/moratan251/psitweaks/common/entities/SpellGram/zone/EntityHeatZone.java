@@ -23,6 +23,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -31,22 +34,27 @@ import java.util.List;
  * <p>
  * 範囲の中の氷と薄氷を水に戻す（ネザーのような水の置けないディメンションでは消える。氷塊・青氷はそのまま）。
  * <p>
- * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括燻製する。Mekanism があるときは、
- * 範囲の中の熱を受け取るブロックに、薪木ストーブ 1 台ぶん（{@link #HEAT_PER_TICK}）の熱を毎 tick 送る。どちらも速さは
- * 置いた時点の事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。熱は 威力 × 100 K までしか
- * 上げない（核分裂炉が損傷する 1200 K を越えさせない）。
+ * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括燻製する（Create のケース入りファンと
+ * 同じで上限なし、速さは置いた時点の事象干渉力、{@link SpellGramZone#machineSpeedFor}）。
+ * <p>
+ * 熱の総量（2026-11-14 ユーザー）: 領域は 1 tick あたり決まった量の熱を持つ（{@link #heatTotalPerTick}: 置いたときのコスト ×
+ * {@link #HEAT_PER_PSI} ÷ 存続時間 × 速さ）。燃料の代わりになるもの（消耗品・エネルギー）はこの総量から払う: Create の
+ * ブレイズバーナーの加熱（1 台 {@link #BURNER_HEAT_PER_TICK}）と、残りを Mekanism の熱を受け取るブロックで均等に分ける。熱は
+ * 威力 × 100 K までしか上げない（核分裂炉が損傷する 1200 K を越えさせない）。
  * <p>
  * 同じ術者の凍結領域と 1 つの直方体を二分すると、氷炎地獄の「灼熱」側になる（{@link InfernoZones}、隠し要素）。
- * 灼熱の間は、Create の加工が一括燻製から一括製錬に変わり、Mekanism へ送る熱が 4 倍になる（2026-11-11 ユーザー）。
+ * 灼熱の間は、Create の加工が一括燻製から一括製錬に変わり（2026-11-11 ユーザー）、熱の総量は相手の凍結領域のコストの分も
+ * 足したものになる。極寒側が Mekanism の機械から奪った熱は、次の tick に灼熱側の Mekanism の機械へ送る（{@link #acceptMovedHeat}、
+ * バーナーには使わない。2026-11-15 ユーザー、案 A: 前の「熱の総量 4 倍」を置き換えた）。
  * <p>
- * Create のブレイズバーナーは、範囲の中なら燃料がなくても「加熱」、灼熱の中なら「極度の加熱」になる（{@link #burnerHeatAt}）。
- * 極度の加熱はふつうブレイズケーキを食べさせ続けて保つ状態なので、灼熱で極度の加熱にしているバーナー 1 台ごとに、加熱領域の
- * 耐久値が時間で減る分の {@link #SUPERHEAT_WEAR_SHARE} 倍だけ余分に減る（2026-11-12 ユーザー、案 C）。台数が多いほど早く消え、
- * 長く保つには時間を長く取るか作動式: 魔法式延長で払い続けることになる。
+ * Create のブレイズバーナーは、熱の総量で払えるぶん（{@link #BURNER_INTERVAL} tick ごとに、領域の中心に近い順に決める）だけ、
+ * 燃料がなくても「加熱」、灼熱の中なら「極度の加熱」（1 台 {@link #SUPERHEATED_BURNER_HEAT_PER_TICK}、ブレイズケーキの代わり）
+ * になる（{@link #burnerHeatAt}）。自分の燃料ですでにその段のバーナーは払わない。2026-11-14 に、前の「極度の加熱 1 台ごとに
+ * 耐久値が余分に減る」を置き換えた。
  * <p>
  * 同じ術者の乱流領域と重なったブロックは「熱乱流」（ヒート・ストーム）になる（2026-11-11 ユーザー）: 中の生物に
  * {@link #STORM_INTERVAL} tick ごとに火属性のダメージ（攻撃術式の共通ルール、設定 {@code heat_storm.damageMultiplier}）、
- * Create の加工と Mekanism へ送る熱が 2 倍。
+ * Create の加工の速さと Mekanism へ送る熱の総量が 2 倍。
  * <p>
  * 凍結領域と重なったブロックでは、加熱と凍結が打ち消し合ってどちらも効かない（術者は問わない。乱流・湿潤との組み合わせより
  * 先に判定するので、熱乱流・吹雪も起きない。2026-11-11 ユーザー）。
@@ -58,10 +66,22 @@ public class EntityHeatZone extends SpellGramZone {
     public static final double TEMPERATURE_PER_POWER = 100.0;
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
-    /** Mekanism の熱: 基準の速さで 1 tick に送る熱（薪木ストーブ 1 台が燃料を燃やしている間と同じ、仮）。 */
-    public static final double HEAT_PER_TICK = 400.0;
-    /** 氷炎地獄の灼熱の間、Mekanism へ送る熱の倍率（2026-11-11 ユーザー）。上限の温度は変えない。 */
-    public static final double INFERNO_HEAT_FACTOR = 4.0;
+    /**
+     * 熱の総量の比率: 置いたときのコスト 1 Psi あたりの熱（J、2026-11-15 ユーザー）。熱発電機は熱 1 J をおよそ 0.28 FE にする
+     * （ゲーム内の測定: 木炭 1 個を薪木ストーブで 320 kJ → 89.6 kFE）ので、サイリンク発電機と同じ 100 FE/Psi になる値。
+     * 威力 5・サイズ 16（コスト 562）の速さ 1 で約 337 J/t。
+     */
+    public static final double HEAT_PER_PSI = 360.0;
+    /**
+     * ブレイズバーナー 1 台を「加熱」にするのに熱の総量から使う熱（J/t、2026-11-15 ユーザー）: 木炭 1 個は薪木ストーブで 320 kJ、
+     * バーナーでは 1600 tick 加熱なので、木炭と同じ 200 J/t。
+     */
+    public static final double BURNER_HEAT_PER_TICK = 200.0;
+    /**
+     * ブレイズバーナー 1 台を「極度の加熱」にするのに使う熱（J/t、加熱の 2 倍、2026-11-15 ユーザー）。ブレイズケーキの溶岩 250 mB は
+     * 約 1 MJ（3200 tick で約 310 J/t）なので、材料の手間を足して加熱の 2 倍。
+     */
+    public static final double SUPERHEATED_BURNER_HEAT_PER_TICK = 400.0;
     private static final int INTERVAL = 10;
     private static final int MAX_EMBERS_PER_TICK = 5;
 
@@ -77,13 +97,17 @@ public class EntityHeatZone extends SpellGramZone {
     public static final int STORM_INTERVAL = 10;
     /** 熱乱流で当たった生物が燃え続ける長さ（秒）。 */
     private static final float STORM_BURN_SECONDS = 4.0F;
-    /**
-     * 灼熱で極度の加熱にしているブレイズバーナー 1 台ごとの、耐久値の余分な減り: 時間で減る分の何倍か（仮）。1 なら 1 台で
-     * 半分の時間で消え、3 台なら 4 分の 1。
-     */
-    public static final float SUPERHEAT_WEAR_SHARE = 1.0F;
-    /** 極度の加熱にしているバーナーを数え直す間隔（tick）。 */
-    private static final int SUPERHEAT_INTERVAL = 10;
+    /** 熱の総量で払うブレイズバーナーを決め直す間隔（tick）。 */
+    public static final int BURNER_INTERVAL = 10;
+
+    /** 熱の総量から払って加熱しているブレイズバーナー（バーナーのブロックの位置 → 1 加熱 / 2 極度の加熱）。サーバー側だけ。 */
+    private final Map<BlockPos, Integer> poweredBurners = new HashMap<>();
+    /** そのバーナーが使っている熱（J/t）。 */
+    private double burnerHeatUse;
+    /** 氷炎地獄の極寒側から移された熱（J）。次の tick に灼熱側の Mekanism の機械へ送る。サーバー側だけ。 */
+    private double movedHeat;
+    /** 移された熱の合計（J、GameTest 用）。 */
+    private double movedHeatReceived;
 
     public EntityHeatZone(EntityType<? extends EntityHeatZone> type, Level level) {
         super(type, level);
@@ -94,18 +118,22 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /** 威力（領域の温度、2026-11-11 ユーザー）。燃やす長さ・Mekanism の上限温度・氷炎地獄の強さを決める。 */
+    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
     private float power = DEFAULT_POWER;
+    /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
+    private float rawPower = DEFAULT_POWER;
 
     /** 置く前に呼ぶ。 */
     public void setPower(float power) {
-        this.power = Math.max(0.0F, power);
+        this.rawPower = Math.max(0.0F, power);
+        this.power = Math.min(rawPower, MAX_EFFECT_POWER);
         SpellGramIndex.touch();
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
     @Override
     protected double stackStrength() {
-        return getPower();
+        return rawPower;
     }
 
     public float getPower() {
@@ -113,9 +141,9 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * Create のブレイズバーナー（2026-11-11 の設計 B、{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} が
-     * 加熱領域の中なら 1（加熱）、氷炎地獄の灼熱の中なら 2（極度の加熱）、どちらでもなければ 0（サーバー側）。打ち消されている
-     * ブロック・領域干渉で止められたブロックと、術者が機械を使えないブロックは 0。重なっていれば強いほう。
+     * Create のブレイズバーナー（2026-11-11 の設計 B、{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} の
+     * バーナーを、加熱領域が熱の総量から払って加熱していれば 1（加熱）、極度の加熱なら 2、どちらでもなければ 0（サーバー側）。
+     * 払う台数・打ち消し・領域干渉・保護は {@link #allocateBurners} で決める。重なっていれば強いほう。
      */
     public static int burnerHeatAt(Level level, BlockPos pos) {
         if (!(level instanceof ServerLevel server)) {
@@ -129,14 +157,13 @@ public class EntityHeatZone extends SpellGramZone {
         BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
         int heat = 0;
         for (EntityHeatZone zone : zones) {
-            if (zone.isEnded() || !zone.isInsideAndActive(at) || !(zone.getCaster() instanceof Player caster)
-                    || !zone.mayUseMachine(server, caster, pos)) {
+            if (zone.isEnded() || !zone.isInsideAndActive(at)) {
                 continue;
             }
-            if (zone.isInfernoAt(server.getGameTime())) {
-                return 2;
+            Integer powered = zone.poweredBurners.get(pos);
+            if (powered != null) {
+                heat = Math.max(heat, powered);
             }
-            heat = 1;
         }
         return heat;
     }
@@ -256,65 +283,144 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             });
         }
-        if (inferno && tickCount % SUPERHEAT_INTERVAL == 0 && CreateCompat.isCreateLoaded()) {
-            int burners = superheatedBurners(level, caster, regions);
-            if (burners > 0) {
-                reduceIntegrity(superheatWearPerTick(getMaxIntegrity(), getLifetimeTicks(), getTimeShare(), burners)
-                        * SUPERHEAT_INTERVAL);
-                // 隠し進捗（Create があるときだけ読み込まれる）。説明に耐久値を余分に使うことを書いてある。
-                InfernoZones.award(level, caster, com.moratan251.psitweaks.common.handler.PsitweaksAdvancements.INFERNO_SUPERHEAT);
-            }
+        if (tickCount % BURNER_INTERVAL == 0) {
+            allocateBurners(level, caster, regions, inferno);
         }
-        double heat = heatPerTick(getMachineSpeed(), inferno);
-        if (heat > 0.0) {
+        double total = heatTotalPerTick(inferno);
+        double heat = total - burnerHeatUse;
+        double moved = movedHeat;
+        movedHeat = 0.0;
+        if (heat > 0.0 || storm || moved > 0.0) {
+            // 世界の範囲と機体の範囲の機械をまとめ、総量を一度に分ける（範囲ごとに総量を払うと、機体に重ねるほど増えてしまう）。
+            Map<BlockPos, ZoneRegion> owners = new HashMap<>();
+            List<BlockEntity> machines = new ArrayList<>();
             for (ZoneRegion region : regions) {
-                List<BlockEntity> machines = machinesIn(region);
-                if (machines.isEmpty()) {
-                    continue;
+                for (BlockEntity blockEntity : machinesIn(region)) {
+                    if (owners.putIfAbsent(blockEntity.getBlockPos(), region) == null) {
+                        machines.add(blockEntity);
+                    }
                 }
-                MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(),
-                        pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+            }
+            if (!machines.isEmpty()) {
+                java.util.function.Predicate<BlockPos> mayHeat = pos -> {
+                    ZoneRegion region = owners.get(pos);
+                    return region != null && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
+                            && mayUseMachine(level, caster, pos);
+                };
+                if (heat > 0.0) {
+                    MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(), mayHeat);
+                }
+                if (moved > 0.0) {
+                    // 氷炎地獄: 極寒側で奪った熱を、灼熱側の機械へ（受け取りきれない分は消える）。
+                    MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), moved, maxTemperature(), mayHeat);
+                }
                 if (storm) {
+                    // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
                     for (EntityTurbulenceZone turbulence : overlappingStorms()) {
-                        MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(),
-                                heat * stormBoost(turbulence.getPower()), maxTemperature(),
-                                pos -> stormAt(region.worldPos(pos)) == turbulence && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                        MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), total * stormBoost(turbulence.getPower()),
+                                maxTemperature(), pos -> {
+                                    ZoneRegion region = owners.get(pos);
+                                    return region != null && stormAt(region.worldPos(pos)) == turbulence
+                                            && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
+                                });
                     }
                 }
             }
         }
     }
 
-    /** 灼熱でこの領域が極度の加熱にしているブレイズバーナーの数（自分の燃料で極度の加熱のものは数えない）。 */
-    private int superheatedBurners(ServerLevel level, Player caster, List<ZoneRegion> regions) {
-        int count = 0;
-        for (ZoneRegion region : regions) {
-            for (BlockEntity blockEntity : machinesIn(region)) {
-                BlockPos pos = blockEntity.getBlockPos();
-                if (!blockEntity.isRemoved() && CreateCompat.isBurnerNeedingSuperheat(blockEntity) && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
-                        && mayUseMachine(level, caster, pos)) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    /** 払うブレイズバーナー 1 台（バーナーの位置、世界の位置、1 加熱 / 2 極度の加熱）。 */
+    private record Burner(BlockPos pos, BlockPos worldPos, int heat) {
     }
 
     /**
-     * 極度の加熱にしているバーナー {@code burners} 台ぶんの、1 tick あたりの耐久値の余分な減り: 時間で減る分（置いたときの
-     * 耐久値 × timeShare ÷ 存続時間）× {@link #SUPERHEAT_WEAR_SHARE} × 台数。時間の入力や干渉力によらず、存続時間の割合で
-     * 同じだけ縮む。
+     * 熱の総量から、加熱するブレイズバーナーを決め直す（{@link #BURNER_INTERVAL} tick ごと）。自分の燃料でまだその段にないバーナーを、
+     * 領域の中心に近い順に、総量で払えるだけ（加熱 {@link #BURNER_HEAT_PER_TICK}、灼熱の中は極度の加熱
+     * {@link #SUPERHEATED_BURNER_HEAT_PER_TICK}）。残りの総量は Mekanism の機械に回る。
      */
-    public static float superheatWearPerTick(float maxIntegrity, int lifetimeTicks, float timeShare, int burners) {
-        if (lifetimeTicks <= 0 || burners <= 0) {
-            return 0.0F;
+    private void allocateBurners(ServerLevel level, Player caster, List<ZoneRegion> regions, boolean inferno) {
+        poweredBurners.clear();
+        burnerHeatUse = 0.0;
+        if (!CreateCompat.isCreateLoaded()) {
+            return;
         }
-        return maxIntegrity * timeShare / lifetimeTicks * SUPERHEAT_WEAR_SHARE * burners;
+        int wanted = inferno ? 2 : 1;
+        List<Burner> burners = new ArrayList<>();
+        for (ZoneRegion region : regions) {
+            for (BlockEntity blockEntity : machinesIn(region)) {
+                if (blockEntity.isRemoved()) {
+                    continue;
+                }
+                int own = CreateCompat.burnerOwnHeat(blockEntity);
+                if (own < 0 || own >= wanted) {
+                    continue;
+                }
+                BlockPos pos = blockEntity.getBlockPos();
+                BlockPos world = region.worldPos(pos);
+                if (isActiveAt(world) && isStrongestAt(world) && mayUseMachine(level, caster, pos)) {
+                    burners.add(new Burner(pos, world, wanted));
+                }
+            }
+        }
+        if (burners.isEmpty()) {
+            return;
+        }
+        BlockPos center = getArea().center();
+        burners.sort(java.util.Comparator.comparingDouble(burner -> burner.worldPos().distSqr(center)));
+        double budget = heatTotalPerTick(inferno);
+        double cost = inferno ? SUPERHEATED_BURNER_HEAT_PER_TICK : BURNER_HEAT_PER_TICK;
+        for (Burner burner : burners) {
+            if (burnerHeatUse + cost > budget + 1.0E-9) {
+                break;
+            }
+            poweredBurners.put(burner.pos(), burner.heat());
+            burnerHeatUse += cost;
+        }
+        if (inferno && !poweredBurners.isEmpty()) {
+            // 隠し進捗（Create があるときだけ読み込まれる）。
+            InfernoZones.award(level, caster, com.moratan251.psitweaks.common.handler.PsitweaksAdvancements.INFERNO_SUPERHEAT);
+        }
     }
 
-    /** Mekanism へ 1 tick に送る熱: 薪木ストーブ 1 台ぶん × 速さ、灼熱の間は 4 倍。 */
-    public static double heatPerTick(float machineSpeed, boolean inferno) {
-        return HEAT_PER_TICK * machineSpeed * (inferno ? INFERNO_HEAT_FACTOR : 1.0);
+    /** 熱の総量で今加熱しているブレイズバーナーの数（GameTest 用）。 */
+    public int poweredBurnerCount() {
+        return poweredBurners.size();
+    }
+
+    /**
+     * 1 tick あたりの熱の総量（J）: 置いたときのコスト × {@link #HEAT_PER_PSI} ÷ 存続時間 × 速さ。灼熱の間は、相手の凍結領域の
+     * 同じ式の分を足す（2 つの領域のコストの合計）。
+     */
+    public double heatTotalPerTick(boolean inferno) {
+        double total = heatTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
+        if (inferno && infernoPartner() instanceof EntityFreezeZone cold) {
+            total += heatTotalPerTick(cold.getPlacementCost(), cold.getLifetimeTicks(), cold.getMachineSpeed());
+        }
+        return total;
+    }
+
+    /** 氷炎地獄の極寒側が奪った熱 {@code heat}（J）を受け取る。次の tick に灼熱側の Mekanism の機械へ送る。 */
+    void acceptMovedHeat(double heat) {
+        if (heat > 0.0) {
+            movedHeat += heat;
+            movedHeatReceived += heat;
+        }
+    }
+
+    /** 極寒側から移された熱の合計（J、GameTest 用）。 */
+    public double movedHeatReceived() {
+        return movedHeatReceived;
+    }
+
+    /**
+     * 置いたときのコスト {@code placementCost}（時間の分を含む）、存続時間 {@code lifetimeTicks}、速さ {@code machineSpeed} の領域の
+     * 1 tick あたりの熱の総量（J）。コストも存続時間も「時間」に比例するので、1 tick あたりの量は時間によらない。
+     */
+    public static double heatTotalPerTick(float placementCost, int lifetimeTicks, float machineSpeed) {
+        if (lifetimeTicks <= 0) {
+            return 0.0;
+        }
+        return placementCost * HEAT_PER_PSI / lifetimeTicks * machineSpeed;
     }
 
     /** Create の加工: ふだんは一括燻製、氷炎地獄の灼熱の間は一括製錬。 */

@@ -38,10 +38,11 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
     private static final int DEFAULT_CONSUME_PSI = 25;
     private static final int MIN_CONSUME_PSI = 1;
     private static final int MAX_CONSUME_PSI = 100;
-    private static final long JOULES_PER_PSI_NUMERATOR = 125;
-    private static final long JOULES_PER_PSI_DENOMINATOR = 2;
-    private static final long ENERGY_CAPACITY_JOULES = 1_600_000L;
-    private static final long AUTO_EJECT_FE_PER_TICK = 6_400;
+    /** Psi 1 あたり 250 J（100 FE、2026-11-15 ユーザー: 前の 25 FE の 4 倍。ほかの Psi → エネルギーの比率の基準）。 */
+    private static final long JOULES_PER_PSI_NUMERATOR = 250;
+    private static final long JOULES_PER_PSI_DENOMINATOR = 1;
+    private static final long ENERGY_CAPACITY_JOULES = 6_400_000L;
+    private static final long AUTO_EJECT_FE_PER_TICK = 25_600;
     private static final long AUTO_EJECT_RATE_JOULES = AUTO_EJECT_FE_PER_TICK * 5 / 2;
     /** The side with the energy port in the model; matches the item's default side config. */
     public static final RelativeSide ENERGY_OUTPUT_SIDE = RelativeSide.BACK;

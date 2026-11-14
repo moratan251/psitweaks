@@ -17,10 +17,11 @@ import vazkii.psi.api.spell.param.ParamNumber;
  * 2026-11-14 ユーザー）は、他人の領域との奪い合いで事象干渉力に 威力 × 5% を上乗せする。
  */
 public class PieceTrickInterferenceZone extends PieceTrickZoneBase<EntityInterferenceZone> {
-    // 仮の数値（2026-11-14 ユーザー、今後調整）: 規模 = 10 + 広さ / 5 ×（1 + 威力 / 10）、コスト = 50 + 広さ × 2 ×（1 + 威力 / 10）
+    // 仮の数値（2026-11-14 ユーザー）: 規模 = 10 + ⌊広さ × 1.35 ×（1 + 威力 / 10）⌋、コスト = 50 + 広さ × 2 ×（1 + 威力 / 10）。威力は必須の 1〜10
     // （広さ = サイズ²）。威力を省けば 0。
     private static final int POTENCY_BASE = 10;
-    private static final int POTENCY_AREA_DIVISOR = 5;
+    /** 規模の広さあたりの係数（2026-11-14 ユーザー: 威力 10・サイズ 16 で威力のある領域と同じ 701）。 */
+    private static final double POTENCY_PER_AREA = 1.35;
     private static final int COST_BASE = 50;
     private static final int COST_PER_AREA = 2;
 
@@ -31,40 +32,38 @@ public class PieceTrickInterferenceZone extends PieceTrickZoneBase<EntityInterfe
 
     public PieceTrickInterferenceZone(Spell spell) {
         super(spell, EntityInterferenceZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, areaLabel().div(POTENCY_AREA_DIVISOR).mul(powerFactorLabel()).add(POTENCY_BASE).floor());
+        setStatLabel(EnumSpellStat.POTENCY, areaLabel().mul(POTENCY_PER_AREA).mul(powerFactorLabel()).add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(COST_PER_AREA).mul(powerFactorLabel()).add(COST_BASE).floor());
     }
 
     @Override
     protected void addZoneParams() {
-        addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, true, true));
+        addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
     }
 
     /** 威力の補正のラベル:（威力 / 10 + 1）。 */
     private static StatLabel powerFactorLabel() {
-        return new StatLabel(SpellParam.GENERIC_NAME_POWER, true).div(MAX_POWER).add(1).parenthesize();
+        return powerLabel().div(MAX_POWER).add(1).parenthesize();
     }
 
-    /** 威力の補正: 1 + 威力 / 10（威力は術式を組んだ時点の定数、省けば 0）。 */
+    /** 威力の補正: 1 + 威力 / 10（威力は術式を組んだ時点の定数、1〜10、2026-11-14 から必須）。 */
     private double powerFactor() throws SpellCompilationException {
-        Object value = getParamEvaluation(power);
-        if (value == null) {
-            return 1.0;
-        }
-        if (!(value instanceof Number number) || number.doubleValue() < 0.0) {
-            throw new SpellCompilationException(SpellCompilationException.NON_POSITIVE_VALUE, x, y);
-        }
-        return 1.0 + Math.min(MAX_POWER, number.doubleValue()) / MAX_POWER;
+        return 1.0 + constantPower(power) / MAX_POWER;
     }
 
     @Override
     protected int potency(int area) throws SpellCompilationException {
-        return POTENCY_BASE + (int) Math.floor((double) area / POTENCY_AREA_DIVISOR * powerFactor());
+        return POTENCY_BASE + (int) Math.floor(area * POTENCY_PER_AREA * powerFactor());
     }
 
     @Override
     protected int cost(int area) throws SpellCompilationException {
         return COST_BASE + (int) Math.floor(area * COST_PER_AREA * powerFactor());
+    }
+
+    @Override
+    protected int runtimeCost(int size, SpellContext context) throws SpellRuntimeException {
+        return COST_BASE + (int) Math.floor(areaOf(size) * COST_PER_AREA * (1.0 + powerValue(context, power) / MAX_POWER));
     }
 
     @Override
@@ -74,11 +73,6 @@ public class PieceTrickInterferenceZone extends PieceTrickZoneBase<EntityInterfe
 
     @Override
     protected void configure(EntityInterferenceZone zone, SpellContext context) throws SpellRuntimeException {
-        Number value = getParamValue(context, power);
-        double powerValue = value == null ? 0.0 : value.doubleValue();
-        if (powerValue < 0.0) {
-            throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
-        }
-        zone.configurePower((float) Math.min(MAX_POWER, powerValue));
+        zone.configurePower(powerValue(context, power));
     }
 }

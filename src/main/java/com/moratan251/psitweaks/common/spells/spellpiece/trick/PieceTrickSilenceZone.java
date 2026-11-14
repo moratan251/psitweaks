@@ -11,20 +11,18 @@ import vazkii.psi.api.spell.SpellContext;
  * （{@link EntitySilenceZone}）。
  */
 public class PieceTrickSilenceZone extends PieceTrickZoneBase<EntitySilenceZone> {
-    // 仮の数値: 規模 = 10 + 広さ / 10、コスト = 40 + 広さ（広さ = サイズ²。湿潤領域と同じ）
-    private static final int POTENCY_BASE = 10;
-    private static final int POTENCY_AREA_DIVISOR = 10;
+    // 仮の数値: 規模 = 10 + 広さ（2026-11-14）、コスト = 40 + 広さ（広さ = サイズ²。湿潤領域と同じ）
     private static final int COST_BASE = 40;
 
     public PieceTrickSilenceZone(Spell spell) {
         super(spell, EntitySilenceZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, areaLabel().div(POTENCY_AREA_DIVISOR).add(POTENCY_BASE).floor());
+        setStatLabel(EnumSpellStat.POTENCY, areaLabel().add(POTENCY_BASE));
         setStatLabel(EnumSpellStat.COST, areaLabel().add(COST_BASE));
     }
 
     @Override
     protected int potency(int area) {
-        return POTENCY_BASE + area / POTENCY_AREA_DIVISOR;
+        return POTENCY_BASE + area;
     }
 
     @Override

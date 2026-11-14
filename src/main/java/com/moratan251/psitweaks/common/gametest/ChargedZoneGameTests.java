@@ -56,16 +56,83 @@ public final class ChargedZoneGameTests {
     private ChargedZoneGameTests() {
     }
 
-    /** FE の量: 速さ × 20 FE/tick、乱流の威力 10 で 2 倍。雷撃は乱流の威力 1 あたり 1。 */
+    /**
+     * 充電能力（2026-11-14 ユーザー）: 置いたときのコスト × 50 FE ÷ 存続時間 × 速さ。コストも存続時間も時間に比例するので、
+     * 1 tick あたりの量は時間によらない。サイズ 16・威力 10（コスト 1074）の速さ 1 で約 358 FE/t（2026-11-15 に 200 FE/Psi）。
+     * 雷撃は乱流の威力 1 あたり 1。
+     */
     @GameTest(template = TEMPLATE)
-    public static void chargedZoneAmountsFollowSpeedAndStorm(GameTestHelper helper) {
-        helper.assertTrue(EntityChargedZone.energyFor(1.0F, 0.0, 5) == 100 && EntityChargedZone.energyFor(0.5F, 0.0, 5) == 50,
-                "Speed 1 must send 20 FE per tick, speed 0.5 half of it");
-        helper.assertTrue(EntityChargedZone.energyFor(1.0F, 10.0, 5) == 200 && EntityChargedZone.energyFor(1.0F, 5.0, 5) == 150,
-                "A Turbulence of Power 10 must double the FE, Power 5 add half");
+    public static void chargedZoneCapacityFollowsTheCost(GameTestHelper helper) {
+        int cost = PieceTrickChargedZone.costFor(256, 10.0);
+        helper.assertTrue(cost == 1074, "Size 16, Power 10 must cost 1074 for 30 s, got " + cost);
+        double perTick = EntityChargedZone.capacityPerTick(cost, 600, 1.0F);
+        helper.assertTrue(Math.abs(perTick - 1074 * EntityChargedZone.FE_PER_PSI / 600.0) < 1.0E-6,
+                "1074 Psi must give " + 1074 * EntityChargedZone.FE_PER_PSI / 600.0 + " FE/t, got " + perTick);
+        helper.assertTrue(Math.abs(EntityChargedZone.capacityPerTick(cost * 4, 2400, 1.0F) - perTick) < 1.0E-6,
+                "A 120 s zone must charge as fast per tick as a 30 s one");
+        helper.assertTrue(Math.abs(EntityChargedZone.capacityPerTick(cost, 600, 0.5F) - perTick / 2.0) < 1.0E-6,
+                "Speed 0.5 must halve the capacity");
         helper.assertTrue(EntityChargedZone.strikeDamage(10.0F) == 10.0F && EntityChargedZone.strikeDamage(0.0F) == 0.0F,
                 "A strike must deal 1 per Power of the turbulence");
         helper.succeed();
+    }
+
+    /**
+     * 充電能力は受け手で分け合う（2026-11-14 ユーザー）: 落ちているエネルギータブレット（Mekanism）が 1 つでも 4 つでも、同じ時間に
+     * 入る FE の合計は同じ（充電能力 × 時間）。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_shared", timeoutTicks = 120)
+    public static void chargedZoneSharesItsCapacity(GameTestHelper helper) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        if (tablet == null) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_shared_caster", new Vec3(4.5, 1.0, 4.5));
+        List<ItemEntity> one = List.of(dropTablet(helper, tablet, new Vec3(0.5, 1.2, 0.5)));
+        List<ItemEntity> four = List.of(dropTablet(helper, tablet, new Vec3(0.5, 1.2, 4.5)), dropTablet(helper, tablet, new Vec3(1.5, 1.2, 4.5)),
+                dropTablet(helper, tablet, new Vec3(0.5, 1.2, 3.5)), dropTablet(helper, tablet, new Vec3(1.5, 1.2, 3.5)));
+        Runnable cleanup = () -> {
+            one.forEach(Entity::discard);
+            four.forEach(Entity::discard);
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        EntityChargedZone[] zones = new EntityChargedZone[2];
+        try {
+            // 1 つのところと 4 つのところに、同じ大きさ・威力の領域を別々に置く。
+            zones[0] = placeCharged(caster, helper.absolutePos(new BlockPos(0, 1, 0)), 1, 5.0);
+            zones[1] = placeCharged(caster, helper.absolutePos(new BlockPos(1, 1, 4)), 3, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(41, () -> {
+            int singleTotal = one.stream().mapToInt(item -> stored(item.getItem())).sum();
+            int sharedTotal = four.stream().mapToInt(item -> stored(item.getItem())).sum();
+            double singleCapacity = zones[0].capacityPerTick();
+            double sharedCapacity = zones[1].capacityPerTick();
+            cleanup.run();
+            // 8 回（40 tick）ぶん。FE の端数は受け手ごとに 2 FE 未満まで次の回へ繰り越すので、足りないのは受け手 1 つにつき 2 FE まで。
+            helper.assertTrue(singleTotal <= singleCapacity * 40 + 1 && singleTotal >= singleCapacity * 40 - 8,
+                    "One tablet must take the whole capacity (" + singleCapacity * 40 + " FE in 40 ticks), got " + singleTotal);
+            helper.assertTrue(sharedTotal <= sharedCapacity * 40 + 1 && sharedTotal >= sharedCapacity * 40 - 32,
+                    "Four tablets must share the capacity (" + sharedCapacity * 40 + " FE in 40 ticks), got " + sharedTotal);
+            int each = four.stream().mapToInt(item -> stored(item.getItem())).min().orElse(0);
+            helper.assertTrue(each > 0, "Every tablet must get a share");
+            helper.succeed();
+        });
+    }
+
+    private static ItemEntity dropTablet(GameTestHelper helper, Item tablet, Vec3 relative) {
+        Vec3 at = helper.absoluteVec(relative);
+        ItemEntity dropped = new ItemEntity(helper.getLevel(), at.x, at.y, at.z, new ItemStack(tablet));
+        dropped.setNoGravity(true);
+        dropped.setDeltaMovement(Vec3.ZERO);
+        dropped.setPickUpDelay(32767);
+        helper.getLevel().addFreshEntity(dropped);
+        return dropped;
     }
 
     /**
@@ -105,7 +172,7 @@ public final class ChargedZoneGameTests {
             GameTestPlayers.remove(helper, caster);
         };
         try {
-            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5);
+            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -149,12 +216,13 @@ public final class ChargedZoneGameTests {
             GameTestPlayers.remove(helper, caster);
         };
         try {
-            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5);
+            // 事象干渉力 4（速さ 2）、サイズ 9・威力 10（コスト 374）: 充電能力 約 62 FE/t、1 個 3200 FE で約 52 tick。
+            caster.getAttribute(com.moratan251.psitweaks.common.attributes.PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 9, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
         }
-        // 干渉力 1（速さ 0.5）で 1 個 80 tick。
         helper.runAfterDelay(100, () -> {
             List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, box, ItemEntity::isAlive);
             boolean hasCharged = items.stream().anyMatch(item -> item.getItem().is(charged));
@@ -182,7 +250,7 @@ public final class ChargedZoneGameTests {
         EntityChargedZone[] zone = new EntityChargedZone[1];
         try {
             BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
-            placeCharged(caster, center, 5);
+            placeCharged(caster, center, 5, 5.0);
             placeTurbulence(caster, center, 5, 10.0);
             zone[0] = SpellGramIndex.all(level, EntityChargedZone.class).stream()
                     .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElseThrow();
@@ -242,8 +310,9 @@ public final class ChargedZoneGameTests {
                 0, 0, 0, 1});
     }
 
-    /** {@code center} のブロックを中心にした一辺 {@code size}（奇数）の荷電領域を置く。 */
-    private static void placeCharged(ServerPlayer caster, BlockPos center, int size) throws SpellRuntimeException {
+    /** {@code center} のブロックを中心にした一辺 {@code size}（奇数）、威力 {@code power} の荷電領域を置き、それを返す。 */
+    private static EntityChargedZone placeCharged(ServerPlayer caster, BlockPos center, int size, double power)
+            throws SpellRuntimeException {
         MatrixValue matrix = cube(center, size);
         var piece = new PieceTrickChargedZone(new Spell()) {
             @Override
@@ -251,10 +320,16 @@ public final class ChargedZoneGameTests {
                 if (param.name.equals(PsitweaksSpellParams.MATRIX)) {
                     return matrix;
                 }
-                return param.name.equals(PsitweaksSpellParams.SIZE) ? (double) size : null;
+                if (param.name.equals(PsitweaksSpellParams.SIZE)) {
+                    return (double) size;
+                }
+                return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? power : null;
             }
         };
+        List<EntityChargedZone> before = SpellGramIndex.all(caster.level(), EntityChargedZone.class);
         execute(piece, caster);
+        return SpellGramIndex.all(caster.level(), EntityChargedZone.class).stream().filter(zone -> !before.contains(zone))
+                .findFirst().orElseThrow();
     }
 
     /** {@code center} のブロックを中心にした一辺 {@code size}（奇数）、威力 {@code power} の乱流領域を置く。 */

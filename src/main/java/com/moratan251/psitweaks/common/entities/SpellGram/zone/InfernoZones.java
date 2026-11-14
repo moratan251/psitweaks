@@ -25,7 +25,9 @@ import java.util.function.Consumer;
  * 隠し要素: 氷炎地獄（インフェルノ、2026-11-11 ユーザー）。同じ術者の加熱領域と凍結領域が、同じ大きさで面どうしぴったり
  * 接し、1 つの直方体を半分ずつ分け合っている（二分している）と起きる。どちらかが他者の領域干渉で止められていれば起きない。
  * <p>
- * 起きている間、加熱側は「灼熱」、凍結側は「極寒」になり、それぞれの効き目はそのままで、中の生物に
+ * 起きている間、加熱側は「灼熱」、凍結側は「極寒」になり、それぞれの効き目はそのままで（2026-11-15 ユーザー、案 A:
+ * 灼熱側の熱の総量は 2 つの領域のコストの合計で決まり、極寒側が Mekanism の機械から奪った熱は灼熱側の Mekanism の機械へ
+ * 移る。前の「熱・冷却 4 倍」は外した）、中の生物に
  * {@link #INTERVAL} tick ごとにダメージを与える（攻撃術式の共通ルール {@link AttackRules}: 術者・術者のペット・同じ
  * チームには当てず、事象干渉力・全体倍率・設定 {@code inferno.damageMultiplier} で増減）。どちらかの領域が消えると終わる。
  * 本には書かない。初めて起こしたプレイヤー（自律詠唱機ならその持ち主）に隠し進捗を与える。
@@ -83,8 +85,8 @@ public final class InfernoZones {
                     && freeze.isActiveAt(freeze.getArea().center())) {
                 boolean starting = !heat.isInfernoAt(now) || !freeze.isInfernoAt(now);
                 float power = Math.min(heat.getPower(), freeze.getPower());
-                heat.extendInferno(now + LINK_TICKS, power);
-                freeze.extendInferno(now + LINK_TICKS, power);
+                heat.extendInferno(now + LINK_TICKS, power, freeze);
+                freeze.extendInferno(now + LINK_TICKS, power, heat);
                 if (starting) {
                     ignite(level, heat, freeze);
                 }

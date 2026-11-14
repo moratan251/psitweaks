@@ -14,6 +14,10 @@ final class MekanismGeneratorsGameplayIntegration {
     private MekanismGeneratorsGameplayIntegration() {
     }
 
+    static boolean isWindGenerator(BlockEntity blockEntity) {
+        return blockEntity instanceof TileEntityWindGenerator;
+    }
+
     static double windMultiplierOf(BlockEntity blockEntity) {
         return blockEntity instanceof TileEntityWindGenerator wind ? wind.getCurrentMultiplier() : Double.NaN;
     }

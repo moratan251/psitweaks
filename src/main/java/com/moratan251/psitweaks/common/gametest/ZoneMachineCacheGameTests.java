@@ -51,6 +51,8 @@ public final class ZoneMachineCacheGameTests {
         zone.setPlacement(caster.getUUID(), 2.0);
         zone.setCaster(caster);
         zone.setLifetimeTicks(400);
+        // 熱の総量は置いたときのコストに比例する（2026-11-14）: コスト 1000（400 tick）で 900 J/t（360 J/Psi）。
+        zone.setPlacementCost(1000.0F);
         zone.setMaxIntegrity(1.0E6F);
         level.addFreshEntity(zone);
         Runnable cleanup = () -> {

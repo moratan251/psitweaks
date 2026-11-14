@@ -33,33 +33,41 @@ public final class MekanismGameplayCompat {
 
     /**
      * 作動式: 加熱領域の熱: 範囲の中の Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機、
-     * ボイラーバルブなど）に、1 つあたり {@code heat} を送る。温度が {@code maxTemperature} 以上のものには送らず、
+     * ボイラーバルブなど）に、合計 {@code total} の熱を均等に分けて送る（2026-11-14 ユーザー: 熱は領域ごとの総量を受け手で分け合う。
+     * 受け取りきれなかった分は、まだ入る受け手に 1 回だけ分け直す）。温度が {@code maxTemperature} 以上のものには送らず、
      * それを越えない分だけ送る（核分裂炉を損傷させないため）。同じマルチブロックには 1 回だけ。{@code mayUse} が偽の
-     * ブロック（保護された場所）には送らない。送った数を返す。Mekanism がなければ何もしない。{@code sideCache} は、熱の窓口が
+     * ブロック（保護された場所）には送らない。送った熱の合計を返す。Mekanism がなければ何もしない。{@code sideCache} は、熱の窓口が
      * どの面にあるかの覚え書き（領域が機械の一覧と一緒に持ち、一覧を作り直すときに空にする）。
      */
-    public static int supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                     double heat, double maxTemperature, Predicate<BlockPos> mayUse) {
+    public static double supplyZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                                        double total, double maxTemperature, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
-                ? MekanismGameplayIntegration.supplyZoneHeat(level, blockEntities, sideCache, heat, maxTemperature, mayUse)
-                : 0;
+                ? MekanismGameplayIntegration.supplyZoneHeat(level, blockEntities, sideCache, total, maxTemperature, mayUse)
+                : 0.0;
     }
 
     /**
      * 作動式: 凍結領域の冷却: 範囲の中の Mekanism の熱を持つブロックを、周囲の温度に向けて温度差の {@code fraction} だけ
      * 冷やす（周囲の温度より下には冷やさない、同じマルチブロックには 1 回だけ、{@code mayUse} が偽のブロックは冷やさない）。
+     * 取り除く合計は {@code maxTotal} まで（超えたら、どの受け手も同じ割合で減らす。2026-11-14 ユーザー）。
      * 取り除いた熱の合計を返す。Mekanism がなければ 0。
      */
     public static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                       double fraction, Predicate<BlockPos> mayUse) {
+                                       double fraction, double maxTotal, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
-                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, mayUse)
+                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, maxTotal, mayUse)
                 : 0.0;
     }
 
     /** Mekanism の熱を持つブロック {@code pos} の温度（K）。Mekanism がないか、熱を持たないブロックなら NaN。GameTest 用。 */
     public static double temperatureAt(ServerLevel level, BlockPos pos) {
         return MekanismCompat.isMekanismLoaded() ? MekanismGameplayIntegration.temperatureAt(level, pos) : Double.NaN;
+    }
+
+    /** {@code blockEntity} が Mekanism Generators の風力発電機か。Mekanism Generators がなければ偽。 */
+    public static boolean isWindGenerator(@Nullable BlockEntity blockEntity) {
+        return blockEntity != null && MekanismCompat.isGeneratorsLoaded()
+                && MekanismGeneratorsGameplayIntegration.isWindGenerator(blockEntity);
     }
 
     /** 風力発電機の今の発電の倍率（0 なら止まっている）。Mekanism Generators がないか、風力発電機でなければ NaN。GameTest 用。 */

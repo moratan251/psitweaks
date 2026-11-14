@@ -1087,7 +1087,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_item.third_eye_device", "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully."},
             {"psi.book.page.psitweaks_machine.material_mutator", "A Mekanism injecting-style machine that performs material mutation with $(item)Psionic Echo Gas$(0) and energy.$(p)It automates mutations that can also be produced by $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)Trick: Material Mutation$(0)$(/l), such as $(l:components/psitweaks_jade)Jade$(/l) and $(l:components/psitweaks_hypostasis_gem)Hypostasis Gems$(/l)."},
             {"psi.book.page.psitweaks_machine.program_researcher", "A powered research table for producing PsiTweaks program items. Put the required ingredients in the input slots and supply FE; completed research outputs the program item.$(p)JEI shows each research recipe's energy usage per tick and time."},
-            {"psi.book.page.psitweaks_machine.psionic_generator", "A generator that links to its Mekanism owner and converts that player's Psi into energy while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Higher consumption gives higher output and drains the owner faster.$(p)By default, generated energy auto-outputs from the back, up to 6400 FE/tick."},
+            {"psi.book.page.psitweaks_machine.psionic_generator", "A generator that links to its Mekanism owner and converts that player's Psi into energy while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. Higher consumption gives higher output and drains the owner faster.$(p)By default, generated energy auto-outputs from the back, up to 25600 FE/tick."},
             {"psi.book.page.psitweaks_machine.spellmachinery_casing", "A casing block used to execute advanced magic through machinery."},
             {"psi.book.page.psitweaks_magician.2", "A Magician is also the source of the $(l:components/psitweaks_magicians_brain)$(o)$(item)Magician's Brain$(0)$(/l). It drops when a Magician villager is killed by $(l:psitweaks_spell_pieces/trick_guillotine)$(o)Trick: Guillotine$(0)$(/l), and is used in caster-focused recipes."},
             {"psi.book.page.psitweaks_material.alloy_hypostasis", "Made by infusing $(l:components/psitweaks_alloy_psionic_echo)$(o)$(item)Echo Alloy$(0)$(/l) with Hypostasis.$(p)Used for $(l:components/psitweaks_hypostasis_control_circuit)$(o)$(item)Hypostasis Control Circuits$(0)$(/l) and high-tier psionic machinery."},
@@ -1143,7 +1143,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava."},
             {"psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "Applies Mekanism radiation exposure to the target."},
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "Stores the target entity's UUID in CAD memory."},
-            {"psi.book.page.psitweaks_spellpiece.trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi."},
+            {"psi.book.page.psitweaks_spellpiece.trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi."},
             {"psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo."},
             {"psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed. Casting it again on the same block replaces both the rate and the remaining time."},
             {"psi.book.title.psitweaks_material.chaotic_psimetal", "Chaotic Psimetal Ingot"},
@@ -1197,7 +1197,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_item.third_eye_device", "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)通常のCAD射程を大きく超える位置を対象にできるため, 扱いには注意してください."},
             {"psi.book.page.psitweaks_machine.material_mutator", "$(item)気化サイオニックエコー$(0) と電力を使い, 物質変成を実行するMekanism注入形式の機械です.$(p)$(l:psitweaks_spell_pieces/trick_material_mutation)$(o)作動式: 物質変成$(0)$(/l)でも得られる$(l:components/psitweaks_jade)翡翠$(/l)や$(l:components/psitweaks_hypostasis_gem)ヒュポスタシスジェム$(/l)などの変成を自動化できます."},
             {"psi.book.page.psitweaks_machine.program_researcher", "PsiTweaksのプログラムアイテムを作成するための電力式研究台です. 必要素材を入力スロットに入れてFEを供給すると, 研究完了時にプログラムを出力します.$(p)各研究のtickあたりの消費電力と時間はJEIで確認できます."},
-            {"psi.book.page.psitweaks_machine.psionic_generator", "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.$(p)発電したFEは, 初期設定では背面から最大6400 FE/tickで自動出力します."},
+            {"psi.book.page.psitweaks_machine.psionic_generator", "所有者にリンクし, 所有者がオンラインの間, そのプレイヤーのPsiをエネルギーへ変換する発電機です.$(p)GUIからリンクの有効化とtickあたりのPsi消費量を設定します. 消費量を増やすほど出力も増えますが, 所有者のPsiも速く減ります.$(p)発電したFEは, 初期設定では背面から最大25600 FE/tickで自動出力します."},
             {"psi.book.page.psitweaks_machine.spellmachinery_casing", "高度な魔法を機械により実行するための筐体ブロックです."},
             {"psi.book.page.psitweaks_magician.2", "魔法師は $(l:components/psitweaks_magicians_brain)$(o)$(item)魔法師の脳$(0)$(/l) の入手元でもあります. 魔法師の村人を $(l:psitweaks_spell_pieces/trick_guillotine)$(o)作動式: ギロチン$(0)$(/l) で倒したときにドロップし, 魔法師向けのレシピに使います."},
             {"psi.book.page.psitweaks_material.alloy_hypostasis", "$(l:components/psitweaks_alloy_psionic_echo)$(o)$(item)感応合金$(0)$(/l) にヒュポスタシスを注入して作ります.$(p)$(l:components/psitweaks_hypostasis_control_circuit)$(o)$(item)位格制御回路$(0)$(/l) や高 tier のサイオニック機械に使います."},
@@ -1253,7 +1253,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります."},
             {"psi.book.page.psitweaks_spellpiece.trick_radiation_injection", "対象へMekanismの放射線被ばくを付与します. "},
             {"psi.book.page.psitweaks_spellpiece.trick_store_entity", "対象エンティティのUUIDをCADメモリに保存します."},
-            {"psi.book.page.psitweaks_spellpiece.trick_supply_fe", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです."},
+            {"psi.book.page.psitweaks_spellpiece.trick_supply_fe", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり80FEです."},
             {"psi.book.page.psitweaks_spellpiece.trick_supreme_infusion", "残響の欠片をサイオニックエコーへ注入変換します."},
             {"psi.book.page.psitweaks_spellpiece.trick_time_accelerate", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで. 同じブロックにかけ直すと, 倍率も残り時間も新しい詠唱のものになります."},
             {"psi.book.page.spellProgrammer.0", "If the $(l:basics/cad_assembler)$(o)$(item)CAD Assembler$(0)$(/l) is the heart of $(thing)Psi$(0), then the $(item)Spell Programmer$(0) is the brains of the mod. It's where $(thing)Spells$(0) are written and compiled, and eventually copied into $(item)Spell Bullets$(0) to be cast.$(p)When placed and opened ($(k:use)), it displays a large 9x9 grid; see $(l:basics/tutorial_1)the tutorial entries$(/l) for more in-depth knowledge on using this grid."},
@@ -1688,8 +1688,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "A machine that performs material mutation with $(item)Psionic Echo Gas$(0) and FE.$(p)It automates mutations that can also be produced by $(l:psitweaks_spell_pieces/trick_material_mutation)$(o)Trick: Material Mutation$(0)$(/l), such as Jade and Hypostasis Gems.";
         });
         root.addProperty("psi.book.page.psitweaks_machine.psionic_generator", switch (locale) {
-            case "ja_jp" -> "所有者にリンクし, 所有者がオンラインのときにPsiをFEへ変換する発電機です.$(p)GUIでリンクの有効化とtickあたりのPsi消費量を設定できます. 発電したFEは, 初期設定では背面から最大6400 FE/tickで自動出力します.";
-            default -> "A generator that links to its owner and converts that player's Psi into FE while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. By default, generated FE auto-outputs from the back, up to 6400 FE/tick.";
+            case "ja_jp" -> "所有者にリンクし, 所有者がオンラインのときにPsiをFEへ変換する発電機です.$(p)GUIでリンクの有効化とtickあたりのPsi消費量を設定できます. 発電したFEは, 初期設定では背面から最大25600 FE/tickで自動出力します.";
+            default -> "A generator that links to its owner and converts that player's Psi into FE while the owner is online.$(p)Use the GUI to enable the link and set the Psi consumed per tick. By default, generated FE auto-outputs from the back, up to 25600 FE/tick.";
         });
         root.addProperty("psi.book.page.psitweaks_machine.transcendent_universal_cable", switch (locale) {
             case "ja_jp" -> "Mekanism のユニバーサルケーブルの強化版です. 究極ケーブルの128倍の性能を持ち, 核融合炉級の電力出力を扱うのに向きます.";
@@ -2041,13 +2041,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "なります。生物が範囲の中にいるかどうかは、当たり判定の中心があるブロックで決まります。範囲は作動式: 領域表示（ブロック"
                         + "モード）で確かめられます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.2",
-                "The Time is a constant of at most 120 seconds, 30 when left "
-                        + "out (a Gravity Zone in Vector mode always lasts 30 seconds)."
-                        + "$(p)Potency and Cost grow with the area (the Size squared), "
-                        + "and with the Power for zones that take one. The Cost also gr"
-                        + "ows in proportion to the Time.",
-                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)規模とコストは範囲の"
-                        + "広さ（サイズの2乗）で増え、威力を持つ領域では威力にも比例します。コストはさらに時間に比例します。");
+                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity and Interference Zones). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time.",
+                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域と領域干渉は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.3",
                 "A zone has integrity, which wears away at a steady rate and "
                         + "ends the zone when it runs out; spells can wear it down too."
@@ -2112,6 +2107,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "eronautics の機体など）に向けて置いた領域は、置いた時点の機体の位置で世界に残ります。領域は範囲に重なった機体"
                         + "の上のブロックや機械にも効きます。");
 
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.8",
+                "A zone's strength follows its Cost: the Power is how much Psi you put into each block. What stands in for fuel or energy (heat, cooling, FE and the extra output of Wind Generators) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference.",
+                "領域の強さはコストで決まり、「威力」は1ブロックあたりにかける Psi の量です。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風力発電機の出力の上乗せ）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。");
+
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.9",
+                "The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the zone's total (heat, cooling, the extra output of Wind Generators and FE), so a small zone can handle as much as a large one by paying the same Cost. Effects on each being or block (how hot, how cold, how sharply projectiles turn and so on) stop growing at 10.",
+                "加熱・凍結・乱流・荷電の領域は、威力を10より上にもできます。10を超えた分は総量（熱・冷却・風力発電機の出力の上乗せ・FE）だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度など）は、威力10で頭打ちです。");
+
         // 湿潤領域
         addBookPage(root, "trick_soak_zone.0",
                 "Places a zone that keeps the living beings inside soaked. Se"
@@ -2135,17 +2138,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 加重領域
         addBookPage(root, "trick_gravity_zone.0",
-                "Every tick it adds motion to the entities inside (living bei"
-                        + "ngs, dropped items, experience orbs, projectiles, minecarts "
-                        + "and boats), more with a higher Power (a constant of at most "
-                        + "10). A Power of about 4 balances gravity; while the zone pus"
-                        + "hes upward, entities inside take no fall damage. The caster "
-                        + "is pushed too. See $(l:psitweaks/zone_magic)Zone Magic$(/l) "
-                        + "for what all zones share.",
-                "範囲の中のエンティティ（生物、落ちているアイテム、経験値オーブ、飛び道具、トロッコやボート）に、「威力」（最大10の定数"
-                        + "）に応じた運動を毎tick足し続けます。威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下"
-                        + "ダメージを受けません。術者自身も押されます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$("
-                        + "/l)の項目にあります。");
+                "Every tick it adds motion to the entities inside (living beings, dropped items, experience orbs, projectiles, minecarts and boats), more with a higher Power (a constant from 1 to 10). A Power of about 4 balances gravity; while the zone pushes upward, entities inside take no fall damage. The caster is pushed too. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中のエンティティ（生物、落ちているアイテム、経験値オーブ、飛び道具、トロッコやボート）に、「威力」（1〜10の定数）に応じた運動を毎tick足し続けます。威力4でおよそ重力と釣り合います。上向きに押している間は、中のエンティティは落下ダメージを受けません。術者自身も押されます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_gravity_zone.1",
                 "It has two modes. In Vector mode (the default) the inputs ar"
                         + "e Matrix, Size, Direction and Power; it pushes toward the Di"
@@ -2168,67 +2162,28 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 加熱領域
         addBookPage(root, "trick_heat_zone.0",
-                "The Power (a constant of at most 10) is how hot the zone is:"
-                        + " living beings inside catch fire, burning as they would in "
-                        + "fire (1 damage a second), and keep burning for 0.6 seconds p"
-                        + "er Power after leaving. The caster does not burn, nor do wet beings. Ice an"
-                        + "d Frosted Ice inside melt into water; Packed Ice and Blue Ic"
-                        + "e stay. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for wha"
-                        + "t all zones share.",
-                "「威力」（最大10の定数）は領域の温度です。中の生物に火がつき、バニラの炎上と同じ毎秒1のダメージを受け、範囲を出てから"
-                        + "威力×0.6秒は燃え続けます。術者自身と、濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。"
-                        + "共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "The Power (a constant of at least 1) is how hot the zone is: living beings inside catch fire, burning as they would in fire (1 damage a second), and keep burning for 0.6 seconds per Power (6 at most) after leaving. The caster does not burn, nor do wet beings. Ice and Frosted Ice inside melt into water; Packed Ice and Blue Ice stay. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "「威力」（1以上の定数）は領域の温度です。中の生物に火がつき、バニラの炎上と同じ毎秒1のダメージを受け、範囲を出てから威力×0.6秒（最大6秒）は燃え続けます。術者自身と、濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_heat_zone.1",
-                "With Create installed, it bulk-smokes dropped items and the "
-                        + "items on Depots and Mechanical Belts inside, and Blaze Burne"
-                        + "rs inside count as heated even without fuel. With Mekanism i"
-                        + "nstalled, it sends heat to the blocks inside that take heat "
-                        + "(Resistive Heaters, Thermal Evaporation Valves, Heat Generat"
-                        + "ors and so on), but never above 100 K per Power. At interfer"
-                        + "ence 2, smoking is as fast as an Encased Fan and the heat ma"
-                        + "tches one Fuelwood Heater.",
-                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。"
-                        + "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。Mekanism が入っているときは、範囲の中の熱を受"
-                        + "け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）に熱を送ります。ただし、威力×100Kより上には温めませ"
-                        + "ん。干渉力2で、一括燻製はケース入りファンと同じ速さ、熱は薪木ストーブ1台ぶんです。");
+                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside, as fast as an Encased Fan at interference 2.$(p)The zone has a heat total that follows its Cost: at interference 2, a Size 16 zone has enough heat for one Blaze Burner at Power 5, and three at Power 10.",
+                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。干渉力2でケース入りファンと同じ速さです。$(p)領域は、コストに応じた熱の総量を持ちます。干渉力2なら、サイズ16の領域で、威力5ならブレイズバーナー1台、威力10なら3台ぶんです。");
+
+        addBookPage(root, "trick_heat_zone.2",
+                "Blaze Burners inside are heated without fuel, nearest to the center first, each using as much of the total as burning charcoal would give it, as many as it pays for. The rest goes to the Mekanism blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), shared evenly, but never above 100 K per Power (1000 K at most).",
+                "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。1台につき熱の総量から木炭を燃やしたときと同じだけの熱を使い、領域の中心に近いものから、総量で払えるだけの台数がなります。残りの熱は、Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）で均等に分けます。ただし、威力×100K（最大1000K）より上には温めません。");
 
         // 凍結領域
         addBookPage(root, "trick_freeze_zone.0",
-                "Living beings inside freeze as if stuck in Powder Snow; once"
-                        + " fully frozen they slow down and take freezing damage. The P"
-                        + "ower (a constant of at most 10) is how cold it is: at 5 they"
-                        + " freeze in 3.5 seconds, at 10 twice as fast. The caster does"
-                        + " not freeze, nor does anything Powder Snow cannot freeze, su"
-                        + "ch as a being in leather armor. Water sources inside with ai"
-                        + "r right above them turn into ice. See $(l:psitweaks/zone_mag"
-                        + "ic)Zone Magic$(/l) for what all zones share.",
-                "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（最大10の定数）は"
-                        + "冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さです。術者自身と、革の防具を着ている生物のように粉"
-                        + "雪で凍えないものは凍えません。範囲の中の水源のうち、真上が空気のものは氷になります。共通の決まりは$(l:psitwea"
-                        + "ks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at least 1) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast, the fastest. The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor. Water sources inside with air right above them turn into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（1以上の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さで、これが最速です。術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。範囲の中の水源のうち、真上が空気のものは氷になります。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_freeze_zone.1",
-                "Wet beings freeze in half the time. With Mekanism installed,"
-                        + " it cools the blocks inside that hold heat (Resistive Heater"
-                        + "s, Boiler Valves, Fission Reactor Ports and so on) toward th"
-                        + "e ambient temperature, faster with a higher Power, but never"
-                        + " below the ambient temperature.",
-                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器"
-                        + "、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。威力が高いほど速く冷え、周囲の温度より下には冷え"
-                        + "ません。");
+                "Wet beings freeze in half the time. With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on) toward the ambient temperature, faster with a higher Power, but never below the ambient temperature. The heat it takes away each tick is capped by its Cost: at interference 2, about 1 MJ for Size 16, Power 10.",
+                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。威力が高いほど速く冷え、周囲の温度より下には冷えません。1 tick に取り除ける熱の合計には、コストに応じた上限があります。干渉力2なら、サイズ16・威力10で約1MJです。");
 
         // 乱流領域
         addBookPage(root, "trick_turbulence_zone.0",
-                "A gale blows inside: projectiles others shot (arrows, triden"
-                        + "ts, snowballs, fireballs and so on) are turned sharply aside"
-                        + " as they enter, more with a higher Power (a constant of at m"
-                        + "ost 10). Magic projectiles are not. Clouds of lingering poti"
-                        + "ons and dragon's breath are blown away and fade quickly. See"
-                        + " $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones"
-                        + " share.",
-                "範囲の中では暴風が吹き荒れ、他者が放った飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きを大きく曲"
-                        + "げられます。「威力」（最大10の定数）が大きいほど大きく曲がります。魔法の弾は曲げません。残留ポーションやドラゴンブレス"
-                        + "の雲は吹き散らされ、早く消えます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項"
-                        + "目にあります。");
+                "A gale blows inside: projectiles others shot (arrows, tridents, snowballs, fireballs and so on) are turned sharply aside as they enter, more with a higher Power (a constant of at least 1; it turns them no further above 10). Magic projectiles are not. Clouds of lingering potions and dragon's breath are blown away and fade quickly. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中では暴風が吹き荒れ、他者が放った飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きを大きく曲げられます。「威力」（1以上の定数。10より上でも曲がり方は同じ）が大きいほど大きく曲がります。魔法の弾は曲げません。残留ポーションやドラゴンブレスの雲は吹き散らされ、早く消えます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_turbulence_zone.1",
                 "Where it overlaps your own zones, it strengthens them. Heat "
                         + "Zone: a Heat Storm, dealing fire damage and speeding up bulk"
@@ -2245,11 +2200,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
                         + "威力10で加工などは2倍の速さです。");
         addBookPage(root, "trick_turbulence_zone.2",
-                "With Mekanism Generators installed, Wind Generators inside w"
-                        + "ork even indoors, and their output rises with the Power (twi"
-                        + "ce at 10).",
-                "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がり"
-                        + "ます（威力10で2倍）。");
+                "With Mekanism Generators installed, Wind Generators inside work even indoors, and their output rises with the Power (twice at 10). The extra output goes in full to as many generators as the floor area of the zone ÷ 64 (one at Size 8, four at Size 16, and more in proportion with a Power above 10); with more generators, each gets a smaller part of it.",
+                "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がります（威力10で2倍）。上乗せをまるごと受け取れるのは、範囲の床の広さ÷64台（サイズ8で1台、16で4台。威力が10を超えると、その割合で増えます）までです。それより多く置くと、1台あたりの上乗せが減ります。");
 
         // 領域干渉
         addBookPage(root, "trick_interference_zone.0",
@@ -2265,43 +2217,20 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "。事象干渉力が同じか高い相手は止められません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$"
                         + "(/l)の項目にあります。");
         addBookPage(root, "trick_interference_zone.1",
-                "Inside, ender teleports of anyone but the caster are stopped"
-                        + " (Endermen and Shulkers teleporting, Ender Pearls and Chorus"
-                        + " Fruit), both from inside to outside and from outside to ins"
-                        + "ide.$(p)The Power (an optional constant of at most 10) adds "
-                        + "5% per Power to the caster's interference when placed, in co"
-                        + "ntests with other casters' zones. Your own spells, and those"
-                        + " of your Autonomous Casters, are never stopped. It stops onl"
-                        + "y Psi spells, not the magic of other mods.",
-                "範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）が"
-                        + "止まります。範囲の中から外へも、外から中へも止まります。$(p)「威力」（省略できる最大10の定数）は、他人の領域との奪"
-                        + "い合いで、置いた時点の事象干渉力に威力×5%を上乗せします。自分と、自分の自律詠唱機の魔法は止まりません。止めるのは P"
-                        + "si の魔法だけで、ほかの mod の魔法は止めません。");
+                "Inside, ender teleports of anyone but the caster are stopped (Endermen and Shulkers teleporting, Ender Pearls and Chorus Fruit), both from inside to outside and from outside to inside.$(p)The Power (a constant from 1 to 10) adds 5% per Power to the caster's interference when placed, in contests with other casters' zones. Your own spells, and those of your Autonomous Casters, are never stopped. It stops only Psi spells, not the magic of other mods.",
+                "範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）が止まります。範囲の中から外へも、外から中へも止まります。$(p)「威力」（1〜10の定数）は、他人の領域との奪い合いで、置いた時点の事象干渉力に威力×5%を上乗せします。自分と、自分の自律詠唱機の魔法は止まりません。止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。");
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",
-                "It slowly sends FE to the entities inside: everything a play"
-                        + "er carries, what other living beings hold and wear, dropped "
-                        + "items, and entities that store FE themselves. Blocks (machin"
-                        + "es) get none; use Trick: FE Charge for those. At interferenc"
-                        + "e 2 each gets 20 FE per tick. See $(l:psitweaks/zone_magic)Z"
-                        + "one Magic$(/l) for what all zones share.",
-                "範囲の中のエンティティに FE を少しずつ送ります。送る先は、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防"
-                        + "具、それに落ちているアイテムと、自分で FE をためるエンティティです。ブロック（機械）には送りません。機械には作動式:"
-                        + " FE供給を使います。干渉力2では、それぞれに1 tick あたり20 FE を送ります。共通の決まりは$(l:psit"
-                        + "weaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "It sends FE to the entities inside: everything a player carries, what other living beings hold and wear, dropped items, and entities that store FE themselves. Blocks (machines) get none; use Trick: FE Charge for those. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中のエンティティに FE を送ります。送る先は、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、それに落ちているアイテムと、自分で FE をためるエンティティです。ブロック（機械）には送りません。機械には作動式: FE供給を使います。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_charged_zone.1",
-                "With Applied Energistics 2 installed, dropped items inside g"
-                        + "o through the same process as a Charger (a Certus Quartz Cry"
-                        + "stal becomes a Charged Certus Quartz Crystal, and so on), on"
-                        + "e item every 2 seconds at interference 2. Where it overlaps "
-                        + "your own Turbulence Zone it becomes a Thundercloud: at rando"
-                        + "m intervals a bolt strikes one living being under it, harder"
-                        + " with a higher Power of the turbulence.",
-                "Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工を"
-                        + "します（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。干渉力2で2秒に1個です。自分の乱流領"
-                        + "域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。雷撃の強さは乱流の威力で決ま"
-                        + "ります。");
+                "The Power (a constant of at least 1) sets the Cost, and the FE capacity follows the Cost; it is shared evenly by everything inside that can take FE. At interference 2, a Size 16, Power 10 zone gives about 360 FE a tick.$(p)With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), each using 3200 FE of the capacity.",
+                "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");
+
+        addBookPage(root, "trick_charged_zone.2",
+                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it, harder with a higher Power of the turbulence, and the FE given there rises with that Power too.",
+                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。雷撃の強さは乱流の威力で決まり、そこで送る FE も乱流の威力に応じて増えます。");
 
         // 遮音領域
         addBookPage(root, "trick_silence_zone.0",
@@ -2394,7 +2323,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
         addBookPage(root, "trick_cocytus", "Permanently freezes the mind of the target mob, leaving it unable to act.", "対象モブの精神を永久に凍結させ, 行動できなくします.");
-        addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 20 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり20FEです.");
+        addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast, as much of it as fits. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_pull_item.1", "In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. In both Item modes, the filter can also be an Item List, matching any of its items. The optional Max input caps the number of items moved.", "StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. Item と Item (Strict) モードでは Item List も接続でき, そのいずれかに一致するアイテムを移動します. 任意入力の最大で移動数に上限を設けられます.");
         addBookPage(root, "trick_send_item.0", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます.");
@@ -3365,8 +3294,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "氷炎地獄", "ひとつの範囲を、灼熱と極寒に二分する");
         // Create only, hidden
         addAdvancement(root, "inferno_superheat", "The Price of Heat",
-                "Superheat a Blaze Burner in the scorching half of an Inferno. Each superheated burner wears the Heat Zone down further",
-                "灼熱の対価", "氷炎地獄の灼熱でブレイズバーナーを極度の加熱にする。極度の加熱にしたバーナー1台ごとに、加熱領域の耐久値が追加で減る");
+                "Superheat a Blaze Burner in the scorching half of an Inferno. Each superheated burner takes twice the heat from the Heat Zone",
+                "灼熱の対価", "氷炎地獄の灼熱でブレイズバーナーを極度の加熱にする。極度の加熱にしたバーナーは、1台ごとに加熱領域の熱を2倍使う");
         addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
                 "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",

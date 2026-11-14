@@ -55,6 +55,15 @@ public final class CreateCompat {
     }
 
     /**
+     * {@code blockEntity} がブレイズの入ったブレイズバーナーなら、自分の燃料で出している加熱の段: 0 = 燃料なし（くすぶり）、
+     * 1 = ふつうの燃料（加熱）、2 = ブレイズケーキかクリエイティブ（極度の加熱）。ブレイズバーナーでないか空なら -1。
+     * 加熱領域が熱の総量から払う台数を決めるのに使う（2026-11-14 ユーザー）。Create がなければ -1。
+     */
+    public static int burnerOwnHeat(BlockEntity blockEntity) {
+        return isCreateLoaded() ? CreateFanIntegration.burnerOwnHeat(blockEntity) : -1;
+    }
+
+    /**
      * クライアント側、毎 tick: ケース入りファンの風を当てたときと同じ加工のパーティクルを、範囲の中の落ちているアイテムと
      * デポ・ベルトの上のアイテムに出す（Create と同じく、出るかどうかは Create の側で毎回くじを引く）。Create がなければ何もしない。
      */

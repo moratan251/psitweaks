@@ -15,14 +15,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 final class PsionicGeneratorChecks {
     private static final BlockPos GENERATOR = new BlockPos(2, 1, 2);
     private static final int TICKS = 20;
-    /** 6400 FE/tick in Mekanism's joules (2.5 J per FE). */
-    private static final long EJECT_RATE_JOULES = 16_000L;
+    /** 25600 FE/tick in Mekanism's joules (2.5 J per FE). */
+    private static final long EJECT_RATE_JOULES = 64_000L;
 
     private PsionicGeneratorChecks() {
     }
 
     /**
-     * Facing north, the generator ejects into a receiver on its back (south) at up to 6400 FE/tick and into none of
+     * Facing north, the generator ejects into a receiver on its back (south) at up to 25600 FE/tick and into none of
      * the receivers on its side or top. A generator placed without its item has no side config from the item, and
      * must still eject.
      */
@@ -44,7 +44,7 @@ final class PsionicGeneratorChecks {
             helper.assertTrue(ejected > 0 && back.getEnergy() == ejected,
                     "ejected " + ejected + " J, the receiver on the back got " + back.getEnergy() + " J");
             helper.assertTrue(ejected <= (TICKS + 1) * EJECT_RATE_JOULES,
-                    "ejected " + ejected + " J in " + TICKS + " ticks, over 6400 FE/tick");
+                    "ejected " + ejected + " J in " + TICKS + " ticks, over 25600 FE/tick");
             helper.assertTrue(side.getEnergy() == 0 && top.getEnergy() == 0,
                     "ejected into the side (" + side.getEnergy() + " J) or the top (" + top.getEnergy() + " J)");
             helper.succeed();
