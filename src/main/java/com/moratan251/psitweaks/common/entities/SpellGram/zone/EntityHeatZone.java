@@ -11,6 +11,7 @@ import com.moratan251.psitweaks.common.spells.SpellBlockProtection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,8 +26,8 @@ import net.minecraft.world.phys.AABB;
 import java.util.List;
 
 /**
- * 作動式: 加熱領域（仮）の範囲。中の生物に火をつける（出てからも 威力 × 0.6 秒は燃える。濡れている生物は
- * 燃えない、{@code CombatStatuses}）。術者自身は燃やさない（{@link #sparesCaster}）。
+ * 作動式: 加熱領域（仮）の範囲。中の生物に火をつける（中にいる間はバニラの炎上と同じ毎秒 1、出てからも 威力 × 0.6 秒は
+ * 燃える。濡れている生物は燃えない、{@code CombatStatuses}。{@link #affect}）。術者自身は燃やさない（{@link #sparesCaster}）。
  * <p>
  * 範囲の中の氷と薄氷を水に戻す（ネザーのような水の置けないディメンションでは消える。氷塊・青氷はそのまま）。
  * <p>
@@ -51,7 +52,7 @@ import java.util.List;
  * 先に判定するので、熱乱流・吹雪も起きない。2026-11-11 ユーザー）。
  */
 public class EntityHeatZone extends SpellGramZone {
-    /** 威力 1 あたりの、範囲の中の生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
+    /** 威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
     public static final float BURN_SECONDS_PER_POWER = 0.6F;
     /** 威力 1 あたりの、Mekanism の機械を温める上限の温度（K、仮）。威力 10 で 1000 K（核分裂炉が損傷する 1200 K より下）。 */
     public static final double TEMPERATURE_PER_POWER = 100.0;
@@ -171,11 +172,38 @@ public class EntityHeatZone extends SpellGramZone {
         return true;
     }
 
+    /**
+     * 中にいる生物に火をつける（{@link #INTERVAL} tick ごと）。ダメージはバニラの炎上そのもの（毎秒 1、2026-11-14 ユーザー）。
+     * <p>
+     * バニラの炎上は、燃える残り時間が 20 の倍数になった tick にだけ 1 ダメージを与える。残り時間が {@link #keepBurning}
+     * より短くなったら 20 tick 単位で足す（20 で割った余りを変えない）ので、中にいる間は 20 tick ごとにちょうど 1 回当たる。
+     * 外に出たあとは、残りの 威力 × 0.6 秒ほど同じように燃え続ける。
+     * <p>
+     * 前は残り時間を「威力 × 12 tick」に戻していたので、10 tick の間に 20 の倍数を通る威力でだけ毎秒 2、通らない威力
+     * （1・3・6・8）では 0 だった。
+     */
     @Override
     protected void affect(Entity target) {
         if (target instanceof LivingEntity living) {
-            living.igniteForSeconds(burnSeconds());
+            int remaining = living.getRemainingFireTicks();
+            int keep = keepBurning();
+            if (remaining < keep) {
+                living.setRemainingFireTicks(Math.max(0, remaining) + 20 * Mth.positiveCeilDiv(keep - Math.max(0, remaining), 20));
+            }
         }
+    }
+
+    /** 外に出たあと燃え続ける長さ（tick）: 威力 × 0.6 秒。 */
+    public int burnTicks() {
+        return Mth.floor(burnSeconds() * 20.0F);
+    }
+
+    /**
+     * 中にいる間、燃える残り時間をこれより短くしない（tick）: 威力 × 0.6 秒。ただし次に足すまで（{@link #INTERVAL} tick）
+     * 火が消えない長さは保つ。
+     */
+    private int keepBurning() {
+        return Math.max(burnTicks(), INTERVAL + 1);
     }
 
     @Override

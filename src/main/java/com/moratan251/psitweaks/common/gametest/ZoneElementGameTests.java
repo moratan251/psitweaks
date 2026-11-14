@@ -105,6 +105,49 @@ public final class ZoneElementGameTests {
         });
     }
 
+    /**
+     * 加熱領域の中のダメージは、威力によらずバニラの炎上と同じ毎秒 1（2026-11-14 ユーザー: 前は燃える残り時間の数え方とかみ合わず、
+     * 威力 1・3・6・8 では 0、ほかは毎秒 2 だった）。外に出たあとは 威力 × 0.6 秒ほど燃え続ける。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_damage_3", timeoutTicks = 120)
+    public static void heatZoneDamageFollowsPower3(GameTestHelper helper) {
+        heatZoneDamageFollowsPower(helper, 3.0F);
+    }
+
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_damage_4", timeoutTicks = 120)
+    public static void heatZoneDamageFollowsPower4(GameTestHelper helper) {
+        heatZoneDamageFollowsPower(helper, 4.0F);
+    }
+
+    private static void heatZoneDamageFollowsPower(GameTestHelper helper, float power) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_damage_" + (int) power, new Vec3(4.5, 1.0, 4.5));
+        Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 2.5));
+        husk.setNoAi(true);
+        Runnable cleanup = () -> cleanup(helper, caster);
+        try {
+            cast(caster, heat(helper, CENTER), 5.0, power);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        float[] before = new float[1];
+        helper.runAfterDelay(20, () -> before[0] = husk.getHealth());
+        helper.runAfterDelay(80, () -> {
+            float lost = before[0] - husk.getHealth();
+            int burning = husk.getRemainingFireTicks();
+            int burnTicks = SpellGramIndex.all(helper.getLevel(), EntityHeatZone.class).stream().findFirst()
+                    .map(EntityHeatZone::burnTicks).orElse(-1);
+            cleanup.run();
+            // 燃える残り時間を 20 tick 単位で足すので、60 tick の間にちょうど 3 回（バニラの炎上、1 回 1）。
+            helper.assertTrue(Math.abs(lost - 3.0F) < 0.05F,
+                    "Power " + power + " must burn like vanilla inside, 1 a second (3 in 3 s), lost " + lost);
+            // 足し直すのは 威力 × 0.6 秒を切ったときだけなので、残りはそれから 10 tick 未満しか減っていない。
+            helper.assertTrue(burnTicks > 0 && burning + 10 > burnTicks,
+                    "The husk must keep burning for Power x 0.6 s after leaving: " + burning + " ticks, burn " + burnTicks);
+            helper.succeed();
+        });
+    }
+
     /** Create があるとき、加熱領域は中の落ちているアイテムを一括燻製する（生の牛肉 → ステーキ）。Create がなければ飛ばす。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_create", timeoutTicks = 400)
     public static void heatZoneSmokesItemsWithCreate(GameTestHelper helper) {

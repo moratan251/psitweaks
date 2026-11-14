@@ -2169,14 +2169,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         // 加熱領域
         addBookPage(root, "trick_heat_zone.0",
                 "The Power (a constant of at most 10) is how hot the zone is:"
-                        + " living beings inside catch fire and keep burning for 0.6 se"
-                        + "conds per Power after leaving. The caster does not burn, nor"
-                        + " do wet beings. Ice and Frosted Ice inside melt into water; "
-                        + "Packed Ice and Blue Ice stay. See $(l:psitweaks/zone_magic)Z"
-                        + "one Magic$(/l) for what all zones share.",
-                "「威力」（最大10の定数）は領域の温度です。中の生物に火がつき、範囲を出てから威力×0.6秒は燃え続けます。術者自身と、"
-                        + "濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。共通の決まりは$(l:psitw"
-                        + "eaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                        + " living beings inside catch fire, burning as they would in "
+                        + "fire (1 damage a second), and keep burning for 0.6 seconds p"
+                        + "er Power after leaving. The caster does not burn, nor do wet beings. Ice an"
+                        + "d Frosted Ice inside melt into water; Packed Ice and Blue Ic"
+                        + "e stay. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for wha"
+                        + "t all zones share.",
+                "「威力」（最大10の定数）は領域の温度です。中の生物に火がつき、バニラの炎上と同じ毎秒1のダメージを受け、範囲を出てから"
+                        + "威力×0.6秒は燃え続けます。術者自身と、濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。"
+                        + "共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_heat_zone.1",
                 "With Create installed, it bulk-smokes dropped items and the "
                         + "items on Depots and Mechanical Belts inside, and Blaze Burne"
