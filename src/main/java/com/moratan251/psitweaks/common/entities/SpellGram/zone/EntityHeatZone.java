@@ -44,8 +44,9 @@ import java.util.List;
  * <p>
  * 同じ術者の凍結領域と 1 つの直方体を二分すると、氷炎地獄の「灼熱」側になる（{@link InfernoZones}、隠し要素）。
  * 灼熱の間は、Create の加工が一括燻製から一括製錬に変わり（2026-11-11 ユーザー）、熱の総量は相手の凍結領域のコストの分も
- * 足したものになる。極寒側が Mekanism の機械から奪った熱は、次の tick に灼熱側の Mekanism の機械へ送る（{@link #acceptMovedHeat}、
- * バーナーには使わない。2026-11-15 ユーザー、案 A: 前の「熱の総量 4 倍」を置き換えた）。
+ * 足したものになる（2026-11-15 ユーザー、案 A: 前の「熱の総量 4 倍」を置き換えた）。極寒側が Mekanism の機械から奪った熱も、
+ * 灼熱側の熱の総量に足す（{@link #acceptMovedHeat}、{@link #BURNER_INTERVAL} tick ごとにならした 1 tick あたり）。バーナーにも
+ * Mekanism の機械にも使える（2026-11-15 ユーザー: 冷却側が奪った熱で加熱側の熱量が上がるように）。熱乱流の上乗せには入れない。
  * <p>
  * Create のブレイズバーナーは、熱の総量で払えるぶん（{@link #BURNER_INTERVAL} tick ごとに、領域の中心に近い順に決める）だけ、
  * 燃料がなくても「加熱」、灼熱の中なら「極度の加熱」（1 台 {@link #SUPERHEATED_BURNER_HEAT_PER_TICK}、ブレイズケーキの代わり）
@@ -104,8 +105,10 @@ public class EntityHeatZone extends SpellGramZone {
     private final Map<BlockPos, Integer> poweredBurners = new HashMap<>();
     /** そのバーナーが使っている熱（J/t）。 */
     private double burnerHeatUse;
-    /** 氷炎地獄の極寒側から移された熱（J）。次の tick に灼熱側の Mekanism の機械へ送る。サーバー側だけ。 */
-    private double movedHeat;
+    /** 氷炎地獄の極寒側から移された熱を、{@link #BURNER_INTERVAL} tick ぶんためたもの（J）。サーバー側だけ。 */
+    private double movedHeatWindow;
+    /** 直前の {@link #BURNER_INTERVAL} tick に移された熱の 1 tick あたり（J/t）。灼熱の間、熱の総量に足す。サーバー側だけ。 */
+    private double movedHeatPerTick;
     /** 移された熱の合計（J、GameTest 用）。 */
     private double movedHeatReceived;
 
@@ -284,13 +287,14 @@ public class EntityHeatZone extends SpellGramZone {
             });
         }
         if (tickCount % BURNER_INTERVAL == 0) {
+            // 極寒側から移された熱を、直前の間隔でならして熱の総量に入れる（バーナーを決める前に）。
+            movedHeatPerTick = movedHeatWindow / BURNER_INTERVAL;
+            movedHeatWindow = 0.0;
             allocateBurners(level, caster, regions, inferno);
         }
         double total = heatTotalPerTick(inferno);
         double heat = total - burnerHeatUse;
-        double moved = movedHeat;
-        movedHeat = 0.0;
-        if (heat > 0.0 || storm || moved > 0.0) {
+        if (heat > 0.0 || storm) {
             // 世界の範囲と機体の範囲の機械をまとめ、総量を一度に分ける（範囲ごとに総量を払うと、機体に重ねるほど増えてしまう）。
             Map<BlockPos, ZoneRegion> owners = new HashMap<>();
             List<BlockEntity> machines = new ArrayList<>();
@@ -310,14 +314,11 @@ public class EntityHeatZone extends SpellGramZone {
                 if (heat > 0.0) {
                     MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(), mayHeat);
                 }
-                if (moved > 0.0) {
-                    // 氷炎地獄: 極寒側で奪った熱を、灼熱側の機械へ（受け取りきれない分は消える）。
-                    MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), moved, maxTemperature(), mayHeat);
-                }
                 if (storm) {
                     // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
                     for (EntityTurbulenceZone turbulence : overlappingStorms()) {
-                        MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), total * stormBoost(turbulence.getPower()),
+                        MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(),
+                                ownHeatTotalPerTick(inferno) * stormBoost(turbulence.getPower()),
                                 maxTemperature(), pos -> {
                                     ZoneRegion region = owners.get(pos);
                                     return region != null && stormAt(region.worldPos(pos)) == turbulence
@@ -392,6 +393,11 @@ public class EntityHeatZone extends SpellGramZone {
      * 同じ式の分を足す（2 つの領域のコストの合計）。
      */
     public double heatTotalPerTick(boolean inferno) {
+        return ownHeatTotalPerTick(inferno) + (inferno ? movedHeatPerTick : 0.0);
+    }
+
+    /** 魔法式が生む熱の総量（J/t）: この領域の分と、灼熱の間は相手の凍結領域の分。極寒側から移された熱は入れない。 */
+    public double ownHeatTotalPerTick(boolean inferno) {
         double total = heatTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
         if (inferno && infernoPartner() instanceof EntityFreezeZone cold) {
             total += heatTotalPerTick(cold.getPlacementCost(), cold.getLifetimeTicks(), cold.getMachineSpeed());
@@ -399,10 +405,21 @@ public class EntityHeatZone extends SpellGramZone {
         return total;
     }
 
-    /** 氷炎地獄の極寒側が奪った熱 {@code heat}（J）を受け取る。次の tick に灼熱側の Mekanism の機械へ送る。 */
+    /** 照準の表示: 熱量（J/t、灼熱なら相手の分と、極寒側から移された熱も足したもの）。 */
+    @Override
+    protected double resourcePerTick() {
+        return heatTotalPerTick(isInfernoAt(level().getGameTime()));
+    }
+
+    @Override
+    public String resourceKey() {
+        return "psitweaks.hud.zone_resource.heat";
+    }
+
+    /** 氷炎地獄の極寒側が奪った熱 {@code heat}（J）を受け取る。ためて、次の間隔から熱の総量に足す。 */
     void acceptMovedHeat(double heat) {
         if (heat > 0.0) {
-            movedHeat += heat;
+            movedHeatWindow += heat;
             movedHeatReceived += heat;
         }
     }

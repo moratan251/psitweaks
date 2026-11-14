@@ -97,15 +97,16 @@ final class MekanismGameplayIntegration {
     }
 
     /**
-     * 作動式: 凍結領域の冷却: 熱を持つブロックの温度を、周囲の温度に向けて温度差の {@code fraction} だけ近づける（取り除く熱 =
-     * 温度差 × 割合 × 熱容量）。周囲の温度より下には冷やさない。同じマルチブロックには 1 回だけ。取り除いた熱の合計を返す。
+     * 作動式: 凍結領域の冷却（2026-11-15 ユーザー: 加熱の熱量と対の「冷却量」）: 冷却量 {@code total} を、周囲の温度より熱い
+     * ブロックで均等に分けて取り除く。1 つから取り除くのは温度差の {@code fraction} まで（温度差 × 割合 × 熱容量）で、周囲の温度より
+     * 下には冷やさない。取り除ききれなかった分は、まだ取り除けるブロックに分け直す（1 回だけ）。同じマルチブロックには 1 回だけ。
+     * 取り除いた熱の合計を返す。
      */
     static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                double fraction, double maxTotal, Predicate<BlockPos> mayUse) {
+                                double fraction, double total, Predicate<BlockPos> mayUse) {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
         List<IHeatHandler> handlers = new ArrayList<>();
         List<Double> amounts = new ArrayList<>();
-        double wanted = 0.0;
         for (BlockEntity blockEntity : blockEntities) {
             IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
@@ -121,17 +122,35 @@ final class MekanismGameplayIntegration {
             }
             // handleHeat は負の値をそのまま受け取り下限を見ないので、取り除くのは必ず周囲との差まで（割合は 1 以下）。
             double amount = excess * Math.min(1.0, fraction) * handler.getTotalHeatCapacity();
-            handlers.add(handler);
-            amounts.add(amount);
-            wanted += amount;
+            if (amount > 0.0) {
+                handlers.add(handler);
+                amounts.add(amount);
+            }
         }
-        // 取り除く合計に上限（2026-11-14 ユーザー: 冷却の上限は領域のコストに比例）。超えたら、どの受け手も同じ割合で減らす。
-        double scale = wanted > maxTotal && wanted > 0.0 ? Math.max(0.0, maxTotal) / wanted : 1.0;
+        if (handlers.isEmpty() || total <= 0.0) {
+            return 0.0;
+        }
+        // 冷却量を均等に分け、温度差の割合で取り除ききれなかった分を、まだ取り除けるブロックに分け直す（1 回だけ）。
+        double share = total / handlers.size();
         double removed = 0.0;
+        List<Integer> open = new ArrayList<>();
         for (int i = 0; i < handlers.size(); i++) {
-            double amount = amounts.get(i) * scale;
+            double amount = Math.min(share, amounts.get(i));
             handlers.get(i).handleHeat(-amount);
             removed += amount;
+            amounts.set(i, amounts.get(i) - amount);
+            if (amounts.get(i) > 1.0E-9) {
+                open.add(i);
+            }
+        }
+        double leftover = total - removed;
+        if (leftover > 1.0E-9 && !open.isEmpty()) {
+            double extra = leftover / open.size();
+            for (int i : open) {
+                double amount = Math.min(extra, amounts.get(i));
+                handlers.get(i).handleHeat(-amount);
+                removed += amount;
+            }
         }
         return removed;
     }

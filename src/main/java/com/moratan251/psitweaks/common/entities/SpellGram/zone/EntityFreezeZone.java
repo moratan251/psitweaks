@@ -72,35 +72,56 @@ public class EntityFreezeZone extends SpellGramZone {
     /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
     public static final double MAX_COOL_FRACTION = 0.5;
     /**
-     * Mekanism の冷却の上限の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、2026-11-14 ユーザー: 冷却の合計の上限は
-     * コストに比例）。威力 10・サイズ 16（コスト 1074）の速さ 1 で約 1 MJ/t。
+     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、2026-11-14・15 ユーザー: 加熱の熱量と対の「冷却量」）。
+     * 威力 10・サイズ 16（コスト 1074）の速さ 1 で約 1 MJ/t。冷やしてもエネルギーは生まれないので、熱（360 J/Psi）より桁違いに
+     * 大きくてよい（核分裂炉を冷やせる）。
      */
     public static final double COOLING_PER_PSI = 560_000.0;
     /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
-    /** 威力（冷やす強さ、2026-11-11 ユーザー）。凍えのたまる速さと氷炎地獄の強さを決める。 */
-    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
+    /**
+     * 威力（冷やす強さ、2026-11-11 ユーザー）。凍えのたまる速さ・1 台あたりの冷える割合・氷炎地獄の強さを決める。1 体・1 か所
+     * あたりの強さに使うので {@link #MAX_EFFECT_POWER} まで。
+     */
     private float power = DEFAULT_POWER;
     /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
 
     /**
-     * Mekanism の冷却で、1 tick に温度差を縮める割合: 威力 × 0.002 × 機械を動かす速さ（置いた時点の事象干渉力）、氷炎地獄の
-     * 上限 0.5。
+     * Mekanism の冷却で、1 台が 1 tick に温度差を縮める割合の上限（加熱の「威力 × 100 K まで」と対）: 威力 × 0.002 × 機械を
+     * 動かす速さ（置いた時点の事象干渉力）、上限 0.5。
      */
     public static double coolFractionPerTick(float power, float machineSpeed) {
         double fraction = Math.max(0.0F, power) * COOL_FRACTION_PER_POWER * Math.max(0.0F, machineSpeed);
         return Math.min(MAX_COOL_FRACTION, fraction);
     }
 
-    /** 1 tick に取り除ける熱の合計の上限（J）: 置いたときのコスト × {@link #COOLING_PER_PSI} ÷ 存続時間 × 速さ。 */
-    public double coolingCapPerTick() {
-        return coolingCapPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
+    /**
+     * 冷却量: 1 tick に取り除ける熱の総量（J）: 置いたときのコスト × {@link #COOLING_PER_PSI} ÷ 存続時間 × 速さ。氷炎地獄の
+     * 極寒の間は、相手の加熱領域の同じ式の分を足す（灼熱側の熱量と対、2 つの領域のコストの合計）。
+     */
+    public double coolingTotalPerTick(boolean inferno) {
+        double total = coolingTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
+        if (inferno && infernoPartner() instanceof EntityHeatZone hot) {
+            total += coolingTotalPerTick(hot.getPlacementCost(), hot.getLifetimeTicks(), hot.getMachineSpeed());
+        }
+        return total;
     }
 
-    /** {@link #coolingCapPerTick()} を、置いたときのコスト・存続時間・速さから求める。時間によらない。 */
-    public static double coolingCapPerTick(float placementCost, int lifetimeTicks, float machineSpeed) {
+    /** 照準の表示: 冷却量（J/t、極寒なら相手の分も足したもの）。 */
+    @Override
+    protected double resourcePerTick() {
+        return coolingTotalPerTick(isInfernoAt(level().getGameTime()));
+    }
+
+    @Override
+    public String resourceKey() {
+        return "psitweaks.hud.zone_resource.cooling";
+    }
+
+    /** 冷却量を、置いたときのコスト・存続時間・速さから求める。時間によらない。 */
+    public static double coolingTotalPerTick(float placementCost, int lifetimeTicks, float machineSpeed) {
         if (lifetimeTicks <= 0) {
             return 0.0;
         }
@@ -173,8 +194,8 @@ public class EntityFreezeZone extends SpellGramZone {
         if (fraction <= 0.0) {
             return;
         }
-        double cap = coolingCapPerTick();
-        // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）をまとめ、上限を一度に分ける。範囲・領域干渉・乱流は
+        double cap = coolingTotalPerTick(isInfernoAt(level.getGameTime()));
+        // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）をまとめ、冷却量を一度に分ける。範囲・領域干渉・乱流は
         // 世界の位置で判定し、保護は機械が本当にある位置で確かめる。
         java.util.Map<BlockPos, ZoneRegion> owners = new java.util.HashMap<>();
         List<BlockEntity> machines = new java.util.ArrayList<>();
@@ -194,7 +215,7 @@ public class EntityFreezeZone extends SpellGramZone {
                     && mayUseMachine(level, caster, pos);
         });
         if (isStorm()) {
-            // 吹雪のところは、乱流の威力に応じて割合と上限を上乗せ（威力 10 で 2 倍）。
+            // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。
             for (EntityTurbulenceZone turbulence : overlappingStorms()) {
                 double boost = stormBoost(turbulence.getPower());
                 removed += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),

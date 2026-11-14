@@ -663,7 +663,14 @@ public final class ZoneElementGameTests {
                     .filter(zone -> zone instanceof EntityHeatZone).map(zone -> (EntityHeatZone) zone).findFirst().orElse(null);
             EntityFreezeZone coldZone = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                     .filter(zone -> zone instanceof EntityFreezeZone).map(zone -> (EntityFreezeZone) zone).findFirst().orElse(null);
-            double pooled = hotZone == null || coldZone == null ? -1.0 : hotZone.heatTotalPerTick(true);
+            double pooled = hotZone == null || coldZone == null ? -1.0 : hotZone.ownHeatTotalPerTick(true);
+            double pooledCooling = hotZone == null || coldZone == null ? -1.0 : coldZone.coolingTotalPerTick(true);
+            float shownHeat = hotZone == null ? -1.0F : hotZone.getResourceAmount();
+            double hotTotal = hotZone == null ? -1.0 : hotZone.heatTotalPerTick(true);
+            float shownCooling = coldZone == null ? -1.0F : coldZone.getResourceAmount();
+            double expectedCooling = hotZone == null || coldZone == null ? 0.0
+                    : EntityFreezeZone.coolingTotalPerTick(hotZone.getPlacementCost(), hotZone.getLifetimeTicks(), hotZone.getMachineSpeed())
+                    + EntityFreezeZone.coolingTotalPerTick(coldZone.getPlacementCost(), coldZone.getLifetimeTicks(), coldZone.getMachineSpeed());
             double expected = hotZone == null || coldZone == null ? 0.0
                     : EntityHeatZone.heatTotalPerTick(hotZone.getPlacementCost(), hotZone.getLifetimeTicks(), hotZone.getMachineSpeed())
                     + EntityHeatZone.heatTotalPerTick(coldZone.getPlacementCost(), coldZone.getLifetimeTicks(), coldZone.getMachineSpeed());
@@ -677,6 +684,11 @@ public final class ZoneElementGameTests {
             // 2026-11-15 ユーザー（案 A）: 灼熱側の熱の総量は、加熱領域と凍結領域のコストの合計で決まる。
             helper.assertTrue(Math.abs(pooled - expected) < 1.0E-6,
                     "The scorching Heat Zone's heat total must come from both zones' costs: " + pooled + " vs " + expected);
+            // 照準の表示（2026-11-15 ユーザー）: 送られるリソースの量は熱量・冷却量そのもの。
+            helper.assertTrue(Math.abs(shownHeat - hotTotal) <= pooled * 1.0E-4 && Math.abs(shownCooling - pooledCooling) <= pooledCooling * 1.0E-4,
+                    "The synced resource amounts must be the heat and cooling totals: " + shownHeat + " / " + shownCooling);
+            helper.assertTrue(Math.abs(pooledCooling - expectedCooling) < 1.0E-6,
+                    "The freezing Freeze Zone's cooling amount must come from both zones' costs: " + pooledCooling + " vs " + expectedCooling);
             helper.succeed();
         });
     }
@@ -716,9 +728,15 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(40, () -> {
             double moved = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                     .filter(zone -> zone instanceof EntityHeatZone).mapToDouble(zone -> ((EntityHeatZone) zone).movedHeatReceived()).sum();
+            // 移された熱は灼熱側の熱の総量に入る（2026-11-15 ユーザー）。
+            double extra = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
+                    .filter(zone -> zone instanceof EntityHeatZone)
+                    .mapToDouble(zone -> ((EntityHeatZone) zone).heatTotalPerTick(true) - ((EntityHeatZone) zone).ownHeatTotalPerTick(true))
+                    .sum();
             double coldTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(coldHeater));
             cleanup.run();
             helper.assertTrue(moved > 0.0, "The scorching Heat Zone must receive the heat the freezing half took away, got " + moved);
+            helper.assertTrue(extra > 0.0, "The moved heat must raise the scorching Heat Zone's heat total, got +" + extra);
             helper.assertTrue(coldTemp < 790.0, "The freezing half must cool the heater, " + coldTemp + " K");
             helper.succeed();
         });

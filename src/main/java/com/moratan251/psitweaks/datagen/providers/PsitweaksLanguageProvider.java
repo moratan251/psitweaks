@@ -427,6 +427,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%s  %s";
             default -> "%s  %s";
         });
+        // 領域のリソース（2026-11-15 ユーザー）。%s は「337 」「1.00 M」のように単位の接頭辞まで含む。
+        root.addProperty("psitweaks.hud.zone_resource.heat", switch (locale) {
+            case "ja_jp" -> "熱量: %sJ/t";
+            default -> "Heat: %sJ/t";
+        });
+        root.addProperty("psitweaks.hud.zone_resource.cooling", switch (locale) {
+            case "ja_jp" -> "冷却量: %sJ/t";
+            default -> "Cooling: %sJ/t";
+        });
+        root.addProperty("psitweaks.hud.zone_resource.charge", switch (locale) {
+            case "ja_jp" -> "充電能力: %sFE/t";
+            default -> "Charge: %sFE/t";
+        });
+        root.addProperty("psitweaks.hud.zone_resource.wind", switch (locale) {
+            case "ja_jp" -> "風量: %s WU";
+            default -> "Wind: %s WU";
+        });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません。";
             default -> "Error: The target is not a Resident SpellGram.";
@@ -2108,12 +2125,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "の上のブロックや機械にも効きます。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.8",
-                "A zone's strength follows its Cost: the Power is how much Psi you put into each block. What stands in for fuel or energy (heat, cooling, FE and the extra output of Wind Generators) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference.",
-                "領域の強さはコストで決まり、「威力」は1ブロックあたりにかける Psi の量です。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風力発電機の出力の上乗せ）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。");
+                "A zone's strength follows its Cost: the Power is how much Psi you put into each block. What stands in for fuel or energy (heat, cooling, FE and wind) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference.",
+                "領域の強さはコストで決まり、「威力」は1ブロックあたりにかける Psi の量です。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風量）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.9",
-                "The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the zone's total (heat, cooling, the extra output of Wind Generators and FE), so a small zone can handle as much as a large one by paying the same Cost. Effects on each being or block (how hot, how cold, how sharply projectiles turn and so on) stop growing at 10.",
-                "加熱・凍結・乱流・荷電の領域は、威力を10より上にもできます。10を超えた分は総量（熱・冷却・風力発電機の出力の上乗せ・FE）だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度など）は、威力10で頭打ちです。");
+                "The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the zone's total (heat, cooling, wind and FE), so a small zone can handle as much as a large one by paying the same Cost. Effects on each being or block (how hot, how cold, how sharply projectiles turn and so on) stop growing at 10.",
+                "加熱・凍結・乱流・荷電の領域は、威力を10より上にもできます。10を超えた分は総量（熱・冷却・風量・FE）だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度など）は、威力10で頭打ちです。");
 
         // 湿潤領域
         addBookPage(root, "trick_soak_zone.0",
@@ -2177,8 +2194,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at least 1) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast, the fastest. The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor. Water sources inside with air right above them turn into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
                 "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（1以上の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さで、これが最速です。術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。範囲の中の水源のうち、真上が空気のものは氷になります。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_freeze_zone.1",
-                "Wet beings freeze in half the time. With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on) toward the ambient temperature, faster with a higher Power, but never below the ambient temperature. The heat it takes away each tick is capped by its Cost: at interference 2, about 1 MJ for Size 16, Power 10.",
-                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。威力が高いほど速く冷え、周囲の温度より下には冷えません。1 tick に取り除ける熱の合計には、コストに応じた上限があります。干渉力2なら、サイズ16・威力10で約1MJです。");
+                "Wet beings freeze in half the time. With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on) toward the ambient temperature, never below it.",
+                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。周囲の温度より下には冷えません。");
+        addBookPage(root, "trick_freeze_zone.2",
+                "The zone has a cooling amount that follows its Cost, the counterpart of the Heat Zone's heat: at interference 2, about 1 MJ a tick for Size 16, Power 10. It is shared evenly by the blocks that hold heat; each loses at most 0.2% per Power of its difference from the ambient temperature a tick (2% at Power 10 and above).",
+                "領域は、コストに応じた冷却量を持ちます。加熱領域の熱量と対になるもので、干渉力2なら、サイズ16・威力10で1 tick に約1MJです。冷却量は熱を持つブロックで均等に分け、1つが1 tick に冷えるのは、周囲との温度差の 威力×0.2%（威力10以上で2%）までです。");
 
         // 乱流領域
         addBookPage(root, "trick_turbulence_zone.0",
@@ -2200,8 +2220,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
                         + "威力10で加工などは2倍の速さです。");
         addBookPage(root, "trick_turbulence_zone.2",
-                "With Mekanism Generators installed, Wind Generators inside work even indoors, and their output rises with the Power (twice at 10). The extra output goes in full to as many generators as the floor area of the zone ÷ 64 (one at Size 8, four at Size 16, and more in proportion with a Power above 10); with more generators, each gets a smaller part of it.",
-                "Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、出力が威力に応じて上がります（威力10で2倍）。上乗せをまるごと受け取れるのは、範囲の床の広さ÷64台（サイズ8で1台、16で4台。威力が10を超えると、その割合で増えます）までです。それより多く置くと、1台あたりの上乗せが減ります。");
+                "The zone blows a wind of floor area × Power ÷ 64 WU (Wind Units): 10 WU at Size 8, Power 10, and 40 at Size 16. One WU raises one Wind Generator's output by 10%. With Mekanism Generators installed, Wind Generators inside work even indoors and share the wind: each takes as many WU as the Power, 10 at most (twice the output), and when the wind runs short, each gets an equal part.",
+                "領域は、床の広さ×威力÷64 WU（風量単位）の風を吹かせます。サイズ8・威力10で10 WU、サイズ16なら40 WUです。1 WU は、風力発電機1台の出力を10%上げる風です。Mekanism Generators が入っているときは、範囲の中の風力発電機が屋内でも動き、風を分け合います。1台が受け取れるのは威力と同じだけ（最大10 WU で出力2倍）で、風が足りなければ均等に分けます。");
 
         // 領域干渉
         addBookPage(root, "trick_interference_zone.0",

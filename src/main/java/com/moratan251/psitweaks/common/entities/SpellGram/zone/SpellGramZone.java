@@ -57,6 +57,14 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** 同じ術者の乱流領域と重なっているか（熱乱流・吹雪などの演出のためクライアントへ送る）。 */
     private static final EntityDataAccessor<Boolean> DATA_STORM =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.BOOLEAN);
+    /**
+     * 扱うリソースの量（1 tick あたりの熱量・冷却量・充電能力、乱流は風力の上乗せを受けられる台数。持たなければ負）。照準を合わせた
+     * ときの表示のためクライアントへ送る（2026-11-15 ユーザー）。
+     */
+    private static final EntityDataAccessor<Float> DATA_RESOURCE =
+            SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
+    /** リソースの量を計算し直して送る間隔（tick）。 */
+    private static final int RESOURCE_SYNC_INTERVAL = 10;
 
     private ZoneArea area = ZoneArea.EMPTY;
     /** 氷炎地獄を続けるゲーム時刻（これより前なら起きている）。サーバー側だけ。 */
@@ -101,6 +109,23 @@ public abstract class SpellGramZone extends SpellGramObject {
     protected void defineSpellGramSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_INFERNO, false);
         builder.define(DATA_STORM, false);
+        builder.define(DATA_RESOURCE, -1.0F);
+    }
+
+    /** この領域が扱うリソースの量（1 tick あたり、サーバー側）。持たなければ負。 */
+    protected double resourcePerTick() {
+        return -1.0;
+    }
+
+    /** 照準を合わせたときに出すリソースの行の翻訳キー（量を 1 つ受け取る）。持たなければ null。 */
+    @org.jetbrains.annotations.Nullable
+    public String resourceKey() {
+        return null;
+    }
+
+    /** 照準を合わせたときに出すリソースの量（クライアントでも分かる、持たなければ負）。 */
+    public float getResourceAmount() {
+        return entityData.get(DATA_RESOURCE);
     }
 
     /** 同じ術者の乱流領域と重なっているか（クライアントでも分かる）。 */
@@ -663,6 +688,9 @@ public abstract class SpellGramZone extends SpellGramObject {
     protected void onSpellGramTickServer() {
         if (isInferno() && !isInfernoAt(level().getGameTime())) {
             entityData.set(DATA_INFERNO, false);
+        }
+        if (tickCount % RESOURCE_SYNC_INTERVAL == 1) {
+            entityData.set(DATA_RESOURCE, (float) resourcePerTick());
         }
         if (area.isEmpty()) {
             return;

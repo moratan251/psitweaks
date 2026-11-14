@@ -37,10 +37,11 @@ import java.util.UUID;
  * <li>他者の飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きをランダムに曲げられる（威力で大きく）。
  * 魔法の弾（Psi・Ars Nouveau・Iron's Spells 'n Spellbooks）はそらさない。</li>
  * <li>残留ポーションやドラゴンブレスの雲を吹き散らす（早く縮んで消える）。</li>
- * <li>Mekanism Generators の風力発電機は、範囲の中なら屋内でも動き、出力が 1 + 威力 × 0.1 倍になる
- * （{@code WindGeneratorTurbulenceMixin}）。上乗せの合計は「範囲の床の広さ ÷ {@link #FOOTPRINT_PER_WIND_GENERATOR}」台ぶんまで
- * （2026-11-14 ユーザー: 上乗せは威力 × 広さ、つまりコストに比例）。台数が多ければ、各台の上乗せを
- * 「許す台数 ÷ 台数」倍にする（{@link #windShare}）。屋内で動くことには台数の上限がない。</li>
+ * <li>風量（2026-11-15 ユーザー、単位 WU = Wind Unit）: 領域は 床の広さ × 入れた威力 ÷ {@link #WIND_FOOTPRINT_DIVISOR}
+ * WU の風を吹かせる（{@link #windAmount}、上乗せは威力 × 広さ、つまりコストに比例）。1 WU は Mekanism Generators の
+ * 風力発電機 1 台の出力を {@link #WIND_BOOST_PER_WU} 上げる風。Mekanism がなくても値を持つ（ほかの mod の風と連携するため）。</li>
+ * <li>Mekanism Generators の風力発電機は、範囲の中なら屋内でも動き（台数の上限なし）、風量を分け合う: 1 台が受け取れるのは
+ * 威力ぶん（10 WU、出力 2 倍まで）で、足りなければ均等に分ける（{@link #windShare}、{@code WindGeneratorTurbulenceMixin}）。</li>
  * <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は一括洗浄が 2 倍
  * （{@link #blowsFor}、それぞれの領域が見る）。</li>
  * </ul>
@@ -48,10 +49,10 @@ import java.util.UUID;
 public class EntityTurbulenceZone extends SpellGramZone {
     /** 威力 1 あたりの、飛び道具を曲げる角度（度、仮）。威力 10 で最大 90 度。 */
     public static final double DEFLECT_DEGREES_PER_POWER = 9.0;
-    /** 威力 1 あたりの、風力発電機の出力の上乗せ（仮）。威力 10 で 2 倍。 */
-    public static final double WIND_BOOST_PER_POWER = 0.1;
-    /** 風力発電機 1 台ぶんの上乗せを許す、範囲の床の広さ（ブロック、2026-11-14 ユーザー）。サイズ 8 で 1 台、16 で 4 台。 */
-    public static final double FOOTPRINT_PER_WIND_GENERATOR = 64.0;
+    /** 1 WU あたりの、風力発電機 1 台の出力の上乗せ（2026-11-15 ユーザー: WU の定義）。1 台は威力ぶん（10 WU で 2 倍）まで。 */
+    public static final double WIND_BOOST_PER_WU = 0.1;
+    /** 風量 = 床の広さ × 威力 ÷ この値（WU、2026-11-14・15 ユーザー）。サイズ 8・威力 10 で 10 WU、サイズ 16 で 40 WU。 */
+    public static final double WIND_FOOTPRINT_DIVISOR = 64.0;
     /** 範囲の中の風力発電機を数え直す間隔（tick）。 */
     public static final int WIND_COUNT_INTERVAL = 20;
     /** 雲が 1 tick に縮む半径（仮）。 */
@@ -96,9 +97,9 @@ public class EntityTurbulenceZone extends SpellGramZone {
         return power;
     }
 
-    /** 威力 {@code power} の乱流が、風力発電機の出力を何倍にするか。 */
-    public static double windBoostFor(double power) {
-        return 1.0 + Math.max(0.0, power) * WIND_BOOST_PER_POWER;
+    /** 風力発電機 1 台が {@code windUnits} WU を受け取ったとき、出力を何倍にするか（1 台は威力ぶん、10 WU まで受け取る）。 */
+    public static double windBoostFor(double windUnits) {
+        return 1.0 + Math.max(0.0, windUnits) * WIND_BOOST_PER_WU;
     }
 
     /**
@@ -116,13 +117,28 @@ public class EntityTurbulenceZone extends SpellGramZone {
     }
 
     /**
-     * 上乗せを許す風力発電機の台数: 範囲の床の広さ（輪郭の箱の X × Z）÷ {@link #FOOTPRINT_PER_WIND_GENERATOR}。威力が 10 を
-     * 超えた分は、1 台の上乗せ（2 倍で頭打ち）の代わりに台数を増やす（入れた威力 ÷ 10 倍。上乗せの合計はコストに比例のまま）。
+     * 風量（WU）: 範囲の床の広さ（輪郭の箱の X × Z）× 入れた威力 ÷ {@link #WIND_FOOTPRINT_DIVISOR}。Mekanism がなくても持つ。
+     * 威力が 10 を超えた分も風量に入る（1 台が受け取れる量は 10 WU のまま、受け取れる台数が増える）。
      */
-    public double windAllowance() {
+    public double windAmount() {
         AABB box = getOutline();
-        double overPower = power > 0.0F ? Math.max(1.0, rawPower / power) : 1.0;
-        return box.getXsize() * box.getZsize() / FOOTPRINT_PER_WIND_GENERATOR * overPower;
+        return box.getXsize() * box.getZsize() * rawPower / WIND_FOOTPRINT_DIVISOR;
+    }
+
+    /** 1 台ずつ威力ぶんの風を受け取れる風力発電機の台数: 風量 ÷ 威力（10 まで）。 */
+    public double windAllowance() {
+        return power > 0.0F ? windAmount() / power : 0.0;
+    }
+
+    /** 照準の表示: 風量（WU）。Mekanism がなくても出す。 */
+    @Override
+    protected double resourcePerTick() {
+        return windAmount();
+    }
+
+    @Override
+    public String resourceKey() {
+        return "psitweaks.hud.zone_resource.wind";
     }
 
     /** 各風力発電機が受け取る上乗せの割合: 台数が許す台数以下なら 1、多ければ 許す台数 ÷ 台数。 */

@@ -124,6 +124,17 @@ public class EntityChargedZone extends SpellGramZone {
         return rawPower;
     }
 
+    /** 照準の表示: 充電能力（FE/t）。 */
+    @Override
+    protected double resourcePerTick() {
+        return capacityPerTick();
+    }
+
+    @Override
+    public String resourceKey() {
+        return "psitweaks.hud.zone_resource.charge";
+    }
+
     /** 1 tick あたりの充電能力（FE）: 置いたときのコスト × {@link #FE_PER_PSI} ÷ 存続時間（tick）× 機械を動かす速さ。 */
     public double capacityPerTick() {
         return capacityPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());

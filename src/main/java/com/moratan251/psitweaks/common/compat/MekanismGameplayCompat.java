@@ -53,9 +53,9 @@ public final class MekanismGameplayCompat {
      * 取り除いた熱の合計を返す。Mekanism がなければ 0。
      */
     public static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                       double fraction, double maxTotal, Predicate<BlockPos> mayUse) {
+                                       double fraction, double total, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
-                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, maxTotal, mayUse)
+                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, total, mayUse)
                 : 0.0;
     }
 
