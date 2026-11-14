@@ -694,6 +694,31 @@ public final class ZoneElementGameTests {
     }
 
     /**
+     * 乱流の重ねがけ（2026-11-15 ユーザー）: 熱乱流・吹雪の総量の上乗せは、乱流が範囲を覆う割合（体積の比）を掛け、合計は 1 まで。
+     * 小さな乱流をいくつ重ねても、範囲全体を 1 つの乱流で覆ったときより増えない。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void stormCoverageNeverExceedsTheWholeZone(GameTestHelper helper) {
+        AABB zone = new AABB(0, 0, 0, 16, 16, 16);
+        List<AABB> small = new java.util.ArrayList<>();
+        for (int i = 0; i < 31; i++) {
+            small.add(new AABB(0, 0, 0, 2, 2, 2));
+        }
+        double[] smallShares = SpellGramZone.coverageShares(zone, small);
+        double smallSum = java.util.Arrays.stream(smallShares).sum();
+        helper.assertTrue(Math.abs(smallSum - 31 * 8.0 / 4096.0) < 1.0E-9,
+                "31 size-2 Turbulence Zones must cover only 31 x 8 of 4096 blocks' worth, got " + smallSum);
+        double[] whole = SpellGramZone.coverageShares(zone, List.of(new AABB(-2, -2, -2, 18, 18, 18)));
+        helper.assertTrue(Math.abs(whole[0] - 1.0) < 1.0E-9, "A Turbulence Zone covering the whole zone must count as 1, got " + whole[0]);
+        double[] stacked = SpellGramZone.coverageShares(zone, List.of(zone, zone, zone));
+        double stackedSum = java.util.Arrays.stream(stacked).sum();
+        helper.assertTrue(Math.abs(stackedSum - 1.0) < 1.0E-9, "Stacked Turbulence Zones must add up to at most 1, got " + stackedSum);
+        double[] apart = SpellGramZone.coverageShares(zone, List.of(new AABB(20, 0, 0, 22, 2, 2)));
+        helper.assertTrue(apart[0] == 0.0, "A Turbulence Zone outside must cover nothing");
+        helper.succeed();
+    }
+
+    /**
      * 氷炎地獄（2026-11-15 ユーザー、案 A）: 極寒側が Mekanism の機械から奪った熱は、灼熱側の加熱領域へ移る（灼熱側の Mekanism の
      * 機械に送る）。Mekanism がなければ飛ばす。
      */

@@ -294,6 +294,8 @@ public class EntityHeatZone extends SpellGramZone {
         }
         double total = heatTotalPerTick(inferno);
         double heat = total - burnerHeatUse;
+        // 照準の表示: 使っている熱 = バーナーに払った分 + Mekanism の機械に渡した分（熱乱流の上乗せは入れない）。
+        double used = burnerHeatUse;
         if (heat > 0.0 || storm) {
             // 世界の範囲と機体の範囲の機械をまとめ、総量を一度に分ける（範囲ごとに総量を払うと、機体に重ねるほど増えてしまう）。
             Map<BlockPos, ZoneRegion> owners = new HashMap<>();
@@ -312,13 +314,15 @@ public class EntityHeatZone extends SpellGramZone {
                             && mayUseMachine(level, caster, pos);
                 };
                 if (heat > 0.0) {
-                    MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(), mayHeat);
+                    used += MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(), mayHeat);
                 }
                 if (storm) {
                     // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
-                    for (EntityTurbulenceZone turbulence : overlappingStorms()) {
+                    // 上乗せは乱流が範囲を覆う割合を掛ける（2026-11-15 ユーザー: 小さな乱流の重ねがけで増えないように）。
+                    for (Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
+                        EntityTurbulenceZone turbulence = entry.getKey();
                         MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(),
-                                ownHeatTotalPerTick(inferno) * stormBoost(turbulence.getPower()),
+                                ownHeatTotalPerTick(inferno) * stormBoost(turbulence.getPower()) * entry.getValue(),
                                 maxTemperature(), pos -> {
                                     ZoneRegion region = owners.get(pos);
                                     return region != null && stormAt(region.worldPos(pos)) == turbulence
@@ -328,6 +332,7 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             }
         }
+        recordResourceUse(Math.min(total, used));
     }
 
     /** 払うブレイズバーナー 1 台（バーナーの位置、世界の位置、1 加熱 / 2 極度の加熱）。 */

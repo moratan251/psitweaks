@@ -427,22 +427,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%s  %s";
             default -> "%s  %s";
         });
-        // 領域のリソース（2026-11-15 ユーザー）。%s は「337 」「1.00 M」のように単位の接頭辞まで含む。
+        // 領域のリソース（2026-11-15 ユーザー）: 使っている量 / 総量。2 つめの %s は「337 」「1.00 M」のように単位の接頭辞まで含む。
         root.addProperty("psitweaks.hud.zone_resource.heat", switch (locale) {
-            case "ja_jp" -> "熱量: %sJ/t";
-            default -> "Heat: %sJ/t";
+            case "ja_jp" -> "熱量: %s / %sJ/t";
+            default -> "Heat: %s / %sJ/t";
         });
         root.addProperty("psitweaks.hud.zone_resource.cooling", switch (locale) {
-            case "ja_jp" -> "冷却量: %sJ/t";
-            default -> "Cooling: %sJ/t";
+            case "ja_jp" -> "冷却量: %s / %sJ/t";
+            default -> "Cooling: %s / %sJ/t";
         });
         root.addProperty("psitweaks.hud.zone_resource.charge", switch (locale) {
-            case "ja_jp" -> "充電能力: %sFE/t";
-            default -> "Charge: %sFE/t";
+            case "ja_jp" -> "充電能力: %s / %sFE/t";
+            default -> "Charge: %s / %sFE/t";
         });
         root.addProperty("psitweaks.hud.zone_resource.wind", switch (locale) {
-            case "ja_jp" -> "風量: %s WU";
-            default -> "Wind: %s WU";
+            case "ja_jp" -> "風量: %s / %s WU";
+            default -> "Wind: %s / %s WU";
         });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません。";
@@ -2101,11 +2101,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "zones there: with a Heat Zone it becomes a Heat Storm, with "
                         + "a Freeze Zone a Blizzard, with a Soak Zone a Rainstorm, and "
                         + "with a Charged Zone a Thundercloud (see Trick: Turbulence Zo"
-                        + "ne).$(p)Where your own Heat Zone and Freeze Zone overlap, th"
+                        + "ne). The extra heat and cooling grow with how much of the zone the turbulence covers, so stacking small Turbulence Zones adds no more than covering the whole zone with one."
+                        + "$(p)Where your own Heat Zone and Freeze Zone overlap, th"
                         + "ey cancel each other out. Beings soaked by a Soak Zone do no"
                         + "t burn, and freeze in half the time.",
                 "自分の乱流領域に自分のほかの領域を重ねると、重なったところが強まります。加熱領域とは熱乱流、凍結領域とは吹雪、湿潤領域と"
-                        + "は暴風雨、荷電領域とは雷雲になります。詳しくは作動式: 乱流領域の項目にあります。$(p)自分の加熱領域と凍結領域が重な"
+                        + "は暴風雨、荷電領域とは雷雲になります。詳しくは作動式: 乱流領域の項目にあります。熱乱流と吹雪で増える熱と冷却量は、乱流が範囲を覆う割合に比例するので、小さな乱流をいくつ重ねても、範囲全体を1つで覆ったときより増えません。$(p)自分の加熱領域と凍結領域が重な"
                         + "ったところでは、両方が打ち消し合ってどちらも効きません。湿潤領域で濡れた生物は燃えず、凍結領域では半分の時間で凍えきりま"
                         + "す。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.7",

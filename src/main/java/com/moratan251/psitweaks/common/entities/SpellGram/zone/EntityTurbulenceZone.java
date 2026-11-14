@@ -141,6 +141,12 @@ public class EntityTurbulenceZone extends SpellGramZone {
         return "psitweaks.hud.zone_resource.wind";
     }
 
+    /** 照準の表示: 風力発電機に渡している WU（1 台は威力ぶんまで、合計は風量まで）。Mekanism Generators がなければ 0。 */
+    @Override
+    protected double resourceUsedPerTick() {
+        return Math.min(windAmount(), windGenerators * (double) power);
+    }
+
     /** 各風力発電機が受け取る上乗せの割合: 台数が許す台数以下なら 1、多ければ 許す台数 ÷ 台数。 */
     public double windShare() {
         double allowance = windAllowance();

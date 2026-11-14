@@ -63,8 +63,13 @@ public abstract class SpellGramZone extends SpellGramObject {
      */
     private static final EntityDataAccessor<Float> DATA_RESOURCE =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
+    /** リソースのうち、直前の間隔に使った量（1 tick あたり、持たなければ負）。照準の表示のためクライアントへ送る（2026-11-15 ユーザー）。 */
+    private static final EntityDataAccessor<Float> DATA_RESOURCE_USED =
+            SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
     /** リソースの量を計算し直して送る間隔（tick）。 */
     private static final int RESOURCE_SYNC_INTERVAL = 10;
+    /** この間隔に使ったリソースの合計（{@link #recordResourceUse}）。サーバー側だけ。 */
+    private double resourceUseWindow;
 
     private ZoneArea area = ZoneArea.EMPTY;
     /** 氷炎地獄を続けるゲーム時刻（これより前なら起きている）。サーバー側だけ。 */
@@ -110,6 +115,7 @@ public abstract class SpellGramZone extends SpellGramObject {
         builder.define(DATA_INFERNO, false);
         builder.define(DATA_STORM, false);
         builder.define(DATA_RESOURCE, -1.0F);
+        builder.define(DATA_RESOURCE_USED, -1.0F);
     }
 
     /** この領域が扱うリソースの量（1 tick あたり、サーバー側）。持たなければ負。 */
@@ -126,6 +132,23 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** 照準を合わせたときに出すリソースの量（クライアントでも分かる、持たなければ負）。 */
     public float getResourceAmount() {
         return entityData.get(DATA_RESOURCE);
+    }
+
+    /** 照準を合わせたときに出す、リソースのうち使っている量（1 tick あたり、クライアントでも分かる、持たなければ負）。 */
+    public float getResourceUsed() {
+        return entityData.get(DATA_RESOURCE_USED);
+    }
+
+    /** この tick にリソースを {@code amount} 使った（サーバー側）。間隔ごとにならして送る。 */
+    protected void recordResourceUse(double amount) {
+        if (amount > 0.0) {
+            resourceUseWindow += amount;
+        }
+    }
+
+    /** 直前の間隔に使ったリソースの 1 tick あたり（サーバー側）。使った量を数えない領域は上書きする。 */
+    protected double resourceUsedPerTick() {
+        return resourceUseWindow / RESOURCE_SYNC_INTERVAL;
     }
 
     /** 同じ術者の乱流領域と重なっているか（クライアントでも分かる）。 */
@@ -194,6 +217,53 @@ public abstract class SpellGramZone extends SpellGramObject {
             }
         }
         return overlapping;
+    }
+
+    /**
+     * 重なっている乱流ごとの、この領域の範囲を覆う割合（輪郭の箱の体積の比、合計は 1 まで。2026-11-15 ユーザー: 乱流の重ねがけを
+     * 直す）。総量に掛ける組み合わせの上乗せ（熱乱流の熱・吹雪の冷却量）はこの割合を掛けるので、小さな乱流をいくつ重ねても、
+     * 範囲全体を 1 つの乱流で覆ったときより増えない。
+     */
+    protected Map<EntityTurbulenceZone, Double> stormCoverage() {
+        List<EntityTurbulenceZone> storms = overlappingStorms();
+        List<AABB> boxes = new java.util.ArrayList<>(storms.size());
+        for (EntityTurbulenceZone storm : storms) {
+            boxes.add(storm.getOutline());
+        }
+        double[] shares = coverageShares(getOutline(), boxes);
+        Map<EntityTurbulenceZone, Double> coverage = new HashMap<>();
+        for (int i = 0; i < storms.size(); i++) {
+            if (shares[i] > 0.0) {
+                coverage.put(storms.get(i), shares[i]);
+            }
+        }
+        return coverage;
+    }
+
+    /**
+     * 箱 {@code own} を、箱 {@code others} がそれぞれ覆う割合（体積の比）。合計が 1 を超えたら、合計が 1 になるよう同じ割合で縮める。
+     */
+    public static double[] coverageShares(AABB own, List<AABB> others) {
+        double[] shares = new double[others.size()];
+        double volume = own.getXsize() * own.getYsize() * own.getZsize();
+        if (volume <= 0.0) {
+            return shares;
+        }
+        double sum = 0.0;
+        for (int i = 0; i < others.size(); i++) {
+            AABB other = others.get(i);
+            double x = Math.min(own.maxX, other.maxX) - Math.max(own.minX, other.minX);
+            double y = Math.min(own.maxY, other.maxY) - Math.max(own.minY, other.minY);
+            double z = Math.min(own.maxZ, other.maxZ) - Math.max(own.minZ, other.minZ);
+            shares[i] = x > 0.0 && y > 0.0 && z > 0.0 ? x * y * z / volume : 0.0;
+            sum += shares[i];
+        }
+        if (sum > 1.0) {
+            for (int i = 0; i < shares.length; i++) {
+                shares[i] /= sum;
+            }
+        }
+        return shares;
     }
 
     /**
@@ -691,6 +761,8 @@ public abstract class SpellGramZone extends SpellGramObject {
         }
         if (tickCount % RESOURCE_SYNC_INTERVAL == 1) {
             entityData.set(DATA_RESOURCE, (float) resourcePerTick());
+            entityData.set(DATA_RESOURCE_USED, resourcePerTick() < 0.0 ? -1.0F : (float) resourceUsedPerTick());
+            resourceUseWindow = 0.0;
         }
         if (area.isEmpty()) {
             return;

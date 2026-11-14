@@ -214,12 +214,16 @@ public class EntityFreezeZone extends SpellGramZone {
             return region != null && isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos))
                     && mayUseMachine(level, caster, pos);
         });
+        // 照準の表示: 使っている冷却量（吹雪の上乗せは入れない）。
+        recordResourceUse(removed);
         if (isStorm()) {
-            // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。
-            for (EntityTurbulenceZone turbulence : overlappingStorms()) {
+            // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。冷却量の上乗せは乱流が範囲を覆う割合を
+            // 掛ける（2026-11-15 ユーザー: 小さな乱流の重ねがけで増えないように）。
+            for (java.util.Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
+                EntityTurbulenceZone turbulence = entry.getKey();
                 double boost = stormBoost(turbulence.getPower());
                 removed += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
-                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost, pos -> {
+                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), pos -> {
                             ZoneRegion region = owners.get(pos);
                             return region != null && stormAt(region.worldPos(pos)) == turbulence
                                     && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);

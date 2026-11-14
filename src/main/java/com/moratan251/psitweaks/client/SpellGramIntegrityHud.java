@@ -83,26 +83,43 @@ public final class SpellGramIntegrityHud {
             String key = zone.resourceKey();
             float amount = zone.getResourceAmount();
             if (key != null && amount >= 0.0F) {
-                String value = zone instanceof com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone
-                        ? String.format(java.util.Locale.ROOT, "%.1f", amount) : withPrefix(amount);
-                graphics.drawCenteredString(font, Component.translatable(key, value), graphics.guiWidth() / 2,
+                float used = Math.max(0.0F, zone.getResourceUsed());
+                String[] values = zone instanceof com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone
+                        ? new String[]{String.format(java.util.Locale.ROOT, "%.1f", used), String.format(java.util.Locale.ROOT, "%.1f", amount)}
+                        : withPrefix(used, amount);
+                graphics.drawCenteredString(font, Component.translatable(key, values[0], values[1]), graphics.guiWidth() / 2,
                         graphics.guiHeight() / 2 + 20, TEXT_COLOR);
             }
         }
     }
 
-    /** 単位の前に付ける接頭辞つきの数（「337 」「12.5 k」「1.00 M」）。翻訳の側で単位（J/t・FE/t）を続ける。 */
-    static String withPrefix(double value) {
-        if (value >= 1.0E6) {
-            return String.format(java.util.Locale.ROOT, "%.2f M", value / 1.0E6);
+    /**
+     * 使っている量と総量を、総量に合わせた桁でそろえる（「120」と「337 」、「0.25」と「1.00 M」）。総量のほうは単位の接頭辞まで
+     * 含み、翻訳の側で単位（J/t・FE/t）を続ける。
+     */
+    static String[] withPrefix(double used, double total) {
+        double scale;
+        String prefix;
+        String digits;
+        if (total >= 1.0E6) {
+            scale = 1.0E6;
+            prefix = "M";
+            digits = "%.2f";
+        } else if (total >= 1.0E4) {
+            scale = 1.0E3;
+            prefix = "k";
+            digits = "%.1f";
+        } else if (total >= 100.0) {
+            scale = 1.0;
+            prefix = "";
+            digits = "%.0f";
+        } else {
+            scale = 1.0;
+            prefix = "";
+            digits = "%.1f";
         }
-        if (value >= 1.0E4) {
-            return String.format(java.util.Locale.ROOT, "%.1f k", value / 1.0E3);
-        }
-        if (value >= 100.0) {
-            return String.format(java.util.Locale.ROOT, "%.0f ", value);
-        }
-        return String.format(java.util.Locale.ROOT, "%.1f ", value);
+        return new String[]{String.format(java.util.Locale.ROOT, digits, used / scale),
+                String.format(java.util.Locale.ROOT, digits, total / scale) + " " + prefix};
     }
 
     /** 置いたときの耐久値が 10 以上なら整数（切り上げ）、それより小さければ小数 1 桁。 */

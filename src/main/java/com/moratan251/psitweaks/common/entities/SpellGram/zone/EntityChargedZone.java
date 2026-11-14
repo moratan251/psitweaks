@@ -230,10 +230,14 @@ public class EntityChargedZone extends SpellGramZone {
         }
         double share = capacityPerTick() * ENERGY_INTERVAL / receivers.size();
         double leftover = 0.0;
+        // 照準の表示: 渡した FE（雷雲の上乗せの前）。
+        double used = 0.0;
         List<Receiver> filled = new ArrayList<>();
         for (Receiver receiver : receivers) {
             double owed = share + energyCarry.getOrDefault(receiver.key(), 0.0);
-            double rest = owed - give(level, receiver, owed);
+            double given = give(level, receiver, owed);
+            used += given;
+            double rest = owed - given;
             if (rest <= MAX_ENERGY_CARRY) {
                 // 受け取りきった。残りは FE の端数なので次の回へ繰り越す。
                 filled.add(receiver);
@@ -249,7 +253,9 @@ public class EntityChargedZone extends SpellGramZone {
             double extra = leftover / filled.size();
             for (Receiver receiver : filled) {
                 double owed = extra + carry.getOrDefault(receiver.key(), 0.0);
-                double rest = owed - give(level, receiver, owed);
+                double given = give(level, receiver, owed);
+                used += given;
+                double rest = owed - given;
                 if (rest > 1.0E-9) {
                     carry.put(receiver.key(), Math.min(MAX_ENERGY_CARRY, rest));
                 } else {
@@ -258,6 +264,7 @@ public class EntityChargedZone extends SpellGramZone {
             }
         }
         energyCarry = carry;
+        recordResourceUse(Math.min(used, capacityPerTick() * ENERGY_INTERVAL));
     }
 
     private static IEnergyStorage itemStorage(ItemStack stack) {

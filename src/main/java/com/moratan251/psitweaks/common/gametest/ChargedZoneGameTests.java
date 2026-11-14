@@ -113,12 +113,16 @@ public final class ChargedZoneGameTests {
             int sharedTotal = four.stream().mapToInt(item -> stored(item.getItem())).sum();
             double singleCapacity = zones[0].capacityPerTick();
             double sharedCapacity = zones[1].capacityPerTick();
+            float sharedUsed = zones[1].getResourceUsed();
             cleanup.run();
             // 8 回（40 tick）ぶん。FE の端数は受け手ごとに 2 FE 未満まで次の回へ繰り越すので、足りないのは受け手 1 つにつき 2 FE まで。
             helper.assertTrue(singleTotal <= singleCapacity * 40 + 1 && singleTotal >= singleCapacity * 40 - 8,
                     "One tablet must take the whole capacity (" + singleCapacity * 40 + " FE in 40 ticks), got " + singleTotal);
             helper.assertTrue(sharedTotal <= sharedCapacity * 40 + 1 && sharedTotal >= sharedCapacity * 40 - 32,
                     "Four tablets must share the capacity (" + sharedCapacity * 40 + " FE in 40 ticks), got " + sharedTotal);
+            // 照準の表示（2026-11-15 ユーザー）: 使っている量は、受け手がみな受け取りきるので充電能力のほとんど。
+            helper.assertTrue(sharedUsed > sharedCapacity * 0.8 && sharedUsed <= sharedCapacity * 1.0001,
+                    "The synced use must be close to the capacity (" + sharedCapacity + " FE/t), got " + sharedUsed);
             int each = four.stream().mapToInt(item -> stored(item.getItem())).min().orElse(0);
             helper.assertTrue(each > 0, "Every tablet must get a share");
             helper.succeed();
