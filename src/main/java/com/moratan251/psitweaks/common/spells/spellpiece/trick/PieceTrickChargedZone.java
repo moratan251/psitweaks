@@ -27,7 +27,7 @@ public class PieceTrickChargedZone extends PieceTrickZoneBase<EntityChargedZone>
 
     public PieceTrickChargedZone(Spell spell) {
         super(spell, EntityChargedZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel(MAX_RESOURCE_ZONE_POWER));
+        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
     }
 

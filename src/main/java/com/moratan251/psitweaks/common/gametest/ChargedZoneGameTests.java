@@ -136,11 +136,11 @@ public final class ChargedZoneGameTests {
     }
 
     /**
-     * 生き物の手のエネルギータブレットと落ちているエネルギータブレット（Mekanism）に FE が入る。ブロック（AE2 のチャージャー）には
-     * 入らない（2026-11-12 ユーザー: ブロックへの給電は外した）。
+     * 生き物の手のエネルギータブレットと落ちているエネルギータブレット（Mekanism）と、ブロック（AE2 のチャージャー）に FE が入る
+     * （2026-11-15 ユーザー: ブロックにも送る。2026-11-12 に外していた）。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_charged_energy", timeoutTicks = 80)
-    public static void chargedZoneFillsCarriedItemsButNotBlocks(GameTestHelper helper) {
+    public static void chargedZoneFillsCarriedItemsAndBlocks(GameTestHelper helper) {
         Block chargerBlock = ModList.get().isLoaded("ae2") ? block("ae2:charger") : null;
         Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
         if (chargerBlock == null && tablet == null) {
@@ -182,7 +182,8 @@ public final class ChargedZoneGameTests {
             int inHand = tablet != null ? stored(holder.getMainHandItem()) : 1;
             int onGround = tablet == null ? 1 : dropped.isAlive() ? stored(dropped.getItem()) : -1;
             cleanup.run();
-            helper.assertTrue(inCharger == 0, "Blocks inside the zone must not get FE, the Charger has " + inCharger);
+            // 2026-11-15 ユーザー: ブロックにも送る（前は送らなかった）。
+            helper.assertTrue(chargerBlock == null || inCharger > 0, "Blocks inside the zone must get FE, the Charger has " + inCharger);
             helper.assertTrue(inHand > 0, "The Energy Tablet held inside the zone must get FE, has " + inHand);
             helper.assertTrue(onGround > 0, "The dropped Energy Tablet inside the zone must get FE, has " + onGround);
             helper.succeed();

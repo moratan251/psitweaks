@@ -25,7 +25,7 @@ public class PieceTrickTurbulenceZone extends PieceTrickZoneBase<EntityTurbulenc
 
     public PieceTrickTurbulenceZone(Spell spell) {
         super(spell, EntityTurbulenceZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel(MAX_RESOURCE_ZONE_POWER));
+        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).add(COST_BASE).floor());
     }
 

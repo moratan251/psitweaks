@@ -25,7 +25,7 @@ public class PieceTrickHeatZone extends PieceTrickZoneBase<EntityHeatZone> {
 
     public PieceTrickHeatZone(Spell spell) {
         super(spell, EntityHeatZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel(MAX_RESOURCE_ZONE_POWER));
+        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
     }
 

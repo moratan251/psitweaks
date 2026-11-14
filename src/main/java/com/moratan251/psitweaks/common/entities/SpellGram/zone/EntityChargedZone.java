@@ -42,9 +42,11 @@ import java.util.Map;
  *   <li>充電能力（2026-11-14 ユーザー）: 領域は 1 tick あたり決まった量の FE を持つ（{@link #capacityPerTick}: 置いたときの
  *   コスト × {@link #FE_PER_PSI} ÷ 存続時間 × 機械を動かす速さ。威力はコストのつまみなので、威力とともに増える）。これを
  *   {@link #ENERGY_INTERVAL} tick ごとに、範囲の中の受け手で均等に分ける。受け手は FE を受け取れるもの（プレイヤーは持ち物
- *   ぜんぶ、ほかの生き物は手と防具、落ちているアイテム、FE を持つエンティティ）と、AE2 のチャージ中の落ちているアイテム。
- *   満タンで受け取れなかった分は、ほかの受け手に回す。ブロック（機械）には送らない（2026-11-12 ユーザー: 向きの決め方が
- *   分かりにくく、発電設備の代わりになりかねないため。ブロックへは作動式: FE供給 の役目）。</li>
+ *   ぜんぶ、ほかの生き物は手と防具、落ちているアイテム、FE を持つエンティティ、範囲の中の FE を受け取れるブロック）と、AE2 の
+ *   チャージ中の落ちているアイテム。満タンで受け取れなかった分は、ほかの受け手に回す。ブロックも同じ割合（2026-11-15
+ *   ユーザー: 2026-11-12 に外したが、総量で縛られるようになったので戻した。領域魔法は中盤の研究で開き、置き続けるには終盤の
+ *   自律詠唱機が要るので、発電機の 2 倍でよい）。ブロックの面は、受け取る面を順に試して選ぶ（Mekanism の機械は面のない
+ *   問い合わせでは受け取らない）。保護・領域干渉は機械と同じく確かめる。</li>
  *   <li>Applied Energistics 2 があれば、落ちているアイテムに AE2 のチャージャーと同じ加工をする（ケルタスクォーツの水晶が
  *   チャージ済みケルタスクォーツの水晶になる、など）。1 個に {@link #FE_PER_AE2_CHARGE} FE を充電能力から使う（AE2 の
  *   チャージャーの 1600 AE を既定の換算にした値）。AE2 のレシピをそのまま使い、コードは AE2 に依存しない。</li>
@@ -86,7 +88,13 @@ public class EntityChargedZone extends SpellGramZone {
     /** 落ちているアイテムごとの、AE2 のチャージにためた FE（エンティティの番号ごと）。サーバー側だけ。 */
     private final Map<Integer, Double> chargeProgress = new HashMap<>();
     /** 受け手ごとの、前の回に渡しきれなかった端数（{@link #MAX_ENERGY_CARRY} まで）。毎回、今いる受け手だけで作り直す。サーバー側だけ。 */
-    private Map<Long, Double> energyCarry = new HashMap<>();
+    private Map<Object, Double> energyCarry = new HashMap<>();
+    /** ブロックごとに FE を受け取った面（{@link #BLOCK_SIDES} の番号）。毎回、今の受け手だけで作り直す。サーバー側だけ。 */
+    private Map<BlockPos, Integer> energySides = new HashMap<>();
+    /** ブロックの FE の窓口を試す順: 6 つの面、最後に面のない問い合わせ。 */
+    private static final net.minecraft.core.Direction[] BLOCK_SIDES = {
+            net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.NORTH,
+            net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.EAST, null};
     /** 威力（コストのつまみ、1〜10）。 */
     /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
     private float power = DEFAULT_POWER;
@@ -176,9 +184,9 @@ public class EntityChargedZone extends SpellGramZone {
 
     /**
      * 充電能力を受け取る相手 1 つ: FE の窓口か、AE2 のチャージ中の落ちているアイテム。{@code boost} は雷雲の上乗せ。{@code key} は
-     * 端数の繰り越しに使う、エンティティの番号と窓口の場所（{@link #receiverKey}）。
+     * 端数の繰り越しに使う、エンティティの番号と窓口の場所（{@link #receiverKey}）か、ブロックの位置。
      */
-    private record Receiver(IEnergyStorage storage, ItemEntity charging, double boost, long key) {
+    private record Receiver(IEnergyStorage storage, ItemEntity charging, double boost, Object key) {
     }
 
     /** エンティティ {@code entityId} の窓口 {@code slot}（0: エンティティ自身、1: 落ちているアイテム、2 以降: 持ち物の枠）。 */
@@ -214,7 +222,8 @@ public class EntityChargedZone extends SpellGramZone {
                 }
             }
         }
-        Map<Long, Double> carry = new HashMap<>();
+        addBlockReceivers(level, receivers);
+        Map<Object, Double> carry = new HashMap<>();
         if (receivers.isEmpty()) {
             energyCarry = carry;
             return;
@@ -255,9 +264,62 @@ public class EntityChargedZone extends SpellGramZone {
         return stack.isEmpty() ? null : stack.getCapability(Capabilities.EnergyStorage.ITEM);
     }
 
+    /**
+     * 範囲の中の FE を受け取れるブロックを受け手に足す（2026-11-15 ユーザー）。世界の範囲と機体の範囲の機械をまとめ、同じブロックは
+     * 1 回だけ。範囲・領域干渉・乱流は世界の位置で判定し、保護は機械が本当にある位置で確かめる。
+     */
+    private void addBlockReceivers(ServerLevel level, List<Receiver> receivers) {
+        Map<BlockPos, Integer> sides = new HashMap<>();
+        if (getCaster() instanceof Player caster) {
+            for (ZoneRegion region : regions()) {
+                for (net.minecraft.world.level.block.entity.BlockEntity blockEntity : machinesIn(region)) {
+                    BlockPos pos = blockEntity.getBlockPos();
+                    if (blockEntity.isRemoved() || sides.containsKey(pos)) {
+                        continue;
+                    }
+                    BlockPos world = region.worldPos(pos);
+                    if (!isActiveAt(world) || !isStrongestAt(world) || !mayUseMachine(level, caster, pos)) {
+                        continue;
+                    }
+                    int side = blockEnergySide(level, blockEntity, energySides.getOrDefault(pos, -1));
+                    if (side < 0) {
+                        continue;
+                    }
+                    sides.put(pos, side);
+                    IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, blockEntity.getBlockState(),
+                            blockEntity, BLOCK_SIDES[side]);
+                    double boost = 1.0 + stormBoost(stormPowerAt(world));
+                    receivers.add(new Receiver(storage, null, boost, pos));
+                }
+            }
+        }
+        energySides = sides;
+    }
+
+    /** ブロックが FE を受け取る面（{@link #BLOCK_SIDES} の番号）。前に受け取った面 {@code known} を先に試す。なければ -1。 */
+    private static int blockEnergySide(ServerLevel level, net.minecraft.world.level.block.entity.BlockEntity blockEntity, int known) {
+        BlockPos pos = blockEntity.getBlockPos();
+        if (known >= 0 && accepts(level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, blockEntity.getBlockState(), blockEntity,
+                BLOCK_SIDES[known]))) {
+            return known;
+        }
+        for (int i = 0; i < BLOCK_SIDES.length; i++) {
+            if (i != known && accepts(level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, blockEntity.getBlockState(), blockEntity,
+                    BLOCK_SIDES[i]))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** 今 FE を受け取れる窓口か（満タン・受け取らない窓口は偽）。 */
+    private static boolean accepts(IEnergyStorage storage) {
+        return storage != null && storage.canReceive() && storage.receiveEnergy(Integer.MAX_VALUE, true) > 0;
+    }
+
     /** FE を受け取れる窓口だけ足す（満タンのものは数えない）。 */
     private static void addReceiver(List<Receiver> receivers, IEnergyStorage storage, double boost, long key) {
-        if (storage != null && storage.canReceive() && storage.receiveEnergy(Integer.MAX_VALUE, true) > 0) {
+        if (accepts(storage)) {
             receivers.add(new Receiver(storage, null, boost, key));
         }
     }
@@ -422,6 +484,7 @@ public class EntityChargedZone extends SpellGramZone {
         super.onEnd(reason);
         chargeProgress.clear();
         energyCarry = new HashMap<>();
+        energySides = new HashMap<>();
     }
 
     /** 中に散る小さな火花。雷雲のところは多め。 */

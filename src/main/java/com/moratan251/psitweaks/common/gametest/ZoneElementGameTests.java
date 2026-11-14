@@ -868,6 +868,9 @@ public final class ZoneElementGameTests {
     public static void smallHeatZoneWithHighPowerKindlesABurner(GameTestHelper helper) {
         int cost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickHeatZone.costFor(9, 100.0);
         helper.assertTrue(cost == 410, "Size 3, Power 100 must cost 410, got " + cost);
+        // 規模は威力 10 で頭打ち（2026-11-15 ユーザー、案 1）: サイズ 3 なら威力によらず 10 + ⌊9 × 10 × 0.27⌋ = 34。
+        int potency = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.poweredPotency(9, 100.0);
+        helper.assertTrue(potency == 34, "Potency must stop growing at Power 10: size 3, Power 100 must be 34, got " + potency);
         burnerTest(helper, BurnerCase.SMALL);
     }
 

@@ -2129,8 +2129,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "領域の強さはコストで決まり、「威力」は1ブロックあたりにかける Psi の量です。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風量）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.9",
-                "The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the zone's total (heat, cooling, wind and FE), so a small zone can handle as much as a large one by paying the same Cost. Effects on each being or block (how hot, how cold, how sharply projectiles turn and so on) stop growing at 10.",
-                "加熱・凍結・乱流・荷電の領域は、威力を10より上にもできます。10を超えた分は総量（熱・冷却・風量・FE）だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度など）は、威力10で頭打ちです。");
+                "The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the zone's total (heat, cooling, wind and FE), so a small zone can handle as much as a large one by paying the same Cost. Effects on each being or block (how hot, how cold, how sharply projectiles turn and so on) and the Potency stop growing at 10.",
+                "加熱・凍結・乱流・荷電の領域は、威力を10より上にもできます。10を超えた分は総量（熱・冷却・風量・FE）だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度など）と規模は、威力10で頭打ちです。");
 
         // 湿潤領域
         addBookPage(root, "trick_soak_zone.0",
@@ -2242,8 +2242,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",
-                "It sends FE to the entities inside: everything a player carries, what other living beings hold and wear, dropped items, and entities that store FE themselves. Blocks (machines) get none; use Trick: FE Charge for those. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
-                "範囲の中のエンティティに FE を送ります。送る先は、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、それに落ちているアイテムと、自分で FE をためるエンティティです。ブロック（機械）には送りません。機械には作動式: FE供給を使います。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "It sends FE to what is inside: blocks that take FE (machines, energy storage and so on, through whichever side takes it), everything a player carries, what other living beings hold and wear, dropped items, and entities that store FE themselves. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中のものに FE を送ります。送る先は、FE を受け取るブロック（機械や蓄電器など。受け取る面に送ります）、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、それに落ちているアイテムと、自分で FE をためるエンティティです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_charged_zone.1",
                 "The Power (a constant of at least 1) sets the Cost, and the FE capacity follows the Cost; it is shared evenly by everything inside that can take FE. At interference 2, a Size 16, Power 10 zone gives about 360 FE a tick.$(p)With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), each using 3200 FE of the capacity.",
                 "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");
@@ -3251,8 +3251,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places a Resident SpellGram zone that keeps weaker casters' Psi spells out of it and stops others' ender teleports",
                 "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と、術者以外のエンダー系のテレポートを、範囲の中で止める常駐魔法式を置く");
         addSpellPiece(root, "trick_charged_zone", "Trick: Charged Zone",
-                "Places a Resident SpellGram zone that slowly charges what the beings inside carry with FE",
-                "作動式: 荷電領域", "範囲の中の持ち物やアイテムに FE を少しずつ送る常駐魔法式を置く");
+                "Places a Resident SpellGram zone that sends FE to the blocks, items and carried things inside it",
+                "作動式: 荷電領域", "範囲の中のブロック・持ち物・アイテムに FE を送る常駐魔法式を置く");
         addSpellPiece(root, "trick_silence_zone", "Trick: Silence Zone",
                 "Places a Resident SpellGram zone where no sound is heard and no vibration gets through",
                 "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない常駐魔法式を置く");

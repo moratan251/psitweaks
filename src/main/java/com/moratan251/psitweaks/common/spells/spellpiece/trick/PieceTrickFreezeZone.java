@@ -24,7 +24,7 @@ public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
 
     public PieceTrickFreezeZone(Spell spell) {
         super(spell, EntityFreezeZone.class);
-        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel(MAX_RESOURCE_ZONE_POWER));
+        setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
     }
 

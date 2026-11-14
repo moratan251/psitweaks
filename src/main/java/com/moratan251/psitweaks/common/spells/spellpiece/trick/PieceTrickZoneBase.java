@@ -155,7 +155,8 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /** 威力のある領域の規模: 10 + ⌊広さ × 威力 × 0.27⌋。 */
     public static int poweredPotency(int area, double power) {
-        return POTENCY_BASE + (int) Math.floor(area * power * POWERED_POTENCY_FACTOR);
+        // 規模は威力 10 で頭打ち（2026-11-15 ユーザー、案 1）: 10 を超えた威力はコスト（＝総量）だけを増やす。
+        return POTENCY_BASE + (int) Math.floor(area * Math.min(power, MAX_ZONE_POWER) * POWERED_POTENCY_FACTOR);
     }
 
     /** {@link #poweredPotency} のラベル。 */
