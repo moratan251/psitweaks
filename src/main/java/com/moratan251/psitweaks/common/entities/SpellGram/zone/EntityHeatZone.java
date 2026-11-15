@@ -426,6 +426,92 @@ public class EntityHeatZone extends SpellGramZone {
         return placementCost * HEAT_PER_PSI / lifetimeTicks * machineSpeed;
     }
 
+    /** 電気炉の放電 1 本あたりの、火花を置く間隔（ブロック）。 */
+    private static final double ARC_STEP = 0.18;
+    /** 電気炉の放電の、横へのぶれの大きさ（ブロック）。 */
+    private static final double ARC_JITTER = 0.14;
+
+    /**
+     * 電気炉（自分の加熱領域に荷電領域が重なり、一括製錬になるところ、2026-11-15 ユーザー）の演出（クライアント側）。地表の上を
+     * ぎざぎざの放電が走り、端から白く光る火の粉と炎が立つ。重なりの下が地面に埋まっていても見えるよう、列ごとに地表（重なりの
+     * 中で、通れるブロックの下が固いところ）を探して、その上に出す。数は重なりの体積に応じて増やす（上限あり）。
+     */
+    private void spawnArcFurnaceParticles(AABB overlap) {
+        double volume = overlap.getXsize() * overlap.getYsize() * overlap.getZsize();
+        // 放電: 地表から 1.5 ブロックまでの高さで、2 点のあいだを火花でぎざぎざに結ぶ。
+        int arcs = (int) Math.min(3, Math.max(1, volume / 150.0));
+        for (int i = 0; i < arcs; i++) {
+            if (random.nextInt(4) != 0) {
+                continue;
+            }
+            double fromX = overlap.minX + random.nextDouble() * overlap.getXsize();
+            double fromZ = overlap.minZ + random.nextDouble() * overlap.getZsize();
+            double fromFloor = arcFloor(overlap, fromX, fromZ);
+            if (Double.isNaN(fromFloor)) {
+                continue;
+            }
+            double angle = random.nextDouble() * Math.PI * 2.0;
+            double length = 1.0 + random.nextDouble() * 1.8;
+            double toX = Mth.clamp(fromX + Math.cos(angle) * length, overlap.minX, overlap.maxX);
+            double toZ = Mth.clamp(fromZ + Math.sin(angle) * length, overlap.minZ, overlap.maxZ);
+            double toFloor = arcFloor(overlap, toX, toZ);
+            if (Double.isNaN(toFloor)) {
+                toFloor = fromFloor;
+            }
+            net.minecraft.world.phys.Vec3 from = new net.minecraft.world.phys.Vec3(fromX, fromFloor + 0.15 + random.nextDouble() * 1.3, fromZ);
+            net.minecraft.world.phys.Vec3 to = new net.minecraft.world.phys.Vec3(toX, toFloor + 0.15 + random.nextDouble() * 1.3, toZ);
+            int steps = Math.max(4, (int) Math.ceil(from.distanceTo(to) / ARC_STEP));
+            for (int k = 0; k <= steps; k++) {
+                double t = (double) k / steps;
+                double jitter = k == 0 || k == steps ? 0.0 : ARC_JITTER;
+                level().addParticle(ParticleTypes.ELECTRIC_SPARK,
+                        Mth.lerp(t, from.x, to.x) + (random.nextDouble() - 0.5) * jitter,
+                        Mth.lerp(t, from.y, to.y) + (random.nextDouble() - 0.5) * jitter,
+                        Mth.lerp(t, from.z, to.z) + (random.nextDouble() - 0.5) * jitter,
+                        0.0, 0.0, 0.0);
+            }
+            // 放電の両端: 白く光る火の粉と、小さな炎。
+            level().addParticle(ParticleTypes.END_ROD, from.x, from.y, from.z, 0.0, 0.02, 0.0);
+            level().addParticle(ParticleTypes.SMALL_FLAME, to.x, to.y, to.z, 0.0, 0.03, 0.0);
+        }
+        // 炉の熱: 地表から白い火の粉と炎がゆっくり昇る。
+        int glows = (int) Math.min(4, Math.max(1, volume / 120.0));
+        for (int i = 0; i < glows; i++) {
+            double x = overlap.minX + random.nextDouble() * overlap.getXsize();
+            double z = overlap.minZ + random.nextDouble() * overlap.getZsize();
+            double floor = arcFloor(overlap, x, z);
+            if (Double.isNaN(floor)) {
+                continue;
+            }
+            double y = floor + random.nextDouble() * 0.6;
+            if (random.nextInt(3) == 0) {
+                level().addParticle(ParticleTypes.END_ROD, x, y, z, 0.0, 0.03, 0.0);
+            } else {
+                level().addParticle(ParticleTypes.FLAME, x, y, z, 0.0, 0.04, 0.0);
+            }
+        }
+    }
+
+    /**
+     * 列 ({@code x}, {@code z}) の、重なり {@code overlap} の中の地表の高さ: 上から見て、通れるブロック（当たり判定がない）の下が
+     * 通れないブロックになる最初の高さ。列の全部が通れるなら重なりの底、全部が埋まっていれば NaN（出さない）。
+     */
+    private double arcFloor(AABB overlap, double x, double z) {
+        int top = Mth.ceil(overlap.maxY) - 1;
+        int bottom = Mth.floor(overlap.minY);
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        boolean openAbove = false;
+        for (int y = top; y >= bottom; y--) {
+            pos.set(Mth.floor(x), y, Mth.floor(z));
+            boolean open = level().getBlockState(pos).getCollisionShape(level(), pos).isEmpty();
+            if (!open && openAbove) {
+                return y + 1.0;
+            }
+            openAbove = open;
+        }
+        return openAbove ? overlap.minY : Double.NaN;
+    }
+
     /** Create の加工: ふだんは一括燻製、氷炎地獄の灼熱の間は一括製錬。 */
     private static CreateCompat.FanProcess fanProcess(boolean inferno) {
         return inferno ? CreateCompat.FanProcess.BLASTING : CreateCompat.FanProcess.SMOKING;
@@ -522,6 +608,13 @@ public class EntityHeatZone extends SpellGramZone {
         if (CreateCompat.isCreateLoaded()) {
             boolean inferno = isInferno();
             List<EntityChargedZone> arcs = inferno ? List.of() : level().getEntitiesOfClass(EntityChargedZone.class, getOutline());
+            // 電気炉（荷電領域が重なったところ）の専用の演出（2026-11-15 ユーザー）。
+            for (EntityChargedZone arc : arcs) {
+                AABB overlap = ZoneAttacks.overlap(getOutline(), arc.getOutline());
+                if (overlap != null && overlap.getXsize() > 0.0 && overlap.getYsize() > 0.0 && overlap.getZsize() > 0.0) {
+                    spawnArcFurnaceParticles(overlap);
+                }
+            }
             for (ZoneRegion region : regions()) {
                 CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), pos -> {
                     if (inferno) {
