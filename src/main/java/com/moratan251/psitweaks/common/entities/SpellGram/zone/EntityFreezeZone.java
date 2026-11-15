@@ -67,10 +67,16 @@ public class EntityFreezeZone extends SpellGramZone {
     /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
     public static final double MAX_COOL_FRACTION = 0.5;
     /**
-     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、加熱の熱量と対）。冷やしてもエネルギーは生まれないので、
-     * 熱の比率より桁違いに大きい。
+     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、2026-11-15 ユーザー、案 A: 加熱の熱量と同じ値にそろえる）。
+     * 熱の出し入れを 1 つの物差しで扱えるよう、加熱領域の {@link EntityHeatZone#HEAT_PER_PSI} と同じ。前の 560 kJ は核分裂炉を
+     * 冷やせたが、熱の約 1,500 倍で分かりにくかった。
      */
-    public static final double COOLING_PER_PSI = 560_000.0;
+    public static final double COOLING_PER_PSI = EntityHeatZone.HEAT_PER_PSI;
+    /**
+     * 威力 1 あたりの、冷やせる下限の周囲の温度からの下げ幅（K、2026-11-15 ユーザー）。威力 10 で周囲より 50 K 下（平地なら
+     * 約 250 K、−23℃）。加熱領域の「威力 × 100 K まで温める」と対になる、1 か所あたりの強さ（威力 10 で頭打ち）。
+     */
+    public static final double COOL_BELOW_AMBIENT_PER_POWER = 5.0;
     /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
@@ -203,8 +209,9 @@ public class EntityFreezeZone extends SpellGramZone {
         if (machines.isEmpty()) {
             return;
         }
-        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算）。
-        double removed = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(), fraction, cap, pos -> {
+        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算）。下限は周囲の温度 − 威力 × 5 K。
+        double belowAmbient = power * COOL_BELOW_AMBIENT_PER_POWER;
+        double removed = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(), fraction, cap, belowAmbient, pos -> {
             ZoneRegion region = owners.get(pos);
             return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
         });
@@ -217,7 +224,7 @@ public class EntityFreezeZone extends SpellGramZone {
                 EntityTurbulenceZone turbulence = entry.getKey();
                 double boost = stormBoost(turbulence.getPower());
                 removed += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
-                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), pos -> {
+                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), belowAmbient, pos -> {
                             ZoneRegion region = owners.get(pos);
                             return region != null && stormAt(region.worldPos(pos)) == turbulence
                                     && mayUseMachine(level, caster, pos);

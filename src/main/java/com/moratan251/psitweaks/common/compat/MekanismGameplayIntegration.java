@@ -103,7 +103,7 @@ final class MekanismGameplayIntegration {
      * 取り除いた熱の合計を返す。
      */
     static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                double fraction, double total, Predicate<BlockPos> mayUse) {
+                                double fraction, double total, double belowAmbient, Predicate<BlockPos> mayUse) {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
         List<IHeatHandler> handlers = new ArrayList<>();
         List<Double> amounts = new ArrayList<>();
@@ -115,12 +115,13 @@ final class MekanismGameplayIntegration {
             if (!cooled.add(heatKeyOf(blockEntity, handler)) || !mayUse.test(blockEntity.getBlockPos())) {
                 continue;
             }
-            double ambient = HeatAPI.getAmbientTemp(level, blockEntity.getBlockPos());
-            double excess = handler.getTotalTemperature() - ambient;
+            // 冷やせる下限は周囲の温度より belowAmbient だけ低いところ（2026-11-15 ユーザー: 水を凍らせる領域なので周囲より下まで）。
+            double floor = Math.max(0.0, HeatAPI.getAmbientTemp(level, blockEntity.getBlockPos()) - Math.max(0.0, belowAmbient));
+            double excess = handler.getTotalTemperature() - floor;
             if (excess <= 0.01) {
                 continue;
             }
-            // handleHeat は負の値をそのまま受け取り下限を見ないので、取り除くのは必ず周囲との差まで（割合は 1 以下）。
+            // handleHeat は負の値をそのまま受け取り下限を見ないので、取り除くのは必ず下限との差まで（割合は 1 以下）。
             double amount = excess * Math.min(1.0, fraction) * handler.getTotalHeatCapacity();
             if (amount > 0.0) {
                 handlers.add(handler);

@@ -2188,11 +2188,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at least 1) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast, the fastest. The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor. Water sources inside with air right above them turn into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
                 "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（1以上の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さで、これが最速です。術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。範囲の中の水源のうち、真上が空気のものは氷になります。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_freeze_zone.1",
-                "Wet beings freeze in half the time. With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on) toward the ambient temperature, never below it.",
-                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を、周囲の温度に向けて冷やします。周囲の温度より下には冷えません。");
+                "Wet beings freeze in half the time. With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on), down to 5 K per Power below the ambient temperature (50 K at most, about -23 °C on plains).",
+                "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を冷やします。冷やせるのは周囲の温度より 威力×5K 下まで（最大 50K 下、平地なら約 −23℃）です。");
         addBookPage(root, "trick_freeze_zone.2",
-                "The zone has a cooling amount that follows its Cost, the counterpart of the Heat Zone's heat: at interference 2, about 1 MJ a tick for Size 16, Power 10. It is shared evenly by the blocks that hold heat; each loses at most 0.2% per Power of its difference from the ambient temperature a tick (2% at Power 10 and above).",
-                "領域は、コストに応じた冷却量を持ちます。加熱領域の熱量と対になるもので、干渉力2なら、サイズ16・威力10で1 tick に約1MJです。冷却量は熱を持つブロックで均等に分け、1つが1 tick に冷えるのは、周囲との温度差の 威力×0.2%（威力10以上で2%）までです。");
+                "The zone has a cooling amount that follows its Cost, the same as the heat of a Heat Zone of the same Cost: at interference 2, about 640 J a tick for Size 16, Power 10. It is shared evenly by the blocks that hold heat; each loses at most 0.2% per Power of its difference from the lowest temperature a tick (2% at Power 10 and above).",
+                "領域は、コストに応じた冷却量を持ちます。同じコストの加熱領域の熱量と同じ量で、干渉力2なら、サイズ16・威力10で1 tick に約640 J です。冷却量は熱を持つブロックで均等に分け、1つが1 tick に冷えるのは、下限との温度差の 威力×0.2%（威力10以上で2%）までです。");
 
         // 乱流領域
         addBookPage(root, "trick_turbulence_zone.0",
