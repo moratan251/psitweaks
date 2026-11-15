@@ -33,7 +33,7 @@ public final class MekanismGameplayCompat {
 
     /**
      * 作動式: 加熱領域の熱: 範囲の中の Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機、
-     * ボイラーバルブなど）に、合計 {@code total} の熱を均等に分けて送る（2026-11-14 ユーザー: 熱は領域ごとの総量を受け手で分け合う。
+     * ボイラーバルブなど）に、合計 {@code total} の熱を均等に分けて送る（熱は領域ごとの総量を受け手で分け合う。
      * 受け取りきれなかった分は、まだ入る受け手に 1 回だけ分け直す）。温度が {@code maxTemperature} 以上のものには送らず、
      * それを越えない分だけ送る（核分裂炉を損傷させないため）。同じマルチブロックには 1 回だけ。{@code mayUse} が偽の
      * ブロック（保護された場所）には送らない。送った熱の合計を返す。Mekanism がなければ何もしない。{@code sideCache} は、熱の窓口が
@@ -49,7 +49,7 @@ public final class MekanismGameplayCompat {
     /**
      * 作動式: 凍結領域の冷却: 範囲の中の Mekanism の熱を持つブロックを、周囲の温度に向けて温度差の {@code fraction} だけ
      * 冷やす（周囲の温度より下には冷やさない、同じマルチブロックには 1 回だけ、{@code mayUse} が偽のブロックは冷やさない）。
-     * 取り除く合計は {@code maxTotal} まで（超えたら、どの受け手も同じ割合で減らす。2026-11-14 ユーザー）。
+     * 取り除く合計は {@code maxTotal} まで（超えたら、どの受け手も同じ割合で減らす）。
      * 取り除いた熱の合計を返す。Mekanism がなければ 0。
      */
     public static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,

@@ -102,7 +102,7 @@ final class CreateFanIntegration {
         for (ItemEntity item : itemsInside(level, area)) {
             if (itemsAt.test(BlockPos.containing(item.getBoundingBox().getCenter())) && FanProcessing.canProcess(item, type)
                     && safeToProcess(level, process, item.getItem())) {
-                // 加工している間は消えるまでの時間を止める（2026-11-12 ユーザー）。
+                // 加工している間は消えるまでの時間を止める。
                 com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneItemLifetimes.hold(item, level.getGameTime());
                 FanProcessing.applyProcessing(item, type);
             }
@@ -116,7 +116,7 @@ final class CreateFanIntegration {
     }
 
     /**
-     * 領域の加工で扱ってよいアイテムか（2026-11-15 ユーザー: ドロップアイテムが意図せず燃えないように）。Create の一括製錬は、
+     * 領域の加工で扱ってよいアイテムか（ドロップアイテムが意図せず燃えないように）。Create の一括製錬は、
      * 精錬・溶鉱炉のレシピがないアイテムを（耐火のもの以外）燃やして消すので、領域の一括製錬はレシピのあるアイテムだけにする。
      * 一括洗浄・一括燻製はもともとレシピのあるアイテムにしか効かない。
      */

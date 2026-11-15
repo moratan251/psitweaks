@@ -25,21 +25,16 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import java.util.List;
 
 /**
- * 作動式: 凍結領域（仮）の範囲。中の生物を、粉雪に埋まったときと同じように凍えさせる（凍えの値をためる。たまりきると
- * バニラと同じく動きが遅くなり、凍えのダメージを受ける）。凍えない生物（革の防具を着ている、ストレイなど）はバニラと同じく
- * 凍えない。術者自身は凍えさせない（{@link #sparesCaster}）。濡れている生物（湿潤領域を重ねるなど）は、凍えきるまでの
- * 時間が半分になる（{@link #freezeAmount}）。
- * <p>
- * 範囲の中の水源の水のうち、真上が空気のものを氷にする（氷渡りと同じ条件）。中にエンティティがいる水は凍らせない。
- * <p>
- * 同じ術者の加熱領域と 1 つの直方体を二分すると、氷炎地獄の「極寒」側になる（{@link InfernoZones}、隠し要素）。極寒の間に
- * Mekanism の機械から奪った熱は、灼熱側の加熱領域へ移す（2026-11-15 ユーザー、案 A。前の「冷却 4 倍」は外した）。
- * <p>
- * 同じ術者の乱流領域と重なったブロックは「吹雪」になる（2026-11-11 ユーザー）: 中の生物に {@link #INTERVAL} tick ごとに
- * 凍結属性のダメージ（攻撃術式の共通ルール、設定 {@code blizzard.damageMultiplier}）、凍えも 2 倍の速さでたまる
- * （濡れていればさらに 2 倍）。
- * <p>
- * 加熱領域と重なったブロックでは、加熱と凍結が打ち消し合ってどちらも効かない（{@link EntityHeatZone#isActiveAt}）。
+ * 作動式: 凍結領域（仮）の範囲。
+ * <ul>
+ *   <li>中の生物を、粉雪に埋まったときと同じように凍えさせる（{@link #freezeAmount}）。術者自身は凍えさせない
+ *   （{@link #sparesCaster}）。</li>
+ *   <li>水源の水のうち、真上が空気のものを氷にする（{@link #affectBlock}）。</li>
+ *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を周囲の温度に向けて冷やす
+ *   （{@link #coolMekanismMachines}）。</li>
+ * </ul>
+ * 自分の側の加熱領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると吹雪、加熱領域と直方体を二分すると
+ * 氷炎地獄の極寒側（{@link InfernoZones}）になる。仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityFreezeZone extends SpellGramZone {
     private static final int INTERVAL = 10;
@@ -72,16 +67,15 @@ public class EntityFreezeZone extends SpellGramZone {
     /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
     public static final double MAX_COOL_FRACTION = 0.5;
     /**
-     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、2026-11-14・15 ユーザー: 加熱の熱量と対の「冷却量」）。
-     * 威力 10・サイズ 16（コスト 1074）の速さ 1 で約 1 MJ/t。冷やしてもエネルギーは生まれないので、熱（360 J/Psi）より桁違いに
-     * 大きくてよい（核分裂炉を冷やせる）。
+     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、加熱の熱量と対）。冷やしてもエネルギーは生まれないので、
+     * 熱の比率より桁違いに大きい。
      */
     public static final double COOLING_PER_PSI = 560_000.0;
     /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
     /**
-     * 威力（冷やす強さ、2026-11-11 ユーザー）。凍えのたまる速さ・1 台あたりの冷える割合・氷炎地獄の強さを決める。1 体・1 か所
+     * 威力（冷やす強さ）。凍えのたまる速さ・1 台あたりの冷える割合・氷炎地獄の強さを決める。1 体・1 か所
      * あたりの強さに使うので {@link #MAX_EFFECT_POWER} まで。
      */
     private float power = DEFAULT_POWER;
@@ -182,7 +176,7 @@ public class EntityFreezeZone extends SpellGramZone {
     }
 
     /**
-     * Mekanism の熱を持つ設備を、周囲の温度に向けて冷やす（毎 tick、2026-11-11 の設計 A）。加熱領域と打ち消し合っているブロック・
+     * Mekanism の熱を持つ設備を、周囲の温度に向けて冷やす（毎 tick）。加熱領域と打ち消し合っているブロック・
      * 領域干渉で止められたブロック・術者が機械を使えないブロックは冷やさない。吹雪のブロックは乱流の威力に応じて上乗せ。
      */
     private void coolMekanismMachines() {
@@ -209,7 +203,7 @@ public class EntityFreezeZone extends SpellGramZone {
         if (machines.isEmpty()) {
             return;
         }
-        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算、2026-11-15 ユーザー、案 A）。
+        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算）。
         double removed = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(), fraction, cap, pos -> {
             ZoneRegion region = owners.get(pos);
             return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
@@ -218,7 +212,7 @@ public class EntityFreezeZone extends SpellGramZone {
         recordResourceUse(removed);
         if (isStorm()) {
             // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。冷却量の上乗せは乱流が範囲を覆う割合を
-            // 掛ける（2026-11-15 ユーザー: 小さな乱流の重ねがけで増えないように）。
+            // 掛ける（小さな乱流を重ねても増えないように）。
             for (java.util.Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                 EntityTurbulenceZone turbulence = entry.getKey();
                 double boost = stormBoost(turbulence.getPower());
@@ -230,7 +224,7 @@ public class EntityFreezeZone extends SpellGramZone {
                         });
             }
         }
-        // 氷炎地獄の極寒: 奪った熱を灼熱側の加熱領域へ移す（2026-11-15 ユーザー、案 A）。
+        // 氷炎地獄の極寒: 奪った熱を灼熱側の加熱領域へ移す。
         if (infernoPartner() instanceof EntityHeatZone hot) {
             hot.acceptMovedHeat(removed);
         }

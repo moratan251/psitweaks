@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * 視線の先の魔法式オブジェクトの核を探す（2026-11-12、耐久値の表示に使う）。魔法式オブジェクトはふつうの照準では選べない
+ * 視線の先の魔法式オブジェクトの核を探す（耐久値の表示に使う）。魔法式オブジェクトはふつうの照準では選べない
  * （{@code isPickable} が偽）ので、核の当たりの箱（{@link #coreBox}）と視線を自分で比べる。ブロックに遮られていれば選ばない。
  */
 public final class SpellGramAim {

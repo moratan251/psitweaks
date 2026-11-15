@@ -32,7 +32,7 @@ import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * 作動式: 術式解体（Gram Demolition、2026-11-14 ユーザー）。入力なし。術者の目から視線の方向へ {@link #RANGE} ブロック、
+ * 作動式: 術式解体（Gram Demolition）。入力なし。術者の目から視線の方向へ {@link #RANGE} ブロック、
  * 半角 {@link #HALF_ANGLE_DEGREES} 度の円錐（ブロックは貫通する）の中にある魔法式オブジェクトの核すべての耐久値を
  * {@link #INTEGRITY_DAMAGE} 減らし（× 術者の事象干渉力）、同じ範囲の生物に {@link #DAMAGE} のダメージ（全体倍率・個別倍率・
  * 事象干渉力を掛ける）を与える。術者自身の魔法式オブジェクトは削らない。

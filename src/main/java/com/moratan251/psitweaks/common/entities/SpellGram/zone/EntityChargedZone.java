@@ -37,34 +37,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作動式: 荷電領域（仮、Charged Zone、2026-11-12 ユーザー）の範囲。
+ * 作動式: 荷電領域（仮、Charged Zone）の範囲。
  * <ul>
- *   <li>充電能力（2026-11-14 ユーザー）: 領域は 1 tick あたり決まった量の FE を持つ（{@link #capacityPerTick}: 置いたときの
- *   コスト × {@link #FE_PER_PSI} ÷ 存続時間 × 機械を動かす速さ。威力はコストのつまみなので、威力とともに増える）。これを
- *   {@link #ENERGY_INTERVAL} tick ごとに、範囲の中の受け手で均等に分ける。受け手は FE を受け取れるもの（プレイヤーは持ち物
- *   ぜんぶ、ほかの生き物は手と防具、落ちているアイテム、FE を持つエンティティ、範囲の中の FE を受け取れるブロック）と、AE2 の
- *   チャージ中の落ちているアイテム。満タンで受け取れなかった分は、ほかの受け手に回す。ブロックも同じ割合（2026-11-15
- *   ユーザー: 2026-11-12 に外したが、総量で縛られるようになったので戻した。領域魔法は中盤の研究で開き、置き続けるには終盤の
- *   自律詠唱機が要るので、発電機の 2 倍でよい）。ブロックの面は、受け取る面を順に試して選ぶ（Mekanism の機械は面のない
- *   問い合わせでは受け取らない）。保護・領域干渉は機械と同じく確かめる。</li>
- *   <li>Applied Energistics 2 があれば、落ちているアイテムに AE2 のチャージャーと同じ加工をする（ケルタスクォーツの水晶が
- *   チャージ済みケルタスクォーツの水晶になる、など）。1 個に {@link #FE_PER_AE2_CHARGE} FE を充電能力から使う（AE2 の
- *   チャージャーの 1600 AE を既定の換算にした値）。AE2 のレシピをそのまま使い、コードは AE2 に依存しない。</li>
- *   <li>同じ術者の乱流領域と重なったところは「雷雲」になる: ランダムな間隔で、連鎖電光に似た雷撃が中の生物を 1 体ずつ打つ
- *   （連鎖はしない）。雷撃の強さは乱流の威力（重なっていれば最も強いもの）、FE とチャージの速さも乱流の威力で上がる
- *   （威力 10 で 2 倍、ほかの組み合わせと同じ）。</li>
+ *   <li>充電能力（{@link #capacityPerTick}）を {@link #ENERGY_INTERVAL} tick ごとに、範囲の中の受け手で均等に分ける。受け手は
+ *   FE を受け取れるもの（プレイヤーの持ち物、ほかの生き物の手と防具、落ちているアイテム、FE を持つエンティティ、FE を受け取れる
+ *   ブロック）と、AE2 のチャージ中の落ちているアイテム。満タンで受け取れなかった分は、ほかの受け手に回す。</li>
+ *   <li>Applied Energistics 2 があれば、落ちているアイテムに AE2 のチャージャーと同じ加工をする（1 個に
+ *   {@link #FE_PER_AE2_CHARGE} FE）。AE2 のレシピをそのまま使い、コードは AE2 に依存しない。</li>
+ *   <li>同じ術者の乱流領域と重なったところは「雷雲」: ランダムな間隔で中の生物を 1 体ずつ雷撃で打ち、受け手は分けた量の
+ *   (1 + 乱流の上乗せ) 倍を受け取る。</li>
  * </ul>
- * 機械を動かす速さは、ほかの領域と同じく置いた時点の事象干渉力で決まる（干渉力 1 で半分、2 で基準、上限 2 倍）。雷雲の中の
- * 受け手は、分けた量の (1 + 乱流の上乗せ) 倍を受け取る（乱流の威力 10 で 2 倍）。
+ * ブロックの面は、受け取る面を順に試して選ぶ（Mekanism の機械は面のない問い合わせでは受け取らない）。仕様の全体と数値の根拠は
+ * {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityChargedZone extends SpellGramZone {
     /** 辺の色: 電気の黄色。 */
     public static final int OUTLINE_COLOR = 0xF4FF6A;
     /** 雷雲のときの辺の色: 雷の薄紫。 */
     public static final int STORM_OUTLINE_COLOR = 0xB9A8FF;
-    /** 充電能力の比率: 置いたときのコスト 1 Psi あたりの FE（2026-11-15 ユーザー: サイリンク発電機の 100 FE の 2 倍）。 */
+    /** 充電能力の比率: 置いたときのコスト 1 Psi あたりの FE（サイリンク発電機の 2 倍）。 */
     public static final double FE_PER_PSI = 200.0;
-    /** AE2 のチャージ 1 個に使う FE（2026-11-14 ユーザー: AE2 のチャージャーの 1600 AE を既定の換算 1 AE = 2 FE にした値）。 */
+    /** AE2 のチャージ 1 個に使う FE（AE2 のチャージャーの 1600 AE を、既定の換算 1 AE = 2 FE にした値）。 */
     public static final int FE_PER_AE2_CHARGE = 3200;
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
@@ -200,7 +193,7 @@ public class EntityChargedZone extends SpellGramZone {
      */
     private void supplyEnergy(ServerLevel level) {
         List<Receiver> receivers = new ArrayList<>();
-        // 重なった自分の荷電領域は、それぞれが自分の充電能力を配る（2026-11-15 ユーザー、案 A）ので、一番強いかは問わない。
+        // 重なった自分の荷電領域は、それぞれが自分の充電能力を配る（足し算）ので、一番強いかは問わない。
         for (Entity target : entitiesReceiving()) {
             double boost = 1.0 + stormBoost(stormPowerAt(BlockPos.containing(target.getBoundingBox().getCenter())));
             int id = target.getId();
@@ -273,7 +266,7 @@ public class EntityChargedZone extends SpellGramZone {
     }
 
     /**
-     * 範囲の中の FE を受け取れるブロックを受け手に足す（2026-11-15 ユーザー）。世界の範囲と機体の範囲の機械をまとめ、同じブロックは
+     * 範囲の中の FE を受け取れるブロックを受け手に足す。世界の範囲と機体の範囲の機械をまとめ、同じブロックは
      * 1 回だけ。範囲・領域干渉・乱流は世界の位置で判定し、保護は機械が本当にある位置で確かめる。
      */
     private void addBlockReceivers(ServerLevel level, List<Receiver> receivers) {
@@ -383,7 +376,7 @@ public class EntityChargedZone extends SpellGramZone {
             chargeProgress.remove(item.getId());
             return;
         }
-        // 加工している間は消えるまでの時間を止める（2026-11-12 ユーザー）。
+        // 加工している間は消えるまでの時間を止める。
         ZoneItemLifetimes.hold(item, level.getGameTime());
         double progress = chargeProgress.getOrDefault(item.getId(), 0.0) + energy;
         int done = (int) Math.min(stack.getCount(), Math.floor(progress / FE_PER_AE2_CHARGE));

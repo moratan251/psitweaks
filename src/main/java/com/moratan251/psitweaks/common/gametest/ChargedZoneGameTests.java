@@ -43,7 +43,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import java.util.List;
 
 /**
- * 作動式: 荷電領域（2026-11-12）。範囲の中の機械・持ち物・落ちているアイテムに FE を送り、AE2 のチャージ加工をし、乱流領域と
+ * 作動式: 荷電領域。範囲の中の機械・持ち物・落ちているアイテムに FE を送り、AE2 のチャージ加工をし、乱流領域と
  * 重なると雷雲になって中の生物を雷撃で打つ。Mekanism・AE2 を使うテストは、入っていないときは中身を飛ばして通す。
  * <p>
  * プレイヤーをワールドに入れるので、他のテストと同時に動かないようバッチを分ける。
@@ -57,8 +57,8 @@ public final class ChargedZoneGameTests {
     }
 
     /**
-     * 充電能力（2026-11-14 ユーザー）: 置いたときのコスト × 50 FE ÷ 存続時間 × 速さ。コストも存続時間も時間に比例するので、
-     * 1 tick あたりの量は時間によらない。サイズ 16・威力 10（コスト 1074）の速さ 1 で約 358 FE/t（2026-11-15 に 200 FE/Psi）。
+     * 充電能力: 置いたときのコスト × 50 FE ÷ 存続時間 × 速さ。コストも存続時間も時間に比例するので、
+     * 1 tick あたりの量は時間によらない。サイズ 16・威力 10（コスト 1074）の速さ 1 で約 358 FE/t。
      * 雷撃は乱流の威力 1 あたり 1。
      */
     @GameTest(template = TEMPLATE)
@@ -78,7 +78,7 @@ public final class ChargedZoneGameTests {
     }
 
     /**
-     * 充電能力は受け手で分け合う（2026-11-14 ユーザー）: 落ちているエネルギータブレット（Mekanism）が 1 つでも 4 つでも、同じ時間に
+     * 充電能力は受け手で分け合う: 落ちているエネルギータブレット（Mekanism）が 1 つでも 4 つでも、同じ時間に
      * 入る FE の合計は同じ（充電能力 × 時間）。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_charged_shared", timeoutTicks = 120)
@@ -120,7 +120,7 @@ public final class ChargedZoneGameTests {
                     "One tablet must take the whole capacity (" + singleCapacity * 40 + " FE in 40 ticks), got " + singleTotal);
             helper.assertTrue(sharedTotal <= sharedCapacity * 40 + 1 && sharedTotal >= sharedCapacity * 40 - 32,
                     "Four tablets must share the capacity (" + sharedCapacity * 40 + " FE in 40 ticks), got " + sharedTotal);
-            // 照準の表示（2026-11-15 ユーザー）: 使っている量は、受け手がみな受け取りきるので充電能力のほとんど。
+            // 照準の表示: 使っている量は、受け手がみな受け取りきるので充電能力のほとんど。
             helper.assertTrue(sharedUsed > sharedCapacity * 0.8 && sharedUsed <= sharedCapacity * 1.0001,
                     "The synced use must be close to the capacity (" + sharedCapacity + " FE/t), got " + sharedUsed);
             int each = four.stream().mapToInt(item -> stored(item.getItem())).min().orElse(0);
@@ -129,7 +129,7 @@ public final class ChargedZoneGameTests {
         });
     }
 
-    /** 重なった自分の荷電領域は、それぞれが自分の充電能力を配る（足し算、2026-11-15 ユーザー、案 A）。 */
+    /** 重なった自分の荷電領域は、それぞれが自分の充電能力を配る（足し算）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_charged_stack", timeoutTicks = 120)
     public static void overlappingChargedZonesAddTheirCapacity(GameTestHelper helper) {
         Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
@@ -175,7 +175,7 @@ public final class ChargedZoneGameTests {
 
     /**
      * 生き物の手のエネルギータブレットと落ちているエネルギータブレット（Mekanism）と、ブロック（AE2 のチャージャー）に FE が入る
-     * （2026-11-15 ユーザー: ブロックにも送る。2026-11-12 に外していた）。
+     * （ブロックにも送る）。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_charged_energy", timeoutTicks = 80)
     public static void chargedZoneFillsCarriedItemsAndBlocks(GameTestHelper helper) {
@@ -220,7 +220,7 @@ public final class ChargedZoneGameTests {
             int inHand = tablet != null ? stored(holder.getMainHandItem()) : 1;
             int onGround = tablet == null ? 1 : dropped.isAlive() ? stored(dropped.getItem()) : -1;
             cleanup.run();
-            // 2026-11-15 ユーザー: ブロックにも送る（前は送らなかった）。
+            // ブロックにも送る。
             helper.assertTrue(chargerBlock == null || inCharger > 0, "Blocks inside the zone must get FE, the Charger has " + inCharger);
             helper.assertTrue(inHand > 0, "The Energy Tablet held inside the zone must get FE, has " + inHand);
             helper.assertTrue(onGround > 0, "The dropped Energy Tablet inside the zone must get FE, has " + onGround);

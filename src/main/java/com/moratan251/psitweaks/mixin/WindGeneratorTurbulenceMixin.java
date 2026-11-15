@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Mekanism Generators の風力発電機と作動式: 乱流領域（加算方式、2026-11-15 ユーザー）。風力発電機の発電に、乱流の風を足す:
+ * Mekanism Generators の風力発電機と作動式: 乱流領域（加算方式）。風力発電機の発電に、乱流の風を足す:
  * 受け取った風量 1 WU ごとに {@link EntityTurbulenceZone#WIND_JOULES_PER_WU}（25 J/t = 10 FE/t）。乱流の風は人工のものなので、
  * 高さによらない（Mekanism の発電は高さで 60〜480 J/t）。屋根の下（上 4 ブロックの位置から空が見えない）の発電機は乱流の風
  * だけで動き、空の下の発電機には上乗せになる。Mekanism の発電の倍率は「発電量 ÷ 最小の発電量（設定 generationMin）」なので、

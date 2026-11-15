@@ -21,22 +21,22 @@ import java.util.UUID;
  * 他者は、自分を対象にする作動式も使えない。他者の領域は、範囲の中に中心を置けない。
  * <p>
  * 他人の領域との奪い合い（{@link SpellGramZone#isActiveAt}、どの領域にも共通）では、置いた時点の事象干渉力に
- * 威力 × {@link #CONTEST_BONUS_PER_POWER} を上乗せして比べる（2026-11-14 ユーザー）。勝てば、重なったところでは自分の側の
+ * 威力 × {@link #CONTEST_BONUS_PER_POWER} を上乗せして比べる。勝てば、重なったところでは自分の側の
  * 領域だけが効く。
  * <p>
  * 範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）を
- * 止める。範囲の中から外へも、外から中へも（{@link #onEntityTeleport}、2026-11-14 ユーザー）。
+ * 止める。範囲の中から外へも、外から中へも（{@link #onEntityTeleport}）。
  * <p>
- * 止めるのは、置いた時点の術者の事象干渉力より低い事象干渉力の他者だけ（2026-11-11 ユーザー、案 A）。同じか高い相手は
+ * 止めるのは、置いた時点の術者の事象干渉力より低い事象干渉力の他者だけ。同じか高い相手は
  * 止めない。「他者」かは術者の {@code getUUID()} で見分ける（自律詠唱機は所有者の UUID を名乗るので、自分の自律詠唱機は
- * 他者に数えない）。Ars Nouveau・Iron's Spells 'n Spellbooks の魔法は止めない（2026-11-09 ユーザー）。
+ * 他者に数えない）。Ars Nouveau・Iron's Spells 'n Spellbooks の魔法は止めない。
  */
 public class EntityInterferenceZone extends SpellGramZone {
     private static final int MAX_MOTES_PER_TICK = 4;
 
     /** 辺の色: 紫。 */
     public static final int OUTLINE_COLOR = 0xB57BFF;
-    /** 奪い合いの事象干渉力への上乗せ: 威力 1 あたり 5%（2026-11-14 ユーザー）。 */
+    /** 奪い合いの事象干渉力への上乗せ: 威力 1 あたり 5%。 */
     public static final double CONTEST_BONUS_PER_POWER = 0.05;
 
     /** 威力（0〜10、サーバー側）。他人の領域との奪い合いで事象干渉力に上乗せする。 */

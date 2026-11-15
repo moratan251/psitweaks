@@ -18,7 +18,7 @@ import vazkii.psi.api.spell.param.ParamNumber;
 public class PieceTrickTurbulenceZone extends PieceTrickZoneBase<EntityTurbulenceZone> {
     /** 威力の上限（仮）。 */
     public static final double MAX_POWER = MAX_RESOURCE_ZONE_POWER;
-    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通、2026-11-14）、コスト = 40 + 広さ × 威力（広さ = サイズ²）
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 40 + 広さ × 威力（広さ = サイズ²）
     private static final int COST_BASE = 40;
 
     private SpellParam<Number> power;
@@ -29,7 +29,7 @@ public class PieceTrickTurbulenceZone extends PieceTrickZoneBase<EntityTurbulenc
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).add(COST_BASE).floor());
     }
 
-    /** 総量を持つ領域なので、威力は 10 より上も入れられる（2026-11-15 ユーザー）。 */
+    /** 総量を持つ領域なので、威力は 10 より上も入れられる。 */
     @Override
     protected double maxPower() {
         return MAX_RESOURCE_ZONE_POWER;

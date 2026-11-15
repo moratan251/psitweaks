@@ -10,12 +10,11 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
- * 作動式: 荷電領域（仮、Charged Zone、2026-11-12 ユーザー）。範囲の中のエンティティ（持ち物）に FE を送り、AE2 のチャージ加工を
- * し、乱流領域と重なると雷雲になる（{@link EntityChargedZone}）。
+ * 作動式: 荷電領域（仮、Charged Zone）。範囲の中のエンティティ（持ち物）に FE を送り、AE2 のチャージ加工をし、乱流領域と
+ * 重なると雷雲になる（{@link EntityChargedZone}）。
  * <p>
- * 2026-11-14 ユーザー: 必須の「威力」（1〜10 の定数）を足した。威力はコストのつまみで、充電能力（置いたときのコストに比例、
- * {@link EntityChargedZone#capacityPerTick}）は威力とともに増える。規模とコストは加熱領域・凍結領域と同じ式で、威力 5 のときが
- * 威力のなかった頃と同じコスト。
+ * 必須の「威力」（定数）はコストのつまみで、充電能力（置いたときのコストに比例、{@link EntityChargedZone#capacityPerTick}）は
+ * 威力とともに増える。規模とコストは加熱領域・凍結領域と同じ式。
  */
 public class PieceTrickChargedZone extends PieceTrickZoneBase<EntityChargedZone> {
     // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²。加熱・凍結と同じ）
@@ -31,7 +30,7 @@ public class PieceTrickChargedZone extends PieceTrickZoneBase<EntityChargedZone>
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
     }
 
-    /** 総量を持つ領域なので、威力は 10 より上も入れられる（2026-11-15 ユーザー）。 */
+    /** 総量を持つ領域なので、威力は 10 より上も入れられる。 */
     @Override
     protected double maxPower() {
         return MAX_RESOURCE_ZONE_POWER;

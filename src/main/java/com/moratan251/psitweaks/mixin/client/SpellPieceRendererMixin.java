@@ -62,7 +62,7 @@ public abstract class SpellPieceRendererMixin {
         } else if (piece instanceof PieceOperatorBlockResourceBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityZone custom) {
-            // 作動式: 加重領域のモード（ベクトル・行列、2026-11-12）。
+            // 作動式: 加重領域のモード（ベクトル・行列）。
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         }
     }

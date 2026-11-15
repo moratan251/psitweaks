@@ -17,7 +17,7 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
- * 演算子: Y軸方向指定（2026-11-12 ユーザー）: 領域行列を箱の中心のまわりに回して Y 軸を方向へ向ける。大きさと中心は変わらず、
+ * 演算子: Y軸方向指定: 領域行列を箱の中心のまわりに回して Y 軸を方向へ向ける。大きさと中心は変わらず、
  * 真上・真下・逆向きでも止まらない。
  */
 @GameTestHolder(Psitweaks.MOD_ID)

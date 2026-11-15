@@ -38,7 +38,7 @@ public final class Psi110CompatibilityGameTests {
                         .orElseThrow().key().location().equals(id), "Wrong group for " + member);
             }
         }
-        // 2026-11-14: サイ・ブリットと術式解体で 2 つ増えた。
+        // サイ・ブリットと術式解体を含む。
         int expected = 90 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
         helper.assertTrue(count == expected, "Expected " + expected + " groups, got " + count);
         helper.succeed();

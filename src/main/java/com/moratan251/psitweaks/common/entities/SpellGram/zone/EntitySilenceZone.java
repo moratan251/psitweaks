@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 /**
- * 作動式: 遮音領域（仮、Silence Zone、2026-11-11 ユーザー）の範囲。範囲の中で鳴る音は聞こえず（クライアントで鳴らさない、
+ * 作動式: 遮音領域（仮、Silence Zone）の範囲。範囲の中で鳴る音は聞こえず（クライアントで鳴らさない、
  * {@code SilenceZoneSounds}）、振動は範囲を通れない（羊毛と同じく、範囲の中で起きた振動も、範囲の中へ向かう振動も、範囲を
  * 横切る振動も届かない。{@code VibrationListenerSilenceZoneMixin}）。スカルクセンサー・調律されたスカルクセンサー・
  * スカルクシュリーカー・ウォーデンが気づかなくなる。範囲の中のスカルクシュリーカーは、踏んでも叫ばない

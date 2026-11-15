@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
- * 領域の重さを測る（2026-11-13、領域干渉と機械連携の軽量化の前後比較）。ふだんの GameTest では何もしない。ゲームのフォルダ
+ * 領域の重さを測る（領域干渉と機械連携の軽量化の前後比較）。ふだんの GameTest では何もしない。ゲームのフォルダ
  * （run/）に {@code psitweaks-zone-benchmark} という名前のファイルを置いたとき（または環境変数
  * {@code PSITWEAKS_ZONE_BENCHMARK=1}、システムプロパティ {@code psitweaks.zoneBenchmark=true}）だけ測り、ログに
  * {@code [ZoneBench]} で出す。時間は機械の速さで変わるので合否は見ない。

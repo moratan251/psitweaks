@@ -97,7 +97,7 @@ final class MekanismGameplayIntegration {
     }
 
     /**
-     * 作動式: 凍結領域の冷却（2026-11-15 ユーザー: 加熱の熱量と対の「冷却量」）: 冷却量 {@code total} を、周囲の温度より熱い
+     * 作動式: 凍結領域の冷却（加熱の熱量と対の「冷却量」）: 冷却量 {@code total} を、周囲の温度より熱い
      * ブロックで均等に分けて取り除く。1 つから取り除くのは温度差の {@code fraction} まで（温度差 × 割合 × 熱容量）で、周囲の温度より
      * 下には冷やさない。取り除ききれなかった分は、まだ取り除けるブロックに分け直す（1 回だけ）。同じマルチブロックには 1 回だけ。
      * 取り除いた熱の合計を返す。
@@ -193,8 +193,8 @@ final class MekanismGameplayIntegration {
     private static final int NO_HANDLER = 7;
 
     /**
-     * {@link #heatHandlerOf(ServerLevel, BlockEntity)} と同じ窓口を、どの面で見つかったかを {@code sideCache} に覚えて引く
-     * （2026-11-13 の軽量化 B3）。毎 tick、熱を持たないブロックエンティティにまで 7 回ずつ問い合わせないように。覚えた面で
+     * {@link #heatHandlerOf(ServerLevel, BlockEntity)} と同じ窓口を、どの面で見つかったかを {@code sideCache} に覚えて引く。
+     * 毎 tick、熱を持たないブロックエンティティにまで 7 回ずつ問い合わせないように。覚えた面で
      * 見つからなくなったら（ブロックが変わったら）探し直す。壊れたブロックエンティティは null。
      */
     @Nullable

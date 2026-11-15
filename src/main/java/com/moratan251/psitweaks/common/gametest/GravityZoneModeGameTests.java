@@ -25,7 +25,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import java.util.List;
 
 /**
- * 作動式: 加重領域のモード（2026-11-12 ユーザー）: ベクトルモード（既定、範囲・サイズ・方向・威力）と、行列モード（範囲・
+ * 作動式: 加重領域のモード: ベクトルモード（既定、範囲・サイズ・方向・威力）と、行列モード（範囲・
  * サイズ・威力・時間、向きは行列の Y 軸、行列を省けば真上、負の威力は逆向き）。
  */
 @GameTestHolder(Psitweaks.MOD_ID)
@@ -71,7 +71,7 @@ public final class GravityZoneModeGameTests {
     }
 
     /**
-     * 行列モードに回した立方体を渡すと、押す向きは回した Y 軸で、効く範囲は輪郭の箱のとおり（角が欠けない、2026-11-12 ユーザー）。
+     * 行列モードに回した立方体を渡すと、押す向きは回した Y 軸で、効く範囲は輪郭の箱のとおり（角が欠けない）。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_gravity_mode", timeoutTicks = 40)
     public static void gravityZoneWithTurnedMatrixKeepsItsOutline(GameTestHelper helper) {

@@ -29,28 +29,22 @@ import vazkii.psi.api.spell.param.ParamNumber;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * 領域型の魔法式オブジェクト（○○ Zone）を置く作動式の基底（試作）。共通の入力は「範囲」（領域行列、省略できる）と
- * 「サイズ」（定数）。行列を省くと、術者（術式の焦点）のいるブロックを中心にした一辺サイズの立方体になる。
- * <p>
- * 範囲は行列の中のブロックのうち、行列の中心のブロックを中心にした一辺サイズのブロックの立方体に入るもの（{@link ZoneArea}、
- * 数え方は演算子: 直方体領域と同じ）。行列が軸にそっていなければ、行列を囲む軸にそった箱で数え、効く範囲はいつも輪郭の線の
- * とおりにする（{@link ZoneArea#boxed}、2026-11-12 ユーザー）。コストと規模はサイズだけで
- * 決まる（術式を組んだ時点で分かるのは定数の大きさだけのため）。同じ種類をいくつも置け、1 人が置ける数はサークルと合わせて
- * {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。
- * 干渉力は効き目に効かず、耐久値にだけ効く。
- * <p>
- * 「時間」（秒の定数、省略すると {@link #DEFAULT_TIME_SECONDS} 秒、2026-11-11 ユーザー）は存続時間で、置いたときの耐久値と
- * コストも時間に比例する。耐久値は毎 tick 同じ量ずつ減るので、干渉力が同じなら減り方は時間によらず一定で、長く置いた領域ほど
- * 術式解体などに強い。加重領域は入力の空きがないので {@link #hasTimeParam} で外し、30 秒のまま。
- * <p>
- * 機体（Sable のサブレベル）に向けて作った範囲は、置く時点の機体の位置と向きで世界の座標へ写してから置く
- * （{@link #projectOutOfSubLevel}）。
+ * 領域型の魔法式オブジェクト（○○ Zone）を置く作動式の基底。共通の入力は「範囲」（領域行列、省略できる）、「サイズ」（定数）、
+ * 「時間」（秒の定数、省略できる。加重領域は持たない、{@link #hasTimeParam}）。
+ * <ul>
+ *   <li>範囲: {@link ZoneArea}。行列を省くと、術者（術式の焦点）のいるブロックを中心にした一辺サイズの立方体。効く範囲は
+ *   いつも輪郭の線のとおり（{@link ZoneArea#boxed}）。機体（Sable のサブレベル）の座標の範囲は、置く時点の機体の位置と向きで
+ *   世界の座標へ写す（{@link #projectOutOfSubLevel}）。</li>
+ *   <li>コストと規模は、術式を組んだ時点で分かるサイズ（と威力）の定数で決まる。存続時間・置いたときの耐久値・コストは「時間」に
+ *   比例する。</li>
+ *   <li>1 人が置ける数は、サークルと合わせて {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。</li>
+ * </ul>
+ * 仕様の全体は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceTrick {
     /**
-     * サイズ（立方体の一辺のブロック数）の上限。範囲は最大 16×16×16 ブロック（2026-11-12 ユーザーの決定で 32 から変更: コストは面積に
-     * 比例し効き目は体積に効くので、大きいほど割安になりすぎる。パーティクルが薄くなる・見て回る負荷も理由）。これより大きいサイズは
-     * 上限に切り詰める。演算子: 直方体領域そのものの上限（65）とは別。
+     * サイズ（立方体の一辺のブロック数）の上限。範囲は最大 16×16×16 ブロック。これより大きいサイズは上限に切り詰める。
+     * 演算子: 直方体領域そのものの上限（65）とは別。
      */
     public static final int MAX_SIZE = 16;
     public static final String ERROR_EMPTY_ZONE = "psitweaks.spellerror.zone_empty";
@@ -110,21 +104,18 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
     /** 威力の上限（加重領域・領域干渉）。 */
     public static final double MAX_ZONE_POWER = 10.0;
     /**
-     * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）の威力の上限（2026-11-15 ユーザー: 小さい領域でも高いコストを
-     * 払えば多くのリソースを扱えるよう、10 より上も入れられる）。10 を超えた分は総量（コスト）だけを増やし、1 体・1 か所あたりの
-     * 強さは威力 10 で頭打ち（{@code SpellGramZone.MAX_EFFECT_POWER}）。上限はコストの桁あふれよけで、規模の上限より先には届かない。
+     * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）の威力の上限。10 を超えた分は総量（コスト）だけを増やし、
+     * 1 体・1 か所あたりの強さは威力 10 で頭打ち（{@code SpellGramZone.MAX_EFFECT_POWER}）。上限はコストの桁あふれよけで、
+     * 規模の上限より先には届かない。
      */
     public static final double MAX_RESOURCE_ZONE_POWER = 1000.0;
     /**
-     * 威力の下限（2026-11-14 ユーザー）。威力は「広さあたりの強さ＝広さあたりのコスト」を決めるコストのつまみで、効くか効かないか
-     * だけの効き目（一括燻製・氷を溶かすなど）を一番安い威力で使えないよう、下限を 1 にする。0 より大きく 1 より小さい威力は 1、
-     * 10 より大きい威力は 10 として扱う（0 以下はエラー）。
+     * 威力の下限。威力は広さあたりのコストを決めるつまみなので、効くか効かないかだけの効き目（一括燻製・氷を溶かすなど）を極端に
+     * 安く使えないよう、下限を 1 にする。0 より大きく 1 より小さい威力は 1、上限（{@link #maxPower}）より大きい威力は上限として
+     * 扱う（0 以下はエラー）。
      */
     public static final double MIN_ZONE_POWER = 1.0;
-    /**
-     * 威力のある領域の規模の係数（2026-11-14 ユーザー: 終盤なら最大の領域を 2 つ同時に置ける程度）: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋。
-     * サイズ 16・威力 10 で 701 になり、プシオニックメタルの CAD（規模 1500）で 2 つ置ける。
-     */
+    /** 威力のある領域の規模の係数: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（サイズ 16・威力 10 で 701）。 */
     public static final double POWERED_POTENCY_FACTOR = 0.27;
     /** 規模の固定分。 */
     public static final int POTENCY_BASE = 10;
@@ -155,7 +146,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /** 威力のある領域の規模: 10 + ⌊広さ × 威力 × 0.27⌋。 */
     public static int poweredPotency(int area, double power) {
-        // 規模は威力 10 で頭打ち（2026-11-15 ユーザー、案 1）: 10 を超えた威力はコスト（＝総量）だけを増やす。
+        // 規模は威力 10 で頭打ち: 10 を超えた威力はコスト（＝総量）だけを増やす。
         return POTENCY_BASE + (int) Math.floor(area * Math.min(power, MAX_ZONE_POWER) * POWERED_POTENCY_FACTOR);
     }
 
@@ -248,7 +239,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /**
      * 領域の耐久値の上限（作動式: 魔法式延長で戻せる上限）。「時間」によらず、「時間」を最大（{@link #MAX_TIME_SECONDS} 秒）にして
-     * 置いたときの耐久値 × {@link SpellGramObject#DEFAULT_INTEGRITY_CAP_FACTOR}（2026-11-14 ユーザー）。
+     * 置いたときの耐久値 × {@link SpellGramObject#DEFAULT_INTEGRITY_CAP_FACTOR}。
      */
     public static float integrityCap(@org.jetbrains.annotations.Nullable net.minecraft.world.entity.LivingEntity caster) {
         return SpellGramIntegrity.initial(BASE_INTEGRITY, caster, (double) MAX_TIME_SECONDS / DEFAULT_TIME_SECONDS)
@@ -284,7 +275,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         if (area.isEmpty()) {
             throw new SpellRuntimeException(ERROR_EMPTY_ZONE);
         }
-        // 効く範囲は輪郭の線のとおり（2026-11-12 ユーザー）: 回した行列や傾いた機体から写した範囲は、輪郭の箱にする。
+        // 効く範囲は輪郭の線のとおり: 回した行列や傾いた機体から写した範囲は、輪郭の箱にする。
         area = projectOutOfSubLevel(context, area).boxed();
         BlockPos center = area.center();
         if (!context.isInRadius(new Vector3(center.getX() + 0.5, center.getY() + 0.5, center.getZ() + 0.5))) {
@@ -308,7 +299,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         zone.setLifetimeTicks((int) Math.round(seconds * 20.0));
         zone.setPlacementCost(timedCost(runtimeCost(sizeValue, context), seconds));
         zone.setMaxIntegrity(SpellGramIntegrity.initial(BASE_INTEGRITY, context.caster, seconds / DEFAULT_TIME_SECONDS));
-        // 耐久値の上限は「時間」によらず一定（2026-11-14 ユーザー）: 「時間」を最大にして置いたときの上限（その耐久値の 2 倍）。
+        // 耐久値の上限は「時間」によらず一定: 「時間」を最大にして置いたときの上限（その耐久値の 2 倍）。
         zone.setIntegrityCap(integrityCap(context.caster));
         level.addFreshEntity(zone);
 
@@ -319,8 +310,8 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /**
      * 範囲が機体（Sable のサブレベル、Create Aeronautics の機体など）の座標で作られていれば（機体に視線を向けたときなど）、置く時点の
-     * 機体の位置と向きで世界の座標へ写す（2026-11-11 ユーザーの決定: 方針 A）。写した領域はその場に残り、機体と一緒には動かない
-     * （サークルと同じ）。機体の座標のままだと、範囲が見た目の場所から遠く離れ、輪郭も描かれず生き物にも効かなかった。
+     * 機体の位置と向きで世界の座標へ写す。写した領域はその場に残り、機体と一緒には動かない（サークルと同じ）。機体の座標のままだと、
+     * 範囲が見た目の場所から遠く離れ、輪郭も描かれず生き物にも効かない。
      */
     private static ZoneArea projectOutOfSubLevel(SpellContext context, ZoneArea area) throws SpellRuntimeException {
         Entity anchor = context.caster != null ? context.caster : context.focalPoint;
@@ -353,7 +344,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /**
      * 置いたときに払ったコストのうち、時間を掛ける前の分を、唱えた時点の入力で求める（術式の盤面の定数と同じ値になる）。荷電領域の
-     * 充電能力や加熱領域の熱の総量はこのコストに比例する（2026-11-14 ユーザー）。威力を持つ領域は上書きして、唱えた時点の威力で
+     * 充電能力や加熱領域の熱の総量はこのコストに比例する。威力を持つ領域は上書きして、唱えた時点の威力で
      * 求める。既定は {@link #placementCost} と同じ。
      */
     protected int runtimeCost(int size, SpellContext context) throws SpellRuntimeException {

@@ -30,7 +30,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import java.util.List;
 
 /**
- * 同じ種類の領域を重ねても効き目は増えない（2026-11-12 ユーザー）: 重なったところでは一番強い（威力が高い、並べば干渉力、それも
+ * 同じ種類の領域を重ねても効き目は増えない: 重なったところでは一番強い（威力が高い、並べば干渉力、それも
  * 並べば古い）領域だけが効く。加重領域だけは押す向きを足し合わせ、威力 10 で頭打ちにする。
  */
 @GameTestHolder(Psitweaks.MOD_ID)

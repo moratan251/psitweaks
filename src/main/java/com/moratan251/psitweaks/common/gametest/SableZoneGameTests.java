@@ -52,7 +52,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.spell.operator.vector.PieceOperatorVectorRaycast;
 
 /**
- * Sable の機体（サブレベル）に向けて置いた領域が、置いた時点の機体の見た目の場所で効くこと（2026-11-11、方針 A）。
+ * Sable の機体（サブレベル）に向けて置いた領域が、置いた時点の機体の見た目の場所で効くこと。
  * Sable がなければ飛ばす。Sable の型（companion）はコンパイル時に見えないので、機体を組む呼び出しはリフレクションにする。
  * 開発クライアントを開いたまま Sable 入りの GameTest サーバーを起動すると、Sable の DLL が使われていて起動直後に落ちる。
  */
@@ -69,7 +69,7 @@ public final class SableZoneGameTests {
 
     /**
      * Sable が機体の位置を半ブロックまで持てる座標の大きさ（2^23 = 8,388,608）。32 ビットの浮動小数はこれを超えると 1 刻みの値しか
-     * 持てず、機体の位置が 1 ブロック単位に丸まる（2026-11-13 毎朝レビュー F-057、Sable 側の精度の限界）。
+     * 持てず、機体の位置が 1 ブロック単位に丸まる（毎朝レビュー F-057、Sable 側の精度の限界）。
      */
     private static final double SABLE_PRECISE_LIMIT = 8_388_608.0;
     /** テストの場所から機体や領域がはみ出す分の余裕（ブロック）。 */
@@ -80,7 +80,7 @@ public final class SableZoneGameTests {
     }
 
     /**
-     * テストの場所の x か z が、Sable が半ブロックを表せない遠さか（2026-11-13 ユーザー: その座標では Sable を使うテストの判定を
+     * テストの場所の x か z が、Sable が半ブロックを表せない遠さか（その座標では Sable を使うテストの判定を
      * 緩める）。GameTest はテストを並べる場所を起動のたびに ±1500 万ブロックのどこかに選ぶので、よく当たる。その座標では機体の
      * 細かい位置や物理を確かめようがないので、機体の位置に頼る判定は飛ばし、組めた・置けた・押したことだけを確かめる。
      * {@code runGameTestServer} では {@code GameTestServerOriginMixin} が場所を原点に固定するので、ここで飛ばすのは開発クライアントの
@@ -181,7 +181,7 @@ public final class SableZoneGameTests {
     }
 
     /**
-     * 加重領域が機体の一部にだけかかると、入っている部分の割合だけ押し、入っている側を押して傾ける（2026-11-12、機体の外箱を
+     * 加重領域が機体の一部にだけかかると、入っている部分の割合だけ押し、入っている側を押して傾ける（機体の外箱を
      * 粗い格子で調べる）。3×3 の床の東半分だけを上へ押すと、床が回り始める。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_sable_tilt", timeoutTicks = 80)
@@ -235,7 +235,7 @@ public final class SableZoneGameTests {
     }
 
     /**
-     * 世界に置いた加熱領域が、範囲に重なった機体（30 度回した 3×3 の石の床）の機械にも効く（2026-11-11、範囲を機体の座標へ
+     * 世界に置いた加熱領域が、範囲に重なった機体（30 度回した 3×3 の石の床）の機械にも効く（範囲を機体の座標へ
      * 写して見る）: 床の上のブレイズバーナー（Create があれば）が「加熱」になり、抵抗型発熱器（Mekanism があれば）が温まる。
      * どちらもなければ飛ばす。
      */

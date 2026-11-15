@@ -31,7 +31,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import java.util.function.Function;
 
 /**
- * 領域が加工している落ちているアイテムは、加工している間は消えるまでの時間が進まない（2026-11-12）。消える寸前（残り 10 tick）に
+ * 領域が加工している落ちているアイテムは、加工している間は消えるまでの時間が進まない。消える寸前（残り 10 tick）に
  * したアイテムを領域の中に置き、加工が終わる前の 40 tick 後にまだ残っていることを確かめる。Create・AE2 がないときは飛ばして通す。
  */
 @GameTestHolder(Psitweaks.MOD_ID)
@@ -131,7 +131,7 @@ public final class ZoneItemLifetimeGameTests {
         if (param.name.equals(PsitweaksSpellParams.SIZE)) {
             return (double) size;
         }
-        // 荷電領域の威力（2026-11-14 から必須）。湿潤領域は持たない。
+        // 荷電領域の威力（必須）。湿潤領域は持たない。
         return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? 5.0 : null;
     }
 }

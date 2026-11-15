@@ -27,27 +27,24 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 魔法式オブジェクト（SpellGram Object）の基底: 耐久値を持つ魔法の実体すべて。2026-11-13 ユーザーの分類で、
- * 常駐魔法式（Resident SpellGram: 円 {@link SpellGramCircle} と領域 {@code SpellGramZone}、{@link #isResident} が真）と、
- * 流星群の夜の核（目印型 {@code SpellGramMarker}）に分かれる。
- * 存続時間、耐久値（{@link #getIntegrity}）、周囲へのダメージ、追従を共通にする。
- * <p>
- * 魔法式オブジェクトは物ではない: 剣や矢、爆発などふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に
- * 保存しない。存続時間が尽きると消える（{@link EndReason#FINISHED}）。耐久値は時間とともに一定の割合で減り（存続時間の
- * 間に減る分は耐久値の {@link #getTimeShare} 倍。既定の 1 なら存続時間の終わりにちょうど 0）、術式解体などの術式からは
- * 受け口 {@link #reduceIntegrity} で削られる。尽きると存続時間が残っていても消える（{@link EndReason#DESTROYED}）。
- * 時間で減る量は 1 tick あたり 置いたときの耐久値 × {@link #getTimeShare} ÷ 存続時間 で、置いたときの耐久値を存続時間に
- * 比例させれば（領域の「時間」の入力）、干渉力が同じなら減り方は存続時間によらず一定になり、長く置いたものほど解体に強い。
- * 作動式: 魔法式延長は {@link #restoreIntegrity} で耐久値を戻す（置いたときの耐久値を超えた分は、そのぶん長く残る）。
- * 解体される・術者がいなくなると {@link #end} で消える。Psi の運動追加・瞬間移動・大移動では、置いた術者のものも含めて動かない
- * （{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。動かす仕組みは専用の作動式として
- * 後で作る予定（保留中）。
+ * 魔法式オブジェクト（SpellGram Object）の基底: 耐久値を持つ魔法の実体すべて。常駐魔法式（円 {@link SpellGramCircle} と
+ * 領域 {@code SpellGramZone}、{@link #isResident} が真）と、目印型（{@code SpellGramMarker}: 流星群の夜の核、マイクロブラック
+ * ホール）に分かれる。存続時間、耐久値（{@link #getIntegrity}）、周囲へのダメージ、追従を共通にする。
+ * <ul>
+ *   <li>物ではない: ふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に保存しない。Psi の運動追加・瞬間移動・
+ *   大移動でも動かない（{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。</li>
+ *   <li>存続時間が尽きると消える（{@link EndReason#FINISHED}）。耐久値は時間とともに一定の割合で減り（{@link #getTimeShare}）、
+ *   術式解体などからは {@link #reduceIntegrity} で削られ、尽きると消える（{@link EndReason#DESTROYED}）。作動式: 魔法式延長は
+ *   {@link #restoreIntegrity} で戻す。</li>
+ *   <li>解体される・術者がいなくなると {@link #end} で消える。</li>
+ * </ul>
+ * 耐久値の減り方の決まりは {@code docs/1.21.1/spellgram-zones.md}。
  */
 public abstract class SpellGramObject extends Entity implements IEntityWithComplexSpawn {
 
     /**
-     * 常駐魔法式か（2026-11-13 ユーザーの分類）: 置いたあとも残り続け、術者が手入れするもの（サークル・領域）。取得子: 自分の常駐魔法式・
-     * 作動式: 魔法式回収・魔法式延長・置ける数の上限は、常駐魔法式だけを扱う。流星群の夜の核（目印型）は常駐魔法式ではない。
+     * 常駐魔法式か: 置いたあとも残り続け、術者が手入れするもの（サークル・領域）。取得子: 自分の常駐魔法式・
+     * 作動式: 魔法式回収・魔法式延長・置ける数の上限は、常駐魔法式だけを扱う。目印型は常駐魔法式ではない。
      * 新しい種類は、常駐魔法式なら上書きして真を返す。
      */
     public boolean isResident() {
@@ -364,14 +361,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return placementCost;
     }
 
-    /** 耐久値の上限を決めていないとき（サークル）の、置いたときの耐久値に対する倍率（2026-11-11 ユーザー）。 */
+    /** 耐久値の上限を決めていないとき（サークル）の、置いたときの耐久値に対する倍率。 */
     public static final float DEFAULT_INTEGRITY_CAP_FACTOR = 2.0F;
 
     /** 耐久値の上限（作動式: 魔法式延長で戻せる上限）。0 なら置いたときの耐久値 × {@link #DEFAULT_INTEGRITY_CAP_FACTOR}。サーバー側だけ。 */
     private float integrityCap;
 
     /**
-     * 置く前に呼ぶ。耐久値の上限（2026-11-14 ユーザー: 領域は「時間」によらず一定で、「時間」を最大にして置いたときの上限と同じ。
+     * 置く前に呼ぶ。耐久値の上限（領域は「時間」によらず一定で、「時間」を最大にして置いたときの上限と同じ。
      * {@code PieceTrickZoneBase} が決める）。
      */
     public void setIntegrityCap(float cap) {
@@ -384,7 +381,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     }
 
     /**
-     * 耐久値を {@code amount} だけ戻す（作動式: 魔法式延長、2026-11-11 ユーザー）。耐久値は上限（{@link #getIntegrityCap}）までで、
+     * 耐久値を {@code amount} だけ戻す（作動式: 魔法式延長）。耐久値は上限（{@link #getIntegrityCap}）までで、
      * それを超える分は捨てる。術式で削られた分から先に戻し、残りは時間で減った分として残りの存続時間を延ばす（耐久値は毎 tick
      * 同じ量ずつ減るので、置いたときの耐久値を超えた分は、そのぶん長く残る）。時間で減らない魔法式（{@link #getTimeShare} が 0）は、
      * 削られた分しか戻らない。実際に戻った耐久値を返す。

@@ -35,10 +35,9 @@ import java.util.List;
  * （保護）を確かめる。
  * <p>
  * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括洗浄する。速さは置いた時点の
- * 事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}。事象干渉力はユーティリティの効き目に効かない方針の例外。
- * 洗浄は細かく調整する場面がないため、2026-11-10 ユーザー）。
+ * 事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。
  * <p>
- * 同じ術者の乱流領域と重なったブロックは「暴風雨」になる（2026-11-11 ユーザー）: 一括洗浄が 2 倍の速さになり、水に弱い
+ * 同じ術者の乱流領域と重なったブロックは「暴風雨」になる: 一括洗浄が 2 倍の速さになり、水に弱い
  * 生物（ブレイズ・エンダーマン・スノウゴーレム・ストライダー、{@code isSensitiveToWater}）に {@link #STORM_INTERVAL} tick
  * ごとにダメージ（攻撃術式の共通ルール、設定 {@code rainstorm.damageMultiplier}）。
  */

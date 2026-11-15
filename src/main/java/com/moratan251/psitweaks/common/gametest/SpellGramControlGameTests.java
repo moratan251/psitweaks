@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 自分の魔法式オブジェクトを扱うピース（取得子: 自分の魔法式オブジェクト、作動式: 魔法式回収・魔法式延長、2026-11-11）。
+ * 自分の魔法式オブジェクトを扱うピース（取得子: 自分の魔法式オブジェクト、作動式: 魔法式回収・魔法式延長）。
  * <p>
  * プレイヤーをワールドに入れるので、他のテストと同時に動かないようバッチを分ける。
  */
@@ -124,7 +124,7 @@ public final class SpellGramControlGameTests {
         helper.succeed();
     }
 
-    /** 魔法式回収は射程（術者から 32 ブロック）の外にある自分の魔法式オブジェクトも消せる（2026-11-13 ユーザー）。 */
+    /** 魔法式回収は射程（術者から 32 ブロック）の外にある自分の魔法式オブジェクトも消せる。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_recall_far", timeoutTicks = 40)
     public static void recallReachesOwnObjectsOutOfRange(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -151,7 +151,7 @@ public final class SpellGramControlGameTests {
 
     /**
      * 魔法式延長は耐久値を 置いたときの耐久値 × このピースのコスト ÷ 置いたときのコストだけ戻す。術式で削られた分から先に戻り、
-     * 残りは存続時間に足され、耐久値は上限まで（2026-11-14: 領域の上限は「時間」によらず、「時間」を最大にして置いたときの
+     * 残りは存続時間に足され、耐久値は上限まで（領域の上限は「時間」によらず、「時間」を最大にして置いたときの
      * 耐久値の 2 倍）。他人のものは回復できない。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_extend", timeoutTicks = 40)
@@ -272,7 +272,7 @@ public final class SpellGramControlGameTests {
         helper.succeed();
     }
 
-    /** 耐久値の表示の狙い: 視線の先の核を選び、目をそらすか間にブロックがあれば選ばない（2026-11-12）。 */
+    /** 耐久値の表示の狙い: 視線の先の核を選び、目をそらすか間にブロックがあれば選ばない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_aim", timeoutTicks = 40)
     public static void aimFindsTheCoreInSightOnly(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -380,7 +380,7 @@ public final class SpellGramControlGameTests {
         }
     }
 
-    /** 取得子: 魔法式耐久値（2026-11-14 ユーザー）は、魔法式オブジェクトの今の耐久値を返す。ほかのエンティティはエラー。 */
+    /** 取得子: 魔法式耐久値は、魔法式オブジェクトの今の耐久値を返す。ほかのエンティティはエラー。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_integrity_selector", timeoutTicks = 40)
     public static void integritySelectorReadsTheCurrentIntegrity(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -418,7 +418,7 @@ public final class SpellGramControlGameTests {
     }
 
     /**
-     * デバッグ用の魔法式耐久値デバッガー（2026-11-14 ユーザー）: 見ている魔法式オブジェクト（自分のものも）の耐久値を量だけ減らす。
+     * デバッグ用の魔法式耐久値デバッガー: 見ている魔法式オブジェクト（自分のものも）の耐久値を量だけ減らす。
      * 既定は 10、しゃがんで使うと次の量（25）に、名前を数にするとその量。耐久値が尽きれば壊れる。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_debugger", timeoutTicks = 40)

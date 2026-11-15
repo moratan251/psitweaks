@@ -117,10 +117,10 @@ public final class SablePhysicsCompat {
     }
 
     /**
-     * 作動式: 加重領域（2026-11-11 の設計 C、2026-11-12 から入っている部分の割合で押し、ある程度傾ける。{@link #samplePush}）:
-     * 重心が {@code inside} のブロックにあるサブレベル（Create Aeronautics の機体など）を、
-     * 世界座標の向き {@code direction} へ加速する（サーバー側）。加速度は {@code gravityFraction} × その場の重力の大きさで、重さに
-     * よらない。重心をまっすぐ押すので機体は傾かない。押した数を返す。Sable がない・API が合わないときは 0。
+     * 作動式: 加重領域: 範囲 {@code inside} にかかるサブレベル（Create Aeronautics の機体など）を、世界座標の向き
+     * {@code direction} へ加速する（サーバー側）。加速度は {@code gravityFraction} × その場の重力の大きさで、重さによらない。
+     * 入っている部分の割合で押し、押す点を入っている側へ寄せてある程度傾ける（{@link #samplePush}）。押した数を返す。Sable が
+     * ない・API が合わないときは 0。
      */
     public static int accelerateSubLevels(Level level, AABB bounds, Vec3 direction, double gravityFraction,
                                           Predicate<BlockPos> inside) {
@@ -222,10 +222,10 @@ public final class SablePhysicsCompat {
 
     /**
      * 機体を押す力と押す点を、機体の外箱（世界の座標）の中を最大 {@link #MAX_SAMPLES_PER_AXIS}³ 点だけ調べて粗く決める
-     * （2026-11-12 ユーザー: 傾きをある程度効かせたいが、軽さ優先で粗くてよい）。点のうち機体のブロックがあるものを数え、
+     * （傾きをある程度効かせたいが、軽さ優先で粗くてよい）。点のうち機体のブロックがあるものを数え、
      * {@code pushAt} が力を返す点（領域に入っている部分）の力を足して、ブロックのある点の数で割る（入っている割合だけ押す）。押す点は
      * 重心と、入っている点の真ん中の間（{@link #TILT_SHARE}）。粗く調べられないとき（Sable の版が合わない、薄い機体で点が当たらない）
-     * は、今までどおり重心のブロックで決めて重心を押す。
+     * は、重心のブロックで決めて重心を押す。
      */
     private static ShipPush samplePush(Level level, Object subLevel, Object pose, Vector3dc localCenter, Vector3d worldCenter,
                                        java.util.function.Function<BlockPos, Vec3> pushAt) {

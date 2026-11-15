@@ -29,21 +29,17 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * 領域型の常駐魔法式（○○ Zone）の基底。範囲は {@link ZoneArea}（領域行列を、その中心のブロックから ±大きさの
- * 立方体で切り詰めたブロックの集まり）。エンティティは当たり判定の中心があるブロックで判定する。
- * <p>
- * 範囲の中のエンティティへの効き目は {@link #affect}（{@link #effectInterval} tick ごと）。何に効くかは種類ごと
- * （{@link #affects}、既定は生き物だけ）で、魔法式オブジェクトにはどの領域も効かない。描画は範囲を囲む箱
- * （{@link #getOutline}）と、種類ごとの中の演出（{@link #spawnClientParticles}）。
- * <p>
- * ブロックへの効き目（{@link #affectBlock}）は、範囲を 1 tick に 1 段ずつ下から見ていき、一周したらまた下から。
- * 読み込まれていないチャンクは見ない。保護を確かめるのは種類ごと（術者がプレイヤーのときだけ呼ぶ）。
- * <p>
- * 他 mod の機械を動かす効き目（Create の加工、Mekanism の熱）の速さは、置いた時点の事象干渉力で決まる
- * （{@link #machineSpeedFor}）。事象干渉力はユーティリティの効き目に効かない方針の例外（2026-11-10 ユーザー、一括洗浄）。
- * <p>
- * 他人の領域が重なったブロックでは、種類を問わず、置いた時点の事象干渉力の一番高い領域（同じなら先に置いたもの）の
- * 持ち主の領域だけが効く（{@link #isActiveAt}、2026-11-14 ユーザー、案 2。作動式: 領域干渉は威力で上乗せする）。
+ * 領域型の常駐魔法式（○○ Zone）の基底。範囲は {@link ZoneArea}。エンティティは当たり判定の中心があるブロックで判定する。
+ * <ul>
+ *   <li>エンティティへの効き目: {@link #affect}（{@link #effectInterval} tick ごと）。何に効くかは {@link #affects}
+ *   （魔法式オブジェクトにはどの領域も効かない）。</li>
+ *   <li>ブロックへの効き目: {@link #affectBlock}（範囲を 1 tick に 1 段ずつ下から、読み込まれたチャンクだけ）。</li>
+ *   <li>他 mod の機械を動かす速さ: {@link #machineSpeedFor}（置いた時点の事象干渉力）。</li>
+ *   <li>重なったときにどれが効くか: {@link #isActiveAt}（他人の領域とは奪い合い、自分の側の加熱と凍結は打ち消し合い）と、
+ *   同じ種類どうしの {@link #isStrongestAt}。</li>
+ *   <li>描画: 範囲を囲む箱（{@link #getOutline}）と、種類ごとの中の演出（{@link #spawnClientParticles}）。</li>
+ * </ul>
+ * 仕様の全体は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public abstract class SpellGramZone extends SpellGramObject {
     @Override
@@ -59,11 +55,11 @@ public abstract class SpellGramZone extends SpellGramObject {
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.BOOLEAN);
     /**
      * 扱うリソースの量（1 tick あたりの熱量・冷却量・充電能力、乱流は風力の上乗せを受けられる台数。持たなければ負）。照準を合わせた
-     * ときの表示のためクライアントへ送る（2026-11-15 ユーザー）。
+     * ときの表示のためクライアントへ送る。
      */
     private static final EntityDataAccessor<Float> DATA_RESOURCE =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
-    /** リソースのうち、直前の間隔に使った量（1 tick あたり、持たなければ負）。照準の表示のためクライアントへ送る（2026-11-15 ユーザー）。 */
+    /** リソースのうち、直前の間隔に使った量（1 tick あたり、持たなければ負）。照準の表示のためクライアントへ送る。 */
     private static final EntityDataAccessor<Float> DATA_RESOURCE_USED =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
     /** リソースの量を計算し直して送る間隔（tick）。 */
@@ -77,7 +73,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** 氷炎地獄の強さ（両側の威力のうち小さいほう）。サーバー側だけ。 */
     private float infernoPower;
     /**
-     * 1 体・1 か所あたりの強さに使う威力の上限（2026-11-15 ユーザー）。加熱・凍結・乱流・荷電の領域は威力を 10 より上にも
+     * 1 体・1 か所あたりの強さに使う威力の上限。加熱・凍結・乱流・荷電の領域は威力を 10 より上にも
      * できるが、上の分はコスト（熱・冷却・FE・風力の総量）だけを増やす。
      */
     public static final float MAX_EFFECT_POWER = 10.0F;
@@ -158,7 +154,7 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     /**
      * 乱流の威力 1 あたりの、組み合わせで機械を動かす速さの上乗せ（Create の加工・Mekanism の熱・吹雪の凍え、仮）。
-     * 威力 10 で 2 倍（2026-11-11 ユーザー: 組み合わせの強さは乱流の威力で決まり、重なっていれば最も強いもの）。
+     * 威力 10 で 2 倍。乱流が重なっていれば最も強いもののぶん。
      */
     public static final double STORM_BOOST_PER_POWER = 0.1;
     /** 乱流の威力 1 あたりの、組み合わせのダメージ（1 回、倍率を掛ける前、仮）。威力 10 で 3（氷炎地獄の 4 より弱い）。 */
@@ -220,8 +216,8 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 重なっている乱流ごとの、この領域の範囲を覆う割合（輪郭の箱の体積の比、合計は 1 まで。2026-11-15 ユーザー: 乱流の重ねがけを
-     * 直す）。総量に掛ける組み合わせの上乗せ（熱乱流の熱・吹雪の冷却量）はこの割合を掛けるので、小さな乱流をいくつ重ねても、
+     * 重なっている乱流ごとの、この領域の範囲を覆う割合（輪郭の箱の体積の比、合計は 1 まで）。総量に掛ける組み合わせの上乗せ
+     * （熱乱流の熱・吹雪の冷却量）はこの割合を掛けるので、小さな乱流をいくつ重ねても、
      * 範囲全体を 1 つの乱流で覆ったときより増えない。
      */
     protected Map<EntityTurbulenceZone, Double> stormCoverage() {
@@ -390,7 +386,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 他人どうしの奪い合いで比べる事象干渉力（2026-11-14 ユーザー、案 2）: 置いた時点の事象干渉力。作動式: 領域干渉は威力に応じて
+     * 他人どうしの奪い合いで比べる事象干渉力: 置いた時点の事象干渉力。作動式: 領域干渉は威力に応じて
      * 上乗せする（{@link EntityInterferenceZone#contestInterference}）。
      */
     public double contestInterference() {
@@ -411,7 +407,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     /**
      * ブロック {@code pos} でこの領域が効くか（サーバー側。クライアントでは常に真）。
      * <ul>
-     *   <li>他人どうしの奪い合い（2026-11-14 ユーザー、案 2）: 他人の領域が重なったところでは、種類を問わず、事象干渉力の一番
+     *   <li>他人どうしの奪い合い: 他人の領域が重なったところでは、種類を問わず、事象干渉力の一番
      *   高い領域（同じなら先に置いたもの）の持ち主の領域だけが効く。自分の側でその場所にある一番強い領域（自分とは限らない。
      *   たとえば威力つきの領域干渉）が、他人の領域に負けていれば効かない。</li>
      *   <li>打ち消し合う種類（加熱と凍結）: 自分の側の、打ち消し合う種類の領域が重なったところでは効かない。</li>
@@ -462,8 +458,8 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * この領域と打ち消し合う種類（加熱と凍結、2026-11-11）。自分の側のその種類の領域が重なったブロックでは、どちらも効かない
-     * （{@link #isActiveAt}）。他人の領域とは打ち消し合わず、奪い合いで決まる（2026-11-14）。打ち消し合わない種類は null。
+     * この領域と打ち消し合う種類（加熱と凍結）。自分の側のその種類の領域が重なったブロックでは、どちらも効かない
+     * （{@link #isActiveAt}）。他人の領域とは打ち消し合わず、奪い合いで決まる。打ち消し合わない種類は null。
      */
     @org.jetbrains.annotations.Nullable
     protected Class<? extends SpellGramZone> cancelledBy() {
@@ -484,10 +480,10 @@ public abstract class SpellGramZone extends SpellGramObject {
         return false;
     }
 
-    // ---- 判定の相手の覚え書き（2026-11-13 の軽量化 A2） ----
+    // ---- 判定の相手の覚え書き ----
     // 範囲の判定（isActiveAt・isStrongestAt・stormAt）は 1 tick に何百回も呼ばれる。そのたびに台帳の全オブジェクトを回さない
     // よう、範囲の箱が重なる相手だけを tick ごとに 1 回集めて覚える。台帳の出し入れや設定の変更（SpellGramIndex#version）が
-    // あれば同じ tick の中でも作り直すので、効き目は前と変わらない。終わったか（isEnded）と、その位置が相手の範囲の中かは、
+    // あれば同じ tick の中でも作り直すので、全部を回したときと結果は同じ。終わったか（isEnded）と、その位置が相手の範囲の中かは、
     // 引くたびに確かめる。
 
     /** 覚え書きを作った tick と台帳の番号。どちらかが変われば作り直す。 */
@@ -602,7 +598,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 術者自身には効かないか。害のある領域（加熱・凍結・乱流）は術者を巻き込まない（仮、2026-11-11）。湿潤・加重は術者にも
+     * 術者自身には効かないか。害のある領域（加熱・凍結・乱流）は術者を巻き込まない（仮）。湿潤・加重は術者にも
      * 効く。
      */
     protected boolean sparesCaster() {
@@ -639,7 +635,7 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     /**
      * この tick の範囲の見え方: 世界の範囲と、範囲に重なった機体（Sable のサブレベル）ごとにその機体の座標へ写した範囲
-     * （2026-11-11 ユーザー: 機体の機械・ブロックにも効かせる）。機体は動くので tick ごとに作り直す。Sable がなければ世界の範囲
+     * （機体の機械・ブロックにも効かせるため）。機体は動くので tick ごとに作り直す。Sable がなければ世界の範囲
      * だけ。機械・ブロックへの効き目は、これを全部回して、範囲の判定などには {@link ZoneRegion#worldPos} を使う。
      */
     protected List<ZoneRegion> regions() {
@@ -675,11 +671,10 @@ public abstract class SpellGramZone extends SpellGramObject {
         return regions;
     }
 
-    // ---- 機械の一覧の覚え書き（2026-11-13 の軽量化 B1〜B3） ----
-    // 機械を動かす効き目（Create の加工、Mekanism の熱）は、範囲にかかるチャンクの全ブロックエンティティを 1 tick に何度も
-    // 調べ直していた。世界の範囲の一覧は MACHINE_REFRESH_TICKS ごとに作り直して使い回し、壊れたものは毎 tick 外す。新しく
-    // 置いた機械に効き始めるまでは最大 MACHINE_REFRESH_TICKS 遅れる（2026-11-12 ユーザー: 10 tick）。機体（Sable）の範囲は
-    // 機体が動くので tick ごとに作り、その tick の中だけ使い回す。
+    // ---- 機械の一覧の覚え書き ----
+    // 機械を動かす効き目（Create の加工、Mekanism の熱）のために、範囲にかかるチャンクのブロックエンティティを何度も調べ直さない。
+    // 世界の範囲の一覧は MACHINE_REFRESH_TICKS ごとに作り直して使い回し、壊れたものは毎 tick 外す。新しく置いた機械に効き始める
+    // までは最大 MACHINE_REFRESH_TICKS 遅れる。機体（Sable）の範囲は機体が動くので tick ごとに作り、その tick の中だけ使い回す。
 
     /** 世界の範囲の機械の一覧を作り直す間隔（tick）。 */
     public static final int MACHINE_REFRESH_TICKS = 10;
@@ -729,7 +724,7 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     /**
      * クライアント側: 演出を見る人が近くにいるか。Minecraft は 32 ブロックより遠い粒を出さないので、遠くの領域の演出の準備
-     * （位置の計算や、Create の加工の粒のための走査）を飛ばす（2026-11-13 の軽量化 B4）。カメラが体から離れる三人称の分を足して
+     * （位置の計算や、Create の加工の粒のための走査）を飛ばす。カメラが体から離れる三人称の分を足して
      * 40 ブロックで見る。
      */
     private boolean hasNearbyViewer() {
@@ -784,7 +779,7 @@ public abstract class SpellGramZone extends SpellGramObject {
      * 範囲 {@code region} の 1 段ぶんのブロックに {@link #affectBlock} を呼ぶ（{@code step} 回目の走査は、下から
      * {@code step} を段の数で割った余りの段）。16×16×16 の区画ごとに、空気だけの区画と、中身の一覧に
      * {@link #mayAffectState} が真のブロックが 1 つもない区画は丸ごと飛ばし、残りは区画から直接ブロックを読む。範囲・領域干渉の
-     * 判定は、対象になりうるブロックにだけする（2026-11-11 の最適化。どのブロックをいつ見るかは前と同じ）。
+     * 判定は、対象になりうるブロックにだけする（どのブロックをいつ見るかは、区画を飛ばさないときと同じ）。
      */
     private void scanLayer(ServerLevel level, Player caster, ZoneRegion region, int step) {
         ZoneArea scanned = region.area();
@@ -834,7 +829,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * リソース（熱量・冷却量・充電能力・風量）を配る相手としての、範囲の中のエンティティ（2026-11-15 ユーザー、案 A）。
+     * リソース（熱量・冷却量・充電能力・風量）を配る相手としての、範囲の中のエンティティ。
      * 自分の同じ種類の領域が重なっていても、それぞれが自分のリソースを配る（足し算）ので、一番強いかは問わない。
      */
     public List<Entity> entitiesReceiving() {
@@ -861,10 +856,9 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 同じ種類の領域が重なったところで、どれが効くかを決める強さ（2026-11-12 ユーザー: 同じ種類は重ねても効き目は増えず、一番
-     * 威力が高いものだけが効く）。既定は他 mod の機械を動かす速さ（置いた時点の事象干渉力）。威力を持つ領域は威力を返す。
-     * 2026-11-15 ユーザー（案 A）: リソース（熱量・冷却量・充電能力・風量）はこれによらず足し算で、ここで決めるのは 1 か所あたりの
-     * 強さ（温度の上限・燃える長さ・凍える速さ・そらす角度・Create の加工の速さなど）だけ。
+     * 同じ種類の領域が重なったところで、どれが効くかを決める強さ（一番強いものだけが効く）。既定は他 mod の機械を動かす速さ
+     * （置いた時点の事象干渉力）。威力を持つ領域は威力を返す。リソース（熱量・冷却量・充電能力・風量）はこれによらず足し算で、
+     * ここで決めるのは 1 か所あたりの強さ（温度の上限・燃える長さ・凍える速さ・そらす角度・Create の加工の速さなど）だけ。
      */
     protected double stackStrength() {
         return machineSpeed;

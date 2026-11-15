@@ -22,7 +22,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
- * 領域が覚えている機械の一覧（2026-11-13 の軽量化 B2）: 一覧は {@link SpellGramZone#MACHINE_REFRESH_TICKS} ごとに作り直すので、
+ * 領域が覚えている機械の一覧: 一覧は {@link SpellGramZone#MACHINE_REFRESH_TICKS} ごとに作り直すので、
  * 領域を置いたあとに置いた機械にも、その間隔のうちに効き始める。
  */
 @GameTestHolder(Psitweaks.MOD_ID)
@@ -51,7 +51,7 @@ public final class ZoneMachineCacheGameTests {
         zone.setPlacement(caster.getUUID(), 2.0);
         zone.setCaster(caster);
         zone.setLifetimeTicks(400);
-        // 熱の総量は置いたときのコストに比例する（2026-11-14）: コスト 1000（400 tick）で 900 J/t（360 J/Psi）。
+        // 熱の総量は置いたときのコストに比例する: コスト 1000（400 tick）で 900 J/t（360 J/Psi）。
         zone.setPlacementCost(1000.0F);
         zone.setMaxIntegrity(1.0E6F);
         level.addFreshEntity(zone);

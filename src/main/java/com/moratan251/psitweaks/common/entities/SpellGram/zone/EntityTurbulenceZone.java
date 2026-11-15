@@ -33,33 +33,25 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * 作動式: 乱流領域（仮）の範囲。中に暴風が吹き荒れる（2026-11-11 ユーザー: 運ぶのは加重領域の役目なので、乱流は「乱して散らす」
- * ものと、ほかの領域を強める触媒にする）。
+ * 作動式: 乱流領域（仮）の範囲。中に暴風が吹き荒れる。運ぶのは加重領域の役目なので、乱流は「乱して散らす」ものと、ほかの領域を
+ * 強める触媒にする。
  * <ul>
- * <li>他者の飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きをランダムに曲げられる（威力で大きく）。
- * 魔法の弾（Psi・Ars Nouveau・Iron's Spells 'n Spellbooks）はそらさない。</li>
- * <li>残留ポーションやドラゴンブレスの雲を吹き散らす（早く縮んで消える）。</li>
- * <li>風量（2026-11-15 ユーザー、単位 WU = Wind Unit）: 領域は 床の広さ × 入れた威力 ÷ {@link #WIND_FOOTPRINT_DIVISOR}
- * WU の風を吹かせる（{@link #windAmount}、上乗せは威力 × 広さ、つまりコストに比例）。1 WU は Mekanism Generators の
- * 風力発電機 1 台の発電を {@link #WIND_JOULES_PER_WU} J/t 増やす風（高さによらない）。Mekanism がなくても値を持つ（ほかの mod の
- * 風と連携するため）。</li>
- * <li>風の分け方（2026-11-15 ユーザー）: 風量を範囲の中の風力発電機の台数で均等に分ける（縦に重ねても 1 台は 1 台）。
- * 加熱・荷電・凍結のリソースと同じ分け方。1 台は重なった乱流と合わせて {@link #MAX_WU_PER_GENERATOR} WU まで
- * （{@link #generatorWind}）。前の「まわりの 8×8・3×3 マスの風を受ける」は、置き方を考える手間が大きく外した。受け取った風は発電に足す（加算方式、2026-11-15 ユーザー、{@code WindGeneratorTurbulenceMixin}）:
- * 1 WU ごとに 25 J/t（10 FE/t）、高さによらない。屋根の下では風だけで動き（10 WU で 250 J/t）、空の下では上乗せ。</li>
- * <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は一括洗浄が 2 倍
- * （{@link #blowsFor}、それぞれの領域が見る）。</li>
+ *   <li>他者の飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きをランダムに曲げられる（威力で大きく）。
+ *   魔法の弾（Psi・Ars Nouveau・Iron's Spells 'n Spellbooks）はそらさない。</li>
+ *   <li>残留ポーションやドラゴンブレスの雲を吹き散らす（早く縮んで消える）。</li>
+ *   <li>風量（{@link #windAmount}、単位 WU）を、範囲の中の風力発電機の台数で均等に分ける（{@link #generatorWind}）。受け取った
+ *   風は発電に足す（{@code WindGeneratorTurbulenceMixin}）。Mekanism がなくても値を持つ（ほかの mod の風と連携するため）。</li>
+ *   <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は一括洗浄が 2 倍、
+ *   荷電領域は雷雲（{@link #blowsFor}、それぞれの領域が見る）。</li>
  * </ul>
+ * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityTurbulenceZone extends SpellGramZone {
     /** 威力 1 あたりの、飛び道具を曲げる角度（度、仮）。威力 10 で最大 90 度。 */
     public static final double DEFLECT_DEGREES_PER_POWER = 9.0;
-    /**
-     * 1 WU あたりに足す、風力発電機 1 台の発電量（J/t、2026-11-15 ユーザー: WU の定義）。10 FE/t。乱流の風は人工のものなので
-     * 高さによらない。乱流領域のコスト 1 Psi あたり約 94 FE で、サイリンク発電機（100 FE/Psi）とほぼ同じ割合。
-     */
+    /** 1 WU あたりに足す、風力発電機 1 台の発電量（J/t、10 FE/t、WU の定義）。乱流の風は人工のものなので高さによらない。 */
     public static final double WIND_JOULES_PER_WU = 25.0;
-    /** 風量 = 床の広さ × 威力 ÷ この値（WU、2026-11-14・15 ユーザー）。サイズ 8・威力 10 で 10 WU、サイズ 16 で 40 WU。 */
+    /** 風量 = 床の広さ × 威力 ÷ この値（WU）。サイズ 8・威力 10 で 10 WU、サイズ 16 で 40 WU。 */
     public static final double WIND_FOOTPRINT_DIVISOR = 64.0;
     /** 範囲の中の風力発電機の風量を計算し直す間隔（tick）。 */
     public static final int WIND_COUNT_INTERVAL = 20;
@@ -111,7 +103,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /**
      * {@code level} のブロック {@code pos} の風力発電機が、吹いている乱流から受け取る風量（WU、サーバー側、術者は問わない）。
      * 吹いていなければ 0。各乱流は自分の風量を範囲の中の発電機で均等に分け（{@link #generatorWind}）、重なった乱流から受け取る
-     * WU は足し算（2026-11-15 ユーザー、案 A）。ただし 1 台が受け取れるのは合わせて {@link #MAX_WU_PER_GENERATOR} WU まで。
+     * WU は足し算。ただし 1 台が受け取れるのは合わせて {@link #MAX_WU_PER_GENERATOR} WU まで。
      * 発電への足し方は {@code WindGeneratorTurbulenceMixin}（1 WU ごとに 25 J/t、高さによらない）。
      */
     public static double windUnitsAt(Level level, BlockPos pos) {
@@ -150,8 +142,8 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /**
      * 照準の表示: 風力発電機に渡している WU。1 台が受け取れるのは重なった乱流と合わせて {@link #MAX_WU_PER_GENERATOR} WU まで
-     * なので、合わせて上限を超える発電機では、この領域の分を「上限 ÷ 合計」倍にして数える（2026-11-15 ユーザー: 重なった
-     * 2 つの乱流で 1 台に 18 WU 使っていると出ていた）。Mekanism Generators がなければ 0。
+     * なので、合わせて上限を超える発電機では、この領域の分を「上限 ÷ 合計」倍にして数える。
+     * Mekanism Generators がなければ 0。
      */
     @Override
     protected double resourceUsedPerTick() {
@@ -174,7 +166,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
     }
 
     /**
-     * 風力発電機ごとの風量を計算し直す（2026-11-15 ユーザー）: 範囲の中の風力発電機の台数で風量を均等に割る。1 台がこの領域から
+     * 風力発電機ごとの風量を計算し直す: 範囲の中の風力発電機の台数で風量を均等に割る。1 台がこの領域から
      * 受けるのは {@link #MAX_WU_PER_GENERATOR} WU まで（全員が届いて余った風は使われない）。発電機の範囲の判定は世界の位置
      * （機体の上の発電機は、見えている世界の位置）。
      */
@@ -213,7 +205,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /**
      * 術者 {@code casterId} の乱流領域の風が、ブロック {@code pos} に吹いているか（サーバー側）。重ねたときの強化
-     * （熱乱流・吹雪・一括洗浄 2 倍）は、同じ術者の領域どうしだけ（2026-11-11 ユーザー）。
+     * （熱乱流・吹雪・一括洗浄 2 倍）は、同じ術者の領域どうしだけ。
      */
     public static boolean blowsFor(Level level, BlockPos pos, @Nullable UUID casterId) {
         for (SpellGramObject object : SpellGramIndex.ofCaster(level, casterId)) {

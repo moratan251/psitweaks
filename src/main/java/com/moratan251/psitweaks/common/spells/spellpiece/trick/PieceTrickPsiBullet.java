@@ -23,7 +23,7 @@ import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * 作動式: サイ・ブリット（2026-11-14 ユーザー）。位置から方向へサイオンの弾（{@link EntityPsiBullet}）を撃ち出す。最初に当たった
+ * 作動式: サイ・ブリット。位置から方向へサイオンの弾（{@link EntityPsiBullet}）を撃ち出す。最初に当たった
  * 生物に {@code 2 + 威力} のダメージ（全体倍率・個別倍率・事象干渉力を掛ける）、魔法式オブジェクトの核に当たれば耐久値を
  * {@code 8 + 2 × 威力} 減らす（× 術者の事象干渉力）。規模・コスト・射程はエア・ブリットと同じ。
  */

@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
  * The singularity of Trick: Micro Black Hole. For three seconds it drags creatures within its radius towards the
  * centre, then collapses: everything close to the centre takes armour-piercing damage.
  * <p>
- * 魔法式オブジェクト（目印型、常駐魔法式ではない）。2026-11-14 ユーザー: 耐久値を持ち（仮に固有値 {@link #BASE_INTEGRITY}、
+ * 魔法式オブジェクト（目印型、常駐魔法式ではない）。耐久値を持ち（仮に固有値 {@link #BASE_INTEGRITY}、
  * ほかの魔法式オブジェクトと同じく置いた時点の事象干渉力と設定の倍率を掛ける）、時間では減らない。崩壊する前に耐久値が尽きると
  * （術式解体など）、何も押し潰さずに消える。ふつうの攻撃では壊れない・保存しない・術者がいなくなると消える・Psi の作動式では
  * 動かせないのは、魔法式オブジェクト共通。
@@ -33,7 +33,7 @@ import net.minecraft.world.phys.Vec3;
 public class EntityMicroBlackHole extends SpellGramMarker {
     public static final int CHARGE_TICKS = 60;
     private static final int LINGER_TICKS = 4;
-    /** 耐久値の固有値（仮、2026-11-14 ユーザー）。 */
+    /** 耐久値の固有値（仮）。 */
     public static final float BASE_INTEGRITY = 150.0F;
     /** Pull acceleration per tick at the edge; wider wells pull harder so the edge still reaches the centre in time. */
     private static final double PULL_BASE = 0.15;
@@ -179,7 +179,7 @@ public class EntityMicroBlackHole extends SpellGramMarker {
         CombatEffects.sound(level, center, SoundEvents.RESPAWN_ANCHOR_DEPLETE, 1.0F, 0.7F);
     }
 
-    /** 耐久値が尽きて消えるとき、ガラスが割れる音を鳴らす（2026-11-14 ユーザー）。押し潰しはしない。 */
+    /** 耐久値が尽きて消えるとき、ガラスが割れる音を鳴らす。押し潰しはしない。 */
     @Override
     protected void onEnd(EndReason reason) {
         if (reason == EndReason.DESTROYED && level() instanceof ServerLevel level) {

@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.compat;
 
 /**
- * 作動式: 加重領域が物理で動く構造物（Sable のサブレベル、Create Aeronautics の機体など）を押す力積の計算（2026-11-11 の設計 C）。
+ * 作動式: 加重領域が物理で動く構造物（Sable のサブレベル、Create Aeronautics の機体など）を押す力積の計算。
  * Minecraft や Sable のクラスに頼らない計算だけを置く（JUnit で確かめるため）。
  */
 public final class SubLevelPushMath {

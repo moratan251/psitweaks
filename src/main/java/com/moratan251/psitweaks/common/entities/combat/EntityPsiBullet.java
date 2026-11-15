@@ -30,7 +30,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * 作動式: サイ・ブリット の弾（2026-11-14 ユーザー）。エア・ブリットと同じ速さと射程でまっすぐ飛び、最初に当たったもので消える:
+ * 作動式: サイ・ブリット の弾。エア・ブリットと同じ速さと射程でまっすぐ飛び、最初に当たったもので消える:
  * 生物ならダメージ（かすりはない）、魔法式オブジェクトの核（{@link SpellGramAim#coreBox}、耐久値の表示と同じ箱）なら耐久値を減らす
  * （{@link SpellGramIntegrity#reduce}、量 × 術者の事象干渉力）、ブロックならそこで弾ける。術者自身の魔法式オブジェクトはすり抜ける。
  */

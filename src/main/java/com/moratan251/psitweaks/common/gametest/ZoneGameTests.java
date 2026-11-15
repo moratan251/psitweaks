@@ -89,7 +89,7 @@ public final class ZoneGameTests {
     }
 
     /**
-     * 効く範囲は輪郭の線のとおり（2026-11-12 ユーザー）: 回した行列は、行列の中だけだと輪郭の箱の角が欠けるので、{@link ZoneArea#boxed}
+     * 効く範囲は輪郭の線のとおり: 回した行列は、行列の中だけだと輪郭の箱の角が欠けるので、{@link ZoneArea#boxed}
      * で輪郭の箱にする。中心のブロックは変わらず、軸にそった行列はそのまま。
      */
     @GameTest(template = TEMPLATE)
@@ -136,7 +136,7 @@ public final class ZoneGameTests {
                 0, 0, 0, 1});
     }
 
-    /** 湿潤領域の中の生物は濡れ、外の生物は濡れない。同じ種類の領域を重ねて置ける（2026-11-11 から）。 */
+    /** 湿潤領域の中の生物は濡れ、外の生物は濡れない。同じ種類の領域を重ねて置ける。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak", timeoutTicks = 100)
     public static void soakZoneSoaksOnlyTheBeingsInside(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -208,7 +208,7 @@ public final class ZoneGameTests {
         helper.succeed();
     }
 
-    /** サイズの上限は 16（2026-11-12、32 から変更）。それより大きいサイズで置くと、一辺 16 の範囲に切り詰める。 */
+    /** サイズの上限は 16。それより大きいサイズで置くと、一辺 16 の範囲に切り詰める。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_size", timeoutTicks = 40)
     public static void zoneSizeIsClampedToTheMaximum(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();

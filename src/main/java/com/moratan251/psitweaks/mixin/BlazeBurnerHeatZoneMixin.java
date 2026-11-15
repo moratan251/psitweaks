@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Create のブレイズバーナーと作動式: 加熱領域（2026-11-11 の設計 B）。ブレイズバーナーが自分の加熱の段を決める
+ * Create のブレイズバーナーと作動式: 加熱領域。ブレイズバーナーが自分の加熱の段を決める
  * {@code getHeatLevel()} の戻り値を、加熱領域の中にあるときだけ引き上げる: 加熱領域の中は「加熱」（KINDLED）、氷炎地獄の灼熱の
  * 中は「極度の加熱」（SEETHING）。燃料には触らないので、領域が消えると次の tick に元の段へ戻り、ブレイズバーナーの中身には
  * 何も残らない。空のブレイズバーナー（NONE）と、すでに最上段のものは変えない。Create がないときは {@link PsitweaksMixinPlugin}

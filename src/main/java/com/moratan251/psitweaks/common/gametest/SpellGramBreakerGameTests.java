@@ -36,7 +36,7 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
- * 魔法式オブジェクトを削る作動式（2026-11-14 ユーザー）: サイ・ブリットと術式解体。どちらも耐久値を「量 × 術者の事象干渉力」
+ * 魔法式オブジェクトを削る作動式: サイ・ブリットと術式解体。どちらも耐久値を「量 × 術者の事象干渉力」
  * だけ減らし（干渉力 1 の試験では量のとおり）、術者自身の魔法式オブジェクトは削らない。
  */
 @GameTestHolder(Psitweaks.MOD_ID)

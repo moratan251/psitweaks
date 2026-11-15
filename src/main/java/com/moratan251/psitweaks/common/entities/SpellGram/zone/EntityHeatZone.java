@@ -29,37 +29,16 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * 作動式: 加熱領域（仮）の範囲。中の生物に火をつける（中にいる間はバニラの炎上と同じ毎秒 1、出てからも 威力 × 0.6 秒は
- * 燃える。濡れている生物は燃えない、{@code CombatStatuses}。{@link #affect}）。術者自身は燃やさない（{@link #sparesCaster}）。
- * <p>
- * 範囲の中の氷と薄氷を水に戻す（ネザーのような水の置けないディメンションでは消える。氷塊・青氷はそのまま）。
- * <p>
- * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括燻製する（Create のケース入りファンと
- * 同じで上限なし、速さは置いた時点の事象干渉力、{@link SpellGramZone#machineSpeedFor}）。自分の荷電領域が重なったところでは、
- * 電気炉のように一括燻製の代わりに一括製錬をする（2026-11-15 ユーザー、精錬できるアイテムだけ）。
- * <p>
- * 熱の総量（2026-11-14 ユーザー）: 領域は 1 tick あたり決まった量の熱を持つ（{@link #heatTotalPerTick}: 置いたときのコスト ×
- * {@link #HEAT_PER_PSI} ÷ 存続時間 × 速さ）。燃料の代わりになるもの（消耗品・エネルギー）はこの総量から払う: Create の
- * ブレイズバーナーの加熱（1 台 {@link #BURNER_HEAT_PER_TICK}）と、残りを Mekanism の熱を受け取るブロックで均等に分ける。熱は
- * 威力 × 100 K までしか上げない（核分裂炉が損傷する 1200 K を越えさせない）。
- * <p>
- * 同じ術者の凍結領域と 1 つの直方体を二分すると、氷炎地獄の「灼熱」側になる（{@link InfernoZones}、隠し要素）。
- * 灼熱の間は、Create の加工が一括燻製から一括製錬に変わり（2026-11-11 ユーザー）、熱の総量は相手の凍結領域のコストの分も
- * 足したものになる（2026-11-15 ユーザー、案 A: 前の「熱の総量 4 倍」を置き換えた）。極寒側が Mekanism の機械から奪った熱も、
- * 灼熱側の熱の総量に足す（{@link #acceptMovedHeat}、{@link #BURNER_INTERVAL} tick ごとにならした 1 tick あたり）。バーナーにも
- * Mekanism の機械にも使える（2026-11-15 ユーザー: 冷却側が奪った熱で加熱側の熱量が上がるように）。熱乱流の上乗せには入れない。
- * <p>
- * Create のブレイズバーナーは、熱の総量で払えるぶん（{@link #BURNER_INTERVAL} tick ごとに、領域の中心に近い順に決める）だけ、
- * 燃料がなくても「加熱」、灼熱の中なら「極度の加熱」（1 台 {@link #SUPERHEATED_BURNER_HEAT_PER_TICK}、ブレイズケーキの代わり）
- * になる（{@link #burnerHeatAt}）。自分の燃料ですでにその段のバーナーは払わない。2026-11-14 に、前の「極度の加熱 1 台ごとに
- * 耐久値が余分に減る」を置き換えた。
- * <p>
- * 同じ術者の乱流領域と重なったブロックは「熱乱流」（ヒート・ストーム）になる（2026-11-11 ユーザー）: 中の生物に
- * {@link #STORM_INTERVAL} tick ごとに火属性のダメージ（攻撃術式の共通ルール、設定 {@code heat_storm.damageMultiplier}）、
- * Create の加工の速さと Mekanism へ送る熱の総量が 2 倍。
- * <p>
- * 凍結領域と重なったブロックでは、加熱と凍結が打ち消し合ってどちらも効かない（術者は問わない。乱流・湿潤との組み合わせより
- * 先に判定するので、熱乱流・吹雪も起きない。2026-11-11 ユーザー）。
+ * 作動式: 加熱領域（仮）の範囲。
+ * <ul>
+ *   <li>中の生物に火をつける（{@link #affect}）。術者自身は燃やさない（{@link #sparesCaster}）。</li>
+ *   <li>氷と薄氷を水に戻す（{@link #affectBlock}）。</li>
+ *   <li>1 tick あたりの熱の総量（{@link #heatTotalPerTick}）で Create のブレイズバーナーを加熱し（{@link #allocateBurners}）、
+ *   残りを Mekanism の熱を受け取るブロックに均等に分ける（温度は {@link #maxTemperature} まで）。</li>
+ *   <li>Create があれば、落ちているアイテムとデポ・ベルトの上のアイテムを一括燻製する（{@link #processCreate}）。</li>
+ * </ul>
+ * 自分の側の凍結領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると熱乱流、凍結領域と直方体を二分すると
+ * 氷炎地獄の灼熱側（{@link InfernoZones}）になる。仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityHeatZone extends SpellGramZone {
     /** 威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
@@ -68,21 +47,11 @@ public class EntityHeatZone extends SpellGramZone {
     public static final double TEMPERATURE_PER_POWER = 100.0;
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
-    /**
-     * 熱の総量の比率: 置いたときのコスト 1 Psi あたりの熱（J、2026-11-15 ユーザー）。熱発電機は熱 1 J をおよそ 0.28 FE にする
-     * （ゲーム内の測定: 木炭 1 個を薪木ストーブで 320 kJ → 89.6 kFE）ので、サイリンク発電機と同じ 100 FE/Psi になる値。
-     * 威力 5・サイズ 16（コスト 562）の速さ 1 で約 337 J/t。
-     */
+    /** 熱の総量の比率: 置いたときのコスト 1 Psi あたりの熱（J）。熱発電機を通すとサイリンク発電機と同じ 100 FE/Psi になる。 */
     public static final double HEAT_PER_PSI = 360.0;
-    /**
-     * ブレイズバーナー 1 台を「加熱」にするのに熱の総量から使う熱（J/t、2026-11-15 ユーザー）: 木炭 1 個は薪木ストーブで 320 kJ、
-     * バーナーでは 1600 tick 加熱なので、木炭と同じ 200 J/t。
-     */
+    /** ブレイズバーナー 1 台を「加熱」にするのに熱の総量から使う熱（J/t、木炭で加熱したときと同じ）。 */
     public static final double BURNER_HEAT_PER_TICK = 200.0;
-    /**
-     * ブレイズバーナー 1 台を「極度の加熱」にするのに使う熱（J/t、加熱の 2 倍、2026-11-15 ユーザー）。ブレイズケーキの溶岩 250 mB は
-     * 約 1 MJ（3200 tick で約 310 J/t）なので、材料の手間を足して加熱の 2 倍。
-     */
+    /** ブレイズバーナー 1 台を「極度の加熱」にするのに使う熱（J/t、加熱の 2 倍）。 */
     public static final double SUPERHEATED_BURNER_HEAT_PER_TICK = 400.0;
     private static final int INTERVAL = 10;
     private static final int MAX_EMBERS_PER_TICK = 5;
@@ -121,8 +90,7 @@ public class EntityHeatZone extends SpellGramZone {
         this(PsitweaksEntities.HEAT_ZONE.get(), level);
     }
 
-    /** 威力（領域の温度、2026-11-11 ユーザー）。燃やす長さ・Mekanism の上限温度・氷炎地獄の強さを決める。 */
-    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
+    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。燃やす長さ・上限の温度・氷炎地獄の強さを決める。 */
     private float power = DEFAULT_POWER;
     /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
@@ -145,7 +113,7 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * Create のブレイズバーナー（2026-11-11 の設計 B、{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} の
+     * Create のブレイズバーナー（{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} の
      * バーナーを、加熱領域が熱の総量から払って加熱していれば 1（加熱）、極度の加熱なら 2、どちらでもなければ 0（サーバー側）。
      * 払う台数・打ち消し・領域干渉・保護は {@link #allocateBurners} で決める。重なっていれば強いほう。
      */
@@ -204,14 +172,11 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * 中にいる生物に火をつける（{@link #INTERVAL} tick ごと）。ダメージはバニラの炎上そのもの（毎秒 1、2026-11-14 ユーザー）。
+     * 中にいる生物に火をつける（{@link #INTERVAL} tick ごと）。ダメージはバニラの炎上そのもの（毎秒 1）。
      * <p>
-     * バニラの炎上は、燃える残り時間が 20 の倍数になった tick にだけ 1 ダメージを与える。残り時間が {@link #keepBurning}
-     * より短くなったら 20 tick 単位で足す（20 で割った余りを変えない）ので、中にいる間は 20 tick ごとにちょうど 1 回当たる。
-     * 外に出たあとは、残りの 威力 × 0.6 秒ほど同じように燃え続ける。
-     * <p>
-     * 前は残り時間を「威力 × 12 tick」に戻していたので、10 tick の間に 20 の倍数を通る威力でだけ毎秒 2、通らない威力
-     * （1・3・6・8）では 0 だった。
+     * バニラの炎上は、燃える残り時間が 20 の倍数になった tick にだけ当たる。残り時間は 20 tick 単位で足して 20 で割った余りを
+     * 変えないので、中にいる間は 20 tick ごとにちょうど 1 回当たる。残り時間を決まった値に戻すと、威力によって毎秒 0 回や
+     * 2 回になる。
      */
     @Override
     protected void affect(Entity target) {
@@ -268,7 +233,7 @@ public class EntityHeatZone extends SpellGramZone {
         // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械にも効かせる）。範囲・領域干渉・乱流は世界の位置で判定し、
         // 保護は機械が本当にある位置で確かめる。
         List<ZoneRegion> regions = regions();
-        // 自分の荷電領域が重なったところは一括製錬（電気炉、2026-11-15 ユーザー）。灼熱の間はどこも一括製錬。
+        // 自分の荷電領域が重なったところは一括製錬（電気炉）。灼熱の間はどこも一括製錬。
         List<EntityChargedZone> arcs = inferno || !CreateCompat.isCreateLoaded() ? List.of() : ownChargedZones(level);
         for (int step = takeMachineSteps(); step > 0; step--) {
             for (ZoneRegion region : regions) {
@@ -309,7 +274,7 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             }
             if (!machines.isEmpty()) {
-                // 重なった自分の加熱領域は、それぞれが自分の熱量を配る（足し算、2026-11-15 ユーザー、案 A）。上限の温度は領域ごと。
+                // 重なった自分の加熱領域は、それぞれが自分の熱量を配る（足し算）。上限の温度は領域ごと。
                 java.util.function.Predicate<BlockPos> mayHeat = pos -> {
                     ZoneRegion region = owners.get(pos);
                     return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
@@ -319,7 +284,7 @@ public class EntityHeatZone extends SpellGramZone {
                 }
                 if (storm) {
                     // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
-                    // 上乗せは乱流が範囲を覆う割合を掛ける（2026-11-15 ユーザー: 小さな乱流の重ねがけで増えないように）。
+                    // 上乗せは乱流が範囲を覆う割合を掛ける（小さな乱流を重ねても増えないように）。
                     for (Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                         EntityTurbulenceZone turbulence = entry.getKey();
                         MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(),
@@ -364,8 +329,8 @@ public class EntityHeatZone extends SpellGramZone {
                 }
                 BlockPos pos = blockEntity.getBlockPos();
                 BlockPos world = region.worldPos(pos);
-                // 重なった自分の加熱領域どうしでは、ほかの領域がもうその段以上で払っているバーナーは払わない（二度払いをしない、
-                // 2026-11-15 ユーザー）。ほかの領域が低い段で払っていれば、こちらが高い段で払い、相手は次の決め直しで手を引く。
+                // 重なった自分の加熱領域どうしでは、ほかの領域がもうその段以上で払っているバーナーは払わない（二度払いをしない）。
+                // ほかの領域が低い段で払っていれば、こちらが高い段で払い、相手は次の決め直しで手を引く。
                 if (isActiveAt(world) && mayUseMachine(level, caster, pos) && !paidByAnother(level, pos, wanted)) {
                     burners.add(new Burner(pos, world, wanted));
                 }
@@ -468,7 +433,7 @@ public class EntityHeatZone extends SpellGramZone {
 
     /**
      * 範囲 {@code region} で Create の加工を 1 回進める。{@code where} は世界の位置で、加工してよいところ。灼熱の間はどこも一括製錬、
-     * そうでなければ自分の荷電領域 {@code arcs} が重なったところは一括製錬、ほかは一括燻製（2026-11-15 ユーザー: 電気炉）。
+     * そうでなければ自分の荷電領域 {@code arcs} が重なったところは一括製錬（電気炉）、ほかは一括燻製。
      */
     private void processCreate(ServerLevel level, Player caster, ZoneRegion region, boolean inferno, List<EntityChargedZone> arcs,
                                java.util.function.Predicate<BlockPos> where) {

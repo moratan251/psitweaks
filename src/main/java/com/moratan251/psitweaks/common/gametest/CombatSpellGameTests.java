@@ -1303,7 +1303,7 @@ public final class CombatSpellGameTests {
 
     /**
      * マイクロブラックホールは魔法式オブジェクト（目印型、常駐魔法式ではない）で、耐久値は 150 × 事象干渉力（時間では減らない）。
-     * 崩壊する前に耐久値が尽きると、何も押し潰さずに消える（2026-11-14 ユーザー）。
+     * 崩壊する前に耐久値が尽きると、何も押し潰さずに消える。
      */
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 120)
     public static void microBlackHoleIsASpellGramObjectWithIntegrity(GameTestHelper helper) throws Exception {
@@ -1338,7 +1338,7 @@ public final class CombatSpellGameTests {
 
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 200)
     public static void microBlackHolePullsInThenCrushes(GameTestHelper helper) throws Exception {
-        // 2026-11-14 からブラックホールは魔法式オブジェクト（術者を ID で引き直す）なので、ワールドにいるプレイヤーで唱える。
+        // ブラックホールは魔法式オブジェクト（術者を ID で引き直す）なので、ワールドにいるプレイヤーで唱える。
         ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_caster", new Vec3(0.5, 0.0, 4.5));
         // 60 + 50 x Power would kill a plain husk, so give it room to show the collapse hits only once.
         var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
@@ -1368,7 +1368,7 @@ public final class CombatSpellGameTests {
      */
     /**
      * 中心が {@code center} の流星群の夜（台帳から）。夜のエンティティ（核）は球のてっぺんにあるので、エンティティの位置ではなく
-     * 球の中心で探す（2026-11-12）。
+     * 球の中心で探す。
      */
     private static List<EntityMeteorLineNight> nightsAround(ServerLevel level, Vec3 center) {
         return SpellGramIndex.all(level, EntityMeteorLineNight.class).stream()
@@ -1637,13 +1637,13 @@ public final class CombatSpellGameTests {
             List<EntityMeteorLineNight> nights = nightsAround(level, center);
             helper.assertTrue(nights.size() == 1, "The night must be in the SpellGram index, found " + nights.size());
             EntityMeteorLineNight night = nights.get(0);
-            // 夜は球で、核（エンティティ）は球のてっぺん（2026-11-12）。
+            // 夜は球で、核（エンティティ）は球のてっぺん。
             helper.assertTrue(near(night.getY(), center.y + night.getRadius()) && night.contains(center.subtract(0.0, night.getRadius() * 0.8, 0.0))
                             && !night.contains(center.subtract(0.0, night.getRadius() * 1.2, 0.0)),
                     "The night must be a sphere with its core at the top: core y " + night.getY() + ", center y " + center.y);
             List<EntityMeteorLineBeam> beams = night.getBeams();
             helper.assertTrue(!beams.isEmpty(), "Streaks must be falling by now");
-            // 耐久値は 400 × 事象干渉力で、時間では減らない（2026-11-14 ユーザー）。
+            // 耐久値は 400 × 事象干渉力で、時間では減らない。
             float max = night.getMaxIntegrity();
             float integrity = night.getIntegrity();
             float expected = com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity.initial(
@@ -1670,7 +1670,7 @@ public final class CombatSpellGameTests {
     }
 
     /**
-     * 耐久値が尽きた夜が砕け散る演出の通信（2026-11-14 ユーザー）: 往復で変わらず、受け手は夜が消えたあとでも、種と半径から
+     * 耐久値が尽きた夜が砕け散る演出の通信: 往復で変わらず、受け手は夜が消えたあとでも、種と半径から
      * 夜と同じ星を作れる。
      */
     @GameTest(template = TEMPLATE, batch = BATCH + "_meteor_line_shatter")

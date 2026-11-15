@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * 作動式: 加重領域（仮、Gravity Zone）。範囲の中の生物に、押す向きへ「威力」に応じた運動を毎 tick 足し続ける。威力はコストを
- * 決めるため定数。入力は 4 つまでなので、モードで組み替える（2026-11-12 ユーザー、演算子: 直方体領域と同じ仕組み）:
+ * 決めるため定数。入力は 4 つまでなので、モードで組み替える（演算子: 直方体領域と同じ仕組み）:
  * <ul>
  *   <li>ベクトルモード（既定、モードのなかった頃の術式もこれ）: 範囲・サイズ・方向・威力。向きは「方向」（長さは関係ない）。
  *   時間は持たず 30 秒。</li>
@@ -37,7 +37,7 @@ import java.util.Map;
 public class PieceTrickGravityZone extends PieceTrickZoneBase<EntityGravityZone> implements PsitweaksModeConfigurable {
     /** 威力の上限（仮）。 */
     public static final double MAX_POWER = 10.0;
-    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通、2026-11-14）、コスト = 40 + 広さ × 威力（広さ = サイズ²）
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 40 + 広さ × 威力（広さ = サイズ²）
     private static final int COST_BASE = 40;
     private static final String TAG_MODE = "psitweaksMode";
     private static final List<PsitweaksModeOption> MODES = List.of(PsitweaksModeOptions.VECTOR, PsitweaksModeOptions.MATRIX);

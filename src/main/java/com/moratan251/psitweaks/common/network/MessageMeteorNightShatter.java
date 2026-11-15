@@ -9,8 +9,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
- * The night of Trick: Meteor Line ran out of integrity: clients draw its dark sphere shattering into shards
- * (2026-11-14). It carries what the night looked like at that moment, so the effect does not need the entity, which
+ * The night of Trick: Meteor Line ran out of integrity: clients draw its dark sphere shattering into shards.
+ * It carries what the night looked like at that moment, so the effect does not need the entity, which
  * is removed right after: the centre, the full and the current radius, how strong the night was ({@code strength},
  * 0..1), its age in ticks, the seed of its stars and the caster's CAD colour.
  */

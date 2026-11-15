@@ -427,7 +427,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%s  %s";
             default -> "%s  %s";
         });
-        // 領域のリソース（2026-11-15 ユーザー）: 使っている量 / 総量。2 つめの %s は「337 」「1.00 M」のように単位の接頭辞まで含む。
+        // 領域のリソース: 使っている量 / 総量。2 つめの %s は「337 」「1.00 M」のように単位の接頭辞まで含む。
         root.addProperty("psitweaks.hud.zone_resource.heat", switch (locale) {
             case "ja_jp" -> "熱量: %s / %sJ/t";
             default -> "Heat: %s / %sJ/t";
@@ -2010,12 +2010,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
     }
 
     /**
-     * 領域魔法の本（2026-11-14 ユーザー）: Psitweaks の分類に項目「領域魔法」を立てて共通の決まりをまとめ、各領域のピースの
-     * 項目はその領域だけの効き目にする。日本語は yomiyasu で推敲した（2026-11-14）。
+     * 領域魔法の本: Psitweaks の分類に項目「領域魔法」を立てて共通の決まりをまとめ、各領域のピースの
+     * 項目はその領域だけの効き目にする。日本語は yomiyasu で推敲した。
      */
     private void addZoneMagicBook(JsonObject root) {
         addLocalized(root, "psi.book.entry.psitweaks_zone_magic", "Zone Magic", "領域魔法");
-        // デバッグ用: 魔法式耐久値デバッガー（2026-11-14 ユーザー）。
+        // デバッグ用: 魔法式耐久値デバッガー。
         addLocalized(root, "psitweaks.debug.spellgram_integrity.amount", "Amount to remove: %s", "減らす量: %s");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.no_target", "No SpellGram object in sight", "魔法式オブジェクトを見ていません");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.reduced", "Removed %2$s integrity from %1$s (%3$s left)",

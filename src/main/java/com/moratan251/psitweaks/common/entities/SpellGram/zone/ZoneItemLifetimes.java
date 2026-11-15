@@ -5,7 +5,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 
 /**
  * 領域が加工している落ちているアイテム（Create の一括洗浄・燻製・製錬、AE2 のチャージ）は、加工している間だけ消えるまでの時間が
- * 進まない（2026-11-12 ユーザー）。NeoForge の {@link ItemEntity#lifespan} を、加工していた tick の分だけ延ばす。加工できない
+ * 進まない。NeoForge の {@link ItemEntity#lifespan} を、加工していた tick の分だけ延ばす。加工できない
  * 物になったら延ばさないので、そこから残りの時間がまた進む（領域を倉庫代わりにはできない）。
  * <p>
  * 加工は毎 tick ではなく、速さや間隔に応じてとびとびに呼ばれるので、前に延ばした tick（アイテムの永続データに覚える）から今までの

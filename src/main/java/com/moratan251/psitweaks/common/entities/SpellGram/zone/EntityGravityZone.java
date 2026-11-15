@@ -21,9 +21,9 @@ import vazkii.psi.common.core.handler.AdditiveMotionHandler;
  * 足す量は 威力 × {@link #ACCELERATION_PER_POWER}（ブロック/tick²、仮）で、事象干渉力では変わらない。
  * 上向きに押している間は落下の距離を数えない（エレベーターのように使っても落下ダメージを受けない）。
  * <p>
- * Sable で物理で動く構造物（Simulated Contraption、Create Aeronautics の機体など）も、重心が範囲の中にある間、生物と同じ基準
- * （威力 4 で重力と釣り合う）で押す（2026-11-11 の設計 C、{@link SablePhysicsCompat#accelerateSubLevels}）。重さによらず同じ
- * 加速で、重心をまっすぐ押すので傾かない。設定 {@code gravity_zone.contraptionMultiplier}（0 で無効）で強さを変えられる。
+ * Sable で物理で動く構造物（Simulated Contraption、Create Aeronautics の機体など）も、範囲に入っている部分の割合で、生物と
+ * 同じ基準（威力 4 で重力と釣り合う）で押す（{@link SablePhysicsCompat#accelerateSubLevels}）。重さによらず同じ加速で、
+ * 押す点を入っている側へ寄せるので、ある程度傾く。設定 {@code gravity_zone.contraptionMultiplier}（0 で無効）で強さを変えられる。
  */
 public class EntityGravityZone extends SpellGramZone {
     /** 威力 1 あたりの毎 tick の加速（仮）。重力は 0.08 なので、威力 4 で上向きに釣り合う。 */
@@ -70,7 +70,7 @@ public class EntityGravityZone extends SpellGramZone {
         return entity.isAlive() && !entity.isSpectator() && !entity.noPhysics;
     }
 
-    /** 重なった加重領域の押す力（向き × 威力）を足したものの大きさの上限（威力、2026-11-12 ユーザー）。 */
+    /** 重なった加重領域の押す力（向き × 威力）を足したものの大きさの上限（威力）。 */
     public static final float MAX_COMBINED_POWER = 10.0F;
 
     /** 加重領域は重なると押す向きを足し合わせる（{@link #combinedPushAt}）。 */

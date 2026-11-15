@@ -24,7 +24,7 @@ public final class CreateCompat {
         SMOKING,
         /**
          * 一括製錬（氷炎地獄の灼熱になった加熱領域と、自分の荷電領域が重なった加熱領域）。精錬・溶鉱炉のレシピがあるアイテムだけを扱う（Create のファンと違い、
-         * レシピのないアイテムを燃やさない、2026-11-15 ユーザー）。
+         * レシピのないアイテムを燃やさない）。
          */
         BLASTING
     }
@@ -60,7 +60,7 @@ public final class CreateCompat {
     /**
      * {@code blockEntity} がブレイズの入ったブレイズバーナーなら、自分の燃料で出している加熱の段: 0 = 燃料なし（くすぶり）、
      * 1 = ふつうの燃料（加熱）、2 = ブレイズケーキかクリエイティブ（極度の加熱）。ブレイズバーナーでないか空なら -1。
-     * 加熱領域が熱の総量から払う台数を決めるのに使う（2026-11-14 ユーザー）。Create がなければ -1。
+     * 加熱領域が熱の総量から払う台数を決めるのに使う。Create がなければ -1。
      */
     public static int burnerOwnHeat(BlockEntity blockEntity) {
         return isCreateLoaded() ? CreateFanIntegration.burnerOwnHeat(blockEntity) : -1;

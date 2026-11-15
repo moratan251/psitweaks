@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 1 人（術者の {@code CasterIds.idOf}、自律詠唱機は機械ごと）が同時に置ける魔法式オブジェクトの数の上限
- * （2026-11-11 ユーザー）。同じ種類をいくつ置いてもよく、サークル（ファイアサークル・アイスサークル）と領域を合わせて
+ * 1 人（術者の {@code CasterIds.idOf}、自律詠唱機は機械ごと）が同時に置ける魔法式オブジェクトの数の上限。
+ * 同じ種類をいくつ置いてもよく、サークル（ファイアサークル・アイスサークル）と領域を合わせて
  * 上限まで。超えて置くと、いちばん古いものから解ける（DISPELLED）。上限はプレイヤーと自律詠唱機で別々に設定できる
  * （{@code spellgram.maxObjectsPerPlayer}・{@code spellgram.maxObjectsPerAutonomousCaster}、どちらも既定 32）。
  * 流星群の夜（目印）は、ほかとは違う扱いにする予定なので数えない。

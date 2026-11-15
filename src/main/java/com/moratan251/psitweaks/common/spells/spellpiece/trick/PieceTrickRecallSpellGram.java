@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作動式: 魔法式回収（2026-11-11 ユーザー）。対象の自分の魔法式オブジェクトを消す（{@link SpellGramObject.EndReason#RECALLED}）。
- * エンティティでもリストでもよく（取得子: 自分の魔法式オブジェクトをそのまま渡せる）、距離は問わない（射程外でも回収できる、
- * 2026-11-13 ユーザー。Psi の射程・耐性の判定はせず、{@link SpellGramTargets#own} だけで確かめる）。自分のもの以外や、魔法式
+ * 作動式: 魔法式回収。対象の自分の魔法式オブジェクトを消す（{@link SpellGramObject.EndReason#RECALLED}）。
+ * エンティティでもリストでもよく（取得子: 自分の魔法式オブジェクトをそのまま渡せる）、距離は問わない（射程外でも回収できる。
+ * Psi の射程・耐性の判定はせず、{@link SpellGramTargets#own} だけで確かめる）。自分のもの以外や、魔法式
  * オブジェクトでないものが混ざっているとエラーで、そのときは何も消さない。Psi は戻らない。他人のものを消すのは術式解体の役目。
  */
 public class PieceTrickRecallSpellGram extends PieceTrick {

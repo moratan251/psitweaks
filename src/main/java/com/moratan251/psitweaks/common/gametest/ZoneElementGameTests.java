@@ -106,8 +106,8 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 加熱領域の中のダメージは、威力によらずバニラの炎上と同じ毎秒 1（2026-11-14 ユーザー: 前は燃える残り時間の数え方とかみ合わず、
-     * 威力 1・3・6・8 では 0、ほかは毎秒 2 だった）。外に出たあとは 威力 × 0.6 秒ほど燃え続ける。
+     * 加熱領域の中のダメージは、威力によらずバニラの炎上と同じ毎秒 1（威力 1・3・6・8 でも 0 にならず、ほかの威力でも 2 に
+     * ならない）。外に出たあとは 威力 × 0.6 秒ほど燃え続ける。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_damage_3", timeoutTicks = 120)
     public static void heatZoneDamageFollowsPower3(GameTestHelper helper) {
@@ -355,7 +355,7 @@ public final class ZoneElementGameTests {
         BlockPos inside = new BlockPos(2, 1, 2);
         BlockPos outside = new BlockPos(6, 1, 2);
         BlockPos openSky = new BlockPos(10, 1, 2);
-        // 2026-11-15 ユーザー（加算方式）: 範囲の中の空の下に 1 台（屋根に穴を開ける）。
+        // 加算方式: 範囲の中の空の下に 1 台（屋根に穴を開ける）。
         BlockPos insideOpen = new BlockPos(0, 1, 4);
         // 風力発電機は 4 ブロック上（y 5、発電機のてっぺん）から空が見えるかを見る。中と外の 2 台の上（x 0〜7）に、すぐ上の y 6 で
         // 屋根をかけ、3 台目は空の下に置く。乱流領域は x 0〜4 なので、外の 1 台（x 6）は入らない。
@@ -398,7 +398,7 @@ public final class ZoneElementGameTests {
             helper.assertTrue(outsideMultiplier == 0.0,
                     "A Wind Generator outside the zone must stay still under a roof, multiplier " + outsideMultiplier);
             helper.assertTrue(skyMultiplier > 0.0, "A Wind Generator under the open sky must run, multiplier " + skyMultiplier);
-            // 風量 25 × 10 ÷ 64 WU を、範囲の中の 2 台で均等に分ける（2026-11-15 ユーザー）。加算方式で 1 WU ごとに 25 J/t、
+            // 風量 25 × 10 ÷ 64 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに 25 J/t、
             // 高さによらない。
             double units = 25.0 * 10.0 / 64.0 / 2.0;
             double openUnits = units;
@@ -413,8 +413,8 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 重なった 2 つの乱流領域（2026-11-15 ユーザー）: 1 台の風力発電機が受け取るのは合わせて 10 WU まで。照準に出す使用量も、
-     * 2 つの領域を合わせて 10 WU になる（前はそれぞれの分を数えて上限を超えて出ていた）。
+     * 重なった 2 つの乱流領域: 1 台の風力発電機が受け取るのは合わせて 10 WU まで。照準に出す使用量も、
+     * 2 つの領域を合わせて 10 WU になる（それぞれの分を数えて上限を超えて出さない）。
      */
     @GameTest(template = WIND_TEMPLATE, batch = "psitweaks_zone_turbulence_wind_overlap", timeoutTicks = 200, skyAccess = true)
     public static void overlappingTurbulenceZonesGiveAGeneratorTenWindUnits(GameTestHelper helper) {
@@ -733,10 +733,10 @@ public final class ZoneElementGameTests {
             // 普通の凍結領域は凍えきるまで（3.5 秒）ダメージを与えない。
             helper.assertTrue(frozenLoss >= 4.0F, "The freezing half must hurt the being inside, lost " + frozenLoss);
             helper.assertTrue(awarded, "The caster must get the hidden Inferno advancement");
-            // 2026-11-15 ユーザー（案 A）: 灼熱側の熱の総量は、加熱領域と凍結領域のコストの合計で決まる。
+            // 灼熱側の熱の総量は、加熱領域と凍結領域のコストの合計で決まる。
             helper.assertTrue(Math.abs(pooled - expected) < 1.0E-6,
                     "The scorching Heat Zone's heat total must come from both zones' costs: " + pooled + " vs " + expected);
-            // 照準の表示（2026-11-15 ユーザー）: 送られるリソースの量は熱量・冷却量そのもの。
+            // 照準の表示: 送られるリソースの量は熱量・冷却量そのもの。
             helper.assertTrue(Math.abs(shownHeat - hotTotal) <= pooled * 1.0E-4 && Math.abs(shownCooling - pooledCooling) <= pooledCooling * 1.0E-4,
                     "The synced resource amounts must be the heat and cooling totals: " + shownHeat + " / " + shownCooling);
             helper.assertTrue(Math.abs(pooledCooling - expectedCooling) < 1.0E-6,
@@ -746,7 +746,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 乱流の重ねがけ（2026-11-15 ユーザー）: 熱乱流・吹雪の総量の上乗せは、乱流が範囲を覆う割合（体積の比）を掛け、合計は 1 まで。
+     * 乱流の重ねがけ: 熱乱流・吹雪の総量の上乗せは、乱流が範囲を覆う割合（体積の比）を掛け、合計は 1 まで。
      * 小さな乱流をいくつ重ねても、範囲全体を 1 つの乱流で覆ったときより増えない。
      */
     @GameTest(template = TEMPLATE)
@@ -771,7 +771,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 氷炎地獄（2026-11-15 ユーザー、案 A）: 極寒側が Mekanism の機械から奪った熱は、灼熱側の加熱領域へ移る（灼熱側の Mekanism の
+     * 氷炎地獄: 極寒側が Mekanism の機械から奪った熱は、灼熱側の加熱領域へ移る（灼熱側の Mekanism の
      * 機械に送る）。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_inferno_moved_heat", timeoutTicks = 100)
@@ -805,7 +805,7 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(40, () -> {
             double moved = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                     .filter(zone -> zone instanceof EntityHeatZone).mapToDouble(zone -> ((EntityHeatZone) zone).movedHeatReceived()).sum();
-            // 移された熱は灼熱側の熱の総量に入る（2026-11-15 ユーザー）。
+            // 移された熱は灼熱側の熱の総量に入る。
             double extra = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                     .filter(zone -> zone instanceof EntityHeatZone)
                     .mapToDouble(zone -> ((EntityHeatZone) zone).heatTotalPerTick(true) - ((EntityHeatZone) zone).ownHeatTotalPerTick(true))
@@ -834,7 +834,7 @@ public final class ZoneElementGameTests {
         item.setNeverPickUp();
         item.setDeltaMovement(Vec3.ZERO);
         level.addFreshEntity(item);
-        // レシピのない土は燃やさない（2026-11-15 ユーザー: ドロップアイテムが意図せず燃えないように）。
+        // レシピのない土は燃やさない（ドロップアイテムが意図せず燃えないように）。
         ItemEntity dirt = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.DIRT));
         dirt.setNeverPickUp();
         dirt.setDeltaMovement(Vec3.ZERO);
@@ -866,7 +866,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 電気炉（2026-11-15 ユーザー）: 自分の荷電領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（原料の鉄 → 鉄インゴット）。
+     * 電気炉: 自分の荷電領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（原料の鉄 → 鉄インゴット）。
      * レシピのない土は燃えない。Create がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_arc_furnace", timeoutTicks = 400)
@@ -985,7 +985,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱の総量（2026-11-14 ユーザー）: ブレイズバーナーは 1 台 200 J/t（2026-11-15）を熱の総量から払い、払える台数だけ加熱になる。1 台ぶんしか
+     * 熱の総量: ブレイズバーナーは 1 台 200 J/t を熱の総量から払い、払える台数だけ加熱になる。1 台ぶんしか
      * ない領域では、中心に近い 1 台だけが加熱になる。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_budget", timeoutTicks = 100)
@@ -994,21 +994,21 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 威力は 10 より上も入れられる（2026-11-15 ユーザー）: 一辺 3 でも威力 100（コスト 410 → 約 246 J/t）ならバーナー 1 台を
+     * 威力は 10 より上も入れられる: 一辺 3 でも威力 100（コスト 410 → 約 246 J/t）ならバーナー 1 台を
      * 加熱にできる。1 か所あたりの強さ（上限の温度）は威力 10 で頭打ち。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_small", timeoutTicks = 100)
     public static void smallHeatZoneWithHighPowerKindlesABurner(GameTestHelper helper) {
         int cost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickHeatZone.costFor(9, 100.0);
         helper.assertTrue(cost == 410, "Size 3, Power 100 must cost 410, got " + cost);
-        // 規模は威力 10 で頭打ち（2026-11-15 ユーザー、案 1）: サイズ 3 なら威力によらず 10 + ⌊9 × 10 × 0.27⌋ = 34。
+        // 規模は威力 10 で頭打ち: サイズ 3 なら威力によらず 10 + ⌊9 × 10 × 0.27⌋ = 34。
         int potency = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.poweredPotency(9, 100.0);
         helper.assertTrue(potency == 34, "Potency must stop growing at Power 10: size 3, Power 100 must be 34, got " + potency);
         burnerTest(helper, BurnerCase.SMALL);
     }
 
     /**
-     * 重なった自分の加熱領域（2026-11-15 ユーザー、案 A）: 熱量は足し算だが、同じバーナーを二度払いしない（どちらか 1 つだけが
+     * 重なった自分の加熱領域: 熱量は足し算だが、同じバーナーを二度払いしない（どちらか 1 つだけが
      * 払う）。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_stacked", timeoutTicks = 100)
@@ -1082,7 +1082,7 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(mode == BurnerCase.INFERNO ? 25 : 14, () -> {
             String insideLevel = propertyValue(helper.getBlockState(inside), "blaze");
             if (mode == BurnerCase.INFERNO) {
-                // 極度の加熱は熱の総量から払う（2026-11-14、前は耐久値が余分に減った）。
+                // 極度の加熱は熱の総量から払う（耐久値は余分に減らない）。
                 float worn = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                         .filter(zone -> zone instanceof EntityHeatZone).map(zone -> zone.getWorn()).findFirst().orElse(0.0F);
                 helper.assertTrue(worn == 0.0F, "Superheating a Blaze Burner must not wear the Heat Zone down any more, worn " + worn);
@@ -1194,7 +1194,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 他人どうしの奪い合い（2026-11-14 ユーザー、案 2）: 種類を問わず、重なったところでは事象干渉力の高い側の領域だけが効く。
+     * 他人どうしの奪い合い: 種類を問わず、重なったところでは事象干渉力の高い側の領域だけが効く。
      * 他人の加熱と凍結は打ち消し合わず、奪い合いで決まる。重ならないところはそれぞれ効く。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contest", timeoutTicks = 40)
@@ -1338,12 +1338,11 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 領域干渉の規模とコスト（2026-11-14 ユーザー、仮）: 規模 = 10 + 広さ / 5 ×（1 + 威力 / 10）、コスト = 50 + 広さ × 2 ×
-     * （1 + 威力 / 10）。威力を省けば今までと同じ。サイズ 5（広さ 25）で、威力なし 15・100、威力 10 で 20・150。
+     * 領域干渉の規模とコスト（仮）: 規模 = 10 + ⌊広さ × 1.35 ×（1 + 威力 / 10）⌋、コスト = 50 + 広さ × 2 ×（1 + 威力 / 10）。
+     * 威力は必須の 1〜10（1 より小さい威力は 1）。サイズ 5（広さ 25）で、威力 1 なら 47・105、威力 10 なら 77・150。
      */
     @GameTest(template = TEMPLATE)
     public static void interferenceZoneCostGrowsWithPower(GameTestHelper helper) throws Exception {
-        // 2026-11-14 ユーザー: 威力は必須の 1〜10、規模 = 10 + ⌊広さ × 1.35 ×（1 + 威力 / 10）⌋。
         int[] low = interferenceStats(1.0);
         int[] full = interferenceStats(10.0);
         int[] below = interferenceStats(0.5);

@@ -8,7 +8,7 @@ import vazkii.psi.api.spell.SpellContext;
 
 /** 作動式: 湿潤領域（仮、Soak Zone）。範囲の中の生物を濡らし続ける。 */
 public class PieceTrickSoakZone extends PieceTrickZoneBase<EntitySoakZone> {
-    // 仮の数値: 規模 = 10 + 広さ（2026-11-14）、コスト = 40 + 広さ（広さ = サイズ²）
+    // 仮の数値: 規模 = 10 + 広さ、コスト = 40 + 広さ（広さ = サイズ²）
     private static final int COST_BASE = 40;
 
     public PieceTrickSoakZone(Spell spell) {

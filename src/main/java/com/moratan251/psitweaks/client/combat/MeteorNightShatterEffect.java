@@ -18,7 +18,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /**
- * The night of Trick: Meteor Line ran out of integrity and shatters like glass (2026-11-14). The dark sphere is cut
+ * The night of Trick: Meteor Line ran out of integrity and shatters like glass. The dark sphere is cut
  * into irregular shards that first fit together exactly where the night was. A crack runs from the core (the top of
  * the sphere) down to its bottom; each shard's edges flash as the crack reaches it, then the shard flies outward,
  * spins, falls and fades. The stars burst outward with a last flare. The flow is in {@link MeteorLineTuning}

@@ -128,7 +128,7 @@ public class EntityTunnelerArrow extends AbstractArrow {
 
     /**
      * 発射からの経過tick数（保存される）。デスポーンと無重力の終わりはこれで数える。ブロックを貫通する矢は、シミュレーション距離の
-     * 外で止まって保存され、読み直すたびに tickCount が 0 に戻るので、tickCount で数えると消えずにたまる（2026-11-11）。
+     * 外で止まって保存され、読み直すたびに tickCount が 0 に戻るので、tickCount で数えると消えずにたまる。
      */
     private int age;
 

@@ -12,10 +12,10 @@ import vazkii.psi.api.spell.StatLabel;
 
 /**
  * 作動式: 凍結領域（仮、Freeze Zone）。範囲の中の生物を凍えさせ、上が空気の水源の水を氷にする（{@link EntityFreezeZone}）。
- * 「威力」（定数、最大 10）は冷やす強さで、凍えのたまる速さと氷炎地獄の強さを決める（2026-11-11 ユーザー）。
+ * 「威力」（定数）は冷やす強さで、凍えのたまる速さと氷炎地獄の強さを決める。
  */
 public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
-    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通、2026-11-14）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²。威力 5 で 威力のなかった頃と同じ）
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²）
     private static final int COST_BASE = 50;
     private static final int COST_MULTIPLIER = 2;
     private static final int COST_DIVISOR = 5;
@@ -28,7 +28,7 @@ public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
         setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
     }
 
-    /** 総量を持つ領域なので、威力は 10 より上も入れられる（2026-11-15 ユーザー）。 */
+    /** 総量を持つ領域なので、威力は 10 より上も入れられる。 */
     @Override
     protected double maxPower() {
         return MAX_RESOURCE_ZONE_POWER;

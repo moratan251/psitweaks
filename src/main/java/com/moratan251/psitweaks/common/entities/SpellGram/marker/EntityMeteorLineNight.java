@@ -34,13 +34,13 @@ import java.util.UUID;
  * 作動式: 流星群の夜。目印型の魔法式オブジェクトで、半径 R の球の夜を広げて内側の上のほうに星を灯し、星から光条
  * （{@link EntityMeteorLineBeam}）を降らせてから晴れる。流れと数は {@link MeteorLineTuning}。
  * <p>
- * エンティティ（核）は球のてっぺん（中心から R 上）に置く（2026-11-12 ユーザー: 半球から球に変え、核を球の表面の上部へ）。
+ * エンティティ（核）は球のてっぺん（中心から R 上）に置く。
  * 夜の中心は {@link #getCenter}（核から R 下）で、範囲・星・狙い・描画はすべてそこを基準にする。
  * <p>
  * 光条は斉射ごとに、夜の中にいる攻撃対象の生物（{@link AttackRules#canHarm}）それぞれへ最低1本を、その tick の体の中心へ
  * 向けて通し、残りを夜の中の地面へ降らせる。狙いと線の端点はサーバーで決め、光条のエンティティで送る。
  * 強度が尽きると夜がつぶれ、まだ降っていない光条も、残っている光条も消える。そのときはガラスが割れる音とともに、闇の球が
- * 破片になって砕け散る（{@code MessageMeteorNightShatter}、2026-11-14 ユーザー）。
+ * 破片になって砕け散る（{@code MessageMeteorNightShatter}）。
  */
 public class EntityMeteorLineNight extends SpellGramMarker {
     /** 狙う相手ごとに、星をいくつ比べて一番まっすぐ降らせられるものを選ぶか。 */
@@ -92,8 +92,8 @@ public class EntityMeteorLineNight extends SpellGramMarker {
     }
 
     /**
-     * 置く前に呼ぶ。耐久値は {@link MeteorLineTuning#BASE_INTEGRITY}（{@link SpellGramIntegrity#initial}）で、時間では減らない
-     * （2026-11-14 ユーザー）。色は術者の CAD の色。
+     * 置く前に呼ぶ。耐久値は {@link MeteorLineTuning#BASE_INTEGRITY}（{@link SpellGramIntegrity#initial}）で、時間では減らない。
+     * 色は術者の CAD の色。
      */
     public void configure(LivingEntity caster, AttackRules.Options options) {
         configureMarker(caster, options, SpellGramIntegrity.initial(MeteorLineTuning.BASE_INTEGRITY, caster, 1.0D));
@@ -382,7 +382,7 @@ public class EntityMeteorLineNight extends SpellGramMarker {
         }
         beams.clear();
         if (reason == EndReason.DESTROYED && level() instanceof ServerLevel level) {
-            // 耐久値が尽きた: ガラスが割れる音とともに、闇の球が破片になって砕け散る（2026-11-14 ユーザー）。
+            // 耐久値が尽きた: ガラスが割れる音とともに、闇の球が破片になって砕け散る。
             Vec3 center = getCenter();
             CombatEffects.sound(level, center, MeteorLineTuning.SHATTER_SOUND, MeteorLineTuning.SHATTER_VOLUME,
                     MeteorLineTuning.SHATTER_LOW_PITCH);

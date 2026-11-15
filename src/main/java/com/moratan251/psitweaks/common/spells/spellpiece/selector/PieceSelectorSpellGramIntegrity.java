@@ -11,7 +11,7 @@ import vazkii.psi.api.spell.param.ParamEntity;
 import vazkii.psi.api.spell.piece.PieceSelector;
 
 /**
- * 取得子: 魔法式耐久値（2026-11-14 ユーザー）。「対象」が魔法式オブジェクト（常駐魔法式や流星群の夜の核）なら、その今の耐久値
+ * 取得子: 魔法式耐久値。「対象」が魔法式オブジェクト（常駐魔法式や流星群の夜の核）なら、その今の耐久値
  * （{@link SpellGramObject#getIntegrity}）を数値で返す。魔法式オブジェクトでなければエラー。読むだけなので、Psi の耐性の判定は
  * しない（{@link ReadOnlyTargets}）。距離も問わない（Psi の読み取りの演算子と同じ）。
  */

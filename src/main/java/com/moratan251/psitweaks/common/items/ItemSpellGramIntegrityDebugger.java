@@ -19,7 +19,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 
 /**
- * デバッグ用: 魔法式耐久値デバッガー（2026-11-14 ユーザー）。右クリックで、見ている魔法式オブジェクト（自分のものも含む）の
+ * デバッグ用: 魔法式耐久値デバッガー。右クリックで、見ている魔法式オブジェクト（自分のものも含む）の
  * 耐久値を決めた量だけ減らす。狙い方は耐久値の表示と同じ核の箱（{@link SpellGramAim#aimedAt}、{@link SpellGramAim#RANGE}
  * ブロックまで）。減らし方は術式と同じ入口（{@link SpellGramIntegrity#reduce}、減らす側の事象干渉力は掛けないので量のとおり、
  * {@code SpellGramIntegrityEvent} も出る）。

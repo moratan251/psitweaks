@@ -38,7 +38,7 @@ public class PsionicGeneratorBlockEntity extends TileEntityConfigurableMachine {
     private static final int DEFAULT_CONSUME_PSI = 25;
     private static final int MIN_CONSUME_PSI = 1;
     private static final int MAX_CONSUME_PSI = 100;
-    /** Psi 1 あたり 250 J（100 FE、2026-11-15 ユーザー: 前の 25 FE の 4 倍。ほかの Psi → エネルギーの比率の基準）。 */
+    /** Psi 1 あたり 250 J（100 FE。ほかの Psi → エネルギーの比率の基準）。 */
     private static final long JOULES_PER_PSI_NUMERATOR = 250;
     private static final long JOULES_PER_PSI_DENOMINATOR = 1;
     private static final long ENERGY_CAPACITY_JOULES = 6_400_000L;

@@ -24,7 +24,7 @@ public final class MeteorLineTuning {
     public static final int SPREAD_TICKS = 20;
     /** 光条が降る。 */
     public static final int FALL_TICKS = 20;
-    /** 光条が降り終わってから晴れ始めるまで、星空の夜だけが残る（2026-11-04 夜の時間を 0.5 秒延ばした分）。 */
+    /** 光条が降り終わってから晴れ始めるまで、星空の夜だけが残る。 */
     public static final int HOLD_TICKS = 10;
     /** 線が消え、星が散って夜が晴れる。 */
     public static final int CLEAR_TICKS = 20;
@@ -128,8 +128,8 @@ public final class MeteorLineTuning {
     // ---- 魔法式オブジェクト ----
 
     /**
-     * 夜の耐久値の固有値（× 置いた時点の事象干渉力 × 設定の倍率）。時間では減らない（2026-11-14 ユーザー: 400、時間で減らさない。
-     * 前は 100 の 5 倍で、存続時間の間に 5 分の 1 が減っていた）。夜は耐久値が残っていても 3.5 秒で晴れる。
+     * 夜の耐久値の固有値（× 置いた時点の事象干渉力 × 設定の倍率）。時間では減らない。
+     * 夜は耐久値が残っていても 3.5 秒で晴れる。
      */
     public static final float BASE_INTEGRITY = 400.0F;
 
@@ -153,7 +153,7 @@ public final class MeteorLineTuning {
     public static final float CLEAR_VOLUME = 3.0F;
     public static final float CLEAR_PITCH = 0.7F;
     /**
-     * 耐久値が尽きて夜が砕け散る音（2026-11-14 ユーザー: ガラスの破壊音）。低い音と少し高い音を重ね、大きなガラスが割れる
+     * 耐久値が尽きて夜が砕け散る音（ガラスの破壊音）。低い音と少し高い音を重ね、大きなガラスが割れる
      * ように聞かせる。音量 1 を超える分は聞こえる距離だけを広げる。
      */
     public static final SoundEvent SHATTER_SOUND = SoundEvents.GLASS_BREAK;

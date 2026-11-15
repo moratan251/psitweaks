@@ -138,7 +138,7 @@ public final class CircleDesigns {
         for (int k = 0; k < count; k++) {
             float deg = 360.0F * k / count;
             float[] c = polar(rc, deg);
-            // 鎖の六角形はすべて白（2026-11-10 ユーザーの指定）。
+            // 鎖の六角形はすべて白。
             p.white().polygonAt(c[0], c[1], 6.5F, 6, deg, 1, FULL);
             p.color();
             if (k % 2 == 0) {
@@ -178,7 +178,7 @@ public final class CircleDesigns {
     }
 
     private static void hexChainInner(CirclePen p) {
-        // 大きな六角形と、その頂点から外へ伸びる 6 本の線と先の点は白（2026-11-10 ユーザーの指定）。
+        // 大きな六角形と、その頂点から外へ伸びる 6 本の線と先の点は白。
         p.white().polygonAt(0.0F, 0.0F, 30.0F, 6, 30.0F, 1, FULL);
         p.color().polygonAt(0.0F, 0.0F, 27.0F, 6, 30.0F, 1, MID);
         p.polygonAt(0.0F, 0.0F, 18.0F, 6, 0.0F, 1, FULL);
