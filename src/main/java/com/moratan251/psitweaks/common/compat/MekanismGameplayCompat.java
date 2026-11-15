@@ -70,6 +70,11 @@ public final class MekanismGameplayCompat {
                 && MekanismGeneratorsGameplayIntegration.isWindGenerator(blockEntity);
     }
 
+    /** Mekanism Generators の風力発電機の最小の発電量（J/t、設定 generationMin）。ないときは NaN。GameTest 用。 */
+    public static double windGenerationMinimum() {
+        return MekanismCompat.isGeneratorsLoaded() ? MekanismGeneratorsGameplayIntegration.windGenerationMinimum() : Double.NaN;
+    }
+
     /** 風力発電機の今の発電の倍率（0 なら止まっている）。Mekanism Generators がないか、風力発電機でなければ NaN。GameTest 用。 */
     public static double windMultiplierOf(@Nullable BlockEntity blockEntity) {
         return blockEntity != null && MekanismCompat.isGeneratorsLoaded()

@@ -18,6 +18,10 @@ final class MekanismGeneratorsGameplayIntegration {
         return blockEntity instanceof TileEntityWindGenerator;
     }
 
+    static double windGenerationMinimum() {
+        return mekanism.generators.common.config.MekanismGeneratorsConfig.generators.windGenerationMin.get();
+    }
+
     static double windMultiplierOf(BlockEntity blockEntity) {
         return blockEntity instanceof TileEntityWindGenerator wind ? wind.getCurrentMultiplier() : Double.NaN;
     }

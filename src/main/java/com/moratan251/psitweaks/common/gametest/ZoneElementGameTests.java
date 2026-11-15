@@ -355,13 +355,18 @@ public final class ZoneElementGameTests {
         BlockPos inside = new BlockPos(2, 1, 2);
         BlockPos outside = new BlockPos(6, 1, 2);
         BlockPos openSky = new BlockPos(10, 1, 2);
+        // 2026-11-15 ユーザー（加算方式）: 範囲の中の空の下に 1 台（屋根に穴を開ける）。
+        BlockPos insideOpen = new BlockPos(0, 1, 4);
         // 風力発電機は 4 ブロック上（y 5、発電機のてっぺん）から空が見えるかを見る。中と外の 2 台の上（x 0〜7）に、すぐ上の y 6 で
         // 屋根をかけ、3 台目は空の下に置く。乱流領域は x 0〜4 なので、外の 1 台（x 6）は入らない。
         for (int x = 0; x <= 7; x++) {
             for (int z = 0; z <= 4; z++) {
-                helper.setBlock(new BlockPos(x, 6, z), Blocks.STONE);
+                if (x != insideOpen.getX() || z != insideOpen.getZ()) {
+                    helper.setBlock(new BlockPos(x, 6, z), Blocks.STONE);
+                }
             }
         }
+        helper.setBlock(insideOpen, windGenerator.get());
         helper.setBlock(inside, windGenerator.get());
         helper.setBlock(outside, windGenerator.get());
         helper.setBlock(openSky, windGenerator.get());
@@ -369,6 +374,7 @@ public final class ZoneElementGameTests {
             helper.setBlock(inside, Blocks.AIR);
             helper.setBlock(outside, Blocks.AIR);
             helper.setBlock(openSky, Blocks.AIR);
+            helper.setBlock(insideOpen, Blocks.AIR);
             for (int x = 0; x <= 7; x++) {
                 for (int z = 0; z <= 4; z++) {
                     helper.setBlock(new BlockPos(x, 6, z), Blocks.AIR);
@@ -387,15 +393,61 @@ public final class ZoneElementGameTests {
             double insideMultiplier = MekanismGameplayCompat.windMultiplierOf(level.getBlockEntity(helper.absolutePos(inside)));
             double outsideMultiplier = MekanismGameplayCompat.windMultiplierOf(level.getBlockEntity(helper.absolutePos(outside)));
             double skyMultiplier = MekanismGameplayCompat.windMultiplierOf(level.getBlockEntity(helper.absolutePos(openSky)));
+            double insideOpenMultiplier = MekanismGameplayCompat.windMultiplierOf(level.getBlockEntity(helper.absolutePos(insideOpen)));
             cleanup.run();
             helper.assertTrue(outsideMultiplier == 0.0,
                     "A Wind Generator outside the zone must stay still under a roof, multiplier " + outsideMultiplier);
             helper.assertTrue(skyMultiplier > 0.0, "A Wind Generator under the open sky must run, multiplier " + skyMultiplier);
-            // 2026-11-14 ユーザー: 上乗せは床の広さ ÷ 64 台ぶんまで。一辺 5（25 ブロック）なら 1 台に 25/64 ぶん。
-            double expected = skyMultiplier * (1.0 + (EntityTurbulenceZone.windBoostFor(10.0) - 1.0) * (25.0 / 64.0));
-            helper.assertTrue(Math.abs(insideMultiplier - expected) < 1.0E-6,
-                    "A Wind Generator in a size-5, Power 10 Turbulence Zone must get 25/64 of the doubling, "
-                            + insideMultiplier + " vs " + expected);
+            // 風量 25 × 10 ÷ 64 WU を、範囲の中の 2 台で均等に分ける（2026-11-15 ユーザー）。加算方式で 1 WU ごとに 25 J/t、
+            // 高さによらない。
+            double units = 25.0 * 10.0 / 64.0 / 2.0;
+            double openUnits = units;
+            double roofed = units * EntityTurbulenceZone.WIND_JOULES_PER_WU / MekanismGameplayCompat.windGenerationMinimum();
+            helper.assertTrue(Math.abs(insideMultiplier - roofed) < 1.0E-6,
+                    "A roofed Wind Generator in the zone must run on the zone's wind alone, " + insideMultiplier + " vs " + roofed);
+            double openAdded = openUnits * EntityTurbulenceZone.WIND_JOULES_PER_WU / MekanismGameplayCompat.windGenerationMinimum();
+            helper.assertTrue(Math.abs(insideOpenMultiplier - (skyMultiplier + openAdded)) < 1.0E-6,
+                    "An open-sky Wind Generator in the zone must get the wind on top, " + insideOpenMultiplier + " vs " + (skyMultiplier + openAdded));
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 重なった 2 つの乱流領域（2026-11-15 ユーザー）: 1 台の風力発電機が受け取るのは合わせて 10 WU まで。照準に出す使用量も、
+     * 2 つの領域を合わせて 10 WU になる（前はそれぞれの分を数えて上限を超えて出ていた）。
+     */
+    @GameTest(template = WIND_TEMPLATE, batch = "psitweaks_zone_turbulence_wind_overlap", timeoutTicks = 200, skyAccess = true)
+    public static void overlappingTurbulenceZonesGiveAGeneratorTenWindUnits(GameTestHelper helper) {
+        Optional<Block> windGenerator = block("mekanismgenerators:wind_generator");
+        if (!MekanismCompat.isGeneratorsLoaded() || windGenerator.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_turbulence_overlap", new Vec3(8.5, 1.0, 0.5));
+        helper.setBlock(CENTER, windGenerator.get());
+        Runnable cleanup = () -> {
+            helper.setBlock(CENTER, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            // どちらも一辺 9・威力 10（81 × 10 ÷ 64 ≈ 12.7 WU）: 発電機は 1 台なので、それぞれから 10 WU（合わせて 20 WU、
+            // 1 台は 10 WU まで）。
+            cast(caster, turbulence(helper), 9.0, 10.0);
+            cast(caster, turbulence(helper), 9.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(60, () -> {
+            BlockPos at = helper.absolutePos(CENTER);
+            double received = EntityTurbulenceZone.windUnitsAt(level, at);
+            double used = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
+                    .filter(zone -> zone instanceof EntityTurbulenceZone).mapToDouble(zone -> ((EntityTurbulenceZone) zone).getResourceUsed())
+                    .sum();
+            cleanup.run();
+            helper.assertTrue(Math.abs(received - 10.0) < 1.0E-6, "A generator must take 10 WU at most, got " + received);
+            helper.assertTrue(Math.abs(used - 10.0) < 1.0E-3, "The two zones must count 10 WU in use together, got " + used);
             helper.succeed();
         });
     }
