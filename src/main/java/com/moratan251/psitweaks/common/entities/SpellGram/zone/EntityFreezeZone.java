@@ -22,8 +22,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 作動式: 凍結領域（仮）の範囲。
@@ -35,8 +38,9 @@ import java.util.Map;
  *   （{@link #coolMekanismMachines}）。</li>
  * </ul>
  * 自分の側の加熱領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると吹雪になる。同じ術者の加熱領域と
- * 面で触れ合うと、奪った熱のうち周囲の温度より上にあった分を、その加熱領域へ運ぶ（{@link ZoneHeatExchange}）。凍結領域は熱を
- * 作らず、運ぶだけ。仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
+ * 面で触れ合うか重なっていると、奪った熱のうち周囲の温度より上にあった分を、その加熱領域へ運ぶ（{@link ZoneHeatExchange}）。同じ熱源を
+ * 冷やす自分の凍結領域のどれかが触れていれば、その熱源の熱は全部渡る（熱源ごとにまとめる）。凍結領域は熱を作らず、運ぶだけ。
+ * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityFreezeZone extends SpellGramZone {
     private static final int INTERVAL = 10;
@@ -88,12 +92,24 @@ public class EntityFreezeZone extends SpellGramZone {
     /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
     /**
-     * 熱を運ぶ先: 面で触れ合っている同じ術者の加熱領域と、触れ合う面の広さの割合（合計 1）。{@link ZoneHeatExchange#INTERVAL}
-     * tick ごとに作り直す。サーバー側だけで、保存も同期もしない。
+     * 面で触れ合っているか重なっている同じ術者の加熱領域と、つながりの広さ（{@link ZoneHeatExchange#linkArea}）。
+     * {@link ZoneHeatExchange#INTERVAL} tick ごとに作り直す。サーバー側だけで、保存も同期もしない。
      */
-    private Map<EntityHeatZone, Double> heatPartners = Map.of();
+    private Map<EntityHeatZone, Double> heatContacts = Map.of();
+    /**
+     * 熱を奪った熱源（{@link MekanismGameplayCompat.ZoneHeatDrain#carriedBySource} のキー）: 今の間隔のものと、1 つ前の間隔のもの。
+     * ほかの自分の凍結領域が、同じ熱源を冷やしているかを見るのに使う（15 節の B）。サーバー側だけ。
+     */
+    private Set<Object> cooledSources = newSourceSet();
+    private Set<Object> previousCooledSources = Set.of();
+    /** 熱源ごとの渡し先と割合（{@link ZoneHeatExchange#route}）。渡し先があるものだけ、次に作り直すまで覚えておく。 */
+    private final Map<Object, Map<EntityHeatZone, Double>> heatRoutes = new IdentityHashMap<>();
+    /** 触れ合いと渡し先をまだ一度も作っていないか（置いた直後の tick にすぐ作る）。 */
+    private boolean exchangeStale = true;
     /** 加熱領域へ運んだ熱の合計（J、GameTest 用）。 */
     private double heatCarried;
+    /** 運べたが、渡し先がなくて捨てた熱の合計（J、GameTest 用）。 */
+    private double heatDiscarded;
 
     /**
      * Mekanism の冷却で、1 台が 1 tick に温度差を縮める割合の上限（加熱の「威力 × 100 K まで」と対）: 威力 × 0.002 × 機械を
@@ -118,6 +134,12 @@ public class EntityFreezeZone extends SpellGramZone {
     @Override
     public String resourceKey() {
         return "psitweaks.hud.zone_resource.cooling";
+    }
+
+    /** 照準の表示の 2 行め: 運搬（奪った熱のうち、実際に加熱領域へ渡った分、J/t）。 */
+    @Override
+    public String resourceMovedKey() {
+        return "psitweaks.hud.zone_resource.carried";
     }
 
     /** 冷却量を、置いたときのコスト・存続時間・速さから求める。時間によらない。 */
@@ -169,17 +191,38 @@ public class EntityFreezeZone extends SpellGramZone {
                         });
             }
         }
-        // 熱を運ぶ先（面で触れ合っている自分の加熱領域）を探し直す。Mekanism がなければ運ぶ熱がないので探さない。
-        if (tickCount % ZoneHeatExchange.INTERVAL == 0 && level() instanceof ServerLevel level) {
-            heatPartners = isEnded() || !MekanismCompat.isMekanismLoaded() ? Map.of() : ZoneHeatExchange.heatPartners(level, this);
+        // 熱を運ぶ先（面で触れ合っている自分の加熱領域）と、熱源ごとの渡し先を作り直す。Mekanism がなければ運ぶ熱がないので
+        // 探さない。
+        if ((exchangeStale || tickCount % ZoneHeatExchange.INTERVAL == 0) && level() instanceof ServerLevel level) {
+            exchangeStale = false;
+            boolean active = !isEnded() && MekanismCompat.isMekanismLoaded();
+            heatContacts = active ? ZoneHeatExchange.heatContacts(level, this) : Map.of();
+            previousCooledSources = active ? cooledSources : Set.of();
+            cooledSources = newSourceSet();
+            heatRoutes.clear();
         }
         coolMekanismMachines();
+    }
+
+    private static Set<Object> newSourceSet() {
+        return Collections.newSetFromMap(new IdentityHashMap<>());
+    }
+
+    /** 面で触れ合っている自分の加熱領域と、触れ合う面の広さ（サーバー側、{@link ZoneHeatExchange#route} が読む）。 */
+    Map<EntityHeatZone, Double> heatContacts() {
+        return heatContacts;
+    }
+
+    /** この凍結領域が、今か 1 つ前の間隔に熱源 {@code source} から熱を奪ったか（サーバー側）。 */
+    boolean coolsSource(Object source) {
+        return cooledSources.contains(source) || previousCooledSources.contains(source);
     }
 
     /**
      * Mekanism の熱を持つ設備を、下限（周囲の温度 − 威力 × 5 K）に向けて冷やす（毎 tick）。加熱領域と打ち消し合っているブロック・
      * 領域干渉で止められたブロック・術者が機械を使えないブロックは冷やさない。吹雪のブロックは乱流の威力に応じて上乗せ。
-     * 奪った熱のうち周囲の温度より上にあった分は、面で触れ合っている自分の加熱領域へ、触れ合う面の広さに比例して運ぶ。
+     * 奪った熱のうち周囲の温度より上にあった分は、熱源ごとに、その熱源を冷やす自分の凍結領域が触れている加熱領域へ、
+     * 触れ合う面の広さに比例して運ぶ。
      */
     private void coolMekanismMachines() {
         if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level)
@@ -214,45 +257,67 @@ public class EntityFreezeZone extends SpellGramZone {
                 });
         // 照準の表示: 使っている冷却量（吹雪の上乗せは入れない）。
         recordResourceUse(drained.removed());
-        double carried = drained.carried();
+        Map<Object, Double> carried = new IdentityHashMap<>(drained.carriedBySource());
         if (isStorm()) {
             // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。冷却量の上乗せは乱流が範囲を覆う割合を
             // 掛ける（小さな乱流を重ねても増えないように）。
             for (java.util.Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                 EntityTurbulenceZone turbulence = entry.getKey();
                 double boost = stormBoost(turbulence.getPower());
-                carried += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
+                MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
                         Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), belowAmbient, pos -> {
                             ZoneRegion region = owners.get(pos);
                             return region != null && stormAt(region.worldPos(pos)) == turbulence
                                     && mayUseMachine(level, caster, pos);
-                        }).carried();
+                        }).carriedBySource().forEach((source, amount) -> carried.merge(source, amount, Double::sum));
             }
         }
-        carryHeat(carried);
+        carryHeat(level, carried);
     }
 
     /**
-     * 運べる熱 {@code carried}（J）を、面で触れ合っている自分の加熱領域へ、触れ合う面の広さに比例して減らさずに渡す
-     * （2026-11-16 ユーザー、案 3「運ぶだけ」）。触れていなければ捨てる。
+     * 熱源ごとの運べる熱 {@code carried}（J）を、渡し先（{@link ZoneHeatExchange#route}: その熱源を冷やす自分の凍結領域が
+     * 触れている加熱領域、触れ合う面の広さに比例）へ減らさずに渡す（2026-11-16 ユーザー、案 3「運ぶだけ」と 15 節の B）。
+     * 渡し先がなければ捨てる。
      */
-    private void carryHeat(double carried) {
-        if (carried <= 0.0 || heatPartners.isEmpty()) {
-            return;
-        }
-        for (Map.Entry<EntityHeatZone, Double> entry : heatPartners.entrySet()) {
-            EntityHeatZone heat = entry.getKey();
-            if (!heat.isEnded()) {
-                double share = carried * entry.getValue();
-                heat.acceptMovedHeat(share);
-                heatCarried += share;
+    private void carryHeat(ServerLevel level, Map<Object, Double> carried) {
+        for (Map.Entry<Object, Double> entry : carried.entrySet()) {
+            Object source = entry.getKey();
+            cooledSources.add(source);
+            double amount = entry.getValue();
+            if (amount <= 0.0) {
+                continue;
             }
+            Map<EntityHeatZone, Double> route = heatRoutes.get(source);
+            if (route == null) {
+                route = ZoneHeatExchange.route(level, this, source);
+                // 渡し先がないものは覚えない（同じ熱源を冷やす凍結領域が、あとから触れ合うかもしれない）。
+                if (!route.isEmpty()) {
+                    heatRoutes.put(source, route);
+                }
+            }
+            double given = 0.0;
+            for (Map.Entry<EntityHeatZone, Double> share : route.entrySet()) {
+                if (!share.getKey().isEnded()) {
+                    double part = amount * share.getValue();
+                    share.getKey().acceptMovedHeat(part);
+                    given += part;
+                }
+            }
+            heatCarried += given;
+            heatDiscarded += amount - given;
+            recordResourceMoved(given);
         }
     }
 
     /** 加熱領域へ運んだ熱の合計（J、GameTest 用）。 */
     public double heatCarried() {
         return heatCarried;
+    }
+
+    /** 運べたが、渡し先がなくて捨てた熱の合計（J、GameTest 用）。 */
+    public double heatDiscarded() {
+        return heatDiscarded;
     }
 
     @Override

@@ -39,7 +39,7 @@ import java.util.List;
  *   重なったところは一括製錬（電気炉）。</li>
  * </ul>
  * 自分の側の凍結領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると熱乱流になる。同じ術者の凍結領域と
- * 面で触れ合うと、凍結領域が運んできた熱を受け取り、熱量に足す（{@link ZoneHeatExchange}、{@link #acceptMovedHeat}）。
+ * 面で触れ合うか重なっていると、凍結領域が運んできた熱を受け取り、熱量に足す（{@link ZoneHeatExchange}、{@link #acceptMovedHeat}）。
  * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityHeatZone extends SpellGramZone {
@@ -77,6 +77,10 @@ public class EntityHeatZone extends SpellGramZone {
     private double movedHeatPerTick;
     /** 運ばれてきた熱の合計（J、GameTest 用）。 */
     private double movedHeatReceived;
+    /** 受け渡しの演出: 直前に「運んでいる」演出を出したか（運び始めの共鳴音を 1 回だけ鳴らすため）。サーバー側だけ。 */
+    private boolean carryingHint;
+    /** 受け渡しの演出: 湯気の音をもう鳴らした、重なっている自分の凍結領域（エンティティの番号）。サーバー側だけ。 */
+    private final java.util.Set<Integer> steamedOverlaps = new java.util.HashSet<>();
 
     public EntityHeatZone(EntityType<? extends EntityHeatZone> type, Level level) {
         super(type, level);
@@ -368,6 +372,35 @@ public class EntityHeatZone extends SpellGramZone {
     @Override
     protected double resourcePerTick() {
         return heatTotalPerTick();
+    }
+
+    /** 照準の表示の 2 行め: 受け取り（熱量に入っている、運ばれてきた熱、J/t）。 */
+    @Override
+    protected double resourceMovedPerTick() {
+        return movedHeatPerTick;
+    }
+
+    @Override
+    public String resourceMovedKey() {
+        return "psitweaks.hud.zone_resource.received";
+    }
+
+    /** 直前の {@link #BURNER_INTERVAL} tick に、触れ合っている凍結領域から運ばれてきた熱の 1 tick あたり（J/t、サーバー側）。 */
+    public double receivedHeatPerTick() {
+        return movedHeatPerTick;
+    }
+
+    /** 受け渡しの演出で、今「運んでいる」演出を出しているか（サーバー側、GameTest 用）。 */
+    public boolean showsCarryingHint() {
+        return carryingHint;
+    }
+
+    void setCarryingHint(boolean carrying) {
+        carryingHint = carrying;
+    }
+
+    java.util.Set<Integer> steamedOverlaps() {
+        return steamedOverlaps;
     }
 
     @Override

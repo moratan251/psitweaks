@@ -59,10 +59,18 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** リソースのうち、直前の間隔に使った量（1 tick あたり、持たなければ負）。照準の表示のためクライアントへ送る。 */
     private static final EntityDataAccessor<Float> DATA_RESOURCE_USED =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
+    /**
+     * 熱の受け渡しで運んだ・受け取った量（1 tick あたり、凍結領域は運搬、加熱領域は受け取り、2026-11-16 ユーザー、16 節）。
+     * 0 なら照準の表示に行を出さない。照準の表示のためクライアントへ送る。
+     */
+    private static final EntityDataAccessor<Float> DATA_RESOURCE_MOVED =
+            SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
     /** リソースの量を計算し直して送る間隔（tick）。 */
     private static final int RESOURCE_SYNC_INTERVAL = 10;
     /** この間隔に使ったリソースの合計（{@link #recordResourceUse}）。サーバー側だけ。 */
     private double resourceUseWindow;
+    /** この間隔に運んだリソースの合計（{@link #recordResourceMoved}）。サーバー側だけ。 */
+    private double resourceMovedWindow;
 
     private ZoneArea area = ZoneArea.EMPTY;
     /**
@@ -102,6 +110,7 @@ public abstract class SpellGramZone extends SpellGramObject {
         builder.define(DATA_STORM, false);
         builder.define(DATA_RESOURCE, -1.0F);
         builder.define(DATA_RESOURCE_USED, -1.0F);
+        builder.define(DATA_RESOURCE_MOVED, 0.0F);
     }
 
     /** この領域が扱うリソースの量（1 tick あたり、サーバー側）。持たなければ負。 */
@@ -135,6 +144,29 @@ public abstract class SpellGramZone extends SpellGramObject {
     /** 直前の間隔に使ったリソースの 1 tick あたり（サーバー側）。使った量を数えない領域は上書きする。 */
     protected double resourceUsedPerTick() {
         return resourceUseWindow / RESOURCE_SYNC_INTERVAL;
+    }
+
+    /** 照準を合わせたときに出す、運んだ・受け取った量の行の翻訳キー（量を 1 つ受け取る）。持たなければ null。 */
+    @org.jetbrains.annotations.Nullable
+    public String resourceMovedKey() {
+        return null;
+    }
+
+    /** 照準を合わせたときに出す、運んだ・受け取った量（1 tick あたり、クライアントでも分かる）。0 なら行を出さない。 */
+    public float getResourceMoved() {
+        return entityData.get(DATA_RESOURCE_MOVED);
+    }
+
+    /** この tick にリソースを {@code amount} 運んだ（サーバー側）。間隔ごとにならして送る。 */
+    protected void recordResourceMoved(double amount) {
+        if (amount > 0.0) {
+            resourceMovedWindow += amount;
+        }
+    }
+
+    /** 直前の間隔に運んだリソースの 1 tick あたり（サーバー側）。ほかの数え方をする領域は上書きする。 */
+    protected double resourceMovedPerTick() {
+        return resourceMovedWindow / RESOURCE_SYNC_INTERVAL;
     }
 
     /** 同じ術者の乱流領域と重なっているか（クライアントでも分かる）。 */
@@ -710,7 +742,9 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (tickCount % RESOURCE_SYNC_INTERVAL == 1) {
             entityData.set(DATA_RESOURCE, (float) resourcePerTick());
             entityData.set(DATA_RESOURCE_USED, resourcePerTick() < 0.0 ? -1.0F : (float) resourceUsedPerTick());
+            entityData.set(DATA_RESOURCE_MOVED, (float) Math.max(0.0, resourceMovedPerTick()));
             resourceUseWindow = 0.0;
+            resourceMovedWindow = 0.0;
         }
         if (area.isEmpty()) {
             return;

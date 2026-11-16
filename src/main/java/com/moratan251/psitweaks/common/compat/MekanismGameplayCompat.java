@@ -64,9 +64,28 @@ public final class MekanismGameplayCompat {
      * 凍結領域の冷却の結果（J）: 取り除いた熱 {@code removed} と、そのうち周囲の温度より上にあった分 {@code carried}（ブロック
      * ごとに min(奪った熱, (温度 − 周囲の温度) × 熱容量) の合計）。運べる熱は、触れ合っている加熱領域へ渡す（2026-11-16
      * ユーザー、案 3「運ぶだけ」）。
+     * <p>
+     * {@code carriedBySource} は運べる熱の熱源ごとの内訳（キーは熱源を表す中身の見えないもの、同じ熱源なら同じもの。組み上がった
+     * マルチブロックは全体で 1 つ）。熱を奪った熱源は、運べる熱が 0 でも載る。同じ熱源を冷やす自分の凍結領域をまとめるのに使う
+     * （15 節の B）。
      */
-    public record ZoneHeatDrain(double removed, double carried) {
-        public static final ZoneHeatDrain NONE = new ZoneHeatDrain(0.0, 0.0);
+    public record ZoneHeatDrain(double removed, double carried, Map<Object, Double> carriedBySource) {
+        public static final ZoneHeatDrain NONE = new ZoneHeatDrain(0.0, 0.0, Map.of());
+    }
+
+    /**
+     * Mekanism の {@code /mek build} と同じく、{@code start} を角に 4 × 18 × 4 の加温蒸発濃縮プラント（外壁・中は空気・コントローラー）を
+     * 組む。Mekanism がなければ何もしない。GameTest 用。
+     */
+    public static void buildEvaporationPlant(ServerLevel level, BlockPos start) {
+        if (MekanismCompat.isMekanismLoaded()) {
+            MekanismGameplayIntegration.buildEvaporationPlant(level, start);
+        }
+    }
+
+    /** ブロック {@code pos} が、組み上がった Mekanism のマルチブロックの一部か。Mekanism がなければ偽。GameTest 用。 */
+    public static boolean isFormedMultiblockAt(ServerLevel level, BlockPos pos) {
+        return MekanismCompat.isMekanismLoaded() && MekanismGameplayIntegration.isFormedMultiblockAt(level, pos);
     }
 
     /** Mekanism の熱を持つブロック {@code pos} の温度（K）。Mekanism がないか、熱を持たないブロックなら NaN。GameTest 用。 */

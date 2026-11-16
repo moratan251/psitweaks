@@ -686,6 +686,16 @@ public final class ZoneElementGameTests {
                 "Overlapping zones do not merely touch");
         helper.assertTrue(ZoneHeatExchange.contactFace(hotBox, ZoneArea.cube(cold.south(3), 3).bounds()) == null,
                 "Zones meeting only along an edge do not touch");
+        // つながりの広さ（2026-11-16 ユーザー: 重なりでも受け渡す）: 触れ合いは面の広さ、重なりは重なりの箱のいちばん広い面。
+        helper.assertTrue(ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold, 3).bounds()) == 9.0,
+                "Touching zones are joined by their touching face");
+        helper.assertTrue(ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold.west(), 3).bounds()) == 9.0,
+                "Zones overlapping by one block are joined by the 3 x 3 face of the overlap");
+        helper.assertTrue(ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold.west().above().south(), 3).bounds()) == 4.0,
+                "Zones overlapping by 1 x 2 x 2 blocks are joined by 2 x 2");
+        helper.assertTrue(ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold.east(2), 3).bounds()) == 0.0
+                        && ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold.south(3), 3).bounds()) == 0.0,
+                "Zones apart or meeting only along an edge are not joined");
         helper.succeed();
     }
 
@@ -731,9 +741,12 @@ public final class ZoneElementGameTests {
         // 加熱領域は x 0〜2（一辺 3）、凍結領域は x 3〜7（一辺 5）。x = 3 の面の 3 × 3 で触れ合う。
         BlockPos coldHeater = new BlockPos(5, 1, 2);
         helper.setBlock(coldHeater, heater.get());
+        // テンプレートの外の領域も動くように、そのチャンクを強制読み込みする。
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(10, 0, 6));
         Runnable cleanup = () -> {
             helper.setBlock(coldHeater, Blocks.AIR);
             cleanup(helper, caster);
+            unforce.run();
         };
         try {
             // 凍結領域の中の発熱器を 800 K まで温めておく。
@@ -769,6 +782,58 @@ public final class ZoneElementGameTests {
     }
 
     /**
+     * 熱の受け渡しは重なりでも働く（2026-11-16 ユーザー）: 自分の加熱領域と凍結領域の端を 1 列重ねると、重なったところは
+     * 打ち消し合うまま、重なりの外の熱源から凍結領域が奪った熱は加熱領域へ渡る。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_overlap", timeoutTicks = 100)
+    public static void overlappingFreezeZoneCarriesHeatToTheHeatZone(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_exchange_overlap", new Vec3(9.5, 1.0, 6.5));
+        // 加熱領域は x 0〜2、凍結領域は x 2〜4（x = 2 の列が重なり、打ち消し合う）。発熱器は凍結領域だけの (4, 1, 2)、
+        // 重なりの (2, 1, 2) にも 1 つ置き、こちらは冷えないことを見る。
+        BlockPos coldHeater = new BlockPos(4, 1, 2);
+        BlockPos cancelledHeater = new BlockPos(2, 1, 2);
+        Runnable cleanup = () -> {
+            helper.setBlock(coldHeater, Blocks.AIR);
+            helper.setBlock(cancelledHeater, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            hotHeater(helper, heater.get(), coldHeater);
+            hotHeater(helper, heater.get(), cancelledHeater);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(3, 1, 2)), 3.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            double received = only(helper, caster, EntityHeatZone.class).movedHeatReceived();
+            EntityFreezeZone cold = only(helper, caster, EntityFreezeZone.class);
+            double carried = cold.heatCarried();
+            double discarded = cold.heatDiscarded();
+            double coldTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(coldHeater));
+            double cancelledTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(cancelledHeater));
+            cleanup.run();
+            String state = "received " + received + ", carried " + carried + ", discarded " + discarded
+                    + "; heater " + coldTemp + " K, heater in the overlap " + cancelledTemp + " K";
+            helper.assertTrue(carried > 0.0 && discarded <= carried * 1.0E-9,
+                    "An overlapping Freeze Zone must carry its heat to the Heat Zone: " + state);
+            helper.assertTrue(Math.abs(received - carried) <= carried * 1.0E-9,
+                    "The Heat Zone must receive what the Freeze Zone carried: " + state);
+            helper.assertTrue(coldTemp < 790.0, "The heater outside the overlap must be cooled: " + state);
+            helper.assertTrue(cancelledTemp > coldTemp + 1.0,
+                    "The heater in the overlap must not be cooled by the zone (they cancel out there): " + state);
+            helper.succeed();
+        });
+    }
+
+    /**
      * 熱の受け渡し: 凍結領域を 2 つの加熱領域で挟むと、運んだ熱は触れ合う面の広さに比例して分かれ（3 × 3 と 2 × 2 なら 9 : 4）、
      * 受け取った合計は運んだ熱と同じ（増えも減りもしない）。Mekanism がなければ飛ばす。
      */
@@ -785,9 +850,12 @@ public final class ZoneElementGameTests {
         // 触れ合う。
         BlockPos coldHeater = new BlockPos(4, 1, 2);
         helper.setBlock(coldHeater, heater.get());
+        // テンプレートの外の領域も動くように、そのチャンクを強制読み込みする。
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(10, 0, 6));
         Runnable cleanup = () -> {
             helper.setBlock(coldHeater, Blocks.AIR);
             cleanup(helper, caster);
+            unforce.run();
         };
         try {
             MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(coldHeater))),
@@ -865,6 +933,524 @@ public final class ZoneElementGameTests {
             helper.assertTrue(cooledTemp < ambient - 5.0, "The Freeze Zone must cool the heater below the ambient temperature: " + state);
             helper.assertTrue(carried < 1.0 && received < 1.0,
                     "Heat cooled away below the ambient temperature must not be carried to the Heat Zone: " + state);
+            helper.succeed();
+        });
+    }
+
+    /** 凍結領域 1 つの数値（GameTest 用）: 運んだ熱と、渡し先がなくて捨てた熱。 */
+    private static double[] carriedAndDiscarded(List<EntityFreezeZone> zones) {
+        double carried = 0.0;
+        double discarded = 0.0;
+        for (EntityFreezeZone zone : zones) {
+            carried += zone.heatCarried();
+            discarded += zone.heatDiscarded();
+        }
+        return new double[]{carried, discarded};
+    }
+
+    /** 術者 {@code caster} の凍結領域を、中心の x・z の順に並べたもの。 */
+    private static List<EntityFreezeZone> freezeZonesOf(GameTestHelper helper, ServerPlayer caster) {
+        return SpellGramIndex.ofCaster(helper.getLevel(), caster.getUUID()).stream()
+                .filter(object -> object instanceof EntityFreezeZone).map(object -> (EntityFreezeZone) object)
+                .sorted(java.util.Comparator.<EntityFreezeZone>comparingInt(zone -> zone.getArea().center().getX())
+                        .thenComparingInt(zone -> zone.getArea().center().getZ()))
+                .toList();
+    }
+
+    /** 抵抗型発熱器を {@code pos} に置き、800 K まで温める。 */
+    private static void hotHeater(GameTestHelper helper, Block heater, BlockPos pos) {
+        helper.setBlock(pos, heater);
+        ServerLevel level = helper.getLevel();
+        MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(pos))),
+                new java.util.IdentityHashMap<>(), 1.0E9, 800.0, at -> true);
+    }
+
+    /**
+     * 熱源ごとにまとめる（2026-11-16 ユーザー、15 節の B）: 1 つの抵抗型発熱器を自分の凍結領域 3 つで冷やし、加熱領域に触れて
+     * いるのが 1 つだけでも、3 つが奪った熱（周囲より上の分）は全部加熱領域へ渡る。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_one_source", timeoutTicks = 100)
+    public static void freezeZonesCoolingOneSourcePassAllOfItsHeat(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_exchange_one_source", new Vec3(10.5, 1.0, 7.5));
+        // 発熱器は (4, 1, 2)。加熱領域は x 0〜2。凍結領域は x 3〜5（加熱領域と触れ合う）、x 4〜6、x 4〜6・z 2〜4（どちらも触れない）。
+        BlockPos source = new BlockPos(4, 1, 2);
+        // テンプレートの外の領域も動くように、そのチャンクを強制読み込みする。
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(10, 0, 6));
+        Runnable cleanup = () -> {
+            helper.setBlock(source, Blocks.AIR);
+            cleanup(helper, caster);
+            unforce.run();
+        };
+        try {
+            hotHeater(helper, heater.get(), source);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(5, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(5, 1, 3)), 3.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            List<EntityFreezeZone> zones = freezeZonesOf(helper, caster);
+            double received = only(helper, caster, EntityHeatZone.class).movedHeatReceived();
+            double[] total = carriedAndDiscarded(zones);
+            double untouched = zones.size() < 3 ? -1.0 : Math.min(zones.get(1).heatCarried(), zones.get(2).heatCarried());
+            cleanup.run();
+            String amounts = "received " + received + ", carried " + total[0] + ", discarded " + total[1] + ", zones " + zones.size();
+            helper.assertTrue(zones.size() == 3, "Three Freeze Zones must be placed: " + amounts);
+            helper.assertTrue(untouched > 0.0,
+                    "Freeze Zones not touching the Heat Zone must still pass on the heat of a source a touching one cools: "
+                            + amounts + ", least " + untouched);
+            helper.assertTrue(Math.abs(received - total[0]) <= total[0] * 1.0E-9,
+                    "The Heat Zone must receive what the three Freeze Zones carried: " + amounts);
+            helper.assertTrue(total[1] <= total[0] * 0.05, "Almost nothing may be thrown away: " + amounts);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 熱源ごとにまとめる: 熱源が 2 つあり、片方にしか加熱領域に触れている凍結領域がないとき、渡るのはその熱源の分だけ。触れていない
+     * 凍結領域も、触れている凍結領域と同じ熱源から奪った分は渡し、もう片方の熱源から奪った分は捨てる。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_two_sources", timeoutTicks = 100)
+    public static void onlyTheSourceATouchingFreezeZoneCoolsGivesHeat(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_exchange_two_sources", new Vec3(10.5, 1.0, 7.5));
+        // 発熱器は (4, 1, 2) と (7, 1, 2)。凍結領域は x 3〜5（加熱領域 x 0〜2 と触れ合い、(4, 1, 2) だけを冷やす）と、
+        // x 4〜8（一辺 5、触れない。2 つとも冷やす）。
+        BlockPos shared = new BlockPos(4, 1, 2);
+        BlockPos apart = new BlockPos(7, 1, 2);
+        // テンプレートの外の領域も動くように、そのチャンクを強制読み込みする。
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(10, 0, 6));
+        Runnable cleanup = () -> {
+            helper.setBlock(shared, Blocks.AIR);
+            helper.setBlock(apart, Blocks.AIR);
+            cleanup(helper, caster);
+            unforce.run();
+        };
+        try {
+            hotHeater(helper, heater.get(), shared);
+            hotHeater(helper, heater.get(), apart);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(6, 1, 2)), 5.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            List<EntityFreezeZone> zones = freezeZonesOf(helper, caster);
+            double received = only(helper, caster, EntityHeatZone.class).movedHeatReceived();
+            EntityFreezeZone touching = zones.isEmpty() ? null : zones.get(0);
+            EntityFreezeZone wide = zones.size() < 2 ? null : zones.get(1);
+            double touchingCarried = touching == null ? -1.0 : touching.heatCarried();
+            double touchingDiscarded = touching == null ? -1.0 : touching.heatDiscarded();
+            double wideCarried = wide == null ? -1.0 : wide.heatCarried();
+            double wideDiscarded = wide == null ? -1.0 : wide.heatDiscarded();
+            cleanup.run();
+            String amounts = "received " + received + "; touching carried " + touchingCarried + ", discarded " + touchingDiscarded
+                    + "; wide carried " + wideCarried + ", discarded " + wideDiscarded;
+            helper.assertTrue(touchingCarried > 0.0 && touchingDiscarded <= touchingCarried * 1.0E-9,
+                    "The touching Freeze Zone must pass on all of its heat: " + amounts);
+            helper.assertTrue(wideCarried > 0.0, "The wide Freeze Zone must pass on the heat of the shared heater: " + amounts);
+            helper.assertTrue(wideDiscarded > 0.0, "The heat of the heater no touching zone cools must be thrown away: " + amounts);
+            helper.assertTrue(Math.abs(received - touchingCarried - wideCarried) <= (touchingCarried + wideCarried) * 1.0E-9,
+                    "The Heat Zone must receive exactly what was passed on: " + amounts);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 熱源ごとにまとめる: 他人の凍結領域が奪った熱は運ばない。他人の凍結領域（事象干渉力が高く、重なったところで勝つ）が自分の
+     * 加熱領域に触れ、自分の凍結領域と同じ発熱器を冷やしても、自分の加熱領域には熱が入らない。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_other", timeoutTicks = 100)
+    public static void anotherCastersFreezeZoneGivesNoHeat(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_exchange_mine", new Vec3(10.5, 1.0, 7.5));
+        ServerPlayer other = GameTestPlayers.inLevel(helper, "zone_heat_exchange_other", new Vec3(11.5, 1.0, 8.5));
+        BlockPos source = new BlockPos(4, 1, 2);
+        Runnable cleanup = () -> {
+            helper.setBlock(source, Blocks.AIR);
+            cleanup(helper, caster);
+            cleanup(helper, other);
+        };
+        try {
+            hotHeater(helper, heater.get(), source);
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            other.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            // 自分の加熱領域 x 0〜2 と凍結領域 x 3〜5。他人の凍結領域も x 3〜5 で、自分の加熱領域に触れる。
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+            cast(other, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            double received = only(helper, caster, EntityHeatZone.class).movedHeatReceived();
+            double[] mine = carriedAndDiscarded(freezeZonesOf(helper, caster));
+            double[] theirs = carriedAndDiscarded(freezeZonesOf(helper, other));
+            double temperature = MekanismGameplayCompat.temperatureAt(helper.getLevel(), helper.absolutePos(source));
+            cleanup.run();
+            String amounts = "received " + received + "; mine carried " + mine[0] + ", discarded " + mine[1]
+                    + "; theirs carried " + theirs[0] + ", discarded " + theirs[1] + "; heater " + temperature + " K";
+            helper.assertTrue(temperature < 790.0, "The other caster's Freeze Zone must cool the heater: " + amounts);
+            helper.assertTrue(theirs[0] == 0.0 && theirs[1] > 0.0,
+                    "The other caster's Freeze Zone must not pass its heat to my Heat Zone: " + amounts);
+            helper.assertTrue(received == 0.0, "My Heat Zone must get no heat taken by another caster's zone: " + amounts);
+            helper.succeed();
+        });
+    }
+
+    /** 熱の受け渡しの数値の記録（GameTest の結果をログに残す）。 */
+    private static final org.slf4j.Logger HEAT_REPORT = com.mojang.logging.LogUtils.getLogger();
+
+    /** 術者 {@code caster} の、中心がテンプレートの {@code relativeCenter} にある {@code type} の領域。 */
+    private static <T extends SpellGramZone> T zoneAt(GameTestHelper helper, ServerPlayer caster, Class<T> type,
+                                                        BlockPos relativeCenter) {
+        BlockPos center = helper.absolutePos(relativeCenter);
+        return SpellGramIndex.ofCaster(helper.getLevel(), caster.getUUID()).stream()
+                .filter(type::isInstance).map(type::cast).filter(zone -> zone.getArea().center().equals(center))
+                .findFirst().orElseThrow(() -> new IllegalStateException("No " + type.getSimpleName() + " at " + relativeCenter));
+    }
+
+    /**
+     * テンプレートの外まで広がる配置のために、テンプレートの {@code from} から {@code to} までのチャンクを強制読み込みし、戻す処理を
+     * 返す。GameTest が読み込むのはテンプレートのチャンクだけで、その隣のチャンクではブロックエンティティは動くがエンティティ
+     * （領域）は動かない。もともと強制読み込みのチャンクは戻さない。
+     */
+    private static Runnable forceChunks(GameTestHelper helper, BlockPos from, BlockPos to) {
+        ServerLevel level = helper.getLevel();
+        BlockPos a = helper.absolutePos(from);
+        BlockPos b = helper.absolutePos(to);
+        List<net.minecraft.world.level.ChunkPos> added = new java.util.ArrayList<>();
+        for (int cx = Math.min(a.getX(), b.getX()) >> 4; cx <= Math.max(a.getX(), b.getX()) >> 4; cx++) {
+            for (int cz = Math.min(a.getZ(), b.getZ()) >> 4; cz <= Math.max(a.getZ(), b.getZ()) >> 4; cz++) {
+                if (!level.getForcedChunks().contains(net.minecraft.world.level.ChunkPos.asLong(cx, cz))) {
+                    level.setChunkForced(cx, cz, true);
+                    added.add(new net.minecraft.world.level.ChunkPos(cx, cz));
+                }
+            }
+        }
+        return () -> added.forEach(chunk -> level.setChunkForced(chunk.x, chunk.z, false));
+    }
+
+    /** 凍結領域の運んだ熱・捨てた熱と、加熱領域の受け取った熱を、決まった順に並べたもの（差を取るため）。 */
+    private static double[] heatCounters(List<EntityFreezeZone> freezes, List<EntityHeatZone> heats) {
+        double[] values = new double[freezes.size() * 2 + heats.size()];
+        int i = 0;
+        for (EntityFreezeZone zone : freezes) {
+            values[i++] = zone.heatCarried();
+            values[i++] = zone.heatDiscarded();
+        }
+        for (EntityHeatZone zone : heats) {
+            values[i++] = zone.movedHeatReceived();
+        }
+        return values;
+    }
+
+    /**
+     * 熱の受け渡しの複雑な配置（2026-11-16 ユーザー: 熱の機械・凍結領域・加熱領域を複雑に組み合わせたときの熱の移動を試したい）。
+     * 800 K の抵抗型発熱器 4 つ、自分の加熱領域 2 つ（片方は熱乱流）・凍結領域 3 つ、他人の凍結領域 1 つ。
+     * <ul>
+     * <li>H1 加熱 x 0〜2。F1 凍結 x 3〜5 が面で触れる（9）。F1 は S1 だけを冷やす。</li>
+     * <li>H2 加熱 x 8〜10（乱流 x 9〜11 で熱乱流）。F2 凍結 x 4〜8（一辺 5）と x = 8 の列で重なる（9）。F2 は S1 と S2 を冷やす。</li>
+     * <li>F3 凍結 x 3〜5・z 6〜8 は S4 だけを冷やし、どの加熱領域にもつながらない。</li>
+     * <li>他人の凍結領域 x 0〜2・z 4〜6 は S3 を冷やし、H1 に面で触れる。</li>
+     * </ul>
+     * 置いて 20 tick（渡し先がそろうまで）から 40 tick までの差で確かめる: S1 の熱（F1 の分と F2 の半分）は H1 と H2 に 9 : 9、
+     * S2 の熱（F2 の残り半分）は H2 だけ、S4・S3 の熱は捨てる。受け取った合計は運んだ合計と同じ。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_layout", timeoutTicks = 140)
+    public static void complexHeatExchangeLayoutRoutesEverySource(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_layout_mine", new Vec3(12.5, 1.0, 9.5));
+        ServerPlayer other = GameTestPlayers.inLevel(helper, "zone_heat_layout_other", new Vec3(13.5, 1.0, 10.5));
+        BlockPos s1 = new BlockPos(4, 1, 2);
+        BlockPos s2 = new BlockPos(7, 1, 2);
+        BlockPos s3 = new BlockPos(1, 1, 5);
+        BlockPos s4 = new BlockPos(4, 1, 7);
+        List<BlockPos> sources = List.of(s1, s2, s3, s4);
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(12, 0, 9));
+        Runnable cleanup = () -> {
+            sources.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            cleanup(helper, caster);
+            cleanup(helper, other);
+            unforce.run();
+        };
+        try {
+            sources.forEach(pos -> hotHeater(helper, heater.get(), pos));
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            other.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, heat(helper, new BlockPos(9, 1, 2)), 3.0, 10.0);
+            cast(caster, turbulence(helper, new BlockPos(10, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(6, 1, 2)), 5.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 7)), 3.0, 10.0);
+            cast(other, freeze(helper, new BlockPos(1, 1, 5)), 3.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(20, () -> {
+            List<EntityFreezeZone> freezes = List.of(
+                    zoneAt(helper, caster, EntityFreezeZone.class, new BlockPos(4, 1, 2)),
+                    zoneAt(helper, caster, EntityFreezeZone.class, new BlockPos(6, 1, 2)),
+                    zoneAt(helper, caster, EntityFreezeZone.class, new BlockPos(4, 1, 7)),
+                    zoneAt(helper, other, EntityFreezeZone.class, new BlockPos(1, 1, 5)));
+            List<EntityHeatZone> heats = List.of(
+                    zoneAt(helper, caster, EntityHeatZone.class, new BlockPos(1, 1, 2)),
+                    zoneAt(helper, caster, EntityHeatZone.class, new BlockPos(9, 1, 2)));
+            double[] before = heatCounters(freezes, heats);
+            helper.runAfterDelay(20, () -> {
+                double[] after = heatCounters(freezes, heats);
+                double[] d = new double[after.length];
+                for (int i = 0; i < d.length; i++) {
+                    d[i] = after[i] - before[i];
+                }
+                // d: F1 運んだ・捨てた、F2 運んだ・捨てた、F3 運んだ・捨てた、他人 運んだ・捨てた、H1 受け取った、H2 受け取った。
+                double f1 = d[0];
+                double f2 = d[2];
+                double expectedH1 = 0.5 * (f1 + f2 / 2.0);
+                double expectedH2 = 0.5 * f1 + 0.75 * f2;
+                boolean storm = heats.get(1).isStorm();
+                double h1Total = heats.get(0).heatTotalPerTick();
+                double h1Own = heats.get(0).ownHeatTotalPerTick();
+                double h2Total = heats.get(1).heatTotalPerTick();
+                double h2Own = heats.get(1).ownHeatTotalPerTick();
+                StringBuilder temps = new StringBuilder();
+                for (BlockPos pos : sources) {
+                    temps.append(String.format(java.util.Locale.ROOT, " %.1f", MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(pos))));
+                }
+                cleanup.run();
+                String report = String.format(java.util.Locale.ROOT,
+                        "[heat-exchange layout] 20 ticks: F1 carried %.2f discarded %.2f | F2 carried %.2f discarded %.2f"
+                                + " | F3 carried %.2f discarded %.2f | other carried %.2f discarded %.2f"
+                                + " | H1 received %.2f (expected %.2f) | H2 received %.2f (expected %.2f)"
+                                + " | H1 heat %.2f J/t (own %.2f) | H2 heat %.2f J/t (own %.2f, storm %s) | S1-S4 K%s",
+                        d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], expectedH1, d[9], expectedH2,
+                        h1Total, h1Own, h2Total, h2Own, storm, temps);
+                HEAT_REPORT.info(report);
+                double carried = d[0] + d[2] + d[4];
+                helper.assertTrue(f1 > 0.0 && f2 > 0.0, "F1 and F2 must carry heat: " + report);
+                helper.assertTrue(d[1] <= f1 * 1.0E-9 && d[3] <= f2 * 1.0E-9,
+                        "F1 and F2 cool only sources joined to a Heat Zone, so nothing may be thrown away: " + report);
+                helper.assertTrue(d[4] == 0.0 && d[5] > 0.0, "F3 is joined to nothing, so its heat must be thrown away: " + report);
+                helper.assertTrue(d[6] == 0.0 && d[7] > 0.0,
+                        "The other caster's Freeze Zone must not give its heat to my Heat Zone: " + report);
+                helper.assertTrue(Math.abs(d[8] + d[9] - carried) <= carried * 1.0E-9,
+                        "The Heat Zones must receive exactly what was carried in total: " + report);
+                helper.assertTrue(Math.abs(d[8] - expectedH1) <= expectedH1 * 1.0E-6 && Math.abs(d[9] - expectedH2) <= expectedH2 * 1.0E-6,
+                        "S1's heat must be split 9 : 9 and S2's must go to H2 only: " + report);
+                helper.assertTrue(storm, "H2 must be a Heat Storm: " + report);
+                helper.succeed();
+            });
+        });
+    }
+
+    /**
+     * 熱の受け渡しで、組み上がったマルチブロックは 1 つの熱源（15 節の B）: 4 × 18 × 4 の加温蒸発濃縮プラントを、西のバルブから自分の
+     * 凍結領域 F_w（自分の加熱領域に触れる）、東のバルブから自分の凍結領域 F_e（どこにも触れない）、南のバルブから他人の凍結領域で
+     * 冷やす。F_e が奪った熱も全部渡り、他人の凍結領域が奪った熱は渡らない。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_multiblock", timeoutTicks = 220)
+    public static void multiblockCooledFromSeveralSidesIsOneHeatSource(GameTestHelper helper) {
+        Optional<Block> valve = block("mekanism:thermal_evaporation_valve");
+        if (!MekanismCompat.isMekanismLoaded() || valve.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_multiblock_mine", new Vec3(12.5, 1.0, 9.5));
+        ServerPlayer other = GameTestPlayers.inLevel(helper, "zone_heat_multiblock_other", new Vec3(13.5, 1.0, 10.5));
+        // 加温蒸発濃縮プラントは x 4〜7・y 1〜18・z 0〜3（Mekanism の /mek build と同じ組み立て、コントローラーは北 (5, 2, 0)）。
+        // バルブは西 (4, 2, 1)・東 (7, 2, 2)・南 (5, 2, 3)。
+        BlockPos west = new BlockPos(4, 2, 1);
+        BlockPos east = new BlockPos(7, 2, 2);
+        BlockPos south = new BlockPos(5, 2, 3);
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(10, 0, 6));
+        Runnable cleanup = () -> {
+            for (int x = 4; x <= 7; x++) {
+                for (int y = 1; y <= 18; y++) {
+                    for (int z = 0; z <= 3; z++) {
+                        helper.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+                    }
+                }
+            }
+            cleanup(helper, caster);
+            cleanup(helper, other);
+            unforce.run();
+        };
+        MekanismGameplayCompat.buildEvaporationPlant(level, helper.absolutePos(new BlockPos(4, 1, 0)));
+        helper.setBlock(west, valve.get());
+        helper.setBlock(east, valve.get());
+        helper.setBlock(south, valve.get());
+        helper.runAfterDelay(20, () -> {
+            if (!MekanismGameplayCompat.isFormedMultiblockAt(level, helper.absolutePos(west))) {
+                cleanup.run();
+                helper.fail("The Thermal Evaporation Plant did not form");
+                return;
+            }
+            try {
+                MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(west))),
+                        new java.util.IdentityHashMap<>(), 1.0E12, 800.0, at -> true);
+                caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+                other.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+                // 自分の加熱領域 x 0〜2、F_w x 3〜5（x = 3 で触れる）、F_e x 7〜9、他人 x 4〜6・z 3〜5。
+                cast(caster, heat(helper, new BlockPos(1, 2, 1)), 3.0, 10.0);
+                cast(caster, freeze(helper, new BlockPos(4, 2, 1)), 3.0, 10.0);
+                cast(caster, freeze(helper, new BlockPos(8, 2, 2)), 3.0, 10.0);
+                cast(other, freeze(helper, new BlockPos(5, 2, 4)), 3.0, 10.0);
+            } catch (RuntimeException | SpellRuntimeException e) {
+                cleanup.run();
+                throw new RuntimeException(e);
+            }
+            double startTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(west));
+            helper.runAfterDelay(20, () -> {
+                List<EntityFreezeZone> freezes = List.of(
+                        zoneAt(helper, caster, EntityFreezeZone.class, new BlockPos(4, 2, 1)),
+                        zoneAt(helper, caster, EntityFreezeZone.class, new BlockPos(8, 2, 2)),
+                        zoneAt(helper, other, EntityFreezeZone.class, new BlockPos(5, 2, 4)));
+                List<EntityHeatZone> heats = List.of(zoneAt(helper, caster, EntityHeatZone.class, new BlockPos(1, 2, 1)));
+                double[] before = heatCounters(freezes, heats);
+                helper.runAfterDelay(20, () -> {
+                    double[] after = heatCounters(freezes, heats);
+                    double[] d = new double[after.length];
+                    for (int i = 0; i < d.length; i++) {
+                        d[i] = after[i] - before[i];
+                    }
+                    double endTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(west));
+                    cleanup.run();
+                    String report = String.format(java.util.Locale.ROOT,
+                            "[heat-exchange multiblock] 20 ticks: F_w carried %.2f discarded %.2f | F_e carried %.2f discarded %.2f"
+                                    + " | other carried %.2f discarded %.2f | H received %.2f | plant %.1f K -> %.1f K",
+                            d[0], d[1], d[2], d[3], d[4], d[5], d[6], startTemp, endTemp);
+                    HEAT_REPORT.info(report);
+                    helper.assertTrue(d[0] > 0.0 && d[2] > 0.0, "Both of my Freeze Zones must carry the plant's heat: " + report);
+                    helper.assertTrue(d[1] <= d[0] * 1.0E-9 && d[3] <= d[2] * 1.0E-9,
+                            "The plant is one heat source joined to my Heat Zone, so nothing may be thrown away: " + report);
+                    helper.assertTrue(d[4] == 0.0 && d[5] > 0.0,
+                            "The other caster's Freeze Zone must not give the plant's heat to my Heat Zone: " + report);
+                    helper.assertTrue(Math.abs(d[6] - d[0] - d[2]) <= (d[0] + d[2]) * 1.0E-9,
+                            "My Heat Zone must receive exactly what my Freeze Zones carried: " + report);
+                    helper.succeed();
+                });
+            });
+        });
+    }
+
+    /**
+     * 受け渡しの見え方（2026-11-16 ユーザー、16 節）: つながっていても、熱源が周囲の温度なら運ぶ熱はないので、加熱領域の受け取りは
+     * 0 で「運んでいる」演出にならず、照準の表示の運搬・受け取りも 0（行を出さない）。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_quiet", timeoutTicks = 120)
+    public static void connectedZonesWithoutHotSourcesShowNoCarrying(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_exchange_quiet", new Vec3(9.5, 1.0, 6.5));
+        BlockPos cooled = new BlockPos(4, 1, 2);
+        helper.setBlock(cooled, heater.get());
+        Runnable cleanup = () -> {
+            helper.setBlock(cooled, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            // 加熱領域 x 0〜2 と凍結領域 x 3〜5 が x = 3 で触れ合う。発熱器は周囲の温度のまま。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 100.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(60, () -> {
+            EntityHeatZone hot = only(helper, caster, EntityHeatZone.class);
+            EntityFreezeZone cold = only(helper, caster, EntityFreezeZone.class);
+            double received = hot.receivedHeatPerTick();
+            boolean carrying = hot.showsCarryingHint();
+            float shownReceived = hot.getResourceMoved();
+            float shownCarried = cold.getResourceMoved();
+            double link = ZoneHeatExchange.linkArea(hot.getArea().bounds(), cold.getArea().bounds());
+            cleanup.run();
+            String state = "received " + received + " J/t, carrying hint " + carrying + ", shown received " + shownReceived
+                    + ", shown carried " + shownCarried + ", link " + link;
+            helper.assertTrue(link > 0.0, "The zones must be joined: " + state);
+            helper.assertTrue(received == 0.0 && !carrying, "Without heat to carry, the zones must not show carrying: " + state);
+            helper.assertTrue(shownReceived == 0.0F && shownCarried == 0.0F,
+                    "The aim display must show no carried or received heat: " + state);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 受け渡しの見え方: 運んでいるとき、照準の表示の、凍結領域の運搬の合計と加熱領域の受け取りが同じ。触れていない凍結領域も、
+     * 同じ熱源を冷やす触れている凍結領域を通して渡った分を運搬に数える。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_shown", timeoutTicks = 100)
+    public static void shownCarriedHeatMatchesShownReceivedHeat(GameTestHelper helper) {
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_exchange_shown", new Vec3(10.5, 1.0, 7.5));
+        // 発熱器 (4, 1, 2) を、加熱領域 x 0〜2 と触れ合う凍結領域 x 3〜5 と、触れない凍結領域 x 4〜6 で冷やす。
+        BlockPos source = new BlockPos(4, 1, 2);
+        Runnable unforce = forceChunks(helper, new BlockPos(-1, 0, -1), new BlockPos(10, 0, 6));
+        Runnable cleanup = () -> {
+            helper.setBlock(source, Blocks.AIR);
+            cleanup(helper, caster);
+            unforce.run();
+        };
+        try {
+            hotHeater(helper, heater.get(), source);
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
+            cast(caster, freeze(helper, new BlockPos(5, 1, 2)), 3.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            EntityHeatZone hot = only(helper, caster, EntityHeatZone.class);
+            List<EntityFreezeZone> colds = freezeZonesOf(helper, caster);
+            float shownReceived = hot.getResourceMoved();
+            double shownCarried = colds.stream().mapToDouble(EntityFreezeZone::getResourceMoved).sum();
+            double leastCarried = colds.stream().mapToDouble(EntityFreezeZone::getResourceMoved).min().orElse(-1.0);
+            boolean carrying = hot.showsCarryingHint();
+            cleanup.run();
+            String state = "shown received " + shownReceived + " J/t, shown carried " + shownCarried + " J/t (least " + leastCarried
+                    + "), carrying hint " + carrying + ", zones " + colds.size();
+            helper.assertTrue(colds.size() == 2 && leastCarried > 0.0,
+                    "Both Freeze Zones must show carried heat, the untouched one too: " + state);
+            helper.assertTrue(carrying, "The Heat Zone must show carrying: " + state);
+            helper.assertTrue(Math.abs(shownReceived - shownCarried) <= shownCarried * 1.0E-4,
+                    "The shown carried heat must add up to the shown received heat: " + state);
             helper.succeed();
         });
     }
@@ -1480,6 +2066,16 @@ public final class ZoneElementGameTests {
     private static PieceTrickZoneBase<?> freeze(GameTestHelper helper) {
         BlockPos center = helper.absolutePos(CENTER);
         return new PieceTrickFreezeZone(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return paramValue(param, center);
+            }
+        };
+    }
+
+    private static PieceTrickZoneBase<?> turbulence(GameTestHelper helper, BlockPos relativeCenter) {
+        BlockPos center = helper.absolutePos(relativeCenter);
+        return new PieceTrickTurbulenceZone(new Spell()) {
             @Override
             public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
                 return paramValue(param, center);

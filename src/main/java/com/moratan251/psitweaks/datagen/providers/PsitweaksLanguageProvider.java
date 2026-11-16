@@ -436,6 +436,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "冷却量: %s / %sJ/t";
             default -> "Cooling: %s / %sJ/t";
         });
+        // 熱の受け渡し（2026-11-16 ユーザー、16 節、文言は仮）: %s は「48.3 」「1.20 k」のように単位の接頭辞まで含む。
+        root.addProperty("psitweaks.hud.zone_resource.carried", switch (locale) {
+            case "ja_jp" -> "運搬: %sJ/t";
+            default -> "Carried: %sJ/t";
+        });
+        root.addProperty("psitweaks.hud.zone_resource.received", switch (locale) {
+            case "ja_jp" -> "受け取り: %sJ/t";
+            default -> "Received: %sJ/t";
+        });
         root.addProperty("psitweaks.hud.zone_resource.charge", switch (locale) {
             case "ja_jp" -> "充電能力: %s / %sFE/t";
             default -> "Charge: %s / %sFE/t";
@@ -2155,8 +2164,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。干渉力2でケース入りファンと同じ速さです。自分の荷電領域が重なったところでは、電気炉のように一括燻製の代わりに一括製錬をします（精錬できるアイテムだけを扱うので、ほかのアイテムは燃えません）。$(p)領域は、コストに応じた熱の総量を持ちます。干渉力2なら、サイズ16の領域で、威力5ならブレイズバーナー1台、威力10なら3台ぶんです。");
 
         addBookPage(root, "trick_heat_zone.2",
-                "Blaze Burners inside are heated without fuel, nearest to the center first, each using as much of the total as burning charcoal would give it, as many as it pays for. The rest goes to the Mekanism blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), shared evenly, but never above 100 K per Power (1000 K at most). Heat carried in by a Freeze Zone of yours touching it adds to the total.",
-                "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。1台につき熱の総量から木炭を燃やしたときと同じだけの熱を使い、領域の中心に近いものから、総量で払えるだけの台数がなります。残りの熱は、Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）で均等に分けます。ただし、威力×100K（最大1000K）より上には温めません。触れ合っている自分の凍結領域が運んできた熱も、総量に加わります。");
+                "Blaze Burners inside are heated without fuel, nearest to the center first, each using as much of the total as burning charcoal would give it, as many as it pays for. The rest goes to the Mekanism blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), shared evenly, but never above 100 K per Power (1000 K at most). Heat carried in by a Freeze Zone of yours touching or overlapping it adds to the total.",
+                "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。1台につき熱の総量から木炭を燃やしたときと同じだけの熱を使い、領域の中心に近いものから、総量で払えるだけの台数がなります。残りの熱は、Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）で均等に分けます。ただし、威力×100K（最大1000K）より上には温めません。触れ合っているか重なっている自分の凍結領域が運んできた熱も、総量に加わります。");
 
         // 凍結領域
         addBookPage(root, "trick_freeze_zone.0",
@@ -2170,8 +2179,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "領域は、コストに応じた冷却量を持ちます。同じコストの加熱領域の熱量と同じ量で、干渉力2なら、サイズ16・威力10で1 tick に約640 J です。冷却量は熱を持つブロックで均等に分け、1つが1 tick に冷えるのは、下限との温度差の 威力×0.2%（威力10以上で2%）までです。");
 
         addBookPage(root, "trick_freeze_zone.3",
-                "Where it touches a Heat Zone of yours by a face, the heat it takes from blocks hotter than the ambient temperature is carried to that zone and adds to its heat total; heat taken below the ambient temperature is lost. Touching several Heat Zones, it splits the heat by the size of each touching face. Without Mekanism, there is no heat to carry.",
-                "自分の加熱領域と面で触れ合っていると、周囲の温度より熱いブロックから奪った熱は、その加熱領域へ運ばれて熱の総量に加わります。周囲より下まで冷やして奪った分は失われます。加熱領域にいくつも触れていれば、触れ合う面の広さに応じて分けます。Mekanism がなければ、運ぶ熱はありません。");
+                "Where it touches or overlaps a Heat Zone of yours (the overlap itself still cancels out), the heat it takes from blocks hotter than the ambient temperature is carried to that zone and adds to its heat total; heat taken below the ambient temperature is lost. Joined to several Heat Zones, it splits the heat by the size of each touching face or overlap. When several Freeze Zones of yours cool the same block or multiblock, all the heat they take from it is carried as long as one of them is joined to a Heat Zone. Without Mekanism, there is no heat to carry.",
+                "自分の加熱領域と面で触れ合っているか重なっていると（重なったところは今までどおり打ち消し合います）、周囲の温度より熱いブロックから奪った熱は、その加熱領域へ運ばれて熱の総量に加わります。周囲より下まで冷やして奪った分は失われます。加熱領域にいくつもつながっていれば、触れ合う面や重なりの広さに応じて分けます。同じブロックやマルチブロックを自分の凍結領域がいくつも冷やしているときは、どれか1つが加熱領域につながっていれば、そこから奪った熱は全部運ばれます。Mekanism がなければ、運ぶ熱はありません。");
 
         // 乱流領域
         addBookPage(root, "trick_turbulence_zone.0",

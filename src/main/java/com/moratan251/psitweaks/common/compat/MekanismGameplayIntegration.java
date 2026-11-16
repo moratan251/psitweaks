@@ -110,6 +110,8 @@ final class MekanismGameplayIntegration {
         List<Double> amounts = new ArrayList<>();
         // そのブロックが周囲の温度より上に持っていた熱（運べる熱の上限、2026-11-16 ユーザー、案 3）。
         List<Double> aboveAmbient = new ArrayList<>();
+        // 熱源（組み上がったマルチブロックはマルチブロック全体、ほかはブロックエンティティ、15 節の B）。
+        List<Object> sources = new ArrayList<>();
         for (BlockEntity blockEntity : blockEntities) {
             IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
@@ -131,6 +133,7 @@ final class MekanismGameplayIntegration {
                 handlers.add(handler);
                 amounts.add(amount);
                 aboveAmbient.add(Math.max(0.0, handler.getTotalTemperature() - ambient) * handler.getTotalHeatCapacity());
+                sources.add(heatSourceOf(blockEntity));
             }
         }
         if (handlers.isEmpty() || total <= 0.0) {
@@ -162,11 +165,32 @@ final class MekanismGameplayIntegration {
             }
         }
         // 運べる熱: ブロックごとに min(奪った熱, (温度 − 周囲の温度) × 熱容量)。周囲より下まで冷やして奪った分は捨てる。
+        // 熱を奪った熱源は、運べる熱が 0 でも載せる（その熱源を冷やしている、という印になる）。
         double carried = 0.0;
+        Map<Object, Double> bySource = new IdentityHashMap<>();
         for (int i = 0; i < handlers.size(); i++) {
-            carried += Math.min(taken[i], aboveAmbient.get(i));
+            if (taken[i] <= 0.0) {
+                continue;
+            }
+            double amount = Math.min(taken[i], aboveAmbient.get(i));
+            carried += amount;
+            bySource.merge(sources.get(i), amount, Double::sum);
         }
-        return new MekanismGameplayCompat.ZoneHeatDrain(removed, carried);
+        return new MekanismGameplayCompat.ZoneHeatDrain(removed, carried, bySource);
+    }
+
+    /**
+     * 熱の受け渡しで「同じ熱源」とみなす単位（15 節の B）: 組み上がったマルチブロック（核分裂炉など）はマルチブロック全体、
+     * それ以外はそのブロックエンティティ。別々の凍結領域が同じ熱源を冷やしているかを見分けるのに使う。
+     */
+    private static Object heatSourceOf(BlockEntity blockEntity) {
+        if (blockEntity instanceof IMultiblock<?> multiblock) {
+            MultiblockData data = multiblock.getMultiblock();
+            if (data != null && data.isFormed()) {
+                return data;
+            }
+        }
+        return blockEntity;
     }
 
     /** 熱を送る・取り除く相手の重複よけのキー: 組み上がったマルチブロックはマルチブロック全体、それ以外は熱の窓口。 */
@@ -178,6 +202,15 @@ final class MekanismGameplayIntegration {
             }
         }
         return handler;
+    }
+
+    static void buildEvaporationPlant(ServerLevel level, BlockPos start) {
+        new mekanism.common.command.builders.Builders.EvaporationBuilder().build(level, start, false);
+    }
+
+    static boolean isFormedMultiblockAt(ServerLevel level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof IMultiblock<?> multiblock && multiblock.getMultiblock() != null
+                && multiblock.getMultiblock().isFormed();
     }
 
     static double temperatureAt(ServerLevel level, BlockPos pos) {

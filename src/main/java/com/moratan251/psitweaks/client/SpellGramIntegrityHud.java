@@ -89,6 +89,13 @@ public final class SpellGramIntegrityHud {
                         : withPrefix(used, amount);
                 graphics.drawCenteredString(font, Component.translatable(key, values[0], values[1]), graphics.guiWidth() / 2,
                         graphics.guiHeight() / 2 + 20, TEXT_COLOR);
+                // 熱の受け渡しの運搬・受け取り（0 なら出さない）。桁は総量にそろえる。
+                String movedKey = zone.resourceMovedKey();
+                float moved = zone.getResourceMoved();
+                if (movedKey != null && moved > 0.0F) {
+                    graphics.drawCenteredString(font, Component.translatable(movedKey, scaledLike(moved, amount)),
+                            graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 30, TEXT_COLOR);
+                }
             }
         }
     }
@@ -120,6 +127,14 @@ public final class SpellGramIntegrityHud {
         }
         return new String[]{String.format(java.util.Locale.ROOT, digits, used / scale),
                 String.format(java.util.Locale.ROOT, digits, total / scale) + " " + prefix};
+    }
+
+    /** {@code value} を、総量 {@code total} と同じ桁・単位の接頭辞で書く（{@link #withPrefix} の総量の書き方）。 */
+    static String scaledLike(double value, double total) {
+        String[] values = withPrefix(value, total);
+        String totalText = values[1];
+        // 総量の文字列の最後は「 」か「 k」「 M」（接頭辞）。それをそのまま使う。
+        return values[0] + totalText.substring(totalText.lastIndexOf(' '));
     }
 
     /** 置いたときの耐久値が 10 以上なら整数（切り上げ）、それより小さければ小数 1 桁。 */
