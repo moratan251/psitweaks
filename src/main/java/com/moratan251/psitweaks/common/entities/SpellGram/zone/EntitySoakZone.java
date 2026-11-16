@@ -10,6 +10,8 @@ import com.moratan251.psitweaks.mixin.ConcretePowderBlockAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,8 +20,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.ConcretePowderBlock;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -31,8 +35,8 @@ import java.util.List;
  * {@link #SOAK_TICKS} の間は濡れたまま。
  * <p>
  * 範囲の中のブロックにも水をかけたように効く: 火を消し（水入りスプラッシュ瓶と同じく、炎・焚き火・ろうそく）、
- * コンクリートパウダーをコンクリートに固める（{@link #affectBlock}、範囲を 1 段ずつ）。術者がそのブロックを変えてよいか
- * （保護）を確かめる。
+ * コンクリートパウダーをコンクリートに固める（{@link #affectBlock}、範囲を 1 段ずつ）。ランダムに選んだブロックで、耕地を
+ * 湿らせ、スポンジを濡らす（{@link #randomBlockTick}）。術者がそのブロックを変えてよいか（保護）を確かめる。
  * <p>
  * Create があるときは、同じ術者の乱流領域が重なったところ（暴風雨）だけ、落ちているアイテムと、デポ・ベルトの上のアイテムを
  * 一括洗浄する。乱流がなければ加工しない。速さは置いた時点の事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。
@@ -135,6 +139,43 @@ public class EntitySoakZone extends SpellGramZone {
     @Override
     protected boolean affectsBlocks() {
         return true;
+    }
+
+    @Override
+    protected boolean hasRandomBlockTicks() {
+        return true;
+    }
+
+    @Override
+    protected boolean mayRandomTick(BlockState state) {
+        return state.is(Blocks.SPONGE)
+                || (state.getBlock() instanceof FarmBlock && state.getValue(FarmBlock.MOISTURE) < FarmBlock.MAX_MOISTURE);
+    }
+
+    /**
+     * ランダムに選ばれたブロック（{@link SpellGramZone#RANDOM_BLOCK_TICK_CHANCE}）に水をかける: 耕地は水の近くにあるときと同じく
+     * 一番湿った状態にし（{@code FarmBlock#randomTick}）、スポンジは濡れたスポンジにする（水を吸ったときと同じ音、水は吸わない）。
+     * 同じ術者の加熱領域も効いているところのスポンジは、濡らすのと乾かすのを行き来しないよう、どちらもしない。
+     */
+    @Override
+    protected void randomBlockTick(ServerLevel level, Player caster, BlockPos pos, BlockPos world, BlockState state) {
+        boolean sponge = state.is(Blocks.SPONGE);
+        boolean farmland = state.getBlock() instanceof FarmBlock && state.getValue(FarmBlock.MOISTURE) < FarmBlock.MAX_MOISTURE;
+        if (!sponge && !farmland) {
+            return;
+        }
+        if (sponge && ownZoneActiveAt(level, EntityHeatZone.class, world)) {
+            return;
+        }
+        if (!SpellBlockProtection.mayChange(level, caster, pos)) {
+            return;
+        }
+        if (farmland) {
+            level.setBlock(pos, state.setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
+            return;
+        }
+        level.setBlock(pos, Blocks.WET_SPONGE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        level.playSound(null, pos, SoundEvents.SPONGE_ABSORB, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     @Override

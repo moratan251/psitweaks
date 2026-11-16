@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.spells.SpellBlockProtection;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import net.minecraft.core.BlockPos;
@@ -26,6 +27,9 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -46,6 +50,7 @@ import java.util.Map;
  *   {@link #FE_PER_AE2_CHARGE} FE）。AE2 のレシピをそのまま使い、コードは AE2 に依存しない。</li>
  *   <li>同じ術者の乱流領域と重なったところは「雷雲」: ランダムな間隔で中の生物を 1 体ずつ雷撃で打ち、受け手は分けた量の
  *   (1 + 乱流の上乗せ) 倍を受け取る。</li>
+ *   <li>ランダムに選んだブロックで、錆びる銅の錆を 1 段落とす（{@link #randomBlockTick}）。</li>
  * </ul>
  * ブロックの面は、受け取る面を順に試して選ぶ（Mekanism の機械は面のない問い合わせでは受け取らない）。仕様の全体と数値の根拠は
  * {@code docs/1.21.1/spellgram-zones.md}。
@@ -173,6 +178,31 @@ public class EntityChargedZone extends SpellGramZone {
     /** FE は {@link #supplyEnergy} でまとめて分けるので、1 体ずつの効き目はない。 */
     @Override
     protected void affect(Entity target) {
+    }
+
+    @Override
+    protected boolean hasRandomBlockTicks() {
+        return true;
+    }
+
+    @Override
+    protected boolean mayRandomTick(BlockState state) {
+        return WeatheringCopper.getPrevious(state).isPresent();
+    }
+
+    /**
+     * ランダムに選ばれたブロック（{@link SpellGramZone#RANDOM_BLOCK_TICK_CHANCE}）が錆びる銅なら、雷が落ちたときと同じく錆を 1 段
+     * 落とす（{@code LightningBolt#randomWalkCleaningCopper}、火花の演出も同じ）。銅ブロック・切り込み入りの銅・階段・ハーフ
+     * ブロック・ドア・トラップドア・金網・電球・模様入りの銅など、錆びる銅すべて。錆止めされた銅はそのまま。
+     */
+    @Override
+    protected void randomBlockTick(ServerLevel level, Player caster, BlockPos pos, BlockPos world, BlockState state) {
+        java.util.Optional<BlockState> cleaner = WeatheringCopper.getPrevious(state);
+        if (cleaner.isEmpty() || !SpellBlockProtection.mayChange(level, caster, pos)) {
+            return;
+        }
+        level.setBlockAndUpdate(pos, cleaner.get());
+        level.levelEvent(LevelEvent.PARTICLES_ELECTRIC_SPARK, pos, -1);
     }
 
     /**

@@ -2115,15 +2115,20 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places a zone that keeps the living beings inside soaked. Se"
                         + "e $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zone"
                         + "s share.$(p)Living beings inside stay wet for 3 seconds afte"
-                        + "r leaving; wet beings do not burn and take 50% more damage f"
-                        + "rom Trick: Chain Lightning. The blocks inside are wetted lik"
-                        + "e with a Splash Water Bottle: fire, campfires and candles go"
-                        + " out, and concrete powder turns into concrete (where the cas"
-                        + "ter may change blocks).",
+                        + "r leaving; wet beings do not burn and take 50%% more damage "
+                        + "from Trick: Chain Lightning. The blocks inside are wetted li"
+                        + "ke with a Splash Water Bottle: fire, campfires and candles g"
+                        + "o out, and concrete powder turns into concrete. At random, "
+                        + "like random ticks but faster, farmland is moistened and Spo"
+                        + "nges get wet; where your own Heat Zone overlaps, Sponges are"
+                        + " left as they are. All this happens only where the caster ma"
+                        + "y change blocks.",
                 "範囲の中の生物を濡らし続ける領域を置きます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$("
                         + "/l)の項目にあります。$(p)中の生物は範囲を出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光"
-                        + "のダメージが50%増えます。範囲のブロックには水入りスプラッシュ瓶のように効き、炎・焚き火・ろうそくを消し、コンクリート"
-                        + "パウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。");
+                        + "のダメージが50%%増えます。範囲のブロックには水入りスプラッシュ瓶のように効き、炎・焚き火・ろうそくを消し、コンクリート"
+                        + "パウダーをコンクリートに固めます。また、ランダムティックのように（それより速く）ランダムに選んだブロックで、耕地を"
+                        + "湿らせ、スポンジを濡らします。自分の加熱領域も重なったところのスポンジはそのままです。どれも術者がブロックを変えて"
+                        + "よい場所だけです。");
         addBookPage(root, "trick_soak_zone.1",
                 "With Create installed, it bulk-washes dropped items and the "
                         + "items on Depots and Mechanical Belts inside, but only where "
@@ -2160,8 +2165,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 加熱領域
         addBookPage(root, "trick_heat_zone.0",
-                "The Power (a constant of at least 1) is how hot the zone is: living beings inside catch fire, burning as they would in fire (1 damage a second), and keep burning for 0.6 seconds per Power (6 at most) after leaving. The caster does not burn, nor do wet beings. Ice and Frosted Ice inside melt into water; Packed Ice and Blue Ice stay. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
-                "「威力」（1以上の定数）は領域の温度です。中の生物に火がつき、バニラの炎上と同じ毎秒1のダメージを受け、範囲を出てから威力×0.6秒（最大6秒）は燃え続けます。術者自身と、濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "The Power (a constant of at least 1) is how hot the zone is: living beings inside catch fire, burning as they would in fire (1 damage a second), and keep burning for 0.6 seconds per Power (6 at most) after leaving. The caster does not burn, nor do wet beings. At random, like random ticks but faster (each block about once every 5 seconds), Ice and Frosted Ice inside melt into water, Snow melts away as it would near a light, and Wet Sponges dry; Packed Ice, Blue Ice and Snow Blocks stay. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "「威力」（1以上の定数）は領域の温度です。中の生物に火がつき、バニラの炎上と同じ毎秒1のダメージを受け、範囲を出てから威力×0.6秒（最大6秒）は燃え続けます。術者自身と、濡れている生物は燃えません。ランダムティックのように（それより速く、1ブロックあたり平均5秒に1回）ランダムに選んだブロックで、範囲の中の氷と薄氷は水に戻り、雪は光源の近くと同じように溶けて消え、濡れたスポンジは乾きます。氷塊・青氷・雪ブロックはそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_heat_zone.1",
                 "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside, but only where your own Turbulence Zone overlaps it (a Heat Storm): as fast as an Encased Fan at interference 2, and faster with a stronger storm. Where your own Charged Zone overlaps there as well, it bulk-blasts instead, like an electric furnace; only items that can be smelted are processed, so nothing else burns.$(p)The zone has a heat total that follows its Cost: at interference 2, a Size 16 zone has enough heat for three Blaze Burners at Power 5, and six at Power 10.",
                 "Create が入っているときは、自分の乱流領域が重なったところ（熱乱流）だけ、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。干渉力2でケース入りファンと同じ速さで、熱乱流が強いほど速くなります。そこに自分の荷電領域も重なっていれば、電気炉のように一括燻製の代わりに一括製錬をします（精錬できるアイテムだけを扱うので、ほかのアイテムは燃えません）。$(p)領域は、コストに応じた熱の総量を持ちます。干渉力2なら、サイズ16の領域で、威力5ならブレイズバーナー3台、威力10なら6台ぶんです。");
@@ -2172,8 +2177,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 凍結領域
         addBookPage(root, "trick_freeze_zone.0",
-                "Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at least 1) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast, the fastest. The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor. Water sources inside with air right above them turn into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
-                "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（1以上の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さで、これが最速です。術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。範囲の中の水源のうち、真上が空気のものは氷になります。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "Living beings inside freeze as if stuck in Powder Snow; once fully frozen they slow down and take freezing damage. The Power (a constant of at least 1) is how cold it is: at 5 they freeze in 3.5 seconds, at 10 twice as fast, the fastest. The caster does not freeze, nor does anything Powder Snow cannot freeze, such as a being in leather armor. At random, like random ticks but faster, water sources inside with air right above them and nothing in them turn into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "中の生物は粉雪に埋まったときと同じように凍え、凍えきると動きが遅くなってダメージを受けます。「威力」（1以上の定数）は冷やす強さで、威力5なら3.5秒で凍えきり、威力10ならその2倍の速さで、これが最速です。術者自身と、革の防具を着ている生物のように粉雪で凍えないものは凍えません。ランダムティックのように（それより速く）ランダムに選んだブロックで、範囲の中の水源のうち、真上が空気で中に何もいないものは氷になります。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_freeze_zone.1",
                 "Wet beings freeze in half the time. With Mekanism installed, it cools the blocks inside that hold heat (Resistive Heaters, Boiler Valves, Fission Reactor Ports and so on), down to 275 K minus 5 K per Power, whatever the ambient temperature (270 K at Power 1, 225 K or about -48 °C at most).",
                 "濡れている生物は半分の時間で凍えきります。Mekanism が入っているときは、範囲の中の熱を持つブロック（抵抗型発熱器、ボイラーバルブ、核分裂炉ポートなど）を冷やします。冷やせるのは、周囲の温度によらず 275K−威力×5K まで（威力1で270K、最大で225K、約 −48℃）です。");
@@ -2233,8 +2238,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",
-                "It sends FE to what is inside: blocks that take FE (machines, energy storage and so on, through whichever side takes it), everything a player carries, what other living beings hold and wear, dropped items, and entities that store FE themselves. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
-                "範囲の中のものに FE を送ります。送る先は、FE を受け取るブロック（機械や蓄電器など。受け取る面に送ります）、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、それに落ちているアイテムと、自分で FE をためるエンティティです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "It sends FE to what is inside: blocks that take FE (machines, energy storage and so on, through whichever side takes it), everything a player carries, what other living beings hold and wear, dropped items, and entities that store FE themselves. At random, like random ticks but faster, copper inside loses one stage of oxidation, as when lightning strikes; waxed copper stays. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中のものに FE を送ります。送る先は、FE を受け取るブロック（機械や蓄電器など。受け取る面に送ります）、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、それに落ちているアイテムと、自分で FE をためるエンティティです。また、ランダムティックのように（それより速く）ランダムに選んだブロックで、雷が落ちたときと同じく銅の錆を1段ずつ落とします（酸化した銅→錆びた銅→風化した銅→銅ブロック、階段やドアなども同じ）。錆止めされた銅はそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_charged_zone.1",
                 "The Power (a constant of at least 1) sets the Cost, and the FE capacity follows the Cost; it is shared evenly by everything inside that can take FE. At interference 2, a Size 16, Power 10 zone gives about 360 FE a tick.$(p)With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), each using 3200 FE of the capacity.",
                 "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");

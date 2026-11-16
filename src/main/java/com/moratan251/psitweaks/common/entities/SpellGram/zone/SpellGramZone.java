@@ -33,7 +33,8 @@ import java.util.UUID;
  * <ul>
  *   <li>エンティティへの効き目: {@link #affect}（{@link #effectInterval} tick ごと）。何に効くかは {@link #affects}
  *   （魔法式オブジェクトにはどの領域も効かない）。</li>
- *   <li>ブロックへの効き目: {@link #affectBlock}（範囲を 1 tick に 1 段ずつ下から、読み込まれたチャンクだけ）。</li>
+ *   <li>ブロックへの効き目: {@link #affectBlock}（範囲を 1 tick に 1 段ずつ下から、読み込まれたチャンクだけ）と、
+ *   {@link #randomBlockTick}（バニラのランダムティックと同じ要領で、範囲からランダムに選んだブロック）。</li>
  *   <li>他 mod の機械を動かす速さ: {@link #machineSpeedFor}（置いた時点の事象干渉力）。</li>
  *   <li>重なったときにどれが効くか: {@link #isActiveAt}（他人の領域とは奪い合い、自分の側の加熱と凍結は打ち消し合い）と、
  *   同じ種類どうしの {@link #isStrongestAt}。</li>
@@ -627,6 +628,50 @@ public abstract class SpellGramZone extends SpellGramObject {
     protected void affectBlock(ServerLevel level, Player caster, BlockPos pos, BlockState state) {
     }
 
+    /**
+     * ランダムなブロックの変化の速さ（仮）: ブロック 1 つが 1 tick に選ばれる見込み。平均 100 tick（5 秒）に 1 回。
+     * バニラのランダムティック（既定で 16×16×16 の区画に 1 tick 3 回、1 ブロックは平均約 68 秒に 1 回）より速い。
+     */
+    public static final double RANDOM_BLOCK_TICK_CHANCE = 1.0 / 100.0;
+
+    /**
+     * ランダムなブロックの変化があるか。真なら毎 tick、範囲の体積 × {@link #RANDOM_BLOCK_TICK_CHANCE} 個（端数は確率で）の
+     * ブロックをランダムに選び、{@link #randomBlockTick} を呼ぶ（バニラのランダムティックと同じ要領）。
+     */
+    protected boolean hasRandomBlockTicks() {
+        return false;
+    }
+
+    /** {@link #randomBlockTick} が何かするかもしれないブロックの状態か（選んだブロックを先に確かめる）。 */
+    protected boolean mayRandomTick(BlockState state) {
+        return false;
+    }
+
+    /**
+     * ランダムに選ばれた、範囲の中の 1 ブロックへの変化（サーバー側、術者がプレイヤーのときだけ、読み込まれているブロックで、
+     * この領域が効いているところだけ）。保護（{@code SpellBlockProtection.mayChange}）は変えるときに確かめること。
+     * {@code pos} はブロックが本当にある位置（機体のブロックなら機体用の空間の座標）、{@code world} は世界の位置。
+     */
+    protected void randomBlockTick(ServerLevel level, Player caster, BlockPos pos, BlockPos world, BlockState state) {
+    }
+
+    /**
+     * 同じ術者の、種類 {@code type} のほかの領域が、世界の位置 {@code world} で効いているか（サーバー側）。重なった領域どうしで
+     * ブロックを行き来させないために使う。
+     */
+    protected boolean ownZoneActiveAt(ServerLevel level, Class<? extends SpellGramZone> type, BlockPos world) {
+        java.util.UUID caster = getCasterUuid();
+        if (caster == null) {
+            return false;
+        }
+        for (SpellGramObject object : SpellGramIndex.ofCaster(level, caster)) {
+            if (object != this && type.isInstance(object) && !object.isEnded() && ((SpellGramZone) object).isInsideAndActive(world)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** この tick の範囲の見え方（{@link #regions}）。作った tick と一緒に覚える。 */
     private List<ZoneRegion> regionsCache;
     private long regionsTick = Long.MIN_VALUE;
@@ -769,6 +814,53 @@ public abstract class SpellGramZone extends SpellGramObject {
                 scanLayer(level, caster, region, scanStep);
             }
             scanStep++;
+        }
+        if (hasRandomBlockTicks() && !isEnded() && level() instanceof ServerLevel level && getCaster() instanceof Player caster) {
+            for (ZoneRegion region : regions()) {
+                randomBlockTicks(level, caster, region);
+            }
+        }
+    }
+
+    /**
+     * 範囲 {@code region} から、体積 × {@link #RANDOM_BLOCK_TICK_CHANCE} 個（端数は確率で）のブロックをランダムに選び、
+     * {@link #mayRandomTick} が真で、範囲の中で、この領域が効いているものに {@link #randomBlockTick} を呼ぶ。
+     * 読み込まれていないブロックは飛ばす。
+     */
+    private void randomBlockTicks(ServerLevel level, Player caster, ZoneRegion region) {
+        ZoneArea scanned = region.area();
+        if (scanned.isEmpty()) {
+            return;
+        }
+        AABB box = scanned.bounds();
+        int minX = (int) Math.floor(box.minX);
+        int minY = (int) Math.floor(box.minY);
+        int minZ = (int) Math.floor(box.minZ);
+        int sizeX = (int) Math.floor(box.maxX) - minX;
+        int sizeY = (int) Math.floor(box.maxY) - minY;
+        int sizeZ = (int) Math.floor(box.maxZ) - minZ;
+        if (sizeX <= 0 || sizeY <= 0 || sizeZ <= 0) {
+            return;
+        }
+        double expected = (double) sizeX * sizeY * sizeZ * RANDOM_BLOCK_TICK_CHANCE;
+        int picks = (int) expected;
+        if (random.nextDouble() < expected - picks) {
+            picks++;
+        }
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int i = 0; i < picks; i++) {
+            pos.set(minX + random.nextInt(sizeX), minY + random.nextInt(sizeY), minZ + random.nextInt(sizeZ));
+            if (pos.getY() < level.getMinBuildHeight() || pos.getY() >= level.getMaxBuildHeight() || !level.hasChunkAt(pos)) {
+                continue;
+            }
+            BlockState state = level.getBlockState(pos);
+            if (!mayRandomTick(state) || !scanned.contains(pos)) {
+                continue;
+            }
+            BlockPos world = region.worldPos(pos);
+            if (isActiveAt(world)) {
+                randomBlockTick(level, caster, pos.immutable(), world, state);
+            }
         }
     }
 

@@ -33,7 +33,7 @@ import java.util.Set;
  * <ul>
  *   <li>中の生物を、粉雪に埋まったときと同じように凍えさせる（{@link #freezeAmount}）。術者自身は凍えさせない
  *   （{@link #sparesCaster}）。</li>
- *   <li>水源の水のうち、真上が空気のものを氷にする（{@link #affectBlock}）。</li>
+ *   <li>ランダムに選んだブロックで、水源の水のうち、真上が空気で中にエンティティがいないものを氷にする（{@link #randomBlockTick}）。</li>
  *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を下限（275 − 威力 × 5 K）に向けて冷やす
  *   （{@link #coolMekanismMachines}）。</li>
  * </ul>
@@ -363,18 +363,21 @@ public class EntityFreezeZone extends SpellGramZone {
     }
 
     @Override
-    protected boolean affectsBlocks() {
+    protected boolean hasRandomBlockTicks() {
         return true;
     }
 
     @Override
-    protected boolean mayAffectState(BlockState state) {
+    protected boolean mayRandomTick(BlockState state) {
         return state.is(Blocks.WATER) && state.getFluidState().isSource();
     }
 
-    /** 水源の水で、真上が空気のものを氷にする。 */
+    /**
+     * ランダムに選ばれたブロック（{@link SpellGramZone#RANDOM_BLOCK_TICK_CHANCE}）が水源の水で、真上が空気で、中にエンティティが
+     * いなければ氷にする。
+     */
     @Override
-    protected void affectBlock(ServerLevel level, Player caster, BlockPos pos, BlockState state) {
+    protected void randomBlockTick(ServerLevel level, Player caster, BlockPos pos, BlockPos world, BlockState state) {
         if (!state.is(Blocks.WATER) || !state.getFluidState().isSource() || !level.getBlockState(pos.above()).isAir()) {
             return;
         }

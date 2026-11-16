@@ -32,7 +32,7 @@ import java.util.List;
  * 作動式: 加熱領域（仮）の範囲。
  * <ul>
  *   <li>中の生物に火をつける（{@link #affect}）。術者自身は燃やさない（{@link #sparesCaster}）。</li>
- *   <li>氷と薄氷を水に戻す（{@link #affectBlock}）。</li>
+ *   <li>ランダムに選んだブロックで、氷と薄氷を水に戻し、積もった雪を溶かし、濡れたスポンジを乾かす（{@link #randomBlockTick}）。</li>
  *   <li>1 tick あたりの熱の総量（{@link #heatTotalPerTick}）で Create のブレイズバーナーを加熱し（{@link #allocateBurners}）、
  *   残りを Mekanism の熱を受け取るブロックに均等に分ける（温度は {@link #maxTemperature} まで）。</li>
  *   <li>Create があれば、同じ術者の乱流領域が重なったところ（熱乱流）だけ、落ちているアイテムとデポ・ベルトの上のアイテムを
@@ -576,22 +576,47 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     @Override
-    protected boolean affectsBlocks() {
+    protected boolean hasRandomBlockTicks() {
         return true;
     }
 
     @Override
-    protected boolean mayAffectState(BlockState state) {
-        return state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE);
+    protected boolean mayRandomTick(BlockState state) {
+        return state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE) || state.is(Blocks.SNOW) || state.is(Blocks.WET_SPONGE);
     }
 
-    /** 氷と薄氷を溶かす（氷が自然に溶けるときと同じ）。 */
+    /**
+     * ランダムに選ばれたブロックを温める（{@link SpellGramZone#RANDOM_BLOCK_TICK_CHANCE}）。
+     * <ul>
+     *   <li>氷と薄氷を溶かす（氷が自然に溶けるときと同じ。水を置けないディメンションでは消える）。</li>
+     *   <li>積もった雪（雪、層の数によらない）は、近くに光源があるときと同じく中身を落として消す
+     *   （{@code SnowLayerBlock#randomTick}、水は残らない）。雪ブロックと粉雪はそのまま。</li>
+     *   <li>濡れたスポンジを乾かす（ネザーに置いたときと同じ演出、{@code WetSpongeBlock#onPlace}）。同じ術者の湿潤領域も
+     *   効いているところは、濡らすのと乾かすのを行き来しないよう、どちらもしない。</li>
+     * </ul>
+     */
     @Override
-    protected void affectBlock(ServerLevel level, Player caster, BlockPos pos, BlockState state) {
-        if (!state.is(Blocks.ICE) && !state.is(Blocks.FROSTED_ICE)) {
+    protected void randomBlockTick(ServerLevel level, Player caster, BlockPos pos, BlockPos world, BlockState state) {
+        if (state.is(Blocks.WET_SPONGE)) {
+            if (ownZoneActiveAt(level, EntitySoakZone.class, world) || !SpellBlockProtection.mayChange(level, caster, pos)) {
+                return;
+            }
+            level.setBlock(pos, Blocks.SPONGE.defaultBlockState(), net.minecraft.world.level.block.Block.UPDATE_ALL);
+            level.levelEvent(net.minecraft.world.level.block.LevelEvent.PARTICLES_WATER_EVAPORATING, pos, 0);
+            level.playSound(null, pos, net.minecraft.sounds.SoundEvents.WET_SPONGE_DRIES, net.minecraft.sounds.SoundSource.BLOCKS,
+                    1.0F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
+            return;
+        }
+        boolean snow = state.is(Blocks.SNOW);
+        if (!snow && !state.is(Blocks.ICE) && !state.is(Blocks.FROSTED_ICE)) {
             return;
         }
         if (!SpellBlockProtection.mayChange(level, caster, pos)) {
+            return;
+        }
+        if (snow) {
+            net.minecraft.world.level.block.Block.dropResources(state, level, pos);
+            level.removeBlock(pos, false);
             return;
         }
         if (level.dimensionType().ultraWarm()) {

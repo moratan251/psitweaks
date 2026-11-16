@@ -40,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -72,15 +73,11 @@ public final class ZoneElementGameTests {
     private ZoneElementGameTests() {
     }
 
-    /** 加熱領域: 中の生物は燃え、術者は燃えない。氷と薄氷は水に戻り、氷塊はそのまま。 */
+    /** 加熱領域: 中の生物は燃え、術者は燃えない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat", timeoutTicks = 100)
-    public static void heatZoneBurnsBeingsAndMeltsIce(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
+    public static void heatZoneBurnsBeings(GameTestHelper helper) {
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_caster", new Vec3(4.5, 1.0, 4.5));
         Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(3.5, 1.0, 3.5));
-        basin(helper, OPEN, Blocks.ICE);
-        basin(helper, COVERED, Blocks.FROSTED_ICE);
-        basin(helper, THIRD, Blocks.PACKED_ICE);
         Runnable cleanup = () -> cleanup(helper, caster);
         try {
             cast(caster, heat(helper), 5.0, 5.0);
@@ -91,15 +88,280 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(25, () -> {
             boolean huskBurning = husk.getRemainingFireTicks() > 0;
             boolean casterBurning = caster.getRemainingFireTicks() > 0;
-            boolean iceMelted = helper.getBlockState(OPEN).is(Blocks.WATER);
-            boolean frostedMelted = helper.getBlockState(COVERED).is(Blocks.WATER);
-            boolean packedKept = helper.getBlockState(THIRD).is(Blocks.PACKED_ICE);
             cleanup.run();
             helper.assertTrue(huskBurning, "The husk inside the Heat Zone must be set on fire");
             helper.assertFalse(casterBurning, "The Heat Zone must not burn its own caster");
-            helper.assertTrue(iceMelted, "The Heat Zone must melt ice into water");
-            helper.assertTrue(frostedMelted, "The Heat Zone must melt frosted ice into water");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * ランダムなブロックの変化を待つ長さ（tick、既定の存続時間 600 tick より短く）。1 ブロックは 1 tick に
+     * {@link SpellGramZone#RANDOM_BLOCK_TICK_CHANCE}（1/100）で選ばれるので、500 tick のうちに一度も選ばれない見込みは
+     * 1 ブロックあたり約 0.66%。テストは「いくつかのうち何個以上」で確かめ、どのテストも落ちる見込みが 10 万回に 1 回より
+     * ずっと小さくなるよう、数と閾値を選ぶ（毎日のレビューでも GameTest を回すため）。
+     */
+    private static final int RANDOM_WAIT = 500;
+
+    /** {@code spots} のうち、状態が {@code changed} に当てはまるものの数。 */
+    private static int countMatching(GameTestHelper helper, List<BlockPos> spots, java.util.function.Predicate<BlockState> changed) {
+        int count = 0;
+        for (BlockPos spot : spots) {
+            if (changed.test(helper.getBlockState(spot))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 加熱領域: ランダムに選んだブロックで、氷は水に戻り、氷塊はそのまま（水が流れ出さないよう石で囲む）。範囲は (2, 1, 2) を
+     * 中心にした一辺 5。氷 4 つのうち 2 つ以上（落ちる見込み約 1.1×10⁻⁶）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_ice", timeoutTicks = RANDOM_WAIT + 100)
+    public static void heatZoneMeltsIceRandomly(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_ice", new Vec3(4.5, 1.0, 4.5));
+        // 氷は四隅の囲いの中。真ん中は四隅の囲いの石に囲まれるので、そこに氷塊を置く。
+        BlockPos packed = CENTER;
+        List<BlockPos> ices = List.of(OPEN, COVERED, THIRD, new BlockPos(3, 1, 3));
+        ices.forEach(pos -> basin(helper, pos, Blocks.ICE));
+        helper.setBlock(packed.below(), Blocks.STONE);
+        helper.setBlock(packed, Blocks.PACKED_ICE);
+        Runnable cleanup = () -> cleanup(helper, caster);
+        try {
+            cast(caster, heat(helper), 5.0, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int melted = countMatching(helper, ices, state -> state.is(Blocks.WATER));
+            boolean packedKept = helper.getBlockState(packed).is(Blocks.PACKED_ICE);
+            cleanup.run();
+            helper.assertTrue(melted >= 2, "The Heat Zone must melt ice into water, melted " + melted + " of 4");
             helper.assertTrue(packedKept, "Packed ice must stay");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 加熱領域: ランダムに選んだブロックで、積もった雪は層の数によらず消える（近くに光源があるときと同じ、水は残らない）。
+     * 雪ブロックと、範囲の外の積もった雪はそのまま。範囲は (2, 1, 2) を中心にした一辺 5（x・z 0〜4）。1 層・8 層それぞれ
+     * 4 つのうち 2 つ以上（落ちる見込み約 2.3×10⁻⁶）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_snow", timeoutTicks = RANDOM_WAIT + 100)
+    public static void heatZoneMeltsSnowRandomly(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_snow", new Vec3(4.5, 1.0, 4.5));
+        List<BlockPos> thin = List.of(new BlockPos(0, 1, 0), new BlockPos(1, 1, 0), new BlockPos(2, 1, 0), new BlockPos(3, 1, 0));
+        List<BlockPos> deep = List.of(new BlockPos(0, 1, 4), new BlockPos(1, 1, 4), new BlockPos(2, 1, 4), new BlockPos(3, 1, 4));
+        BlockPos block = CENTER;
+        BlockPos outside = new BlockPos(6, 1, 2);
+        List<BlockPos> spots = new java.util.ArrayList<>(thin);
+        spots.addAll(deep);
+        spots.add(block);
+        spots.add(outside);
+        spots.forEach(pos -> helper.setBlock(pos.below(), Blocks.STONE));
+        thin.forEach(pos -> helper.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 1)));
+        deep.forEach(pos -> helper.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 8)));
+        helper.setBlock(block, Blocks.SNOW_BLOCK);
+        helper.setBlock(outside, Blocks.SNOW);
+        Runnable cleanup = () -> {
+            spots.forEach(pos -> {
+                helper.setBlock(pos, Blocks.AIR);
+                helper.setBlock(pos.below(), Blocks.AIR);
+            });
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, heat(helper), 5.0, 1.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int thinMelted = countMatching(helper, thin, BlockState::isAir);
+            int deepMelted = countMatching(helper, deep, BlockState::isAir);
+            boolean blockKept = helper.getBlockState(block).is(Blocks.SNOW_BLOCK);
+            boolean outsideKept = helper.getBlockState(outside).is(Blocks.SNOW);
+            cleanup.run();
+            helper.assertTrue(thinMelted >= 2, "One-layer snow inside the Heat Zone must melt away, melted " + thinMelted + " of 4");
+            helper.assertTrue(deepMelted >= 2, "Eight-layer snow inside the Heat Zone must melt away, melted " + deepMelted + " of 4");
+            helper.assertTrue(blockKept, "A Snow Block must stay");
+            helper.assertTrue(outsideKept, "Snow outside the Heat Zone must stay");
+            helper.succeed();
+        });
+    }
+
+    /** 範囲 (2, 1, 2) を中心にした一辺 3 の、真ん中を除く 8 か所（y 1）。 */
+    private static List<BlockPos> ringAroundCenter() {
+        List<BlockPos> ring = new java.util.ArrayList<>();
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 3; z++) {
+                if (x != 2 || z != 2) {
+                    ring.add(new BlockPos(x, 1, z));
+                }
+            }
+        }
+        return ring;
+    }
+
+    /** 加熱領域: ランダムに選んだブロックで、濡れたスポンジが乾く（8 つのうち 5 つ以上、落ちる見込み約 1.3×10⁻⁷）。範囲の外の濡れたスポンジはそのまま。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_sponge", timeoutTicks = RANDOM_WAIT + 100)
+    public static void heatZoneDriesSpongesRandomly(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_sponge", new Vec3(4.5, 1.0, 4.5));
+        List<BlockPos> sponges = ringAroundCenter();
+        BlockPos outside = new BlockPos(6, 1, 2);
+        sponges.forEach(pos -> helper.setBlock(pos, Blocks.WET_SPONGE));
+        helper.setBlock(outside, Blocks.WET_SPONGE);
+        Runnable cleanup = () -> {
+            sponges.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            helper.setBlock(outside, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, heat(helper, CENTER), 3.0, 1.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int dried = countMatching(helper, sponges, state -> state.is(Blocks.SPONGE));
+            boolean outsideKept = helper.getBlockState(outside).is(Blocks.WET_SPONGE);
+            cleanup.run();
+            helper.assertTrue(dried >= 5, "Wet Sponges inside the Heat Zone must dry, dried " + dried + " of 8");
+            helper.assertTrue(outsideKept, "A Wet Sponge outside the Heat Zone must stay wet");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 荷電領域: ランダムに選んだブロックで、錆びる銅の錆が 1 段ずつ落ちる（雷が落ちたときと同じ）。向きなどの状態は保つ。
+     * 錆止めされた銅と、範囲の外の銅はそのまま。1 段でも落ちれば数え（1 度選ばれれば足りる）、7 つのうち 4 つ以上
+     * （落ちる見込み約 6.4×10⁻⁸）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_charged_copper", timeoutTicks = RANDOM_WAIT + 100)
+    public static void chargedZoneScrapesCopperRandomly(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_charged_copper", new Vec3(4.5, 1.0, 4.5));
+        List<BlockPos> ring = ringAroundCenter();
+        List<BlockPos> blocks = ring.subList(0, 7);
+        BlockPos stairs = ring.get(7);
+        BlockPos waxed = CENTER;
+        BlockPos outside = new BlockPos(6, 1, 2);
+        blocks.forEach(pos -> helper.setBlock(pos, Blocks.OXIDIZED_COPPER));
+        helper.setBlock(stairs, Blocks.OXIDIZED_CUT_COPPER_STAIRS.defaultBlockState()
+                .setValue(net.minecraft.world.level.block.StairBlock.FACING, net.minecraft.core.Direction.EAST));
+        helper.setBlock(waxed, Blocks.WAXED_OXIDIZED_COPPER);
+        helper.setBlock(outside, Blocks.OXIDIZED_COPPER);
+        Runnable cleanup = () -> {
+            ring.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            helper.setBlock(waxed, Blocks.AIR);
+            helper.setBlock(outside, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, charged(helper, CENTER), 3.0, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int scraped = countMatching(helper, blocks, state -> state.is(Blocks.WEATHERED_COPPER) || state.is(Blocks.EXPOSED_COPPER)
+                    || state.is(Blocks.COPPER_BLOCK));
+            BlockState stairsState = helper.getBlockState(stairs);
+            boolean stairsKeptShape = stairsState.getBlock() instanceof net.minecraft.world.level.block.StairBlock
+                    && stairsState.getValue(net.minecraft.world.level.block.StairBlock.FACING) == net.minecraft.core.Direction.EAST;
+            boolean waxedKept = helper.getBlockState(waxed).is(Blocks.WAXED_OXIDIZED_COPPER);
+            boolean outsideKept = helper.getBlockState(outside).is(Blocks.OXIDIZED_COPPER);
+            cleanup.run();
+            helper.assertTrue(scraped >= 4, "Copper inside the Charged Zone must lose its oxidation, scraped " + scraped + " of 7");
+            helper.assertTrue(stairsKeptShape, "Copper stairs must keep their shape and facing, got " + stairsState);
+            helper.assertTrue(waxedKept, "Waxed copper must stay as it is");
+            helper.assertTrue(outsideKept, "Copper outside the Charged Zone must stay oxidized");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 湿潤領域: ランダムに選んだブロックで、耕地は一番湿った状態（7）になり、スポンジは濡れたスポンジになる。範囲の外の
+     * スポンジはそのまま。耕地はバニラのランダムティックでも乾くので、5 以上（始めは 2）を湿ったとみなす。耕地・スポンジ
+     * それぞれ 4 つのうち 2 つ以上（落ちる見込み約 2.6×10⁻⁶）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak_random_blocks", timeoutTicks = RANDOM_WAIT + 100)
+    public static void soakZoneMoistensFarmlandAndWetsSpongesRandomly(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_soak_blocks", new Vec3(4.5, 1.0, 4.5));
+        List<BlockPos> ring = ringAroundCenter();
+        List<BlockPos> farmland = ring.subList(0, 4);
+        List<BlockPos> sponges = ring.subList(4, 8);
+        BlockPos outside = new BlockPos(6, 1, 2);
+        farmland.forEach(pos -> helper.setBlock(pos, Blocks.FARMLAND.defaultBlockState()
+                .setValue(net.minecraft.world.level.block.FarmBlock.MOISTURE, 2)));
+        sponges.forEach(pos -> helper.setBlock(pos, Blocks.SPONGE));
+        helper.setBlock(outside, Blocks.SPONGE);
+        Runnable cleanup = () -> {
+            ring.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            helper.setBlock(outside, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, soak(helper, CENTER), 3.0, 0.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int moist = countMatching(helper, farmland, state -> state.is(Blocks.FARMLAND)
+                    && state.getValue(net.minecraft.world.level.block.FarmBlock.MOISTURE) >= 5);
+            int wet = countMatching(helper, sponges, state -> state.is(Blocks.WET_SPONGE));
+            boolean outsideKept = helper.getBlockState(outside).is(Blocks.SPONGE);
+            cleanup.run();
+            helper.assertTrue(moist >= 2, "Farmland inside the Soak Zone must be moistened, moist " + moist + " of 4");
+            helper.assertTrue(wet >= 2, "Sponges inside the Soak Zone must get wet, wet " + wet + " of 4");
+            helper.assertTrue(outsideKept, "A Sponge outside the Soak Zone must stay dry");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 同じ術者の加熱領域と湿潤領域が重なったところのスポンジは、乾かすのと濡らすのを行き来しないよう、どちらもしない。
+     * 湿潤領域は x 1〜3、加熱領域は x 3〜5 で、x 3 が重なり。湿潤だけのところのスポンジは濡れ、加熱だけのところの濡れた
+     * スポンジは乾く（それぞれ 3 つのうち 1 つ以上、落ちる見込み約 5.7×10⁻⁷）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_soak_sponge", timeoutTicks = RANDOM_WAIT + 100)
+    public static void heatAndSoakOverlapLeaveSpongesAlone(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_soak_sponge", new Vec3(7.5, 1.0, 4.5));
+        List<BlockPos> soakOnly = List.of(new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(1, 1, 3));
+        List<BlockPos> heatOnly = List.of(new BlockPos(5, 1, 1), new BlockPos(5, 1, 2), new BlockPos(5, 1, 3));
+        List<BlockPos> overlapDry = List.of(new BlockPos(3, 1, 1), new BlockPos(3, 1, 2));
+        BlockPos overlapWet = new BlockPos(3, 1, 3);
+        soakOnly.forEach(pos -> helper.setBlock(pos, Blocks.SPONGE));
+        heatOnly.forEach(pos -> helper.setBlock(pos, Blocks.WET_SPONGE));
+        overlapDry.forEach(pos -> helper.setBlock(pos, Blocks.SPONGE));
+        helper.setBlock(overlapWet, Blocks.WET_SPONGE);
+        Runnable cleanup = () -> {
+            soakOnly.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            heatOnly.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            overlapDry.forEach(pos -> helper.setBlock(pos, Blocks.AIR));
+            helper.setBlock(overlapWet, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, soak(helper, CENTER), 3.0, 0.0);
+            cast(caster, heat(helper, new BlockPos(4, 1, 2)), 3.0, 1.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int wetted = countMatching(helper, soakOnly, state -> state.is(Blocks.WET_SPONGE));
+            int dried = countMatching(helper, heatOnly, state -> state.is(Blocks.SPONGE));
+            int overlapKeptDry = countMatching(helper, overlapDry, state -> state.is(Blocks.SPONGE));
+            boolean overlapKeptWet = helper.getBlockState(overlapWet).is(Blocks.WET_SPONGE);
+            cleanup.run();
+            helper.assertTrue(wetted >= 1, "Sponges under the Soak Zone alone must get wet, wet " + wetted + " of 3");
+            helper.assertTrue(dried >= 1, "Wet Sponges under the Heat Zone alone must dry, dried " + dried + " of 3");
+            helper.assertTrue(overlapKeptDry == 2 && overlapKeptWet,
+                    "Sponges where your Heat and Soak Zones overlap must stay as they are: dry kept " + overlapKeptDry
+                            + " of 2, wet kept " + overlapKeptWet);
             helper.succeed();
         });
     }
@@ -288,19 +550,12 @@ public final class ZoneElementGameTests {
         });
     }
 
-    /** 凍結領域: 中の生物は凍え、術者は凍えない。真上が空気の水源の水は氷になり、上が塞がれた水はそのまま。 */
+    /** 凍結領域: 中の生物は凍え、術者は凍えない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze", timeoutTicks = 100)
-    public static void freezeZoneFreezesBeingsAndOpenWater(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
+    public static void freezeZoneFreezesBeings(GameTestHelper helper) {
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_freeze_caster", new Vec3(4.5, 1.0, 4.5));
         Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(3.5, 1.0, 3.5));
-        basin(helper, OPEN, Blocks.WATER);
-        basin(helper, COVERED, Blocks.WATER);
-        helper.setBlock(COVERED.above(), Blocks.STONE);
-        Runnable cleanup = () -> {
-            helper.setBlock(COVERED.above(), Blocks.AIR);
-            cleanup(helper, caster);
-        };
+        Runnable cleanup = () -> cleanup(helper, caster);
         try {
             cast(caster, freeze(helper), 5.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
@@ -310,12 +565,42 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(25, () -> {
             int huskFrozen = husk.getTicksFrozen();
             int casterFrozen = caster.getTicksFrozen();
-            boolean openFrozen = helper.getBlockState(OPEN).is(Blocks.ICE);
-            boolean coveredKept = helper.getBlockState(COVERED).is(Blocks.WATER);
             cleanup.run();
             helper.assertTrue(huskFrozen > 0, "The husk inside the Freeze Zone must freeze, frozen ticks " + huskFrozen);
             helper.assertTrue(casterFrozen == 0, "The Freeze Zone must not freeze its own caster, frozen ticks " + casterFrozen);
-            helper.assertTrue(openFrozen, "Water with air above must turn into ice");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 凍結領域: ランダムに選んだブロックで、真上が空気の水源の水は氷になり（四隅の 4 つのうち 2 つ以上、落ちる見込み約
+     * 1.1×10⁻⁶）、上が塞がれた水はそのまま。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_water", timeoutTicks = RANDOM_WAIT + 100)
+    public static void freezeZoneFreezesOpenWaterRandomly(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_freeze_water", new Vec3(4.5, 1.0, 4.5));
+        // 開いた水は四隅の囲いの中。真ん中は四隅の囲いの石に囲まれるので、上を石で塞いだ水を置く。
+        List<BlockPos> open = List.of(OPEN, COVERED, THIRD, new BlockPos(3, 1, 3));
+        BlockPos covered = CENTER;
+        open.forEach(pos -> basin(helper, pos, Blocks.WATER));
+        helper.setBlock(covered.below(), Blocks.STONE);
+        helper.setBlock(covered, Blocks.WATER);
+        helper.setBlock(covered.above(), Blocks.STONE);
+        Runnable cleanup = () -> {
+            helper.setBlock(covered.above(), Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, freeze(helper), 5.0, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(RANDOM_WAIT, () -> {
+            int frozen = countMatching(helper, open, state -> state.is(Blocks.ICE));
+            boolean coveredKept = helper.getBlockState(covered).is(Blocks.WATER);
+            cleanup.run();
+            helper.assertTrue(frozen >= 2, "Water with air above must turn into ice, frozen " + frozen + " of 4");
             helper.assertTrue(coveredKept, "Water with a block above must stay water");
             helper.succeed();
         });
