@@ -153,6 +153,9 @@
   + Remade the 3D models of CADs made from Heavy Psimetal CAD Assembly α / β
 
 
+- Changed the look of the Magician villager to a researcher in a white coat and an academic cap (zombie villagers too)
+
+
 - The Psi-Link Generator now makes 4x the energy per Psi (100 FE) and has 4x the capacity. It outputs FE from its back side automatically by default (up to 25600 FE/t)
 
 
