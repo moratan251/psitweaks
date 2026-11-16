@@ -102,11 +102,14 @@ final class MekanismGameplayIntegration {
      * 下には冷やさない。取り除ききれなかった分は、まだ取り除けるブロックに分け直す（1 回だけ）。同じマルチブロックには 1 回だけ。
      * 取り除いた熱の合計を返す。
      */
-    static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                double fraction, double total, double belowAmbient, Predicate<BlockPos> mayUse) {
+    static MekanismGameplayCompat.ZoneHeatDrain drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities,
+                                                              Map<BlockEntity, Integer> sideCache, double fraction, double total,
+                                                              double belowAmbient, Predicate<BlockPos> mayUse) {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
         List<IHeatHandler> handlers = new ArrayList<>();
         List<Double> amounts = new ArrayList<>();
+        // そのブロックが周囲の温度より上に持っていた熱（運べる熱の上限、2026-11-16 ユーザー、案 3）。
+        List<Double> aboveAmbient = new ArrayList<>();
         for (BlockEntity blockEntity : blockEntities) {
             IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
             if (handler == null) {
@@ -116,7 +119,8 @@ final class MekanismGameplayIntegration {
                 continue;
             }
             // 冷やせる下限は周囲の温度より belowAmbient だけ低いところ（2026-11-15 ユーザー: 水を凍らせる領域なので周囲より下まで）。
-            double floor = Math.max(0.0, HeatAPI.getAmbientTemp(level, blockEntity.getBlockPos()) - Math.max(0.0, belowAmbient));
+            double ambient = HeatAPI.getAmbientTemp(level, blockEntity.getBlockPos());
+            double floor = Math.max(0.0, ambient - Math.max(0.0, belowAmbient));
             double excess = handler.getTotalTemperature() - floor;
             if (excess <= 0.01) {
                 continue;
@@ -126,19 +130,22 @@ final class MekanismGameplayIntegration {
             if (amount > 0.0) {
                 handlers.add(handler);
                 amounts.add(amount);
+                aboveAmbient.add(Math.max(0.0, handler.getTotalTemperature() - ambient) * handler.getTotalHeatCapacity());
             }
         }
         if (handlers.isEmpty() || total <= 0.0) {
-            return 0.0;
+            return MekanismGameplayCompat.ZoneHeatDrain.NONE;
         }
         // 冷却量を均等に分け、温度差の割合で取り除ききれなかった分を、まだ取り除けるブロックに分け直す（1 回だけ）。
         double share = total / handlers.size();
         double removed = 0.0;
+        double[] taken = new double[handlers.size()];
         List<Integer> open = new ArrayList<>();
         for (int i = 0; i < handlers.size(); i++) {
             double amount = Math.min(share, amounts.get(i));
             handlers.get(i).handleHeat(-amount);
             removed += amount;
+            taken[i] += amount;
             amounts.set(i, amounts.get(i) - amount);
             if (amounts.get(i) > 1.0E-9) {
                 open.add(i);
@@ -151,9 +158,15 @@ final class MekanismGameplayIntegration {
                 double amount = Math.min(extra, amounts.get(i));
                 handlers.get(i).handleHeat(-amount);
                 removed += amount;
+                taken[i] += amount;
             }
         }
-        return removed;
+        // 運べる熱: ブロックごとに min(奪った熱, (温度 − 周囲の温度) × 熱容量)。周囲より下まで冷やして奪った分は捨てる。
+        double carried = 0.0;
+        for (int i = 0; i < handlers.size(); i++) {
+            carried += Math.min(taken[i], aboveAmbient.get(i));
+        }
+        return new MekanismGameplayCompat.ZoneHeatDrain(removed, carried);
     }
 
     /** 熱を送る・取り除く相手の重複よけのキー: 組み上がったマルチブロックはマルチブロック全体、それ以外は熱の窓口。 */

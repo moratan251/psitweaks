@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 
 /**
- * 領域を組み合わせたときのダメージ（氷炎地獄・熱乱流・吹雪・暴風雨）。攻撃術式の共通ルール {@link AttackRules} に乗せる: 術者・
+ * 領域を組み合わせたときのダメージ（熱乱流・吹雪・暴風雨）。攻撃術式の共通ルール {@link AttackRules} に乗せる: 術者・
  * 術者のペット・同じチームには当てず、ダメージは 基本値 × 設定の倍率 × 全体倍率 × 術者の事象干渉力。
  */
 final class ZoneAttacks {
@@ -24,23 +24,8 @@ final class ZoneAttacks {
     }
 
     /**
-     * 領域 {@code zone} の中で、{@code where} が真のブロックにいる生物（当たり判定の中心で判定）に、1 回ぶんのダメージを
-     * 与える。当たった生物に {@code afterHit} を呼ぶ。
-     */
-    static void harm(ServerLevel level, SpellGramZone zone, ResourceKey<DamageType> type, float baseDamage,
-                     double perSpellMultiplier, Predicate<BlockPos> where, Consumer<LivingEntity> afterHit) {
-        harm(level, zone, type, baseDamage, perSpellMultiplier, where, target -> true, afterHit);
-    }
-
-    /** {@link #harm} のうち、{@code who} が真の生物だけに当てる。 */
-    static void harm(ServerLevel level, SpellGramZone zone, ResourceKey<DamageType> type, float baseDamage,
-                     double perSpellMultiplier, Predicate<BlockPos> where, Predicate<LivingEntity> who,
-                     Consumer<LivingEntity> afterHit) {
-        harmScaled(level, zone, type, perSpellMultiplier, pos -> where.test(pos) ? baseDamage : 0.0, who, afterHit);
-    }
-
-    /**
-     * 生物のいるブロックごとに 1 回ぶんの基本のダメージ（{@code baseDamageAt}、倍率を掛ける前）を決めて当てる。0 以下の
+     * 領域 {@code zone} の中の生物（当たり判定の中心で判定、{@code who} が真のものだけ）に、いるブロックごとに決めた 1 回ぶんの
+     * 基本のダメージ（{@code baseDamageAt}、倍率を掛ける前）を与え、当たった生物に {@code afterHit} を呼ぶ。0 以下の
      * ブロックの生物には当てない。乱流の威力で強さの決まる組み合わせ（熱乱流・吹雪・暴風雨）に使う。
      */
     static void harmScaled(ServerLevel level, SpellGramZone zone, ResourceKey<DamageType> type, double perSpellMultiplier,

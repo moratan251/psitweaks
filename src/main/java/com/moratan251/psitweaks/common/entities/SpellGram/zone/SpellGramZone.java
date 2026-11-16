@@ -47,9 +47,6 @@ public abstract class SpellGramZone extends SpellGramObject {
         return true;
     }
 
-    /** 氷炎地獄が起きているか（{@link InfernoZones}）。演出のためクライアントへ送る。 */
-    private static final EntityDataAccessor<Boolean> DATA_INFERNO =
-            SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.BOOLEAN);
     /** 同じ術者の乱流領域と重なっているか（熱乱流・吹雪などの演出のためクライアントへ送る）。 */
     private static final EntityDataAccessor<Boolean> DATA_STORM =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.BOOLEAN);
@@ -68,17 +65,11 @@ public abstract class SpellGramZone extends SpellGramObject {
     private double resourceUseWindow;
 
     private ZoneArea area = ZoneArea.EMPTY;
-    /** 氷炎地獄を続けるゲーム時刻（これより前なら起きている）。サーバー側だけ。 */
-    private long infernoUntil = Long.MIN_VALUE;
-    /** 氷炎地獄の強さ（両側の威力のうち小さいほう）。サーバー側だけ。 */
-    private float infernoPower;
     /**
      * 1 体・1 か所あたりの強さに使う威力の上限。加熱・凍結・乱流・荷電の領域は威力を 10 より上にも
      * できるが、上の分はコスト（熱・冷却・FE・風力の総量）だけを増やす。
      */
     public static final float MAX_EFFECT_POWER = 10.0F;
-    /** 氷炎地獄の相手の領域（エンティティの番号、まだなければ -1）。サーバー側だけ。 */
-    private int infernoPartner = -1;
     private int color = 0xFFFFFF;
     /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
     private int floorCircleLevel = -1;
@@ -108,7 +99,6 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     @Override
     protected void defineSpellGramSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DATA_INFERNO, false);
         builder.define(DATA_STORM, false);
         builder.define(DATA_RESOURCE, -1.0F);
         builder.define(DATA_RESOURCE_USED, -1.0F);
@@ -157,7 +147,7 @@ public abstract class SpellGramZone extends SpellGramObject {
      * 威力 10 で 2 倍。乱流が重なっていれば最も強いもののぶん。
      */
     public static final double STORM_BOOST_PER_POWER = 0.1;
-    /** 乱流の威力 1 あたりの、組み合わせのダメージ（1 回、倍率を掛ける前、仮）。威力 10 で 3（氷炎地獄の 4 より弱い）。 */
+    /** 乱流の威力 1 あたりの、組み合わせのダメージ（1 回、倍率を掛ける前、仮）。威力 10 で 3。 */
     public static final float STORM_DAMAGE_PER_POWER = 0.3F;
 
     /** 乱流ごとの、組み合わせで機械を動かす上乗せの進み（乱流のエンティティの番号ごと）。サーバー側だけ。 */
@@ -303,40 +293,6 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (storm != isStorm()) {
             entityData.set(DATA_STORM, storm);
         }
-    }
-
-    /** 氷炎地獄が起きているか（両側。クライアントでも分かる）。 */
-    public boolean isInferno() {
-        return entityData.get(DATA_INFERNO);
-    }
-
-    /** 氷炎地獄の強さ（両側の威力のうち小さいほう、サーバー側）。 */
-    float getInfernoPower() {
-        return infernoPower;
-    }
-
-    /** ゲーム時刻 {@code gameTime} に氷炎地獄が起きているか（サーバー側）。 */
-    boolean isInfernoAt(long gameTime) {
-        return gameTime < infernoUntil;
-    }
-
-    /** 氷炎地獄を {@code until}（ゲーム時刻）まで、相手 {@code partner} と続ける（サーバー側）。 */
-    void extendInferno(long until, float power, SpellGramZone partner) {
-        infernoUntil = Math.max(infernoUntil, until);
-        infernoPower = power;
-        infernoPartner = partner.getId();
-        if (!isInferno() && isInfernoAt(level().getGameTime())) {
-            entityData.set(DATA_INFERNO, true);
-        }
-    }
-
-    /** 氷炎地獄の相手（起きていない・相手が消えたなら null、サーバー側）。 */
-    @org.jetbrains.annotations.Nullable
-    SpellGramZone infernoPartner() {
-        if (infernoPartner < 0 || !isInfernoAt(level().getGameTime())) {
-            return null;
-        }
-        return level().getEntity(infernoPartner) instanceof SpellGramZone zone && !zone.isEnded() ? zone : null;
     }
 
     /** 床の魔法陣に前のフレームで選んだ画像の段（クライアントの描画用）。 */
@@ -751,9 +707,6 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     @Override
     protected void onSpellGramTickServer() {
-        if (isInferno() && !isInfernoAt(level().getGameTime())) {
-            entityData.set(DATA_INFERNO, false);
-        }
         if (tickCount % RESOURCE_SYNC_INTERVAL == 1) {
             entityData.set(DATA_RESOURCE, (float) resourcePerTick());
             entityData.set(DATA_RESOURCE_USED, resourcePerTick() < 0.0 ? -1.0F : (float) resourceUsedPerTick());

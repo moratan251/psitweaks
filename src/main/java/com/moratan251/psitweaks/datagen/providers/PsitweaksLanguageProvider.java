@@ -696,7 +696,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "active_air_mine", "Active Air Mine", "能動空中機雷");
         addDamageMultiplierConfig(root, "flare_circle", "Fire Circle", "ファイアサークル");
         addDamageMultiplierConfig(root, "ice_circle", "Ice Circle", "アイスサークル");
-        addDamageMultiplierConfig(root, "inferno", "Inferno", "氷炎地獄");
         addDamageMultiplierConfig(root, "heat_storm", "Heat Storm", "熱乱流");
         addDamageMultiplierConfig(root, "blizzard", "Blizzard", "吹雪");
         addDamageMultiplierConfig(root, "rainstorm", "Rainstorm", "暴風雨");
@@ -1002,18 +1001,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sは%2$sが%3$sで張ったアイスサークルに凍らされた";
             default -> "%1$s was frozen by an Ice Circle %2$s cast using %3$s";
         });
-        root.addProperty("death.attack.psitweaks.inferno_heat", switch (locale) {
-            case "ja_jp" -> "%1$sは氷炎地獄の灼熱に焼き尽くされた";
-            default -> "%1$s was burned away in the scorching half of an Inferno";
-        });
-        root.addProperty("death.attack.psitweaks.inferno_heat.player", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの氷炎地獄の灼熱に焼き尽くされた";
-            default -> "%1$s was burned away in the scorching half of %2$s's Inferno";
-        });
-        root.addProperty("death.attack.psitweaks.inferno_heat.item", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした氷炎地獄の灼熱に焼き尽くされた";
-            default -> "%1$s was burned away in the scorching half of an Inferno %2$s raised using %3$s";
-        });
         root.addProperty("death.attack.psitweaks.heat_storm", switch (locale) {
             case "ja_jp" -> "%1$sは熱乱流に焼かれた";
             default -> "%1$s was burned by a Heat Storm";
@@ -1061,18 +1048,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.rainstorm.item", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sが%3$sで起こした暴風雨に打たれて力尽きた";
             default -> "%1$s was beaten down by a Rainstorm %2$s raised using %3$s";
-        });
-        root.addProperty("death.attack.psitweaks.inferno_cold", switch (locale) {
-            case "ja_jp" -> "%1$sは氷炎地獄の極寒に凍りついた";
-            default -> "%1$s froze solid in the freezing half of an Inferno";
-        });
-        root.addProperty("death.attack.psitweaks.inferno_cold.player", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sの氷炎地獄の極寒に凍りついた";
-            default -> "%1$s froze solid in the freezing half of %2$s's Inferno";
-        });
-        root.addProperty("death.attack.psitweaks.inferno_cold.item", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした氷炎地獄の極寒に凍りついた";
-            default -> "%1$s froze solid in the freezing half of an Inferno %2$s raised using %3$s";
         });
     }
 
@@ -2180,8 +2155,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。干渉力2でケース入りファンと同じ速さです。自分の荷電領域が重なったところでは、電気炉のように一括燻製の代わりに一括製錬をします（精錬できるアイテムだけを扱うので、ほかのアイテムは燃えません）。$(p)領域は、コストに応じた熱の総量を持ちます。干渉力2なら、サイズ16の領域で、威力5ならブレイズバーナー1台、威力10なら3台ぶんです。");
 
         addBookPage(root, "trick_heat_zone.2",
-                "Blaze Burners inside are heated without fuel, nearest to the center first, each using as much of the total as burning charcoal would give it, as many as it pays for. The rest goes to the Mekanism blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), shared evenly, but never above 100 K per Power (1000 K at most).",
-                "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。1台につき熱の総量から木炭を燃やしたときと同じだけの熱を使い、領域の中心に近いものから、総量で払えるだけの台数がなります。残りの熱は、Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）で均等に分けます。ただし、威力×100K（最大1000K）より上には温めません。");
+                "Blaze Burners inside are heated without fuel, nearest to the center first, each using as much of the total as burning charcoal would give it, as many as it pays for. The rest goes to the Mekanism blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), shared evenly, but never above 100 K per Power (1000 K at most). Heat carried in by a Freeze Zone of yours touching it adds to the total.",
+                "範囲の中のブレイズバーナーは、燃料がなくても加熱の状態になります。1台につき熱の総量から木炭を燃やしたときと同じだけの熱を使い、領域の中心に近いものから、総量で払えるだけの台数がなります。残りの熱は、Mekanism の熱を受け取るブロック（抵抗型発熱器、加温蒸発濃縮バルブ、熱発電機など）で均等に分けます。ただし、威力×100K（最大1000K）より上には温めません。触れ合っている自分の凍結領域が運んできた熱も、総量に加わります。");
 
         // 凍結領域
         addBookPage(root, "trick_freeze_zone.0",
@@ -2193,6 +2168,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_freeze_zone.2",
                 "The zone has a cooling amount that follows its Cost, the same as the heat of a Heat Zone of the same Cost: at interference 2, about 640 J a tick for Size 16, Power 10. It is shared evenly by the blocks that hold heat; each loses at most 0.2% per Power of its difference from the lowest temperature a tick (2% at Power 10 and above).",
                 "領域は、コストに応じた冷却量を持ちます。同じコストの加熱領域の熱量と同じ量で、干渉力2なら、サイズ16・威力10で1 tick に約640 J です。冷却量は熱を持つブロックで均等に分け、1つが1 tick に冷えるのは、下限との温度差の 威力×0.2%（威力10以上で2%）までです。");
+
+        addBookPage(root, "trick_freeze_zone.3",
+                "Where it touches a Heat Zone of yours by a face, the heat it takes from blocks hotter than the ambient temperature is carried to that zone and adds to its heat total; heat taken below the ambient temperature is lost. Touching several Heat Zones, it splits the heat by the size of each touching face. Without Mekanism, there is no heat to carry.",
+                "自分の加熱領域と面で触れ合っていると、周囲の温度より熱いブロックから奪った熱は、その加熱領域へ運ばれて熱の総量に加わります。周囲より下まで冷やして奪った分は失われます。加熱領域にいくつも触れていれば、触れ合う面の広さに応じて分けます。Mekanism がなければ、運ぶ熱はありません。");
 
         // 乱流領域
         addBookPage(root, "trick_turbulence_zone.0",
@@ -3306,13 +3285,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         // Mekanism Generators only, hidden
         addAdvancement(root, "phonon_maser_fusion_ignition", "Sonofusion", "Ignite a Fusion Reactor with Trick: Phonon Maser",
                 "音響核融合", "作動式: フォノンメーザーで核融合炉を点火する");
-        // Hidden
-        addAdvancement(root, "inferno", "Inferno", "Split one region into scorching heat and bitter cold",
-                "氷炎地獄", "ひとつの範囲を、灼熱と極寒に二分する");
-        // Create only, hidden
-        addAdvancement(root, "inferno_superheat", "The Price of Heat",
-                "Superheat a Blaze Burner in the scorching half of an Inferno. Each superheated burner takes twice the heat from the Heat Zone",
-                "灼熱の対価", "氷炎地獄の灼熱でブレイズバーナーを極度の加熱にする。極度の加熱にしたバーナーは、1台ごとに加熱領域の熱を2倍使う");
         addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
                 "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",

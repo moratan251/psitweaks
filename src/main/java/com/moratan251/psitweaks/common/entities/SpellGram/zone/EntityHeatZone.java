@@ -35,10 +35,12 @@ import java.util.List;
  *   <li>氷と薄氷を水に戻す（{@link #affectBlock}）。</li>
  *   <li>1 tick あたりの熱の総量（{@link #heatTotalPerTick}）で Create のブレイズバーナーを加熱し（{@link #allocateBurners}）、
  *   残りを Mekanism の熱を受け取るブロックに均等に分ける（温度は {@link #maxTemperature} まで）。</li>
- *   <li>Create があれば、落ちているアイテムとデポ・ベルトの上のアイテムを一括燻製する（{@link #processCreate}）。</li>
+ *   <li>Create があれば、落ちているアイテムとデポ・ベルトの上のアイテムを一括燻製する（{@link #processCreate}）。自分の荷電領域が
+ *   重なったところは一括製錬（電気炉）。</li>
  * </ul>
- * 自分の側の凍結領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると熱乱流、凍結領域と直方体を二分すると
- * 氷炎地獄の灼熱側（{@link InfernoZones}）になる。仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
+ * 自分の側の凍結領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると熱乱流になる。同じ術者の凍結領域と
+ * 面で触れ合うと、凍結領域が運んできた熱を受け取り、熱量に足す（{@link ZoneHeatExchange}、{@link #acceptMovedHeat}）。
+ * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityHeatZone extends SpellGramZone {
     /** 威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
@@ -51,19 +53,13 @@ public class EntityHeatZone extends SpellGramZone {
     public static final double HEAT_PER_PSI = 360.0;
     /** ブレイズバーナー 1 台を「加熱」にするのに熱の総量から使う熱（J/t、木炭で加熱したときと同じ）。 */
     public static final double BURNER_HEAT_PER_TICK = 200.0;
-    /** ブレイズバーナー 1 台を「極度の加熱」にするのに使う熱（J/t、加熱の 2 倍）。 */
-    public static final double SUPERHEATED_BURNER_HEAT_PER_TICK = 400.0;
     private static final int INTERVAL = 10;
     private static final int MAX_EMBERS_PER_TICK = 5;
 
     /** 辺の色: 炎の橙。 */
     public static final int OUTLINE_COLOR = 0xFF7A2E;
-    /** 氷炎地獄の灼熱の辺の色: 赤。 */
-    public static final int INFERNO_OUTLINE_COLOR = 0xFF2A10;
     /** 熱乱流の辺の色: 明るい黄。 */
     public static final int STORM_OUTLINE_COLOR = 0xFFD23A;
-    /** 灼熱で当たった生物が燃え続ける長さ（秒）。 */
-    private static final float INFERNO_BURN_SECONDS = 6.0F;
     /** 熱乱流のダメージの間隔（tick）。 */
     public static final int STORM_INTERVAL = 10;
     /** 熱乱流で当たった生物が燃え続ける長さ（秒）。 */
@@ -71,15 +67,15 @@ public class EntityHeatZone extends SpellGramZone {
     /** 熱の総量で払うブレイズバーナーを決め直す間隔（tick）。 */
     public static final int BURNER_INTERVAL = 10;
 
-    /** 熱の総量から払って加熱しているブレイズバーナー（バーナーのブロックの位置 → 1 加熱 / 2 極度の加熱）。サーバー側だけ。 */
-    private final Map<BlockPos, Integer> poweredBurners = new HashMap<>();
+    /** 熱の総量から払って「加熱」にしているブレイズバーナー（バーナーのブロックの位置）。サーバー側だけ。 */
+    private final java.util.Set<BlockPos> poweredBurners = new java.util.HashSet<>();
     /** そのバーナーが使っている熱（J/t）。 */
     private double burnerHeatUse;
-    /** 氷炎地獄の極寒側から移された熱を、{@link #BURNER_INTERVAL} tick ぶんためたもの（J）。サーバー側だけ。 */
+    /** 触れ合っている凍結領域が運んできた熱を、{@link #BURNER_INTERVAL} tick ぶんためたもの（J）。サーバー側だけ。 */
     private double movedHeatWindow;
-    /** 直前の {@link #BURNER_INTERVAL} tick に移された熱の 1 tick あたり（J/t）。灼熱の間、熱の総量に足す。サーバー側だけ。 */
+    /** 直前の {@link #BURNER_INTERVAL} tick に運ばれてきた熱の 1 tick あたり（J/t）。熱量に足す。サーバー側だけ。 */
     private double movedHeatPerTick;
-    /** 移された熱の合計（J、GameTest 用）。 */
+    /** 運ばれてきた熱の合計（J、GameTest 用）。 */
     private double movedHeatReceived;
 
     public EntityHeatZone(EntityType<? extends EntityHeatZone> type, Level level) {
@@ -90,7 +86,7 @@ public class EntityHeatZone extends SpellGramZone {
         this(PsitweaksEntities.HEAT_ZONE.get(), level);
     }
 
-    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。燃やす長さ・上限の温度・氷炎地獄の強さを決める。 */
+    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。燃やす長さ・上限の温度を決める。 */
     private float power = DEFAULT_POWER;
     /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
@@ -113,31 +109,26 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * Create のブレイズバーナー（{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} の
-     * バーナーを、加熱領域が熱の総量から払って加熱していれば 1（加熱）、極度の加熱なら 2、どちらでもなければ 0（サーバー側）。
-     * 払う台数・打ち消し・領域干渉・保護は {@link #allocateBurners} で決める。重なっていれば強いほう。
+     * Create のブレイズバーナー（{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} のバーナーを、加熱領域が
+     * 熱の総量から払って「加熱」にしているか（サーバー側）。払う台数・打ち消し・領域干渉・保護は {@link #allocateBurners} で
+     * 決める。領域からは極度の加熱にしない（2026-11-16 ユーザー）。
      */
-    public static int burnerHeatAt(Level level, BlockPos pos) {
-        if (!(level instanceof ServerLevel server)) {
-            return 0;
+    public static boolean isBurnerPowered(Level level, BlockPos pos) {
+        if (!(level instanceof ServerLevel)) {
+            return false;
         }
         List<EntityHeatZone> zones = SpellGramIndex.all(level, EntityHeatZone.class);
         if (zones.isEmpty()) {
-            return 0;
+            return false;
         }
         // 機体（Sable のサブレベル）の上のバーナーは、今見えている世界の位置で領域を探す（保護は本当の位置で確かめる）。
         BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
-        int heat = 0;
         for (EntityHeatZone zone : zones) {
-            if (zone.isEnded() || !zone.isInsideAndActive(at)) {
-                continue;
-            }
-            Integer powered = zone.poweredBurners.get(pos);
-            if (powered != null) {
-                heat = Math.max(heat, powered);
+            if (!zone.isEnded() && zone.poweredBurners.contains(pos) && zone.isInsideAndActive(at)) {
+                return true;
             }
         }
-        return heat;
+        return false;
     }
 
     /** 範囲の中の生物が燃え続ける長さ（秒）: 威力 × 0.6。 */
@@ -158,7 +149,7 @@ public class EntityHeatZone extends SpellGramZone {
 
     @Override
     public int getOutlineColor() {
-        return isInferno() ? INFERNO_OUTLINE_COLOR : isStorm() ? STORM_OUTLINE_COLOR : OUTLINE_COLOR;
+        return isStorm() ? STORM_OUTLINE_COLOR : OUTLINE_COLOR;
     }
 
     @Override
@@ -208,13 +199,8 @@ public class EntityHeatZone extends SpellGramZone {
         if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level)) {
             return;
         }
-        if (tickCount % InfernoZones.INTERVAL == 0) {
-            InfernoZones.link(level, this);
-            InfernoZones.showHints(level, this);
-            if (isInfernoAt(level.getGameTime())) {
-                InfernoZones.harm(level, this, PsitweaksDamageTypes.INFERNO_HEAT,
-                        target -> target.igniteForSeconds(INFERNO_BURN_SECONDS));
-            }
+        if (tickCount % ZoneHeatExchange.INTERVAL == 0) {
+            ZoneHeatExchange.showHints(level, this);
         }
         if (tickCount % STORM_INTERVAL == 0) {
             refreshStorm();
@@ -228,16 +214,15 @@ public class EntityHeatZone extends SpellGramZone {
         if (!(getCaster() instanceof Player caster)) {
             return;
         }
-        boolean inferno = isInfernoAt(level.getGameTime());
         boolean storm = isStorm();
         // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械にも効かせる）。範囲・領域干渉・乱流は世界の位置で判定し、
         // 保護は機械が本当にある位置で確かめる。
         List<ZoneRegion> regions = regions();
-        // 自分の荷電領域が重なったところは一括製錬（電気炉）。灼熱の間はどこも一括製錬。
-        List<EntityChargedZone> arcs = inferno || !CreateCompat.isCreateLoaded() ? List.of() : ownChargedZones(level);
+        // 自分の荷電領域が重なったところは一括製錬（電気炉）。
+        List<EntityChargedZone> arcs = CreateCompat.isCreateLoaded() ? ownChargedZones(level) : List.of();
         for (int step = takeMachineSteps(); step > 0; step--) {
             for (ZoneRegion region : regions) {
-                processCreate(level, caster, region, inferno, arcs,
+                processCreate(level, caster, region, arcs,
                         world -> isActiveAt(world) && isStrongestAt(world));
             }
         }
@@ -246,19 +231,19 @@ public class EntityHeatZone extends SpellGramZone {
             forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                 for (int i = 0; i < steps; i++) {
                     for (ZoneRegion region : regions) {
-                        processCreate(level, caster, region, inferno, arcs,
+                        processCreate(level, caster, region, arcs,
                                 world -> stormAt(world) == turbulence && isStrongestAt(world));
                     }
                 }
             });
         }
         if (tickCount % BURNER_INTERVAL == 0) {
-            // 極寒側から移された熱を、直前の間隔でならして熱の総量に入れる（バーナーを決める前に）。
+            // 触れ合っている凍結領域が運んできた熱を、直前の間隔でならして熱の総量に入れる（バーナーを決める前に）。
             movedHeatPerTick = movedHeatWindow / BURNER_INTERVAL;
             movedHeatWindow = 0.0;
-            allocateBurners(level, caster, regions, inferno);
+            allocateBurners(level, caster, regions);
         }
-        double total = heatTotalPerTick(inferno);
+        double total = heatTotalPerTick();
         double heat = total - burnerHeatUse;
         // 照準の表示: 使っている熱 = バーナーに払った分 + Mekanism の機械に渡した分（熱乱流の上乗せは入れない）。
         double used = burnerHeatUse;
@@ -284,11 +269,11 @@ public class EntityHeatZone extends SpellGramZone {
                 }
                 if (storm) {
                     // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
-                    // 上乗せは乱流が範囲を覆う割合を掛ける（小さな乱流を重ねても増えないように）。
+                    // 上乗せは乱流が範囲を覆う割合を掛ける（小さな乱流を重ねても増えないように）。運ばれてきた熱には掛けない。
                     for (Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                         EntityTurbulenceZone turbulence = entry.getKey();
                         MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(),
-                                ownHeatTotalPerTick(inferno) * stormBoost(turbulence.getPower()) * entry.getValue(),
+                                ownHeatTotalPerTick() * stormBoost(turbulence.getPower()) * entry.getValue(),
                                 maxTemperature(), pos -> {
                                     ZoneRegion region = owners.get(pos);
                                     return region != null && stormAt(region.worldPos(pos)) == turbulence
@@ -301,22 +286,20 @@ public class EntityHeatZone extends SpellGramZone {
         recordResourceUse(Math.min(total, used));
     }
 
-    /** 払うブレイズバーナー 1 台（バーナーの位置、世界の位置、1 加熱 / 2 極度の加熱）。 */
-    private record Burner(BlockPos pos, BlockPos worldPos, int heat) {
+    /** 払うブレイズバーナー 1 台（バーナーの位置、世界の位置）。 */
+    private record Burner(BlockPos pos, BlockPos worldPos) {
     }
 
     /**
-     * 熱の総量から、加熱するブレイズバーナーを決め直す（{@link #BURNER_INTERVAL} tick ごと）。自分の燃料でまだその段にないバーナーを、
-     * 領域の中心に近い順に、総量で払えるだけ（加熱 {@link #BURNER_HEAT_PER_TICK}、灼熱の中は極度の加熱
-     * {@link #SUPERHEATED_BURNER_HEAT_PER_TICK}）。残りの総量は Mekanism の機械に回る。
+     * 熱の総量から、加熱するブレイズバーナーを決め直す（{@link #BURNER_INTERVAL} tick ごと）。自分の燃料ではまだ加熱になっていない
+     * バーナーを、領域の中心に近い順に、総量で払えるだけ（1 台 {@link #BURNER_HEAT_PER_TICK}）。残りの総量は Mekanism の機械に回る。
      */
-    private void allocateBurners(ServerLevel level, Player caster, List<ZoneRegion> regions, boolean inferno) {
+    private void allocateBurners(ServerLevel level, Player caster, List<ZoneRegion> regions) {
         poweredBurners.clear();
         burnerHeatUse = 0.0;
         if (!CreateCompat.isCreateLoaded()) {
             return;
         }
-        int wanted = inferno ? 2 : 1;
         List<Burner> burners = new ArrayList<>();
         for (ZoneRegion region : regions) {
             for (BlockEntity blockEntity : machinesIn(region)) {
@@ -324,15 +307,14 @@ public class EntityHeatZone extends SpellGramZone {
                     continue;
                 }
                 int own = CreateCompat.burnerOwnHeat(blockEntity);
-                if (own < 0 || own >= wanted) {
+                if (own != 0) {
                     continue;
                 }
                 BlockPos pos = blockEntity.getBlockPos();
                 BlockPos world = region.worldPos(pos);
-                // 重なった自分の加熱領域どうしでは、ほかの領域がもうその段以上で払っているバーナーは払わない（二度払いをしない）。
-                // ほかの領域が低い段で払っていれば、こちらが高い段で払い、相手は次の決め直しで手を引く。
-                if (isActiveAt(world) && mayUseMachine(level, caster, pos) && !paidByAnother(level, pos, wanted)) {
-                    burners.add(new Burner(pos, world, wanted));
+                // 重なった自分の加熱領域どうしでは、ほかの領域がもう払っているバーナーは払わない（二度払いをしない）。
+                if (isActiveAt(world) && mayUseMachine(level, caster, pos) && !paidByAnother(level, pos)) {
+                    burners.add(new Burner(pos, world));
                 }
             }
         }
@@ -341,29 +323,21 @@ public class EntityHeatZone extends SpellGramZone {
         }
         BlockPos center = getArea().center();
         burners.sort(java.util.Comparator.comparingDouble(burner -> burner.worldPos().distSqr(center)));
-        double budget = heatTotalPerTick(inferno);
-        double cost = inferno ? SUPERHEATED_BURNER_HEAT_PER_TICK : BURNER_HEAT_PER_TICK;
+        double budget = heatTotalPerTick();
         for (Burner burner : burners) {
-            if (burnerHeatUse + cost > budget + 1.0E-9) {
+            if (burnerHeatUse + BURNER_HEAT_PER_TICK > budget + 1.0E-9) {
                 break;
             }
-            poweredBurners.put(burner.pos(), burner.heat());
-            burnerHeatUse += cost;
-        }
-        if (inferno && !poweredBurners.isEmpty()) {
-            // 隠し進捗（Create があるときだけ読み込まれる）。
-            InfernoZones.award(level, caster, com.moratan251.psitweaks.common.handler.PsitweaksAdvancements.INFERNO_SUPERHEAT);
+            poweredBurners.add(burner.pos());
+            burnerHeatUse += BURNER_HEAT_PER_TICK;
         }
     }
 
-    /** ほかの加熱領域が、バーナー {@code pos} を段 {@code wanted} 以上で払っているか。 */
-    private boolean paidByAnother(ServerLevel level, BlockPos pos, int wanted) {
+    /** ほかの加熱領域が、バーナー {@code pos} をもう払っているか。 */
+    private boolean paidByAnother(ServerLevel level, BlockPos pos) {
         for (EntityHeatZone other : SpellGramIndex.all(level, EntityHeatZone.class)) {
-            if (other != this && !other.isEnded()) {
-                Integer paid = other.poweredBurners.get(pos);
-                if (paid != null && paid >= wanted) {
-                    return true;
-                }
+            if (other != this && !other.isEnded() && other.poweredBurners.contains(pos)) {
+                return true;
             }
         }
         return false;
@@ -375,26 +349,25 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * 1 tick あたりの熱の総量（J）: 置いたときのコスト × {@link #HEAT_PER_PSI} ÷ 存続時間 × 速さ。灼熱の間は、相手の凍結領域の
-     * 同じ式の分を足す（2 つの領域のコストの合計）。
+     * 1 tick あたりの熱の総量（J）: 自分の分（{@link #ownHeatTotalPerTick}）と、触れ合っている凍結領域が運んできた熱（直前の
+     * {@link #BURNER_INTERVAL} tick の平均）。ブレイズバーナーを先に払い、残りを Mekanism の機械に配る。
      */
-    public double heatTotalPerTick(boolean inferno) {
-        return ownHeatTotalPerTick(inferno) + (inferno ? movedHeatPerTick : 0.0);
+    public double heatTotalPerTick() {
+        return ownHeatTotalPerTick() + movedHeatPerTick;
     }
 
-    /** 魔法式が生む熱の総量（J/t）: この領域の分と、灼熱の間は相手の凍結領域の分。極寒側から移された熱は入れない。 */
-    public double ownHeatTotalPerTick(boolean inferno) {
-        double total = heatTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
-        if (inferno && infernoPartner() instanceof EntityFreezeZone cold) {
-            total += heatTotalPerTick(cold.getPlacementCost(), cold.getLifetimeTicks(), cold.getMachineSpeed());
-        }
-        return total;
+    /**
+     * 魔法式が生む熱の総量（J/t）: 置いたときのコスト × {@link #HEAT_PER_PSI} ÷ 存続時間 × 速さ。運ばれてきた熱は入れない
+     * （熱乱流の上乗せはこれにだけ掛ける）。
+     */
+    public double ownHeatTotalPerTick() {
+        return heatTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
     }
 
-    /** 照準の表示: 熱量（J/t、灼熱なら相手の分と、極寒側から移された熱も足したもの）。 */
+    /** 照準の表示: 熱量（J/t、運ばれてきた熱も足したもの）。 */
     @Override
     protected double resourcePerTick() {
-        return heatTotalPerTick(isInfernoAt(level().getGameTime()));
+        return heatTotalPerTick();
     }
 
     @Override
@@ -402,7 +375,7 @@ public class EntityHeatZone extends SpellGramZone {
         return "psitweaks.hud.zone_resource.heat";
     }
 
-    /** 氷炎地獄の極寒側が奪った熱 {@code heat}（J）を受け取る。ためて、次の間隔から熱の総量に足す。 */
+    /** 触れ合っている凍結領域が運んできた熱 {@code heat}（J）を受け取る。ためて、次の間隔から熱の総量に足す。 */
     void acceptMovedHeat(double heat) {
         if (heat > 0.0) {
             movedHeatWindow += heat;
@@ -410,7 +383,7 @@ public class EntityHeatZone extends SpellGramZone {
         }
     }
 
-    /** 極寒側から移された熱の合計（J、GameTest 用）。 */
+    /** 凍結領域から運ばれてきた熱の合計（J、GameTest 用）。 */
     public double movedHeatReceived() {
         return movedHeatReceived;
     }
@@ -512,20 +485,14 @@ public class EntityHeatZone extends SpellGramZone {
         return openAbove ? overlap.minY : Double.NaN;
     }
 
-    /** Create の加工: ふだんは一括燻製、氷炎地獄の灼熱の間は一括製錬。 */
-    private static CreateCompat.FanProcess fanProcess(boolean inferno) {
-        return inferno ? CreateCompat.FanProcess.BLASTING : CreateCompat.FanProcess.SMOKING;
-    }
-
     /**
-     * 範囲 {@code region} で Create の加工を 1 回進める。{@code where} は世界の位置で、加工してよいところ。灼熱の間はどこも一括製錬、
-     * そうでなければ自分の荷電領域 {@code arcs} が重なったところは一括製錬（電気炉）、ほかは一括燻製。
+     * 範囲 {@code region} で Create の加工を 1 回進める。{@code where} は世界の位置で、加工してよいところ。自分の荷電領域
+     * {@code arcs} が重なったところは一括製錬（電気炉）、ほかは一括燻製。
      */
-    private void processCreate(ServerLevel level, Player caster, ZoneRegion region, boolean inferno, List<EntityChargedZone> arcs,
+    private void processCreate(ServerLevel level, Player caster, ZoneRegion region, List<EntityChargedZone> arcs,
                                java.util.function.Predicate<BlockPos> where) {
-        if (inferno || arcs.isEmpty()) {
-            CreateCompat.FanProcess process = fanProcess(inferno);
-            CreateCompat.processZone(level, region.area(), machinesIn(region), process,
+        if (arcs.isEmpty()) {
+            CreateCompat.processZone(level, region.area(), machinesIn(region), CreateCompat.FanProcess.SMOKING,
                     pos -> where.test(region.worldPos(pos)),
                     pos -> where.test(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
             return;
@@ -602,12 +569,11 @@ public class EntityHeatZone extends SpellGramZone {
                 }
             }
         }
-        // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル（灼熱と、荷電領域が重なったところは
+        // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル（荷電領域が重なったところは
         // 一括製錬のもの。クライアントでは術者を見分けない）。
         // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
         if (CreateCompat.isCreateLoaded()) {
-            boolean inferno = isInferno();
-            List<EntityChargedZone> arcs = inferno ? List.of() : level().getEntitiesOfClass(EntityChargedZone.class, getOutline());
+            List<EntityChargedZone> arcs = level().getEntitiesOfClass(EntityChargedZone.class, getOutline());
             // 電気炉（荷電領域が重なったところ）の専用の演出（2026-11-15 ユーザー）。
             for (EntityChargedZone arc : arcs) {
                 AABB overlap = ZoneAttacks.overlap(getOutline(), arc.getOutline());
@@ -617,9 +583,6 @@ public class EntityHeatZone extends SpellGramZone {
             }
             for (ZoneRegion region : regions()) {
                 CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), pos -> {
-                    if (inferno) {
-                        return CreateCompat.FanProcess.BLASTING;
-                    }
                     net.minecraft.world.phys.Vec3 at = net.minecraft.world.phys.Vec3.atCenterOf(region.worldPos(pos));
                     for (EntityChargedZone arc : arcs) {
                         if (arc.getOutline().contains(at)) {
@@ -632,19 +595,14 @@ public class EntityHeatZone extends SpellGramZone {
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int embers = (int) Math.min(MAX_EMBERS_PER_TICK, Math.max(1, volume / 150.0)) * (isInferno() ? 4 : 1);
+        int embers = (int) Math.min(MAX_EMBERS_PER_TICK, Math.max(1, volume / 150.0));
         for (int i = 0; i < embers; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();
             double y = box.minY + random.nextDouble() * box.getYsize();
             double z = box.minZ + random.nextDouble() * box.getZsize();
             if (getArea().contains(BlockPos.containing(x, y, z))) {
-                if (isInferno()) {
-                    level().addParticle(random.nextInt(4) == 0 ? ParticleTypes.LAVA : ParticleTypes.FLAME,
-                            x, y, z, 0.0, 0.05, 0.0);
-                } else {
-                    level().addParticle(random.nextInt(3) == 0 ? ParticleTypes.SMOKE : ParticleTypes.SMALL_FLAME,
-                            x, y, z, 0.0, 0.02, 0.0);
-                }
+                level().addParticle(random.nextInt(3) == 0 ? ParticleTypes.SMOKE : ParticleTypes.SMALL_FLAME,
+                        x, y, z, 0.0, 0.02, 0.0);
             }
         }
     }

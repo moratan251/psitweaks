@@ -50,14 +50,23 @@ public final class MekanismGameplayCompat {
      * 作動式: 凍結領域の冷却: 範囲の中の Mekanism の熱を持つブロックを、下限（周囲の温度 − {@code belowAmbient}）に向けて
      * 温度差の {@code fraction} だけ冷やす（下限より下には冷やさない、同じマルチブロックには 1 回だけ、{@code mayUse} が偽の
      * ブロックは冷やさない）。
-     * 取り除く合計は {@code maxTotal} まで（超えたら、どの受け手も同じ割合で減らす）。
-     * 取り除いた熱の合計を返す。Mekanism がなければ 0。
+     * 取り除く合計は {@code total} まで（均等に分け、取り除ききれなかった分を 1 回だけ分け直す）。
+     * 取り除いた熱の合計と、そのうち周囲の温度より上にあった分（加熱領域へ運べる熱）を返す。Mekanism がなければ両方 0。
      */
-    public static double drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                       double fraction, double total, double belowAmbient, Predicate<BlockPos> mayUse) {
+    public static ZoneHeatDrain drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
+                                              double fraction, double total, double belowAmbient, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
                 ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, total, belowAmbient, mayUse)
-                : 0.0;
+                : ZoneHeatDrain.NONE;
+    }
+
+    /**
+     * 凍結領域の冷却の結果（J）: 取り除いた熱 {@code removed} と、そのうち周囲の温度より上にあった分 {@code carried}（ブロック
+     * ごとに min(奪った熱, (温度 − 周囲の温度) × 熱容量) の合計）。運べる熱は、触れ合っている加熱領域へ渡す（2026-11-16
+     * ユーザー、案 3「運ぶだけ」）。
+     */
+    public record ZoneHeatDrain(double removed, double carried) {
+        public static final ZoneHeatDrain NONE = new ZoneHeatDrain(0.0, 0.0);
     }
 
     /** Mekanism の熱を持つブロック {@code pos} の温度（K）。Mekanism がないか、熱を持たないブロックなら NaN。GameTest 用。 */

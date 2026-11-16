@@ -40,12 +40,6 @@ public final class PsitweaksDamageTypes {
     /** 作動式: アイスサークルの円の中のダメージ。凍結属性で、術者を攻撃者に持つ（障壁で防げる）。 */
     public static final ResourceKey<DamageType> ICE_CIRCLE =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("ice_circle"));
-    /** 氷炎地獄の灼熱（加熱領域）のダメージ。火属性で、術者を攻撃者に持つ。 */
-    public static final ResourceKey<DamageType> INFERNO_HEAT =
-            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("inferno_heat"));
-    /** 氷炎地獄の極寒（凍結領域）のダメージ。凍結属性で、術者を攻撃者に持つ。 */
-    public static final ResourceKey<DamageType> INFERNO_COLD =
-            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("inferno_cold"));
     /** 熱乱流（乱流領域と加熱領域）のダメージ。火属性で、術者を攻撃者に持つ。 */
     public static final ResourceKey<DamageType> HEAT_STORM =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("heat_storm"));

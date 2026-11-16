@@ -13,7 +13,7 @@ import vazkii.psi.api.spell.StatLabel;
 /**
  * 作動式: 加熱領域（仮、Heat Zone）。範囲の中の生物に火をつけ、氷を溶かす。Create があれば一括燻製、Mekanism があれば
  * 熱を受け取るブロックに熱を送る（{@link EntityHeatZone}）。「威力」（定数）は領域の温度で、燃やす長さと
- * Mekanism の機械を温める上限の温度、氷炎地獄の強さを決める。
+ * Mekanism の機械を温める上限の温度を決める。
  */
 public class PieceTrickHeatZone extends PieceTrickZoneBase<EntityHeatZone> {
     // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²）

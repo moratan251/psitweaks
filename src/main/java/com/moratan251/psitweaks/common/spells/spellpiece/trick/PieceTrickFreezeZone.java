@@ -12,7 +12,7 @@ import vazkii.psi.api.spell.StatLabel;
 
 /**
  * 作動式: 凍結領域（仮、Freeze Zone）。範囲の中の生物を凍えさせ、上が空気の水源の水を氷にする（{@link EntityFreezeZone}）。
- * 「威力」（定数）は冷やす強さで、凍えのたまる速さと氷炎地獄の強さを決める。
+ * 「威力」（定数）は冷やす強さで、凍えのたまる速さと、Mekanism の機械を冷やせる下限を決める。
  */
 public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
     // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²）

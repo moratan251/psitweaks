@@ -30,20 +30,6 @@ final class CreateFanIntegration {
     private static java.lang.reflect.Method creative;
     private static boolean burnerLookedUp;
 
-    /** {@link CreateCompat#isBurnerNeedingSuperheat}。 */
-    static boolean isBurnerNeedingSuperheat(BlockEntity blockEntity) {
-        if (!lookUpBurner() || !burnerClass.isInstance(blockEntity)
-                || BlazeBurnerBlock.getHeatLevelOf(blockEntity.getBlockState()) == BlazeBurnerBlock.HeatLevel.NONE) {
-            return false;
-        }
-        try {
-            Object fuel = activeFuel.invoke(blockEntity);
-            return !((Boolean) creative.invoke(blockEntity)) && !(fuel instanceof Enum<?> type && "SPECIAL".equals(type.name()));
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            return false;
-        }
-    }
-
     /** {@link CreateCompat#burnerOwnHeat}。 */
     static int burnerOwnHeat(BlockEntity blockEntity) {
         if (!lookUpBurner() || !burnerClass.isInstance(blockEntity)

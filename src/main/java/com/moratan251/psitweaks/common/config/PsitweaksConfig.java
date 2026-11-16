@@ -29,7 +29,6 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue activeAirMineDamageMultiplier;
         public final ModConfigSpec.DoubleValue flareCircleDamageMultiplier;
         public final ModConfigSpec.DoubleValue iceCircleDamageMultiplier;
-        public final ModConfigSpec.DoubleValue infernoDamageMultiplier;
         public final ModConfigSpec.DoubleValue heatStormDamageMultiplier;
         public final ModConfigSpec.DoubleValue blizzardDamageMultiplier;
         public final ModConfigSpec.DoubleValue rainstormDamageMultiplier;
@@ -208,19 +207,6 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // ice_circle カテゴリ終了
-
-            // --- 氷炎地獄（加熱領域と凍結領域の組み合わせ） ---
-            builder.comment("Inferno Settings")
-                    .translation("psitweaks.configuration.spells.inferno")
-                    .push("inferno");
-
-            infernoDamageMultiplier = builder
-                    .comment("氷炎地獄（加熱領域と凍結領域の組み合わせ）の威力倍率（与ダメージ倍率）",
-                            "Power (damage) multiplier for the Inferno (a Heat Zone and a Freeze Zone together)")
-                    .translation("psitweaks.configuration.spells.inferno.damage_multiplier")
-                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
-
-            builder.pop(); // inferno カテゴリ終了
 
             // --- 熱乱流（乱流領域と加熱領域の組み合わせ） ---
             builder.comment("Heat Storm Settings")

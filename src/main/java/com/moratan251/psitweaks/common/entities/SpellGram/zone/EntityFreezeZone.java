@@ -23,6 +23,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 作動式: 凍結領域（仮）の範囲。
@@ -30,11 +31,12 @@ import java.util.List;
  *   <li>中の生物を、粉雪に埋まったときと同じように凍えさせる（{@link #freezeAmount}）。術者自身は凍えさせない
  *   （{@link #sparesCaster}）。</li>
  *   <li>水源の水のうち、真上が空気のものを氷にする（{@link #affectBlock}）。</li>
- *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を周囲の温度に向けて冷やす
+ *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を下限（周囲の温度 − 威力 × 5 K）に向けて冷やす
  *   （{@link #coolMekanismMachines}）。</li>
  * </ul>
- * 自分の側の加熱領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると吹雪、加熱領域と直方体を二分すると
- * 氷炎地獄の極寒側（{@link InfernoZones}）になる。仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
+ * 自分の側の加熱領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると吹雪になる。同じ術者の加熱領域と
+ * 面で触れ合うと、奪った熱のうち周囲の温度より上にあった分を、その加熱領域へ運ぶ（{@link ZoneHeatExchange}）。凍結領域は熱を
+ * 作らず、運ぶだけ。仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityFreezeZone extends SpellGramZone {
     private static final int INTERVAL = 10;
@@ -44,8 +46,6 @@ public class EntityFreezeZone extends SpellGramZone {
 
     /** 辺の色: 氷の水色。 */
     public static final int OUTLINE_COLOR = 0xB8F0FF;
-    /** 氷炎地獄の極寒の辺の色: 青白。 */
-    public static final int INFERNO_OUTLINE_COLOR = 0x6FD0FF;
     /** 吹雪の辺の色: 白。 */
     public static final int STORM_OUTLINE_COLOR = 0xFFFFFF;
 
@@ -81,12 +81,19 @@ public class EntityFreezeZone extends SpellGramZone {
     public static final int NET_FREEZE_PER_POWER = 4;
 
     /**
-     * 威力（冷やす強さ）。凍えのたまる速さ・1 台あたりの冷える割合・氷炎地獄の強さを決める。1 体・1 か所
+     * 威力（冷やす強さ）。凍えのたまる速さ・1 台あたりの冷える割合・冷やせる下限を決める。1 体・1 か所
      * あたりの強さに使うので {@link #MAX_EFFECT_POWER} まで。
      */
     private float power = DEFAULT_POWER;
     /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
+    /**
+     * 熱を運ぶ先: 面で触れ合っている同じ術者の加熱領域と、触れ合う面の広さの割合（合計 1）。{@link ZoneHeatExchange#INTERVAL}
+     * tick ごとに作り直す。サーバー側だけで、保存も同期もしない。
+     */
+    private Map<EntityHeatZone, Double> heatPartners = Map.of();
+    /** 加熱領域へ運んだ熱の合計（J、GameTest 用）。 */
+    private double heatCarried;
 
     /**
      * Mekanism の冷却で、1 台が 1 tick に温度差を縮める割合の上限（加熱の「威力 × 100 K まで」と対）: 威力 × 0.002 × 機械を
@@ -97,22 +104,15 @@ public class EntityFreezeZone extends SpellGramZone {
         return Math.min(MAX_COOL_FRACTION, fraction);
     }
 
-    /**
-     * 冷却量: 1 tick に取り除ける熱の総量（J）: 置いたときのコスト × {@link #COOLING_PER_PSI} ÷ 存続時間 × 速さ。氷炎地獄の
-     * 極寒の間は、相手の加熱領域の同じ式の分を足す（灼熱側の熱量と対、2 つの領域のコストの合計）。
-     */
-    public double coolingTotalPerTick(boolean inferno) {
-        double total = coolingTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
-        if (inferno && infernoPartner() instanceof EntityHeatZone hot) {
-            total += coolingTotalPerTick(hot.getPlacementCost(), hot.getLifetimeTicks(), hot.getMachineSpeed());
-        }
-        return total;
+    /** 冷却量: 1 tick に取り除ける熱の総量（J）: 置いたときのコスト × {@link #COOLING_PER_PSI} ÷ 存続時間 × 速さ。 */
+    public double coolingTotalPerTick() {
+        return coolingTotalPerTick(getPlacementCost(), getLifetimeTicks(), getMachineSpeed());
     }
 
-    /** 照準の表示: 冷却量（J/t、極寒なら相手の分も足したもの）。 */
+    /** 照準の表示: 冷却量（J/t）。 */
     @Override
     protected double resourcePerTick() {
-        return coolingTotalPerTick(isInfernoAt(level().getGameTime()));
+        return coolingTotalPerTick();
     }
 
     @Override
@@ -153,7 +153,7 @@ public class EntityFreezeZone extends SpellGramZone {
 
     @Override
     public int getOutlineColor() {
-        return isInferno() ? INFERNO_OUTLINE_COLOR : isStorm() ? STORM_OUTLINE_COLOR : OUTLINE_COLOR;
+        return isStorm() ? STORM_OUTLINE_COLOR : OUTLINE_COLOR;
     }
 
     @Override
@@ -169,21 +169,17 @@ public class EntityFreezeZone extends SpellGramZone {
                         });
             }
         }
-        // 氷炎地獄の極寒: 当たった生物は凍えきる（加熱領域が組み合わせを確かめて続ける）。
-        if (!isEnded() && tickCount % InfernoZones.INTERVAL == 0 && level() instanceof ServerLevel level
-                && isInfernoAt(level.getGameTime())) {
-            InfernoZones.harm(level, this, PsitweaksDamageTypes.INFERNO_COLD, target -> {
-                if (target.canFreeze()) {
-                    target.setTicksFrozen(Math.max(target.getTicksFrozen(), target.getTicksRequiredToFreeze() + INTERVAL * 2));
-                }
-            });
+        // 熱を運ぶ先（面で触れ合っている自分の加熱領域）を探し直す。Mekanism がなければ運ぶ熱がないので探さない。
+        if (tickCount % ZoneHeatExchange.INTERVAL == 0 && level() instanceof ServerLevel level) {
+            heatPartners = isEnded() || !MekanismCompat.isMekanismLoaded() ? Map.of() : ZoneHeatExchange.heatPartners(level, this);
         }
         coolMekanismMachines();
     }
 
     /**
-     * Mekanism の熱を持つ設備を、周囲の温度に向けて冷やす（毎 tick）。加熱領域と打ち消し合っているブロック・
+     * Mekanism の熱を持つ設備を、下限（周囲の温度 − 威力 × 5 K）に向けて冷やす（毎 tick）。加熱領域と打ち消し合っているブロック・
      * 領域干渉で止められたブロック・術者が機械を使えないブロックは冷やさない。吹雪のブロックは乱流の威力に応じて上乗せ。
+     * 奪った熱のうち周囲の温度より上にあった分は、面で触れ合っている自分の加熱領域へ、触れ合う面の広さに比例して運ぶ。
      */
     private void coolMekanismMachines() {
         if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level)
@@ -194,7 +190,7 @@ public class EntityFreezeZone extends SpellGramZone {
         if (fraction <= 0.0) {
             return;
         }
-        double cap = coolingTotalPerTick(isInfernoAt(level.getGameTime()));
+        double cap = coolingTotalPerTick();
         // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械も冷やす）をまとめ、冷却量を一度に分ける。範囲・領域干渉・乱流は
         // 世界の位置で判定し、保護は機械が本当にある位置で確かめる。
         java.util.Map<BlockPos, ZoneRegion> owners = new java.util.HashMap<>();
@@ -211,30 +207,52 @@ public class EntityFreezeZone extends SpellGramZone {
         }
         // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算）。下限は周囲の温度 − 威力 × 5 K。
         double belowAmbient = power * COOL_BELOW_AMBIENT_PER_POWER;
-        double removed = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(), fraction, cap, belowAmbient, pos -> {
-            ZoneRegion region = owners.get(pos);
-            return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
-        });
+        MekanismGameplayCompat.ZoneHeatDrain drained = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
+                fraction, cap, belowAmbient, pos -> {
+                    ZoneRegion region = owners.get(pos);
+                    return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
+                });
         // 照準の表示: 使っている冷却量（吹雪の上乗せは入れない）。
-        recordResourceUse(removed);
+        recordResourceUse(drained.removed());
+        double carried = drained.carried();
         if (isStorm()) {
             // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。冷却量の上乗せは乱流が範囲を覆う割合を
             // 掛ける（小さな乱流を重ねても増えないように）。
             for (java.util.Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                 EntityTurbulenceZone turbulence = entry.getKey();
                 double boost = stormBoost(turbulence.getPower());
-                removed += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
+                carried += MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
                         Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), belowAmbient, pos -> {
                             ZoneRegion region = owners.get(pos);
                             return region != null && stormAt(region.worldPos(pos)) == turbulence
                                     && mayUseMachine(level, caster, pos);
-                        });
+                        }).carried();
             }
         }
-        // 氷炎地獄の極寒: 奪った熱を灼熱側の加熱領域へ移す。
-        if (infernoPartner() instanceof EntityHeatZone hot) {
-            hot.acceptMovedHeat(removed);
+        carryHeat(carried);
+    }
+
+    /**
+     * 運べる熱 {@code carried}（J）を、面で触れ合っている自分の加熱領域へ、触れ合う面の広さに比例して減らさずに渡す
+     * （2026-11-16 ユーザー、案 3「運ぶだけ」）。触れていなければ捨てる。
+     */
+    private void carryHeat(double carried) {
+        if (carried <= 0.0 || heatPartners.isEmpty()) {
+            return;
         }
+        for (Map.Entry<EntityHeatZone, Double> entry : heatPartners.entrySet()) {
+            EntityHeatZone heat = entry.getKey();
+            if (!heat.isEnded()) {
+                double share = carried * entry.getValue();
+                heat.acceptMovedHeat(share);
+                heatCarried += share;
+            }
+        }
+    }
+
+    /** 加熱領域へ運んだ熱の合計（J、GameTest 用）。 */
+    public double heatCarried() {
+        return heatCarried;
     }
 
     @Override
@@ -306,14 +324,13 @@ public class EntityFreezeZone extends SpellGramZone {
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int flakes = (int) Math.min(MAX_FLAKES_PER_TICK, Math.max(1, volume / 150.0)) * (isInferno() ? 4 : 1);
+        int flakes = (int) Math.min(MAX_FLAKES_PER_TICK, Math.max(1, volume / 150.0));
         for (int i = 0; i < flakes; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();
             double y = box.minY + random.nextDouble() * box.getYsize();
             double z = box.minZ + random.nextDouble() * box.getZsize();
             if (getArea().contains(BlockPos.containing(x, y, z))) {
-                level().addParticle(isInferno() && random.nextInt(3) == 0 ? ParticleTypes.ITEM_SNOWBALL : ParticleTypes.SNOWFLAKE,
-                        x, y, z, 0.0, -0.03, 0.0);
+                level().addParticle(ParticleTypes.SNOWFLAKE, x, y, z, 0.0, -0.03, 0.0);
             }
         }
     }

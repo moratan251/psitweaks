@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Create のブレイズバーナーと作動式: 加熱領域。ブレイズバーナーが自分の加熱の段を決める
- * {@code getHeatLevel()} の戻り値を、加熱領域の中にあるときだけ引き上げる: 加熱領域の中は「加熱」（KINDLED）、氷炎地獄の灼熱の
- * 中は「極度の加熱」（SEETHING）。燃料には触らないので、領域が消えると次の tick に元の段へ戻り、ブレイズバーナーの中身には
- * 何も残らない。空のブレイズバーナー（NONE）と、すでに最上段のものは変えない。Create がないときは {@link PsitweaksMixinPlugin}
- * が当てない。
+ * {@code getHeatLevel()} の戻り値を、加熱領域が熱量から払っているときだけ「加熱」（KINDLED）に引き上げる（領域からは極度の
+ * 加熱にしない、2026-11-16 ユーザー: 極度の加熱はブレイズケーキに任せる）。燃料には触らないので、領域が消えると次の tick に
+ * 元の段へ戻り、ブレイズバーナーの中身には何も残らない。空のブレイズバーナー（NONE）と、すでに加熱以上のものは変えない。
+ * Create がないときは {@link PsitweaksMixinPlugin} が当てない。
  */
 @Pseudo
 @Mixin(targets = "com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity", remap = false)
@@ -29,13 +29,10 @@ public abstract class BlazeBurnerHeatZoneMixin {
         }
         BlazeBurnerBlock.HeatLevel current = cir.getReturnValue();
         if (current == null || current == BlazeBurnerBlock.HeatLevel.NONE
-                || current.isAtLeast(BlazeBurnerBlock.HeatLevel.SEETHING)) {
+                || current.isAtLeast(BlazeBurnerBlock.HeatLevel.KINDLED)) {
             return;
         }
-        int zoneHeat = EntityHeatZone.burnerHeatAt(level, self.getBlockPos());
-        if (zoneHeat >= 2) {
-            cir.setReturnValue(BlazeBurnerBlock.HeatLevel.SEETHING);
-        } else if (zoneHeat == 1 && !current.isAtLeast(BlazeBurnerBlock.HeatLevel.KINDLED)) {
+        if (EntityHeatZone.isBurnerPowered(level, self.getBlockPos())) {
             cir.setReturnValue(BlazeBurnerBlock.HeatLevel.KINDLED);
         }
     }

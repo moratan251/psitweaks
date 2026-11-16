@@ -23,7 +23,7 @@ public final class CreateCompat {
         /** 一括燻製（作動式: 加熱領域）。 */
         SMOKING,
         /**
-         * 一括製錬（氷炎地獄の灼熱になった加熱領域と、自分の荷電領域が重なった加熱領域）。精錬・溶鉱炉のレシピがあるアイテムだけを扱う（Create のファンと違い、
+         * 一括製錬（自分の荷電領域が重なった加熱領域、電気炉）。精錬・溶鉱炉のレシピがあるアイテムだけを扱う（Create のファンと違い、
          * レシピのないアイテムを燃やさない）。
          */
         BLASTING
@@ -47,14 +47,6 @@ public final class CreateCompat {
         if (isCreateLoaded()) {
             CreateFanIntegration.process(level, area, blockEntities, process, itemsAt, machinesAt);
         }
-    }
-
-    /**
-     * {@code blockEntity} が、ブレイズの入ったブレイズバーナーで、自分の燃料では極度の加熱になっていない（ブレイズケーキでも
-     * クリエイティブでもない）か。氷炎地獄の灼熱が極度の加熱にしてやると、加熱領域の耐久値を余分に使う。Create がなければ偽。
-     */
-    public static boolean isBurnerNeedingSuperheat(BlockEntity blockEntity) {
-        return isCreateLoaded() && CreateFanIntegration.isBurnerNeedingSuperheat(blockEntity);
     }
 
     /**
