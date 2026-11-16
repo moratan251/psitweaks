@@ -342,7 +342,8 @@ public final class SableZoneGameTests {
             try {
                 helper.assertTrue(MekanismGameplayCompat.isWindGenerator(level.getBlockEntity(generatorPlot)),
                         "Precondition: the Wind Generator must be on the ship at " + generatorPlot);
-                // 一辺 7・威力 10: 風量 49 × 10 ÷ 64 ≈ 7.7 WU を、範囲の中の発電機 1 台が全部受け取る。
+                // 一辺 7・威力 10・事象干渉力 1: 風量 49 × 10 ÷ 96 ≈ 5.1 WU を、範囲の中の発電機 1 台が
+                // 全部受け取る。
                 castOverShip(caster, ship, turbulencePiece(), 10.0);
             } catch (ReflectiveOperationException | SpellRuntimeException e) {
                 throw new RuntimeException(e);

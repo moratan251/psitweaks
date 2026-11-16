@@ -2202,11 +2202,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
                         + "威力10で加工などは2倍の速さです。");
         addBookPage(root, "trick_turbulence_zone.2",
-                "The zone blows a wind of floor area × Power ÷ 64 WU (Wind Units): 10 WU at Size 8, Power 10, and 40 at Size 16.",
-                "領域は、床の広さ×威力÷64 WU（風量単位）の風を吹かせます。サイズ8・威力10で10 WU、サイズ16なら40 WUです。");
+                "The zone blows a wind of floor area × Power ÷ 96 WU (Wind Units) at interference 1 when placed; twice that at 2, and at most four times. At interference 1, that is 15 WU at Size 12, Power 10, and about 27 WU at Size 16, Power 10.",
+                "領域は、床の広さ×威力÷96 WU（風量単位）の風を吹かせます。風量は置いた時点の事象干渉力に比例して増え、干渉力1でこのとおり、2で2倍、最大で4倍です。干渉力1なら、サイズ12・威力10で15 WU、サイズ16・威力10で約27 WUです。");
         addBookPage(root, "trick_turbulence_zone.3",
-                "With Mekanism Generators installed, the zone's wind is shared evenly by the Wind Generators inside (stacked ones count one each), 10 WU at most each. Each WU adds 25 J/t (10 FE/t) whatever the height. Under a roof a generator runs on this wind alone; under the open sky the wind comes on top.",
-                "Mekanism Generators が入っているときは、領域の風量を範囲の中の風力発電機で均等に分けます（縦に重ねても1台は1台）。1台は10 WU までです。1 WU ごとに、高さに関係なく発電量が 25 J/t（10 FE/t）増えます。屋根の下ではこの風だけで動き、空の下では上乗せになります。");
+                "With Mekanism Generators installed, the zone's wind is shared evenly by the Wind Generators inside (stacked ones count one each), 10 WU at most each. Each WU adds 37.5 J/t (15 FE/t) whatever the height. Under a roof a generator runs on this wind alone; under the open sky the wind comes on top.",
+                "Mekanism Generators が入っているときは、領域の風量を範囲の中の風力発電機で均等に分けます（縦に重ねても1台は1台）。1台は10 WU までです。1 WU ごとに、高さに関係なく発電量が 37.5 J/t（15 FE/t）増えます。屋根の下ではこの風だけで動き、空の下では上乗せになります。");
 
         // 領域干渉
         addBookPage(root, "trick_interference_zone.0",

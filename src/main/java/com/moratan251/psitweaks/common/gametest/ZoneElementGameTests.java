@@ -337,8 +337,9 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * Mekanism Generators があるとき、乱流領域の中の風力発電機は屋根の下でも発電し、威力 10 なら空の下の 2 倍になる。
-     * 外の風力発電機は屋根の下で止まったまま。Mekanism Generators がなければ飛ばす。
+     * Mekanism Generators があるとき、乱流領域の中の風力発電機は屋根の下でも乱流の風だけで発電し、空の下の発電機には風が上乗せ
+     * になる。風量は置いた時点の事象干渉力で増える。外の風力発電機は屋根の下で止まったまま。Mekanism Generators が
+     * なければ飛ばす。
      * 風力発電機は高さが 5 ブロックあり、5×4×5 の区画には収まらないので、専用の区画に 3 台と屋根を収める。空の下に置く 1 台が
      * あるので、区画の天井（バリア）は付けない（skyAccess）。
      */
@@ -382,6 +383,8 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
+            // 事象干渉力 4 → 風量は上限の 4 倍。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, turbulence(helper), 5.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
@@ -397,9 +400,9 @@ public final class ZoneElementGameTests {
             helper.assertTrue(outsideMultiplier == 0.0,
                     "A Wind Generator outside the zone must stay still under a roof, multiplier " + outsideMultiplier);
             helper.assertTrue(skyMultiplier > 0.0, "A Wind Generator under the open sky must run, multiplier " + skyMultiplier);
-            // 風量 25 × 10 ÷ 64 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに 25 J/t、
+            // 風量 25 × 10 ÷ 96 × 干渉力 4 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに 37.5 J/t、
             // 高さによらない。
-            double units = 25.0 * 10.0 / 64.0 / 2.0;
+            double units = 25.0 * 10.0 / 96.0 * 4.0 / 2.0;
             double openUnits = units;
             double roofed = units * EntityTurbulenceZone.WIND_JOULES_PER_WU / MekanismGameplayCompat.windGenerationMinimum();
             helper.assertTrue(Math.abs(insideMultiplier - roofed) < 1.0E-6,
@@ -430,8 +433,9 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            // どちらも一辺 9・威力 10（81 × 10 ÷ 64 ≈ 12.7 WU）: 発電機は 1 台なので、それぞれから 10 WU（合わせて 20 WU、
-            // 1 台は 10 WU まで）。
+            // どちらも一辺 9・威力 10・事象干渉力 1（81 × 10 ÷ 96 ≈ 8.4 WU）: 発電機は 1 台なので、それぞれから
+            // 8.4 WU（合わせて約 16.9 WU、1 台は 10 WU まで）。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.0D);
             cast(caster, turbulence(helper), 9.0, 10.0);
             cast(caster, turbulence(helper), 9.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
@@ -449,6 +453,45 @@ public final class ZoneElementGameTests {
             helper.assertTrue(Math.abs(used - 10.0) < 1.0E-3, "The two zones must count 10 WU in use together, got " + used);
             helper.succeed();
         });
+    }
+
+    /**
+     * 乱流領域の風量は置いた時点の事象干渉力に比例して増える: 干渉力 1 で基準、2 で 2 倍、4 以上で 4 倍（上限）。1 WU は
+     * 37.5 J/t・床の広さ × 威力 ÷ 96 WU なので、干渉力 1 での 1 Psi あたりの発電の上乗せは 25 ÷ 64 J/t（約 94 FE/Psi）。
+     * 風量は Mekanism がなくても持つので、Mekanism なしでも試す。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_turbulence_wind_interference", timeoutTicks = 40)
+    public static void turbulenceWindGrowsWithInterference(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_turbulence_interference", new Vec3(0.5, 1.0, 0.5));
+        double[] interferences = {1.0, 2.0, 4.0, 8.0};
+        double[] winds = new double[interferences.length];
+        try {
+            for (int i = 0; i < interferences.length; i++) {
+                caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(interferences[i]);
+                List<Object> before = new java.util.ArrayList<>(SpellGramIndex.ofCaster(level, caster.getUUID()));
+                // 一辺 3・威力 32: 床の広さ 9 × 32 ÷ 96 = 3 WU × 事象干渉力。
+                cast(caster, turbulence(helper), 3.0, 32.0);
+                EntityTurbulenceZone placed = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
+                        .filter(object -> object instanceof EntityTurbulenceZone && before.stream().noneMatch(old -> old == object))
+                        .map(EntityTurbulenceZone.class::cast).findFirst()
+                        .orElseThrow(() -> new IllegalStateException("The Turbulence Zone must be placed"));
+                winds[i] = placed.windAmount();
+            }
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup(helper, caster);
+            throw new RuntimeException(e);
+        }
+        cleanup(helper, caster);
+        double[] expected = {3.0, 6.0, 12.0, 12.0};
+        for (int i = 0; i < interferences.length; i++) {
+            helper.assertTrue(Math.abs(winds[i] - expected[i]) < 1.0E-6, "Interference " + interferences[i]
+                    + " must blow " + expected[i] + " WU, got " + winds[i]);
+        }
+        // 干渉力 1 での 1 Psi あたりの上乗せ（1 WU の J/t ÷ 割る数）は 25 ÷ 64。
+        double perPsi = EntityTurbulenceZone.WIND_JOULES_PER_WU / EntityTurbulenceZone.WIND_FOOTPRINT_DIVISOR;
+        helper.assertTrue(Math.abs(perPsi - 25.0 / 64.0) < 1.0E-9, "The wind power per Psi must stay 25/64 J/t, got " + perPsi);
+        helper.succeed();
     }
 
     /**

@@ -75,7 +75,7 @@
 - Zone Magic with other mods
   + Create: Soak Zone bulk-washes and Heat Zone bulk-smokes dropped items and items on Depots and Mechanical Belts. Where your own Heat Zone and Charged Zone overlap, the Heat Zone bulk-blasts instead. Blaze Burners in a Heat Zone are heated without fuel (paid from the zone's heat)
   + Mekanism: Heat Zone heats blocks that take heat, and Freeze Zone cools blocks that hold heat, even below the ambient temperature
-  + Mekanism Generators: Turbulence Zone adds wind to the Wind Generators inside. Each WU adds 25 J/t (10 FE/t) whatever the height, up to 10 WU per generator, and the zone's wind is shared equally among them. Generators under a roof run on this wind alone
+  + Mekanism Generators: Turbulence Zone adds wind to the Wind Generators inside. Each WU adds 37.5 J/t (15 FE/t) whatever the height, up to 10 WU per generator. The zone's wind grows in proportion to the caster's interference (×1 at 1, up to ×4) and is shared equally among them. Generators under a roof run on this wind alone
   + Applied Energistics 2: Charged Zone charges dropped items as a Charger does
   + The speed of these effects follows the caster's Phenomenon Interference when placed (the base at 2, half at 1, twice at most). Dropped items do not despawn while being processed
   + Simulated Contraptions (such as Create Aeronautics airships): Gravity Zone pushes and tilts them, and zones also work on the blocks and machines of contraptions they overlap
