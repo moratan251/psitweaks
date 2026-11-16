@@ -147,15 +147,30 @@ public final class ZoneElementGameTests {
         });
     }
 
-    /** Create があるとき、加熱領域は中の落ちているアイテムを一括燻製する（生の牛肉 → ステーキ）。Create がなければ飛ばす。 */
+    /**
+     * Create があるとき、加熱領域は同じ術者の乱流領域が重なったところ（熱乱流）で、落ちているアイテムを一括燻製する
+     * （生の牛肉 → ステーキ）。Create がなければ飛ばす。
+     */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_create", timeoutTicks = 400)
     public static void heatZoneSmokesItemsWithCreate(GameTestHelper helper) {
+        heatSmokeTest(helper, true);
+    }
+
+    /** 乱流領域が重なっていない加熱領域は一括燻製しない。他人の乱流領域が重なっていても同じ。Create がなければ飛ばす。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_create_no_turbulence", timeoutTicks = 400)
+    public static void heatZoneDoesNotSmokeWithoutOwnTurbulence(GameTestHelper helper) {
+        heatSmokeTest(helper, false);
+    }
+
+    private static void heatSmokeTest(GameTestHelper helper, boolean ownTurbulence) {
         if (!CreateCompat.isCreateLoaded()) {
             helper.succeed();
             return;
         }
         ServerLevel level = helper.getLevel();
-        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_create", new Vec3(4.5, 1.0, 4.5));
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, ownTurbulence ? "zone_heat_create" : "zone_heat_create_alone",
+                new Vec3(4.5, 1.0, 4.5));
+        ServerPlayer other = ownTurbulence ? null : GameTestPlayers.inLevel(helper, "zone_heat_create_other", new Vec3(0.5, 1.0, 4.5));
         helper.setBlock(new BlockPos(2, 0, 2), Blocks.STONE);
         Vec3 itemAt = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         ItemEntity item = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.BEEF));
@@ -165,12 +180,17 @@ public final class ZoneElementGameTests {
         AABB around = new AABB(helper.absolutePos(CENTER)).inflate(4.0);
         Runnable cleanup = () -> {
             level.getEntitiesOfClass(ItemEntity.class, around).forEach(ItemEntity::discard);
+            if (other != null) {
+                cleanup(helper, other);
+            }
             cleanup(helper, caster);
         };
         try {
             // 事象干渉力 4 → 速さは上限の 2 倍（Create の処理時間 150 tick を 75 tick ほどで）。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, heat(helper), 5.0, 5.0);
+            // 一括燻製は同じ術者の乱流領域が重なったところだけ。燻製しない場合も、他人の乱流領域を同じ範囲に重ねる。
+            cast(ownTurbulence ? caster : other, turbulence(helper), 5.0, 1.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -178,8 +198,14 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(110, () -> {
             boolean smoked = !level.getEntitiesOfClass(ItemEntity.class, around,
                     entity -> entity.getItem().is(Items.COOKED_BEEF)).isEmpty();
+            boolean rawKept = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.BEEF)).isEmpty();
             cleanup.run();
-            helper.assertTrue(smoked, "The Heat Zone must smoke raw beef into steak with Create");
+            if (ownTurbulence) {
+                helper.assertTrue(smoked, "A Heat Zone with your own Turbulence Zone must smoke raw beef into steak with Create");
+            } else {
+                helper.assertTrue(!smoked && rawKept, "A Heat Zone without your own Turbulence Zone must not smoke items");
+            }
             helper.succeed();
         });
     }
@@ -1551,17 +1577,32 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 電気炉: 自分の荷電領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（原料の鉄 → 鉄インゴット）。
+     * 電気炉: 自分の荷電領域と乱流領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（原料の鉄 → 鉄インゴット）。
      * レシピのない土は燃えない。Create がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_arc_furnace", timeoutTicks = 400)
     public static void chargedHeatZoneBlastsItemsWithCreate(GameTestHelper helper) {
+        arcFurnaceTest(helper, true);
+    }
+
+    /**
+     * 乱流領域が重なっていなければ、加熱領域と荷電領域が重なっていても一括製錬しない。他人の乱流領域が重なっていても同じ。
+     * Create がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_arc_furnace_no_turbulence", timeoutTicks = 400)
+    public static void chargedHeatZoneDoesNotBlastWithoutOwnTurbulence(GameTestHelper helper) {
+        arcFurnaceTest(helper, false);
+    }
+
+    private static void arcFurnaceTest(GameTestHelper helper, boolean ownTurbulence) {
         if (!CreateCompat.isCreateLoaded()) {
             helper.succeed();
             return;
         }
         ServerLevel level = helper.getLevel();
-        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_arc_furnace", new Vec3(8.5, 1.0, 2.5));
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, ownTurbulence ? "zone_arc_furnace" : "zone_arc_furnace_alone",
+                new Vec3(8.5, 1.0, 2.5));
+        ServerPlayer other = ownTurbulence ? null : GameTestPlayers.inLevel(helper, "zone_arc_furnace_other", new Vec3(8.5, 1.0, 4.5));
         helper.setBlock(new BlockPos(1, 0, 2), Blocks.STONE);
         Vec3 itemAt = helper.absoluteVec(new Vec3(1.5, 1.0, 2.5));
         ItemEntity iron = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.RAW_IRON));
@@ -1575,6 +1616,9 @@ public final class ZoneElementGameTests {
         AABB around = new AABB(helper.absolutePos(CENTER)).inflate(5.0);
         Runnable cleanup = () -> {
             level.getEntitiesOfClass(ItemEntity.class, around).forEach(ItemEntity::discard);
+            if (other != null) {
+                cleanup(helper, other);
+            }
             cleanup(helper, caster);
         };
         try {
@@ -1582,6 +1626,8 @@ public final class ZoneElementGameTests {
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
             cast(caster, charged(helper, new BlockPos(1, 1, 2)), 3.0, 5.0);
+            // 一括製錬は同じ術者の乱流領域も重なったところだけ。製錬しない場合も、他人の乱流領域を同じ範囲に重ねる。
+            cast(ownTurbulence ? caster : other, turbulence(helper, new BlockPos(1, 1, 2)), 3.0, 1.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -1589,10 +1635,17 @@ public final class ZoneElementGameTests {
         helper.runAfterDelay(120, () -> {
             boolean blasted = !level.getEntitiesOfClass(ItemEntity.class, around,
                     entity -> entity.getItem().is(Items.IRON_INGOT)).isEmpty();
+            boolean rawKept = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.RAW_IRON)).isEmpty();
             boolean dirtKept = !level.getEntitiesOfClass(ItemEntity.class, around,
                     entity -> entity.getItem().is(Items.DIRT)).isEmpty();
             cleanup.run();
-            helper.assertTrue(blasted, "A Heat Zone overlapped by your own Charged Zone must blast raw iron into an iron ingot");
+            if (ownTurbulence) {
+                helper.assertTrue(blasted,
+                        "A Heat Zone overlapped by your own Charged and Turbulence Zones must blast raw iron into an iron ingot");
+            } else {
+                helper.assertTrue(!blasted && rawKept, "Without your own Turbulence Zone, the Heat and Charged Zones must not blast items");
+            }
             helper.assertTrue(dirtKept, "It must not burn dirt, which has no smelting recipe");
             helper.succeed();
         });

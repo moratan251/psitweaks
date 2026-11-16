@@ -35,8 +35,8 @@ import java.util.List;
  *   <li>氷と薄氷を水に戻す（{@link #affectBlock}）。</li>
  *   <li>1 tick あたりの熱の総量（{@link #heatTotalPerTick}）で Create のブレイズバーナーを加熱し（{@link #allocateBurners}）、
  *   残りを Mekanism の熱を受け取るブロックに均等に分ける（温度は {@link #maxTemperature} まで）。</li>
- *   <li>Create があれば、落ちているアイテムとデポ・ベルトの上のアイテムを一括燻製する（{@link #processCreate}）。自分の荷電領域が
- *   重なったところは一括製錬（電気炉）。</li>
+ *   <li>Create があれば、同じ術者の乱流領域が重なったところ（熱乱流）だけ、落ちているアイテムとデポ・ベルトの上のアイテムを
+ *   一括燻製する（{@link #processCreate}）。自分の荷電領域も重なったところは一括製錬（電気炉）。乱流がなければ加工しない。</li>
  * </ul>
  * 自分の側の凍結領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると熱乱流になる。同じ術者の凍結領域と
  * 面で触れ合うか重なっていると、凍結領域が運んできた熱を受け取り、熱量に足す（{@link ZoneHeatExchange}、{@link #acceptMovedHeat}）。
@@ -231,16 +231,17 @@ public class EntityHeatZone extends SpellGramZone {
         if (!(getCaster() instanceof Player caster)) {
             return;
         }
-        boolean storm = isStorm();
+        // Create の加工（一括燻製・電気炉の一括製錬）は、同じ術者の乱流領域が重なったところ（熱乱流）だけ。
+        boolean storm = !overlappingStorms().isEmpty();
         // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の機械にも効かせる）。範囲・領域干渉・乱流は世界の位置で判定し、
         // 保護は機械が本当にある位置で確かめる。
         List<ZoneRegion> regions = regions();
         // 自分の荷電領域が重なったところは一括製錬（電気炉）。
-        List<EntityChargedZone> arcs = CreateCompat.isCreateLoaded() ? ownChargedZones(level) : List.of();
-        for (int step = takeMachineSteps(); step > 0; step--) {
+        List<EntityChargedZone> arcs = CreateCompat.isCreateLoaded() && storm ? ownChargedZones(level) : List.of();
+        for (int step = takeMachineSteps(); step > 0 && storm; step--) {
             for (ZoneRegion region : regions) {
                 processCreate(level, caster, region, arcs,
-                        world -> isActiveAt(world) && isStrongestAt(world));
+                        world -> isActiveAt(world) && isStrongestAt(world) && isStormAt(world));
             }
         }
         if (storm) {
@@ -451,7 +452,7 @@ public class EntityHeatZone extends SpellGramZone {
     private static final double ARC_JITTER = 0.14;
 
     /**
-     * 電気炉（自分の加熱領域に荷電領域が重なり、一括製錬になるところ、2026-11-15 ユーザー）の演出（クライアント側）。地表の上を
+     * 電気炉（自分の加熱領域に荷電領域と乱流領域が重なり、一括製錬になるところ）の演出（クライアント側）。地表の上を
      * ぎざぎざの放電が走り、端から白く光る火の粉と炎が立つ。重なりの下が地面に埋まっていても見えるよう、列ごとに地表（重なりの
      * 中で、通れるブロックの下が固いところ）を探して、その上に出す。数は重なりの体積に応じて増やす（上限あり）。
      */
@@ -532,8 +533,8 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * 範囲 {@code region} で Create の加工を 1 回進める。{@code where} は世界の位置で、加工してよいところ。自分の荷電領域
-     * {@code arcs} が重なったところは一括製錬（電気炉）、ほかは一括燻製。
+     * 範囲 {@code region} で Create の加工を 1 回進める。{@code where} は世界の位置で、加工してよいところ（呼ぶ側が、同じ術者の
+     * 乱流領域が吹いているところに絞る）。自分の荷電領域 {@code arcs} が重なったところは一括製錬（電気炉）、ほかは一括燻製。
      */
     private void processCreate(ServerLevel level, Player caster, ZoneRegion region, List<EntityChargedZone> arcs,
                                java.util.function.Predicate<BlockPos> where) {
@@ -603,9 +604,10 @@ public class EntityHeatZone extends SpellGramZone {
 
     @Override
     protected void spawnClientParticles() {
-        if (isStorm()) {
+        List<AABB> storms = isStorm() ? stormBoxes() : List.of();
+        if (!storms.isEmpty()) {
             // 熱乱流: 炎の竜巻が速く回りながら昇る。
-            for (AABB storm : stormBoxes()) {
+            for (AABB storm : storms) {
                 int count = ZoneParticles.count(storm, 25.0, 4, 14);
                 ZoneParticles.vortex(level(), random, storm, count, ParticleTypes.FLAME, 0.4, 0.12);
                 ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 3), ParticleTypes.SMALL_FLAME, 0.5, 0.15);
@@ -616,20 +618,29 @@ public class EntityHeatZone extends SpellGramZone {
             }
         }
         // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル（荷電領域が重なったところは
-        // 一括製錬のもの。クライアントでは術者を見分けない）。
+        // 一括製錬のもの）。加工するのは乱流が重なったところだけなので、そこにだけ出す（クライアントでは術者を見分けない）。
         // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
-        if (CreateCompat.isCreateLoaded()) {
+        if (CreateCompat.isCreateLoaded() && !storms.isEmpty()) {
             List<EntityChargedZone> arcs = level().getEntitiesOfClass(EntityChargedZone.class, getOutline());
-            // 電気炉（荷電領域が重なったところ）の専用の演出（2026-11-15 ユーザー）。
+            // 電気炉（荷電領域と乱流領域が重なったところ）の専用の演出。
             for (EntityChargedZone arc : arcs) {
                 AABB overlap = ZoneAttacks.overlap(getOutline(), arc.getOutline());
-                if (overlap != null && overlap.getXsize() > 0.0 && overlap.getYsize() > 0.0 && overlap.getZsize() > 0.0) {
-                    spawnArcFurnaceParticles(overlap);
+                if (overlap == null) {
+                    continue;
+                }
+                for (AABB storm : storms) {
+                    AABB furnace = ZoneAttacks.overlap(overlap, storm);
+                    if (furnace != null && furnace.getXsize() > 0.0 && furnace.getYsize() > 0.0 && furnace.getZsize() > 0.0) {
+                        spawnArcFurnaceParticles(furnace);
+                    }
                 }
             }
             for (ZoneRegion region : regions()) {
                 CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), pos -> {
                     net.minecraft.world.phys.Vec3 at = net.minecraft.world.phys.Vec3.atCenterOf(region.worldPos(pos));
+                    if (!insideAny(storms, at)) {
+                        return null;
+                    }
                     for (EntityChargedZone arc : arcs) {
                         if (arc.getOutline().contains(at)) {
                             return CreateCompat.FanProcess.BLASTING;

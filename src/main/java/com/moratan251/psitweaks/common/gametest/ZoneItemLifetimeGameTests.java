@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickSoakZone;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -42,14 +43,14 @@ public final class ZoneItemLifetimeGameTests {
     private ZoneItemLifetimeGameTests() {
     }
 
-    /** 湿潤領域の一括洗浄（Create）: 砂利は洗っている間は消えない。 */
+    /** 湿潤領域の一括洗浄（Create、同じ術者の乱流領域が重なったところだけ洗う）: 砂利は洗っている間は消えない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_item_lifetime_wash", timeoutTicks = 80)
     public static void washingKeepsItemsFromDespawning(GameTestHelper helper) {
         if (!CreateCompat.isCreateLoaded()) {
             helper.succeed();
             return;
         }
-        check(helper, "zone_lifetime_wash", new ItemStack(Items.GRAVEL), PieceTrickSoakZone::new);
+        check(helper, "zone_lifetime_wash", new ItemStack(Items.GRAVEL), PieceTrickSoakZone::new, true);
     }
 
     /** 荷電領域の AE2 のチャージ: ケルタスクォーツの水晶はチャージしている間は消えない。 */
@@ -60,10 +61,11 @@ public final class ZoneItemLifetimeGameTests {
             helper.succeed();
             return;
         }
-        check(helper, "zone_lifetime_charge", new ItemStack(BuiltInRegistries.ITEM.get(certusId)), PieceTrickChargedZone::new);
+        check(helper, "zone_lifetime_charge", new ItemStack(BuiltInRegistries.ITEM.get(certusId)), PieceTrickChargedZone::new, false);
     }
 
-    private static void check(GameTestHelper helper, String name, ItemStack stack, Function<Spell, PieceTrickZoneBase<?>> pieceType) {
+    private static void check(GameTestHelper helper, String name, ItemStack stack, Function<Spell, PieceTrickZoneBase<?>> pieceType,
+                              boolean withTurbulence) {
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, name, new Vec3(4.5, 1.0, 4.5));
         Vec3 at = helper.absoluteVec(new Vec3(1.5, 1.2, 1.5));
@@ -80,6 +82,9 @@ public final class ZoneItemLifetimeGameTests {
         };
         try {
             place(pieceType, caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5);
+            if (withTurbulence) {
+                place(PieceTrickTurbulenceZone::new, caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5);
+            }
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -106,8 +111,16 @@ public final class ZoneItemLifetimeGameTests {
         wrap(pieceType.apply(new Spell()), matrix, size).execute(new SpellContext().setPlayer(caster));
     }
 
-    /** 入力を差し替えた同じ種類の作動式（湿潤領域は行列・サイズ・時間、荷電領域はさらに威力を持つ）。 */
+    /** 入力を差し替えた同じ種類の作動式（湿潤領域は行列・サイズ・時間、荷電領域と乱流領域はさらに威力を持つ）。 */
     private static PieceTrickZoneBase<?> wrap(PieceTrickZoneBase<?> piece, MatrixValue matrix, int size) {
+        if (piece instanceof PieceTrickTurbulenceZone) {
+            return new PieceTrickTurbulenceZone(new Spell()) {
+                @Override
+                public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                    return input(param, matrix, size);
+                }
+            };
+        }
         if (piece instanceof PieceTrickSoakZone) {
             return new PieceTrickSoakZone(new Spell()) {
                 @Override
@@ -131,7 +144,7 @@ public final class ZoneItemLifetimeGameTests {
         if (param.name.equals(PsitweaksSpellParams.SIZE)) {
             return (double) size;
         }
-        // 荷電領域の威力（必須）。湿潤領域は持たない。
+        // 荷電領域・乱流領域の威力（必須）。湿潤領域は持たない。
         return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? 5.0 : null;
     }
 }

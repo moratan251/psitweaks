@@ -17,6 +17,7 @@ import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickSoakZone;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
@@ -372,15 +373,32 @@ public final class ZoneGameTests {
         });
     }
 
-    /** Create があるとき、湿潤領域は中の落ちているアイテムを一括洗浄する（マグマブロック → 黒曜石）。Create がなければ飛ばす。 */
+    /**
+     * Create があるとき、湿潤領域は同じ術者の乱流領域が重なったところ（暴風雨）で、落ちているアイテムを一括洗浄する
+     * （マグマブロック → 黒曜石）。Create がなければ飛ばす。
+     */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak_create", timeoutTicks = 400)
     public static void soakZoneWashesItemsWithCreate(GameTestHelper helper) {
+        soakWashTest(helper, true);
+    }
+
+    /**
+     * 乱流領域が重なっていない湿潤領域は一括洗浄しない。他人の乱流領域が重なっていても同じ。Create がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_soak_create_no_turbulence", timeoutTicks = 400)
+    public static void soakZoneDoesNotWashWithoutOwnTurbulence(GameTestHelper helper) {
+        soakWashTest(helper, false);
+    }
+
+    private static void soakWashTest(GameTestHelper helper, boolean ownTurbulence) {
         if (!CreateCompat.isCreateLoaded()) {
             helper.succeed();
             return;
         }
         ServerLevel level = helper.getLevel();
-        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_soak_create", new Vec3(0.5, 1.0, 0.5));
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, ownTurbulence ? "zone_soak_create" : "zone_soak_create_alone",
+                new Vec3(0.5, 1.0, 0.5));
+        ServerPlayer other = ownTurbulence ? null : GameTestPlayers.inLevel(helper, "zone_soak_create_other", new Vec3(4.5, 1.0, 0.5));
         helper.setBlock(new BlockPos(2, 0, 2), Blocks.STONE);
         Vec3 itemAt = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         ItemEntity item = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.MAGMA_BLOCK));
@@ -390,18 +408,25 @@ public final class ZoneGameTests {
         BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
         Runnable cleanup = () -> {
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(zone -> zone.discard());
+            if (other != null) {
+                SpellGramIndex.ofCaster(level, other.getUUID()).forEach(zone -> zone.discard());
+                GameTestPlayers.remove(helper, other);
+            }
             level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(center).inflate(4.0)).forEach(ItemEntity::discard);
             GameTestPlayers.remove(helper, caster);
         };
         try {
             // 事象干渉力 4 → 洗う速さは上限の 2 倍。洗う速さは置いた時点の干渉力で決まる。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
-            castSoak(caster, cube(vector(center).add(-2.5, -2.5, -2.5), 5), 5.0);
+            MatrixValue box = cube(vector(center).add(-2.5, -2.5, -2.5), 5);
+            castSoak(caster, box, 5.0);
             List<EntitySoakZone> zones = SpellGramIndex.near(level, Vec3.atCenterOf(center), 0.5, EntitySoakZone.class);
             helper.assertTrue(zones.size() == 1 && zones.get(0).getMachineSpeed() == SpellGramZone.MAX_MACHINE_SPEED,
                     "The washing speed must come from the caster's interference, capped at twice a fan");
             helper.assertTrue(SpellGramZone.machineSpeedFor(1.0) == 0.5F && SpellGramZone.machineSpeedFor(2.0) == 1.0F,
                     "Interference 1 washes at half a fan, 2 at a fan");
+            // 一括洗浄は同じ術者の乱流領域が重なったところだけ。洗わない場合も、他人の乱流領域を同じ範囲に重ねる。
+            castTurbulence(ownTurbulence ? caster : other, box, 5.0, 1.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -411,9 +436,29 @@ public final class ZoneGameTests {
             boolean washed = !level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(center).inflate(4.0),
                     entity -> entity.getItem().is(Items.OBSIDIAN)).isEmpty();
             cleanup.run();
-            helper.assertTrue(washed, "The Soak Zone must wash the magma block into obsidian with Create");
+            if (ownTurbulence) {
+                helper.assertTrue(washed, "A Soak Zone with your own Turbulence Zone must wash the magma block into obsidian with Create");
+            } else {
+                helper.assertTrue(!washed, "A Soak Zone without your own Turbulence Zone must not wash items");
+            }
             helper.succeed();
         });
+    }
+
+    private static void castTurbulence(ServerPlayer caster, MatrixValue matrix, double size, double power) throws SpellRuntimeException {
+        var piece = new PieceTrickTurbulenceZone(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                if (param.name.equals(PsitweaksSpellParams.MATRIX)) {
+                    return matrix;
+                }
+                if (param.name.equals(PsitweaksSpellParams.SIZE)) {
+                    return size;
+                }
+                return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? power : null;
+            }
+        };
+        piece.execute(new SpellContext().setPlayer(caster));
     }
 
     private static void castSoak(ServerPlayer caster, @Nullable MatrixValue matrix, double size) throws SpellRuntimeException {

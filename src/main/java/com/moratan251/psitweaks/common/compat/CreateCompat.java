@@ -66,7 +66,7 @@ public final class CreateCompat {
         spawnProcessingParticles(level, area, blockEntities, pos -> process);
     }
 
-    /** クライアント側: アイテムのあるブロックごとに加工の種類を選んで、パーティクルを出す。 */
+    /** クライアント側: アイテムのあるブロックごとに加工の種類を選んで、パーティクルを出す（null を返したブロックには出さない）。 */
     public static void spawnProcessingParticles(Level level, ZoneArea area, List<BlockEntity> blockEntities,
                                                 java.util.function.Function<BlockPos, FanProcess> processAt) {
         if (isCreateLoaded()) {

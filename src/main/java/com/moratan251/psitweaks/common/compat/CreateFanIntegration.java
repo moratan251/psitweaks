@@ -125,12 +125,18 @@ final class CreateFanIntegration {
             return;
         }
         for (ItemEntity item : itemsInside(level, area)) {
-            typeOf(processAt.apply(item.blockPosition())).spawnProcessingParticles(level, item.position());
+            CreateCompat.FanProcess process = processAt.apply(item.blockPosition());
+            if (process != null) {
+                typeOf(process).spawnProcessingParticles(level, item.position());
+            }
         }
         for (TransportedItemStackHandlerBehaviour handler : handlersInside(blockEntities, pos -> true)) {
             handler.handleProcessingOnAllItems(transported -> {
                 net.minecraft.world.phys.Vec3 at = handler.getWorldPositionOf(transported);
-                typeOf(processAt.apply(BlockPos.containing(at))).spawnProcessingParticles(level, at);
+                CreateCompat.FanProcess process = processAt.apply(BlockPos.containing(at));
+                if (process != null) {
+                    typeOf(process).spawnProcessingParticles(level, at);
+                }
                 return TransportedItemStackHandlerBehaviour.TransportedResult.doNothing();
             });
         }

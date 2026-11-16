@@ -319,6 +319,16 @@ public abstract class SpellGramZone extends SpellGramObject {
         return boxes;
     }
 
+    /** クライアント側の演出用: 位置 {@code at} が、箱 {@code boxes}（{@link #stormBoxes} など）のどれかの中か。 */
+    protected static boolean insideAny(List<AABB> boxes, Vec3 at) {
+        for (AABB box : boxes) {
+            if (box.contains(at)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** 同じ術者の乱流領域が重なっているかを確かめ直す（サーバー側、ときどき）。 */
     protected void refreshStorm() {
         boolean storm = !overlappingStorms().isEmpty();

@@ -2103,8 +2103,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "の上のブロックや機械にも効きます。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.8",
-                "A zone's strength follows its Cost: the Power is how much Psi you put into each block. What stands in for fuel or energy (heat, cooling, FE and wind) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference.",
-                "領域の強さはコストで決まり、「威力」は1ブロックあたりにかける Psi の量です。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風量）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。");
+                "A zone's strength follows its Cost: the Power is how much Psi you put into each block. What stands in for fuel or energy (heat, cooling, FE and wind) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference. It happens only where your own Turbulence Zone overlaps the zone.",
+                "領域の強さはコストで決まり、「威力」は1ブロックあたりにかける Psi の量です。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風量）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。この加工は、自分の乱流領域が重なったところでしか起きません。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.9",
                 "The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the zone's total (heat, cooling, wind and FE), so a small zone can handle as much as a large one by paying the same Cost. Effects on each being or block (how hot, how cold, how sharply projectiles turn and so on) and the Potency stop growing at 10.",
@@ -2126,10 +2126,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "パウダーをコンクリートに固めます（術者がブロックを変えてよい場所だけ）。");
         addBookPage(root, "trick_soak_zone.1",
                 "With Create installed, it bulk-washes dropped items and the "
-                        + "items on Depots and Mechanical Belts inside, as fast as an E"
-                        + "ncased Fan at interference 2.",
-                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括洗浄します。"
-                        + "干渉力2でケース入りファンと同じ速さです。");
+                        + "items on Depots and Mechanical Belts inside, but only where "
+                        + "your own Turbulence Zone overlaps it (a Rainstorm): as fast "
+                        + "as an Encased Fan at interference 2, and faster with a stron"
+                        + "ger storm. Without a Turbulence Zone it does not wash.",
+                "Create が入っているときは、自分の乱流領域が重なったところ（暴風雨）だけ、範囲の中の落ちているアイテムと、デポ・メカニカル"
+                        + "ベルトの上のアイテムを一括洗浄します。干渉力2でケース入りファンと同じ速さで、暴風雨が強いほど速くなります。乱流領域が"
+                        + "なければ洗いません。");
 
         // 加重領域
         addBookPage(root, "trick_gravity_zone.0",
@@ -2160,8 +2163,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "The Power (a constant of at least 1) is how hot the zone is: living beings inside catch fire, burning as they would in fire (1 damage a second), and keep burning for 0.6 seconds per Power (6 at most) after leaving. The caster does not burn, nor do wet beings. Ice and Frosted Ice inside melt into water; Packed Ice and Blue Ice stay. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
                 "「威力」（1以上の定数）は領域の温度です。中の生物に火がつき、バニラの炎上と同じ毎秒1のダメージを受け、範囲を出てから威力×0.6秒（最大6秒）は燃え続けます。術者自身と、濡れている生物は燃えません。範囲の中の氷と薄氷は水に戻ります。氷塊と青氷はそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_heat_zone.1",
-                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside, as fast as an Encased Fan at interference 2. Where your own Charged Zone overlaps, it bulk-blasts instead, like an electric furnace; only items that can be smelted are processed, so nothing else burns.$(p)The zone has a heat total that follows its Cost: at interference 2, a Size 16 zone has enough heat for three Blaze Burners at Power 5, and six at Power 10.",
-                "Create が入っているときは、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。干渉力2でケース入りファンと同じ速さです。自分の荷電領域が重なったところでは、電気炉のように一括燻製の代わりに一括製錬をします（精錬できるアイテムだけを扱うので、ほかのアイテムは燃えません）。$(p)領域は、コストに応じた熱の総量を持ちます。干渉力2なら、サイズ16の領域で、威力5ならブレイズバーナー3台、威力10なら6台ぶんです。");
+                "With Create installed, it bulk-smokes dropped items and the items on Depots and Mechanical Belts inside, but only where your own Turbulence Zone overlaps it (a Heat Storm): as fast as an Encased Fan at interference 2, and faster with a stronger storm. Where your own Charged Zone overlaps there as well, it bulk-blasts instead, like an electric furnace; only items that can be smelted are processed, so nothing else burns.$(p)The zone has a heat total that follows its Cost: at interference 2, a Size 16 zone has enough heat for three Blaze Burners at Power 5, and six at Power 10.",
+                "Create が入っているときは、自分の乱流領域が重なったところ（熱乱流）だけ、範囲の中の落ちているアイテムと、デポ・メカニカルベルトの上のアイテムを一括燻製します。干渉力2でケース入りファンと同じ速さで、熱乱流が強いほど速くなります。そこに自分の荷電領域も重なっていれば、電気炉のように一括燻製の代わりに一括製錬をします（精錬できるアイテムだけを扱うので、ほかのアイテムは燃えません）。$(p)領域は、コストに応じた熱の総量を持ちます。干渉力2なら、サイズ16の領域で、威力5ならブレイズバーナー3台、威力10なら6台ぶんです。");
 
         addBookPage(root, "trick_heat_zone.2",
                 "Blaze Burners inside are heated without fuel, nearest to the center first, each using as much of the total as burning charcoal would give it, as many as it pays for. The rest goes to the Mekanism blocks inside that take heat (Resistive Heaters, Thermal Evaporation Valves, Heat Generators and so on), shared evenly, but never above 500 K plus 50 K per Power, whatever the ambient temperature (550 K at Power 1, 1000 K at most). Heat carried in by a Freeze Zone of yours touching or overlapping it adds to the total.",
@@ -2188,18 +2191,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "範囲の中では暴風が吹き荒れ、他者が放った飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きを大きく曲げられます。「威力」（1以上の定数。10より上でも曲がり方は同じ）が大きいほど大きく曲がります。魔法の弾は曲げません。残留ポーションやドラゴンブレスの雲は吹き散らされ、早く消えます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_turbulence_zone.1",
                 "Where it overlaps your own zones, it strengthens them. Heat "
-                        + "Zone: a Heat Storm, dealing fire damage and speeding up bulk"
-                        + " smoking and Mekanism heat. Freeze Zone: a Blizzard, dealing"
-                        + " freezing damage and freezing faster. Soak Zone: a Rainstorm"
-                        + ", washing faster and hurting beings weak to water (Blazes, E"
-                        + "ndermen and so on). Charged Zone: a Thundercloud, striking l"
-                        + "iving beings inside at random and charging faster. They foll"
-                        + "ow the Power of the turbulence (the strongest where several "
-                        + "overlap): at 10, machines run twice as fast.",
-                "自分のほかの領域と重ねると、重なったところが強まります。加熱領域とは熱乱流になり、火のダメージを与え、一括燻製と Mek"
-                        + "anism へ送る熱が増えます。凍結領域とは吹雪になり、凍結のダメージを与え、凍えが速くたまります。湿潤領域とは暴風雨に"
-                        + "なり、一括洗浄が速くなり、ブレイズやエンダーマンなど水に弱い生物にダメージを与えます。荷電領域とは雷雲になり、ランダムな"
-                        + "間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
+                        + "Zone: a Heat Storm, dealing fire damage, letting it bulk-smo"
+                        + "ke (bulk-blast where your Charged Zone overlaps too) and add"
+                        + "ing Mekanism heat. Freeze Zone: a Blizzard, dealing freezing"
+                        + " damage and freezing faster. Soak Zone: a Rainstorm, lettin"
+                        + "g it bulk-wash and hurting beings weak to water (Blazes, End"
+                        + "ermen and so on). Charged Zone: a Thundercloud, striking liv"
+                        + "ing beings inside at random and charging faster. Create bulk"
+                        + " processing by zones happens only in these overlaps. They fo"
+                        + "llow the Power of the turbulence (the strongest where severa"
+                        + "l overlap): at 10, machines run twice as fast.",
+                "自分のほかの領域と重ねると、重なったところが強まります。加熱領域とは熱乱流になり、火のダメージを与え、一括燻製（荷電領域"
+                        + "も重なれば一括製錬）ができるようになり、Mekanism へ送る熱が増えます。凍結領域とは吹雪になり、凍結のダメージを与え、"
+                        + "凍えが速くたまります。湿潤領域とは暴風雨になり、一括洗浄ができるようになり、ブレイズやエンダーマンなど水に弱い生物に"
+                        + "ダメージを与えます。荷電領域とは雷雲になり、ランダムな間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。"
+                        + "領域による Create の一括加工は、この重なりでしか起きません。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
                         + "威力10で加工などは2倍の速さです。");
         addBookPage(root, "trick_turbulence_zone.2",
                 "The zone blows a wind of floor area × Power ÷ 240 WU (Wind Units) at interference 1 when placed; twice that at 2, and at most four times. At interference 1, that is 6 WU at Size 12, Power 10, and about 11 WU at Size 16, Power 10.",
@@ -2234,8 +2240,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");
 
         addBookPage(root, "trick_charged_zone.2",
-                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it, harder with a higher Power of the turbulence, and the FE given there rises with that Power too. Where it overlaps your own Heat Zone, the Heat Zone bulk-blasts instead of bulk-smoking.",
-                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。雷撃の強さは乱流の威力で決まり、そこで送る FE も乱流の威力に応じて増えます。自分の加熱領域と重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
+                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it, harder with a higher Power of the turbulence, and the FE given there rises with that Power too. Where your own Heat Zone and Turbulence Zone both overlap it, the Heat Zone bulk-blasts instead of bulk-smoking.",
+                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。雷撃の強さは乱流の威力で決まり、そこで送る FE も乱流の威力に応じて増えます。自分の加熱領域と乱流領域の両方が重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
 
         // 遮音領域
         addBookPage(root, "trick_silence_zone.0",

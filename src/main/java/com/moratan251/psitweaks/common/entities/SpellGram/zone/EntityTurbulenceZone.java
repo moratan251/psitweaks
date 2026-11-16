@@ -42,8 +42,9 @@ import java.util.UUID;
  *   <li>残留ポーションやドラゴンブレスの雲を吹き散らす（早く縮んで消える）。</li>
  *   <li>風量（{@link #windAmount}、単位 WU、置いた時点の事象干渉力で増える）を、範囲の中の風力発電機の台数で均等に分ける
  *   （{@link #generatorWind}）。受け取った風は発電に足す（{@code WindGeneratorTurbulenceMixin}）。Mekanism がなくても値を持つ（ほかの mod の風と連携するため）。</li>
- *   <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は一括洗浄が 2 倍、
- *   荷電領域は雷雲（{@link #blowsFor}、それぞれの領域が見る）。</li>
+ *   <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は暴風雨、
+ *   荷電領域は雷雲（{@link #blowsFor}、それぞれの領域が見る）。Create の一括加工（湿潤領域の一括洗浄、加熱領域の一括燻製、
+ *   加熱領域と荷電領域の重なりの一括製錬）は、乱流が重なったところでしか起きない。</li>
  * </ul>
  * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
@@ -232,7 +233,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /**
      * 術者 {@code casterId} の乱流領域の風が、ブロック {@code pos} に吹いているか（サーバー側）。重ねたときの強化
-     * （熱乱流・吹雪・一括洗浄 2 倍）は、同じ術者の領域どうしだけ。
+     * （熱乱流・吹雪・暴風雨・雷雲と、Create の一括加工）は、同じ術者の領域どうしだけ。
      */
     public static boolean blowsFor(Level level, BlockPos pos, @Nullable UUID casterId) {
         for (SpellGramObject object : SpellGramIndex.ofCaster(level, casterId)) {

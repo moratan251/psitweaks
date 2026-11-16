@@ -34,10 +34,10 @@ import java.util.List;
  * コンクリートパウダーをコンクリートに固める（{@link #affectBlock}、範囲を 1 段ずつ）。術者がそのブロックを変えてよいか
  * （保護）を確かめる。
  * <p>
- * Create があるときは、範囲の中の落ちているアイテムと、デポ・ベルトの上のアイテムを一括洗浄する。速さは置いた時点の
- * 事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。
+ * Create があるときは、同じ術者の乱流領域が重なったところ（暴風雨）だけ、落ちているアイテムと、デポ・ベルトの上のアイテムを
+ * 一括洗浄する。乱流がなければ加工しない。速さは置いた時点の事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。
  * <p>
- * 同じ術者の乱流領域と重なったブロックは「暴風雨」になる: 一括洗浄が 2 倍の速さになり、水に弱い
+ * 同じ術者の乱流領域と重なったブロックは「暴風雨」になる: 一括洗浄が乱流の威力に応じて速くなり（威力 10 で 2 倍）、水に弱い
  * 生物（ブレイズ・エンダーマン・スノウゴーレム・ストライダー、{@code isSensitiveToWater}）に {@link #STORM_INTERVAL} tick
  * ごとにダメージ（攻撃術式の共通ルール、設定 {@code rainstorm.damageMultiplier}）。
  */
@@ -98,18 +98,20 @@ public class EntitySoakZone extends SpellGramZone {
             }
         }
         if (getCaster() instanceof Player caster) {
-            // 洗う速さぶん進め、1 たまるごとに Create の洗浄を 1 回進める。
+            // 洗う速さぶん進め、1 たまるごとに Create の洗浄を 1 回進める。洗うのは同じ術者の乱流領域が重なったところ（暴風雨）
+            // だけ。
             // 世界の範囲と、範囲に重なった機体ごとの範囲（機体の上のデポ・ベルトも洗う）。範囲・領域干渉・乱流は世界の位置で
             // 判定し、保護は機械が本当にある位置で確かめる。
             List<ZoneRegion> regions = regions();
-            for (int step = takeMachineSteps(); step > 0; step--) {
+            boolean stormy = !overlappingStorms().isEmpty();
+            for (int step = takeMachineSteps(); step > 0 && stormy; step--) {
                 for (ZoneRegion region : regions) {
                     CreateCompat.processZone(level, region.area(), machinesIn(region), CreateCompat.FanProcess.WASHING,
-                            pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)),
-                            pos -> isActiveAt(region.worldPos(pos)) && isStrongestAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
+                            pos -> washesAt(region.worldPos(pos)),
+                            pos -> washesAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos));
                 }
             }
-            if (isStorm()) {
+            if (stormy) {
                 // 暴風雨のところは、乱流の威力に応じて上乗せ（威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
                 forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                     for (int i = 0; i < steps; i++) {
@@ -123,6 +125,11 @@ public class EntitySoakZone extends SpellGramZone {
                 });
             }
         }
+    }
+
+    /** 世界の位置 {@code world} で一括洗浄するか（サーバー側）: この領域が効き、同じ術者の乱流領域が吹いているところ。 */
+    private boolean washesAt(BlockPos world) {
+        return isActiveAt(world) && isStrongestAt(world) && isStormAt(world);
     }
 
     @Override
@@ -166,14 +173,18 @@ public class EntitySoakZone extends SpellGramZone {
 
     @Override
     protected void spawnClientParticles() {
-        // Create があるとき: ケース入りファンの水を当てたときと同じ一括洗浄のパーティクル。
-        // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
-        for (ZoneRegion region : regions()) {
-            CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region), CreateCompat.FanProcess.WASHING);
-        }
         if (isStorm()) {
+            List<AABB> storms = stormBoxes();
+            // Create があるとき: ケース入りファンの水を当てたときと同じ一括洗浄のパーティクル。洗うのは乱流が重なったところ
+            // だけなので、そこにだけ出す（クライアントでは術者を見分けない）。
+            // 機体の上のデポ・ベルトにも出す（機体用の空間に出したパーティクルは、Sable が見えている場所へ移す）。
+            for (ZoneRegion region : regions()) {
+                CreateCompat.spawnProcessingParticles(level(), region.area(), machinesIn(region),
+                        pos -> insideAny(storms, net.minecraft.world.phys.Vec3.atCenterOf(region.worldPos(pos)))
+                                ? CreateCompat.FanProcess.WASHING : null);
+            }
             // 乱流と重なったところ: 水しぶきの竜巻（水しぶきは上向きの速さを 0 にすると横の速さが効く）。
-            for (AABB storm : stormBoxes()) {
+            for (AABB storm : storms) {
                 int count = ZoneParticles.count(storm, 20.0, 6, 16);
                 ZoneParticles.vortex(level(), random, storm, count, ParticleTypes.SPLASH, 0.5, 0.0);
                 ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 3), ParticleTypes.CLOUD, 0.45, 0.04);
