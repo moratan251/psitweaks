@@ -54,8 +54,11 @@ public class EntityHeatZone extends SpellGramZone {
     public static final double MAX_TEMPERATURE_PER_POWER = 50.0;
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
-    /** 熱の総量の比率: 置いたときのコスト 1 Psi あたりの熱（J）。熱発電機を通すとサイリンク発電機と同じ 100 FE/Psi になる。 */
-    public static final double HEAT_PER_PSI = 360.0;
+    /**
+     * 熱の総量の比率: 置いたときのコスト 1 Psi あたりの熱（J）。熱発電機（1000 K で熱 1 J ≈ 0.28 FE）を通すと、干渉力 2 で
+     * 約 200 FE/Psi（荷電領域の FE と同じ）、干渉力 1 で約 100 FE/Psi になる。
+     */
+    public static final double HEAT_PER_PSI = 720.0;
     /** ブレイズバーナー 1 台を「加熱」にするのに熱の総量から使う熱（J/t、木炭で加熱したときと同じ）。 */
     public static final double BURNER_HEAT_PER_TICK = 200.0;
     private static final int INTERVAL = 10;

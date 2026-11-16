@@ -284,7 +284,7 @@ public final class SableZoneGameTests {
                     heaterBefore[0] = MekanismGameplayCompat.temperatureAt(level, heaterPlot);
                     helper.assertTrue(!Double.isNaN(heaterBefore[0]), "Precondition: the heater must be on the ship");
                 }
-                // 熱の総量でブレイズバーナー 1 台（200 J/t）を払えるよう、干渉力 4（速さ 2）・一辺 9・威力 10（コスト 374 → 約 449 J/t）。
+                // 熱の総量でブレイズバーナー 1 台（200 J/t）を払えるよう、干渉力 4（速さ 2）・一辺 9・威力 10（コスト 374 → 約 898 J/t）。
                 caster.getAttribute(com.moratan251.psitweaks.common.attributes.PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
                 castOverShip(caster, ship, heatPiece(), 10.0, 9.0);
             } catch (ReflectiveOperationException | SpellRuntimeException e) {
@@ -342,7 +342,7 @@ public final class SableZoneGameTests {
             try {
                 helper.assertTrue(MekanismGameplayCompat.isWindGenerator(level.getBlockEntity(generatorPlot)),
                         "Precondition: the Wind Generator must be on the ship at " + generatorPlot);
-                // 一辺 7・威力 10・事象干渉力 1: 風量 49 × 10 ÷ 96 ≈ 5.1 WU を、範囲の中の発電機 1 台が
+                // 一辺 7・威力 10・事象干渉力 1: 風量 49 × 10 ÷ 240 ≈ 2.0 WU を、範囲の中の発電機 1 台が
                 // 全部受け取る。
                 castOverShip(caster, ship, turbulencePiece(), 10.0);
             } catch (ReflectiveOperationException | SpellRuntimeException e) {

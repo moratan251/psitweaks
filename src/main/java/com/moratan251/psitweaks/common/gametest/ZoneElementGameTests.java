@@ -444,9 +444,9 @@ public final class ZoneElementGameTests {
             helper.assertTrue(outsideMultiplier == 0.0,
                     "A Wind Generator outside the zone must stay still under a roof, multiplier " + outsideMultiplier);
             helper.assertTrue(skyMultiplier > 0.0, "A Wind Generator under the open sky must run, multiplier " + skyMultiplier);
-            // 風量 25 × 10 ÷ 96 × 干渉力 4 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに 37.5 J/t、
+            // 風量 25 × 10 ÷ 240 × 干渉力 4 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに 37.5 J/t、
             // 高さによらない。
-            double units = 25.0 * 10.0 / 96.0 * 4.0 / 2.0;
+            double units = 25.0 * 10.0 / 240.0 * 4.0 / 2.0;
             double openUnits = units;
             double roofed = units * EntityTurbulenceZone.WIND_JOULES_PER_WU / MekanismGameplayCompat.windGenerationMinimum();
             helper.assertTrue(Math.abs(insideMultiplier - roofed) < 1.0E-6,
@@ -477,11 +477,11 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            // どちらも一辺 9・威力 10・事象干渉力 1（81 × 10 ÷ 96 ≈ 8.4 WU）: 発電機は 1 台なので、それぞれから
+            // どちらも一辺 9・威力 25・事象干渉力 1（81 × 25 ÷ 240 ≈ 8.4 WU）: 発電機は 1 台なので、それぞれから
             // 8.4 WU（合わせて約 16.9 WU、1 台は 10 WU まで）。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.0D);
-            cast(caster, turbulence(helper), 9.0, 10.0);
-            cast(caster, turbulence(helper), 9.0, 10.0);
+            cast(caster, turbulence(helper), 9.0, 25.0);
+            cast(caster, turbulence(helper), 9.0, 25.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -501,7 +501,8 @@ public final class ZoneElementGameTests {
 
     /**
      * 乱流領域の風量は置いた時点の事象干渉力に比例して増える: 干渉力 1 で基準、2 で 2 倍、4 以上で 4 倍（上限）。1 WU は
-     * 37.5 J/t・床の広さ × 威力 ÷ 96 WU なので、干渉力 1 での 1 Psi あたりの発電の上乗せは 25 ÷ 64 J/t（約 94 FE/Psi）。
+     * 37.5 J/t・床の広さ × 威力 ÷ 240 WU、コストは加熱・荷電と同じ 50 + 広さ × 威力 × 2 / 5 なので、干渉力 1 でのコスト 1 Psi
+     * あたりの発電の上乗せは 25 ÷ 64 J/t（約 94 FE/Psi）。規模とコストが加熱領域と同じことも確かめる。
      * 風量は Mekanism がなくても持つので、Mekanism なしでも試す。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_turbulence_wind_interference", timeoutTicks = 40)
@@ -514,8 +515,8 @@ public final class ZoneElementGameTests {
             for (int i = 0; i < interferences.length; i++) {
                 caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(interferences[i]);
                 List<Object> before = new java.util.ArrayList<>(SpellGramIndex.ofCaster(level, caster.getUUID()));
-                // 一辺 3・威力 32: 床の広さ 9 × 32 ÷ 96 = 3 WU × 事象干渉力。
-                cast(caster, turbulence(helper), 3.0, 32.0);
+                // 一辺 3・威力 80: 床の広さ 9 × 80 ÷ 240 = 3 WU × 事象干渉力。
+                cast(caster, turbulence(helper), 3.0, 80.0);
                 EntityTurbulenceZone placed = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                         .filter(object -> object instanceof EntityTurbulenceZone && before.stream().noneMatch(old -> old == object))
                         .map(EntityTurbulenceZone.class::cast).findFirst()
@@ -532,9 +533,16 @@ public final class ZoneElementGameTests {
             helper.assertTrue(Math.abs(winds[i] - expected[i]) < 1.0E-6, "Interference " + interferences[i]
                     + " must blow " + expected[i] + " WU, got " + winds[i]);
         }
-        // 干渉力 1 での 1 Psi あたりの上乗せ（1 WU の J/t ÷ 割る数）は 25 ÷ 64。
-        double perPsi = EntityTurbulenceZone.WIND_JOULES_PER_WU / EntityTurbulenceZone.WIND_FOOTPRINT_DIVISOR;
+        // 干渉力 1 でのコスト 1 Psi あたりの上乗せ（1 WU の J/t ÷ 割る数 ÷ 広さ × 威力 1 あたりのコスト 2 / 5）は 25 ÷ 64。
+        double perPsi = EntityTurbulenceZone.WIND_JOULES_PER_WU / EntityTurbulenceZone.WIND_FOOTPRINT_DIVISOR / (2.0 / 5.0);
         helper.assertTrue(Math.abs(perPsi - 25.0 / 64.0) < 1.0E-9, "The wind power per Psi must stay 25/64 J/t, got " + perPsi);
+        // コストと規模は加熱領域と同じ式（サイズ 16・威力 10 でコスト 1074、規模 701）。
+        int turbulenceCost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone.costFor(256, 10.0);
+        int heatCost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickHeatZone.costFor(256, 10.0);
+        helper.assertTrue(turbulenceCost == 1074 && heatCost == 1074,
+                "The Turbulence Zone must cost the same as the Heat Zone: " + turbulenceCost + " vs " + heatCost);
+        int potency = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.poweredPotency(256, 10.0);
+        helper.assertTrue(potency == 701, "Size 16, Power 10 must have Potency 701, got " + potency);
         helper.succeed();
     }
 
@@ -1621,8 +1629,8 @@ public final class ZoneElementGameTests {
                 MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(pos))),
                         new java.util.IdentityHashMap<>(), 1.0E9, 800.0, at -> true);
             }
-            // 凍結領域は x 0〜2・z 1〜3（干渉力 4 → 速さ 2、1 台あたり毎 tick 4% まで）。冷却量は熱量と同じ 360 J/Psi（2026-11-15）
-            // なので、威力 100（コスト 410 → 約 490 J/t）にする。cancelled の 1 ブロックだけ加熱領域も重ねる。
+            // 凍結領域は x 0〜2・z 1〜3（干渉力 4 → 速さ 2、1 台あたり毎 tick 4% まで）。冷却量は熱量と同じ 720 J/Psi
+            // なので、威力 100（コスト 410 → 約 984 J/t）にする。cancelled の 1 ブロックだけ加熱領域も重ねる。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, freeze(helper, new BlockPos(1, 1, 2)), 3.0, 100.0);
             cast(caster, heat(helper, cancelled), 1.0, 5.0);
@@ -1724,7 +1732,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 威力は 10 より上も入れられる: 一辺 3 でも威力 100（コスト 410 → 約 246 J/t）ならバーナー 1 台を
+     * 威力は 10 より上も入れられる: 一辺 3 でも威力 100（コスト 410 → 干渉力 1 で約 246 J/t）ならバーナー 1 台を
      * 加熱にできる。1 か所あたりの強さ（上限の温度）は威力 10 で頭打ち。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_small", timeoutTicks = 100)
@@ -1767,8 +1775,8 @@ public final class ZoneElementGameTests {
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_burner_" + mode.name().toLowerCase(java.util.Locale.ROOT),
                 new Vec3(4.5, 1.0, 4.5));
-        // 加熱領域は (1, 1, 2) を中心にした一辺 9（x -3〜5）。熱の総量でバーナー 1 台（200 J/t）だけ払えるよう、干渉力 2（速さ 1）・
-        // 威力 10（コスト 374 → 約 224 J/t）にする。
+        // 加熱領域は (1, 1, 2) を中心にした一辺 9（x -3〜5）。熱の総量でバーナー 1 台（200 J/t）だけ払えるよう、干渉力 1（速さ 0.5）・
+        // 威力 10（コスト 374 × 720 J ÷ 600 tick × 0.5 → 約 224 J/t）にする。
         BlockPos inside = new BlockPos(1, 1, 1);
         BlockPos outside = new BlockPos(8, 1, 2);
         // BUDGET: 1 台ぶん（200 J/t）しか払えない領域に、中心から遠いもう 1 台を置く。
@@ -1785,7 +1793,7 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.0D);
             switch (mode) {
                 case KINDLE, REVERT, BUDGET -> cast(caster, heat(helper, new BlockPos(1, 1, 2)), 9.0, 10.0);
                 // 一辺 3（x 0〜2）・威力 100。外のバーナー (8, 1, 2) は外。

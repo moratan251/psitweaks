@@ -53,10 +53,11 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /** 1 WU あたりに足す、風力発電機 1 台の発電量（J/t、15 FE/t、WU の定義）。乱流の風は人工のものなので高さによらない。 */
     public static final double WIND_JOULES_PER_WU = 37.5;
     /**
-     * 風量 = 床の広さ × 威力 ÷ この値 × 風の倍率（WU、{@link #windFactor}）。干渉力 1 なら、サイズ 12・威力 10 で 15 WU、
-     * サイズ 16・威力 10 で約 26.7 WU。
+     * 風量 = 床の広さ × 威力 ÷ この値 × 風の倍率（WU、{@link #windFactor}）。干渉力 1 なら、サイズ 12・威力 10 で 6 WU、
+     * サイズ 16・威力 10 で約 10.7 WU。コスト（広さ × 威力 × 2 / 5）と合わせて、コスト 1 Psi あたりの風は
+     * 6.25 WU·tick（干渉力 1、時間によらない）。
      */
-    public static final double WIND_FOOTPRINT_DIVISOR = 96.0;
+    public static final double WIND_FOOTPRINT_DIVISOR = 240.0;
     /** 範囲の中の風力発電機の風量を計算し直す間隔（tick）。 */
     public static final int WIND_COUNT_INTERVAL = 20;
     /** 雲が 1 tick に縮む半径（仮）。 */
@@ -142,7 +143,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
     }
 
     /**
-     * 風の倍率: 置いた時点の事象干渉力（上限 4）。干渉力 1 で 1 倍（1 Psi あたりの発電の上乗せは 25 ÷ 64 J/t）、2 で 2 倍。
+     * 風の倍率: 置いた時点の事象干渉力（上限 4）。干渉力 1 で 1 倍（コスト 1 Psi あたりの発電の上乗せは 25 ÷ 64 J/t）、2 で 2 倍。
      * 加熱・荷電の総量（干渉力 2 で基準、上限 2 倍）とは基準が違う。上限は速さ（{@link SpellGramZone#machineSpeedFor}）が
      * 頭打ちになる干渉力にそろえ、速さから戻す。
      */
