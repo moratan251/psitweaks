@@ -21,9 +21,14 @@ import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitBoots;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitChestplate;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitHelmet;
 import com.moratan251.psitweaks.common.items.armor.ItemMovalSuitLeggings;
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -275,9 +280,16 @@ public final class PsitweaksItems {
             "echo_sheet",
             new Item.Properties().rarity(Rarity.UNCOMMON)
     );
-    public static final DeferredItem<Item> MAGICIANS_BRAIN = ITEMS.registerSimpleItem(
-            "magicians_brain",
-            new Item.Properties().rarity(Rarity.UNCOMMON)
+    // ほかのモブの頭と同じく床にも壁にも置け、かぶれる。音符ブロックの上では村人の声で鳴る。
+    public static final DeferredItem<StandingAndWallBlockItem> MAGICIANS_HEAD = ITEMS.register(
+            "magicians_head",
+            () -> new StandingAndWallBlockItem(
+                    PsitweaksBlocks.MAGICIANS_HEAD.get(),
+                    PsitweaksBlocks.MAGICIANS_WALL_HEAD.get(),
+                    new Item.Properties()
+                            .rarity(Rarity.UNCOMMON)
+                            .component(DataComponents.NOTE_BLOCK_SOUND, SoundEvents.VILLAGER_AMBIENT.getLocation()),
+                    Direction.DOWN)
     );
     public static final DeferredItem<Item> AQUA_CUTTER_PROJECTILE = ITEMS.registerSimpleItem(
             "aqua_cutter_projectile",
@@ -607,6 +619,8 @@ public final class PsitweaksItems {
     }
 
     public static void register(IEventBus eventBus) {
+        // 旧「魔法師の脳」は「魔法師の頭」に置き換えた。古いワールドの脳は頭として読み込む。
+        ITEMS.addAlias(Psitweaks.location("magicians_brain"), Psitweaks.location("magicians_head"));
         ITEMS.register(eventBus);
     }
 

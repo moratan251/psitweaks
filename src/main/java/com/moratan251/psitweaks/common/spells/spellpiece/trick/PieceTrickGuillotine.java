@@ -96,9 +96,6 @@ public class PieceTrickGuillotine extends PieceTrick {
             if (!headStack.isEmpty()) {
                 livingEntity.spawnAtLocation(headStack);
             }
-            if (livingEntity instanceof Villager villager && isSpellcasterVillager(villager)) {
-                villager.spawnAtLocation(new ItemStack(PsitweaksItems.MAGICIANS_BRAIN.get()));
-            }
         }
 
         return null;
@@ -107,6 +104,9 @@ public class PieceTrickGuillotine extends PieceTrick {
     private ItemStack resolveHeadDrop(LivingEntity livingEntity) {
         if (livingEntity instanceof Player player) {
             return createPlayerHead(player);
+        }
+        if (livingEntity instanceof Villager villager && isSpellcasterVillager(villager)) {
+            return new ItemStack(PsitweaksItems.MAGICIANS_HEAD.get());
         }
         if (livingEntity instanceof Mob mob) {
             Item headItem = resolveMobHeadItem(mob);

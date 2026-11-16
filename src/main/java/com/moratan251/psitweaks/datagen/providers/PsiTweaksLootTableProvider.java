@@ -53,6 +53,8 @@ public class PsiTweaksLootTableProvider implements DataProvider {
             };
             futures.add(DataProvider.saveStable(output, lootTable, pathProvider.json(Psitweaks.location("blocks/" + block.id()))));
         }
+        // The wall head drops this table too (lootFrom), like the vanilla wall heads.
+        futures.add(DataProvider.saveStable(output, dropSelf("magicians_head"), pathProvider.json(Psitweaks.location("blocks/magicians_head"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }

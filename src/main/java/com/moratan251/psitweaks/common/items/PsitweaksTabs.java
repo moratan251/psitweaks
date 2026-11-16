@@ -82,7 +82,7 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.JADE.get());
                         output.accept(PsitweaksItems.MAGATAMA.get());
                         output.accept(PsitweaksItems.ECHO_SHEET.get());
-                        output.accept(PsitweaksItems.MAGICIANS_BRAIN.get());
+                        output.accept(PsitweaksItems.MAGICIANS_HEAD.get());
                         output.accept(PsitweaksItems.PHILOSOPHERS_STONE.get());
                         output.accept(PsitweaksItems.SPELL_MAGAZINE.get());
                         output.accept(PsitweaksItems.PORTABLE_CAD_ASSEMBLER.get());

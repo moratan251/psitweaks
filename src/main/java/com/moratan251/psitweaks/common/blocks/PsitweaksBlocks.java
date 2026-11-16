@@ -6,9 +6,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -126,9 +129,31 @@ public final class PsitweaksBlocks {
     private PsitweaksBlocks() {
     }
 
+    // ほかのモブの頭と同じ作り。アイテムは PsitweaksItems.MAGICIANS_HEAD (床と壁の両方に置ける)。
+    public static final DeferredBlock<MagiciansHeadBlock> MAGICIANS_HEAD = BLOCKS.register(
+            "magicians_head",
+            () -> new MagiciansHeadBlock(BlockBehaviour.Properties.of()
+                    .instrument(NoteBlockInstrument.CUSTOM_HEAD)
+                    .strength(1.0F)
+                    .pushReaction(PushReaction.DESTROY))
+    );
+    public static final DeferredBlock<MagiciansWallHeadBlock> MAGICIANS_WALL_HEAD = BLOCKS.register(
+            "magicians_wall_head",
+            () -> new MagiciansWallHeadBlock(BlockBehaviour.Properties.of()
+                    .strength(1.0F)
+                    .lootFrom(MAGICIANS_HEAD)
+                    .pushReaction(PushReaction.DESTROY))
+    );
+
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
         BLOCK_ITEMS.register(eventBus);
+        eventBus.addListener(PsitweaksBlocks::onAddBlockEntityBlocks);
+    }
+
+    // 頭はバニラの SkullBlockEntity を使うので、その種類に魔法師の頭を足す。
+    private static void onAddBlockEntityBlocks(BlockEntityTypeAddBlocksEvent event) {
+        event.modify(BlockEntityType.SKULL, MAGICIANS_HEAD.get(), MAGICIANS_WALL_HEAD.get());
     }
 
     private static DeferredBlock<Block> registerSimpleBlock(String name, BlockBehaviour.Properties properties) {

@@ -64,7 +64,6 @@ final class PsitweaksDatagenItems {
             item("hypostasis_gem", "Hypostasis Gem", "ヒュポスタシスジェム"),
             item("dimensional_crystal", "Dimensional Crystal", "次元の結晶"),
             item("echo_sheet", "HDΨE Sheet", "HDΨEシート"),
-            item("magicians_brain", "Magician's Brain", "魔法師の脳"),
             item("program_blank", "Blank Program", "空白のプログラム"),
             item("program_cocytus", "Program: Cocytus", "プログラム: コキュートス", "program_trick_cocytus"),
             item("program_time_accelerate", "Program: Time Accelerate", "プログラム: 時間加速", "program_trick_time_accelerate"),

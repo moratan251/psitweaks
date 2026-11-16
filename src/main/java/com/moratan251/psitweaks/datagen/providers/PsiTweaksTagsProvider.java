@@ -132,6 +132,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/plutonium", block(PsitweaksBlocks.PLUTONIUM_BLOCK.get()));
         tag(tags, "c", "storage_blocks/polonium", block(PsitweaksBlocks.POLONIUM_BLOCK.get()));
         tag(tags, "c", "storage_blocks/raw_antinite", block(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()));
+        tag(tags, "c", "skulls", block(PsitweaksBlocks.MAGICIANS_HEAD.get()), block(PsitweaksBlocks.MAGICIANS_WALL_HEAD.get()));
     }
 
     private static void addChemicalTags(Map<ResourceLocation, JsonObject> tags) {
@@ -212,6 +213,8 @@ public class PsiTweaksTagsProvider implements DataProvider {
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {
+        tag(tags, "minecraft", "skulls", item(PsitweaksItems.MAGICIANS_HEAD));
+        tag(tags, "minecraft", "noteblock_top_instruments", item(PsitweaksItems.MAGICIANS_HEAD));
         tag(tags, "c", "alloys", item(PsitweaksItems.ALLOY_PSION), item(PsitweaksItems.ALLOY_PSIONIC_ECHO), item(PsitweaksItems.ALLOY_HYPOSTASIS));
         tag(tags, "c", "circuits", item(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT), item(PsitweaksItems.ECHO_CONTROL_CIRCUIT), item(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT));
         tag(tags, "c", "dusts", tagRef("c:dusts/antinite"));

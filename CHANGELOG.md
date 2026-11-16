@@ -156,6 +156,9 @@
 - Changed the look of the Magician villager to a researcher in a white coat and an academic cap (zombie villagers too)
 
 
+- Changed the Magician's Brain into the Magician's Head, which shows the Magician villager's head. Like other mob heads, it can be placed on the floor or a wall and worn, and plays a villager sound on top of a note block (Magician's Brains in existing worlds become Magician's Heads)
+
+
 - The Psi-Link Generator now makes 4x the energy per Psi (100 FE) and has 4x the capacity. It outputs FE from its back side automatically by default (up to 25600 FE/t)
 
 

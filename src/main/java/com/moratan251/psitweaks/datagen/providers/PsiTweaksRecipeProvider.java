@@ -432,7 +432,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 List.of("AEA", "AMA", "NNN"),
                 Map.of(
                         'A', ingredientItem(PsitweaksItems.ALLOY_HYPOSTASIS),
-                        'E', ingredientItem(PsitweaksItems.MAGICIANS_BRAIN),
+                        'E', ingredientItem(PsitweaksItems.MAGICIANS_HEAD),
                         'M', ingredientItem(MekanismItems.MODULE_BASE),
                         'N', ingredientItem(PsitweaksItems.PELLET_NEPTUNIUM)
                 ),
@@ -618,7 +618,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
         recipe(recipes, "sorcery_booster", shaped("tools",
                 List.of("CDC", "BBB", "CCC"),
                 Map.of(
-                        'B', ingredientItem(PsitweaksItems.MAGICIANS_BRAIN),
+                        'B', ingredientItem(PsitweaksItems.MAGICIANS_HEAD),
                         'C', ingredientItem(PsitweaksItems.FLASHMETAL),
                         'D', ingredientItem(PsitweaksItems.HEAVY_PSIMETAL)
                 ),

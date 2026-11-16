@@ -17,6 +17,7 @@ import com.moratan251.psitweaks.client.SpellUnlockClientEvents;
 import com.moratan251.psitweaks.client.combat.CombatEffectsClient;
 import com.moratan251.psitweaks.client.config.PsitweaksConfigScreenRegistration;
 import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
+import com.moratan251.psitweaks.client.head.MagiciansHeadClient;
 import com.moratan251.psitweaks.client.models.PsitweaksClientModels;
 import com.moratan251.psitweaks.client.spells.PsitweaksClientSpells;
 import com.moratan251.psitweaks.client.gui.BladePouchScreen;
@@ -192,6 +193,7 @@ public class Psitweaks {
             PsitweaksConfigScreenRegistration.register(modContainer);
             PsitweaksClientSpells.register(modEventBus);
             PsitweaksClientModels.register(modEventBus);
+            MagiciansHeadClient.register(modEventBus);
             DisplayNameTranslationRepository.registerClientReloadListeners(modEventBus);
             ClientModEvents.register(modEventBus);
             MekanismCompat.registerClient(modEventBus);

@@ -33,6 +33,15 @@ public class PsitweaksBlockStateProvider implements DataProvider {
                 blockStatePathProvider.json(connector)));
         // Empty geometry, no textures. The block renders only Psi particles.
         futures.add(DataProvider.saveStable(output, new JsonObject(), blockModelPathProvider.json(connector)));
+        // Mob-head style: the block entity renderer draws it, so use the vanilla skull models like the vanilla heads.
+        ResourceLocation skullModel = ResourceLocation.withDefaultNamespace("block/skull");
+        futures.add(DataProvider.saveStable(output, simpleBlockState(skullModel),
+                blockStatePathProvider.json(Psitweaks.location("magicians_head"))));
+        futures.add(DataProvider.saveStable(output, simpleBlockState(skullModel),
+                blockStatePathProvider.json(Psitweaks.location("magicians_wall_head"))));
+        futures.add(DataProvider.saveStable(output,
+                parentItemModel(ResourceLocation.withDefaultNamespace("item/template_skull")),
+                itemModelPathProvider.json(Psitweaks.location("magicians_head"))));
 
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             if ("transcendent_universal_cable".equals(block.id())) {
