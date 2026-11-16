@@ -47,16 +47,16 @@ public final class MekanismGameplayCompat {
     }
 
     /**
-     * 作動式: 凍結領域の冷却: 範囲の中の Mekanism の熱を持つブロックを、下限（周囲の温度 − {@code belowAmbient}）に向けて
-     * 温度差の {@code fraction} だけ冷やす（下限より下には冷やさない、同じマルチブロックには 1 回だけ、{@code mayUse} が偽の
+     * 作動式: 凍結領域の冷却: 範囲の中の Mekanism の熱を持つブロックを、下限の温度 {@code floor}（K、周囲の温度によらない）に
+     * 向けて温度差の {@code fraction} だけ冷やす（下限より下には冷やさない、同じマルチブロックには 1 回だけ、{@code mayUse} が偽の
      * ブロックは冷やさない）。
      * 取り除く合計は {@code total} まで（均等に分け、取り除ききれなかった分を 1 回だけ分け直す）。
      * 取り除いた熱の合計と、そのうち周囲の温度より上にあった分（加熱領域へ運べる熱）を返す。Mekanism がなければ両方 0。
      */
     public static ZoneHeatDrain drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities, Map<BlockEntity, Integer> sideCache,
-                                              double fraction, double total, double belowAmbient, Predicate<BlockPos> mayUse) {
+                                              double fraction, double total, double floor, Predicate<BlockPos> mayUse) {
         return MekanismCompat.isMekanismLoaded()
-                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, total, belowAmbient, mayUse)
+                ? MekanismGameplayIntegration.drainZoneHeat(level, blockEntities, sideCache, fraction, total, floor, mayUse)
                 : ZoneHeatDrain.NONE;
     }
 

@@ -97,14 +97,14 @@ final class MekanismGameplayIntegration {
     }
 
     /**
-     * 作動式: 凍結領域の冷却（加熱の熱量と対の「冷却量」）: 冷却量 {@code total} を、周囲の温度より熱い
-     * ブロックで均等に分けて取り除く。1 つから取り除くのは温度差の {@code fraction} まで（温度差 × 割合 × 熱容量）で、周囲の温度より
-     * 下には冷やさない。取り除ききれなかった分は、まだ取り除けるブロックに分け直す（1 回だけ）。同じマルチブロックには 1 回だけ。
-     * 取り除いた熱の合計を返す。
+     * 作動式: 凍結領域の冷却（加熱の熱量と対の「冷却量」）: 冷却量 {@code total} を、下限の温度 {@code floor} より熱い
+     * ブロックで均等に分けて取り除く。1 つから取り除くのは下限との温度差の {@code fraction} まで（温度差 × 割合 × 熱容量）で、
+     * 下限より下には冷やさない。取り除ききれなかった分は、まだ取り除けるブロックに分け直す（1 回だけ）。同じマルチブロックには
+     * 1 回だけ。取り除いた熱の合計を返す。
      */
     static MekanismGameplayCompat.ZoneHeatDrain drainZoneHeat(ServerLevel level, List<BlockEntity> blockEntities,
                                                               Map<BlockEntity, Integer> sideCache, double fraction, double total,
-                                                              double belowAmbient, Predicate<BlockPos> mayUse) {
+                                                              double floor, Predicate<BlockPos> mayUse) {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
         List<IHeatHandler> handlers = new ArrayList<>();
         List<Double> amounts = new ArrayList<>();
@@ -120,10 +120,9 @@ final class MekanismGameplayIntegration {
             if (!cooled.add(heatKeyOf(blockEntity, handler)) || !mayUse.test(blockEntity.getBlockPos())) {
                 continue;
             }
-            // 冷やせる下限は周囲の温度より belowAmbient だけ低いところ（2026-11-15 ユーザー: 水を凍らせる領域なので周囲より下まで）。
+            // 冷やせる下限は周囲の温度によらない決まった温度。周囲の温度は、運べる熱（周囲より上にあった分）を求めるのに使う。
             double ambient = HeatAPI.getAmbientTemp(level, blockEntity.getBlockPos());
-            double floor = Math.max(0.0, ambient - Math.max(0.0, belowAmbient));
-            double excess = handler.getTotalTemperature() - floor;
+            double excess = handler.getTotalTemperature() - Math.max(0.0, floor);
             if (excess <= 0.01) {
                 continue;
             }

@@ -34,7 +34,7 @@ import java.util.Set;
  *   <li>中の生物を、粉雪に埋まったときと同じように凍えさせる（{@link #freezeAmount}）。術者自身は凍えさせない
  *   （{@link #sparesCaster}）。</li>
  *   <li>水源の水のうち、真上が空気のものを氷にする（{@link #affectBlock}）。</li>
- *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を下限（周囲の温度 − 威力 × 5 K）に向けて冷やす
+ *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を下限（275 − 威力 × 5 K）に向けて冷やす
  *   （{@link #coolMekanismMachines}）。</li>
  * </ul>
  * 自分の側の加熱領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると吹雪になる。同じ術者の加熱領域と
@@ -76,11 +76,13 @@ public class EntityFreezeZone extends SpellGramZone {
      * 冷やせたが、熱の約 1,500 倍で分かりにくかった。
      */
     public static final double COOLING_PER_PSI = EntityHeatZone.HEAT_PER_PSI;
+    /** Mekanism の機械を冷やせる下限の温度の基準（K）。下限 = この値 − 威力 × {@link #MIN_TEMPERATURE_PER_POWER}。 */
+    public static final double MIN_TEMPERATURE_BASE = 275.0;
     /**
-     * 威力 1 あたりの、冷やせる下限の周囲の温度からの下げ幅（K、2026-11-15 ユーザー）。威力 10 で周囲より 50 K 下（平地なら
-     * 約 250 K、−23℃）。加熱領域の「威力 × 100 K まで温める」と対になる、1 か所あたりの強さ（威力 10 で頭打ち）。
+     * 威力 1 あたりの、冷やせる下限の下げ幅（K）。威力 1 で 270 K、威力 10 で 225 K（約 −48℃）。周囲の温度によらない。
+     * 加熱領域の「500 + 威力 × 50 K まで温める」と対になる、1 か所あたりの強さ（威力 10 で頭打ち）。
      */
-    public static final double COOL_BELOW_AMBIENT_PER_POWER = 5.0;
+    public static final double MIN_TEMPERATURE_PER_POWER = 5.0;
     /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
@@ -112,12 +114,22 @@ public class EntityFreezeZone extends SpellGramZone {
     private double heatDiscarded;
 
     /**
-     * Mekanism の冷却で、1 台が 1 tick に温度差を縮める割合の上限（加熱の「威力 × 100 K まで」と対）: 威力 × 0.002 × 機械を
-     * 動かす速さ（置いた時点の事象干渉力）、上限 0.5。
+     * Mekanism の冷却で、1 台が 1 tick に下限との温度差を縮める割合の上限: 威力 × 0.002 × 機械を動かす速さ（置いた時点の
+     * 事象干渉力）、上限 0.5。
      */
     public static double coolFractionPerTick(float power, float machineSpeed) {
         double fraction = Math.max(0.0F, power) * COOL_FRACTION_PER_POWER * Math.max(0.0F, machineSpeed);
         return Math.min(MAX_COOL_FRACTION, fraction);
+    }
+
+    /** 威力 {@code power} の凍結領域が Mekanism の機械を冷やせる下限の温度（K）: 275 − 威力 × 5（威力 10 で頭打ち）。 */
+    public static double minTemperatureFor(float power) {
+        return MIN_TEMPERATURE_BASE - Math.max(0.0F, Math.min(power, MAX_EFFECT_POWER)) * MIN_TEMPERATURE_PER_POWER;
+    }
+
+    /** Mekanism の機械を冷やせる下限の温度（K）: {@link #minTemperatureFor}。 */
+    public double minTemperature() {
+        return minTemperatureFor(power);
     }
 
     /** 冷却量: 1 tick に取り除ける熱の総量（J）: 置いたときのコスト × {@link #COOLING_PER_PSI} ÷ 存続時間 × 速さ。 */
@@ -219,7 +231,7 @@ public class EntityFreezeZone extends SpellGramZone {
     }
 
     /**
-     * Mekanism の熱を持つ設備を、下限（周囲の温度 − 威力 × 5 K）に向けて冷やす（毎 tick）。加熱領域と打ち消し合っているブロック・
+     * Mekanism の熱を持つ設備を、下限（{@link #minTemperature}）に向けて冷やす（毎 tick）。加熱領域と打ち消し合っているブロック・
      * 領域干渉で止められたブロック・術者が機械を使えないブロックは冷やさない。吹雪のブロックは乱流の威力に応じて上乗せ。
      * 奪った熱のうち周囲の温度より上にあった分は、熱源ごとに、その熱源を冷やす自分の凍結領域が触れている加熱領域へ、
      * 触れ合う面の広さに比例して運ぶ。
@@ -248,10 +260,10 @@ public class EntityFreezeZone extends SpellGramZone {
         if (machines.isEmpty()) {
             return;
         }
-        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算）。下限は周囲の温度 − 威力 × 5 K。
-        double belowAmbient = power * COOL_BELOW_AMBIENT_PER_POWER;
+        // 重なった自分の凍結領域は、それぞれが自分の冷却量で冷やす（足し算）。下限は 275 − 威力 × 5 K。
+        double floor = minTemperature();
         MekanismGameplayCompat.ZoneHeatDrain drained = MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
-                fraction, cap, belowAmbient, pos -> {
+                fraction, cap, floor, pos -> {
                     ZoneRegion region = owners.get(pos);
                     return region != null && isActiveAt(region.worldPos(pos)) && mayUseMachine(level, caster, pos);
                 });
@@ -265,7 +277,7 @@ public class EntityFreezeZone extends SpellGramZone {
                 EntityTurbulenceZone turbulence = entry.getKey();
                 double boost = stormBoost(turbulence.getPower());
                 MekanismGameplayCompat.drainZoneHeat(level, machines, heatSideCache(),
-                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), belowAmbient, pos -> {
+                        Math.min(MAX_COOL_FRACTION, fraction * boost), cap * boost * entry.getValue(), floor, pos -> {
                             ZoneRegion region = owners.get(pos);
                             return region != null && stormAt(region.worldPos(pos)) == turbulence
                                     && mayUseMachine(level, caster, pos);

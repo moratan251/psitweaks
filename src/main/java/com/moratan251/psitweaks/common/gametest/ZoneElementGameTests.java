@@ -218,6 +218,50 @@ public final class ZoneElementGameTests {
         });
     }
 
+    /**
+     * 加熱領域が Mekanism の機械を温める上限は、周囲の温度によらず 500 + 威力 × 50 K（威力 10 以上で 1000 K）。威力 1 でも
+     * 上限 550 K なので、周囲の温度の抵抗型発熱器を温める。上限の式も確かめる。Mekanism がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_mekanism_low_power", timeoutTicks = 100)
+    public static void heatZoneWithPowerOneHeatsMekanismBlocks(GameTestHelper helper) {
+        helper.assertTrue(EntityHeatZone.maxTemperatureFor(1.0F) == 550.0 && EntityHeatZone.maxTemperatureFor(5.0F) == 750.0
+                        && EntityHeatZone.maxTemperatureFor(10.0F) == 1000.0 && EntityHeatZone.maxTemperatureFor(100.0F) == 1000.0,
+                "The highest temperature must be 500 + Power x 50 K, stopping at Power 10");
+        Optional<Block> heater = block("mekanism:resistive_heater");
+        if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_mekanism_low_power", new Vec3(4.5, 1.0, 4.5));
+        BlockPos heaterPos = new BlockPos(1, 1, 1);
+        helper.setBlock(heaterPos, heater.get());
+        BlockPos absolute = helper.absolutePos(heaterPos);
+        double before = MekanismGameplayCompat.temperatureAt(level, absolute);
+        Runnable cleanup = () -> {
+            helper.setBlock(heaterPos, Blocks.AIR);
+            cleanup(helper, caster);
+        };
+        try {
+            helper.assertTrue(!Double.isNaN(before), "The Resistive Heater must hold heat");
+            // 威力 1・一辺 5（コスト 60）、干渉力 4 → 速さ 2 で約 72 J/t。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
+            cast(caster, heat(helper), 5.0, 1.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            double after = MekanismGameplayCompat.temperatureAt(level, absolute);
+            cleanup.run();
+            helper.assertTrue(after > before + 5.0,
+                    "A Power 1 Heat Zone must heat the Resistive Heater, " + before + " K -> " + after + " K");
+            helper.assertTrue(after <= EntityHeatZone.maxTemperatureFor(1.0F) + 0.5,
+                    "It must not heat above 550 K, " + before + " K -> " + after + " K");
+            helper.succeed();
+        });
+    }
+
     /** 凍結領域: 中の生物は凍え、術者は凍えない。真上が空気の水源の水は氷になり、上が塞がれた水はそのまま。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze", timeoutTicks = 100)
     public static void freezeZoneFreezesBeingsAndOpenWater(GameTestHelper helper) {
@@ -1547,8 +1591,8 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 設計 A: 凍結領域は中の Mekanism の熱を持つ設備を周囲の温度に向けて冷やす（外の設備より速く冷える、周囲の温度より下には
-     * 冷えない）。加熱領域と重なったブロックの設備は冷えない（打ち消し合う）。Mekanism がなければ飛ばす。
+     * 設計 A: 凍結領域は中の Mekanism の熱を持つ設備を下限（275 − 威力 × 5 K）に向けて冷やす（外の設備より速く冷える、下限より
+     * 下には冷えない）。加熱領域と重なったブロックの設備は冷えない（打ち消し合う）。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_mekanism", timeoutTicks = 120)
     public static void freezeZoneCoolsMekanismBlocks(GameTestHelper helper) {
@@ -1593,8 +1637,9 @@ public final class ZoneElementGameTests {
             cleanup.run();
             String temps = "cooled " + cooledTemp + " K, cancelled " + cancelledTemp + " K, outside " + outsideTemp + " K";
             helper.assertTrue(cooledTemp < outsideTemp - 50.0, "The Freeze Zone must cool the heater inside: " + temps);
-            // 2026-11-15 ユーザー: 冷やせる下限は周囲の温度 − 威力 × 5 K（威力 10 で 50 K 下）。
-            helper.assertTrue(cooledTemp > 240.0, "It must not cool below 50 K under the ambient temperature: " + temps);
+            // 冷やせる下限は 275 − 威力 × 5 K（威力 10 以上で 225 K）。
+            helper.assertTrue(cooledTemp > EntityFreezeZone.minTemperatureFor(100.0F) - 0.5,
+                    "It must not cool below the lowest temperature, 225 K: " + temps);
             helper.assertTrue(cancelledTemp > cooledTemp + 50.0,
                     "A heater where the Heat Zone cancels the Freeze Zone must not be cooled: " + temps);
             helper.succeed();
@@ -1602,10 +1647,11 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 凍結領域は Mekanism の機械を周囲の温度より下まで冷やせる（2026-11-15 ユーザー）: 下限は周囲 − 威力 × 5 K（威力 10 以上で
-     * 50 K 下）。周囲の温度の発電器を冷やすと周囲より下がり、下限より下にはならない。Mekanism がなければ飛ばす。
+     * 凍結領域は Mekanism の機械を周囲の温度より下まで冷やせる: 下限は周囲の温度によらず 275 − 威力 × 5 K（威力 10 以上で
+     * 225 K）。周囲の温度の発熱器を冷やすと、周囲より 50 K 以上下がり（平地の周囲 300 K から下限 225 K へ）、下限より下には
+     * ならない。下限の式も確かめる。Mekanism がなければ飛ばす。
      */
-    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_below_ambient", timeoutTicks = 120)
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_below_ambient", timeoutTicks = 160)
     public static void freezeZoneCoolsMekanismBlocksBelowAmbient(GameTestHelper helper) {
         Optional<Block> heater = block("mekanism:resistive_heater");
         if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
@@ -1613,6 +1659,9 @@ public final class ZoneElementGameTests {
             return;
         }
         ServerLevel level = helper.getLevel();
+        helper.assertTrue(EntityFreezeZone.minTemperatureFor(1.0F) == 270.0 && EntityFreezeZone.minTemperatureFor(5.0F) == 250.0
+                        && EntityFreezeZone.minTemperatureFor(10.0F) == 225.0 && EntityFreezeZone.minTemperatureFor(100.0F) == 225.0,
+                "The lowest temperature must be 275 - Power x 5 K, stopping at Power 10");
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_freeze_below_ambient", new Vec3(4.5, 1.0, 0.5));
         BlockPos cooled = new BlockPos(1, 1, 1);
         BlockPos reference = new BlockPos(4, 1, 4);
@@ -1630,13 +1679,16 @@ public final class ZoneElementGameTests {
             cleanup.run();
             throw new RuntimeException(e);
         }
-        helper.runAfterDelay(60, () -> {
+        // 干渉力 4 → 速さ 2、威力 100 で、1 tick に下限との温度差の 4% ずつ縮む（300 K から 100 tick で下限の約 1 K 上）。
+        helper.runAfterDelay(110, () -> {
             double cooledTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(cooled));
             double ambient = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(reference));
             cleanup.run();
             String temps = "cooled " + cooledTemp + " K, ambient " + ambient + " K";
-            helper.assertTrue(cooledTemp < ambient - 5.0, "The Freeze Zone must cool the heater below the ambient temperature: " + temps);
-            helper.assertTrue(cooledTemp > ambient - 50.5, "It must not cool more than 50 K below the ambient temperature: " + temps);
+            helper.assertTrue(cooledTemp < ambient - 55.0,
+                    "The Freeze Zone must cool the heater well below the ambient temperature, towards 225 K: " + temps);
+            helper.assertTrue(cooledTemp > EntityFreezeZone.minTemperatureFor(100.0F) - 0.5,
+                    "It must not cool below the lowest temperature, 225 K: " + temps);
             helper.succeed();
         });
     }

@@ -45,8 +45,13 @@ import java.util.List;
 public class EntityHeatZone extends SpellGramZone {
     /** 威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
     public static final float BURN_SECONDS_PER_POWER = 0.6F;
-    /** 威力 1 あたりの、Mekanism の機械を温める上限の温度（K、仮）。威力 10 で 1000 K（核分裂炉が損傷する 1200 K より下）。 */
-    public static final double TEMPERATURE_PER_POWER = 100.0;
+    /** Mekanism の機械を温める上限の温度の基準（K）。上限 = この値 + 威力 × {@link #MAX_TEMPERATURE_PER_POWER}。 */
+    public static final double MAX_TEMPERATURE_BASE = 500.0;
+    /**
+     * 威力 1 あたりの、Mekanism の機械を温める上限の温度の上がり幅（K）。威力 1 で 550 K、威力 10 で 1000 K（核分裂炉が
+     * 損傷する 1200 K より下）。周囲の温度によらない。
+     */
+    public static final double MAX_TEMPERATURE_PER_POWER = 50.0;
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
     /** 熱の総量の比率: 置いたときのコスト 1 Psi あたりの熱（J）。熱発電機を通すとサイリンク発電機と同じ 100 FE/Psi になる。 */
@@ -140,9 +145,14 @@ public class EntityHeatZone extends SpellGramZone {
         return power * BURN_SECONDS_PER_POWER;
     }
 
-    /** Mekanism の熱: これより熱いブロックには送らない（K）: 威力 × 100。 */
+    /** Mekanism の熱: これより熱いブロックには送らない（K）: {@link #maxTemperatureFor}。 */
     public double maxTemperature() {
-        return power * TEMPERATURE_PER_POWER;
+        return maxTemperatureFor(power);
+    }
+
+    /** 威力 {@code power} の加熱領域が Mekanism の機械を温める上限の温度（K）: 500 + 威力 × 50（威力 10 で頭打ち）。 */
+    public static double maxTemperatureFor(float power) {
+        return MAX_TEMPERATURE_BASE + Math.max(0.0F, Math.min(power, MAX_EFFECT_POWER)) * MAX_TEMPERATURE_PER_POWER;
     }
 
     /** 凍結領域と重なったブロックでは効かない（打ち消し合う）。 */
