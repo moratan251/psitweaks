@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.compat.SablePhysicsCompat;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
@@ -66,6 +67,8 @@ public final class SableZoneGameTests {
     private static final BlockPos CAMPFIRE_ON_SHIP = new BlockPos(2, 2, 1);
     private static final BlockPos BURNER_ON_SHIP = new BlockPos(3, 2, 3);
     private static final BlockPos HEATER_ON_SHIP = new BlockPos(1, 2, 3);
+    /** 機体に載せる風力発電機（Mekanism Generators、テストの場所の位置）。 */
+    private static final BlockPos WIND_GENERATOR_ON_SHIP = new BlockPos(2, 2, 2);
 
     /**
      * Sable が機体の位置を半ブロックまで持てる座標の大きさ（2^23 = 8,388,608）。32 ビットの浮動小数はこれを超えると 1 刻みの値しか
@@ -311,6 +314,63 @@ public final class SableZoneGameTests {
     }
 
     /**
+     * 世界に置いた乱流領域が、範囲に重なった機体（30 度回した 3×3 の石の床）の上の風力発電機にも風を渡す（2026-11-16 ユーザー:
+     * Create Aeronautics の機体の上の風力発電機に効かなかった）。発電機が受け取る風量（WU）が 0 より大きく、発電の倍率に
+     * 1 WU ごとの上乗せが入る。Sable か Mekanism Generators がなければ飛ばす。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_sable_ship_wind", timeoutTicks = 140)
+    public static void worldTurbulenceZoneRunsWindGeneratorsOnShips(GameTestHelper helper) {
+        Optional<Block> windGenerator = block("mekanismgenerators:wind_generator");
+        if (!ModList.get().isLoaded("sable") || !MekanismCompat.isGeneratorsLoaded() || windGenerator.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        boolean coarse = beyondSablePrecision(helper, "worldTurbulenceZoneRunsWindGeneratorsOnShips");
+        Object ship;
+        BlockPos plotAnchor;
+        try {
+            ship = assembleTurnedPlatform(helper, level, 30.0, Map.of(WIND_GENERATOR_ON_SHIP, windGenerator.get().defaultBlockState()));
+            plotAnchor = plotAnchorOf(ship);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not assemble a Sable sub-level for the test", e);
+        }
+        BlockPos generatorPlot = onPlot(plotAnchor, WIND_GENERATOR_ON_SHIP);
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_sable_wind_caster", new Vec3(0.5, 1.0, 0.5));
+
+        helper.runAtTickTime(10, () -> {
+            try {
+                helper.assertTrue(MekanismGameplayCompat.isWindGenerator(level.getBlockEntity(generatorPlot)),
+                        "Precondition: the Wind Generator must be on the ship at " + generatorPlot);
+                // 一辺 7・威力 10: 風量 49 × 10 ÷ 64 ≈ 7.7 WU を、範囲の中の発電機 1 台が全部受け取る。
+                castOverShip(caster, ship, turbulencePiece(), 10.0);
+            } catch (ReflectiveOperationException | SpellRuntimeException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // 乱流領域は数 tick ごとに発電機の風量を決め直し、風力発電機は 20 tick ごとに発電の倍率を決め直す。
+        helper.runAtTickTime(90, () -> {
+            double units = EntityTurbulenceZone.windUnitsAt(level, generatorPlot);
+            double multiplier = MekanismGameplayCompat.windMultiplierOf(level.getBlockEntity(generatorPlot));
+            boolean placed = !SpellGramIndex.ofCaster(level, caster.getUUID()).isEmpty();
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(SpellGramObject::discard);
+            GameTestPlayers.remove(helper, caster);
+            helper.assertTrue(placed, "The Turbulence Zone must be placed over the ship");
+            if (coarse) {
+                helper.succeed();
+                return;
+            }
+            double added = units * EntityTurbulenceZone.WIND_JOULES_PER_WU / MekanismGameplayCompat.windGenerationMinimum();
+            String state = "WU " + units + ", multiplier " + multiplier + ", added at least " + added;
+            helper.assertTrue(units > 0.0, "The Wind Generator on the ship must get wind from the Turbulence Zone: " + state);
+            helper.assertTrue(multiplier >= added - 1.0E-6,
+                    "The Wind Generator's output must include the zone's wind: " + state);
+            helper.succeed();
+        });
+    }
+
+    /**
      * 世界に置いた湿潤領域が、範囲に重なった機体（30 度回した 3×3 の石の床）のブロックにも効く（ブロックを 1 段ずつ見る走査も
      * 機体の座標へ写した範囲で回る）: 床の上の火のついた焚き火が消える。氷は機体が床に当たると割れることがあるので使わない。
      */
@@ -442,6 +502,15 @@ public final class SableZoneGameTests {
     }
 
     /** 入力を castZone の値に差し替えた作動式: 湿潤領域。 */
+    private static PieceTrickZoneBase<?> turbulencePiece() {
+        return new com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return zoneInput(param);
+            }
+        };
+    }
+
     private static PieceTrickZoneBase<?> soakPiece() {
         return new PieceTrickSoakZone(new Spell()) {
             @Override

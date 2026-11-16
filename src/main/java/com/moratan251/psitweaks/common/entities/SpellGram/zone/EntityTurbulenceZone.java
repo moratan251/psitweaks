@@ -19,6 +19,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -105,11 +106,20 @@ public class EntityTurbulenceZone extends SpellGramZone {
      * 吹いていなければ 0。各乱流は自分の風量を範囲の中の発電機で均等に分け（{@link #generatorWind}）、重なった乱流から受け取る
      * WU は足し算。ただし 1 台が受け取れるのは合わせて {@link #MAX_WU_PER_GENERATOR} WU まで。
      * 発電への足し方は {@code WindGeneratorTurbulenceMixin}（1 WU ごとに 25 J/t、高さによらない）。
+     * <p>
+     * 機体（Sable のサブレベル、Create Aeronautics の機体など）の上の発電機は、ブロックの本当の位置（機体用の空間）ではなく、
+     * 今見えている世界の位置で範囲を見る（2026-11-16 ユーザー: 機体の上の風力発電機に乱流領域が効かなかった）。風量の表は
+     * ブロックエンティティの本当の位置で引く（{@link #computeGeneratorWind} と同じ）。
      */
     public static double windUnitsAt(Level level, BlockPos pos) {
+        List<EntityTurbulenceZone> zones = SpellGramIndex.all(level, EntityTurbulenceZone.class);
+        if (zones.isEmpty()) {
+            return 0.0;
+        }
+        BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
         double units = 0.0;
-        for (EntityTurbulenceZone zone : SpellGramIndex.all(level, EntityTurbulenceZone.class)) {
-            if (!zone.isEnded() && zone.isInsideAndActive(pos)) {
+        for (EntityTurbulenceZone zone : zones) {
+            if (!zone.isEnded() && zone.isInsideAndActive(at)) {
                 units += zone.generatorWind.getOrDefault(pos, 0.0);
             }
         }
@@ -193,10 +203,14 @@ public class EntityTurbulenceZone extends SpellGramZone {
         generatorWind = wind;
     }
 
-    /** {@code level} のブロック {@code pos} に乱流領域の風が吹いているか（サーバー側、術者は問わない）。 */
+    /**
+     * {@code level} のブロック {@code pos} に乱流領域の風が吹いているか（サーバー側、術者は問わない）。機体の上のブロックは、
+     * 今見えている世界の位置で見る。
+     */
     public static boolean blowsAt(Level level, BlockPos pos) {
+        BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
         for (EntityTurbulenceZone zone : SpellGramIndex.all(level, EntityTurbulenceZone.class)) {
-            if (!zone.isEnded() && zone.isInsideAndActive(pos)) {
+            if (!zone.isEnded() && zone.isInsideAndActive(at)) {
                 return true;
             }
         }
