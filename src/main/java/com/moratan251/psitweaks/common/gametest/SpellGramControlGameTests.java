@@ -15,6 +15,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBas
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -213,6 +214,46 @@ public final class SpellGramControlGameTests {
             String error = extendError(caster, others, 1.0);
             helper.assertTrue(NOT_OWN.equals(error), "Restoring someone else's zone must fail, got " + error);
             helper.assertTrue(others.getRemainingTicks() == othersBefore, "A failed restore must not change the zone");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /**
+     * 耐久値の上限は NBT に書き出され、読み込んだ魔法式オブジェクトでも同じ上限になる。上限のキーがない保存では、
+     * 置いたときの耐久値 × 2 になる。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_cap_save", timeoutTicks = 40)
+    public static void integrityCapSurvivesSaveAndLoad(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "spellgram_cap_save_caster", new Vec3(1.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            // 「時間」を省いた（30 秒の）領域の上限は、置いたときの耐久値の 8 倍で、既定の 2 倍とは違う。
+            SpellGramObject zone = placeSoak(caster, 15.0, null);
+            float max = zone.getMaxIntegrity();
+            float cap = zone.getIntegrityCap();
+            helper.assertTrue(Math.abs(cap - max * 8.0F) < max * 1.0E-3F,
+                    "The 30 s zone's cap must be 8x its integrity for this test to mean anything, was " + cap + " of " + max);
+
+            CompoundTag tag = zone.saveWithoutId(new CompoundTag());
+            EntitySoakZone loaded = new EntitySoakZone(level);
+            loaded.load(tag);
+            helper.assertTrue(Math.abs(loaded.getMaxIntegrity() - max) < max * 1.0E-3F
+                            && Math.abs(loaded.getIntegrityCap() - cap) < max * 1.0E-3F,
+                    "A loaded zone must keep the cap: " + cap + " -> " + loaded.getIntegrityCap());
+
+            tag.remove("SpellGramIntegrityCap");
+            EntitySoakZone legacy = new EntitySoakZone(level);
+            legacy.load(tag);
+            helper.assertTrue(Math.abs(legacy.getIntegrityCap() - max * 2.0F) < max * 1.0E-3F,
+                    "A save without the cap must fall back to twice the integrity, was " + legacy.getIntegrityCap() + " of " + max);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);

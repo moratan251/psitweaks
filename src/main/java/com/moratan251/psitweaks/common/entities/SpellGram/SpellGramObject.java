@@ -73,6 +73,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     private static final String NBT_INTEGRITY = "SpellGramIntegrity";
     private static final String NBT_LIFETIME_TICKS = "SpellGramLifetimeTicks";
     private static final String NBT_MAX_INTEGRITY = "SpellGramMaxIntegrity";
+    private static final String NBT_INTEGRITY_CAP = "SpellGramIntegrityCap";
     private static final String NBT_WORN = "SpellGramWorn";
     private static final String NBT_TIME_SHARE = "SpellGramTimeShare";
     private static final String NBT_MOTION_DAMPING = "SpellGramMotionDamping";
@@ -631,6 +632,10 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         } else if (tag.contains(NBT_INTEGRITY)) {
             setMaxIntegrity(tag.getFloat(NBT_INTEGRITY));
         }
+        // キーのない保存では上限を決めていないものとして、置いたときの耐久値 × DEFAULT_INTEGRITY_CAP_FACTOR になる。
+        if (tag.contains(NBT_INTEGRITY_CAP)) {
+            setIntegrityCap(tag.getFloat(NBT_INTEGRITY_CAP));
+        }
         this.entityData.set(DATA_WORN, Math.max(0.0F, tag.getFloat(NBT_WORN)));
         if (tag.contains(NBT_TIME_SHARE)) {
             setTimeShare(tag.getFloat(NBT_TIME_SHARE));
@@ -667,6 +672,8 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         tag.putFloat(NBT_AOE_DAMAGE, getAoEDamage());
         tag.putInt(NBT_DAMAGE_INTERVAL, getDamageIntervalTicks());
         tag.putFloat(NBT_MAX_INTEGRITY, getMaxIntegrity());
+        // 0（上限を決めていない）もそのまま書く。
+        tag.putFloat(NBT_INTEGRITY_CAP, integrityCap);
         tag.putFloat(NBT_WORN, getWorn());
         tag.putFloat(NBT_TIME_SHARE, getTimeShare());
         tag.putFloat(NBT_MOTION_DAMPING, getMotionDamping());
