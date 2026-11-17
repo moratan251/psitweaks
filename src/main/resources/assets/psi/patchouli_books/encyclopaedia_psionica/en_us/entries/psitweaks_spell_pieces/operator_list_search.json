@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "psi.book.page.psitweaks_spellpiece.operator_list_search"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_list_search.1"
     }
   ]
 }

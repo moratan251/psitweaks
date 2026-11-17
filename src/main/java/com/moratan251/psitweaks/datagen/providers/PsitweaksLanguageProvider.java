@@ -1988,8 +1988,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_string_trim", "Operator: String Trim", "Removes leading and trailing whitespace from the input String.", "演算子: 文字列トリム", "入力した文字列の前後の空白を取り除きます。");
         addSpellPiece(root, "operator_string_list_join", "Operator: String List Join", "Joins the input String List with String 2 and outputs a String.", "演算子: 文字列リスト結合", "入力リストを文字列2で結合し、String を出力します。");
         addSpellPiece(root, "operator_player_name", "Operator: Player Name", "Outputs the player name if the Entity is a player, otherwise outputs an empty string.", "演算子: プレイヤーネーム", "Entityがプレイヤーならプレイヤー名を、そうでなければ空文字列を出力します。");
-        addSpellPiece(root, "operator_list_search", "Operator: List Keep Matches", "Keeps only the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work.", "演算子: リスト一致抽出", "要素のIDまたは文字列が、パターンと一致するものだけを残します。全体一致で、* ? [abc] を使えます。");
-        addSpellPiece(root, "operator_list_search_exclude", "Operator: List Remove Matches", "Removes the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work.", "演算子: リスト一致除外", "要素のIDまたは文字列が、パターンと一致するものを除きます。全体一致で、* ? [abc] を使えます。");
+        addSpellPiece(root, "operator_list_search", "Operator: List Keep Matches", "Keeps only the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work. Start with # to compare tags.", "演算子: リスト一致抽出", "要素のIDまたは文字列が、パターンと一致するものだけを残します。全体一致で、* ? [abc] を使えます。# で始めると、要素のタグで比べます。");
+        addSpellPiece(root, "operator_list_search_exclude", "Operator: List Remove Matches", "Removes the List elements whose ID or string form matches the pattern. The whole string must match; * ? [abc] work. Start with # to compare tags.", "演算子: リスト一致除外", "要素のIDまたは文字列が、パターンと一致するものを除きます。全体一致で、* ? [abc] を使えます。# で始めると、要素のタグで比べます。");
         addSpellPiece(root, "operator_list_name_search", "Operator: List Keep Name Matches", "Keeps only the List elements whose display name matches the pattern. The whole name must match; * ? [abc] work.", "演算子: 表示名一致抽出", "要素の表示名が、パターンと一致するものだけを残します。全体一致で、* ? [abc] を使えます。");
         addSpellPiece(root, "operator_list_name_search_exclude", "Operator: List Remove Name Matches", "Removes the List elements whose display name matches the pattern. The whole name must match; * ? [abc] work.", "演算子: 表示名一致除外", "要素の表示名が、パターンと一致するものを除きます。全体一致で、* ? [abc] を使えます。");
         addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the input List.", "演算子: ランダム要素", "入力した List からランダムに1要素を出力します。");
@@ -2406,7 +2406,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_cocytus", "Permanently freezes the mind of the target mob, leaving it unable to act.", "対象モブの精神を永久に凍結させ, 行動できなくします.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast, as much of it as fits. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
-        addBookPage(root, "trick_pull_item.1", "In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. In both Item modes, the filter can also be an Item List, matching any of its items. The optional Max input caps the number of items moved.", "StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. Item と Item (Strict) モードでは Item List も接続でき, そのいずれかに一致するアイテムを移動します. 任意入力の最大で移動数に上限を設けられます.");
+        addBookPage(root, "trick_pull_item.1", "In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. In both Item modes, the filter can also be an Item List, matching any of its items. The optional Max input caps the number of items moved. In String mode, start with # to match item tags instead, such as #minecraft:logs.", "StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. Item と Item (Strict) モードでは Item List も接続でき, そのいずれかに一致するアイテムを移動します. 任意入力の最大で移動数に上限を設けられます. String モードで # から始めると, #minecraft:logs のようにアイテムのタグで絞り込みます.");
         addBookPage(root, "trick_send_item.0", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます.");
         addBookPage(root, "trick_send_item.1", "The filter modes and the optional Max input behave like Trick: Pull Item, including Item Lists in both Item modes. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様で, Item と Item (Strict) モードでは Item List も接続できます. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします.上限は512倍速まで.");
@@ -2556,7 +2556,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_string_list_join", "Joins the input String List with String 2 and outputs a String. If String 2 is not connected, a comma is used. Empty delimiters are allowed and concatenate the elements directly.", "入力リストを文字列2で結合し, String を出力します. 文字列2が未接続の場合はカンマを使います. 空の区切り文字は許可され, 要素を直接連結します.");
         addBookPage(root, "operator_player_name", "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.", "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.");
         addBookPage(root, "operator_list_search", "Keeps only the elements of the selected List mode that match the pattern. Entity and contextual values such as Item and Block compare by registry ID; other values use the same text as Operator: To String. If the pattern has no namespace such as \"minecraft:\", only the rest of the ID is compared. * matches any text, ? one character, and [abc] one of the listed characters. The whole text must match; use *zombie* for a partial match.", "選択中の List モードから, パターンに一致する要素だけを残します. Entity と Item/Block などの Contextual Value はレジストリIDで, それ以外は 演算子: 文字列へ変換 と同じ文字列で比較します. 「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で, 部分一致には *zombie* のように前後に * を付けます.");
+        addBookPage(root, "operator_list_search.1", "In Entity, Item and Block modes, a pattern starting with # compares tags instead: entity type tags, item tags or block tags. The rest of the pattern follows the same rules, including the namespace, and one matching tag is enough, e.g. #minecraft:logs or #c:ores/*. Elements without tags never match. In the other modes # is an ordinary character.", "Entity, Item, Block モードでは, # で始まるパターンはタグで比較します (エンティティの種類のタグ, アイテムのタグ, ブロックのタグ). # の後ろは名前空間の省略も含めて同じ規則で, タグのどれか1つが一致すれば一致です. 例: #minecraft:logs, #c:ores/*. タグのない要素は一致しません. ほかのモードでは # は普通の文字です.");
         addBookPage(root, "operator_list_search_exclude", "Removes the elements of the selected List mode that match the pattern. Entity and contextual values such as Item and Block compare by registry ID; other values use the same text as Operator: To String. If the pattern has no namespace such as \"minecraft:\", only the rest of the ID is compared. * matches any text, ? one character, and [abc] one of the listed characters. The whole text must match; use *zombie* for a partial match.", "選択中の List モードから, パターンに一致する要素を除きます. Entity と Item/Block などの Contextual Value はレジストリIDで, それ以外は 演算子: 文字列へ変換 と同じ文字列で比較します. 「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で, 部分一致には *zombie* のように前後に * を付けます.");
+        addBookPage(root, "operator_list_search_exclude.1", "In Entity, Item and Block modes, a pattern starting with # compares tags instead: entity type tags, item tags or block tags. The rest of the pattern follows the same rules, including the namespace, and one matching tag is enough, e.g. #minecraft:logs or #c:ores/*. Elements without tags never match. In the other modes # is an ordinary character.", "Entity, Item, Block モードでは, # で始まるパターンはタグで比較します (エンティティの種類のタグ, アイテムのタグ, ブロックのタグ). # の後ろは名前空間の省略も含めて同じ規則で, タグのどれか1つが一致すれば一致です. 例: #minecraft:logs, #c:ores/*. タグのない要素は一致しません. ほかのモードでは # は普通の文字です.");
         addBookPage(root, "operator_list_name_search", "Keeps only the elements of the selected List mode (Entity, Item or Block) whose display name matches the pattern. Names are the same as Selector: Display Name: a player's name, the custom name of an entity or item, and otherwise the name in the caster's language, so that last kind can give different results for casters with different languages. * matches any text, ? one character, and [abc] one of the listed characters. The whole name must match and case matters; use *Zombie* for a partial match.", "選択中の List モード (Entity, Item, Block) から, 表示名がパターンに一致する要素だけを残します. 表示名は 取得子: 表示名 と同じで, プレイヤーはプレイヤー名, 名前を付けた Entity や Item はその名前, それ以外は術者の言語での名前になります. 最後の場合は, 術者の言語によって結果が変わります. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で大文字と小文字を区別し, 部分一致には *ゾンビ* のように前後に * を付けます.");
         addBookPage(root, "operator_list_name_search_exclude", "Removes the elements of the selected List mode (Entity, Item or Block) whose display name matches the pattern. Names are the same as Selector: Display Name: a player's name, the custom name of an entity or item, and otherwise the name in the caster's language, so that last kind can give different results for casters with different languages. * matches any text, ? one character, and [abc] one of the listed characters. The whole name must match and case matters; use *Zombie* for a partial match.", "選択中の List モード (Entity, Item, Block) から, 表示名がパターンに一致する要素を除きます. 表示名は 取得子: 表示名 と同じで, プレイヤーはプレイヤー名, 名前を付けた Entity や Item はその名前, それ以外は術者の言語での名前になります. 最後の場合は, 術者の言語によって結果が変わります. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で大文字と小文字を区別し, 部分一致には *ゾンビ* のように前後に * を付けます.");
         addBookPage(root, "operator_random_element", "Returns one random element from the input List.", "入力された List から要素を1つランダムに返します.");
@@ -3013,10 +3015,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                     "The filter is optional; with no filter or an empty String, everything of the chosen kind is a target."
                             + " In Fluid and Chemical modes the filter is a String matched against resource IDs, supporting * (any text) and ? (any single character)."
                             + " Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods (e.g. *water for water, heavy water and more)."
+                            + " Start with # to match tags instead, such as #minecraft:water."
                             + " FE mode has no filter.",
                     "フィルタは省略でき、接続しないか空文字にすると、選んだ種類のすべてが対象です。"
                             + "液体・化学物質モードのフィルタはStringで、資源IDで照合し、*（任意の文字列）と?（任意の1文字）が使えます。"
                             + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します（例: *water で水や重水など）。"
+                            + "#で始めると、#minecraft:waterのようにタグで照合します。"
                             + "FEモードにフィルタはありません。");
             addBookPage(root, id + ".2",
                     "In Item mode, what you connect to the filter decides how it matches: a String matches item IDs as above (e.g. *_ore for every mod's ores),"
@@ -3069,11 +3073,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 depositJp + "ストレージの空きが足りない場合は、移せる分だけ移します。" + jpInputs);
         addBookPage(root, "trick_idea_storage_deposit_slot.1",
                 "With no filter or an empty String, the item in the slot is deposited whatever it is; otherwise nothing happens unless it matches."
-                        + " The filter matches as in Trick: Ideaspace Storage - Deposit: a String matches item IDs with * (any text) and ? (any single character),"
+                        + " The filter matches as in Trick: Ideaspace Storage - Deposit: a String matches item IDs with * (any text) and ? (any single character), or item tags when it starts with #,"
                         + " an Item matches that item type, an Item List any of its items, and the output of Operator: Strict Item also compares data components.",
                 "フィルタを接続しないか空文字にすると、スロットのアイテムを種類を問わず格納します。"
                         + "フィルタに一致しない場合は何もしません。"
-                        + "照合方法は作動式: イデアストレージ-格納と同じで、Stringは*（任意の文字列）と?（任意の1文字）を使ってアイテムIDで照合し、"
+                        + "照合方法は作動式: イデアストレージ-格納と同じで、Stringは*（任意の文字列）と?（任意の1文字）を使ってアイテムIDで照合し（#で始めるとアイテムのタグで照合）、"
                         + "Itemはその種類に、Item Listはそのいずれかに一致し、演算子: 厳密一致アイテムの出力はデータコンポーネントまで比べます。");
         addBookPage(root, "trick_idea_storage_deposit_slot.2", enSlot, jpSlot);
 
@@ -3136,8 +3140,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "Item フィルタとして作動式: イデアストレージ-スロット取出などに使えます。");
 
         addSpellPiece(root, "operator_block_resource_amount", "Operator: Block Resource Amount",
-                "Outputs the items, fluids, chemicals or FE stored in a block, chosen by the mode. String narrows it down by ID.",
-                "演算子: ブロック資源量", "ブロック内のアイテム・液体・化学物質・FEの量を、モードに応じて出力します。「文字列」でIDを絞り込めます。");
+                "Outputs the items, fluids, chemicals or FE stored in a block, chosen by the mode. String narrows it down by ID, or by tag when it starts with #.",
+                "演算子: ブロック資源量", "ブロック内のアイテム・液体・化学物質・FEの量を、モードに応じて出力します。「文字列」でID（#で始めるとタグ）を絞り込めます。");
         addBookPage(root, "operator_block_resource_amount.0",
                 "Outputs how much a block holds of the kind chosen in the mode menu: items (count), fluids or chemicals (mB), or FE."
                         + " Direction picks the face to read, following the block's per-face input and output; unconnected, the whole block is read.",
@@ -3146,11 +3150,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "接続しない場合はブロック全体を読みます。");
         addBookPage(root, "operator_block_resource_amount.1",
                 "The optional String filters by ID with * (any text) and ? (any single character); omit the namespace, such as \"minecraft:\", to match across all mods."
+                        + " Start with # to match tags instead, such as #c:ingots."
                         + " Unconnected or empty, everything is counted."
                         + " Blocks with no such storage, in unloaded chunks or in other dimensions read as 0, as do chemicals without Mekanism."
                         + " A protected block fails with an error.",
                 "任意の「文字列」は資源IDで絞り込み、*（任意の文字列）と?（任意の1文字）が使えます。"
                         + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します。"
+                        + "#で始めると、#c:ingotsのようにタグで照合します。"
                         + "接続しないか空文字にすると、すべてを数えます。"
                         + "該当する保管先がないブロック、読み込まれていないチャンクや別のディメンションのブロック、Mekanismがない場合の化学物質は0です。"
                         + "保護されたブロックはエラーになります。");

@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
 import com.moratan251.psitweaks.common.compat.BlockResourceMekanism;
-import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import java.util.OptionalLong;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
@@ -34,7 +34,7 @@ public class PieceOperatorBlockResourceAmount extends PieceOperatorBlockResource
 
     @Override
     protected long readItems(IItemHandler handler, @Nullable String resource, boolean pooled) {
-        Predicate<ResourceLocation> filter = idFilter(resource);
+        Predicate<ResourceLocation> filter = ResourcePattern.filter(resource, BuiltInRegistries.ITEM);
         long total = 0;
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack stack = handler.getStackInSlot(slot);
@@ -47,7 +47,7 @@ public class PieceOperatorBlockResourceAmount extends PieceOperatorBlockResource
 
     @Override
     protected long readFluids(IFluidHandler handler, @Nullable String resource) {
-        Predicate<ResourceLocation> filter = idFilter(resource);
+        Predicate<ResourceLocation> filter = ResourcePattern.filter(resource, BuiltInRegistries.FLUID);
         long total = 0;
         for (int tank = 0; tank < handler.getTanks(); tank++) {
             FluidStack stack = handler.getFluidInTank(tank);
@@ -61,20 +61,11 @@ public class PieceOperatorBlockResourceAmount extends PieceOperatorBlockResource
     @Override
     protected OptionalLong readChemicals(ServerLevel level, BlockPos pos, @Nullable Direction side,
                                          @Nullable String resource, boolean pooled) {
-        return BlockResourceMekanism.amount(level, pos, side, idFilter(resource));
+        return BlockResourceMekanism.amount(level, pos, side, BlockResourceMekanism.chemicalFilter(resource));
     }
 
     @Override
     protected long readEnergy(IEnergyStorage storage, boolean pooled) {
         return Math.max(0, storage.getEnergyStored());
-    }
-
-    private static Predicate<ResourceLocation> idFilter(@Nullable String pattern) {
-        if (pattern == null || pattern.isEmpty()) {
-            return id -> true;
-        }
-        WildcardStringMatcher matcher = WildcardStringMatcher.compile(pattern);
-        boolean fullId = pattern.indexOf(':') >= 0;
-        return id -> matcher.matches(fullId ? id.toString() : id.getPath());
     }
 }

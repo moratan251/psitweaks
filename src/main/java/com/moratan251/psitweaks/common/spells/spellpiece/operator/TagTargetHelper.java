@@ -25,7 +25,7 @@ final class TagTargetHelper {
         return StringListWrapper.make(tags);
     }
 
-    private static Collection<ResourceLocation> getTagIds(SpellContext context, Object target)
+    static Collection<ResourceLocation> getTagIds(SpellContext context, Object target)
             throws SpellRuntimeException {
         if (target instanceof Entity entity) {
             ReadOnlyTargets.verify(context, entity);

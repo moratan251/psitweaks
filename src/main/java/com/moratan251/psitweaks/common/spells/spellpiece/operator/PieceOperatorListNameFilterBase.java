@@ -21,6 +21,12 @@ public abstract class PieceOperatorListNameFilterBase extends PieceOperatorListS
         return PsitweaksValueKind.CONTEXTUAL;
     }
 
+    /** Display names are compared as they are, so # is an ordinary character here. */
+    @Override
+    protected boolean tagPatterns() {
+        return false;
+    }
+
     @Override
     protected String searchText(SpellContext context, Object value, boolean matchFullId)
             throws SpellRuntimeException {

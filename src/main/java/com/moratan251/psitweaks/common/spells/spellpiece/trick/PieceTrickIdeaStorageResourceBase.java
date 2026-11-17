@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.mojang.logging.LogUtils;
+import com.moratan251.psitweaks.common.compat.BlockResourceMekanism;
 import com.moratan251.psitweaks.common.compat.IdeaStorageLogisticsMekanism;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
@@ -11,6 +12,7 @@ import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import com.moratan251.psitweaks.common.spells.param.ParamItemSearch;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.IdeaStorageLastTransfer;
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import com.moratan251.psitweaks.common.storage.connector.ConnectorResource.Kind;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageEnergyTransfer;
 import com.moratan251.psitweaks.common.storage.idea.IdeaStorageOwnerResolver;
@@ -206,7 +208,7 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
                     : IdeaStorageResourceTransfers.withdrawItems(storage, handler, filter, amount);
         } else if (kind() == Kind.FLUID) {
             var handler = level.getCapability(Capabilities.FluidHandler.BLOCK, blockPos, facing);
-            var ids = SpellItemFilters.idFilter(stringFilter(context));
+            var ids = ResourcePattern.filter(stringFilter(context), BuiltInRegistries.FLUID);
             if (handler == null) return 0;
             Predicate<FluidStack> filter = stack -> ids.test(BuiltInRegistries.FLUID.getKey(stack.getFluid()));
             int amount = (int) maximum;
@@ -215,7 +217,7 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
             return exact ? IdeaStorageResourceTransfers.withdrawFluidsExact(storage, handler, filter, amount)
                     : IdeaStorageResourceTransfers.withdrawFluids(storage, handler, filter, amount);
         } else if (MekanismCompat.isMekanismLoaded()) {
-            var ids = SpellItemFilters.idFilter(stringFilter(context));
+            var ids = BlockResourceMekanism.chemicalFilter(stringFilter(context));
             return exact ? IdeaStorageLogisticsMekanism.transferExact(storage, level, blockPos, facing, ids, maximum, deposit())
                     : IdeaStorageLogisticsMekanism.transfer(storage, level, blockPos, facing, ids, maximum, deposit());
         }

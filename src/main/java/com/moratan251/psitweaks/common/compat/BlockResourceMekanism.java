@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.compat;
 
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import java.util.OptionalLong;
 import java.util.function.Predicate;
 import mekanism.api.Action;
@@ -16,6 +17,11 @@ import org.jetbrains.annotations.Nullable;
 /** Chemical reads of the block resource operators. Loaded only when Mekanism is present. */
 public final class BlockResourceMekanism {
     private BlockResourceMekanism() { }
+
+    /** The chemical ID filter of a resource pattern; a # pattern compares the chemical's tags. */
+    public static Predicate<ResourceLocation> chemicalFilter(@Nullable String pattern) {
+        return ResourcePattern.filter(pattern, MekanismAPI.CHEMICAL_REGISTRY);
+    }
 
     /** mB of the matching chemicals in every tank the side exposes; empty when the side has no chemical handler. */
     public static OptionalLong amount(Level level, BlockPos pos, @Nullable Direction side, Predicate<ResourceLocation> filter) {

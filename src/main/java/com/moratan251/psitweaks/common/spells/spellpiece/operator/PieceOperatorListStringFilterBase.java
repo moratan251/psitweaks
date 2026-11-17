@@ -5,7 +5,9 @@ import com.moratan251.psitweaks.api.value.ContextualValue;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
+import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Object source = getNotNullParamValue(context, typed(list));
         String wildcard = getNotNullParamValue(context, string);
+        ResourcePattern tagPattern = comparesTags(wildcard) ? ResourcePattern.compile(wildcard) : null;
         WildcardStringMatcher matcher = WildcardStringMatcher.compile(wildcard);
         boolean matchFullId = wildcard.indexOf(':') >= 0;
         PsitweaksListAdapter<Object> adapter = currentAdapter();
@@ -36,7 +39,9 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         int size = adapter.size(source);
         for (int i = 0; i < size; i++) {
             Object value = adapter.get(source, i);
-            boolean matches = matcher.matches(searchText(context, value, matchFullId));
+            boolean matches = tagPattern != null
+                    ? tagPattern.matchesAnyTag(TagTargetHelper.getTagIds(context, value))
+                    : matcher.matches(searchText(context, value, matchFullId));
             if (shouldKeep(matches)) {
                 result.add(value);
             }
@@ -62,6 +67,19 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         addParam(string = new ParamString(PsitweaksSpellParams.STRING, PsitweaksSpellParams.STRING_COLOR, false,
                 false));
         restoreParamSides(savedSides);
+    }
+
+    /**
+     * Whether a pattern starting with # compares the tags of the elements. Only Entity, Item and Block elements have
+     * tags; in the other modes # is an ordinary character.
+     */
+    protected boolean tagPatterns() {
+        return true;
+    }
+
+    private boolean comparesTags(String wildcard) {
+        return tagPatterns() && currentMode().valueKind() == PsitweaksValueKind.CONTEXTUAL
+                && ResourcePattern.isTagPattern(wildcard);
     }
 
     /** The text the pattern is matched against. Subclasses may compare something else, such as the display name. */

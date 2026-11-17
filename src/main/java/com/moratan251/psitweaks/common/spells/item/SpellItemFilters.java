@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.spells.item;
 
-import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -74,7 +74,7 @@ public final class SpellItemFilters {
             return stack -> true;
         }
         if (value instanceof String pattern) {
-            Predicate<ResourceLocation> ids = idFilter(pattern);
+            Predicate<ResourceLocation> ids = ResourcePattern.filter(pattern, BuiltInRegistries.ITEM);
             return stack -> ids.test(BuiltInRegistries.ITEM.getKey(stack.getItem()));
         }
         return of(value, false);
@@ -85,15 +85,4 @@ public final class SpellItemFilters {
         return value != null && !(value instanceof String pattern && pattern.isEmpty());
     }
 
-    /**
-     * Wildcard filter over resource IDs: * is any text and ? any single character. Without a namespace the pattern
-     * matches the path of every mod's IDs. Null and an empty pattern match everything.
-     */
-    public static Predicate<ResourceLocation> idFilter(String pattern) {
-        if (pattern == null || pattern.isEmpty()) {
-            return id -> true;
-        }
-        var matcher = WildcardStringMatcher.compile(pattern);
-        return id -> matcher.matches(pattern.indexOf(':') >= 0 ? id.toString() : id.getPath());
-    }
 }

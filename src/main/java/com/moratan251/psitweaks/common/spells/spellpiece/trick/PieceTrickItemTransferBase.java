@@ -7,7 +7,7 @@ import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import com.moratan251.psitweaks.common.spells.param.ParamSpellItemFilter;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
-import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -273,12 +273,8 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
         if (typeVal == null || typeVal.isEmpty()) {
             return stack -> true;
         }
-        WildcardStringMatcher matcher = WildcardStringMatcher.compile(typeVal);
-        boolean matchFullId = typeVal.indexOf(':') >= 0;
-        return stack -> {
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-            return matcher.matches(matchFullId ? id.toString() : id.getPath());
-        };
+        Predicate<ResourceLocation> ids = ResourcePattern.filter(typeVal, BuiltInRegistries.ITEM);
+        return stack -> ids.test(BuiltInRegistries.ITEM.getKey(stack.getItem()));
     }
 
     private int resolveLimit(SpellContext context) throws SpellRuntimeException {
