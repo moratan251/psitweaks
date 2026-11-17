@@ -62,12 +62,11 @@ public final class MekanismGameplayCompat {
 
     /**
      * 凍結領域の冷却の結果（J）: 取り除いた熱 {@code removed} と、そのうち周囲の温度より上にあった分 {@code carried}（ブロック
-     * ごとに min(奪った熱, (温度 − 周囲の温度) × 熱容量) の合計）。運べる熱は、触れ合っている加熱領域へ渡す（2026-11-16
-     * ユーザー、案 3「運ぶだけ」）。
+     * ごとに min(奪った熱, (温度 − 周囲の温度) × 熱容量) の合計）。運べる熱は、触れ合っている加熱領域へ渡す（凍結領域は熱を
+     * 作らず運ぶだけ）。
      * <p>
      * {@code carriedBySource} は運べる熱の熱源ごとの内訳（キーは熱源を表す中身の見えないもの、同じ熱源なら同じもの。組み上がった
-     * マルチブロックは全体で 1 つ）。熱を奪った熱源は、運べる熱が 0 でも載る。同じ熱源を冷やす自分の凍結領域をまとめるのに使う
-     * （15 節の B）。
+     * マルチブロックは全体で 1 つ）。熱を奪った熱源は、運べる熱が 0 でも載る。同じ熱源を冷やす自分の凍結領域をまとめるのに使う。
      */
     public record ZoneHeatDrain(double removed, double carried, Map<Object, Double> carriedBySource) {
         public static final ZoneHeatDrain NONE = new ZoneHeatDrain(0.0, 0.0, Map.of());

@@ -619,7 +619,7 @@ public final class PsitweaksItems {
     }
 
     public static void register(IEventBus eventBus) {
-        // 旧「魔法師の脳」は「魔法師の頭」に置き換えた。古いワールドの脳は頭として読み込む。
+        // 古いワールドの「魔法師の脳」（magicians_brain）は「魔法師の頭」として読み込む。
         ITEMS.addAlias(Psitweaks.location("magicians_brain"), Psitweaks.location("magicians_head"));
         ITEMS.register(eventBus);
     }

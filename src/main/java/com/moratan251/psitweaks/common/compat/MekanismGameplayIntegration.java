@@ -108,9 +108,9 @@ final class MekanismGameplayIntegration {
         Set<Object> cooled = Collections.newSetFromMap(new IdentityHashMap<>());
         List<IHeatHandler> handlers = new ArrayList<>();
         List<Double> amounts = new ArrayList<>();
-        // そのブロックが周囲の温度より上に持っていた熱（運べる熱の上限、2026-11-16 ユーザー、案 3）。
+        // そのブロックが周囲の温度より上に持っていた熱（運べる熱の上限）。
         List<Double> aboveAmbient = new ArrayList<>();
-        // 熱源（組み上がったマルチブロックはマルチブロック全体、ほかはブロックエンティティ、15 節の B）。
+        // 熱源（組み上がったマルチブロックはマルチブロック全体、ほかはブロックエンティティ）。
         List<Object> sources = new ArrayList<>();
         for (BlockEntity blockEntity : blockEntities) {
             IHeatHandler handler = heatHandlerOf(level, blockEntity, sideCache);
@@ -179,7 +179,7 @@ final class MekanismGameplayIntegration {
     }
 
     /**
-     * 熱の受け渡しで「同じ熱源」とみなす単位（15 節の B）: 組み上がったマルチブロック（核分裂炉など）はマルチブロック全体、
+     * 熱の受け渡しで「同じ熱源」とみなす単位: 組み上がったマルチブロック（核分裂炉など）はマルチブロック全体、
      * それ以外はそのブロックエンティティ。別々の凍結領域が同じ熱源を冷やしているかを見分けるのに使う。
      */
     private static Object heatSourceOf(BlockEntity blockEntity) {

@@ -113,8 +113,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
      * 発電への足し方は {@code WindGeneratorTurbulenceMixin}（1 WU ごとに 37.5 J/t、高さによらない）。
      * <p>
      * 機体（Sable のサブレベル、Create Aeronautics の機体など）の上の発電機は、ブロックの本当の位置（機体用の空間）ではなく、
-     * 今見えている世界の位置で範囲を見る（2026-11-16 ユーザー: 機体の上の風力発電機に乱流領域が効かなかった）。風量の表は
-     * ブロックエンティティの本当の位置で引く（{@link #computeGeneratorWind} と同じ）。
+     * 今見えている世界の位置で範囲を見る。風量の表はブロックエンティティの本当の位置で引く（{@link #computeGeneratorWind} と同じ）。
      */
     public static double windUnitsAt(Level level, BlockPos pos) {
         List<EntityTurbulenceZone> zones = SpellGramIndex.all(level, EntityTurbulenceZone.class);

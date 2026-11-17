@@ -61,7 +61,7 @@ public abstract class SpellGramZone extends SpellGramObject {
     private static final EntityDataAccessor<Float> DATA_RESOURCE_USED =
             SynchedEntityData.defineId(SpellGramZone.class, EntityDataSerializers.FLOAT);
     /**
-     * 熱の受け渡しで運んだ・受け取った量（1 tick あたり、凍結領域は運搬、加熱領域は受け取り、2026-11-16 ユーザー、16 節）。
+     * 熱の受け渡しで運んだ・受け取った量（1 tick あたり、凍結領域は運搬、加熱領域は受け取り）。
      * 0 なら照準の表示に行を出さない。照準の表示のためクライアントへ送る。
      */
     private static final EntityDataAccessor<Float> DATA_RESOURCE_MOVED =

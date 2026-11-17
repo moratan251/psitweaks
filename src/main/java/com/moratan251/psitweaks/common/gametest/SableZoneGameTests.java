@@ -314,9 +314,8 @@ public final class SableZoneGameTests {
     }
 
     /**
-     * 世界に置いた乱流領域が、範囲に重なった機体（30 度回した 3×3 の石の床）の上の風力発電機にも風を渡す（2026-11-16 ユーザー:
-     * Create Aeronautics の機体の上の風力発電機に効かなかった）。発電機が受け取る風量（WU）が 0 より大きく、発電の倍率に
-     * 1 WU ごとの上乗せが入る。Sable か Mekanism Generators がなければ飛ばす。
+     * 世界に置いた乱流領域が、範囲に重なった機体（30 度回した 3×3 の石の床）の上の風力発電機にも風を渡す。
+     * 発電機が受け取る風量（WU）が 0 より大きく、発電の倍率に 1 WU ごとの上乗せが入る。Sable か Mekanism Generators がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_sable_ship_wind", timeoutTicks = 140)
     public static void worldTurbulenceZoneRunsWindGeneratorsOnShips(GameTestHelper helper) {

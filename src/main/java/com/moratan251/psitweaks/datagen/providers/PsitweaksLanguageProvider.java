@@ -444,7 +444,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "冷却量: %s / %sJ/t";
             default -> "Cooling: %s / %sJ/t";
         });
-        // 熱の受け渡し（2026-11-16 ユーザー、16 節、文言は仮）: %s は「48.3 」「1.20 k」のように単位の接頭辞まで含む。
+        // 熱の受け渡し（文言は仮）: %s は「48.3 」「1.20 k」のように単位の接頭辞まで含む。
         root.addProperty("psitweaks.hud.zone_resource.carried", switch (locale) {
             case "ja_jp" -> "運搬: %sJ/t";
             default -> "Carried: %sJ/t";

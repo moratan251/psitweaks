@@ -71,9 +71,8 @@ public class EntityFreezeZone extends SpellGramZone {
     /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
     public static final double MAX_COOL_FRACTION = 0.5;
     /**
-     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J、2026-11-15 ユーザー、案 A: 加熱の熱量と同じ値にそろえる）。
-     * 熱の出し入れを 1 つの物差しで扱えるよう、加熱領域の {@link EntityHeatZone#HEAT_PER_PSI} と同じ。前の 560 kJ は核分裂炉を
-     * 冷やせたが、熱の約 1,500 倍で分かりにくかった。
+     * 冷却量の比率: 置いたときのコスト 1 Psi あたりに取り除ける熱（J）。熱の出し入れを 1 つの物差しで扱えるよう、加熱領域の
+     * {@link EntityHeatZone#HEAT_PER_PSI} と同じ。
      */
     public static final double COOLING_PER_PSI = EntityHeatZone.HEAT_PER_PSI;
     /** Mekanism の機械を冷やせる下限の温度の基準（K）。下限 = この値 − 威力 × {@link #MIN_TEMPERATURE_PER_POWER}。 */
@@ -100,7 +99,7 @@ public class EntityFreezeZone extends SpellGramZone {
     private Map<EntityHeatZone, Double> heatContacts = Map.of();
     /**
      * 熱を奪った熱源（{@link MekanismGameplayCompat.ZoneHeatDrain#carriedBySource} のキー）: 今の間隔のものと、1 つ前の間隔のもの。
-     * ほかの自分の凍結領域が、同じ熱源を冷やしているかを見るのに使う（15 節の B）。サーバー側だけ。
+     * ほかの自分の凍結領域が、同じ熱源を冷やしているかを見るのに使う。サーバー側だけ。
      */
     private Set<Object> cooledSources = newSourceSet();
     private Set<Object> previousCooledSources = Set.of();
@@ -289,8 +288,7 @@ public class EntityFreezeZone extends SpellGramZone {
 
     /**
      * 熱源ごとの運べる熱 {@code carried}（J）を、渡し先（{@link ZoneHeatExchange#route}: その熱源を冷やす自分の凍結領域が
-     * 触れている加熱領域、触れ合う面の広さに比例）へ減らさずに渡す（2026-11-16 ユーザー、案 3「運ぶだけ」と 15 節の B）。
-     * 渡し先がなければ捨てる。
+     * 触れている加熱領域、触れ合う面の広さに比例）へ減らさずに渡す。渡し先がなければ捨てる。
      */
     private void carryHeat(ServerLevel level, Map<Object, Double> carried) {
         for (Map.Entry<Object, Double> entry : carried.entrySet()) {

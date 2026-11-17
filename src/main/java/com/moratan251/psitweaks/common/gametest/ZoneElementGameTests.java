@@ -1068,7 +1068,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱の受け渡し（2026-11-16 ユーザー、案 3）の条件: 加熱領域と凍結領域が面で触れ合っているか。大きさ違いでも、ずれていても、
+     * 熱の受け渡しの条件:加熱領域と凍結領域が面で触れ合っているか。大きさ違いでも、ずれていても、
      * 面で触れていれば触れ合う（同じ大きさで二分していても同じ）。触れ合う面の広さは、運ぶ熱を分ける割合に使う。
      */
     @GameTest(template = TEMPLATE)
@@ -1092,7 +1092,7 @@ public final class ZoneElementGameTests {
                 "Overlapping zones do not merely touch");
         helper.assertTrue(ZoneHeatExchange.contactFace(hotBox, ZoneArea.cube(cold.south(3), 3).bounds()) == null,
                 "Zones meeting only along an edge do not touch");
-        // つながりの広さ（2026-11-16 ユーザー: 重なりでも受け渡す）: 触れ合いは面の広さ、重なりは重なりの箱のいちばん広い面。
+        // つながりの広さ（重なりでも受け渡す）:触れ合いは面の広さ、重なりは重なりの箱のいちばん広い面。
         helper.assertTrue(ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold, 3).bounds()) == 9.0,
                 "Touching zones are joined by their touching face");
         helper.assertTrue(ZoneHeatExchange.linkArea(hotBox, ZoneArea.cube(cold.west(), 3).bounds()) == 9.0,
@@ -1131,7 +1131,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱の受け渡し（2026-11-16 ユーザー、案 3「運ぶだけ」）: 同じ術者の凍結領域が Mekanism のブロックから奪った熱のうち、周囲の
+     * 熱の受け渡し: 同じ術者の凍結領域が Mekanism のブロックから奪った熱のうち、周囲の
      * 温度より上にあった分は、面で触れ合っている加熱領域の熱量に入る。大きさの違う組（加熱 3・凍結 5）でも運ぶ。
      * Mekanism がなければ飛ばす。
      */
@@ -1188,7 +1188,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱の受け渡しは重なりでも働く（2026-11-16 ユーザー）: 自分の加熱領域と凍結領域の端を 1 列重ねると、重なったところは
+     * 熱の受け渡しは重なりでも働く:自分の加熱領域と凍結領域の端を 1 列重ねると、重なったところは
      * 打ち消し合うまま、重なりの外の熱源から凍結領域が奪った熱は加熱領域へ渡る。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_overlap", timeoutTicks = 100)
@@ -1372,7 +1372,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱源ごとにまとめる（2026-11-16 ユーザー、15 節の B）: 1 つの抵抗型発熱器を自分の凍結領域 3 つで冷やし、加熱領域に触れて
+     * 熱源ごとにまとめる:1 つの抵抗型発熱器を自分の凍結領域 3 つで冷やし、加熱領域に触れて
      * いるのが 1 つだけでも、3 つが奪った熱（周囲より上の分）は全部加熱領域へ渡る。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_one_source", timeoutTicks = 100)
@@ -1571,7 +1571,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱の受け渡しの複雑な配置（2026-11-16 ユーザー: 熱の機械・凍結領域・加熱領域を複雑に組み合わせたときの熱の移動を試したい）。
+     * 熱の受け渡しの複雑な配置: 熱の機械・凍結領域・加熱領域を組み合わせたときの熱の移動を確かめる。
      * 800 K の抵抗型発熱器 4 つ、自分の加熱領域 2 つ（片方は熱乱流）・凍結領域 3 つ、他人の凍結領域 1 つ。
      * <ul>
      * <li>H1 加熱 x 0〜2。F1 凍結 x 3〜5 が面で触れる（9）。F1 は S1 だけを冷やす。</li>
@@ -1676,7 +1676,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 熱の受け渡しで、組み上がったマルチブロックは 1 つの熱源（15 節の B）: 4 × 18 × 4 の加温蒸発濃縮プラントを、西のバルブから自分の
+     * 熱の受け渡しで、組み上がったマルチブロックは 1 つの熱源:4 × 18 × 4 の加温蒸発濃縮プラントを、西のバルブから自分の
      * 凍結領域 F_w（自分の加熱領域に触れる）、東のバルブから自分の凍結領域 F_e（どこにも触れない）、南のバルブから他人の凍結領域で
      * 冷やす。F_e が奪った熱も全部渡り、他人の凍結領域が奪った熱は渡らない。Mekanism がなければ飛ばす。
      */
@@ -1767,7 +1767,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 受け渡しの見え方（2026-11-16 ユーザー、16 節）: つながっていても、熱源が周囲の温度なら運ぶ熱はないので、加熱領域の受け取りは
+     * 受け渡しの見え方:つながっていても、熱源が周囲の温度なら運ぶ熱はないので、加熱領域の受け取りは
      * 0 で「運んでいる」演出にならず、照準の表示の運搬・受け取りも 0（行を出さない）。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_exchange_quiet", timeoutTicks = 120)
@@ -1937,7 +1937,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 設計 A: 凍結領域は中の Mekanism の熱を持つ設備を下限（275 − 威力 × 5 K）に向けて冷やす（外の設備より速く冷える、下限より
+     * 凍結領域は中の Mekanism の熱を持つ設備を下限（275 − 威力 × 5 K）に向けて冷やす（外の設備より速く冷える、下限より
      * 下には冷えない）。加熱領域と重なったブロックの設備は冷えない（打ち消し合う）。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_mekanism", timeoutTicks = 120)
@@ -2039,20 +2039,20 @@ public final class ZoneElementGameTests {
         });
     }
 
-    /** 設計 B: 加熱領域の中のブレイズバーナーは燃料なしで「加熱」になり、外のものは変わらない。Create がなければ飛ばす。 */
+    /** 加熱領域の中のブレイズバーナーは燃料なしで「加熱」になり、外のものは変わらない。Create がなければ飛ばす。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner", timeoutTicks = 100)
     public static void heatZoneKindlesBlazeBurners(GameTestHelper helper) {
         burnerTest(helper, BurnerCase.KINDLE);
     }
 
-    /** 設計 B: 加熱領域が消えると、ブレイズバーナーは数 tick で元の段に戻る。 */
+    /** 加熱領域が消えると、ブレイズバーナーは数 tick で元の段に戻る。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_revert", timeoutTicks = 100)
     public static void heatZoneBurnerRevertsWhenTheZoneEnds(GameTestHelper helper) {
         burnerTest(helper, BurnerCase.REVERT);
     }
 
     /**
-     * 領域からは極度の加熱にしない（2026-11-16 ユーザー、氷炎地獄の撤廃）: 同じ大きさの凍結領域と直方体を二分していても、
+     * 領域からは極度の加熱にしない:同じ大きさの凍結領域と直方体を二分していても、
      * 加熱領域の中のブレイズバーナーは「加熱」まで。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_split", timeoutTicks = 100)
@@ -2092,7 +2092,7 @@ public final class ZoneElementGameTests {
         burnerTest(helper, BurnerCase.STACKED);
     }
 
-    /** 設計 B: 凍結領域と重なって打ち消されたところのブレイズバーナーは変わらない。 */
+    /** 凍結領域と重なって打ち消されたところのブレイズバーナーは変わらない。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_cancel", timeoutTicks = 100)
     public static void cancelledHeatZoneLeavesBlazeBurnersAlone(GameTestHelper helper) {
         burnerTest(helper, BurnerCase.CANCEL);
@@ -2240,7 +2240,7 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 設計 C: Sable があるとき、加重領域が機体を押すためのフックが今の Sable の版で揃い、機体のない場所では何も押さない。
+     * Sable があるとき、加重領域が機体を押すためのフックが今の Sable の版で揃い、機体のない場所では何も押さない。
      * Sable がなければ飛ばす（機体の動きそのものはゲーム内で確かめる）。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_gravity_sable", timeoutTicks = 40)

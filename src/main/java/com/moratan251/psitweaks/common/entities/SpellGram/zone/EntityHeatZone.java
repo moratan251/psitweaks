@@ -123,7 +123,7 @@ public class EntityHeatZone extends SpellGramZone {
     /**
      * Create のブレイズバーナー（{@code BlazeBurnerHeatZoneMixin} から呼ぶ）: ブロック {@code pos} のバーナーを、加熱領域が
      * 熱の総量から払って「加熱」にしているか（サーバー側）。払う台数・打ち消し・領域干渉・保護は {@link #allocateBurners} で
-     * 決める。領域からは極度の加熱にしない（2026-11-16 ユーザー）。
+     * 決める。領域からは極度の加熱にしない。
      */
     public static boolean isBurnerPowered(Level level, BlockPos pos) {
         if (!(level instanceof ServerLevel)) {

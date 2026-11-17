@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Create のブレイズバーナーと作動式: 加熱領域。ブレイズバーナーが自分の加熱の段を決める
  * {@code getHeatLevel()} の戻り値を、加熱領域が熱量から払っているときだけ「加熱」（KINDLED）に引き上げる（領域からは極度の
- * 加熱にしない、2026-11-16 ユーザー: 極度の加熱はブレイズケーキに任せる）。燃料には触らないので、領域が消えると次の tick に
+ * 加熱にしない。極度の加熱はブレイズケーキに任せる）。燃料には触らないので、領域が消えると次の tick に
  * 元の段へ戻り、ブレイズバーナーの中身には何も残らない。空のブレイズバーナー（NONE）と、すでに加熱以上のものは変えない。
  * Create がないときは {@link PsitweaksMixinPlugin} が当てない。
  */

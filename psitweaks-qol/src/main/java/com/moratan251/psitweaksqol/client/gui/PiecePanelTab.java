@@ -70,7 +70,7 @@ public enum PiecePanelTab {
             case OPERATOR -> type == EnumPieceType.OPERATOR;
             case TRICK -> type == EnumPieceType.TRICK;
             // 定数子・コネクタ・エラー抑止・安全装置など、上の 3 種類に入らないもの全部。
-            // 定数子は数が少ないので専用のタブを作らない（2026-11-13 ユーザーの決定）。
+            // 定数子は数が少ないので専用のタブを作らない。
             case OTHER -> type != EnumPieceType.SELECTOR
                     && type != EnumPieceType.OPERATOR
                     && type != EnumPieceType.TRICK;
