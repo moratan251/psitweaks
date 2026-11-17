@@ -290,6 +290,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_name_search_exclude");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
             registerPieceMaterial("operator_random_element");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_DISTANCE_KEEP =
+            registerPieceMaterial("operator_list_distance_keep");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_DISTANCE_ELEMENT =
+            registerPieceMaterial("operator_list_distance_element");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =
             registerPieceMaterial("operator_list_add");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE =

@@ -56,18 +56,18 @@ public class PieceTrickStarfall extends PieceTrick {
     public PieceTrickStarfall(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER).mul(POTENCY_PER_POWER)
-                .add(new StatLabel("psitweaks.spellparam.count", true).min(MAX_METEORS).mul(POTENCY_PER_METEOR))
+                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_METEORS).mul(POTENCY_PER_METEOR))
                 .add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER)
                 .mul(COST_PER_METEOR_POWER).add(COST_PER_METEOR).parenthesize()
-                .mul(new StatLabel("psitweaks.spellparam.count", true).min(MAX_METEORS)).add(COST_BASE).floor());
+                .mul(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_METEORS)).add(COST_BASE).floor());
     }
 
     @Override
     public void initParams() {
         addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, false, false));
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
-        addParam(count = new ParamNumber("psitweaks.spellparam.count", SpellParam.GREEN, false, true));
+        addParam(count = new ParamNumber(SpellParam.GENERIC_NAME_NUMBER, SpellParam.GREEN, false, true));
     }
 
     @Override

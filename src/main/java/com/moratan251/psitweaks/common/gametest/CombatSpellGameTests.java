@@ -111,7 +111,7 @@ public final class CombatSpellGameTests {
     private static final String POSITION = SpellParam.GENERIC_NAME_POSITION;
     private static final String DIRECTION = SpellParam.GENERIC_NAME_DIRECTION;
     private static final String RADIUS = SpellParam.GENERIC_NAME_RADIUS;
-    private static final String COUNT = "psitweaks.spellparam.count";
+    private static final String NUMBER = SpellParam.GENERIC_NAME_NUMBER;
     private static final float EPSILON = 1.0E-3F;
     /** Health of the creatures {@link #tough} prepares. */
     private static final float TOUGH_HEALTH = 200.0F;
@@ -492,7 +492,7 @@ public final class CombatSpellGameTests {
         helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
-        int[] starfall = stats(starfall(Map.of(POWER, 1.0, COUNT, 13.0)));
+        int[] starfall = stats(starfall(Map.of(POWER, 1.0, NUMBER, 13.0)));
         helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
         int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 30.0)));
         helper.assertTrue(gravity[0] == 1340 && gravity[1] == 10350, "Gravity radius must be capped at 24, got " + gravity[0] + "/" + gravity[1]);
@@ -510,7 +510,7 @@ public final class CombatSpellGameTests {
     public static void largeCombatTricksNeedHighTierCads(GameTestHelper helper) throws Exception {
         int blades = stats(dancingBlades(Map.of()))[0];
         helper.assertTrue(blades > 800 && blades <= 1000, "Smallest Dancing Blades must need heavy psimetal, got " + blades);
-        int starfall = stats(starfall(Map.of(POWER, 0.5, COUNT, 1.0)))[0];
+        int starfall = stats(starfall(Map.of(POWER, 0.5, NUMBER, 1.0)))[0];
         helper.assertTrue(starfall > 800 && starfall <= 1000, "Smallest Starfall must need heavy psimetal, got " + starfall);
         int burst = stats(burst(Map.of(POWER, 0.5)))[0];
         helper.assertTrue(burst > 1200 && burst <= 1500, "Smallest Burst must need psycheonic metal, got " + burst);
@@ -1259,7 +1259,7 @@ public final class CombatSpellGameTests {
     public static void starfallCallsMeteorsAroundThePosition(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 4), "starfall-caster");
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
-        starfall(Map.of(POSITION, vector(center), POWER, 1.0, COUNT, 3.0)).execute(new SpellContext().setPlayer(player));
+        starfall(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 3.0)).execute(new SpellContext().setPlayer(player));
         List<EntityStarfallMeteor> meteors = helper.getLevel().getEntitiesOfClass(EntityStarfallMeteor.class,
                 new AABB(center, center).inflate(8));
         meteors.sort(Comparator.comparingInt(EntityStarfallMeteor::getDelay));
