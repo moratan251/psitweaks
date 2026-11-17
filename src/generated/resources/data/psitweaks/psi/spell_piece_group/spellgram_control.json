@@ -3,6 +3,7 @@
   "pieces": [
     "psitweaks:trick_recall_spellgram",
     "psitweaks:trick_extend_spellgram",
-    "psitweaks:selector_spellgram_integrity"
+    "psitweaks:selector_spellgram_integrity",
+    "psitweaks:trick_circle_follow"
   ]
 }

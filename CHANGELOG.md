@@ -94,11 +94,21 @@
   + Trick: Ice Circle no longer keeps building up freezing
 
 
+- Reworked Trick: Fire Circle / Ice Circle
+  + Added a Time input (1 to 120 seconds, 60 if left out). The Cost and integrity grow in proportion to the Time; the Cost is at least 50
+  + Where several of your own circles of the same kind overlap, only the strongest one hits (the highest Power, then the higher Phenomenon Interference when placed, then the older one). Circles of other kinds and other casters' circles hit on their own
+  + While its center is inside another caster's Trick: Interference Zone that wins against it, a circle does nothing (it stays and its time runs on)
+  + Trick: Fire Circle no longer sets wet targets on fire (they still take the damage)
+  + Trick: Ice Circle turns the water inside it into Frosted Ice like Frost Walker and keeps that ice from melting. This is the only way a circle changes the world. While it follows a boat floating on water it leaves the water alone, so you can row; on ice it keeps freezing, so an ice boat slides on
+  + The integrity cap (how far Trick: Extend SpellGram restores) is now twice the integrity at the longest Time, as for zones
+
+
 - Added spell pieces for SpellGram objects
   + Selector: Own Resident SpellGrams: lists your own Resident SpellGrams in the dimension, however far away, oldest first
   + Selector: SpellGram Integrity
   + Trick: Recall SpellGram: ends your own Resident SpellGrams, however far away
   + Trick: Extend SpellGram: restores the integrity of your own Resident SpellGram so it lasts longer
+  + Trick: Circle Follow: makes your own circles follow you or a non-living entity such as a boat. Without a Follow Target it lets them go, and they stay where they are. A following circle uses up integrity as it moves
   + Trick: Psi Bullet: fires a bullet of psions that strikes the first creature or SpellGram object it hits. Hitting a core wears away its integrity
   + Trick: Gram Demolition: wears away the integrity of every SpellGram object in a cone in front of the caster (blocks do not stop it) and damages the creatures there
   + Trick: Psi Bullet and Trick: Gram Demolition leave the caster's own SpellGram objects alone
@@ -107,6 +117,7 @@
 
 - Removed Trick: Set SpellGram Follow Target
   + Spells that contain it load with just that piece removed
+  + Trick: Circle Follow, which moves only your own circles, is a separate new piece
 
 
 - Renamed the attribute "Spell Damage Factor" to "Phenomenon Interference" (the ID is unchanged)

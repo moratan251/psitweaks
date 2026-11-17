@@ -36,7 +36,8 @@ public final class OptionalSpellPieceCompat {
      * missing optional piece, instead of failing the whole player or chunk.
      */
     private static final List<ResourceLocation> REMOVED_PIECE_IDS = List.of(
-            // Trick: Set SpellGram Follow Target (removed in 1.0.0 with the SpellGram rework).
+            // Trick: Set SpellGram Follow Target (removed in 1.0.0 with the SpellGram rework; Trick: Circle Follow is a
+            // new piece under its own ID, so spells with the old piece still drop it).
             Psitweaks.location("trick_set_spellgram_follow_target"));
 
     private OptionalSpellPieceCompat() {

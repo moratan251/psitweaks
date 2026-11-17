@@ -1140,11 +1140,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact."},
             {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast."},
-            {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds, or until its caster logs out or moves to another dimension. One caster can keep up to 32 circles and zones in all; placing more ends the oldest."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively."},
             {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "Freezes the target block one stage. Water becomes ice, ice becomes packed ice, packed ice becomes blue ice, lava becomes magma block, and magma block becomes obsidian."},
             {"psi.book.page.psitweaks_spellpiece.trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2)."},
-            {"psi.book.page.psitweaks_spellpiece.trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control and remains for 60 seconds or until its caster is gone. One caster can keep up to 32 circles and zones in all; placing more ends the oldest."},
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava."},
@@ -1248,11 +1246,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_beneficial", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています."},
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います."},
             {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません."},
-            {"psi.book.page.psitweaks_spellpiece.trick_flare_circle", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けますが, 術者がログアウトしたり別のディメンションへ移ったりすると消えます. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です."},
             {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります."},
             {"psi.book.page.psitweaks_spellpiece.trick_hardening", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます."},
-            {"psi.book.page.psitweaks_spellpiece.trick_ice_circle", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いており, 60秒か術者がいなくなるまで残ります. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます."},
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります."},
@@ -1803,6 +1799,77 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
     }
 
+    /** 作動式: ファイアサークル・アイスサークル・サークル追従の本のページ。 */
+    private void addCircleBookPages(JsonObject root) {
+        String timeEn = "$(p)The circle stays for the Time (a constant from 1 to 120 seconds, 60 if left out), or until its caster"
+                + " logs out or moves to another dimension. Its Cost and integrity grow in proportion to the Time; the Cost is at least 50.";
+        String timeJa = "$(p)サークルは「時間」（1〜120秒の定数、省くと60秒）のあいだ残り、術者がログアウトしたり別のディメンションへ移ったり"
+                + "すると消えます。コストと耐久値は時間に比例し、コストは最低50です。";
+        addBookPage(root, "trick_flare_circle.0",
+                "Places a fire Resident SpellGram circle at the Position. Living beings inside take fire damage every half second,"
+                        + " more with a higher Power and the caster's interference, and catch fire for 2 seconds; wet beings take the"
+                        + " damage but do not catch fire." + timeEn,
+                "「位置」に炎の常駐魔法式のサークルを張ります。中の生物は0.5秒ごとに炎のダメージを受け（威力と術者の事象干渉力で増えます）、"
+                        + "2秒燃えます。濡れている生物はダメージだけを受け、燃えません。" + timeJa);
+        addBookPage(root, "trick_flare_circle.1", circleRulesEn("Fire Circles"), circleRulesJa("ファイアサークル"));
+        addBookPage(root, "trick_ice_circle.0",
+                "Places an ice Resident SpellGram circle at the Position. Living beings inside take freezing damage every half"
+                        + " second, more with a higher Power and the caster's interference, and grow cold." + timeEn,
+                "「位置」に氷の常駐魔法式のサークルを張ります。中の生物は0.5秒ごとに凍結のダメージを受け（威力と術者の事象干渉力で増えます）、"
+                        + "凍えていきます。" + timeJa);
+        addBookPage(root, "trick_ice_circle.1",
+                "Like Frost Walker, the circle turns water sources inside it, at its own level and one block below, into Frosted Ice"
+                        + " where only air is above and nothing stands in the water, and keeps the Frosted Ice inside from melting. Once the"
+                        + " circle has moved on or ended, the ice melts as usual. This is the only way a circle changes the world.$(p)It"
+                        + " leaves alone blocks the caster may not change and blocks where a Heat Zone works. While it follows a boat"
+                        + " (or someone in one) that floats on water, it makes no ice, so you can row as usual; on ice it keeps freezing"
+                        + " the water ahead, so an ice boat slides on.",
+                "氷渡りのように、円の中の、サークルと同じ高さと1つ下の水源のうち、真上が空気で中に何もいないものを薄氷にし、円の中の薄氷を"
+                        + "溶けないように保ちます。サークルが離れたり消えたりすると、薄氷はふつうどおり溶けます。サークルが世界を変えるのは"
+                        + "これだけです。$(p)術者が変えてはいけないブロックと、加熱領域が効いているブロックはそのままです。水に浮いている"
+                        + "ボート（またはそれに乗った人）を追従している間は薄氷を作らないので、ふつうに漕げます。氷の上では先の水面を凍らせ"
+                        + "続けるので、氷上ボートはそのまま滑れます。");
+        addBookPage(root, "trick_ice_circle.2", circleRulesEn("Ice Circles"), circleRulesJa("アイスサークル"));
+        addBookPage(root, "trick_circle_follow.0",
+                "Makes your own circles (Trick: Fire Circle, Trick: Ice Circle) given as the Target move to the Follow Target every"
+                        + " tick. Leave out the Target for your newest circle in this dimension. The circles may be any distance away."
+                        + " The Follow Target must be you (Selector: Caster) or something that is not a living being (a boat, a"
+                        + " minecart, an item and so on; an armor stand counts as living) within the spell's range, with no one but"
+                        + " you riding it.$(p)Leave out the Follow Target to let the circles go: they stop following and stay where they"
+                        + " are.",
+                "「対象」に入れた自分のサークル（作動式: ファイアサークル・アイスサークル）を、毎tick「追従先」の位置へ移るようにします。"
+                        + "「対象」を省くとこのディメンションの自分の一番新しいサークルです。サークルはどれだけ遠くてもかまいません。追従先は、"
+                        + "術者自身（取得子: 術者）か、術式の射程の中にある生き物でないもの（ボート・トロッコ・アイテムなど。防具立ては生き物に"
+                        + "数えます）で、術者以外の生き物が乗っていないものに限ります。$(p)「追従先」を省くと、サークルは追従をやめてその場に"
+                        + "残ります。");
+        addBookPage(root, "trick_circle_follow.1",
+                "If the Target holds anything but your own circles, the spell errors and nothing changes.$(p)A following circle"
+                        + " uses up integrity as it moves: each block it moves, the first jump to the Follow Target included, costs as"
+                        + " much as one tick of its time, so it ends sooner. It lets go and stays where it is when the Follow Target is"
+                        + " gone, is in another dimension or in a part of the world that is not running, is more than 32 blocks from"
+                        + " you, or is ridden by a living being other than you. Zones cannot be moved.",
+                "「対象」に自分のサークル以外のものが混ざっているとエラーになり、何も変えません。$(p)追従しているサークルは、動いた分だけ"
+                        + "耐久値を使います。最初に追従先へ飛ぶ分も含め、1ブロック動くごとに時間1tick分を使うので、早く消えます。追従先が"
+                        + "消えたとき、別のディメンションや動いていないチャンクにあるとき、術者から32ブロックより遠いとき、術者以外の生き物が"
+                        + "乗ったときは、追従をやめてその場に残ります。領域は動かせません。");
+    }
+
+    /** サークルの共通の決まり（重なり・領域干渉・置ける数）の本のページ。 */
+    private static String circleRulesEn(String kind) {
+        return "Where several of your own " + kind + " overlap, a being there is hit only by the strongest one (the highest Power,"
+                + " then the higher interference when placed, then the older one). Other kinds of circles and other casters'"
+                + " circles hit on their own.$(p)While its center is inside another caster's Interference Zone that wins against it"
+                + " (as zones contest each other), the circle does nothing, though its time runs on. Move it with Trick: Circle"
+                + " Follow. One caster can keep up to 32 circles and zones in all; placing more ends the oldest.";
+    }
+
+    private static String circleRulesJa(String kind) {
+        return "自分の" + kind + "が重なったところにいる生物には、一番強いもの（威力が高いもの、並べば置いた時点の事象干渉力が高いもの、"
+                + "それも並べば古いもの）だけが当たります。種類の違うサークルや他人のサークルは、それぞれ当たります。$(p)中心が、勝てない"
+                + "他人の領域干渉（領域どうしの奪い合いと同じ比べ方）の中にある間は、何もしません。時間は進みます。作動式: サークル追従で"
+                + "動かせます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。";
+    }
+
     private void addSpellPieces(JsonObject root) {
         addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
         addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "対象に、受けるダメージを1分間肩代わりするシールドを張る");
@@ -1859,7 +1926,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せる極小のブラックホールを生み出し、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a fire Resident SpellGram circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の常駐魔法式を設置して内部の生物に継続的な炎ダメージを与える");
-        addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Resident SpellGram circle that repeatedly deals freeze damage around it", "作動式: アイスサークル", "氷の常駐魔法式を設置して内部の生物に継続的な凍結ダメージを与える");
+        addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Resident SpellGram circle that repeatedly deals freeze damage around it and freezes the water in it", "作動式: アイスサークル", "氷の常駐魔法式を設置して内部の生物に継続的な凍結ダメージを与え、水面を薄氷にする");
         addSpellPiece(root, "trick_die_flex", "Trick: Flexible Die", "Stops the spell when given a number whose absolute value is below 1, and refunds the Psi of the pieces not yet run. In spells cast every tick, the Psi display may briefly desync.", "作動式: 柔軟停止", "絶対値が1未満の数値を受け取ると停止し、未実行分のPsiを返却します。毎tick詠唱では、Psi表示が一時的にずれることがあります。");
         addSpellPiece(root, "trick_jump", "Trick: Jump", "If the target number is unset or its absolute value is less than 1, jumps forward to the next Jump Anchor with the same constant label.", "作動式: ジャンプ", "対象数値が未入力、または絶対値が1未満なら、同じ定数ラベルを持つ次のジャンプアンカーまで前方にジャンプします。");
         addSpellPiece(root, "trick_jump_flex", "Trick: Flexible Jump", "Behaves like Trick: Jump and refunds the Psi of the pieces it skips.", "作動式: 柔軟ジャンプ", "作動式: ジャンプと同じ動作をし、飛ばしたピースのPsiを返却します。");
@@ -2360,8 +2427,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
-        addBookPage(root, "trick_flare_circle", "Places a fire SpellGram Circle that continuously deals fire damage to living beings inside it. Once placed, the circle remains for 60 seconds, or until its caster logs out or moves to another dimension. One caster can keep up to 32 circles and zones in all; placing more ends the oldest.", "炎の魔法式サークルを設置し, 内部の生物に継続的な炎ダメージを与えます. 一度設置したサークルは60秒残り続けますが, 術者がログアウトしたり別のディメンションへ移ったりすると消えます. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます.");
-        addBookPage(root, "trick_ice_circle", "Places an ice SpellGram Circle that continuously deals freezing damage to living beings inside it. Like Fire Circle, it is suited for area control and remains for 60 seconds or until its caster is gone. One caster can keep up to 32 circles and zones in all; placing more ends the oldest.", "氷の魔法式サークルを設置し, 内部の生物に継続的な凍結ダメージを与えます. ファイアサークルと同じく領域制圧に向いており, 60秒か術者がいなくなるまで残ります. 1人が置けるのはサークルと領域を合わせて32個までで, 超えて置くと古いものから消えます.");
+        addCircleBookPages(root);
         addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
         addBookPage(root, "trick_jump", "Jumps forward to the next Jump Anchor with the same label when the target number is unset, or when its absolute value is less than 1. The label input is optional, but if used it must be a String constant. Empty labels only match empty-label anchors. It cannot jump to Jump Anchors behind it.", "対象数値が未入力、または絶対値が1未満なら, 同じラベルを持つ次のジャンプアンカーまで前方にジャンプします. ラベル入力は任意ですが, 使う場合はString定数である必要があります. 空ラベルは空ラベルのアンカーにのみ一致します. 後方のジャンプアンカーには飛ぶことができません.");
         addBookPage(root, "trick_jump_flex", "Uses the same conditions as Trick: Jump to jump to a Jump Anchor, then refunds the Psi cost of the spell pieces actually skipped by the jump. With high-frequency casting, the client-side Psi display may temporarily desync.", "作動式: ジャンプと同じ条件でジャンプアンカーまでジャンプし, ジャンプによって実際にスキップしたスペルピースのPsiコストを返却します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
@@ -3234,11 +3300,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Restores the integrity of your own Resident SpellGram given as the Target, however far away it is. Its cost is 100 per Power (a constant of at most 100)."
                         + " It gives back the share of the integrity the object had when placed that this cost is of what the object cost when placed, so costly objects are harder to restore."
                         + " Integrity lost to spells comes back first. Integrity wears away at a steady rate, so anything restored beyond that makes the object last longer."
-                        + " Integrity can be restored up to a cap: for a zone, twice what it would have had if placed with the longest Time (120 seconds), whatever Time it was placed with; for a circle, twice what it had when placed.",
+                        + " Integrity can be restored up to a cap: twice what the object would have had if placed with the longest Time (120 seconds), whatever Time it was placed with.",
                 "「対象」に入れた自分の常駐魔法式の耐久値を、距離に関係なく回復します。コストは威力（最大100の定数）×100です。"
                         + "置いたときのコストのうち、このコストが占める割合だけ、置いたときの耐久値が戻るので、多くコストを払ったものほど回復しにくくなります。"
                         + "術式で削られた分から先に戻ります。耐久値は一定の速さで減るので、それを超えて戻した分だけ長く残ります。"
-                        + "回復できる上限は、領域なら置いたときの「時間」によらず、「時間」を最大（120秒）にして置いたときの耐久値の2倍です。サークルは置いたときの耐久値の2倍です。");
+                        + "回復できる上限は、領域でもサークルでも、置いたときの「時間」によらず、「時間」を最大（120秒）にして置いたときの耐久値の2倍です。");
+        addSpellPiece(root, "trick_circle_follow", "Trick: Circle Follow",
+                "Makes your own circles follow you or an entity that is not a living being; without a Follow Target, lets them go",
+                "作動式: サークル追従", "自分のサークルを、術者か生き物でないエンティティに追従させる。追従先を入れなければ放す");
+        addLocalized(root, "psitweaks.spellparam.follow_target", "Follow Target", "追従先");
+        addLocalized(root, "psitweaks.spellerror.not_circle",
+                "Error: The target is not a circle.", "エラー: 対象がサークルではありません。");
+        addLocalized(root, "psitweaks.spellerror.invalid_follow_target",
+                "Error: The follow target must be the caster or an entity that is not a living being.",
+                "エラー: 追従先は術者か、生き物でないエンティティにしてください。");
+        addLocalized(root, "psitweaks.spellerror.follow_target_ridden",
+                "Error: A living being other than the caster is riding the follow target.",
+                "エラー: 追従先に術者以外の生き物が乗っています。");
         addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
                 "Places a Resident SpellGram zone that keeps weaker casters' Psi spells out of it and stops others' ender teleports",
                 "作動式: 領域干渉", "自分より事象干渉力の低い他者の魔法と、術者以外のエンダー系のテレポートを、範囲の中で止める常駐魔法式を置く");

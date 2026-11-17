@@ -6,6 +6,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import vazkii.psi.client.render.entity.RenderSpellCircle;
 
@@ -35,6 +38,11 @@ public class SpellGramCircleRenderer<T extends SpellGramCircle> extends EntityRe
         }
 
         float alive = entity.tickCount + partialTicks;
+        poseStack.pushPose();
+        Vec3 offset = followOffset(entity, partialTicks);
+        if (offset != null) {
+            poseStack.translate(offset.x, offset.y, offset.z);
+        }
         RenderSpellCircle.renderSpellCircle(
                 alive,
                 1.0F,
@@ -46,8 +54,27 @@ public class SpellGramCircleRenderer<T extends SpellGramCircle> extends EntityRe
                 poseStack,
                 buffer
         );
+        poseStack.popPose();
 
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    }
+
+    /**
+     * 追従中の円を、追従先の補間した位置に描くためのずれ。円は自分の tick で追従先の位置へ移るので、追従先が後から動いた tick は
+     * 1 tick 遅れて見える。追従先がクライアントで見つからなければ null（円の位置のまま描く）。
+     */
+    private static Vec3 followOffset(SpellGramCircle circle, float partialTicks) {
+        if (!circle.isEntityFollowMode()) {
+            return null;
+        }
+        Entity target = circle.getFollowTargetEntity();
+        if (target == null) {
+            return null;
+        }
+        return new Vec3(
+                Mth.lerp(partialTicks, target.xo, target.getX()) - Mth.lerp(partialTicks, circle.xo, circle.getX()),
+                Mth.lerp(partialTicks, target.yo, target.getY()) - Mth.lerp(partialTicks, circle.yo, circle.getY()),
+                Mth.lerp(partialTicks, target.zo, target.getZ()) - Mth.lerp(partialTicks, circle.zo, circle.getZ()));
     }
 
     @Override

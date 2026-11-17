@@ -394,6 +394,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_recall_spellgram");
     public static final DeferredHolder<Material, Material> TRICK_EXTEND_SPELLGRAM =
             registerPieceMaterial("trick_extend_spellgram");
+    public static final DeferredHolder<Material, Material> TRICK_CIRCLE_FOLLOW =
+            registerPieceMaterial("trick_circle_follow");
     public static final DeferredHolder<Material, Material> SELECTOR_SPELLGRAM_INTEGRITY =
             registerPieceMaterial("selector_spellgram_integrity");
     public static final DeferredHolder<Material, Material> OPERATOR_ALIVE =

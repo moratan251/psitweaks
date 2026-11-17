@@ -136,7 +136,7 @@ public final class SpellGramGameTests {
         });
     }
 
-    /** 作動式: 運動追加(単)・瞬間移動(単) では、他人の円も自分の円も動かない（動かす仕組みは専用の作動式として保留中）。 */
+    /** 作動式: 運動追加(単)・瞬間移動(単) では、他人の円も自分の円も動かない（円を動かすのは作動式: サークル追従だけ）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_move", timeoutTicks = 100)
     public static void psiMovementTricksDoNotMoveSpellGrams(GameTestHelper helper) throws SpellRuntimeException {
         ServerLevel level = helper.getLevel();

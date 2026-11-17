@@ -32,7 +32,8 @@ import java.util.UUID;
  * ホール）に分かれる。存続時間、耐久値（{@link #getIntegrity}）、周囲へのダメージ、追従を共通にする。
  * <ul>
  *   <li>物ではない: ふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に保存しない。Psi の運動追加・瞬間移動・
- *   大移動でも動かない（{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。</li>
+ *   大移動でも動かない（{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。動くのは、作動式:
+ *   サークル追従で追従するサークルだけ（{@link #tickEntityFollow}）。</li>
  *   <li>存続時間が尽きると消える（{@link EndReason#FINISHED}）。耐久値は時間とともに一定の割合で減り（{@link #getTimeShare}）、
  *   術式解体などからは {@link #reduceIntegrity} で削られ、尽きると消える（{@link EndReason#DESTROYED}）。作動式: 魔法式延長は
  *   {@link #restoreIntegrity} で戻す。</li>
@@ -361,15 +362,15 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return placementCost;
     }
 
-    /** 耐久値の上限を決めていないとき（サークル）の、置いたときの耐久値に対する倍率。 */
+    /** 耐久値の上限の、置いたときの耐久値に対する倍率（上限を決めていないとき。領域とサークルは「時間」を最大にしたときの値に掛ける）。 */
     public static final float DEFAULT_INTEGRITY_CAP_FACTOR = 2.0F;
 
     /** 耐久値の上限（作動式: 魔法式延長で戻せる上限）。0 なら置いたときの耐久値 × {@link #DEFAULT_INTEGRITY_CAP_FACTOR}。サーバー側だけ。 */
     private float integrityCap;
 
     /**
-     * 置く前に呼ぶ。耐久値の上限（領域は「時間」によらず一定で、「時間」を最大にして置いたときの上限と同じ。
-     * {@code PieceTrickZoneBase} が決める）。
+     * 置く前に呼ぶ。耐久値の上限（領域とサークルは「時間」によらず一定で、「時間」を最大にして置いたときの上限と同じ。
+     * {@code PieceTrickZoneBase}・{@code PieceTrickSpellGramCircleBase} が決める）。
      */
     public void setIntegrityCap(float cap) {
         this.integrityCap = Math.max(0.0F, cap);

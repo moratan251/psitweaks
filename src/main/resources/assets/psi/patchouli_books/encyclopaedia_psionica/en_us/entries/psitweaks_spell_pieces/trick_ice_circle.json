@@ -5,7 +5,15 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.trick_ice_circle"
+      "text": "psi.book.page.psitweaks_spellpiece.trick_ice_circle.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_ice_circle.1"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_ice_circle.2"
     }
   ]
 }

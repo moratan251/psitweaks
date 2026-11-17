@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.entities.SpellGram;
 
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
@@ -11,7 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-/** 作動式: ファイアサークルの円。火属性のダメージを与え、2 秒燃やす。 */
+/** 作動式: ファイアサークルの円。火属性のダメージを与え、2 秒燃やす（濡れている相手は燃やさず、ダメージだけ）。 */
 public class EntityFlareCircle extends SpellGramCircle {
 
     public EntityFlareCircle(EntityType<? extends EntityFlareCircle> type, Level level) {
@@ -39,6 +40,8 @@ public class EntityFlareCircle extends SpellGramCircle {
 
     @Override
     protected void onAreaDamageApplied(LivingEntity target, float damage, DamageSource source) {
-        target.igniteForSeconds(2);
+        if (!CombatStatuses.isSoaked(target)) {
+            target.igniteForSeconds(2);
+        }
     }
 }
