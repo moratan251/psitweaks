@@ -19,6 +19,10 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
             "com.moratan251.psitweaks.mixin.WindGeneratorTurbulenceMixin";
     private static final String WIND_GENERATOR_TARGET =
             "mekanism.generators.common.tile.TileEntityWindGenerator";
+    private static final String WINDMILL_MIXIN =
+            "com.moratan251.psitweaks.mixin.WindmillTurbulenceMixin";
+    private static final String WINDMILL_TARGET =
+            "blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity";
     private static final String GAMETEST_ORIGIN_MIXIN =
             "com.moratan251.psitweaks.mixin.GameTestServerOriginMixin";
     /** GameTest の場所を原点に固定するか（build.gradle の gameTestServer の run が true にする）。 */
@@ -43,6 +47,9 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
         }
         if (WIND_GENERATOR_MIXIN.equals(mixinClassName)) {
             return isClassPresent(WIND_GENERATOR_TARGET);
+        }
+        if (WINDMILL_MIXIN.equals(mixinClassName)) {
+            return isClassPresent(WINDMILL_TARGET);
         }
         if (GAMETEST_ORIGIN_MIXIN.equals(mixinClassName)) {
             return Boolean.getBoolean(GAMETEST_FIXED_ORIGIN_PROPERTY);

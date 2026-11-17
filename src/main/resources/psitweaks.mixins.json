@@ -35,7 +35,8 @@
     "SpellPieceOptionalCompatMixin",
     "VibrationListenerSilenceZoneMixin",
     "SpellHelpersRangeLimitMixin",
-    "WindGeneratorTurbulenceMixin"
+    "WindGeneratorTurbulenceMixin",
+    "WindmillTurbulenceMixin"
   ],
   "client": [
     "client.PatchouliGuiButtonEntryMixin",

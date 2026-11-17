@@ -2158,8 +2158,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "で、超えると古いものから消えます。この数は設定で変えられます。術者がログアウトしたり別のディメンションへ移ったりしたとき"
                         + "も、領域は消えます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.5",
-                "Where your own zones of the same kind overlap, their totals (heat, cooling, FE and wind) add up: each shares its own total with what it covers. A Blaze Burner is paid for by one zone only, and a Wind Generator takes 10 WU at most. Other effects do not add up; only the strongest zone works there (the highest Power, then the higher interference, then the older one). Gravity Zones add their pushes together, up to Power 10.",
-                "自分の同じ種類の領域を重ねると、総量（熱・冷却・FE・風量）は足し算になり、それぞれが自分の範囲に配ります。ブレイズバーナーは1つの領域だけが払い、風力発電機は1台10 WU までです。ほかの効き目は足し算にならず、重なったところでは一番強いもの（威力が高いもの、並べば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。加重領域は押す向きを足し、威力10で頭打ちです。");
+                "Where your own zones of the same kind overlap, their totals (heat, cooling, FE and wind) add up: each shares its own total with what it covers. A Blaze Burner is paid for by one zone only, a Wind Generator takes 10 WU at most, and a Windmill 4 WU. Other effects do not add up; only the strongest zone works there (the highest Power, then the higher interference, then the older one). Gravity Zones add their pushes together, up to Power 10.",
+                "自分の同じ種類の領域を重ねると、総量（熱・冷却・FE・風量）は足し算になり、それぞれが自分の範囲に配ります。ブレイズバーナーは1つの領域だけが払い、風力発電機は1台10 WU、風車は1台4 WU までです。ほかの効き目は足し算にならず、重なったところでは一番強いもの（威力が高いもの、並べば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。加重領域は押す向きを足し、威力10で頭打ちです。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.10",
                 "Where another caster's zone overlaps, whatever the kinds, only the zones of the owner of the zone with the highest interference when placed (the earliest one on a tie) work there. Trick: Interference Zone raises this interference with its Power.",
                 "他人の領域が重なったところでは、種類を問わず、置いた時点の事象干渉力が一番高い領域（同じなら先に置いたもの）の持ち主の領域だけが効きます。作動式: 領域干渉は、威力に応じてこの事象干渉力を上乗せします。");
@@ -2308,6 +2308,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_turbulence_zone.3",
                 "With Mekanism Generators installed, the zone's wind is shared evenly by the Wind Generators inside (stacked ones count one each), 10 WU at most each. Each WU adds 37.5 J/t (15 FE/t) whatever the height. Under a roof a generator runs on this wind alone; under the open sky the wind comes on top.",
                 "Mekanism Generators が入っているときは、領域の風量を範囲の中の風力発電機で均等に分けます（縦に重ねても1台は1台）。1台は10 WU までです。1 WU ごとに、高さに関係なく発電量が 37.5 J/t（15 FE/t）増えます。屋根の下ではこの風だけで動き、空の下では上乗せになります。");
+        addBookPage(root, "trick_turbulence_zone.4",
+                "With Immersive Engineering installed, Windmills with a Kinetic Dynamo behind them share the wind too, 4 WU at most each; when one is full, the rest goes to the others. Each WU adds 15 FE/t whatever the weather or sails. A Windmill only needs room for its blades: it runs on this wind even when the air in front is blocked.",
+                "Immersive Engineering が入っているときは、後ろに動力ダイナモをつないだ風車も風を分け合います。1台は4 WU までで、上限に届いた分はほかの機械に回ります。1 WU ごとに、天気や帆羽に関係なく 15 FE/t 増えます。羽が回る場所さえ空いていれば、前が塞がっていてもこの風で回ります。");
 
         // 領域干渉
         addBookPage(root, "trick_interference_zone.0",

@@ -217,6 +217,8 @@ dependencies {
     runtimeOnly "curse.maven:irons-lib-1492763:9328060"
     runtimeOnly "curse.maven:playeranimator-658587:7389814"
     // Immersive Engineering: for checking how spells and zones interact with its machines and items.
+    // compileOnly for the Turbulence Zone's windmill link (optional at runtime).
+    compileOnly "curse.maven:immersive-engineering-231951:6733669"
     runtimeOnly "curse.maven:immersive-engineering-231951:6733669"
     // Integrated Dynamics: for checking how spells and zones interact with its networks and machines.
     // Requires Cyclops Core and Common Capabilities.

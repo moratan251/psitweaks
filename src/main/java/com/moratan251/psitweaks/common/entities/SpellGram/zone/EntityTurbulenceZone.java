@@ -17,6 +17,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
+import com.moratan251.psitweaks.common.compat.ImmersiveEngineeringCompat;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.compat.MekanismGameplayCompat;
 import com.moratan251.psitweaks.common.compat.SableRangeCompat;
@@ -40,8 +41,9 @@ import java.util.UUID;
  *   <li>他者の飛び道具（矢・トライデント・雪玉・火の玉など）は、入ってきたときに向きをランダムに曲げられる（威力で大きく）。
  *   魔法の弾（Psi・Ars Nouveau・Iron's Spells 'n Spellbooks）はそらさない。</li>
  *   <li>残留ポーションやドラゴンブレスの雲を吹き散らす（早く縮んで消える）。</li>
- *   <li>風量（{@link #windAmount}、単位 WU、置いた時点の事象干渉力で増える）を、範囲の中の風力発電機の台数で均等に分ける
- *   （{@link #generatorWind}）。受け取った風は発電に足す（{@code WindGeneratorTurbulenceMixin}）。Mekanism がなくても値を持つ（ほかの mod の風と連携するため）。</li>
+ *   <li>風量（{@link #windAmount}、単位 WU、置いた時点の事象干渉力で増える）を、範囲の中の風を受ける機械（Mekanism の風力発電機と
+ *   IE の風車）の台数で分ける（{@link #generatorWind}）。受け取った風は発電に足す（{@code WindGeneratorTurbulenceMixin}・
+ *   {@code WindmillTurbulenceMixin}）。どちらの mod もなくても値を持つ。</li>
  *   <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は暴風雨、
  *   荷電領域は雷雲（{@link #blowsFor}、それぞれの領域が見る）。Create の一括加工（湿潤領域の一括洗浄、加熱領域の一括燻製、
  *   加熱領域と荷電領域の重なりの一括製錬）は、乱流が重なったところでしか起きない。</li>
@@ -53,6 +55,8 @@ public class EntityTurbulenceZone extends SpellGramZone {
     public static final double DEFLECT_DEGREES_PER_POWER = 9.0;
     /** 1 WU あたりに足す、風力発電機 1 台の発電量（J/t、15 FE/t、WU の定義）。乱流の風は人工のものなので高さによらない。 */
     public static final double WIND_JOULES_PER_WU = 37.5;
+    /** 1 WU を FE/t にした値（{@link #WIND_JOULES_PER_WU} を Mekanism の 2.5 J = 1 FE で割ったもの）。IE の風車に足す発電量。 */
+    public static final double WIND_FE_PER_WU = 15.0;
     /**
      * 風量 = 床の広さ × 威力 ÷ この値 × 風の倍率（WU、{@link #windFactor}）。干渉力 1 なら、サイズ 12・威力 10 で 6 WU、
      * サイズ 16・威力 10 で約 10.7 WU。コスト（広さ × 威力 × 2 / 5）と合わせて、コスト 1 Psi あたりの風は
@@ -74,10 +78,14 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /** 入れた威力（10 より上もそのまま。重なりの強さと、風力の上乗せを許す台数に使う）。 */
     private float rawPower;
     /**
-     * 風力発電機ごとの、この領域から受ける風量（WU、発電機のブロックエンティティの位置 → WU）。{@link #WIND_COUNT_INTERVAL} tick
-     * ごとに計算し直す。サーバー側だけ。
+     * 風を受ける機械ごとの、この領域から受ける風量（機械のブロックエンティティの位置 → 風量と上限）。{@link #WIND_COUNT_INTERVAL}
+     * tick ごとに計算し直す。サーバー側だけ。
      */
-    private Map<BlockPos, Double> generatorWind = Map.of();
+    private Map<BlockPos, WindShare> generatorWind = Map.of();
+
+    /** 風を受ける機械 1 台が、この領域から受ける風量 {@code units} と、重なった乱流から合わせて受け取れる上限 {@code cap}（WU）。 */
+    private record WindShare(double units, double cap) {
+    }
     /** もう曲げた飛び道具（1 つにつき 1 回だけ曲げる）。サーバー側だけ。 */
     private final Set<UUID> deflected = new HashSet<>();
 
@@ -107,12 +115,14 @@ public class EntityTurbulenceZone extends SpellGramZone {
     }
 
     /**
-     * {@code level} のブロック {@code pos} の風力発電機が、吹いている乱流から受け取る風量（WU、サーバー側、術者は問わない）。
-     * 吹いていなければ 0。各乱流は自分の風量を範囲の中の発電機で均等に分け（{@link #generatorWind}）、重なった乱流から受け取る
-     * WU は足し算。ただし 1 台が受け取れるのは合わせて {@link #MAX_WU_PER_GENERATOR} WU まで。
-     * 発電への足し方は {@code WindGeneratorTurbulenceMixin}（1 WU ごとに 37.5 J/t、高さによらない）。
+     * {@code level} のブロック {@code pos} の風を受ける機械（風力発電機・風車）が、吹いている乱流から受け取る風量（WU、サーバー側、
+     * 術者は問わない）。吹いていないか、風を受ける機械でなければ 0。各乱流は自分の風量を範囲の中の機械で分け
+     * （{@link #generatorWind}）、重なった乱流から受け取る WU は足し算。ただし 1 台が受け取れるのは合わせて機械の種類ごとの上限
+     * （風力発電機は {@link #MAX_WU_PER_GENERATOR}、風車は {@link #MAX_WU_PER_WINDMILL}）まで。
+     * 発電への足し方は {@code WindGeneratorTurbulenceMixin}（1 WU ごとに 37.5 J/t、高さによらない）と
+     * {@code WindmillTurbulenceMixin}（1 WU ごとに 15 FE/t、天気・帆羽によらない）。
      * <p>
-     * 機体（Sable のサブレベル、Create Aeronautics の機体など）の上の発電機は、ブロックの本当の位置（機体用の空間）ではなく、
+     * 機体（Sable のサブレベル、Create Aeronautics の機体など）の上の機械は、ブロックの本当の位置（機体用の空間）ではなく、
      * 今見えている世界の位置で範囲を見る。風量の表はブロックエンティティの本当の位置で引く（{@link #computeGeneratorWind} と同じ）。
      */
     public static double windUnitsAt(Level level, BlockPos pos) {
@@ -122,16 +132,31 @@ public class EntityTurbulenceZone extends SpellGramZone {
         }
         BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
         double units = 0.0;
+        double cap = 0.0;
         for (EntityTurbulenceZone zone : zones) {
             if (!zone.isEnded() && zone.isInsideAndActive(at)) {
-                units += zone.generatorWind.getOrDefault(pos, 0.0);
+                WindShare share = zone.generatorWind.get(pos);
+                if (share != null) {
+                    units += share.units();
+                    cap = share.cap();
+                }
             }
         }
-        return Math.min(MAX_WU_PER_GENERATOR, units);
+        return Math.min(cap, units);
     }
 
     /** 風力発電機 1 台が、重なった乱流から合わせて受け取れる WU（375 J/t = 150 FE/t ぶん）。 */
     public static final double MAX_WU_PER_GENERATOR = 10.0;
+    /** IE の風車 1 台が、重なった乱流から合わせて受け取れる WU（60 FE/t ぶん）。 */
+    public static final double MAX_WU_PER_WINDMILL = 4.0;
+
+    /** {@code blockEntity} が風を受ける機械なら、1 台が受け取れる WU の上限。そうでなければ 0。 */
+    private static double windCapOf(BlockEntity blockEntity) {
+        if (MekanismGameplayCompat.isWindGenerator(blockEntity)) {
+            return MAX_WU_PER_GENERATOR;
+        }
+        return ImmersiveEngineeringCompat.isWindReceivingWindmill(blockEntity) ? MAX_WU_PER_WINDMILL : 0.0;
+    }
 
     /**
      * 風量（WU）: 範囲の床の広さ（輪郭の箱の X × Z）× 入れた威力 ÷ {@link #WIND_FOOTPRINT_DIVISOR} × {@link #windFactor}。
@@ -164,54 +189,68 @@ public class EntityTurbulenceZone extends SpellGramZone {
     }
 
     /**
-     * 照準の表示: 風力発電機に渡している WU。1 台が受け取れるのは重なった乱流と合わせて {@link #MAX_WU_PER_GENERATOR} WU まで
-     * なので、合わせて上限を超える発電機では、この領域の分を「上限 ÷ 合計」倍にして数える。
-     * Mekanism Generators がなければ 0。
+     * 照準の表示: 風を受ける機械に渡している WU。1 台が受け取れるのは重なった乱流と合わせて種類ごとの上限までなので、合わせて
+     * 上限を超える機械では、この領域の分を「上限 ÷ 合計」倍にして数える。
+     * 風を受ける機械がなければ 0。
      */
     @Override
     protected double resourceUsedPerTick() {
         double used = 0.0;
-        for (Map.Entry<BlockPos, Double> entry : generatorWind.entrySet()) {
+        for (Map.Entry<BlockPos, WindShare> entry : generatorWind.entrySet()) {
             double total = 0.0;
             for (EntityTurbulenceZone zone : SpellGramIndex.all(level(), EntityTurbulenceZone.class)) {
                 if (!zone.isEnded()) {
-                    total += zone.generatorWind.getOrDefault(entry.getKey(), 0.0);
+                    WindShare share = zone.generatorWind.get(entry.getKey());
+                    total += share == null ? 0.0 : share.units();
                 }
             }
-            used += total > MAX_WU_PER_GENERATOR ? entry.getValue() * MAX_WU_PER_GENERATOR / total : entry.getValue();
+            double units = entry.getValue().units();
+            double cap = entry.getValue().cap();
+            used += total > cap ? units * cap / total : units;
         }
         return used;
     }
 
-    /** 風力発電機 {@code pos}（ブロックエンティティの位置）がこの領域から受ける風量（WU、GameTest 用）。 */
+    /** 風を受ける機械 {@code pos}（ブロックエンティティの位置）がこの領域から受ける風量（WU、GameTest 用）。 */
     public double generatorWindAt(BlockPos pos) {
-        return generatorWind.getOrDefault(pos, 0.0);
+        WindShare share = generatorWind.get(pos);
+        return share == null ? 0.0 : share.units();
     }
 
     /**
-     * 風力発電機ごとの風量を計算し直す: 範囲の中の風力発電機の台数で風量を均等に割る。1 台がこの領域から
-     * 受けるのは {@link #MAX_WU_PER_GENERATOR} WU まで（全員が届いて余った風は使われない）。発電機の範囲の判定は世界の位置
-     * （機体の上の発電機は、見えている世界の位置）。
+     * 風を受ける機械ごとの風量を計算し直す: 範囲の中の風を受ける機械（Mekanism の風力発電機と IE の風車）の台数で風量を均等に
+     * 割る。1 台がこの領域から受けるのは種類ごとの上限まで（{@link #windCapOf}）で、上限に届いた台の余りはほかの台で分け直す
+     * （上限の小さい台から順に配る）。全員が届いて余った風は使われない。機械の範囲の判定は世界の位置（機体の上の機械は、見えている
+     * 世界の位置）。
      */
     private void computeGeneratorWind() {
-        List<BlockPos> generators = new java.util.ArrayList<>();
+        Map<BlockPos, Double> caps = new java.util.LinkedHashMap<>();
         for (ZoneRegion region : regions()) {
             for (BlockEntity blockEntity : machinesIn(region)) {
                 BlockPos pos = blockEntity.getBlockPos();
-                if (MekanismGameplayCompat.isWindGenerator(blockEntity) && isInsideAndActive(region.worldPos(pos))
-                        && !generators.contains(pos)) {
-                    generators.add(pos);
+                if (caps.containsKey(pos) || !isInsideAndActive(region.worldPos(pos))) {
+                    continue;
+                }
+                double cap = windCapOf(blockEntity);
+                if (cap > 0.0) {
+                    caps.put(pos, cap);
                 }
             }
         }
-        if (generators.isEmpty()) {
+        if (caps.isEmpty()) {
             generatorWind = Map.of();
             return;
         }
-        double share = Math.min(MAX_WU_PER_GENERATOR, windAmount() / generators.size());
-        Map<BlockPos, Double> wind = new HashMap<>();
-        for (BlockPos pos : generators) {
-            wind.put(pos, share);
+        List<Map.Entry<BlockPos, Double>> byCap = new java.util.ArrayList<>(caps.entrySet());
+        byCap.sort(Map.Entry.comparingByValue());
+        double left = windAmount();
+        int remaining = byCap.size();
+        Map<BlockPos, WindShare> wind = new HashMap<>();
+        for (Map.Entry<BlockPos, Double> entry : byCap) {
+            double share = Math.min(entry.getValue(), left / remaining);
+            wind.put(entry.getKey(), new WindShare(share, entry.getValue()));
+            left -= share;
+            remaining--;
         }
         generatorWind = wind;
     }
@@ -224,6 +263,20 @@ public class EntityTurbulenceZone extends SpellGramZone {
         BlockPos at = SableRangeCompat.worldBlockOf(level, pos);
         for (EntityTurbulenceZone zone : SpellGramIndex.all(level, EntityTurbulenceZone.class)) {
             if (!zone.isEnded() && zone.isInsideAndActive(at)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * クライアント側の見た目用: ブロック {@code pos} が、どれかの乱流領域の範囲に入っているか（奪い合い・領域干渉は見ない）。
+     * 機体の上のブロックは見ない。
+     */
+    public static boolean coversOnClient(Level level, BlockPos pos) {
+        AABB near = new AABB(pos).inflate(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.MAX_SIZE);
+        for (EntityTurbulenceZone zone : level.getEntitiesOfClass(EntityTurbulenceZone.class, near)) {
+            if (!zone.isEnded() && zone.getArea().contains(pos)) {
                 return true;
             }
         }
@@ -264,7 +317,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
         if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level)) {
             return;
         }
-        if (tickCount % WIND_COUNT_INTERVAL == 1 && MekanismCompat.isGeneratorsLoaded()) {
+        if (tickCount % WIND_COUNT_INTERVAL == 1 && (MekanismCompat.isGeneratorsLoaded() || ImmersiveEngineeringCompat.isLoaded())) {
             computeGeneratorWind();
         }
         List<Entity> inside = level.getEntities(this, getArea().bounds(),
