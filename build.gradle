@@ -218,6 +218,14 @@ dependencies {
     runtimeOnly "curse.maven:playeranimator-658587:7389814"
     // Immersive Engineering: for checking how spells and zones interact with its machines and items.
     runtimeOnly "curse.maven:immersive-engineering-231951:6733669"
+    // Integrated Dynamics: for checking how spells and zones interact with its networks and machines.
+    // Requires Cyclops Core and Common Capabilities.
+    // Refined Storage is also needed: Integrated Dynamics ships a Refined Storage GameTest class, and NeoForge loads
+    // every GameTest class whenever GameTests are enabled (the client runs and runGameTestServer), crashing without it.
+    runtimeOnly "maven.modrinth:integrated-dynamics:qimtbFIe"
+    runtimeOnly "maven.modrinth:cyclops-core:mbABgx56"
+    runtimeOnly "maven.modrinth:common-capabilities:R9PufPlP"
+    runtimeOnly "maven.modrinth:refined-storage:lHHiI26k"
     //runtimeOnly "curse.maven:nuclearcraft-neoteric-840010:8754140"
     //runtimeOnly "curse.maven:nuclear-radiation-1148833:8745596"
 
