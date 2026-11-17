@@ -8,11 +8,6 @@
       "text": "psi.book.page.psitweaks_magician.1",
       "item": "psi:cad_assembler",
       "link_recipe": true
-    },
-    {
-      "type": "spotlight",
-      "text": "psi.book.page.psitweaks_magician.2",
-      "item": "psitweaks:magicians_head"
     }
   ]
 }
