@@ -174,7 +174,7 @@ public final class ReadOnlyTargetGameTests {
             helper.assertTrue(((StringListWrapper) read("NBT Keys", nbtKeys, context)).asList().contains("Health"),
                     "NBT Keys must read the Wither");
             in.put(TARGET, rider);
-            in.put(STRING, "Health");
+            in.put(PsitweaksSpellParams.NBT_PATH, "Health");
             var nbtValue = new PieceSelectorNbtValue(new Spell()) {
                 @Override public Object getRawParamValue(SpellContext c, SpellParam<?> p) { return in.get(p.name); }
             };

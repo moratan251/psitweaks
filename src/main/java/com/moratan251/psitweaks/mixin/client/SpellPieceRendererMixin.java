@@ -16,6 +16,8 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorM
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorMatrixTransformVector;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorRegionFilterBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListDistanceBase;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtNumberList;
+import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtValue;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorFormatString;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorModeConversionBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorModeListBase;
@@ -53,6 +55,10 @@ public abstract class SpellPieceRendererMixin {
         } else if (piece instanceof PieceOperatorRegionFilterBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorListDistanceBase custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceSelectorNbtValue custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceSelectorNbtNumberList custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorMatrixCasterBasis custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());

@@ -240,6 +240,8 @@ public final class PsitweaksSpells {
             registerPiece("selector_nbt_keys", PieceSelectorNbtKeys.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_NBT_VALUE =
             registerPiece("selector_nbt_value", PieceSelectorNbtValue.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_NBT_EXISTS =
+            registerPiece("selector_nbt_exists", PieceSelectorNbtExists.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_STRING_PARTIAL_MATCH =
             registerPiece("operator_string_partial_match", PieceOperatorStringPartialMatch.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_STRING_STARTS_WITH =
@@ -270,12 +272,28 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_name_search", PieceOperatorListNameSearch.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NAME_SEARCH_EXCLUDE =
             registerPiece("operator_list_name_search_exclude", PieceOperatorListNameSearchExclude.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NBT_SEARCH =
+            registerPiece("operator_list_nbt_search", PieceOperatorListNbtSearch.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NBT_SEARCH_EXCLUDE =
+            registerPiece("operator_list_nbt_search_exclude", PieceOperatorListNbtSearchExclude.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NBT_RANGE =
+            registerPiece("operator_list_nbt_range", PieceOperatorListNbtRange.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_NBT_RANGE_OUTSIDE =
+            registerPiece("operator_list_nbt_range_outside", PieceOperatorListNbtRangeOutside.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_RANDOM_ELEMENT =
             registerPiece("operator_random_element", PieceOperatorRandomElement.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_DISTANCE_KEEP =
             registerPiece("operator_list_distance_keep", PieceOperatorListDistanceKeep.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_DISTANCE_ELEMENT =
             registerPiece("operator_list_distance_element", PieceOperatorListDistanceElement.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_NBT_NUMBER_LIST =
+            registerPiece("selector_nbt_number_list", PieceSelectorNbtNumberList.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_VALUE_RANGE =
+            registerPiece("operator_list_value_range", PieceOperatorListValueRange.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_VALUE_KEEP =
+            registerPiece("operator_list_value_keep", PieceOperatorListValueKeep.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_VALUE_ELEMENT =
+            registerPiece("operator_list_value_element", PieceOperatorListValueElement.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_ADD =
             registerPiece("operator_list_add", PieceOperatorListAdd.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_REMOVE =

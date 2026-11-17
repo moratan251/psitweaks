@@ -1,6 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import java.util.List;
+import com.moratan251.psitweaks.common.spells.util.RankedSelection;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
@@ -18,14 +18,7 @@ public class PieceOperatorListDistanceElement extends PieceOperatorListDistanceB
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         double value = numberValue(context);
-        List<?> sorted = sortedByDistance(context);
-        int size = sorted.size();
-        long index = Double.isNaN(value) ? 0L : (long) value;
-        long normalized = index < 0 ? size + index : index;
-        if (normalized < 0 || normalized >= size) {
-            throw new SpellRuntimeException("psi.spellerror.out_of_bounds");
-        }
-        return sorted.get((int) normalized);
+        return RankedSelection.element(sortedByDistance(context), value);
     }
 
     @Override

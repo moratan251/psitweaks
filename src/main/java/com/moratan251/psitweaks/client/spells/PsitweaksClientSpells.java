@@ -258,6 +258,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("selector_nbt_keys");
     public static final DeferredHolder<Material, Material> SELECTOR_NBT_VALUE =
             registerPieceMaterial("selector_nbt_value");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT_EXISTS =
+            registerPieceMaterial("selector_nbt_exists");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_PARTIAL_MATCH =
             registerPieceMaterial("operator_string_partial_match");
     public static final DeferredHolder<Material, Material> OPERATOR_STRING_STARTS_WITH =
@@ -288,12 +290,28 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_name_search");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_NAME_SEARCH_EXCLUDE =
             registerPieceMaterial("operator_list_name_search_exclude");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_NBT_SEARCH =
+            registerPieceMaterial("operator_list_nbt_search");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_NBT_SEARCH_EXCLUDE =
+            registerPieceMaterial("operator_list_nbt_search_exclude");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_NBT_RANGE =
+            registerPieceMaterial("operator_list_nbt_range");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_NBT_RANGE_OUTSIDE =
+            registerPieceMaterial("operator_list_nbt_range_outside");
     public static final DeferredHolder<Material, Material> OPERATOR_RANDOM_ELEMENT =
             registerPieceMaterial("operator_random_element");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_DISTANCE_KEEP =
             registerPieceMaterial("operator_list_distance_keep");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_DISTANCE_ELEMENT =
             registerPieceMaterial("operator_list_distance_element");
+    public static final DeferredHolder<Material, Material> SELECTOR_NBT_NUMBER_LIST =
+            registerPieceMaterial("selector_nbt_number_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_VALUE_RANGE =
+            registerPieceMaterial("operator_list_value_range");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_VALUE_KEEP =
+            registerPieceMaterial("operator_list_value_keep");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_VALUE_ELEMENT =
+            registerPieceMaterial("operator_list_value_element");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_ADD =
             registerPieceMaterial("operator_list_add");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE =

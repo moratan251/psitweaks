@@ -9,9 +9,8 @@ import com.moratan251.psitweaks.common.spells.wrapper.VectorListWrapper;
 import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import com.moratan251.psitweaks.common.spells.util.RankedSelection;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,18 +152,10 @@ public abstract class PieceOperatorListDistanceBase extends PieceOperator implem
         }
 
         double[] distances = new double[points.size()];
-        Integer[] order = new Integer[points.size()];
         for (int i = 0; i < distances.length; i++) {
             distances[i] = distanceSquared(level, origin, points.get(i));
-            order[i] = i;
         }
-        // A stable sort, so elements at the same distance keep their input order.
-        Arrays.sort(order, Comparator.comparingDouble((Integer i) -> distances[i]));
-        List<Object> sorted = new ArrayList<>(order.length);
-        for (Integer i : order) {
-            sorted.add(elements.get(i));
-        }
-        return sorted;
+        return RankedSelection.ascending(elements, distances);
     }
 
     /** A List of the current mode with the given elements, in that order (an Entity List takes Psi's own order). */

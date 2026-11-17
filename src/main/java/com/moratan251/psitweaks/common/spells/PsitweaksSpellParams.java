@@ -28,6 +28,12 @@ public final class PsitweaksSpellParams {
     public static final String UP_DOWN = PREFIX + "updown";
     public static final String OFFSET = PREFIX + "offset";
     public static final String MAX = PREFIX + "max";
+    /** Path input of the NBT pieces. */
+    public static final String NBT_PATH = PREFIX + "nbt_path";
+    /** Optional input given when a selector finds nothing usable. */
+    public static final String FALLBACK = PREFIX + "fallback";
+    /** Number List input of the value-ranked list operators, one value per List element. */
+    public static final String VALUES = PREFIX + "values";
     /** Optional input of the auto-targeting combat tricks: non-zero aims at every creature, not only hostile ones. */
     public static final String INDISCRIMINATE = PREFIX + "indiscriminate";
     /** Search input of the ideaspace logistics tricks (String, Item, Item List or a strict Item). */
