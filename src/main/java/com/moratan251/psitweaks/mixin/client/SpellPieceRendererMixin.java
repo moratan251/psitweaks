@@ -24,6 +24,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorM
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorStoredValue;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorIdeaStorageResourceBase;
 import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickItemTransferBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickIdeaStorageResourceBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickShowRegion;
@@ -31,23 +32,30 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickShowReg
 /** Preserves addon overlays after Psi moved rendering out of SpellPiece. */
 @Mixin(value = SpellPieceRenderer.class, remap = false)
 public abstract class SpellPieceRendererMixin {
-    @Inject(method = "drawAdditional", at = @At("TAIL"))
-    private static void psitweaks$drawAdditional(SpellPiece piece, PoseStack poses,
-                                               MultiBufferSource buffers, int light, CallbackInfo ci) {
-        if (piece instanceof PieceConstantString custom) {
-            custom.drawAdditional(poses, buffers, light);
-        } else if (piece instanceof PieceMacroCasterAxialOffsetBase custom) {
-            custom.drawAdditional(poses, buffers, light);
-        } else if (piece instanceof PieceOperatorFormatString custom) {
-            custom.drawAdditional(poses, buffers, light);
+    /**
+     * Mode badges go on the background plane, before Psi lifts the pose for drawAdditional. The programmer draws
+     * the red "!!" compile-error marker at that same depth afterwards, so the marker stays visible over the badge.
+     */
+    @Inject(
+            method = "draw(Lvazkii/psi/api/spell/SpellPiece;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lvazkii/psi/client/render/spell/SpellPieceRenderer;drawBackground(Lvazkii/psi/api/spell/SpellPiece;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private static void psitweaks$drawModeBadge(SpellPiece piece, PoseStack poses,
+                                                MultiBufferSource buffers, int light, CallbackInfo ci) {
+        if (piece instanceof PieceMacroCasterAxialOffsetBase custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorModeConversionBase custom) {
-            custom.drawAdditional(poses, buffers, light);
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorModeListBase custom) {
-            custom.drawAdditional(poses, buffers, light);
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceSelectorStoredValue custom) {
-            custom.drawAdditional(poses, buffers, light);
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceTrickItemTransferBase custom) {
-            custom.drawAdditional(poses, buffers, light);
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceSelectorIdeaStorageResourceBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceTrickIdeaStorageResourceBase custom) {
@@ -70,9 +78,18 @@ public abstract class SpellPieceRendererMixin {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceOperatorBlockResourceBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
-        } else if (piece instanceof com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityZone custom) {
-            // 作動式: 加重領域のモード（ベクトル・行列）。
+        } else if (piece instanceof PieceTrickGravityZone custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        }
+    }
+
+    @Inject(method = "drawAdditional", at = @At("TAIL"))
+    private static void psitweaks$drawAdditional(SpellPiece piece, PoseStack poses,
+                                               MultiBufferSource buffers, int light, CallbackInfo ci) {
+        if (piece instanceof PieceConstantString custom) {
+            custom.drawAdditional(poses, buffers, light);
+        } else if (piece instanceof PieceOperatorFormatString custom) {
+            custom.drawAdditional(poses, buffers, light);
         }
     }
 }

@@ -3,13 +3,10 @@ package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
-import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.internal.Vector3;
@@ -70,10 +67,6 @@ public abstract class PieceMacroCasterAxialOffsetBase extends PieceOperator impl
         Map<String, SpellParam.Side> savedSides = saveParamSides();
         mode = nextMode;
         rebuildParams(savedSides);
-    }
-
-    public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, getModeOption());
     }
 
     @Override

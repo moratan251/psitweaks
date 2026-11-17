@@ -1,6 +1,5 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
-import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemFilters;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
@@ -10,12 +9,10 @@ import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -102,10 +99,6 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
         Map<String, SpellParam.Side> savedSides = saveParamSides();
         mode = nextMode;
         rebuildParams(savedSides);
-    }
-
-    public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, getModeOption());
     }
 
     @Override

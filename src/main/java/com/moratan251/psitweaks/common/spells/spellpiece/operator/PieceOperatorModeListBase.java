@@ -1,17 +1,14 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.moratan251.psitweaks.api.PsitweaksListAdapter;
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
-import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.mode.ModeConfigurableSpellPiece;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellParam;
@@ -52,10 +49,6 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
         Map<String, SpellParam.Side> savedSides = saveParamSides();
         this.mode = nextMode;
         rebuildParams(savedSides);
-    }
-
-    public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, currentMode());
     }
 
     @Override

@@ -1,16 +1,13 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
 import com.moratan251.psitweaksqol.api.PsitweaksModeConfigurable;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.value.PlainValueType;
-import com.moratan251.psitweaks.client.spells.ModeOverlayRenderer;
 import com.moratan251.psitweaks.common.spells.combat.CombatTrickStats;
 import com.moratan251.psitweaks.common.spells.memory.CadPlainMemory;
 import java.util.List;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -83,10 +80,6 @@ public class PieceSelectorStoredValue extends PieceSelector implements Psitweaks
         return PsitweaksPlainValues.snapshot().stream()
                 .map(PlainValueType::modeOption)
                 .toList();
-    }
-
-    public void drawAdditional(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        ModeOverlayRenderer.drawModeOverlay(poseStack, bufferSource, light, getModeOption());
     }
 
     @Override
