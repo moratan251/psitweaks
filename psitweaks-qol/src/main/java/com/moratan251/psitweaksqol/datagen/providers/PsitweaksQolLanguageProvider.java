@@ -200,6 +200,144 @@ public class PsitweaksQolLanguageProvider implements DataProvider {
             default -> "Click a trick to name the spell (Esc: cancel)";
         });
 
+        root.addProperty("psitweaks_qol.snippet.button", switch (locale) {
+            case "ja_jp" -> "スニペット";
+            default -> "Snippets";
+        });
+        root.addProperty("psitweaks_qol.snippet.button.save", switch (locale) {
+            case "ja_jp" -> "選んだピースに名前を付けて保存 (Ctrl + S)";
+            default -> "Save the selected pieces with a name (Ctrl + S)";
+        });
+        root.addProperty("psitweaks_qol.snippet.button.list", switch (locale) {
+            case "ja_jp" -> "保存したスニペットの一覧 (Ctrl + S)";
+            default -> "List saved snippets (Ctrl + S)";
+        });
+        root.addProperty("psitweaks_qol.snippet.button.select_hint", switch (locale) {
+            case "ja_jp" -> "Shift + ドラッグでピースを選んでから押すと保存";
+            default -> "Select pieces with Shift + drag first to save them";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.title", switch (locale) {
+            case "ja_jp" -> "スニペットを保存 (%s×%s・%s 個)";
+            default -> "Save snippet (%s×%s, %s pieces)";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.name", switch (locale) {
+            case "ja_jp" -> "名前";
+            default -> "Name";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.name_hint", switch (locale) {
+            case "ja_jp" -> "名前を入力";
+            default -> "Enter a name";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.hint", switch (locale) {
+            case "ja_jp" -> "Enter: 保存 / Esc: やめる";
+            default -> "Enter: save / Esc: cancel";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.exists", switch (locale) {
+            case "ja_jp" -> "同じ名前があります。保存を 2 回押すと上書きします";
+            default -> "This name is already used. Press Save twice to overwrite it.";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.overwrite_confirm", switch (locale) {
+            case "ja_jp" -> "もう一度押すと上書きします";
+            default -> "Press again to overwrite it.";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.button", switch (locale) {
+            case "ja_jp" -> "保存";
+            default -> "Save";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.overwrite_button", switch (locale) {
+            case "ja_jp" -> "上書き";
+            default -> "Overwrite";
+        });
+        root.addProperty("psitweaks_qol.snippet.save.cancel", switch (locale) {
+            case "ja_jp" -> "やめる";
+            default -> "Cancel";
+        });
+        root.addProperty("psitweaks_qol.snippet.saved", switch (locale) {
+            case "ja_jp" -> "スニペット「%s」を保存しました";
+            default -> "Saved snippet \"%s\"";
+        });
+        root.addProperty("psitweaks_qol.snippet.save_failed", switch (locale) {
+            case "ja_jp" -> "スニペットを保存できませんでした: %s";
+            default -> "Could not save the snippet: %s";
+        });
+        root.addProperty("psitweaks_qol.snippet.deleted", switch (locale) {
+            case "ja_jp" -> "スニペット「%s」を削除しました";
+            default -> "Deleted snippet \"%s\"";
+        });
+        root.addProperty("psitweaks_qol.snippet.delete_failed", switch (locale) {
+            case "ja_jp" -> "スニペットを削除できませんでした: %s";
+            default -> "Could not delete the snippet: %s";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.title", switch (locale) {
+            case "ja_jp" -> "スニペット";
+            default -> "Snippets";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.count", switch (locale) {
+            case "ja_jp" -> "%s 件";
+            default -> "%s saved";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.search", switch (locale) {
+            case "ja_jp" -> "絞り込み";
+            default -> "Filter";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.search_hint", switch (locale) {
+            case "ja_jp" -> "名前で絞り込み";
+            default -> "Filter by name";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.empty", switch (locale) {
+            case "ja_jp" -> "保存したスニペットはありません。Shift + ドラッグでピースを選び、このボタンか Ctrl + S で保存できます。";
+            default -> "No snippets yet. Select pieces with Shift + drag, then press this button or Ctrl + S to save them.";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.no_match", switch (locale) {
+            case "ja_jp" -> "一致するスニペットはありません。";
+            default -> "No matching snippets.";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.open_folder", switch (locale) {
+            case "ja_jp" -> "フォルダを開く";
+            default -> "Open folder";
+        });
+        root.addProperty("psitweaks_qol.snippet.list.delete_hint", switch (locale) {
+            case "ja_jp" -> "Shift + クリックで削除";
+            default -> "Shift + click to delete";
+        });
+        root.addProperty("psitweaks_qol.snippet.size", "%s×%s");
+        root.addProperty("psitweaks_qol.snippet.info", switch (locale) {
+            case "ja_jp" -> "%s×%s・%s 個のピース";
+            default -> "%s×%s, %s pieces";
+        });
+        root.addProperty("psitweaks_qol.snippet.place.hint", switch (locale) {
+            case "ja_jp" -> "「%s」を置く: 左クリック (Shift で続けて置く) / 右クリックか Esc でやめる";
+            default -> "Placing \"%s\": left click (hold Shift to keep placing) / right click or Esc to stop";
+        });
+        root.addProperty("psitweaks_qol.snippet.unusable", switch (locale) {
+            case "ja_jp" -> "使えないピース %s 個 (貼り付けでは飛ばす)";
+            default -> "%s unusable pieces (skipped when pasting)";
+        });
+        root.addProperty("psitweaks_qol.paste.skipped", switch (locale) {
+            case "ja_jp" -> "使えないピース %s 個を飛ばして貼り付けました";
+            default -> "Pasted, skipping %s unusable pieces";
+        });
+        root.addProperty("psitweaks_qol.paste.nothing", switch (locale) {
+            case "ja_jp" -> "使えないピースだけなので、%s 個とも貼り付けませんでした";
+            default -> "Nothing pasted: all %s pieces are unusable";
+        });
+        root.addProperty("psitweaks_qol.paste.reason.unknown", switch (locale) {
+            case "ja_jp" -> "見つからない (mod がない)";
+            default -> "Unknown (mod missing)";
+        });
+        root.addProperty("psitweaks_qol.paste.reason.disabled", switch (locale) {
+            case "ja_jp" -> "無効";
+            default -> "Disabled";
+        });
+        root.addProperty("psitweaks_qol.paste.reason.locked", switch (locale) {
+            case "ja_jp" -> "未解禁";
+            default -> "Locked";
+        });
+        root.addProperty("psitweaks_qol.paste.reason.not_learned", switch (locale) {
+            case "ja_jp" -> "未習得";
+            default -> "Not learned";
+        });
+
         return root;
     }
 }

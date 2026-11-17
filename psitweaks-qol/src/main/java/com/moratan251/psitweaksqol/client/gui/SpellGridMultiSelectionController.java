@@ -1,31 +1,17 @@
 package com.moratan251.psitweaksqol.client.gui;
 
+import com.moratan251.psitweaksqol.client.snippet.SpellPieceLayout;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
-import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.spell.SpellGrid;
 import vazkii.psi.api.spell.SpellPiece;
-import vazkii.psi.api.spell.SpellPieceGroup;
 import vazkii.psi.client.gui.GuiProgrammer;
-import vazkii.psi.common.core.handler.PlayerData;
-import vazkii.psi.common.core.handler.PlayerDataHandler;
 
 public final class SpellGridMultiSelectionController {
     private static final int LEFT_MOUSE_BUTTON = 0;
@@ -44,7 +30,7 @@ public final class SpellGridMultiSelectionController {
     private static boolean dragging;
     private static GridPosition pendingControlClick;
     private static Set<GridPosition> selectedPositions = Set.of();
-    private static List<ClipboardEntry> clipboard = List.of();
+    private static SpellPieceLayout clipboard = SpellPieceLayout.EMPTY;
 
     private SpellGridMultiSelectionController() {
     }
@@ -193,7 +179,7 @@ public final class SpellGridMultiSelectionController {
 
         if (Screen.isCopy(keyCode)) {
             if (selectedPositions.isEmpty()) {
-                clipboard = List.of();
+                clipboard = SpellPieceLayout.EMPTY;
                 return false;
             }
             if (!screen.isSpectator()) {
@@ -204,7 +190,7 @@ public final class SpellGridMultiSelectionController {
 
         if (Screen.isCut(keyCode)) {
             if (selectedPositions.isEmpty()) {
-                clipboard = List.of();
+                clipboard = SpellPieceLayout.EMPTY;
                 return false;
             }
             if (!screen.isSpectator()) {
@@ -254,28 +240,50 @@ public final class SpellGridMultiSelectionController {
     }
 
     private static boolean copySelection(GuiProgrammer screen) {
-        List<GridPosition> positions = selectedPositions.stream()
-                .filter(position -> getPiece(screen, position) != null)
-                .sorted(Comparator.comparingInt(GridPosition::x).thenComparingInt(GridPosition::y))
-                .toList();
-        if (positions.isEmpty()) {
-            clipboard = List.of();
+        SpellPieceLayout layout = selectionLayout(screen);
+        clipboard = layout;
+        if (layout.isEmpty()) {
             return false;
         }
-
-        int minX = positions.stream().mapToInt(GridPosition::x).min().orElseThrow();
-        int minY = positions.stream().mapToInt(GridPosition::y).min().orElseThrow();
-        List<ClipboardEntry> entries = new ArrayList<>(positions.size());
-        for (GridPosition position : positions) {
-            SpellPiece piece = getPiece(screen, position);
-            CompoundTag pieceData = new CompoundTag();
-            piece.writeToNBT(pieceData);
-            entries.add(new ClipboardEntry(position.x - minX, position.y - minY, pieceData));
-        }
-
-        clipboard = List.copyOf(entries);
         GuiProgrammer.clipboard = null;
         return true;
+    }
+
+    private static SpellPieceLayout selectionLayout(GuiProgrammer screen) {
+        return snapshotSelection(screen).layout();
+    }
+
+    /** 選んでいるピースの並びと、その左上のマスの位置。選んでいなければ並びは空、位置は (-1, -1)。 */
+    public static SelectionSnapshot snapshotSelection(GuiProgrammer screen) {
+        List<SpellPieceLayout.Entry> entries = new ArrayList<>(selectedPositions.size());
+        int originX = Integer.MAX_VALUE;
+        int originY = Integer.MAX_VALUE;
+        for (GridPosition position : selectedPositions) {
+            SpellPiece piece = getPiece(screen, position);
+            if (piece != null) {
+                CompoundTag pieceData = new CompoundTag();
+                piece.writeToNBT(pieceData);
+                entries.add(new SpellPieceLayout.Entry(position.x, position.y, pieceData));
+                originX = Math.min(originX, position.x);
+                originY = Math.min(originY, position.y);
+            }
+        }
+        if (entries.isEmpty()) {
+            return new SelectionSnapshot(SpellPieceLayout.EMPTY, -1, -1);
+        }
+        return new SelectionSnapshot(SpellPieceLayout.of(entries), originX, originY);
+    }
+
+    public static boolean hasSelection() {
+        return !selectedPositions.isEmpty();
+    }
+
+    /** Ctrl+V で貼る並びを差し替える。Psi 本体の 1 ピースのクリップボードは空にする。 */
+    public static void setClipboard(SpellPieceLayout layout) {
+        clipboard = layout;
+        if (!layout.isEmpty()) {
+            GuiProgrammer.clipboard = null;
+        }
     }
 
     private static void cutSelection(GuiProgrammer screen) {
@@ -301,71 +309,9 @@ public final class SpellGridMultiSelectionController {
             return;
         }
 
-        List<PendingPlacement> placements = new ArrayList<>(clipboard.size());
-        for (ClipboardEntry entry : clipboard) {
-            int targetX = pasteX + entry.offsetX;
-            int targetY = pasteY + entry.offsetY;
-            if (!SpellGrid.exists(targetX, targetY)) {
-                ClientGuiSounds.playError();
-                return;
-            }
-
-            SpellPiece piece = SpellPiece.createFromNBT(screen.spell, entry.pieceData.copy());
-            if (piece == null) {
-                return;
-            }
-            piece.x = targetX;
-            piece.y = targetY;
-            piece.isInGrid = true;
-            placements.add(new PendingPlacement(targetX, targetY, piece));
+        if (SpellPieceLayoutPlacer.place(screen, clipboard, pasteX, pasteY)) {
+            clearSelection();
         }
-
-        if (placements.isEmpty()) {
-            return;
-        }
-        if (!canPastePieces(placements)) {
-            ClientGuiSounds.playError();
-            return;
-        }
-
-        screen.pushState(true);
-        for (PendingPlacement placement : placements) {
-            screen.spell.grid.gridData[placement.x][placement.y] = placement.piece;
-        }
-        clearSelection();
-        screen.onSpellChanged(false);
-    }
-
-    /** Psi 本体の貼り付けと同じ順で、無効化・ロック・未研究のピースを含む貼り付けを拒否する(部分配置はしない)。 */
-    private static boolean canPastePieces(List<PendingPlacement> placements) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return false;
-        }
-        RegistryAccess registryAccess = player.registryAccess();
-        PlayerData data = PlayerDataHandler.get(player);
-        for (PendingPlacement placement : placements) {
-            SpellPiece piece = placement.piece;
-            ResourceLocation key = piece.getRegistryKey();
-            if (!PsiAPI.isPieceEnabled(registryAccess, key)) {
-                sendPasteError(player, Component.translatable("psimisc.disabled_piece", Component.translatable(piece.getUnlocalizedName())));
-                return false;
-            }
-            if (PsiAPI.isPieceLocked(player, registryAccess, key)) {
-                sendPasteError(player, Component.translatable("psimisc.locked_piece", Component.translatable(piece.getUnlocalizedName())));
-                return false;
-            }
-            Optional<Holder.Reference<SpellPieceGroup>> group = PsiAPI.getPieceGroup(registryAccess, key);
-            if (group.isPresent() && !player.isCreative() && !data.isPieceGroupUnlocked(group.get().key().location(), key)) {
-                sendPasteError(player, Component.translatable("psimisc.missing_pieces"));
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void sendPasteError(LocalPlayer player, MutableComponent message) {
-        player.sendSystemMessage(message.setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
     }
 
     private static boolean canStartSelection(GuiProgrammer screen) {
@@ -476,9 +422,7 @@ public final class SpellGridMultiSelectionController {
     private record GridPosition(int x, int y) {
     }
 
-    private record ClipboardEntry(int offsetX, int offsetY, CompoundTag pieceData) {
+    public record SelectionSnapshot(SpellPieceLayout layout, int originX, int originY) {
     }
 
-    private record PendingPlacement(int x, int y, SpellPiece piece) {
-    }
 }

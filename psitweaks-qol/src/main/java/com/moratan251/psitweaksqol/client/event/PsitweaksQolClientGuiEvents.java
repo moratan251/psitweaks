@@ -10,6 +10,7 @@ import com.moratan251.psitweaksqol.client.gui.ProgrammerOverlayInputGuard;
 import com.moratan251.psitweaksqol.client.gui.SpellGridMultiSelectionController;
 import com.moratan251.psitweaksqol.client.gui.SpellNameFromTrickController;
 import com.moratan251.psitweaksqol.client.gui.SpellPieceModeButtonOverlay;
+import com.moratan251.psitweaksqol.client.gui.SpellSnippetController;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -23,6 +24,7 @@ public final class PsitweaksQolClientGuiEvents {
 
     public static void register(IEventBus eventBus) {
         eventBus.addListener(PsitweaksQolClientGuiEvents::onScreenInitPost);
+        eventBus.addListener(PsitweaksQolClientGuiEvents::onScreenRenderPre);
         eventBus.addListener(PsitweaksQolClientGuiEvents::onScreenRenderPost);
         eventBus.addListener(PsitweaksQolClientGuiEvents::onKeyPressedPre);
         eventBus.addListener(PsitweaksQolClientGuiEvents::onCharacterTypedPre);
@@ -37,6 +39,13 @@ public final class PsitweaksQolClientGuiEvents {
     private static void onScreenInitPost(ScreenEvent.Init.Post event) {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellNameFromTrickController.onScreenInit(screen, event::addListener);
+            SpellSnippetController.onScreenInit(screen, event::addListener);
+        }
+    }
+
+    private static void onScreenRenderPre(ScreenEvent.Render.Pre event) {
+        if (event.getScreen() instanceof GuiProgrammer screen) {
+            SpellSnippetController.beforeRender(screen, event.getMouseX(), event.getMouseY());
         }
     }
 
@@ -46,15 +55,20 @@ public final class PsitweaksQolClientGuiEvents {
             SpellNameFromTrickController.render(screen, event.getGuiGraphics(), event.getMouseX(), event.getMouseY());
             SpellPieceModeButtonOverlay.render(screen, event.getGuiGraphics(), event.getMouseX(), event.getMouseY());
             EditableStringInputOverlay.render(screen, event.getGuiGraphics());
+            SpellSnippetController.render(screen, event.getGuiGraphics(),
+                    event.getMouseX(), event.getMouseY(), event.getPartialTick());
         }
     }
 
     private static void onKeyPressedPre(ScreenEvent.KeyPressed.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && (SpellNameFromTrickController.handleKeyPressedPre(screen, event.getKeyCode())
+                && (SpellSnippetController.handleKeyPressedPre(screen,
+                        event.getKeyCode(), event.getScanCode(), event.getModifiers())
+                || SpellNameFromTrickController.handleKeyPressedPre(screen, event.getKeyCode())
                 || SpellPieceModeButtonOverlay.handleKeyPressedPre(screen, event.getKeyCode())
                 || EditableStringInputOverlay.handleKeyPressedPre(screen, event.getKeyCode(), event.getScanCode())
                 || SpellGridMultiSelectionController.handleKeyPressedPre(screen, event.getKeyCode())
+                || SpellSnippetController.handleShortcutKey(screen, event.getKeyCode())
                 || handlePiecePanelSettingsKey(screen, event.getKeyCode())
                 || PiecePanelKeyboard.handleKeyPressed(screen, event.getKeyCode()))) {
             event.setCanceled(true);
@@ -72,7 +86,8 @@ public final class PsitweaksQolClientGuiEvents {
 
     private static void onCharacterTypedPre(ScreenEvent.CharacterTyped.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && EditableStringInputOverlay.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers())) {
+                && (SpellSnippetController.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers())
+                || EditableStringInputOverlay.handleCharacterTypedPre(screen, event.getCodePoint(), event.getModifiers()))) {
             event.setCanceled(true);
         }
     }
@@ -84,6 +99,13 @@ public final class PsitweaksQolClientGuiEvents {
                     event.getMouseX(),
                     event.getMouseY(),
                     event.getButton());
+            if (SpellSnippetController.handleMousePressedPre(screen,
+                    event.getMouseX(),
+                    event.getMouseY(),
+                    event.getButton())) {
+                event.setCanceled(true);
+                return;
+            }
             SpellGridMultiSelectionController.prepareMousePressed(event.getButton());
             boolean handled = SpellNameFromTrickController.handleMousePressedPre(screen,
                     event.getMouseX(),
@@ -215,7 +237,11 @@ public final class PsitweaksQolClientGuiEvents {
 
     private static void onMouseScrolledPre(ScreenEvent.MouseScrolled.Pre event) {
         if (event.getScreen() instanceof GuiProgrammer screen
-                && (SpellPieceModeButtonOverlay.handleMouseScrolledPre(screen,
+                && (SpellSnippetController.handleMouseScrolledPre(screen,
+                        event.getMouseX(),
+                        event.getMouseY(),
+                        event.getScrollDeltaY())
+                || SpellPieceModeButtonOverlay.handleMouseScrolledPre(screen,
                         event.getMouseX(),
                         event.getMouseY(),
                         event.getScrollDeltaY())
@@ -262,6 +288,7 @@ public final class PsitweaksQolClientGuiEvents {
         if (event.getScreen() instanceof GuiProgrammer screen) {
             SpellPieceModeButtonOverlay.deactivate();
             SpellNameFromTrickController.deactivate();
+            SpellSnippetController.deactivate();
             EditableStringInputOverlay.deactivate(screen);
             SpellGridMultiSelectionController.resetScreenState();
             ProgrammerOverlayInputGuard.reset();
