@@ -140,6 +140,16 @@ public final class SpellLimitGameTests {
         helper.assertTrue(WildcardStringMatcher.compile("Ab").matches("Ab") && !WildcardStringMatcher.compile("Ab").matches("ab"),
                 "The match should keep case");
         helper.assertTrue(WildcardStringMatcher.compile("line*end").matches("line\nend"), "* should match a line break too");
+        WildcardStringMatcher run = WildcardStringMatcher.compile("a***b");
+        helper.assertTrue(run.matches("ab") && run.matches("axyb") && !run.matches("axc"), "A run of * should act as one *");
+        helper.assertTrue(WildcardStringMatcher.compile("***").matches("") && WildcardStringMatcher.compile("***").matches("x"),
+                "Only * should match any text, none included");
+        helper.assertTrue(WildcardStringMatcher.compilePartial("**o**").matches("foo") && !WildcardStringMatcher.compilePartial("**o**").matches("bar"),
+                "A partial match should accept runs of * too");
+        WildcardStringMatcher unsorted = WildcardStringMatcher.compile("[zaz\\]m]");
+        helper.assertTrue(unsorted.matches("z") && unsorted.matches("a") && unsorted.matches("]") && unsorted.matches("m")
+                        && !unsorted.matches("b"),
+                "A class should match its characters in any written order");
 
         // With a regular expression these took seconds (150 characters) to minutes (300).
         String value = "a".repeat(StringSpellHelper.MAX_STRING_LENGTH);

@@ -82,12 +82,7 @@ public final class WildcardStringMatcher {
             return true;
         }
         if (test < ANY) {
-            for (int choice : choices[choiceIndex(test)]) {
-                if (choice == codePoint) {
-                    return true;
-                }
-            }
-            return false;
+            return Arrays.binarySearch(choices[choiceIndex(test)], codePoint) >= 0;
         }
         return test == codePoint;
     }
@@ -113,8 +108,11 @@ public final class WildcardStringMatcher {
             } else if (c == '\\') {
                 escaped = true;
             } else if (c == '*') {
-                pieces.add(current.toArray());
-                current = new Piece();
+                // Only the first piece may be empty here: a run of * needs no pieces in between.
+                if (pieces.isEmpty() || current.size > 0) {
+                    pieces.add(current.toArray());
+                    current = new Piece();
+                }
             } else if (c == '?') {
                 current.add(ANY);
             } else if (c == '[') {
@@ -164,6 +162,7 @@ public final class WildcardStringMatcher {
         return -1;
     }
 
+    /** The characters of a class, sorted for {@link #accepts}. */
     private static int[] characterClass(int[] pattern, int from, int close) {
         Piece result = new Piece();
         boolean escaped = false;
@@ -176,7 +175,9 @@ public final class WildcardStringMatcher {
                 escaped = false;
             }
         }
-        return result.toArray();
+        int[] sorted = result.toArray();
+        Arrays.sort(sorted);
+        return sorted;
     }
 
     private static int choiceTest(int index) {

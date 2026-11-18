@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.gametest;
 
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.api.value.BlockValue;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListNbtFilterBase;
@@ -12,9 +13,12 @@ import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorN
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtKeys;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtValue;
 import com.moratan251.psitweaks.common.spells.util.NbtPathHelper;
+import com.moratan251.psitweaks.common.spells.util.NbtTargetReader;
+import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +45,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import vazkii.psi.api.PsiAPI;
@@ -145,6 +151,114 @@ public final class NbtPiecesGameTests {
                         && NbtPathHelper.number(StringTag.valueOf("5")).isEmpty()
                         && NbtPathHelper.number(new ListTag()).isEmpty(),
                 "Only number tags have a number");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void deepPathsFindNothingWithoutOverflowing(GameTestHelper helper) throws SpellRuntimeException {
+        CompoundTag root = snbt(helper, "{list:[{a:{b:1b}},{a:{b:2b}}]}");
+        for (int depth : List.of(511, 513, 2050, 8189)) {
+            String open = "{a:" + "[".repeat(depth);
+            helper.assertTrue(NbtPathHelper.find(root, open).isEmpty(), "An unclosed path of depth " + depth + " must find nothing");
+            helper.assertTrue(NbtPathHelper.find(root, open + "]".repeat(depth) + "}").isEmpty(),
+                    "A closed path of depth " + depth + " must find nothing");
+        }
+
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put(TARGET, item(helper, Items.STONE, "{foo:\"bar\"}"));
+        inputs.put(PATH, "{a:" + "[".repeat(8189));
+        helper.assertTrue("".equals(value(inputs).execute(context(helper))), "NBT Value must treat a deep path as not found");
+        var keep = filter(true, inputs);
+        keep.setModeOption(PsitweaksModeOptions.ITEM);
+        inputs.put(LIST, SpellItemListWrapper.make(List.of(item(helper, Items.STONE, "{foo:\"bar\"}"))));
+        inputs.put(PATTERN, "*");
+        helper.assertTrue(items(keep.execute(context(helper))).isEmpty(), "A list filter must treat a deep path as not found");
+
+        helper.assertTrue(texts(NbtPathHelper.find(root, "list[{a:{b:2b}}].a.b")).equals(List.of("2")),
+                "A nested filter within the limit must still match");
+        String bracketKey = "[".repeat(600);
+        CompoundTag outer = new CompoundTag();
+        outer.putInt(bracketKey, 5);
+        root.put("outer", outer);
+        helper.assertTrue(texts(NbtPathHelper.find(root, "outer.\"" + bracketKey + "\"")).equals(List.of("5")),
+                "Brackets inside a quoted key must not count as nesting");
+
+        var compiled = NbtPathHelper.compile("list[].a.b");
+        helper.assertTrue(texts(compiled.find(root)).equals(List.of("1", "2")) && compiled.find(new CompoundTag()).isEmpty()
+                        && compiled.find(null).isEmpty() && texts(compiled.find(root)).equals(List.of("1", "2")),
+                "A compiled path must work on every root it is given");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void listsShareTheirElementsAndReadNbtOncePerCast(GameTestHelper helper) throws SpellRuntimeException {
+        var level = helper.getLevel();
+        helper.setBlock(new BlockPos(1, 1, 1), Blocks.CHEST);
+        helper.setBlock(new BlockPos(3, 1, 1), Blocks.CHEST);
+        BlockPos first = helper.absolutePos(new BlockPos(1, 1, 1));
+        BlockPos second = helper.absolutePos(new BlockPos(3, 1, 1));
+        BlockListWrapper blocks = BlockListWrapper.make(List.of(BlockValue.snapshot(level, second),
+                BlockValue.snapshot(level, first), BlockValue.snapshot(level, second)));
+        helper.assertTrue(blocks.asList().stream().map(BlockValue::blockPos).collect(Collectors.toList()).equals(List.of(second, first)),
+                "A Block List must drop duplicates and keep its order");
+        helper.assertTrue(blocks.get(0) == blocks.get(0), "A Block List must hand out the same element each time");
+
+        SpellItemListWrapper itemList = SpellItemListWrapper.make(List.of(item(helper, Items.STONE, "{a:1b}"),
+                item(helper, Items.STONE, "{a:1b}"), item(helper, Items.STONE, "{a:2b}"),
+                SpellItemValue.snapshot(new ItemStack(Items.STONE, 2)), SpellItemValue.EMPTY));
+        helper.assertTrue(itemList.size() == 3, "An Item List must drop empty and equivalent items: " + itemList.size());
+        helper.assertTrue(itemList.get(0) == itemList.get(0), "An Item List must hand out the same element each time");
+        itemList.get(0).copyStack().setCount(5);
+        helper.assertTrue(itemList.get(0).copyStack().getCount() == 1, "Changing a copy must not change the element");
+
+        var chest = (ChestBlockEntity) level.getBlockEntity(first);
+        chest.setItem(0, new ItemStack(Items.APPLE));
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put(LIST, blocks);
+        inputs.put(PATH, "Items[].id");
+        inputs.put(PATTERN, "minecraft:apple");
+        var keep = filter(true, inputs);
+        keep.setModeOption(PsitweaksModeOptions.BLOCK);
+        var context = context(helper);
+        helper.assertTrue(((BlockListWrapper) keep.execute(context)).size() == 1, "The chest with the apple must stay");
+        chest.setItem(0, new ItemStack(Items.BREAD));
+        helper.assertTrue(((BlockListWrapper) keep.execute(context)).size() == 1, "One cast must reuse the NBT it already read");
+        helper.assertTrue(((BlockListWrapper) keep.execute(context(helper))).size() == 0, "A new cast must read the NBT again");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void oneCastReadsTheNbtOfALimitedNumberOfTargets(GameTestHelper helper) throws SpellRuntimeException {
+        int limit = PsitweaksConfig.COMMON.nbtMaxTargetsPerCast.get();
+        List<SpellItemValue> values = new ArrayList<>();
+        for (int i = 0; i <= limit; i++) {
+            values.add(item(helper, Items.STONE, "{i:" + i + "}"));
+        }
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put(LIST, SpellItemListWrapper.make(values.subList(0, limit)));
+        inputs.put(PATH, "id");
+        inputs.put(PATTERN, "*");
+        var keep = filter(true, inputs);
+        keep.setModeOption(PsitweaksModeOptions.ITEM);
+        var context = context(helper);
+        helper.assertTrue(((SpellItemListWrapper) keep.execute(context)).size() == limit, "Reading up to the limit must work");
+        helper.assertTrue(((SpellItemListWrapper) keep.execute(context)).size() == limit, "Reading the same targets again must not count");
+
+        inputs.put(LIST, SpellItemListWrapper.make(values));
+        try {
+            keep.execute(context(helper));
+            helper.fail("Reading past the limit must stop the spell");
+        } catch (SpellRuntimeException e) {
+            helper.assertTrue(NbtTargetReader.ERROR_TOO_MANY_TARGETS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+        }
+
+        List<BlockValue> blocksWithoutNbt = new ArrayList<>();
+        for (int i = 0; i <= limit; i++) {
+            blocksWithoutNbt.add(BlockValue.snapshot(helper.getLevel(), helper.absolutePos(new BlockPos(i % 16, 10 + i / 256, (i / 16) % 16))));
+        }
+        inputs.put(LIST, BlockListWrapper.make(blocksWithoutNbt));
+        keep.setModeOption(PsitweaksModeOptions.BLOCK);
+        helper.assertTrue(((BlockListWrapper) keep.execute(context(helper))).size() == 0, "Targets without NBT must not count");
         helper.succeed();
     }
 

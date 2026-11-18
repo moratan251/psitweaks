@@ -3,18 +3,27 @@ package com.moratan251.psitweaks.common.spells.wrapper;
 import com.moratan251.psitweaks.api.PsitweaksListLike;
 import com.moratan251.psitweaks.api.value.BlockValue;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
+/**
+ * A List of Blocks without equivalent duplicates. {@link BlockValue} is immutable, so the elements are shared rather
+ * than copied: an element keeps its identity, which lets the NBT pieces reuse its NBT within a cast.
+ */
 public final class BlockListWrapper implements Iterable<BlockValue>, PsitweaksListLike {
     public static final BlockListWrapper EMPTY = new BlockListWrapper(List.of());
 
     private final List<BlockValue> list;
 
     private BlockListWrapper(List<BlockValue> list) {
-        this.list = copyValues(list);
+        this.list = List.copyOf(list);
     }
 
     public static BlockListWrapper make(List<BlockValue> values) {
@@ -23,9 +32,10 @@ public final class BlockListWrapper implements Iterable<BlockValue>, PsitweaksLi
         }
 
         List<BlockValue> result = new ArrayList<>(values.size());
+        Set<EquivalenceKey> seen = new HashSet<>();
         for (BlockValue value : values) {
-            if (value != null && !containsEquivalent(result, value)) {
-                result.add(copyBlock(value));
+            if (value != null && seen.add(new EquivalenceKey(value.dimension(), value.blockPos(), value.state()))) {
+                result.add(value);
             }
         }
 
@@ -37,16 +47,16 @@ public final class BlockListWrapper implements Iterable<BlockValue>, PsitweaksLi
     }
 
     public BlockValue get(int index) {
-        return copyBlock(list.get(index));
+        return list.get(index);
     }
 
     public List<BlockValue> asList() {
-        return Collections.unmodifiableList(copyValues(list));
+        return list;
     }
 
     @Override
     public Iterator<BlockValue> iterator() {
-        return asList().iterator();
+        return list.iterator();
     }
 
     @Override
@@ -61,26 +71,7 @@ public final class BlockListWrapper implements Iterable<BlockValue>, PsitweaksLi
                 && Objects.equals(left.state(), right.state());
     }
 
-    private static boolean containsEquivalent(List<BlockValue> values, BlockValue candidate) {
-        for (BlockValue value : values) {
-            if (equivalent(value, candidate)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static List<BlockValue> copyValues(List<BlockValue> values) {
-        List<BlockValue> result = new ArrayList<>(values.size());
-        for (BlockValue value : values) {
-            if (value != null) {
-                result.add(copyBlock(value));
-            }
-        }
-        return List.copyOf(result);
-    }
-
-    private static BlockValue copyBlock(BlockValue value) {
-        return new BlockValue(value.dimension(), value.blockPos(), value.state());
+    /** The fields {@link #equivalent} compares. */
+    private record EquivalenceKey(ResourceKey<Level> dimension, BlockPos pos, BlockState state) {
     }
 }

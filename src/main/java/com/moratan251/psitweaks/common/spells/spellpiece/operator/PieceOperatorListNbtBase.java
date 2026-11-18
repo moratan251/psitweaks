@@ -57,7 +57,7 @@ public abstract class PieceOperatorListNbtBase extends PieceOperatorModeListBase
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Object source = getNotNullParamValue(context, typed(list));
-        String pathValue = getNotNullParamValue(context, path);
+        NbtPathHelper.CompiledPath compiledPath = NbtPathHelper.compile(getNotNullParamValue(context, path));
         ElementTest test = prepare(context);
         PsitweaksListAdapter<Object> adapter = currentAdapter();
         List<Object> result = new ArrayList<>();
@@ -65,7 +65,7 @@ public abstract class PieceOperatorListNbtBase extends PieceOperatorModeListBase
         int size = adapter.size(source);
         for (int i = 0; i < size; i++) {
             Object value = adapter.get(source, i);
-            if (test.keeps(NbtPathHelper.find(NbtTargetReader.read(context, value).orElse(null), pathValue))) {
+            if (test.keeps(compiledPath.find(NbtTargetReader.read(context, value).orElse(null)))) {
                 result.add(value);
             }
         }

@@ -12,6 +12,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorL
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListSearch;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListSearchExclude;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListStringFilterBase;
+import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
 import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
@@ -27,6 +28,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -206,6 +208,14 @@ public final class ListTagFilterGameTests {
                 "The item search filter must match #c:ingots by tag");
         helper.assertTrue(SpellItemFilters.search("oak_log").test(new ItemStack(Items.OAK_LOG)),
                 "An ID pattern must still match the item ID");
+        helper.assertTrue(items.test(new ItemStack(Items.OAK_LOG)) && !items.test(new ItemStack(Items.STONE)),
+                "A filter must give the same answer when it is asked again");
+        var tagPattern = ResourcePattern.compile("#minecraft:logs");
+        var logs = List.of(ResourceLocation.withDefaultNamespace("logs"));
+        var planks = List.of(ResourceLocation.withDefaultNamespace("planks"));
+        helper.assertTrue(tagPattern.matchesAnyTag(logs) && !tagPattern.matchesAnyTag(planks)
+                        && tagPattern.matchesAnyTag(logs) && !tagPattern.matchesAnyTag(planks),
+                "A tag pattern must give the same answer for a tag each time");
 
         var amount = new PieceOperatorBlockResourceAmount(new Spell()) {
             long items(IItemHandler handler, String pattern) {

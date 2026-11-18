@@ -110,14 +110,14 @@ public class PieceSelectorNbtNumberList extends PieceSelector implements Psitwea
     @SuppressWarnings("unchecked")
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Object source = getNotNullParamValue(context, (SpellParam<Object>) list);
-        String pathValue = getNotNullParamValue(context, path);
+        NbtPathHelper.CompiledPath compiledPath = NbtPathHelper.compile(getNotNullParamValue(context, path));
         Number fallbackValue = getParamValue(context, fallback);
         double otherwise = fallbackValue == null ? 0.0D : fallbackValue.doubleValue();
         PsitweaksListAdapter<Object> adapter = adapter();
         int size = adapter.size(source);
         List<Double> numbers = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            List<Tag> found = NbtPathHelper.find(NbtTargetReader.read(context, adapter.get(source, i)).orElse(null), pathValue);
+            List<Tag> found = compiledPath.find(NbtTargetReader.read(context, adapter.get(source, i)).orElse(null));
             OptionalDouble number = found.isEmpty() ? OptionalDouble.empty() : NbtPathHelper.number(found.get(0));
             numbers.add(number.orElse(otherwise));
         }

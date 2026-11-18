@@ -37,6 +37,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue spellGramIntegrityMultiplier;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerPlayer;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerAutonomousCaster;
+        public final ModConfigSpec.IntValue nbtMaxTargetsPerCast;
         public final ModConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ModConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
@@ -297,6 +298,19 @@ public class PsitweaksConfig {
                     .defineInRange("maxObjectsPerAutonomousCaster", 32, 1, 256);
 
             builder.pop(); // spellgram カテゴリ終了
+
+            // --- NBT 系のピース ---
+            builder.comment("NBT Piece Settings")
+                    .translation("psitweaks.configuration.spells.nbt_pieces")
+                    .push("nbt_pieces");
+
+            nbtMaxTargetsPerCast = builder
+                    .comment("1回の詠唱でNBTを読める対象の数。NBTを持たない対象と、同じ詠唱で読み直した対象は数えない。超えると術式はエラーで止まる",
+                            "How many targets one cast can read the NBT of. Targets without NBT and targets read again in the same cast do not count. Reading more stops the spell with an error")
+                    .translation("psitweaks.configuration.spells.nbt_pieces.max_targets_per_cast")
+                    .defineInRange("maxTargetsPerCast", 1024, 1, Integer.MAX_VALUE);
+
+            builder.pop(); // nbt_pieces カテゴリ終了
 
             // --- 放射線注入 ---
             builder.comment("Radiation Injection Settings")

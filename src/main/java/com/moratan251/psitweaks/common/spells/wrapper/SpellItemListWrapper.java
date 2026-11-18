@@ -4,9 +4,15 @@ import com.moratan251.psitweaks.api.PsitweaksListLike;
 import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+/**
+ * A List of Items without empty or equivalent elements. {@link SpellItemValue} never exposes its stack, so the elements
+ * are shared rather than copied: an element keeps its identity, which lets the NBT pieces reuse its NBT within a cast.
+ */
 public final class SpellItemListWrapper implements Iterable<SpellItemValue>, PsitweaksListLike {
     public static final SpellItemListWrapper EMPTY = new SpellItemListWrapper(List.of());
 
@@ -22,12 +28,10 @@ public final class SpellItemListWrapper implements Iterable<SpellItemValue>, Psi
         }
 
         List<SpellItemValue> result = new ArrayList<>(values.size());
+        Set<EquivalenceKey> seen = new HashSet<>();
         for (SpellItemValue value : values) {
-            if (value != null && !value.isEmpty()) {
-                SpellItemValue copied = new SpellItemValue(value.copyStack(), value.source());
-                if (!containsEquivalent(result, copied)) {
-                    result.add(copied);
-                }
+            if (value != null && !value.isEmpty() && seen.add(new EquivalenceKey(value))) {
+                result.add(value);
             }
         }
 
@@ -39,8 +43,7 @@ public final class SpellItemListWrapper implements Iterable<SpellItemValue>, Psi
     }
 
     public SpellItemValue get(int index) {
-        SpellItemValue value = list.get(index);
-        return new SpellItemValue(value.copyStack(), value.source());
+        return list.get(index);
     }
 
     public List<SpellItemValue> asList() {
@@ -57,12 +60,16 @@ public final class SpellItemListWrapper implements Iterable<SpellItemValue>, Psi
         return list.toString();
     }
 
-    private static boolean containsEquivalent(List<SpellItemValue> values, SpellItemValue candidate) {
-        for (SpellItemValue value : values) {
-            if (SpellItemValue.equivalent(value, candidate)) {
-                return true;
-            }
+    /** Compares by {@link SpellItemValue#equivalent}. */
+    private record EquivalenceKey(SpellItemValue value) {
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof EquivalenceKey key && SpellItemValue.equivalent(value, key.value);
         }
-        return false;
+
+        @Override
+        public int hashCode() {
+            return value.equivalenceHash();
+        }
     }
 }

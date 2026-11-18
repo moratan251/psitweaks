@@ -21,9 +21,12 @@ import net.minecraft.nbt.Tag;
  * An empty path is the whole root, an exact top-level key wins over path parsing, and an unquoted key that vanilla
  * would cut short (a space, a quote or a closing bracket in it) is quoted first. Whole numbers written the way spell
  * strings print them are accepted too: an index [3.0] reads as [3], and 3.0b, 3.0s or 3.0L in a {...} filter as 3b,
- * 3s or 3L. Lookups never throw: a bad path, a missing key and a wrong type all give no match.
+ * 3s or 3L. Lookups never throw: a bad path, a missing key and a wrong type all give no match, and so does a path
+ * nested deeper than NBT itself can be.
  */
 public final class NbtPathHelper {
+    /** The depth NBT stops at when it is read. The vanilla path parser recurses once per level and has no limit. */
+    private static final int MAX_NESTING = 512;
     private static final Pattern WHOLE_INDEX = Pattern.compile("\\[\\s*(-?\\d+)\\.0+\\s*]");
     private static final Pattern WHOLE_INTEGER_TAG = Pattern.compile("(?<![\\w.])(-?\\d+)\\.0+([bBsSlL])(?!\\w)");
 
@@ -32,27 +35,86 @@ public final class NbtPathHelper {
 
     /** Every tag the path reaches from the root, in vanilla order; empty when the root is null or nothing matches. */
     public static List<Tag> find(@Nullable CompoundTag root, @Nullable String path) {
-        if (root == null) {
-            return List.of();
+        return compile(path).find(root);
+    }
+
+    /** The path ready to be looked up in many roots; it is parsed at most once, when a lookup first needs it. */
+    public static CompiledPath compile(@Nullable String path) {
+        return new CompiledPath(path == null ? "" : path.trim());
+    }
+
+    /** A path read once. Not thread-safe: use it within one piece's execution. */
+    public static final class CompiledPath {
+        private final String path;
+        @Nullable
+        private NbtPathArgument.NbtPath parsed;
+        private boolean parseAttempted;
+
+        private CompiledPath(String path) {
+            this.path = path;
         }
-        String trimmed = path == null ? "" : path.trim();
-        if (trimmed.isEmpty()) {
-            return List.of(root);
-        }
-        Tag direct = root.get(trimmed);
-        if (direct != null) {
-            return List.of(direct);
-        }
-        try {
-            StringReader reader = new StringReader(quoteBareKeys(trimmed));
-            NbtPathArgument.NbtPath parsed = new NbtPathArgument().parse(reader);
-            if (reader.canRead()) {
+
+        /** Every tag this path reaches from the root, as {@link NbtPathHelper#find}. */
+        public List<Tag> find(@Nullable CompoundTag root) {
+            if (root == null) {
                 return List.of();
             }
-            return parsed.get(root);
-        } catch (Exception ignored) {
-            return List.of();
+            if (path.isEmpty()) {
+                return List.of(root);
+            }
+            Tag direct = root.get(path);
+            if (direct != null) {
+                return List.of(direct);
+            }
+            if (!parseAttempted) {
+                parseAttempted = true;
+                parsed = parse(path);
+            }
+            if (parsed == null) {
+                return List.of();
+            }
+            try {
+                return parsed.get(root);
+            } catch (Exception | StackOverflowError ignored) {
+                return List.of();
+            }
         }
+    }
+
+    @Nullable
+    private static NbtPathArgument.NbtPath parse(String path) {
+        String quoted = quoteBareKeys(path);
+        if (deepestNesting(quoted) > MAX_NESTING) {
+            return null;
+        }
+        try {
+            StringReader reader = new StringReader(quoted);
+            NbtPathArgument.NbtPath parsed = new NbtPathArgument().parse(reader);
+            return reader.canRead() ? null : parsed;
+        } catch (Exception | StackOverflowError ignored) {
+            return null;
+        }
+    }
+
+    /** The deepest [...] / {...} nesting outside quoted strings. */
+    private static int deepestNesting(String path) {
+        int depth = 0;
+        int deepest = 0;
+        int i = 0;
+        while (i < path.length()) {
+            char c = path.charAt(i);
+            if (c == '"' || c == '\'') {
+                i = quotedEnd(path, i);
+                continue;
+            }
+            if (c == '[' || c == '{') {
+                deepest = Math.max(deepest, ++depth);
+            } else if ((c == ']' || c == '}') && depth > 0) {
+                depth--;
+            }
+            i++;
+        }
+        return deepest;
     }
 
     /**

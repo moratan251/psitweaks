@@ -59,6 +59,14 @@ public record SpellItemValue(ItemStack snapshot, Optional<ItemSourceRef> source)
                 && ItemStack.matches(left.snapshot, right.snapshot);
     }
 
+    /** A hash that is equal for {@link #equivalent} values. */
+    public int equivalenceHash() {
+        if (isEmpty()) {
+            return 0;
+        }
+        return 31 * (31 * source.hashCode() + ItemStack.hashItemAndComponents(snapshot)) + snapshot.getCount();
+    }
+
     @Override
     public Optional<CompoundTag> getNbt(SpellContext context) {
         if (context == null || context.focalPoint == null || snapshot.isEmpty()) {

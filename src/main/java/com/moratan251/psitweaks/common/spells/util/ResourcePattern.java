@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.spells.util;
 
 import com.moratan251.psitweaksqol.api.StringSpellHelper;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.core.Registry;
@@ -10,12 +12,14 @@ import net.minecraft.resources.ResourceLocation;
  * A String pattern of the spell filters over resource IDs. The pattern uses the {@link WildcardStringMatcher} rules;
  * without a ':' only the path of an ID is compared, so it matches that path in every namespace. A pattern that starts
  * with # is compared with the tag IDs of the resource instead, under the same rules, and one matching tag is enough.
- * A resource without tags never matches a tag pattern, and # alone matches nothing.
+ * A resource without tags never matches a tag pattern, and # alone matches nothing. The answer for each tag ID is kept,
+ * so a tag shared by many resources is compared once. Not thread-safe: use a pattern within one piece's execution.
  */
 public final class ResourcePattern {
     private final WildcardStringMatcher matcher;
     private final boolean fullId;
     private final boolean tag;
+    private final Map<ResourceLocation, Boolean> tagResults = new HashMap<>();
 
     private ResourcePattern(WildcardStringMatcher matcher, boolean fullId, boolean tag) {
         this.matcher = matcher;
@@ -37,14 +41,15 @@ public final class ResourcePattern {
 
     /**
      * A filter over the IDs of the registry: a resource matches by its ID, or by its tags for a # pattern. Null and an
-     * empty pattern match everything.
+     * empty pattern match everything. The answer for each ID is kept for the life of the filter.
      */
     public static Predicate<ResourceLocation> filter(@Nullable String pattern, Registry<?> registry) {
         if (pattern == null || pattern.isEmpty()) {
             return id -> true;
         }
         ResourcePattern compiled = compile(pattern);
-        return id -> compiled.matches(registry, id);
+        Map<ResourceLocation, Boolean> results = new HashMap<>();
+        return id -> results.computeIfAbsent(id, key -> compiled.matches(registry, key));
     }
 
     public boolean isTag() {
@@ -57,7 +62,7 @@ public final class ResourcePattern {
             return matchesLocation(id);
         }
         return registry.getHolder(id)
-                .map(holder -> holder.tags().anyMatch(key -> matchesLocation(key.location())))
+                .map(holder -> holder.tags().anyMatch(key -> matchesTag(key.location())))
                 .orElse(false);
     }
 
@@ -67,11 +72,15 @@ public final class ResourcePattern {
             return false;
         }
         for (ResourceLocation tagId : tagIds) {
-            if (tagId != null && matchesLocation(tagId)) {
+            if (tagId != null && matchesTag(tagId)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean matchesTag(ResourceLocation tagId) {
+        return tagResults.computeIfAbsent(tagId, this::matchesLocation);
     }
 
     private boolean matchesLocation(ResourceLocation id) {
