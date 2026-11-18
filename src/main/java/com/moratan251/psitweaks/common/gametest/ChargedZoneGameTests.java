@@ -40,6 +40,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,8 +73,11 @@ public final class ChargedZoneGameTests {
                 "A 120 s zone must charge as fast per tick as a 30 s one");
         helper.assertTrue(Math.abs(EntityChargedZone.capacityPerTick(cost, 600, 0.5F) - perTick / 2.0) < 1.0E-6,
                 "Speed 0.5 must halve the capacity");
-        helper.assertTrue(EntityChargedZone.strikeDamage(10.0F) == 10.0F && EntityChargedZone.strikeDamage(0.0F) == 0.0F,
-                "A strike must deal 1 per Power of the turbulence");
+        helper.assertTrue(EntityChargedZone.strikeDamage(10.0F) == 5.0F && EntityChargedZone.strikeDamage(0.0F) == 0.0F,
+                "A strike must deal 0.5 per attack power of the turbulence");
+        helper.assertTrue(EntityChargedZone.strikeDamage(40.0F, 1) == 20.0F && EntityChargedZone.strikeDamage(40.0F, 2) == 16.25F
+                        && EntityChargedZone.strikeDamage(40.0F, 3) == 12.5F,
+                "A strike must deal 20 / 16.25 / 12.5 to each of 1 / 2 / 3 beings at attack power 40");
         helper.succeed();
     }
 
@@ -297,13 +301,53 @@ public final class ChargedZoneGameTests {
             cleanup.run();
             throw new RuntimeException(e);
         }
-        // 乱流と重なったと気づくまで最大 10 tick、最初の雷撃までさらに最大 50 tick。
+        // 乱流と重なったと気づくまで最大 10 tick、最初の雷撃までさらに最大 35 tick。
         helper.runAfterDelay(90, () -> {
             boolean storm = zone[0].isStorm();
             float health = target.getHealth();
             cleanup.run();
             helper.assertTrue(storm, "A Charged Zone overlapping the caster's Turbulence Zone must become a Thundercloud");
             helper.assertTrue(health < 200.0F, "A strike of the Thundercloud must hit the husk inside, health " + health);
+            helper.succeed();
+        });
+    }
+
+    /** 雷雲の 1 回の雷撃が打つのは、中に 5 体いても 3 体まで。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_thundercloud_targets", timeoutTicks = 120)
+    public static void thundercloudStrikesAtMostThreeBeings(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_storm_targets_caster", new Vec3(4.5, 1.0, 4.5));
+        List<Husk> husks = new ArrayList<>();
+        for (Vec3 at : List.of(new Vec3(1.5, 1.0, 1.5), new Vec3(2.5, 1.0, 1.5), new Vec3(3.5, 1.0, 1.5),
+                new Vec3(1.5, 1.0, 3.5), new Vec3(2.5, 1.0, 3.5))) {
+            Husk husk = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, at), 200.0F);
+            husk.setNoAi(true);
+            husk.setHealth(200.0F);
+            husks.add(husk);
+        }
+        Runnable cleanup = () -> {
+            husks.forEach(Entity::discard);
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
+            placeCharged(caster, center, 5, 5.0);
+            placeTurbulence(caster, center, 5, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        int[] firstStruck = {0};
+        helper.onEachTick(() -> {
+            if (firstStruck[0] == 0) {
+                firstStruck[0] = (int) husks.stream().filter(husk -> husk.getHealth() < 200.0F).count();
+            }
+        });
+        helper.runAfterDelay(90, () -> {
+            cleanup.run();
+            helper.assertTrue(firstStruck[0] == EntityChargedZone.MAX_STRIKE_TARGETS,
+                    "The first strike must hit 3 of the 5 husks, hit " + firstStruck[0]);
             helper.succeed();
         });
     }

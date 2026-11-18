@@ -301,8 +301,9 @@ public final class CircleGameTests {
         helper.runAfterDelay(15, guarded(cleanup, () -> {
             float lost = start - husk.getHealth();
             // 自分のアイスサークルは強いほうの 3 だけ、ファイアサークル 2、他人のアイスサークル 4。
-            helper.assertTrue(Math.abs(lost - 9.0F) < 1.0E-3F,
-                    "One hit of each kind and caster, the strongest of own Ice Circles, must take 9, took " + lost);
+            // ハスクの防具 3（素の 2 と革のブーツの 1）で、それぞれ 2.82、1.84、3.84 に減る。
+            helper.assertTrue(Math.abs(lost - 8.5F) < 1.0E-3F,
+                    "One hit of each kind and caster, the strongest of own Ice Circles, must take 8.5 after armor, took " + lost);
             helper.assertTrue(husk.getRemainingFireTicks() <= 0, "The wet creature must not catch fire");
             cleanup.run();
             helper.succeed();
@@ -508,7 +509,13 @@ public final class CircleGameTests {
                             && PieceTrickSpellGramCircleBase.costFor(1.0, 120.0) == 6400
                             && PieceTrickSpellGramCircleBase.costFor(1.0, 500.0) == 6400
                             && PieceTrickSpellGramCircleBase.costFor(0.5, 1.0) == 50,
-                    "The cost must be (2000 + 1200 × Power) × Time ÷ 60, at least 50, with the Time at most 120");
+                    "The cost must be 1600 × (1 + Power) × Time ÷ 60, at least 50, with the Time at most 120");
+            for (double power : new double[]{0.5, 1.0, 2.0, 4.0, 10.0}) {
+                float damage = PieceTrickSpellGramCircleBase.damageFor(power);
+                int cost = PieceTrickSpellGramCircleBase.costFor(power, 60.0);
+                helper.assertTrue(damage == 1.0F + (float) power && cost == Math.round(damage * 1600.0F),
+                        "The damage must be 1 + Power and the cost must follow it at Power " + power + ": " + damage + ", " + cost);
+            }
             int[] halfTime = stats(fireCircle(helper, 1.0, 30.0));
             int[] noTime = stats(fireCircle(helper, 1.0, null));
             helper.assertTrue(halfTime[0] == 300 && halfTime[1] == 1600 && noTime[0] == 300 && noTime[1] == 3200,

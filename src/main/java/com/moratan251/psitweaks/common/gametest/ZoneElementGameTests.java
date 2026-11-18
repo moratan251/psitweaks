@@ -905,15 +905,90 @@ public final class ZoneElementGameTests {
             cleanup.run();
             helper.assertTrue(storm, "The caster's own turbulence must turn the zone into a " + name);
             if (heat) {
-                // 普通の火は 1 秒に 1。熱乱流は威力 10 で 0.5 秒ごとに 3（当たった直後の火のダメージは無敵時間で消える）。
-                helper.assertTrue(stormedLoss >= 6.0F && stormedLoss > plainLoss,
+                // 普通の火は 1 秒に 1。熱乱流は 0.5 秒ごとに 1.79（当たった直後の火のダメージは無敵時間で消える）。
+                helper.assertTrue(stormedLoss >= 3.0F && stormedLoss > plainLoss,
                         "The Heat Storm must hurt more than plain fire: storm " + stormedLoss + ", plain " + plainLoss);
             } else {
                 // 凍結領域だけでは、凍えきるまで（数秒）ダメージを与えない。
-                // 威力 10 の吹雪は 0.5 秒ごとに 3（弱い乱流が重なっても、最も強い乱流で決まる）。
-                helper.assertTrue(stormedLoss >= 6.0F, "The Blizzard must hurt the being inside, lost " + stormedLoss);
+                // 吹雪は 0.5 秒ごとに 1.79（弱い乱流が重なっても、最も強い乱流で決まる）。
+                helper.assertTrue(stormedLoss >= 3.0F, "The Blizzard must hurt the being inside, lost " + stormedLoss);
                 helper.assertTrue(plainLoss == 0.0F, "Someone else's turbulence must not make a Blizzard, lost " + plainLoss);
             }
+            helper.succeed();
+        });
+    }
+
+    /** 組み合わせの攻撃の強さは、乱流領域の 1 秒あたりのコスト ÷ 3（40 まで）を、相方の領域の威力 × 4 で頭打ちにしたもの。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_storm_attack_power")
+    public static void stormAttackPowerFollowsTheCostOfTheTurbulence(GameTestHelper helper) {
+        helper.assertTrue(Math.abs(EntityTurbulenceZone.attackPower(306.0F, 600) - 3.4F) < 1.0E-4F,
+                "Size 8, Power 10 for 30 s must have attack power 3.4");
+        helper.assertTrue(Math.abs(EntityTurbulenceZone.attackPower(612.0F, 1200) - 3.4F) < 1.0E-4F,
+                "A longer zone of the same size and Power must have the same attack power");
+        helper.assertTrue(Math.abs(EntityTurbulenceZone.attackPower(1074.0F, 600) - 1074.0F / 90.0F) < 1.0E-4F,
+                "The Power must no longer limit the attack power of Size 16, Power 10");
+        helper.assertTrue(EntityTurbulenceZone.attackPower(3603.0F, 600) == 40.0F, "The attack power must stop at 40");
+        helper.assertTrue(EntityTurbulenceZone.attackPower(306.0F, 0) == 0.0F, "A zone without a lifetime must have no attack power");
+        float perPower = EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER;
+        float[][] partners = {{1.0F, 0.6F}, {5.0F, 3.0F}, {10.0F, 6.0F}, {30.0F, 6.0F}};
+        for (float[] partner : partners) {
+            float hit = SpellGramZone.STORM_DAMAGE_PER_POWER * EntityTurbulenceZone.limitedAttackPower(40.0F, partner[0], perPower);
+            helper.assertTrue(Math.abs(hit - partner[1]) < 1.0E-4F, "A partner of Power " + partner[0] + " must allow " + partner[1] + " a hit, got " + hit);
+        }
+        helper.assertTrue(EntityTurbulenceZone.limitedAttackPower(3.4F, 10.0F, perPower) == 3.4F,
+                "A strong partner must not raise the attack power of cheap turbulence");
+        helper.succeed();
+    }
+
+    /** 相方の領域の威力が、強い乱流の攻撃の強さを頭打ちにする。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_partner_attack_limit", timeoutTicks = 60)
+    public static void partnerPowerLimitsTheStormAttack(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_partner_limit_caster", new Vec3(4.5, 1.0, 0.5));
+        Runnable cleanup = () -> cleanup(helper, caster);
+        try {
+            cast(caster, heat(helper, CENTER), 3.0, 5.0);
+            castTurbulenceOver(caster, helper.absolutePos(new BlockPos(1, 0, 1)), 3, 3, 3, 40.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(15, () -> {
+            BlockPos inside = helper.absolutePos(new BlockPos(2, 1, 2));
+            EntityHeatZone zone = SpellGramIndex.all(level, EntityHeatZone.class).stream()
+                    .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElseThrow();
+            float storm = zone.stormAttackPowerAt(inside);
+            float combo = zone.comboAttackPowerAt(inside, zone.getPower(), EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER);
+            cleanup.run();
+            helper.assertTrue(storm == 40.0F, "The turbulence alone must reach attack power 40, was " + storm);
+            helper.assertTrue(combo == 20.0F, "A Heat Zone of Power 5 must limit the attack power to 20, was " + combo);
+            helper.succeed();
+        });
+    }
+
+    /** 小さく安い乱流領域を重ねた領域は、そのコストの分の強さでしか攻撃しない（機械を動かす乱流の威力は 10 のまま）。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_cheap_storm", timeoutTicks = 60)
+    public static void cheapTurbulenceAttacksWeakly(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_cheap_storm_caster", new Vec3(4.5, 1.0, 0.5));
+        Runnable cleanup = () -> cleanup(helper, caster);
+        try {
+            cast(caster, heat(helper, CENTER), 3.0, 5.0);
+            castTurbulenceOver(caster, helper.absolutePos(new BlockPos(1, 0, 1)), 3, 3, 3, 10.0, 3.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(15, () -> {
+            BlockPos inside = helper.absolutePos(new BlockPos(2, 1, 2));
+            EntityHeatZone zone = SpellGramIndex.all(level, EntityHeatZone.class).stream()
+                    .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElseThrow();
+            float attack = zone.stormAttackPowerAt(inside);
+            float power = zone.stormPowerAt(inside);
+            cleanup.run();
+            // サイズ 3・威力 10 のコストは 86: 30 秒で毎秒 2.87、強さはその 1/3。
+            helper.assertTrue(Math.abs(attack - 86.0F / 30.0F / 3.0F) < 1.0E-3F, "The attack power must follow the cost, was " + attack);
+            helper.assertTrue(power == 10.0F, "The Power that drives machines must stay 10, was " + power);
             helper.succeed();
         });
     }
@@ -929,6 +1004,8 @@ public final class ZoneElementGameTests {
         basin(helper, COVERED, Blocks.ICE);
         Husk husk = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 2.5)), 100.0F);
         var blaze = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.BLAZE, new Vec3(2.5, 1.0, 3.5)), 100.0F);
+        // AI があるとブレイズは自分で浮き上がり、領域の上へ出てしまう。
+        blaze.setNoAi(true);
         float huskBefore = husk.getHealth();
         float blazeBefore = blaze.getHealth();
         Runnable cleanup = () -> cleanup(helper, caster);
@@ -969,6 +1046,12 @@ public final class ZoneElementGameTests {
     /** {@code caster} が、ブロック {@code from}（角）から x×y×z ブロックの、威力 {@code power} の乱流領域を置く。 */
     private static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs, double power)
             throws SpellRuntimeException {
+        castTurbulenceOver(caster, from, xs, ys, zs, power, 32.0);
+    }
+
+    /** {@code caster} が、入力のサイズ {@code size}（コストを決める）で、ブロック {@code from}（角）から x×y×z ブロックの乱流領域を置く。 */
+    private static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs, double power, double size)
+            throws SpellRuntimeException {
         MatrixValue matrix = new MatrixValue(4, 4, new double[]{
                 xs, 0, 0, from.getX() - 0.5,
                 0, ys, 0, from.getY() - 0.5,
@@ -981,7 +1064,7 @@ public final class ZoneElementGameTests {
                     return matrix;
                 }
                 if (param.name.equals(PsitweaksSpellParams.SIZE)) {
-                    return 32.0;
+                    return size;
                 }
                 return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? power : null;
             }

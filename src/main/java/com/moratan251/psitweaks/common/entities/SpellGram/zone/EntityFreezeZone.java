@@ -198,7 +198,8 @@ public class EntityFreezeZone extends SpellGramZone {
                 // 吹雪: 同じ術者の乱流領域と重なったところ。
                 ZoneAttacks.harmScaled(level, this, PsitweaksDamageTypes.BLIZZARD,
                         PsitweaksConfig.COMMON.blizzardDamageMultiplier.get(),
-                        pos -> STORM_DAMAGE_PER_POWER * stormPowerAt(pos), target -> true, target -> {
+                        pos -> STORM_DAMAGE_PER_POWER * comboAttackPowerAt(pos, getPower(),
+                                EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER), target -> true, target -> {
                         });
             }
         }

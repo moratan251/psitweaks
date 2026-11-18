@@ -160,9 +160,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String rainstorm = damageType("rainstorm");
         String thundercloud = damageType("thundercloud");
         // Active Air Mine keeps what it had as a sonic boom: armour and protection enchantments do not help.
-        // The circles keep what they had as burning and freezing (vanilla's on_fire and freeze bypass armour).
-        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine, flareCircle,
-                iceCircle, heatStorm, blizzard, rainstorm);
+        tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine);
         // Meteors and blades are separate hits, so each one counts even right after the previous.
         tag(tags, "minecraft", "bypasses_cooldown", meteorLine, dryMeteor, carbonPoisoning, tunneler, dancingBlades, starfall);
         tag(tags, "minecraft", "bypasses_effects", meteorLine, tunneler);

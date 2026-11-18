@@ -180,8 +180,8 @@ public abstract class SpellGramZone extends SpellGramObject {
      * 威力 10 で 2 倍。乱流が重なっていれば最も強いもののぶん。
      */
     public static final double STORM_BOOST_PER_POWER = 0.1;
-    /** 乱流の威力 1 あたりの、組み合わせのダメージ（1 回、倍率を掛ける前、仮）。威力 10 で 3。 */
-    public static final float STORM_DAMAGE_PER_POWER = 0.3F;
+    /** 乱流の攻撃の強さ（{@link EntityTurbulenceZone#attackPower()}）1 あたりの、組み合わせのダメージ（1 回、倍率を掛ける前、仮）。強さ 40 で 6。 */
+    public static final float STORM_DAMAGE_PER_POWER = 0.15F;
 
     /** 乱流ごとの、組み合わせで機械を動かす上乗せの進み（乱流のエンティティの番号ごと）。サーバー側だけ。 */
     private final Map<Integer, Float> stormProgress = new HashMap<>();
@@ -211,6 +211,32 @@ public abstract class SpellGramZone extends SpellGramObject {
     public float stormPowerAt(BlockPos pos) {
         EntityTurbulenceZone storm = stormAt(pos);
         return storm == null ? 0.0F : storm.getPower();
+    }
+
+    /**
+     * ブロック {@code pos} で、組み合わせのダメージに使う乱流の攻撃の強さ（{@link EntityTurbulenceZone#attackPower()}）。
+     * 乱流が重なっていれば一番高いもの。吹いていない・この領域が効かないブロックなら 0。
+     */
+    public float stormAttackPowerAt(BlockPos pos) {
+        if (level().isClientSide || !isInsideAndActive(pos)) {
+            return 0.0F;
+        }
+        refreshJudgement();
+        float best = 0.0F;
+        for (EntityTurbulenceZone turbulence : storms) {
+            if (!turbulence.isEnded() && turbulence.isInsideAndActive(pos)) {
+                best = Math.max(best, turbulence.attackPower());
+            }
+        }
+        return best;
+    }
+
+    /**
+     * ブロック {@code pos} の組み合わせの攻撃の強さ: 乱流の強さ（{@link #stormAttackPowerAt}）を、この領域の威力
+     * {@code ownPower} × {@code perPower} で頭打ちにしたもの。
+     */
+    public float comboAttackPowerAt(BlockPos pos, float ownPower, float perPower) {
+        return EntityTurbulenceZone.limitedAttackPower(stormAttackPowerAt(pos), ownPower, perPower);
     }
 
     /**

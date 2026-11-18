@@ -36,16 +36,16 @@ public abstract class PieceTrickSpellGramCircleBase<T extends SpellGramCircle> e
 
     // バランス調整用の定数（両方の円で共通）
     private static final double MIN_POWER = 0.5D;
-    private static final float BASE_DAMAGE = 2.0F;
-    private static final float DAMAGE_PER_POWER = 2.0F;
+    private static final float BASE_DAMAGE = 1.0F;
+    private static final float DAMAGE_PER_POWER = 1.0F;
     private static final float FIXED_RADIUS = 8.0F;
     // RenderSpellCircle 側の見た目の半径は「2 * horizontalScale」なので、半径 8.0 に合わせて 4.0 を使う
     private static final float FIXED_VISUAL_SCALE = FIXED_RADIUS * 0.5F;
     private static final int DAMAGE_INTERVAL_TICKS = 10;
     private static final double POTENCY_BASE = 200.0D;
     private static final double POTENCY_PER_POWER = 100.0D;
-    private static final double COST_BASE = 2000.0D;
-    private static final double COST_PER_POWER = 1200.0D;
+    private static final double COST_BASE = 1600.0D;
+    private static final double COST_PER_POWER = 1600.0D;
     /** コストの下限（時間を短くしても、これより安くはならない）。 */
     public static final int MIN_COST = 50;
     /** 「時間」を省いたときの存続時間（秒）。コストと耐久値はこの時間のときの値を基準に、時間に比例する。 */
@@ -98,7 +98,14 @@ public abstract class PieceTrickSpellGramCircleBase<T extends SpellGramCircle> e
         addParam(time = new ParamNumber(SpellParam.GENERIC_NAME_TIME, SpellParam.GREEN, true, true));
     }
 
-    /** コスト: max(50, ⌊(2000 + 1200 × 威力) × 時間 ÷ 60⌋)。威力は 0.5 以上、時間は 1〜120 秒にそろえる。 */
+    /** 1 回のダメージ（倍率を掛ける前）: 1 + 威力。威力は 0.5 以上にそろえる。 */
+    public static float damageFor(double power) {
+        return BASE_DAMAGE + (float) (Math.max(MIN_POWER, power) * DAMAGE_PER_POWER);
+    }
+
+    /**
+     * コスト: max(50, ⌊1600 × (1 + 威力) × 時間 ÷ 60⌋)。与えるダメージの合計に比例する。威力は 0.5 以上、時間は 1〜120 秒にそろえる。
+     */
     public static int costFor(double power, double seconds) {
         double base = COST_BASE + Math.max(MIN_POWER, power) * COST_PER_POWER;
         return Math.max(MIN_COST, (int) Math.floor(base * clampSeconds(seconds) / DEFAULT_TIME_SECONDS));
@@ -184,8 +191,7 @@ public abstract class PieceTrickSpellGramCircleBase<T extends SpellGramCircle> e
         }
 
         double clampedPower = Math.max(MIN_POWER, powerVal);
-        float baseDamage = BASE_DAMAGE + (float) (clampedPower * DAMAGE_PER_POWER);
-        float finalDamage = AttackRules.scale(baseDamage, damageMultiplier(), context.caster);
+        float finalDamage = AttackRules.scale(damageFor(clampedPower), damageMultiplier(), context.caster);
 
         // 同じ種類もいくつでも置け、1 人が置ける数は領域と合わせて上限まで（超えると古いものから解ける）。
         SpellGramLimits.makeRoom(serverLevel, context.caster);

@@ -2306,14 +2306,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "ermen and so on). Charged Zone: a Thundercloud, striking liv"
                         + "ing beings inside at random and charging faster. Create bulk"
                         + " processing by zones happens only in these overlaps. They fo"
-                        + "llow the Power of the turbulence (the strongest where severa"
-                        + "l overlap): at 10, machines run twice as fast.",
+                        + "llow the Power of the strongest turbulence: at 10, machines "
+                        + "run twice as fast.",
                 "自分のほかの領域と重ねると、重なったところが強まります。加熱領域とは熱乱流になり、火のダメージを与え、一括燻製（荷電領域"
                         + "も重なれば一括製錬）ができるようになり、Mekanism へ送る熱が増えます。凍結領域とは吹雪になり、凍結のダメージを与え、"
                         + "凍えが速くたまります。湿潤領域とは暴風雨になり、一括洗浄ができるようになり、ブレイズやエンダーマンなど水に弱い生物に"
                         + "ダメージを与えます。荷電領域とは雷雲になり、ランダムな間隔で雷撃が中の生物を打ち、FE とチャージ加工が速くなります。"
-                        + "領域による Create の一括加工は、この重なりでしか起きません。強さは乱流の威力（重なっていれば最も強いもの）で決まり、"
+                        + "領域による Create の一括加工は、この重なりでしか起きません。強さは最も強い乱流の威力で決まり、"
                         + "威力10で加工などは2倍の速さです。");
+        addBookPage(root, "trick_turbulence_zone.5",
+                "The damage of these overlaps grows with the Cost of the Turbulence Zone. The Power of the zone it overlaps sets the limit, highest at Power 10 (a Soak Zone has no Power, so a Rainstorm follows the Cost alone).",
+                "重なりのダメージは、乱流領域のコストに比例して強くなります。上限は重ねた領域の威力で決まり、威力10で最大です（湿潤領域には威力がないので、暴風雨は乱流領域のコストだけで決まります）。");
         addBookPage(root, "trick_turbulence_zone.2",
                 "The zone blows a wind of floor area × Power ÷ 240 WU (Wind Units) at interference 1 when placed; twice that at 2, and at most four times. At interference 1, that is 6 WU at Size 12, Power 10, and about 11 WU at Size 16, Power 10.",
                 "領域は、床の広さ×威力÷240 WU（風量単位）の風を吹かせます。風量は置いた時点の事象干渉力に比例して増え、干渉力1でこのとおり、2で2倍、最大で4倍です。干渉力1なら、サイズ12・威力10で6 WU、サイズ16・威力10で約11 WUです。");
@@ -2350,8 +2353,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");
 
         addBookPage(root, "trick_charged_zone.2",
-                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals a bolt strikes one living being under it, harder with a higher Power of the turbulence, and the FE given there rises with that Power too. Where your own Heat Zone and Turbulence Zone both overlap it, the Heat Zone bulk-blasts instead of bulk-smoking.",
-                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下にいる生物を1体ずつ雷撃が打ちます。雷撃の強さは乱流の威力で決まり、そこで送る FE も乱流の威力に応じて増えます。自分の加熱領域と乱流領域の両方が重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
+                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals bolts strike up to three living beings under it, harder the fewer they are and the higher the Cost of the turbulence, and the FE given there rises with the Power of the turbulence. Where your own Heat Zone and Turbulence Zone both overlap it, the Heat Zone bulk-blasts instead of bulk-smoking.",
+                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下の生物を最大3体まで雷撃が打ちます（少ないほど強い）。雷撃の強さは乱流領域のコストで決まり、送る FE は乱流の威力に応じて増えます。自分の加熱領域と乱流領域の両方が重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
 
         // 遮音領域
         addBookPage(root, "trick_silence_zone.0",

@@ -97,7 +97,7 @@ public class EntitySoakZone extends SpellGramZone {
                 // 暴風雨: 水に弱い生物にダメージ。
                 ZoneAttacks.harmScaled(level, this, PsitweaksDamageTypes.RAINSTORM,
                         PsitweaksConfig.COMMON.rainstormDamageMultiplier.get(),
-                        pos -> STORM_DAMAGE_PER_POWER * stormPowerAt(pos), LivingEntity::isSensitiveToWater, target -> {
+                        pos -> STORM_DAMAGE_PER_POWER * stormAttackPowerAt(pos), LivingEntity::isSensitiveToWater, target -> {
                         });
             }
         }

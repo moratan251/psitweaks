@@ -63,6 +63,14 @@ public class EntityTurbulenceZone extends SpellGramZone {
      * 6.25 WU·tick（干渉力 1、時間によらない）。
      */
     public static final double WIND_FOOTPRINT_DIVISOR = 240.0;
+    /** 組み合わせの攻撃の強さの上限。 */
+    public static final float MAX_ATTACK_POWER = 40.0F;
+    /** 組み合わせの攻撃の強さ 1 に要る、乱流領域の 1 秒あたりのコスト。 */
+    public static final float ATTACK_COST_PER_SECOND = 3.0F;
+    /** 熱乱流・吹雪の攻撃の強さの上限を決める、加熱領域・凍結領域の威力 1 あたりの強さ。 */
+    public static final float PARTNER_ATTACK_POWER_PER_POWER = 4.0F;
+    /** 雷雲の攻撃の強さの上限を決める、荷電領域の威力 1 あたりの強さ。 */
+    public static final float CHARGED_ATTACK_POWER_PER_POWER = 4.0F;
     /** 範囲の中の風力発電機の風量を計算し直す間隔（tick）。 */
     public static final int WIND_COUNT_INTERVAL = 20;
     /** 雲が 1 tick に縮む半径（仮）。 */
@@ -112,6 +120,27 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     public float getPower() {
         return power;
+    }
+
+    /** 組み合わせ（熱乱流・吹雪・暴風雨・雷雲）のダメージに使う、この乱流の強さ（{@link #attackPower(float, int)}）。 */
+    public float attackPower() {
+        return attackPower(getPlacementCost(), getLifetimeTicks());
+    }
+
+    /**
+     * 乱流の攻撃の強さ: 1 秒あたりのコスト ÷ {@link #ATTACK_COST_PER_SECOND}（{@link #MAX_ATTACK_POWER} まで）。
+     * ダメージはコストに比例する。熱量・風量などのリソースには関わらない。
+     */
+    public static float attackPower(float placementCost, int lifetimeTicks) {
+        if (lifetimeTicks <= 0) {
+            return 0.0F;
+        }
+        return Math.min(MAX_ATTACK_POWER, placementCost * 20.0F / lifetimeTicks / ATTACK_COST_PER_SECOND);
+    }
+
+    /** 乱流の攻撃の強さを、相方の領域の威力（{@link #MAX_EFFECT_POWER} まで）× {@code perPower} で頭打ちにした強さ。 */
+    public static float limitedAttackPower(float attackPower, float partnerPower, float perPower) {
+        return Math.min(attackPower, Math.min(partnerPower, MAX_EFFECT_POWER) * perPower);
     }
 
     /**

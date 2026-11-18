@@ -224,7 +224,8 @@ public class EntityHeatZone extends SpellGramZone {
             if (isStorm()) {
                 ZoneAttacks.harmScaled(level, this, PsitweaksDamageTypes.HEAT_STORM,
                         PsitweaksConfig.COMMON.heatStormDamageMultiplier.get(),
-                        pos -> STORM_DAMAGE_PER_POWER * stormPowerAt(pos), target -> true,
+                        pos -> STORM_DAMAGE_PER_POWER * comboAttackPowerAt(pos, getPower(),
+                                EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER), target -> true,
                         target -> target.igniteForSeconds(STORM_BURN_SECONDS));
             }
         }

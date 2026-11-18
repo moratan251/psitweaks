@@ -36,6 +36,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ import java.util.Map;
  *   ブロック）と、AE2 のチャージ中の落ちているアイテム。満タンで受け取れなかった分は、ほかの受け手に回す。</li>
  *   <li>Applied Energistics 2 があれば、落ちているアイテムに AE2 のチャージャーと同じ加工をする（1 個に
  *   {@link #FE_PER_AE2_CHARGE} FE）。AE2 のレシピをそのまま使い、コードは AE2 に依存しない。</li>
- *   <li>同じ術者の乱流領域と重なったところは「雷雲」: ランダムな間隔で中の生物を 1 体ずつ雷撃で打ち、受け手は分けた量の
+ *   <li>同じ術者の乱流領域と重なったところは「雷雲」: ランダムな間隔で中の生物を最大 3 体まで雷撃で打ち、受け手は分けた量の
  *   (1 + 乱流の上乗せ) 倍を受け取る。</li>
  *   <li>ランダムに選んだブロックで、錆びる銅の錆を 1 段落とす（{@link #randomBlockTick}）。</li>
  * </ul>
@@ -75,11 +76,15 @@ public class EntityChargedZone extends SpellGramZone {
     public static final double MAX_ENERGY_CARRY = 2.0;
     /** 乱流と重なっているかを確かめ直す間隔（tick）。 */
     public static final int STORM_INTERVAL = 10;
-    /** 雷撃の間隔: 最短（tick）と、それに足すランダムな分の上限（仮、平均 1.75 秒）。 */
-    public static final int STRIKE_MIN_TICKS = 20;
-    public static final int STRIKE_RANDOM_TICKS = 30;
-    /** 乱流の威力 1 あたりの、雷撃 1 回のダメージ（倍率を掛ける前、仮）。威力 10 で 10。 */
-    public static final float STRIKE_DAMAGE_PER_POWER = 1.0F;
+    /** 雷撃の間隔: 最短（tick）と、それに足すランダムな分の上限（平均 1.25 秒）。 */
+    public static final int STRIKE_MIN_TICKS = 15;
+    public static final int STRIKE_RANDOM_TICKS = 20;
+    /** 1 回の雷撃で打つ生物の数の上限。 */
+    public static final int MAX_STRIKE_TARGETS = 3;
+    /** 乱流の攻撃の強さ（{@link EntityTurbulenceZone#attackPower()}）1 あたりの、1 体だけを打つ雷撃のダメージ（倍率を掛ける前、仮）。強さ 40 で 20。 */
+    public static final float STRIKE_DAMAGE_PER_POWER = 0.5F;
+    /** 1 回の雷撃で打つ生物の数（1〜{@link #MAX_STRIKE_TARGETS}）ごとの、1 体あたりのダメージの倍率。 */
+    private static final float[] STRIKE_TARGET_FACTORS = {1.0F, 0.8125F, 0.625F};
     private static final ResourceLocation AE2_CHARGER = ResourceLocation.fromNamespaceAndPath("ae2", "charger");
     private static final int MAX_SPARKS_PER_TICK = 3;
 
@@ -154,9 +159,15 @@ public class EntityChargedZone extends SpellGramZone {
         return lifetimeTicks <= 0 ? 0.0 : placementCost * FE_PER_PSI / lifetimeTicks * machineSpeed;
     }
 
-    /** 雷撃 1 回の基本のダメージ（倍率を掛ける前）。 */
-    public static float strikeDamage(float turbulencePower) {
-        return STRIKE_DAMAGE_PER_POWER * Math.max(0.0F, turbulencePower);
+    /** 1 体だけを打つ雷撃の基本のダメージ（倍率を掛ける前）。 */
+    public static float strikeDamage(float attackPower) {
+        return STRIKE_DAMAGE_PER_POWER * Math.max(0.0F, attackPower);
+    }
+
+    /** 1 回の雷撃で {@code targets} 体を打つときの、1 体あたりの基本のダメージ（倍率を掛ける前）。 */
+    public static float strikeDamage(float attackPower, int targets) {
+        int index = Math.max(1, Math.min(MAX_STRIKE_TARGETS, targets)) - 1;
+        return strikeDamage(attackPower) * STRIKE_TARGET_FACTORS[index];
     }
 
     /** 1 体ずつの効き目はない（FE は {@link #supplyEnergy} でまとめて分ける）ので、ほぼ呼ばない。 */
@@ -460,8 +471,8 @@ public class EntityChargedZone extends SpellGramZone {
     }
 
     /**
-     * 雷雲: ランダムな間隔で、雷雲の下（同じ術者の乱流と重なったところ）にいる生物を 1 体選んで雷撃で打つ。打てる相手が
-     * いなければ、雷雲の下のどこかへ落ちる（演出だけ）。
+     * 雷雲: ランダムな間隔で、雷雲の下（同じ術者の乱流と重なったところ）にいる生物を最大 {@link #MAX_STRIKE_TARGETS} 体選んで
+     * 雷撃で打つ。打つ数が少ないほど 1 体あたりのダメージが高い。打てる相手がいなければ、雷雲の下のどこかへ落ちる（演出だけ）。
      */
     private void tickThundercloud(ServerLevel level) {
         long now = level.getGameTime();
@@ -475,39 +486,54 @@ public class EntityChargedZone extends SpellGramZone {
         nextStrike = now + STRIKE_MIN_TICKS + random.nextInt(STRIKE_RANDOM_TICKS + 1);
         LivingEntity caster = getCaster();
         AABB bounds = getArea().bounds();
-        List<LivingEntity> candidates = level.getEntitiesOfClass(LivingEntity.class, bounds, target -> target.isAlive()
+        List<LivingEntity> candidates = new ArrayList<>(level.getEntitiesOfClass(LivingEntity.class, bounds, target -> target.isAlive()
                 && AttackRules.canHarm(caster, target, AttackRules.Options.DEFAULT)
                 && stormAt(BlockPos.containing(target.getBoundingBox().getCenter())) != null
-                && isStrongestAt(BlockPos.containing(target.getBoundingBox().getCenter())));
-        LivingEntity target = candidates.isEmpty() ? null : candidates.get(random.nextInt(candidates.size()));
-        Vec3 end;
-        if (target != null) {
-            end = target.getBoundingBox().getCenter();
-        } else {
-            end = null;
-            for (int i = 0; i < 6 && end == null; i++) {
-                Vec3 point = new Vec3(bounds.minX + random.nextDouble() * bounds.getXsize(), bounds.minY + 0.05,
-                        bounds.minZ + random.nextDouble() * bounds.getZsize());
-                if (stormAt(BlockPos.containing(point)) != null && isStrongestAt(BlockPos.containing(point))) {
-                    end = point;
-                }
+                && isStrongestAt(BlockPos.containing(target.getBoundingBox().getCenter()))));
+        if (candidates.isEmpty()) {
+            Vec3 end = emptyStrikePoint(bounds);
+            if (end != null) {
+                showStrike(level, bounds, end);
             }
-            if (end == null) {
-                return;
+            return;
+        }
+        int targets = Math.min(MAX_STRIKE_TARGETS, candidates.size());
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.THUNDERCLOUD, this, caster);
+        for (int i = 0; i < targets; i++) {
+            Collections.swap(candidates, i, i + random.nextInt(candidates.size() - i));
+            LivingEntity target = candidates.get(i);
+            Vec3 end = target.getBoundingBox().getCenter();
+            showStrike(level, bounds, end);
+            float attack = comboAttackPowerAt(BlockPos.containing(end), getPower(),
+                    EntityTurbulenceZone.CHARGED_ATTACK_POWER_PER_POWER);
+            if (attack > 0.0F) {
+                float damage = AttackRules.scale(strikeDamage(attack, targets),
+                        PsitweaksConfig.COMMON.thundercloudDamageMultiplier.get(), caster);
+                target.invulnerableTime = 0;
+                AttackRules.harm(caster, target, AttackRules.Options.DEFAULT, source, damage);
             }
         }
-        float power = stormPowerAt(BlockPos.containing(end));
+    }
+
+    /** 打てる相手がいないときに雷撃が落ちる、雷雲の下のどこか（見つからなければ null）。 */
+    private Vec3 emptyStrikePoint(AABB bounds) {
+        for (int i = 0; i < 6; i++) {
+            Vec3 point = new Vec3(bounds.minX + random.nextDouble() * bounds.getXsize(), bounds.minY + 0.05,
+                    bounds.minZ + random.nextDouble() * bounds.getZsize());
+            if (stormAt(BlockPos.containing(point)) != null && isStrongestAt(BlockPos.containing(point))) {
+                return point;
+            }
+        }
+        return null;
+    }
+
+    /** {@code end} へ落ちる雷撃の見た目と音。 */
+    private void showStrike(ServerLevel level, AABB bounds, Vec3 end) {
         Vec3 start = new Vec3(end.x + (random.nextDouble() - 0.5) * 1.5, Math.max(bounds.maxY - 0.25, end.y + 2.0),
                 end.z + (random.nextDouble() - 0.5) * 1.5);
         CombatEffects.lightningArcs(level, List.of(start, end), List.of(-1, 0), getColor(), random.nextLong());
         CombatEffects.sound(level, end, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.7F, 1.4F + random.nextFloat() * 0.3F);
         CombatEffects.sound(level, start, SoundEvents.TRIDENT_THUNDER, 0.35F, 1.7F);
-        if (target != null && power > 0.0F) {
-            DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.THUNDERCLOUD, this, caster);
-            float damage = AttackRules.scale(strikeDamage(power), PsitweaksConfig.COMMON.thundercloudDamageMultiplier.get(), caster);
-            target.invulnerableTime = 0;
-            AttackRules.harm(caster, target, AttackRules.Options.DEFAULT, source, damage);
-        }
     }
 
     @Override

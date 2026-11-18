@@ -96,6 +96,8 @@
 
 - Reworked Trick: Fire Circle / Ice Circle
   + Added a Time input (1 to 120 seconds, 60 if left out). The Cost and integrity grow in proportion to the Time; the Cost is at least 50
+  + Each hit now deals 1 + Power, and the cost is 1600 × (1 + Power) × Time ÷ 60, so the cost follows the damage dealt
+  + Armor now reduces the damage
   + Where several of your own circles of the same kind overlap, only the strongest one hits (the highest Power, then the higher Phenomenon Interference when placed, then the older one). Circles of other kinds and other casters' circles hit on their own
   + While its center is inside another caster's Trick: Interference Zone that wins against it, a circle does nothing (it stays and its time runs on)
   + Trick: Fire Circle no longer sets wet targets on fire (they still take the damage)
