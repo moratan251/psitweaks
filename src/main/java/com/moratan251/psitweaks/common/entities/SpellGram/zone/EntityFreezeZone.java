@@ -396,14 +396,14 @@ public class EntityFreezeZone extends SpellGramZone {
             // 吹雪: 雪が速く渦を巻いて吹き荒れる。
             for (AABB storm : stormBoxes()) {
                 int count = ZoneParticles.count(storm, 20.0, 6, 18);
-                ZoneParticles.vortex(level(), random, storm, count, ParticleTypes.SNOWFLAKE, 0.55, 0.02);
-                ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 3), ParticleTypes.ITEM_SNOWBALL, 0.6, 0.05);
-                ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 4), ParticleTypes.CLOUD, 0.45, 0.03);
+                ZoneParticles.vortex(level(), random, storm, particleCount(count), ParticleTypes.SNOWFLAKE, 0.55, 0.02);
+                ZoneParticles.vortex(level(), random, storm, particleCount(Math.max(1, count / 3)), ParticleTypes.ITEM_SNOWBALL, 0.6, 0.05);
+                ZoneParticles.vortex(level(), random, storm, particleCount(Math.max(1, count / 4)), ParticleTypes.CLOUD, 0.45, 0.03);
             }
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int flakes = (int) Math.min(MAX_FLAKES_PER_TICK, Math.max(1, volume / 150.0));
+        int flakes = particleCount((int) Math.min(MAX_FLAKES_PER_TICK, Math.max(1, volume / 150.0)));
         for (int i = 0; i < flakes; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();
             double y = box.minY + random.nextDouble() * box.getYsize();

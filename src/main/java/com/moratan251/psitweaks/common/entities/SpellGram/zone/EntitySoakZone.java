@@ -227,13 +227,13 @@ public class EntitySoakZone extends SpellGramZone {
             // 乱流と重なったところ: 水しぶきの竜巻（水しぶきは上向きの速さを 0 にすると横の速さが効く）。
             for (AABB storm : storms) {
                 int count = ZoneParticles.count(storm, 20.0, 6, 16);
-                ZoneParticles.vortex(level(), random, storm, count, ParticleTypes.SPLASH, 0.5, 0.0);
-                ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 3), ParticleTypes.CLOUD, 0.45, 0.04);
+                ZoneParticles.vortex(level(), random, storm, particleCount(count), ParticleTypes.SPLASH, 0.5, 0.0);
+                ZoneParticles.vortex(level(), random, storm, particleCount(Math.max(1, count / 3)), ParticleTypes.CLOUD, 0.45, 0.04);
             }
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int drips = (int) Math.min(MAX_DRIPS_PER_TICK, Math.max(1, volume / 150.0));
+        int drips = particleCount((int) Math.min(MAX_DRIPS_PER_TICK, Math.max(1, volume / 150.0)));
         for (int i = 0; i < drips; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();
             double y = box.minY + random.nextDouble() * box.getYsize();

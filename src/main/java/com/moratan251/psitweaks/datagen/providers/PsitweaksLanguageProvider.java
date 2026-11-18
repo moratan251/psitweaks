@@ -693,6 +693,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.high", "High (1024 px)", "高（1024 px）");
         addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.medium", "Medium (512 px)", "中（512 px）");
         addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.low", "Low (256 px)", "低（256 px）");
+        addConfigValue(root, "psitweaks.configuration.effects.zone_particle_limit",
+                "Zone Particle Limit", "領域のパーティクルの上限",
+                "Maximum number of particles that all zone spellgrams together spawn per tick,"
+                        + " such as the storms of Heat Storm and Blizzard."
+                        + " When more are wanted, every zone spawns fewer at the same rate."
+                        + " Zones far from the camera always spawn fewer. 0 turns them off.",
+                "すべての領域魔法を合わせて、1 tickに出すパーティクルの数の上限です（熱乱流や吹雪の渦など）。"
+                        + "超えるときは、すべての領域で同じ割合で減らします。"
+                        + "カメラから遠い領域は、いつも少なめに出します。0にすると出しません。");
         addConfigLabel(root, "psitweaks.configuration.windows", "Window Positions", "ウィンドウの位置");
         addConfigLabel(root, "psitweaks.configuration.windows.autonomous_caster_settings",
                 "Autonomous Caster Settings Window", "自律詠唱機の設定ウィンドウ");

@@ -635,12 +635,10 @@ public class EntityHeatZone extends SpellGramZone {
             // 熱乱流: 炎の竜巻が速く回りながら昇る。
             for (AABB storm : storms) {
                 int count = ZoneParticles.count(storm, 25.0, 4, 14);
-                ZoneParticles.vortex(level(), random, storm, count, ParticleTypes.FLAME, 0.4, 0.12);
-                ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 3), ParticleTypes.SMALL_FLAME, 0.5, 0.15);
-                ZoneParticles.vortex(level(), random, storm, Math.max(1, count / 4), ParticleTypes.LARGE_SMOKE, 0.3, 0.1);
-                if (random.nextInt(4) == 0) {
-                    ZoneParticles.vortex(level(), random, storm, 1, ParticleTypes.LAVA, 0.2, 0.2);
-                }
+                ZoneParticles.vortex(level(), random, storm, particleCount(count), ParticleTypes.FLAME, 0.4, 0.12);
+                ZoneParticles.vortex(level(), random, storm, particleCount(Math.max(1, count / 3)), ParticleTypes.SMALL_FLAME, 0.5, 0.15);
+                ZoneParticles.vortex(level(), random, storm, particleCount(Math.max(1, count / 4)), ParticleTypes.LARGE_SMOKE, 0.3, 0.1);
+                ZoneParticles.vortex(level(), random, storm, particleCount(0.25), ParticleTypes.LAVA, 0.2, 0.2);
             }
         }
         // Create があるとき: ケース入りファンを焚き火に当てたときと同じ一括燻製のパーティクル（荷電領域が重なったところは
@@ -678,7 +676,7 @@ public class EntityHeatZone extends SpellGramZone {
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int embers = (int) Math.min(MAX_EMBERS_PER_TICK, Math.max(1, volume / 150.0));
+        int embers = particleCount((int) Math.min(MAX_EMBERS_PER_TICK, Math.max(1, volume / 150.0)));
         for (int i = 0; i < embers; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();
             double y = box.minY + random.nextDouble() * box.getYsize();

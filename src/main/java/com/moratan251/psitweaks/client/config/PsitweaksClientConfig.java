@@ -27,6 +27,8 @@ public final class PsitweaksClientConfig {
         public final ModConfigSpec.BooleanValue meteorLineNight;
         /** 領域の床の魔法陣の画質（使う画像の大きさの上限）。 */
         public final ModConfigSpec.EnumValue<ZoneCircleQuality> zoneCircleQuality;
+        /** すべての領域を合わせて、1 tick に出す中の演出の粒の数の上限（{@code ZoneParticleBudget}）。 */
+        public final ModConfigSpec.IntValue zoneParticleLimit;
         public final WindowPosition autonomousCasterSettingsWindow;
 
         private Client(ModConfigSpec.Builder builder) {
@@ -70,6 +72,14 @@ public final class PsitweaksClientConfig {
                             "Smaller images are still used when the circle looks small.")
                     .translation("psitweaks.configuration.effects.zone_circle_quality")
                     .defineEnum("zoneCircleQuality", ZoneCircleQuality.HIGH);
+
+            zoneParticleLimit = builder
+                    .comment("Maximum number of particles that all zone spellgrams together spawn per tick: the storms of",
+                            "Heat Storm, Blizzard, Rainstorm and Thundercloud, and the particles inside each zone. When more are",
+                            "wanted, every zone spawns fewer at the same rate. Zones far from the camera always spawn fewer.",
+                            "0 turns them off.")
+                    .translation("psitweaks.configuration.effects.zone_particle_limit")
+                    .defineInRange("zoneParticleLimit", 120, 0, 2000);
 
             builder.pop();
 

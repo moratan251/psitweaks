@@ -1153,6 +1153,8 @@
   "psitweaks.configuration.effects.zone_circle_quality.low": "低（256 px）",
   "psitweaks.configuration.effects.zone_circle_quality.medium": "中（512 px）",
   "psitweaks.configuration.effects.zone_circle_quality.tooltip": "領域の床に出る魔法陣の画質です。低くするとビデオメモリの使用量が減り、近くで見たときの線が少しぼやけます。遠くで小さく見えるときは、どの画質でも小さい画像を使います。",
+  "psitweaks.configuration.effects.zone_particle_limit": "領域のパーティクルの上限",
+  "psitweaks.configuration.effects.zone_particle_limit.tooltip": "すべての領域魔法を合わせて、1 tickに出すパーティクルの数の上限です（熱乱流や吹雪の渦など）。超えるときは、すべての領域で同じ割合で減らします。カメラから遠い領域は、いつも少なめに出します。0にすると出しません。",
   "psitweaks.configuration.idea_storage": "イデアストレージ",
   "psitweaks.configuration.idea_storage.item_stacks_per_type": "1種類あたりのスタック数係数",
   "psitweaks.configuration.idea_storage.item_stacks_per_type.tooltip": "アイテム1種類あたりの上限を、最大スタック数に掛ける係数として設定します。",

@@ -1088,6 +1088,8 @@
   "psitweaks.configuration.effects.zone_circle_quality.low": "Low (256 px)",
   "psitweaks.configuration.effects.zone_circle_quality.medium": "Medium (512 px)",
   "psitweaks.configuration.effects.zone_circle_quality.tooltip": "Image quality of the magic circle on the floor of zone spellgrams. Lower uses less video memory, and the lines look a little blurry up close. Smaller images are still used when the circle looks small.",
+  "psitweaks.configuration.effects.zone_particle_limit": "Zone Particle Limit",
+  "psitweaks.configuration.effects.zone_particle_limit.tooltip": "Maximum number of particles that all zone spellgrams together spawn per tick, such as the storms of Heat Storm and Blizzard. When more are wanted, every zone spawns fewer at the same rate. Zones far from the camera always spawn fewer. 0 turns them off.",
   "psitweaks.configuration.idea_storage": "Ideaspace Storage",
   "psitweaks.configuration.idea_storage.item_stacks_per_type": "Item Stacks per Type",
   "psitweaks.configuration.idea_storage.item_stacks_per_type.tooltip": "Per-type item limit as a multiplier of the item's max stack size.",

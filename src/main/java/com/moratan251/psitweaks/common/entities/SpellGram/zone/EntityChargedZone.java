@@ -549,7 +549,7 @@ public class EntityChargedZone extends SpellGramZone {
     protected void spawnClientParticles() {
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int sparks = (int) Math.min(MAX_SPARKS_PER_TICK, Math.max(1, volume / 250.0));
+        int sparks = particleCount((int) Math.min(MAX_SPARKS_PER_TICK, Math.max(1, volume / 250.0)));
         for (int i = 0; i < sparks; i++) {
             Vec3 at = ZoneAttacks.randomPoint(box, random);
             if (getArea().contains(BlockPos.containing(at)) && random.nextInt(3) == 0) {
@@ -558,7 +558,7 @@ public class EntityChargedZone extends SpellGramZone {
         }
         if (isStorm()) {
             for (AABB storm : stormBoxes()) {
-                int count = ZoneParticles.count(storm, 60.0, 1, 4);
+                int count = particleCount(ZoneParticles.count(storm, 60.0, 1, 4));
                 for (int i = 0; i < count; i++) {
                     Vec3 at = ZoneAttacks.randomPoint(storm, random);
                     level().addParticle(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z,

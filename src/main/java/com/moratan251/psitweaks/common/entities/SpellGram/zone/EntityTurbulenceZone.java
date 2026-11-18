@@ -418,6 +418,13 @@ public class EntityTurbulenceZone extends SpellGramZone {
     private static final float[] SOAK_SMOKE = {0.25F, 0.5F, 1.0F};
     private static final float[] FREEZE_SMOKE = {0.62F, 0.92F, 1.0F};
     private static final float[] CHARGE_SMOKE = {0.42F, 0.4F, 0.56F};
+    /** 煙の色の割合（{@link #stormShare}）を測り直す間隔（tick）。あいだは前の結果を使う。 */
+    private static final int STORM_SHARE_REFRESH_TICKS = 10;
+
+    /** 煙の色の割合（熱乱流・乱流＋湿潤・吹雪・雷雲の順、クライアント側）。まだ測っていなければ null。 */
+    @org.jetbrains.annotations.Nullable
+    private double[] stormShares;
+    private int stormSharesTick;
 
     @Override
     protected void spawnClientParticles() {
@@ -429,10 +436,15 @@ public class EntityTurbulenceZone extends SpellGramZone {
         double swirl = 0.25 + 0.035 * power;
         int count = ZoneParticles.count(box, 40.0, 4, 14);
         // 同じ術者のほかの領域と重なっているとき（熱乱流・乱流＋湿潤・吹雪）: 重なっている体積の割合だけ、煙をその色にする。
-        double heat = stormShare(box, EntityHeatZone.class);
-        double soak = stormShare(box, EntitySoakZone.class);
-        double freeze = stormShare(box, EntityFreezeZone.class);
-        double charge = stormShare(box, EntityChargedZone.class);
+        if (stormShares == null || tickCount - stormSharesTick >= STORM_SHARE_REFRESH_TICKS) {
+            stormShares = new double[]{stormShare(box, EntityHeatZone.class), stormShare(box, EntitySoakZone.class),
+                    stormShare(box, EntityFreezeZone.class), stormShare(box, EntityChargedZone.class)};
+            stormSharesTick = tickCount;
+        }
+        double heat = stormShares[0];
+        double soak = stormShares[1];
+        double freeze = stormShares[2];
+        double charge = stormShares[3];
         double total = heat + soak + freeze + charge;
         if (total > 1.0) {
             heat /= total;
@@ -445,19 +457,20 @@ public class EntityTurbulenceZone extends SpellGramZone {
         int freezeCount = (int) Math.round(count * freeze);
         int chargeCount = (int) Math.round(count * charge);
         int white = Math.max(0, count - heatCount - soakCount - freezeCount - chargeCount);
-        ZoneParticles.vortex(level(), random, box, white, ParticleTypes.CLOUD, swirl, 0.06);
+        ZoneParticles.vortex(level(), random, box, particleCount(white), ParticleTypes.CLOUD, swirl, 0.06);
         tintedVortex(box, heatCount, HEAT_SMOKE, swirl, 0.08);
         tintedVortex(box, soakCount, SOAK_SMOKE, swirl, 0.05);
         tintedVortex(box, freezeCount, FREEZE_SMOKE, swirl, 0.04);
         tintedVortex(box, chargeCount, CHARGE_SMOKE, swirl, 0.03);
         if (random.nextInt(3) == 0) {
-            ZoneParticles.vortex(level(), random, box, 2, ParticleTypes.WHITE_SMOKE, swirl * 1.2, 0.04);
+            ZoneParticles.vortex(level(), random, box, particleCount(2), ParticleTypes.WHITE_SMOKE, swirl * 1.2, 0.04);
         }
     }
 
     private void tintedVortex(AABB box, int count, float[] color, double swirl, double rise) {
-        if (count > 0) {
-            ZoneParticles.vortex(level(), random, box, count,
+        int spawned = particleCount(count);
+        if (spawned > 0) {
+            ZoneParticles.vortex(level(), random, box, spawned,
                     ColorParticleOption.create(PsitweaksParticles.TINTED_CLOUD.get(), color[0], color[1], color[2]), swirl, rise);
         }
     }

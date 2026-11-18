@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
+import com.moratan251.psitweaks.client.particles.ZoneParticleBudget;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
@@ -333,6 +334,9 @@ public abstract class SpellGramZone extends SpellGramObject {
      * クライアント側の演出用: この領域と、見えている乱流領域の重なり（術者は見分けない。{@link #isStorm} が真のときだけ呼ぶ）。
      */
     protected List<AABB> stormBoxes() {
+        if (clientStormBoxes != null && tickCount - clientStormBoxesTick < STORM_BOXES_REFRESH_TICKS) {
+            return clientStormBoxes;
+        }
         List<AABB> boxes = new java.util.ArrayList<>();
         AABB own = getOutline();
         for (EntityTurbulenceZone turbulence : level().getEntitiesOfClass(EntityTurbulenceZone.class, own.inflate(1.0))) {
@@ -343,8 +347,17 @@ public abstract class SpellGramZone extends SpellGramObject {
                 }
             }
         }
+        clientStormBoxes = boxes;
+        clientStormBoxesTick = tickCount;
         return boxes;
     }
+
+    /** {@link #stormBoxes} を探し直す間隔（tick）。あいだは前の結果を使う。 */
+    private static final int STORM_BOXES_REFRESH_TICKS = 10;
+    /** {@link #stormBoxes} の前の結果（クライアント側）。まだなければ null。 */
+    @org.jetbrains.annotations.Nullable
+    private List<AABB> clientStormBoxes;
+    private int clientStormBoxesTick;
 
     /** クライアント側の演出用: 位置 {@code at} が、箱 {@code boxes}（{@link #stormBoxes} など）のどれかの中か。 */
     protected static boolean insideAny(List<AABB> boxes, Vec3 at) {
@@ -806,15 +819,41 @@ public abstract class SpellGramZone extends SpellGramObject {
         return false;
     }
 
-    /** 範囲の中の演出（クライアント側、毎 tick）。 */
+    /** この tick の演出の粒の、カメラからの距離による倍率（クライアント側、{@link ZoneParticleBudget#distanceFactor}）。 */
+    private double particleDistanceFactor;
+    /** この tick の演出の粒の倍率（クライアント側）: 距離・すべての領域の上限・「パーティクルの表示」の設定を掛けたもの。 */
+    private double particleFactor;
+
+    /**
+     * 範囲の中の演出（クライアント側、毎 tick）。出す粒の数は {@link #particleCount} で減らす（領域を何個も置いたとき・
+     * 遠いときに減る）。
+     */
     protected void spawnClientParticles() {
+    }
+
+    /**
+     * クライアント側の演出用: 出したい粒の数 {@code count} を、この tick の倍率（{@link ZoneParticleBudget}）で減らした数。
+     * 端数は確率で切り上げるので、平均では {@code count} × 倍率になる。出したい数は、すべての領域の上限の計算に足す。
+     */
+    protected int particleCount(double count) {
+        if (count <= 0.0) {
+            return 0;
+        }
+        ZoneParticleBudget.request(count * particleDistanceFactor);
+        double scaled = count * particleFactor;
+        int whole = (int) scaled;
+        return random.nextDouble() < scaled - whole ? whole + 1 : whole;
     }
 
     @Override
     public void tick() {
         super.tick();
         if (level().isClientSide && !isRemoved() && hasNearbyViewer()) {
-            spawnClientParticles();
+            particleDistanceFactor = ZoneParticleBudget.distanceFactor(getOutline());
+            if (particleDistanceFactor > 0.0) {
+                particleFactor = particleDistanceFactor * ZoneParticleBudget.sharedFactor(level());
+                spawnClientParticles();
+            }
         }
     }
 
