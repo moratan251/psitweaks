@@ -36,6 +36,7 @@ import java.util.UUID;
  *   <li>領域干渉: 中心のブロックが、勝てない他人の領域干渉の中にある間は、何もしない（{@link #isSuppressed}）。時間は進む。</li>
  *   <li>追従（作動式: サークル追従）: 追従先の位置に毎 tick 移り、動いた距離のぶん耐久値を使う。追従を続けられなくなると
  *   その場に残る（{@link #shouldRelease}）。</li>
+ *   <li>Psi の運動追加・瞬間移動・大移動: 術者自身の、追従していない円だけが動く（{@link #isMovableBy}）。耐久値は減らない。</li>
  * </ul>
  * 仕様の全体は {@code docs/1.21.1/spellgram-zones.md} のサークルの節。
  */
@@ -72,8 +73,11 @@ public abstract class SpellGramCircle extends SpellGramObject {
     /** 置いた時点の術者の事象干渉力（重なりと領域干渉で比べる）。サーバー側だけ。 */
     private double placedInterference = 1.0D;
 
-    /** この tick に追従で動いた距離（ブロック）。サーバー側だけ。 */
+    /** この tick に動いた距離（ブロック、追従・Psi の運動追加・瞬間移動などすべて）。サーバー側だけ。 */
     private double lastMoved;
+    /** 前の tick の終わりの位置（tick の合間の瞬間移動も数えるため）。サーバー側だけ。 */
+    @Nullable
+    private Vec3 lastTickPosition;
     /** 領域干渉に止められているかを確かめた tick と台帳の番号、その結果。サーバー側だけ。 */
     private long suppressedTick = Long.MIN_VALUE;
     private long suppressedVersion = -1L;
@@ -100,7 +104,6 @@ public abstract class SpellGramCircle extends SpellGramObject {
 
     @Override
     public void tick() {
-        lastMoved = 0.0D;
         super.tick();
 
         if (level().isClientSide && !isRemoved()) {
@@ -141,9 +144,28 @@ public abstract class SpellGramCircle extends SpellGramObject {
         return ownerSide;
     }
 
-    /** この tick に追従で動いた距離（ブロック、サーバー側）。 */
+    /** この tick に動いた距離（ブロック、サーバー側）。追従・Psi の運動追加・瞬間移動など、どの動きも数える。 */
     public double getLastMoved() {
         return lastMoved;
+    }
+
+    /** 動いたあとに、この tick に動いた距離を数える（前の tick の終わりからの距離なので、tick の合間の瞬間移動も入る）。 */
+    @Override
+    protected void tickMotion() {
+        super.tickMotion();
+        if (!level().isClientSide) {
+            Vec3 now = position();
+            lastMoved = lastTickPosition == null ? 0.0D : now.distanceTo(lastTickPosition);
+            lastTickPosition = now;
+        }
+    }
+
+    /**
+     * {@code mover} の Psi の作動式（運動追加・瞬間移動・大移動）で動かしてよいか: 術者自身（自律詠唱機は機械ごと）のサークルで、
+     * 追従していないときだけ。追従中は追従が優先。Psi の作動式で動いても耐久値は減らない。
+     */
+    public boolean isMovableBy(@Nullable Entity mover) {
+        return !isEntityFollowMode() && mover != null && CasterIds.matches(mover, getCasterUuid());
     }
 
     // ---- 追従（作動式: サークル追従） ----
@@ -173,8 +195,7 @@ public abstract class SpellGramCircle extends SpellGramObject {
         boolean following = super.tickEntityFollow();
         double moved = position().distanceTo(before);
         if (moved > 0.0D) {
-            lastMoved = moved;
-            // 1 ブロック動くと、存続時間 1 tick ぶんの耐久値を使う（術式で削られた分として数える）。
+            // 追従で 1 ブロック動くと、存続時間 1 tick ぶんの耐久値を使う（術式で削られた分として数える）。
             float perTick = getMaxIntegrity() * getTimeShare() / Math.max(1, getLifetimeTicks());
             reduceIntegrity((float) (moved * perTick));
         }

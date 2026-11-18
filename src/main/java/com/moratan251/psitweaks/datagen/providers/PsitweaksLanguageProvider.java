@@ -1814,9 +1814,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
     /** 作動式: ファイアサークル・アイスサークル・サークル追従の本のページ。 */
     private void addCircleBookPages(JsonObject root) {
         String timeEn = "$(p)The circle stays for the Time (a constant from 1 to 120 seconds, 60 if left out), or until its caster"
-                + " logs out or moves to another dimension. Its Cost and integrity grow in proportion to the Time; the Cost is at least 50.";
+                + " logs out or moves to another dimension. Its Cost and integrity grow in proportion to the Time; the Cost is at least 50."
+                + " One caster can keep up to 32 circles and zones in all; placing more ends the oldest.";
         String timeJa = "$(p)サークルは「時間」（1〜120秒の定数、省くと60秒）のあいだ残り、術者がログアウトしたり別のディメンションへ移ったり"
-                + "すると消えます。コストと耐久値は時間に比例し、コストは最低50です。";
+                + "すると消えます。コストと耐久値は時間に比例し、コストは最低50です。1人が置けるのはサークルと領域を合わせて32個までで、"
+                + "超えて置くと古いものから消えます。";
         addBookPage(root, "trick_flare_circle.0",
                 "Places a fire Resident SpellGram circle at the Position. Living beings inside take fire damage every half second,"
                         + " more with a higher Power and the caster's interference, and catch fire for 2 seconds; wet beings take the"
@@ -1871,15 +1873,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         return "Where several of your own " + kind + " overlap, a being there is hit only by the strongest one (the highest Power,"
                 + " then the higher interference when placed, then the older one). Other kinds of circles and other casters'"
                 + " circles hit on their own.$(p)While its center is inside another caster's Interference Zone that wins against it"
-                + " (as zones contest each other), the circle does nothing, though its time runs on. Move it with Trick: Circle"
-                + " Follow. One caster can keep up to 32 circles and zones in all; placing more ends the oldest.";
+                + " (as zones contest each other), the circle does nothing, though its time runs on.$(p)Move your own circles with"
+                + " Trick: Circle Follow, or with Psi's Trick: Add Motion, Blink and Mass Exodus. Moving with Psi's tricks costs no"
+                + " integrity, and a following circle keeps following instead.";
     }
 
     private static String circleRulesJa(String kind) {
         return "自分の" + kind + "が重なったところにいる生物には、一番強いもの（威力が高いもの、並べば置いた時点の事象干渉力が高いもの、"
                 + "それも並べば古いもの）だけが当たります。種類の違うサークルや他人のサークルは、それぞれ当たります。$(p)中心が、勝てない"
-                + "他人の領域干渉（領域どうしの奪い合いと同じ比べ方）の中にある間は、何もしません。時間は進みます。作動式: サークル追従で"
-                + "動かせます。1人が置けるのはサークルと領域を合わせて32個までで、超えて置くと古いものから消えます。";
+                + "他人の領域干渉（領域どうしの奪い合いと同じ比べ方）の中にある間は、何もしません。時間は進みます。$(p)自分のサークルは、"
+                + "作動式: サークル追従か、Psi の 作動式: 運動追加・瞬間移動・大移動で動かせます。Psi の作動式で動かしても耐久値は減らず、"
+                + "追従しているサークルは追従を続けます。";
     }
 
     private void addSpellPieces(JsonObject root) {

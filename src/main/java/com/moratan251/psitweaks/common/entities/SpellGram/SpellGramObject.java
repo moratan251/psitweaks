@@ -31,9 +31,10 @@ import java.util.UUID;
  * 領域 {@code SpellGramZone}、{@link #isResident} が真）と、目印型（{@code SpellGramMarker}: 流星群の夜の核、マイクロブラック
  * ホール）に分かれる。存続時間、耐久値（{@link #getIntegrity}）、周囲へのダメージ、追従を共通にする。
  * <ul>
- *   <li>物ではない: ふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に保存しない。Psi の運動追加・瞬間移動・
- *   大移動でも動かない（{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}）。動くのは、作動式:
- *   サークル追従で追従するサークルだけ（{@link #tickEntityFollow}）。</li>
+ *   <li>物ではない: ふつうの攻撃では壊れず（{@link #hurt}）、押されず、チャンクと一緒に保存しない。動くのはサークルだけで、
+ *   作動式: サークル追従（{@link #tickEntityFollow}）と、術者自身の Psi の運動追加・瞬間移動・大移動
+ *   （{@code PieceTrickAddMotionSpellGramMixin}・{@code PieceTrickBlinkSpellGramMixin}、{@code SpellGramCircle#isMovableBy}）で動く。
+ *   領域と目印型は動かない。</li>
  *   <li>存続時間が尽きると消える（{@link EndReason#FINISHED}）。耐久値は時間とともに一定の割合で減り（{@link #getTimeShare}）、
  *   術式解体などからは {@link #reduceIntegrity} で削られ、尽きると消える（{@link EndReason#DESTROYED}）。作動式: 魔法式延長は
  *   {@link #restoreIntegrity} で戻す。</li>

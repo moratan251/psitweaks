@@ -86,7 +86,7 @@
   + Magic entities with integrity are now SpellGram objects: Resident SpellGrams (Fire Circle, Ice Circle and the zones), the Meteor Line night and the Micro Black Hole
   + They are not destroyed or pushed by ordinary attacks such as swords, arrows and explosions, and are not saved with the chunk
   + They disappear when the caster is gone (logged out or moved to another dimension)
-  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus cannot move them
+  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus cannot move them, except your own circles (see below)
   + Added integrity. An object disappears when its integrity runs out (the Meteor Line night shatters, and the Micro Black Hole vanishes without crushing anything). Integrity depends on the caster's Phenomenon Interference when the object is placed (the multiplier can be changed in the config), and Resident SpellGrams also lose it over time
   + Aim at the core within 5 blocks to see its name and integrity (can be toggled in the client config)
   + One player or one Autonomous Caster can keep up to 32 Resident SpellGrams, several of the same kind included. Placing more removes the oldest (changeable in the config)
@@ -101,6 +101,7 @@
   + Trick: Fire Circle no longer sets wet targets on fire (they still take the damage)
   + Trick: Ice Circle turns the water inside it into Frosted Ice like Frost Walker and keeps that ice from melting. This is the only way a circle changes the world. While it follows a boat floating on water it leaves the water alone, so you can row; on ice it keeps freezing, so an ice boat slides on
   + The integrity cap (how far Trick: Extend SpellGram restores) is now twice the integrity at the longest Time, as for zones
+  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus can move your own circles. This costs no integrity, and a circle following with Trick: Circle Follow keeps following
 
 
 - Added spell pieces for SpellGram objects
