@@ -278,6 +278,26 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                         'A', ingredientItem(Blocks.ANVIL)
                 ),
                 PsitweaksBlocks.CAD_DISASSEMBLER.get(), 1));
+        // 領域給電機: FE をためるブロックなので、エネルギータブレットを材料に入れる（Mekanism がなければ代わりのレシピ）。
+        recipe(recipes, "zone_feeder", shaped(
+                List.of(" L ", "PGP", "CRC"),
+                Map.of(
+                        'L', ingredientItem(Items.LIGHTNING_ROD),
+                        'P', ingredientItem(ModItems.psimetal.get()),
+                        'G', ingredientItem(ModItems.psigem.get()),
+                        'C', ingredientItem(Items.COPPER_BLOCK),
+                        'R', ingredientItem(MekanismItems.ENERGY_TABLET)
+                ),
+                PsitweaksBlocks.ZONE_FEEDER.get(), 1));
+        recipe(recipes, "zone_receiver", shaped(
+                List.of(" L ", "CPC", " R "),
+                Map.of(
+                        'L', ingredientItem(Items.LIGHTNING_ROD),
+                        'C', ingredientItem(Items.COPPER_INGOT),
+                        'P', ingredientItem(ModItems.psimetal.get()),
+                        'R', ingredientItem(Items.REDSTONE)
+                ),
+                PsitweaksItems.ZONE_RECEIVER, 1));
         recipe(recipes, "program_researcher", shaped(
                 List.of("PCP", "CGC", "PCP"),
                 Map.of(

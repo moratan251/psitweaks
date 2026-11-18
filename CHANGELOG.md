@@ -82,6 +82,16 @@
   + Simulated Contraptions (such as Create Aeronautics airships): Gravity Zone pushes and tilts them, and zones also work on the blocks and machines of contraptions they overlap
 
 
+- Added the Zone Feeder
+  + It takes FE from cables and the like; your own Charged Zones covering it send out its FE wherever their own capacity is not enough. There is no cap on how much the zones take
+  + It takes up to as much per tick as an Ultimate Universal Cable carries (3,276,800 FE by default), and cables can draw the same amount back out. It keeps its FE when broken
+
+
+- Added the Zone Receiver
+  + Carried anywhere in your inventory, it lets Charged Zones send FE to the items you carry that take FE. Right-click to switch it on or off
+  + Charged Zones do not send FE to the items of players without one, or to what other living beings hold and wear
+
+
 - Reorganized SpellGram objects
   + Magic entities with integrity are now SpellGram objects: Resident SpellGrams (Fire Circle, Ice Circle and the zones), the Meteor Line night and the Micro Black Hole
   + They are not destroyed or pushed by ordinary attacks such as swords, arrows and explosions, and are not saved with the chunk

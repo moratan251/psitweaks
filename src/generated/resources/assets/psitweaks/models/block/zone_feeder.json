@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "psitweaks:block/zone_feeder/bottom",
+    "side": "psitweaks:block/zone_feeder/side",
+    "top": "psitweaks:block/zone_feeder/top"
+  }
+}

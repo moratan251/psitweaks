@@ -469,6 +469,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "受け取り: %sJ/t";
             default -> "Received: %sJ/t";
         });
+        // 荷電領域が領域給電機から引いて配った FE。
+        root.addProperty("psitweaks.hud.zone_resource.received_fe", switch (locale) {
+            case "ja_jp" -> "受け取り: %sFE/t";
+            default -> "Received: %sFE/t";
+        });
         root.addProperty("psitweaks.hud.zone_resource.charge", switch (locale) {
             case "ja_jp" -> "充電能力: %s / %sFE/t";
             default -> "Charge: %s / %sFE/t";
@@ -612,6 +617,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         AutonomousCasterTranslations.add(root, locale);
         addSpellUnlockMessages(root);
         addCadDisassembler(root);
+        addZoneFeeder(root);
+        addZoneReceiver(root);
         addUtilityItemsBook(root);
         addMovalSuitBook(root);
         addMekanismIntegrationBook(root);
@@ -2355,15 +2362,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",
-                "It sends FE to what is inside: blocks that take FE (machines, energy storage and so on, through whichever side takes it), everything a player carries, what other living beings hold and wear, dropped items, and entities that store FE themselves. At random, like random ticks but faster, copper inside loses one stage of oxidation, as when lightning strikes; waxed copper stays. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
-                "範囲の中のものに FE を送ります。送る先は、FE を受け取るブロック（機械や蓄電器など。受け取る面に送ります）、プレイヤーなら持ち物すべて、ほかの生き物なら手に持つ物と防具、それに落ちているアイテムと、自分で FE をためるエンティティです。また、ランダムティックのように（それより速く）ランダムに選んだブロックで、雷が落ちたときと同じく銅の錆を1段ずつ落とします（酸化した銅→錆びた銅→風化した銅→銅ブロック、階段やドアなども同じ）。錆止めされた銅はそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+                "It sends FE to what is inside: blocks that take FE (machines, energy storage and so on, through whichever side takes it), dropped items, entities that store FE themselves, and the items of players carrying a Zone Receiver. At random, like random ticks but faster, copper inside loses one stage of oxidation, as when lightning strikes; waxed copper stays. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中のものに FE を送ります。送る先は、FE を受け取るブロック（機械や蓄電器など。受け取る面に送ります）、落ちているアイテム、自分で FE をためるエンティティ、領域受電器を持つプレイヤーの持ち物です。また、ランダムティックのように（それより速く）ランダムに選んだブロックで、雷が落ちたときと同じく銅の錆を1段ずつ落とします（酸化した銅→錆びた銅→風化した銅→銅ブロック、階段やドアなども同じ）。錆止めされた銅はそのままです。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
         addBookPage(root, "trick_charged_zone.1",
                 "The Power (a constant of at least 1) sets the Cost, and the FE capacity follows the Cost; it is shared evenly by everything inside that can take FE. At interference 2, a Size 16, Power 10 zone gives about 360 FE a tick.$(p)With Applied Energistics 2 installed, dropped items inside go through the same process as a Charger (a Certus Quartz Crystal becomes a Charged Certus Quartz Crystal, and so on), each using 3200 FE of the capacity.",
                 "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");
 
+        addBookPage(root, "trick_charged_zone.3",
+                "If your own $(l:psitweaks_machines/zone_feeder)Zone Feeder$(/l) is inside, the FE stored in it is sent out when the zone's own capacity is not enough. FE from feeders has no cap, and the Thundercloud does not raise it. The zone never sends FE to a feeder.",
+                "範囲の中に自分の$(l:psitweaks_machines/zone_feeder)領域給電機$(/l)があると、充電能力で足りない分を、給電機にたまった FE から送ります。給電機の FE には上限がなく、雷雲でも増えません。給電機そのものには FE を送りません。");
+
         addBookPage(root, "trick_charged_zone.2",
                 "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals bolts strike up to three living beings under it, harder the fewer they are and the higher the Cost of the turbulence, and 25%% harder on wet ones. The FE given there rises with the Power of the turbulence. Where your own Heat Zone and Turbulence Zone both overlap it, the Heat Zone bulk-blasts instead of bulk-smoking.",
                 "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下の生物を最大3体まで雷撃が打ちます（少ないほど強く、濡れた相手には1.25倍）。雷撃の強さは乱流領域のコストで決まり、送る FE は乱流の威力に応じて増えます。自分の加熱領域と乱流領域の両方が重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
+
+        addBookPage(root, "trick_charged_zone.4",
+                "Carried anywhere on you, it lets Charged Zones charge the FE items you carry. You count as one receiver: armor fills first, then the main hand, the off hand and the rest. Right-click to switch it on or off. Players without one get no FE, and neither does the gear of other beings.",
+                "持ち物のどこかに入れておくと、荷電領域の中で、持ち物の FE を受け取るアイテムに給電されます。持ち主は 1 人で受け手 1 つに数え、防具、メインハンド、オフハンド、残りの持ち物の順に満たします。右クリックで入と切を切り替えます。持たないプレイヤーや、ほかの生き物の装備には送りません。");
 
         // 遮音領域
         addBookPage(root, "trick_silence_zone.0",
@@ -2696,6 +2711,36 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "macro_face_axial_rotation.0", "Rotates the specified direction vector according to the orientation of the block face hit by a raycast from the caster. X points right as the face is viewed, Y points toward the top as the face is viewed, and Z points inward into the block. On the top and bottom faces, the caster's horizontal facing determines the rotation within the face. The vector's magnitude is preserved. If the raycast misses, a null-vector error is raised.", "術者からのレイキャストが命中したブロック面の向きに応じて、指定した方向ベクトルを回転します. Xは面を見た時の右、Yは面を見た時の上、Zはブロック内側方向です. 上面と下面では、術者の水平向きによって面内の回転を決めます. ベクトルの大きさは保存されます. レイキャストが命中しなかった場合は null vector エラーになります.");
         addBookPage(root, "macro_face_axial_rotation.1", "Face Axial Offset and Face Axial Rotation in the same program share the raycast result of the first one executed. See page 2 of $(l:psitweaks_spell_pieces/macro_face_axial_offset)$(o)Macro: Face Axial Offset$(0)$(/l) for details.", "同じプログラムにある 面基準平行移動 と 面基準回転 は, 最初に実行されたピースのレイキャスト結果を共有します. 詳しくは $(l:psitweaks_spell_pieces/macro_face_axial_offset)$(o)マクロ: 面基準平行移動$(0)$(/l) の2ページ目を参照してください.");
         addBookPage(root, "trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Duplicate positions count once, and only the first positions up to the maximum block count (at most 4096) are processed. The maximum must be a positive integer constant. Drops go into the caster's inventory; overflow drops at the caster's position, or at the focal point if the task is interrupted.", "Vector List（Block List も可）の座標にあるブロックを破壊します. 重複した座標は1回だけ扱い, 先頭から破壊数の上限まで(最大4096)を処理します. 上限は正の整数定数である必要があります. ドロップは術者のインベントリに入り, 入りきらない分は術者の位置(タスクが中断されたときは焦点位置)に落ちます.");
+    }
+
+    private void addZoneFeeder(JsonObject root) {
+        root.addProperty("message.psitweaks.zone_feeder.status", switch (locale) {
+            case "ja_jp" -> "%s / %s FE・送り先の荷電領域: %s";
+            default -> "%s / %s FE, Charged Zones drawing: %s";
+        });
+        root.addProperty("psi.book.page.psitweaks_machine.zone_feeder", switch (locale) {
+            case "ja_jp" -> "荷電領域へ FE を送り込むブロックです. どの面からも FE を受け取り, 1 tick に究極ユニバーサルケーブルと同じ量（既定で 3,276,800 FE）まで受け取れます. 同じ量までケーブルで取り出すこともでき, 壊してもためた FE は残ります.";
+            default -> "Feeds FE into Charged Zones. It takes FE from any side, up to as much per tick as an Ultimate Universal Cable carries (3,276,800 FE by default). Cables can draw the same amount back out, and it keeps its FE when broken.";
+        });
+        root.addProperty("tooltip.psitweaks.zone_feeder.stored", "%s / %s FE");
+        root.addProperty("psi.book.page.psitweaks_machine.zone_feeder.1", switch (locale) {
+            case "ja_jp" -> "置いた人の$(l:psitweaks_spell_pieces/trick_charged_zone)荷電領域$(/l)がこのブロックを範囲に含むと, 領域は自分の充電能力で足りない分を, ここから引いて配ります. 送っている間は光り, 素手で右クリックするとたまっている量が分かります.$(p)ケーブルは範囲の外から引いてください. 範囲の中のケーブルには領域の FE も流れ込み, 給電機に戻ってきます.";
+            default -> "When a $(l:psitweaks_spell_pieces/trick_charged_zone)Charged Zone$(/l) of the player who placed it covers this block, the zone draws from it whatever its own capacity cannot cover. It glows while sending, and right-clicking it with an empty hand shows how much it holds.$(p)Run cables to it from outside the zone: cables inside also take the zone's FE and bring it back.";
+        });
+    }
+
+    private void addZoneReceiver(JsonObject root) {
+        boolean japanese = "ja_jp".equals(locale);
+        root.addProperty("message.psitweaks.zone_receiver.on", japanese ? "領域受電器: 入" : "Zone Receiver: On");
+        root.addProperty("message.psitweaks.zone_receiver.off", japanese ? "領域受電器: 切" : "Zone Receiver: Off");
+        root.addProperty("tooltip.psitweaks.zone_receiver.effect", japanese
+                ? "持っていると、荷電領域の中で持ち物の FE を受け取るアイテムに給電されます"
+                : "While carried, Charged Zones send FE to the items you carry that take FE");
+        root.addProperty("tooltip.psitweaks.zone_receiver.toggle", japanese
+                ? "右クリックで入と切を切り替えます"
+                : "Right-click to switch it on or off");
+        root.addProperty("tooltip.psitweaks.zone_receiver.on", japanese ? "状態: 入" : "State: On");
+        root.addProperty("tooltip.psitweaks.zone_receiver.off", japanese ? "状態: 切" : "State: Off");
     }
 
     private void addCadDisassembler(JsonObject root) {

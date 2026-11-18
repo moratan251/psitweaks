@@ -387,6 +387,10 @@ public final class PsitweaksItems {
             "third_eye_device",
             () -> new ItemThirdEyeDevice(new Item.Properties())
     );
+    public static final DeferredItem<ItemZoneReceiver> ZONE_RECEIVER = ITEMS.register(
+            "zone_receiver",
+            () -> new ItemZoneReceiver(new Item.Properties().stacksTo(1))
+    );
     /** デバッグ用: 見ている魔法式オブジェクトの耐久値を減らす。レシピはなく、クリエイティブのタブから取る。 */
     public static final DeferredItem<ItemSpellGramIntegrityDebugger> SPELLGRAM_INTEGRITY_DEBUGGER = ITEMS.register(
             "spellgram_integrity_debugger",

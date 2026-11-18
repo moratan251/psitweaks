@@ -1,11 +1,14 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
+import com.moratan251.psitweaks.common.compat.SableRangeCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.SpellBlockProtection;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
+import com.moratan251.psitweaks.common.tile.ZoneFeederBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,10 +19,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -38,23 +39,28 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 作動式: 荷電領域（仮、Charged Zone）の範囲。
  * <ul>
  *   <li>充電能力（{@link #capacityPerTick}）を {@link #ENERGY_INTERVAL} tick ごとに、範囲の中の受け手で均等に分ける。受け手は
- *   FE を受け取れるもの（プレイヤーの持ち物、ほかの生き物の手と防具、落ちているアイテム、FE を持つエンティティ、FE を受け取れる
- *   ブロック）と、AE2 のチャージ中の落ちているアイテム。満タンで受け取れなかった分は、ほかの受け手に回す。</li>
+ *   FE を受け取れるブロック、落ちているアイテム（AE2 のチャージ中のものを含む）、FE を持つプレイヤー以外のエンティティと、入の
+ *   領域受電器を持つプレイヤー（持ち物の FE アイテムをまとめて受け手 1 つ、{@link CarriedEnergyStorage}）。プレイヤー以外の生き物の
+ *   手と防具には配らない。満タンで受け取れなかった分は、ほかの受け手に回す。</li>
  *   <li>Applied Energistics 2 があれば、落ちているアイテムに AE2 のチャージャーと同じ加工をする（1 個に
  *   {@link #FE_PER_AE2_CHARGE} FE）。AE2 のレシピをそのまま使い、コードは AE2 に依存しない。</li>
  *   <li>同じ術者の乱流領域と重なったところは「雷雲」: ランダムな間隔で中の生物を最大 3 体まで雷撃で打ち、受け手は分けた量の
  *   (1 + 乱流の上乗せ) 倍を受け取る。</li>
  *   <li>ランダムに選んだブロックで、錆びる銅の錆を 1 段落とす（{@link #randomBlockTick}）。</li>
+ *   <li>範囲の中に置いた人の領域給電機（{@link ZoneFeederBlockEntity}）があれば、自分の充電能力を配ったあと、受け手がまだ
+ *   受け取れる分だけ給電機から FE を引いて配る（{@link #supplyFedEnergy}）。引ける量に上限はなく、雷雲の上乗せは掛けない。
+ *   給電機は受け手にしない。</li>
  * </ul>
- * ブロックの面は、受け取る面を順に試して選ぶ（Mekanism の機械は面のない問い合わせでは受け取らない）。仕様の全体と数値の根拠は
- * {@code docs/1.21.1/spellgram-zones.md}。
+ * ブロックの面は、受け取る面を順に試して選ぶ（Mekanism の機械は面のない問い合わせでは受け取らない）。
  */
 public class EntityChargedZone extends SpellGramZone {
     /** 辺の色: 電気の黄色。 */
@@ -107,6 +113,8 @@ public class EntityChargedZone extends SpellGramZone {
     private float rawPower = DEFAULT_POWER;
     /** 次の雷撃のゲーム時刻（まだ決めていなければ -1）。サーバー側だけ。 */
     private long nextStrike = -1;
+    /** 領域給電機から引いて配った FE の合計（GameTest 用）。サーバー側だけ。 */
+    private long fedTotal;
 
     public EntityChargedZone(EntityType<? extends EntityChargedZone> type, Level level) {
         super(type, level);
@@ -137,10 +145,36 @@ public class EntityChargedZone extends SpellGramZone {
         return rawPower;
     }
 
-    /** 照準の表示: 充電能力（FE/t）。 */
+    /** 照準の表示: 充電能力（FE/t）。直前に領域給電機から引いて配った分（{@link #resourceMovedPerTick}）も足す。 */
     @Override
     protected double resourcePerTick() {
-        return capacityPerTick();
+        return capacityPerTick() + resourceMovedPerTick();
+    }
+
+    /** 照準の表示の 2 行め: 受け取り（領域給電機から引いて配った FE、FE/t）。 */
+    @Override
+    public String resourceMovedKey() {
+        return "psitweaks.hud.zone_resource.received_fe";
+    }
+
+    /** 領域給電機から引いて配った FE の合計（GameTest 用）。 */
+    public long fedTotal() {
+        return fedTotal;
+    }
+
+    /**
+     * 領域給電機 {@code feeder} から FE を引いている、置いた人の荷電領域の数（給電機の位置が範囲に入っていて、そこで効いているもの）。
+     * 機体の上の給電機は、今見えている世界の位置で探す。
+     */
+    public static int zonesDrawingFrom(ServerLevel level, ZoneFeederBlockEntity feeder) {
+        BlockPos at = SableRangeCompat.worldBlockOf(level, feeder.getBlockPos());
+        int count = 0;
+        for (EntityChargedZone zone : SpellGramIndex.all(level, EntityChargedZone.class)) {
+            if (!zone.isEnded() && zone.getCaster() instanceof Player caster && feeder.allows(caster) && zone.isInsideAndActive(at)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -230,7 +264,7 @@ public class EntityChargedZone extends SpellGramZone {
     private record Receiver(IEnergyStorage storage, ItemEntity charging, double boost, Object key) {
     }
 
-    /** エンティティ {@code entityId} の窓口 {@code slot}（0: エンティティ自身、1: 落ちているアイテム、2 以降: 持ち物の枠）。 */
+    /** エンティティ {@code entityId} の窓口 {@code slot}（0: エンティティ自身、1: 落ちているアイテム、2: プレイヤーの持ち物）。 */
     private static long receiverKey(int entityId, int slot) {
         return ((long) entityId << 16) | (slot & 0xFFFF);
     }
@@ -245,6 +279,10 @@ public class EntityChargedZone extends SpellGramZone {
         for (Entity target : entitiesReceiving()) {
             double boost = 1.0 + stormBoost(stormPowerAt(BlockPos.containing(target.getBoundingBox().getCenter())));
             int id = target.getId();
+            if (target instanceof Player player) {
+                addReceiver(receivers, CarriedEnergyStorage.of(player), boost, receiverKey(id, 2));
+                continue;
+            }
             addReceiver(receivers, target.getCapability(Capabilities.EnergyStorage.ENTITY, null), boost, receiverKey(id, 0));
             if (target instanceof ItemEntity item) {
                 addReceiver(receivers, item.getItem().getCapability(Capabilities.EnergyStorage.ITEM), boost, receiverKey(id, 1));
@@ -253,18 +291,10 @@ public class EntityChargedZone extends SpellGramZone {
                 } else {
                     chargeProgress.remove(item.getId());
                 }
-            } else if (target instanceof Player player) {
-                Inventory inventory = player.getInventory();
-                for (int i = 0; i < inventory.getContainerSize(); i++) {
-                    addReceiver(receivers, itemStorage(inventory.getItem(i)), boost, receiverKey(id, 2 + i));
-                }
-            } else if (target instanceof LivingEntity living) {
-                for (EquipmentSlot slot : EquipmentSlot.values()) {
-                    addReceiver(receivers, itemStorage(living.getItemBySlot(slot)), boost, receiverKey(id, 2 + slot.ordinal()));
-                }
             }
         }
-        addBlockReceivers(level, receivers);
+        List<ZoneFeederBlockEntity> feeders = new ArrayList<>();
+        addBlockReceivers(level, receivers, feeders);
         Map<Object, Double> carry = new HashMap<>();
         if (receivers.isEmpty()) {
             energyCarry = carry;
@@ -306,19 +336,125 @@ public class EntityChargedZone extends SpellGramZone {
             }
         }
         energyCarry = carry;
-        recordResourceUse(Math.min(used, capacityPerTick() * ENERGY_INTERVAL));
+        // 自分の充電能力で足りなかった分を、領域給電機から引いて配る（雷雲の上乗せは掛けない）。
+        long fed = supplyFedEnergy(level, receivers, feeders);
+        recordResourceUse(Math.min(used, capacityPerTick() * ENERGY_INTERVAL) + fed);
+        recordResourceMoved(fed);
     }
 
-    private static IEnergyStorage itemStorage(ItemStack stack) {
-        return stack.isEmpty() ? null : stack.getCapability(Capabilities.EnergyStorage.ITEM);
+    /**
+     * 領域給電機 {@code feeders} にためた FE を、まだ受け取れる受け手で均等に分ける（受け取りきれなかった分は、受け取りきった受け手に
+     * 1 回だけ分け直す）。受け手は分けた量をそのまま受け取る（雷雲の上乗せは掛けない。掛けると、領域 → 蓄電器 → 給電機 → 領域と
+     * 回すたびに FE が増える）。配った分だけを、給電機からためている量の割合で引く。配った FE を返す。
+     */
+    private long supplyFedEnergy(ServerLevel level, List<Receiver> receivers, List<ZoneFeederBlockEntity> feeders) {
+        if (feeders.isEmpty()) {
+            return 0L;
+        }
+        long[] stored = new long[feeders.size()];
+        long available = 0L;
+        for (int i = 0; i < feeders.size(); i++) {
+            stored[i] = feeders.get(i).stored();
+            available += stored[i];
+        }
+        if (available <= 0L) {
+            return 0L;
+        }
+        List<Receiver> open = new ArrayList<>();
+        for (Receiver receiver : receivers) {
+            if (fedDemand(level, receiver) > 0L) {
+                open.add(receiver);
+            }
+        }
+        if (open.isEmpty()) {
+            return 0L;
+        }
+        long remaining = available;
+        long given = 0L;
+        long share = Math.max(1L, available / open.size());
+        List<Receiver> filled = new ArrayList<>();
+        for (Receiver receiver : open) {
+            if (remaining <= 0L) {
+                break;
+            }
+            long offer = Math.min(share, remaining);
+            long took = giveFed(level, receiver, offer);
+            given += took;
+            remaining -= took;
+            if (took >= offer) {
+                filled.add(receiver);
+            }
+        }
+        if (remaining > 0L && !filled.isEmpty()) {
+            long extra = Math.max(1L, remaining / filled.size());
+            for (Receiver receiver : filled) {
+                if (remaining <= 0L) {
+                    break;
+                }
+                long took = giveFed(level, receiver, Math.min(extra, remaining));
+                given += took;
+                remaining -= took;
+            }
+        }
+        if (given <= 0L) {
+            return 0L;
+        }
+        // 給電機から、ためている量の割合で引く。端数は前から順に引いて合わせる。
+        long left = given;
+        for (int i = 0; i < feeders.size() && left > 0L; i++) {
+            long part = (long) Math.floor((double) given * stored[i] / available);
+            left -= feeders.get(i).draw(Math.min(part, left));
+        }
+        for (int i = 0; i < feeders.size() && left > 0L; i++) {
+            left -= feeders.get(i).draw(left);
+        }
+        long drawn = given - left;
+        fedTotal += drawn;
+        return drawn;
+    }
+
+    /** 受け手が今、給電機の FE をあとどれだけ受け取れるか（窓口は試しに入れて確かめる。AE2 のチャージは残りの加工に要る量）。 */
+    private long fedDemand(ServerLevel level, Receiver receiver) {
+        if (receiver.charging() != null) {
+            return receiver.charging().isAlive() ? ae2Demand(level, receiver.charging()) : 0L;
+        }
+        return receiver.storage().receiveEnergy(Integer.MAX_VALUE, true);
+    }
+
+    /** 受け手に給電機の FE を {@code offer} まで渡し（上乗せなし）、渡した量を返す。 */
+    private long giveFed(ServerLevel level, Receiver receiver, long offer) {
+        if (offer <= 0L) {
+            return 0L;
+        }
+        if (receiver.charging() != null) {
+            ItemEntity item = receiver.charging();
+            long amount = Math.min(offer, item.isAlive() ? ae2Demand(level, item) : 0L);
+            if (amount > 0L) {
+                chargeAe2(level, item, amount);
+            }
+            return amount;
+        }
+        return receiver.storage().receiveEnergy((int) Math.min(offer, Integer.MAX_VALUE), false);
+    }
+
+    /** 落ちているアイテム {@code item} を全部 AE2 のチャージで加工しきるのに、あと要る FE。加工できなければ 0。 */
+    private long ae2Demand(ServerLevel level, ItemEntity item) {
+        ItemStack stack = item.getItem();
+        if (ae2ChargeResult(level, stack).isEmpty()) {
+            return 0L;
+        }
+        double needed = (double) stack.getCount() * FE_PER_AE2_CHARGE - chargeProgress.getOrDefault(item.getId(), 0.0);
+        return (long) Math.max(0.0, Math.ceil(needed));
     }
 
     /**
      * 範囲の中の FE を受け取れるブロックを受け手に足す。世界の範囲と機体の範囲の機械をまとめ、同じブロックは
-     * 1 回だけ。範囲・領域干渉・乱流は世界の位置で判定し、保護は機械が本当にある位置で確かめる。
+     * 1 回だけ。範囲・領域干渉・乱流は世界の位置で判定し、保護は機械が本当にある位置で確かめる。領域給電機は受け手にせず、
+     * 置いた人の荷電領域なら FE を引く先として {@code feeders} に足す。
      */
-    private void addBlockReceivers(ServerLevel level, List<Receiver> receivers) {
+    private void addBlockReceivers(ServerLevel level, List<Receiver> receivers, List<ZoneFeederBlockEntity> feeders) {
         Map<BlockPos, Integer> sides = new HashMap<>();
+        Set<BlockPos> feederPositions = new HashSet<>();
         if (getCaster() instanceof Player caster) {
             for (ZoneRegion region : regions()) {
                 for (net.minecraft.world.level.block.entity.BlockEntity blockEntity : machinesIn(region)) {
@@ -327,6 +463,12 @@ public class EntityChargedZone extends SpellGramZone {
                         continue;
                     }
                     BlockPos world = region.worldPos(pos);
+                    if (blockEntity instanceof ZoneFeederBlockEntity feeder) {
+                        if (feederPositions.add(pos) && feeder.allows(caster) && isActiveAt(world) && mayUseMachine(level, caster, pos)) {
+                            feeders.add(feeder);
+                        }
+                        continue;
+                    }
                     if (!isActiveAt(world) || !mayUseMachine(level, caster, pos)) {
                         continue;
                     }
@@ -362,7 +504,7 @@ public class EntityChargedZone extends SpellGramZone {
     }
 
     /** 今 FE を受け取れる窓口か（満タン・受け取らない窓口は偽）。 */
-    private static boolean accepts(IEnergyStorage storage) {
+    static boolean accepts(IEnergyStorage storage) {
         return storage != null && storage.canReceive() && storage.receiveEnergy(Integer.MAX_VALUE, true) > 0;
     }
 

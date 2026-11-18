@@ -119,6 +119,8 @@ public final class PsitweaksTabs {
                         output.accept(PsitweaksItems.SECONDARY_CASTER.get());
                         output.accept(PsitweaksItems.PARALLEL_CASTER.get());
                         output.accept(PsitweaksBlocks.CAD_DISASSEMBLER.get());
+                        output.accept(PsitweaksBlocks.ZONE_FEEDER.get());
+                        output.accept(PsitweaksItems.ZONE_RECEIVER.get());
                         MekanismCompat.addCreativeTabContents(output);
                         output.accept(PsitweaksBlocks.ORE_ANTINITE.get());
                         output.accept(PsitweaksBlocks.ANTINITE_BLOCK.get());

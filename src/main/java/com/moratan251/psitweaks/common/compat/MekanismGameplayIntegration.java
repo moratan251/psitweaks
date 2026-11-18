@@ -29,6 +29,24 @@ final class MekanismGameplayIntegration {
     private MekanismGameplayIntegration() {
     }
 
+    /**
+     * 究極ユニバーサルケーブルの送電量（J/t、設定の値）を、Mekanism の FE の換算（FE × 換算 = J）で FE にした値。読めなければ
+     * {@code fallback}。
+     */
+    static long ultimateCableFePerTick(long fallback) {
+        try {
+            long joules = mekanism.common.tier.CableTier.ULTIMATE.getCableCapacity();
+            double joulesPerFe = mekanism.common.config.MekanismConfig.general.forgeConversionRate.get();
+            if (joules <= 0L || !(joulesPerFe > 0.0)) {
+                return fallback;
+            }
+            return (long) Math.floor(joules / joulesPerFe);
+        } catch (RuntimeException e) {
+            // 設定がまだ読み込まれていないなど。
+            return fallback;
+        }
+    }
+
     static SoundEvent laserSound() {
         return MekanismSounds.LASER.get();
     }

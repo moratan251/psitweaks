@@ -19,6 +19,14 @@ public final class MekanismGameplayCompat {
     private MekanismGameplayCompat() {
     }
 
+    /**
+     * Mekanism の究極ユニバーサルケーブルの送電量（FE/t）: Mekanism の設定のケーブルの送電量（J/t）を、Mekanism の FE の換算で
+     * FE にした値。Mekanism がなければ {@code fallback}。
+     */
+    public static long ultimateCableFePerTick(long fallback) {
+        return MekanismCompat.isMekanismLoaded() ? MekanismGameplayIntegration.ultimateCableFePerTick(fallback) : fallback;
+    }
+
     public static SoundEvent laserSound() {
         return MekanismCompat.isMekanismLoaded()
                 ? MekanismGameplayIntegration.laserSound()

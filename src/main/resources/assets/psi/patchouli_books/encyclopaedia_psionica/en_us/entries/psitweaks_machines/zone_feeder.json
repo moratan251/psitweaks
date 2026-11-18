@@ -1,0 +1,17 @@
+{
+  "name": "block.psitweaks.zone_feeder",
+  "category": "psi:psitweaks_machines",
+  "icon": "psitweaks:zone_feeder",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_machine.zone_feeder",
+      "item": "psitweaks:zone_feeder",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_machine.zone_feeder.1"
+    }
+  ]
+}

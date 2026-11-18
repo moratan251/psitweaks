@@ -13,6 +13,7 @@
     "psitweaks:psycheonic_metal_block",
     "psitweaks:hypostasis_gem_block",
     "psitweaks:psycheonic_metal_crux",
+    "psitweaks:zone_feeder",
     {
       "id": "psitweaks:program_researcher",
       "required": false

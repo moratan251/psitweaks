@@ -3,9 +3,12 @@ package com.moratan251.psitweaks.common.gametest;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.CarriedEnergyStorage;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityChargedZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
+import com.moratan251.psitweaks.common.items.ItemZoneReceiver;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone;
@@ -16,15 +19,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -47,8 +53,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作動式: 荷電領域。範囲の中の機械・持ち物・落ちているアイテムに FE を送り、AE2 のチャージ加工をし、乱流領域と
- * 重なると雷雲になって中の生物を雷撃で打つ。Mekanism・AE2 を使うテストは、入っていないときは中身を飛ばして通す。
+ * 作動式: 荷電領域。範囲の中の機械・領域受電器を持つプレイヤーの持ち物・落ちているアイテムに FE を送り、AE2 のチャージ加工をし、
+ * 乱流領域と重なると雷雲になって中の生物を雷撃で打つ。Mekanism・AE2 を使うテストは、入っていないときは中身を飛ばして通す。
  * <p>
  * プレイヤーをワールドに入れるので、他のテストと同時に動かないようバッチを分ける。
  */
@@ -56,6 +62,10 @@ import java.util.List;
 @PrefixGameTestTemplate(false)
 public final class ChargedZoneGameTests {
     private static final String TEMPLATE = "connector_empty";
+    /** 領域受電器を入れる持ち物の枠（ホットバーの外）。 */
+    private static final int RECEIVER_SLOT = 9;
+    /** FE アイテムを入れる持ち物の枠（ホットバーの外）。 */
+    private static final int BACKPACK_SLOT = 20;
 
     private ChargedZoneGameTests() {
     }
@@ -173,6 +183,13 @@ public final class ChargedZoneGameTests {
         });
     }
 
+    /** 入の領域受電器を持ち物に入れたプレイヤーを {@code relative} に立たせる。 */
+    private static ServerPlayer carrier(GameTestHelper helper, String name, Vec3 relative) {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, name, relative);
+        player.getInventory().setItem(RECEIVER_SLOT, new ItemStack(PsitweaksItems.ZONE_RECEIVER.get()));
+        return player;
+    }
+
     private static ItemEntity dropTablet(GameTestHelper helper, Item tablet, Vec3 relative) {
         Vec3 at = helper.absoluteVec(relative);
         ItemEntity dropped = new ItemEntity(helper.getLevel(), at.x, at.y, at.z, new ItemStack(tablet));
@@ -184,8 +201,8 @@ public final class ChargedZoneGameTests {
     }
 
     /**
-     * 生き物の手のエネルギータブレットと落ちているエネルギータブレット（Mekanism）と、ブロック（AE2 のチャージャー）に FE が入る
-     * （ブロックにも送る）。
+     * 領域受電器を持つプレイヤーの手のエネルギータブレットと落ちているエネルギータブレット（Mekanism）と、ブロック（AE2 のチャージャー）に
+     * FE が入る（ブロックにも送る）。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_charged_energy", timeoutTicks = 80)
     public static void chargedZoneFillsCarriedItemsAndBlocks(GameTestHelper helper) {
@@ -201,8 +218,7 @@ public final class ChargedZoneGameTests {
             helper.setBlock(charger, chargerBlock);
         }
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_energy_caster", new Vec3(4.5, 1.0, 4.5));
-        Husk holder = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 0.5));
-        holder.setNoAi(true);
+        ServerPlayer holder = carrier(helper, "charged_energy_holder", new Vec3(2.5, 1.0, 0.5));
         Vec3 droppedAt = helper.absoluteVec(new Vec3(0.5, 1.2, 2.5));
         ItemEntity dropped = new ItemEntity(level, droppedAt.x, droppedAt.y, droppedAt.z,
                 tablet != null ? new ItemStack(tablet) : new ItemStack(Items.STONE));
@@ -214,7 +230,7 @@ public final class ChargedZoneGameTests {
             level.addFreshEntity(dropped);
         }
         Runnable cleanup = () -> {
-            holder.discard();
+            GameTestPlayers.remove(helper, holder);
             dropped.discard();
             SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
             GameTestPlayers.remove(helper, caster);
@@ -236,6 +252,262 @@ public final class ChargedZoneGameTests {
             helper.assertTrue(onGround > 0, "The dropped Energy Tablet inside the zone must get FE, has " + onGround);
             helper.succeed();
         });
+    }
+
+    /** 領域受電器のないプレイヤーの持ち物には給電しない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_no_receiver", timeoutTicks = 80)
+    public static void playersWithoutAReceiverGetNoEnergy(GameTestHelper helper) {
+        checkCarriedTablet(helper, "charged_no_receiver", null, false);
+    }
+
+    /** 入の領域受電器を持つプレイヤーの持ち物には、術者でなくても給電する。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_receiver_on", timeoutTicks = 80)
+    public static void playersWithAnEnabledReceiverGetEnergy(GameTestHelper helper) {
+        checkCarriedTablet(helper, "charged_receiver_on", true, true);
+    }
+
+    /** 切の領域受電器では給電しない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_receiver_off", timeoutTicks = 80)
+    public static void playersWithADisabledReceiverGetNoEnergy(GameTestHelper helper) {
+        checkCarriedTablet(helper, "charged_receiver_off", false, false);
+    }
+
+    /**
+     * 術者でないプレイヤーの手にエネルギータブレットを持たせて荷電領域に入れ、FE が入るかを確かめる。{@code receiver} は領域受電器の状態
+     * （null なら持たせない）。領域が働いていることは、落ちているエネルギータブレットで確かめる。
+     */
+    private static void checkCarriedTablet(GameTestHelper helper, String name, @Nullable Boolean receiver, boolean expectEnergy) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        if (tablet == null) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, name + "_caster", new Vec3(4.5, 1.0, 4.5));
+        ServerPlayer player = GameTestPlayers.inLevel(helper, name + "_player", new Vec3(1.5, 1.0, 1.5));
+        if (receiver != null) {
+            ItemStack stack = new ItemStack(PsitweaksItems.ZONE_RECEIVER.get());
+            ItemZoneReceiver.setEnabled(stack, receiver);
+            player.getInventory().setItem(RECEIVER_SLOT, stack);
+        }
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(tablet));
+        ItemEntity dropped = dropTablet(helper, tablet, new Vec3(3.5, 1.2, 0.5));
+        Runnable cleanup = () -> {
+            dropped.discard();
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, player);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(30, () -> {
+            int carried = stored(player.getMainHandItem());
+            int onGround = stored(dropped.getItem());
+            cleanup.run();
+            helper.assertTrue(onGround > 0, "The dropped Energy Tablet must get FE, has " + onGround);
+            helper.assertTrue(expectEnergy ? carried > 0 : carried == 0, "With receiver state " + receiver
+                    + " the carried Energy Tablet must " + (expectEnergy ? "get FE" : "get no FE") + ", has " + carried);
+            helper.succeed();
+        });
+    }
+
+    /** プレイヤー以外の生き物の手と防具には給電しない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_mob_gear", timeoutTicks = 80)
+    public static void mobEquipmentGetsNoEnergy(GameTestHelper helper) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        if (tablet == null) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_mob_gear_caster", new Vec3(4.5, 1.0, 4.5));
+        Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 1.0, 1.5));
+        husk.setNoAi(true);
+        husk.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(tablet));
+        husk.setItemSlot(EquipmentSlot.CHEST, new ItemStack(tablet));
+        ItemEntity dropped = dropTablet(helper, tablet, new Vec3(3.5, 1.2, 0.5));
+        Runnable cleanup = () -> {
+            husk.discard();
+            dropped.discard();
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(30, () -> {
+            int inHand = stored(husk.getItemBySlot(EquipmentSlot.MAINHAND));
+            int worn = stored(husk.getItemBySlot(EquipmentSlot.CHEST));
+            int onGround = stored(dropped.getItem());
+            cleanup.run();
+            helper.assertTrue(onGround > 0, "The dropped Energy Tablet must get FE, has " + onGround);
+            helper.assertTrue(inHand == 0 && worn == 0, "A mob's equipment must get no FE, hand " + inHand + ", armor " + worn);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * FE アイテムを 3 つ持つプレイヤーは受け手 1 つに数える: ブロック（Mekanism のエネルギーキューブ）1 つと分けると、ブロックが
+     * 渡した FE のおよそ半分を受け取る。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_one_share", timeoutTicks = 100)
+    public static void aPlayerCountsAsOneReceiver(GameTestHelper helper) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        Block cube = ModList.get().isLoaded("mekanism") ? block("mekanism:basic_energy_cube") : null;
+        if (tablet == null || cube == null) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        BlockPos cubePos = new BlockPos(0, 1, 0);
+        helper.setBlock(cubePos, cube);
+        // Mekanism の機械の面の設定は、アイテムの既定の値を読むまで空で、どの面からも FE を受け取らない。
+        level.getBlockEntity(helper.absolutePos(cubePos)).applyComponentsFromItemStack(new ItemStack(cube));
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_one_share_caster", new Vec3(4.5, 1.0, 4.5));
+        ServerPlayer player = carrier(helper, "charged_one_share_player", new Vec3(2.5, 1.0, 2.5));
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(tablet));
+        player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(tablet));
+        player.getInventory().setItem(BACKPACK_SLOT, new ItemStack(tablet));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, player);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(41, () -> {
+            int inCube = stored(level, helper.absolutePos(cubePos));
+            int carried = stored(player.getMainHandItem()) + stored(player.getOffhandItem())
+                    + stored(player.getInventory().getItem(BACKPACK_SLOT));
+            cleanup.run();
+            int total = inCube + carried;
+            helper.assertTrue(total > 0, "The cube and the player must get FE");
+            helper.assertTrue(inCube >= total * 0.4 && inCube <= total * 0.6,
+                    "The player must take one share: the cube has " + inCube + " FE, the player " + carried + " FE");
+            helper.succeed();
+        });
+    }
+
+    /** 足りないときは防具が先に満たされ、メインハンドと残りの持ち物には回らない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_armor_first", timeoutTicks = 80)
+    public static void armorFillsFirstWhenEnergyIsShort(GameTestHelper helper) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        if (tablet == null) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_armor_first_caster", new Vec3(4.5, 1.0, 4.5));
+        ServerPlayer player = carrier(helper, "charged_armor_first_player", new Vec3(1.5, 1.0, 1.5));
+        player.getInventory().armor.set(0, new ItemStack(tablet));
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(tablet));
+        player.getInventory().setItem(BACKPACK_SLOT, new ItemStack(tablet));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, player);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 5, 5.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(30, () -> {
+            int armor = stored(player.getInventory().armor.get(0));
+            int hand = stored(player.getMainHandItem());
+            int backpack = stored(player.getInventory().getItem(BACKPACK_SLOT));
+            cleanup.run();
+            helper.assertTrue(armor > 0, "The armor slot must fill first, has " + armor);
+            helper.assertTrue(hand == 0 && backpack == 0,
+                    "Nothing may reach the other items while the armor takes it all, hand " + hand + ", backpack " + backpack);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 持ち物をまとめた窓口: 防具 → メインハンド → オフハンド → 残りの持ち物の順に詰め、満タンのアイテムは飛ばし、引き出せない。受電器は
+     * 持ち物のどの区画にあっても効く。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_carried_storage", timeoutTicks = 40)
+    public static void carriedStorageFillsInOrder(GameTestHelper helper) {
+        Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+        if (tablet == null) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "charged_carried_storage", new Vec3(1.5, 1.0, 1.5));
+        try {
+            Inventory inventory = player.getInventory();
+            ItemStack receiver = new ItemStack(PsitweaksItems.ZONE_RECEIVER.get());
+            helper.assertTrue(!ItemZoneReceiver.isCarriedBy(player), "A player with no receiver must not count as carrying one");
+            for (int slot : new int[]{0, RECEIVER_SLOT, Inventory.INVENTORY_SIZE, Inventory.SLOT_OFFHAND}) {
+                inventory.setItem(slot, receiver.copy());
+                helper.assertTrue(ItemZoneReceiver.isCarriedBy(player), "A receiver in slot " + slot + " must count");
+                inventory.setItem(slot, ItemStack.EMPTY);
+            }
+            inventory.setItem(RECEIVER_SLOT, receiver.copy());
+            helper.assertTrue(CarriedEnergyStorage.of(player) == null, "A player with no FE item must not be a receiver");
+
+            List<ItemStack> ordered = List.of(new ItemStack(tablet), new ItemStack(tablet), new ItemStack(tablet), new ItemStack(tablet));
+            inventory.armor.set(0, ordered.get(0));
+            inventory.setItem(inventory.selected, ordered.get(1));
+            inventory.offhand.set(0, ordered.get(2));
+            inventory.setItem(BACKPACK_SLOT, ordered.get(3));
+            for (int filling = 0; filling < ordered.size(); filling++) {
+                CarriedEnergyStorage storage = CarriedEnergyStorage.of(player);
+                helper.assertTrue(storage != null && storage.canReceive(), "Item " + filling + " must still take FE");
+                helper.assertTrue(!storage.canExtract() && storage.extractEnergy(100, false) == 0, "FE must not come back out");
+                int[] before = ordered.stream().mapToInt(ChargedZoneGameTests::stored).toArray();
+                helper.assertTrue(storage.receiveEnergy(100, false) > 0, "Item " + filling + " must take the FE");
+                for (int i = 0; i < ordered.size(); i++) {
+                    int gained = stored(ordered.get(i)) - before[i];
+                    helper.assertTrue(i == filling ? gained > 0 : gained == 0,
+                            "With items before " + filling + " full, item " + i + " gained " + gained);
+                }
+                IEnergyStorage filled = ordered.get(filling).getCapability(Capabilities.EnergyStorage.ITEM);
+                while (filled.receiveEnergy(Integer.MAX_VALUE, false) > 0) {
+                    // 1 回に受け取れる量に上限があるので、満タンになるまで繰り返す。
+                }
+            }
+            helper.assertTrue(CarriedEnergyStorage.of(player) == null, "A player whose FE items are all full must not be a receiver");
+            helper.succeed();
+        } finally {
+            GameTestPlayers.remove(helper, player);
+        }
+    }
+
+    /** 右クリックで入と切が切り替わり、光と保存もそれに従う。作ったばかりの受電器は入。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_receiver_toggle", timeoutTicks = 40)
+    public static void zoneReceiverTogglesOnUse(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "charged_receiver_toggle", new Vec3(1.5, 1.0, 1.5));
+        try {
+            ItemStack stack = new ItemStack(PsitweaksItems.ZONE_RECEIVER.get());
+            helper.assertTrue(stack.getMaxStackSize() == 1, "The Zone Receiver must not stack");
+            helper.assertTrue(ItemZoneReceiver.isEnabled(stack) && stack.hasFoil(), "A new Zone Receiver must be on and glow");
+            player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+            stack.use(level, player, InteractionHand.MAIN_HAND);
+            helper.assertTrue(!ItemZoneReceiver.isEnabled(stack) && !stack.hasFoil(), "Using it must switch it off and stop the glow");
+            ItemStack loaded = ItemStack.parseOptional(level.registryAccess(), (CompoundTag) stack.save(level.registryAccess()));
+            helper.assertTrue(!ItemZoneReceiver.isEnabled(loaded), "The off state must survive saving");
+            stack.use(level, player, InteractionHand.MAIN_HAND);
+            helper.assertTrue(ItemZoneReceiver.isEnabled(stack) && stack.hasFoil(), "Using it again must switch it back on");
+            helper.succeed();
+        } finally {
+            GameTestPlayers.remove(helper, player);
+        }
     }
 
     /** AE2 があれば、落ちているケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる。 */

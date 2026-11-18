@@ -126,6 +126,17 @@ public final class PsitweaksBlocks {
             () -> new BlockItem(PSYCHEONIC_METAL_CRUX.get(), new Item.Properties())
     );
 
+    public static final DeferredBlock<ZoneFeederBlock> ZONE_FEEDER = BLOCKS.register(
+            "zone_feeder",
+            () -> new ZoneFeederBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.COPPER)
+                    .requiresCorrectToolForDrops()
+                    .lightLevel(state -> state.getValue(ZoneFeederBlock.ACTIVE) ? 7 : 0))
+    );
+    public static final DeferredItem<BlockItem> ZONE_FEEDER_ITEM = BLOCK_ITEMS.registerSimpleBlockItem(ZONE_FEEDER, new Item.Properties());
+
     private PsitweaksBlocks() {
     }
 

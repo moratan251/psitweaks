@@ -14,6 +14,9 @@ public final class PsitweaksBlockEntityCapabilities {
                 (connector, side) -> side == null ? null : connector.handlers(side).fluids);
         event.registerBlockEntity(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK, type,
                 (connector, side) -> side == null ? null : connector.handlers(side).energy);
+        // 領域給電機: どの面からも（面のない問い合わせでも）受け取りと取り出しができる FE の窓口。
+        event.registerBlockEntity(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK,
+                PsitweaksBlockEntityTypes.ZONE_FEEDER.get(), (feeder, side) -> feeder.energyStorage());
         if (com.moratan251.psitweaks.common.compat.MekanismCompat.isMekanismLoaded())
             com.moratan251.psitweaks.common.compat.ConnectorMekanism.register(event);
     }

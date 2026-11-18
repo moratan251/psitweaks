@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "psitweaks:block/zone_feeder"
+    },
+    "active=true": {
+      "model": "psitweaks:block/zone_feeder_active"
+    }
+  }
+}

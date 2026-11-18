@@ -5,6 +5,7 @@ import java.util.List;
 final class PsitweaksDatagenBlocks {
     private static final List<GeneratedBlock> BLOCKS = List.of(
             block("cad_disassembler", "CAD Disassembler", "CAD分解台"),
+            block("zone_feeder", "Zone Feeder", "領域給電機"),
             customModelMachine("program_researcher", "Program Research Table", "プログラム研究台"),
             customModelMachine("sculk_eroder", "Sculk Eroder", "スカルク侵食機"),
             machine("material_mutator", "Material Mutator", "物質変成機", "material_mutator"),

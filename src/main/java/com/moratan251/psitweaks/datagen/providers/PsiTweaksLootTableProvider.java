@@ -40,6 +40,7 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         for (PsitweaksDatagenBlocks.GeneratedBlock block : PsitweaksDatagenBlocks.blocks()) {
             JsonObject lootTable = switch (block.id()) {
                 case "ore_antinite" -> oreDrop(block.id(), PsitweaksItems.RAW_ANTINITE);
+                case "zone_feeder" -> dropWithComponents(block.id(), PsitweaksDataComponents.ZONE_FEEDER_ENERGY.getId().toString());
                 // The Mekanism machines only exist with Mekanism; skip their tables otherwise instead of failing to parse them.
                 case "autonomous_caster" -> RecipeConditionHelper.requireMod(
                         dropMekanismMachine(block.id(), PsitweaksDataComponents.AUTONOMOUS_CASTER_PSI.getId().toString(),
@@ -77,6 +78,26 @@ public class PsiTweaksLootTableProvider implements DataProvider {
         pool.add("entries", entries);
         pool.add("conditions", conditions);
         addPool(table, pool);
+
+        return table;
+    }
+
+    /** ブロック自身を落とし、ブロックエンティティの {@code components} をアイテムへ写す。 */
+    private static JsonObject dropWithComponents(String blockId, String... components) {
+        JsonObject table = dropSelf(blockId);
+        JsonObject entry = table.getAsJsonArray("pools").get(0).getAsJsonObject().getAsJsonArray("entries").get(0).getAsJsonObject();
+        JsonArray functions = new JsonArray();
+        JsonObject copyComponents = new JsonObject();
+        JsonArray include = new JsonArray();
+
+        copyComponents.addProperty("function", "minecraft:copy_components");
+        copyComponents.addProperty("source", "block_entity");
+        for (String component : components) {
+            include.add(component);
+        }
+        copyComponents.add("include", include);
+        functions.add(copyComponents);
+        entry.add("functions", functions);
 
         return table;
     }

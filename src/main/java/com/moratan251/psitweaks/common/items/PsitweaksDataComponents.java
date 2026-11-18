@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.items;
 
+import com.mojang.serialization.Codec;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.caster.AutonomousCasterStoredSettings;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
@@ -44,6 +45,18 @@ public final class PsitweaksDataComponents {
                     .persistent(VirtualCad.Memory.CODEC)
                     .networkSynchronized(VirtualCad.Memory.STREAM_CODEC)
                     .cacheEncoding());
+
+    /** 領域受電器の入（真）と切（偽）。付いていないものは入として扱う。 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ZONE_RECEIVER_ENABLED =
+            DATA_COMPONENTS.registerComponentType("zone_receiver_enabled", builder -> builder
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL));
+
+    /** 壊した領域給電機にためてあった FE。空の給電機には付けない。 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> ZONE_FEEDER_ENERGY =
+            DATA_COMPONENTS.registerComponentType("zone_feeder_energy", builder -> builder
+                    .persistent(Codec.LONG)
+                    .networkSynchronized(ByteBufCodecs.VAR_LONG));
 
     private PsitweaksDataComponents() {
     }

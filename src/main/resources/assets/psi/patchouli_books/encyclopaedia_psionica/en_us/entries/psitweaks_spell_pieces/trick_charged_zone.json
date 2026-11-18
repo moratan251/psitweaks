@@ -14,6 +14,16 @@
     {
       "type": "text",
       "text": "psi.book.page.psitweaks_spellpiece.trick_charged_zone.2"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_charged_zone.3"
+    },
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_charged_zone.4",
+      "item": "psitweaks:zone_receiver",
+      "link_recipe": true
     }
   ]
 }

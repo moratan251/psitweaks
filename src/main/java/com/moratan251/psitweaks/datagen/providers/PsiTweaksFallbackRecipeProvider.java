@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.datagen.providers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.blocks.PsitweaksBlocks;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -244,6 +245,17 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                         'D', ingredient(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER)
                 ),
                 PsitweaksItems.THIRD_EYE_DEVICE, 1));
+
+        add(recipes, "zone_feeder", shaped(
+                List.of(" L ", "PGP", "CRC"),
+                Map.of(
+                        'L', ingredient(Items.LIGHTNING_ROD),
+                        'P', ingredient(ModItems.psimetal.get()),
+                        'G', ingredient(ModItems.psigem.get()),
+                        'C', ingredient(Items.COPPER_BLOCK),
+                        'R', ingredient(Items.REDSTONE_BLOCK)
+                ),
+                PsitweaksBlocks.ZONE_FEEDER.get(), 1));
 
         CompletableFuture<?>[] futures = recipes.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(output, entry.getValue(), pathProvider.json(entry.getKey())))

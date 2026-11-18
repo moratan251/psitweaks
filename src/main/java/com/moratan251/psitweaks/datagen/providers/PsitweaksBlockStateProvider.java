@@ -54,6 +54,25 @@ public class PsitweaksBlockStateProvider implements DataProvider {
                 futures.add(DataProvider.saveStable(output, parentItemModel(model), itemModelPathProvider.json(id)));
                 continue;
             }
+            if ("zone_feeder".equals(block.id())) {
+                // 送っている間（active）は光る面に変える。上が避雷針の面、下が受け口の面。
+                ResourceLocation id = Psitweaks.location(block.id());
+                JsonObject state = new JsonObject();
+                JsonObject variants = new JsonObject();
+                JsonObject idle = new JsonObject();
+                idle.addProperty("model", Psitweaks.location("block/zone_feeder").toString());
+                JsonObject active = new JsonObject();
+                active.addProperty("model", Psitweaks.location("block/zone_feeder_active").toString());
+                variants.add("active=false", idle);
+                variants.add("active=true", active);
+                state.add("variants", variants);
+                futures.add(DataProvider.saveStable(output, state, blockStatePathProvider.json(id)));
+                futures.add(DataProvider.saveStable(output, zoneFeederModel(false), blockModelPathProvider.json(id)));
+                futures.add(DataProvider.saveStable(output, zoneFeederModel(true),
+                        blockModelPathProvider.json(Psitweaks.location("zone_feeder_active"))));
+                futures.add(DataProvider.saveStable(output, blockItemModel(block.id()), itemModelPathProvider.json(id)));
+                continue;
+            }
             if ("transcendent_energy_cube".equals(block.id())) {
                 ResourceLocation id = Psitweaks.location(block.id());
                 ResourceLocation model = Psitweaks.location("block/energy_cube/transcendent");
@@ -113,6 +132,18 @@ public class PsitweaksBlockStateProvider implements DataProvider {
         variants.add("", defaultVariant);
         root.add("variants", variants);
 
+        return root;
+    }
+
+    private static JsonObject zoneFeederModel(boolean active) {
+        JsonObject root = new JsonObject();
+        JsonObject textures = new JsonObject();
+        String suffix = active ? "_active" : "";
+        root.addProperty("parent", "minecraft:block/cube_bottom_top");
+        textures.addProperty("side", Psitweaks.location("block/zone_feeder/side" + suffix).toString());
+        textures.addProperty("top", Psitweaks.location("block/zone_feeder/top" + suffix).toString());
+        textures.addProperty("bottom", Psitweaks.location("block/zone_feeder/bottom").toString());
+        root.add("textures", textures);
         return root;
     }
 
