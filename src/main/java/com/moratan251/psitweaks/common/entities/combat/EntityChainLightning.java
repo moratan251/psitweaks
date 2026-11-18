@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 public class EntityChainLightning extends CombatSpellEntity {
     /** Ticks between one stage of the bolt and the next. The client arcs light up at the same pace. */
     public static final int STAGGER = 2;
-    private static final float WET_DAMAGE_FACTOR = 1.5F;
+    private static final float WET_DAMAGE_FACTOR = 1.25F;
 
     private final List<Hit> hits = new ArrayList<>();
     /** Game time of the cast; counting from it keeps the pace whether the entity first ticks this tick or the next. */

@@ -4,8 +4,10 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityChargedZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase;
@@ -20,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.item.Item;
@@ -78,6 +81,9 @@ public final class ChargedZoneGameTests {
         helper.assertTrue(EntityChargedZone.strikeDamage(40.0F, 1) == 20.0F && EntityChargedZone.strikeDamage(40.0F, 2) == 16.25F
                         && EntityChargedZone.strikeDamage(40.0F, 3) == 12.5F,
                 "A strike must deal 20 / 16.25 / 12.5 to each of 1 / 2 / 3 beings at attack power 40");
+        helper.assertTrue(EntityChargedZone.strikeDamage(40.0F, 1, true) == 25.0F && EntityChargedZone.strikeDamage(40.0F, 3, true) == 15.625F
+                        && EntityChargedZone.strikeDamage(40.0F, 1, false) == 20.0F,
+                "A strike must deal 1.25 times the damage to a wet being");
         helper.succeed();
     }
 
@@ -308,6 +314,52 @@ public final class ChargedZoneGameTests {
             cleanup.run();
             helper.assertTrue(storm, "A Charged Zone overlapping the caster's Turbulence Zone must become a Thundercloud");
             helper.assertTrue(health < 200.0F, "A strike of the Thundercloud must hit the husk inside, health " + health);
+            helper.succeed();
+        });
+    }
+
+    /** 雷雲の雷撃は、濡れた相手に 1.25 倍のダメージを与える。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_thundercloud_wet", timeoutTicks = 120)
+    public static void thundercloudStrikesWetBeingsHarder(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "charged_storm_wet_caster", new Vec3(4.5, 1.0, 4.5));
+        Husk target = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 1.0, 1.5)), 200.0F);
+        target.setNoAi(true);
+        target.getAttribute(Attributes.ARMOR).setBaseValue(0.0);
+        target.setHealth(200.0F);
+        CombatStatuses.soak(target, 1000);
+        Runnable cleanup = () -> {
+            target.discard();
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        EntityTurbulenceZone[] turbulence = new EntityTurbulenceZone[1];
+        EntityChargedZone[] charged = new EntityChargedZone[1];
+        try {
+            BlockPos center = helper.absolutePos(new BlockPos(2, 1, 2));
+            placeCharged(caster, center, 5, 5.0);
+            placeTurbulence(caster, center, 5, 10.0);
+            charged[0] = SpellGramIndex.all(level, EntityChargedZone.class).stream()
+                    .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElseThrow();
+            turbulence[0] = SpellGramIndex.all(level, EntityTurbulenceZone.class).stream()
+                    .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElseThrow();
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        float attack = EntityTurbulenceZone.limitedAttackPower(turbulence[0].attackPower(), charged[0].getPower(),
+                EntityTurbulenceZone.CHARGED_ATTACK_POWER_PER_POWER);
+        float[] firstLoss = {0.0F};
+        helper.onEachTick(() -> {
+            if (firstLoss[0] == 0.0F) {
+                firstLoss[0] = 200.0F - target.getHealth();
+            }
+        });
+        helper.runAfterDelay(90, () -> {
+            cleanup.run();
+            float expected = EntityChargedZone.strikeDamage(attack, 1, true);
+            helper.assertTrue(Math.abs(firstLoss[0] - expected) < 1.0E-3F,
+                    "A strike must deal " + expected + " to the wet husk, dealt " + firstLoss[0]);
             helper.succeed();
         });
     }

@@ -2226,8 +2226,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places a zone that keeps the living beings inside soaked. Se"
                         + "e $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zone"
                         + "s share.$(p)Living beings inside stay wet for 3 seconds afte"
-                        + "r leaving; wet beings do not burn and take 50%% more damage "
-                        + "from Trick: Chain Lightning. The blocks inside are wetted li"
+                        + "r leaving; wet beings do not burn and take 25%% more damage "
+                        + "from Trick: Chain Lightning and Thundercloud bolts. The blocks inside are wetted li"
                         + "ke with a Splash Water Bottle: fire, campfires and candles g"
                         + "o out, and concrete powder turns into concrete. At random, "
                         + "like random ticks but faster, farmland is moistened and Spo"
@@ -2236,7 +2236,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "y change blocks.",
                 "範囲の中の生物を濡らし続ける領域を置きます。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$("
                         + "/l)の項目にあります。$(p)中の生物は範囲を出てから3秒は濡れたままです。濡れている生物は燃えず、作動式: 連鎖電光"
-                        + "のダメージが50%%増えます。範囲のブロックには水入りスプラッシュ瓶のように効き、炎・焚き火・ろうそくを消し、コンクリート"
+                        + "と雷雲の雷撃のダメージが25%%増えます。範囲のブロックには水入りスプラッシュ瓶のように効き、炎・焚き火・ろうそくを消し、コンクリート"
                         + "パウダーをコンクリートに固めます。また、ランダムティックのように（それより速く）ランダムに選んだブロックで、耕地を"
                         + "湿らせ、スポンジを濡らします。自分の加熱領域も重なったところのスポンジはそのままです。どれも術者がブロックを変えて"
                         + "よい場所だけです。");
@@ -2362,8 +2362,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "「威力」（1以上の定数）でコストが決まり、コストに応じて充電能力が決まります。充電能力は、FE を受け取れるもので均等に分けます。干渉力2なら、サイズ16・威力10の領域で1 tick あたり約360 FE です。$(p)Applied Energistics 2 が入っているときは、範囲の中の落ちているアイテムに、チャージャーと同じ加工をします（ケルタスクォーツの水晶がチャージ済みケルタスクォーツの水晶になる、など）。1個につき充電能力から3200 FE を使います。");
 
         addBookPage(root, "trick_charged_zone.2",
-                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals bolts strike up to three living beings under it, harder the fewer they are and the higher the Cost of the turbulence, and the FE given there rises with the Power of the turbulence. Where your own Heat Zone and Turbulence Zone both overlap it, the Heat Zone bulk-blasts instead of bulk-smoking.",
-                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下の生物を最大3体まで雷撃が打ちます（少ないほど強い）。雷撃の強さは乱流領域のコストで決まり、送る FE は乱流の威力に応じて増えます。自分の加熱領域と乱流領域の両方が重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
+                "Where it overlaps your own Turbulence Zone it becomes a Thundercloud: at random intervals bolts strike up to three living beings under it, harder the fewer they are and the higher the Cost of the turbulence, and 25%% harder on wet ones. The FE given there rises with the Power of the turbulence. Where your own Heat Zone and Turbulence Zone both overlap it, the Heat Zone bulk-blasts instead of bulk-smoking.",
+                "自分の乱流領域と重なったところは雷雲になり、ランダムな間隔で、その下の生物を最大3体まで雷撃が打ちます（少ないほど強く、濡れた相手には1.25倍）。雷撃の強さは乱流領域のコストで決まり、送る FE は乱流の威力に応じて増えます。自分の加熱領域と乱流領域の両方が重なったところでは、加熱領域が一括燻製の代わりに一括製錬をします。");
 
         // 遮音領域
         addBookPage(root, "trick_silence_zone.0",
@@ -2472,8 +2472,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
         addBookPage(root, "trick_aqua_cutter",
-                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) deals it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
-                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
+                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
+                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) と雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
         addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
@@ -2496,8 +2496,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "From the first target, the bolt branches to up to 3 hostile creatures within 8 blocks, and from each of those to up to 2 more within 8 blocks. It never strikes the same creature twice. The first hit deals $(thing)9 + 9 × Power$(0) damage, the first branches 40%% of it and the second branches 20%%.",
                 "雷撃は最初の対象から8ブロック以内の敵対的な生物最大3体へ枝分かれし、さらにそれぞれから8ブロック以内の最大2体へ枝分かれします. 同じ生物に二度当たることはありません. ダメージは最初の一撃が $(thing)9 + 9×威力$(0)、1段目の枝分かれがその40%%、2段目が20%%です.");
         addBookPage(root, "trick_chain_lightning.2",
-                "Wet creatures (in water or rain, or soaked by $(thing)Trick: Aqua Cutter$(0)) take 50%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
-                "水中や雨の中にいる生物や, $(thing)作動式: アクアカッター$(0) で濡れた生物には50%%増しになります. 最初の対象も枝分かれの先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
+                "Wet creatures (in water or rain, or soaked by $(thing)Trick: Aqua Cutter$(0)) take 25%% more. The bolt only strikes hostile creatures (monsters and anything attacking you), so allies and animals are left alone.",
+                "水中や雨の中にいる生物や, $(thing)作動式: アクアカッター$(0) で濡れた生物には25%%増しになります. 最初の対象も枝分かれの先も敵対的な生物 (モンスターや術者を攻撃している生物) に限られるため、味方や動物は巻き込みません.");
         addBookPage(root, "trick_chain_lightning.3",
                 "With a non-zero $(thing)Indiscriminate$(0) (optional), the bolt strikes and branches to any creature, animals and villagers included. It still never strikes you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
                 "$(thing)無差別$(0) (省略可) に0以外を入れると, 動物や村人を含むあらゆる生物を狙い、枝分かれします. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");

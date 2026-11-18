@@ -97,8 +97,8 @@ public final class WetStateGameTests {
         var source = AttackRules.source(helper.getLevel(), PsitweaksDamageTypes.CHAIN_LIGHTNING, player, player);
         EntityChainLightning.strike(helper.getLevel(), player, AttackRules.Options.DEFAULT, soaked, source, 10.0F, 0);
         EntityChainLightning.strike(helper.getLevel(), player, AttackRules.Options.DEFAULT, dry, source, 10.0F, 0);
-        helper.assertTrue(Math.abs(HEALTH - soaked.getHealth() - 15.0F) < 1.0E-3F,
-                "Chain Lightning must deal 50% more to a soaked creature: " + (HEALTH - soaked.getHealth()));
+        helper.assertTrue(Math.abs(HEALTH - soaked.getHealth() - 12.5F) < 1.0E-3F,
+                "Chain Lightning must deal 25% more to a soaked creature: " + (HEALTH - soaked.getHealth()));
         helper.assertTrue(raining || Math.abs(HEALTH - dry.getHealth() - 10.0F) < 1.0E-3F,
                 "Chain Lightning must deal its plain damage to a dry creature: " + (HEALTH - dry.getHealth()));
         helper.succeed();

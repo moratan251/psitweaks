@@ -567,7 +567,7 @@ public final class CombatSpellGameTests {
         lookUp(player);
         chainLightning(Map.of(DIRECTION, toward(player, first), POWER, 1.0)).execute(new SpellContext().setPlayer(player));
         float d1 = TOUGH_HEALTH - first.getHealth();
-        helper.assertTrue(near(d1, 18) || near(d1, 27), "The first hit must deal 9 + 9 x Power (x1.5 when wet): " + d1);
+        helper.assertTrue(near(d1, 18) || near(d1, 22.5F), "The first hit must deal 9 + 9 x Power (x1.25 when wet): " + d1);
         helper.assertTrue(tookDamage(others, 0.0F) == others.size(), "The branches must land after the first hit, not with it");
         float firstBranch = d1 * 0.4F;
         float secondBranch = d1 * 0.2F;

@@ -6,7 +6,7 @@
 
 
 - Added attack spell pieces
-  + Trick: Chain Lightning: discharges lightning from the focal point in the direction; it strikes the nearest enemy and branches to the enemies around it. 1.5x damage against wet targets
+  + Trick: Chain Lightning: discharges lightning from the focal point in the direction; it strikes the nearest enemy and branches to the enemies around it. 1.25x damage against wet targets
   + Trick: Mine Genesis: shakes the ground so a shockwave spreads out and throws up the creatures standing on it
   + Trick: Burst: makes the creature you are aiming at burst from within, catching the creatures around it
   + Trick: Air Bullet: fires a bullet of compressed air that strikes the first creature it hits directly (creatures it grazes take a little damage)

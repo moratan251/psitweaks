@@ -85,6 +85,8 @@ public class EntityChargedZone extends SpellGramZone {
     public static final float STRIKE_DAMAGE_PER_POWER = 0.5F;
     /** 1 回の雷撃で打つ生物の数（1〜{@link #MAX_STRIKE_TARGETS}）ごとの、1 体あたりのダメージの倍率。 */
     private static final float[] STRIKE_TARGET_FACTORS = {1.0F, 0.8125F, 0.625F};
+    /** 濡れた相手（{@link LivingEntity#isInWaterOrRain()}）への雷撃のダメージの倍率。 */
+    public static final float STRIKE_WET_DAMAGE_FACTOR = 1.25F;
     private static final ResourceLocation AE2_CHARGER = ResourceLocation.fromNamespaceAndPath("ae2", "charger");
     private static final int MAX_SPARKS_PER_TICK = 3;
 
@@ -168,6 +170,11 @@ public class EntityChargedZone extends SpellGramZone {
     public static float strikeDamage(float attackPower, int targets) {
         int index = Math.max(1, Math.min(MAX_STRIKE_TARGETS, targets)) - 1;
         return strikeDamage(attackPower) * STRIKE_TARGET_FACTORS[index];
+    }
+
+    /** {@link #strikeDamage(float, int)} に、相手が濡れていれば {@link #STRIKE_WET_DAMAGE_FACTOR} を掛けたダメージ。 */
+    public static float strikeDamage(float attackPower, int targets, boolean wet) {
+        return strikeDamage(attackPower, targets) * (wet ? STRIKE_WET_DAMAGE_FACTOR : 1.0F);
     }
 
     /** 1 体ずつの効き目はない（FE は {@link #supplyEnergy} でまとめて分ける）ので、ほぼ呼ばない。 */
@@ -472,7 +479,7 @@ public class EntityChargedZone extends SpellGramZone {
 
     /**
      * 雷雲: ランダムな間隔で、雷雲の下（同じ術者の乱流と重なったところ）にいる生物を最大 {@link #MAX_STRIKE_TARGETS} 体選んで
-     * 雷撃で打つ。打つ数が少ないほど 1 体あたりのダメージが高い。打てる相手がいなければ、雷雲の下のどこかへ落ちる（演出だけ）。
+     * 雷撃で打つ。打つ数が少ないほど 1 体あたりのダメージが高く、濡れた相手には 1.25 倍。打てる相手がいなければ、雷雲の下のどこかへ落ちる（演出だけ）。
      */
     private void tickThundercloud(ServerLevel level) {
         long now = level.getGameTime();
@@ -507,7 +514,7 @@ public class EntityChargedZone extends SpellGramZone {
             float attack = comboAttackPowerAt(BlockPos.containing(end), getPower(),
                     EntityTurbulenceZone.CHARGED_ATTACK_POWER_PER_POWER);
             if (attack > 0.0F) {
-                float damage = AttackRules.scale(strikeDamage(attack, targets),
+                float damage = AttackRules.scale(strikeDamage(attack, targets, target.isInWaterOrRain()),
                         PsitweaksConfig.COMMON.thundercloudDamageMultiplier.get(), caster);
                 target.invulnerableTime = 0;
                 AttackRules.harm(caster, target, AttackRules.Options.DEFAULT, source, damage);
