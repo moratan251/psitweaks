@@ -234,8 +234,7 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         DamageSource source = createAreaDamageSource(caster);
         float damage = getAoEDamage();
         for (LivingEntity target : targets) {
-            target.invulnerableTime = 0;
-            if (AttackRules.harm(caster, target, attackOptions(), source, damage)) {
+            if (AttackRules.harmWithoutCooldown(caster, target, attackOptions(), source, damage)) {
                 onAreaDamageApplied(target, damage, source);
             }
         }

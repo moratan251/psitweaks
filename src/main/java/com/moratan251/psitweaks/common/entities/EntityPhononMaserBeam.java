@@ -236,8 +236,7 @@ public class EntityPhononMaserBeam extends Entity {
             if (entity instanceof LivingEntity living) {
                 Vec3 oldDeltaMovement = living.getDeltaMovement();
 
-                living.invulnerableTime = 0;
-                AttackRules.harm(caster, living, attackCaster.options(), damageSource, damagePerTick);
+                AttackRules.harmWithoutCooldown(caster, living, attackCaster.options(), damageSource, damagePerTick);
 
                 // ノックバックを無効化
                 living.setDeltaMovement(oldDeltaMovement);

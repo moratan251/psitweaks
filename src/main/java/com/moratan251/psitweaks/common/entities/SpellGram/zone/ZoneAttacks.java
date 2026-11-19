@@ -53,8 +53,7 @@ final class ZoneAttacks {
                 continue;
             }
             float damage = AttackRules.scale(base, perSpellMultiplier, caster);
-            target.invulnerableTime = 0;
-            if (AttackRules.harm(caster, target, AttackRules.Options.DEFAULT, source, damage)) {
+            if (AttackRules.harmWithoutCooldown(caster, target, AttackRules.Options.DEFAULT, source, damage)) {
                 afterHit.accept(target);
             }
         }

@@ -373,8 +373,7 @@ public abstract class SpellGramCircle extends SpellGramObject {
                 target.setLastHurtByMob(caster);
             }
 
-            target.invulnerableTime = 0;
-            if (AttackRules.harm(caster, target, attackOptions(), source, damage)) {
+            if (AttackRules.harmWithoutCooldown(caster, target, attackOptions(), source, damage)) {
                 onAreaDamageApplied(target, damage, source);
             }
         }

@@ -658,8 +658,7 @@ public class EntityChargedZone extends SpellGramZone {
             if (attack > 0.0F) {
                 float damage = AttackRules.scale(strikeDamage(attack, targets, target.isInWaterOrRain()),
                         PsitweaksConfig.COMMON.thundercloudDamageMultiplier.get(), caster);
-                target.invulnerableTime = 0;
-                AttackRules.harm(caster, target, AttackRules.Options.DEFAULT, source, damage);
+                AttackRules.harmWithoutCooldown(caster, target, AttackRules.Options.DEFAULT, source, damage);
             }
         }
     }

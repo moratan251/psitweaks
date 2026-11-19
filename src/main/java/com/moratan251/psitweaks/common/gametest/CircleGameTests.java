@@ -13,6 +13,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenc
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickCircleFollow;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickFlareCircle;
@@ -23,9 +24,11 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -575,6 +578,67 @@ public final class CircleGameTests {
     // ---- 道具 ----
 
     /** 動かない円を {@code relative} に置く（存続 400 tick、耐久値 1000）。 */
+    /**
+     * サークル・領域・ビームの当て方（{@link AttackRules#harmWithoutCooldown}）は相手に無敵時間を残さない。あとから当てた
+     * 単発の攻撃は満額入り、単発の攻撃どうしの無敵時間はそのまま効く。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_periodic_no_cooldown")
+    public static void periodicHitsLeaveNoCooldownForOtherAttacks(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "no_cooldown_caster", new Vec3(0.5, 1.0, 0.5));
+        Husk husk = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 2.5)), TOUGH);
+        husk.setNoAi(true);
+        husk.getAttribute(Attributes.ARMOR).setBaseValue(0.0);
+        husk.setHealth(TOUGH);
+        Runnable cleanup = () -> cleanup(helper, List.of(caster), husk);
+        guarded(cleanup, () -> {
+            DamageSource source = caster.damageSources().indirectMagic(caster, caster);
+            float start = husk.getHealth();
+            AttackRules.harmWithoutCooldown(caster, husk, AttackRules.Options.DEFAULT, source, 6.0F);
+            float afterPeriodic = husk.getHealth();
+            int cooldown = husk.invulnerableTime;
+            AttackRules.harm(caster, husk, AttackRules.Options.DEFAULT, source, 29.0F);
+            float afterSpell = husk.getHealth();
+            AttackRules.harmWithoutCooldown(caster, husk, AttackRules.Options.DEFAULT, source, 6.0F);
+            float afterSecondPeriodic = husk.getHealth();
+            AttackRules.harm(caster, husk, AttackRules.Options.DEFAULT, source, 29.0F);
+            float afterRepeat = husk.getHealth();
+            cleanup.run();
+            helper.assertTrue(Math.abs(start - afterPeriodic - 6.0F) < 1.0E-3F && cooldown == 0,
+                    "A periodic hit must deal 6 and leave no cooldown, dealt " + (start - afterPeriodic) + ", cooldown " + cooldown);
+            helper.assertTrue(Math.abs(afterPeriodic - afterSpell - 29.0F) < 1.0E-3F,
+                    "A spell right after a periodic hit must deal its full 29, dealt " + (afterPeriodic - afterSpell));
+            helper.assertTrue(Math.abs(afterSpell - afterSecondPeriodic - 6.0F) < 1.0E-3F,
+                    "A periodic hit inside the spell's cooldown must still deal 6, dealt " + (afterSpell - afterSecondPeriodic));
+            helper.assertTrue(Math.abs(afterSecondPeriodic - afterRepeat) < 1.0E-3F,
+                    "The same spell again inside its own cooldown must deal nothing, dealt " + (afterSecondPeriodic - afterRepeat));
+            helper.succeed();
+        }).run();
+    }
+
+    /** サークルが当たったあと、相手に無敵時間が残らない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_circle_no_cooldown", timeoutTicks = 60)
+    public static void circleHitsLeaveNoCooldown(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "circle_no_cooldown_caster", new Vec3(0.5, 1.0, 0.5));
+        Husk husk = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 2.5)), TOUGH);
+        husk.setNoAi(true);
+        CombatStatuses.soak(husk, 1000);
+        place(helper, new EntityFlareCircle(level), caster, new Vec3(2.5, 1.0, 2.5), 2.0F, 2.0F, 10, 1.0F);
+        Runnable cleanup = () -> cleanup(helper, List.of(caster), husk);
+        float start = husk.getHealth();
+        int[] cooldownAfterHit = {-1};
+        helper.onEachTick(() -> {
+            if (cooldownAfterHit[0] < 0 && husk.getHealth() < start) {
+                cooldownAfterHit[0] = husk.invulnerableTime;
+            }
+        });
+        helper.runAfterDelay(25, guarded(cleanup, () -> {
+            cleanup.run();
+            helper.assertTrue(cooldownAfterHit[0] == 0, "A circle hit must leave no hurt cooldown, left " + cooldownAfterHit[0]);
+            helper.succeed();
+        }));
+    }
+
     private static <T extends SpellGramCircle> T place(GameTestHelper helper, T circle, ServerPlayer caster, Vec3 relative,
                                                        float radius, float damage, int interval, float power) {
         Vec3 at = helper.absoluteVec(relative);

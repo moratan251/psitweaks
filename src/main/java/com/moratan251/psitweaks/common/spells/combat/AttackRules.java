@@ -4,6 +4,7 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.spells.SpellSafetyUtils;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
+import com.moratan251.psitweaks.mixin.LivingEntityAccessor;
 import javax.annotation.Nullable;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -248,6 +249,25 @@ public final class AttackRules {
      */
     public static boolean harm(@Nullable LivingEntity caster, Entity target, Options options, DamageSource source, float amount) {
         return canHarm(caster, target, options) && target.hurt(source, amount);
+    }
+
+    /**
+     * {@link #harm} that leaves no hurt cooldown on the target, for damage dealt on a short fixed interval (circles, zones,
+     * beams). The hit lands whatever cooldown the target is in, and the target's cooldown and last damage are put back
+     * afterwards, so other attacks that follow are not reduced by it.
+     */
+    public static boolean harmWithoutCooldown(@Nullable LivingEntity caster, LivingEntity target, Options options,
+                                              DamageSource source, float amount) {
+        LivingEntityAccessor accessor = (LivingEntityAccessor) target;
+        int cooldown = target.invulnerableTime;
+        float lastHurt = accessor.psitweaks$getLastHurt();
+        target.invulnerableTime = 0;
+        try {
+            return harm(caster, target, options, source, amount);
+        } finally {
+            target.invulnerableTime = cooldown;
+            accessor.psitweaks$setLastHurt(lastHurt);
+        }
     }
 
     /** {@link #harm} for an attack trick's projectile hitting the entity, by {@link #canProjectileHarm}. */
