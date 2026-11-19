@@ -6,6 +6,7 @@ import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.param.ParamString;
 import com.moratan251.psitweaks.common.spells.util.ModeStringConversionHelper;
 import com.moratan251.psitweaks.common.spells.util.ResourcePattern;
+import com.moratan251.psitweaks.common.spells.util.WildcardBudget;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import com.moratan251.psitweaksqol.api.PsitweaksValueKind;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
         String wildcard = getNotNullParamValue(context, string);
         ResourcePattern tagPattern = comparesTags(wildcard) ? ResourcePattern.compile(wildcard) : null;
         WildcardStringMatcher matcher = WildcardStringMatcher.compile(wildcard);
+        WildcardBudget budget = WildcardBudget.forCast(context);
         boolean matchFullId = wildcard.indexOf(':') >= 0;
         PsitweaksListAdapter<Object> adapter = currentAdapter();
         List<Object> result = new ArrayList<>();
@@ -41,7 +43,7 @@ public abstract class PieceOperatorListStringFilterBase extends PieceOperatorMod
             Object value = adapter.get(source, i);
             boolean matches = tagPattern != null
                     ? tagPattern.matchesAnyTag(TagTargetHelper.getTagIds(context, value))
-                    : matcher.matches(searchText(context, value, matchFullId));
+                    : matcher.matches(searchText(context, value, matchFullId), budget);
             if (shouldKeep(matches)) {
                 result.add(value);
             }

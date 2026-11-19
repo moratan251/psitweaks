@@ -38,6 +38,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerPlayer;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerAutonomousCaster;
         public final ModConfigSpec.IntValue nbtMaxTargetsPerCast;
+        public final ModConfigSpec.LongValue wildcardMaxComparisonsPerCast;
         public final ModConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ModConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
@@ -311,6 +312,19 @@ public class PsitweaksConfig {
                     .defineInRange("maxTargetsPerCast", 1024, 1, Integer.MAX_VALUE);
 
             builder.pop(); // nbt_pieces カテゴリ終了
+
+            // --- パターンの照合 ---
+            builder.comment("Pattern Matching Settings")
+                    .translation("psitweaks.configuration.spells.pattern_matching")
+                    .push("pattern_matching");
+
+            wildcardMaxComparisonsPerCast = builder
+                    .comment("パターン（* ? [abc]）との照合で、1回の詠唱が文字を比べられる回数。演算子: 部分一致、リスト一致抽出・除外、表示名一致抽出・除外、NBT一致抽出・除外が数える。超えると術式はエラーで止まる",
+                            "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them. Going past it stops the spell with an error")
+                    .translation("psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast")
+                    .defineInRange("maxComparisonsPerCast", 50_000_000L, 1L, Long.MAX_VALUE);
+
+            builder.pop(); // pattern_matching カテゴリ終了
 
             // --- 放射線注入 ---
             builder.comment("Radiation Injection Settings")

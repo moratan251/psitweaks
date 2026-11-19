@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorF
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorStoredEntity;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPhononMaser;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTimeAccelerate;
+import com.moratan251.psitweaks.common.spells.util.WildcardBudget;
 import com.moratan251.psitweaks.common.spells.util.WildcardStringMatcher;
 import com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellListLimits;
@@ -42,6 +43,7 @@ import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellPiece;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
  * Spells built only from constants must not stop or crash the server: Operator: Format String, the wildcard match,
@@ -123,6 +125,44 @@ public final class SpellLimitGameTests {
 
         helper.assertTrue("a{4}{x}{".equals(PieceOperatorFormatString.format("{2}{1}{4}{x}{", new String[]{"", "a", ""})),
                 "Only {1} to {3} are placeholders");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE)
+    public static void wildcardBudgetCountsEveryCharacterTest(GameTestHelper helper) throws SpellRuntimeException {
+        WildcardBudget budget = WildcardBudget.of(100);
+        helper.assertTrue(!WildcardStringMatcher.compile("abc").matches("abd", budget) && budget.remaining() == 97,
+                "The two passing tests and the failing one should count, left " + budget.remaining());
+        helper.assertTrue(WildcardStringMatcher.compile("*b*").matches("aab", budget) && budget.remaining() == 94,
+                "Every start of a search should count its tests, left " + budget.remaining());
+
+        WildcardBudget exact = WildcardBudget.of(3);
+        helper.assertTrue(!WildcardStringMatcher.compile("abc").matches("abd", exact) && exact.remaining() == 0,
+                "Using the whole budget must not stop the spell");
+        try {
+            WildcardStringMatcher.compile("abc").matches("abd", WildcardBudget.of(2));
+            helper.fail("Going past the budget must stop the spell");
+        } catch (SpellRuntimeException e) {
+            helper.assertTrue(WildcardBudget.ERROR_TOO_MANY_COMPARISONS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+        }
+
+        String value = "a".repeat(StringSpellHelper.MAX_STRING_LENGTH);
+        WildcardStringMatcher slow = WildcardStringMatcher.compile("*" + "?".repeat(4095) + "b*");
+        WildcardBudget small = WildcardBudget.of(1_000_000);
+        long start = System.nanoTime();
+        try {
+            slow.matches(value, small);
+            helper.fail("A slow match must stop at the budget");
+        } catch (SpellRuntimeException e) {
+            helper.assertTrue(WildcardBudget.ERROR_TOO_MANY_COMPARISONS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+        }
+        long elapsed = System.nanoTime() - start;
+        helper.assertTrue(small.remaining() < 0 && small.remaining() > -4096 * 2,
+                "The match should stop within one placement past the budget, left " + small.remaining());
+        helper.assertTrue(elapsed < SLOW_NANOS, "Stopping at the budget took " + elapsed / 1_000_000 + " ms");
+        helper.assertTrue(WildcardStringMatcher.compile("*a*b").matches("xaxb", WildcardBudget.of(1_000))
+                        == WildcardStringMatcher.compile("*a*b").matches("xaxb"),
+                "Counting must not change the answer");
         helper.succeed();
     }
 

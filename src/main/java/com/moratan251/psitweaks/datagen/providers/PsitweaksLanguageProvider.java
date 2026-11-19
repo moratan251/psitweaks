@@ -439,6 +439,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "1回の詠唱でNBTを読める対象の数を超えました";
             default -> "Too many targets had their NBT read in one cast";
         });
+        root.addProperty("psitweaks.spellerror.wildcard_too_many_comparisons", switch (locale) {
+            case "ja_jp" -> "1回の詠唱でパターンと文字を比べられる回数を超えました";
+            default -> "Too many characters were compared with patterns in one cast";
+        });
         root.addProperty("psitweaks.spellerror.value_list_size_mismatch", switch (locale) {
             case "ja_jp" -> "リストと基準値の要素数が違います";
             default -> "The List and the Values have different sizes";
@@ -767,6 +771,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigValue(root, "psitweaks.configuration.spells.nbt_pieces.max_targets_per_cast", "Targets per Cast", "1回の詠唱で読める対象の数",
                 "How many targets one cast can read the NBT of. Targets without NBT and targets read again in the same cast do not count. Reading more stops the spell with an error.",
                 "1回の詠唱でNBTを読める対象の数です。NBTを持たない対象と、同じ詠唱で読み直した対象は数えません。超えると術式はエラーで止まります。");
+        addConfigLabel(root, "psitweaks.configuration.spells.pattern_matching", "Pattern Matching", "パターンの照合");
+        addConfigValue(root, "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast", "Comparisons per Cast", "1回の詠唱で比べられる回数",
+                "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. Going past it stops the spell with an error.",
+                "パターン（* ? [abc]）との照合で、1回の詠唱が文字を比べられる回数です。演算子: 部分一致、リスト一致抽出・除外、表示名一致抽出・除外、NBT一致抽出・除外が数えます（# のタグの照合は数えません）。超えると術式はエラーで止まります。");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
@@ -1451,8 +1459,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "$(thing)PsiTweaks$(0) adds new value types to Psi spell programming. The main additions are String, Block, Item, and Matrix.",
                 "$(thing)PsiTweaks$(0) は, Psi のスペルプログラミングに新しい型を追加します. 主な追加型は String, Block, Item, Matrix です.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.1",
-                "String is the type used for text. It can hold IDs, names, NBT paths, search conditions, and messages for display.$(p)For example, a spell can obtain a block or item ID as a String and test whether it matches a particular ID.$(p)String values are limited to 8192 characters at runtime. Note that Constant: String pieces can only store 1024 characters inside the spell, because the value is saved with the spell itself.",
-                "String 型は文字列を扱うための型です. ID, 名前, NBTパス, 検索条件, 表示用メッセージなどをスペル内で扱うために使用します.$(p)例えば, ブロックやアイテムのIDを String として取得し, 特定のIDと一致するかを調べることができます.$(p)実行時の String 値は 8192 文字までに制限されています. なお, 定数子: 文字列 は術式に値を保存するため, 1つのピースあたり最大1024文字までしか入力できません.");
+                "String is the type used for text. It can hold IDs, names, NBT paths, search conditions, and messages for display.$(p)For example, a spell can obtain a block or item ID as a String and test whether it matches a particular ID.",
+                "String 型は文字列を扱うための型です. ID, 名前, NBTパス, 検索条件, 表示用メッセージなどをスペル内で扱うために使用します.$(p)例えば, ブロックやアイテムのIDを String として取得し, 特定のIDと一致するかを調べることができます.");
+        addLocalized(root, "psi.book.page.psitweaks_programming_types.string_limits",
+                "String values are limited to 8192 characters at runtime. Note that Constant: String pieces can only store 1024 characters inside the spell, because the value is saved with the spell itself.$(p)Matching text against patterns (* ? [abc]) is limited too: one cast can make up to 50,000,000 character comparisons by default, and going past that stops the spell.",
+                "実行時の String 値は 8192 文字までに制限されています. なお, 定数子: 文字列 は術式に値を保存するため, 1つのピースあたり最大1024文字までしか入力できません.$(p)パターン (* ? [abc]) との照合にも上限があります. 1回の詠唱で文字を比べられる回数は標準で5000万回までで, 超えると術式は止まります.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.2",
                 "Block represents a block in the world. It provides information such as position, dimension, block state, registry ID, tags, and display name.$(p)A Vector represents coordinates, while a Block represents information about the block at those coordinates.",
                 "Block 型はワールド上のブロックを扱うための型です. ブロックの座標, ディメンション, ブロック状態, レジストリID, タグ, 表示名などの情報を扱えます.$(p)Vector が「座標」を表すのに対し, Block は「その座標に存在するブロックの情報」を表します.");

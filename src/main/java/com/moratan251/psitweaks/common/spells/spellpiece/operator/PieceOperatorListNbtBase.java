@@ -51,7 +51,7 @@ public abstract class PieceOperatorListNbtBase extends PieceOperatorModeListBase
 
     @FunctionalInterface
     protected interface ElementTest {
-        boolean keeps(List<Tag> found);
+        boolean keeps(List<Tag> found) throws SpellRuntimeException;
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
  * Matches the spell wildcards: * is any text, ? is any one character, [abc] is one of a, b or c, and a backslash
@@ -12,6 +14,7 @@ import java.util.List;
  * <p>The pattern is split at each * into pieces of single-character tests. A value matches when the first piece
  * matches its start, the last piece its end, and the pieces in between appear in order; taking each one as early as
  * possible is enough, so there is no backtracking and a match takes at most (value length) x (piece length) tests.
+ * Spell pieces match through {@link #matches(String, WildcardBudget)}, which counts those tests against the cast.
  */
 public final class WildcardStringMatcher {
     private static final int ANY = -1;
@@ -35,22 +38,41 @@ public final class WildcardStringMatcher {
         return parse(StringSpellHelper.sanitize(wildcard), true);
     }
 
+    /** Whether the value matches, with no limit on the work. */
     public boolean matches(String value) {
-        int[] text = (value == null ? "" : value).codePoints().toArray();
+        return run(codePoints(value), null);
+    }
+
+    /**
+     * Whether the value matches, taking every character test from the budget: the tests that pass and the one that
+     * fails. Going past the budget stops the spell with {@link WildcardBudget#ERROR_TOO_MANY_COMPARISONS}.
+     */
+    public boolean matches(String value, WildcardBudget budget) throws SpellRuntimeException {
+        boolean result = run(codePoints(value), budget);
+        budget.throwIfSpent();
+        return result;
+    }
+
+    private static int[] codePoints(String value) {
+        return (value == null ? "" : value).codePoints().toArray();
+    }
+
+    /** The match; false as soon as the budget runs out, which the caller then reports. */
+    private boolean run(int[] text, @Nullable WildcardBudget budget) {
         if (pieces.length == 1) {
-            return text.length == pieces[0].length && matchesAt(pieces[0], text, 0);
+            return text.length == pieces[0].length && matchesAt(pieces[0], text, 0, budget);
         }
 
         int[] first = pieces[0];
         int[] last = pieces[pieces.length - 1];
         int end = text.length - last.length;
-        if (end < first.length || !matchesAt(first, text, 0) || !matchesAt(last, text, end)) {
+        if (end < first.length || !matchesAt(first, text, 0, budget) || !matchesAt(last, text, end, budget)) {
             return false;
         }
 
         int position = first.length;
         for (int i = 1; i < pieces.length - 1; i++) {
-            int found = find(pieces[i], text, position, end);
+            int found = find(pieces[i], text, position, end, budget);
             if (found < 0) {
                 return false;
             }
@@ -59,22 +81,36 @@ public final class WildcardStringMatcher {
         return true;
     }
 
-    private int find(int[] piece, int[] text, int from, int end) {
+    private int find(int[] piece, int[] text, int from, int end, @Nullable WildcardBudget budget) {
         for (int start = from; start + piece.length <= end; start++) {
-            if (matchesAt(piece, text, start)) {
+            int passed = passed(piece, text, start);
+            if (!charge(budget, passed, piece.length)) {
+                return -1;
+            }
+            if (passed == piece.length) {
                 return start;
             }
         }
         return -1;
     }
 
-    private boolean matchesAt(int[] piece, int[] text, int start) {
-        for (int i = 0; i < piece.length; i++) {
-            if (!accepts(piece[i], text[start + i])) {
-                return false;
-            }
+    private boolean matchesAt(int[] piece, int[] text, int start, @Nullable WildcardBudget budget) {
+        int passed = passed(piece, text, start);
+        return charge(budget, passed, piece.length) && passed == piece.length;
+    }
+
+    /** How many tests of the piece pass in a row when it is laid at start. */
+    private int passed(int[] piece, int[] text, int start) {
+        int passed = 0;
+        while (passed < piece.length && accepts(piece[passed], text[start + passed])) {
+            passed++;
         }
-        return true;
+        return passed;
+    }
+
+    /** Takes the tests of one placement from the budget (the passing ones and the failing one); false once it runs out. */
+    private static boolean charge(@Nullable WildcardBudget budget, int passed, int length) {
+        return budget == null || budget.spend(passed < length ? passed + 1L : passed);
     }
 
     private boolean accepts(int test, int codePoint) {

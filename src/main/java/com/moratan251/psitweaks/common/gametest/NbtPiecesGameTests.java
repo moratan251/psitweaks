@@ -8,12 +8,15 @@ import com.moratan251.psitweaks.common.spells.item.SpellItemValue;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListNbtFilterBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListNbtSearch;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListNbtSearchExclude;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListSearch;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorStringPartialMatch;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbt;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtExists;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtKeys;
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtValue;
 import com.moratan251.psitweaks.common.spells.util.NbtPathHelper;
 import com.moratan251.psitweaks.common.spells.util.NbtTargetReader;
+import com.moratan251.psitweaks.common.spells.util.WildcardBudget;
 import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
@@ -259,6 +262,79 @@ public final class NbtPiecesGameTests {
         inputs.put(LIST, BlockListWrapper.make(blocksWithoutNbt));
         keep.setModeOption(PsitweaksModeOptions.BLOCK);
         helper.assertTrue(((BlockListWrapper) keep.execute(context(helper))).size() == 0, "Targets without NBT must not count");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 400)
+    public static void patternMatchingOfOneCastStopsAtTheBudget(GameTestHelper helper) throws SpellRuntimeException {
+        long budget = PsitweaksConfig.COMMON.wildcardMaxComparisonsPerCast.get();
+        int count = Math.min(PsitweaksConfig.COMMON.nbtMaxTargetsPerCast.get(), 1024);
+        int length = 8000;
+        String longText = "a".repeat(length);
+        List<SpellItemValue> values = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            values.add(item(helper, Items.STONE, "{i:" + i + ",s:\"" + longText + "\"}"));
+        }
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put(LIST, SpellItemListWrapper.make(values));
+        inputs.put(PATH, DATA + ".s");
+        inputs.put(PATTERN, "*b*");
+        var keep = filter(true, inputs);
+        keep.setModeOption(PsitweaksModeOptions.ITEM);
+
+        var context = context(helper);
+        helper.assertTrue(((SpellItemListWrapper) keep.execute(context)).size() == 0, "A short pattern over long values should fit the budget");
+        long used = budget - WildcardBudget.forCast(context).remaining();
+        helper.assertTrue(used == (long) count * length, "Each start of the search should count one test, used " + used);
+
+        long runsThatFit = budget / used;
+        for (long run = 1; run < runsThatFit; run++) {
+            keep.execute(context);
+        }
+        try {
+            keep.execute(context);
+            helper.fail("The pieces of one cast must share the budget");
+        } catch (SpellRuntimeException e) {
+            helper.assertTrue(WildcardBudget.ERROR_TOO_MANY_COMPARISONS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+        }
+
+        Map<String, Object> texts = new HashMap<>();
+        texts.put(PsitweaksSpellParams.STRING1, "abc");
+        texts.put(PsitweaksSpellParams.STRING2, "b");
+        texts.put(LIST, StringListWrapper.make(List.of("abc")));
+        texts.put(PATTERN, "a*");
+        var partial = new PieceOperatorStringPartialMatch(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return texts.get(param.name);
+            }
+        };
+        var search = new PieceOperatorListSearch(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return texts.get(param.name);
+            }
+        };
+        for (SpellPiece piece : List.<SpellPiece>of(partial, search)) {
+            try {
+                piece.execute(context);
+                helper.fail(piece.getClass().getSuperclass().getSimpleName() + " must use the budget of the cast");
+            } catch (SpellRuntimeException e) {
+                helper.assertTrue(WildcardBudget.ERROR_TOO_MANY_COMPARISONS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+            }
+        }
+        var fresh = context(helper);
+        helper.assertTrue(((Number) partial.execute(fresh)).doubleValue() == 1.0, "A new cast must start with a new budget");
+        helper.assertTrue(strings(search.execute(fresh)).equals(List.of("abc")), "A new cast must start with a new budget");
+
+        inputs.put(PATTERN, "*" + "?".repeat(4000) + "b*");
+        long start = System.nanoTime();
+        try {
+            keep.execute(context(helper));
+            helper.fail("A long pattern over long values must stop at the budget");
+        } catch (SpellRuntimeException e) {
+            helper.assertTrue(WildcardBudget.ERROR_TOO_MANY_COMPARISONS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+        }
+        long elapsedMs = (System.nanoTime() - start) / 1_000_000;
+        helper.assertTrue(elapsedMs < 2_000, "Stopping at the budget took " + elapsedMs + " ms");
         helper.succeed();
     }
 
