@@ -12,7 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-/** One running sphere flash: the honeycomb shield of Trick: Barrier, a plain shock sphere, or a water splash. */
+/**
+ * One running sphere flash: the honeycomb shield of Trick: Barrier, a plain shock sphere, a water splash, or the cone
+ * shock wave of Trick: Gram Demolition ({@link ConeWave}).
+ */
 final class SphereFlashEffect {
     /** How far the cell edges reach into each cell; the inner part is the dim fill. */
     private static final float EDGE_INSET = 0.80F;
@@ -29,6 +32,8 @@ final class SphereFlashEffect {
     /** The starting velocity (blocks per tick) and size of each drop of a water splash; empty for other styles. */
     private final Vector3f[] dropVelocities;
     private final float[] dropSizes;
+    /** The cone shock wave; null for other styles. */
+    private final ConeWave cone;
     private int age;
 
     SphereFlashEffect(MessageSphereFlash message) {
@@ -47,6 +52,9 @@ final class SphereFlashEffect {
             dropVelocities = new Vector3f[0];
             dropSizes = new float[0];
         }
+        this.cone = message.style() == Style.CONE_WAVE
+                ? new ConeWave(impact != null ? impact : new Vector3f(0.0F, 1.0F, 0.0F), message.radius(), color)
+                : null;
     }
 
     /** Drops fly out in every direction but mostly towards the spray side, a little upward, at varied speeds. */
@@ -77,6 +85,7 @@ final class SphereFlashEffect {
             case SHOCKWAVE -> 10;
             case IMPLOSION -> 16;
             case WATER_SPLASH -> 12;
+            case CONE_WAVE -> 16;
         };
     }
 
@@ -95,6 +104,7 @@ final class SphereFlashEffect {
             case SHOCKWAVE -> renderShockwave(buffers, pose, center, t, strength);
             case IMPLOSION -> renderImplosion(buffers, pose, center, t, strength);
             case WATER_SPLASH -> renderWaterSplash(buffers, pose, center, age + partialTick, t, strength);
+            case CONE_WAVE -> cone.render(buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR), pose, center, t, strength);
             default -> renderHoneycomb(buffers, pose, center, t, strength);
         }
     }

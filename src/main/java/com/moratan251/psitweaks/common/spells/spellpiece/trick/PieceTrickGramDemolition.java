@@ -14,8 +14,6 @@ import java.util.List;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
@@ -35,7 +33,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * 半角 {@link #HALF_ANGLE_DEGREES} 度の円錐（ブロックは貫通する）の中にある魔法式オブジェクトの核すべての耐久値を
  * {@link #INTEGRITY_DAMAGE} 減らし（× 術者の事象干渉力）、同じ範囲の生物に {@link #DAMAGE} のダメージ（全体倍率・個別倍率・
  * 事象干渉力を掛ける）を与える。術者自身の魔法式オブジェクト（自律詠唱機は所有者の側のものも）は削らない
- * （{@link SpellGramIntegrity#isSparedBy}）。
+ * （{@link SpellGramIntegrity#isSparedBy}）。ダメージを受けた生物は、術者の目から見た水平の向きへ、パンチ II の矢と
+ * 同じだけ押し出す（{@link #KNOCKBACK}、ノックバック耐性で弱まる）。
  */
 public class PieceTrickGramDemolition extends PieceTrick {
     private static final int POTENCY = 750;
@@ -44,8 +43,13 @@ public class PieceTrickGramDemolition extends PieceTrick {
     public static final double HALF_ANGLE_DEGREES = 30.0;
     public static final float INTEGRITY_DAMAGE = 300.0F;
     public static final float DAMAGE = 6.0F;
-    /** 円錐の中に散らす光の粒の数。 */
-    private static final int WAVE_PARTICLES = 48;
+    /**
+     * ダメージを受けた生物を水平に押し出す速さ。パンチ II の矢の押し出し（エンチャントのノックバック 2 × 0.6）と同じ。
+     * ダメージ自体の通常のノックバックに上乗せする。
+     */
+    public static final double KNOCKBACK = 1.2;
+    /** 押し出すときに加える上向きの速さ。矢のノックバックと同じ。 */
+    public static final double KNOCKBACK_LIFT = 0.1;
 
     public PieceTrickGramDemolition(Spell spell) {
         super(spell);
@@ -82,10 +86,22 @@ public class PieceTrickGramDemolition extends PieceTrick {
         DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.GRAM_DEMOLITION, caster, caster);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(RANGE + 2.0),
                 living -> living != caster && inCone(eye, look, CombatSpellHelper.center(living), living.getBbWidth() * 0.5))) {
-            AttackRules.harm(caster, living, options, source, damage);
+            if (!AttackRules.harm(caster, living, options, source, damage)) {
+                continue;
+            }
+            Vec3 away = CombatSpellHelper.center(living).subtract(eye);
+            Vec3 horizontal = new Vec3(away.x, 0.0, away.z);
+            if (horizontal.lengthSqr() < 1.0E-6) {
+                horizontal = new Vec3(look.x, 0.0, look.z);
+            }
+            if (horizontal.lengthSqr() < 1.0E-6) {
+                continue;
+            }
+            // ノックバック耐性で弱め、プレイヤーにも速度を送る（CombatSpellHelper.push）。
+            CombatSpellHelper.push(living, horizontal.normalize().scale(KNOCKBACK).add(0.0, KNOCKBACK_LIFT, 0.0));
         }
 
-        wave(level, eye, look);
+        CombatEffects.coneWave(level, eye, look, (float) RANGE, CombatSpellHelper.spellColor(caster), 1.0F);
         CombatEffects.sound(level, eye, SoundEvents.EVOKER_CAST_SPELL, 1.2F, 1.3F);
         CombatEffects.sound(level, eye, SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.8F);
         return null;
@@ -123,21 +139,5 @@ public class PieceTrickGramDemolition extends PieceTrick {
         double slack = Math.asin(Math.min(1.0, margin / distance));
         double cos = offset.dot(look) / distance;
         return cos >= Math.cos(Math.min(Math.PI, Math.toRadians(HALF_ANGLE_DEGREES) + slack));
-    }
-
-    /** 円錐の中に、前へ流れる光の粒を散らす。 */
-    private static void wave(ServerLevel level, Vec3 eye, Vec3 look) {
-        RandomSource random = level.getRandom();
-        Vec3 helper = Math.abs(look.y) < 0.95 ? new Vec3(0.0, 1.0, 0.0) : new Vec3(1.0, 0.0, 0.0);
-        Vec3 right = look.cross(helper).normalize();
-        Vec3 up = right.cross(look).normalize();
-        double tan = Math.tan(Math.toRadians(HALF_ANGLE_DEGREES));
-        for (int i = 0; i < WAVE_PARTICLES; i++) {
-            double along = 1.0 + random.nextDouble() * (RANGE - 1.0);
-            double radius = Math.sqrt(random.nextDouble()) * along * tan;
-            double angle = random.nextDouble() * Mth.TWO_PI;
-            Vec3 at = eye.add(look.scale(along)).add(right.scale(Math.cos(angle) * radius)).add(up.scale(Math.sin(angle) * radius));
-            level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 0, look.x, look.y, look.z, 0.15);
-        }
     }
 }

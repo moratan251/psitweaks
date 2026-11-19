@@ -64,6 +64,7 @@ public final class CombatEffectsClient {
         switch (message.style()) {
             case SHOCKWAVE -> CameraShake.kickFrom(message.position(), 12.0 + message.radius() * 2.0, 0.35F * message.strength());
             case IMPLOSION -> CameraShake.kickFrom(message.position(), 16.0 + message.radius() * 2.0, 0.55F * message.strength());
+            case CONE_WAVE -> CameraShake.kickFrom(message.position(), 6.0, 0.3F * message.strength());
             default -> {
             }
         }

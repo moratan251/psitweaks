@@ -35,6 +35,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancingBlades;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGramDemolition;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMicroBlackHole;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickAirBullet;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorLine;
@@ -1013,6 +1014,39 @@ public final class CombatSpellGameTests {
         lookUp(player);
         helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> burst(Map.of(POWER, 1.0)).execute(context))),
                 "Aiming at nothing must fail as with no target");
+        helper.succeed();
+    }
+
+    /**
+     * 術式解体でダメージを受けた生物は、ダメージの通常のノックバック（0.4）に加えて、パンチ II の矢と同じ
+     * {@link PieceTrickGramDemolition#KNOCKBACK} だけ術者から離れる向きへ押し出される。ノックバック耐性 1 の生物は動かない。
+     * 円錐は 16 ブロック先まで届くので、ほかの試験の生物に当たらないよう専用のバッチで動かす。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_gram_demolition")
+    public static void gramDemolitionKnocksBackLikeAPunchTwoArrow(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 2), "gram-knockback");
+        var context = new SpellContext().setPlayer(player);
+        Husk normal = husk(helper, new Vec3(2.5, 0.0, 2.5), false);
+        Husk resistant = husk(helper, new Vec3(4.0, 0.0, 2.5), false);
+        resistant.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, player.getEyePosition().add(1.0, 0.0, 0.0));
+        try {
+            new PieceTrickGramDemolition(new Spell()).execute(context);
+
+            helper.assertTrue(normal.getHealth() < normal.getMaxHealth() && resistant.getHealth() < resistant.getMaxHealth(),
+                    "Both husks in the cone must take damage: " + normal.getHealth() + ", " + resistant.getHealth());
+            Vec3 pushed = normal.getDeltaMovement();
+            helper.assertTrue(pushed.x >= PieceTrickGramDemolition.KNOCKBACK && Math.abs(pushed.z) < EPSILON,
+                    "A hit husk must be pushed along the line of sight by at least " + PieceTrickGramDemolition.KNOCKBACK
+                            + ": " + pushed);
+            helper.assertTrue(pushed.y >= PieceTrickGramDemolition.KNOCKBACK_LIFT - EPSILON,
+                    "A hit husk must be lifted a little: " + pushed);
+            Vec3 held = resistant.getDeltaMovement();
+            helper.assertTrue(held.length() < EPSILON, "Full knockback resistance must cancel the push: " + held);
+        } finally {
+            normal.discard();
+            resistant.discard();
+        }
         helper.succeed();
     }
 

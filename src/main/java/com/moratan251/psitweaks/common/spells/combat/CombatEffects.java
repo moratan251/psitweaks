@@ -32,6 +32,14 @@ public final class CombatEffects {
                 new MessageSphereFlash(MessageSphereFlash.NO_ENTITY, position, radius, color, style, direction, strength));
     }
 
+    /**
+     * A shock wave thrown from {@code tip} towards {@code direction} through a cone {@code length} blocks long, as wide
+     * as Trick: Gram Demolition's.
+     */
+    public static void coneWave(ServerLevel level, Vec3 tip, Vec3 direction, float length, int color, float strength) {
+        sphereFlash(level, tip, length, color, MessageSphereFlash.Style.CONE_WAVE, direction, strength);
+    }
+
     /** The arcs of a Trick: Chain Lightning cast, as the tree {@link MessageLightningArcs} describes. */
     public static void lightningArcs(ServerLevel level, List<Vec3> points, List<Integer> parents, int color, long seed) {
         if (points.size() < 2) {
