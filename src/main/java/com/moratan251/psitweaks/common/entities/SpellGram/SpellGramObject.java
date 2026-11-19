@@ -602,6 +602,12 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return attackCaster.id();
     }
 
+    /** 置いた術者の側。置いた時点の術者の {@code getUUID()}（自律詠唱機は所有者の UUID、所有者のいない機械は内部キー）。 */
+    @Nullable
+    public UUID getCasterSide() {
+        return attackCaster.side();
+    }
+
     @Nullable
     public LivingEntity getCaster() {
         // 自律詠唱機の詠唱主体はワールドに入らないため、保存した ID で引き直す（AttackCaster）。

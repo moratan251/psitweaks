@@ -11,7 +11,6 @@ import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -35,7 +34,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * 作動式: 術式解体（Gram Demolition）。入力なし。術者の目から視線の方向へ {@link #RANGE} ブロック、
  * 半角 {@link #HALF_ANGLE_DEGREES} 度の円錐（ブロックは貫通する）の中にある魔法式オブジェクトの核すべての耐久値を
  * {@link #INTEGRITY_DAMAGE} 減らし（× 術者の事象干渉力）、同じ範囲の生物に {@link #DAMAGE} のダメージ（全体倍率・個別倍率・
- * 事象干渉力を掛ける）を与える。術者自身の魔法式オブジェクトは削らない。
+ * 事象干渉力を掛ける）を与える。術者自身の魔法式オブジェクト（自律詠唱機は所有者の側のものも）は削らない
+ * （{@link SpellGramIntegrity#isSparedBy}）。
  */
 public class PieceTrickGramDemolition extends PieceTrick {
     private static final int POTENCY = 750;
@@ -91,13 +91,12 @@ public class PieceTrickGramDemolition extends PieceTrick {
         return null;
     }
 
-    /** 円錐の中にある、術者自身のものでない魔法式オブジェクト（核の位置で比べる）。 */
+    /** 円錐の中にある、術者がよけない（{@link SpellGramIntegrity#isSparedBy}）魔法式オブジェクト（核の位置で比べる）。 */
     public static List<SpellGramObject> targets(ServerLevel level, @Nullable LivingEntity caster, Vec3 eye, Vec3 look) {
-        UUID own = caster != null ? caster.getUUID() : null;
         List<SpellGramObject> result = new ArrayList<>();
         for (SpellGramObject object : level.getEntitiesOfClass(SpellGramObject.class,
                 new AABB(eye, eye).inflate(RANGE + SpellGramAim.CORE_HALF))) {
-            if (object.isEnded() || (own != null && own.equals(object.getCasterUuid()))) {
+            if (object.isEnded() || SpellGramIntegrity.isSparedBy(object, caster)) {
                 continue;
             }
             if (inCone(eye, look, object.position(), SpellGramAim.CORE_HALF)) {

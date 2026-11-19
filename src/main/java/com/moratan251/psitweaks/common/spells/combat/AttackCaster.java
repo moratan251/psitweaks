@@ -79,6 +79,12 @@ public final class AttackCaster {
         return id;
     }
 
+    /** The caster's side as it was when cast: its {@code getUUID()} (an autonomous caster's is its owner's). */
+    @Nullable
+    public UUID side() {
+        return sideUuid;
+    }
+
     /** The caster, seen from an entity in {@code level}. Null when it cannot be found. */
     @Nullable
     public LivingEntity get(Level level) {

@@ -9,8 +9,6 @@ import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.Optional;
-import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -32,7 +30,8 @@ import net.minecraft.world.phys.Vec3;
 /**
  * 作動式: サイ・ブリット の弾。エア・ブリットと同じ速さと射程でまっすぐ飛び、最初に当たったもので消える:
  * 生物ならダメージ（かすりはない）、魔法式オブジェクトの核（{@link SpellGramAim#coreBox}、耐久値の表示と同じ箱）なら耐久値を減らす
- * （{@link SpellGramIntegrity#reduce}、量 × 術者の事象干渉力）、ブロックならそこで弾ける。術者自身の魔法式オブジェクトはすり抜ける。
+ * （{@link SpellGramIntegrity#reduce}、量 × 術者の事象干渉力）、ブロックならそこで弾ける。術者自身の魔法式オブジェクト
+ * （自律詠唱機は所有者の側のものも、{@link SpellGramIntegrity#isSparedBy}）はすり抜ける。
  */
 public class EntityPsiBullet extends CombatSpellEntity {
     public static final float SPEED = EntityAirBullet.SPEED;
@@ -119,7 +118,7 @@ public class EntityPsiBullet extends CombatSpellEntity {
             }
             for (SpellGramObject candidate : level.getEntitiesOfClass(SpellGramObject.class,
                     new AABB(start, end).inflate(SpellGramAim.CORE_HALF + 1.0))) {
-                if (candidate.isEnded() || isOwn(caster, candidate)) {
+                if (candidate.isEnded() || SpellGramIntegrity.isSparedBy(candidate, caster)) {
                     continue;
                 }
                 AABB core = SpellGramAim.coreBox(candidate).inflate(REACH);
@@ -174,12 +173,6 @@ public class EntityPsiBullet extends CombatSpellEntity {
             return -1.0;
         }
         return Mth.clamp(along - halfWidth, 0.0, SPEED);
-    }
-
-    /** 術者自身の魔法式オブジェクトか（弾はすり抜ける）。 */
-    private static boolean isOwn(@Nullable LivingEntity caster, SpellGramObject object) {
-        UUID owner = object.getCasterUuid();
-        return caster != null && owner != null && owner.equals(caster.getUUID());
     }
 
     private void impact(ServerLevel level, Vec3 at, boolean spellGram) {

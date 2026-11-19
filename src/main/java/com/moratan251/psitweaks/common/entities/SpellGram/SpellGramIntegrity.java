@@ -1,6 +1,8 @@
 package com.moratan251.psitweaks.common.entities.SpellGram;
 
 import com.moratan251.psitweaks.api.event.SpellGramIntegrityEvent;
+import com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer;
+import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.common.NeoForge;
@@ -47,5 +49,20 @@ public final class SpellGramIntegrity {
         float removed = Math.min(object.getIntegrity(), event.getAmount());
         object.reduceIntegrity(event.getAmount());
         return removed;
+    }
+
+    /**
+     * 魔法式オブジェクトを削る術式（サイ・ブリット、術式解体）が、{@code reducer} の術式のときに {@code object} をよけるか。
+     * 術者自身のもの（{@link CasterIds}、自律詠唱機は機械ごと）はよける。自律詠唱機はさらに所有者の側のもの（所有者や、
+     * 同じ所有者のほかの自律詠唱機が置いたもの）もよける。プレイヤーは自分の自律詠唱機が置いたものは削る。
+     */
+    public static boolean isSparedBy(SpellGramObject object, @Nullable LivingEntity reducer) {
+        if (reducer == null) {
+            return false;
+        }
+        if (CasterIds.matches(reducer, object.getCasterUuid())) {
+            return true;
+        }
+        return reducer instanceof AutonomousCasterPlayer && reducer.getUUID().equals(object.getCasterSide());
     }
 }

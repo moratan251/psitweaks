@@ -332,9 +332,13 @@ final class AutonomousCasterTranslations {
                         + "イデアストレージを使う術式は, 機械の所有者のストレージを使います.");
         put(BOOK + ".6",
                 "$(item)Trick: Spin Chamber$(0) and $(item)Trick: Russian Roulette$(0) switch the machine's selected "
-                        + "Spell Bullet slot, as they switch a CAD's selected bullet.",
+                        + "Spell Bullet slot, as they switch a CAD's selected bullet.$(p)"
+                        + "$(item)Trick: Psi Bullet$(0) and $(item)Trick: Gram Demolition$(0) from the machine leave alone "
+                        + "the SpellGram objects of its owner and of the owner's other Autonomous Casters, as well as its own.",
                 "$(item)Trick: Spin Chamber$(0)と$(item)Trick: Russian Roulette$(0)は, CADの選択中の術式弾と同じように, "
-                        + "機械の選択中の術式弾スロットを切り替えます.");
+                        + "機械の選択中の術式弾スロットを切り替えます.$(p)"
+                        + "機械が使う$(item)作動式: サイ・ブリット$(0)と$(item)作動式: 術式解体$(0)は, "
+                        + "機械自身と所有者, 同じ所有者のほかの自律詠唱機の魔法式オブジェクトを削りません.");
         put(BOOK + ".7",
                 "Pieces that open a GUI or use the caster's Eidos Changelog do nothing in the Autonomous Caster.$(p)"
                         + "For example:"
