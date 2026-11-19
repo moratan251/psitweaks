@@ -12,7 +12,7 @@
   + Trick: Air Bullet: fires a bullet of compressed air that strikes the first creature it hits directly (creatures it grazes take a little damage)
   + Trick: Dancing Blades: deploys the swords in your Blade Pouch as blades that cut nearby enemies
   + Trick: Starfall: calls meteors down around the position
-  + Trick: Micro Black Hole: creates a tiny black hole that pulls creatures in, then collapses
+  + Trick: Micro Black Hole: creates a tiny black hole that pulls creatures in and swings them around, then collapses
 
 
 - Unified who attack spells can hit

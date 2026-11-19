@@ -24,21 +24,20 @@ import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Opens a micro black hole at the position: for three seconds creatures within Radius are dragged to the centre, then
- * it collapses and crushes everything near the centre with armour-piercing damage.
+ * Opens a micro black hole at the position: for ten seconds creatures within Radius (16 to 32) are dragged in and swung
+ * around the centre, then it swallows them and collapses, crushing everything near the centre with armour-piercing damage.
  */
 public class PieceTrickMicroBlackHole extends PieceTrick {
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 60.0F;
-    private static final float DAMAGE_PER_POWER = 50.0F;
-    public static final double MAX_RADIUS = 24.0;
-    private static final double MIN_RADIUS = 3.0;
+    private static final float BASE_DAMAGE = 30.0F;
+    private static final float DAMAGE_PER_POWER = 25.0F;
+    public static final double MAX_RADIUS = 32.0;
+    private static final double MIN_RADIUS = 16.0;
     private static final double POTENCY_BASE = 1170.0;
     private static final double POTENCY_PER_POWER = 50.0;
     private static final double POTENCY_PER_RADIUS = 5.0;
-    private static final double COST_BASE = 2400.0;
-    private static final double COST_PER_POWER = 750.0;
-    private static final double COST_PER_RADIUS = 300.0;
+    private static final double COST_PER_POWER = 500.0;
+    private static final double COST_PER_RADIUS = 75.0;
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;
@@ -51,7 +50,7 @@ public class PieceTrickMicroBlackHole extends PieceTrick {
                 .add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER).mul(COST_PER_POWER)
                 .add(new StatLabel(SpellParam.GENERIC_NAME_RADIUS, true).max(MIN_RADIUS).min(MAX_RADIUS).mul(COST_PER_RADIUS))
-                .add(COST_BASE).floor());
+                .floor());
     }
 
     @Override
@@ -67,7 +66,7 @@ public class PieceTrickMicroBlackHole extends PieceTrick {
         double powerVal = Math.max(MIN_POWER, CombatTrickStats.positive(getParamEvaluation(power), x, y));
         double radiusVal = Mth.clamp(CombatTrickStats.positive(getParamEvaluation(radius), x, y), MIN_RADIUS, MAX_RADIUS);
         meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + powerVal * POTENCY_PER_POWER + radiusVal * POTENCY_PER_RADIUS));
-        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(COST_BASE + powerVal * COST_PER_POWER + radiusVal * COST_PER_RADIUS));
+        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(powerVal * COST_PER_POWER + radiusVal * COST_PER_RADIUS));
     }
 
     @Override

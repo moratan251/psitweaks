@@ -135,7 +135,8 @@ public final class CombatEffectsClient {
             }
         }
         for (EntityMicroBlackHole well : level.getEntitiesOfClass(EntityMicroBlackHole.class, area)) {
-            if (well.tickCount >= EntityMicroBlackHole.CHARGE_TICKS) {
+            // 長く振り回している間は揺らさず、最後に呑み込むときだけ揺らす。
+            if (well.tickCount >= EntityMicroBlackHole.CHARGE_TICKS || !EntityMicroBlackHole.isSwallowing(well.tickCount)) {
                 continue;
             }
             double range = well.getRadius() + 6.0;

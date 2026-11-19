@@ -1980,7 +1980,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
         addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
-        addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せる極小のブラックホールを生み出し、最後に崩壊させる");
+        addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in and swings them around, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せて振り回す極小のブラックホールを生み出し、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a fire Resident SpellGram circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の常駐魔法式を設置して内部の生物に継続的な炎ダメージを与える");
         addSpellPiece(root, "trick_ice_circle", "Trick: Ice Circle", "Places an ice Resident SpellGram circle that repeatedly deals freeze damage around it and freezes the water in it", "作動式: アイスサークル", "氷の常駐魔法式を設置して内部の生物に継続的な凍結ダメージを与え、水面を薄氷にする");
@@ -2576,12 +2576,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within its blast (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
                 "流星は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
         addBookPage(root, "trick_micro_black_hole.0",
-                "Creates a micro black hole at the position. For 3 seconds it drags creatures within $(thing)Radius$(0) blocks (3 to 24) towards its centre, then collapses and crushes everything close to the centre.",
-                "指定位置にマイクロブラックホールを生み出します. 3秒間 $(thing)半径$(0) ブロック (3〜24) 以内の生物を中心へ引き寄せた後、崩壊して中心付近のものを押し潰します.");
+                "Creates a micro black hole at the position. For 10 seconds it drags creatures within $(thing)Radius$(0) blocks (16 to 32) and swings them around its centre at speed; a creature whipping past the centre may be flung out of range. In the last 1.5 seconds it swallows them, then collapses and crushes everything within three tenths of $(thing)Radius$(0) of the centre.",
+                "指定位置にマイクロブラックホールを生み出します. 10秒間、$(thing)半径$(0) ブロック (16〜32) 以内の生物を引き寄せ、中心のまわりで勢いよく振り回します. 中心のそばを回り込んだ勢いで、範囲の外へ投げ飛ばされることもあります. 最後の1.5秒で中心へ呑み込み、崩壊して中心から $(thing)半径$(0) の3割以内のものを押し潰します.");
         addBookPage(root, "trick_micro_black_hole.1",
-                "The collapse deals $(thing)60 + 50 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage."
+                "The collapse deals $(thing)30 + 25 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage."
                         + " The black hole is a SpellGram object: it has integrity, which does not wear away over time. If its integrity runs out before the collapse, it vanishes without crushing anything.",
-                "崩壊のダメージは防具と盾を無視する $(thing)60 + 50×威力$(0) で、外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません."
+                "崩壊のダメージは防具と盾を無視する $(thing)30 + 25×威力$(0) で、外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません."
                         + "ブラックホールは魔法式オブジェクトで、耐久値を持ちます. 耐久値は時間では減りません. 崩壊する前に耐久値が尽きると、何も押し潰さずに消えます.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし、Simulated Contraption に命中したならば推進力を与えます.");

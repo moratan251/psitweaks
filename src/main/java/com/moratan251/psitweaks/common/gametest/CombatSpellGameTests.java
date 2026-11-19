@@ -495,9 +495,13 @@ public final class CombatSpellGameTests {
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
         int[] starfall = stats(starfall(Map.of(POWER, 1.0, NUMBER, 13.0)));
         helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
-        int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 30.0)));
-        helper.assertTrue(gravity[0] == 1340 && gravity[1] == 10350, "Gravity radius must be capped at 24, got " + gravity[0] + "/" + gravity[1]);
-        int widest = stats(microBlackHole(Map.of(POWER, 0.5, RADIUS, 24.0)))[0];
+        int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 40.0)));
+        helper.assertTrue(gravity[0] == 1380 && gravity[1] == 2900,
+                "Micro Black Hole radius must be capped at 32 (1170+50P+5R / 500P+75R), got " + gravity[0] + "/" + gravity[1]);
+        int[] narrowest = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 3.0)));
+        helper.assertTrue(narrowest[0] == 1300 && narrowest[1] == 1700,
+                "Micro Black Hole radius must be at least 16, got " + narrowest[0] + "/" + narrowest[1]);
+        int widest = stats(microBlackHole(Map.of(POWER, 0.5, RADIUS, 32.0)))[0];
         helper.assertTrue(widest <= 1500, "The widest Micro Black Hole must still fit a psycheonic metal CAD, got " + widest);
         helper.succeed();
     }
@@ -1345,7 +1349,7 @@ public final class CombatSpellGameTests {
         ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_integrity_caster", new Vec3(0.5, 0.0, 4.5));
         var husk = tough(husk(helper, new BlockPos(2, 0, 2), true));
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
-        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 4.0)).execute(new SpellContext().setPlayer(player));
+        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 16.0)).execute(new SpellContext().setPlayer(player));
         var wells = helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class, helper.getBounds().inflate(4));
         helper.assertTrue(wells.size() == 1, "One black hole expected, found " + wells.size());
         EntityMicroBlackHole well = wells.get(0);
@@ -1370,29 +1374,143 @@ public final class CombatSpellGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 200)
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = EntityMicroBlackHole.CHARGE_TICKS + 100)
     public static void microBlackHolePullsInThenCrushes(GameTestHelper helper) throws Exception {
         // ブラックホールは魔法式オブジェクト（術者を ID で引き直す）なので、ワールドにいるプレイヤーで唱える。
         ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_caster", new Vec3(0.5, 0.0, 4.5));
-        // 60 + 50 x Power would kill a plain husk, so give it room to show the collapse hits only once.
+        // 30 + 25 x Power would nearly kill a plain husk, so give it room to show the collapse hits only once.
         var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
         husk.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
         double startX = husk.getX();
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
-        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 4.0)).execute(new SpellContext().setPlayer(player));
+        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 16.0)).execute(new SpellContext().setPlayer(player));
         helper.startSequence()
                 .thenExecuteAfter(15, () -> {
                     helper.assertTrue(husk.getX() < startX - 0.4, "The black hole must drag the husk in: moved " + (startX - husk.getX()));
                     helper.assertTrue(near(husk.getHealth(), TOUGH_HEALTH), "No damage before the collapse");
                 })
-                .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - 55 + EPSILON,
-                        "The collapse must crush through armor for at least half of 60 + 50 x Power, health " + husk.getHealth()))
+                .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - 27.5F + EPSILON,
+                        "The collapse must crush through armor for at least half of 30 + 25 x Power, health " + husk.getHealth()))
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class,
                         helper.getBounds().inflate(4)).isEmpty(), "The black hole must close after collapsing"))
-                .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 110 - EPSILON,
+                .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 55 - EPSILON,
                         "The collapse hits once, health " + husk.getHealth()))
                 .thenExecute(() -> GameTestPlayers.remove(helper, player))
                 .thenSucceed();
+    }
+
+    /**
+     * マイクロブラックホールの吸引は重力に似せてあり、端ほど弱い（届く距離の半分のところより弱い）。中心では 0 で、最後に呑み込むときは
+     * 強まる。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void microBlackHolePullIsWeakerTowardsTheEdge(GameTestHelper helper) {
+        for (double reach : new double[] {16.0, 24.0, 32.0}) {
+            double edge = EntityMicroBlackHole.pullAcceleration(reach, reach, 0);
+            double half = EntityMicroBlackHole.pullAcceleration(reach / 2.0, reach, 0);
+            helper.assertTrue(edge > 0.0 && edge < half * 0.8,
+                    "Reach " + reach + ": the edge must pull clearly weaker than halfway in, edge " + edge + ", halfway " + half);
+            helper.assertTrue(EntityMicroBlackHole.pullAcceleration(0.0, reach, 0) == 0.0,
+                    "Reach " + reach + ": nothing pulls at the very centre, so creatures pass through it");
+            int swallowing = EntityMicroBlackHole.CHARGE_TICKS - EntityMicroBlackHole.SWALLOW_TICKS;
+            helper.assertTrue(EntityMicroBlackHole.pullAcceleration(reach / 2.0, reach, swallowing)
+                            > EntityMicroBlackHole.pullAcceleration(reach / 2.0, reach, swallowing - 1),
+                    "Reach " + reach + ": the pull must grow stronger when the black hole swallows before the collapse");
+        }
+        helper.succeed();
+    }
+
+    /**
+     * 中心のそばでは速さが乗る（端から落ちてくると、中心から 1.5 ブロックのところで 2 ブロック/tick 以上）。端の近くから落ちてきた生物は、
+     * 回り込みで 1 割速くなるだけで範囲の外まで飛んでいく。勢いの下限で回っている生物は、同じだけ速くなっても範囲の中に残る。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void microBlackHoleFlingsCreaturesThatFellFromTheEdge(GameTestHelper helper) {
+        double close = 1.5;
+        double boost = 1.1;
+        helper.assertTrue(1.0 + EntityMicroBlackHole.SLINGSHOT_MAX > boost && 1.0 + EntityMicroBlackHole.SLINGSHOT_MIN < 1.0,
+                "A slingshot must be able to speed a creature up by 10% and also slow it down");
+        for (double reach : new double[] {16.0, 24.0, 32.0}) {
+            double closeDepth = EntityMicroBlackHole.depth(close, reach);
+            helper.assertTrue(Math.sqrt(2.0 * closeDepth) >= 2.0,
+                    "Reach " + reach + ": a creature falling from the edge must pass the centre at 2 blocks/tick or more, got "
+                            + Math.sqrt(2.0 * closeDepth));
+            double fromEdge = boost * boost * (closeDepth - EntityMicroBlackHole.depth(0.9 * reach, reach)) - closeDepth;
+            helper.assertTrue(fromEdge > 0.0,
+                    "Reach " + reach + ": a creature that fell from near the edge must fly out after a 10% slingshot, energy " + fromEdge);
+            double swinging = boost * boost
+                    * (closeDepth - EntityMicroBlackHole.depth(EntityMicroBlackHole.SWING_FLOOR * reach, reach)) - closeDepth;
+            helper.assertTrue(swinging < 0.0,
+                    "Reach " + reach + ": a creature swinging at the lowest energy must stay inside after a 10% slingshot, energy "
+                            + swinging);
+        }
+        helper.succeed();
+    }
+
+    /**
+     * 半径は 16〜32 に収める。吸引はその半径まで届き、崩壊で押し潰すのは半径の 3 割。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 40)
+    public static void microBlackHoleKeepsItsRadiusWithin16To32(GameTestHelper helper) throws Exception {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_radius_caster", new Vec3(0.5, 0.0, 4.5));
+        Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
+        microBlackHole(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(1.5, 1.5, 1.5))), POWER, 1.0, RADIUS, 3.0))
+                .execute(new SpellContext().setPlayer(player));
+        microBlackHole(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(3.5, 1.5, 3.5))), POWER, 1.0, RADIUS, 40.0))
+                .execute(new SpellContext().setPlayer(player));
+        guarded(cleanup, () -> {
+            List<Float> radii = helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class, helper.getBounds().inflate(4)).stream()
+                    .map(EntityMicroBlackHole::getRadius).sorted().toList();
+            helper.assertTrue(radii.equals(List.of(16.0F, 32.0F)), "Radius 3 and 40 must become 16 and 32, got " + radii);
+            for (EntityMicroBlackHole well : helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class, helper.getBounds().inflate(4))) {
+                helper.assertTrue(Math.abs(well.getCollapseRadius() - well.getRadius() * 0.3) < 1.0E-4,
+                        "The collapse must crush within 0.3 x radius, got " + well.getCollapseRadius() + " for " + well.getRadius());
+            }
+        }).run();
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /**
+     * 引き寄せた生物を中心に吸い付かせない。勢いのまま中心を通り過ぎては引き戻され、呑み込みが始まるまで振り回され続ける
+     * （スイングバイ）。試験場は狭いので、ハスクは障壁に当たりながら回り続ける。平均の速さで確かめる。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = EntityMicroBlackHole.CHARGE_TICKS + 100)
+    public static void microBlackHoleKeepsCreaturesMoving(GameTestHelper helper) throws Exception {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "black_hole_swing_caster", new Vec3(0.5, 0.0, 4.5));
+        var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
+        microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 16.0)).execute(new SpellContext().setPlayer(player));
+        int swallow = EntityMicroBlackHole.CHARGE_TICKS - EntityMicroBlackHole.SWALLOW_TICKS;
+        int lateFrom = swallow - 50;
+        // [0] 経過 tick、[1] 前の tick の位置 x、[2] z、[3][4] 40 tick 目から呑み込みの手前までの水平移動の合計と tick 数、[5][6] 終わりの 50 tick の分
+        double[] track = {0.0, husk.getX(), husk.getZ(), 0.0, 0.0, 0.0, 0.0};
+        helper.onEachTick(() -> {
+            int tick = (int) track[0]++;
+            double moved = Math.hypot(husk.getX() - track[1], husk.getZ() - track[2]);
+            track[1] = husk.getX();
+            track[2] = husk.getZ();
+            if (tick < 40 || tick >= swallow - 2) {
+                return;
+            }
+            track[3] += moved;
+            track[4]++;
+            if (tick >= lateFrom) {
+                track[5] += moved;
+                track[6]++;
+            }
+        });
+        Runnable cleanup = () -> GameTestPlayers.remove(helper, player);
+        helper.runAfterDelay(swallow, guarded(cleanup, () -> {
+            double speed = track[3] / Math.max(1.0, track[4]);
+            double lateSpeed = track[5] / Math.max(1.0, track[6]);
+            helper.assertTrue(speed >= 0.15, "The husk must keep being swung around instead of sticking to the centre,"
+                    + " average speed " + speed + " blocks/tick");
+            helper.assertTrue(lateSpeed >= 0.15, "The husk must still be swung around just before the black hole swallows,"
+                    + " average speed " + lateSpeed + " blocks/tick");
+            cleanup.run();
+            helper.succeed();
+        }));
     }
 
     /**
