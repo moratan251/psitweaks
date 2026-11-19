@@ -1,10 +1,10 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
 import com.moratan251.psitweaks.client.particles.ZoneParticleBudget;
-import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.spells.SpellBlockProtection;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -23,6 +23,7 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -635,11 +636,23 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 術者自身には効かないか。害のある領域（加熱・凍結・乱流）は術者を巻き込まない（仮）。湿潤・加重は術者にも
-     * 効く。
+     * 効き目の相手を攻撃術式の共通ルール（{@link AttackRules#canHarm}）で選ぶか。真なら、攻撃の当たらない相手（術者・術者の
+     * ペット・味方、PvP が切ってあるときのほかのプレイヤー、クリエイティブのプレイヤー、防具立てなど）には効かない。自律詠唱機の
+     * 領域では持ち主の側がそれに当たる。害のある領域（加熱・凍結）が真にする。湿潤・加重などは術者にも効く。
      */
-    protected boolean sparesCaster() {
+    protected boolean followsAttackRules() {
         return false;
+    }
+
+    /**
+     * 範囲の中の {@code entity} を効き目の相手にしてよいか: 魔法式オブジェクトでなく、{@link #affects} が真で、
+     * {@link #followsAttackRules} なら術者 {@code caster} の攻撃が当たる相手。
+     */
+    private boolean mayTarget(Entity entity, @Nullable LivingEntity caster) {
+        if (entity instanceof SpellGramObject || !affects(entity)) {
+            return false;
+        }
+        return !followsAttackRules() || entity instanceof LivingEntity living && canDamageEntity(caster, living);
     }
 
     /** 範囲の中のエンティティ 1 体への効き目（サーバー側、{@link #affects} が真のものだけ）。 */
@@ -986,8 +999,9 @@ public abstract class SpellGramZone extends SpellGramObject {
      * 自分の同じ種類の領域が重なっていても、それぞれが自分のリソースを配る（足し算）ので、一番強いかは問わない。
      */
     public List<Entity> entitiesReceiving() {
+        LivingEntity caster = followsAttackRules() ? getCaster() : null;
         return level().getEntities(this, area.bounds(), entity -> {
-            if (entity instanceof SpellGramObject || !affects(entity) || (sparesCaster() && CasterIds.matches(entity, getCasterUuid()))) {
+            if (!mayTarget(entity, caster)) {
                 return false;
             }
             return insideAndActive(BlockPos.containing(entity.getBoundingBox().getCenter()));
@@ -999,8 +1013,9 @@ public abstract class SpellGramZone extends SpellGramObject {
      * 領域が重なっていれば、そこで一番強い領域だけが効く（{@link #isStrongestAt}）。1 体あたりの強さに使う。
      */
     public List<Entity> entitiesInside() {
+        LivingEntity caster = followsAttackRules() ? getCaster() : null;
         return level().getEntities(this, area.bounds(), entity -> {
-            if (entity instanceof SpellGramObject || !affects(entity) || (sparesCaster() && CasterIds.matches(entity, getCasterUuid()))) {
+            if (!mayTarget(entity, caster)) {
                 return false;
             }
             BlockPos pos = BlockPos.containing(entity.getBoundingBox().getCenter());

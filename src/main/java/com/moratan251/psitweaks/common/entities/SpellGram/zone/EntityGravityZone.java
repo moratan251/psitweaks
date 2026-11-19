@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.BlockAttachedEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -17,7 +18,8 @@ import vazkii.psi.common.core.handler.AdditiveMotionHandler;
 /**
  * 作動式: 加重領域（仮）の範囲。中のエンティティ全般（生き物、落ちているアイテム、経験値、矢などの飛び道具、
  * トロッコやボート）に、指定の向きへ毎 tick 運動を足し続ける（Psi の運動追加と同じ仕組み）。スペクテイターと、物理で
- * 動かないもの（{@code noPhysics} の光線など）と魔法式オブジェクトは動かさない。
+ * 動かないもの（{@code noPhysics} の光線など）と、壁や柵に掛けるもの（額縁・絵画・リードの杭）と魔法式オブジェクトは
+ * 動かさない。
  * 足す量は 威力 × {@link #ACCELERATION_PER_POWER}（ブロック/tick²、仮）で、事象干渉力では変わらない。
  * 上向きに押している間は落下の距離を数えない（エレベーターのように使っても落下ダメージを受けない）。
  * <p>
@@ -65,9 +67,13 @@ public class EntityGravityZone extends SpellGramZone {
         return power;
     }
 
+    /**
+     * 押すエンティティ。壁や柵に掛けるもの（額縁・絵画・リードの杭、{@link BlockAttachedEntity}）は、バニラでは押されると外れて
+     * アイテムになる（{@link BlockAttachedEntity#push}）ので押さない。
+     */
     @Override
     protected boolean affects(Entity entity) {
-        return entity.isAlive() && !entity.isSpectator() && !entity.noPhysics;
+        return entity.isAlive() && !entity.isSpectator() && !entity.noPhysics && !(entity instanceof BlockAttachedEntity);
     }
 
     /** 重なった加重領域の押す力（向き × 威力）を足したものの大きさの上限（威力）。 */

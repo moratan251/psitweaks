@@ -31,8 +31,8 @@ import java.util.Set;
 /**
  * 作動式: 凍結領域（仮）の範囲。
  * <ul>
- *   <li>中の生物を、粉雪に埋まったときと同じように凍えさせる（{@link #freezeAmount}）。術者自身は凍えさせない
- *   （{@link #sparesCaster}）。</li>
+ *   <li>中の生物を、粉雪に埋まったときと同じように凍えさせる（{@link #freezeAmount}）。攻撃術式と同じく、術者・術者の
+ *   ペット・味方と、PvP が切ってあるときのほかのプレイヤーは凍えさせない（{@link #followsAttackRules}）。</li>
  *   <li>ランダムに選んだブロックで、水源の水のうち、真上が空気で中にエンティティがいないものを氷にする（{@link #randomBlockTick}）。</li>
  *   <li>冷却量（{@link #coolingTotalPerTick}）の範囲で、Mekanism の熱を持つ設備を下限（275 − 威力 × 5 K）に向けて冷やす
  *   （{@link #coolMekanismMachines}）。</li>
@@ -336,7 +336,7 @@ public class EntityFreezeZone extends SpellGramZone {
     }
 
     @Override
-    protected boolean sparesCaster() {
+    protected boolean followsAttackRules() {
         return true;
     }
 

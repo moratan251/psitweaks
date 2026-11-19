@@ -31,7 +31,8 @@ import java.util.List;
 /**
  * 作動式: 加熱領域（仮）の範囲。
  * <ul>
- *   <li>中の生物に火をつける（{@link #affect}）。術者自身は燃やさない（{@link #sparesCaster}）。</li>
+ *   <li>中の生物に火をつける（{@link #affect}）。攻撃術式と同じく、術者・術者のペット・味方と、PvP が切ってあるときのほかの
+ *   プレイヤーは燃やさない（{@link #followsAttackRules}）。</li>
  *   <li>ランダムに選んだブロックで、氷と薄氷を水に戻し、積もった雪を溶かし、濡れたスポンジを乾かす（{@link #randomBlockTick}）。</li>
  *   <li>1 tick あたりの熱の総量（{@link #heatTotalPerTick}）で Create のブレイズバーナーを加熱し（{@link #allocateBurners}）、
  *   残りを Mekanism の熱を受け取るブロックに均等に分ける（温度は {@link #maxTemperature} まで）。</li>
@@ -174,7 +175,7 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     @Override
-    protected boolean sparesCaster() {
+    protected boolean followsAttackRules() {
         return true;
     }
 
