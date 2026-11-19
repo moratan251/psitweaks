@@ -1870,15 +1870,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Like Frost Walker, the circle turns water sources inside it, at its own level and one block below, into Frosted Ice"
                         + " where only air is above and nothing stands in the water, and keeps the Frosted Ice inside from melting. Once the"
                         + " circle has moved on or ended, the ice melts as usual. This is the only way a circle changes the world.$(p)It"
-                        + " leaves alone blocks the caster may not change and blocks where a Heat Zone works. While it follows a boat"
-                        + " (or someone in one) that floats on water, it makes no ice, so you can row as usual; on ice it keeps freezing"
-                        + " the water ahead, so an ice boat slides on.",
+                        + " leaves alone blocks the caster may not change and blocks where a Heat Zone works.",
                 "氷渡りのように、円の中の、サークルと同じ高さと1つ下の水源のうち、真上が空気で中に何もいないものを薄氷にし、円の中の薄氷を"
                         + "溶けないように保ちます。サークルが離れたり消えたりすると、薄氷はふつうどおり溶けます。サークルが世界を変えるのは"
-                        + "これだけです。$(p)術者が変えてはいけないブロックと、加熱領域が効いているブロックはそのままです。水に浮いている"
-                        + "ボート（またはそれに乗った人）を追従している間は薄氷を作らないので、ふつうに漕げます。氷の上では先の水面を凍らせ"
-                        + "続けるので、氷上ボートはそのまま滑れます。");
-        addBookPage(root, "trick_ice_circle.2", circleRulesEn("Ice Circles"), circleRulesJa("アイスサークル"));
+                        + "これだけです。$(p)術者が変えてはいけないブロックと、加熱領域が効いているブロックはそのままです。");
+        addBookPage(root, "trick_ice_circle.2",
+                "While it follows something (Trick: Circle Follow), it freezes water the way the Frost Walker enchantment does:"
+                        + " only when what it follows stands on the ground and moves onto another block or lands, only one block below"
+                        + " its feet, and it does not keep the Frosted Ice from melting.$(p)Nothing freezes while what it follows rides"
+                        + " something, except a boat: on ice or land the boat freezes the water ahead, so an ice boat slides on; floating"
+                        + " on water it makes no ice, so you can row as usual.",
+                "作動式: サークル追従で追従している間は、エンチャントの氷渡りと同じように凍らせます。追従先が地面にいて、別のブロックへ"
+                        + "移ったときと着地したときだけ、足元の1つ下の段を凍らせ、薄氷を溶けないように保つことはしません。$(p)追従先が"
+                        + "乗り物に乗っている間は凍らせません。ただしボートは別で、氷や陸の上では先の水面を凍らせるので、氷上ボートはそのまま"
+                        + "滑れます。水に浮いている間は凍らせないので、ふつうに漕げます。");
+        addBookPage(root, "trick_ice_circle.3", circleRulesEn("Ice Circles"), circleRulesJa("アイスサークル"));
         addBookPage(root, "trick_circle_follow.0",
                 "Makes your own circles (Trick: Fire Circle, Trick: Ice Circle) given as the Target move to the Follow Target every"
                         + " tick. Leave out the Target for your newest circle in this dimension. The circles may be any distance away."

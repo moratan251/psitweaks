@@ -30,6 +30,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
@@ -384,7 +385,7 @@ public final class CircleGameTests {
     }
 
     /**
-     * アイスサークルの氷渡り: 円の中の、中心の段と 1 つ下の段の、真上が空気でエンティティのいない水源は薄氷になる。上が塞がった
+     * 置いたアイスサークルの氷渡り: 円の中の、中心の段と 1 つ下の段の、真上が空気でエンティティのいない水源は薄氷になる。上が塞がった
      * 水・防具立てのいる水・加熱領域の中の水はそのまま。もとからある薄氷の年齢は 0 に戻る。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_circle_frost", timeoutTicks = 60)
@@ -494,6 +495,133 @@ public final class CircleGameTests {
             for (BlockPos water : waters) {
                 helper.assertTrue(isFrostedYoung(helper.getBlockState(water)),
                         "Water around a boat on ice must turn into Frosted Ice: " + water);
+            }
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /** 術者が乗ったボートが氷の上にあれば、術者を追従しているアイスサークルはボートの周りの水面を薄氷にする（ボートで判断する）。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_circle_frost_ride_boat", timeoutTicks = 60)
+    public static void iceCirclesFollowingTheCasterInABoatOnIceFreezeTheWater(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "circle_ride_boat_caster", new Vec3(4.5, 2.0, 4.5));
+        stoneLayer(helper);
+        helper.setBlock(new BlockPos(2, 1, 2), Blocks.ICE);
+        List<BlockPos> waters = List.of(new BlockPos(1, 1, 1), new BlockPos(3, 1, 3));
+        waters.forEach(pos -> helper.setBlock(pos, Blocks.WATER));
+        Boat boat = boat(helper, new Vec3(2.5, 2.0, 2.5), false);
+        EntityIceCircle circle = place(helper, new EntityIceCircle(level), caster, new Vec3(2.5, 2.0, 2.5), 1.5F, 0.0F, 10, 1.0F);
+        Runnable cleanup = () -> cleanup(helper, List.of(caster), boat);
+        try {
+            caster.startRiding(boat, true);
+            follow(caster, circle, caster);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(15, guarded(cleanup, () -> {
+            helper.assertTrue(caster.getVehicle() == boat && circle.isEntityFollowMode(),
+                    "The caster must stay in the boat and the circle must follow the caster");
+            for (BlockPos water : waters) {
+                helper.assertTrue(isFrostedYoung(helper.getBlockState(water)),
+                        "Water around the caster's boat on ice must turn into Frosted Ice: " + water);
+            }
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /**
+     * 追従しているアイスサークルはバニラの氷渡りのように凍らせる: 追従先が地面にいて、追従を始めたときと別のブロックへ移ったときだけ、
+     * 足元の 1 つ下の段の水源を薄氷にする。追従先と同じ段の水は凍らせず、もとからある薄氷の年齢は戻さず、止まっている間に来た水は
+     * 動くまで凍らせない。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_circle_frost_follow", timeoutTicks = 60)
+    public static void followingIceCirclesFreezeLikeFrostWalker(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "circle_frost_follow_caster", new Vec3(4.5, 2.0, 0.5));
+        stoneLayer(helper);
+        BlockPos open = new BlockPos(1, 1, 3);
+        BlockPos aged = new BlockPos(3, 1, 1);
+        BlockPos sameLevel = new BlockPos(3, 2, 3);
+        BlockPos late = new BlockPos(0, 1, 3);
+        helper.setBlock(open, Blocks.WATER);
+        helper.setBlock(aged, Blocks.FROSTED_ICE.defaultBlockState().setValue(FrostedIceBlock.AGE, 2));
+        // 追従先と同じ段（y = 2）の水: 四方を石で囲む（下は石の段）。
+        for (BlockPos wall : List.of(sameLevel.west(), sameLevel.east(), sameLevel.north(), sameLevel.south())) {
+            helper.setBlock(wall, Blocks.STONE);
+        }
+        helper.setBlock(sameLevel, Blocks.WATER);
+        ItemEntity item = helper.spawnItem(Items.SNOWBALL, new Vec3(1.5, 2.0, 1.5));
+        item.setNeverPickUp();
+        EntityIceCircle circle = place(helper, new EntityIceCircle(level), caster, new Vec3(1.5, 2.0, 1.5), 3.0F, 0.0F, 10, 1.0F);
+        Runnable cleanup = () -> cleanup(helper, List.of(caster), item);
+        try {
+            follow(caster, circle, item);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(10, guarded(cleanup, () -> {
+            helper.assertTrue(item.onGround() && circle.isEntityFollowMode(), "The item must lie on the ground and be followed");
+            helper.assertTrue(isFrostedYoung(helper.getBlockState(open)),
+                    "Open water one block below the item must turn into Frosted Ice once the following starts");
+            helper.assertTrue(helper.getBlockState(sameLevel).is(Blocks.WATER), "Water at the item's own level must stay water");
+            helper.setBlock(late, Blocks.WATER);
+        }));
+        helper.runAfterDelay(25, guarded(cleanup, () -> {
+            helper.assertTrue(helper.getBlockState(late).is(Blocks.WATER),
+                    "Water that came while the item lay still must stay water until the item moves");
+            helper.assertFalse(isFrostedYoung(helper.getBlockState(aged)), "Frosted Ice must not be kept at age 0 while following");
+            Vec3 moved = helper.absoluteVec(new Vec3(0.5, 2.0, 1.5));
+            item.setPos(moved.x, moved.y, moved.z);
+        }));
+        helper.runAfterDelay(35, guarded(cleanup, () -> {
+            helper.assertTrue(isFrostedYoung(helper.getBlockState(late)),
+                    "Water must turn into Frosted Ice once the item has moved onto another block");
+            helper.assertTrue(helper.getBlockState(sameLevel).is(Blocks.WATER), "Water at the item's own level must still stay water");
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /** 宙に浮いたもの（水面のすぐ上に浮かせたボート）を追従しているアイスサークルは、動いても下の水を凍らせない。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_circle_frost_air", timeoutTicks = 40)
+    public static void followingIceCirclesDoNotFreezeUnderSomethingInTheAir(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "circle_frost_air_caster", new Vec3(4.5, 2.0, 4.5));
+        stoneLayer(helper);
+        List<BlockPos> waters = new ArrayList<>();
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 3; z++) {
+                BlockPos water = new BlockPos(x, 1, z);
+                helper.setBlock(water, Blocks.WATER);
+                waters.add(water);
+            }
+        }
+        Boat boat = boat(helper, new Vec3(2.5, 2.0, 2.5), true);
+        EntityIceCircle circle = place(helper, new EntityIceCircle(level), caster, new Vec3(2.5, 2.0, 2.5), 3.0F, 0.0F, 10, 1.0F);
+        Runnable cleanup = () -> cleanup(helper, List.of(caster), boat);
+        try {
+            follow(caster, circle, boat);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(5, guarded(cleanup, () -> {
+            // 別のブロックへ移しても、ボートの下面は水の上だけに収める。周りの石の縁に掛かると Boat#getGroundFriction が
+            // 石を拾い、地面にいる扱いになる。
+            Vec3 moved = helper.absoluteVec(new Vec3(2.5, 2.0, 1.9));
+            boat.setPos(moved.x, moved.y, moved.z);
+        }));
+        helper.runAfterDelay(15, guarded(cleanup, () -> {
+            helper.assertTrue(!boat.isInWater() && circle.isEntityFollowMode(), "The circle must follow the boat above the water");
+            helper.assertTrue(boat.blockPosition().equals(helper.absolutePos(new BlockPos(2, 2, 1))),
+                    "The boat must have moved onto another block: " + boat.blockPosition());
+            for (BlockPos water : waters) {
+                helper.assertTrue(helper.getBlockState(water).is(Blocks.WATER),
+                        "Water under something in the air must stay water: " + water);
             }
             cleanup.run();
             helper.succeed();

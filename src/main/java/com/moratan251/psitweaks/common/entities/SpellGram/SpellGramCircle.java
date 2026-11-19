@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -230,22 +229,6 @@ public abstract class SpellGramCircle extends SpellGramObject {
             }
         }
         return false;
-    }
-
-    /**
-     * 水に浮いている（または沈んでいる）ボートを追従しているか（追従先がボートか、ボートに乗っている）。氷や陸の上のボート、宙に
-     * 浮いたボートは数えない。
-     */
-    public boolean isFollowingBoatInWater() {
-        if (!isEntityFollowMode()) {
-            return false;
-        }
-        Entity target = getFollowTargetEntity();
-        if (target == null) {
-            return false;
-        }
-        Entity vehicle = target instanceof Boat ? target : target.getRootVehicle();
-        return vehicle instanceof Boat boat && (boat.isInWater() || boat.isUnderWater());
     }
 
     // ---- 領域干渉 ----
