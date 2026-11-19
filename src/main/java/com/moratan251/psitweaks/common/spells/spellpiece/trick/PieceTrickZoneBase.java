@@ -39,7 +39,6 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  *   比例する。</li>
  *   <li>1 人が置ける数は、サークルと合わせて {@link SpellGramLimits} の上限まで（超えると古いものから解ける）。</li>
  * </ul>
- * 仕様の全体は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceTrick {
     /**

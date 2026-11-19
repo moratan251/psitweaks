@@ -41,7 +41,6 @@ import java.util.UUID;
  *   同じ種類どうしの {@link #isStrongestAt}。</li>
  *   <li>描画: 範囲を囲む箱（{@link #getOutline}）と、種類ごとの中の演出（{@link #spawnClientParticles}）。</li>
  * </ul>
- * 仕様の全体は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public abstract class SpellGramZone extends SpellGramObject {
     @Override

@@ -928,7 +928,7 @@ public final class AutonomousCasterGameTests {
         ServerLevel level = helper.getLevel();
         boolean pvp = level.getServer().isPvpAllowed();
         // 線は2本: z=1 に所有者と奥のハスク、z=3 にペットと奥の野良のオオカミ。光線はそれぞれの胴の高さを通す。
-        // 光線の始点・終点は float で同期されるので、ずれないよう線の z は整数の座標にする（docs/pitfalls.md PIT-055）。
+        // 光線の始点・終点は float で同期されるので、ずれないよう線の z は整数の座標にする。
         ServerPlayer owner = survivalOwner(helper, new Vec3(2.5, 1.0, 1.0));
         Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(4.0, 1.0, 1.0));
         husk.setNoAi(true);

@@ -209,7 +209,7 @@ public final class AttackTargetGameTests {
     public static void beamsSpareTeamMatesEvenWithFriendlyFire(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         boolean pvp = level.getServer().isPvpAllowed();
-        // 線は2本（z は float の座標がずれない整数。docs/pitfalls.md PIT-055）: z=1 に術者の光線とチームメイト・奥のハスク、
+        // 線は2本（z は float の座標がずれない整数）: z=1 に術者の光線とチームメイト・奥のハスク、
         // z=3 に機械の光線と他のプレイヤー・奥のハスク。光線はそれぞれの胴の高さを通す。
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "tgt_b_caster", new Vec3(0.5, 1.0 + 0.9 - 1.62, 1.0));
         caster.moveTo(caster.getX(), caster.getY(), caster.getZ(), -90.0F, 0.0F);

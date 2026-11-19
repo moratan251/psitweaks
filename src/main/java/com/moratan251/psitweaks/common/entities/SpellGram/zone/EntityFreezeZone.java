@@ -40,7 +40,6 @@ import java.util.Set;
  * 自分の側の加熱領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると吹雪になる。同じ術者の加熱領域と
  * 面で触れ合うか重なっていると、奪った熱のうち周囲の温度より上にあった分を、その加熱領域へ運ぶ（{@link ZoneHeatExchange}）。同じ熱源を
  * 冷やす自分の凍結領域のどれかが触れていれば、その熱源の熱は全部渡る（熱源ごとにまとめる）。凍結領域は熱を作らず、運ぶだけ。
- * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityFreezeZone extends SpellGramZone {
     private static final int INTERVAL = 10;

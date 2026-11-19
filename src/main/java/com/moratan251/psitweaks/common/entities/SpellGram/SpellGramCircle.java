@@ -38,7 +38,6 @@ import java.util.UUID;
  *   その場に残る（{@link #shouldRelease}）。</li>
  *   <li>Psi の運動追加・瞬間移動・大移動: 術者自身の、追従していない円だけが動く（{@link #isMovableBy}）。耐久値は減らない。</li>
  * </ul>
- * 仕様の全体は {@code docs/1.21.1/spellgram-zones.md} のサークルの節。
  */
 public abstract class SpellGramCircle extends SpellGramObject {
 

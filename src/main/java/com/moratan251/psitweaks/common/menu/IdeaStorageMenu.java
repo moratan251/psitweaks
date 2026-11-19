@@ -735,7 +735,7 @@ public class IdeaStorageMenu extends AbstractContainerMenu {
     }
 
     private static long addToPlayerInventory(Player player, ItemStack template, long amount, int maxStack) {
-        // PIT-029: Inventory#add はクリエイティブで残数を消去して成功を返すため、
+        // Inventory#add はクリエイティブで残数を消去して成功を返すため、
         // IItemHandler 化してシミュレートで受理量を確定してから本挿入する。
         PlayerMainInvWrapper wrapper = new PlayerMainInvWrapper(player.getInventory());
         long remaining = amount;

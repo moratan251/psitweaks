@@ -25,7 +25,7 @@ import org.joml.Matrix4f;
  * Psi の魔法陣のように白で描く図形（{@link CirclePen#white()}）は、同じ層の別の画像 {@code <図案>_<層>_white_<大きさ>.png} に
  * あり、同じ回転で白を掛けて重ねる（白の図形がない層は 1 枚だけ）。
  * <p>
- * 画像は記録フォルダ（{@code .steering/202611100300-zone-vector-magic-circle/tools/}）の生成ツール CircleTextureGen で、
+ * 画像は生成ツール CircleTextureGen で、
  * {@link CircleDesign} の形から作る。図案を直したら画像を作り直す。明るさは R = G = B の灰色（1 で頭打ち）。中心は画素の格子の
  * 中心で、層が持つ正方形の対称（左右・上下・対角の鏡映、90 度ごとの回転）は画素の単位で厳密にそろえてある。
  * <p>

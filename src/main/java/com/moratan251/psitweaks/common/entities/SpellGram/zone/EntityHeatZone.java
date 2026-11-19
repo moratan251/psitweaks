@@ -40,7 +40,6 @@ import java.util.List;
  * </ul>
  * 自分の側の凍結領域とは打ち消し合う（{@link #cancelledBy}）。同じ術者の乱流領域と重なると熱乱流になる。同じ術者の凍結領域と
  * 面で触れ合うか重なっていると、凍結領域が運んできた熱を受け取り、熱量に足す（{@link ZoneHeatExchange}、{@link #acceptMovedHeat}）。
- * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityHeatZone extends SpellGramZone {
     /** 威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */

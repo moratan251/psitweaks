@@ -28,8 +28,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 /**
  * The one rule every attack trick follows: who it may hit ({@link #canHarm}, also for picking targets), how hard
  * ({@link #scale}) and how ({@link #harm}). An attack trick never calls {@code hurt} itself; it deals damage through
- * {@link #harm} or {@link #harmByProjectile}, which apply the rule first. See {@code docs/1.21.1/development-guidelines.md}
- * 「攻撃術式の命中判定」.
+ * {@link #harm} or {@link #harmByProjectile}, which apply the rule first.
  */
 public final class AttackRules {
     private AttackRules() {

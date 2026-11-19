@@ -41,7 +41,7 @@ final class GameTestPlayers {
         Connection connection = new Connection(PacketFlow.SERVERBOUND);
         new EmbeddedChannel(connection);
         // ワールドに入ると他 Mod（Curios など）が同期の payload を送る。チャンネルを取り決めていない接続は NeoForge が
-        // 送信を拒むので、どのチャンネルも受け付ける接続にする（送った payload はどこにも届かない。docs/pitfalls.md PIT-053）。
+        // 送信を拒むので、どのチャンネルも受け付ける接続にする（送った payload はどこにも届かない）。
         connection.channel().attr(ChannelAttributes.ADHOC_CHANNELS).set(new AbstractSet<>() {
             @Override
             public boolean contains(Object channel) {

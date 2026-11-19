@@ -283,9 +283,9 @@ sourceSets.main.resources.srcDir generateModMetadata
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
 neoForge.ideSyncTask generateModMetadata
 
-// Attack spells deal damage only through AttackRules.harm / harmByProjectile, which apply the shared hit rule
-// (docs/1.21.1/development-guidelines.md「攻撃術式の命中判定」). This check fails when a spell, a spell's entity or a handler
-// calls hurt() directly. Run it with `./gradlew checkAttackDamageCalls`; `check` and `build` run it too.
+// Attack spells deal damage only through AttackRules.harm / harmByProjectile, which apply the shared hit rule.
+// This check fails when a spell, a spell's entity or a handler calls hurt() directly.
+// Run it with `./gradlew checkAttackDamageCalls`; `check` and `build` run it too.
 abstract class CheckAttackDamageCalls extends DefaultTask {
     @InputFiles
     @PathSensitive(PathSensitivity.RELATIVE)
@@ -312,8 +312,8 @@ abstract class CheckAttackDamageCalls extends DefaultTask {
             }
         }
         if (!offenders.isEmpty()) {
-            throw new GradleException("Attack spells must deal damage through AttackRules.harm or harmByProjectile "
-                    + "(docs/1.21.1/development-guidelines.md). Direct hurt() calls:" + System.lineSeparator() + "  "
+            throw new GradleException("Attack spells must deal damage through AttackRules.harm or harmByProjectile. "
+                    + "Direct hurt() calls:" + System.lineSeparator() + "  "
                     + offenders.join(System.lineSeparator() + "  "))
         }
     }

@@ -40,7 +40,6 @@ import java.util.UUID;
  *   {@link #restoreIntegrity} で戻す。</li>
  *   <li>解体される・術者がいなくなると {@link #end} で消える。</li>
  * </ul>
- * 耐久値の減り方の決まりは {@code docs/1.21.1/spellgram-zones.md}。
  */
 public abstract class SpellGramObject extends Entity implements IEntityWithComplexSpawn {
 

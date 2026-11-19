@@ -48,7 +48,6 @@ import java.util.UUID;
  *   荷電領域は雷雲（{@link #blowsFor}、それぞれの領域が見る）。Create の一括加工（湿潤領域の一括洗浄、加熱領域の一括燻製、
  *   加熱領域と荷電領域の重なりの一括製錬）は、乱流が重なったところでしか起きない。</li>
  * </ul>
- * 仕様の全体と数値の根拠は {@code docs/1.21.1/spellgram-zones.md}。
  */
 public class EntityTurbulenceZone extends SpellGramZone {
     /** 威力 1 あたりの、飛び道具を曲げる角度（度、仮）。威力 10 で最大 90 度。 */

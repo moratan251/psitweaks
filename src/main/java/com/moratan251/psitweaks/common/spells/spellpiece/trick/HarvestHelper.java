@@ -366,7 +366,7 @@ public final class HarvestHelper {
 
         /** Hands stacks over until {@code deadline}; true once everything is handed over. */
         boolean handOver(Player caster, long deadline) {
-            // Inventory.add deletes what does not fit in creative mode (PIT-029), so go through the item handler.
+            // Inventory.add deletes what does not fit in creative mode, so go through the item handler.
             IItemHandler inventory = new PlayerMainInvWrapper(caster.getInventory());
             while (index < entries.size()) {
                 DropEntry entry = entries.get(index);

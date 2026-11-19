@@ -363,7 +363,7 @@ public final class UtilitySpellGameTests {
     @GameTest(template = TEMPLATE)
     public static void harvestDropsWhatDoesNotFitEvenInCreative(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 0, 2), "full-harvester");
-        // Inventory.add would delete the overflow of a creative player (PIT-029).
+        // Inventory.add would delete the overflow of a creative player.
         player.getAbilities().instabuild = true;
         for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
             player.getInventory().items.set(slot, new ItemStack(Items.STONE, 64));

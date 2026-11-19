@@ -217,7 +217,7 @@ public final class MassBlockBreakScheduler {
             ItemStack stack = entry.copyStack(stackCount);
             task.dropEntryOffset += stackCount;
 
-            // Inventory.add はクリエイティブで入りきらない分を消してしまうので、PlayerMainInvWrapper で入れて残りを落とす（PIT-029）。
+            // Inventory.add はクリエイティブで入りきらない分を消してしまうので、PlayerMainInvWrapper で入れて残りを落とす。
             ItemStack rest = ItemHandlerHelper.insertItemStacked(new PlayerMainInvWrapper(player.getInventory()), stack, false);
             if (!rest.isEmpty()) {
                 task.overflow.add(rest);
