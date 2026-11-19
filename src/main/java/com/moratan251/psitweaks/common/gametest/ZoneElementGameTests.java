@@ -43,8 +43,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.items.IItemHandler;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
@@ -1945,8 +1947,9 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 電気炉: 自分の荷電領域と乱流領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（原料の鉄 → 鉄インゴット）。
-     * レシピのない土は燃えない。Create がなければ飛ばす。
+     * 電気炉: 自分の荷電領域と乱流領域が重なった加熱領域は、一括燻製の代わりに一括製錬をする（鉄の原石 → 鉄インゴット）。
+     * レシピのない土は燃えない。Create の一括製錬が燃やして消す生の牛肉も、落ちているものとデポの上のものの両方が、消えずに
+     * ステーキになる。Create がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_arc_furnace", timeoutTicks = 400)
     public static void chargedHeatZoneBlastsItemsWithCreate(GameTestHelper helper) {
@@ -1981,8 +1984,17 @@ public final class ZoneElementGameTests {
         dirt.setNeverPickUp();
         dirt.setDeltaMovement(Vec3.ZERO);
         level.addFreshEntity(dirt);
+        ItemEntity beef = new ItemEntity(level, itemAt.x, itemAt.y, itemAt.z, new ItemStack(Items.BEEF));
+        beef.setNeverPickUp();
+        beef.setDeltaMovement(Vec3.ZERO);
+        level.addFreshEntity(beef);
+        // デポの上の生の牛肉（デポ・メカニカルベルトの側の加工）。デポは領域を置く前に置く（領域が覚える
+        // ブロックエンティティの一覧に入るように）。
+        BlockPos depotAt = new BlockPos(1, 1, 3);
+        helper.setBlock(depotAt, block("create:depot").orElseThrow());
         AABB around = new AABB(helper.absolutePos(CENTER)).inflate(5.0);
         Runnable cleanup = () -> {
+            helper.setBlock(depotAt, Blocks.AIR);
             level.getEntitiesOfClass(ItemEntity.class, around).forEach(ItemEntity::discard);
             if (other != null) {
                 cleanup(helper, other);
@@ -1990,6 +2002,9 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
+            IItemHandler depot = level.getCapability(Capabilities.ItemHandler.BLOCK, helper.absolutePos(depotAt), null);
+            helper.assertTrue(depot != null && depot.insertItem(0, new ItemStack(Items.BEEF), false).isEmpty(),
+                    "Raw beef must go onto the Depot");
             // 事象干渉力 4 → 速さは上限の 2 倍（Create の処理時間 150 tick を 75 tick ほどで）。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
@@ -2007,16 +2022,43 @@ public final class ZoneElementGameTests {
                     entity -> entity.getItem().is(Items.RAW_IRON)).isEmpty();
             boolean dirtKept = !level.getEntitiesOfClass(ItemEntity.class, around,
                     entity -> entity.getItem().is(Items.DIRT)).isEmpty();
+            boolean beefCooked = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.COOKED_BEEF)).isEmpty();
+            boolean beefRaw = !level.getEntitiesOfClass(ItemEntity.class, around,
+                    entity -> entity.getItem().is(Items.BEEF)).isEmpty();
+            boolean depotCooked = depotHolds(level, helper.absolutePos(depotAt), Items.COOKED_BEEF);
+            boolean depotRaw = depotHolds(level, helper.absolutePos(depotAt), Items.BEEF);
             cleanup.run();
+            String state = "dropped beef: cooked " + beefCooked + ", raw " + beefRaw + "; Depot beef: cooked " + depotCooked
+                    + ", raw " + depotRaw;
             if (ownTurbulence) {
                 helper.assertTrue(blasted,
                         "A Heat Zone overlapped by your own Charged and Turbulence Zones must blast raw iron into an iron ingot");
+                helper.assertTrue(beefCooked && !beefRaw && depotCooked && !depotRaw,
+                        "The electric furnace must cook raw beef into steak instead of burning it away, dropped and on a Depot: "
+                                + state);
             } else {
                 helper.assertTrue(!blasted && rawKept, "Without your own Turbulence Zone, the Heat and Charged Zones must not blast items");
+                helper.assertTrue(!beefCooked && beefRaw && !depotCooked && depotRaw,
+                        "Without your own Turbulence Zone, raw beef must stay as it is: " + state);
             }
             helper.assertTrue(dirtKept, "It must not burn dirt, which has no smelting recipe");
             helper.succeed();
         });
+    }
+
+    /** {@code pos} のデポ（持っているアイテムと、加工の出力の置き場）に {@code item} があるか。 */
+    private static boolean depotHolds(ServerLevel level, BlockPos pos, net.minecraft.world.item.Item item) {
+        IItemHandler depot = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+        if (depot == null) {
+            return false;
+        }
+        for (int slot = 0; slot < depot.getSlots(); slot++) {
+            if (depot.getStackInSlot(slot).is(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.moratan251.psitweaks.common.compat;
 
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
+import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour;
 import com.simibubi.create.content.kinetics.fan.processing.AllFanProcessingTypes;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessing;
@@ -10,11 +11,17 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -84,10 +91,12 @@ final class CreateFanIntegration {
         if (area.isEmpty()) {
             return;
         }
-        FanProcessingType type = typeOf(process);
         for (ItemEntity item : itemsInside(level, area)) {
-            if (itemsAt.test(BlockPos.containing(item.getBoundingBox().getCenter())) && FanProcessing.canProcess(item, type)
-                    && safeToProcess(level, process, item.getItem())) {
+            if (!itemsAt.test(BlockPos.containing(item.getBoundingBox().getCenter()))) {
+                continue;
+            }
+            FanProcessingType type = typeFor(level, process, item.getItem());
+            if (type != null && FanProcessing.canProcess(item, type)) {
                 // 加工している間は消えるまでの時間を止める。
                 com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneItemLifetimes.hold(item, level.getGameTime());
                 FanProcessing.applyProcessing(item, type);
@@ -95,27 +104,50 @@ final class CreateFanIntegration {
         }
         // 集めてから加工する（加工でブロックエンティティの一覧が変わっても困らないように）。
         for (TransportedItemStackHandlerBehaviour handler : handlersInside(blockEntities, mayUse)) {
-            handler.handleProcessingOnAllItems(transported -> safeToProcess(level, process, transported.stack)
-                    ? FanProcessing.applyProcessing(transported, level, type)
-                    : TransportedItemStackHandlerBehaviour.TransportedResult.doNothing());
+            handler.handleProcessingOnAllItems(transported -> {
+                FanProcessingType type = typeFor(level, process, transported.stack);
+                return type != null
+                        ? FanProcessing.applyProcessing(transported, level, type)
+                        : TransportedItemStackHandlerBehaviour.TransportedResult.doNothing();
+            });
         }
     }
 
     /**
-     * 領域の加工で扱ってよいアイテムか（ドロップアイテムが意図せず燃えないように）。Create の一括製錬は、
-     * 精錬・溶鉱炉のレシピがないアイテムを（耐火のもの以外）燃やして消すので、領域の一括製錬はレシピのあるアイテムだけにする。
-     * 一括洗浄・一括燻製はもともとレシピのあるアイテムにしか効かない。
+     * 領域の加工で {@code stack} にする Create の加工の種類。扱わないアイテムなら null（ドロップアイテムが意図せず燃えないように）。
+     * 一括洗浄・一括燻製はもともとレシピのあるアイテムにしか効かないので、そのまま。一括製錬（電気炉）は、Create の一括製錬が
+     * 燃やして消すアイテムを、消さないように振り分ける。
+     * <ul>
+     *   <li>精錬・溶鉱炉のレシピがないアイテム: 扱わない（Create は耐火のもの以外を燃やす）。</li>
+     *   <li>燻製でも精錬と同じアイテムができるもの（生の肉・魚、じゃがいも、昆布など）: 一括燻製で焼く（Create の一括製錬は、
+     *       燻製で作るものとして燃やす）。できるものは精錬と同じアイテム。</li>
+     *   <li>ほか: 一括製錬。</li>
+     * </ul>
      */
-    static boolean safeToProcess(Level level, CreateCompat.FanProcess process, net.minecraft.world.item.ItemStack stack) {
-        if (process != CreateCompat.FanProcess.BLASTING || stack.isEmpty()) {
-            return true;
+    static @Nullable FanProcessingType typeFor(Level level, CreateCompat.FanProcess process, ItemStack stack) {
+        if (process != CreateCompat.FanProcess.BLASTING) {
+            return typeOf(process);
         }
-        var input = new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
-        var recipes = level.getRecipeManager();
-        return recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING, input, level)
-                .filter(com.simibubi.create.AllRecipeTypes.CAN_BE_AUTOMATED).isPresent()
-                || recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.BLASTING, input, level)
-                .filter(com.simibubi.create.AllRecipeTypes.CAN_BE_AUTOMATED).isPresent();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        SingleRecipeInput input = new SingleRecipeInput(stack);
+        RecipeManager recipes = level.getRecipeManager();
+        // Create の一括製錬と同じ順: 精錬のレシピ、なければ溶鉱炉のレシピ。
+        Optional<ItemStack> cooked = recipes.getRecipeFor(RecipeType.SMELTING, input, level)
+                .filter(AllRecipeTypes.CAN_BE_AUTOMATED)
+                .map(holder -> holder.value().getResultItem(level.registryAccess()))
+                .or(() -> recipes.getRecipeFor(RecipeType.BLASTING, input, level)
+                        .filter(AllRecipeTypes.CAN_BE_AUTOMATED)
+                        .map(holder -> holder.value().getResultItem(level.registryAccess())));
+        if (cooked.isEmpty()) {
+            return null;
+        }
+        boolean smokedTheSame = recipes.getRecipeFor(RecipeType.SMOKING, input, level)
+                .filter(AllRecipeTypes.CAN_BE_AUTOMATED)
+                .map(holder -> ItemStack.isSameItem(holder.value().getResultItem(level.registryAccess()), cooked.get()))
+                .orElse(false);
+        return smokedTheSame ? AllFanProcessingTypes.SMOKING : AllFanProcessingTypes.BLASTING;
     }
 
     /** クライアント側: Create の AirCurrent がクライアントでするのと同じく、範囲の中のアイテムの位置にパーティクルを出す。 */
