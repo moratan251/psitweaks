@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.api.value.MatrixValue;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.network.MessageRegionOutline;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.item.BlockInventorySlotSource;
 import com.moratan251.psitweaks.common.spells.item.EntityHandSource;
@@ -525,6 +526,77 @@ public final class ItemBlockMatrixGameTests {
         helper.assertTrue(((PieceOperatorMatrixCuboidRegion) SpellPiece.createFromNBT(new Spell(), tag)).isNumberMode(),
                 "Number mode lost on reload");
         helper.succeed();
+    }
+
+    /**
+     * Operator: Cuboid Region: a whole-number size counts blocks around the block that contains Position, so a zone
+     * given the matrix covers the same blocks as a zone placed without one, and a position on a block centre does not
+     * take in an extra layer. Other sizes stay continuous around Position itself.
+     */
+    @GameTest(template = "connector_empty")
+    public static void cuboidRegionCountsFromTheContainingBlock(GameTestHelper helper) throws Exception {
+        var player = fakeCaster(helper, new BlockPos(2, 1, 2), "cuboid-block");
+        var context = new SpellContext().setPlayer(player);
+        Object[] input = new Object[2];
+        var cuboid = new PieceOperatorMatrixCuboidRegion(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return param.name.equals(POSITION) ? input[0] : input[1];
+            }
+        };
+
+        input[0] = new Vector3(10.7, 64.2, 5.9);
+        input[1] = new Vector3(3, 3, 3);
+        helper.assertTrue(regionBlocks((MatrixValue) cuboid.execute(context)).equals(blockBox(9, 63, 4, 11, 65, 6)),
+                "A Size of 3 must be centred on the block that contains Position, also in the upper half of the block");
+
+        input[0] = new Vector3(10.5, 64.5, 5.5);
+        input[1] = new Vector3(1, 1, 1);
+        helper.assertTrue(regionBlocks((MatrixValue) cuboid.execute(context)).equals(blockBox(10, 64, 5, 10, 64, 5)),
+                "A Size of 1 on a block centre must be that one block");
+        input[1] = new Vector3(3, 3, 3);
+        helper.assertTrue(regionBlocks((MatrixValue) cuboid.execute(context)).equals(blockBox(9, 63, 4, 11, 65, 6)),
+                "A Size of 3 on a block centre must be 3x3x3, not 4x4x4");
+
+        input[0] = new Vector3(10.7, 64.2, 5.9);
+        input[1] = new Vector3(4, -4, 1);
+        helper.assertTrue(regionBlocks((MatrixValue) cuboid.execute(context)).equals(blockBox(9, 62, 5, 12, 65, 5)),
+                "Even sizes must keep their extra block on the positive side, negative even sizes on the negative side");
+
+        input[0] = new Vector3(-0.3, 64.2, 5.9);
+        input[1] = new Vector3(1, 1, 1);
+        helper.assertTrue(regionBlocks((MatrixValue) cuboid.execute(context)).equals(blockBox(-1, 64, 5, -1, 64, 5)),
+                "A negative coordinate must use the block that contains it");
+
+        input[0] = new Vector3(10.7, 64.2, 5.9);
+        input[1] = new Vector3(2.5, 3, 3);
+        var continuous = (MatrixValue) cuboid.execute(context);
+        helper.assertTrue(Math.abs(continuous.get(0, 3) - 9.45) < 1e-9 && continuous.get(0, 0) == 2.5,
+                "A size that is not a whole number must stay continuous around Position");
+
+        input[0] = new Vector3(10.7, 64.2, 5.9);
+        input[1] = new Vector3(5, 5, 5);
+        var withMatrix = ZoneArea.of((MatrixValue) cuboid.execute(context), 5);
+        var withoutMatrix = ZoneArea.cube(new BlockPos(10, 64, 5), 5);
+        helper.assertTrue(withMatrix.bounds().equals(withoutMatrix.bounds()),
+                "A zone given the matrix must cover the same 5x5x5 blocks as a zone placed without one: "
+                        + withMatrix.bounds() + " vs " + withoutMatrix.bounds());
+        cuboid.setModeOption(PsitweaksModeOptions.NUMBER);
+        input[1] = 5.0;
+        helper.assertTrue(ZoneArea.of((MatrixValue) cuboid.execute(context), 5).bounds().equals(withoutMatrix.bounds()),
+                "Number mode must cover the same blocks as Vector mode");
+        helper.succeed();
+    }
+
+    private static Set<BlockPos> regionBlocks(MatrixValue matrix) throws SpellRuntimeException {
+        return new HashSet<>(MassBlockBreakHelper.collectRegionPositions(matrix));
+    }
+
+    private static Set<BlockPos> blockBox(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+        Set<BlockPos> blocks = new HashSet<>();
+        for (BlockPos pos : BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
+            blocks.add(pos.immutable());
+        }
+        return blocks;
     }
 
     @GameTest(template = "connector_empty")

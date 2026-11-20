@@ -826,7 +826,7 @@
   "psi.book.page.psitweaks_spellpiece.operator_matrix_caster_basis.2": "例: 演算子: 直方体領域を「位置」(0, 1, 3)、「サイズ」(3, 3, 5) で作り、演算子: 行列積でこの行列を左から掛けます。結果は術者の正面にある 3×3、奥行き5ブロックのトンネル状の領域です。作動式: 領域表示で確認でき、演算子: 領域ベクトルリスト化と作動式: 大規模ブロック破壊で掘れます。",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_column_count": "列数を Number として返します.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_column_from_list": "Number List または Vector を列行列に変換します. 入力は1〜4要素である必要があります.",
-  "psi.book.page.psitweaks_spellpiece.operator_matrix_cuboid_region": "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われます. 奇数は入力位置を中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します. Number モードではサイズを1つの数値で受け取り, 3軸すべてに使うので, サイズ5なら5×5×5の立方体になります.",
+  "psi.book.page.psitweaks_spellpiece.operator_matrix_cuboid_region": "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われ, 入力位置が入っているブロックを基準にします. 奇数はそのブロックを中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します. Number モードではサイズを1つの数値で受け取り, 3軸すべてに使うので, サイズ5なら5×5×5の立方体になります.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_delete_column": "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう、元の行列は2列以上である必要があります.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_delete_row": "0始まりのインデックスで指定した行を行列から削除します. 結果が空にならないよう、元の行列は2行以上である必要があります.",
   "psi.book.page.psitweaks_spellpiece.operator_matrix_determinant": "行列式を求めます. 行列は正方行列である必要があります.",

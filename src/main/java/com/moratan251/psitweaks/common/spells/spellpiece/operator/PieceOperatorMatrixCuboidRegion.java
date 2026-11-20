@@ -23,6 +23,10 @@ import vazkii.psi.api.spell.piece.PieceOperator;
  * The 4x4 region matrix of an axis-aligned cuboid centred on the position. Vector mode (the default, and the mode of
  * spells saved before the modes existed) takes the size per axis; Number mode takes one size for all three axes, so
  * a cube needs only one number. Both modes name the input Size, so changing the mode keeps the wire.
+ * <p>
+ * A whole-number size counts blocks around the block that contains the position, the block Psi's tricks act on and
+ * the centre of a zone placed without a matrix, so a zone given this matrix with the same size covers the same blocks.
+ * Other sizes keep a continuous edge around the position itself.
  */
 public class PieceOperatorMatrixCuboidRegion extends PieceOperator implements PsitweaksModeConfigurable {
     private static final String TAG_MODE = "psitweaksMode";
@@ -144,14 +148,18 @@ public class PieceOperatorMatrixCuboidRegion extends PieceOperator implements Ps
             return new AxisRegion(center - size * 0.5, size);
         }
 
+        // Counting from the raw position would centre on the nearest block, one off from the block that contains a
+        // position in the upper half of its block, and a position on a block centre would put the edges on whole
+        // numbers, where the region takes in the blocks on both sides.
+        double block = Math.floor(center + INTEGER_EPSILON);
         int blocks = (int) Math.abs(Math.rint(size));
         if (size > 0) {
             int minOffset = -((blocks - 1) / 2);
-            return new AxisRegion(center + minOffset - 0.5, blocks);
+            return new AxisRegion(block + minOffset - 0.5, blocks);
         }
 
         int maxOffset = (blocks - 1) / 2;
-        return new AxisRegion(center + maxOffset + 0.5, -blocks);
+        return new AxisRegion(block + maxOffset + 0.5, -blocks);
     }
 
     private static boolean isWholeNumber(double value) {
