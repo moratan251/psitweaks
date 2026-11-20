@@ -20,9 +20,7 @@ import java.util.UUID;
  * （{@code SpellContext.isInRadius} が偽になり、射程外と同じく失敗する。{@code SpellContextRangeMixin}）。範囲の中にいる
  * 他者は、自分を対象にする作動式も使えない。他者の領域は、範囲の中に中心を置けない。
  * <p>
- * 他人の領域との奪い合い（{@link SpellGramZone#isActiveAt}、どの領域にも共通）では、置いた時点の事象干渉力に
- * 威力 × {@link #CONTEST_BONUS_PER_POWER} を上乗せして比べる。勝てば、重なったところでは自分の側の
- * 領域だけが効く。
+ * 他人の領域との奪い合い（{@link SpellGramZone#isActiveAt}）は、ほかの領域と同じく置いた時点の事象干渉力で比べる。
  * <p>
  * 範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）を
  * 止める。範囲の中から外へも、外から中へも（{@link #onEntityTeleport}）。
@@ -36,11 +34,6 @@ public class EntityInterferenceZone extends SpellGramZone {
 
     /** 辺の色: 紫。 */
     public static final int OUTLINE_COLOR = 0xB57BFF;
-    /** 奪い合いの事象干渉力への上乗せ: 威力 1 あたり 5%。 */
-    public static final double CONTEST_BONUS_PER_POWER = 0.05;
-
-    /** 威力（0〜10、サーバー側）。他人の領域との奪い合いで事象干渉力に上乗せする。 */
-    private float power;
 
     public EntityInterferenceZone(EntityType<? extends EntityInterferenceZone> type, Level level) {
         super(type, level);
@@ -69,22 +62,6 @@ public class EntityInterferenceZone extends SpellGramZone {
             }
         }
         return false;
-    }
-
-    /** 置く前に呼ぶ。威力（0〜10）。 */
-    public void configurePower(float power) {
-        this.power = Math.max(0.0F, power);
-        SpellGramIndex.touch();
-    }
-
-    public float getPower() {
-        return power;
-    }
-
-    /** 奪い合いの事象干渉力: 置いた時点の事象干渉力 ×（1 + 威力 × 5%）。 */
-    @Override
-    public double contestInterference() {
-        return getPlacedInterference() * (1.0 + power * CONTEST_BONUS_PER_POWER);
     }
 
     /**

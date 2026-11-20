@@ -335,14 +335,10 @@ public final class CircleGameTests {
             for (EntityIceCircle circle : List.of(suppressed, weak, own)) {
                 circle.setPlacedInterference(1.0);
             }
-            // 他人の強い領域干渉: 1 ×（1 + 威力 1 × 5%）= 1.05 > 1。弱いもの: 0.5。自分のもの: 強いが自分の側。
-            EntityInterferenceZone strongZone = new EntityInterferenceZone(level);
-            strongZone.configurePower(1.0F);
-            placeZone(strongZone, ZoneArea.cube(helper.absolutePos(new BlockPos(0, 1, 0)), 1), other, 1.0);
+            // 他人の強い領域干渉: 1.5 > 1。弱いもの: 0.5。自分のもの: 強いが自分の側。
+            placeZone(new EntityInterferenceZone(level), ZoneArea.cube(helper.absolutePos(new BlockPos(0, 1, 0)), 1), other, 1.5);
             placeZone(new EntityInterferenceZone(level), ZoneArea.cube(helper.absolutePos(new BlockPos(4, 1, 0)), 1), other, 0.5);
-            EntityInterferenceZone ownZone = new EntityInterferenceZone(level);
-            ownZone.configurePower(10.0F);
-            placeZone(ownZone, ZoneArea.cube(helper.absolutePos(new BlockPos(2, 1, 4)), 1), caster, 5.0);
+            placeZone(new EntityInterferenceZone(level), ZoneArea.cube(helper.absolutePos(new BlockPos(2, 1, 4)), 1), caster, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);

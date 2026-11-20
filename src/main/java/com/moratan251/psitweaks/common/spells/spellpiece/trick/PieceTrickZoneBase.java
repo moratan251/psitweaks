@@ -100,7 +100,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         super.setStatLabel(stat, label);
     }
 
-    /** 威力の上限（加重領域・領域干渉）。 */
+    /** 威力の上限（加重領域）。 */
     public static final double MAX_ZONE_POWER = 10.0;
     /**
      * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）の威力の上限。10 を超えた分は総量（コスト）だけを増やし、

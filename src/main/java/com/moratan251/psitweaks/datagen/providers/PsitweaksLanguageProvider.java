@@ -2177,8 +2177,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "なります。生物が範囲の中にいるかどうかは、当たり判定の中心があるブロックで決まります。範囲は作動式: 領域表示（ブロック"
                         + "モード）で確かめられます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.2",
-                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity and Interference Zones). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time.",
-                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域と領域干渉は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。");
+                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity Zone). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time.",
+                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.3",
                 "A zone has integrity, which wears away at a steady rate and "
                         + "ends the zone when it runs out; spells can wear it down too."
@@ -2206,8 +2206,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Where your own zones of the same kind overlap, their totals (heat, cooling, FE and wind) add up: each shares its own total with what it covers. A Blaze Burner is paid for by one zone only, a Wind Generator takes 10 WU at most, and a Windmill 4 WU. Other effects do not add up; only the strongest zone works there (the highest Power, then the higher interference, then the older one). Gravity Zones add their pushes together, up to Power 10.",
                 "自分の同じ種類の領域を重ねると、総量（熱・冷却・FE・風量）は足し算になり、それぞれが自分の範囲に配ります。ブレイズバーナーは1つの領域だけが払い、風力発電機は1台10 WU、風車は1台4 WU までです。ほかの効き目は足し算にならず、重なったところでは一番強いもの（威力が高いもの、並べば事象干渉力が高いもの、それも並べば古いもの）だけが効きます。加重領域は押す向きを足し、威力10で頭打ちです。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.10",
-                "Where another caster's zone overlaps, whatever the kinds, only the zones of the owner of the zone with the highest interference when placed (the earliest one on a tie) work there. Trick: Interference Zone raises this interference with its Power.",
-                "他人の領域が重なったところでは、種類を問わず、置いた時点の事象干渉力が一番高い領域（同じなら先に置いたもの）の持ち主の領域だけが効きます。作動式: 領域干渉は、威力に応じてこの事象干渉力を上乗せします。");
+                "Where another caster's zone overlaps, whatever the kinds, only the zones of the owner of the zone with the highest interference when placed (the earliest one on a tie) work there.",
+                "他人の領域が重なったところでは、種類を問わず、置いた時点の事象干渉力が一番高い領域（同じなら先に置いたもの）の持ち主の領域だけが効きます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.6",
                 "Overlapping your own Turbulence Zone strengthens your other "
                         + "zones there: with a Heat Zone it becomes a Heat Storm, with "
@@ -2374,8 +2374,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "。事象干渉力が同じか高い相手は止められません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$"
                         + "(/l)の項目にあります。");
         addBookPage(root, "trick_interference_zone.1",
-                "Inside, ender teleports of anyone but the caster are stopped (Endermen and Shulkers teleporting, Ender Pearls and Chorus Fruit), both from inside to outside and from outside to inside.$(p)The Power (a constant from 1 to 10) adds 5% per Power to the caster's interference when placed, in contests with other casters' zones. Your own spells, and those of your Autonomous Casters, are never stopped. It stops only Psi spells, not the magic of other mods.",
-                "範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）が止まります。範囲の中から外へも、外から中へも止まります。$(p)「威力」（1〜10の定数）は、他人の領域との奪い合いで、置いた時点の事象干渉力に威力×5%を上乗せします。自分と、自分の自律詠唱機の魔法は止まりません。止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。");
+                "Inside, ender teleports of anyone but the caster are stopped (Endermen and Shulkers teleporting, Ender Pearls and Chorus Fruit), both from inside to outside and from outside to inside.$(p)Your own spells, and those of your Autonomous Casters, are never stopped. It stops only Psi spells, not the magic of other mods.",
+                "範囲の中では、術者以外のエンダー系のテレポート（エンダーマン・シュルカーの瞬間移動、エンダーパール、コーラスフルーツ）が止まります。範囲の中から外へも、外から中へも止まります。$(p)自分と、自分の自律詠唱機の魔法は止まりません。止めるのは Psi の魔法だけで、ほかの mod の魔法は止めません。");
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",

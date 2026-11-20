@@ -67,7 +67,7 @@
   + Zones that take a Power need one (at least 1). Potency and Cost grow with the area and the Power, and the Cost also grows with the Time
   + What stands in for fuel or energy (heat, cooling, FE and wind) is a total set by the zone's Cost and shared by everything inside. The Heat, Freeze, Turbulence and Charged Zones take a Power above 10, which only adds to that total
   + Where your own zones of the same kind overlap, their totals add up and other effects use only the strongest one. Where your own Heat Zone and Freeze Zone overlap, they cancel each other out
-  + Where other casters' zones overlap, only the zones of the caster with the highest Phenomenon Interference work (Trick: Interference Zone adds to it with its Power)
+  + Where other casters' zones overlap, only the zones of the caster with the highest Phenomenon Interference work
   + Zones change blocks at random, like random ticks but faster (each block about once every 5 seconds): the Heat Zone melts ice and snow layers and dries Wet Sponges, the Freeze Zone freezes water sources, the Soak Zone moistens farmland and wets Sponges, and the Charged Zone scrapes oxidation off copper
   + Aiming at the core of a zone shows its integrity and how much of its Heat, Cooling, Charge or Wind is in use out of the total
   + The floor of a zone shows a magic circle in the CAD's color (its resolution can be lowered in the client config)

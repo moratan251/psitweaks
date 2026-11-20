@@ -51,6 +51,7 @@ import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
+import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 import java.util.List;
@@ -1091,7 +1092,7 @@ public final class ZoneElementGameTests {
         try {
             owner.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(3.0D);
             stronger.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(5.0D);
-            cast(owner, interference(helper, CENTER), 5.0, 1.0);
+            cast(owner, interference(helper, CENTER), 5.0, 0.0);
             Vector3 inside = vector(helper.absoluteVec(new Vec3(2.5, 1.5, 2.5)));
             Vector3 outside = vector(helper.absoluteVec(new Vec3(7.5, 1.5, 2.5)));
 
@@ -1137,7 +1138,7 @@ public final class ZoneElementGameTests {
             owner.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(3.0D);
             // 弱い側の湿潤領域（x 0〜4）を先に置き、強い側の領域干渉（x 0〜2）を重ねる。
             cast(weaker, soak(helper, CENTER), 5.0, 0.0);
-            cast(owner, interference(helper, new BlockPos(1, 1, 2)), 3.0, 1.0);
+            cast(owner, interference(helper, new BlockPos(1, 1, 2)), 3.0, 0.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -2451,43 +2452,6 @@ public final class ZoneElementGameTests {
         helper.succeed();
     }
 
-    /**
-     * 領域干渉の威力は奪い合いの事象干渉力に 威力 × 5% を上乗せし、勝てば重なったところでは持ち主の側の領域（ほかの種類も）が
-     * 効く。干渉力 2・威力 10 の領域干渉（3.0）は、干渉力 2.8 の他人に勝つ。
-     */
-    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contest_bonus", timeoutTicks = 40)
-    public static void interferenceZonePowerWinsTheContestForItsOwner(GameTestHelper helper) {
-        ServerPlayer owner = GameTestPlayers.inLevel(helper, "zone_contest_bonus_owner", new Vec3(0.5, 1.0, 0.5));
-        ServerPlayer rival = GameTestPlayers.inLevel(helper, "zone_contest_bonus_rival", new Vec3(4.5, 1.0, 4.5));
-        Runnable cleanup = () -> {
-            cleanup(helper, owner);
-            cleanup(helper, rival);
-        };
-        try {
-            owner.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
-            rival.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.8D);
-            cast(rival, soak(helper, CENTER), 5.0, 0.0);
-            cast(owner, soak(helper, new BlockPos(5, 1, 2)), 3.0, 0.0);
-            SpellGramZone rivalSoak = only(helper, rival, EntitySoakZone.class);
-            SpellGramZone ownerSoak = only(helper, owner, EntitySoakZone.class);
-            BlockPos overlap = helper.absolutePos(new BlockPos(4, 1, 2));
-            helper.assertTrue(rivalSoak.isInsideAndActive(overlap) && !ownerSoak.isInsideAndActive(overlap),
-                    "Precondition: the rival with higher interference holds the overlap");
-
-            cast(owner, interference(helper, new BlockPos(5, 1, 2)), 3.0, 10.0);
-            EntityInterferenceZone zone = only(helper, owner, EntityInterferenceZone.class);
-            helper.assertTrue(Math.abs(zone.contestInterference() - 3.0) < 1.0E-9,
-                    "Power 10 must add 50% to the interference in contests, got " + zone.contestInterference());
-            helper.assertTrue(ownerSoak.isInsideAndActive(overlap) && !rivalSoak.isInsideAndActive(overlap),
-                    "With the Interference Zone's bonus, the owner's zones must take the overlap");
-        } catch (RuntimeException | SpellRuntimeException e) {
-            cleanup.run();
-            throw new RuntimeException(e);
-        }
-        cleanup.run();
-        helper.succeed();
-    }
-
     /** 領域干渉の範囲では、術者以外のエンダー系のテレポートが、中から外へも外から中へも止まる。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_interference_teleport", timeoutTicks = 40)
     public static void interferenceZoneStopsEnderTeleportsOfOthers(GameTestHelper helper) {
@@ -2498,7 +2462,7 @@ public final class ZoneElementGameTests {
             cleanup(helper, stranger);
         };
         try {
-            cast(owner, interference(helper, CENTER), 5.0, 1.0);
+            cast(owner, interference(helper, CENTER), 5.0, 0.0);
             var level = helper.getLevel();
             Vec3 inside = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
             Vec3 outside = helper.absoluteVec(new Vec3(12.5, 1.0, 2.5));
@@ -2528,32 +2492,113 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 領域干渉の規模とコスト（仮）: 規模 = 10 + ⌊広さ × 1.35 ×（1 + 威力 / 10）⌋、コスト = 50 + 広さ × 2 ×（1 + 威力 / 10）。
-     * 威力は必須の 1〜10（1 より小さい威力は 1）。サイズ 5（広さ 25）で、威力 1 なら 47・105、威力 10 なら 77・150。
+     * 領域干渉の規模とコストは遮音領域と同じ: 規模 = 10 + 広さ、コスト = 40 + 広さ（広さ = サイズ²）。威力の入力はない。
+     * サイズ 5（広さ 25）で 35・65。
      */
     @GameTest(template = TEMPLATE)
-    public static void interferenceZoneCostGrowsWithPower(GameTestHelper helper) throws Exception {
-        int[] low = interferenceStats(1.0);
-        int[] full = interferenceStats(10.0);
-        int[] below = interferenceStats(0.5);
-        helper.assertTrue(low[0] == 47 && low[1] == 105, "At Power 1: Potency 47, Cost 105, got " + low[0] + ", " + low[1]);
-        helper.assertTrue(full[0] == 77 && full[1] == 150, "At Power 10: Potency 77, Cost 150, got " + full[0] + ", " + full[1]);
-        helper.assertTrue(below[0] == low[0] && below[1] == low[1], "A Power below 1 must count as 1");
+    public static void interferenceZoneCostMatchesSilenceZone(GameTestHelper helper) throws Exception {
+        PieceTrickZoneBase<?> interferencePiece = new PieceTrickInterferenceZone(new Spell()) {
+            @Override
+            public <T> T getParamEvaluation(SpellParam<?> param) {
+                return sizeFive(param);
+            }
+        };
+        PieceTrickZoneBase<?> silencePiece = new com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickSilenceZone(new Spell()) {
+            @Override
+            public <T> T getParamEvaluation(SpellParam<?> param) {
+                return sizeFive(param);
+            }
+        };
+        helper.assertFalse(interferencePiece.params.containsKey(SpellParam.GENERIC_NAME_POWER),
+                "The Interference Zone must not take a Power");
+        int[] interference = zoneStats(interferencePiece);
+        int[] silence = zoneStats(silencePiece);
+        helper.assertTrue(interference[0] == 35 && interference[1] == 65,
+                "At Size 5: Potency 35, Cost 65, got " + interference[0] + ", " + interference[1]);
+        helper.assertTrue(interference[0] == silence[0] && interference[1] == silence[1],
+                "The Interference Zone must cost the same as the Silence Zone, got " + silence[0] + ", " + silence[1]);
         helper.succeed();
     }
 
-    /** サイズ 5・威力 {@code power}（null なら省く）の領域干渉の {規模, コスト}。 */
-    private static int[] interferenceStats(Double power) throws Exception {
-        var piece = new com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickInterferenceZone(new Spell()) {
-            @Override
-            @SuppressWarnings("unchecked")
-            public <T> T getParamEvaluation(SpellParam<?> param) {
-                if (param.name.equals(PsitweaksSpellParams.SIZE)) {
-                    return (T) Double.valueOf(5.0);
-                }
-                return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? (T) power : null;
+    /**
+     * 「威力」の入力に定数をつないだ向きが NBT に残っている領域干渉の術式も、読み込めて組める。Psi は今の入力の名前だけを
+     * NBT から読むので、なくなった入力の向きは読み飛ばされ、つないでいた定数はどこにも使われない。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void interferenceZoneSpellsWithAPowerSideStillCompile(GameTestHelper helper) {
+        Spell spell = new Spell();
+        spell.name = "interference_zone_power_side";
+        SpellPiece zone = vazkii.psi.api.PsiAPI.SPELL_PIECE_REGISTRY.get(Psitweaks.location("trick_interference_zone")).create(spell);
+        zone.paramSides.put(zone.params.get(PsitweaksSpellParams.SIZE), SpellParam.Side.RIGHT);
+        placeOnGrid(spell, zone, 4, 4);
+        placeOnGrid(spell, constantNumber(spell, "3"), 5, 4);
+        placeOnGrid(spell, constantNumber(spell, "10"), 4, 3);
+
+        net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+        spell.writeToNBT(tag);
+        // Psi の SpellPiece#writeToNBT と同じ書き方の入力名で、上の定数を指す「威力」の向きを書き足す。
+        String sizeKey = PsitweaksSpellParams.SIZE.replaceAll("^psi.spellparam.", "_");
+        String powerKey = SpellParam.GENERIC_NAME_POWER.replaceAll("^psi.spellparam.", "_");
+        int added = addParamSide(tag, sizeKey, powerKey, SpellParam.Side.TOP.asInt());
+        helper.assertTrue(added == 1, "Expected one Interference Zone in the saved spell, found " + added);
+
+        Spell loaded = Spell.createFromNBT(tag);
+        helper.assertTrue(loaded != null && loaded.grid.gridData[4][4] instanceof PieceTrickInterferenceZone,
+                "The saved spell must load with its Interference Zone");
+        SpellPiece loadedZone = loaded.grid.gridData[4][4];
+        helper.assertTrue(loadedZone.paramSides.get(loadedZone.params.get(PsitweaksSpellParams.SIZE)) == SpellParam.Side.RIGHT,
+                "The Size side must survive the reload");
+        var compiled = new vazkii.psi.common.spell.SpellCompiler().compile(loaded, helper.getLevel().registryAccess(), null);
+        helper.assertTrue(compiled.left().isPresent(),
+                "A spell with a Power side left over must still compile: " + compiled.right().map(Throwable::getMessage).orElse(""));
+        var meta = compiled.left().orElseThrow().metadata;
+        int potency = meta.getStat(vazkii.psi.api.spell.EnumSpellStat.POTENCY);
+        int cost = meta.getStat(vazkii.psi.api.spell.EnumSpellStat.COST);
+        helper.assertTrue(potency == 19 && cost == 49, "At Size 3: Potency 19, Cost 49, got " + potency + ", " + cost);
+        helper.succeed();
+    }
+
+    private static SpellPiece constantNumber(Spell spell, String value) {
+        var piece = (vazkii.psi.common.spell.constant.PieceConstantNumber) vazkii.psi.api.PsiAPI.SPELL_PIECE_REGISTRY
+                .get(vazkii.psi.api.PsiAPI.location("constant_number")).create(spell);
+        piece.valueStr = value;
+        return piece;
+    }
+
+    private static void placeOnGrid(Spell spell, SpellPiece piece, int x, int y) {
+        piece.x = x;
+        piece.y = y;
+        piece.isInGrid = true;
+        spell.grid.gridData[x][y] = piece;
+    }
+
+    /** {@code tag} の中で、入力 {@code anchorKey} の向きを持つピースに、入力 {@code key} の向き {@code side} を足す。足した数を返す。 */
+    private static int addParamSide(net.minecraft.nbt.Tag tag, String anchorKey, String key, int side) {
+        int added = 0;
+        if (tag instanceof net.minecraft.nbt.CompoundTag compound) {
+            if (compound.getCompound("params").contains(anchorKey)) {
+                compound.getCompound("params").putInt(key, side);
+                added++;
             }
-        };
+            for (String child : compound.getAllKeys()) {
+                added += addParamSide(compound.get(child), anchorKey, key, side);
+            }
+        } else if (tag instanceof net.minecraft.nbt.ListTag list) {
+            for (net.minecraft.nbt.Tag element : list) {
+                added += addParamSide(element, anchorKey, key, side);
+            }
+        }
+        return added;
+    }
+
+    /** 入力の評価: サイズは 5、ほか（時間など）は省いたもの。 */
+    @SuppressWarnings("unchecked")
+    private static <T> T sizeFive(SpellParam<?> param) {
+        return param.name.equals(PsitweaksSpellParams.SIZE) ? (T) Double.valueOf(5.0) : null;
+    }
+
+    /** 領域 {@code piece} の {規模, コスト}。 */
+    private static int[] zoneStats(PieceTrickZoneBase<?> piece) throws Exception {
         var meta = new vazkii.psi.api.spell.SpellMetadata();
         piece.addToMetadata(meta);
         return new int[]{meta.getStat(vazkii.psi.api.spell.EnumSpellStat.POTENCY), meta.getStat(vazkii.psi.api.spell.EnumSpellStat.COST)};

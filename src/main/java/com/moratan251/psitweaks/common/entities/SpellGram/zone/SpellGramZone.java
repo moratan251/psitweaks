@@ -424,16 +424,11 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 他人どうしの奪い合いで比べる事象干渉力: 置いた時点の事象干渉力。作動式: 領域干渉は威力に応じて
-     * 上乗せする（{@link EntityInterferenceZone#contestInterference}）。
+     * 他人どうしの奪い合いで、この領域が {@code other} より優先されるか: 置いた時点の事象干渉力が高いほう、同じなら先に
+     * 置いたほう。
      */
-    public double contestInterference() {
-        return placedInterference;
-    }
-
-    /** 他人どうしの奪い合いで、この領域が {@code other} より優先されるか: 事象干渉力が高いほう、同じなら先に置いたほう。 */
     public boolean winsContestAgainst(SpellGramZone other) {
-        int interference = Double.compare(contestInterference(), other.contestInterference());
+        int interference = Double.compare(placedInterference, other.placedInterference);
         return interference != 0 ? interference > 0 : getId() < other.getId();
     }
 
@@ -446,8 +441,8 @@ public abstract class SpellGramZone extends SpellGramObject {
      * ブロック {@code pos} でこの領域が効くか（サーバー側。クライアントでは常に真）。
      * <ul>
      *   <li>他人どうしの奪い合い: 他人の領域が重なったところでは、種類を問わず、事象干渉力の一番
-     *   高い領域（同じなら先に置いたもの）の持ち主の領域だけが効く。自分の側でその場所にある一番強い領域（自分とは限らない。
-     *   たとえば威力つきの領域干渉）が、他人の領域に負けていれば効かない。</li>
+     *   高い領域（同じなら先に置いたもの）の持ち主の領域だけが効く。自分の側でその場所にある一番強い領域（自分とは限らない）が、
+     *   他人の領域に負けていれば効かない。</li>
      *   <li>打ち消し合う種類（加熱と凍結）: 自分の側の、打ち消し合う種類の領域が重なったところでは効かない。</li>
      * </ul>
      */

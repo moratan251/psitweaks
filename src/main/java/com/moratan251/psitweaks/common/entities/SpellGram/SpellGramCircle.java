@@ -234,8 +234,8 @@ public abstract class SpellGramCircle extends SpellGramObject {
     // ---- 領域干渉 ----
 
     /**
-     * 領域干渉に止められているか（サーバー側。クライアントではいつも偽）: 中心のブロックで効いている他人の領域干渉のうち、奪い合いの
-     * 事象干渉力（{@link EntityInterferenceZone#contestInterference}）がこの円の置いた時点の事象干渉力より高いもの、同じなら先に
+     * 領域干渉に止められているか（サーバー側。クライアントではいつも偽）: 中心のブロックで効いている他人の領域干渉のうち、置いた時点の
+     * 事象干渉力（{@link EntityInterferenceZone#getPlacedInterference}）がこの円の置いた時点の事象干渉力より高いもの、同じなら先に
      * 置いたものがあれば止められている。止められている間はダメージも薄氷も出さない。
      */
     public boolean isSuppressed() {
@@ -271,7 +271,7 @@ public abstract class SpellGramCircle extends SpellGramObject {
     }
 
     private boolean beatenBy(EntityInterferenceZone zone) {
-        int interference = Double.compare(zone.contestInterference(), placedInterference);
+        int interference = Double.compare(zone.getPlacedInterference(), placedInterference);
         return interference != 0 ? interference > 0 : zone.getId() < getId();
     }
 
