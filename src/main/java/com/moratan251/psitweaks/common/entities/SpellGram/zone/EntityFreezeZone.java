@@ -63,8 +63,8 @@ public class EntityFreezeZone extends SpellGramZone {
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
     /**
-     * Mekanism の冷却: 威力 1・機械を動かす速さ 1 あたりの、1 tick に温度差を縮める割合（仮）。威力 5・事象干渉力 2 で毎 tick 1%
-     * （1500 K の設備が約 12 秒で 400 K）。
+     * Mekanism の冷却: 中の威力 1・機械を動かす速さ 1 あたりの、1 tick に温度差を縮める割合（仮）。中の威力 5（入れた威力 1）・
+     * 事象干渉力 2 で毎 tick 1%（1500 K の設備が約 12 秒で 400 K）、中の威力 14 で 2.8%。
      */
     public static final double COOL_FRACTION_PER_POWER = 0.002;
     /** Mekanism の冷却: 1 tick に温度差を縮める割合の上限（仮）。 */
@@ -74,22 +74,22 @@ public class EntityFreezeZone extends SpellGramZone {
      * {@link EntityHeatZone#HEAT_PER_PSI} と同じ。
      */
     public static final double COOLING_PER_PSI = EntityHeatZone.HEAT_PER_PSI;
-    /** Mekanism の機械を冷やせる下限の温度の基準（K）。下限 = この値 − 威力 × {@link #MIN_TEMPERATURE_PER_POWER}。 */
+    /** Mekanism の機械を冷やせる下限の温度の基準（K）。下限 = この値 − 中の威力 × {@link #MIN_TEMPERATURE_PER_POWER}。 */
     public static final double MIN_TEMPERATURE_BASE = 275.0;
     /**
-     * 威力 1 あたりの、冷やせる下限の下げ幅（K）。威力 1 で 270 K、威力 10 で 225 K（約 −48℃）。周囲の温度によらない。
-     * 加熱領域の「500 + 威力 × 50 K まで温める」と対になる、1 か所あたりの強さ（威力 10 で頭打ち）。
+     * 中の威力 1 あたりの、冷やせる下限の下げ幅（K）。中の威力 5（入れた威力 1）で 250 K、14 で 205 K（約 −68℃）。周囲の温度に
+     * よらない。加熱領域の「500 + 中の威力 × 50 K まで温める」と対になる、1 か所あたりの強さ。
      */
     public static final double MIN_TEMPERATURE_PER_POWER = 5.0;
-    /** 威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。威力 5 で 20（3.5 秒で凍えきる）。 */
+    /** 中の威力 1 あたりの、{@link #INTERVAL} ごとの凍えの差し引きの増え（仮）。中の威力 5（入れた威力 1）で 20（3.5 秒で凍えきる）。 */
     public static final int NET_FREEZE_PER_POWER = 4;
 
     /**
-     * 威力（冷やす強さ）。凍えのたまる速さ・1 台あたりの冷える割合・冷やせる下限を決める。1 体・1 か所
+     * 中の威力（冷やす強さ）。凍えのたまる速さ・1 台あたりの冷える割合・冷やせる下限を決める。1 体・1 か所
      * あたりの強さに使うので {@link #MAX_EFFECT_POWER} まで。
      */
     private float power = DEFAULT_POWER;
-    /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
+    /** 渡された中の威力（14 より上もそのまま。重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
     /**
      * 面で触れ合っているか重なっている同じ術者の加熱領域と、つながりの広さ（{@link ZoneHeatExchange#linkArea}）。
@@ -112,7 +112,7 @@ public class EntityFreezeZone extends SpellGramZone {
     private double heatDiscarded;
 
     /**
-     * Mekanism の冷却で、1 台が 1 tick に下限との温度差を縮める割合の上限: 威力 × 0.002 × 機械を動かす速さ（置いた時点の
+     * Mekanism の冷却で、1 台が 1 tick に下限との温度差を縮める割合の上限: 中の威力 × 0.002 × 機械を動かす速さ（置いた時点の
      * 事象干渉力）、上限 0.5。
      */
     public static double coolFractionPerTick(float power, float machineSpeed) {
@@ -120,7 +120,7 @@ public class EntityFreezeZone extends SpellGramZone {
         return Math.min(MAX_COOL_FRACTION, fraction);
     }
 
-    /** 威力 {@code power} の凍結領域が Mekanism の機械を冷やせる下限の温度（K）: 275 − 威力 × 5（威力 10 で頭打ち）。 */
+    /** 中の威力 {@code power} の凍結領域が Mekanism の機械を冷やせる下限の温度（K）: 275 − 中の威力 × 5（中の威力 14 で頭打ち）。 */
     public static double minTemperatureFor(float power) {
         return MIN_TEMPERATURE_BASE - Math.max(0.0F, Math.min(power, MAX_EFFECT_POWER)) * MIN_TEMPERATURE_PER_POWER;
     }
@@ -160,14 +160,14 @@ public class EntityFreezeZone extends SpellGramZone {
         return placementCost * COOLING_PER_PSI / lifetimeTicks * machineSpeed;
     }
 
-    /** 置く前に呼ぶ。 */
+    /** 置く前に呼ぶ。{@code power} は中の威力（作動式に入れた威力 + 4）。 */
     public void setPower(float power) {
         this.rawPower = Math.max(0.0F, power);
         this.power = Math.min(rawPower, MAX_EFFECT_POWER);
         SpellGramIndex.touch();
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
     @Override
     protected double stackStrength() {
         return rawPower;
@@ -270,7 +270,7 @@ public class EntityFreezeZone extends SpellGramZone {
         recordResourceUse(drained.removed());
         Map<Object, Double> carried = new IdentityHashMap<>(drained.carriedBySource());
         if (isStorm()) {
-            // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（威力 10 で 2 倍）。冷却量の上乗せは乱流が範囲を覆う割合を
+            // 吹雪のところは、乱流の威力に応じて割合と冷却量を上乗せ（中の威力 10 で 2 倍）。冷却量の上乗せは乱流が範囲を覆う割合を
             // 掛ける（小さな乱流を重ねても増えないように）。
             for (java.util.Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                 EntityTurbulenceZone turbulence = entry.getKey();
@@ -352,8 +352,8 @@ public class EntityFreezeZone extends SpellGramZone {
     }
 
     /**
-     * {@link #INTERVAL} ごとに足す凍えの値。差し引き（足す − 抜ける）は 凍結の威力 × 4 で、濡れていれば 2 倍、吹雪なら乱流の
-     * 威力に応じて 1 + 威力 × 0.1 倍になる（凍結の威力 5 で: ふだん 40、濡れていれば 60、威力 10 の吹雪で 60、両方で 100）。
+     * {@link #INTERVAL} ごとに足す凍えの値。差し引き（足す − 抜ける）は 凍結の中の威力 × 4 で、濡れていれば 2 倍、吹雪なら乱流の
+     * 中の威力に応じて 1 + 中の威力 × 0.1 倍になる（凍結の中の威力 5 で: ふだん 40、濡れていれば 60、中の威力 10 の吹雪で 60、両方で 100）。
      */
     public static int freezeAmount(float power, boolean soaked, float stormPower) {
         double net = NET_FREEZE_PER_POWER * Math.max(0.0F, power) * (soaked ? 2 : 1) * (1.0 + stormBoost(stormPower));

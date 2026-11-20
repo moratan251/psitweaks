@@ -50,25 +50,32 @@ import java.util.UUID;
  * </ul>
  */
 public class EntityTurbulenceZone extends SpellGramZone {
-    /** 威力 1 あたりの、飛び道具を曲げる角度（度、仮）。威力 10 で最大 90 度。 */
-    public static final double DEFLECT_DEGREES_PER_POWER = 9.0;
+    /**
+     * 中の威力 1 あたりの、飛び道具を曲げる角度の増え（度、仮）。角度 = {@link #DEFLECT_DEGREES_BASE} + 中の威力 × これ で、中の威力 5
+     * （入れた威力 1）で 45 度、1 段 5 度ずつ増えて 14（入れた威力 10）でちょうど 90 度。
+     */
+    public static final double DEFLECT_DEGREES_PER_POWER = 5.0;
+    /** 飛び道具を曲げる角度の固定分（度）。 */
+    public static final double DEFLECT_DEGREES_BASE = 20.0;
+    /** 飛び道具を曲げる角度の上限（度）。これより曲げると後ろへ返すことになる。 */
+    public static final double MAX_DEFLECT_DEGREES = 90.0;
     /** 1 WU あたりに足す、風力発電機 1 台の発電量（J/t、15 FE/t、WU の定義）。乱流の風は人工のものなので高さによらない。 */
     public static final double WIND_JOULES_PER_WU = 37.5;
     /** 1 WU を FE/t にした値（{@link #WIND_JOULES_PER_WU} を Mekanism の 2.5 J = 1 FE で割ったもの）。IE の風車に足す発電量。 */
     public static final double WIND_FE_PER_WU = 15.0;
     /**
-     * 風量 = 床の広さ × 威力 ÷ この値 × 風の倍率（WU、{@link #windFactor}）。干渉力 1 なら、サイズ 12・威力 10 で 6 WU、
-     * サイズ 16・威力 10 で約 10.7 WU。威力 5 以上のコスト（広さ × 威力 × 2 / 5）と合わせて、コスト 1 Psi あたりの風は
-     * 6.25 WU·tick（干渉力 1、時間によらない）。威力 5 より下はコストに下限があるので、1 Psi あたりの風はそれより少ない。
+     * 風量 = 床の広さ × 中の威力 ÷ この値 × 風の倍率（WU、{@link #windFactor}）。干渉力 1 なら、サイズ 12・中の威力 10（入れた
+     * 威力 6）で 6 WU、サイズ 16・中の威力 14（入れた威力 10）で約 14.9 WU。コスト（広さ × 中の威力 × 2 / 5）と合わせて、コスト
+     * 1 Psi あたりの風は 6.25 WU·tick（干渉力 1、時間によらない）。
      */
     public static final double WIND_FOOTPRINT_DIVISOR = 240.0;
     /** 組み合わせの攻撃の強さの上限。 */
     public static final float MAX_ATTACK_POWER = 40.0F;
     /** 組み合わせの攻撃の強さ 1 に要る、乱流領域の 1 秒あたりのコスト。 */
     public static final float ATTACK_COST_PER_SECOND = 3.0F;
-    /** 熱乱流・吹雪の攻撃の強さの上限を決める、加熱領域・凍結領域の威力 1 あたりの強さ。 */
+    /** 熱乱流・吹雪の攻撃の強さの上限を決める、加熱領域・凍結領域の中の威力 1 あたりの強さ。 */
     public static final float PARTNER_ATTACK_POWER_PER_POWER = 4.0F;
-    /** 雷雲の攻撃の強さの上限を決める、荷電領域の威力 1 あたりの強さ。 */
+    /** 雷雲の攻撃の強さの上限を決める、荷電領域の中の威力 1 あたりの強さ。 */
     public static final float CHARGED_ATTACK_POWER_PER_POWER = 4.0F;
     /** 範囲の中の風力発電機の風量を計算し直す間隔（tick）。 */
     public static final int WIND_COUNT_INTERVAL = 20;
@@ -80,9 +87,9 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /** 辺の色: 風の薄緑。 */
     public static final int OUTLINE_COLOR = 0x9CF2C4;
 
-    /** 1 か所あたりの強さ（そらす角度・組み合わせの上乗せ・風力の倍率）に使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
+    /** 1 か所あたりの強さ（そらす角度・組み合わせの上乗せ・風力の倍率）に使う中の威力（{@link #MAX_EFFECT_POWER} まで）。 */
     private float power;
-    /** 入れた威力（10 より上もそのまま。重なりの強さと、風力の上乗せを許す台数に使う）。 */
+    /** 渡された中の威力（14 より上もそのまま。重なりの強さと、風量に使う）。 */
     private float rawPower;
     /**
      * 風を受ける機械ごとの、この領域から受ける風量（機械のブロックエンティティの位置 → 風量と上限）。{@link #WIND_COUNT_INTERVAL}
@@ -104,14 +111,14 @@ public class EntityTurbulenceZone extends SpellGramZone {
         this(PsitweaksEntities.TURBULENCE_ZONE.get(), level);
     }
 
-    /** 置く前に呼ぶ。 */
+    /** 置く前に呼ぶ。{@code power} は中の威力（作動式に入れた威力 + 4）。 */
     public void configureWind(float power) {
         this.rawPower = Math.max(0.0F, power);
         this.power = Math.min(rawPower, MAX_EFFECT_POWER);
         SpellGramIndex.touch();
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
     @Override
     protected double stackStrength() {
         return rawPower;
@@ -187,8 +194,9 @@ public class EntityTurbulenceZone extends SpellGramZone {
     }
 
     /**
-     * 風量（WU）: 範囲の床の広さ（輪郭の箱の X × Z）× 入れた威力 ÷ {@link #WIND_FOOTPRINT_DIVISOR} × {@link #windFactor}。
-     * Mekanism がなくても持つ。威力が 10 を超えた分も風量に入る（1 台が受け取れる量は 10 WU のまま、受け取れる台数が増える）。
+     * 風量（WU）: 範囲の床の広さ（輪郭の箱の X × Z）× 中の威力（作動式に入れた威力 + 4）÷ {@link #WIND_FOOTPRINT_DIVISOR}
+     * × {@link #windFactor}。Mekanism がなくても持つ。入れた威力が 10 を超えた分も風量に入る（1 台が受け取れる量は機械の種類ごとの
+     * 上限のまま、受け取れる台数が増える）。
      */
     public double windAmount() {
         AABB box = getOutline();
@@ -360,6 +368,14 @@ public class EntityTurbulenceZone extends SpellGramZone {
         }
     }
 
+    /** 中の威力 {@code power} の乱流が飛び道具を曲げる角度の上限（度）: 20 + 中の威力 × 5（90 度まで、威力がなければ 0）。 */
+    public static double deflectDegreesFor(float power) {
+        if (power <= 0.0F) {
+            return 0.0;
+        }
+        return Math.min(MAX_DEFLECT_DEGREES, DEFLECT_DEGREES_BASE + power * DEFLECT_DEGREES_PER_POWER);
+    }
+
     /** 他者の飛び道具の向きを、入ってきたときに 1 回だけランダムに曲げる（速さは変えない）。 */
     private void deflect(ServerLevel level, Projectile projectile) {
         if (isSpellProjectile(projectile) || CasterIds.matches(projectile.getOwner(), getCasterUuid())
@@ -371,7 +387,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
         if (speed < 1.0E-3) {
             return;
         }
-        double maxAngle = Math.toRadians(Math.min(90.0, power * DEFLECT_DEGREES_PER_POWER));
+        double maxAngle = Math.toRadians(deflectDegreesFor(power));
         double angle = maxAngle * (0.5 + 0.5 * random.nextDouble());
         // 進む向きに垂直なランダムな向きへ、angle だけ倒す。
         Vec3 forward = velocity.scale(1.0 / speed);

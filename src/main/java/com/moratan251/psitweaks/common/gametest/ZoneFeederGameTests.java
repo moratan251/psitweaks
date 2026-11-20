@@ -226,7 +226,7 @@ public final class ZoneFeederGameTests {
 
     /**
      * 雷雲でも、給電機から引いた FE は増えない（増えるのは自分の充電能力の分だけ）。タブレットが受け取った量から給電機が減った量を
-     * 引いた残りは、自分の充電能力 × 時間の 2 倍（乱流の威力 10）を超えない。
+     * 引いた残りは、自分の充電能力 × 時間の 2.4 倍（乱流の威力 10 = 中の威力 14）を超えない。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_feeder_storm", timeoutTicks = 100)
     public static void thundercloudDoesNotRaiseFeederEnergy(GameTestHelper helper) {
@@ -263,7 +263,8 @@ public final class ZoneFeederGameTests {
             double own = zone[0].capacityPerTick() * 30;
             cleanup.run();
             helper.assertTrue(drawn > 0, "The zone must draw from the feeder under the Thundercloud");
-            helper.assertTrue(gained - drawn <= own * 2.0 + 16,
+            double boost = 1.0 + com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone.stormBoost(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(10.0));
+            helper.assertTrue(gained - drawn <= own * boost + 16,
                     "Only the zone's own capacity may be raised by the Thundercloud: got " + gained + " FE for " + drawn
                             + " FE drawn and " + own + " FE of its own");
             helper.succeed();

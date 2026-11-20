@@ -76,10 +76,11 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     private ZoneArea area = ZoneArea.EMPTY;
     /**
-     * 1 体・1 か所あたりの強さに使う威力の上限。加熱・凍結・乱流・荷電の領域は威力を 10 より上にも
-     * できるが、上の分はコスト（熱・冷却・FE・風力の総量）だけを増やす。
+     * 1 体・1 か所あたりの強さに使う威力の上限。加熱・凍結・乱流・荷電の領域の威力は、作動式に入れた威力に 4 を足した中の威力
+     * （{@code PieceTrickZoneBase.resourcePower}）で、この上限は入れた威力 10 の分。入れた威力は 10 より上にもできるが、上の分は
+     * コスト（熱・冷却・FE・風力の総量）だけを増やす。
      */
-    public static final float MAX_EFFECT_POWER = 10.0F;
+    public static final float MAX_EFFECT_POWER = 14.0F;
     private int color = 0xFFFFFF;
     /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
     private int floorCircleLevel = -1;
@@ -178,7 +179,7 @@ public abstract class SpellGramZone extends SpellGramObject {
 
     /**
      * 乱流の威力 1 あたりの、組み合わせで機械を動かす速さの上乗せ（Create の加工・Mekanism の熱・吹雪の凍え、仮）。
-     * 威力 10 で 2 倍。乱流が重なっていれば最も強いもののぶん。
+     * 中の威力 5（入れた威力 1）で 1.5 倍、14（入れた威力 10）で 2.4 倍。乱流が重なっていれば最も強いもののぶん。
      */
     public static final double STORM_BOOST_PER_POWER = 0.1;
     /** 乱流の攻撃の強さ（{@link EntityTurbulenceZone#attackPower()}）1 あたりの、組み合わせのダメージ（1 回、倍率を掛ける前、仮）。強さ 40 で 6。 */
@@ -248,7 +249,7 @@ public abstract class SpellGramZone extends SpellGramObject {
         return stormAt(pos) != null;
     }
 
-    /** 威力 {@code power} の乱流が、組み合わせで機械を動かす速さに上乗せする分（威力 10 で +1、つまり 2 倍）。 */
+    /** 中の威力 {@code power} の乱流が、組み合わせで機械を動かす速さに上乗せする分（中の威力 10 で +1、つまり 2 倍）。 */
     public static double stormBoost(double power) {
         return Math.max(0.0, power) * STORM_BOOST_PER_POWER;
     }

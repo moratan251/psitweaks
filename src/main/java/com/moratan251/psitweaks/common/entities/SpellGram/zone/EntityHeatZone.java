@@ -43,15 +43,20 @@ import java.util.List;
  * 面で触れ合うか重なっていると、凍結領域が運んできた熱を受け取り、熱量に足す（{@link ZoneHeatExchange}、{@link #acceptMovedHeat}）。
  */
 public class EntityHeatZone extends SpellGramZone {
-    /** 威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。威力 5 で 3 秒。 */
+    /** 中の威力 1 あたりの、範囲を出たあと生物が燃え続ける長さ（秒、仮）。中の威力 5（入れた威力 1）で 3 秒、14 で 8.4 秒。 */
     public static final float BURN_SECONDS_PER_POWER = 0.6F;
-    /** Mekanism の機械を温める上限の温度の基準（K）。上限 = この値 + 威力 × {@link #MAX_TEMPERATURE_PER_POWER}。 */
+    /** Mekanism の機械を温める上限の温度の基準（K）。上限 = この値 + 中の威力 × {@link #MAX_TEMPERATURE_PER_POWER}（{@link #MAX_TEMPERATURE} まで）。 */
     public static final double MAX_TEMPERATURE_BASE = 500.0;
     /**
-     * 威力 1 あたりの、Mekanism の機械を温める上限の温度の上がり幅（K）。威力 1 で 550 K、威力 10 で 1000 K（核分裂炉が
-     * 損傷する 1200 K より下）。周囲の温度によらない。
+     * 中の威力 1 あたりの、Mekanism の機械を温める上限の温度の上がり幅（K）。中の威力 5（入れた威力 1）で 750 K。周囲の温度に
+     * よらない。
      */
     public static final double MAX_TEMPERATURE_PER_POWER = 50.0;
+    /**
+     * Mekanism の機械を温める上限の温度の頭打ち（K）。核分裂炉は 1200 K を超えると損傷するので、熱の足し方で少し超えても
+     * 届かないよう、余裕を残して止める。中の威力 13（入れた威力 9）から上はこの温度。
+     */
+    public static final double MAX_TEMPERATURE = 1150.0;
     /** 威力の既定値（置く前に設定しなかったとき）。 */
     public static final float DEFAULT_POWER = 5.0F;
     /**
@@ -98,19 +103,19 @@ public class EntityHeatZone extends SpellGramZone {
         this(PsitweaksEntities.HEAT_ZONE.get(), level);
     }
 
-    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。燃やす長さ・上限の温度を決める。 */
+    /** 1 体・1 か所あたりの強さに使う中の威力（{@link #MAX_EFFECT_POWER} まで）。燃やす長さ・上限の温度を決める。 */
     private float power = DEFAULT_POWER;
-    /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
+    /** 渡された中の威力（14 より上もそのまま。重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
 
-    /** 置く前に呼ぶ。 */
+    /** 置く前に呼ぶ。{@code power} は中の威力（作動式に入れた威力 + 4）。 */
     public void setPower(float power) {
         this.rawPower = Math.max(0.0F, power);
         this.power = Math.min(rawPower, MAX_EFFECT_POWER);
         SpellGramIndex.touch();
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
     @Override
     protected double stackStrength() {
         return rawPower;
@@ -143,7 +148,7 @@ public class EntityHeatZone extends SpellGramZone {
         return false;
     }
 
-    /** 範囲の中の生物が燃え続ける長さ（秒）: 威力 × 0.6。 */
+    /** 範囲の中の生物が燃え続ける長さ（秒）: 中の威力 × 0.6。 */
     public float burnSeconds() {
         return power * BURN_SECONDS_PER_POWER;
     }
@@ -153,9 +158,10 @@ public class EntityHeatZone extends SpellGramZone {
         return maxTemperatureFor(power);
     }
 
-    /** 威力 {@code power} の加熱領域が Mekanism の機械を温める上限の温度（K）: 500 + 威力 × 50（威力 10 で頭打ち）。 */
+    /** 中の威力 {@code power} の加熱領域が Mekanism の機械を温める上限の温度（K）: 500 + 中の威力 × 50（1150 K で頭打ち）。 */
     public static double maxTemperatureFor(float power) {
-        return MAX_TEMPERATURE_BASE + Math.max(0.0F, Math.min(power, MAX_EFFECT_POWER)) * MAX_TEMPERATURE_PER_POWER;
+        return Math.min(MAX_TEMPERATURE,
+                MAX_TEMPERATURE_BASE + Math.max(0.0F, Math.min(power, MAX_EFFECT_POWER)) * MAX_TEMPERATURE_PER_POWER);
     }
 
     /** 凍結領域と重なったブロックでは効かない（打ち消し合う）。 */
@@ -246,7 +252,7 @@ public class EntityHeatZone extends SpellGramZone {
             }
         }
         if (storm) {
-            // 熱乱流のところは、乱流の威力に応じて上乗せ（威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
+            // 熱乱流のところは、乱流の威力に応じて上乗せ（中の威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
             forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                 for (int i = 0; i < steps; i++) {
                     for (ZoneRegion region : regions) {
@@ -287,7 +293,7 @@ public class EntityHeatZone extends SpellGramZone {
                     used += MekanismGameplayCompat.supplyZoneHeat(level, machines, heatSideCache(), heat, maxTemperature(), mayHeat);
                 }
                 if (storm) {
-                    // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
+                    // 熱乱流のところは、乱流の威力に応じて総量を上乗せ（中の威力 10 で 2 倍）。そのブロックで最も強い乱流のぶんだけ。
                     // 上乗せは乱流が範囲を覆う割合を掛ける（小さな乱流を重ねても増えないように）。運ばれてきた熱には掛けない。
                     for (Map.Entry<EntityTurbulenceZone, Double> entry : stormCoverage().entrySet()) {
                         EntityTurbulenceZone turbulence = entry.getKey();

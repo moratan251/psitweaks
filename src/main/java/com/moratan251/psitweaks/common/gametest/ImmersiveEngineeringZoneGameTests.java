@@ -60,9 +60,10 @@ public final class ImmersiveEngineeringZoneGameTests {
     /** Mekanism の風力発電機（高さ 5）。風車 1 の前（自然の風は壁で止まっている）。 */
     private static final BlockPos WIND_GENERATOR = new BlockPos(1, 1, 7);
     private static final int ZONE_SIZE = 9;
-    /** 床の広さ 81 × 40 ÷ 240 × 事象干渉力 1 = 13.5 WU。 */
-    private static final double ZONE_POWER = 40.0;
-    private static final double ZONE_WIND = 81.0 * ZONE_POWER / 240.0;
+    /** 威力 10（中の威力 14）: 床の広さ 81 × 14 ÷ 240 × 事象干渉力 2 = 9.45 WU。 */
+    private static final double ZONE_POWER = 10.0;
+    private static final double ZONE_INTERFERENCE = 2.0;
+    private static final double ZONE_WIND = 81.0 * com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(ZONE_POWER) / 240.0 * ZONE_INTERFERENCE;
     /** キャパシタの増え方を測る長さ（tick）。 */
     private static final int MEASURE_TICKS = 40;
 
@@ -72,7 +73,7 @@ public final class ImmersiveEngineeringZoneGameTests {
     /**
      * 乱流領域の中の風車は、羽の円が空いていて後ろに動力ダイナモがあれば、前が塞がっていても乱流の風で回り、1 台は 4 WU
      * （60 FE/t）まで受け取る。羽の円が塞がった風車・動力ダイナモのない風車は風を受け取らない（風を分ける台数にも入らない）。
-     * Mekanism Generators があれば風力発電機も置き、上限 4 WU の風車の余りが風力発電機に回ること（13.5 − 4 = 9.5 WU）を確かめる。
+     * Mekanism Generators があれば風力発電機も置き、上限 4 WU の風車の余りが風力発電機に回ること（9.45 − 4 = 5.45 WU）を確かめる。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_turbulence_ie_windmill", timeoutTicks = 200)
     public static void turbulenceZoneTurnsWindmillsUpToFourUnits(GameTestHelper helper) {
@@ -108,7 +109,7 @@ public final class ImmersiveEngineeringZoneGameTests {
             GameTestPlayers.remove(helper, caster);
         };
         try {
-            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.0D);
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(ZONE_INTERFERENCE);
             cast(helper, caster);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();

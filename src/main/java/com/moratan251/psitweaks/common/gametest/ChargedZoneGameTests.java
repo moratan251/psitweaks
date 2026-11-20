@@ -71,17 +71,17 @@ public final class ChargedZoneGameTests {
     }
 
     /**
-     * 充電能力: 置いたときのコスト × 50 FE ÷ 存続時間 × 速さ。コストも存続時間も時間に比例するので、
-     * 1 tick あたりの量は時間によらない。サイズ 16・威力 10（コスト 1074）の速さ 1 で約 358 FE/t。
+     * 充電能力: 置いたときのコスト × {@link EntityChargedZone#FE_PER_PSI} ÷ 存続時間 × 速さ。コストも存続時間も時間に比例するので、
+     * 1 tick あたりの量は時間によらない。サイズ 16・威力 10（コスト 1483）の速さ 1 で約 494 FE/t。
      * 雷撃は乱流の威力 1 あたり 1。
      */
     @GameTest(template = TEMPLATE)
     public static void chargedZoneCapacityFollowsTheCost(GameTestHelper helper) {
         int cost = PieceTrickChargedZone.costFor(256, 10.0);
-        helper.assertTrue(cost == 1074, "Size 16, Power 10 must cost 1074 for 30 s, got " + cost);
+        helper.assertTrue(cost == 1483, "Size 16, Power 10 must cost 1483 for 30 s, got " + cost);
         double perTick = EntityChargedZone.capacityPerTick(cost, 600, 1.0F);
-        helper.assertTrue(Math.abs(perTick - 1074 * EntityChargedZone.FE_PER_PSI / 600.0) < 1.0E-6,
-                "1074 Psi must give " + 1074 * EntityChargedZone.FE_PER_PSI / 600.0 + " FE/t, got " + perTick);
+        helper.assertTrue(Math.abs(perTick - 1483 * EntityChargedZone.FE_PER_PSI / 600.0) < 1.0E-6,
+                "1483 Psi must give " + 1483 * EntityChargedZone.FE_PER_PSI / 600.0 + " FE/t, got " + perTick);
         helper.assertTrue(Math.abs(EntityChargedZone.capacityPerTick(cost * 4, 2400, 1.0F) - perTick) < 1.0E-6,
                 "A 120 s zone must charge as fast per tick as a 30 s one");
         helper.assertTrue(Math.abs(EntityChargedZone.capacityPerTick(cost, 600, 0.5F) - perTick / 2.0) < 1.0E-6,
@@ -537,7 +537,7 @@ public final class ChargedZoneGameTests {
             GameTestPlayers.remove(helper, caster);
         };
         try {
-            // 事象干渉力 4（速さ 2）、サイズ 9・威力 10（コスト 374）: 充電能力 約 62 FE/t、1 個 3200 FE で約 52 tick。
+            // 事象干渉力 4（速さ 2）、サイズ 9・威力 10（コスト 503）: 充電能力 約 335 FE/t、1 個 3200 FE で約 10 tick。
             caster.getAttribute(com.moratan251.psitweaks.common.attributes.PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             placeCharged(caster, helper.absolutePos(new BlockPos(2, 1, 2)), 9, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {

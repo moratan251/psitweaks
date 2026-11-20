@@ -510,14 +510,15 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 加熱領域が Mekanism の機械を温める上限は、周囲の温度によらず 500 + 威力 × 50 K（威力 10 以上で 1000 K）。威力 1 でも
-     * 上限 550 K なので、周囲の温度の抵抗型発熱器を温める。上限の式も確かめる。Mekanism がなければ飛ばす。
+     * 加熱領域が Mekanism の機械を温める上限は、周囲の温度によらず 500 + 中の威力 × 50 K（1150 K で頭打ち）。入れた威力 1
+     * （中の威力 5）で上限 750 K なので、周囲の温度の抵抗型発熱器を温める。上限の式も確かめる。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_mekanism_low_power", timeoutTicks = 100)
     public static void heatZoneWithPowerOneHeatsMekanismBlocks(GameTestHelper helper) {
-        helper.assertTrue(EntityHeatZone.maxTemperatureFor(1.0F) == 550.0 && EntityHeatZone.maxTemperatureFor(5.0F) == 750.0
-                        && EntityHeatZone.maxTemperatureFor(10.0F) == 1000.0 && EntityHeatZone.maxTemperatureFor(100.0F) == 1000.0,
-                "The highest temperature must be 500 + Power x 50 K, stopping at Power 10");
+        helper.assertTrue(EntityHeatZone.maxTemperatureFor(5.0F) == 750.0 && EntityHeatZone.maxTemperatureFor(10.0F) == 1000.0
+                        && EntityHeatZone.maxTemperatureFor(13.0F) == 1150.0 && EntityHeatZone.maxTemperatureFor(14.0F) == 1150.0
+                        && EntityHeatZone.maxTemperatureFor(100.0F) == 1150.0,
+                "The highest temperature must be 500 + Power x 50 K, stopping at 1150 K");
         Optional<Block> heater = block("mekanism:resistive_heater");
         if (!MekanismCompat.isMekanismLoaded() || heater.isEmpty()) {
             helper.succeed();
@@ -535,7 +536,7 @@ public final class ZoneElementGameTests {
         };
         try {
             helper.assertTrue(!Double.isNaN(before), "The Resistive Heater must hold heat");
-            // 威力 1・一辺 5（コスト 60）、干渉力 4 → 速さ 2 で約 72 J/t。
+            // 威力 1（中の威力 5）・一辺 5（コスト 100）、干渉力 4 → 速さ 2 で約 240 J/t。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, heat(helper), 5.0, 1.0);
         } catch (RuntimeException | SpellRuntimeException e) {
@@ -547,8 +548,8 @@ public final class ZoneElementGameTests {
             cleanup.run();
             helper.assertTrue(after > before + 5.0,
                     "A Power 1 Heat Zone must heat the Resistive Heater, " + before + " K -> " + after + " K");
-            helper.assertTrue(after <= EntityHeatZone.maxTemperatureFor(1.0F) + 0.5,
-                    "It must not heat above 550 K, " + before + " K -> " + after + " K");
+            helper.assertTrue(after <= EntityHeatZone.maxTemperatureFor(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(1.0)) + 0.5,
+                    "It must not heat above 750 K, " + before + " K -> " + after + " K");
             helper.succeed();
         });
     }
@@ -612,7 +613,7 @@ public final class ZoneElementGameTests {
     /** 凍結領域に湿潤領域を重ねると、濡れた生物は凍えきるまでの時間が半分になる（凍えの値が倍の速さでたまる）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_soak", timeoutTicks = 100)
     public static void soakedBeingsFreezeTwiceAsFast(GameTestHelper helper) {
-        // 凍えの差し引きは 凍結の威力 × 4（威力 5 で 20、10 で 40）、濡れていれば 2 倍、威力 10 の吹雪で 2 倍。
+        // 凍えの差し引きは 凍結の中の威力 × 4（中の威力 5 で 20、10 で 40）、濡れていれば 2 倍、中の威力 10 の吹雪で 2 倍。
         helper.assertTrue(EntityFreezeZone.freezeAmount(5.0F, false, 0.0F) == 40
                         && EntityFreezeZone.freezeAmount(10.0F, false, 0.0F) == 60
                         && EntityFreezeZone.freezeAmount(5.0F, true, 0.0F) == 60
@@ -623,9 +624,9 @@ public final class ZoneElementGameTests {
         Husk dry = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(3.5, 1.0, 2.5));
         Runnable cleanup = () -> cleanup(helper, caster);
         try {
-            // 凍結領域は x 0〜4、湿潤領域は x 0〜2 だけ（濡れるのは片方の生物）。
+            // 凍結領域は x 0〜4（威力 1 = 中の威力 5）、湿潤領域は x 0〜2 だけ（濡れるのは片方の生物）。
             cast(caster, soak(helper, new BlockPos(1, 1, 2)), 3.0, 0.0);
-            cast(caster, freeze(helper, CENTER), 5.0, 5.0);
+            cast(caster, freeze(helper, CENTER), 5.0, 1.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -758,9 +759,9 @@ public final class ZoneElementGameTests {
             helper.assertTrue(outsideMultiplier == 0.0,
                     "A Wind Generator outside the zone must stay still under a roof, multiplier " + outsideMultiplier);
             helper.assertTrue(skyMultiplier > 0.0, "A Wind Generator under the open sky must run, multiplier " + skyMultiplier);
-            // 風量 25 × 10 ÷ 240 × 干渉力 4 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに 37.5 J/t、
-            // 高さによらない。
-            double units = 25.0 * 10.0 / 240.0 * 4.0 / 2.0;
+            // 風量 25 × 14（威力 10 の中の威力）÷ 240 × 干渉力 4 WU を、範囲の中の 2 台で均等に分ける。加算方式で 1 WU ごとに
+            // 37.5 J/t、高さによらない。
+            double units = 25.0 * com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(10.0) / 240.0 * 4.0 / 2.0;
             double openUnits = units;
             double roofed = units * EntityTurbulenceZone.WIND_JOULES_PER_WU / MekanismGameplayCompat.windGenerationMinimum();
             helper.assertTrue(Math.abs(insideMultiplier - roofed) < 1.0E-6,
@@ -791,11 +792,11 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            // どちらも一辺 9・威力 25・事象干渉力 1（81 × 25 ÷ 240 ≈ 8.4 WU）: 発電機は 1 台なので、それぞれから
-            // 8.4 WU（合わせて約 16.9 WU、1 台は 10 WU まで）。
-            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(1.0D);
-            cast(caster, turbulence(helper), 9.0, 25.0);
-            cast(caster, turbulence(helper), 9.0, 25.0);
+            // どちらも一辺 9・威力 10（中の威力 14）・事象干渉力 2（81 × 14 ÷ 240 × 2 ≈ 9.45 WU）: 発電機は 1 台なので、
+            // それぞれから 9.45 WU（合わせて 18.9 WU、1 台は 10 WU まで）。
+            caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(2.0D);
+            cast(caster, turbulence(helper), 9.0, 10.0);
+            cast(caster, turbulence(helper), 9.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -815,7 +816,7 @@ public final class ZoneElementGameTests {
 
     /**
      * 乱流領域の風量は置いた時点の事象干渉力に比例して増える: 干渉力 1 で基準、2 で 2 倍、4 以上で 4 倍（上限）。1 WU は
-     * 37.5 J/t・床の広さ × 威力 ÷ 240 WU、コストは加熱・荷電と同じ（威力 5 以上で 50 + 広さ × 威力 × 2 / 5）なので、干渉力 1 でのコスト 1 Psi
+     * 37.5 J/t・床の広さ × 中の威力 ÷ 240 WU、コストは加熱・荷電と同じ 50 + 広さ × 中の威力 × 2 / 5 なので、干渉力 1 でのコスト 1 Psi
      * あたりの発電の上乗せは 25 ÷ 64 J/t（約 94 FE/Psi）。規模とコストが加熱領域と同じことも確かめる。
      * 風量は Mekanism がなくても持つので、Mekanism なしでも試す。
      */
@@ -829,8 +830,8 @@ public final class ZoneElementGameTests {
             for (int i = 0; i < interferences.length; i++) {
                 caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(interferences[i]);
                 List<Object> before = new java.util.ArrayList<>(SpellGramIndex.ofCaster(level, caster.getUUID()));
-                // 一辺 3・威力 80: 床の広さ 9 × 80 ÷ 240 = 3 WU × 事象干渉力。
-                cast(caster, turbulence(helper), 3.0, 80.0);
+                // 一辺 6・威力 6（中の威力 10）: 床の広さ 36 × 10 ÷ 240 = 1.5 WU × 事象干渉力。
+                cast(caster, turbulence(helper), 6.0, 6.0);
                 EntityTurbulenceZone placed = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
                         .filter(object -> object instanceof EntityTurbulenceZone && before.stream().noneMatch(old -> old == object))
                         .map(EntityTurbulenceZone.class::cast).findFirst()
@@ -842,18 +843,18 @@ public final class ZoneElementGameTests {
             throw new RuntimeException(e);
         }
         cleanup(helper, caster);
-        double[] expected = {3.0, 6.0, 12.0, 12.0};
+        double[] expected = {1.5, 3.0, 6.0, 6.0};
         for (int i = 0; i < interferences.length; i++) {
             helper.assertTrue(Math.abs(winds[i] - expected[i]) < 1.0E-6, "Interference " + interferences[i]
                     + " must blow " + expected[i] + " WU, got " + winds[i]);
         }
-        // 干渉力 1 でのコスト 1 Psi あたりの上乗せ（1 WU の J/t ÷ 割る数 ÷ 広さ × 威力 1 あたりのコスト 2 / 5）は 25 ÷ 64。
+        // 干渉力 1 でのコスト 1 Psi あたりの上乗せ（1 WU の J/t ÷ 割る数 ÷ 広さ × 中の威力 1 あたりのコスト 2 / 5）は 25 ÷ 64。
         double perPsi = EntityTurbulenceZone.WIND_JOULES_PER_WU / EntityTurbulenceZone.WIND_FOOTPRINT_DIVISOR / (2.0 / 5.0);
         helper.assertTrue(Math.abs(perPsi - 25.0 / 64.0) < 1.0E-9, "The wind power per Psi must stay 25/64 J/t, got " + perPsi);
-        // コストと規模は加熱領域と同じ式（サイズ 16・威力 10 でコスト 1074、規模 701）。
+        // コストと規模は加熱領域と同じ式（サイズ 16・威力 10 でコスト 1483、規模 701）。
         int turbulenceCost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone.costFor(256, 10.0);
         int heatCost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickHeatZone.costFor(256, 10.0);
-        helper.assertTrue(turbulenceCost == 1074 && heatCost == 1074,
+        helper.assertTrue(turbulenceCost == 1483 && heatCost == 1483,
                 "The Turbulence Zone must cost the same as the Heat Zone: " + turbulenceCost + " vs " + heatCost);
         int potency = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.poweredPotency(256, 10.0);
         helper.assertTrue(potency == 701, "Size 16, Power 10 must have Potency 701, got " + potency);
@@ -925,11 +926,11 @@ public final class ZoneElementGameTests {
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_storm_attack_power")
     public static void stormAttackPowerFollowsTheCostOfTheTurbulence(GameTestHelper helper) {
         helper.assertTrue(Math.abs(EntityTurbulenceZone.attackPower(306.0F, 600) - 3.4F) < 1.0E-4F,
-                "Size 8, Power 10 for 30 s must have attack power 3.4");
+                "A cost of 306 for 30 s must have attack power 3.4");
         helper.assertTrue(Math.abs(EntityTurbulenceZone.attackPower(612.0F, 1200) - 3.4F) < 1.0E-4F,
                 "A longer zone of the same size and Power must have the same attack power");
         helper.assertTrue(Math.abs(EntityTurbulenceZone.attackPower(1074.0F, 600) - 1074.0F / 90.0F) < 1.0E-4F,
-                "The Power must no longer limit the attack power of Size 16, Power 10");
+                "The Power must not limit the attack power of a cost of 1074");
         helper.assertTrue(EntityTurbulenceZone.attackPower(3603.0F, 600) == 40.0F, "The attack power must stop at 40");
         helper.assertTrue(EntityTurbulenceZone.attackPower(306.0F, 0) == 0.0F, "A zone without a lifetime must have no attack power");
         float perPower = EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER;
@@ -943,14 +944,17 @@ public final class ZoneElementGameTests {
         helper.succeed();
     }
 
-    /** 相方の領域の威力が、強い乱流の攻撃の強さを頭打ちにする。 */
+    /**
+     * 相方の領域の威力が、強い乱流の攻撃の強さを頭打ちにする。威力 40 の乱流（サイズ 16 でコスト 4555）は強さ 40 に届き、威力 1
+     * （中の威力 5）の加熱領域が 20 に頭打ちにする。
+     */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_partner_attack_limit", timeoutTicks = 60)
     public static void partnerPowerLimitsTheStormAttack(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_partner_limit_caster", new Vec3(4.5, 1.0, 0.5));
         Runnable cleanup = () -> cleanup(helper, caster);
         try {
-            cast(caster, heat(helper, CENTER), 3.0, 5.0);
+            cast(caster, heat(helper, CENTER), 3.0, 1.0);
             castTurbulenceOver(caster, helper.absolutePos(new BlockPos(1, 0, 1)), 3, 3, 3, 40.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
@@ -964,12 +968,12 @@ public final class ZoneElementGameTests {
             float combo = zone.comboAttackPowerAt(inside, zone.getPower(), EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER);
             cleanup.run();
             helper.assertTrue(storm == 40.0F, "The turbulence alone must reach attack power 40, was " + storm);
-            helper.assertTrue(combo == 20.0F, "A Heat Zone of Power 5 must limit the attack power to 20, was " + combo);
+            helper.assertTrue(combo == 20.0F, "A Heat Zone of Power 1 must limit the attack power to 20, was " + combo);
             helper.succeed();
         });
     }
 
-    /** 小さく安い乱流領域を重ねた領域は、そのコストの分の強さでしか攻撃しない（機械を動かす乱流の威力は 10 のまま）。 */
+    /** 小さく安い乱流領域を重ねた領域は、そのコストの分の強さでしか攻撃しない（機械を動かす乱流の中の威力は 14 のまま）。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_cheap_storm", timeoutTicks = 60)
     public static void cheapTurbulenceAttacksWeakly(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -989,9 +993,9 @@ public final class ZoneElementGameTests {
             float attack = zone.stormAttackPowerAt(inside);
             float power = zone.stormPowerAt(inside);
             cleanup.run();
-            // サイズ 3・威力 10 のコストは 86: 30 秒で毎秒 2.87、強さはその 1/3。
-            helper.assertTrue(Math.abs(attack - 86.0F / 30.0F / 3.0F) < 1.0E-3F, "The attack power must follow the cost, was " + attack);
-            helper.assertTrue(power == 10.0F, "The Power that drives machines must stay 10, was " + power);
+            // サイズ 3・威力 10（中の威力 14）のコストは 100: 30 秒で毎秒 3.33、強さはその 1/3。
+            helper.assertTrue(Math.abs(attack - 100.0F / 30.0F / 3.0F) < 1.0E-3F, "The attack power must follow the cost, was " + attack);
+            helper.assertTrue(power == 14.0F, "The Power that drives machines must stay 14, was " + power);
             helper.succeed();
         });
     }
@@ -1407,10 +1411,10 @@ public final class ZoneElementGameTests {
             cleanup(helper, caster);
         };
         try {
-            // 凍結領域は x 3〜5（干渉力 4 → 速さ 2、威力 100）。加熱領域は x 0〜2 で、x = 3 の面で触れ合う。
+            // 凍結領域は x 3〜5（干渉力 4 → 速さ 2、威力 10）。加熱領域は x 0〜2 で、x = 3 の面で触れ合う。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
-            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 100.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -1874,7 +1878,7 @@ public final class ZoneElementGameTests {
             // 加熱領域 x 0〜2 と凍結領域 x 3〜5 が x = 3 で触れ合う。発熱器は周囲の温度のまま。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
             cast(caster, heat(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
-            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 100.0);
+            cast(caster, freeze(helper, new BlockPos(4, 1, 2)), 3.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
@@ -2093,10 +2097,10 @@ public final class ZoneElementGameTests {
                 MekanismGameplayCompat.supplyZoneHeat(level, List.of(level.getBlockEntity(helper.absolutePos(pos))),
                         new java.util.IdentityHashMap<>(), 1.0E9, 800.0, at -> true);
             }
-            // 凍結領域は x 0〜2・z 1〜3（干渉力 4 → 速さ 2、1 台あたり毎 tick 4% まで）。冷却量は熱量と同じ 720 J/Psi
-            // なので、威力 100（コスト 410 → 約 984 J/t）にする。cancelled の 1 ブロックだけ加熱領域も重ねる。
+            // 凍結領域は x 0〜2・z 1〜3（干渉力 4 → 速さ 2、1 台あたり毎 tick 5.6% まで）。冷却量は熱量と同じ 720 J/Psi
+            // なので、威力 10（中の威力 14、コスト 100 → 約 240 J/t）にする。cancelled の 1 ブロックだけ加熱領域も重ねる。
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
-            cast(caster, freeze(helper, new BlockPos(1, 1, 2)), 3.0, 100.0);
+            cast(caster, freeze(helper, new BlockPos(1, 1, 2)), 3.0, 10.0);
             cast(caster, heat(helper, cancelled), 1.0, 5.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
@@ -2109,9 +2113,9 @@ public final class ZoneElementGameTests {
             cleanup.run();
             String temps = "cooled " + cooledTemp + " K, cancelled " + cancelledTemp + " K, outside " + outsideTemp + " K";
             helper.assertTrue(cooledTemp < outsideTemp - 50.0, "The Freeze Zone must cool the heater inside: " + temps);
-            // 冷やせる下限は 275 − 威力 × 5 K（威力 10 以上で 225 K）。
-            helper.assertTrue(cooledTemp > EntityFreezeZone.minTemperatureFor(100.0F) - 0.5,
-                    "It must not cool below the lowest temperature, 225 K: " + temps);
+            // 冷やせる下限は 275 − 中の威力 × 5 K（入れた威力 10 で 205 K）。
+            helper.assertTrue(cooledTemp > EntityFreezeZone.minTemperatureFor(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(10.0)) - 0.5,
+                    "It must not cool below the lowest temperature, 205 K: " + temps);
             helper.assertTrue(cancelledTemp > cooledTemp + 50.0,
                     "A heater where the Heat Zone cancels the Freeze Zone must not be cooled: " + temps);
             helper.succeed();
@@ -2119,8 +2123,8 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 凍結領域は Mekanism の機械を周囲の温度より下まで冷やせる: 下限は周囲の温度によらず 275 − 威力 × 5 K（威力 10 以上で
-     * 225 K）。周囲の温度の発熱器を冷やすと、周囲より 50 K 以上下がり（平地の周囲 300 K から下限 225 K へ）、下限より下には
+     * 凍結領域は Mekanism の機械を周囲の温度より下まで冷やせる: 下限は周囲の温度によらず 275 − 中の威力 × 5 K（入れた威力 10 で
+     * 205 K）。周囲の温度の発熱器を冷やすと、周囲より 50 K 以上下がり（平地の周囲 300 K から下限 205 K へ）、下限より下には
      * ならない。下限の式も確かめる。Mekanism がなければ飛ばす。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_freeze_below_ambient", timeoutTicks = 160)
@@ -2131,9 +2135,11 @@ public final class ZoneElementGameTests {
             return;
         }
         ServerLevel level = helper.getLevel();
-        helper.assertTrue(EntityFreezeZone.minTemperatureFor(1.0F) == 270.0 && EntityFreezeZone.minTemperatureFor(5.0F) == 250.0
-                        && EntityFreezeZone.minTemperatureFor(10.0F) == 225.0 && EntityFreezeZone.minTemperatureFor(100.0F) == 225.0,
-                "The lowest temperature must be 275 - Power x 5 K, stopping at Power 10");
+        helper.assertTrue(EntityFreezeZone.minTemperatureFor(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(1.0)) == 250.0
+                        && EntityFreezeZone.minTemperatureFor(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(5.0)) == 230.0
+                        && EntityFreezeZone.minTemperatureFor(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(10.0)) == 205.0
+                        && EntityFreezeZone.minTemperatureFor(100.0F) == 205.0,
+                "The lowest temperature must be 275 - Power x 5 K, stopping at the Power of 14");
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_freeze_below_ambient", new Vec3(4.5, 1.0, 0.5));
         BlockPos cooled = new BlockPos(1, 1, 1);
         BlockPos reference = new BlockPos(4, 1, 4);
@@ -2146,21 +2152,22 @@ public final class ZoneElementGameTests {
         };
         try {
             caster.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR).setBaseValue(4.0D);
-            cast(caster, freeze(helper, new BlockPos(1, 1, 1)), 3.0, 100.0);
+            cast(caster, freeze(helper, new BlockPos(1, 1, 1)), 3.0, 10.0);
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup.run();
             throw new RuntimeException(e);
         }
-        // 干渉力 4 → 速さ 2、威力 100 で、1 tick に下限との温度差の 4% ずつ縮む（300 K から 100 tick で下限の約 1 K 上）。
+        // 干渉力 4 → 速さ 2、威力 10（中の威力 14）で、1 tick に下限との温度差の 5.6% ずつ縮む（300 K から 100 tick で下限の
+        // 1 K 以内まで下がる）。
         helper.runAfterDelay(110, () -> {
             double cooledTemp = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(cooled));
             double ambient = MekanismGameplayCompat.temperatureAt(level, helper.absolutePos(reference));
             cleanup.run();
             String temps = "cooled " + cooledTemp + " K, ambient " + ambient + " K";
             helper.assertTrue(cooledTemp < ambient - 55.0,
-                    "The Freeze Zone must cool the heater well below the ambient temperature, towards 225 K: " + temps);
-            helper.assertTrue(cooledTemp > EntityFreezeZone.minTemperatureFor(100.0F) - 0.5,
-                    "It must not cool below the lowest temperature, 225 K: " + temps);
+                    "The Freeze Zone must cool the heater well below the ambient temperature, towards 205 K: " + temps);
+            helper.assertTrue(cooledTemp > EntityFreezeZone.minTemperatureFor(com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.resourcePower(10.0)) - 0.5,
+                    "It must not cool below the lowest temperature, 205 K: " + temps);
             helper.succeed();
         });
     }
@@ -2196,14 +2203,14 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 威力は 10 より上も入れられる: 一辺 3 でも威力 100（コスト 410 → 干渉力 1 で約 246 J/t）ならバーナー 1 台を
-     * 加熱にできる。1 か所あたりの強さ（上限の温度）は威力 10 で頭打ち。
+     * 威力は 10 より上も入れられる: 一辺 3 でも威力 100（中の威力 104、コスト 424 → 干渉力 1 で約 254 J/t）ならバーナー 1 台を
+     * 加熱にできる。1 か所あたりの強さ（上限の温度）は入れた威力 10（中の威力 14）で頭打ち。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_burner_small", timeoutTicks = 100)
     public static void smallHeatZoneWithHighPowerKindlesABurner(GameTestHelper helper) {
         int cost = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickHeatZone.costFor(9, 100.0);
-        helper.assertTrue(cost == 410, "Size 3, Power 100 must cost 410, got " + cost);
-        // 規模は威力 10 で頭打ち: サイズ 3 なら威力によらず 10 + ⌊9 × 10 × 0.27⌋ = 34。
+        helper.assertTrue(cost == 424, "Size 3, Power 100 must cost 424, got " + cost);
+        // 規模は入れた威力 10 で頭打ち: サイズ 3 なら威力によらず 10 + ⌊9 × 10 × 0.27⌋ = 34。
         int potency = com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.poweredPotency(9, 100.0);
         helper.assertTrue(potency == 34, "Potency must stop growing at Power 10: size 3, Power 100 must be 34, got " + potency);
         burnerTest(helper, BurnerCase.SMALL);
@@ -2240,7 +2247,7 @@ public final class ZoneElementGameTests {
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_burner_" + mode.name().toLowerCase(java.util.Locale.ROOT),
                 new Vec3(4.5, 1.0, 4.5));
         // 加熱領域は (1, 1, 2) を中心にした一辺 9（x -3〜5）。熱の総量でバーナー 1 台（200 J/t）だけ払えるよう、干渉力 1（速さ 0.5）・
-        // 威力 10（コスト 374 × 720 J ÷ 600 tick × 0.5 → 約 224 J/t）にする。
+        // 威力 10（中の威力 14、コスト 503 × 720 J ÷ 600 tick × 0.5 → 約 302 J/t）にする。
         BlockPos inside = new BlockPos(1, 1, 1);
         BlockPos outside = new BlockPos(8, 1, 2);
         // BUDGET: 1 台ぶん（200 J/t）しか払えない領域に、中心から遠いもう 1 台を置く。
@@ -2313,7 +2320,7 @@ public final class ZoneElementGameTests {
                 double maxTemperature = zone == null ? -1.0 : zone.maxTemperature();
                 cleanup.run();
                 helper.assertTrue("kindled".equals(insideLevel), "A size-3, Power 100 Heat Zone must kindle the burner, was " + insideLevel);
-                helper.assertTrue(zonePower == 10.0F && maxTemperature == 1000.0,
+                helper.assertTrue(zonePower == 14.0F && maxTemperature == 1150.0,
                         "Effects must stop growing at Power 10: power " + zonePower + ", max temperature " + maxTemperature);
                 helper.succeed();
                 return;
@@ -2521,12 +2528,15 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 総量を持つ領域（加熱・凍結・乱流・荷電）のコストには、広さあたり 2（威力 5 の分）の下限がある: 威力 1 も威力 5 も
-     * 50 + 広さ × 2、威力 6 からは 50 + ⌊広さ × 威力 × 2 / 5⌋。湿潤領域は 40 + 広さ × 2。置いたときのコスト（唱えた時点の威力で
-     * 求める）も同じ式で、構築機に出る式にも下限が入っている。
+     * 総量を持つ領域（加熱・凍結・乱流・荷電）の威力の尺度: 入れた威力は 1 以上（0.5 は 1）で、コスト・強さは中の威力
+     * （入れた威力 + 4）、規模は入れた威力で決まる。サイズ 16・30 秒で、威力 1・5・10 のコストは 562・971・1483、規模は 79・355・701。
+     * 10 を超えた分はコストと総量だけを増やし、強さと規模は 10 と同じ（威力 11 は 1586）。乱流の組み合わせの強さはサイズ 16 なら
+     * 威力 31（コスト 3634）で上限 40 に届く。
+     * 加熱の上限の温度は 750 K から 1 段 50 K ずつ上がり、威力 9 から 1150 K で止まる。乱流のそらす角度は 45 度から 1 段 5 度ずつ
+     * 上がり、威力 10 で 90 度。湿潤領域は 40 + 広さ × 2。
      */
-    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_cost_floor", timeoutTicks = 40)
-    public static void resourceZoneCostsHaveAFloor(GameTestHelper helper) throws Exception {
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_power_scale", timeoutTicks = 40)
+    public static void resourceZonePowerScale(GameTestHelper helper) throws Exception {
         java.util.Map<String, java.util.function.ToIntBiFunction<Integer, Double>> costs = new java.util.LinkedHashMap<>();
         costs.put("Heat", PieceTrickHeatZone::costFor);
         costs.put("Freeze", PieceTrickFreezeZone::costFor);
@@ -2534,15 +2544,47 @@ public final class ZoneElementGameTests {
         costs.put("Charged", com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone::costFor);
         for (var entry : costs.entrySet()) {
             var costFor = entry.getValue();
-            int[] low = {costFor.applyAsInt(16, 1.0), costFor.applyAsInt(64, 1.0), costFor.applyAsInt(256, 1.0)};
-            helper.assertTrue(low[0] == 82 && low[1] == 178 && low[2] == 562,
-                    entry.getKey() + " at Power 1 must cost 82 / 178 / 562 at Size 4 / 8 / 16, got " + java.util.Arrays.toString(low));
-            helper.assertTrue(costFor.applyAsInt(256, 5.0) == 562 && costFor.applyAsInt(256, 3.0) == 562,
-                    entry.getKey() + " below Power 5 must cost the same as Power 5");
-            helper.assertTrue(costFor.applyAsInt(256, 6.0) == 664 && costFor.applyAsInt(256, 10.0) == 1074,
-                    entry.getKey() + " from Power 6 must follow the Power: " + costFor.applyAsInt(256, 6.0) + ", "
-                            + costFor.applyAsInt(256, 10.0));
+            int[] size16 = {costFor.applyAsInt(256, 1.0), costFor.applyAsInt(256, 5.0), costFor.applyAsInt(256, 10.0)};
+            helper.assertTrue(size16[0] == 562 && size16[1] == 971 && size16[2] == 1483,
+                    entry.getKey() + " at Size 16 must cost 562 / 971 / 1483 at Power 1 / 5 / 10, got " + java.util.Arrays.toString(size16));
+            helper.assertTrue(costFor.applyAsInt(16, 1.0) == 82 && costFor.applyAsInt(64, 1.0) == 178,
+                    entry.getKey() + " at Power 1 must cost 82 at Size 4 and 178 at Size 8");
         }
+
+        int[] one = resourceStats(16, 1.0);
+        int[] five = resourceStats(16, 5.0);
+        int[] ten = resourceStats(16, 10.0);
+        helper.assertTrue(one[0] == 79 && five[0] == 355 && ten[0] == 701,
+                "Potency must follow the Power itself: " + one[0] + " / " + five[0] + " / " + ten[0]);
+        helper.assertTrue(one[1] == 562 && five[1] == 971 && ten[1] == 1483,
+                "The compiled Cost must follow the Power plus 4: " + one[1] + " / " + five[1] + " / " + ten[1]);
+        helper.assertTrue(java.util.Arrays.equals(resourceStats(16, 0.5), one), "A Power below 1 must count as 1");
+        int[] eleven = resourceStats(16, 11.0);
+        helper.assertTrue(eleven[0] == 701 && eleven[1] == 1586,
+                "Above 10 only the Cost must grow: Potency 701, Cost 1586 at Power 11, got " + eleven[0] + ", " + eleven[1]);
+        float strongest = EntityTurbulenceZone.attackPower(PieceTrickTurbulenceZone.costFor(256, 31.0), 600);
+        float below = EntityTurbulenceZone.attackPower(PieceTrickTurbulenceZone.costFor(256, 30.0), 600);
+        helper.assertTrue(PieceTrickTurbulenceZone.costFor(256, 31.0) == 3634 && strongest == EntityTurbulenceZone.MAX_ATTACK_POWER
+                        && below < EntityTurbulenceZone.MAX_ATTACK_POWER,
+                "A Size 16 Turbulence Zone must reach attack power 40 at Power 31, got " + below + " at 30 and " + strongest + " at 31");
+
+        double[] temperatures = {
+                EntityHeatZone.maxTemperatureFor(PieceTrickZoneBase.resourcePower(1.0)),
+                EntityHeatZone.maxTemperatureFor(PieceTrickZoneBase.resourcePower(8.0)),
+                EntityHeatZone.maxTemperatureFor(PieceTrickZoneBase.resourcePower(9.0)),
+                EntityHeatZone.maxTemperatureFor(PieceTrickZoneBase.resourcePower(10.0))};
+        helper.assertTrue(temperatures[0] == 750.0 && temperatures[1] == 1100.0 && temperatures[2] == 1150.0 && temperatures[3] == 1150.0,
+                "The Heat Zone must heat up to 750 / 1100 / 1150 / 1150 K at Power 1 / 8 / 9 / 10, got "
+                        + java.util.Arrays.toString(temperatures));
+        double[] angles = {
+                EntityTurbulenceZone.deflectDegreesFor(PieceTrickZoneBase.resourcePower(1.0)),
+                EntityTurbulenceZone.deflectDegreesFor(PieceTrickZoneBase.resourcePower(5.0)),
+                EntityTurbulenceZone.deflectDegreesFor(PieceTrickZoneBase.resourcePower(10.0))};
+        helper.assertTrue(angles[0] == 45.0 && angles[1] == 65.0 && angles[2] == 90.0,
+                "The Turbulence Zone must turn projectiles up to 45 / 65 / 90 degrees at Power 1 / 5 / 10, got "
+                        + java.util.Arrays.toString(angles));
+        double coldest = EntityFreezeZone.minTemperatureFor(PieceTrickZoneBase.resourcePower(10.0));
+        helper.assertTrue(coldest == 205.0, "The Freeze Zone at Power 10 must cool down to 205 K, got " + coldest);
 
         PieceTrickZoneBase<?> soakPiece = new PieceTrickSoakZone(new Spell()) {
             @Override
@@ -2554,19 +2596,44 @@ public final class ZoneElementGameTests {
         helper.assertTrue(soak[0] == 35 && soak[1] == 90, "The Soak Zone at Size 5: Potency 35, Cost 90, got " + soak[0] + ", " + soak[1]);
 
         String label = new PieceTrickHeatZone(new Spell()).getStatLabels().get(vazkii.psi.api.spell.EnumSpellStat.COST).toString();
-        helper.assertTrue(label.contains("max(") && label.contains(", 2)"), "The shown Cost must include the floor, got " + label);
+        helper.assertTrue(label.contains("+ 4"), "The shown Cost must add 4 to the Power, got " + label);
 
-        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_cost_floor_caster", new Vec3(0.5, 1.0, 0.5));
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_power_scale_caster", new Vec3(0.5, 1.0, 0.5));
         try {
             cast(caster, heat(helper, CENTER), 4.0, 1.0);
-            float placed = only(helper, caster, EntityHeatZone.class).getPlacementCost();
-            helper.assertTrue(placed == 82.0F, "A Power 1, Size 4 Heat Zone must be placed for 82, got " + placed);
+            EntityHeatZone low = only(helper, caster, EntityHeatZone.class);
+            helper.assertTrue(low.getPlacementCost() == 82.0F && low.getPower() == 5.0F && low.burnSeconds() == 3.0F,
+                    "A Power 1, Size 4 Heat Zone must be placed for 82 with the strength of 5, got " + low.getPlacementCost()
+                            + ", " + low.getPower() + ", " + low.burnSeconds() + " s");
+            low.discard();
+            cast(caster, heat(helper, CENTER), 4.0, 11.0);
+            EntityHeatZone high = only(helper, caster, EntityHeatZone.class);
+            helper.assertTrue(high.getPower() == 14.0F && Math.abs(high.burnSeconds() - 8.4F) < 1.0E-4F && high.maxTemperature() == 1150.0,
+                    "A Power 11 Heat Zone must be as strong as Power 10: " + high.getPower() + ", " + high.burnSeconds() + " s, "
+                            + high.maxTemperature() + " K");
+            helper.assertTrue(high.getPlacementCost() == 146.0F,
+                    "A Power 11, Size 4 Heat Zone must still cost more than Power 10, got " + high.getPlacementCost());
         } catch (RuntimeException | SpellRuntimeException e) {
             cleanup(helper, caster);
             throw new RuntimeException(e);
         }
         cleanup(helper, caster);
         helper.succeed();
+    }
+
+    /** サイズ {@code size}・威力 {@code power}（時間は省く）の加熱領域の {規模, コスト}。 */
+    private static int[] resourceStats(int size, double power) throws Exception {
+        PieceTrickZoneBase<?> piece = new PieceTrickHeatZone(new Spell()) {
+            @Override
+            @SuppressWarnings("unchecked")
+            public <T> T getParamEvaluation(SpellParam<?> param) {
+                if (param.name.equals(PsitweaksSpellParams.SIZE)) {
+                    return (T) Double.valueOf(size);
+                }
+                return param.name.equals(SpellParam.GENERIC_NAME_POWER) ? (T) Double.valueOf(power) : null;
+            }
+        };
+        return zoneStats(piece);
     }
 
     /**

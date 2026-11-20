@@ -106,10 +106,9 @@ public class EntityChargedZone extends SpellGramZone {
     private static final net.minecraft.core.Direction[] BLOCK_SIDES = {
             net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.NORTH,
             net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.EAST, null};
-    /** 威力（コストのつまみ、1〜10）。 */
-    /** 1 体・1 か所あたりの強さに使う威力（{@link #MAX_EFFECT_POWER} まで）。 */
+    /** 1 体・1 か所あたりの強さに使う中の威力（{@link #MAX_EFFECT_POWER} まで）。 */
     private float power = DEFAULT_POWER;
-    /** 入れた威力（10 より上もそのまま。コストと重なりの強さに使う）。 */
+    /** 渡された中の威力（14 より上もそのまま。重なりの強さに使う）。 */
     private float rawPower = DEFAULT_POWER;
     /** 次の雷撃のゲーム時刻（まだ決めていなければ -1）。サーバー側だけ。 */
     private long nextStrike = -1;
@@ -129,7 +128,7 @@ public class EntityChargedZone extends SpellGramZone {
         return isStorm() ? STORM_OUTLINE_COLOR : OUTLINE_COLOR;
     }
 
-    /** 置く前に呼ぶ。 */
+    /** 置く前に呼ぶ。{@code power} は中の威力（作動式に入れた威力 + 4）。 */
     public void setPower(float power) {
         this.rawPower = Math.max(0.0F, power);
         this.power = Math.min(rawPower, MAX_EFFECT_POWER);
@@ -139,7 +138,7 @@ public class EntityChargedZone extends SpellGramZone {
         return power;
     }
 
-    /** 同じ種類が重なったところでは、威力の一番高いもの（10 より上も比べる）だけが効く。 */
+    /** 同じ種類が重なったところでは、威力の一番高いものだけが効く。 */
     @Override
     protected double stackStrength() {
         return rawPower;

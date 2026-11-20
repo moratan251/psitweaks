@@ -8,34 +8,27 @@ import vazkii.psi.api.spell.SpellCompilationException;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
-import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
 
 /**
  * 作動式: 乱流領域（仮、Turbulence Zone）。範囲の中に暴風を起こす: 他者の飛び道具をそらし、残留ポーションなどの雲を
  * 吹き散らし、同じ術者のほかの領域と重なると強める（熱乱流・吹雪・暴風雨・雷雲）。中のエンティティは運ばない（運ぶのは
  * 加重領域）。風量（WU）を持ち、Mekanism Generators の風力発電機に風を足す（{@link EntityTurbulenceZone}）。強さは「威力」
- * （コストを決めるため定数）。
+ * （コストを決めるため 1 以上の定数。領域には中の威力 = 威力 + 4 を渡す、{@link #resourcePower}）。
  */
 public class PieceTrickTurbulenceZone extends PieceTrickZoneBase<EntityTurbulenceZone> {
-    /** 威力の上限（仮）。 */
-    public static final double MAX_POWER = MAX_RESOURCE_ZONE_POWER;
-    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + ⌊広さ × max(威力 × 2 / 5, 2)⌋（加熱・凍結・荷電と
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + ⌊広さ × (威力 + 4) × 2 / 5⌋（加熱・凍結・荷電と
     // 同じ。広さ = サイズ²）
-    private static final int COST_BASE = 50;
-    private static final int COST_MULTIPLIER = 2;
-    private static final int COST_DIVISOR = 5;
 
     private SpellParam<Number> power;
 
     public PieceTrickTurbulenceZone(Spell spell) {
         super(spell, EntityTurbulenceZone.class);
         setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
-        setStatLabel(EnumSpellStat.COST, areaLabel().mul(perAreaCostWithFloorLabel(
-                powerLabel(MAX_RESOURCE_ZONE_POWER).mul(COST_MULTIPLIER).div(COST_DIVISOR))).add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.COST, resourceZoneCostLabel());
     }
 
-    /** 総量を持つ領域なので、威力は 10 より上も入れられる。 */
+    /** 総量を持つ領域なので、威力は 10 より上も入れられる（10 を超えた分はコスト＝総量だけを増やす）。 */
     @Override
     protected double maxPower() {
         return MAX_RESOURCE_ZONE_POWER;
@@ -56,9 +49,9 @@ public class PieceTrickTurbulenceZone extends PieceTrickZoneBase<EntityTurbulenc
         return costFor(area, constantPower(power));
     }
 
-    /** コスト（30 秒）: 50 + ⌊広さ × max(威力 × 2 / 5, 2)⌋（2 は {@link #MIN_COST_PER_AREA}。威力 5 より下は威力 5 と同じ）。 */
+    /** コスト（30 秒）: 50 + ⌊広さ × (威力 + 4) × 2 / 5⌋（{@link #resourceZoneCost}、威力は入れた威力）。 */
     public static int costFor(int area, double power) {
-        return COST_BASE + withCostFloor(area, area * power * COST_MULTIPLIER / COST_DIVISOR);
+        return resourceZoneCost(area, power);
     }
 
     @Override
@@ -73,6 +66,6 @@ public class PieceTrickTurbulenceZone extends PieceTrickZoneBase<EntityTurbulenc
 
     @Override
     protected void configure(EntityTurbulenceZone zone, SpellContext context) throws SpellRuntimeException {
-        zone.configureWind(powerValue(context, power));
+        zone.configureWind(resourcePower(powerValue(context, power)));
     }
 }

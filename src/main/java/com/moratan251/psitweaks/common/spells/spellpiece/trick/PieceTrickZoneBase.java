@@ -103,22 +103,26 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
     /** 威力の上限（加重領域）。 */
     public static final double MAX_ZONE_POWER = 10.0;
     /**
-     * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）の威力の上限。10 を超えた分は総量（コスト）だけを増やし、
-     * 1 体・1 か所あたりの強さは威力 10 で頭打ち（{@code SpellGramZone.MAX_EFFECT_POWER}）。上限はコストの桁あふれよけで、
-     * 規模の上限より先には届かない。
+     * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）で、入れた威力に足して「中の威力」にする数。入れた威力 1 が
+     * 中の威力 5、10 が 14。コスト・総量・1 体・1 か所あたりの強さは中の威力で決まり（{@link #resourcePower}）、規模は入れた威力で
+     * 決まる（{@link #poweredPotency}）。
+     */
+    public static final int RESOURCE_POWER_OFFSET = 4;
+    /**
+     * 熱・冷却・FE・風力の総量を持つ領域（加熱・凍結・乱流・荷電）の威力の上限。10 を超えた分はコスト（＝総量）だけを増やし、
+     * 1 体・1 か所あたりの強さ（{@code SpellGramZone.MAX_EFFECT_POWER}）と規模は入れた威力 10 で頭打ち。上限はコストの
+     * 桁あふれよけ。
      */
     public static final double MAX_RESOURCE_ZONE_POWER = 1000.0;
+    /** 総量を持つ領域のコストの固定分。 */
+    public static final int RESOURCE_COST_BASE = 50;
+    /** 総量を持つ領域のコスト: 広さ × 中の威力 × この値 ÷ {@link #RESOURCE_COST_DIVISOR}。 */
+    public static final int RESOURCE_COST_MULTIPLIER = 2;
+    public static final int RESOURCE_COST_DIVISOR = 5;
     /**
      * 威力の下限。0 より大きく 1 より小さい威力は 1、上限（{@link #maxPower}）より大きい威力は上限として扱う（0 以下はエラー）。
-     * 威力が低くても、コストには {@link #MIN_COST_PER_AREA} の下限がある。
      */
     public static final double MIN_ZONE_POWER = 1.0;
-    /**
-     * 広さ 1 あたりのコストの下限（威力 5 の分）。総量を持つ領域（加熱・凍結・乱流・荷電）は威力が低くてもこれより安くならず
-     * （{@link #withCostFloor}）、湿潤領域の広さあたりのコストもこの値。氷を溶かす・水を凍らせる・濡らすなど、威力によらず
-     * 範囲全体に効く効き目を安く使えないようにする。
-     */
-    public static final double MIN_COST_PER_AREA = 2.0;
     /** 威力のある領域の規模の係数: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（サイズ 16・威力 10 で 701）。 */
     public static final double POWERED_POTENCY_FACTOR = 0.27;
     /** 規模の固定分。 */
@@ -150,7 +154,7 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /** 威力のある領域の規模: 10 + ⌊広さ × 威力 × 0.27⌋。 */
     public static int poweredPotency(int area, double power) {
-        // 規模は威力 10 で頭打ち: 10 を超えた威力はコスト（＝総量）だけを増やす。
+        // 規模は入れた威力で決まり、10 で頭打ち: 10 を超えた威力はコスト（＝総量）だけを増やす。総量を持つ領域でも中の威力は使わない。
         return POTENCY_BASE + (int) Math.floor(area * Math.min(power, MAX_ZONE_POWER) * POWERED_POTENCY_FACTOR);
     }
 
@@ -189,14 +193,21 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
         return (float) clampOwnPower(value);
     }
 
-    /** 広さ {@code area} の分のコスト {@code areaCost} に下限（広さ × {@link #MIN_COST_PER_AREA}）をつけ、切り捨てる。 */
-    protected static int withCostFloor(int area, double areaCost) {
-        return (int) Math.floor(Math.max(areaCost, area * MIN_COST_PER_AREA));
+    /** 総量を持つ領域の中の威力: 入れた威力（1〜1000 にそろえたもの）+ {@link #RESOURCE_POWER_OFFSET}。 */
+    public static float resourcePower(double power) {
+        return (float) (power + RESOURCE_POWER_OFFSET);
     }
 
-    /** 広さあたりのコストのラベル {@code perArea} に下限をつけたもの: max(広さあたり, 2)。 */
-    protected static StatLabel perAreaCostWithFloorLabel(StatLabel perArea) {
-        return perArea.max(MIN_COST_PER_AREA);
+    /** 総量を持つ領域のコスト（30 秒）: 50 + ⌊広さ × (威力 + 4) × 2 / 5⌋（威力は入れた威力、1〜1000 にそろえたもの）。 */
+    public static int resourceZoneCost(int area, double power) {
+        return RESOURCE_COST_BASE + (int) Math.floor(
+                area * (power + RESOURCE_POWER_OFFSET) * RESOURCE_COST_MULTIPLIER / RESOURCE_COST_DIVISOR);
+    }
+
+    /** {@link #resourceZoneCost} のラベル。 */
+    protected static StatLabel resourceZoneCostLabel() {
+        return areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER).add(RESOURCE_POWER_OFFSET).parenthesize())
+                .mul(RESOURCE_COST_MULTIPLIER).div(RESOURCE_COST_DIVISOR).add(RESOURCE_COST_BASE).floor();
     }
 
     /** 範囲の広さのラベル: サイズ²。 */

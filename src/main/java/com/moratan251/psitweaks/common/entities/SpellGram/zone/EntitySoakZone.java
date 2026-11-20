@@ -41,7 +41,7 @@ import java.util.List;
  * Create があるときは、同じ術者の乱流領域が重なったところ（暴風雨）だけ、落ちているアイテムと、デポ・ベルトの上のアイテムを
  * 一括洗浄する。乱流がなければ加工しない。速さは置いた時点の事象干渉力で決まる（{@link SpellGramZone#machineSpeedFor}）。
  * <p>
- * 同じ術者の乱流領域と重なったブロックは「暴風雨」になる: 一括洗浄が乱流の威力に応じて速くなり（威力 10 で 2 倍）、水に弱い
+ * 同じ術者の乱流領域と重なったブロックは「暴風雨」になる: 一括洗浄が乱流の威力に応じて速くなり（中の威力 10 で 2 倍）、水に弱い
  * 生物（ブレイズ・エンダーマン・スノウゴーレム・ストライダー、{@code isSensitiveToWater}）に {@link #STORM_INTERVAL} tick
  * ごとにダメージ（攻撃術式の共通ルール、設定 {@code rainstorm.damageMultiplier}）。
  */
@@ -116,7 +116,7 @@ public class EntitySoakZone extends SpellGramZone {
                 }
             }
             if (stormy) {
-                // 暴風雨のところは、乱流の威力に応じて上乗せ（威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
+                // 暴風雨のところは、乱流の威力に応じて上乗せ（中の威力 10 で 2 倍の速さ）。そのブロックで最も強い乱流のぶんだけ。
                 forEachStormStep(getMachineSpeed(), (turbulence, steps) -> {
                     for (int i = 0; i < steps; i++) {
                         for (ZoneRegion region : regions) {
