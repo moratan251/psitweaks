@@ -945,11 +945,19 @@ public final class ZoneElementGameTests {
     }
 
     /**
-     * 相方の領域の威力が、強い乱流の攻撃の強さを頭打ちにする。威力 40 の乱流（サイズ 16 でコスト 4555）は強さ 40 に届き、威力 1
-     * （中の威力 5）の加熱領域が 20 に頭打ちにする。
+     * 相方の領域の入れた威力 × 4 が、強い乱流の攻撃の強さを頭打ちにする: 相方の威力 1・5・10 で 4・20・40、10 を超えた相方は 10 と
+     * 同じ。威力 40 の乱流（サイズ 16 でコスト 4555）は強さ 40 に届き、威力 1 の加熱領域が 4 に頭打ちにする。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_partner_attack_limit", timeoutTicks = 60)
     public static void partnerPowerLimitsTheStormAttack(GameTestHelper helper) {
+        float perPower = EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER;
+        float[][] partners = {{1.0F, 4.0F}, {5.0F, 20.0F}, {10.0F, 40.0F}, {11.0F, 40.0F}, {100.0F, 40.0F}};
+        for (float[] partner : partners) {
+            float limited = EntityTurbulenceZone.limitedAttackPower(40.0F,
+                    SpellGramZone.enteredPowerOf(PieceTrickZoneBase.resourcePower(partner[0])), perPower);
+            helper.assertTrue(limited == partner[1],
+                    "A partner of Power " + partner[0] + " must limit the attack power to " + partner[1] + ", got " + limited);
+        }
         ServerLevel level = helper.getLevel();
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_partner_limit_caster", new Vec3(4.5, 1.0, 0.5));
         Runnable cleanup = () -> cleanup(helper, caster);
@@ -968,7 +976,7 @@ public final class ZoneElementGameTests {
             float combo = zone.comboAttackPowerAt(inside, zone.getPower(), EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER);
             cleanup.run();
             helper.assertTrue(storm == 40.0F, "The turbulence alone must reach attack power 40, was " + storm);
-            helper.assertTrue(combo == 20.0F, "A Heat Zone of Power 1 must limit the attack power to 20, was " + combo);
+            helper.assertTrue(combo == 4.0F, "A Heat Zone of Power 1 must limit the attack power to 4, was " + combo);
             helper.succeed();
         });
     }

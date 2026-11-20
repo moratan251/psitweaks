@@ -2347,8 +2347,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "領域による Create の一括加工は、この重なりでしか起きません。強さは最も強い乱流の威力で決まり、"
                         + "加工などは威力1で1.5倍、威力10以上で2.4倍の速さです。");
         addBookPage(root, "trick_turbulence_zone.5",
-                "The damage of these overlaps grows with the Cost of the Turbulence Zone. The Power of the zone it overlaps sets the limit, highest from Power 6 (a Soak Zone has no Power, so a Rainstorm follows the Cost alone).",
-                "重なりのダメージは、乱流領域のコストに比例して強くなります。上限は重ねた領域の威力で決まり、威力6から上で最大です（湿潤領域には威力がないので、暴風雨は乱流領域のコストだけで決まります）。");
+                "The damage of these overlaps grows with the Cost of the Turbulence Zone. The Power of the zone it overlaps sets the limit, highest at Power 10 (a Soak Zone has no Power, so a Rainstorm follows the Cost alone).",
+                "重なりのダメージは、乱流領域のコストに比例して強くなります。上限は重ねた領域の威力で決まり、威力10で最大です（湿潤領域には威力がないので、暴風雨は乱流領域のコストだけで決まります）。");
         addBookPage(root, "trick_turbulence_zone.2",
                 "The zone blows a wind of floor area × (Power + 4) ÷ 240 WU (Wind Units) at interference 1 when placed; twice that at 2, and at most four times. At interference 1, that is 6 WU at Size 12, Power 6, and about 15 WU at Size 16, Power 10.",
                 "領域は、床の広さ×（威力＋4）÷240 WU（風量単位）の風を吹かせます。風量は置いた時点の事象干渉力に比例して増え、干渉力1でこのとおり、2で2倍、最大で4倍です。干渉力1なら、サイズ12・威力6で6 WU、サイズ16・威力10で約15 WUです。");

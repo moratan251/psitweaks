@@ -81,6 +81,8 @@ public abstract class SpellGramZone extends SpellGramObject {
      * コスト（熱・冷却・FE・風力の総量）だけを増やす。
      */
     public static final float MAX_EFFECT_POWER = 14.0F;
+    /** 組み合わせの相方の頭打ちに使う、相方の入れた威力の上限（10 を超えた入力は 10 として数える）。 */
+    public static final float MAX_PARTNER_POWER = 10.0F;
     private int color = 0xFFFFFF;
     /** 描画だけが使う: 床の魔法陣に前のフレームで選んだ画像の段（-1 はまだない）。同期も保存もしない。 */
     private int floorCircleLevel = -1;
@@ -234,11 +236,20 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * ブロック {@code pos} の組み合わせの攻撃の強さ: 乱流の強さ（{@link #stormAttackPowerAt}）を、この領域の威力
-     * {@code ownPower} × {@code perPower} で頭打ちにしたもの。
+     * ブロック {@code pos} の組み合わせの攻撃の強さ: 乱流の強さ（{@link #stormAttackPowerAt}）を、この領域の入れた威力
+     * （中の威力 {@code ownPower} から戻したもの、{@link #enteredPowerOf}）× {@code perPower} で頭打ちにしたもの。
      */
     public float comboAttackPowerAt(BlockPos pos, float ownPower, float perPower) {
-        return EntityTurbulenceZone.limitedAttackPower(stormAttackPowerAt(pos), ownPower, perPower);
+        return EntityTurbulenceZone.limitedAttackPower(stormAttackPowerAt(pos), enteredPowerOf(ownPower), perPower);
+    }
+
+    /**
+     * 総量を持つ領域の中の威力 {@code power} を、作動式に入れた威力（1〜{@link #MAX_PARTNER_POWER}）に戻す。組み合わせの相方の
+     * 頭打ちに使う。
+     */
+    public static float enteredPowerOf(float power) {
+        return Math.max(1.0F, Math.min(MAX_PARTNER_POWER,
+                power - com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickZoneBase.RESOURCE_POWER_OFFSET));
     }
 
     /**

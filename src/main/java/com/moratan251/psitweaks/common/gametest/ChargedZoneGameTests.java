@@ -619,7 +619,8 @@ public final class ChargedZoneGameTests {
             cleanup.run();
             throw new RuntimeException(e);
         }
-        float attack = EntityTurbulenceZone.limitedAttackPower(turbulence[0].attackPower(), charged[0].getPower(),
+        float attack = EntityTurbulenceZone.limitedAttackPower(turbulence[0].attackPower(),
+                com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone.enteredPowerOf(charged[0].getPower()),
                 EntityTurbulenceZone.CHARGED_ATTACK_POWER_PER_POWER);
         float[] firstLoss = {0.0F};
         helper.onEachTick(() -> {
