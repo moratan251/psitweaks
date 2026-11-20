@@ -15,7 +15,7 @@ import vazkii.psi.api.spell.StatLabel;
  * 「威力」（定数）は冷やす強さで、凍えのたまる速さと、Mekanism の機械を冷やせる下限を決める。
  */
 public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
-    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²）
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + ⌊広さ × max(威力 × 2 / 5, 2)⌋（広さ = サイズ²）
     private static final int COST_BASE = 50;
     private static final int COST_MULTIPLIER = 2;
     private static final int COST_DIVISOR = 5;
@@ -25,7 +25,8 @@ public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
     public PieceTrickFreezeZone(Spell spell) {
         super(spell, EntityFreezeZone.class);
         setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
-        setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.COST, areaLabel().mul(perAreaCostWithFloorLabel(
+                powerLabel(MAX_RESOURCE_ZONE_POWER).mul(COST_MULTIPLIER).div(COST_DIVISOR))).add(COST_BASE).floor());
     }
 
     /** 総量を持つ領域なので、威力は 10 より上も入れられる。 */
@@ -49,9 +50,9 @@ public class PieceTrickFreezeZone extends PieceTrickZoneBase<EntityFreezeZone> {
         return costFor(area, constantPower(power));
     }
 
-    /** コスト（30 秒）: 50 + ⌊広さ × 威力 × 2 / 5⌋。 */
+    /** コスト（30 秒）: 50 + ⌊広さ × max(威力 × 2 / 5, 2)⌋（2 は {@link #MIN_COST_PER_AREA}。威力 5 より下は威力 5 と同じ）。 */
     public static int costFor(int area, double power) {
-        return COST_BASE + (int) Math.floor(area * power * COST_MULTIPLIER / COST_DIVISOR);
+        return COST_BASE + withCostFloor(area, area * power * COST_MULTIPLIER / COST_DIVISOR);
     }
 
     @Override

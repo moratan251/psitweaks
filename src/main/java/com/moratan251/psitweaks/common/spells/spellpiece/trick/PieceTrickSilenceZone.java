@@ -11,7 +11,7 @@ import vazkii.psi.api.spell.SpellContext;
  * （{@link EntitySilenceZone}）。
  */
 public class PieceTrickSilenceZone extends PieceTrickZoneBase<EntitySilenceZone> {
-    // 仮の数値: 規模 = 10 + 広さ、コスト = 40 + 広さ（広さ = サイズ²。湿潤領域と同じ）
+    // 仮の数値: 規模 = 10 + 広さ、コスト = 40 + 広さ（広さ = サイズ²）
     private static final int COST_BASE = 40;
 
     public PieceTrickSilenceZone(Spell spell) {

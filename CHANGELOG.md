@@ -64,7 +64,7 @@
 
 - Common rules of Zone Magic
   + The area is set by a Matrix (region matrix) and a Size (at most 16); leaving out the Matrix centers it on the caster. A zone lasts for its Time (at most 120 seconds, 30 when left out)
-  + Zones that take a Power need one (at least 1). Potency and Cost grow with the area and the Power, and the Cost also grows with the Time
+  + Zones that take a Power need one (at least 1). Potency and Cost grow with the area and the Power, and the Cost also grows with the Time. For the Heat, Freeze, Turbulence and Charged Zones, a Power below 5 costs the same as Power 5
   + What stands in for fuel or energy (heat, cooling, FE and wind) is a total set by the zone's Cost and shared by everything inside. The Heat, Freeze, Turbulence and Charged Zones take a Power above 10, which only adds to that total
   + Where your own zones of the same kind overlap, their totals add up and other effects use only the strongest one. Where your own Heat Zone and Freeze Zone overlap, they cancel each other out
   + Where other casters' zones overlap, only the zones of the caster with the highest Phenomenon Interference work

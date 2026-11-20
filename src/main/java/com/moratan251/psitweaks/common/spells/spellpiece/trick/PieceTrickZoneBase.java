@@ -109,11 +109,16 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
      */
     public static final double MAX_RESOURCE_ZONE_POWER = 1000.0;
     /**
-     * 威力の下限。威力は広さあたりのコストを決めるつまみなので、効くか効かないかだけの効き目（一括燻製・氷を溶かすなど）を極端に
-     * 安く使えないよう、下限を 1 にする。0 より大きく 1 より小さい威力は 1、上限（{@link #maxPower}）より大きい威力は上限として
-     * 扱う（0 以下はエラー）。
+     * 威力の下限。0 より大きく 1 より小さい威力は 1、上限（{@link #maxPower}）より大きい威力は上限として扱う（0 以下はエラー）。
+     * 威力が低くても、コストには {@link #MIN_COST_PER_AREA} の下限がある。
      */
     public static final double MIN_ZONE_POWER = 1.0;
+    /**
+     * 広さ 1 あたりのコストの下限（威力 5 の分）。総量を持つ領域（加熱・凍結・乱流・荷電）は威力が低くてもこれより安くならず
+     * （{@link #withCostFloor}）、湿潤領域の広さあたりのコストもこの値。氷を溶かす・水を凍らせる・濡らすなど、威力によらず
+     * 範囲全体に効く効き目を安く使えないようにする。
+     */
+    public static final double MIN_COST_PER_AREA = 2.0;
     /** 威力のある領域の規模の係数: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（サイズ 16・威力 10 で 701）。 */
     public static final double POWERED_POTENCY_FACTOR = 0.27;
     /** 規模の固定分。 */
@@ -182,6 +187,16 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
             throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
         return (float) clampOwnPower(value);
+    }
+
+    /** 広さ {@code area} の分のコスト {@code areaCost} に下限（広さ × {@link #MIN_COST_PER_AREA}）をつけ、切り捨てる。 */
+    protected static int withCostFloor(int area, double areaCost) {
+        return (int) Math.floor(Math.max(areaCost, area * MIN_COST_PER_AREA));
+    }
+
+    /** 広さあたりのコストのラベル {@code perArea} に下限をつけたもの: max(広さあたり, 2)。 */
+    protected static StatLabel perAreaCostWithFloorLabel(StatLabel perArea) {
+        return perArea.max(MIN_COST_PER_AREA);
     }
 
     /** 範囲の広さのラベル: サイズ²。 */

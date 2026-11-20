@@ -815,7 +815,7 @@ public final class ZoneElementGameTests {
 
     /**
      * 乱流領域の風量は置いた時点の事象干渉力に比例して増える: 干渉力 1 で基準、2 で 2 倍、4 以上で 4 倍（上限）。1 WU は
-     * 37.5 J/t・床の広さ × 威力 ÷ 240 WU、コストは加熱・荷電と同じ 50 + 広さ × 威力 × 2 / 5 なので、干渉力 1 でのコスト 1 Psi
+     * 37.5 J/t・床の広さ × 威力 ÷ 240 WU、コストは加熱・荷電と同じ（威力 5 以上で 50 + 広さ × 威力 × 2 / 5）なので、干渉力 1 でのコスト 1 Psi
      * あたりの発電の上乗せは 25 ÷ 64 J/t（約 94 FE/Psi）。規模とコストが加熱領域と同じことも確かめる。
      * 風量は Mekanism がなくても持つので、Mekanism なしでも試す。
      */
@@ -2517,6 +2517,55 @@ public final class ZoneElementGameTests {
                 "At Size 5: Potency 35, Cost 65, got " + interference[0] + ", " + interference[1]);
         helper.assertTrue(interference[0] == silence[0] && interference[1] == silence[1],
                 "The Interference Zone must cost the same as the Silence Zone, got " + silence[0] + ", " + silence[1]);
+        helper.succeed();
+    }
+
+    /**
+     * 総量を持つ領域（加熱・凍結・乱流・荷電）のコストには、広さあたり 2（威力 5 の分）の下限がある: 威力 1 も威力 5 も
+     * 50 + 広さ × 2、威力 6 からは 50 + ⌊広さ × 威力 × 2 / 5⌋。湿潤領域は 40 + 広さ × 2。置いたときのコスト（唱えた時点の威力で
+     * 求める）も同じ式で、構築機に出る式にも下限が入っている。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_cost_floor", timeoutTicks = 40)
+    public static void resourceZoneCostsHaveAFloor(GameTestHelper helper) throws Exception {
+        java.util.Map<String, java.util.function.ToIntBiFunction<Integer, Double>> costs = new java.util.LinkedHashMap<>();
+        costs.put("Heat", PieceTrickHeatZone::costFor);
+        costs.put("Freeze", PieceTrickFreezeZone::costFor);
+        costs.put("Turbulence", PieceTrickTurbulenceZone::costFor);
+        costs.put("Charged", com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone::costFor);
+        for (var entry : costs.entrySet()) {
+            var costFor = entry.getValue();
+            int[] low = {costFor.applyAsInt(16, 1.0), costFor.applyAsInt(64, 1.0), costFor.applyAsInt(256, 1.0)};
+            helper.assertTrue(low[0] == 82 && low[1] == 178 && low[2] == 562,
+                    entry.getKey() + " at Power 1 must cost 82 / 178 / 562 at Size 4 / 8 / 16, got " + java.util.Arrays.toString(low));
+            helper.assertTrue(costFor.applyAsInt(256, 5.0) == 562 && costFor.applyAsInt(256, 3.0) == 562,
+                    entry.getKey() + " below Power 5 must cost the same as Power 5");
+            helper.assertTrue(costFor.applyAsInt(256, 6.0) == 664 && costFor.applyAsInt(256, 10.0) == 1074,
+                    entry.getKey() + " from Power 6 must follow the Power: " + costFor.applyAsInt(256, 6.0) + ", "
+                            + costFor.applyAsInt(256, 10.0));
+        }
+
+        PieceTrickZoneBase<?> soakPiece = new PieceTrickSoakZone(new Spell()) {
+            @Override
+            public <T> T getParamEvaluation(SpellParam<?> param) {
+                return sizeFive(param);
+            }
+        };
+        int[] soak = zoneStats(soakPiece);
+        helper.assertTrue(soak[0] == 35 && soak[1] == 90, "The Soak Zone at Size 5: Potency 35, Cost 90, got " + soak[0] + ", " + soak[1]);
+
+        String label = new PieceTrickHeatZone(new Spell()).getStatLabels().get(vazkii.psi.api.spell.EnumSpellStat.COST).toString();
+        helper.assertTrue(label.contains("max(") && label.contains(", 2)"), "The shown Cost must include the floor, got " + label);
+
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_cost_floor_caster", new Vec3(0.5, 1.0, 0.5));
+        try {
+            cast(caster, heat(helper, CENTER), 4.0, 1.0);
+            float placed = only(helper, caster, EntityHeatZone.class).getPlacementCost();
+            helper.assertTrue(placed == 82.0F, "A Power 1, Size 4 Heat Zone must be placed for 82, got " + placed);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup(helper, caster);
+            throw new RuntimeException(e);
+        }
+        cleanup(helper, caster);
         helper.succeed();
     }
 

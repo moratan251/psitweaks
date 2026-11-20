@@ -8,13 +8,13 @@ import vazkii.psi.api.spell.SpellContext;
 
 /** 作動式: 湿潤領域（仮、Soak Zone）。範囲の中の生物を濡らし続ける。 */
 public class PieceTrickSoakZone extends PieceTrickZoneBase<EntitySoakZone> {
-    // 仮の数値: 規模 = 10 + 広さ、コスト = 40 + 広さ（広さ = サイズ²）
+    // 仮の数値: 規模 = 10 + 広さ、コスト = 40 + 広さ × 2（広さ = サイズ²。2 は総量を持つ領域のコストの下限 MIN_COST_PER_AREA と同じ）
     private static final int COST_BASE = 40;
 
     public PieceTrickSoakZone(Spell spell) {
         super(spell, EntitySoakZone.class);
         setStatLabel(EnumSpellStat.POTENCY, areaLabel().add(POTENCY_BASE));
-        setStatLabel(EnumSpellStat.COST, areaLabel().add(COST_BASE));
+        setStatLabel(EnumSpellStat.COST, areaLabel().mul(MIN_COST_PER_AREA).add(COST_BASE));
     }
 
     @Override
@@ -24,7 +24,7 @@ public class PieceTrickSoakZone extends PieceTrickZoneBase<EntitySoakZone> {
 
     @Override
     protected int cost(int area) {
-        return COST_BASE + area;
+        return COST_BASE + (int) Math.floor(area * MIN_COST_PER_AREA);
     }
 
     @Override

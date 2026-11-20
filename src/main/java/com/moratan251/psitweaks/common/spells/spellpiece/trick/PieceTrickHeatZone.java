@@ -16,7 +16,7 @@ import vazkii.psi.api.spell.StatLabel;
  * Mekanism の機械を温める上限の温度を決める。
  */
 public class PieceTrickHeatZone extends PieceTrickZoneBase<EntityHeatZone> {
-    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + 広さ × 威力 × 2 / 5（広さ = サイズ²）
+    // 仮の数値: 規模 = 10 + ⌊広さ × 威力 × 0.27⌋（威力のある領域で共通）、コスト = 50 + ⌊広さ × max(威力 × 2 / 5, 2)⌋（広さ = サイズ²）
     private static final int COST_BASE = 50;
     private static final int COST_MULTIPLIER = 2;
     private static final int COST_DIVISOR = 5;
@@ -26,7 +26,8 @@ public class PieceTrickHeatZone extends PieceTrickZoneBase<EntityHeatZone> {
     public PieceTrickHeatZone(Spell spell) {
         super(spell, EntityHeatZone.class);
         setStatLabel(EnumSpellStat.POTENCY, poweredPotencyLabel());
-        setStatLabel(EnumSpellStat.COST, areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER)).mul(COST_MULTIPLIER).div(COST_DIVISOR).add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.COST, areaLabel().mul(perAreaCostWithFloorLabel(
+                powerLabel(MAX_RESOURCE_ZONE_POWER).mul(COST_MULTIPLIER).div(COST_DIVISOR))).add(COST_BASE).floor());
     }
 
     /** 総量を持つ領域なので、威力は 10 より上も入れられる。 */
@@ -50,9 +51,9 @@ public class PieceTrickHeatZone extends PieceTrickZoneBase<EntityHeatZone> {
         return costFor(area, constantPower(power));
     }
 
-    /** コスト（30 秒）: 50 + ⌊広さ × 威力 × 2 / 5⌋。 */
+    /** コスト（30 秒）: 50 + ⌊広さ × max(威力 × 2 / 5, 2)⌋（2 は {@link #MIN_COST_PER_AREA}。威力 5 より下は威力 5 と同じ）。 */
     public static int costFor(int area, double power) {
-        return COST_BASE + (int) Math.floor(area * power * COST_MULTIPLIER / COST_DIVISOR);
+        return COST_BASE + withCostFloor(area, area * power * COST_MULTIPLIER / COST_DIVISOR);
     }
 
     @Override

@@ -58,8 +58,8 @@ public class EntityTurbulenceZone extends SpellGramZone {
     public static final double WIND_FE_PER_WU = 15.0;
     /**
      * 風量 = 床の広さ × 威力 ÷ この値 × 風の倍率（WU、{@link #windFactor}）。干渉力 1 なら、サイズ 12・威力 10 で 6 WU、
-     * サイズ 16・威力 10 で約 10.7 WU。コスト（広さ × 威力 × 2 / 5）と合わせて、コスト 1 Psi あたりの風は
-     * 6.25 WU·tick（干渉力 1、時間によらない）。
+     * サイズ 16・威力 10 で約 10.7 WU。威力 5 以上のコスト（広さ × 威力 × 2 / 5）と合わせて、コスト 1 Psi あたりの風は
+     * 6.25 WU·tick（干渉力 1、時間によらない）。威力 5 より下はコストに下限があるので、1 Psi あたりの風はそれより少ない。
      */
     public static final double WIND_FOOTPRINT_DIVISOR = 240.0;
     /** 組み合わせの攻撃の強さの上限。 */

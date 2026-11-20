@@ -2177,8 +2177,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "なります。生物が範囲の中にいるかどうかは、当たり判定の中心があるブロックで決まります。範囲は作動式: 領域表示（ブロック"
                         + "モード）で確かめられます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.2",
-                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity Zone). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time.",
-                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。");
+                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity Zone). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time. For the Heat, Freeze, Turbulence and Charged Zones, a Power below 5 costs the same as Power 5.",
+                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。加熱・凍結・乱流・荷電の領域は、威力が5より低くてもコストは威力5と同じです。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.3",
                 "A zone has integrity, which wears away at a steady rate and "
                         + "ends the zone when it runs out; spells can wear it down too."

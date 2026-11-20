@@ -167,12 +167,12 @@ public final class SpellGramControlGameTests {
             GameTestPlayers.remove(helper, other);
         };
         try {
-            // サイズ 15 の湿潤領域: 面積 225、コスト 265。威力 1（コスト 100）で 置いたときの耐久値 × 100 / 265 戻る。
+            // サイズ 15 の湿潤領域: 面積 225、コスト 490。威力 1（コスト 100）で 置いたときの耐久値 × 100 / 490 戻る。
             SpellGramObject zone = placeSoak(caster, 15.0, null);
             int lifetime = zone.getLifetimeTicks();
             float max = zone.getMaxIntegrity();
-            float share = PieceTrickExtendSpellGram.restoreAmount(max, 1.0, 265.0F);
-            helper.assertTrue(zone.getPlacementCost() == 265.0F, "The placement cost must be the zone's cost, was " + zone.getPlacementCost());
+            float share = PieceTrickExtendSpellGram.restoreAmount(max, 1.0, 490.0F);
+            helper.assertTrue(zone.getPlacementCost() == 490.0F, "The placement cost must be the zone's cost, was " + zone.getPlacementCost());
 
             // 術式で削られた分から先に戻る（存続時間は変わらない）。
             zone.reduceIntegrity(share * 0.5F);
@@ -284,7 +284,7 @@ public final class SpellGramControlGameTests {
                             + longer.getLifetimeTicks() + ", " + capped.getLifetimeTicks());
             helper.assertTrue(Math.abs(longer.getMaxIntegrity() - plain.getMaxIntegrity() * 3.0F) < plain.getMaxIntegrity() * 1.0E-3F,
                     "Three times the time must give three times the integrity: " + plain.getMaxIntegrity() + " vs " + longer.getMaxIntegrity());
-            helper.assertTrue(plain.getPlacementCost() == 65.0F && longer.getPlacementCost() == 195.0F
+            helper.assertTrue(plain.getPlacementCost() == 90.0F && longer.getPlacementCost() == 270.0F
                             && PieceTrickZoneBase.timedCost(65, 45.0) == 98,
                     "The cost must grow with the time: " + plain.getPlacementCost() + ", " + longer.getPlacementCost());
 
