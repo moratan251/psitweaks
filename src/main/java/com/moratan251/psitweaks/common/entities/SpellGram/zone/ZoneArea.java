@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * 領域型の魔法式オブジェクトの範囲: 領域行列（3×4 / 4×4、1〜3 列目が辺、4 列目が始点）の中にあるブロックのうち、
- * 行列の中心のブロックを中心にした一辺 {@code size} ブロックの立方体に入るもの。立方体の数え方は演算子: 直方体領域と同じ
+ * 行列の中にあるブロックの真ん中のブロックを中心にした一辺 {@code size} ブロックの立方体に入るもの。立方体の数え方は演算子: 直方体領域と同じ
  * （奇数は中心から対称、偶数は正の向きに 1 つ多い）なので、直方体領域の Number モードに同じサイズを入れると同じ範囲になる。
  * ブロックは整数の座標（ブロックの角）を点として行列で判定する（演算子: 領域ベクトルリスト化・作動式: 領域表示のブロックの
  * モードと同じ）。
@@ -85,10 +85,6 @@ public final class ZoneArea {
         RegionMatrix region = RegionMatrix.parse(matrix);
         Vector3 far = region.corner(true, true, true);
         Vector3 start = region.corner(false, false, false);
-        BlockPos center = fixedCenter != null ? fixedCenter : BlockPos.containing(
-                Math.floor((start.x + far.x) * 0.5 + EPSILON),
-                Math.floor((start.y + far.y) * 0.5 + EPSILON),
-                Math.floor((start.z + far.z) * 0.5 + EPSILON));
 
         double lowX = Double.POSITIVE_INFINITY;
         double lowY = Double.POSITIVE_INFINITY;
@@ -105,17 +101,41 @@ public final class ZoneArea {
             highY = Math.max(highY, corner.y);
             highZ = Math.max(highZ, corner.z);
         }
+        int firstX = Mth.ceil(lowX - EPSILON);
+        int firstY = Mth.ceil(lowY - EPSILON);
+        int firstZ = Mth.ceil(lowZ - EPSILON);
+        int lastX = Mth.floor(highX + EPSILON);
+        int lastY = Mth.floor(highY + EPSILON);
+        int lastZ = Mth.floor(highZ + EPSILON);
+        // 中心は行列の中にあるブロックの真ん中。行列の真ん中の点を切り捨てると、端数のある行列（平行移動行列で半端に
+        // ずらしたものなど）では中にあるブロックとずれ、サイズちょうどの行列でも 1 列欠ける。
+        BlockPos center = fixedCenter != null ? fixedCenter : new BlockPos(
+                middle(firstX, lastX, start.x + far.x),
+                middle(firstY, lastY, start.y + far.y),
+                middle(firstZ, lastZ, start.z + far.z));
         int edge = Math.max(0, size);
         // 演算子: 直方体領域と同じ: 中心から負の向きに (edge - 1) / 2、残りを正の向きに。
         int low = -((edge - 1) / 2);
         int high = low + edge - 1;
         return new ZoneArea(matrix, region, center, fixedCenter != null, edge,
-                Math.max(center.getX() + low, Mth.ceil(lowX - EPSILON)),
-                Math.max(center.getY() + low, Mth.ceil(lowY - EPSILON)),
-                Math.max(center.getZ() + low, Mth.ceil(lowZ - EPSILON)),
-                Math.min(center.getX() + high, Mth.floor(highX + EPSILON)),
-                Math.min(center.getY() + high, Mth.floor(highY + EPSILON)),
-                Math.min(center.getZ() + high, Mth.floor(highZ + EPSILON)));
+                Math.max(center.getX() + low, firstX),
+                Math.max(center.getY() + low, firstY),
+                Math.max(center.getZ() + low, firstZ),
+                Math.min(center.getX() + high, lastX),
+                Math.min(center.getY() + high, lastY),
+                Math.min(center.getZ() + high, lastZ));
+    }
+
+    /**
+     * 1 つの軸で、ブロック {@code first}〜{@code last} の真ん中（数が偶数なら負の側。サイズの立方体は正の向きに 1 つ多いので、
+     * サイズちょうどならちょうど収まる）。その軸にブロックがなければ、行列の真ん中の点（{@code startPlusFar} の半分）を
+     * 切り捨てたもの。
+     */
+    private static int middle(int first, int last, double startPlusFar) {
+        if (first > last) {
+            return Mth.floor(startPlusFar * 0.5 + EPSILON);
+        }
+        return (int) Math.floorDiv((long) first + last, 2L);
     }
 
     /**
@@ -233,7 +253,7 @@ public final class ZoneArea {
         return found;
     }
 
-    /** 行列の中心のブロック。 */
+    /** 範囲の中心のブロック（行列の中にあるブロックの真ん中）。 */
     public BlockPos center() {
         return center;
     }

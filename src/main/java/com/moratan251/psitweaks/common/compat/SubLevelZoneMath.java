@@ -111,15 +111,22 @@ public final class SubLevelZoneMath {
     }
 
     /**
-     * 領域行列 {@code matrix} の中の整数の点が、行列の中心のブロック（ZoneArea と同じ求め方）を中心にした一辺の立方体に全部入る、
-     * いちばん小さい奇数の一辺。写した後の範囲を、ZoneArea の立方体で欠けさせないために使う。
+     * 領域行列 {@code matrix} の中の整数の点が、範囲の中心のブロック（ZoneArea と同じ求め方: 中にある整数の点の真ん中）を中心に
+     * した一辺の立方体に全部入る、いちばん小さい奇数の一辺。写した後の範囲を、ZoneArea の立方体で欠けさせないために使う。
      */
     public static int enclosingEdge(double[] matrix) {
         int[] center = new int[3];
         for (int axis = 0; axis < 3; axis++) {
-            double start = matrix[axis * 4 + 3];
-            double far = start + matrix[axis * 4] + matrix[axis * 4 + 1] + matrix[axis * 4 + 2];
-            center[axis] = (int) Math.floor((start + far) * 0.5 + EPSILON);
+            double[] span = span(matrix, axis);
+            int first = (int) Math.ceil(span[0] - EPSILON);
+            int last = (int) Math.floor(span[1] + EPSILON);
+            if (first <= last) {
+                center[axis] = (int) Math.floorDiv((long) first + last, 2L);
+            } else {
+                double start = matrix[axis * 4 + 3];
+                double far = start + matrix[axis * 4] + matrix[axis * 4 + 1] + matrix[axis * 4 + 2];
+                center[axis] = (int) Math.floor((start + far) * 0.5 + EPSILON);
+            }
         }
         return enclosingEdge(matrix, center);
     }
@@ -141,23 +148,29 @@ public final class SubLevelZoneMath {
     public static int enclosingEdge(double[] matrix, int[] center) {
         int edge = 1;
         for (int axis = 0; axis < 3; axis++) {
-            double start = matrix[axis * 4 + 3];
-            double low = start;
-            double high = start;
-            for (int i = 1; i < 8; i++) {
-                double corner = start;
-                for (int col = 0; col < 3; col++) {
-                    if ((i & (1 << col)) != 0) {
-                        corner += matrix[axis * 4 + col];
-                    }
-                }
-                low = Math.min(low, corner);
-                high = Math.max(high, corner);
-            }
-            int below = center[axis] - (int) Math.ceil(low - EPSILON);
-            int above = (int) Math.floor(high + EPSILON) - center[axis];
+            double[] span = span(matrix, axis);
+            int below = center[axis] - (int) Math.ceil(span[0] - EPSILON);
+            int above = (int) Math.floor(span[1] + EPSILON) - center[axis];
             edge = Math.max(edge, 2 * Math.max(0, Math.max(below, above)) + 1);
         }
         return edge;
+    }
+
+    /** 行列の 8 つの角の、軸 {@code axis} の座標の {最小, 最大}。 */
+    private static double[] span(double[] matrix, int axis) {
+        double start = matrix[axis * 4 + 3];
+        double low = start;
+        double high = start;
+        for (int i = 1; i < 8; i++) {
+            double corner = start;
+            for (int col = 0; col < 3; col++) {
+                if ((i & (1 << col)) != 0) {
+                    corner += matrix[axis * 4 + col];
+                }
+            }
+            low = Math.min(low, corner);
+            high = Math.max(high, corner);
+        }
+        return new double[]{low, high};
     }
 }

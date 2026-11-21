@@ -15,6 +15,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.MatrixOperations;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGravityZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickSoakZone;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickTurbulenceZone;
@@ -87,6 +88,44 @@ public final class ZoneGameTests {
         helper.assertTrue(PieceTrickZoneBase.areaOf(5) == 25 && PieceTrickZoneBase.areaOf(17) == 289,
                 "The area is the Size squared");
         helper.succeed();
+    }
+
+    /**
+     * 中心は行列の中にあるブロックの真ん中: 平行移動行列で半端にずらした行列のように端数のある行列でも、サイズちょうどなら
+     * 1 列も欠けない。行列のほうが大きければ、中にあるブロックの真ん中のまわりで切り詰める。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void zoneAreaCentersOnTheBlocksInsideTheMatrix(GameTestHelper helper) throws SpellRuntimeException {
+        // ブロック 0 を中心にした 5×5×5 を X に 0.7 ずらした行列: X は -1.8〜3.2 で、中のブロックは -1〜3。
+        MatrixValue shifted = MatrixOperations.multiply(translation(0.7, 0, 0), cube(new Vector3(-2.5, -2.5, -2.5), 5));
+        ZoneArea area = ZoneArea.of(shifted, 5);
+        helper.assertTrue(area.center().equals(new BlockPos(1, 0, 0)),
+                "The center must be the middle of the blocks inside: " + area.center());
+        helper.assertTrue(area.contains(new BlockPos(-1, 0, 0)) && area.contains(new BlockPos(3, 0, 0))
+                        && area.bounds().getXsize() == 5 && area.bounds().getYsize() == 5 && area.bounds().getZsize() == 5,
+                "A shifted matrix of the zone's Size must keep all 5 rows: " + area.bounds());
+
+        // 中のブロックが 9〜13 の行列をサイズ 3 で置くと、真ん中の 11 のまわりの 10〜12。
+        ZoneArea clipped = ZoneArea.of(cube(new Vector3(8.2, 8.2, 8.2), 5), 3);
+        helper.assertTrue(clipped.center().equals(new BlockPos(11, 11, 11))
+                        && clipped.contains(new BlockPos(10, 10, 10)) && clipped.contains(new BlockPos(12, 12, 12))
+                        && !clipped.contains(new BlockPos(9, 11, 11)) && !clipped.contains(new BlockPos(13, 11, 11)),
+                "A larger matrix must be cut around the middle of the blocks inside: " + clipped.bounds());
+
+        // 端数のない行列は今までどおり。
+        helper.assertTrue(ZoneArea.of(cube(new Vector3(-0.5, -0.5, -0.5), 9), 5).center().equals(new BlockPos(4, 4, 4))
+                        && ZoneArea.of(cube(new Vector3(-0.5, -0.5, -0.5), 8), 4).center().equals(new BlockPos(3, 3, 3)),
+                "Matrices on whole blocks must keep their center");
+        helper.succeed();
+    }
+
+    /** 点を {@code (x, y, z)} だけ動かす 4×4 行列。 */
+    private static MatrixValue translation(double x, double y, double z) {
+        return new MatrixValue(4, 4, new double[]{
+                1, 0, 0, x,
+                0, 1, 0, y,
+                0, 0, 1, z,
+                0, 0, 0, 1});
     }
 
     /**
