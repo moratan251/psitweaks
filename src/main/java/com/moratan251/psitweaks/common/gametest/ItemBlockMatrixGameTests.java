@@ -68,6 +68,7 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -168,6 +169,7 @@ public final class ItemBlockMatrixGameTests {
         groups.put("operator_matrix_rotation", "matrix");
         groups.put("operator_matrix_translation", "matrix");
         groups.put("operator_matrix_set_y_axis", "matrix");
+        groups.put("operator_matrix_cuboid_corners", "matrix");
         groups.put("trick_show_region", "matrix");
         groups.put("operator_strict_item", "item");
         Map<String, Class<?>> outputs = Map.of(
@@ -179,7 +181,8 @@ public final class ItemBlockMatrixGameTests {
                 "operator_matrix_caster_basis", MatrixValue.class,
                 "operator_matrix_rotation", MatrixValue.class,
                 "operator_matrix_translation", MatrixValue.class,
-                "operator_matrix_set_y_axis", MatrixValue.class);
+                "operator_matrix_set_y_axis", MatrixValue.class,
+                "operator_matrix_cuboid_corners", MatrixValue.class);
         for (var entry : groups.entrySet()) {
             var id = Psitweaks.location(entry.getKey());
             helper.assertTrue(PsiAPI.SPELL_PIECE_REGISTRY.get(id) != null, "Piece is not registered: " + id);
@@ -597,6 +600,173 @@ public final class ItemBlockMatrixGameTests {
             blocks.add(pos.immutable());
         }
         return blocks;
+    }
+
+    /** Operator: Matrix Cuboid From Corners with its Vector A and Vector B fed from {@code input}. */
+    private static PieceOperatorMatrixCuboidCorners corners(Object[] input) {
+        return new PieceOperatorMatrixCuboidCorners(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return param.name.equals(SpellParam.GENERIC_NAME_VECTOR1) ? input[0] : input[1];
+            }
+        };
+    }
+
+    private static boolean sameMatrix(MatrixValue a, MatrixValue b) {
+        if (a.rows() != b.rows() || a.cols() != b.cols()) {
+            return false;
+        }
+        for (int row = 0; row < a.rows(); row++) {
+            for (int col = 0; col < a.cols(); col++) {
+                if (Math.abs(a.get(row, col) - b.get(row, col)) > 1e-9) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /** Block mode takes in both corner blocks, whichever corner comes first. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidCornersBlockModeIncludesBothCorners(GameTestHelper helper) throws Exception {
+        var context = new SpellContext().setPlayer(fakeCaster(helper, new BlockPos(2, 1, 2), "corners-both"));
+        Object[] input = {new Vector3(10, 64, 5), new Vector3(13, 62, 9)};
+        var piece = corners(input);
+        var forward = (MatrixValue) piece.execute(context);
+        Set<BlockPos> blocks = regionBlocks(forward);
+        helper.assertTrue(blocks.size() == 60 && blocks.equals(blockBox(10, 62, 5, 13, 64, 9)),
+                "The box must hold both corner blocks and the blocks between them: " + blocks.size());
+        input[0] = new Vector3(13, 62, 9);
+        input[1] = new Vector3(10, 64, 5);
+        helper.assertTrue(sameMatrix(forward, (MatrixValue) piece.execute(context)), "Swapping the corners must not change the matrix");
+        helper.assertTrue(forward.get(0, 0) > 0 && forward.get(1, 1) > 0 && forward.get(2, 2) > 0, "The edges must point the positive way");
+        helper.succeed();
+    }
+
+    /** Block mode uses the block that contains each corner, as Psi's tricks do. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidCornersBlockModeFloorsFractions(GameTestHelper helper) throws Exception {
+        var context = new SpellContext().setPlayer(fakeCaster(helper, new BlockPos(2, 1, 2), "corners-floor"));
+        Object[] input = {new Vector3(10.7, 63.9999999999, -0.3), new Vector3(10.5, 64.0, 2.0)};
+        var matrix = (MatrixValue) corners(input).execute(context);
+        helper.assertTrue(regionBlocks(matrix).equals(blockBox(10, 64, -1, 10, 64, 2)),
+                "10.7 and 10.5 must be block 10, -0.3 block -1, and a hair under 64 block 64");
+        helper.assertTrue(matrix.get(0, 3) == 9.5 && matrix.get(0, 0) == 1.0 && matrix.get(2, 3) == -1.5 && matrix.get(2, 2) == 4.0,
+                "The box must run half a block past the corner blocks");
+        helper.succeed();
+    }
+
+    /** Block mode: one point is one block, and corners at the same height make a layer, not an error. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidCornersSinglePointAndLayer(GameTestHelper helper) throws Exception {
+        var context = new SpellContext().setPlayer(fakeCaster(helper, new BlockPos(2, 1, 2), "corners-layer"));
+        Object[] input = {new Vector3(3.2, 70.9, -4.5), new Vector3(3.2, 70.9, -4.5)};
+        var piece = corners(input);
+        helper.assertTrue(regionBlocks((MatrixValue) piece.execute(context)).equals(blockBox(3, 70, -5, 3, 70, -5)),
+                "The same point twice must be its one block");
+        input[0] = new Vector3(0, 64, 0);
+        input[1] = new Vector3(4, 64.6, 2);
+        var layer = (MatrixValue) piece.execute(context);
+        helper.assertTrue(regionBlocks(layer).equals(blockBox(0, 64, 0, 4, 64, 2)), "Corners at the same height must make a layer one block thick");
+        helper.assertTrue(!ZoneArea.of(layer, 16).isEmpty(), "A zone must take the layer");
+        helper.succeed();
+    }
+
+    /** Corners around a centre give the matrix Operator: Matrix Cuboid Region makes from that centre and the odd sizes. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidCornersMatchesCuboidRegion(GameTestHelper helper) throws Exception {
+        var context = new SpellContext().setPlayer(fakeCaster(helper, new BlockPos(2, 1, 2), "corners-cuboid"));
+        Object[] corner = new Object[2];
+        var piece = corners(corner);
+        Object[] centre = new Object[1];
+        Vector3 size = new Vector3(3, 5, 7);
+        var cuboid = new PieceOperatorMatrixCuboidRegion(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return param.name.equals(POSITION) ? centre[0] : size;
+            }
+        };
+        for (Vector3 c : new Vector3[]{new Vector3(10, 64, 5), new Vector3(10.7, 64.2, 5.9), new Vector3(-3.5, 70.5, -0.25)}) {
+            centre[0] = c;
+            corner[0] = c.copy().add(-1, -2, -3);
+            corner[1] = c.copy().add(1, 2, 3);
+            var fromCorners = (MatrixValue) piece.execute(context);
+            var fromCentre = (MatrixValue) cuboid.execute(context);
+            helper.assertTrue(sameMatrix(fromCorners, fromCentre),
+                    "Corners c -/+ (1, 2, 3) must match Cuboid Region (c, (3, 5, 7)) at " + c);
+        }
+        helper.succeed();
+    }
+
+    /** Vector mode uses the two points as they are; a shared coordinate is the usual flat-region error. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidCornersVectorModeExactBox(GameTestHelper helper) throws Exception {
+        var context = new SpellContext().setPlayer(fakeCaster(helper, new BlockPos(2, 1, 2), "corners-vector"));
+        Object[] input = {new Vector3(2.5, 70, 1.25), new Vector3(0.5, 66.5, 4.25)};
+        var piece = corners(input);
+        piece.setModeOption(PsitweaksModeOptions.VECTOR);
+        var matrix = (MatrixValue) piece.execute(context);
+        helper.assertTrue(near(new Vector3(matrix.get(0, 3), matrix.get(1, 3), matrix.get(2, 3)), 0.5, 66.5, 1.25)
+                        && near(new Vector3(matrix.get(0, 0), matrix.get(1, 1), matrix.get(2, 2)), 2, 3.5, 3),
+                "Vector mode must start at the smaller corner with the differences as edges");
+        var region = RegionMatrix.parse(matrix);
+        helper.assertTrue(region.contains((Vector3) input[0]) && region.contains((Vector3) input[1])
+                        && region.contains(new Vector3(1.5, 68.25, 2.75)),
+                "Both corners and the middle must be inside");
+        for (Vector3 outside : new Vector3[]{new Vector3(2.6, 68, 2), new Vector3(1.5, 66.4, 2), new Vector3(1.5, 68, 4.35)}) {
+            helper.assertTrue(!region.contains(outside), "A point just outside must be outside: " + outside);
+        }
+        input[1] = new Vector3(0.5, 70, 4.25);
+        var flat = (MatrixValue) piece.execute(context);
+        helper.assertTrue(MassBlockBreakHelper.ERROR_DEGENERATE_EDGES.equals(error(() -> RegionMatrix.parse(flat))),
+                "Vector mode corners at the same height must be a flat region");
+        input[1] = new Vector3(Double.NaN, 70, 4.25);
+        helper.assertTrue(MassBlockBreakHelper.ERROR_REGION_TOO_LARGE.equals(error(() -> piece.execute(context))),
+                "A corner that is not finite must fail");
+        piece.setModeOption(PsitweaksModeOptions.BLOCK);
+        input[1] = new Vector3(3e9, 70, 4.25);
+        helper.assertTrue(MassBlockBreakHelper.ERROR_REGION_TOO_LARGE.equals(error(() -> piece.execute(context))),
+                "Block mode must reject a corner past the block coordinates");
+        helper.succeed();
+    }
+
+    /** A zone given the matrix covers the corner blocks to their outer faces, cut down to Size around the box centre. */
+    @GameTest(template = "connector_empty")
+    public static void cuboidCornersZoneArea(GameTestHelper helper) throws Exception {
+        var context = new SpellContext().setPlayer(fakeCaster(helper, new BlockPos(2, 1, 2), "corners-zone"));
+        Object[] input = {new Vector3(10, 64, 5), new Vector3(13, 62, 9)};
+        var piece = corners(input);
+        var bounds = ZoneArea.of((MatrixValue) piece.execute(context), 16).bounds();
+        helper.assertTrue(bounds.equals(new AABB(10, 62, 5, 14, 65, 10)),
+                "The zone must reach the outer faces of the corner blocks: " + bounds);
+        input[0] = new Vector3(10, 64, 5);
+        input[1] = new Vector3(30, 64, 5);
+        var wide = ZoneArea.of((MatrixValue) piece.execute(context), 16).bounds();
+        helper.assertTrue(wide.minX == 13 && wide.maxX == 29, "A box of blocks 10 to 30 must be cut to 13 to 28 by a Size of 16: " + wide);
+        helper.succeed();
+    }
+
+    /** Block is the default, Vector mode survives a reload, an unknown mode reads as Block, and switching keeps the wires. */
+    @GameTest(template = "psi110_empty")
+    public static void cuboidCornersModeSurvivesReload(GameTestHelper helper) throws Exception {
+        var saved = (PieceOperatorMatrixCuboidCorners) create("operator_matrix_cuboid_corners");
+        helper.assertTrue(saved.isBlockMode(), "Block mode must be the default");
+        var a = saved.params.get(SpellParam.GENERIC_NAME_VECTOR1);
+        var b = saved.params.get(SpellParam.GENERIC_NAME_VECTOR2);
+        helper.assertTrue(a != null && b != null && !a.canDisable && !b.canDisable, "Vector A and Vector B must both be required");
+        saved.paramSides.put(a, SpellParam.Side.LEFT);
+        saved.paramSides.put(b, SpellParam.Side.TOP);
+        saved.setModeOption(PsitweaksModeOptions.VECTOR);
+        helper.assertTrue(saved.paramSides.get(saved.params.get(SpellParam.GENERIC_NAME_VECTOR1)) == SpellParam.Side.LEFT
+                        && saved.paramSides.get(saved.params.get(SpellParam.GENERIC_NAME_VECTOR2)) == SpellParam.Side.TOP,
+                "Switching the mode must keep the wires");
+        var tag = new CompoundTag();
+        saved.writeToNBT(tag);
+        var reloaded = (PieceOperatorMatrixCuboidCorners) SpellPiece.createFromNBT(new Spell(), tag);
+        helper.assertTrue(!reloaded.isBlockMode() && reloaded.paramSides.get(reloaded.params.get(SpellParam.GENERIC_NAME_VECTOR1)) == SpellParam.Side.LEFT,
+                "Vector mode and the wires must survive a reload");
+        tag.putString(TAG_MODE, "no_such_mode");
+        helper.assertTrue(((PieceOperatorMatrixCuboidCorners) SpellPiece.createFromNBT(new Spell(), tag)).isBlockMode(),
+                "An unknown mode must read as Block");
+        helper.succeed();
     }
 
     @GameTest(template = "connector_empty")

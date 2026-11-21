@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.operator_matrix_cuboid_corners",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_matrix_cuboid_corners.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_cuboid_corners.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_cuboid_corners.1"
+    }
+  ]
+}

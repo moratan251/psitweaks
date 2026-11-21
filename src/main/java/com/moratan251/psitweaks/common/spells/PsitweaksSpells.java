@@ -364,6 +364,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_delete_column", PieceOperatorMatrixDeleteColumn.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_CUBOID_REGION =
             registerPiece("operator_matrix_cuboid_region", PieceOperatorMatrixCuboidRegion.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_CUBOID_CORNERS =
+            registerPiece("operator_matrix_cuboid_corners", PieceOperatorMatrixCuboidCorners.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_REGION_VECTOR_LIST =
             registerPiece("operator_region_vector_list", PieceOperatorRegionVectorList.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_INSIDE_REGION =

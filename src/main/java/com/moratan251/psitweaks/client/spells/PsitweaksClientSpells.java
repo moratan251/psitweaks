@@ -378,6 +378,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_delete_column");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_CUBOID_REGION =
             registerPieceMaterial("operator_matrix_cuboid_region");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_CUBOID_CORNERS =
+            registerPieceMaterial("operator_matrix_cuboid_corners");
     public static final DeferredHolder<Material, Material> OPERATOR_REGION_VECTOR_LIST =
             registerPieceMaterial("operator_region_vector_list");
     public static final DeferredHolder<Material, Material> OPERATOR_INSIDE_REGION =

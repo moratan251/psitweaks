@@ -2098,6 +2098,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_delete_row", "Operator: Matrix Delete Row", "Deletes the specified row from the matrix and shifts the remaining rows up.", "演算子: 行削除", "指定した行を行列から削除し、残りの行を詰めます。");
         addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し、残りの列を詰めます。");
         addSpellPiece(root, "operator_matrix_cuboid_region", "Operator: Matrix Cuboid Region", "Builds a 4x4 matrix for an axis-aligned cuboid from a center position and size. Whole-number sizes act as block counts on each axis. Number mode makes a cube from one size.", "演算子: 直方体領域", "中心位置とサイズから軸平行直方体を表す 4×4 行列を生成します。整数サイズは各軸でブロック数として扱われます。Number モードでは1つの数値で立方体を作ります。");
+        addSpellPiece(root, "operator_matrix_cuboid_corners", "Operator: Matrix Cuboid From Corners",
+                "Builds a 4x4 matrix for the axis-aligned cuboid with two positions as opposite corners. Block mode includes both corner blocks.",
+                "演算子: 2点直方体領域",
+                "2つの位置を向かい合う角とする軸平行直方体の 4×4 行列を作ります。Block モードでは両方の角のブロックを含みます。");
         addSpellPiece(root, "operator_region_vector_list", "Operator: Region Vector List", "Returns block position vectors inside a matrix-defined region.", "演算子: 領域ベクトルリスト化", "行列で定義された領域内のブロック座標を Vector List として返します。");
         addSpellPiece(root, "operator_inside_region", "Operator: Inside Region", "Keeps only the elements of an Entity, Vector or Block List that are inside the matrix region. Choose the list type in the mode menu.", "演算子: 領域内", "Entity・Vector・Block の List のうち、行列の領域内にあるものだけを残します。リストの種類はモードで選びます。");
         addSpellPiece(root, "operator_outside_region", "Operator: Outside Region", "Keeps only the elements of an Entity, Vector or Block List that are outside the matrix region. Choose the list type in the mode menu.", "演算子: 領域外", "Entity・Vector・Block の List のうち、行列の領域外にあるものだけを残します。リストの種類はモードで選びます。");
@@ -2691,6 +2695,26 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_delete_row", "Deletes the row at the zero-based index from the matrix. The matrix must have at least 2 rows so that the result is not empty.", "0始まりのインデックスで指定した行を行列から削除します. 結果が空にならないよう、元の行列は2行以上である必要があります.");
         addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう、元の行列は2列以上である必要があります.");
         addBookPage(root, "operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts around the block that contains the input position: odd counts are centered on that block, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break. In Number mode the Size is one number used for all three axes, so a Size of 5 makes a 5x5x5 cube.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われ, 入力位置が入っているブロックを基準にします. 奇数はそのブロックを中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に、演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します. Number モードではサイズを1つの数値で受け取り, 3軸すべてに使うので, サイズ5なら5×5×5の立方体になります.");
+        addBookPage(root, "operator_matrix_cuboid_corners.0",
+                "Builds a 4x4 matrix for the axis-aligned cuboid whose opposite corners are Vector A and Vector B, in the same form as Operator: Matrix Cuboid Region."
+                        + " The order of the corners does not matter."
+                        + " Block mode (default) turns each corner into the block it is in and includes both of those blocks, so two raycast hits give exactly the blocks between them, edges included."
+                        + " Corners at the same height give a layer one block thick.",
+                "「ベクトル A」と「ベクトル B」を向かい合う角とする軸平行直方体の 4×4 行列を、演算子: 直方体領域と同じ形で作ります。"
+                        + "角の順番は関係ありません。"
+                        + "Block モード（既定）は、それぞれの角をその点が入っているブロックにし、両方のブロックを含む箱にします。"
+                        + "2か所のレイキャストの当たりから、その間のブロックを端までちょうど選べます。"
+                        + "同じ高さの2点なら、厚さ1ブロックの板になります。");
+        addBookPage(root, "operator_matrix_cuboid_corners.1",
+                "Vector mode uses the two points as they are, for picking entities or vectors with Operator: Inside Region."
+                        + " Corners that share a coordinate make a flat box, which is an error where the matrix is used."
+                        + " Pass the matrix to the Matrix of a zone trick to place the zone over those blocks; a box wider than the zone's Size is cut down to Size around its center."
+                        + " Operator: Region Vector List turns it into up to 4096 block positions.",
+                "Vector モードは2点をそのまま角にします。演算子: 領域内でエンティティやベクトルを選ぶときに使います。"
+                        + "座標が同じ軸があると厚さ0の箱になり、行列を使うところでエラーになります。"
+                        + "領域の作動式の「行列」に渡すと、その範囲に領域を置けます。"
+                        + "箱が「サイズ」より大きいと、箱の中心のまわりで「サイズ」まで切り詰められます。"
+                        + "演算子: 領域ベクトルリスト化で、最大4096個のブロック座標にできます。");
         addBookPage(root, "operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された平行六面体の内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル、第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため、空気、未読み込みチャンク、破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
         String regionModesEn = "Choose the list type in the mode menu. Entity (default) tests the center of each bounding box, Vector tests each vector as given, and Block tests block positions, the same points Operator: Region Vector List returns.";
         String regionModesJa = "リストの種類はモードで選びます. Entity（既定）は当たり判定の中心、Vector はそのベクトル、Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.";

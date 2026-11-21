@@ -26,6 +26,7 @@
     "psitweaks:operator_matrix_transform_vector",
     "psitweaks:operator_matrix_linear_part",
     "psitweaks:operator_matrix_cuboid_region",
+    "psitweaks:operator_matrix_cuboid_corners",
     "psitweaks:operator_region_vector_list",
     "psitweaks:operator_inside_region",
     "psitweaks:operator_outside_region",
