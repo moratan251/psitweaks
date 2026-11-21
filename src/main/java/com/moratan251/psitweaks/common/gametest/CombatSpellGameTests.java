@@ -1374,6 +1374,11 @@ public final class CombatSpellGameTests {
                 .thenSucceed();
     }
 
+    /**
+     * マイクロブラックホールは生物を引き寄せて振り回し、最後に中心へ呑み込んでから押し潰す。振り回す向きと回り込みでの向きの変化は
+     * ランダムで、5×5 の区画では壁にも当たるので、ある時点の位置ではなく、期間中に生物が動いた距離と、呑み込む間に中心へ最も近づいた
+     * 距離で確かめる。
+     */
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = EntityMicroBlackHole.CHARGE_TICKS + 100)
     public static void microBlackHolePullsInThenCrushes(GameTestHelper helper) throws Exception {
         // ブラックホールは魔法式オブジェクト（術者を ID で引き直す）なので、ワールドにいるプレイヤーで唱える。
@@ -1381,16 +1386,30 @@ public final class CombatSpellGameTests {
         // 30 + 25 x Power would nearly kill a plain husk, so give it room to show the collapse hits only once.
         var husk = tough(husk(helper, new BlockPos(4, 0, 2), true));
         husk.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
-        double startX = husk.getX();
+        Vec3 start = husk.position();
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 1.5, 2.5));
         microBlackHole(Map.of(POSITION, vector(center), POWER, 1.0, RADIUS, 16.0)).execute(new SpellContext().setPlayer(player));
+        // 期間中に、置いた位置から水平に最も離れた距離と、呑み込む間（崩壊の前の SWALLOW_TICKS tick）に体の中心が穴の中心へ最も近づいた距離。
+        double[] farthest = {0.0};
+        double[] closest = {Double.MAX_VALUE};
+        helper.onEachTick(() -> {
+            Vec3 at = husk.position();
+            farthest[0] = Math.max(farthest[0], Math.hypot(at.x - start.x, at.z - start.z));
+            var holes = helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class, helper.getBounds().inflate(4));
+            if (!holes.isEmpty() && EntityMicroBlackHole.isSwallowing(holes.get(0).tickCount)) {
+                closest[0] = Math.min(closest[0], husk.getBoundingBox().getCenter().distanceTo(center));
+            }
+        });
         helper.startSequence()
-                .thenExecuteAfter(15, () -> {
-                    helper.assertTrue(husk.getX() < startX - 0.4, "The black hole must drag the husk in: moved " + (startX - husk.getX()));
-                    helper.assertTrue(near(husk.getHealth(), TOUGH_HEALTH), "No damage before the collapse");
-                })
+                .thenExecuteAfter(15, () -> helper.assertTrue(near(husk.getHealth(), TOUGH_HEALTH), "No damage before the collapse"))
                 .thenWaitUntil(() -> helper.assertTrue(husk.getHealth() < TOUGH_HEALTH - 27.5F + EPSILON,
                         "The collapse must crush through armor for at least half of 30 + 25 x Power, health " + husk.getHealth()))
+                .thenExecute(() -> {
+                    helper.assertTrue(farthest[0] >= 2.0,
+                            "The black hole must drag the husk around: it moved at most " + farthest[0] + " blocks from where it stood");
+                    helper.assertTrue(closest[0] <= 1.0,
+                            "The black hole must swallow the husk before collapsing: it came " + closest[0] + " blocks from the centre at best");
+                })
                 .thenWaitUntil(() -> helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityMicroBlackHole.class,
                         helper.getBounds().inflate(4)).isEmpty(), "The black hole must close after collapsing"))
                 .thenExecute(() -> helper.assertTrue(player.isAlive() && husk.getHealth() > TOUGH_HEALTH - 55 - EPSILON,
