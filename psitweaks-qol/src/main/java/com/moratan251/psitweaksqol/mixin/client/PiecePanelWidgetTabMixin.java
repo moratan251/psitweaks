@@ -38,6 +38,8 @@ import java.util.Locale;
  * <li>Psi は 5 列 5 行（1 ページ 25 個）を決め打ちで並べる。ここでは Psi の並べたあとに全部を並べ直し、
  * ページ数と、25 が埋め込まれているカーソルの計算を差し替える。</li>
  * <li>設定を開いている間はピースを隠し、同じ場所に設定項目を出す。</li>
+ * <li>設定を開いている間は、大きさを変えても面の位置と大きさを変えない（押した選択肢がカーソルの下に残る）。
+ * 新しい大きさは、ピース一覧に戻るときか次に開くときに置き直して反映する。</li>
  * </ul>
  */
 @Mixin(value = PiecePanelWidget.class, remap = false)
@@ -95,7 +97,7 @@ public abstract class PiecePanelWidgetTabMixin {
             psitweaks$tabButtons.add(button);
             added.add(button);
         }
-        psitweaks$settingsList = new PiecePanelSettingsList(() -> psitweaks$onSizeChanged());
+        psitweaks$settingsList = new PiecePanelSettingsList(() -> psitweaks$onLayoutChanged());
         psitweaks$settingsButton = new PiecePanelSettingsButton(pressed -> psitweaks$toggleSettings());
         added.add(psitweaks$settingsList);
         added.add(psitweaks$settingsButton);
@@ -159,9 +161,22 @@ public abstract class PiecePanelWidgetTabMixin {
         self.searchField.setWidth(psitweaks$size.panelWidth() - 30);
     }
 
-    /** 設定で大きさが変わったとき。一覧を開いたまま置き直す。 */
+    /**
+     * 設定で大きさか並び順が変わったとき。並べ直しだけして、面は動かさない。
+     * 大きさは {@link #psitweaks$applySelectedSize} で、ピース一覧に戻るときに反映する。
+     */
     @Unique
-    private void psitweaks$onSizeChanged() {
+    private void psitweaks$onLayoutChanged() {
+        page = 0;
+        updatePanelButtons();
+    }
+
+    /** 設定で選ばれている大きさが、いまの面の大きさと違えば、一覧を開いたまま置き直す。 */
+    @Unique
+    private void psitweaks$applySelectedSize() {
+        if (!panelEnabled || PiecePanelSettings.size() == psitweaks$size) {
+            return;
+        }
         psitweaks$computeBody();
         psitweaks$placeSearchField();
         page = 0;
@@ -256,6 +271,9 @@ public abstract class PiecePanelWidgetTabMixin {
         PiecePanelWidget self = (PiecePanelWidget) (Object) this;
         if (self.searchField != null && panelEnabled) {
             self.searchField.setVisible(!psitweaks$settingsMode);
+        }
+        if (!psitweaks$settingsMode) {
+            psitweaks$applySelectedSize();
         }
         psitweaks$layoutPage();
         psitweaks$syncTabRow();
