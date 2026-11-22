@@ -41,7 +41,7 @@ public class PsiTweaksRecipeProvider implements DataProvider {
                 List.of("AUA"),
                 Map.of(
                         'A', ingredientItem(PsitweaksItems.ALLOY_PSION),
-                        'U', ingredientItem(MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+                        'U', ingredientItem(MekanismItems.ELITE_CONTROL_CIRCUIT)
                 ),
                 PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 1));
         recipe(recipes, "echo_control_circuit", shaped(

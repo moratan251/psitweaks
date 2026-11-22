@@ -219,7 +219,7 @@ public class PsiTweaksMekanismRecipeProvider implements DataProvider {
     private static void addMetallurgicInfusingRecipes(Map<ResourceLocation, JsonObject> recipes) {
         recipe(recipes, "metallurgic_infusing/alloy_psion", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psigem"), 40),
-                itemInput(MekanismItems.ATOMIC_ALLOY),
+                itemInput(MekanismItems.REINFORCED_ALLOY),
                 PsitweaksItems.ALLOY_PSION, 1));
         recipe(recipes, "metallurgic_infusing/alloy_psionic_echo", metallurgicInfusing(
                 chemicalInput(chemical("infuse_psionic_echo"), 40),
