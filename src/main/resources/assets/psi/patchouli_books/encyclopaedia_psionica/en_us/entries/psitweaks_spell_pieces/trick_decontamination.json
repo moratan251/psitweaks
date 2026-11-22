@@ -1,0 +1,16 @@
+{
+  "name": "psitweaks.spellpiece.trick_decontamination",
+  "category": "psi:psitweaks_spell_pieces",
+  "flag": "mod:mekanism",
+  "icon": "psitweaks:textures/spell/trick_decontamination.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_decontamination.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_decontamination.1"
+    }
+  ]
+}

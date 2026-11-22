@@ -1,0 +1,55 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "psitweaks:program_research",
+  "energy_per_tick": 60000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_blank"
+      }
+    },
+    {
+      "consume": false,
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_zone_magic"
+      }
+    },
+    {
+      "consume": false,
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_radiation_filter"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "mekanism:ingot_uranium"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "mekanism:pellet_polonium"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:flashmetal"
+      }
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "psitweaks:program_contamination_zone"
+  },
+  "time": 3600
+}

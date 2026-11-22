@@ -1,0 +1,6 @@
+{
+  "command_id": "acceleration_zone",
+  "piece": "psitweaks:trick_acceleration_zone",
+  "unlock_item": "psitweaks:program_acceleration_zone",
+  "unlock_tag": "psitweaks.unlock.trick_acceleration_zone"
+}

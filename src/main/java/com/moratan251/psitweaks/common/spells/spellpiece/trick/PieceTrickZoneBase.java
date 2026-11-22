@@ -206,7 +206,12 @@ public abstract class PieceTrickZoneBase<T extends SpellGramZone> extends PieceT
 
     /** {@link #resourceZoneCost} のラベル。 */
     protected static StatLabel resourceZoneCostLabel() {
-        return areaLabel().mul(powerLabel(MAX_RESOURCE_ZONE_POWER).add(RESOURCE_POWER_OFFSET).parenthesize())
+        return resourceZoneCostLabel(MAX_RESOURCE_ZONE_POWER);
+    }
+
+    /** {@link #resourceZoneCost} のラベル（威力の上限 {@code max}）。 */
+    protected static StatLabel resourceZoneCostLabel(double max) {
+        return areaLabel().mul(powerLabel(max).add(RESOURCE_POWER_OFFSET).parenthesize())
                 .mul(RESOURCE_COST_MULTIPLIER).div(RESOURCE_COST_DIVISOR).add(RESOURCE_COST_BASE).floor();
     }
 

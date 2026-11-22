@@ -455,6 +455,27 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.FERMENTED_SPIDER_EYE, 2),
                 counted(Items.TINTED_GLASS, 2),
                 counted(PsitweaksItems.FLASHMETAL, 2)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_ZONE_MAGIC, List.of(
+                counted(Items.PACKED_ICE, 2),
+                counted(Items.MAGMA_BLOCK, 2),
+                counted(Items.SPONGE, 1),
+                counted(Items.FEATHER, 1),
+                counted(Items.LIGHTNING_ROD, 1),
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 1)));
+        // 研究の触媒のプログラムも材料にする（クラフトでは消費する）
+        addProgram(recipes, PsitweaksItems.PROGRAM_ACCELERATION_ZONE, List.of(
+                counted(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
+                counted(PsitweaksItems.PROGRAM_TIME_ACCELERATE, 1),
+                counted(Items.CLOCK, 2),
+                counted(Items.BONE_BLOCK, 2),
+                counted(Items.AMETHYST_SHARD, 1),
+                counted(PsitweaksItems.FLASHMETAL, 1)));
+        addProgram(recipes, PsitweaksItems.PROGRAM_DECELERATION_ZONE, List.of(
+                counted(PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 1),
+                counted(Items.COBWEB, 2),
+                counted(Items.SOUL_SAND, 2),
+                counted(Items.CLOCK, 2),
+                counted(PsitweaksItems.FLASHMETAL, 1)));
     }
 
     private static void addProgram(Map<ResourceLocation, JsonObject> recipes, ItemLike program,

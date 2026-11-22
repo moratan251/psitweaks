@@ -39,6 +39,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerAutonomousCaster;
         public final ModConfigSpec.IntValue nbtMaxTargetsPerCast;
         public final ModConfigSpec.LongValue wildcardMaxComparisonsPerCast;
+        /** 作動式: 放射線注入の被ばく量の倍率。作動式: 放射線注入を使えなくしているあいだは null。 */
         public final ModConfigSpec.DoubleValue radiationInjectionMultiplier;
         public final ModConfigSpec.DoubleValue guillotineDamageMultiplier;
         public final ModConfigSpec.DoubleValue chainLightningDamageMultiplier;
@@ -327,17 +328,21 @@ public class PsitweaksConfig {
             builder.pop(); // pattern_matching カテゴリ終了
 
             // --- 放射線注入 ---
-            builder.comment("Radiation Injection Settings")
-                    .translation("psitweaks.configuration.spells.radiation_injection")
-                    .push("radiation_injection");
+            if (com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+                builder.comment("Radiation Injection Settings")
+                        .translation("psitweaks.configuration.spells.radiation_injection")
+                        .push("radiation_injection");
 
-            radiationInjectionMultiplier = builder
-                    .comment("作動式: 放射線注入 の被ばく量倍率",
-                            "Radiation amount multiplier for Trick: Radiation Injection")
-                    .translation("psitweaks.configuration.spells.radiation_injection.radiation_multiplier")
-                    .defineInRange("radiationMultiplier", 1.0, 0.0, 1000000.0);
+                radiationInjectionMultiplier = builder
+                        .comment("作動式: 放射線注入 の被ばく量倍率",
+                                "Radiation amount multiplier for Trick: Radiation Injection")
+                        .translation("psitweaks.configuration.spells.radiation_injection.radiation_multiplier")
+                        .defineInRange("radiationMultiplier", 1.0, 0.0, 1000000.0);
 
-            builder.pop(); // radiation_injection カテゴリ終了
+                builder.pop(); // radiation_injection カテゴリ終了
+            } else {
+                radiationInjectionMultiplier = null;
+            }
 
             // --- ギロチン ---
             builder.comment("Guillotine Settings")

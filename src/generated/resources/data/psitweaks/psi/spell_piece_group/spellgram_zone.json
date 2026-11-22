@@ -7,6 +7,9 @@
     "psitweaks:trick_turbulence_zone",
     "psitweaks:trick_interference_zone",
     "psitweaks:trick_silence_zone",
-    "psitweaks:trick_charged_zone"
+    "psitweaks:trick_charged_zone",
+    "psitweaks:trick_acceleration_zone",
+    "psitweaks:trick_deceleration_zone",
+    "psitweaks:trick_contamination_zone"
   ]
 }

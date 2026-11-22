@@ -106,7 +106,7 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SAFETY =
             registerPiece("safety", PieceSafety.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_RADIATION_INJECTION =
-            MekanismCompat.isMekanismLoaded() ? registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class) : null;
+            MekanismCompat.isRadiationInjectionEnabled() ? registerPiece("trick_radiation_injection", PieceTrickRadiationInjection.class) : null;
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_RADIATION_FILTER =
             MekanismCompat.isMekanismLoaded() ? registerPiece("trick_radiation_filter", PieceTrickRadiationFilter.class) : null;
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_CURE_RADIATION =
@@ -398,6 +398,14 @@ public final class PsitweaksSpells {
             registerPiece("trick_silence_zone", PieceTrickSilenceZone.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_CHARGED_ZONE =
             registerPiece("trick_charged_zone", PieceTrickChargedZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_ACCELERATION_ZONE =
+            registerPiece("trick_acceleration_zone", PieceTrickAccelerationZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DECELERATION_ZONE =
+            registerPiece("trick_deceleration_zone", PieceTrickDecelerationZone.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DECONTAMINATION =
+            MekanismCompat.isMekanismLoaded() ? registerPiece("trick_decontamination", PieceTrickDecontamination.class) : null;
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_CONTAMINATION_ZONE =
+            MekanismCompat.isMekanismLoaded() ? registerPiece("trick_contamination_zone", PieceTrickContaminationZone.class) : null;
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_OWN_SPELLGRAMS =
             registerPiece("selector_own_spellgrams",
                     com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorOwnSpellGrams.class);

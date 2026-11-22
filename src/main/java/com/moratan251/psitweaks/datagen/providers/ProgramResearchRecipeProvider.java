@@ -85,12 +85,14 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3)
         ), PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER, 80_000L, 6_000);
 
-        research(recipes, "program_radiation_injection", List.of(
-                input(PsitweaksItems.PROGRAM_BLANK, 1),
-                inputId(mekanism("ingot_uranium"), 16),
-                inputId(mekanism("ingot_lead"), 8),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
-        ), PsitweaksItems.PROGRAM_RADIATION_INJECTION, 60_000L, 3_600);
+        if (com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+            research(recipes, "program_radiation_injection", List.of(
+                    input(PsitweaksItems.PROGRAM_BLANK, 1),
+                    inputId(mekanism("ingot_uranium"), 16),
+                    inputId(mekanism("ingot_lead"), 8),
+                    input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
+            ), PsitweaksItems.PROGRAM_RADIATION_INJECTION, 60_000L, 3_600);
+        }
 
         research(recipes, "program_radiation_filter", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
@@ -235,6 +237,59 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.CHAOTIC_PSIMETAL, 8),
                 input(PsitweaksItems.FLASHMETAL, 4)
         ), PsitweaksItems.PROGRAM_PARADE, 50_000L, 3_600);
+
+        // 領域魔法（段 1）: 今の 8 つの領域を開く。数字と素材は仮
+        research(recipes, "program_zone_magic", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                input(Items.PACKED_ICE, 16),
+                input(Items.MAGMA_BLOCK, 16),
+                input(Items.SPONGE, 4),
+                input(Items.FEATHER, 16),
+                input(Items.LIGHTNING_ROD, 4),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
+        ), PsitweaksItems.PROGRAM_ZONE_MAGIC, 15_000L, 1_200);
+
+        // 加速領域（段 2）: 触媒はプログラム: 領域魔法とプログラム: 時間加速。数字と素材は仮
+        research(recipes, "program_acceleration_zone", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                catalyst(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
+                catalyst(PsitweaksItems.PROGRAM_TIME_ACCELERATE, 1),
+                input(Items.CLOCK, 8),
+                input(Items.BONE_BLOCK, 16),
+                input(Items.AMETHYST_SHARD, 16),
+                input(PsitweaksItems.FLASHMETAL, 8)
+        ), PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 40_000L, 2_400);
+
+        // 減速領域（段 2）: 触媒はプログラム: 加速領域。数字と素材は仮
+        research(recipes, "program_deceleration_zone", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                catalyst(PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 1),
+                input(Items.COBWEB, 16),
+                input(Items.SOUL_SAND, 16),
+                input(Items.CLOCK, 8),
+                input(PsitweaksItems.FLASHMETAL, 8)
+        ), PsitweaksItems.PROGRAM_DECELERATION_ZONE, 40_000L, 2_400);
+
+        // 除染（段 2、Mekanism のみ）: 触媒はプログラム: 領域魔法とプログラム: 放射線除去。数字と素材は仮
+        research(recipes, "program_decontamination", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                catalyst(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
+                catalyst(PsitweaksItems.PROGRAM_CURE_RADIATION, 1),
+                inputId(mekanism("ingot_lead"), 16),
+                inputId(mekanism("dust_fluorite"), 16),
+                inputId(mekanism("hdpe_sheet"), 8),
+                input(PsitweaksItems.FLASHMETAL, 8)
+        ), PsitweaksItems.PROGRAM_DECONTAMINATION, 60_000L, 3_600);
+
+        // 汚染領域（段 2、Mekanism のみ）: 触媒はプログラム: 領域魔法とプログラム: 放射線フィルタ。数字と素材は仮
+        research(recipes, "program_contamination_zone", List.of(
+                input(PsitweaksItems.PROGRAM_BLANK, 1),
+                catalyst(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
+                catalyst(PsitweaksItems.PROGRAM_RADIATION_FILTER, 1),
+                inputId(mekanism("ingot_uranium"), 32),
+                inputId(mekanism("pellet_polonium"), 4),
+                input(PsitweaksItems.FLASHMETAL, 8)
+        ), PsitweaksItems.PROGRAM_CONTAMINATION_ZONE, 60_000L, 3_600);
     }
 
     private static void research(Map<ResourceLocation, JsonObject> recipes, String id, List<JsonObject> inputs,

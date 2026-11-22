@@ -134,6 +134,23 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "c", "storage_blocks/polonium", block(PsitweaksBlocks.POLONIUM_BLOCK.get()));
         tag(tags, "c", "storage_blocks/raw_antinite", block(PsitweaksBlocks.RAW_ANTINITE_BLOCK.get()));
         tag(tags, "c", "skulls", block(PsitweaksBlocks.MAGICIANS_HEAD.get()), block(PsitweaksBlocks.MAGICIANS_WALL_HEAD.get()));
+        // 加速領域が速めるブロック（AE2 の ae2:growth_acceleratable と同じ並び）。植物の胴の部分（kelp_plant など）は
+        // ランダムティックしないので入れない。
+        tag(tags, "psitweaks", "zone_acceleratable",
+                tagRef("minecraft:crops"),
+                tagRef("minecraft:saplings"),
+                tagRef("c:budding_blocks"),
+                "minecraft:bamboo_sapling",
+                "minecraft:bamboo",
+                "minecraft:sugar_cane",
+                "minecraft:vine",
+                "minecraft:twisting_vines",
+                "minecraft:weeping_vines",
+                "minecraft:cave_vines",
+                "minecraft:sweet_berry_bush",
+                "minecraft:nether_wart",
+                "minecraft:kelp",
+                "minecraft:cocoa");
     }
 
     private static void addChemicalTags(Map<ResourceLocation, JsonObject> tags) {

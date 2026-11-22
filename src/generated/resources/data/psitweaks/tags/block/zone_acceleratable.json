@@ -1,0 +1,18 @@
+{
+  "values": [
+    "#minecraft:crops",
+    "#minecraft:saplings",
+    "#c:budding_blocks",
+    "minecraft:bamboo_sapling",
+    "minecraft:bamboo",
+    "minecraft:sugar_cane",
+    "minecraft:vine",
+    "minecraft:twisting_vines",
+    "minecraft:weeping_vines",
+    "minecraft:cave_vines",
+    "minecraft:sweet_berry_bush",
+    "minecraft:nether_wart",
+    "minecraft:kelp",
+    "minecraft:cocoa"
+  ]
+}

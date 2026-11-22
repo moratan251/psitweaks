@@ -26,7 +26,8 @@ import net.neoforged.neoforge.common.NeoForge;
  * 核から {@link #RANGE} ブロック以内でだけ出す。
  * <p>
  * リソースを扱う領域（加熱・凍結・荷電・乱流）は、その下にもう 1 行、熱量・冷却量・充電能力・風量（WU）を出す。
- * 量はサーバーが {@code SpellGramZone} の同期データで送る。
+ * 量はサーバーが {@code SpellGramZone} の同期データで送る。そのほかの領域は、自分の強さの行（{@code SpellGramZone#hudLines}）を
+ * その下に出す（魔法式オブジェクトはどれも {@code SpellGramObject#hudLines} の行を出せる）。
  * <p>
  * 狙いはクライアントの tick ごとに {@link SpellGramAim#aimedAt} で決める（ブロックに遮られていない、視線の先の核のうち最も近いもの）。
  * 覚えるのはエンティティの番号だけで、ログアウトで消す。
@@ -36,6 +37,8 @@ public final class SpellGramIntegrityHud {
     private static final int TEXT_COLOR = 0x55FFFF;
     /** 出す距離（ブロック、目から核まで）。 */
     public static final double RANGE = 5.0;
+    /** 行の間隔（GUI の座標）。 */
+    private static final int LINE_HEIGHT = 10;
 
     /** 照準が合っている魔法式オブジェクトのエンティティの番号（なければ -1）。 */
     private static int targetId = -1;
@@ -79,6 +82,7 @@ public final class SpellGramIntegrityHud {
         Component text = Component.translatable("psitweaks.hud.spellgram_integrity", object.getName(),
                 format(object.getIntegrity(), object.getMaxIntegrity()));
         graphics.drawCenteredString(font, text, graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 10, TEXT_COLOR);
+        int y = graphics.guiHeight() / 2 + 20;
         if (object instanceof com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone zone) {
             String key = zone.resourceKey();
             float amount = zone.getResourceAmount();
@@ -88,15 +92,21 @@ public final class SpellGramIntegrityHud {
                         ? new String[]{String.format(java.util.Locale.ROOT, "%.1f", used), String.format(java.util.Locale.ROOT, "%.1f", amount)}
                         : withPrefix(used, amount);
                 graphics.drawCenteredString(font, Component.translatable(key, values[0], values[1]), graphics.guiWidth() / 2,
-                        graphics.guiHeight() / 2 + 20, TEXT_COLOR);
+                        y, TEXT_COLOR);
+                y += LINE_HEIGHT;
                 // 熱の受け渡しの運搬・受け取り（0 なら出さない）。桁は総量にそろえる。
                 String movedKey = zone.resourceMovedKey();
                 float moved = zone.getResourceMoved();
                 if (movedKey != null && moved > 0.0F) {
                     graphics.drawCenteredString(font, Component.translatable(movedKey, scaledLike(moved, amount)),
-                            graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 30, TEXT_COLOR);
+                            graphics.guiWidth() / 2, y, TEXT_COLOR);
+                    y += LINE_HEIGHT;
                 }
             }
+        }
+        for (Component line : object.hudLines()) {
+            graphics.drawCenteredString(font, line, graphics.guiWidth() / 2, y, TEXT_COLOR);
+            y += LINE_HEIGHT;
         }
     }
 

@@ -89,7 +89,7 @@ public final class SpellUnlockHandler {
     private static final DynamicCommandExceptionType UNKNOWN_SPELL = new DynamicCommandExceptionType(
             id -> Component.translatable("message.psitweaks.spell_unlock.command.unknown", id));
 
-    private static final List<SpellUnlockDefinition> DEFAULT_SPELL_UNLOCKS = List.of(
+    private static final List<SpellUnlockDefinition> DEFAULT_SPELL_UNLOCKS = withoutDisabledPieces(List.of(
             definition("cocytus", "trick_cocytus", "program_cocytus"),
             definition("time_accelerate", "trick_time_accelerate", "program_time_accelerate"),
             definition("flight", "trick_flight", "program_flight"),
@@ -116,6 +116,21 @@ public final class SpellUnlockHandler {
             definition("burst", "trick_burst", "program_burst"),
             definition("micro_black_hole", "trick_micro_black_hole", "program_micro_black_hole"),
             definition("parade", "trick_parade", "program_parade"),
+            // 領域魔法（今の 8 つ）は共通の unlock_tag を共有し、プログラム: 領域魔法 1 つで開く。グループの定義も持つ
+            definition("zone_magic", "trick_soak_zone", "program_zone_magic",
+                    Psitweaks.MOD_ID + ".unlock.zone_magic", "spellgram_zone"),
+            definition("gravity_zone", "trick_gravity_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            definition("heat_zone", "trick_heat_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            definition("freeze_zone", "trick_freeze_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            definition("turbulence_zone", "trick_turbulence_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            definition("interference_zone", "trick_interference_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            definition("silence_zone", "trick_silence_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            definition("charged_zone", "trick_charged_zone", "program_zone_magic", Psitweaks.MOD_ID + ".unlock.zone_magic"),
+            // 新しい領域はそれぞれのプログラムで開く（ピースの定義がグループ spellgram_zone の定義より優先する）
+            definition("acceleration_zone", "trick_acceleration_zone", "program_acceleration_zone"),
+            definition("deceleration_zone", "trick_deceleration_zone", "program_deceleration_zone"),
+            definition("contamination_zone", "trick_contamination_zone", "program_contamination_zone"),
+            definition("decontamination", "trick_decontamination", "program_decontamination"),
             // イデアストレージ系ピースは共通の unlock_tag を共有し、1つのプログラムで全ピースを解禁する
             // 統合前のコマンド ID は統合後のピースを指す
             definition("idea_storage_absorb_fe", "trick_idea_storage_deposit", "program_idea_storage",
@@ -128,7 +143,7 @@ public final class SpellUnlockHandler {
                     Psitweaks.MOD_ID + ".unlock.idea_storage"),
             definition("idea_storage", "trick_idea_storage_view", "program_idea_storage",
                     Psitweaks.MOD_ID + ".unlock.idea_storage", "idea_storage")
-    );
+    ));
 
     private static final SpellUnlockReloadListener SPELL_UNLOCK_RELOAD_LISTENER = new SpellUnlockReloadListener();
     private static final Snapshot DEFAULT_SNAPSHOT = buildSnapshot(DEFAULT_SPELL_UNLOCKS, true);
@@ -141,6 +156,14 @@ public final class SpellUnlockHandler {
     private static final String UNLOCKS_DATA_KEY = Psitweaks.MOD_ID + ".spell_unlocks";
 
     private SpellUnlockHandler() {
+    }
+
+    /** 使えなくしている作動式（{@link com.moratan251.psitweaks.common.compat.MekanismCompat#RADIATION_INJECTION_ENABLED}）の定義を外す。 */
+    private static List<SpellUnlockDefinition> withoutDisabledPieces(List<SpellUnlockDefinition> definitions) {
+        if (com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+            return definitions;
+        }
+        return definitions.stream().filter(definition -> !"radiation_injection".equals(definition.commandId())).toList();
     }
 
     private static SpellUnlockDefinition definition(String commandId, String piecePath, String itemPath) {

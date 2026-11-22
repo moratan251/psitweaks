@@ -15,27 +15,47 @@
       }
     },
     {
-      "count": 16,
+      "consume": false,
+      "count": 1,
       "ingredient": {
-        "item": "mekanism:ingot_uranium"
+        "item": "psitweaks:program_zone_magic"
       }
     },
     {
-      "count": 8,
+      "consume": false,
+      "count": 1,
+      "ingredient": {
+        "item": "psitweaks:program_cure_radiation"
+      }
+    },
+    {
+      "count": 16,
       "ingredient": {
         "item": "mekanism:ingot_lead"
       }
     },
     {
+      "count": 16,
+      "ingredient": {
+        "item": "mekanism:dust_fluorite"
+      }
+    },
+    {
       "count": 8,
       "ingredient": {
-        "item": "psitweaks:chaotic_psimetal"
+        "item": "mekanism:hdpe_sheet"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "psitweaks:flashmetal"
       }
     }
   ],
   "output": {
     "count": 1,
-    "id": "psitweaks:program_radiation_injection"
+    "id": "psitweaks:program_decontamination"
   },
   "time": 3600
 }

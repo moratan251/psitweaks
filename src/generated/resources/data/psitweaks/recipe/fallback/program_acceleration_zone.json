@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "mekanism"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "psitweaks:program_blank"
+    },
+    {
+      "item": "psitweaks:program_zone_magic"
+    },
+    {
+      "item": "psitweaks:program_time_accelerate"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:bone_block"
+    },
+    {
+      "item": "minecraft:bone_block"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "psitweaks:flashmetal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "psitweaks:program_acceleration_zone"
+  }
+}

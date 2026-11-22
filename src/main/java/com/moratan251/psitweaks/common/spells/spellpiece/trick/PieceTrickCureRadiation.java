@@ -79,11 +79,7 @@ public class PieceTrickCureRadiation extends PieceTrick {
 
         double radiationAmount = PieceTrickRadiationInjection.calculateRadiationDose(powerVal);
         double globalDamageMul = PsitweaksConfig.COMMON.globalSpellPowerMultiplier.get();
-        double radiationMultiplier = PsitweaksConfig.COMMON.radiationInjectionMultiplier.get();
-        if (radiationMultiplier <= 0.0) {
-            return null;
-        }
-        double removedRadiation = radiationAmount * radiationMultiplier * globalDamageMul;
+        double removedRadiation = radiationAmount * globalDamageMul;
         if (removedRadiation <= 0.0) {
             return null;
         }

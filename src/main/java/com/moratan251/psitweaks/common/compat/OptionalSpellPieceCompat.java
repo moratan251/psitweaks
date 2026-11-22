@@ -15,13 +15,17 @@ public final class OptionalSpellPieceCompat {
     private static final String TAG_KEY_LEGACY = "spellKey";
     private static final String TAG_KEY = "key";
     private static final ResourceLocation PHYSICAL_PROPULSION_ID = Psitweaks.location("trick_physical_propulsion");
+    /** 作動式: 放射線注入（{@link MekanismCompat#RADIATION_INJECTION_ENABLED} が偽のあいだは登録しない）。 */
+    private static final ResourceLocation RADIATION_INJECTION_ID = Psitweaks.location("trick_radiation_injection");
     private static final String REMOVAL_MARKER_COMMENT = "psitweaks:remove_optional_physical_propulsion";
     /** Pieces registered only with Mekanism (see {@code PsitweaksSpells}). */
     private static final List<ResourceLocation> MEKANISM_PIECE_IDS = List.of(
             Psitweaks.location("selector_autonomous_caster_position"),
             Psitweaks.location("trick_radiation_injection"),
             Psitweaks.location("trick_radiation_filter"),
-            Psitweaks.location("trick_cure_radiation"));
+            Psitweaks.location("trick_cure_radiation"),
+            Psitweaks.location("trick_decontamination"),
+            Psitweaks.location("trick_contamination_zone"));
 
     /**
      * Pieces whose ID changed during 1.0.0 development (old ID → new ID). Psi cannot read an unknown namespaced ID
@@ -38,7 +42,10 @@ public final class OptionalSpellPieceCompat {
     private static final List<ResourceLocation> REMOVED_PIECE_IDS = List.of(
             // Trick: Set SpellGram Follow Target (removed in 1.0.0 with the SpellGram rework; Trick: Circle Follow is a
             // new piece under its own ID, so spells with the old piece still drop it).
-            Psitweaks.location("trick_set_spellgram_follow_target"));
+            Psitweaks.location("trick_set_spellgram_follow_target"),
+            // Trick: Purification Zone. Its region and size inputs do not match Trick: Decontamination (position, power,
+            // time), so it is dropped rather than loaded under that ID.
+            Psitweaks.location("trick_purification_zone"));
 
     private OptionalSpellPieceCompat() {
     }
@@ -66,7 +73,8 @@ public final class OptionalSpellPieceCompat {
      * for the radiation tricks and Selector: Autonomous Caster Position). Such a piece is not registered, and Psi would
      * fail the whole spell (or the player holding it), so it is read as a marker and removed from the grid. A spell
      * saved while the mod is missing keeps the piece removed. Pieces removed from the mod ({@link #REMOVED_PIECE_IDS})
-     * are taken out the same way.
+     * and Trick: Radiation Injection while it is disabled ({@link MekanismCompat#RADIATION_INJECTION_ENABLED}) are taken
+     * out the same way.
      */
     public static boolean shouldRemoveMissingOptionalPiece(CompoundTag cmp) {
         if (cmp == null) {
@@ -79,6 +87,9 @@ public final class OptionalSpellPieceCompat {
             }
         }
         if (!SablePhysicsCompat.isLoaded() && matchesSpellPieceId(id, PHYSICAL_PROPULSION_ID)) {
+            return true;
+        }
+        if (!MekanismCompat.isRadiationInjectionEnabled() && matchesSpellPieceId(id, RADIATION_INJECTION_ID)) {
             return true;
         }
         if (!MekanismCompat.isMekanismLoaded()) {

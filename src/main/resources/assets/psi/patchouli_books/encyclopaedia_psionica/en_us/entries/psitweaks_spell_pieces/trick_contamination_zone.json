@@ -1,0 +1,16 @@
+{
+  "name": "psitweaks.spellpiece.trick_contamination_zone",
+  "category": "psi:psitweaks_spell_pieces",
+  "flag": "mod:mekanism",
+  "icon": "psitweaks:textures/spell/trick_contamination_zone.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_contamination_zone.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_contamination_zone.1"
+    }
+  ]
+}

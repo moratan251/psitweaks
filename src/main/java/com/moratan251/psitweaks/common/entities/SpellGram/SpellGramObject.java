@@ -52,6 +52,32 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
         return false;
     }
 
+    /**
+     * 照準を合わせたときに、耐久値の行（領域はリソースの行）の下に出す行（クライアント側）。自分の強さ（加速の倍率、除染の能力
+     * など）を出すのに使う。既定はなし。
+     */
+    public List<net.minecraft.network.chat.Component> hudLines() {
+        return List.of();
+    }
+
+    /** 照準の表示の量（桁の幅が広いもの、放射線の量など）: 有効数字 3 桁、1000 以上は整数。 */
+    public static String hudAmount(double value) {
+        if (value <= 0.0 || !Double.isFinite(value)) {
+            return "0";
+        }
+        if (value >= 1000.0) {
+            return Long.toString(Math.round(value));
+        }
+        return new java.math.BigDecimal(value).round(new java.math.MathContext(3)).stripTrailingZeros().toPlainString();
+    }
+
+    /** 照準の表示の数: 整数ならそのまま、そうでなければ小数 1 桁。 */
+    public static String hudNumber(double value) {
+        double rounded = Math.round(value * 10.0) / 10.0;
+        return rounded == Math.rint(rounded)
+                ? Long.toString(Math.round(rounded)) : String.format(java.util.Locale.ROOT, "%.1f", rounded);
+    }
+
     /** 魔法式オブジェクトが消えた理由。 */
     public enum EndReason {
         /** 存続時間が尽きた、または作動式の役目を終えた。 */

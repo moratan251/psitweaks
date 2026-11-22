@@ -35,10 +35,30 @@ import vazkii.psi.common.item.base.ModItems;
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SpellUnlockGameTests {
-    private static final int SHIPPED_DEFINITIONS = 33;
+    private static final int SHIPPED_DEFINITIONS = 44;
     /** The combat tricks unlocked by research (Parade included); Air Bullet is free. */
     private static final List<String> COMBAT_UNLOCKS = List.of(
             "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "micro_black_hole", "parade");
+    /** The zone tricks unlocked together by Program: Zone Magic. */
+    private static final List<String> ZONE_MAGIC_TRICKS = List.of("trick_soak_zone", "trick_gravity_zone", "trick_heat_zone",
+            "trick_freeze_zone", "trick_turbulence_zone", "trick_interference_zone", "trick_silence_zone", "trick_charged_zone");
+    /**
+     * The tricks with a program of their own that Program: Zone Magic must not unlock: {command id, piece group, piece,
+     * whether it needs Mekanism}; the program is "program_" + command id. Those that need Mekanism have only a research
+     * recipe. Trick: Decontamination is a Resident SpellGram but not a zone, so it has a group of its own.
+     */
+    private static final List<String[]> OWN_PROGRAM_ZONES = List.of(
+            new String[] {"acceleration_zone", "spellgram_zone", "trick_acceleration_zone", "false"},
+            new String[] {"deceleration_zone", "spellgram_zone", "trick_deceleration_zone", "false"},
+            new String[] {"contamination_zone", "spellgram_zone", "trick_contamination_zone", "true"},
+            new String[] {"decontamination", "trick_decontamination", "trick_decontamination", "true"});
+    /** Circles and the pieces that handle Resident SpellGrams stay free: {group, piece}. */
+    private static final List<String[]> FREE_SPELLGRAM_PIECES = List.of(
+            new String[] {"trick_flare_circle", "trick_flare_circle"}, new String[] {"trick_ice_circle", "trick_ice_circle"},
+            new String[] {"spellgram_control", "selector_own_spellgrams"}, new String[] {"spellgram_control", "trick_recall_spellgram"},
+            new String[] {"spellgram_control", "trick_extend_spellgram"}, new String[] {"spellgram_control", "selector_spellgram_integrity"},
+            new String[] {"spellgram_control", "trick_circle_follow"}, new String[] {"selector_nearby_spellgram", "selector_nearby_spellgram"},
+            new String[] {"trick_gram_demolition", "trick_gram_demolition"}, new String[] {"matrix", "trick_show_region"});
 
     @GameTest(template = "psi110_empty")
     public static void allCommandCountsDefinitionsLikeStatus(GameTestHelper helper) throws Exception {
@@ -117,6 +137,64 @@ public final class SpellUnlockGameTests {
                     .is(BuiltInRegistries.ITEM.get(Psitweaks.location("program_" + id))), "No recipe " + recipe);
         }
         helper.assertTrue(isNotUnlockDefinition(player, "air_bullet"), "Air Bullet must stay free");
+        helper.succeed();
+    }
+
+    /**
+     * 領域の作動式は研究で解禁する: 既定では置けず、プログラム: 領域魔法で今の 8 つが開く（レシピは研究か、Mekanism がなければ代替）。
+     * 設定 requireSpellUnlocks を切ると全部置ける。サークルと常駐魔法式を扱うピースは鍵なし。
+     */
+    @GameTest(template = "psi110_empty")
+    public static void zoneTricksAreUnlockedByZoneMagicResearch(GameTestHelper helper) throws Exception {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "unlock-zones"));
+        var data = PlayerDataHandler.get(player);
+        var zoneGroup = Psitweaks.location("spellgram_zone");
+        var requireUnlocks = PsitweaksConfig.COMMON.requireSpellUnlocks;
+        boolean required = requireUnlocks.get();
+        try {
+            requireUnlocks.set(true);
+            for (String zone : ZONE_MAGIC_TRICKS) {
+                helper.assertFalse(data.isPieceGroupUnlocked(zoneGroup, Psitweaks.location(zone)), zone + " must start locked");
+            }
+            for (String[] piece : FREE_SPELLGRAM_PIECES) {
+                helper.assertTrue(data.isPieceGroupUnlocked(Psitweaks.location(piece[0]), Psitweaks.location(piece[1])),
+                        piece[1] + " must stay free");
+            }
+            requireUnlocks.set(false);
+            for (String zone : ZONE_MAGIC_TRICKS) {
+                helper.assertTrue(data.isPieceGroupUnlocked(zoneGroup, Psitweaks.location(zone)),
+                        "Without requireSpellUnlocks, " + zone + " must be free");
+            }
+            requireUnlocks.set(true);
+            helper.assertTrue(run(player, "zone_magic grant @s") == 1, "Zone Magic must be grantable");
+            for (String zone : ZONE_MAGIC_TRICKS) {
+                helper.assertTrue(data.isPieceGroupUnlocked(zoneGroup, Psitweaks.location(zone)), "Zone Magic must unlock " + zone);
+            }
+            for (String[] zone : OWN_PROGRAM_ZONES) {
+                var group = Psitweaks.location(zone[1]);
+                var piece = Psitweaks.location(zone[2]);
+                helper.assertFalse(data.isPieceGroupUnlocked(group, piece), "Zone Magic must not unlock " + zone[2]);
+                helper.assertTrue(run(player, zone[0] + " grant @s") == 1, zone[0] + " must be grantable");
+                helper.assertTrue(data.isPieceGroupUnlocked(group, piece), "Its own program must unlock " + zone[2]);
+            }
+        } finally {
+            requireUnlocks.set(required);
+        }
+        // The research table needs Mekanism; without it the program is crafted from the fallback recipe.
+        String recipe = (MekanismCompat.isMekanismLoaded() ? "program_research/" : "fallback/") + "program_zone_magic";
+        var holder = helper.getLevel().getRecipeManager().byKey(Psitweaks.location(recipe));
+        helper.assertTrue(holder.isPresent() && holder.get().value().getResultItem(helper.getLevel().registryAccess())
+                .is(PsitweaksItems.PROGRAM_ZONE_MAGIC.get()), "No recipe " + recipe);
+        for (String[] zone : OWN_PROGRAM_ZONES) {
+            if (Boolean.parseBoolean(zone[3]) && !MekanismCompat.isMekanismLoaded()) {
+                continue;
+            }
+            String own = (MekanismCompat.isMekanismLoaded() ? "program_research/" : "fallback/") + "program_" + zone[0];
+            var ownHolder = helper.getLevel().getRecipeManager().byKey(Psitweaks.location(own));
+            helper.assertTrue(ownHolder.isPresent() && Psitweaks.location("program_" + zone[0]).equals(
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(ownHolder.get().value()
+                            .getResultItem(helper.getLevel().registryAccess()).getItem())), "No recipe " + own);
+        }
         helper.succeed();
     }
 

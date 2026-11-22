@@ -250,6 +250,9 @@ public class Psitweaks {
         event.enqueueWork(ComponentStats::registerCoreStats);
         event.enqueueWork(ComponentStats::registerBatteryStats);
         event.enqueueWork(PsitweaksItems::registerCurioItems);
+        // 解説書の 作動式: 放射線注入 の項目は、このフラグが真のときだけ出す。
+        event.enqueueWork(() -> vazkii.patchouli.api.PatchouliAPI.get().setConfigFlag(
+                MekanismCompat.RADIATION_INJECTION_BOOK_FLAG, MekanismCompat.isRadiationInjectionEnabled()));
         MekanismCompat.commonSetup(event);
 
         // TODO(port): Re-enable after NetworkHandler is ported.
@@ -395,6 +398,18 @@ public class Psitweaks {
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
             event.registerEntityRenderer(PsitweaksEntities.CHARGED_ZONE.get(),
                     context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.ACCELERATION_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            event.registerEntityRenderer(PsitweaksEntities.DECELERATION_ZONE.get(),
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            if (PsitweaksEntities.DECONTAMINATION != null) {
+                event.registerEntityRenderer(PsitweaksEntities.DECONTAMINATION.get(),
+                        com.moratan251.psitweaks.client.renderer.DecontaminationRenderer::new);
+            }
+            if (PsitweaksEntities.CONTAMINATION_ZONE != null) {
+                event.registerEntityRenderer(PsitweaksEntities.CONTAMINATION_ZONE.get(),
+                        context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+            }
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.AIR_BULLET.get(), AirBulletRenderer::new);

@@ -5,6 +5,7 @@
   "plugin": "com.moratan251.psitweaks.mixin.PsitweaksMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractArrowAccessor",
     "BlazeBurnerHeatZoneMixin",
     "ConcretePowderBlockAccessor",
     "DisableDamagePsiDeduction",
@@ -13,6 +14,7 @@
     "EntityParadeInvisibleMixin",
     "EntitySpellCircleAutonomousCasterMixin",
     "EntitySpellProjectileAutonomousCasterMixin",
+    "FireworkRocketEntityAccessor",
     "GameTestServerOriginMixin",
     "ItemCADAutonomousCasterMixin",
     "ItemCADPlainMemoryMixin",

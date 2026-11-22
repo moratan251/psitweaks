@@ -1,6 +1,7 @@
 {
   "name": "psitweaks.spellpiece.trick_radiation_injection",
   "category": "psi:psitweaks_spell_pieces",
+  "flag": "psitweaks_radiation_injection",
   "icon": "psitweaks:textures/spell/trick_radiation_injection.png",
   "pages": [
     {

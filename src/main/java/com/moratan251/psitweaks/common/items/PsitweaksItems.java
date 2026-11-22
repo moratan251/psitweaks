@@ -309,7 +309,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_SUPREME_INFUSION = registerProgram("program_supreme_infusion", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MOLECULAR_DIVIDER = registerProgram("program_molecular_divider", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_RADIATION_INJECTION =
-            registerMekanismProgram("program_radiation_injection");
+            MekanismCompat.isRadiationInjectionEnabled() ? registerMekanismProgram("program_radiation_injection") : null;
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_RADIATION_FILTER =
             registerMekanismProgram("program_radiation_filter");
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CURE_RADIATION =
@@ -323,6 +323,11 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MASS_BLOCK_BREAK = registerProgram("program_mass_block_break", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MASS_HARVEST = registerProgram("program_mass_harvest", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_IDEA_STORAGE = registerProgram("program_idea_storage", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_ZONE_MAGIC = registerProgram("program_zone_magic", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_ACCELERATION_ZONE = registerProgram("program_acceleration_zone", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DECELERATION_ZONE = registerProgram("program_deceleration_zone", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DECONTAMINATION = registerMekanismProgram("program_decontamination");
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CONTAMINATION_ZONE = registerMekanismProgram("program_contamination_zone");
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CHAIN_LIGHTNING = registerProgram("program_chain_lightning", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MINE_GENESIS = registerProgram("program_mine_genesis", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DANCING_BLADES = registerProgram("program_dancing_blades", false);
@@ -625,6 +630,10 @@ public final class PsitweaksItems {
     public static void register(IEventBus eventBus) {
         // 古いワールドの「魔法師の脳」（magicians_brain）は「魔法師の頭」として読み込む。
         ITEMS.addAlias(Psitweaks.location("magicians_brain"), Psitweaks.location("magicians_head"));
+        // 浄化領域のプログラム（program_purification_zone）は「プログラム: 除染」として読み込む。
+        if (PROGRAM_DECONTAMINATION != null) {
+            ITEMS.addAlias(Psitweaks.location("program_purification_zone"), PROGRAM_DECONTAMINATION.getId());
+        }
         ITEMS.register(eventBus);
     }
 

@@ -1,0 +1,6 @@
+{
+  "command_id": "deceleration_zone",
+  "piece": "psitweaks:trick_deceleration_zone",
+  "unlock_item": "psitweaks:program_deceleration_zone",
+  "unlock_tag": "psitweaks.unlock.trick_deceleration_zone"
+}

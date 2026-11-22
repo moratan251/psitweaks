@@ -26,6 +26,20 @@ public final class MekanismCompat {
         return ModList.get().isLoaded(MEKANISM_MOD_ID);
     }
 
+    /**
+     * 作動式: 放射線注入を登録するか。偽のあいだは、ピース・ピースの絵・プログラム・クリエイティブタブ・研究のアンロック・設定と、
+     * 生成する研究レシピ・アンロック・アイテムのモデルと名前・言語・ピースのグループを作らず、解説書の項目も隠し、保存された魔法式からは
+     * このピースを外す（{@link OptionalSpellPieceCompat}）。戻すときは真にして runData する。
+     */
+    public static final boolean RADIATION_INJECTION_ENABLED = false;
+    /** 解説書（Patchouli）で 作動式: 放射線注入 の項目を出すかのフラグ。 */
+    public static final String RADIATION_INJECTION_BOOK_FLAG = "psitweaks_radiation_injection";
+
+    /** 作動式: 放射線注入を登録するか（{@link #RADIATION_INJECTION_ENABLED} で、Mekanism があるとき）。 */
+    public static boolean isRadiationInjectionEnabled() {
+        return RADIATION_INJECTION_ENABLED && isMekanismLoaded();
+    }
+
     public static boolean isGeneratorsLoaded() {
         return isMekanismLoaded() && ModList.get().isLoaded(GENERATORS_MOD_ID);
     }

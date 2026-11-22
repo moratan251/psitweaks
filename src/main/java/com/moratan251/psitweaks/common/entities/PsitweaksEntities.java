@@ -16,7 +16,10 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityHeatZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySilenceZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityAccelerationZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityChargedZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityContaminationZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityDecelerationZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
@@ -194,6 +197,49 @@ public class PsitweaksEntities {
                             .updateInterval(20)
                             .fireImmune()
                             .build(Psitweaks.MOD_ID + ":charged_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityAccelerationZone>> ACCELERATION_ZONE =
+            ENTITY_TYPES.register("acceleration_zone",
+                    () -> EntityType.Builder.<EntityAccelerationZone>of(EntityAccelerationZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":acceleration_zone"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityDecelerationZone>> DECELERATION_ZONE =
+            ENTITY_TYPES.register("deceleration_zone",
+                    () -> EntityType.Builder.<EntityDecelerationZone>of(EntityDecelerationZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":deceleration_zone"));
+
+    /** Mekanism があるときだけ登録する（ないときは null）。 */
+    public static final DeferredHolder<EntityType<?>, EntityType<com.moratan251.psitweaks.common.entities.SpellGram.EntityDecontamination>> DECONTAMINATION =
+            com.moratan251.psitweaks.common.compat.MekanismCompat.isMekanismLoaded()
+                    ? ENTITY_TYPES.register("decontamination",
+                    () -> EntityType.Builder.<com.moratan251.psitweaks.common.entities.SpellGram.EntityDecontamination>of(
+                                    com.moratan251.psitweaks.common.entities.SpellGram.EntityDecontamination::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":decontamination"))
+                    : null;
+
+    /** Mekanism があるときだけ登録する（ないときは null）。 */
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityContaminationZone>> CONTAMINATION_ZONE =
+            com.moratan251.psitweaks.common.compat.MekanismCompat.isMekanismLoaded()
+                    ? ENTITY_TYPES.register("contamination_zone",
+                    () -> EntityType.Builder.<EntityContaminationZone>of(EntityContaminationZone::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(20)
+                            .fireImmune()
+                            .build(Psitweaks.MOD_ID + ":contamination_zone"))
+                    : null;
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityTunnelerArrow>> TUNNELER_ARROW =
             ENTITY_TYPES.register("tunneler_arrow",

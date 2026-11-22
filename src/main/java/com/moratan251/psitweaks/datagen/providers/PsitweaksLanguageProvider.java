@@ -18,7 +18,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput output) {
-        return DataProvider.saveStable(output, translations(), pathProvider.json(Psitweaks.location(locale)));
+        JsonObject root = translations();
+        if (!com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+            // 作動式: 放射線注入を使えなくしているあいだは、ピース・解説書・設定・プログラムの文を出さない。
+            root.keySet().removeIf(key -> key.contains("radiation_injection"));
+        }
+        return DataProvider.saveStable(output, root, pathProvider.json(Psitweaks.location(locale)));
     }
 
     @Override
@@ -141,6 +146,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("entity.psitweaks.silence_zone", switch (locale) {
             case "ja_jp" -> "遮音領域";
             default -> "Silence Zone";
+        });
+        root.addProperty("entity.psitweaks.acceleration_zone", switch (locale) {
+            case "ja_jp" -> "加速領域";
+            default -> "Acceleration Zone";
+        });
+        root.addProperty("entity.psitweaks.deceleration_zone", switch (locale) {
+            case "ja_jp" -> "減速領域";
+            default -> "Deceleration Zone";
+        });
+        root.addProperty("entity.psitweaks.decontamination", switch (locale) {
+            case "ja_jp" -> "除染";
+            default -> "Decontamination";
+        });
+        root.addProperty("entity.psitweaks.contamination_zone", switch (locale) {
+            case "ja_jp" -> "汚染領域";
+            default -> "Contamination Zone";
         });
         root.addProperty("entity.psitweaks.meteor_line_night", switch (locale) {
             case "ja_jp" -> "流星群";
@@ -486,6 +507,28 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "風量: %s / %s WU";
             default -> "Wind: %s / %s WU";
         });
+        // 領域の強さ（リソースを持たない領域）。
+        root.addProperty("psitweaks.hud.zone_acceleration", switch (locale) {
+            case "ja_jp" -> "加速: ×%s";
+            default -> "Acceleration: ×%s";
+        });
+        root.addProperty("psitweaks.hud.zone_deceleration", switch (locale) {
+            case "ja_jp" -> "減速: 移動 −%s%%・飛び道具 ×%s/tick";
+            default -> "Deceleration: movement −%s%%, projectiles ×%s/tick";
+        });
+        // 作動式: 除染: 使った量 / 除染能力（1 秒あたり）、半径の中の線源。
+        root.addProperty("psitweaks.hud.decontamination.sources", switch (locale) {
+            case "ja_jp" -> "除染能力: %s / %s Sv/h（毎秒）";
+            default -> "Decontamination: %s / %s Sv/h a second";
+        });
+        root.addProperty("psitweaks.hud.decontamination.left", switch (locale) {
+            case "ja_jp" -> "半径の中の線源: %s 個（計 %s Sv/h）";
+            default -> "Sources in range: %s (%s Sv/h in all)";
+        });
+        root.addProperty("psitweaks.hud.zone_contamination", switch (locale) {
+            case "ja_jp" -> "被ばく: 上限 %s mSv";
+            default -> "Dose: up to %s mSv";
+        });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません。";
             default -> "Error: The target is not a Resident SpellGram.";
@@ -611,6 +654,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "警告: 対象は既に戦闘不能です。";
             default -> "WARNING: The target is already down.";
         });
+        root.addProperty("psitweaks.spellwarning.radiation_disabled", switch (locale) {
+            case "ja_jp" -> "警告: Mekanism の設定で放射線が無効なので、領域を置きませんでした。";
+            default -> "WARNING: Radiation is turned off in Mekanism's config, so the zone was not placed.";
+        });
         root.addProperty("psitweaks.spellwarning.no_breeding_food", switch (locale) {
             case "ja_jp" -> "警告: %sを繁殖させる餌を持っていません。";
             default -> "WARNING: You have no food to breed %s.";
@@ -634,6 +681,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addEffect(root, "hardening", "Hardening", "硬化");
         addEffect(root, "radiation_filter", "Radiation Filter", "放射線フィルタ");
         addEffect(root, "carbon_poisoning", "Carbon Poisoning", "炭素中毒");
+        addEffect(root, "torpor", "Torpor", "鈍化");
 
         addSpellPieces(root);
         addSpellPiecesBook(root);
@@ -2156,14 +2204,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.0",
                 "Zone Magic places Resident SpellGrams that keep working insi"
                         + "de an area: Trick: Soak Zone, Gravity Zone, Heat Zone, Freez"
-                        + "e Zone, Turbulence Zone, Interference Zone, Silence Zone and"
-                        + " Charged Zone.$(p)Each takes a Matrix and a Size for its are"
+                        + "e Zone, Turbulence Zone, Interference Zone, Silence Zone,"
+                        + " Charged Zone, Acceleration Zone, Deceleration Zone and, with Mekanism, Contamination Zone.$(p)Each takes a Matrix and a Size for its are"
                         + "a and lasts for its Time. This entry covers what all zones s"
                         + "hare; each piece's own entry covers only what that zone does"
                         + ".",
                 "領域魔法は範囲の中で効き続ける常駐魔法式です。作動式: 湿潤領域・加重領域・加熱領域・凍結領域・乱流領域・領域干渉・遮音"
-                        + "領域・荷電領域があります。$(p)どれも「行列」と「サイズ」で範囲を決め、「時間」のあいだ残ります。この項目には領域に共"
+                        + "領域・荷電領域・加速領域・減速領域があり、Mekanism があるときは汚染領域もあります。$(p)どれも「行列」と「サイズ」で範囲を決め、「時間」のあいだ残ります。この項目には領域に共"
                         + "通の決まりをまとめ、各ピースの項目にはその領域だけの効き目を書いています。");
+        addLocalized(root, "psi.book.page.psitweaks_zone_magic.11",
+                "Zone tricks are unlocked by research. Program: Zone Magic unlocks the first eight: the Soak, Gravity, Heat, Freeze, Turbulence, Interference, Silence and Charged Zones. The Acceleration, Deceleration and Contamination Zones each have a program of the same name (Program: Contamination Zone needs Mekanism).",
+                "領域の作動式は研究で解禁します。プログラム: 領域魔法で、湿潤領域・加重領域・加熱領域・凍結領域・乱流領域・領域干渉・遮音領域・荷電領域の8つが開きます。加速領域・減速領域・汚染領域は、それぞれ同じ名前のプログラムで開きます（汚染領域は Mekanism が必要です）。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.1",
                 "The area holds the blocks of the Matrix (a region matrix) th"
                         + "at lie inside a cube of Size blocks on each edge (a constant"
@@ -2181,8 +2232,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "なります。生物が範囲の中にいるかどうかは、当たり判定の中心があるブロックで決まります。範囲は作動式: 領域表示（ブロック"
                         + "モード）で確かめられます。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.2",
-                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity Zone). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time.",
-                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。");
+                "The Time is a constant of at most 120 seconds, 30 when left out (a Gravity Zone in Vector mode always lasts 30 seconds).$(p)Zones that take a Power need one: a constant of at least 1 (a smaller one counts as 1; at most 10 for the Gravity, Acceleration, Deceleration and Contamination Zones). Potency and Cost grow with the area (the Size squared) and with the Power; the Cost also grows in proportion to the Time.",
+                "「時間」は最大120秒の定数で、省くと30秒です（加重領域のベクトルモードはいつも30秒）。$(p)威力を持つ領域では「威力」は必須で、1以上の定数です（1より小さければ1として扱います。加重領域・加速領域・減速領域・汚染領域は最大10）。規模とコストは範囲の広さ（サイズの2乗）と威力で増え、コストはさらに時間に比例します。");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.3",
                 "A zone has integrity, which wears away at a steady rate and "
                         + "ends the zone when it runs out; spells can wear it down too."
@@ -2242,12 +2293,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + "の上のブロックや機械にも効きます。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.8",
-                "A zone's strength follows its Cost: the Power sets how much Psi you put into each block (in proportion to the Power plus 4 for the Heat, Freeze, Turbulence and Charged Zones). What stands in for fuel or energy (heat, cooling, FE and wind) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference. It happens only where your own Turbulence Zone overlaps the zone.",
-                "領域の強さはコストで決まり、「威力」で1ブロックあたりにかける Psi の量が決まります（加熱・凍結・乱流・荷電では「威力＋4」に比例）。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風量）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。この加工は、自分の乱流領域が重なったところでしか起きません。");
+                "A zone's strength follows its Cost: the Power sets how much Psi you put into each block (in proportion to the Power plus 4 for every zone with a Power but the Gravity Zone). What stands in for fuel or energy (heat, cooling, FE and wind) is a total for the whole zone, shared by everything inside, so filling a zone with machines does not multiply it. The total per tick does not depend on the Time.$(p)What Create's Encased Fans do for free (bulk washing, smoking and blasting) has no total; only its speed follows the interference. It happens only where your own Turbulence Zone overlaps the zone.",
+                "領域の強さはコストで決まり、「威力」で1ブロックあたりにかける Psi の量が決まります（加重領域を除く、威力を持つ領域では「威力＋4」に比例）。燃料やエネルギーの代わりになるもの（熱・冷却・FE・風量）は領域全体の総量で、範囲の中のもので分け合います。機械を並べても総量は増えません。1 tick あたりの総量は「時間」によりません。$(p)Create のケース入りファンがただでする加工（一括洗浄・一括燻製・一括製錬）には総量がなく、速さだけが事象干渉力で決まります。この加工は、自分の乱流領域が重なったところでしか起きません。");
 
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.9",
-                "The Heat, Freeze, Turbulence and Charged Zones work at a fair strength even at Power 1: their effects on each being or block (how hot, how cold, how sharply projectiles turn and so on), their total (heat, cooling, wind and FE) and their Cost follow the Power plus 4, while their Potency follows the Power itself.$(p)They also take a Power above 10. What goes beyond 10 adds only to the Cost and the total, so a small zone can handle as much as a large one by paying the same Cost: a Size 3 Heat Zone at Power 100 has heat for a Blaze Burner. Effects on each being or block and the Potency stop growing at 10.",
-                "加熱・凍結・乱流・荷電の領域は、威力1でもそれなりの強さで効きます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度など）、総量（熱・冷却・風量・FE）、コストは「威力＋4」に応じて増え、規模は威力そのもので決まります。$(p)威力は10より上にもできます。10を超えた分はコストと総量だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます（サイズ3・威力100の加熱領域でブレイズバーナー1台ぶん）。生物やブロック1つあたりの効き目と規模は、威力10で頭打ちです。");
+                "The zones with a Power, except the Gravity Zone, work at a fair strength even at Power 1: their effects on each being or block (how hot, how cold, how sharply projectiles turn, how fast things grow and so on), their total (heat, cooling, wind and FE) and their Cost follow the Power plus 4, while their Potency follows the Power itself.$(p)The Heat, Freeze, Turbulence and Charged Zones also take a Power above 10. What goes beyond 10 adds only to the Cost and the total, so a small zone can handle as much as a large one by paying the same Cost: a Size 3 Heat Zone at Power 100 has heat for a Blaze Burner. Effects on each being or block and the Potency stop growing at 10.",
+                "加重領域を除く、威力を持つ領域は、威力1でもそれなりの強さで効きます。生物やブロック1つあたりの効き目（温度、冷やす強さ、飛び道具をそらす角度、育つ速さなど）、総量（熱・冷却・風量・FE）、コストは「威力＋4」に応じて増え、規模は威力そのもので決まります。$(p)加熱・凍結・乱流・荷電の領域は、威力を10より上にもできます。10を超えた分はコストと総量だけを増やすので、小さな領域でも、同じコストを払えば大きな領域と同じだけの量を扱えます（サイズ3・威力100の加熱領域でブレイズバーナー1台ぶん）。生物やブロック1つあたりの効き目と規模は、威力10で頭打ちです。");
 
         // 湿潤領域
         addBookPage(root, "trick_soak_zone.0",
@@ -2422,6 +2473,38 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "スカルクセンサー、調律されたスカルクセンサー、スカルクシュリーカー、ウォーデンは、範囲を通れない振動に気づきません。範囲"
                         + "の中のスカルクシュリーカーは踏まれても叫びません。範囲の中にいる人が踏んだシュリーカーも同じです。消すのは音だけで、にお"
                         + "いは消せません。ウォーデンは近くにいる相手をかぎつけます。");
+
+        // 加速領域
+        addBookPage(root, "trick_acceleration_zone.0",
+                "Growing things inside get extra random ticks: crops, saplings, Budding Amethyst, Bamboo Shoots, Bamboo, Sugar Cane, Vines, Twisting Vines, Weeping Vines, Cave Vines, Sweet Berry Bushes, Nether Wart, Kelp and Cocoa (the block tag psitweaks:zone_acceleratable). With the usual random ticks they grow (Power + 5) times as fast: 6 times at Power 1 and 15 times at Power 10. Block entities and living beings are not affected. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中の育つものに、ランダムティックを上乗せします。対象は作物・苗木・芽生えたアメジスト・タケノコ・竹・サトウキビ・ツタ・ねじれツタ・しだれツタ・洞窟のツタ・スイートベリーの低木・ネザーウォート・コンブ・カカオの実です（ブロックのタグ psitweaks:zone_acceleratable）。ふだんのランダムティックと合わせて（威力＋5）倍の速さで育ち、威力1で6倍、威力10で15倍です。ブロックエンティティと生き物には効きません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_acceleration_zone.1",
+                "The extra random ticks follow the game rule randomTickSpeed, so nothing grows faster when it is 0. The Power is a constant from 1 to 10.$(p)Where it overlaps your own other zones, their random block changes speed up by the same factor: a Heat Zone melting ice and snow, a Freeze Zone freezing water, a Soak Zone moistening farmland, a Charged Zone scraping copper and so on. Where Acceleration Zones overlap, only the strongest works.",
+                "上乗せするランダムティックはゲームルール randomTickSpeed（ランダムティックの発生数）に合わせて増えるので、0 のときは速くなりません。「威力」は1から10までの定数です。$(p)自分のほかの領域と重なったところでは、その領域のランダムなブロックの変化も同じ倍率で速くなります（加熱領域が氷や雪を溶かす、凍結領域が水を凍らせる、湿潤領域が耕地を湿らせる、荷電領域が銅の錆を落とす、など）。加速領域どうしが重なったところでは、一番強いものだけが効きます。");
+
+        // 減速領域
+        addBookPage(root, "trick_deceleration_zone.0",
+                "Living beings inside get Torpor: their movement and flying speed drop by (Power + 4) × 5%%, from 25%% at Power 1 to 70%% at Power 10, and players also attack (Power + 4) × 3%% slower. Beings other than players are slowed every tick as well, even those that move without walking. Torpor wears off 0.75 seconds after leaving. Like attack tricks it spares you, your pets and allies, and other players while PvP is off; bosses are not affected. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中の生き物に鈍化をかけます。移動速度と飛ぶ速さが（威力＋4）×5%%下がり（威力1で25%%、威力10で70%%）、プレイヤーは攻撃速度も（威力＋4）×3%%下がります。プレイヤー以外の生き物は、歩かずに動くものも含めて、毎 tick 速さそのものも落ちます。鈍化は範囲を出ると0.75秒で切れます。攻撃の作動式と同じく、自分・自分のペットと味方、PvP が切ってあるときのほかのプレイヤーには効かず、ボスにも効きません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_deceleration_zone.1",
+                "Projectiles inside lose (Power + 4) × 4%% of their speed every tick, keeping 80%% a tick at Power 1 and 44%% at Power 10. Magic projectiles (Psi, Psitweaks, Ars Nouveau and Iron's Spells), projectiles shot by those it spares, arrows stuck in the ground, rockets boosting an Elytra and fishing bobbers are not slowed, nor are dropped items, experience orbs, minecarts and boats.$(p)The Power is a constant from 1 to 10. Where Deceleration Zones overlap, only the strongest works. It does not cancel an Acceleration Zone.",
+                "範囲の中の飛び道具は、毎 tick 速さが（威力＋4）×4%%ずつ落ち、1 tick ごとに威力1で80%%、威力10で44%%になります。魔法の弾（Psi・Psitweaks・Ars Nouveau・Iron's Spells）、効かない相手が放った飛び道具、地面に刺さった矢、エリトラで飛ぶためのロケット花火、浮きは遅くなりません。落ちているアイテム・経験値オーブ・トロッコ・ボートもそのままです。$(p)「威力」は1から10までの定数です。減速領域どうしが重なったところでは、一番強いものだけが効きます。加速領域とは打ち消し合いません。");
+
+        // 作動式: 除染（領域ではない常駐魔法式）
+        addBookPage(root, "trick_decontamination.0",
+                "Places a decontamination core at the Position: a Resident SpellGram, but not a zone. Once a second it weakens the Mekanism radiation sources centered within 32 blocks of the core. Its capacity follows the Cost: each second it takes away Cost × 0.5 Sv/h ÷ Time (seconds), shared in proportion to how much each source puts into the core (its strength ÷ the squared distance), so nearer and stronger sources weaken first. A source that drops below 10 µSv/h disappears. White light flows from the sources it weakens into the core.",
+                "「位置」に除染の核を置きます。領域ではない常駐魔法式です。核から32ブロック以内に中心がある Mekanism の放射線源を、毎秒弱めます。除染能力はコストで決まり、毎秒「コスト×0.5 Sv/h ÷ 時間（秒）」を、核に届いている量（線源の強さ ÷ 核までの距離の2乗）に比例して配るので、近い線源・強い線源ほど早く弱まります。10 µSv/h を下回った線源は消えます。弱めている線源から核へ、白い光が流れ込みます。");
+        addBookPage(root, "trick_decontamination.1",
+                "It does not lower the radiation dose of living beings; use Trick: Cure Radiation for that.$(p)The Power is a constant of at least 1; above 10 it only raises the Cost, and so the capacity. The Time is a constant of at most 120 seconds, 30 when left out. It stops inside another caster's stronger Interference Zone. It is not placed while radiation is turned off in Mekanism's config.",
+                "生き物の被ばく量は減らしません（それには作動式: 放射線除去を使います）。$(p)「威力」は1以上の定数で、10を超えた分はコスト（つまり除染能力）だけを増やします。「時間」は最大120秒の定数で、省くと30秒です。勝てない他人の領域干渉の中では止まります。Mekanism の設定で放射線が無効なときは置けません。");
+
+        // 汚染領域
+        addBookPage(root, "trick_contamination_zone.0",
+                "Exposes the living beings inside to radiation once a second, without leaving any radiation source. A being's dose rises by a fifth of the limit each second up to (Power + 4) × 0.1 mSv: 0.5 mSv at Power 1 and 1.4 mSv at Power 10. Beings already above the limit get nothing. Protection works as against any radiation, such as the MekaSuit and Trick: Radiation Filter. Like attack tricks it spares you, your pets and allies, armor stands, and other players while PvP is off. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for what all zones share.",
+                "範囲の中の生き物を、毎秒放射線にさらします。放射線源は残しません。被ばく量は毎秒上限の5分の1ずつ増え、上限は（威力＋4）×0.1 mSv です（威力1で0.5 mSv、威力10で1.4 mSv）。すでに上限を超えている相手には何もしません。ほかの放射線と同じく、MekaSuit などの防具や作動式: 放射線フィルタで防げます。攻撃の作動式と同じく、自分・自分のペットと味方・防具立てには効かず、PvP が切ってあるときはほかのプレイヤーにも効きません。共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)の項目にあります。");
+        addBookPage(root, "trick_contamination_zone.1",
+                "The Power is a constant from 1 to 10. Where Contamination Zones overlap, only the strongest works. It is not placed while radiation is turned off in Mekanism's config.",
+                "「威力」は1から10までの定数です。汚染領域どうしが重なったところでは、一番強いものだけが効きます。Mekanism の設定で放射線が無効なときは置けません。");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -3480,6 +3563,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_silence_zone", "Trick: Silence Zone",
                 "Places a Resident SpellGram zone where no sound is heard and no vibration gets through",
                 "作動式: 遮音領域", "範囲の中の音を消し、振動を通さない常駐魔法式を置く");
+        addSpellPiece(root, "trick_acceleration_zone", "Trick: Acceleration Zone",
+                "Places a Resident SpellGram zone that speeds up the random ticks of growing things inside it",
+                "作動式: 加速領域", "範囲の中の育つもののランダムティックを速める常駐魔法式を置く");
+        addSpellPiece(root, "trick_deceleration_zone", "Trick: Deceleration Zone",
+                "Places a Resident SpellGram zone that slows the living beings and projectiles inside it",
+                "作動式: 減速領域", "範囲の中の生き物と飛び道具を遅くする常駐魔法式を置く");
+        addSpellPiece(root, "trick_decontamination", "Trick: Decontamination",
+                "Places a Resident SpellGram core that clears the radiation sources within 32 blocks of it (needs Mekanism)",
+                "作動式: 除染", "周り32ブロックの放射線源を取り除く常駐魔法式の核を置く（Mekanism が必要）");
+        addSpellPiece(root, "trick_contamination_zone", "Trick: Contamination Zone",
+                "Places a Resident SpellGram zone that exposes the living beings inside it to radiation, up to a limit (needs Mekanism)",
+                "作動式: 汚染領域", "範囲の中の生き物を、上限まで放射線にさらす常駐魔法式を置く（Mekanism が必要）");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を、CADの色のパーティクルで描きます。");

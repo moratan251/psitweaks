@@ -1,11 +1,16 @@
 package com.moratan251.psitweaks.common.gametest;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.compat.OptionalSpellPieceCompat;
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.fml.ModList;
@@ -17,10 +22,15 @@ import vazkii.psi.api.event.PsiEvents;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.common.core.handler.PlayerDataHandler;
+import vazkii.psi.common.item.ItemSpellDrive;
+import vazkii.psi.common.item.base.ModItems;
 
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class Psi110CompatibilityGameTests {
+    /** Mekanism があるときだけ登録され、ほかのピースと同じグループに入っているもの。 */
+    private static final java.util.Set<String> MEKANISM_GROUP_MEMBERS = java.util.Set.of("trick_contamination_zone");
+
     @GameTest(template = "psi110_empty")
     public static void groupsResolveRegisteredPieces(GameTestHelper helper) {
         var groups = helper.getLevel().registryAccess().registryOrThrow(PsiAPI.SPELL_PIECE_GROUP_REGISTRY_KEY);
@@ -33,13 +43,19 @@ public final class Psi110CompatibilityGameTests {
             var group = groups.get(id);
             helper.assertTrue(PsiAPI.SPELL_PIECE_REGISTRY.containsKey(group.main()), "Unknown main piece in " + id);
             for (var member : group.pieces()) {
+                if (!MekanismCompat.isMekanismLoaded() && MEKANISM_GROUP_MEMBERS.contains(member.getPath())) {
+                    // 領域魔法のグループには、Mekanism がないと登録されない領域も入っている（ID だけなので害はない）。
+                    continue;
+                }
                 helper.assertTrue(PsiAPI.SPELL_PIECE_REGISTRY.containsKey(member), "Unknown member " + member);
                 helper.assertTrue(PsiAPI.getPieceGroup(helper.getLevel().registryAccess(), member)
                         .orElseThrow().key().location().equals(id), "Wrong group for " + member);
             }
         }
-        // サイ・ブリットと術式解体を含む。
-        int expected = 90 + (ModList.get().isLoaded("mekanism") ? 4 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
+        // サイ・ブリットと術式解体を含む。放射線注入は止めている間グループも登録しない。
+        // Mekanism: 放射線フィルタ・放射線除去・自律詠唱機の位置・除染（放射線注入は止めている間は数えない）。
+        int expected = 90 + (ModList.get().isLoaded("mekanism") ? 4 : 0)
+                + (MekanismCompat.isRadiationInjectionEnabled() ? 1 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
         helper.assertTrue(count == expected, "Expected " + expected + " groups, got " + count);
         helper.succeed();
     }
@@ -96,11 +112,81 @@ public final class Psi110CompatibilityGameTests {
         helper.succeed();
     }
 
+    /**
+     * 作動式: 浄化領域は登録しない。このピースを含む魔法式を書いた術式弾は、ピースを外して読み込む（プレイヤーの持ち物と同じ
+     * {@link ItemStack#parse}）。Mekanism があれば、浄化領域のプログラムの ID はプログラム: 除染として読み込む。
+     */
+    @GameTest(template = "psi110_empty")
+    public static void purificationZoneDataLoadsWithoutIt(GameTestHelper helper) {
+        var removedId = Psitweaks.location("trick_purification_zone");
+        helper.assertFalse(PsiAPI.SPELL_PIECE_REGISTRY.containsKey(removedId), "Trick: Purification Zone must not be registered");
+        var registries = helper.getLevel().registryAccess();
+
+        Spell spell = new Spell();
+        spell.name = "old_purification_zone";
+        placeForSave(spell, PsiAPI.SPELL_PIECE_REGISTRY.get(PsiAPI.location("constant_number")).create(spell), 3, 4);
+        placeForSave(spell, PsiAPI.SPELL_PIECE_REGISTRY.get(PsiAPI.location("trick_debug")).create(spell), 4, 4);
+        ItemStack bullet = new ItemStack(ModItems.spellBullet.get());
+        ItemSpellDrive.setSpell(bullet, spell);
+        Tag saved = bullet.save(registries);
+        int rewritten = rewriteStrings(saved, PsiAPI.location("trick_debug").toString(), removedId.toString());
+        helper.assertTrue(rewritten == 1, "The saved bullet must hold the trick's ID once: " + saved);
+
+        ItemStack loaded = ItemStack.parse(registries, saved).orElse(ItemStack.EMPTY);
+        Spell loadedSpell = ItemSpellDrive.getSpell(loaded);
+        helper.assertTrue(loaded.is(ModItems.spellBullet.get()) && loadedSpell != null, "The bullet must keep its spell: " + loaded);
+        helper.assertTrue(loadedSpell.grid.gridData[4][4] == null, "Trick: Purification Zone must be taken out");
+        helper.assertTrue(loadedSpell.grid.gridData[3][4] != null, "The other pieces must stay");
+
+        if (PsitweaksItems.PROGRAM_DECONTAMINATION != null) {
+            CompoundTag program = new CompoundTag();
+            program.putString("id", Psitweaks.location("program_purification_zone").toString());
+            program.putInt("count", 2);
+            ItemStack loadedProgram = ItemStack.parseOptional(registries, program);
+            helper.assertTrue(loadedProgram.is(PsitweaksItems.PROGRAM_DECONTAMINATION.get()) && loadedProgram.getCount() == 2,
+                    "A saved purification zone program loaded as " + loadedProgram);
+        }
+        helper.succeed();
+    }
+
+    private static void placeForSave(Spell spell, SpellPiece piece, int x, int y) {
+        piece.x = x;
+        piece.y = y;
+        piece.isInGrid = true;
+        spell.grid.gridData[x][y] = piece;
+    }
+
+    /** {@code tag} の中の文字列 {@code from} をすべて {@code to} に書き換え、書き換えた数を返す。 */
+    private static int rewriteStrings(Tag tag, String from, String to) {
+        int count = 0;
+        if (tag instanceof CompoundTag compound) {
+            for (String key : java.util.List.copyOf(compound.getAllKeys())) {
+                Tag child = compound.get(key);
+                if (child instanceof StringTag string && string.getAsString().equals(from)) {
+                    compound.putString(key, to);
+                    count++;
+                } else {
+                    count += rewriteStrings(child, from, to);
+                }
+            }
+        } else if (tag instanceof ListTag list) {
+            for (int i = 0; i < list.size(); i++) {
+                Tag child = list.get(i);
+                if (child instanceof StringTag string && string.getAsString().equals(from)) {
+                    list.set(i, StringTag.valueOf(to));
+                    count++;
+                } else {
+                    count += rewriteStrings(child, from, to);
+                }
+            }
+        }
+        return count;
+    }
+
     /** F-037: without Mekanism, its pieces load as a removal marker instead of failing the whole spell. */
     @GameTest(template = "psi110_empty")
     public static void mekanismPiecesAreRemovedWithoutMekanism(GameTestHelper helper) {
-        for (String path : new String[] {"trick_radiation_filter", "trick_radiation_injection", "trick_cure_radiation",
-                "selector_autonomous_caster_position"}) {
+        for (String path : new String[] {"trick_radiation_filter", "trick_cure_radiation", "selector_autonomous_caster_position"}) {
             var id = Psitweaks.location(path);
             var tag = new CompoundTag();
             if (ModList.get().isLoaded("mekanism")) {
@@ -113,6 +199,28 @@ public final class Psi110CompatibilityGameTests {
                 helper.assertTrue(OptionalSpellPieceCompat.isRemovalMarker(restored),
                         path + " should be removed without Mekanism, got " + restored);
             }
+        }
+        helper.succeed();
+    }
+
+    /**
+     * 作動式: 放射線注入は使えなくしているあいだ登録せず、プログラムも作らない。このピースを含む魔法式は、ピースを外して読み込む
+     * （Mekanism の有無によらない）。
+     */
+    @GameTest(template = "psi110_empty")
+    public static void radiationInjectionIsRemovedWhileDisabled(GameTestHelper helper) {
+        var id = Psitweaks.location("trick_radiation_injection");
+        boolean enabled = com.moratan251.psitweaks.common.compat.MekanismCompat.isRadiationInjectionEnabled();
+        helper.assertTrue(PsiAPI.SPELL_PIECE_REGISTRY.containsKey(id) == enabled,
+                "Trick: Radiation Injection must be registered only while it is enabled");
+        helper.assertTrue(net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(Psitweaks.location("program_radiation_injection")) == enabled,
+                "Program: Radiation Injection must exist only while the trick is enabled");
+        if (!enabled) {
+            var tag = new CompoundTag();
+            tag.putString("key", id.toString());
+            var restored = SpellPiece.createFromNBT(new Spell(), tag);
+            helper.assertTrue(OptionalSpellPieceCompat.isRemovalMarker(restored),
+                    "Spells with Trick: Radiation Injection must load with it taken out, got " + restored);
         }
         helper.succeed();
     }

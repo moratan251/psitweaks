@@ -1,0 +1,7 @@
+{
+  "command_id": "zone_magic",
+  "group": "psitweaks:spellgram_zone",
+  "piece": "psitweaks:trick_soak_zone",
+  "unlock_item": "psitweaks:program_zone_magic",
+  "unlock_tag": "psitweaks.unlock.zone_magic"
+}

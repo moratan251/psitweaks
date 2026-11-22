@@ -23,6 +23,8 @@ public final class PsitweaksEffects {
             EFFECTS.register("radiation_filter", EffectRadiationFilter::new);
     public static final DeferredHolder<MobEffect, MobEffect> CARBON_POISONING =
             EFFECTS.register("carbon_poisoning", EffectCarbonPoisoning::new);
+    public static final DeferredHolder<MobEffect, MobEffect> TORPOR =
+            EFFECTS.register("torpor", EffectTorpor::new);
 
     private PsitweaksEffects() {
     }

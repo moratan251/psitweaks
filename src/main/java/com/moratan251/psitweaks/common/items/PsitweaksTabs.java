@@ -194,8 +194,10 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_DRY_METEOR.get());
         output.accept(PsitweaksItems.PROGRAM_SUPREME_INFUSION.get());
         output.accept(PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER.get());
-        if (MekanismCompat.isMekanismLoaded()) {
+        if (MekanismCompat.isRadiationInjectionEnabled()) {
             output.accept(PsitweaksItems.PROGRAM_RADIATION_INJECTION.get());
+        }
+        if (MekanismCompat.isMekanismLoaded()) {
             output.accept(PsitweaksItems.PROGRAM_RADIATION_FILTER.get());
             output.accept(PsitweaksItems.PROGRAM_CURE_RADIATION.get());
         }
@@ -208,6 +210,13 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK.get());
         output.accept(PsitweaksItems.PROGRAM_MASS_HARVEST.get());
         output.accept(PsitweaksItems.PROGRAM_IDEA_STORAGE.get());
+        output.accept(PsitweaksItems.PROGRAM_ZONE_MAGIC.get());
+        output.accept(PsitweaksItems.PROGRAM_ACCELERATION_ZONE.get());
+        output.accept(PsitweaksItems.PROGRAM_DECELERATION_ZONE.get());
+        if (MekanismCompat.isMekanismLoaded()) {
+            output.accept(PsitweaksItems.PROGRAM_DECONTAMINATION.get());
+            output.accept(PsitweaksItems.PROGRAM_CONTAMINATION_ZONE.get());
+        }
         output.accept(PsitweaksItems.PROGRAM_CHAIN_LIGHTNING.get());
         output.accept(PsitweaksItems.PROGRAM_MINE_GENESIS.get());
         output.accept(PsitweaksItems.PROGRAM_DANCING_BLADES.get());

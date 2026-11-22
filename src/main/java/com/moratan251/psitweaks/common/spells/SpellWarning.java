@@ -27,6 +27,8 @@ public final class SpellWarning {
     public static final String TARGET_FALLEN = "psitweaks.spellwarning.target_fallen";
     /** Trick: Breed found no food in the caster's inventory for an animal; argument: the first such animal's name. */
     public static final String NO_BREEDING_FOOD = "psitweaks.spellwarning.no_breeding_food";
+    /** A zone that handles Mekanism's radiation was not placed because radiation is turned off in Mekanism's config. */
+    public static final String RADIATION_DISABLED = "psitweaks.spellwarning.radiation_disabled";
 
     public final String key;
     public final Object[] arguments;

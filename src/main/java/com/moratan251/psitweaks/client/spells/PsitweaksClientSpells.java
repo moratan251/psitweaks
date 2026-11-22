@@ -102,7 +102,7 @@ public final class PsitweaksClientSpells {
     public static final DeferredHolder<Material, Material> SAFETY =
             registerPieceMaterial("safety");
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_INJECTION =
-            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_radiation_injection") : null;
+            MekanismCompat.isRadiationInjectionEnabled() ? registerPieceMaterial("trick_radiation_injection") : null;
     public static final DeferredHolder<Material, Material> TRICK_RADIATION_FILTER =
             MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_radiation_filter") : null;
     public static final DeferredHolder<Material, Material> TRICK_CURE_RADIATION =
@@ -412,6 +412,14 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("trick_silence_zone");
     public static final DeferredHolder<Material, Material> TRICK_CHARGED_ZONE =
             registerPieceMaterial("trick_charged_zone");
+    public static final DeferredHolder<Material, Material> TRICK_ACCELERATION_ZONE =
+            registerPieceMaterial("trick_acceleration_zone");
+    public static final DeferredHolder<Material, Material> TRICK_DECELERATION_ZONE =
+            registerPieceMaterial("trick_deceleration_zone");
+    public static final DeferredHolder<Material, Material> TRICK_DECONTAMINATION =
+            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_decontamination") : null;
+    public static final DeferredHolder<Material, Material> TRICK_CONTAMINATION_ZONE =
+            MekanismCompat.isMekanismLoaded() ? registerPieceMaterial("trick_contamination_zone") : null;
     public static final DeferredHolder<Material, Material> SELECTOR_OWN_SPELLGRAMS =
             registerPieceMaterial("selector_own_spellgrams");
     public static final DeferredHolder<Material, Material> TRICK_RECALL_SPELLGRAM =

@@ -1,0 +1,6 @@
+{
+  "command_id": "gravity_zone",
+  "piece": "psitweaks:trick_gravity_zone",
+  "unlock_item": "psitweaks:program_zone_magic",
+  "unlock_tag": "psitweaks.unlock.zone_magic"
+}

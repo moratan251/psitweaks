@@ -9,13 +9,11 @@ import com.moratan251.psitweaks.common.particles.PsitweaksParticles;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import com.moratan251.psitweaks.common.compat.ImmersiveEngineeringCompat;
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
@@ -81,8 +79,6 @@ public class EntityTurbulenceZone extends SpellGramZone {
     public static final int WIND_COUNT_INTERVAL = 20;
     /** 雲が 1 tick に縮む半径（仮）。 */
     private static final float CLOUD_SHRINK_PER_TICK = 0.15F;
-    /** そらさない魔法の弾の mod。 */
-    private static final Set<String> SPELL_PROJECTILE_MODS = Set.of("psi", "psitweaks", "ars_nouveau", "irons_spellbooks");
 
     /** 辺の色: 風の薄緑。 */
     public static final int OUTLINE_COLOR = 0x9CF2C4;
@@ -378,7 +374,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /** 他者の飛び道具の向きを、入ってきたときに 1 回だけランダムに曲げる（速さは変えない）。 */
     private void deflect(ServerLevel level, Projectile projectile) {
-        if (isSpellProjectile(projectile) || CasterIds.matches(projectile.getOwner(), getCasterUuid())
+        if (ZoneProjectiles.isSpellProjectile(projectile) || CasterIds.matches(projectile.getOwner(), getCasterUuid())
                 || !deflected.add(projectile.getUUID())) {
             return;
         }
@@ -405,11 +401,6 @@ public class EntityTurbulenceZone extends SpellGramZone {
         projectile.setXRot(pitch);
         level.sendParticles(ParticleTypes.CLOUD, projectile.getX(), projectile.getY(), projectile.getZ(), 4,
                 0.1, 0.1, 0.1, 0.02);
-    }
-
-    private static boolean isSpellProjectile(Projectile projectile) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(projectile.getType());
-        return SPELL_PROJECTILE_MODS.contains(id.getNamespace());
     }
 
     /** 残留ポーション・ドラゴンブレスの雲を早く縮める。 */

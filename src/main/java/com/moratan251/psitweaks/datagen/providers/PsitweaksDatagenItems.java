@@ -85,6 +85,11 @@ final class PsitweaksDatagenItems {
             item("program_mass_block_break", "Program: Mass Block Break", "プログラム: 大規模ブロック破壊", "program_trick_mass_block_break"),
             item("program_mass_harvest", "Program: Mass Harvest", "プログラム: 大規模収穫", "program_trick_mass_harvest"),
             item("program_idea_storage", "Program: Ideaspace Storage", "プログラム: イデアストレージ", "program_trick_idea_storage"),
+            item("program_zone_magic", "Program: Zone Magic", "プログラム: 領域魔法", "program_zone_magic"),
+            item("program_acceleration_zone", "Program: Acceleration Zone", "プログラム: 加速領域", "program_acceleration_zone"),
+            item("program_deceleration_zone", "Program: Deceleration Zone", "プログラム: 減速領域", "program_deceleration_zone"),
+            item("program_decontamination", "Program: Decontamination", "プログラム: 除染", "program_decontamination"),
+            item("program_contamination_zone", "Program: Contamination Zone", "プログラム: 汚染領域", "program_contamination_zone"),
             item("program_chain_lightning", "Program: Chain Lightning", "プログラム: 連鎖電光", "program_trick_chain_lightning"),
             item("program_mine_genesis", "Program: Mine Genesis", "プログラム: 地雷原", "program_trick_mine_genesis"),
             item("program_dancing_blades", "Program: Dancing Blades", "プログラム: ダンシングブレイズ", "program_trick_dancing_blades"),
@@ -182,7 +187,10 @@ final class PsitweaksDatagenItems {
     }
 
     static List<GeneratedItem> items() {
-        return ITEMS;
+        if (com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+            return ITEMS;
+        }
+        return ITEMS.stream().filter(item -> !item.id().equals("program_radiation_injection")).toList();
     }
 
     private static GeneratedItem item(String id, String enUs, String jaJp) {

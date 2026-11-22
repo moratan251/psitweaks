@@ -700,6 +700,22 @@ public abstract class SpellGramZone extends SpellGramObject {
         return false;
     }
 
+    /**
+     * ランダムなブロックの変化で、ブロック 1 つが 1 tick に選ばれる見込み。既定は {@link #RANDOM_BLOCK_TICK_CHANCE}。
+     * 加速領域はゲームルール randomTickSpeed と威力で決める。
+     */
+    protected double randomBlockTickChance(ServerLevel level) {
+        return RANDOM_BLOCK_TICK_CHANCE;
+    }
+
+    /**
+     * ランダムなブロックの変化が、同じ術者の加速領域の重なったところで、その倍率（{@link EntityAccelerationZone#multiplier}）
+     * だけ速まるか。加速領域そのものは速めない。
+     */
+    protected boolean acceleratedByOwnZones() {
+        return true;
+    }
+
     /** {@link #randomBlockTick} が何かするかもしれないブロックの状態か（選んだブロックを先に確かめる）。 */
     protected boolean mayRandomTick(BlockState state) {
         return false;
@@ -907,9 +923,13 @@ public abstract class SpellGramZone extends SpellGramObject {
     }
 
     /**
-     * 範囲 {@code region} から、体積 × {@link #RANDOM_BLOCK_TICK_CHANCE} 個（端数は確率で）のブロックをランダムに選び、
+     * 範囲 {@code region} から、体積 × {@link #randomBlockTickChance} 個（端数は確率で）のブロックをランダムに選び、
      * {@link #mayRandomTick} が真で、範囲の中で、この領域が効いているものに {@link #randomBlockTick} を呼ぶ。
      * 読み込まれていないブロックは飛ばす。
+     * <p>
+     * 同じ術者の加速領域が重なっていれば（{@link #acceleratedByOwnZones}）、重なる加速領域の一番大きい倍率だけ選ぶ数を増やし、
+     * 選んだ場所の倍率（加速が効いていなければ 1）÷ 一番大きい倍率 の見込みで間引く。どのブロックも、そこに効いている倍率だけ
+     * 速く変わる。
      */
     private void randomBlockTicks(ServerLevel level, Player caster, ZoneRegion region) {
         ZoneArea scanned = region.area();
@@ -926,7 +946,15 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (sizeX <= 0 || sizeY <= 0 || sizeZ <= 0) {
             return;
         }
-        double expected = (double) sizeX * sizeY * sizeZ * RANDOM_BLOCK_TICK_CHANCE;
+        List<EntityAccelerationZone> boosters = acceleratedByOwnZones() ? EntityAccelerationZone.boostersOf(this) : List.of();
+        double maxMultiplier = 1.0;
+        for (EntityAccelerationZone booster : boosters) {
+            maxMultiplier = Math.max(maxMultiplier, booster.multiplier());
+        }
+        double expected = (double) sizeX * sizeY * sizeZ * randomBlockTickChance(level) * maxMultiplier;
+        if (expected <= 0.0) {
+            return;
+        }
         int picks = (int) expected;
         if (random.nextDouble() < expected - picks) {
             picks++;
@@ -942,9 +970,14 @@ public abstract class SpellGramZone extends SpellGramObject {
                 continue;
             }
             BlockPos world = region.worldPos(pos);
-            if (isActiveAt(world)) {
-                randomBlockTick(level, caster, pos.immutable(), world, state);
+            if (!isActiveAt(world)) {
+                continue;
             }
+            if (maxMultiplier > 1.0
+                    && random.nextDouble() * maxMultiplier >= EntityAccelerationZone.multiplierAt(boosters, world)) {
+                continue;
+            }
+            randomBlockTick(level, caster, pos.immutable(), world, state);
         }
     }
 

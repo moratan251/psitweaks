@@ -33,7 +33,9 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "dry_meteor", "trick_dry_meteor", PsitweaksItems.PROGRAM_DRY_METEOR);
         spellUnlock(entries, "supreme_infusion", "trick_supreme_infusion", PsitweaksItems.PROGRAM_SUPREME_INFUSION);
         spellUnlock(entries, "molecular_divider", "trick_molecular_divider", PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER);
-        spellUnlock(entries, "radiation_injection", "trick_radiation_injection", PsitweaksItems.PROGRAM_RADIATION_INJECTION);
+        if (com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+            spellUnlock(entries, "radiation_injection", "trick_radiation_injection", PsitweaksItems.PROGRAM_RADIATION_INJECTION);
+        }
         spellUnlock(entries, "radiation_filter", "trick_radiation_filter", PsitweaksItems.PROGRAM_RADIATION_FILTER);
         spellUnlock(entries, "cure_radiation", "trick_cure_radiation", PsitweaksItems.PROGRAM_CURE_RADIATION);
         spellUnlock(entries, "guillotine", "trick_guillotine", PsitweaksItems.PROGRAM_GUILLOTINE);
@@ -51,6 +53,28 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "burst", "trick_burst", PsitweaksItems.PROGRAM_BURST);
         spellUnlock(entries, "micro_black_hole", "trick_micro_black_hole", PsitweaksItems.PROGRAM_MICRO_BLACK_HOLE);
         spellUnlock(entries, "parade", "trick_parade", PsitweaksItems.PROGRAM_PARADE);
+        // 領域魔法（今の 8 つ）: group 指定で spellgram_zone グループ全体も解禁対象にする（同じピースを指せる定義は 1 つだけ）
+        spellUnlock(entries, "zone_magic", "trick_soak_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic", "spellgram_zone");
+        spellUnlock(entries, "gravity_zone", "trick_gravity_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        spellUnlock(entries, "heat_zone", "trick_heat_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        spellUnlock(entries, "freeze_zone", "trick_freeze_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        spellUnlock(entries, "turbulence_zone", "trick_turbulence_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        spellUnlock(entries, "interference_zone", "trick_interference_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        spellUnlock(entries, "silence_zone", "trick_silence_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        spellUnlock(entries, "charged_zone", "trick_charged_zone", PsitweaksItems.PROGRAM_ZONE_MAGIC,
+                Psitweaks.MOD_ID + ".unlock.zone_magic");
+        // 新しい領域はそれぞれのプログラムで開く（ピースの定義がグループ spellgram_zone の定義より優先する）
+        spellUnlock(entries, "acceleration_zone", "trick_acceleration_zone", PsitweaksItems.PROGRAM_ACCELERATION_ZONE);
+        spellUnlock(entries, "deceleration_zone", "trick_deceleration_zone", PsitweaksItems.PROGRAM_DECELERATION_ZONE);
+        spellUnlock(entries, "contamination_zone", "trick_contamination_zone", PsitweaksItems.PROGRAM_CONTAMINATION_ZONE);
+        spellUnlock(entries, "decontamination", "trick_decontamination", PsitweaksItems.PROGRAM_DECONTAMINATION);
         // group 指定で idea_storage グループ全体を解禁対象にする(以下のピース単位定義はコマンド互換用)
         spellUnlock(entries, "idea_storage", "trick_idea_storage_view", PsitweaksItems.PROGRAM_IDEA_STORAGE,
                 Psitweaks.MOD_ID + ".unlock.idea_storage", "idea_storage");

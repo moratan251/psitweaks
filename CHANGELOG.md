@@ -60,16 +60,23 @@
   + Trick: Interference Zone
   + Trick: Silence Zone
   + Trick: Charged Zone
+  + Trick: Acceleration Zone: growing things inside (crops, saplings, Budding Amethyst and others in the block tag psitweaks:zone_acceleratable) get extra random ticks and grow (Power + 5) times as fast in all. Your own zones' random block changes speed up by the same factor where they overlap
+  + Trick: Deceleration Zone: living beings inside get the new effect Torpor (movement and flying speed −(Power + 4) × 5%, players' attack speed −(Power + 4) × 3%), and mobs and projectiles slow down every tick. It spares your side, bosses and magic projectiles
+  + Trick: Contamination Zone (with Mekanism): exposes the living beings inside to radiation up to (Power + 4) × 0.1 mSv, without leaving radiation sources. It spares your side
+
+
+- Added Trick: Decontamination (with Mekanism): places a Resident SpellGram core (not a zone) that weakens the radiation sources within 32 blocks, nearer and stronger ones first, as much as its Cost allows. It is unlocked by research (Program: Decontamination)
 
 
 - Common rules of Zone Magic
+  + Zone tricks are unlocked by research: Program: Zone Magic unlocks the first eight above, and the Acceleration, Deceleration and Contamination Zones each have a program of their own
   + The area is set by a Matrix (region matrix) and a Size (at most 16); leaving out the Matrix centers it on the caster. A zone lasts for its Time (at most 120 seconds, 30 when left out)
-  + Zones that take a Power need one (at least 1). Potency and Cost grow with the area and the Power, and the Cost also grows with the Time. The Heat, Freeze, Turbulence and Charged Zones work at a fair strength even at Power 1: their effects, totals and Cost follow the Power plus 4, and their Potency follows the Power itself
+  + Zones that take a Power need one (at least 1). Potency and Cost grow with the area and the Power, and the Cost also grows with the Time. Every zone with a Power but the Gravity Zone works at a fair strength even at Power 1: its effects, totals and Cost follow the Power plus 4, and its Potency follows the Power itself. The Gravity, Acceleration, Deceleration and Contamination Zones take a Power of at most 10
   + What stands in for fuel or energy (heat, cooling, FE and wind) is a total set by the zone's Cost and shared by everything inside. The Heat, Freeze, Turbulence and Charged Zones take a Power above 10, which only adds to that total
   + Where your own zones of the same kind overlap, their totals add up and other effects use only the strongest one. Where your own Heat Zone and Freeze Zone overlap, they cancel each other out
   + Where other casters' zones overlap, only the zones of the caster with the highest Phenomenon Interference work
   + Zones change blocks at random, like random ticks but faster (each block about once every 5 seconds): the Heat Zone melts ice and snow layers and dries Wet Sponges, the Freeze Zone freezes water sources, the Soak Zone moistens farmland and wets Sponges, and the Charged Zone scrapes oxidation off copper
-  + Aiming at the core of a zone shows its integrity and how much of its Heat, Cooling, Charge or Wind is in use out of the total
+  + Aiming at the core of a zone shows its integrity and how much of its Heat, Cooling, Charge or Wind is in use out of the total; the Acceleration, Deceleration and Contamination Zones show their strength
   + The floor of a zone shows a magic circle in the CAD's color (its resolution can be lowered in the client config)
 
 
@@ -131,6 +138,11 @@
 - Removed Trick: Set SpellGram Follow Target
   + Spells that contain it load with just that piece removed
   + Trick: Circle Follow, which moves only your own circles, is a separate new piece
+
+
+- Disabled Trick: Radiation Injection for now (with Mekanism)
+  + Spells that contain it load with just that piece removed
+  + Trick: Cure Radiation still removes 0.4 Sv × 10^(Power − 1); the Radiation Injection multiplier setting no longer applies to it
 
 
 - Renamed the attribute "Spell Damage Factor" to "Phenomenon Interference" (the ID is unchanged)

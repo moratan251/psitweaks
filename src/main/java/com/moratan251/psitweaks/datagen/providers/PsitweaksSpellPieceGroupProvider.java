@@ -56,7 +56,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "trick_ice_circle", "trick_ice_circle");
         group(output, saves, "spellgram_zone", "trick_soak_zone", "trick_gravity_zone", "trick_heat_zone",
                 "trick_freeze_zone", "trick_turbulence_zone", "trick_interference_zone", "trick_silence_zone",
-                "trick_charged_zone");
+                "trick_charged_zone", "trick_acceleration_zone", "trick_deceleration_zone", "trick_contamination_zone");
         group(output, saves, "spellgram_control", "selector_own_spellgrams", "trick_recall_spellgram",
                 "trick_extend_spellgram", "selector_spellgram_integrity", "trick_circle_follow");
         group(output, saves, "trick_die_flex", "trick_die_flex");
@@ -66,9 +66,12 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         group(output, saves, "trick_switch_flex", "trick_switch_flex");
         group(output, saves, "jump_anchor", "jump_anchor");
         group(output, saves, "safety", "safety");
-        group(output, saves, "trick_radiation_injection", "trick_radiation_injection");
+        if (com.moratan251.psitweaks.common.compat.MekanismCompat.RADIATION_INJECTION_ENABLED) {
+            group(output, saves, "trick_radiation_injection", "trick_radiation_injection");
+        }
         group(output, saves, "trick_radiation_filter", "trick_radiation_filter");
         group(output, saves, "trick_cure_radiation", "trick_cure_radiation");
+        group(output, saves, "trick_decontamination", "trick_decontamination");
         group(output, saves, "trick_guillotine", "trick_guillotine");
         group(output, saves, "trick_chain_lightning", "trick_chain_lightning");
         group(output, saves, "trick_mine_genesis", "trick_mine_genesis");
@@ -137,7 +140,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         // These definitions use IDs only; optional pieces need not be loaded during datagen.
         String requiredMod = switch (id) {
             case "trick_radiation_injection", "trick_radiation_filter", "trick_cure_radiation",
-                    "selector_autonomous_caster_position" -> "mekanism";
+                    "trick_decontamination", "selector_autonomous_caster_position" -> "mekanism";
             case "trick_physical_propulsion" -> "sable";
             default -> null;
         };

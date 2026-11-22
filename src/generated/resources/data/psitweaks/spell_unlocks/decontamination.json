@@ -1,0 +1,6 @@
+{
+  "command_id": "decontamination",
+  "piece": "psitweaks:trick_decontamination",
+  "unlock_item": "psitweaks:program_decontamination",
+  "unlock_tag": "psitweaks.unlock.trick_decontamination"
+}
