@@ -5,13 +5,6 @@
     {
       "count": 1,
       "ingredient": {
-        "item": "psitweaks:program_blank"
-      }
-    },
-    {
-      "consume": false,
-      "count": 1,
-      "ingredient": {
         "item": "psitweaks:program_acceleration_zone"
       }
     },

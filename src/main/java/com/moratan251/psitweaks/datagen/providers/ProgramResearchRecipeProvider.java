@@ -251,21 +251,19 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
         ), PsitweaksItems.PROGRAM_ZONE_MAGIC, 2_000L, 2_400);
 
-        // 加速領域（段 2）: 触媒はプログラム: 領域魔法とプログラム: 時間加速。数字と素材は仮
+        // 加速領域（段 2）: プログラム: 領域魔法とプログラム: 時間加速を消費する（空白のプログラムは使わない）。数字と素材は仮
         research(recipes, "program_acceleration_zone", List.of(
-                input(PsitweaksItems.PROGRAM_BLANK, 1),
-                catalyst(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
-                catalyst(PsitweaksItems.PROGRAM_TIME_ACCELERATE, 1),
+                input(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
+                input(PsitweaksItems.PROGRAM_TIME_ACCELERATE, 1),
                 input(Items.CLOCK, 8),
                 input(Items.BONE_BLOCK, 16),
                 input(Items.AMETHYST_SHARD, 16),
                 input(PsitweaksItems.FLASHMETAL, 8)
         ), PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 2_000L, 6_000);
 
-        // 減速領域（段 2）: 触媒はプログラム: 加速領域。数字と素材は仮
+        // 減速領域（段 2）: プログラム: 加速領域を消費する（空白のプログラムは使わない）。数字と素材は仮
         research(recipes, "program_deceleration_zone", List.of(
-                input(PsitweaksItems.PROGRAM_BLANK, 1),
-                catalyst(PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 1),
+                input(PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 1),
                 input(Items.COBWEB, 16),
                 input(Items.SOUL_SAND, 16),
                 input(Items.CLOCK, 8),
@@ -281,11 +279,10 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.FLASHMETAL, 8)
         ), PsitweaksItems.PROGRAM_DECONTAMINATION, 4_000L, 36_000);
 
-        // 汚染領域（段 2、Mekanism のみ）: 触媒はプログラム: 領域魔法とプログラム: 放射線フィルタ。数字と素材は仮
+        // 汚染領域（段 2、Mekanism のみ）: プログラム: 領域魔法とプログラム: 放射線フィルタを消費する（空白のプログラムは使わない）。数字と素材は仮
         research(recipes, "program_contamination_zone", List.of(
-                input(PsitweaksItems.PROGRAM_BLANK, 1),
-                catalyst(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
-                catalyst(PsitweaksItems.PROGRAM_RADIATION_FILTER, 1),
+                input(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
+                input(PsitweaksItems.PROGRAM_RADIATION_FILTER, 1),
                 inputId(mekanism("ingot_uranium"), 32),
                 inputId(mekanism("pellet_polonium"), 4),
                 input(PsitweaksItems.FLASHMETAL, 8)

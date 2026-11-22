@@ -11,18 +11,10 @@
     {
       "count": 1,
       "ingredient": {
-        "item": "psitweaks:program_blank"
-      }
-    },
-    {
-      "consume": false,
-      "count": 1,
-      "ingredient": {
         "item": "psitweaks:program_zone_magic"
       }
     },
     {
-      "consume": false,
       "count": 1,
       "ingredient": {
         "item": "psitweaks:program_radiation_filter"
