@@ -52,6 +52,9 @@ public final class PsitweaksDamageTypes {
     /** 雷雲（乱流領域と荷電領域）の雷撃のダメージ。術者を攻撃者に持つ。 */
     public static final ResourceKey<DamageType> THUNDERCLOUD =
             ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("thundercloud"));
+    /** 汚染流（乱流領域と汚染領域）のダメージ。術者を攻撃者に持つ。 */
+    public static final ResourceKey<DamageType> CONTAMINATED_STREAM =
+            ResourceKey.create(Registries.DAMAGE_TYPE, Psitweaks.location("contaminated_stream"));
 
     private PsitweaksDamageTypes() {
     }

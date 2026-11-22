@@ -2,12 +2,17 @@ package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
 import com.moratan251.psitweaks.common.compat.MekanismCompat;
 import com.moratan251.psitweaks.common.compat.ZoneRadiationCompat;
+import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
+import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
+import com.moratan251.psitweaks.common.particles.PsitweaksParticles;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,10 +29,19 @@ import java.util.List;
  * Mekanism 側で効く。
  * <p>
  * 同じ種類が重なったところでは、威力の一番高いものだけが効く。
+ * <p>
+ * 同じ術者の乱流領域と重なったブロックは「汚染流」になる: 照射は続けたまま、中の生き物に {@link #STORM_INTERVAL} tick ごとに
+ * ダメージを与える（攻撃術式の共通ルール、「プレイヤーに安全」も照射と同じ、設定 {@code contaminated_stream.damageMultiplier}）。
+ * 1 回の基本のダメージは 0.15 × 強さ（{@link SpellGramZone#STORM_DAMAGE_PER_POWER}）、強さは乱流の強さをこの領域の入れた威力 × 4
+ * で頭打ちにしたもの（{@link #comboAttackPowerAt}、熱乱流・吹雪と同じ）。
  */
 public class EntityContaminationZone extends SpellGramZone {
     /** 辺の色: 毒々しい黄緑。 */
     public static final int OUTLINE_COLOR = 0xC4FF1A;
+    /** 乱流と重なったとき（汚染流）の辺の色と、渦の煙の色: 毒の緑。 */
+    public static final int STORM_OUTLINE_COLOR = 0x47DB38;
+    /** 汚染流のダメージの間隔（tick）。 */
+    public static final int STORM_INTERVAL = 10;
     /** さらす間隔（tick）。 */
     public static final int INTERVAL = 20;
     /** 中の威力 1 あたりの、被ばく量の上限（Sv）: 0.1 mSv。 */
@@ -111,7 +125,24 @@ public class EntityContaminationZone extends SpellGramZone {
 
     @Override
     public int getOutlineColor() {
-        return OUTLINE_COLOR;
+        return isStorm() ? STORM_OUTLINE_COLOR : OUTLINE_COLOR;
+    }
+
+    @Override
+    protected void onSpellGramTickServer() {
+        super.onSpellGramTickServer();
+        if (isEnded() || getArea().isEmpty() || !(level() instanceof ServerLevel level) || tickCount % STORM_INTERVAL != 0) {
+            return;
+        }
+        refreshStorm();
+        if (isStorm() && MekanismCompat.isMekanismLoaded() && ZoneRadiationCompat.isRadiationEnabled()) {
+            // 汚染流: 同じ術者の乱流領域と重なったところ。
+            ZoneAttacks.harmScaled(level, this, PsitweaksDamageTypes.CONTAMINATED_STREAM,
+                    PsitweaksConfig.COMMON.contaminatedStreamDamageMultiplier.get(),
+                    pos -> STORM_DAMAGE_PER_POWER * comboAttackPowerAt(pos, power,
+                            EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER), target -> true, target -> {
+                    }, attackOptions());
+        }
     }
 
     /** 照準の表示: 被ばく量の上限（mSv）。 */
@@ -130,11 +161,22 @@ public class EntityContaminationZone extends SpellGramZone {
         power = buffer.readFloat();
     }
 
-    /** Mekanism の放射線の粒を、範囲の中にまばらに出す。 */
+    /** Mekanism の放射線の粒を、範囲の中にまばらに出す。乱流と重なったところ（汚染流）には、緑の煙と放射線の粒の渦も出す。 */
     @Override
     protected void spawnClientParticles() {
         if (!MekanismCompat.isMekanismLoaded()) {
             return;
+        }
+        if (isStorm()) {
+            ParticleOptions smoke = ColorParticleOption.create(PsitweaksParticles.TINTED_CLOUD.get(),
+                    ((STORM_OUTLINE_COLOR >> 16) & 0xFF) / 255.0F, ((STORM_OUTLINE_COLOR >> 8) & 0xFF) / 255.0F,
+                    (STORM_OUTLINE_COLOR & 0xFF) / 255.0F);
+            for (AABB storm : stormBoxes()) {
+                int count = ZoneParticles.count(storm, 20.0, 6, 16);
+                ZoneParticles.vortex(level(), random, storm, particleCount(count), smoke, 0.5, 0.04);
+                ZoneParticles.vortex(level(), random, storm, particleCount(Math.max(1, count / 3)),
+                        ZoneRadiationCompat.radiationParticle(), 0.45, 0.02);
+            }
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();

@@ -177,6 +177,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         String blizzard = damageType("blizzard");
         String rainstorm = damageType("rainstorm");
         String thundercloud = damageType("thundercloud");
+        String contaminatedStream = damageType("contaminated_stream");
         // Active Air Mine keeps what it had as a sonic boom: armour and protection enchantments do not help.
         tag(tags, "minecraft", "bypasses_armor", meteorLine, tunneler, burst, microBlackHole, activeAirMine);
         // Meteors and blades are separate hits, so each one counts even right after the previous.
@@ -192,7 +193,7 @@ public class PsiTweaksTagsProvider implements DataProvider {
         // These tricks push their targets themselves.
         tag(tags, "minecraft", "no_knockback", meteorLine, carbonPoisoning, mineGenesis, burst, airBullet, dancingBlades,
                 starfall, microBlackHole, flareCircle, iceCircle, heatStorm, blizzard, rainstorm,
-                thundercloud);
+                thundercloud, contaminatedStream);
         // Trick: Barrier does not absorb these: damage from inside the body or the world, not from an attack.
         tag(tags, "psitweaks", "bypasses_barrier",
                 tagRef("minecraft:bypasses_invulnerability"),

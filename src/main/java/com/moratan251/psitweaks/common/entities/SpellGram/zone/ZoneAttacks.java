@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 
 /**
- * 領域を組み合わせたときのダメージ（熱乱流・吹雪・暴風雨）。攻撃術式の共通ルール {@link AttackRules} に乗せる: 術者・
+ * 領域を組み合わせたときのダメージ（熱乱流・吹雪・暴風雨・汚染流）。攻撃術式の共通ルール {@link AttackRules} に乗せる: 術者・
  * 術者のペット・同じチームには当てず、ダメージは 基本値 × 設定の倍率 × 全体倍率 × 術者の事象干渉力。
  */
 final class ZoneAttacks {
@@ -31,6 +31,13 @@ final class ZoneAttacks {
     static void harmScaled(ServerLevel level, SpellGramZone zone, ResourceKey<DamageType> type, double perSpellMultiplier,
                            ToDoubleFunction<BlockPos> baseDamageAt, Predicate<LivingEntity> who,
                            Consumer<LivingEntity> afterHit) {
+        harmScaled(level, zone, type, perSpellMultiplier, baseDamageAt, who, afterHit, AttackRules.Options.DEFAULT);
+    }
+
+    /** {@link #harmScaled} の、攻撃の設定 {@code options}（「プレイヤーに安全」の扱い）を渡すもの。 */
+    static void harmScaled(ServerLevel level, SpellGramZone zone, ResourceKey<DamageType> type, double perSpellMultiplier,
+                           ToDoubleFunction<BlockPos> baseDamageAt, Predicate<LivingEntity> who,
+                           Consumer<LivingEntity> afterHit, AttackRules.Options options) {
         LivingEntity caster = zone.getCaster();
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, zone.getArea().bounds(), target -> {
             if (!target.isAlive() || !who.test(target)) {
@@ -53,7 +60,7 @@ final class ZoneAttacks {
                 continue;
             }
             float damage = AttackRules.scale(base, perSpellMultiplier, caster);
-            if (AttackRules.harmWithoutCooldown(caster, target, AttackRules.Options.DEFAULT, source, damage)) {
+            if (AttackRules.harmWithoutCooldown(caster, target, options, source, damage)) {
                 afterHit.accept(target);
             }
         }

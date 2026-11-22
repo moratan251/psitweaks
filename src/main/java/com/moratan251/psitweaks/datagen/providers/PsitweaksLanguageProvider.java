@@ -801,6 +801,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "blizzard", "Blizzard", "吹雪");
         addDamageMultiplierConfig(root, "rainstorm", "Rainstorm", "暴風雨");
         addDamageMultiplierConfig(root, "thundercloud", "Thundercloud", "雷雲");
+        addDamageMultiplierConfig(root, "contaminated_stream", "Contaminated Stream", "汚染流");
         addConfigLabel(root, "psitweaks.configuration.spells.gravity_zone", "Gravity Zone", "加重領域");
         addConfigValue(root, "psitweaks.configuration.spells.gravity_zone.contraption_multiplier", "Contraption Multiplier",
                 "物理で動く構造物への倍率",
@@ -1157,6 +1158,18 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("death.attack.psitweaks.rainstorm.item", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sが%3$sで起こした暴風雨に打たれて力尽きた";
             default -> "%1$s was beaten down by a Rainstorm %2$s raised using %3$s";
+        });
+        root.addProperty("death.attack.psitweaks.contaminated_stream", switch (locale) {
+            case "ja_jp" -> "%1$sは汚染流に蝕まれた";
+            default -> "%1$s was eaten away by a Contaminated Stream";
+        });
+        root.addProperty("death.attack.psitweaks.contaminated_stream.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sの汚染流に蝕まれた";
+            default -> "%1$s was eaten away by %2$s's Contaminated Stream";
+        });
+        root.addProperty("death.attack.psitweaks.contaminated_stream.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで起こした汚染流に蝕まれた";
+            default -> "%1$s was eaten away by a Contaminated Stream %2$s raised using %3$s";
         });
     }
 

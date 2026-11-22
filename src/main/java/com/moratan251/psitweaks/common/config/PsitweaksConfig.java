@@ -33,6 +33,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue blizzardDamageMultiplier;
         public final ModConfigSpec.DoubleValue rainstormDamageMultiplier;
         public final ModConfigSpec.DoubleValue thundercloudDamageMultiplier;
+        public final ModConfigSpec.DoubleValue contaminatedStreamDamageMultiplier;
         public final ModConfigSpec.DoubleValue gravityZoneContraptionMultiplier;
         public final ModConfigSpec.DoubleValue spellGramIntegrityMultiplier;
         public final ModConfigSpec.IntValue spellGramMaxObjectsPerPlayer;
@@ -262,6 +263,19 @@ public class PsitweaksConfig {
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
             builder.pop(); // thundercloud カテゴリ終了
+
+            // --- 汚染流（乱流領域と汚染領域の組み合わせ） ---
+            builder.comment("Contaminated Stream Settings")
+                    .translation("psitweaks.configuration.spells.contaminated_stream")
+                    .push("contaminated_stream");
+
+            contaminatedStreamDamageMultiplier = builder
+                    .comment("汚染流（乱流領域と汚染領域の組み合わせ）のダメージの倍率",
+                            "Damage multiplier for the Contaminated Stream (a Turbulence Zone and a Contamination Zone together)")
+                    .translation("psitweaks.configuration.spells.contaminated_stream.damage_multiplier")
+                    .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
+
+            builder.pop(); // contaminated_stream カテゴリ終了
 
             // --- 加重領域 ---
             builder.comment("Gravity Zone Settings")

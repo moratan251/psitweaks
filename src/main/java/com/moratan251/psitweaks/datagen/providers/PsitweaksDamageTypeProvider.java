@@ -76,6 +76,8 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
                 damageType("psitweaks.rainstorm", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.THUNDERCLOUD.location(),
                 damageType("psitweaks.thundercloud", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.CONTAMINATED_STREAM.location(),
+                damageType("psitweaks.contaminated_stream", "never", 0.1F));
     }
 
     private static JsonObject damageType(String messageId, String scaling, float exhaustion) {

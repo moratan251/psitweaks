@@ -8,6 +8,8 @@ import com.moratan251.psitweaks.common.effects.PsitweaksEffects;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityContaminationZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
@@ -42,6 +44,7 @@ import static com.moratan251.psitweaks.common.gametest.ZoneCasting.cast;
 import static com.moratan251.psitweaks.common.gametest.ZoneCasting.castOrClean;
 import static com.moratan251.psitweaks.common.gametest.ZoneCasting.cleanup;
 import static com.moratan251.psitweaks.common.gametest.ZoneCasting.paramValue;
+import static com.moratan251.psitweaks.common.gametest.ZoneElementGameTests.castTurbulenceOver;
 
 /**
  * 汚染領域（作動式: 汚染領域、Mekanism のみ）。Mekanism がなければ、ピースなどが登録されていないことだけ
@@ -190,6 +193,128 @@ public final class ContaminationZoneGameTests {
         helper.assertFalse(placed, "No zone may be placed while radiation is off");
         helper.assertTrue(warnings == 2, "Both tricks must warn, got " + messages);
         helper.succeed();
+    }
+
+    /**
+     * 汚染流（同じ術者の乱流領域と重なったところ）: 照射は続けたまま、0.5 秒ごとにダメージを足す。範囲は汚染が x・y・z 0〜2、
+     * 乱流（威力 40、サイズは 16 までなのでコスト 4555 で強さ 40）が x 0〜1。汚染の威力 10 は強さを 40 で頭打ちにするので、1 回の
+     * 基本のダメージは 6。
+     * 乱流のない x 2 のハスクは、被ばくするだけで汚染流のダメージを受けない（Mekanism の放射線そのもののダメージは除く）。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contaminated_stream", timeoutTicks = 100)
+    public static void contaminatedStreamHurtsWhileItKeepsExposing(GameTestHelper helper) {
+        if (!requireRadiation(helper)) {
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_contaminated_stream", new Vec3(4.5, 0.0, 4.5));
+        Husk stormed = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(0.5, 0.0, 1.5)), 100.0F);
+        Husk plain = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 0.0, 1.5)), 100.0F);
+        Runnable cleanup = () -> {
+            stormed.discard();
+            plain.discard();
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, contamination(helper, new BlockPos(1, 1, 1)), 3.0, 10.0);
+            castTurbulenceOver(caster, helper.absolutePos(new BlockPos(0, 0, 0)), 2, 3, 3, 40.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        float stormedBefore = stormed.getHealth();
+        float plainBefore = plain.getHealth();
+        helper.runAfterDelay(25, () -> {
+            float stormedLoss = stormedBefore - stormed.getHealth();
+            float plainLoss = plainBefore - plain.getHealth();
+            String plainHurtBy = plain.getLastDamageSource() == null ? "nothing" : plain.getLastDamageSource().getMsgId();
+            double stormedDose = ZoneRadiationCompat.exposure(stormed);
+            double plainDose = ZoneRadiationCompat.exposure(plain);
+            EntityContaminationZone zone = SpellGramIndex.all(level, EntityContaminationZone.class).stream()
+                    .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElse(null);
+            boolean storm = zone != null && zone.isStorm();
+            int outline = zone == null ? 0 : zone.getOutlineColor();
+            float combo = zone == null ? 0.0F : zone.comboAttackPowerAt(stormed.blockPosition(), zone.getPower(),
+                    EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER);
+            cleanup.run();
+            helper.assertTrue(storm, "The caster's own turbulence must turn the zone into a Contaminated Stream");
+            helper.assertTrue(outline == EntityContaminationZone.STORM_OUTLINE_COLOR, "The stream must draw its green outline");
+            helper.assertTrue(combo == 40.0F, "Power 10 must let the stream reach attack power 40, got " + combo);
+            // Mekanism の放射線そのもの（被ばく量に応じてときどき 1）は、どちらのハスクにも入りうる。汚染流は 1 回 6 弱。
+            helper.assertTrue(stormedLoss >= plainLoss + 3.0F,
+                    "The Contaminated Stream must hurt the husk inside: stream " + stormedLoss + ", plain " + plainLoss);
+            helper.assertTrue(plainLoss < 3.0F && !"psitweaks.contaminated_stream".equals(plainHurtBy),
+                    "Without turbulence the zone must not hurt with the stream, lost " + plainLoss + " by " + plainHurtBy);
+            helper.assertTrue(stormedDose >= STEP * 0.5 && plainDose >= STEP * 0.5,
+                    "Both husks must still be exposed: stream " + stormedDose + ", plain " + plainDose);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 汚染流の強さは、乱流の強さを汚染領域の入れた威力 × 4 で頭打ちにしたもの（熱乱流・吹雪と同じ）。威力 40 の乱流（強さ 40）でも、
+     * 威力 1 の汚染領域なら 4、1 回の基本のダメージは 0.6。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contaminated_stream_limit", timeoutTicks = 60)
+    public static void contaminationPowerLimitsTheStream(GameTestHelper helper) {
+        if (!requireRadiation(helper)) {
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_contaminated_stream_limit", new Vec3(4.5, 0.0, 4.5));
+        Runnable cleanup = () -> cleanup(helper, caster);
+        try {
+            cast(caster, contamination(helper, new BlockPos(1, 1, 1)), 3.0, 1.0);
+            castTurbulenceOver(caster, helper.absolutePos(new BlockPos(0, 0, 0)), 3, 3, 3, 40.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(15, () -> {
+            BlockPos inside = helper.absolutePos(new BlockPos(1, 1, 1));
+            EntityContaminationZone zone = SpellGramIndex.all(level, EntityContaminationZone.class).stream()
+                    .filter(found -> caster.getUUID().equals(found.getCasterUuid())).findFirst().orElseThrow();
+            float storm = zone.stormAttackPowerAt(inside);
+            float combo = zone.comboAttackPowerAt(inside, zone.getPower(), EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER);
+            cleanup.run();
+            helper.assertTrue(storm == 40.0F, "The turbulence alone must reach attack power 40, was " + storm);
+            helper.assertTrue(combo == 4.0F, "A Contamination Zone of Power 1 must limit the attack power to 4, was " + combo);
+            helper.assertTrue(Math.abs(SpellGramZone.STORM_DAMAGE_PER_POWER * combo - 0.6F) < 1.0E-6F,
+                    "A hit must be 0.6 before multipliers");
+            helper.succeed();
+        });
+    }
+
+    /** Mekanism の設定で放射線が切ってあると、汚染領域が置けないので、乱流を重ねても汚染流は起きない（落ちない）。 */
+    @GameTest(template = TEMPLATE, batch = RADIATION_OFF_BATCH, timeoutTicks = 100)
+    public static void noContaminatedStreamWhileRadiationIsOff(GameTestHelper helper) throws Exception {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_contaminated_stream_off", new Vec3(4.5, 0.0, 4.5));
+        Husk husk = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 0.0, 1.5)), 100.0F);
+        Runnable cleanup = () -> {
+            husk.discard();
+            cleanup(helper, caster);
+        };
+        try {
+            cast(caster, contamination(helper, new BlockPos(1, 1, 1)), 3.0, 10.0);
+            castTurbulenceOver(caster, helper.absolutePos(new BlockPos(0, 0, 0)), 3, 3, 3);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        float before = husk.getHealth();
+        helper.runAfterDelay(25, () -> {
+            float loss = before - husk.getHealth();
+            boolean contaminated = SpellGramIndex.all(helper.getLevel(), EntityContaminationZone.class).stream()
+                    .anyMatch(found -> caster.getUUID().equals(found.getCasterUuid()));
+            cleanup.run();
+            helper.assertFalse(contaminated, "No Contamination Zone may be placed while radiation is off");
+            helper.assertTrue(loss == 0.0F, "The turbulence alone must not hurt, lost " + loss);
+            helper.succeed();
+        });
     }
 
     /** Mekanism がなければ通す（false を返す）。Mekanism があって放射線が切ってあれば落とす。 */

@@ -1053,19 +1053,19 @@ public final class ZoneElementGameTests {
     }
 
     /** {@code caster} が、ブロック {@code from}（角）から x×y×z ブロックの乱流領域（威力 10）を置く。 */
-    private static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs)
+    static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs)
             throws SpellRuntimeException {
         castTurbulenceOver(caster, from, xs, ys, zs, 10.0);
     }
 
     /** {@code caster} が、ブロック {@code from}（角）から x×y×z ブロックの、威力 {@code power} の乱流領域を置く。 */
-    private static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs, double power)
+    static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs, double power)
             throws SpellRuntimeException {
         castTurbulenceOver(caster, from, xs, ys, zs, power, 32.0);
     }
 
     /** {@code caster} が、入力のサイズ {@code size}（コストを決める）で、ブロック {@code from}（角）から x×y×z ブロックの乱流領域を置く。 */
-    private static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs, double power, double size)
+    static void castTurbulenceOver(ServerPlayer caster, BlockPos from, int xs, int ys, int zs, double power, double size)
             throws SpellRuntimeException {
         MatrixValue matrix = new MatrixValue(4, 4, new double[]{
                 xs, 0, 0, from.getX() - 0.5,

@@ -43,7 +43,7 @@ import java.util.UUID;
  *   IE の風車）の台数で分ける（{@link #generatorWind}）。受け取った風は発電に足す（{@code WindGeneratorTurbulenceMixin}・
  *   {@code WindmillTurbulenceMixin}）。どちらの mod もなくても値を持つ。</li>
  *   <li>同じ術者のほかの領域と重なると、重なったブロックで強める: 加熱領域は熱乱流、凍結領域は吹雪、湿潤領域は暴風雨、
- *   荷電領域は雷雲（{@link #blowsFor}、それぞれの領域が見る）。Create の一括加工（湿潤領域の一括洗浄、加熱領域の一括燻製、
+ *   荷電領域は雷雲、汚染領域は汚染流（{@link #blowsFor}、それぞれの領域が見る）。Create の一括加工（湿潤領域の一括洗浄、加熱領域の一括燻製、
  *   加熱領域と荷電領域の重なりの一括製錬）は、乱流が重なったところでしか起きない。</li>
  * </ul>
  */
@@ -71,7 +71,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
     public static final float MAX_ATTACK_POWER = 40.0F;
     /** 組み合わせの攻撃の強さ 1 に要る、乱流領域の 1 秒あたりのコスト。 */
     public static final float ATTACK_COST_PER_SECOND = 3.0F;
-    /** 熱乱流・吹雪の攻撃の強さの上限を決める、加熱領域・凍結領域の入れた威力 1 あたりの強さ（威力 10 で 40）。 */
+    /** 熱乱流・吹雪・汚染流の攻撃の強さの上限を決める、加熱領域・凍結領域・汚染領域の入れた威力 1 あたりの強さ（威力 10 で 40）。 */
     public static final float PARTNER_ATTACK_POWER_PER_POWER = 4.0F;
     /** 雷雲の攻撃の強さの上限を決める、荷電領域の入れた威力 1 あたりの強さ（威力 10 で 40）。 */
     public static final float CHARGED_ATTACK_POWER_PER_POWER = 4.0F;
@@ -124,7 +124,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
         return power;
     }
 
-    /** 組み合わせ（熱乱流・吹雪・暴風雨・雷雲）のダメージに使う、この乱流の強さ（{@link #attackPower(float, int)}）。 */
+    /** 組み合わせ（熱乱流・吹雪・暴風雨・雷雲・汚染流）のダメージに使う、この乱流の強さ（{@link #attackPower(float, int)}）。 */
     public float attackPower() {
         return attackPower(getPlacementCost(), getLifetimeTicks());
     }
@@ -317,7 +317,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /**
      * 術者 {@code casterId} の乱流領域の風が、ブロック {@code pos} に吹いているか（サーバー側）。重ねたときの強化
-     * （熱乱流・吹雪・暴風雨・雷雲と、Create の一括加工）は、同じ術者の領域どうしだけ。
+     * （熱乱流・吹雪・暴風雨・雷雲・汚染流と、Create の一括加工）は、同じ術者の領域どうしだけ。
      */
     public static boolean blowsFor(Level level, BlockPos pos, @Nullable UUID casterId) {
         for (SpellGramObject object : SpellGramIndex.ofCaster(level, casterId)) {
@@ -419,15 +419,19 @@ public class EntityTurbulenceZone extends SpellGramZone {
         deflected.clear();
     }
 
-    /** 竜巻の煙の色: 熱乱流（オレンジ）・乱流＋湿潤（青）・吹雪（水色）・雷雲（暗い紫がかった灰色）。 */
+    /** 竜巻の煙の色: 熱乱流（オレンジ）・乱流＋湿潤（青）・吹雪（水色）・雷雲（暗い紫がかった灰色）・汚染流（毒の緑）。 */
     private static final float[] HEAT_SMOKE = {1.0F, 0.55F, 0.16F};
     private static final float[] SOAK_SMOKE = {0.25F, 0.5F, 1.0F};
     private static final float[] FREEZE_SMOKE = {0.62F, 0.92F, 1.0F};
     private static final float[] CHARGE_SMOKE = {0.42F, 0.4F, 0.56F};
+    private static final float[] CONTAMINATION_SMOKE = {
+            ((EntityContaminationZone.STORM_OUTLINE_COLOR >> 16) & 0xFF) / 255.0F,
+            ((EntityContaminationZone.STORM_OUTLINE_COLOR >> 8) & 0xFF) / 255.0F,
+            (EntityContaminationZone.STORM_OUTLINE_COLOR & 0xFF) / 255.0F};
     /** 煙の色の割合（{@link #stormShare}）を測り直す間隔（tick）。あいだは前の結果を使う。 */
     private static final int STORM_SHARE_REFRESH_TICKS = 10;
 
-    /** 煙の色の割合（熱乱流・乱流＋湿潤・吹雪・雷雲の順、クライアント側）。まだ測っていなければ null。 */
+    /** 煙の色の割合（熱乱流・乱流＋湿潤・吹雪・雷雲・汚染流の順、クライアント側）。まだ測っていなければ null。 */
     @org.jetbrains.annotations.Nullable
     private double[] stormShares;
     private int stormSharesTick;
@@ -441,33 +445,39 @@ public class EntityTurbulenceZone extends SpellGramZone {
         AABB box = getOutline();
         double swirl = 0.25 + 0.035 * power;
         int count = ZoneParticles.count(box, 40.0, 4, 14);
-        // 同じ術者のほかの領域と重なっているとき（熱乱流・乱流＋湿潤・吹雪）: 重なっている体積の割合だけ、煙をその色にする。
+        // 同じ術者のほかの領域と重なっているとき（熱乱流・暴風雨・吹雪・雷雲・汚染流）: 重なっている体積の割合だけ、煙をその色に
+        // する。
         if (stormShares == null || tickCount - stormSharesTick >= STORM_SHARE_REFRESH_TICKS) {
             stormShares = new double[]{stormShare(box, EntityHeatZone.class), stormShare(box, EntitySoakZone.class),
-                    stormShare(box, EntityFreezeZone.class), stormShare(box, EntityChargedZone.class)};
+                    stormShare(box, EntityFreezeZone.class), stormShare(box, EntityChargedZone.class),
+                    stormShare(box, EntityContaminationZone.class)};
             stormSharesTick = tickCount;
         }
         double heat = stormShares[0];
         double soak = stormShares[1];
         double freeze = stormShares[2];
         double charge = stormShares[3];
-        double total = heat + soak + freeze + charge;
+        double contamination = stormShares[4];
+        double total = heat + soak + freeze + charge + contamination;
         if (total > 1.0) {
             heat /= total;
             soak /= total;
             freeze /= total;
             charge /= total;
+            contamination /= total;
         }
         int heatCount = (int) Math.round(count * heat);
         int soakCount = (int) Math.round(count * soak);
         int freezeCount = (int) Math.round(count * freeze);
         int chargeCount = (int) Math.round(count * charge);
-        int white = Math.max(0, count - heatCount - soakCount - freezeCount - chargeCount);
+        int contaminationCount = (int) Math.round(count * contamination);
+        int white = Math.max(0, count - heatCount - soakCount - freezeCount - chargeCount - contaminationCount);
         ZoneParticles.vortex(level(), random, box, particleCount(white), ParticleTypes.CLOUD, swirl, 0.06);
         tintedVortex(box, heatCount, HEAT_SMOKE, swirl, 0.08);
         tintedVortex(box, soakCount, SOAK_SMOKE, swirl, 0.05);
         tintedVortex(box, freezeCount, FREEZE_SMOKE, swirl, 0.04);
         tintedVortex(box, chargeCount, CHARGE_SMOKE, swirl, 0.03);
+        tintedVortex(box, contaminationCount, CONTAMINATION_SMOKE, swirl, 0.05);
         if (random.nextInt(3) == 0) {
             ZoneParticles.vortex(level(), random, box, particleCount(2), ParticleTypes.WHITE_SMOKE, swirl * 1.2, 0.04);
         }
