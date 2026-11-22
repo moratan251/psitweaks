@@ -435,7 +435,7 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(ProgramResearchRecipeProvider.enchantedBook(Enchantments.LOYALTY), 1),
                 counted(PsitweaksItems.HEAVY_PSIMETAL, 2),
                 counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 2)));
-        addProgram(recipes, PsitweaksItems.PROGRAM_STARFALL, List.of(
+        addProgram(recipes, PsitweaksItems.PROGRAM_PSEUDO_METEOR, List.of(
                 counted(Items.NETHER_STAR, 1),
                 counted(Items.FIRE_CHARGE, 2),
                 counted(PsitweaksItems.HEAVY_PSIMETAL, 3),

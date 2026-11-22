@@ -14,7 +14,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
 import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
-import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.entities.combat.EntityPseudoMeteor;
 import com.moratan251.psitweaks.common.items.BladePouches;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.menu.BladePouchMenu;
@@ -41,7 +41,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickAirBull
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorLine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
-import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickStarfall;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPseudoMeteor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -285,8 +285,8 @@ public final class CombatSpellGameTests {
         };
     }
 
-    private static PieceTrickStarfall starfall(Map<String, ?> values) {
-        return new PieceTrickStarfall(new Spell()) {
+    private static PieceTrickPseudoMeteor pseudoMeteor(Map<String, ?> values) {
+        return new PieceTrickPseudoMeteor(new Spell()) {
             @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return values.get(param.name); }
             @Override public <T> T getParamEvaluation(SpellParam<?> param) { return evaluation(values, param); }
         };
@@ -493,8 +493,8 @@ public final class CombatSpellGameTests {
         helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
-        int[] starfall = stats(starfall(Map.of(POWER, 1.0, NUMBER, 13.0)));
-        helper.assertTrue(starfall[0] == 1160 && starfall[1] == 7680, "Meteors must be capped at 12, got " + starfall[0] + "/" + starfall[1]);
+        int[] pseudoMeteor = stats(pseudoMeteor(Map.of(POWER, 1.0, NUMBER, 13.0)));
+        helper.assertTrue(pseudoMeteor[0] == 1160 && pseudoMeteor[1] == 7680, "Meteors must be capped at 12, got " + pseudoMeteor[0] + "/" + pseudoMeteor[1]);
         int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 40.0)));
         helper.assertTrue(gravity[0] == 1380 && gravity[1] == 2900,
                 "Micro Black Hole radius must be capped at 32 (1170+50P+5R / 500P+75R), got " + gravity[0] + "/" + gravity[1]);
@@ -507,7 +507,7 @@ public final class CombatSpellGameTests {
     }
 
     /**
-     * The smallest Dancing Blades and Starfall need a heavy psimetal CAD (more than flashmetal's 800, within the beta's
+     * The smallest Dancing Blades and Pseudo Meteor need a heavy psimetal CAD (more than flashmetal's 800, within the beta's
      * 1000); the smallest Burst and Micro Black Hole need a psycheonic metal CAD (more than the heavy alpha's 1200,
      * within 1500).
      */
@@ -515,8 +515,8 @@ public final class CombatSpellGameTests {
     public static void largeCombatTricksNeedHighTierCads(GameTestHelper helper) throws Exception {
         int blades = stats(dancingBlades(Map.of()))[0];
         helper.assertTrue(blades > 800 && blades <= 1000, "Smallest Dancing Blades must need heavy psimetal, got " + blades);
-        int starfall = stats(starfall(Map.of(POWER, 0.5, NUMBER, 1.0)))[0];
-        helper.assertTrue(starfall > 800 && starfall <= 1000, "Smallest Starfall must need heavy psimetal, got " + starfall);
+        int pseudoMeteor = stats(pseudoMeteor(Map.of(POWER, 0.5, NUMBER, 1.0)))[0];
+        helper.assertTrue(pseudoMeteor > 800 && pseudoMeteor <= 1000, "Smallest Pseudo Meteor must need heavy psimetal, got " + pseudoMeteor);
         int burst = stats(burst(Map.of(POWER, 0.5)))[0];
         helper.assertTrue(burst > 1200 && burst <= 1500, "Smallest Burst must need psycheonic metal, got " + burst);
         int gravity = stats(microBlackHole(Map.of(POWER, 0.5, RADIUS, 3.0)))[0];
@@ -1293,14 +1293,14 @@ public final class CombatSpellGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = TEMPLATE, batch = BATCH + "_starfall")
-    public static void starfallCallsMeteorsAroundThePosition(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 4), "starfall-caster");
+    @GameTest(template = TEMPLATE, batch = BATCH + "_pseudo_meteor")
+    public static void pseudoMeteorCallsMeteorsAroundThePosition(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "pseudo-meteor-caster");
         Vec3 center = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
-        starfall(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 3.0)).execute(new SpellContext().setPlayer(player));
-        List<EntityStarfallMeteor> meteors = helper.getLevel().getEntitiesOfClass(EntityStarfallMeteor.class,
+        pseudoMeteor(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 3.0)).execute(new SpellContext().setPlayer(player));
+        List<EntityPseudoMeteor> meteors = helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class,
                 new AABB(center, center).inflate(8));
-        meteors.sort(Comparator.comparingInt(EntityStarfallMeteor::getDelay));
+        meteors.sort(Comparator.comparingInt(EntityPseudoMeteor::getDelay));
         try {
             helper.assertTrue(meteors.size() == 3, "Three meteors expected, got " + meteors.size());
             helper.assertTrue(meteors.get(0).getDelay() == 20 && meteors.get(1).getDelay() == 25 && meteors.get(2).getDelay() == 30,
@@ -1308,25 +1308,25 @@ public final class CombatSpellGameTests {
             Vec3 first = meteors.get(0).getTarget();
             helper.assertTrue(near(first.x, center.x) && near(first.z, center.z) && near(first.y, center.y),
                     "The first meteor must land on the ground at the centre: " + first);
-            for (EntityStarfallMeteor meteor : meteors) {
+            for (EntityPseudoMeteor meteor : meteors) {
                 Vec3 target = meteor.getTarget();
                 helper.assertTrue(Math.hypot(target.x - center.x, target.z - center.z) <= 4.0 + EPSILON,
                         "Meteors must land within 4 blocks: " + target);
                 helper.assertTrue(meteor.getStart().y > target.y + 20, "Meteors must fall from the sky");
             }
         } finally {
-            meteors.forEach(EntityStarfallMeteor::discard);
+            meteors.forEach(EntityPseudoMeteor::discard);
         }
         helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void starfallMeteorBurnsWhatItHits(GameTestHelper helper) {
+    public static void pseudoMeteorBurnsWhatItHits(GameTestHelper helper) {
         var player = caster(helper, new BlockPos(0, 0, 4), "meteor-caster");
         var hit = husk(helper, new BlockPos(2, 0, 2), false);
         var spared = husk(helper, new BlockPos(4, 0, 4), false);
         Vec3 target = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
-        var meteor = new EntityStarfallMeteor(helper.getLevel(), target.add(0, 8, 0), target, 0);
+        var meteor = new EntityPseudoMeteor(helper.getLevel(), target.add(0, 8, 0), target, 0);
         meteor.configure(player, false, 9.0F, CombatSpellHelper.DEFAULT_SPELL_COLOR);
         helper.getLevel().addFreshEntity(meteor);
         helper.succeedWhen(() -> {

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "psitweaks:item/program_trick_starfall"
+    "layer0": "psitweaks:item/program_trick_pseudo_meteor"
   }
 }

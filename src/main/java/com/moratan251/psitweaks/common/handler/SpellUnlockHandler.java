@@ -112,7 +112,7 @@ public final class SpellUnlockHandler {
             definition("chain_lightning", "trick_chain_lightning", "program_chain_lightning"),
             definition("mine_genesis", "trick_mine_genesis", "program_mine_genesis"),
             definition("dancing_blades", "trick_dancing_blades", "program_dancing_blades"),
-            definition("starfall", "trick_starfall", "program_starfall"),
+            definition("pseudo_meteor", "trick_pseudo_meteor", "program_pseudo_meteor"),
             definition("burst", "trick_burst", "program_burst"),
             definition("micro_black_hole", "trick_micro_black_hole", "program_micro_black_hole"),
             definition("parade", "trick_parade", "program_parade"),

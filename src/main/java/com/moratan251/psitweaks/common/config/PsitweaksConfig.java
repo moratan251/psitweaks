@@ -50,7 +50,7 @@ public class PsitweaksConfig {
         public final ModConfigSpec.DoubleValue psiBulletDamageMultiplier;
         public final ModConfigSpec.DoubleValue gramDemolitionDamageMultiplier;
         public final ModConfigSpec.DoubleValue dancingBladesDamageMultiplier;
-        public final ModConfigSpec.DoubleValue starfallDamageMultiplier;
+        public final ModConfigSpec.DoubleValue pseudoMeteorDamageMultiplier;
         public final ModConfigSpec.DoubleValue microBlackHoleDamageMultiplier;
         public final ModConfigSpec.DoubleValue barrierShieldMultiplier;
         public final ModConfigSpec.DoubleValue gravstringerBaseDamage;
@@ -462,18 +462,18 @@ public class PsitweaksConfig {
 
             builder.pop(); // dancing_blades カテゴリ終了
 
-            // --- スターフォール ---
-            builder.comment("Starfall Settings")
-                    .translation("psitweaks.configuration.spells.starfall")
-                    .push("starfall");
+            // --- 疑似隕石 ---
+            builder.comment("Pseudo Meteor Settings")
+                    .translation("psitweaks.configuration.spells.pseudo_meteor")
+                    .push("pseudo_meteor");
 
-            starfallDamageMultiplier = builder
-                    .comment("作動式: スターフォール のダメージ倍率",
-                            "Damage multiplier for Trick: Starfall")
-                    .translation("psitweaks.configuration.spells.starfall.damage_multiplier")
+            pseudoMeteorDamageMultiplier = builder
+                    .comment("作動式: 疑似隕石 のダメージ倍率",
+                            "Damage multiplier for Trick: Pseudo Meteor")
+                    .translation("psitweaks.configuration.spells.pseudo_meteor.damage_multiplier")
                     .defineInRange("damageMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 
-            builder.pop(); // starfall カテゴリ終了
+            builder.pop(); // pseudo_meteor カテゴリ終了
 
             // --- マイクロブラックホール ---
             builder.comment("Micro Black Hole Settings")

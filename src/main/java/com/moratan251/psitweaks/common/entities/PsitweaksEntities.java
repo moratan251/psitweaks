@@ -9,7 +9,7 @@ import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityPsiBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
-import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.entities.combat.EntityPseudoMeteor;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityIceCircle;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityFreezeZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityGravityZone;
@@ -291,15 +291,15 @@ public class PsitweaksEntities {
                             .noSave()
                             .build(Psitweaks.MOD_ID + ":dancing_blade"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<EntityStarfallMeteor>> STARFALL_METEOR =
-            ENTITY_TYPES.register("starfall_meteor",
-                    () -> EntityType.Builder.<EntityStarfallMeteor>of(EntityStarfallMeteor::new, MobCategory.MISC)
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityPseudoMeteor>> PSEUDO_METEOR =
+            ENTITY_TYPES.register("pseudo_meteor",
+                    () -> EntityType.Builder.<EntityPseudoMeteor>of(EntityPseudoMeteor::new, MobCategory.MISC)
                             .sized(0.25f, 0.25f)
                             .clientTrackingRange(10)
                             .updateInterval(20)
                             .fireImmune()
                             .noSave()
-                            .build(Psitweaks.MOD_ID + ":starfall_meteor"));
+                            .build(Psitweaks.MOD_ID + ":pseudo_meteor"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityMicroBlackHole>> MICRO_BLACK_HOLE =
             ENTITY_TYPES.register("micro_black_hole",

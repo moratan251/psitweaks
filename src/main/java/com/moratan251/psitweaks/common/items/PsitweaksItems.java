@@ -331,7 +331,7 @@ public final class PsitweaksItems {
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_CHAIN_LIGHTNING = registerProgram("program_chain_lightning", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MINE_GENESIS = registerProgram("program_mine_genesis", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_DANCING_BLADES = registerProgram("program_dancing_blades", false);
-    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_STARFALL = registerProgram("program_starfall", false);
+    public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PSEUDO_METEOR = registerProgram("program_pseudo_meteor", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_BURST = registerProgram("program_burst", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_MICRO_BLACK_HOLE = registerProgram("program_micro_black_hole", false);
     public static final DeferredItem<ItemPsitweaksProgram> PROGRAM_PARADE = registerProgram("program_parade", false);

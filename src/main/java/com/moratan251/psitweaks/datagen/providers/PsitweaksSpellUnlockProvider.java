@@ -49,7 +49,7 @@ public class PsitweaksSpellUnlockProvider implements DataProvider {
         spellUnlock(entries, "chain_lightning", "trick_chain_lightning", PsitweaksItems.PROGRAM_CHAIN_LIGHTNING);
         spellUnlock(entries, "mine_genesis", "trick_mine_genesis", PsitweaksItems.PROGRAM_MINE_GENESIS);
         spellUnlock(entries, "dancing_blades", "trick_dancing_blades", PsitweaksItems.PROGRAM_DANCING_BLADES);
-        spellUnlock(entries, "starfall", "trick_starfall", PsitweaksItems.PROGRAM_STARFALL);
+        spellUnlock(entries, "pseudo_meteor", "trick_pseudo_meteor", PsitweaksItems.PROGRAM_PSEUDO_METEOR);
         spellUnlock(entries, "burst", "trick_burst", PsitweaksItems.PROGRAM_BURST);
         spellUnlock(entries, "micro_black_hole", "trick_micro_black_hole", PsitweaksItems.PROGRAM_MICRO_BLACK_HOLE);
         spellUnlock(entries, "parade", "trick_parade", PsitweaksItems.PROGRAM_PARADE);

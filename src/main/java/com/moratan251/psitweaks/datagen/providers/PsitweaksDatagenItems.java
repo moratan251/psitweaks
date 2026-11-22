@@ -93,7 +93,7 @@ final class PsitweaksDatagenItems {
             item("program_chain_lightning", "Program: Chain Lightning", "プログラム: 連鎖電光", "program_trick_chain_lightning"),
             item("program_mine_genesis", "Program: Mine Genesis", "プログラム: 地雷原", "program_trick_mine_genesis"),
             item("program_dancing_blades", "Program: Dancing Blades", "プログラム: ダンシングブレイズ", "program_trick_dancing_blades"),
-            item("program_starfall", "Program: Starfall", "プログラム: スターフォール", "program_trick_starfall"),
+            item("program_pseudo_meteor", "Program: Pseudo Meteor", "プログラム: 疑似隕石", "program_trick_pseudo_meteor"),
             item("program_burst", "Program: Burst", "プログラム: 爆裂", "program_trick_burst"),
             item("program_micro_black_hole", "Program: Micro Black Hole", "プログラム: マイクロブラックホール", "program_trick_micro_black_hole"),
             item("program_parade", "Program: Parade", "プログラム: 仮装行列", "program_trick_parade"),

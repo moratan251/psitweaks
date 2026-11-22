@@ -56,8 +56,8 @@ public class PsitweaksDamageTypeProvider implements DataProvider {
                 damageType("psitweaks.gram_demolition", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.DANCING_BLADES.location(),
                 damageType("psitweaks.dancing_blades", "never", 0.1F));
-        damageTypes.put(PsitweaksDamageTypes.STARFALL.location(),
-                damageType("psitweaks.starfall", "never", 0.1F));
+        damageTypes.put(PsitweaksDamageTypes.PSEUDO_METEOR.location(),
+                damageType("psitweaks.pseudo_meteor", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.MICRO_BLACK_HOLE.location(),
                 damageType("psitweaks.micro_black_hole", "never", 0.1F));
         damageTypes.put(PsitweaksDamageTypes.ACTIVE_AIR_MINE.location(),

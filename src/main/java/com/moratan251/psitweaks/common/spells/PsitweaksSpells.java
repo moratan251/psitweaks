@@ -127,8 +127,8 @@ public final class PsitweaksSpells {
             registerPiece("trick_gram_demolition", PieceTrickGramDemolition.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_DANCING_BLADES =
             registerPiece("trick_dancing_blades", PieceTrickDancingBlades.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_STARFALL =
-            registerPiece("trick_starfall", PieceTrickStarfall.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_PSEUDO_METEOR =
+            registerPiece("trick_pseudo_meteor", PieceTrickPseudoMeteor.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_MICRO_BLACK_HOLE =
             registerPiece("trick_micro_black_hole", PieceTrickMicroBlackHole.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> TRICK_MATERIAL_MUTATION =

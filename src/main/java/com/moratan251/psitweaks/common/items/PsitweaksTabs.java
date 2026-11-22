@@ -220,7 +220,7 @@ public final class PsitweaksTabs {
         output.accept(PsitweaksItems.PROGRAM_CHAIN_LIGHTNING.get());
         output.accept(PsitweaksItems.PROGRAM_MINE_GENESIS.get());
         output.accept(PsitweaksItems.PROGRAM_DANCING_BLADES.get());
-        output.accept(PsitweaksItems.PROGRAM_STARFALL.get());
+        output.accept(PsitweaksItems.PROGRAM_PSEUDO_METEOR.get());
         output.accept(PsitweaksItems.PROGRAM_BURST.get());
         output.accept(PsitweaksItems.PROGRAM_MICRO_BLACK_HOLE.get());
         output.accept(PsitweaksItems.PROGRAM_PARADE.get());

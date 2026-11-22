@@ -21,10 +21,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * One meteor of Trick: Starfall. It waits for its turn (a target ring marks where it will land), then falls along a
+ * One meteor of Trick: Pseudo Meteor. It waits for its turn (a target ring marks where it will land), then falls along a
  * straight line from the sky and explodes on arrival. It passes through terrain and never breaks blocks.
  */
-public class EntityStarfallMeteor extends CombatSpellEntity {
+public class EntityPseudoMeteor extends CombatSpellEntity {
     public static final int FLIGHT_TICKS = 14;
     public static final float IMPACT_RADIUS = 2.5F;
     private static final double EDGE_DAMAGE_FACTOR = 0.5;
@@ -32,19 +32,19 @@ public class EntityStarfallMeteor extends CombatSpellEntity {
 
     // Where the fall starts, relative to the landing spot. The entity itself stays on the landing spot, whose
     // position is synced exactly; absolute coordinates in floats would drift far from the world origin.
-    private static final EntityDataAccessor<Float> FALL_X = SynchedEntityData.defineId(EntityStarfallMeteor.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> FALL_Y = SynchedEntityData.defineId(EntityStarfallMeteor.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> FALL_Z = SynchedEntityData.defineId(EntityStarfallMeteor.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.defineId(EntityStarfallMeteor.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> FALL_X = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> FALL_Y = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> FALL_Z = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.INT);
     /** Game time the meteor was cast; timing uses world time so clients that saw it late still stay in step. */
-    private static final EntityDataAccessor<Long> CAST_TIME = SynchedEntityData.defineId(EntityStarfallMeteor.class, EntityDataSerializers.LONG);
+    private static final EntityDataAccessor<Long> CAST_TIME = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.LONG);
 
-    public EntityStarfallMeteor(EntityType<?> type, Level level) {
+    public EntityPseudoMeteor(EntityType<?> type, Level level) {
         super(type, level);
     }
 
-    public EntityStarfallMeteor(Level level, Vec3 start, Vec3 target, int delay) {
-        this(PsitweaksEntities.STARFALL_METEOR.get(), level);
+    public EntityPseudoMeteor(Level level, Vec3 start, Vec3 target, int delay) {
+        this(PsitweaksEntities.PSEUDO_METEOR.get(), level);
         setPos(target.x, target.y, target.z);
         entityData.set(FALL_X, (float) (start.x - target.x));
         entityData.set(FALL_Y, (float) (start.y - target.y));
@@ -128,7 +128,7 @@ public class EntityStarfallMeteor extends CombatSpellEntity {
     private void impact(ServerLevel level) {
         Vec3 at = getTarget();
         LivingEntity caster = getCaster();
-        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.STARFALL, this, caster);
+        DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.PSEUDO_METEOR, this, caster);
         AABB area = new AABB(at, at).inflate(IMPACT_RADIUS + 1.0);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, area)) {
             if (!canAffect(caster, living)) {

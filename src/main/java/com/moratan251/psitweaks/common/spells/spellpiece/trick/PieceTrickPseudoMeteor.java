@@ -1,7 +1,7 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.config.PsitweaksConfig;
-import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.entities.combat.EntityPseudoMeteor;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
@@ -30,7 +30,7 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * Calls Count meteors down around the position. After a one-second warning they land one after another, the first
  * at the centre and the rest within four blocks, each exploding without breaking blocks and setting things alight.
  */
-public class PieceTrickStarfall extends PieceTrick {
+public class PieceTrickPseudoMeteor extends PieceTrick {
     private static final double MIN_POWER = 0.5;
     private static final float BASE_DAMAGE = 50.0F;
     private static final float DAMAGE_PER_POWER = 40.0F;
@@ -53,7 +53,7 @@ public class PieceTrickStarfall extends PieceTrick {
     private SpellParam<Number> power;
     private SpellParam<Number> count;
 
-    public PieceTrickStarfall(Spell spell) {
+    public PieceTrickPseudoMeteor(Spell spell) {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER).mul(POTENCY_PER_POWER)
                 .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).min(MAX_METEORS).mul(POTENCY_PER_METEOR))
@@ -96,7 +96,7 @@ public class PieceTrickStarfall extends PieceTrick {
         double powerVal = Math.max(MIN_POWER, getParamValue(context, power).doubleValue());
         int meteors = Mth.clamp(getParamValue(context, count).intValue(), 1, MAX_METEORS);
         float damage = AttackRules.scale(BASE_DAMAGE + powerVal * DAMAGE_PER_POWER,
-                PsitweaksConfig.COMMON.starfallDamageMultiplier.get(), context.caster);
+                PsitweaksConfig.COMMON.pseudoMeteorDamageMultiplier.get(), context.caster);
         AttackRules.Options options = AttackRules.Options.from(context);
         int color = CombatSpellHelper.spellColor(context.caster);
 
@@ -115,7 +115,7 @@ public class PieceTrickStarfall extends PieceTrick {
             Vec3 impact = new Vec3(landing.x, landingY(level, landing.x, center.y, landing.z), landing.z);
             Vec3 start = impact.add(behind.scale(SKY_OFFSET)).add((random.nextDouble() - 0.5) * 3.0, SKY_HEIGHT,
                     (random.nextDouble() - 0.5) * 3.0);
-            EntityStarfallMeteor meteor = new EntityStarfallMeteor(level, start, impact, WARNING_TICKS + i * INTERVAL_TICKS);
+            EntityPseudoMeteor meteor = new EntityPseudoMeteor(level, start, impact, WARNING_TICKS + i * INTERVAL_TICKS);
             meteor.configure(context.caster, options, damage, color);
             level.addFreshEntity(meteor);
         }

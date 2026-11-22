@@ -179,7 +179,7 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2)
         ), PsitweaksItems.PROGRAM_IDEA_STORAGE, 10_000L, 90_000);
 
-        // 戦闘系魔法: 研究の重さは必要な CAD の段階に合わせる(スターフォールとマイクロブラックホールは終盤向けとして重め)
+        // 戦闘系魔法: 研究の重さは必要な CAD の段階に合わせる(疑似隕石とマイクロブラックホールは終盤向けとして重め)
         research(recipes, "program_chain_lightning", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(Items.LIGHTNING_ROD, 8),
@@ -205,14 +205,14 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3)
         ), PsitweaksItems.PROGRAM_DANCING_BLADES, 4_000L, 36_000);
 
-        research(recipes, "program_starfall", List.of(
+        research(recipes, "program_pseudo_meteor", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(Items.NETHER_STAR, 2),
                 input(Items.FIRE_CHARGE, 32),
                 input(Items.MAGMA_BLOCK, 32),
                 input(PsitweaksItems.HEAVY_PSIMETAL, 32),
                 input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 8)
-        ), PsitweaksItems.PROGRAM_STARFALL, 10_000L, 72_000);
+        ), PsitweaksItems.PROGRAM_PSEUDO_METEOR, 10_000L, 72_000);
 
         research(recipes, "program_burst", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),

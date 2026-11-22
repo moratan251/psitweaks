@@ -38,7 +38,7 @@ public final class SpellUnlockGameTests {
     private static final int SHIPPED_DEFINITIONS = 44;
     /** The combat tricks unlocked by research (Parade included); Air Bullet is free. */
     private static final List<String> COMBAT_UNLOCKS = List.of(
-            "chain_lightning", "mine_genesis", "dancing_blades", "starfall", "burst", "micro_black_hole", "parade");
+            "chain_lightning", "mine_genesis", "dancing_blades", "pseudo_meteor", "burst", "micro_black_hole", "parade");
     /** The zone tricks unlocked together by Program: Zone Magic. */
     private static final List<String> ZONE_MAGIC_TRICKS = List.of("trick_soak_zone", "trick_gravity_zone", "trick_heat_zone",
             "trick_freeze_zone", "trick_turbulence_zone", "trick_interference_zone", "trick_silence_zone", "trick_charged_zone");

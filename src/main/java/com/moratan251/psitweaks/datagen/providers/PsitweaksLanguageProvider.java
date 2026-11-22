@@ -103,9 +103,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "仮装行列の分身";
             default -> "Parade Lookalike";
         });
-        root.addProperty("entity.psitweaks.starfall_meteor", switch (locale) {
-            case "ja_jp" -> "スターフォールの流星";
-            default -> "Starfall Meteor";
+        root.addProperty("entity.psitweaks.pseudo_meteor", switch (locale) {
+            case "ja_jp" -> "疑似隕石";
+            default -> "Pseudo Meteor";
         });
         root.addProperty("entity.psitweaks.soak_zone", switch (locale) {
             case "ja_jp" -> "湿潤領域";
@@ -723,8 +723,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigLabel(root, "psitweaks.configuration.effects", "Spell Effects", "術式エフェクト");
         addConfigValue(root, "psitweaks.configuration.effects.camera_shake",
                 "Camera Shake", "画面の揺れ",
-                "Shake the camera for ground shockwaves, meteor impacts and micro black hole collapses.",
-                "地雷原の衝撃波、流星の着弾、マイクロブラックホールの崩壊などで画面を揺らします。");
+                "Shake the camera for ground shockwaves, pseudo meteor impacts and micro black hole collapses.",
+                "地雷原の衝撃波、疑似隕石の着弾、マイクロブラックホールの崩壊などで画面を揺らします。");
         addConfigValue(root, "psitweaks.configuration.effects.camera_shake_strength",
                 "Camera Shake Strength", "画面の揺れの強さ",
                 "Strength of the camera shake. 1.0 is the default.",
@@ -832,7 +832,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addDamageMultiplierConfig(root, "psi_bullet", "Psi Bullet", "サイ・ブリット");
         addDamageMultiplierConfig(root, "gram_demolition", "Gram Demolition", "術式解体");
         addDamageMultiplierConfig(root, "dancing_blades", "Dancing Blades", "ダンシングブレイズ");
-        addDamageMultiplierConfig(root, "starfall", "Starfall", "スターフォール");
+        addDamageMultiplierConfig(root, "pseudo_meteor", "Pseudo Meteor", "疑似隕石");
         addDamageMultiplierConfig(root, "micro_black_hole", "Micro Black Hole", "マイクロブラックホール");
         addConfigLabel(root, "psitweaks.configuration.spells.barrier", "Barrier", "障壁");
         addConfigValue(root, "psitweaks.configuration.spells.barrier.shield_multiplier",
@@ -1050,17 +1050,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "%1$sは%2$sが%3$sで呼んだ舞う刃に斬り伏せられた";
             default -> "%1$s was cut down by dancing blades summoned by %2$s using %3$s";
         });
-        root.addProperty("death.attack.psitweaks.starfall", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが呼んだ流星に押し潰された";
-            default -> "%1$s was crushed by a meteor called down by %2$s";
+        root.addProperty("death.attack.psitweaks.pseudo_meteor", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが呼んだ疑似隕石に押し潰された";
+            default -> "%1$s was crushed by a pseudo meteor called down by %2$s";
         });
-        root.addProperty("death.attack.psitweaks.starfall.player", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが呼んだ流星に押し潰された";
-            default -> "%1$s was crushed by a meteor called down by %2$s";
+        root.addProperty("death.attack.psitweaks.pseudo_meteor.player", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが呼んだ疑似隕石に押し潰された";
+            default -> "%1$s was crushed by a pseudo meteor called down by %2$s";
         });
-        root.addProperty("death.attack.psitweaks.starfall.item", switch (locale) {
-            case "ja_jp" -> "%1$sは%2$sが%3$sで呼んだ流星に押し潰された";
-            default -> "%1$s was crushed by a meteor %2$s called down using %3$s";
+        root.addProperty("death.attack.psitweaks.pseudo_meteor.item", switch (locale) {
+            case "ja_jp" -> "%1$sは%2$sが%3$sで呼んだ疑似隕石に押し潰された";
+            default -> "%1$s was crushed by a pseudo meteor %2$s called down using %3$s";
         });
         root.addProperty("death.attack.psitweaks.micro_black_hole", switch (locale) {
             case "ja_jp" -> "%1$sは%2$sのマイクロブラックホールに押し潰された";
@@ -2040,7 +2040,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 術式解体", "前方の魔法式オブジェクトに想子をぶつけ、耐久値をまとめて削る");
         addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
-        addSpellPiece(root, "trick_starfall", "Trick: Starfall", "Calls meteors down around the position", "作動式: スターフォール", "指定位置の周りに流星を降らせる");
+        addSpellPiece(root, "trick_pseudo_meteor", "Trick: Pseudo Meteor", "Calls pseudo meteors down around the position", "作動式: 疑似隕石", "指定位置の周りに疑似隕石を降らせる");
         addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in and swings them around, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せて振り回す極小のブラックホールを生み出し、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a fire Resident SpellGram circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の常駐魔法式を設置して内部の生物に継続的な炎ダメージを与える");
@@ -2668,12 +2668,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dancing_blades.1",
                 "Each cut deals what a swing of that sword would (its attack damage and damage enchantments) times the caster's Phenomenon Interference, and Fire Aspect, Knockback and the like take effect. The swords lose no durability. Casting it again replaces the blades you already have.",
                 "1回の斬撃のダメージは, その剣で殴ったときのダメージ (攻撃力とダメージ増加などのエンチャント) に事象干渉力を掛けたもので, 火属性やノックバックなどのエンチャントも働きます. 剣の耐久値は減りません. もう一度唱えると, 今ある刃と入れ替わります.");
-        addBookPage(root, "trick_starfall.0",
-                "Calls down as many meteors as the $(thing)Number$(0) (at most 12) around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
-                "指定位置の周りに $(thing)数値$(0) で指定した数 (上限12) の流星を降らせます. 着弾点は地面の輪で示され、1秒後から流星が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
-        addBookPage(root, "trick_starfall.1",
+        addBookPage(root, "trick_pseudo_meteor.0",
+                "Calls down as many pseudo meteors as the $(thing)Number$(0) (at most 12) around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
+                "指定位置の周りに $(thing)数値$(0) で指定した数 (上限12) の疑似隕石を降らせます. 着弾点は地面の輪で示され、1秒後から疑似隕石が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
+        addBookPage(root, "trick_pseudo_meteor.1",
                 "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within its blast (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
-                "流星は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 流星は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
+                "疑似隕石は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 疑似隕石は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
         addBookPage(root, "trick_micro_black_hole.0",
                 "Creates a micro black hole at the position. For 10 seconds it drags creatures within $(thing)Radius$(0) blocks (16 to 32) and swings them around its centre at speed; a creature whipping past the centre may be flung out of range. In the last 1.5 seconds it swallows them, then collapses and crushes everything within three tenths of $(thing)Radius$(0) of the centre.",
                 "指定位置にマイクロブラックホールを生み出します. 10秒間、$(thing)半径$(0) ブロック (16〜32) 以内の生物を引き寄せ、中心のまわりで勢いよく振り回します. 中心のそばを回り込んだ勢いで、範囲の外へ投げ飛ばされることもあります. 最後の1.5秒で中心へ呑み込み、崩壊して中心から $(thing)半径$(0) の3割以内のものを押し潰します.");

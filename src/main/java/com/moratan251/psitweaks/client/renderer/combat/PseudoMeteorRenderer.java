@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moratan251.psitweaks.client.combat.GlowDrawing;
 import com.moratan251.psitweaks.client.combat.PsitweaksRenderTypes;
-import com.moratan251.psitweaks.common.entities.combat.EntityStarfallMeteor;
+import com.moratan251.psitweaks.common.entities.combat.EntityPseudoMeteor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -14,29 +14,29 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
- * Trick: Starfall. A target ring marks the landing spot, with an inner ring closing in as the meteor approaches;
+ * Trick: Pseudo Meteor. A target ring marks the landing spot, with an inner ring closing in as the meteor approaches;
  * the meteor is a white-hot head with a fiery trail edged in the caster's colour.
  */
-public class StarfallMeteorRenderer extends CombatGlowRenderer<EntityStarfallMeteor> {
+public class PseudoMeteorRenderer extends CombatGlowRenderer<EntityPseudoMeteor> {
     private static final int FIRE = 0xFF8A2A;
     private static final int WHITE_HOT = 0xFFF2CC;
     private static final float MAX_TRAIL = 7.0F;
 
-    public StarfallMeteorRenderer(EntityRendererProvider.Context context) {
+    public PseudoMeteorRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public void render(@NotNull EntityStarfallMeteor entity, float entityYaw, float partialTick,
+    public void render(@NotNull EntityPseudoMeteor entity, float entityYaw, float partialTick,
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffers, int packedLight) {
         Matrix4f pose = cameraPose(entity, partialTick, poseStack);
         float age = entity.getAge(partialTick);
-        float total = entity.getDelay() + EntityStarfallMeteor.FLIGHT_TICKS;
+        float total = entity.getDelay() + EntityPseudoMeteor.FLIGHT_TICKS;
         int color = GlowDrawing.glowColor(entity.getColor());
         VertexConsumer consumer = buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR);
 
         Vector3f target = relative(entity.getTarget()).add(0.0F, 0.06F, 0.0F);
-        float radius = EntityStarfallMeteor.IMPACT_RADIUS;
+        float radius = EntityPseudoMeteor.IMPACT_RADIUS;
         float appear = Mth.clamp(age / 6.0F, 0.0F, 1.0F);
         float pulse = 0.75F + 0.25F * Mth.sin(age * 0.9F);
         GlowDrawing.ring(consumer, pose, target, UP, 0.0F, radius - 0.2F, 32, color, 0.12F * appear, 0.05F * appear, 255);

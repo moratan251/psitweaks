@@ -1,0 +1,6 @@
+{
+  "command_id": "pseudo_meteor",
+  "piece": "psitweaks:trick_pseudo_meteor",
+  "unlock_item": "psitweaks:program_pseudo_meteor",
+  "unlock_tag": "psitweaks.unlock.trick_pseudo_meteor"
+}

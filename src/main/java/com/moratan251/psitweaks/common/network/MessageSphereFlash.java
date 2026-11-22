@@ -30,7 +30,7 @@ public record MessageSphereFlash(int entityId, Vec3 position, float radius, int 
         BARRIER_BREAK,
         /** The shield timed out: a faint fade. */
         BARRIER_FADE,
-        /** An expanding plain shock sphere (Burst, Starfall impact). */
+        /** An expanding plain shock sphere (Burst, Pseudo Meteor impact). */
         SHOCKWAVE,
         /** A contracting sphere followed by a flash (Micro Black Hole). */
         IMPLOSION,
