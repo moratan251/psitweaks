@@ -63,7 +63,7 @@ neoForge {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             //jvmArgument '-Xmx4G'
-            jvmArgument '-Xmx6G'
+            jvmArgument '-Xmx10G'
         }
 
         client2 {
