@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 15000,
+  "energy_per_tick": 2000,
   "inputs": [
     {
       "count": 1,
@@ -31,5 +31,5 @@
     "count": 1,
     "id": "psitweaks:program_dry_meteor"
   },
-  "time": 1200
+  "time": 2400
 }

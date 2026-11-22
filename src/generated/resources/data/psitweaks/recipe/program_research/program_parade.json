@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 50000,
+  "energy_per_tick": 2000,
   "inputs": [
     {
       "count": 1,
@@ -43,5 +43,5 @@
     "count": 1,
     "id": "psitweaks:program_parade"
   },
-  "time": 3600
+  "time": 9000
 }

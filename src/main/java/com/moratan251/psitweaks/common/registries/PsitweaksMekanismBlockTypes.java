@@ -35,8 +35,8 @@ import vazkii.psi.client.fx.SparkleParticleData;
 
 public final class PsitweaksMekanismBlockTypes {
     private static final long SCULK_ERODER_STORAGE = 20_000L;
-    /** プログラム研究台の容量（FE）。レシピの消費も FE/t で書く。 */
-    private static final long PROGRAM_RESEARCHER_STORAGE_FE = 10_000_000L;
+    /** プログラム研究台の容量（FE、2^31-1）。レシピの消費も FE/t で書く。時間加速で研究を縮めるとき、1 tick に使える電力はこの容量までになる。 */
+    private static final long PROGRAM_RESEARCHER_STORAGE_FE = Integer.MAX_VALUE;
     private static final long MATERIAL_MUTATOR_STORAGE = 4_000_000L;
     private static final long PSIONIC_GENERATOR_MAX_OUTPUT = 6_250L;
     private static final ILangEntry DESCRIPTION_SCULK_ERODER = () -> "description.psitweaks.sculk_eroder";
@@ -90,7 +90,7 @@ public final class PsitweaksMekanismBlockTypes {
                     .withCustomShape(PROGRAM_RESEARCHER_SHAPES)
                     .withGui(() -> PsitweaksMekanismContainerTypes.PROGRAM_RESEARCHER)
                     .withSound(PsitweaksMekanismSounds.PROGRAM_RESEARCHER)
-                    // 1.20.1 と同じく 10M FE を J に換算する。換算率は Mekanism の設定なので、読み込んだ後に引く。
+                    // 蓄電量の FE を J に換算する。換算率は Mekanism の設定なので、読み込んだ後に引く。
                     .withEnergyConfig(PsitweaksMekanismBlockTypes::programResearcherStorage,
                             PsitweaksMekanismBlockTypes::programResearcherStorage)
                     .withComputerSupport("programResearcher")

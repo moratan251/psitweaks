@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 250000,
+  "energy_per_tick": 10000,
   "inputs": [
     {
       "count": 1,
@@ -43,5 +43,5 @@
     "count": 1,
     "id": "psitweaks:program_starfall"
   },
-  "time": 24000
+  "time": 72000
 }

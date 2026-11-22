@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 40000,
+  "energy_per_tick": 2000,
   "inputs": [
     {
       "count": 1,
@@ -51,5 +51,5 @@
     "count": 1,
     "id": "psitweaks:program_acceleration_zone"
   },
-  "time": 2400
+  "time": 6000
 }

@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 10000,
+  "energy_per_tick": 1500,
   "inputs": [
     {
       "count": 1,
@@ -31,5 +31,5 @@
     "count": 1,
     "id": "psitweaks:program_mass_harvest"
   },
-  "time": 1200
+  "time": 2400
 }

@@ -6,7 +6,7 @@
     }
   ],
   "type": "psitweaks:program_research",
-  "energy_per_tick": 40000,
+  "energy_per_tick": 4000,
   "inputs": [
     {
       "count": 1,
@@ -43,5 +43,5 @@
     "count": 1,
     "id": "psitweaks:program_phonon_maser"
   },
-  "time": 2400
+  "time": 36000
 }

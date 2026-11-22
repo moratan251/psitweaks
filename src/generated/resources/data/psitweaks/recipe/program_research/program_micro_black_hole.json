@@ -6,7 +6,7 @@
     }
   ],
   "type": "psitweaks:program_research",
-  "energy_per_tick": 1500000,
+  "energy_per_tick": 40000,
   "inputs": [
     {
       "count": 1,
@@ -49,5 +49,5 @@
     "count": 1,
     "id": "psitweaks:program_micro_black_hole"
   },
-  "time": 108000
+  "time": 144000
 }

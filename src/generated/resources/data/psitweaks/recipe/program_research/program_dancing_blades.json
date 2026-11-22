@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 80000,
+  "energy_per_tick": 4000,
   "inputs": [
     {
       "count": 1,
@@ -38,5 +38,5 @@
     "count": 1,
     "id": "psitweaks:program_dancing_blades"
   },
-  "time": 6000
+  "time": 36000
 }

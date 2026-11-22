@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 10000,
+  "energy_per_tick": 2000,
   "inputs": [
     {
       "count": 1,
@@ -29,7 +29,7 @@
     {
       "count": 8,
       "ingredient": {
-        "item": "psitweaks:chaotic_factor"
+        "item": "psitweaks:graviton_factor"
       }
     }
   ],
@@ -37,5 +37,5 @@
     "count": 1,
     "id": "psitweaks:program_flight"
   },
-  "time": 600
+  "time": 6000
 }
