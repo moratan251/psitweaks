@@ -20,35 +20,11 @@
     },
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_machine.autonomous_caster.loop"
-    },
-    {
-      "type": "text",
       "text": "psi.book.page.psitweaks_machine.autonomous_caster.3"
     },
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_machine.autonomous_caster.inventory"
-    },
-    {
-      "type": "text",
       "text": "psi.book.page.psitweaks_machine.autonomous_caster.4"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_machine.autonomous_caster.upgrades"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_machine.autonomous_caster.5"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_machine.autonomous_caster.6"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_machine.autonomous_caster.7"
     }
   ]
 }

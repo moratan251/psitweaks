@@ -22,7 +22,7 @@
   + Added the Zone Feeder (feeds stored FE into a Charged Zone to cover demand beyond its own capacity) and Zone Receiver (charges FE items and equipment in your inventory while inside a Charged Zone)
 - Added Trick: Decontamination (with Mekanism; unlocked by research): places a Resident SpellGram core that weakens radiation sources within 32 blocks based on Cost
 - Added spell pieces and a debug item for SpellGram objects
-  + Selector: Own Resident SpellGrams, Selector: SpellGram Integrity
+  + Selector: Own Resident SpellGrams, Selector: SpellGram Integrity, Selector: SpellGram Integrity List
   + Trick: Recall SpellGram, Trick: Extend SpellGram, Trick: Circle Follow, Trick: Psi Bullet, Trick: Gram Demolition
   + SpellGram Integrity Debugger (creative only)
 - Added utility spell pieces
