@@ -27,16 +27,16 @@
       "item": "minecraft:blue_ice"
     },
     {
-      "item": "minecraft:nether_star"
+      "item": "psitweaks:alloy_hypostasis"
+    },
+    {
+      "item": "minecraft:heart_of_the_sea"
     },
     {
       "item": "minecraft:nether_star"
     },
     {
       "item": "minecraft:nether_star"
-    },
-    {
-      "item": "minecraft:sculk_shrieker"
     }
   ],
   "result": {

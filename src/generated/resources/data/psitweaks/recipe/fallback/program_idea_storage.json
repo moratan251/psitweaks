@@ -15,6 +15,15 @@
       "item": "psitweaks:program_blank"
     },
     {
+      "item": "psitweaks:quantized_plate"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
       "item": "psitweaks:dimensional_crystal"
     },
     {
@@ -24,19 +33,7 @@
       "item": "psitweaks:psycheonic_metal_ingot"
     },
     {
-      "item": "psitweaks:psycheonic_metal_ingot"
-    },
-    {
       "item": "minecraft:ender_chest"
-    },
-    {
-      "item": "minecraft:ender_chest"
-    },
-    {
-      "item": "psitweaks:quantized_plate"
-    },
-    {
-      "item": "psitweaks:quantized_plate"
     }
   ],
   "result": {

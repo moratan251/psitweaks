@@ -21,21 +21,15 @@
       }
     },
     {
-      "count": 24,
+      "count": 1,
       "ingredient": {
-        "item": "minecraft:rotten_flesh"
+        "item": "psi:psimetal_sword"
       }
     },
     {
       "count": 16,
       "ingredient": {
-        "item": "minecraft:bone"
-      }
-    },
-    {
-      "count": 1,
-      "ingredient": {
-        "item": "psi:psimetal_sword"
+        "item": "psitweaks:chaotic_psimetal"
       }
     }
   ],

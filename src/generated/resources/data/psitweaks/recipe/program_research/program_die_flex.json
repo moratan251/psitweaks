@@ -9,7 +9,7 @@
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
         "item": "psitweaks:psionic_control_circuit"
       }
@@ -17,13 +17,13 @@
     {
       "count": 16,
       "ingredient": {
-        "item": "psitweaks:chaotic_psimetal"
+        "item": "psi:psimetal"
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
-        "item": "psitweaks:chaotic_factor"
+        "item": "psi:psigem"
       }
     }
   ],

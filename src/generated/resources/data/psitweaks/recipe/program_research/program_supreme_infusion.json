@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 2000,
+  "energy_per_tick": 4000,
   "inputs": [
     {
       "count": 1,
@@ -11,7 +11,7 @@
     {
       "count": 1,
       "ingredient": {
-        "item": "minecraft:netherite_ingot"
+        "item": "minecraft:netherite_scrap"
       }
     },
     {
@@ -37,5 +37,5 @@
     "count": 1,
     "id": "psitweaks:program_supreme_infusion"
   },
-  "time": 6000
+  "time": 12000
 }

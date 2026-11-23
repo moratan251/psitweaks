@@ -1,6 +1,6 @@
 {
   "type": "psitweaks:program_research",
-  "energy_per_tick": 2000,
+  "energy_per_tick": 10000,
   "inputs": [
     {
       "count": 1,
@@ -29,13 +29,13 @@
     {
       "count": 8,
       "ingredient": {
-        "item": "psitweaks:chaotic_psimetal"
+        "item": "psitweaks:echo_control_circuit"
       }
     },
     {
-      "count": 4,
+      "count": 16,
       "ingredient": {
-        "item": "psitweaks:flashmetal"
+        "item": "psitweaks:antinite_ingot"
       }
     }
   ],
@@ -43,5 +43,5 @@
     "count": 1,
     "id": "psitweaks:program_parade"
   },
-  "time": 9000
+  "time": 54000
 }

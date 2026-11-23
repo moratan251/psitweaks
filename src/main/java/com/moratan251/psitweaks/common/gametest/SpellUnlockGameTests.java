@@ -274,7 +274,7 @@ public final class SpellUnlockGameTests {
         var slots = ((ProgramResearchRecipe) holder.get().value()).getDisplaySlots();
         long swordSlots = slots.stream().filter(slot -> slot.input().ingredient().test(new ItemStack(ModItems.psimetalSword.get()))).count();
         helper.assertTrue(swordSlots == 3 && slots.stream().allMatch(slot -> slot.count() <= 64), "Three swords must take three slots: " + slots);
-        helper.assertTrue(slots.size() == 7, "Blank, 3 swords, book, heavy psimetal and circuits make 7 slots, got " + slots.size());
+        helper.assertTrue(slots.size() == 7, "Blank, 3 swords, book, flashmetal and circuits make 7 slots, got " + slots.size());
         helper.succeed();
     }
 

@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
   "type": "psitweaks:program_research",
   "energy_per_tick": 10000,
   "inputs": [
@@ -9,21 +15,21 @@
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
         "item": "psitweaks:hypostasis_control_circuit"
       }
     },
     {
-      "count": 32,
+      "count": 16,
       "ingredient": {
         "item": "psitweaks:heavy_psimetal"
       }
     },
     {
-      "count": 8,
+      "count": 4,
       "ingredient": {
-        "item": "psitweaks:pellet_americium"
+        "item": "mekanism:pellet_polonium"
       }
     }
   ],

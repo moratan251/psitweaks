@@ -15,7 +15,7 @@
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
         "item": "psitweaks:quantized_plate"
       }
@@ -23,7 +23,7 @@
     {
       "count": 8,
       "ingredient": {
-        "item": "psitweaks:hypostasis_control_circuit"
+        "item": "psitweaks:echo_control_circuit"
       }
     },
     {
@@ -39,7 +39,7 @@
       }
     },
     {
-      "count": 2,
+      "count": 1,
       "ingredient": {
         "item": "psitweaks:psycheonic_metal_ingot"
       }

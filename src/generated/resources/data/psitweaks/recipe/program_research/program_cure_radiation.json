@@ -15,21 +15,27 @@
       }
     },
     {
-      "count": 8,
+      "count": 4,
       "ingredient": {
-        "item": "minecraft:golden_apple"
+        "item": "psitweaks:psycheonic_metal_ingot"
       }
     },
     {
       "count": 16,
       "ingredient": {
+        "item": "minecraft:golden_apple"
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
         "item": "mekanism:ingot_lead"
       }
     },
     {
-      "count": 8,
+      "count": 32,
       "ingredient": {
-        "item": "psitweaks:chaotic_psimetal"
+        "item": "psitweaks:antinite_ingot"
       }
     }
   ],

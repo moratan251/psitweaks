@@ -33,9 +33,9 @@
       }
     },
     {
-      "count": 8,
+      "count": 16,
       "ingredient": {
-        "item": "psitweaks:flashmetal"
+        "item": "psitweaks:chaotic_psimetal"
       }
     }
   ],

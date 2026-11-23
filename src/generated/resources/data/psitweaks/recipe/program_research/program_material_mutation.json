@@ -22,9 +22,9 @@
       }
     },
     {
-      "count": 16,
+      "count": 2,
       "ingredient": {
-        "item": "psitweaks:chaotic_factor"
+        "item": "psitweaks:string_a"
       }
     },
     {
@@ -36,7 +36,7 @@
     {
       "count": 16,
       "ingredient": {
-        "item": "psitweaks:psionic_echo"
+        "item": "psitweaks:alloy_psionic_echo"
       }
     }
   ],
@@ -44,5 +44,5 @@
     "count": 1,
     "id": "psitweaks:program_material_mutation"
   },
-  "time": 72000
+  "time": 54000
 }

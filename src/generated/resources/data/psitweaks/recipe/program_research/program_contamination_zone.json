@@ -15,27 +15,21 @@
       }
     },
     {
-      "count": 1,
-      "ingredient": {
-        "item": "psitweaks:program_radiation_filter"
-      }
-    },
-    {
       "count": 32,
       "ingredient": {
         "item": "mekanism:ingot_uranium"
       }
     },
     {
-      "count": 4,
+      "count": 16,
       "ingredient": {
-        "item": "mekanism:pellet_polonium"
+        "item": "psitweaks:chaotic_psimetal"
       }
     },
     {
-      "count": 8,
+      "count": 32,
       "ingredient": {
-        "item": "psitweaks:flashmetal"
+        "item": "mekanism:fluorite_gem"
       }
     }
   ],

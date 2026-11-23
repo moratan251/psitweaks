@@ -15,6 +15,15 @@
       "item": "psitweaks:program_blank"
     },
     {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
       "item": "minecraft:redstone_block"
     },
     {
@@ -27,16 +36,7 @@
       "item": "minecraft:powered_rail"
     },
     {
-      "item": "minecraft:clock"
-    },
-    {
-      "item": "minecraft:clock"
-    },
-    {
-      "item": "minecraft:clock"
-    },
-    {
-      "item": "minecraft:clock"
+      "item": "psitweaks:chaotic_psimetal"
     }
   ],
   "result": {

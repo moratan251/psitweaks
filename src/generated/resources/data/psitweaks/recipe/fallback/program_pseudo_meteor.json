@@ -24,7 +24,7 @@
       "item": "minecraft:fire_charge"
     },
     {
-      "item": "psitweaks:heavy_psimetal"
+      "item": "minecraft:magma_block"
     },
     {
       "item": "psitweaks:heavy_psimetal"
@@ -33,10 +33,10 @@
       "item": "psitweaks:heavy_psimetal"
     },
     {
-      "item": "psitweaks:hypostasis_control_circuit"
+      "item": "psitweaks:antinite_ingot"
     },
     {
-      "item": "psitweaks:hypostasis_control_circuit"
+      "item": "psitweaks:antinite_ingot"
     }
   ],
   "result": {

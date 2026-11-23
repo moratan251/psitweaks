@@ -15,28 +15,25 @@
       "item": "psitweaks:program_blank"
     },
     {
-      "item": "minecraft:packed_ice"
+      "item": "minecraft:glass"
     },
     {
-      "item": "minecraft:packed_ice"
+      "item": "minecraft:glass"
     },
     {
-      "item": "minecraft:magma_block"
+      "item": "minecraft:glass"
     },
     {
-      "item": "minecraft:magma_block"
-    },
-    {
-      "item": "minecraft:sponge"
-    },
-    {
-      "item": "minecraft:feather"
-    },
-    {
-      "item": "minecraft:lightning_rod"
+      "item": "minecraft:glass"
     },
     {
       "item": "psitweaks:chaotic_psimetal"
+    },
+    {
+      "item": "psi:psigem"
+    },
+    {
+      "item": "psi:psigem"
     }
   ],
   "result": {

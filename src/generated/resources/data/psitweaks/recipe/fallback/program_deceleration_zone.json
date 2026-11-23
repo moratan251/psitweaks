@@ -12,7 +12,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "psitweaks:program_acceleration_zone"
+      "item": "psitweaks:program_zone_magic"
     },
     {
       "item": "minecraft:cobweb"
@@ -33,7 +33,10 @@
       "item": "minecraft:clock"
     },
     {
-      "item": "psitweaks:flashmetal"
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    {
+      "item": "psitweaks:chaotic_psimetal"
     }
   ],
   "result": {

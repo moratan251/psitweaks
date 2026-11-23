@@ -345,16 +345,18 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         addProgram(recipes, PsitweaksItems.PROGRAM_COCYTUS, List.of(
                 counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
                 counted(Items.BLUE_ICE, 2),
-                counted(Items.NETHER_STAR, 3),
-                counted(Items.SCULK_SHRIEKER, 1)));
+                counted(PsitweaksItems.ALLOY_HYPOSTASIS, 1),
+                counted(Items.HEART_OF_THE_SEA, 1),
+                counted(Items.NETHER_STAR, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_PHONON_MASER, List.of(
                 counted(Items.AMETHYST_SHARD, 2),
                 counted(PsitweaksItems.FLASHMETAL, 4),
                 counted(Items.NOTE_BLOCK, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_TIME_ACCELERATE, List.of(
+                counted(Items.CLOCK, 3),
                 counted(Items.REDSTONE_BLOCK, 2),
                 counted(Items.POWERED_RAIL, 2),
-                counted(Items.CLOCK, 4)));
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_FLIGHT, List.of(
                 counted(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP, 4),
                 counted(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP, 1),
@@ -366,60 +368,62 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.DRAGON_HEAD, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_DRY_METEOR, List.of(
                 counted(Items.PACKED_ICE, 3),
-                counted(ModItems.psidust.get(), 3),
+                counted(ModItems.psimetal.get(), 3),
                 counted(Items.BONE, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_SUPREME_INFUSION, List.of(
                 counted(Items.AMETHYST_BLOCK, 2),
                 counted(PsitweaksItems.FLASHMETAL, 2),
                 counted(PsitweaksItems.ALLOY_PSION, 3),
-                counted(Items.NETHERITE_INGOT, 1)));
+                counted(Items.NETHERITE_SCRAP, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER, List.of(
-                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 4),
-                counted(Items.QUARTZ_BLOCK, 2),
-                counted(PsitweaksItems.HEAVY_PSIMETAL, 2)));
+                counted(ModItems.psigem.get(), 2),
+                counted(PsitweaksItems.QUANTIZED_PLATE, 1),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 2),
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_GUILLOTINE, List.of(
                 counted(Items.WITHER_SKELETON_SKULL, 1),
                 counted(Items.ANVIL, 3),
                 counted(ModItems.psimetalSword.get(), 1),
-                counted(Items.BONE, 2),
-                counted(Items.ROTTEN_FLESH, 1)));
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_ACTIVE_AIR_MINE, List.of(
                 counted(Items.TNT, 2),
                 counted(ModItems.psidust.get(), 4),
                 counted(ModItems.psigem.get(), 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_DIE_FLEX, List.of(
-                counted(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 3),
-                counted(PsitweaksItems.FLASHMETAL, 3),
-                counted(PsitweaksItems.CHAOTIC_FACTOR, 2)));
+                counted(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 2),
+                counted(ModItems.psimetal.get(), 4),
+                counted(ModItems.psigem.get(), 2)));
         addProgramUpgrade(recipes, PsitweaksItems.PROGRAM_JUMP_FLEX, List.of(
                 counted(PsitweaksItems.PROGRAM_DIE_FLEX, 1),
-                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3),
-                counted(PsitweaksItems.HEAVY_PSIMETAL, 3),
-                counted(PsitweaksItems.ANTINITE_INGOT, 2)));
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 2),
+                counted(PsitweaksItems.FLASHMETAL, 4),
+                counted(Items.ENDER_EYE, 2)));
+        // ポロニウムペレットは Mekanism にしかないので、ネザースターで代える
         addProgramUpgrade(recipes, PsitweaksItems.PROGRAM_SWITCH_FLEX, List.of(
                 counted(PsitweaksItems.PROGRAM_JUMP_FLEX, 1),
-                counted(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 3),
-                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 3),
+                counted(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 2),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 4),
                 counted(Items.NETHER_STAR, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_MATERIAL_MUTATION, List.of(
                 counted(PsitweaksItems.PHILOSOPHERS_STONE, 1),
                 counted(Items.SCULK_CATALYST, 1),
                 counted(PsitweaksItems.ANTINITE_INGOT, 2),
-                counted(PsitweaksItems.CHAOTIC_FACTOR, 2),
-                counted(PsitweaksItems.PSIONIC_ECHO, 2)));
+                counted(PsitweaksItems.STRING_A, 1),
+                counted(PsitweaksItems.ALLOY_PSIONIC_ECHO, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK, List.of(
                 counted(Items.TNT, 4),
                 counted(ModItems.psigem.get(), 2),
-                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_MASS_HARVEST, List.of(
                 counted(Items.HAY_BLOCK, 4),
                 counted(ModItems.psigem.get(), 2),
-                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_IDEA_STORAGE, List.of(
+                counted(PsitweaksItems.QUANTIZED_PLATE, 1),
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 2),
                 counted(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2),
-                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
-                counted(Items.ENDER_CHEST, 2),
-                counted(PsitweaksItems.QUANTIZED_PLATE, 2)));
+                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 1),
+                counted(Items.ENDER_CHEST, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_CHAIN_LIGHTNING, List.of(
                 counted(Items.LIGHTNING_ROD, 2),
                 counted(Items.COPPER_BLOCK, 2),
@@ -433,18 +437,19 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
         addProgram(recipes, PsitweaksItems.PROGRAM_DANCING_BLADES, List.of(
                 counted(ModItems.psimetalSword.get(), 3),
                 counted(ProgramResearchRecipeProvider.enchantedBook(Enchantments.LOYALTY), 1),
-                counted(PsitweaksItems.HEAVY_PSIMETAL, 2),
+                counted(PsitweaksItems.FLASHMETAL, 2),
                 counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_PSEUDO_METEOR, List.of(
                 counted(Items.NETHER_STAR, 1),
                 counted(Items.FIRE_CHARGE, 2),
-                counted(PsitweaksItems.HEAVY_PSIMETAL, 3),
-                counted(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 2)));
+                counted(Items.MAGMA_BLOCK, 1),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 2),
+                counted(PsitweaksItems.ANTINITE_INGOT, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_BURST, List.of(
-                counted(Items.MAGMA_CREAM, 2),
                 counted(Items.GHAST_TEAR, 2),
-                counted(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2),
-                counted(Items.NETHER_STAR, 1)));
+                counted(Items.MAGMA_CREAM, 2),
+                counted(PsitweaksItems.HEAVY_PSIMETAL, 2),
+                counted(PsitweaksItems.ANTINITE_INGOT, 2)));
         addProgram(recipes, PsitweaksItems.PROGRAM_MICRO_BLACK_HOLE, List.of(
                 counted(Items.HEAVY_CORE, 1),
                 counted(PsitweaksItems.GRAVITIZED_PLATE, 3),
@@ -454,14 +459,12 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.ARMOR_STAND, 2),
                 counted(Items.FERMENTED_SPIDER_EYE, 2),
                 counted(Items.TINTED_GLASS, 2),
-                counted(PsitweaksItems.FLASHMETAL, 2)));
+                counted(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 1),
+                counted(PsitweaksItems.ANTINITE_INGOT, 1)));
         addProgram(recipes, PsitweaksItems.PROGRAM_ZONE_MAGIC, List.of(
-                counted(Items.PACKED_ICE, 2),
-                counted(Items.MAGMA_BLOCK, 2),
-                counted(Items.SPONGE, 1),
-                counted(Items.FEATHER, 1),
-                counted(Items.LIGHTNING_ROD, 1),
-                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 1)));
+                counted(Items.GLASS, 4),
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 1),
+                counted(ModItems.psigem.get(), 2)));
         // 研究と同じく、材料のプログラムを消費し、空白のプログラムは使わない
         addProgramUpgrade(recipes, PsitweaksItems.PROGRAM_ACCELERATION_ZONE, List.of(
                 counted(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
@@ -469,13 +472,13 @@ public final class PsiTweaksFallbackRecipeProvider implements DataProvider {
                 counted(Items.CLOCK, 2),
                 counted(Items.BONE_BLOCK, 2),
                 counted(Items.AMETHYST_SHARD, 1),
-                counted(PsitweaksItems.FLASHMETAL, 1)));
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
         addProgramUpgrade(recipes, PsitweaksItems.PROGRAM_DECELERATION_ZONE, List.of(
-                counted(PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 1),
+                counted(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
                 counted(Items.COBWEB, 2),
                 counted(Items.SOUL_SAND, 2),
                 counted(Items.CLOCK, 2),
-                counted(PsitweaksItems.FLASHMETAL, 1)));
+                counted(PsitweaksItems.CHAOTIC_PSIMETAL, 2)));
     }
 
     private static void addProgram(Map<ResourceLocation, JsonObject> recipes, ItemLike program,

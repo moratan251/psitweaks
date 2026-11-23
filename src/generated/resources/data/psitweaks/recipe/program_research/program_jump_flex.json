@@ -15,13 +15,13 @@
       }
     },
     {
-      "count": 16,
+      "count": 4,
       "ingredient": {
         "item": "psitweaks:echo_control_circuit"
       }
     },
     {
-      "count": 24,
+      "count": 16,
       "ingredient": {
         "item": "psitweaks:flashmetal"
       }
@@ -29,7 +29,7 @@
     {
       "count": 4,
       "ingredient": {
-        "item": "mekanism:pellet_polonium"
+        "item": "mekanism:teleportation_core"
       }
     }
   ],
@@ -37,5 +37,5 @@
     "count": 1,
     "id": "psitweaks:program_jump_flex"
   },
-  "time": 45000
+  "time": 36000
 }

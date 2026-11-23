@@ -15,28 +15,25 @@
       "item": "psitweaks:program_blank"
     },
     {
-      "item": "psitweaks:echo_control_circuit"
+      "item": "psi:psigem"
     },
     {
-      "item": "psitweaks:echo_control_circuit"
+      "item": "psi:psigem"
     },
     {
-      "item": "psitweaks:echo_control_circuit"
-    },
-    {
-      "item": "psitweaks:echo_control_circuit"
-    },
-    {
-      "item": "minecraft:quartz_block"
-    },
-    {
-      "item": "minecraft:quartz_block"
+      "item": "psitweaks:quantized_plate"
     },
     {
       "item": "psitweaks:heavy_psimetal"
     },
     {
       "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
+    },
+    {
+      "item": "psitweaks:echo_control_circuit"
     }
   ],
   "result": {

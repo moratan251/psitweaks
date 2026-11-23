@@ -15,25 +15,28 @@
       "item": "psitweaks:program_blank"
     },
     {
-      "item": "minecraft:magma_cream"
-    },
-    {
-      "item": "minecraft:magma_cream"
-    },
-    {
       "item": "minecraft:ghast_tear"
     },
     {
       "item": "minecraft:ghast_tear"
     },
     {
-      "item": "psitweaks:psycheonic_metal_ingot"
+      "item": "minecraft:magma_cream"
     },
     {
-      "item": "psitweaks:psycheonic_metal_ingot"
+      "item": "minecraft:magma_cream"
     },
     {
-      "item": "minecraft:nether_star"
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:heavy_psimetal"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
+    },
+    {
+      "item": "psitweaks:antinite_ingot"
     }
   ],
   "result": {

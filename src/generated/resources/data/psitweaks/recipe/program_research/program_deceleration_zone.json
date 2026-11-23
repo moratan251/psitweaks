@@ -5,7 +5,7 @@
     {
       "count": 1,
       "ingredient": {
-        "item": "psitweaks:program_acceleration_zone"
+        "item": "psitweaks:program_zone_magic"
       }
     },
     {
@@ -27,9 +27,9 @@
       }
     },
     {
-      "count": 8,
+      "count": 16,
       "ingredient": {
-        "item": "psitweaks:flashmetal"
+        "item": "psitweaks:chaotic_psimetal"
       }
     }
   ],

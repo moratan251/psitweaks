@@ -30,13 +30,10 @@
       "item": "psi:psimetal_sword"
     },
     {
-      "item": "minecraft:bone"
+      "item": "psitweaks:chaotic_psimetal"
     },
     {
-      "item": "minecraft:bone"
-    },
-    {
-      "item": "minecraft:rotten_flesh"
+      "item": "psitweaks:chaotic_psimetal"
     }
   ],
   "result": {

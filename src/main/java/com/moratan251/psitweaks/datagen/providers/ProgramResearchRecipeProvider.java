@@ -20,13 +20,13 @@ public final class ProgramResearchRecipeProvider {
     }
 
     static void addRecipes(Map<ResourceLocation, JsonObject> recipes) {
-        // 研究の段: 段 1 は時間加速なしで終わる短さ（1〜2 分）。段 2 からは作動式: 時間加速で縮める前提で長くし（段 2 = 5〜10 分、段 3 = 30 分前後、段 4 = 1 時間前後、段 5 = 2 時間前後で流星群だけ 4 時間）、
+        // 研究の段: 段 1 は時間加速なしで終わる短さ（1〜2 分）。段 2 からは作動式: 時間加速で縮める前提で長くし（段 2 = 5〜10 分、段 3 = 30 分前後で超位注入だけ 10 分、段 4 = 45 分〜1 時間 15 分、段 5 = 2 時間前後で流星群だけ 4 時間）、
         // FE/t は加速した倍率を掛けても発電で賄える低さにする（段 2 = 2,000、段 3 = 4,000、段 4 = 10,000、段 5 = 40,000）。
         research(recipes, "program_cocytus", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 inputId(mekanism("pellet_antimatter"), 8),
                 input(Items.BLUE_ICE, 64),
-                input(Items.SCULK_SHRIEKER, 24),
+                input(PsitweaksItems.ALLOY_HYPOSTASIS, 64),
                 input(Items.HEART_OF_THE_SEA, 4),
                 input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 64)
         ), PsitweaksItems.PROGRAM_COCYTUS, 40_000L, 144_000);
@@ -44,8 +44,8 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.ADVANCED_SPELL_BULLET_LOOP, 16),
                 input(PsitweaksItems.SUBLIMATED_SPELL_BULLET_LOOP, 1),
                 input(Items.FEATHER, 32),
-                input(PsitweaksItems.GRAVITON_FACTOR, 8)
-        ), PsitweaksItems.PROGRAM_FLIGHT, 2_000L, 6_000);
+                input(PsitweaksItems.GRAVITON_FACTOR, 4)
+        ), PsitweaksItems.PROGRAM_FLIGHT, 4_000L, 36_000);
 
         research(recipes, "program_phonon_maser", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
@@ -59,7 +59,7 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(Items.NETHER_STAR, 24),
                 inputId(mekanism("pellet_antimatter"), 16),
-                input(PsitweaksItems.ALLOY_HYPOSTASIS, 48),
+                input(PsitweaksItems.PHOTON_GLITTER, 32),
                 input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 64),
                 input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 64)
         ), PsitweaksItems.PROGRAM_METEOR_LINE, 40_000L, 288_000);
@@ -67,22 +67,22 @@ public final class ProgramResearchRecipeProvider {
         research(recipes, "program_dry_meteor", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(Items.PACKED_ICE, 16),
-                input(ModItems.psidust.get(), 32),
+                input(ModItems.psimetal.get(), 32),
                 input(Items.BONE, 16)
         ), PsitweaksItems.PROGRAM_DRY_METEOR, 2_000L, 2_400);
 
         research(recipes, "program_supreme_infusion", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                input(Items.NETHERITE_INGOT, 1),
+                input(Items.NETHERITE_SCRAP, 1),
                 input(PsitweaksItems.FLASHMETAL, 8),
                 input(PsitweaksItems.ALLOY_PSION, 24),
                 input(Items.AMETHYST_BLOCK, 16)
-        ), PsitweaksItems.PROGRAM_SUPREME_INFUSION, 2_000L, 6_000);
+        ), PsitweaksItems.PROGRAM_SUPREME_INFUSION, 4_000L, 12_000);
 
         research(recipes, "program_molecular_divider", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(ModItems.psigem.get(), 32),
-                input(Items.QUARTZ, 48),
+                input(PsitweaksItems.QUANTIZED_PLATE, 4),
                 input(PsitweaksItems.HEAVY_PSIMETAL, 8),
                 input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3)
         ), PsitweaksItems.PROGRAM_MOLECULAR_DIVIDER, 10_000L, 72_000);
@@ -105,18 +105,18 @@ public final class ProgramResearchRecipeProvider {
 
         research(recipes, "program_cure_radiation", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                input(Items.GOLDEN_APPLE, 8),
-                inputId(mekanism("ingot_lead"), 16),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
+                input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 4),
+                input(Items.GOLDEN_APPLE, 16),
+                inputId(mekanism("ingot_lead"), 32),
+                input(PsitweaksItems.ANTINITE_INGOT, 32)
         ), PsitweaksItems.PROGRAM_CURE_RADIATION, 10_000L, 72_000);
 
         research(recipes, "program_guillotine", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(Items.WITHER_SKELETON_SKULL, 1),
                 input(Items.ANVIL, 3),
-                input(Items.ROTTEN_FLESH, 24),
-                input(Items.BONE, 16),
-                input(ModItems.psimetalSword.get(), 1)
+                input(ModItems.psimetalSword.get(), 1),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16)
         ), PsitweaksItems.PROGRAM_GUILLOTINE, 2_000L, 9_000);
 
         research(recipes, "program_active_air_mine", List.of(
@@ -128,55 +128,55 @@ public final class ProgramResearchRecipeProvider {
 
         research(recipes, "program_die_flex", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                input(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 16),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16),
-                input(PsitweaksItems.CHAOTIC_FACTOR, 16)
+                input(PsitweaksItems.PSIONIC_CONTROL_CIRCUIT, 4),
+                input(ModItems.psimetal.get(), 16),
+                input(ModItems.psigem.get(), 4)
         ), PsitweaksItems.PROGRAM_DIE_FLEX, 1_000L, 1_200);
 
         research(recipes, "program_jump_flex", List.of(
                 input(PsitweaksItems.PROGRAM_DIE_FLEX, 1),
-                input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 16),
-                input(PsitweaksItems.FLASHMETAL, 24),
-                inputId(mekanism("pellet_polonium"), 4)
-        ), PsitweaksItems.PROGRAM_JUMP_FLEX, 4_000L, 45_000);
+                input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 4),
+                input(PsitweaksItems.FLASHMETAL, 16),
+                inputId(mekanism("teleportation_core"), 4)
+        ), PsitweaksItems.PROGRAM_JUMP_FLEX, 4_000L, 36_000);
 
         research(recipes, "program_switch_flex", List.of(
                 input(PsitweaksItems.PROGRAM_JUMP_FLEX, 1),
-                input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 16),
-                input(PsitweaksItems.HEAVY_PSIMETAL, 32),
-                input(PsitweaksItems.PELLET_AMERICIUM, 8)
+                input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 4),
+                input(PsitweaksItems.HEAVY_PSIMETAL, 16),
+                inputId(mekanism("pellet_polonium"), 4)
         ), PsitweaksItems.PROGRAM_SWITCH_FLEX, 10_000L, 90_000);
 
         research(recipes, "program_material_mutation", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 catalyst(PsitweaksItems.PHILOSOPHERS_STONE, 1),
                 input(Items.SCULK_CATALYST, 1),
-                input(PsitweaksItems.CHAOTIC_FACTOR, 16),
+                input(PsitweaksItems.STRING_A, 2),
                 input(PsitweaksItems.ANTINITE_INGOT, 32),
-                input(PsitweaksItems.PSIONIC_ECHO, 16)
-        ), PsitweaksItems.PROGRAM_MATERIAL_MUTATION, 10_000L, 72_000);
+                input(PsitweaksItems.ALLOY_PSIONIC_ECHO, 16)
+        ), PsitweaksItems.PROGRAM_MATERIAL_MUTATION, 10_000L, 54_000);
 
         research(recipes, "program_mass_block_break", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(ModItems.psigem.get(), 16),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8),
                 input(Items.TNT, 16)
         ), PsitweaksItems.PROGRAM_MASS_BLOCK_BREAK, 1_500L, 2_400);
 
         research(recipes, "program_mass_harvest", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(ModItems.psigem.get(), 16),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8),
                 input(Items.HAY_BLOCK, 16)
         ), PsitweaksItems.PROGRAM_MASS_HARVEST, 1_500L, 2_400);
 
         research(recipes, "program_idea_storage", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                input(PsitweaksItems.QUANTIZED_PLATE, 16),
-                input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 8),
+                input(PsitweaksItems.QUANTIZED_PLATE, 4),
+                input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 8),
                 inputId(mekanism("quantum_entangloporter"), 2),
                 input(PsitweaksItems.DIMENSIONAL_CRYSTAL, 2),
-                input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 2)
+                input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 1)
         ), PsitweaksItems.PROGRAM_IDEA_STORAGE, 10_000L, 90_000);
 
         // 戦闘系魔法: 研究の重さは必要な CAD の段階に合わせる(疑似隕石とマイクロブラックホールは終盤向けとして重め)
@@ -201,7 +201,7 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
                 input(ModItems.psimetalSword.get(), 3),
                 input(enchantedBook(Enchantments.LOYALTY), 1),
-                input(PsitweaksItems.HEAVY_PSIMETAL, 8),
+                input(PsitweaksItems.FLASHMETAL, 16),
                 input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 3)
         ), PsitweaksItems.PROGRAM_DANCING_BLADES, 4_000L, 36_000);
 
@@ -211,15 +211,15 @@ public final class ProgramResearchRecipeProvider {
                 input(Items.FIRE_CHARGE, 32),
                 input(Items.MAGMA_BLOCK, 32),
                 input(PsitweaksItems.HEAVY_PSIMETAL, 32),
-                input(PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT, 8)
+                input(PsitweaksItems.ANTINITE_INGOT, 8)
         ), PsitweaksItems.PROGRAM_PSEUDO_METEOR, 10_000L, 72_000);
 
         research(recipes, "program_burst", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                inputId(mekanism("superheating_element"), 4),
+                input(Items.GHAST_TEAR, 32),
                 input(Items.MAGMA_CREAM, 32),
-                input(Items.GHAST_TEAR, 8),
-                input(PsitweaksItems.PSYCHEONIC_METAL_INGOT, 16)
+                input(PsitweaksItems.HEAVY_PSIMETAL, 16),
+                input(PsitweaksItems.ANTINITE_INGOT, 16)
         ), PsitweaksItems.PROGRAM_BURST, 10_000L, 90_000);
 
         research(recipes, "program_micro_black_hole", List.of(
@@ -236,19 +236,16 @@ public final class ProgramResearchRecipeProvider {
                 input(Items.ARMOR_STAND, 4),
                 input(Items.FERMENTED_SPIDER_EYE, 16),
                 input(Items.TINTED_GLASS, 16),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8),
-                input(PsitweaksItems.FLASHMETAL, 4)
-        ), PsitweaksItems.PROGRAM_PARADE, 2_000L, 9_000);
+                input(PsitweaksItems.ECHO_CONTROL_CIRCUIT, 8),
+                input(PsitweaksItems.ANTINITE_INGOT, 16)
+        ), PsitweaksItems.PROGRAM_PARADE, 10_000L, 54_000);
 
         // 領域魔法（段 1）: 今の 8 つの領域を開く。数字と素材は仮
         research(recipes, "program_zone_magic", List.of(
                 input(PsitweaksItems.PROGRAM_BLANK, 1),
-                input(Items.PACKED_ICE, 16),
-                input(Items.MAGMA_BLOCK, 16),
-                input(Items.SPONGE, 4),
-                input(Items.FEATHER, 16),
-                input(Items.LIGHTNING_ROD, 4),
-                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8)
+                input(Items.GLASS, 64),
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 8),
+                input(ModItems.psigem.get(), 16)
         ), PsitweaksItems.PROGRAM_ZONE_MAGIC, 2_000L, 2_400);
 
         // 加速領域（段 2）: プログラム: 領域魔法とプログラム: 時間加速を消費する（空白のプログラムは使わない）。数字と素材は仮
@@ -258,16 +255,16 @@ public final class ProgramResearchRecipeProvider {
                 input(Items.CLOCK, 8),
                 input(Items.BONE_BLOCK, 16),
                 input(Items.AMETHYST_SHARD, 16),
-                input(PsitweaksItems.FLASHMETAL, 8)
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16)
         ), PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 2_000L, 6_000);
 
-        // 減速領域（段 2）: プログラム: 加速領域を消費する（空白のプログラムは使わない）。数字と素材は仮
+        // 減速領域（段 2）: プログラム: 領域魔法を消費する（空白のプログラムは使わない）。数字と素材は仮
         research(recipes, "program_deceleration_zone", List.of(
-                input(PsitweaksItems.PROGRAM_ACCELERATION_ZONE, 1),
+                input(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
                 input(Items.COBWEB, 16),
                 input(Items.SOUL_SAND, 16),
                 input(Items.CLOCK, 8),
-                input(PsitweaksItems.FLASHMETAL, 8)
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16)
         ), PsitweaksItems.PROGRAM_DECELERATION_ZONE, 2_000L, 6_000);
 
         // 除染（段 3、Mekanism のみ）: 領域ではないので領域魔法は要らず、放射線除去より下の段なので放射線除去も使わない。数字と素材は仮
@@ -279,13 +276,12 @@ public final class ProgramResearchRecipeProvider {
                 input(PsitweaksItems.FLASHMETAL, 8)
         ), PsitweaksItems.PROGRAM_DECONTAMINATION, 4_000L, 36_000);
 
-        // 汚染領域（段 2、Mekanism のみ）: プログラム: 領域魔法とプログラム: 放射線フィルタを消費する（空白のプログラムは使わない）。数字と素材は仮
+        // 汚染領域（段 2、Mekanism のみ）: 材料はプログラム: 領域魔法（研究で消費し、空白のプログラムは使わない）。数字と素材は仮
         research(recipes, "program_contamination_zone", List.of(
                 input(PsitweaksItems.PROGRAM_ZONE_MAGIC, 1),
-                input(PsitweaksItems.PROGRAM_RADIATION_FILTER, 1),
                 inputId(mekanism("ingot_uranium"), 32),
-                inputId(mekanism("pellet_polonium"), 4),
-                input(PsitweaksItems.FLASHMETAL, 8)
+                input(PsitweaksItems.CHAOTIC_PSIMETAL, 16),
+                inputId(mekanism("fluorite_gem"), 32)
         ), PsitweaksItems.PROGRAM_CONTAMINATION_ZONE, 2_000L, 12_000);
     }
 

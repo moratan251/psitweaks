@@ -33,7 +33,10 @@
       "item": "minecraft:amethyst_shard"
     },
     {
-      "item": "psitweaks:flashmetal"
+      "item": "psitweaks:chaotic_psimetal"
+    },
+    {
+      "item": "psitweaks:chaotic_psimetal"
     }
   ],
   "result": {
