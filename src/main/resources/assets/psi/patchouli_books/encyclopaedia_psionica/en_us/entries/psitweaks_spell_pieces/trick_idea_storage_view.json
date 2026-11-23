@@ -4,8 +4,6 @@
   "icon": "psitweaks:textures/spell/trick_idea_storage_view.png",
   "pages": [
     { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.0" },
-    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.1" },
-    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.2" },
-    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.3" }
+    { "type": "text", "text": "psi.book.page.psitweaks_spellpiece.trick_idea_storage_view.1" }
   ]
 }

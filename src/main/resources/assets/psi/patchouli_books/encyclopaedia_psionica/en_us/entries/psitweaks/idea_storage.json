@@ -8,13 +8,9 @@
       "text": "psi.book.page.psitweaks_idea_storage.0"
     },
     {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_idea_storage.1"
-    },
-    {
       "type": "spotlight",
       "item": "psitweaks:program_idea_storage",
-      "text": "psi.book.page.psitweaks_idea_storage.2"
+      "text": "psi.book.page.psitweaks_idea_storage.1"
     }
   ]
 }

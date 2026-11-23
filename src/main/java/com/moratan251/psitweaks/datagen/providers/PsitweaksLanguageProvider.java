@@ -1475,16 +1475,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Ideaspace Storage";
         });
         root.addProperty("psi.book.page.psitweaks_idea_storage.0", switch (locale) {
-            case "ja_jp" -> "$(thing)イデアストレージ$(0) は, プレイヤーごとに1つずつ用意される専用の保管庫です. アイテム, 液体, Mekanismの化学物質, FEをまとめて保管できます.$(p)中身はプレイヤー単位でワールドに保存され, 持ち物とは別に管理されるので, 死亡しても失われません. 保管できる種類数や1種類あたりの上限はコンフィグで変更できます.";
-            default -> "$(thing)Ideaspace Storage$(0) is a personal storage space that every player has. It holds items, fluids, Mekanism chemicals, and FE together.$(p)Its contents are saved in the world for each player, separately from your inventory, so they are not lost when you die. The number of types and the per-type limits can be changed in the config.";
+            case "ja_jp" -> "$(thing)イデアストレージ$(0)はプレイヤーごとに1つ用意される専用の仮想保管庫です。アイテム・液体・Mekanism の化学物質・FE を保管でき、ワールドにプレイヤー単位で保存されるため死亡しても失われません（種類数や容量の上限はコンフィグで変更可）。$(p)中身は$(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)作動式: イデアストレージ閲覧$(0)$(/l)で操作でき、術式での転送・参照や$(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)作動式: イデアコネクター$(0)$(/l)による外部機器連携にも対応します。";
+            default -> "$(thing)Ideaspace Storage$(0) is a personal virtual storage for each player holding items, fluids, Mekanism chemicals, and FE. Saved per player in the world, it is never lost on death (limits are configurable).$(p)Access it via $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)Trick: View Ideaspace Storage$(0)$(/l), automate it with transfer/selector pieces, or link pipes via $(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)Trick: Ideaspace Connector$(0)$(/l).";
         });
         root.addProperty("psi.book.page.psitweaks_idea_storage.1", switch (locale) {
-            case "ja_jp" -> "中身は $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)作動式: イデアストレージ閲覧$(0)$(/l) の画面で確認・出し入れできます.$(p)術式からは, ブロックや指定スロットと資源・FEを格納・取出する作動式と, 貯蔵量・空き容量・種類数を調べる取得子で操作します.$(p)$(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)作動式: イデアコネクター$(0)$(/l) を設置すると, パイプなどの外部機器ともやり取りできます.";
-            default -> "Use the screen opened by $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)Trick: View Ideaspace Storage$(0)$(/l) to check its contents and move things in and out.$(p)Spells work with it through tricks that deposit and withdraw resources and FE with blocks or the target slot, and selectors that read amounts, free capacity and type counts.$(p)Place a $(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)Trick: Ideaspace Connector$(0)$(/l) to exchange resources with pipes and other external devices.";
-        });
-        root.addProperty("psi.book.page.psitweaks_idea_storage.2", switch (locale) {
-            case "ja_jp" -> "イデアストレージ系のスペルピースは, この $(item)プログラム: イデアストレージ$(0) を右クリックで使用するだけで, すべてまとめて解禁されます. プログラムは消費されません.$(p)プログラムの作り方は $(l:psitweaks/research)研究$(/l) を参照してください.";
-            default -> "Using this $(item)Program: Ideaspace Storage$(0) with right-click unlocks every Ideaspace Storage spell piece at once. The program is not consumed.$(p)See $(l:psitweaks/research)Research$(/l) for how to make programs.";
+            case "ja_jp" -> "イデアストレージ系のスペルピースは、この$(item)プログラム: イデアストレージ$(0)を右クリックするだけでまとめて解禁されます（プログラムは消費されません）。$(p)プログラムの作り方は$(l:psitweaks/research)研究$(/l)を参照してください。";
+            default -> "Right-clicking this $(item)Program: Ideaspace Storage$(0) unlocks all Ideaspace Storage spell pieces at once without consuming the program.$(p)See $(l:psitweaks/research)Research$(/l) for how to craft programs.";
         });
         root.addProperty("psi.book.entry.psitweaks_magician", switch (locale) {
             case "ja_jp" -> "魔法師";
@@ -2327,17 +2323,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addUtilitySpellPieces(root);
         addIdeaStorageSelectorPages(root);
         addBookPage(root, "trick_idea_storage_view.0",
-                "Opens your personal Ideaspace Storage. Items, fluids, Mekanism chemicals, and FE can each be stored. FE is transferred by the FE mode of the Deposit and Withdraw tricks; its balance appears in the storage grid, and the information button also shows capacity.$(p)By default, it can store 256 item types, 64 fluid types, and 64 chemical types. Capacity limits can be changed in the config.",
-                "自分専用のイデアストレージを開きます。アイテム・液体・Mekanismの化学物質・FEを保管できます。FEは格納・取出の作動式のFEモードで転送し、一覧のスロットで残量、情報ボタンで上限も確認できます。$(p)標準設定ではアイテム256種類、液体64種類、化学物質64種類を保管できます。保存上限はコンフィグで変更できます。");
+                "Opens your personal Ideaspace Storage for items, fluids, Mekanism chemicals, and FE (transferred via Deposit/Withdraw FE mode; defaults to 256 item, 64 fluid, and 64 chemical types, configurable).$(p)Left-click the grid with a held item (right-click for 1) or Shift-click in your inventory to store. With an empty cursor, left-click withdraws up to a stack and right-click up to half (hold Shift to move directly to inventory).",
+                "自分専用のイデアストレージ画面を開きます。アイテム・液体・Mekanism の化学物質・FE（FE モードの格納／取出で転送）を保管でき、既定ではアイテム256種・液体64種・化学物質64種まで入ります（設定変更可）。$(p)カーソルで持って左クリック（右クリックで1個）またはインベントリから Shift クリックで格納し、空の手で左クリックすると最大1スタック、右クリックで半分（Shift 併用で直接インベントリへ）取り出せます。");
         addBookPage(root, "trick_idea_storage_view.1",
-                "To store items, hold a stack on the cursor and left-click the storage grid, or Shift-click a stack in your inventory. Right-click while holding a normal item to store just one. Fluid and chemical containers transfer their contents instead.$(p)With an empty cursor, left-click a stored item to withdraw up to one stack, or right-click for up to half its maximum stack size. Hold Shift to send the withdrawn items directly to your inventory.",
-                "アイテムをカーソルで持ち、ストレージ欄を左クリックすると格納します。インベントリ内のアイテムをShiftクリックしても格納できます。通常アイテムを持って右クリックすると1個だけ格納します。液体・化学物質の容器は中身を移します。$(p)カーソルが空のとき、保存済みアイテムを左クリックすると最大1スタック、右クリックすると最大スタック数の半分まで取り出します。Shiftを押しながら操作すると、直接インベントリへ取り出します。");
-        addBookPage(root, "trick_idea_storage_view.2",
-                "Hold a fluid or chemical container on the cursor and right-click the storage grid to transfer its contents. Right-click the desired stored resource to fill a compatible container; if it cannot be filled, its contents may be deposited instead.$(p)Shift-right-click repeats the transfer in the same direction. With an empty cursor, left-click a stored fluid to fill one empty bucket from storage, if that fluid supports buckets.",
-                "液体や化学物質の容器をカーソルで持ち、ストレージ欄を右クリックすると中身を移します。保存済みの資源を右クリックすると、対応する容器への充填を試みます。充填できない場合は、容器の中身を格納することがあります。$(p)Shift＋右クリックでは、同じ方向への転送を繰り返します。カーソルが空の状態で液体を左クリックすると、保存済みの空バケツ1個に充填できます。バケツに対応する液体に限ります。");
-        addBookPage(root, "trick_idea_storage_view.3",
-                "The side crafting-table button opens a 3x3 crafting grid. Consumed ingredients are replenished from storage when available. Shift-click the result to craft roughly one stack at a time.$(p)The clear button returns ingredients to storage if they all fit. Search, sorting, and the + / - buttons help organize the view. JEI and EMI can also place recipe ingredients while the crafting grid is open.",
-                "左側の作業台ボタンで3×3のクラフト欄を開きます。消費した材料は、ストレージに在庫があれば自動補充されます。完成品をShiftクリックすると、約1スタック分をまとめて作成します。$(p)材料返却ボタンは、全量を格納できる場合に材料をストレージへ戻します。検索・並べ替え・＋／－ボタンで表示を調整できます。クラフト欄を開いている間は、JEI・EMIからの材料配置にも対応します。");
+                "Right-click the grid with a fluid or chemical container to store or fill its contents (Shift + right-click repeats). With an empty cursor, left-clicking a stored fluid fills one stored empty bucket if supported.$(p)The side crafting button opens a 3x3 grid that auto-refills consumed ingredients from storage (Shift-click crafts roughly a stack; supports clearing to storage, search, sorting, and JEI/EMI recipe transfer).",
+                "液体や化学物質の容器を持って右クリックすると中身を格納／充填できます（Shift＋右クリックで連続転送）。空の手で液体を左クリックすると、保存済みの空バケツ1個に汲み出せます。$(p)左の作業台ボタンで3×3クラフト欄が開き、消費した材料は在庫から自動補充されます（Shift クリックでまとめて作成、材料返却・検索・並べ替え・JEI/EMI 材料配置にも対応）。");
         root.addProperty("psi.book.category.psitweaks_spell_pieces", switch (locale) {
             case "ja_jp" -> "追加術式";
             default -> "Additional Spell Pieces";
@@ -2943,72 +2933,26 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places an Ideaspace Connector linked to your Ideaspace Storage at the specified position.",
                 "作動式: イデアコネクター", "指定位置に、自分のイデアストレージへ接続するイデアコネクターを設置します。");
         addBookPage(root, "trick_ideaspace_connector.0",
-                "Places an Ideaspace Connector at the input position (Vector). Its appearance uses only conjured-block particles in the CAD color. It does not expire; breaking it drops no block item and leaves your stored resources intact.",
-                "位置(Vector)の座標にイデアコネクターを設置します。外観はCADの色を使った魔法ブロックのパーティクルのみです。時間経過では消えず、破壊時にブロックアイテムは落ちません。ストレージの中身は保持されます。");
+                "Places an Ideaspace Connector linked directly to your Ideaspace Storage at the input position (never expires; breaking drops no item and keeps storage intact). Incoming items, fluids, chemicals (with Mekanism), and FE go straight to storage; right-click to publish up to 9 resources for extraction. Only the owner can configure it, and it works offline while chunk-loaded.",
+                "位置(Vector)に自分のイデアストレージと直結するイデアコネクターを設置します（時間経過で消えず、破壊してもドロップなし・在庫は保持）。搬入されたアイテム・液体・化学物質（Mekanism 導入時）・FE は直接ストレージに入り、右クリックで最大9種類を公開して外部機器から搬出できます。設定変更は設置者のみで、チャンク読込中ならオフラインでも稼働します。");
         addBookPage(root, "trick_ideaspace_connector.1",
-                "Incoming items, fluids, chemicals and FE enter the owner's Ideaspace Storage directly. Right-click to configure up to nine published resources. External devices can extract only these resources. Configuration consumes nothing; the connector holds no inventory. Only the owner can configure it, and it works while the owner is offline if its chunk is loaded. Chemicals require Mekanism.",
-                "搬入されたアイテム・液体・化学物質・FEは、設置者のイデアストレージに直接収納されます。右クリックの設定画面で最大9種類を公開し、外部機器から搬出できます。設定に資源は消費せず、ブロック内に在庫は持ちません。設定変更は設置者のみ可能です。チャンクが読み込まれていれば設置者がオフラインでも利用できます。化学物質にはMekanismが必要です。");
+                "All six faces default to I/O enabled with automatic export off. Face I/O, redstone mode (always / powered / unpowered), export rate/interval, and stock rules (minimum storage stock and destination target stock) can be overridden per published slot.$(p)The Input filter (all faces) restricts accepted resources via Accept all, Allow list, Deny list, or Stored types only (FE is always accepted).",
+                "初期状態では全6面から搬入・搬出でき、自動搬出は無効です。面設定・動作条件（常時／信号あり／信号なし）・自動搬出の量と間隔・在庫条件（開始在庫・目標在庫）は共通設定を基本に公開枠ごとに上書きできます。$(p)「搬入フィルタ」（全6面共通）では、すべて許可／許可リスト／拒否リスト／在庫のある種類のみ（FE は常時許可）の4方式で受け入れを制限できます。");
         addBookPage(root, "trick_ideaspace_connector.2",
-                "All six faces initially allow input and output. Each published slot can override the shared face settings. Automatic output is initially off. Export rate settings control the amount per attempt and interval for each resource type, shared by all six faces of each slot. Defaults are one stack, 1,000 mB of fluid or chemical, and 16,000 FE every 5 ticks. Transfers are limited to available stock and destination capacity.",
-                "初期状態では全6面から搬入・搬出できます。面設定は共通設定を基本に、公開枠ごとに個別設定で上書きできます。自動搬出は初期状態では無効です。「自動搬出量・間隔」で資源別の1回量と間隔を設定でき、各枠の6面で共用します。初期値は5tickごとに最大1スタック、液体・化学物質1,000mB、16,000FEです。在庫や移動先の空きに応じ、移動できる分だけ搬出します。");
-        addBookPage(root, "trick_ideaspace_connector.3",
-                "Each face can run always, when powered, or when unpowered. Signals received on any face are shared by the whole connector. An inactive face blocks external input, extraction and automatic output for items, fluids, chemicals and FE. Conditions follow the shared or individual slot settings. The All button changes all six faces of the current profile together. Defaults to always active.",
-                "各面の動作条件を「常時動作」「信号ありで動作」「信号なしで動作」から選べます。どの面から受けた信号もブロック全体で共有します。停止中の面は、アイテム・液体・化学物質・FEの外部からの搬入・搬出と自動搬出を停止します。条件は共通設定を基本に、公開枠ごとに上書きできます。「全6面」ボタンで編集中の設定の6面を一括変更できます。初期値は常時動作です。");
-        addBookPage(root, "trick_ideaspace_connector.4",
-                "The Input filter limits which resources are accepted. It applies to all six faces and has four modes: Accept all, Allow list, Deny list, and Stored types only. The nine list slots are separate from the published slots, match only resources with identical data such as durability, and never consume resources. Stored types only accepts types the storage holds at least one of, so a type that runs out is no longer accepted. FE is always accepted. Defaults to Accept all.",
-                "「搬入フィルタ」で、受け入れる資源を制限できます。全6面に適用され、方式は「すべて許可」「許可リスト」「拒否リスト」「在庫のある種類のみ」の4つです。リスト用の9枠は公開枠とは別で、耐久値などのデータまで一致するものだけが対象です。登録しても資源は消費しません。「在庫のある種類のみ」は、ストレージに1以上ある種類だけを受け入れます。在庫が0になった種類は受け入れなくなります。FEは常に受け入れます。初期値は「すべて許可」です。");
-        addBookPage(root, "trick_ideaspace_connector.5",
-                "Stock rules adjust when and how much automatic export sends. Min. storage stock exports only while the storage holds at least that amount. It does not keep a reserve, so a single export may drop below it. Target stock counts the same resource visible through the connected face of the destination and exports only what is missing (blank = off). Both can be combined and follow the shared or per-slot settings. They do not apply when other devices extract from the connector.",
-                "自動搬出の「在庫条件」で、搬出のタイミングと量を調整できます。「開始在庫」を設定すると、ストレージにその量以上あるときだけ搬出します。残量を確保する機能ではないので、1回の搬出で下回ることがあります。「目標在庫」を設定すると、搬出先の接続面から見える同じ資源を数え、目標に足りない分だけ搬出します（空欄で無効）。両方を併用でき、共通設定と公開枠ごとの個別設定に従います。他の機器がコネクターから引き出す場合には適用されません。");
-        addBookPage(root, "trick_ideaspace_connector.6",
-                "Copy on the main page puts the published slots, I/O settings, export rates, stock rules and input filters on the clipboard as JSON. Paste on another connector applies them; Ctrl+C and Ctrl+V also work. Deleting the faces, export, slots or input section from the JSON leaves that part unchanged. Faces keep their absolute directions, and resources unavailable in the world become empty.",
-                "メイン画面の「コピー」で、公開枠・搬入出設定・搬出量・在庫条件・搬入フィルタをJSONとしてクリップボードに保存し、別のコネクターで「貼り付け」すると同じ設定にできます。Ctrl+C / Ctrl+Vでも操作できます。JSONから faces・export・slots・input の項目を消すと、その部分は変更しません。面は東西南北などの向きのまま貼り付け、存在しない資源は空欄になります。");
+                "Use Copy / Paste (or Ctrl+C / Ctrl+V) on the main page to transfer published slots, face settings, export rates, stock rules, and input filters as JSON between connectors. Removing sections from the JSON leaves those parts unchanged; faces keep their world directions.",
+                "メイン画面の「コピー」「貼り付け」（Ctrl+C / Ctrl+V）で、公開枠・面設定・搬出量・在庫条件・搬入フィルタを JSON として別のコネクターへ複製できます。JSON から一部項目を削ればその箇所を変更せずに貼り付けられ、面は方角（東西南北等）のまま適用されます。");
     }
 
     private void addIdeaStorageSelectorPages(JsonObject root) {
-        String enFree = " the per-type limit minus the stock, or 0 for a new type while every type slot is in use.";
-        String jpFree = "1種類あたりの上限から在庫を引いた値で、種類数が上限に達しているときに新しい種類を指定すると0です。";
-        String enModes = " The mode picks the resource kind: Item (I), Fluid (F), Chemical (C) or FE.";
-        String jpModes = "資源の種類はモードで選びます（アイテム I・液体 F・化学物質 C・FE）。";
         addBookPage(root, "selector_idea_storage_last_transfer.0",
-                "Returns the amount actually moved by the most recent Ideaspace transfer trick that ran earlier in the same cast, as a Number."
-                        + " The units match the storage amount selectors: items are counted one by one, fluids and chemicals in mB, and FE in FE."
-                        + " Returns 0 if no such trick has run yet.",
-                "同じ詠唱の中で、それまでに実行された最後のイデア転送の作動式が実際に移した量をNumberとして取得します。"
-                        + "単位は貯蔵量の取得子と同じで、アイテムは個数、液体・化学物質はmB、FEはFEです。まだ実行されていなければ0です。");
-        addBookPage(root, "selector_idea_storage_last_transfer.1",
-                "Counted tricks: Deposit and Withdraw in every mode, FE included, and Slot Deposit/Withdraw."
-                        + " A trick that moves nothing (an Exact Transfer that falls short included) or stops with an error records 0."
-                        + " Tricks run in reading order, row by row from the top left, so connect this selector only to tricks placed after the transfer.",
-                "対象は、すべてのモード（FEを含む）の格納・取出と、スロット格納・取出の作動式です。"
-                        + "何も移さなかった場合（量が足りなかった完全転送を含む）や、エラーで止まった場合は0が記録されます。"
-                        + "作動式は左上から1行ずつ順に実行されるため、この取得子は転送より後にある作動式だけに接続してください。");
+                "Returns the amount actually moved by the most recent Ideaspace transfer trick (Deposit, Withdraw, Slot Deposit/Withdraw in any mode) executed earlier in the same cast, or 0 if none ran, moved nothing, or failed.$(p)Because tricks run in reading order from top left, connect this selector only to tricks placed after the transfer.",
+                "同じ詠唱内で直前に実行されたイデア転送作動式（格納・取出・スロット格納・スロット取出の全モード）が実際に移した量を Number で取得します（未実行・移動量0・エラー時は0）。$(p)作動式は左上から順に実行されるため、転送より後ろに配置した作動式へ接続して使います。");
         addBookPage(root, "selector_idea_storage_amount.0",
-                "Returns how much of one resource your Ideaspace Storage holds, as a Number." + enModes
-                        + " Items are counted one by one, fluids and chemicals in mB, and FE in FE.",
-                "自分のイデアストレージにある資源の量をNumberとして取得します。" + jpModes
-                        + "アイテムは個数、液体・化学物質はmB、FEはFE単位です。");
-        addBookPage(root, "selector_idea_storage_amount.1",
-                "Item mode takes an item ID as a String (e.g. minecraft:stone) or an Item, which uses that item's ID."
-                        + " Fluid and Chemical modes take an ID as a String (e.g. minecraft:water, mekanism:hydrogen). FE mode has no input."
-                        + " Items and fluids with different data components are counted together when their IDs match."
-                        + " Invalid IDs, empty Item values and missing stock return 0.",
-                "アイテムモードはアイテムIDのString（例: minecraft:stone）かItemを受け取り、ItemではそのアイテムのIDを使います。"
-                        + "液体・化学物質モードはIDをString（例: minecraft:water、mekanism:hydrogen）で受け取ります。FEモードに入力はありません。"
-                        + "アイテムと液体は、同じIDならデータコンポーネントが異なるものも合算します。"
-                        + "不正なID・空のItem・在庫なしの場合は0を返します。");
+                "Returns how much of a resource your Ideaspace Storage holds as a Number (Item: count, Fluid/Chemical: mB, FE: FE).$(p)Item mode takes an ID String or Item; Fluid and Chemical modes take an ID String (FE takes no input). Items and fluids with the same ID are summed across data components; invalid IDs, empty items, and missing stock return 0.",
+                "自分のイデアストレージにある資源量を Number で取得します（モード: アイテム I＝個数、液体 F・化学物質 C＝mB、FE＝FE）。$(p)アイテムは ID の String か Item、液体・化学物質は ID の String を入力します（FE は入力なし）。アイテムと液体は同じ ID ならデータコンポーネント違いも合算し、不正 ID・空 Item・在庫なしは0を返します。");
         addBookPage(root, "selector_idea_storage_free_capacity.0",
-                "Returns how much more of one resource your Ideaspace Storage can accept now, as a Number." + enModes
-                        + " For items, fluids and chemicals it is" + enFree + " In FE mode it is the FE capacity minus the stored FE.",
-                "自分のイデアストレージに、資源を今あとどれだけ格納できるかをNumberとして取得します。" + jpModes
-                        + "アイテム・液体・化学物質では、" + jpFree + "FEモードでは、FEの上限から蓄電量を引いた値です。");
-        addBookPage(root, "selector_idea_storage_free_capacity.1",
-                "Item mode takes an item ID as a String, meaning the item without extra data components, or an Item, which keeps its data components."
-                        + " Fluid and Chemical modes take an ID as a String; the fluid is taken without extra data components. FE mode has no input."
-                        + " Invalid IDs and empty Item values return 0, and Chemical mode always returns 0 without Mekanism.",
-                "アイテムモードはアイテムIDのString（追加のデータコンポーネントなし）か、Item（データコンポーネントを含む）を受け取ります。"
-                        + "液体・化学物質モードはIDをStringで受け取り、液体は追加のデータコンポーネントがないものとして扱います。FEモードに入力はありません。"
-                        + "不正なID・空のItemは0で、Mekanismが導入されていない場合、化学物質モードは常に0です。");
+                "Returns how much more of a resource your Ideaspace Storage can accept as a Number (Item, Fluid, Chemical, or FE mode; returns 0 for a new type when the type limit is full).$(p)Item mode takes an ID String (no extra data) or Item (with its data components); Fluid and Chemical modes take an ID String (FE takes no input). Invalid inputs and Chemical mode without Mekanism return 0.",
+                "自分のイデアストレージにあとどれだけ格納できるかを Number で取得します（モード: アイテム I・液体 F・化学物質 C・FE。種類数上限に達している場合、新規種類は0）。$(p)アイテムは ID の String（追加データなし）か Item（データ込み）、液体・化学物質は ID の String を入力します（FE は入力なし）。不正入力や Mekanism 未導入時の化学物質モードは0を返します。");
         addBookPage(root, "selector_idea_storage_type_count",
                 "Returns the number of types of one resource kind currently stored in your Ideaspace Storage, as a Number."
                         + " The mode picks Item (I), Fluid (F) or Chemical (C)."
@@ -3041,64 +2985,21 @@ public class PsitweaksLanguageProvider implements DataProvider {
                     : "自分のイデアストレージから、モードで選んだ資源（アイテム・液体・化学物質・FE）を位置のブロックの指定面へ取り出します。";
             addSpellPiece(root, id, "Trick: Ideaspace Storage - " + (deposit ? "Deposit" : "Withdraw"), en,
                     "作動式: イデアストレージ-" + (deposit ? "格納" : "取出"), jp);
-            addBookPage(root, id + ".0",
-                    (deposit
-                            ? "Deposits the resource chosen by the mode from the specified face of the block at Position into your Ideaspace Storage."
-                            : "Withdraws the resource chosen by the mode from your Ideaspace Storage into the specified face of the block at Position.")
-                            + " The modes are Item (I), Fluid (F), Chemical (C) and FE, and the first three also have Exact Transfer (I=, F=, C=)."
-                            + " Partial Transfer moves as much as it can: items up to the count given by Number, fluids and chemicals up to Power * 1000 mB,"
-                            + " and FE up to Power * 4000 FE. The amount must be positive; fractions are rounded down.",
-                    (deposit
-                            ? "位置のブロックの指定面から、モードで選んだ資源を自分のイデアストレージへ格納します。"
-                            : "自分のイデアストレージから、モードで選んだ資源を位置のブロックの指定面へ取り出します。")
-                            + "モードはアイテム（I）・液体（F）・化学物質（C）・FEで、FE以外は完全転送（I=・F=・C=）も選べます。"
-                            + "部分転送では移せる分だけ移します。上限はアイテムが「数値」の個数、液体・化学物質が威力×1000mB、FEが威力×4000FEです。"
-                            + "量には正の数を指定し、端数は切り捨てます。");
             if (!deposit) {
-                // Filters, block transfers and Exact Transfer are shared with Deposit, so Withdraw links there instead of repeating them.
-                addBookPage(root, id + ".1",
-                        "Filters, block transfers and Exact Transfer work as in $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l)."
-                                + " When several types match, they are withdrawn in turn until the limit is reached.",
-                        "フィルタ、ブロックとの転送、完全転送は $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l) と同じです。"
-                                + "複数の種類が一致する場合は、上限に達するまで順に取り出します。");
+                addBookPage(root, id + ".0",
+                        "Withdraws the chosen resource (Item I, Fluid F, Chemical C, or FE) from your Ideaspace Storage into the specified block face, up to Number items, Power * 1000 mB, or Power * 4000 FE (rounded down).$(p)Filters, block rules, and Exact Transfer (I=, F=, C=) match $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l); multiple matching types are withdrawn in turn up to the limit.",
+                        "自分のイデアストレージから位置のブロックの指定面へ、モードで選んだ資源（アイテム I・液体 F・化学物質 C・FE）を取り出します。上限はアイテムが「数値」個、液体・化学物質が威力×1000 mB、FE が威力×4000 FE です（端数切り捨て）。$(p)フィルタ・ブロック転送・完全転送（I=・F=・C=）の仕様は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じで、複数種類が一致する場合は上限まで順に取り出します。");
                 continue;
             }
+            addBookPage(root, id + ".0",
+                    "Deposits the chosen resource (Item I, Fluid F, Chemical C, or FE) from the specified block face into your Ideaspace Storage, up to Number items, Power * 1000 mB, or Power * 4000 FE (rounded down).$(p)Follows face I/O rules, errors on protected blocks, and skips unloaded chunks, your own Ideaspace Connector (except FE), and Chemical mode without Mekanism.",
+                    "位置のブロックの指定面から、選んだモードの資源（アイテム I・液体 F・化学物質 C・FE）を自分のイデアストレージへ格納します。上限はアイテムが「数値」個、液体・化学物質が威力×1000 mB、FE が威力×4000 FE です（端数切り捨て）。$(p)ブロックの面設定に従い、保護ブロックではエラー、未ロードチャンク・自分のイデアコネクター（FE 以外）・Mekanism 未導入時の化学物質モードでは作用しません。");
             addBookPage(root, id + ".1",
-                    "The filter is optional; with no filter or an empty String, everything of the chosen kind is a target."
-                            + " In Fluid and Chemical modes the filter is a String matched against resource IDs, supporting * (any text) and ? (any single character)."
-                            + " Omit the namespace, such as \"minecraft:\", to match the rest of the ID across all mods (e.g. *water for water, heavy water and more)."
-                            + " Start with # to match tags instead, such as #minecraft:water."
-                            + " FE mode has no filter.",
-                    "フィルタは省略でき、接続しないか空文字にすると、選んだ種類のすべてが対象です。"
-                            + "液体・化学物質モードのフィルタはStringで、資源IDで照合し、*（任意の文字列）と?（任意の1文字）が使えます。"
-                            + "「minecraft:」のような先頭部分を省くと、どのModでも後半部分だけで照合します（例: *water で水や重水など）。"
-                            + "#で始めると、#minecraft:waterのようにタグで照合します。"
-                            + "FEモードにフィルタはありません。");
+                    "The filter is optional (absent in FE mode). Fluid and Chemical modes match ID Strings with * and ? wildcards, optional namespace omission, or # tag matching.$(p)Item mode adapts to the connected type: String (ID/wildcard/#tag), Item (same type), Item List (any match), or Operator: Strict Item (matches data components such as enchantments and durability).",
+                    "フィルタは省略可能です（FE モードはなし）。液体・化学物質は資源 ID を String で照合し、*・?・名前空間省略・# タグ指定に対応します。$(p)アイテムモードは接続した値で照合方法が決まります：String（ID／ワイルドカード／# タグ）、Item（その種類）、Item List（いずれか）、演算子: 厳密一致アイテム（エンチャントや耐久値等のデータまで一致）。");
             addBookPage(root, id + ".2",
-                    "In Item mode, what you connect to the filter decides how it matches: a String matches item IDs as above (e.g. *_ore for every mod's ores),"
-                            + " an Item matches that item type, an Item List matches any of its items, and the output of Operator: Strict Item"
-                            + " matches only items with the same data components, such as enchantments and durability.",
-                    "アイテムモードでは、フィルタにつないだ値で照合方法が決まります。Stringは上と同じくアイテムIDで照合し（例: *_ore で各Modの鉱石）、"
-                            + "Itemはそのアイテムの種類に、Item Listはそのいずれかに一致します。演算子: 厳密一致アイテムの出力をつなぐと、"
-                            + "エンチャントや耐久値などのデータコンポーネントまで一致するものだけが対象です。");
-            addBookPage(root, id + ".3",
-                    "Follows the block's per-face input and output. Casting fails with an error if the block is protected,"
-                            + " and nothing happens on blocks in unloaded chunks. Items, fluids and chemicals are not moved on your own Ideaspace Connector either."
-                            + " Chemical mode requires Mekanism and does nothing without it.",
-                    "ブロックの面ごとの入出力に従います。保護されたブロックを対象にするとエラーになり、"
-                            + "読み込まれていないチャンクのブロックには作用しません。アイテム・液体・化学物質は、自分のイデアコネクターにも作用しません。"
-                            + "化学物質モードにはMekanismが必要で、導入されていない場合は何もしません。");
-            addBookPage(root, id + ".4",
-                    "Exact Transfer (I=, F=, C=; the badge turns white): moves exactly the full amount of one resource type, or nothing at all."
-                            + " Both sides are simulated first, including the storage's per-type and type limits."
-                            + " Different items, the same item with different data components, and different fluids or chemicals are never combined;"
-                            + " the first type that fits is moved. When depositing a fluid, the block must release the amount in a single drain,"
-                            + " while the same chemical in several tanks of the block adds up. A shortfall is not an error.",
-                    "完全転送（I=・F=・C=。バッジが白地になります）: 1種類の資源を全量ちょうど移すか、まったく移しません。"
-                            + "移動元・移動先と、ストレージの1種類あたりの上限・種類数上限を先に試算します。"
-                            + "別のアイテムやデータコンポーネント違い、別の液体・化学物質を合算することはなく、条件を満たす最初の種類を移します。"
-                            + "液体の格納では1回の排出で全量を出せる必要があり、化学物質はブロックの複数のタンクにある同じものを合算します。"
-                            + "量が足りなくてもエラーにはなりません。");
+                    "Exact Transfer modes (I=, F=, C=; white badge) move the exact full amount of a single resource type or nothing at all without raising an error.$(p)Different items, data components, fluids, or chemicals are never combined; the first qualifying type is moved (fluid deposits require a single full drain, while matching chemicals across tanks combine).",
+                    "FE 以外は完全転送モード（I=・F=・C=、白地バッジ）も選べます。1種類の資源を指定量ちょうど移せる場合のみ実行し、足りない場合は何も移さず終了します（エラーにはなりません）。$(p)別アイテムやデータ違いを合算せず、条件を満たす最初の1種類を転送します（液体格納は1回の排出で全量が必要、化学物質は同種の複数タンクを合算）。");
         }
     }
 
@@ -3107,47 +3008,26 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "指定スロットとのイデア転送に失敗しました。詳細はサーバーログを確認してください";
             default -> "Ideaspace transfer with the target slot failed. Check the server log for details";
         });
-        String enInputs = " The filter is optional. Number must be positive; fractions of an item are rounded down.";
-        String jpInputs = "フィルタは省略できます。数値には正の数を指定し、1個未満の端数は切り捨てます。";
-        String enSlot = "The target slot is the same one used by Psi pieces such as Trick: Place Block. By default it is the hotbar slot to the right of your CAD,"
-                + " and it can be changed with Trick: Switch Focus Slot (Hotbar) or Trick: Slot Change (Inventory)."
-                + " Has no effect on the slot holding the CAD in use or the tool casting the spell. Casting without a CAD fails with an error.";
-        String jpSlot = "指定スロットは、Psiの作動式: ブロック設置(単)などが使うスロットと同じです。既定ではCADの右隣のホットバーで、"
-                + "作動式: 指定スロット切替やTrick: Slot Change (Inventory)で変更できます。"
-                + "使用中のCADや、術式を詠唱している道具があるスロットには作用しません。CADを持っていないとエラーになります。";
+        String enSlot = "The target slot matches Psi's Trick: Place Block (default: hotbar slot right of the CAD; changeable via Trick: Switch Focus Slot or Trick: Slot Change (Inventory)). Skips the active CAD or casting tool slot, and errors if you have no CAD.";
+        String jpSlot = "指定スロットは Psi の作動式: ブロック設置(単)等と共通です（既定は CAD の右隣で、作動式: 指定スロット切替や Trick: Slot Change (Inventory) で変更可）。使用中の CAD や詠唱中の道具があるスロットには作用せず、CAD 未所持時はエラーになります。";
 
         String depositEn = "Deposits the item in the spell's target slot into your Ideaspace Storage, up to the count given by Number.";
         String depositJp = "術式の指定スロットにあるアイテムを、自分のイデアストレージへ格納します。上限は「数値」で指定した個数です。";
         addSpellPiece(root, "trick_idea_storage_deposit_slot", "Trick: Ideaspace Storage - Slot Deposit", depositEn,
                 "作動式: イデアストレージ-スロット格納", depositJp);
         addBookPage(root, "trick_idea_storage_deposit_slot.0",
-                depositEn + " If storage space runs short, moves as much as possible." + enInputs,
-                depositJp + "ストレージの空きが足りない場合は、移せる分だけ移します。" + jpInputs);
-        addBookPage(root, "trick_idea_storage_deposit_slot.1",
-                "With no filter or an empty String, the item in the slot is deposited whatever it is; otherwise nothing happens unless it matches."
-                        + " The filter matches as in Trick: Ideaspace Storage - Deposit: a String matches item IDs with * (any text) and ? (any single character), or item tags when it starts with #,"
-                        + " an Item matches that item type, an Item List any of its items, and the output of Operator: Strict Item also compares data components.",
-                "フィルタを接続しないか空文字にすると、スロットのアイテムを種類を問わず格納します。"
-                        + "フィルタに一致しない場合は何もしません。"
-                        + "照合方法は作動式: イデアストレージ-格納と同じで、Stringは*（任意の文字列）と?（任意の1文字）を使ってアイテムIDで照合し（#で始めるとアイテムのタグで照合）、"
-                        + "Itemはその種類に、Item Listはそのいずれかに一致し、演算子: 厳密一致アイテムの出力はデータコンポーネントまで比べます。");
-        addBookPage(root, "trick_idea_storage_deposit_slot.2", enSlot, jpSlot);
+                depositEn + " Moves as much as fits (fractions rounded down).$(p)The filter is optional (unconnected or empty matches any item) and uses the same matching rules as $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l).",
+                depositJp + "空きが足りない場合は移せる分だけ移します（端数切り捨て）。$(p)フィルタは省略可能（未接続・空文字なら種類を問わず格納）で、照合方法は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じです。");
+        addBookPage(root, "trick_idea_storage_deposit_slot.1", enSlot, jpSlot);
 
         String withdrawEn = "Withdraws items from your Ideaspace Storage into the spell's target slot, up to the count given by Number.";
         String withdrawJp = "自分のイデアストレージから、術式の指定スロットへアイテムを取り出します。上限は「数値」で指定した個数です。";
         addSpellPiece(root, "trick_idea_storage_withdraw_slot", "Trick: Ideaspace Storage - Slot Withdraw", withdrawEn,
                 "作動式: イデアストレージ-スロット取出", withdrawJp);
         addBookPage(root, "trick_idea_storage_withdraw_slot.0",
-                withdrawEn + " The slot is filled up to the item's max stack size. If stock runs short, moves as much as possible." + enInputs,
-                withdrawJp + "スロットには最大スタック数まで入ります。在庫が足りない場合は、移せる分だけ移します。" + jpInputs);
-        addBookPage(root, "trick_idea_storage_withdraw_slot.1",
-                "If the slot holds an item, only the same item with identical data components is added; with no filter or an empty String, the slot is simply topped up."
-                        + " If the slot is empty, the first stored type matching the filter is withdrawn. An empty slot with no filter does nothing."
-                        + " The filter matches as in Trick: Ideaspace Storage - Slot Deposit.",
-                "スロットにアイテムがある場合は、データコンポーネントまで同じアイテムだけを補充します。フィルタを接続しないか空文字にすると、そのまま補充します。"
-                        + "スロットが空の場合は、フィルタに一致する最初の種類を取り出します。スロットが空でフィルタもない場合は何もしません。"
-                        + "フィルタの照合方法は、作動式: イデアストレージ-スロット格納と同じです。");
-        addBookPage(root, "trick_idea_storage_withdraw_slot.2", enSlot, jpSlot);
+                withdrawEn + " Fills up to the item's max stack size (fractions rounded down).$(p)Occupied slots only top up with identical data components; empty slots take the first type matching the filter (does nothing if empty with no filter). Filter rules match $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l).",
+                withdrawJp + "最大スタック数まで入ります（端数切り捨て）。$(p)既存アイテムがあるスロットにはデータまで同一のものを補充し、空スロットにはフィルタに一致する最初の種類を取り出します（空＋フィルタなしは何もしません）。フィルタ照合は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じです。");
+        addBookPage(root, "trick_idea_storage_withdraw_slot.1", enSlot, jpSlot);
     }
 
     /** Pieces that put the Item, Block and Matrix types to work: block resources, item collecting and region matrices. */
