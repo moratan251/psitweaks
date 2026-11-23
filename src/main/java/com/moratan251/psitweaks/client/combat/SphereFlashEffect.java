@@ -13,8 +13,9 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
- * One running sphere flash: the honeycomb shield of Trick: Barrier, a plain shock sphere, a water splash, or the cone
- * shock wave of Trick: Gram Demolition ({@link ConeWave}).
+ * One running sphere flash: the honeycomb shield of Trick: Barrier, a plain shock sphere, a water splash, the cone
+ * shock wave of Trick: Gram Demolition ({@link ConeWave}), or the frost front of Trick: Cocytus's blizzard (a dimmer
+ * {@link ConeWave}; its snow is a {@link ConeBlizzard}).
  */
 final class SphereFlashEffect {
     /** How far the cell edges reach into each cell; the inner part is the dim fill. */
@@ -24,6 +25,8 @@ final class SphereFlashEffect {
     private static final float SPLASH_GRAVITY = 0.03F;
     /** The deep blue mixed into the body of the drops; their highlights take the message colour. */
     private static final int SPLASH_WATER = 0x1E5FB0;
+    /** How bright the frost front of a blizzard is against Gram Demolition's shock wave. */
+    private static final float BLIZZARD_FRONT = 0.45F;
 
     private final MessageSphereFlash message;
     private final int duration;
@@ -32,7 +35,7 @@ final class SphereFlashEffect {
     /** The starting velocity (blocks per tick) and size of each drop of a water splash; empty for other styles. */
     private final Vector3f[] dropVelocities;
     private final float[] dropSizes;
-    /** The cone shock wave; null for other styles. */
+    /** The cone shock wave or blizzard frost front; null for other styles. */
     private final ConeWave cone;
     private int age;
 
@@ -52,7 +55,7 @@ final class SphereFlashEffect {
             dropVelocities = new Vector3f[0];
             dropSizes = new float[0];
         }
-        this.cone = message.style() == Style.CONE_WAVE
+        this.cone = message.style() == Style.CONE_WAVE || message.style() == Style.CONE_BLIZZARD
                 ? new ConeWave(impact != null ? impact : new Vector3f(0.0F, 1.0F, 0.0F), message.radius(), color)
                 : null;
     }
@@ -86,6 +89,7 @@ final class SphereFlashEffect {
             case IMPLOSION -> 16;
             case WATER_SPLASH -> 12;
             case CONE_WAVE -> 16;
+            case CONE_BLIZZARD -> 24;
         };
     }
 
@@ -105,6 +109,8 @@ final class SphereFlashEffect {
             case IMPLOSION -> renderImplosion(buffers, pose, center, t, strength);
             case WATER_SPLASH -> renderWaterSplash(buffers, pose, center, age + partialTick, t, strength);
             case CONE_WAVE -> cone.render(buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR), pose, center, t, strength);
+            case CONE_BLIZZARD -> cone.render(buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR), pose, center, t,
+                    strength * BLIZZARD_FRONT);
             default -> renderHoneycomb(buffers, pose, center, t, strength);
         }
     }

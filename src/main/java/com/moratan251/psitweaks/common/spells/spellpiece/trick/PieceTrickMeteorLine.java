@@ -26,8 +26,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * {@link MeteorLineTuning#MAX_RADIUS}; zero or less does not compile.
  */
 public class PieceTrickMeteorLine extends PieceTrick {
-    private static final int POTENCY = 1428;
-    private static final int COST = 12_000;
+    private static final int POTENCY = 1400;
+    private static final int COST = 12_500;
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> radius;

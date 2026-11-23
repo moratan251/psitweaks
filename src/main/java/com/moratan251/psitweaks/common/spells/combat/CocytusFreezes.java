@@ -1,14 +1,17 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
+import javax.annotation.Nullable;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * Trick: Cocytus freezes a mob's mind: its AI is switched off and it is drawn encased in ice. If something else turns
@@ -16,6 +19,18 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class CocytusFreezes {
     private CocytusFreezes() {
+    }
+
+    /**
+     * Whether Trick: Cocytus cast by {@code caster} freezes the entity: a mob an attack of the caster may hit
+     * ({@link AttackRules#canHarm}, so never the caster's pets or allies), that does not opt out of spells and is not a
+     * boss (tag {@code #c:bosses}). Players have no AI to switch off and are never frozen.
+     */
+    public static boolean canFreeze(@Nullable LivingEntity caster, @Nullable Entity entity, AttackRules.Options options) {
+        return entity instanceof Mob mob
+                && AttackRules.canHarm(caster, mob, options)
+                && !AttackRules.isSpellImmune(mob)
+                && !mob.getType().is(Tags.EntityTypes.BOSSES);
     }
 
     /** Switches off the mob's AI and encases it in ice. Freezing an already frozen mob only replays the effects. */

@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_spellpiece.trick_cocytus"
+      "text": "psi.book.page.psitweaks_spellpiece.trick_cocytus.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.trick_cocytus.1"
     }
   ]
 }

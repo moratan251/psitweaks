@@ -35,6 +35,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickActiveA
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBarrier;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickCocytus;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancingBlades;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGramDemolition;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMicroBlackHole;
@@ -1096,6 +1097,54 @@ public final class CombatSpellGameTests {
         helper.succeed();
     }
 
+    /**
+     * コキュートスは入力を取らず、術式解体と同じ視線の先の円錐の中のモブだけを凍らせる。後ろ・横のモブ、術者のペット、ボス、
+     * プレイヤーは凍らない。ダメージは与えない。円錐は 16 ブロック先まで届くので、専用のバッチで動かす。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_cocytus")
+    public static void cocytusFreezesTheMobsInGramDemolitionsCone(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 2), "cocytus-caster");
+        var other = caster(helper, new BlockPos(2, 0, 2), "cocytus-bystander");
+        var context = new SpellContext().setPlayer(player);
+        Husk front = husk(helper, new Vec3(3.0, 0.0, 2.5), true);
+        Husk far = husk(helper, new Vec3(9.5, 0.0, 2.5), true);
+        Husk behind = husk(helper, new Vec3(-2.5, 0.0, 2.5), true);
+        Husk side = husk(helper, new Vec3(2.5, 0.0, 7.5), true);
+        Wolf pet = helper.spawnWithNoFreeWill(EntityType.WOLF, new Vec3(5.5, 0.0, 2.5));
+        pet.setTame(true, false);
+        pet.setOwnerUUID(player.getUUID());
+        var wither = helper.spawnWithNoFreeWill(EntityType.WITHER, new Vec3(7.5, 0.0, 2.5));
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, player.getEyePosition().add(1.0, 0.0, 0.0));
+        try {
+            var cocytus = new PieceTrickCocytus(new Spell());
+            helper.assertTrue(cocytus.params.isEmpty(), "Cocytus must take no input: " + cocytus.params.keySet());
+            int[] stats = stats(cocytus);
+            helper.assertTrue(stats[0] == 1250 && stats[1] == 10_000,
+                    "Cocytus must cost 1250 / 10000, got " + stats[0] + "/" + stats[1]);
+            cocytus.execute(context);
+
+            helper.assertTrue(CocytusFreezes.isFrozen(front) && CocytusFreezes.isFrozen(far),
+                    "Mobs in the cone must be frozen: " + CocytusFreezes.isFrozen(front) + ", " + CocytusFreezes.isFrozen(far));
+            helper.assertTrue(front.isSilent() && near(front.getHealth(), front.getMaxHealth()),
+                    "A frozen mob must fall silent and take no damage: " + front.getHealth());
+            for (Husk spared : List.of(behind, side)) {
+                helper.assertTrue(!spared.isNoAi() && !spared.hasData(PsitweaksAttachments.COCYTUS_FREEZE),
+                        "Mobs behind or to the side must be left alone");
+            }
+            helper.assertTrue(!pet.isNoAi() && !CocytusFreezes.isFrozen(pet), "The caster's pet must not be frozen");
+            helper.assertTrue(!wither.isNoAi() && !CocytusFreezes.isFrozen(wither), "A boss must not be frozen");
+            helper.assertTrue(!CocytusFreezes.canFreeze(player, other, AttackRules.Options.DEFAULT),
+                    "A player has no AI to freeze");
+            var again = PieceTrickCocytus.freezeInCone(helper.getLevel(), player, player.getEyePosition(),
+                    player.getLookAngle(), AttackRules.Options.DEFAULT);
+            helper.assertTrue(again.size() == 2 && again.containsAll(List.of(front, far)),
+                    "Casting again must catch the same two mobs, got " + again);
+        } finally {
+            List.of(front, far, behind, side, pet, wither).forEach(Entity::discard);
+        }
+        helper.succeed();
+    }
+
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void mineGenesisLaunchesOnlyGroundedCreatures(GameTestHelper helper) throws Exception {
         // The helper's y = 0 is the layer under the test box; the ground below it has its top at y = 0.
@@ -1720,7 +1769,7 @@ public final class CombatSpellGameTests {
     public static void meteorLineTakesAnOptionalPositiveRadius(GameTestHelper helper) throws Exception {
         Vector3 at = vector(helper.absoluteVec(new Vec3(2.5, 0.0, 2.5)));
         int[] stats = stats(meteorLine(Map.of(POSITION, at)));
-        helper.assertTrue(stats[0] == 1428 && stats[1] == 12_000, "Meteor Line must cost 1428 / 12000, got " + stats[0] + "/" + stats[1]);
+        helper.assertTrue(stats[0] == 1400 && stats[1] == 12_500, "Meteor Line must cost 1400 / 12500, got " + stats[0] + "/" + stats[1]);
         helper.assertTrue(compileError(() -> stats(meteorLine(Map.of(POSITION, at, RADIUS, 4.0)))) == null,
                 "A positive radius must compile");
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_VALUE.equals(compileError(

@@ -2015,7 +2015,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_dispel", "Trick: Dispel", "Remove effects from target entity", "作動式: 解呪", "対象からエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_beneficial", "Trick: Dispel Beneficial", "Remove beneficial effects from target entity", "作動式: 良性解呪", "対象から有益なエフェクトを除去する");
         addSpellPiece(root, "trick_dispel_non_beneficial", "Trick: Dispel Non Beneficial", "Remove non beneficial effects from target entity", "作動式: 悪性解呪", "対象から有益でないエフェクトを除去する");
-        addSpellPiece(root, "trick_cocytus", "Trick: Cocytus", "Permanently freeze the target mob's mind", "作動式: コキュートス", "対象のモブの精神を永久に凍結させる");
+        addSpellPiece(root, "trick_cocytus", "Trick: Cocytus",
+                "Blows a blizzard forward that freezes the minds of the mobs it catches forever",
+                "作動式: コキュートス", "前方に吹雪を放ち、巻き込んだモブの精神を永久に凍結させる");
         addSpellPiece(root, "trick_supply_fe", "Trick: FE Charge", "Supplies FE to blocks. Direction can be specified.", "作動式: FE供給", "ブロックにFEを供給します。方向の指定が可能です。");
         addSpellPiece(root, "trick_time_accelerate", "Trick: Time Accelerate", "Accelerates the time of the target block", "作動式: 時間加速", "対象のブロックの時を加速させます。");
         addSpellPiece(root, "trick_phonon_maser", "Trick: Phonon Maser", "Vibrates ultrasonic waves to emit heat rays", "作動式: フォノンメーザー", "超音波を振動させ熱線を放出する");
@@ -2586,7 +2588,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel", "Removes effects from the target entity. This is the general-purpose dispel that does not distinguish between beneficial and harmful effects.", "対象エンティティからエフェクトを除去します. 良性・悪性を区別しない汎用版の解呪です.");
         addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
-        addBookPage(root, "trick_cocytus", "Permanently freezes the mind of the target mob, leaving it unable to act.", "対象モブの精神を永久に凍結させ, 行動できなくします.");
+        addBookPage(root, "trick_cocytus.0",
+                "Takes no input. Blows a blizzard the way the caster is looking, through the same cone in front of the caster as $(thing)Trick: Gram Demolition$(0) (blocks do not stop it), and freezes the minds of the mobs it catches forever. A frozen mob's AI stops and it is sealed in ice, unable to move or make a sound.",
+                "入力はありません. 術者の視線の方向へ吹雪を放ち, $(thing)作動式: 術式解体$(0)と同じ前方の円錐の範囲 (ブロックは貫通します) にいるモブの精神を永久に凍結させます. 凍結したモブは AI が止まって氷に閉じ込められ, 動くことも音を立てることもなくなります.");
+        addBookPage(root, "trick_cocytus.1",
+                "Players, the caster, the caster's pets and allies, and bosses are not frozen. The blizzard itself deals no damage.$(br2)If something else turns a frozen mob's AI back on, the ice melts and the mob can make sounds again.",
+                "プレイヤー, 術者自身とそのペット・味方, ボスは凍結しません. 吹雪そのものはダメージを与えません.$(br2)ほかの方法で AI が戻ると, 氷が溶けて再び音を立てるようになります.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき、1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0", "Moves items from the inventory of the block at the target position, through the specified face, into the caster's inventory. Only one stack is moved per cast, as much of it as fits. Casting fails with an error if the block has no inventory, nothing can be moved, or the block is protected.", "入力位置のブロックのインベントリから, 入力方向の面を経由してアイテムを術者のインベントリへ移動させます. 1回の実行で移動できるのは1スタックまでで, 術者のインベントリに入りきらない場合は入る分だけ移動します. インベントリが無い, 移動できるものが無い, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_pull_item.1", "In String mode the filter matches item IDs with wildcard support (the namespace may be omitted), Item mode matches the item type only, and Item (Strict) mode also compares data components such as enchantments and durability. In both Item modes, the filter can also be an Item List, matching any of its items. The optional Max input caps the number of items moved. In String mode, start with # to match item tags instead, such as #minecraft:logs.", "StringモードはアイテムIDをワイルドカードで絞り込みます(名前空間は省略可能), Itemモードはアイテム種のみ, Item (Strict)モードはエンチャントや耐久値などのデータコンポーネントまで一致を要求します. Item と Item (Strict) モードでは Item List も接続でき, そのいずれかに一致するアイテムを移動します. 任意入力の最大で移動数に上限を設けられます. String モードで # から始めると, #minecraft:logs のようにアイテムのタグで絞り込みます.");

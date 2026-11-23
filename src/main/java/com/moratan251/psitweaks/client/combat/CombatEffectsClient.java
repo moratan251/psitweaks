@@ -28,19 +28,21 @@ import org.joml.Matrix4f;
 
 /**
  * Client side of the combat spell effects that are not entities: sphere flashes (barrier honeycomb, shock spheres),
- * chain lightning arcs, the shattering of a Meteor Line night, camera shake, the barrier HUD bar and the darkened
- * view inside a Meteor Line night.
+ * the snow of Cocytus's blizzard, chain lightning arcs, the shattering of a Meteor Line night, camera shake, the barrier
+ * HUD bar and the darkened view inside a Meteor Line night.
  */
 public final class CombatEffectsClient {
     private static final int MAX_FLASHES = 64;
     private static final int MAX_ARCS = 32;
     private static final int MAX_SHATTERS = 8;
+    private static final int MAX_BLIZZARDS = 8;
     private static final double RUMBLE_SEARCH = 24.0;
     private static final double SHOCKWAVE_RUMBLE_RANGE = 10.0;
 
     private static final List<SphereFlashEffect> FLASHES = new ArrayList<>();
     private static final List<LightningArcEffect> ARCS = new ArrayList<>();
     private static final List<MeteorNightShatterEffect> SHATTERS = new ArrayList<>();
+    private static final List<ConeBlizzard> BLIZZARDS = new ArrayList<>();
 
     private CombatEffectsClient() {
     }
@@ -65,6 +67,13 @@ public final class CombatEffectsClient {
             case SHOCKWAVE -> CameraShake.kickFrom(message.position(), 12.0 + message.radius() * 2.0, 0.35F * message.strength());
             case IMPLOSION -> CameraShake.kickFrom(message.position(), 16.0 + message.radius() * 2.0, 0.55F * message.strength());
             case CONE_WAVE -> CameraShake.kickFrom(message.position(), 6.0, 0.3F * message.strength());
+            case CONE_BLIZZARD -> {
+                CameraShake.kickFrom(message.position(), 6.0, 0.15F * message.strength());
+                if (BLIZZARDS.size() >= MAX_BLIZZARDS) {
+                    BLIZZARDS.remove(0);
+                }
+                BLIZZARDS.add(new ConeBlizzard(message.position(), message.impactDirection(), message.radius()));
+            }
             default -> {
             }
         }
@@ -113,6 +122,7 @@ public final class CombatEffectsClient {
         }
         FLASHES.removeIf(flash -> !flash.tick());
         SHATTERS.removeIf(shatter -> !shatter.tick());
+        BLIZZARDS.removeIf(blizzard -> !blizzard.tick(level));
         for (Iterator<LightningArcEffect> iterator = ARCS.iterator(); iterator.hasNext(); ) {
             if (!iterator.next().tick(level)) {
                 iterator.remove();
@@ -182,6 +192,7 @@ public final class CombatEffectsClient {
         FLASHES.clear();
         ARCS.clear();
         SHATTERS.clear();
+        BLIZZARDS.clear();
         CameraShake.clear();
         MeteorLineNightView.clear();
     }

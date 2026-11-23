@@ -10,7 +10,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
  * A short-lived spherical flash drawn on clients: the honeycomb shield of Trick: Barrier, the shock spheres of
- * the combat tricks, the water splash of Aqua Cutter and the cone-shaped shock wave of Gram Demolition. When
+ * the combat tricks, the water splash of Aqua Cutter, the cone-shaped shock wave of Gram Demolition and the blizzard of
+ * Cocytus. When
  * {@code entityId} is set the flash follows that entity; otherwise it stays at the position.
  */
 public record MessageSphereFlash(int entityId, Vec3 position, float radius, int color, Style style,
@@ -43,7 +44,12 @@ public record MessageSphereFlash(int entityId, Vec3 position, float radius, int 
          * A shock wave thrown forward through a cone (Gram Demolition). {@code position} is the tip of the cone,
          * {@code impactDirection} the way it opens and {@code radius} how far it reaches.
          */
-        CONE_WAVE;
+        CONE_WAVE,
+        /**
+         * A blizzard blown forward through the same cone (Cocytus): snow particles and a faint frost front in the
+         * message colour. The fields mean the same as for {@link #CONE_WAVE}.
+         */
+        CONE_BLIZZARD;
 
         private static final Style[] VALUES = values();
 

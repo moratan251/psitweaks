@@ -16,6 +16,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class CombatEffects {
     /** Players within this distance of an effect receive it. */
     public static final double EFFECT_RANGE = 96.0;
+    /** The pale ice blue of the frost front of Trick: Cocytus's blizzard. */
+    public static final int BLIZZARD_COLOR = 0xB4E2FF;
 
     private CombatEffects() {
     }
@@ -38,6 +40,14 @@ public final class CombatEffects {
      */
     public static void coneWave(ServerLevel level, Vec3 tip, Vec3 direction, float length, int color, float strength) {
         sphereFlash(level, tip, length, color, MessageSphereFlash.Style.CONE_WAVE, direction, strength);
+    }
+
+    /**
+     * A blizzard blown from {@code tip} towards {@code direction} through a cone {@code length} blocks long, as wide as
+     * Trick: Gram Demolition's (Trick: Cocytus), in {@link #BLIZZARD_COLOR}.
+     */
+    public static void coneBlizzard(ServerLevel level, Vec3 tip, Vec3 direction, float length, float strength) {
+        sphereFlash(level, tip, length, BLIZZARD_COLOR, MessageSphereFlash.Style.CONE_BLIZZARD, direction, strength);
     }
 
     /** The arcs of a Trick: Chain Lightning cast, as the tree {@link MessageLightningArcs} describes. */

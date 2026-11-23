@@ -84,8 +84,7 @@ public class PieceTrickGramDemolition extends PieceTrick {
         AttackRules.Options options = AttackRules.Options.from(context);
         float damage = AttackRules.scale(DAMAGE, PsitweaksConfig.COMMON.gramDemolitionDamageMultiplier.get(), caster);
         DamageSource source = AttackRules.source(level, PsitweaksDamageTypes.GRAM_DEMOLITION, caster, caster);
-        for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(RANGE + 2.0),
-                living -> living != caster && inCone(eye, look, CombatSpellHelper.center(living), living.getBbWidth() * 0.5))) {
+        for (LivingEntity living : creaturesInCone(level, caster, eye, look)) {
             if (!AttackRules.harm(caster, living, options, source, damage)) {
                 continue;
             }
@@ -105,6 +104,15 @@ public class PieceTrickGramDemolition extends PieceTrick {
         CombatEffects.sound(level, eye, SoundEvents.EVOKER_CAST_SPELL, 1.2F, 1.3F);
         CombatEffects.sound(level, eye, SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.8F);
         return null;
+    }
+
+    /**
+     * 円錐の中にいる、術者以外の生物（胴の中心で比べ、幅の半分だけ広げて見る）。誰に効かせるかは呼ぶ側が決める。
+     * 作動式: コキュートスも同じ範囲を使う。
+     */
+    public static List<LivingEntity> creaturesInCone(ServerLevel level, @Nullable LivingEntity caster, Vec3 eye, Vec3 look) {
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(RANGE + 2.0),
+                living -> living != caster && inCone(eye, look, CombatSpellHelper.center(living), living.getBbWidth() * 0.5));
     }
 
     /** 円錐の中にある、術者がよけない（{@link SpellGramIntegrity#isSparedBy}）魔法式オブジェクト（核の位置で比べる）。 */
