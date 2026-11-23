@@ -41,8 +41,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  */
 public class PieceTrickPseudoMeteor extends PieceTrick {
     private static final double MIN_POWER = 0.5;
-    private static final float BASE_DAMAGE = 50.0F;
-    private static final float DAMAGE_PER_POWER = 40.0F;
+    private static final float BASE_DAMAGE = 25.0F;
+    private static final float DAMAGE_PER_POWER = 20.0F;
     public static final int MAX_METEORS = 16;
     private static final double SPREAD = 4.0;
     private static final double MIN_AIM_RANGE = 6.0;
@@ -56,9 +56,9 @@ public class PieceTrickPseudoMeteor extends PieceTrick {
     private static final double POTENCY_BASE = 760.0;
     private static final double POTENCY_PER_POWER = 40.0;
     private static final double POTENCY_PER_METEOR = 30.0;
-    private static final double COST_BASE = 800.0;
-    private static final double COST_PER_METEOR = 200.0;
-    private static final double COST_PER_METEOR_POWER = 160.0;
+    private static final double COST_BASE = 400.0;
+    private static final double COST_PER_METEOR = 100.0;
+    private static final double COST_PER_METEOR_POWER = 80.0;
 
     private SpellParam<Vector3> position;
     private SpellParam<Number> power;

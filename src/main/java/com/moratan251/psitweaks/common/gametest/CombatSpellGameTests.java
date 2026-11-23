@@ -498,8 +498,8 @@ public final class CombatSpellGameTests {
         int[] blades = stats(dancingBlades(Map.of()));
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
         int[] pseudoMeteor = stats(pseudoMeteor(Map.of(POWER, 1.0, NUMBER, 17.0)));
-        helper.assertTrue(pseudoMeteor[0] == 1280 && pseudoMeteor[1] == 6560,
-                "Meteors must be capped at 16 (760+40P+30N / 800+N(200+160P)), got " + pseudoMeteor[0] + "/" + pseudoMeteor[1]);
+        helper.assertTrue(pseudoMeteor[0] == 1280 && pseudoMeteor[1] == 3280,
+                "Meteors must be capped at 16 (760+40P+30N / 400+N(100+80P)), got " + pseudoMeteor[0] + "/" + pseudoMeteor[1]);
         int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 40.0)));
         helper.assertTrue(gravity[0] == 1380 && gravity[1] == 2900,
                 "Micro Black Hole radius must be capped at 32 (1170+50P+5R / 500P+75R), got " + gravity[0] + "/" + gravity[1]);

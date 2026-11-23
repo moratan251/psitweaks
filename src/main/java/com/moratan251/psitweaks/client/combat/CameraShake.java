@@ -5,7 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 
-/** Camera shake for heavy impacts. Strength is in degrees of jitter and decays every tick. */
+/**
+ * Camera shake for heavy impacts. Strength is in degrees of jitter and decays every tick. Shakes that overlap never add
+ * up: only the strongest one is felt, so a shower of meteors shakes no harder than its biggest impact.
+ */
 public final class CameraShake {
     private static final float MAX_TRAUMA = 1.5F;
     private static final float DECAY_PER_TICK = 0.08F;
@@ -17,9 +20,9 @@ public final class CameraShake {
     private CameraShake() {
     }
 
-    /** A one-off kick, e.g. a meteor impact. */
+    /** A one-off kick, e.g. a meteor impact. A weaker kick than the shake still going on does nothing. */
     public static void kick(float amount) {
-        trauma = Math.min(MAX_TRAUMA, trauma + amount);
+        trauma = Math.max(trauma, Math.min(MAX_TRAUMA, amount));
     }
 
     /** A kick that falls off with distance from the source; nothing beyond {@code range}. */
