@@ -459,6 +459,67 @@ public final class SpellGramControlGameTests {
     }
 
     /**
+     * 取得子: 魔法式耐久値リストは、リストと同じ順に今の耐久値を並べる。演算子: 基準値順要素に渡すと、耐久値が一番少ないものを
+     * 選べる。魔法式オブジェクトでない要素はエラーで、空のリストは空の Number List。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_spellgram_integrity_list", timeoutTicks = 40)
+    public static void integrityListLinesUpWithTheList(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "spellgram_integrity_list_caster", new Vec3(1.5, 1.0, 1.5));
+        Runnable cleanup = () -> {
+            SpellGramIndex.ofCaster(level, caster.getUUID()).forEach(Entity::discard);
+            GameTestPlayers.remove(helper, caster);
+        };
+        try {
+            var id = Psitweaks.location("selector_spellgram_integrity_list");
+            helper.assertTrue(vazkii.psi.api.PsiAPI.SPELL_PIECE_REGISTRY.get(id) != null, "The list selector must be registered");
+            helper.assertTrue(vazkii.psi.api.PsiAPI.getPieceGroup(level.registryAccess(), id).orElseThrow().key().location()
+                    .equals(Psitweaks.location("spellgram_control")), "The list selector must be researched with the SpellGram controls");
+
+            SpellGramObject first = placeSoak(caster, 1.0, 120.0);
+            SpellGramObject second = placeSoak(caster, 1.0, 120.0);
+            SpellGramObject third = placeSoak(caster, 1.0, 120.0);
+            second.reduceIntegrity(second.getIntegrity() * 0.5F);
+            third.reduceIntegrity(third.getIntegrity() * 0.25F);
+
+            EntityListWrapper own = EntityListWrapper.make(new ArrayList<>(select(caster)));
+            List<Double> read = readIntegrities(caster, own);
+            List<Double> expected = new ArrayList<>();
+            for (Entity entity : own) {
+                expected.add((double) ((SpellGramObject) entity).getIntegrity());
+            }
+            helper.assertTrue(read.size() == 3 && read.equals(expected),
+                    "The numbers must follow the List's order: " + read + " vs " + expected);
+
+            var element = new com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorListValueElement(new Spell()) {
+                @Override
+                public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                    if (param.name.equals(SpellParam.GENERIC_NAME_LIST)) {
+                        return own;
+                    }
+                    if (param.name.equals(PsitweaksSpellParams.VALUES)) {
+                        return com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper.make(read);
+                    }
+                    return param.name.equals(SpellParam.GENERIC_NAME_NUMBER) ? 0.0 : null;
+                }
+            };
+            element.setModeOption(com.moratan251.psitweaksqol.api.PsitweaksModeOptions.ENTITY);
+            helper.assertTrue(element.execute(new SpellContext().setPlayer(caster)) == second,
+                    "Value-Ranked Element 0 must pick the zone with the least integrity");
+
+            String mixed = readIntegritiesError(caster, EntityListWrapper.make(List.<Entity>of(first, caster)));
+            helper.assertTrue(com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrity
+                            .ERROR_NOT_SPELLGRAM_OBJECT.equals(mixed), "A List with another entity must be an error, got " + mixed);
+            helper.assertTrue(readIntegrities(caster, EntityListWrapper.EMPTY).isEmpty(), "An empty List must give an empty Number List");
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        cleanup.run();
+        helper.succeed();
+    }
+
+    /**
      * デバッグ用の魔法式耐久値デバッガー: 見ている魔法式オブジェクト（自分のものも）の耐久値を量だけ減らす。
      * 既定は 10、しゃがんで使うと次の量（25）に、名前を数にするとその量。耐久値が尽きれば壊れる。
      */
@@ -529,6 +590,26 @@ public final class SpellGramControlGameTests {
     private static String readIntegrityError(ServerPlayer caster, Entity target) {
         try {
             readIntegrity(caster, target);
+            return "no error";
+        } catch (SpellRuntimeException e) {
+            return e.getMessage();
+        }
+    }
+
+    private static List<Double> readIntegrities(ServerPlayer caster, EntityListWrapper list) throws SpellRuntimeException {
+        var piece = new com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrityList(new Spell()) {
+            @Override
+            public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return list;
+            }
+        };
+        return ((com.moratan251.psitweaks.common.spells.wrapper.NumberListWrapper) piece.execute(new SpellContext().setPlayer(caster)))
+                .asList();
+    }
+
+    private static String readIntegritiesError(ServerPlayer caster, EntityListWrapper list) {
+        try {
+            readIntegrities(caster, list);
             return "no error";
         } catch (SpellRuntimeException e) {
             return e.getMessage();

@@ -3351,6 +3351,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "「対象」に入れた魔法式オブジェクト（常駐魔法式、流星群の夜の核、マイクロブラックホール）の、今の耐久値を数値で返します。"
                         + "魔法式オブジェクトでないエンティティを入れるとエラーになります。"
                         + "値は核に照準を合わせたときに表示される耐久値と同じで（表示は切り上げ）、作動式: 魔法式延長を使う前などに、残りを術式で確かめられます。");
+        addSpellPiece(root, "selector_spellgram_integrity_list", "Selector: SpellGram Integrity List",
+                "Returns the current integrity of each SpellGram object in the List, as a Number List in the same order",
+                "取得子: 魔法式耐久値リスト", "リストの魔法式オブジェクトそれぞれの今の耐久値を、同じ順の Number List で返す");
+        addBookPage(root, "selector_spellgram_integrity_list",
+                "Returns the current integrity of every SpellGram object in the List as a Number List, in the List's order (an Entity List is in Psi's own order),"
+                        + " so it can be the Values of Operator: Value-Ranked Element and the other value-ranked list operators. The numbers are the same as Selector: SpellGram Integrity."
+                        + " Any element that is not a SpellGram object is an error. Example: with Selector: Own Resident SpellGrams as the List,"
+                        + " Operator: Value-Ranked Element with 0 picks your SpellGram with the least integrity for Trick: Extend SpellGram.",
+                "リストに入れた魔法式オブジェクトそれぞれの今の耐久値を、リストと同じ順（Entity の List は Psi の決まった順）の Number List で返します。"
+                        + "演算子: 基準値順要素などの基準値にそのまま使えます。値は取得子: 魔法式耐久値と同じで、魔法式オブジェクトでない要素があるとエラーになります。"
+                        + "例: 取得子: 自分の常駐魔法式をリストに入れて、演算子: 基準値順要素に0を渡すと、耐久値が一番少ない自分の常駐魔法式を作動式: 魔法式延長に渡せます。");
         addSpellPiece(root, "trick_extend_spellgram", "Trick: Extend SpellGram",
                 "Restores the integrity of your own Resident SpellGram, so it lasts longer",
                 "作動式: 魔法式延長", "自分の常駐魔法式の耐久値を回復し、長く残す");

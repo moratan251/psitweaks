@@ -57,6 +57,7 @@ public final class SpellUnlockGameTests {
             new String[] {"trick_flare_circle", "trick_flare_circle"}, new String[] {"trick_ice_circle", "trick_ice_circle"},
             new String[] {"spellgram_control", "selector_own_spellgrams"}, new String[] {"spellgram_control", "trick_recall_spellgram"},
             new String[] {"spellgram_control", "trick_extend_spellgram"}, new String[] {"spellgram_control", "selector_spellgram_integrity"},
+            new String[] {"spellgram_control", "selector_spellgram_integrity_list"},
             new String[] {"spellgram_control", "trick_circle_follow"}, new String[] {"selector_nearby_spellgram", "selector_nearby_spellgram"},
             new String[] {"trick_gram_demolition", "trick_gram_demolition"}, new String[] {"matrix", "trick_show_region"});
 

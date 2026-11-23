@@ -4,6 +4,7 @@
     "psitweaks:trick_recall_spellgram",
     "psitweaks:trick_extend_spellgram",
     "psitweaks:selector_spellgram_integrity",
+    "psitweaks:selector_spellgram_integrity_list",
     "psitweaks:trick_circle_follow"
   ]
 }

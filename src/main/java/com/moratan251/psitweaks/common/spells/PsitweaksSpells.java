@@ -418,6 +418,9 @@ public final class PsitweaksSpells {
     public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_SPELLGRAM_INTEGRITY =
             registerPiece("selector_spellgram_integrity",
                     com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrity.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> SELECTOR_SPELLGRAM_INTEGRITY_LIST =
+            registerPiece("selector_spellgram_integrity_list",
+                    com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorSpellGramIntegrityList.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ALIVE =
             registerPiece("operator_alive", PieceOperatorAlive.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_WEAK_RAYCAST =
