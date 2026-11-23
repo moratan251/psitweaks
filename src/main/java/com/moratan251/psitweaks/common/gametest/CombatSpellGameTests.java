@@ -26,6 +26,7 @@ import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShields;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
+import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.combat.MeteorLineTuning;
 import com.moratan251.psitweaks.common.spells.combat.Parades;
 import com.moratan251.psitweaks.common.spells.combat.SwordStrikes;
@@ -158,9 +159,12 @@ public final class CombatSpellGameTests {
         return Math.abs(actual - expected) < EPSILON;
     }
 
-    /** Turns the caster to look at the centre of {@code target}, as Burst aims by the caster's view. */
-    private static void lookAt(Player caster, Entity target) {
-        caster.lookAt(EntityAnchorArgument.Anchor.EYES, CombatSpellHelper.center(target));
+    /**
+     * What Burst at Power 1 (36 + 30) deals to the creature: 25% more while it is wet, which the test world's rain also
+     * makes it.
+     */
+    private static float burstDamage(LivingEntity target) {
+        return target.isInWaterOrRain() ? 66.0F * 1.25F : 66.0F;
     }
 
     /** The direction from the caster's eyes to the centre of {@code target}, for Chain Lightning's Direction input. */
@@ -486,15 +490,16 @@ public final class CombatSpellGameTests {
         int[] mine = stats(mineGenesis(Map.of(POWER, 1.0, RADIUS, 3.0)));
         helper.assertTrue(mine[0] == 185 && mine[1] == 990, "Mine Genesis P1 R3: 100+40P+15R / 300+150P+60R², got " + mine[0] + "/" + mine[1]);
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
-        helper.assertTrue(burst[0] == 1240 && burst[1] == 1050, "Burst P1, got " + burst[0] + "/" + burst[1]);
+        helper.assertTrue(burst[0] == 1240 && burst[1] == 700, "Burst P1: 1180+60P / 400+300P, got " + burst[0] + "/" + burst[1]);
         int[] parade = stats(parade(Map.of(POWER, 2.0, TIME, 30.0)));
         helper.assertTrue(parade[0] == 660 && parade[1] == 900, "Parade P2 T30: 300+150P+2T / 400+100P+10T, got " + parade[0] + "/" + parade[1]);
         int[] airBullet = stats(airBullet(Map.of(POWER, 1.0)));
         helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
         helper.assertTrue(blades[0] == 900 && blades[1] == 1500, "Dancing Blades has fixed stats, got " + blades[0] + "/" + blades[1]);
-        int[] pseudoMeteor = stats(pseudoMeteor(Map.of(POWER, 1.0, NUMBER, 13.0)));
-        helper.assertTrue(pseudoMeteor[0] == 1160 && pseudoMeteor[1] == 7680, "Meteors must be capped at 12, got " + pseudoMeteor[0] + "/" + pseudoMeteor[1]);
+        int[] pseudoMeteor = stats(pseudoMeteor(Map.of(POWER, 1.0, NUMBER, 17.0)));
+        helper.assertTrue(pseudoMeteor[0] == 1280 && pseudoMeteor[1] == 6560,
+                "Meteors must be capped at 16 (760+40P+30N / 800+N(200+160P)), got " + pseudoMeteor[0] + "/" + pseudoMeteor[1]);
         int[] gravity = stats(microBlackHole(Map.of(POWER, 1.0, RADIUS, 40.0)));
         helper.assertTrue(gravity[0] == 1380 && gravity[1] == 2900,
                 "Micro Black Hole radius must be capped at 32 (1170+50P+5R / 500P+75R), got " + gravity[0] + "/" + gravity[1]);
@@ -730,11 +735,10 @@ public final class CombatSpellGameTests {
         fallen.setHealth(0.0F);
         // Off to the side, out of Chain Lightning's direction, but within a branch of the fallen husk.
         var bystander = husk(helper, new BlockPos(4, 0, 4), false);
-        lookAt(player, fallen);
         // Chain Lightning picks its own targets: a fallen creature is no target, so the bolt discharges without a warning.
         helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, toward(player, fallen), POWER, 1.0))
                 .execute(context)) == null, "Chain Lightning must discharge past a fallen creature without an error");
-        helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null,
+        helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
                 "Burst must skip a fallen target without an error");
         helper.assertTrue(castError(() -> barrier(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
                 "Barrier must skip a fallen target without an error");
@@ -751,7 +755,7 @@ public final class CombatSpellGameTests {
         suppressed.metadata.errorsSuppressed = true;
         var quietContext = new SpellContext().setPlayer(player).setCompiledSpell(suppressed);
         messages.clear();
-        helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(quietContext)) == null,
+        helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(quietContext)) == null,
                 "Burst must skip a fallen target without an error when errors are suppressed");
         helper.assertTrue(messages.isEmpty(), "An Error Suppressor must hide the warning, got " + messages);
         helper.succeed();
@@ -805,16 +809,16 @@ public final class CombatSpellGameTests {
             helper.assertTrue(ISpellImmune.isImmune(wither) && ISpellImmune.isImmune(rider),
                     "Psi itself treats bosses and riders as immune");
             float witherHealth = wither.getHealth();
-            lookAt(player, wither);
-            helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null,
+            helper.assertTrue(castError(() -> burst(Map.of(TARGET, wither, POWER, 1.0)).execute(context)) == null,
                     "Burst must accept the Wither");
             helper.assertTrue(wither.getHealth() < witherHealth, "Burst must hurt the Wither");
             float afterBurst = wither.getHealth();
+            // Burst's hit is bigger than Chain Lightning's, so the hurt cooldown it leaves would swallow the bolt.
+            wither.invulnerableTime = 0;
             helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, toward(player, wither), POWER, 1.0))
                     .execute(context)) == null, "Chain Lightning must accept the Wither");
             helper.assertTrue(wither.getHealth() < afterBurst, "Chain Lightning must hurt the Wither");
-            lookAt(player, rider);
-            helper.assertTrue(castError(() -> burst(Map.of(POWER, 1.0)).execute(context)) == null
+            helper.assertTrue(castError(() -> burst(Map.of(TARGET, rider, POWER, 1.0)).execute(context)) == null
                     && rider.getHealth() < 20, "Burst must hit a creature riding another");
         } finally {
             wither.discard();
@@ -970,54 +974,92 @@ public final class CombatSpellGameTests {
         armored.getAttribute(Attributes.ARMOR).setBaseValue(20.0);
         var golem = helper.spawnWithNoFreeWill(EntityType.IRON_GOLEM, new BlockPos(4, 0, 0));
         golem.setNoAi(true);
+        var soaked = tough(husk(helper, new BlockPos(3, 0, 0), false));
+        CombatStatuses.soak(soaked, CombatStatuses.AQUA_CUTTER_WET_TICKS);
         var doomed = husk(helper, new BlockPos(0, 0, 4), false);
         doomed.setHealth(5.0F);
         var neighbour = tough(husk(helper, new BlockPos(1, 0, 4), false));
 
-        lookAt(player, armored);
-        burst(Map.of(POWER, 1.0)).execute(context);
-        helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - 66), "Burst must deal 36 + 30 x Power through armor: " + armored.getHealth());
-        lookAt(player, golem);
-        burst(Map.of(POWER, 1.0)).execute(context);
-        helper.assertTrue(near(golem.getMaxHealth() - golem.getHealth(), 16.5), "Golems must take a quarter: "
+        float armoredHit = burstDamage(armored);
+        burst(Map.of(TARGET, armored, POWER, 1.0)).execute(context);
+        helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - armoredHit), "Burst must deal 36 + 30 x Power through armor: " + armored.getHealth());
+        float golemHit = burstDamage(golem);
+        burst(Map.of(TARGET, golem, POWER, 1.0)).execute(context);
+        helper.assertTrue(near(golem.getMaxHealth() - golem.getHealth(), golemHit), "Golems must take the full damage: "
                 + (golem.getMaxHealth() - golem.getHealth()));
+        burst(Map.of(TARGET, soaked, POWER, 1.0)).execute(context);
+        helper.assertTrue(near(TOUGH_HEALTH - soaked.getHealth(), 66.0F * 1.25F), "A soaked creature must take 25% more: "
+                + (TOUGH_HEALTH - soaked.getHealth()));
         helper.assertTrue(near(neighbour.getHealth(), TOUGH_HEALTH), "No splash without a kill");
 
-        lookAt(player, doomed);
-        burst(Map.of(POWER, 1.0)).execute(context);
-        // 40% of 66, 1 block away out of 3 with half damage at the edge.
-        float splash = 66.0F * 0.4F * (1.0F - 0.5F / 3.0F);
+        // 40% of 66 (25% more if the neighbour is wet), 1 block away out of 3 with half damage at the edge.
+        float splash = 66.0F * 0.4F * (neighbour.isInWaterOrRain() ? 1.25F : 1.0F) * (1.0F - 0.5F / 3.0F);
+        burst(Map.of(TARGET, doomed, POWER, 1.0)).execute(context);
         helper.assertTrue(!doomed.isAlive() && near(TOUGH_HEALTH - neighbour.getHealth(), splash),
                 "A kill must splash " + splash + ", got " + (TOUGH_HEALTH - neighbour.getHealth()));
-        helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - 66), "The splash must stay within 3 blocks");
+        helper.assertTrue(near(armored.getHealth(), TOUGH_HEALTH - armoredHit), "The splash must stay within 3 blocks");
         helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void burstHitsOnlyTheCreatureUnderTheCrosshair(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 2), "burst-aim");
+    public static void burstHitsTheTargetWithinTheSpellRadius(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 2), "burst-target");
         var context = new SpellContext().setPlayer(player);
-        var aimed = tough(husk(helper, new BlockPos(4, 0, 2), false));
-        // Nearer and only a block off the crosshair: Burst needs a precise aim, so it is spared.
-        var offAim = tough(husk(helper, new BlockPos(2, 0, 3), false));
-        Vec3 ahead = player.getEyePosition().add(1.0, 0.0, 0.0);
-        player.lookAt(EntityAnchorArgument.Anchor.EYES, ahead);
+        var target = tough(husk(helper, new BlockPos(4, 0, 2), false));
+        var bystander = tough(husk(helper, new BlockPos(2, 0, 3), false));
 
-        burst(Map.of(POWER, 1.0)).execute(context);
-        helper.assertTrue(near(aimed.getHealth(), TOUGH_HEALTH - 66), "Burst must hit the husk under the crosshair: " + aimed.getHealth());
-        helper.assertTrue(near(offAim.getHealth(), TOUGH_HEALTH), "Burst must leave a husk off the crosshair alone");
+        float hit = burstDamage(target);
+        burst(Map.of(TARGET, target, POWER, 1.0)).execute(context);
+        helper.assertTrue(near(target.getHealth(), TOUGH_HEALTH - hit), "Burst must hit the target: " + target.getHealth());
+        helper.assertTrue(near(bystander.getHealth(), TOUGH_HEALTH), "Burst must leave other creatures alone");
 
-        // A solid block in the line of sight hides the husk behind it.
-        BlockPos wall = BlockPos.containing(player.getEyePosition().add(2.0, 0.0, 0.0));
-        helper.getLevel().setBlockAndUpdate(wall, Blocks.STONE.defaultBlockState());
         helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> burst(Map.of(POWER, 1.0)).execute(context))),
-                "With a wall in the way the spell must fail as with no target");
-        helper.getLevel().setBlockAndUpdate(wall, Blocks.AIR.defaultBlockState());
-        helper.assertTrue(near(aimed.getHealth(), TOUGH_HEALTH - 66), "The husk behind the wall must be unharmed");
+                "Without a target the spell must fail");
+        var item = helper.spawnItem(Items.STONE, new BlockPos(3, 0, 2));
+        try {
+            helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> burst(Map.of(TARGET, item, POWER, 1.0))
+                    .execute(context))), "A target that is not a creature must fail as with no target");
+        } finally {
+            item.discard();
+        }
+        var far = caster(helper, new BlockPos(0, 0, 80), "burst-far");
+        helper.assertTrue(SpellRuntimeException.OUTSIDE_RADIUS.equals(castError(() -> burst(Map.of(TARGET, target, POWER, 1.0))
+                .execute(new SpellContext().setPlayer(far)))), "A target out of the spell radius must fail");
+        helper.assertTrue(near(target.getHealth(), TOUGH_HEALTH - hit), "The failed casts must not hurt the target");
+        helper.succeed();
+    }
 
-        lookUp(player);
-        helper.assertTrue(SpellRuntimeException.NULL_TARGET.equals(castError(() -> burst(Map.of(POWER, 1.0)).execute(context))),
-                "Aiming at nothing must fail as with no target");
+    /**
+     * Given a part of the Ender Dragon, Burst bursts that part: the head takes the full damage, while the dragon as a
+     * whole is hit through its body, which vanilla cuts to a quarter plus one. The dragon is wide, so it has a batch of
+     * its own.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_dragon")
+    public static void burstHitsTheEnderDragonThroughItsParts(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "burst-dragon");
+        var context = new SpellContext().setPlayer(player);
+        var dragon = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new BlockPos(2, 2, 2));
+        try {
+            dragon.head.setPos(dragon.position().add(0.0, 1.0, 0.0));
+            helper.assertTrue(AttackRules.wholeEntity(dragon.head) == dragon, "A part must belong to the dragon");
+            helper.assertTrue(AttackRules.canHarm(player, dragon.head, AttackRules.Options.DEFAULT),
+                    "A part must be judged as the dragon");
+
+            float hit = burstDamage(dragon);
+            float before = dragon.getHealth();
+            helper.assertTrue(castError(() -> burst(Map.of(TARGET, dragon.head, POWER, 1.0)).execute(context)) == null,
+                    "Burst must accept a part of the dragon");
+            helper.assertTrue(near(before - dragon.getHealth(), hit), "The head must take the full damage: " + (before - dragon.getHealth()));
+
+            dragon.invulnerableTime = 0;
+            float afterHead = dragon.getHealth();
+            helper.assertTrue(castError(() -> burst(Map.of(TARGET, dragon, POWER, 1.0)).execute(context)) == null,
+                    "Burst must accept the dragon itself");
+            helper.assertTrue(near(afterHead - dragon.getHealth(), hit / 4.0F + 1.0F),
+                    "The dragon as a whole must be hit through its body: " + (afterHead - dragon.getHealth()));
+        } finally {
+            dragon.discard();
+        }
         helper.succeed();
     }
 
@@ -1303,8 +1345,8 @@ public final class CombatSpellGameTests {
         meteors.sort(Comparator.comparingInt(EntityPseudoMeteor::getDelay));
         try {
             helper.assertTrue(meteors.size() == 3, "Three meteors expected, got " + meteors.size());
-            helper.assertTrue(meteors.get(0).getDelay() == 20 && meteors.get(1).getDelay() == 25 && meteors.get(2).getDelay() == 30,
-                    "Meteors must land 1 s after the cast, then every 5 ticks");
+            helper.assertTrue(meteors.get(0).getDelay() == 10 && meteors.get(1).getDelay() == 15 && meteors.get(2).getDelay() == 20,
+                    "Meteors must start to fall half a second after the cast, then every 5 ticks");
             Vec3 first = meteors.get(0).getTarget();
             helper.assertTrue(near(first.x, center.x) && near(first.z, center.z) && near(first.y, center.y),
                     "The first meteor must land on the ground at the centre: " + first);
@@ -1316,6 +1358,112 @@ public final class CombatSpellGameTests {
             }
         } finally {
             meteors.forEach(EntityPseudoMeteor::discard);
+        }
+        helper.succeed();
+    }
+
+    /**
+     * The meteors go after the hostile creatures near the position, nearest first and in turn, the first one too. A
+     * meteor's landing spot follows its creature until the meteor starts to fall and then stays, and a creature in the
+     * air is met at its height. Both husks are hit in the end.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_pseudo_meteor_chase", timeoutTicks = 200)
+    public static void pseudoMeteorChasesHostileCreatures(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "pseudo-meteor-chase");
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
+        var walker = tough(husk(helper, new BlockPos(3, 0, 2), false));
+        var flier = tough(husk(helper, new Vec3(1.5, 3.0, 2.5), false));
+        flier.setNoGravity(true);
+        pseudoMeteor(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 4.0)).execute(new SpellContext().setPlayer(player));
+        List<EntityPseudoMeteor> meteors = helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class,
+                new AABB(center, center).inflate(8));
+        meteors.sort(Comparator.comparingInt(EntityPseudoMeteor::getDelay));
+        helper.assertTrue(meteors.size() == 4, "Four meteors expected, got " + meteors.size());
+        // The walker is nearer: the first and third meteors go after it, the second and fourth after the flier.
+        EntityPseudoMeteor first = meteors.get(0);
+        EntityPseudoMeteor last = meteors.get(2);
+        helper.assertTrue(first.getTarget().distanceTo(walker.position()) < EPSILON
+                        && meteors.get(1).getTarget().distanceTo(flier.position()) < EPSILON
+                        && last.getTarget().distanceTo(walker.position()) < EPSILON
+                        && meteors.get(3).getTarget().distanceTo(flier.position()) < EPSILON,
+                "The meteors must go after the husks, nearest first and in turn");
+        Vec3 firstSpot = helper.absoluteVec(new Vec3(3.5, 0.0, 0.5));
+        Vec3 lastSpot = helper.absoluteVec(new Vec3(4.5, 0.0, 4.5));
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> walker.teleportTo(firstSpot.x, firstSpot.y, firstSpot.z))
+                .thenExecuteAfter(2, () -> helper.assertTrue(first.getTarget().distanceTo(firstSpot) < EPSILON
+                                && last.getTarget().distanceTo(firstSpot) < EPSILON,
+                        "Waiting meteors must follow the husk: " + first.getTarget()))
+                // The walker's first meteor starts to fall 10 ticks after the cast, its second one 20 ticks after it.
+                .thenExecuteAfter(9, () -> walker.teleportTo(lastSpot.x, lastSpot.y, lastSpot.z))
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(first.getTarget().distanceTo(firstSpot) < EPSILON,
+                            "A falling meteor must keep its landing spot: " + first.getTarget());
+                    helper.assertTrue(last.getTarget().distanceTo(lastSpot) < EPSILON,
+                            "A waiting meteor must keep following: " + last.getTarget());
+                })
+                .thenWaitUntil(() -> helper.assertTrue(meteors.stream().allMatch(EntityPseudoMeteor::isRemoved), "Meteors still falling"))
+                .thenExecute(() -> {
+                    helper.assertTrue(flier.getHealth() < TOUGH_HEALTH, "The husk in the air must be hit at its height");
+                    helper.assertTrue(walker.getHealth() < TOUGH_HEALTH, "The walking husk must be hit where it went");
+                })
+                .thenSucceed();
+    }
+
+    /** The meteors go after any creature only with Indiscriminate; otherwise they leave a cow alone. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_pseudo_meteor_any")
+    public static void pseudoMeteorGoesAfterAnyCreatureOnlyWhenIndiscriminate(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 4), "pseudo-meteor-any");
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
+        var cow = helper.spawnWithNoFreeWill(EntityType.COW, new BlockPos(3, 0, 2));
+        AABB area = new AABB(center, center).inflate(8);
+        try {
+            pseudoMeteor(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 3.0)).execute(new SpellContext().setPlayer(player));
+            List<EntityPseudoMeteor> spared = helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class, area);
+            helper.assertTrue(spared.size() == 3 && spared.stream().noneMatch(meteor -> meteor.getTarget().distanceTo(cow.position()) < EPSILON),
+                    "Without Indiscriminate no meteor may go after the cow");
+            spared.forEach(EntityPseudoMeteor::discard);
+
+            pseudoMeteor(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 3.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0))
+                    .execute(new SpellContext().setPlayer(player));
+            List<EntityPseudoMeteor> chasing = helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class, area,
+                    meteor -> !meteor.isRemoved());
+            chasing.sort(Comparator.comparingInt(EntityPseudoMeteor::getDelay));
+            helper.assertTrue(chasing.size() == 3 && chasing.stream().allMatch(meteor -> meteor.getTarget().distanceTo(cow.position()) < EPSILON),
+                    "With Indiscriminate every meteor must go after the cow");
+        } finally {
+            helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class, area).forEach(EntityPseudoMeteor::discard);
+        }
+        helper.succeed();
+    }
+
+    /** The meteors look 6 blocks around the position for one or two meteors, 0.4 more for each meteor beyond two. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_pseudo_meteor_range")
+    public static void pseudoMeteorLooksFartherWithMoreMeteors(GameTestHelper helper) throws Exception {
+        helper.assertTrue(near(PieceTrickPseudoMeteor.aimRange(1), 6) && near(PieceTrickPseudoMeteor.aimRange(2), 6)
+                        && near(PieceTrickPseudoMeteor.aimRange(7), 8) && near(PieceTrickPseudoMeteor.aimRange(12), 10)
+                        && near(PieceTrickPseudoMeteor.aimRange(16), 11.6),
+                "The search must reach 6 blocks for two meteors, 10 for twelve and 11.6 for sixteen");
+        var player = caster(helper, new BlockPos(0, 0, 4), "pseudo-meteor-range");
+        Vec3 center = helper.absoluteVec(new Vec3(2.5, 0.0, 2.5));
+        // About 8 blocks from the position: beyond two meteors' reach, within twelve meteors'.
+        var husk = husk(helper, new Vec3(2.5, 0.0, 10.5), false);
+        AABB area = new AABB(center, center).inflate(12);
+        try {
+            pseudoMeteor(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 2.0)).execute(new SpellContext().setPlayer(player));
+            List<EntityPseudoMeteor> few = helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class, area);
+            helper.assertTrue(few.size() == 2 && few.stream().noneMatch(meteor -> meteor.getTarget().distanceTo(husk.position()) < EPSILON),
+                    "Two meteors must not reach a husk 8 blocks away");
+            few.forEach(EntityPseudoMeteor::discard);
+
+            pseudoMeteor(Map.of(POSITION, vector(center), POWER, 1.0, NUMBER, 12.0)).execute(new SpellContext().setPlayer(player));
+            List<EntityPseudoMeteor> many = helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class, area,
+                    meteor -> !meteor.isRemoved());
+            helper.assertTrue(many.size() == 12 && many.stream().allMatch(meteor -> meteor.getTarget().distanceTo(husk.position()) < EPSILON),
+                    "Twelve meteors must reach a husk 8 blocks away");
+        } finally {
+            helper.getLevel().getEntitiesOfClass(EntityPseudoMeteor.class, area).forEach(EntityPseudoMeteor::discard);
+            husk.discard();
         }
         helper.succeed();
     }

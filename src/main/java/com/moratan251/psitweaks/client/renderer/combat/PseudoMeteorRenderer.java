@@ -35,7 +35,7 @@ public class PseudoMeteorRenderer extends CombatGlowRenderer<EntityPseudoMeteor>
         int color = GlowDrawing.glowColor(entity.getColor());
         VertexConsumer consumer = buffers.getBuffer(PsitweaksRenderTypes.ADDITIVE_COLOR);
 
-        Vector3f target = relative(entity.getTarget()).add(0.0F, 0.06F, 0.0F);
+        Vector3f target = relative(entity.getTarget(partialTick)).add(0.0F, 0.06F, 0.0F);
         float radius = EntityPseudoMeteor.IMPACT_RADIUS;
         float appear = Mth.clamp(age / 6.0F, 0.0F, 1.0F);
         float pulse = 0.75F + 0.25F * Mth.sin(age * 0.9F);

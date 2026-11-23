@@ -215,18 +215,6 @@ public class PsiTweaksTagsProvider implements DataProvider {
 
     private static void addEntityTypeTags(Map<ResourceLocation, JsonObject> tags) {
         tag(tags, "minecraft", "arrows", "psitweaks:tunneler_arrow");
-        // Creatures with little liquid inside; Trick: Burst deals a quarter of its damage to them.
-        tag(tags, "psitweaks", "burst_resistant",
-                tagRef("minecraft:skeletons"),
-                "minecraft:iron_golem",
-                "minecraft:snow_golem",
-                "minecraft:blaze",
-                "minecraft:breeze",
-                "minecraft:shulker",
-                "minecraft:vex",
-                "minecraft:allay",
-                "minecraft:magma_cube",
-                "minecraft:wither");
     }
 
     private static void addItemTags(Map<ResourceLocation, JsonObject> tags) {

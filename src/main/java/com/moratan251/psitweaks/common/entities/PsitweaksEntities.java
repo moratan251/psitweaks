@@ -296,7 +296,8 @@ public class PsitweaksEntities {
                     () -> EntityType.Builder.<EntityPseudoMeteor>of(EntityPseudoMeteor::new, MobCategory.MISC)
                             .sized(0.25f, 0.25f)
                             .clientTrackingRange(10)
-                            .updateInterval(20)
+                            // A meteor chasing a creature moves its landing spot every tick while it waits.
+                            .updateInterval(1)
                             .fireImmune()
                             .noSave()
                             .build(Psitweaks.MOD_ID + ":pseudo_meteor"));

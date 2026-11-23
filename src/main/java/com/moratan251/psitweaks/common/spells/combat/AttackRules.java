@@ -21,6 +21,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.entity.PartEntity;
 import vazkii.psi.api.capability.PsiCapabilities;
 import vazkii.psi.api.spell.ISpellImmune;
 import vazkii.psi.api.spell.SpellContext;
@@ -59,9 +60,11 @@ public final class AttackRules {
      * team mates' pets) are never hit. Players are never hit with the Safe to Players option (PvP off); otherwise the
      * player decides like a vanilla hit ({@link Player#canHarmPlayer}: PvP and the player's team). An autonomous caster
      * has its machine owner's UUID and team, so it spares the owner, the owner's pets and the owner's team mates too.
+     * A part of a multipart creature (the Ender Dragon's head, body and wings) is judged as the creature itself
+     * ({@link #wholeEntity}).
      */
     public static boolean canHarm(@Nullable LivingEntity caster, @Nullable Entity entity, Options options) {
-        if (!(entity instanceof LivingEntity living) || !living.isAlive() || living.isSpectator()) {
+        if (!(wholeEntity(entity) instanceof LivingEntity living) || !living.isAlive() || living.isSpectator()) {
             return false;
         }
         if (living instanceof ArmorStand) {
@@ -93,6 +96,16 @@ public final class AttackRules {
             return true;
         }
         return canHarm(projectile.getOwner() instanceof LivingEntity owner ? owner : null, target, options);
+    }
+
+    /**
+     * The creature a part of a multipart entity belongs to (the Ender Dragon for its head, body and wings, which
+     * NeoForge models as {@link PartEntity}); any other entity as it is. Selectors that pick entities by a ray hit the
+     * part, while who may be hit and whether the target has fallen are questions about the creature.
+     */
+    @Nullable
+    public static Entity wholeEntity(@Nullable Entity entity) {
+        return entity instanceof PartEntity<?> part ? part.getParent() : entity;
     }
 
     /**

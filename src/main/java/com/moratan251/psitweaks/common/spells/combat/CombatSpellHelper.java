@@ -1,7 +1,6 @@
 package com.moratan251.psitweaks.common.spells.combat;
 
 import com.moratan251.psitweaks.common.caster.CasterIds;
-import com.moratan251.psitweaks.common.spells.SpellRange;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
@@ -13,12 +12,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -94,27 +90,6 @@ public final class CombatSpellHelper {
         right = right.lengthSqr() < 1.0E-6 ? Vec3.ZERO : right.normalize();
         double side = caster.getMainArm() == HumanoidArm.RIGHT ? 0.35 : -0.35;
         return caster.getEyePosition().add(look.scale(0.6)).add(right.scale(side)).add(0.0, -0.3, 0.0);
-    }
-
-    /**
-     * The creature under the caster's crosshair: the first living entity the caster's line of sight meets, out to the
-     * caster's spell range ({@link SpellRange#maxDistance}) and within {@link SpellContext#isInRadius}. Solid blocks stop
-     * the line; blocks without collision (grass, flowers) and entities that are not alive in the first place (item
-     * frames, boats) do not. Null when there is none.
-     */
-    @Nullable
-    public static LivingEntity aimedCreature(SpellContext context) {
-        Player caster = context.caster;
-        Vec3 eye = caster.getEyePosition();
-        Vec3 end = eye.add(caster.getLookAngle().scale(SpellRange.maxDistance(caster)));
-        HitResult block = caster.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
-        if (block.getType() != HitResult.Type.MISS) {
-            end = block.getLocation();
-        }
-        AABB area = caster.getBoundingBox().expandTowards(end.subtract(eye)).inflate(1.0);
-        EntityHitResult hit = ProjectileUtil.getEntityHitResult(caster, eye, end, area, entity -> entity instanceof LivingEntity
-                && !entity.isSpectator() && entity.isPickable() && context.isInRadius(entity), eye.distanceToSqr(end));
-        return hit != null && hit.getEntity() instanceof LivingEntity living ? living : null;
     }
 
     /** Whether nothing solid blocks the straight line between the two points. */

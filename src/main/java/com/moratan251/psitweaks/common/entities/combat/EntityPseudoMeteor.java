@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -22,7 +23,9 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * One meteor of Trick: Pseudo Meteor. It waits for its turn (a target ring marks where it will land), then falls along a
- * straight line from the sky and explodes on arrival. It passes through terrain and never breaks blocks.
+ * straight line from the sky and explodes on arrival. It passes through terrain and never breaks blocks. A meteor sent
+ * after a creature ({@link #chase}) keeps its landing spot at the creature's feet while it waits, in the air too, and
+ * keeps the spot where it was once it starts to fall.
  */
 public class EntityPseudoMeteor extends CombatSpellEntity {
     public static final int FLIGHT_TICKS = 14;
@@ -38,6 +41,9 @@ public class EntityPseudoMeteor extends CombatSpellEntity {
     private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.INT);
     /** Game time the meteor was cast; timing uses world time so clients that saw it late still stay in step. */
     private static final EntityDataAccessor<Long> CAST_TIME = SynchedEntityData.defineId(EntityPseudoMeteor.class, EntityDataSerializers.LONG);
+
+    /** Server side: the id of the creature the landing spot follows until the fall, or -1. */
+    private int chasedId = -1;
 
     public EntityPseudoMeteor(EntityType<?> type, Level level) {
         super(type, level);
@@ -72,6 +78,16 @@ public class EntityPseudoMeteor extends CombatSpellEntity {
         return position();
     }
 
+    /** {@link #getTarget()} smoothed between ticks, as a landing spot that follows a creature moves. */
+    public Vec3 getTarget(float partialTick) {
+        return new Vec3(Mth.lerp(partialTick, xOld, getX()), Mth.lerp(partialTick, yOld, getY()), Mth.lerp(partialTick, zOld, getZ()));
+    }
+
+    /** Keeps the landing spot at the creature's feet until the meteor starts to fall. */
+    public void chase(Entity creature) {
+        chasedId = creature.getId();
+    }
+
     public int getDelay() {
         return entityData.get(DELAY);
     }
@@ -92,7 +108,9 @@ public class EntityPseudoMeteor extends CombatSpellEntity {
 
     /** Where the meteor is at this moment of its fall. */
     public Vec3 getFlightPosition(float partialTick) {
-        return getStart().lerp(getTarget(), getProgress(partialTick));
+        Vec3 target = getTarget(partialTick);
+        Vec3 start = target.add(entityData.get(FALL_X), entityData.get(FALL_Y), entityData.get(FALL_Z));
+        return start.lerp(target, getProgress(partialTick));
     }
 
     @Override
@@ -116,6 +134,9 @@ public class EntityPseudoMeteor extends CombatSpellEntity {
             return;
         }
         int age = (int) getAge(0.0F);
+        if (chasedId >= 0) {
+            follow(level, age);
+        }
         if (age == getDelay()) {
             CombatEffects.sound(level, getStart(), SoundEvents.FIRECHARGE_USE, 2.0F, 0.6F);
         }
@@ -123,6 +144,19 @@ public class EntityPseudoMeteor extends CombatSpellEntity {
             impact(level);
             discard();
         }
+    }
+
+    /**
+     * Moves the landing spot to the chased creature while waiting. The spot stays where it is once the creature is gone
+     * or the fall starts.
+     */
+    private void follow(ServerLevel level, int age) {
+        Entity chased = age < getDelay() ? level.getEntity(chasedId) : null;
+        if (chased == null || !chased.isAlive()) {
+            chasedId = -1;
+            return;
+        }
+        setPos(chased.position());
     }
 
     private void impact(ServerLevel level) {

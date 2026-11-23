@@ -16,7 +16,7 @@ import vazkii.psi.api.spell.SpellContext;
  * <li>サードアイデバイス: 射程の判定をしない。レイキャストの長さは 256 ブロック</li>
  * </ul>
  * 複数当てはまるときは長いほう。射程の判定は {@code SpellContextRangeMixin}、レイキャストのピースの長さは
- * {@code SpellHelpersRangeLimitMixin} が使う。Psi のレイキャストを通さずに術者の視線へ線を引く処理（照準の生物、面の座標系）は
+ * {@code SpellHelpersRangeLimitMixin} が使う。Psi のレイキャストを通さずに術者の視線へ線を引く処理（面の座標系）は
  * {@link #maxDistance} の長さにする（サードアイデバイスでも 256 ブロックまでは引かない）。
  */
 public final class SpellRange {

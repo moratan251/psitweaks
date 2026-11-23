@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -420,17 +419,16 @@ public final class AttackTargetGameTests {
         helper.assertTrue(hit == hits, "Guillotine " + (hits ? "spared " : "hit ") + what);
     }
 
-    /** 機械をハスクの胴の高さ・距離 2.5 に置いて向けてから、作動式: 爆裂（威力 1）を撃たせる。 */
+    /** 機械を対象の胴の高さ・距離 2 に置いてから、その対象へ作動式: 爆裂（威力 1）を撃たせる。 */
     private static void castBurstAt(GameTestHelper helper, AutonomousCasterPlayer machine, LivingEntity target) {
         Vec3 aim = target.position().add(0.0, target.getBbHeight() / 2.0, 0.0);
         Vec3 eye = aim.add(-2.0, 0.0, 0.0);
         machine.moveTo(eye.x, eye.y - machine.getEyeHeight(), eye.z, 0.0F, 0.0F);
-        machine.lookAt(EntityAnchorArgument.Anchor.EYES, aim);
         target.invulnerableTime = 0;
         var burst = new PieceTrickBurst(new Spell()) {
             @Override
             public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
-                return 1.0;
+                return SpellParam.GENERIC_NAME_TARGET.equals(param.name) ? target : 1.0;
             }
         };
         try {

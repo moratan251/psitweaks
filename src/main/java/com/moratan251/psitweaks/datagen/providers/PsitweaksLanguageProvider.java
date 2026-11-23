@@ -2031,7 +2031,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_guillotine", "Trick: Guillotine", "Deals a heavy slash to the target and drops a head on kill", "作動式: ギロチン", "対象に強力な斬撃ダメージを与え、討伐時に頭をドロップさせる");
         addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Discharges lightning from the focal point in the direction; it strikes the nearest hostile creature and branches to nearby ones", "作動式: 連鎖電光", "焦点から方向へ雷撃を放ち、最も近い敵対的な生物に当てて近くの敵対的な生物へ枝分かれさせる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ、地上の生物を打ち上げる");
-        addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the creature you are aiming at so it bursts from within", "作動式: 爆裂", "照準を合わせた生物の体内の液体を気化させ、内側から破裂させる");
+        addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the target so it bursts from within", "作動式: 爆裂", "対象の体内の液体を気化させ、内側から破裂させる");
         addSpellPiece(root, "trick_psi_bullet", "Trick: Psi Bullet",
                 "Fires a bullet of psions that strikes the first creature or SpellGram object it hits",
                 "作動式: サイ・ブリット", "想子の弾を撃ち出し、最初に当たった生物か魔法式オブジェクトに当てる");
@@ -2040,7 +2040,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 術式解体", "前方の魔法式オブジェクトに想子をぶつけ、耐久値をまとめて削る");
         addSpellPiece(root, "trick_air_bullet", "Trick: Air Bullet", "Fires a bullet of compressed air that strikes the first creature it hits", "作動式: エア・ブリット", "圧縮した空気の弾を撃ち出し、最初に直撃した生物に当てる");
         addSpellPiece(root, "trick_dancing_blades", "Trick: Dancing Blades", "Deploys the swords in your Blade Pouch as blades that strike nearby hostile creatures", "作動式: ダンシングブレイズ", "ブレードポーチの剣を刃として展開し、近くの敵対的な生物を斬りつける");
-        addSpellPiece(root, "trick_pseudo_meteor", "Trick: Pseudo Meteor", "Calls pseudo meteors down around the position", "作動式: 疑似隕石", "指定位置の周りに疑似隕石を降らせる");
+        addSpellPiece(root, "trick_pseudo_meteor", "Trick: Pseudo Meteor", "Calls pseudo meteors down on the position and the hostile creatures around it", "作動式: 疑似隕石", "指定位置とその周りの敵対的な生物に疑似隕石を降らせる");
         addSpellPiece(root, "trick_micro_black_hole", "Trick: Micro Black Hole", "Creates a tiny black hole that pulls creatures in and swings them around, then collapses", "作動式: マイクロブラックホール", "生物を引き寄せて振り回す極小のブラックホールを生み出し、最後に崩壊させる");
         addSpellPiece(root, "trick_active_air_mine", "Trick: Active Air Mine", "Deals magic damage to entities inside a spherical area around the target position", "作動式: 能動空中機雷", "指定座標を中心とした範囲内の生物にダメージを与える");
         addSpellPiece(root, "trick_flare_circle", "Trick: Fire Circle", "Places a fire Resident SpellGram circle that repeatedly deals fire damage around it", "作動式: ファイアサークル", "炎の常駐魔法式を設置して内部の生物に継続的な炎ダメージを与える");
@@ -2603,8 +2603,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
         addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
         addBookPage(root, "trick_aqua_cutter",
-                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
-                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) と雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
+                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0), $(thing)Trick: Burst$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
+                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) や $(thing)作動式: 爆裂$(0), 雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
         addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
         addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
@@ -2639,8 +2639,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 40%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
                 "ダメージは中心で $(thing)16 + 12×威力$(0)、外縁では40%%まで下がります. 盾では防げず、威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで、ブロックは壊れません.");
         addBookPage(root, "trick_burst.0",
-                "Vaporizes the liquid inside the creature under the caster's crosshair, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. The range is 32 blocks, and with nothing in the sights the spell fails. Creatures with little liquid inside them, such as skeletons, golems and blazes, take only a quarter of the damage.",
-                "照準を合わせた生物の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. 射程は32ブロックで、照準の先に生物がいなければ術式は失敗します. スケルトン、ゴーレム、ブレイズのように体内の液体が少ない生物には、ダメージが4分の1になります.");
+                "Vaporizes the liquid inside the target, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. It works on bosses too. Wet creatures (in water or rain, or soaked by $(thing)Trick: Aqua Cutter$(0)) take 25%% more.",
+                "対象の体内の液体を気化させ、防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. ボスにも効きます. 水中や雨の中にいる生物や, $(thing)作動式: アクアカッター$(0) で濡れた生物には25%%増しになります.");
         addBookPage(root, "trick_burst.1",
                 "If the target dies from it, its body bursts and hits nearby hostile creatures for up to 40%% of the damage.",
                 "この術式で対象が倒れると体が破裂し、付近の敵対的な生物に最大でダメージの40%%を与えます.");
@@ -2669,11 +2669,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Each cut deals what a swing of that sword would (its attack damage and damage enchantments) times the caster's Phenomenon Interference, and Fire Aspect, Knockback and the like take effect. The swords lose no durability. Casting it again replaces the blades you already have.",
                 "1回の斬撃のダメージは, その剣で殴ったときのダメージ (攻撃力とダメージ増加などのエンチャント) に事象干渉力を掛けたもので, 火属性やノックバックなどのエンチャントも働きます. 剣の耐久値は減りません. もう一度唱えると, 今ある刃と入れ替わります.");
         addBookPage(root, "trick_pseudo_meteor.0",
-                "Calls down as many pseudo meteors as the $(thing)Number$(0) (at most 12) around the position. A ring on the ground marks each landing spot; after one second the meteors fall one after another, the first at the centre and the rest within 4 blocks of it.",
-                "指定位置の周りに $(thing)数値$(0) で指定した数 (上限12) の疑似隕石を降らせます. 着弾点は地面の輪で示され、1秒後から疑似隕石が順に落ちてきます. 最初の1つは中心に、残りは中心から4ブロック以内に落ちます.");
+                "Calls down as many pseudo meteors as the $(thing)Number$(0) (at most 16). A ring marks each landing spot, and after half a second the meteors fall one after another. They go after the hostile creatures near the position, nearest first and in turn, and their rings follow those creatures until the meteors start to fall. The search reaches 6 blocks from the position, 0.4 more for each meteor beyond two (10 with 12, 11.6 with 16). With no such creature, the first lands at the position and the rest anywhere within 4 blocks of it.",
+                "$(thing)数値$(0) で指定した数 (上限16) の疑似隕石を降らせます. 着弾点は輪で示され、0.5秒後から疑似隕石が順に落ちてきます. 疑似隕石は指定位置の近くの敵対的な生物を近い順に順番に狙い、落ち始めるまで輪がその生物を追いかけます. 探す範囲は指定位置から6ブロックで、数が3以上なら1つ増えるごとに0.4ブロック広がります (12で10ブロック、16で11.6ブロック). 該当する生物がいなければ、最初の1つは指定位置に、残りはその周り4ブロック以内に落ちます.");
         addBookPage(root, "trick_pseudo_meteor.1",
-                "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within its blast (half at the edge) and setting targets on fire for 3 seconds. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
-                "疑似隕石は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 疑似隕石は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
+                "Each meteor explodes on landing, dealing up to $(thing)50 + 40 × Power$(0) damage within its blast (half at the edge) and setting targets on fire for 3 seconds. A meteor that goes after a creature in the air explodes at its height. Meteors pass through terrain and never break blocks. Blast Protection reduces the damage.",
+                "疑似隕石は着弾と同時に爆発し、範囲内に最大 $(thing)50 + 40×威力$(0) のダメージ (外縁では半分) を与え、対象を3秒間燃やします. 空中の生物を狙った疑似隕石は、その高さで爆発します. 疑似隕石は地形をすり抜け、ブロックを壊しません. 爆発耐性でダメージを軽減できます.");
+        addBookPage(root, "trick_pseudo_meteor.2",
+                "With a non-zero $(thing)Indiscriminate$(0) (optional), the meteors go after any creature, animals and villagers included. They still never go after you, your allies, your pets and the like. Connect $(thing)Selector: Sneak Status$(0) to switch by sneaking.",
+                "$(thing)無差別$(0) (省略可) に0以外を入れると, 疑似隕石は動物や村人を含むあらゆる生物を狙います. ただし術者自身, 味方, 自分のペットなどは狙いません. $(thing)取得子: スニーク状態$(0) をつなぐと, スニークで切り替えられます.");
         addBookPage(root, "trick_micro_black_hole.0",
                 "Creates a micro black hole at the position. For 10 seconds it drags creatures within $(thing)Radius$(0) blocks (16 to 32) and swings them around its centre at speed; a creature whipping past the centre may be flung out of range. In the last 1.5 seconds it swallows them, then collapses and crushes everything within three tenths of $(thing)Radius$(0) of the centre.",
                 "指定位置にマイクロブラックホールを生み出します. 10秒間、$(thing)半径$(0) ブロック (16〜32) 以内の生物を引き寄せ、中心のまわりで勢いよく振り回します. 中心のそばを回り込んだ勢いで、範囲の外へ投げ飛ばされることもあります. 最後の1.5秒で中心へ呑み込み、崩壊して中心から $(thing)半径$(0) の3割以内のものを押し潰します.");

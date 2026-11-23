@@ -8,9 +8,9 @@ import net.minecraft.world.entity.LivingEntity;
 /**
  * The wet state Trick: Aqua Cutter leaves on a creature. It is built on vanilla's own check, so other mods share it
  * without depending on Psitweaks: a soaked creature counts as in water or rain ({@code isInWaterOrRain}), the way Ars
- * Nouveau adds its Soaked effect and Bubble to that check. Anything that looks for it sees the creature as wet: Trick:
- * Chain Lightning's extra damage, Ars Nouveau's Cold Snap and lightning, a Riptide trident. Like a creature soaked by
- * Ars Nouveau, it does not catch fire while wet.
+ * Nouveau adds its Soaked effect and Bubble to that check. Anything that looks for it sees the creature as wet: the
+ * extra damage of Trick: Chain Lightning and Trick: Burst, Ars Nouveau's Cold Snap and lightning, a Riptide trident.
+ * Like a creature soaked by Ars Nouveau, it does not catch fire while wet.
  */
 public final class CombatStatuses {
     /** How long Trick: Aqua Cutter leaves a creature wet: 10 seconds. */
