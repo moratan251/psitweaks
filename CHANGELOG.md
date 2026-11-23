@@ -4,294 +4,94 @@
 
 > Work in progress. Numbers and behavior may change before release.
 
-
+##### Added
 - Added attack spell pieces
-  + Trick: Chain Lightning: discharges lightning from the focal point in the direction; it strikes the nearest enemy and branches to the enemies around it
-  + Trick: Mine Genesis: shakes the ground so a shockwave spreads out and throws up the creatures standing on it
-  + Trick: Burst: vaporizes the liquid inside the target so it bursts from within
+  + Trick: Chain Lightning: fires lightning from the focal point that strikes the nearest enemy and chains to nearby enemies
+  + Trick: Mine Genesis: sends out a ground shockwave that launches creatures upward
+  + Trick: Burst: vaporizes liquid inside the target so it bursts from within
   + Trick: Air Bullet: fires a bullet of compressed air
-  + Trick: Dancing Blades: deploys the swords in your Blade Pouch as blades that cut nearby enemies
-  + Trick: Pseudo Meteor: calls pseudo meteors down around the position
+  + Trick: Dancing Blades: deploys swords from your Blade Pouch to slash nearby enemies
+  + Trick: Pseudo Meteor: calls pseudo meteors down around the target position
   + Trick: Micro Black Hole: creates a tiny black hole that pulls creatures in and swings them around
-
-
-- Unified who attack spells can hit
-  + Attack spells, beams, spell circles and projectiles do not hit the caster, the caster's pets or allies on the same team (regardless of the friendly fire setting). Players are not hit when PvP is off
-  + Projectiles from Trick: Blaze Ball, Trick: Dry Meteor and Trick: Aqua Cutter pass through the caster's side
-  + Attack spells (including Trick: Guillotine) now work on bosses such as the Wither and the Ender Dragon, and on creatures that are riding something or sleeping
-
-
-- Added the Blade Pouch
-  + Holds up to 8 swords and works in any Curios slot
-  + Trick: Dancing Blades cuts with the swords in the pouch; the sword's attack damage, enchantments and on-hit effects all apply (the swords do not lose durability)
-
-
-- Remade Trick: Barrier as a shield
-  + Raises a shield that takes damage in the target's place for one minute. Phenomenon Interference applies to the shield amount
-  + Removed the time input (existing spells still load; a piece connected to it is no longer used)
-  + The target does not catch fire while the shield is up. Poison, hunger, falling and similar damage pass through the shield
-  + Casting it again keeps whichever shield has more left
-  + Shows the remaining shield and time on the HUD (can be toggled in the client config)
-  + Added Selector: Barrier Amount
-
-
-- Remade Trick: Parade as a decoy spell
-  + Instead of dodging damage by chance, it conjures a lookalike of the caster at the position. Nearby mobs target the lookalike
-  + While it lasts, spells from other players that target the caster directly fail, and Operator: Entity Position returns the lookalike's position
-  + Now unlocked by research
-
-
-- Rebuilt Trick: Meteor Line
-  + Covers the position (radius 16 to 32) in a sphere of night and rains streaks of light from its stars on the creatures inside. They also reach under roofs
-  + Potency 1428 → 1400, Cost 12000 → 12500
-
-
-- Remade Trick: Cocytus
-  + It no longer takes a target. It blows a blizzard forward and freezes the minds of all the mobs it catches forever (existing spells still load; a piece connected to the target is no longer used)
-  + Players, the caster's pets and allies, and bosses are not frozen. It deals no damage
-  + A frozen mob now looks encased in ice. The ice breaks if something else wakes the mob up
-  + Cost 5000 → 10000
-
-
-- Adjusted existing attack spells
-  + Trick: Aqua Cutter: now looks like a crescent water blade and splashes on hit. Targets it hits stay wet for 10 seconds (they cannot catch fire while wet). Burning targets take 1.25x damage instead, and the fire is put out
-  + Trick: Active Air Mine: new spherical shockwave visuals and its own damage type
-
-
-- Added Zone Magic: Resident SpellGrams that keep working inside an area
-  + Trick: Soak Zone
-  + Trick: Heat Zone
-  + Trick: Freeze Zone
-  + Trick: Turbulence Zone
-  + Trick: Gravity Zone
-  + Trick: Interference Zone
-  + Trick: Silence Zone
-  + Trick: Charged Zone
-  + Trick: Acceleration Zone: growing things inside (crops, saplings, Budding Amethyst and others in the block tag psitweaks:zone_acceleratable) get extra random ticks and grow (Power + 5) times as fast in all. Your own zones' random block changes speed up by the same factor where they overlap
-  + Trick: Deceleration Zone: living beings inside get the new effect Torpor (movement and flying speed −(Power + 4) × 5%, players' attack speed −(Power + 4) × 3%), and mobs and projectiles slow down every tick. It spares your side, bosses and magic projectiles
-  + Trick: Contamination Zone (with Mekanism): exposes the living beings inside to radiation up to (Power + 4) × 0.1 mSv, without leaving radiation sources. It spares your side
-
-
-- Added Trick: Decontamination (with Mekanism): places a Resident SpellGram core (not a zone) that weakens the radiation sources within 32 blocks, nearer and stronger ones first, as much as its Cost allows. It is unlocked by research (Program: Decontamination)
-
-
-- Common rules of Zone Magic
-  + Zone tricks are unlocked by research: Program: Zone Magic unlocks the first eight above, and the Acceleration, Deceleration and Contamination Zones each have a program of their own
-  + The area is set by a Matrix (region matrix) and a Size (at most 16); leaving out the Matrix centers it on the caster. A zone lasts for its Time (at most 120 seconds, 30 when left out)
-  + Zones that take a Power need one (at least 1). Potency and Cost grow with the area and the Power, and the Cost also grows with the Time. Every zone with a Power but the Gravity Zone works at a fair strength even at Power 1: its effects, totals and Cost follow the Power plus 4, and its Potency follows the Power itself. The Gravity, Acceleration, Deceleration and Contamination Zones take a Power of at most 10
-  + What stands in for fuel or energy (heat, cooling, FE and wind) is a total set by the zone's Cost and shared by everything inside. The Heat, Freeze, Turbulence and Charged Zones take a Power above 10, which only adds to that total
-  + Where your own zones of the same kind overlap, their totals add up and other effects use only the strongest one. Where your own Heat Zone and Freeze Zone overlap, they cancel each other out
-  + Where other casters' zones overlap, only the zones of the caster with the highest Phenomenon Interference work
-  + Zones change blocks at random, like random ticks but faster (each block about once every 5 seconds): the Heat Zone melts ice and snow layers and dries Wet Sponges, the Freeze Zone freezes water sources, the Soak Zone moistens farmland and wets Sponges, and the Charged Zone scrapes oxidation off copper
-  + Aiming at the core of a zone shows its integrity and how much of its Heat, Cooling, Charge or Wind is in use out of the total; the Acceleration, Deceleration and Contamination Zones show their strength
-  + The floor of a zone shows a magic circle in the CAD's color (its resolution can be lowered in the client config)
-  + Zone particles are capped for all zones together (Zone Particle Limit in the client config), thin out with distance from the camera, and follow the Particles video setting
-
-
-- Added the Zone Feeder
-  + When it is inside a Charged Zone, the zone uses the Zone Feeder's FE to power machines
-
-
-- Added the Zone Receiver
-  + Kept in your inventory inside a Charged Zone, it lets the zone send FE to your other items and equipment that take FE
-
-
-- Reorganized SpellGram objects
-  + Magic entities with integrity are now SpellGram objects: Resident SpellGrams (Fire Circle, Ice Circle and the zones), the Meteor Line night and the Micro Black Hole
-  + They are not destroyed or pushed by ordinary attacks such as swords, arrows and explosions, and are not saved with the chunk
-  + They disappear when the caster is gone (logged out or moved to another dimension)
-  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus cannot move them, except your own circles
-  + Added integrity. An object disappears when its integrity runs out (the Meteor Line night shatters, and the Micro Black Hole vanishes without crushing anything). Integrity depends on the caster's Phenomenon Interference when the object is placed (the multiplier can be changed in the config), and Resident SpellGrams also lose it over time
-  + Aim at the core within 5 blocks to see its name and integrity (can be toggled in the client config)
-  + One player or one Autonomous Caster can keep up to 32 Resident SpellGrams, several of the same kind included. Placing more removes the oldest (changeable in the config)
-  + Trick: Fire Circle / Ice Circle now deal their own damage types, so Barrier blocks them and kills are credited to the caster
-  + Trick: Ice Circle no longer keeps building up freezing
-
-
-- Reworked Trick: Fire Circle / Ice Circle
-  + Added a Time input (1 to 120 seconds, 60 if left out). The Cost and integrity grow in proportion to the Time; the Cost is at least 50
-  + Adjusted the damage formula so that the total damage follows the Cost
-  + Armor now reduces the damage
-  + Several identical circles no longer hit the same target more than once
-  + While its center is inside another caster's Trick: Interference Zone that wins against it, a circle does nothing (it stays and its time runs on)
-  + Trick: Ice Circle now turns water into Frosted Ice, like the Frost Walker enchantment
-  + The integrity cap (how far Trick: Extend SpellGram restores) is now twice the integrity at the longest Time, as for zones
-
-
-- Added spell pieces for SpellGram objects
-  + Selector: Own Resident SpellGrams: lists your own Resident SpellGrams in the dimension, however far away, oldest first
-  + Selector: SpellGram Integrity
-  + Trick: Recall SpellGram: ends your own Resident SpellGrams, however far away
-  + Trick: Extend SpellGram: restores the integrity of your own Resident SpellGram
-  + Trick: Circle Follow: makes your own circles follow you or a non-living entity. Without a Follow Target it lets them go, and they stay where they are. A following circle uses up extra integrity as it moves
-  + Trick: Psi Bullet: fires a bullet of psions that hits a creature or SpellGram object and wears away its health or integrity
-  + Trick: Gram Demolition: sends out a shockwave that wears away the integrity of the SpellGram objects in front of the caster all at once
-  + Added the SpellGram Integrity Debugger (creative only), which wears away the integrity of the SpellGram object you look at
-
-
-- Removed Trick: Set SpellGram Follow Target
-  + Trick: Circle Follow was added as a piece that does something similar for circles
-
-
-- Removed Trick: Radiation Injection
-
-
-- Renamed the attribute "Spell Damage Factor" to "Phenomenon Interference" (the ID is unchanged)
-
-
+- Added the Blade Pouch: holds up to 8 swords and works in any Curios slot. Trick: Dancing Blades applies each sword's damage, enchantments, and on-hit effects without consuming durability
+- Added Zone Magic (Resident SpellGrams active within an area; unlocked by research)
+  + Added 11 zone tricks: Soak Zone, Heat Zone, Freeze Zone, Turbulence Zone, Gravity Zone, Interference Zone, Silence Zone, Charged Zone, Acceleration Zone, Deceleration Zone (applies the new Torpor effect), and Contamination Zone (with Mekanism)
+  + Controlled by a region matrix, Size, Time, and (for zones that take it) Power; shared resources such as heat, cooling, FE, and wind scale with Cost
+  + Added overlap rules: your own matching zones combine resource totals and apply the strongest effect, your own Heat and Freeze Zones cancel each other out, and competing casters' zones defer to the highest Phenomenon Interference
+  + Zones periodically alter blocks at random and show integrity and usage when aiming at the core (floor magic circle resolution and particle limits can be adjusted in the client config)
+  + Added the Zone Feeder (feeds stored FE into a Charged Zone to cover demand beyond its own capacity) and Zone Receiver (charges FE items and equipment in your inventory while inside a Charged Zone)
+- Added Trick: Decontamination (with Mekanism; unlocked by research): places a Resident SpellGram core that weakens radiation sources within 32 blocks based on Cost
+- Added spell pieces and a debug item for SpellGram objects
+  + Selector: Own Resident SpellGrams, Selector: SpellGram Integrity
+  + Trick: Recall SpellGram, Trick: Extend SpellGram, Trick: Circle Follow, Trick: Psi Bullet, Trick: Gram Demolition
+  + SpellGram Integrity Debugger (creative only)
 - Added utility spell pieces
-  + Trick: Ender Chest
-  + Trick: Crafting Table
-  + Trick: Harvest
-  + Trick: Harvest Sequence
-  + Trick: Mass Harvest
-  + Trick: Shear
-  + Trick: Breed
-  + Operator: Connected Blocks
-  + The harvest tricks harvest ripe crops and replant them; the harvest and the shearings go into the caster's inventory
-
-
+  + Trick: Ender Chest, Trick: Crafting Table, Trick: Harvest, Trick: Harvest Sequence, Trick: Mass Harvest, Trick: Shear, Trick: Breed, and Operator: Connected Blocks (harvested and sheared drops go straight into the caster's inventory)
 - Added list and matrix operators
-  + Operator: List Keep Name Matches / List Remove Name Matches: filter an Entity, Item or Block list by display name (* ? [abc] work as in Operator: List Keep Matches)
-  + Operator: Matrix Set Y Axis: turns a region matrix around its center so that its Y axis points along a direction
-  + Operator: Matrix Cuboid From Corners: builds an axis-aligned cuboid region matrix from two opposite corners. Block mode includes both corner blocks; Vector mode uses the two points as they are
-  + Operator: List Keep By Distance / Distance-Ranked Element: sort an Entity, Vector or Block list by distance from a position, and keep the nearest elements (the farthest with a negative Number) or take the one at an index
-  + Operator: List Keep In Value Range / List Keep By Value / Value-Ranked Element: filter or sort a list by a matching list of numbers (Values), such as the one from Selector: NBT Number List
-
-
-- Reworked the NBT spell pieces
-  + NBT paths follow the vanilla NBT path syntax ([n], [-1], [], [{...}]). An empty path is the whole NBT, keys with spaces are quoted automatically, and a wrong path counts as not found instead of an error
-  + Selector: NBT Value: added String / Number modes and a Fallback input
-  + Selector: NBT / NBT Keys: added an NBT Path input, to list what is inside compound tags and lists
-  + Added Selector: NBT Exists and Selector: NBT Number List
-  + Added Operator: List Keep NBT Matches / List Remove NBT Matches and List Keep NBT In Range / List Keep NBT Out Of Range for Entity, Item and Block lists
-  + One cast reads the NBT of up to 1024 targets (changeable in the config)
-
-
+  + Operator: List Keep Name Matches, List Remove Name Matches, Matrix Set Y Axis, Matrix Cuboid From Corners, List Keep By Distance, Distance-Ranked Element, List Keep In Value Range, List Keep By Value, and Value-Ranked Element
 - Added the Autonomous Caster (with Mekanism)
-  + A machine that turns Psionic Echo Gas into Psi and casts the spells on its Spell Bullets automatically
-  + Has 12 Spell Bullet slots, 36 item slots laid out like the caster's inventory, and an internal CAD with fixed stats
-  + A settings window controls the bullet selection, cast interval, look direction, trigger (pulse / level), loop count and test casts (can be pinned)
-  + A sight visualization tab, and an operation log that records spell errors and warnings with their position
-  + 10 dedicated upgrades (Calculation Potency, Calculation Efficiency, Overclock, Multi-Step, Memory, Psyon Capacity, Psyon Conversion Speed, Psyon Conversion Efficiency, Phenomenon Interference, Interference Range). Up to 3 per machine, one of each kind
-  + The Interference Range Upgrade extends the range of the spells it casts from 32 to 64 blocks (the amount can be changed in the config)
-  + Keeps its internal Psi, settings and internal CAD memory when picked up
-  + Only the owner and their team can cast or change settings
-  + Trick: Spin Chamber and Trick: Russian Roulette switch its Spell Bullet slot. Loopcast Spell Bullets cannot be used
-  + Added Selector: Autonomous Caster Position
-
-
+  + Converts Psionic Echo Gas into Psi to automatically cast spells from up to 12 Spell Bullets, with 36 item slots and a fixed internal CAD (Loopcast Spell Bullets are not supported)
+  + Includes a pinnable settings window, a sight visualization tab, and an operation log for spell errors and warnings; retains internal Psi, settings, and CAD memory when picked up
+  + Added 10 dedicated upgrades (up to 3 per machine, 1 of each kind; Interference Range extends spell range)
+  + Restricted to the owner and their team; also added Selector: Autonomous Caster Position
 - Added advancements
   + Added 18 advancements for Psitweaks materials and CAD assemblies to Psi's advancement tab
-  + Added Japanese translations of Psi's own advancements
+  + Added Japanese translations for Psi's own advancements
 
+##### Changed
+- Unified attack spell hit rules
+  + Attack spells, beams, spell circles, and projectiles no longer hit the caster, pets, or same-team allies (regardless of friendly fire), nor players when PvP is disabled; Blaze Ball, Dry Meteor, and Aqua Cutter projectiles pass through allies
+  + Attack spells (including Trick: Guillotine) now work on bosses such as the Wither and Ender Dragon, as well as riding or sleeping creatures
+- Reorganized SpellGram objects
+  + Unified Resident SpellGrams (Fire Circle, Ice Circle, and zones), the Meteor Line night, and Micro Black Hole as SpellGram objects
+  + Added integrity determined by Phenomenon Interference when placed (Resident SpellGrams also decay over time; aiming at the core shows integrity and the object disappears when depleted)
+  + Immune to ordinary attacks and Psi movement tricks (except your own circles), not saved with chunks, and removed when the caster logs out or changes dimension
+  + Limited Resident SpellGrams to 32 per player or Autonomous Caster, removing the oldest when exceeded (configurable)
+- Remade and adjusted existing spell pieces
+  + Trick: Barrier: remade as a 1-minute damage-absorbing shield scaled by Phenomenon Interference (removed the Time input; existing spells still load). Added a configurable HUD indicator and Selector: Barrier Amount
+  + Trick: Parade: remade from chance-based dodging into a decoy spell that draws nearby mobs, blocks direct targeting by other players' spells, and redirects Operator: Entity Position; now unlocked by research
+  + Trick: Meteor Line: rebuilt to cover a 16–32 block radius in a sphere of night and rain streaks of light even under roofs (Potency 1428 → 1400, Cost 12000 → 12500)
+  + Trick: Cocytus: removed the target input (existing spells still load) and rebuilt to blow a blizzard forward that permanently freezes caught mobs in ice without dealing damage (sparing players, pets, allies, and bosses; Cost 5000 → 10000)
+  + Trick: Fire Circle / Ice Circle: added a Time input (1–120 s), scaled damage with Cost, applied armor reduction, prevented multi-hits from identical circles, and allowed opposing Interference Zones to suppress them. Switched to dedicated damage types (blocked by Barrier, credited to the caster); Ice Circle no longer builds up freezing indefinitely and now turns water into Frosted Ice
+  + Trick: Aqua Cutter: updated with crescent water blade visuals and hit splashes; wets targets for 10 s (preventing fire), or extinguishes burning targets for 1.25x damage instead
+  + Trick: Active Air Mine: updated with spherical shockwave visuals and a dedicated damage type
+  + Reworked NBT spell pieces: adopted vanilla NBT path syntax (invalid paths return not found instead of an error), added String/Number modes and Fallback to Selector: NBT Value, added NBT Path input to Selector: NBT / NBT Keys, and added Selector: NBT Exists, Selector: NBT Number List, and 4 NBT list-filtering operators
+  + Other spell adjustments: lowered Trick: Conjure Pulsar / Conjure Pulsar Light complexity to 1, updated Trick: Time Accelerate re-casts to adopt the new multiplier and duration, quadrupled Trick: FE Charge output (80 FE/Psi), added a single-number mode to Operator: Matrix Cuboid Region, supported `#` tag matching in patterns, and fixed mismatched tooltip stats and costs
+- Updated attributes and spell warnings
+  + Renamed the attribute "Spell Damage Factor" to "Phenomenon Interference" (ID unchanged)
+  + Spell warnings now display with their grid position like Psi errors and respect error suppression
+- Updated machines, recipes, and visuals
+  + Psi-Link Generator: quadrupled generation (100 FE/Psi) and capacity, and enabled automatic FE output from the back by default (up to 25600 FE/t)
+  + Program Research Table: aligned power consumption with JEI/EMI displays, greatly increased energy capacity, displayed non-stackable research ingredients one per slot in JEI/EMI, and rebalanced research recipes overall
+  + Models and audio: remade models for the Program Research Table, Sculk Eroder, Psi-Link Generator, and Heavy Psimetal CAD Assembly α/β CADs; updated the Program Research Table's working sound
+  + Magician villager and Magician's Head: gave Magician villagers (including zombie villagers) a white-coat researcher look, and replaced Magician's Brain with the placeable, wearable, note-block-compatible Magician's Head (existing items convert automatically)
 
-- Changed the look of machines and items
-  + Remade the models of the Program Research Table, Sculk Eroder and Psi-Link Generator
-  + Changed the working sound of the Program Research Table
-  + Remade the 3D models of CADs made from Heavy Psimetal CAD Assembly α / β
+##### Removed
+- Removed Trick: Set SpellGram Follow Target (replaced for circles by Trick: Circle Follow)
+- Removed Trick: Radiation Injection
 
+##### QoL
+- Added a Spell Programmer button to name spells after their trick, along with snippet support
+- Added piece-list filter tabs (bookmarks, recent, categories), display/search settings, and keyboard navigation
+- Fixed multi-selection Ctrl+C / X / V acting on the spell grid while the piece list is open
+- Fixed mouse-wheel scrolling failing when the piece list overlaps the cost display, and Enter placing a piece from page 1 while viewing a later page
 
-- Changed the look of the Magician villager to a researcher in a white coat and an academic cap (zombie villagers too)
-
-
-- Changed the Magician's Brain into the Magician's Head, which shows the Magician villager's head. Like other mob heads, it can be placed on the floor or a wall and worn, and plays a villager sound on top of a note block (Magician's Brains in existing worlds become Magician's Heads)
-
-
-- The Psi-Link Generator now makes 4x the energy per Psi (100 FE) and has 4x the capacity. It outputs FE from its back side automatically by default (up to 25600 FE/t)
-
-
-- Fixed the Program Research Table's power use to match what JEI and EMI show, and changed its capacity to 2,147,483,647 FE (it used only 1/2.5 of the shown amount)
-  + Research recipes in JEI and EMI show non-stackable ingredients one per slot
-
-
-- Adjusted program research recipes overall
-
-
-- Changed existing spell pieces
-  + Trick: Conjure Pulsar / Conjure Pulsar Light now have a complexity of 1, the same as Trick: Conjure Pulsar Sequence
-  + Trick: Time Accelerate: casting it again now uses the new cast's multiplier and remaining time
-  + Trick: FE Charge: supplies 4x the FE per Psi (80 FE)
-  + Operator: Matrix Cuboid Region: added a Number mode that takes one number for all three sizes (the previous behavior is the Vector mode)
-  + A pattern starting with # now matches tags, such as #minecraft:logs
-  + Fixed tooltip costs and stats that did not match the actual values
-
-
-- Spell warnings are now shown with their position like Psi's errors, and can be hidden with error suppression
-
-
-- (QoL) Added a button to the Spell Programmer that names the spell after its trick
-
-
-- (QoL) Added filter tabs and settings to the Spell Programmer's piece list
-  + Tabs for bookmarks, recently used pieces (up to 50), selectors, operators, tricks and others. They work together with the search
-  + Settings: list size (S / M / L), keep search text, right-click clears the search, right-click closes the list, sort by English name, show English names
-  + Keyboard controls: Tab / Shift + Tab, Up / Down and PageUp / PageDown move the cursor
-
-
-- (QoL) Added snippets to the Spell Programmer
-
-
-- Fixed spells built only from constants crashing or freezing the server
-  + Chained replacements in Operator: Format String, wildcard matching, overflowing large values and lists growing without limit
-  + Added a limit on pattern-matching comparisons per cast
-
-
-- Fixed items being duplicated or lost
-  + Portable CAD Assembler: parts were duplicated or lost on disconnect or death
-  + Gravstringer: fan-shooting Tunnelers let you pick up the side arrows too, turning one arrow into three
-  + Ideaspace Storage: leftovers in the crafting grid are now dropped at your feet while disconnected or after death
-  + Ideaspace Storage screen: clicking on the side button column or the crafting panel threw the held item on the ground
-
-
-- Fixed spell pieces that act on blocks or others' things skipping range and protection checks
-  + Trick: Block Interact reached outside the spell range and unloaded chunks, and ignored protection mods
-  + Trick: Block Freeze, Block Melt and Material Mutation, and Trick: Ideaspace Storage - Deposit / Withdraw (FE mode), did not check protected areas
-  + Selector: Stored Entity could get targets outside the spell range
-
-
+##### Fixed
+- Fixed server crashes and freezes from constant-only spells (chained Format String replacements, wildcard matching, value overflows, unbounded list growth) and added a per-cast pattern comparison limit
+- Fixed item duplication and loss issues (Portable CAD Assembler on disconnect/death, Gravstringer fan-shooting Tunnelers, Ideaspace Storage crafting grid leftovers on disconnect/death, and clicking on the Ideaspace Storage side button column or crafting panel)
+- Fixed missing range and protection checks on block/entity spells (Trick: Block Interact, Block Freeze, Block Melt, Material Mutation, Ideaspace Storage - Deposit / Withdraw in FE mode, and Selector: Stored Entity)
+- Fixed read-only entity spell pieces failing with an error when targets include bosses or riding creatures
 - (1.21.1) Fixed Trick: Radiation Filter having no effect
-
-
-- Fixed an error when loading spells with radiation tricks without Mekanism, and loot table load errors without Mekanism
-
-
+- Fixed spell and loot table load errors involving radiation tricks when Mekanism is not installed
 - Fixed the Material Mutation recipe table becoming empty after pressing F3+T in singleplayer
-
-
-- Fixed drops from Trick: Mass Block Break disappearing in creative mode
-
-
-- Fixed Operator: Equal to compare a Block and a Vector by block position
-
-
-- Fixed Operator: Matrix Cuboid Region being one block short or too long with a whole-number size, depending on the fraction of the position
-
-
-- Fixed vectors losing digits when turned into strings
-
-
-- Fixed amounts overflowing their slots on the Ideaspace Storage screen, and the JEI + button while the crafting grid is closed
-
-
-- (QoL) Fixed multi-selection Ctrl+C / X / V acting on the spell grid while the piece list is open
-
-
-- Fixed spell pieces that only read entities (Operator: List Keep Matches, Tag List, Selector: Effect List, Main-Hand Item, Carried Items, Entity Slot Item, Trick: Store Entity and others) stopping with an error when the targets included a boss or a creature riding something
-
-
-- Fixed Tunneler arrows piling up without disappearing
-
-
-- Fixed the outline of Trick: Show Region being invisible with pure-colored CADs such as white or red
-
-
-- Fixed attack spell aiming and Macro: Face Axial Offset / Face Axial Rotation not reaching the longer range of the Interference Range Extender
-
-
-- (QoL) Fixed the mouse wheel not turning pages when the piece list overlaps the cost display, and Enter placing a piece from the first page while a later page is shown
-
-
+- Fixed Trick: Mass Block Break drops disappearing in creative mode
+- Fixed Operator: Equal to compare Blocks and Vectors by block position
+- Fixed Operator: Matrix Cuboid Region being off by one block for whole-number sizes depending on fractional position
+- Fixed vectors losing precision when converted to strings
+- Fixed Ideaspace Storage slot counts overflowing and the JEI `+` button failing while the crafting grid is closed
+- Fixed Tunneler arrows piling up without despawning
+- Fixed Trick: Show Region outlines being invisible with pure-colored CADs such as white or red
+- Fixed attack spell aiming and Macro: Face Axial Offset / Face Axial Rotation not reaching the extended range of the Interference Range Extender
 - Fixed missing translations
 
 
