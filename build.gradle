@@ -150,7 +150,7 @@ dependencies {
         runtimeOnly "curse.maven:mekanism-268560:7904058"
         runtimeOnly "curse.maven:mekanism-generators-268566:7904061"
     }
-    implementation "curse.maven:curios-309927:6529130"
+    implementation "curse.maven:curios-309927:9694505"
     implementation "curse.maven:patchouli-306770:7730942"
     implementation "curse.maven:jei-238222:6756166"
     compileOnly "curse.maven:emi-580555:8081408"
@@ -159,31 +159,31 @@ dependencies {
     // runtimeOnly "curse.maven:psionic-utilities-611991:8358809"
     implementation "com.moratan251:psitweaks-qol"
     jarJar "com.moratan251:psitweaks-qol"
-    implementation "curse.maven:mystical-agriculture-246640:8344249"
+    implementation "curse.maven:mystical-agriculture-246640:9291239"
     implementation "curse.maven:cucumber-272335:8035802"
-    implementation "curse.maven:mystical-agradditions-256247:7802027"
+    implementation "curse.maven:mystical-agradditions-256247:9041182"
 
 
     testImplementation platform("org.junit:junit-bom:5.11.4")
     testImplementation "org.junit.jupiter:junit-jupiter"
 
 //    implementation "curse.maven:create-328085:7963363"
-//    implementation "maven.modrinth:create-aeronautics:YhZLrAFC"
-//    implementation "curse.maven:sable-1312371:8007005"
+//    implementation "maven.modrinth:create-aeronautics:demX2roU"
+//    implementation "maven.modrinth:sable:fg9dTRz9"
 
     compileOnly "curse.maven:create-328085:7963363"
     // Create は開発時の実行にだけ入れる（作動式: 湿潤領域の一括洗浄の確認用）。-Ppsitweaks.includeCreateInRuns=false で外せる。
     if (providers.gradleProperty("psitweaks.includeCreateInRuns").orElse("true").get().toBoolean()) {
         runtimeOnly "curse.maven:create-328085:7963363"
     }
-    compileOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
-    compileOnly "curse.maven:sable-1312371:8007005"
+    compileOnly "maven.modrinth:create-aeronautics:demX2roU"
+    compileOnly "maven.modrinth:sable:fg9dTRz9"
     // Create Aeronautics と Sable も開発時の実行にだけ入れる（作動式: 加重領域・物理推進で機体を押す確認用）。
     // Create が要るので、Create を入れないときは入れない。-Ppsitweaks.includeAeronauticsInRuns=false で外せる。
     if (providers.gradleProperty("psitweaks.includeCreateInRuns").orElse("true").get().toBoolean()
             && providers.gradleProperty("psitweaks.includeAeronauticsInRuns").orElse("true").get().toBoolean()) {
-        runtimeOnly "maven.modrinth:create-aeronautics:YhZLrAFC"
-        runtimeOnly "curse.maven:sable-1312371:8007005"
+        runtimeOnly "maven.modrinth:create-aeronautics:demX2roU"
+        runtimeOnly "maven.modrinth:sable:fg9dTRz9"
     }
 
     runtimeOnly "curse.maven:mmmmmmmmmmmm-225738:7943676"
@@ -192,7 +192,7 @@ dependencies {
     runtimeOnly "curse.maven:untranslated-items-401770:5574485"
     runtimeOnly "curse.maven:jade-324717:7545219"
     runtimeOnly "curse.maven:worldedit-225608:5830452"
-    runtimeOnly "curse.maven:productivebees-377897:8022994"
+    runtimeOnly "curse.maven:productivebees-377897:8987967"
     runtimeOnly "curse.maven:rhino-416294:8218748"
     runtimeOnly "curse.maven:jupiter-1072905:7738312"
     runtimeOnly "curse.maven:pendulum-1562526:8654865"
@@ -202,7 +202,7 @@ dependencies {
     //runtimeOnly "curse.maven:moffs-addonapi-dynload-1242459:8290849"
     //runtimeOnly "curse.maven:psiex-1408745:8499563"
 
-    runtimeOnly "curse.maven:applied-energistics-2-223794:7027323"
+    runtimeOnly "curse.maven:applied-energistics-2-223794:9676922"
     runtimeOnly "maven.modrinth:appflux:4x40hq9D"
     runtimeOnly "curse.maven:ex-pattern-provider-892005:8511901"
     runtimeOnly "curse.maven:advancedae-1084104:7849217"
