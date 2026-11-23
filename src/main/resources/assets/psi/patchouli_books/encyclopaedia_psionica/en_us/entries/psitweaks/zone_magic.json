@@ -10,10 +10,6 @@
     },
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.11"
-    },
-    {
-      "type": "text",
       "text": "psi.book.page.psitweaks_zone_magic.1"
     },
     {
@@ -27,30 +23,6 @@
     {
       "type": "text",
       "text": "psi.book.page.psitweaks_zone_magic.4"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.5"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.10"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.6"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.7"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.8"
-    },
-    {
-      "type": "text",
-      "text": "psi.book.page.psitweaks_zone_magic.9"
     }
   ]
 }
