@@ -6,13 +6,13 @@
 
 
 - Added attack spell pieces
-  + Trick: Chain Lightning: discharges lightning from the focal point in the direction; it strikes the nearest enemy and branches to the enemies around it. 1.25x damage against wet targets
+  + Trick: Chain Lightning: discharges lightning from the focal point in the direction; it strikes the nearest enemy and branches to the enemies around it
   + Trick: Mine Genesis: shakes the ground so a shockwave spreads out and throws up the creatures standing on it
-  + Trick: Burst: makes the creature you are aiming at burst from within, catching the creatures around it
-  + Trick: Air Bullet: fires a bullet of compressed air that strikes the first creature it hits directly (creatures it grazes take a little damage)
+  + Trick: Burst: vaporizes the liquid inside the target so it bursts from within
+  + Trick: Air Bullet: fires a bullet of compressed air
   + Trick: Dancing Blades: deploys the swords in your Blade Pouch as blades that cut nearby enemies
   + Trick: Pseudo Meteor: calls pseudo meteors down around the position
-  + Trick: Micro Black Hole: creates a tiny black hole that pulls creatures in and swings them around, then collapses
+  + Trick: Micro Black Hole: creates a tiny black hole that pulls creatures in and swings them around
 
 
 - Unified who attack spells can hit
@@ -43,11 +43,18 @@
 
 - Rebuilt Trick: Meteor Line
   + Covers the position (radius 16 to 32) in a sphere of night and rains streaks of light from its stars on the creatures inside. They also reach under roofs
+  + Potency 1428 → 1400, Cost 12000 → 12500
+
+
+- Remade Trick: Cocytus
+  + It no longer takes a target. It blows a blizzard forward and freezes the minds of all the mobs it catches forever (existing spells still load; a piece connected to the target is no longer used)
+  + Players, the caster's pets and allies, and bosses are not frozen. It deals no damage
+  + A frozen mob now looks encased in ice. The ice breaks if something else wakes the mob up
+  + Cost 5000 → 10000
 
 
 - Adjusted existing attack spells
   + Trick: Aqua Cutter: now looks like a crescent water blade and splashes on hit. Targets it hits stay wet for 10 seconds (they cannot catch fire while wet). Burning targets take 1.25x damage instead, and the fire is put out
-  + Trick: Cocytus: the stopped mob now looks frozen in ice. The ice breaks if something else wakes the mob up
   + Trick: Active Air Mine: new spherical shockwave visuals and its own damage type
 
 
@@ -78,32 +85,22 @@
   + Zones change blocks at random, like random ticks but faster (each block about once every 5 seconds): the Heat Zone melts ice and snow layers and dries Wet Sponges, the Freeze Zone freezes water sources, the Soak Zone moistens farmland and wets Sponges, and the Charged Zone scrapes oxidation off copper
   + Aiming at the core of a zone shows its integrity and how much of its Heat, Cooling, Charge or Wind is in use out of the total; the Acceleration, Deceleration and Contamination Zones show their strength
   + The floor of a zone shows a magic circle in the CAD's color (its resolution can be lowered in the client config)
-
-
-- Zone Magic with other mods
-  + Create: Where your own Turbulence Zone overlaps them, Soak Zone bulk-washes and Heat Zone bulk-smokes dropped items and items on Depots and Mechanical Belts (without a Turbulence Zone they do not process items). Where your own Heat Zone, Charged Zone and Turbulence Zone overlap, the Heat Zone bulk-blasts instead. Blaze Burners in a Heat Zone are heated without fuel (paid from the zone's heat)
-  + Mekanism: Heat Zone heats blocks that take heat, and Freeze Zone cools blocks that hold heat, even below the ambient temperature
-  + Mekanism Generators: Turbulence Zone adds wind to the Wind Generators inside. Each WU adds 37.5 J/t (15 FE/t) whatever the height, up to 10 WU per generator. The zone's wind grows in proportion to the caster's interference (×1 at 1, up to ×4) and is shared equally among them. Generators under a roof run on this wind alone
-  + Applied Energistics 2: Charged Zone charges dropped items as a Charger does
-  + The speed of these effects follows the caster's Phenomenon Interference when placed (the base at 2, half at 1, twice at most). Dropped items do not despawn while being processed
-  + Simulated Contraptions (such as Create Aeronautics airships): Gravity Zone pushes and tilts them, and zones also work on the blocks and machines of contraptions they overlap
+  + Zone particles are capped for all zones together (Zone Particle Limit in the client config), thin out with distance from the camera, and follow the Particles video setting
 
 
 - Added the Zone Feeder
-  + It takes FE from cables and the like; your own Charged Zones covering it send out its FE wherever their own capacity is not enough. There is no cap on how much the zones take
-  + It takes up to as much per tick as an Ultimate Universal Cable carries (3,276,800 FE by default), and cables can draw the same amount back out. It keeps its FE when broken
+  + When it is inside a Charged Zone, the zone uses the Zone Feeder's FE to power machines
 
 
 - Added the Zone Receiver
-  + Carried anywhere in your inventory, it lets Charged Zones send FE to the items you carry that take FE. Right-click to switch it on or off
-  + Charged Zones do not send FE to the items of players without one, or to what other living beings hold and wear
+  + Kept in your inventory inside a Charged Zone, it lets the zone send FE to your other items and equipment that take FE
 
 
 - Reorganized SpellGram objects
   + Magic entities with integrity are now SpellGram objects: Resident SpellGrams (Fire Circle, Ice Circle and the zones), the Meteor Line night and the Micro Black Hole
   + They are not destroyed or pushed by ordinary attacks such as swords, arrows and explosions, and are not saved with the chunk
   + They disappear when the caster is gone (logged out or moved to another dimension)
-  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus cannot move them, except your own circles (see below)
+  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus cannot move them, except your own circles
   + Added integrity. An object disappears when its integrity runs out (the Meteor Line night shatters, and the Micro Black Hole vanishes without crushing anything). Integrity depends on the caster's Phenomenon Interference when the object is placed (the multiplier can be changed in the config), and Resident SpellGrams also lose it over time
   + Aim at the core within 5 blocks to see its name and integrity (can be toggled in the client config)
   + One player or one Autonomous Caster can keep up to 32 Resident SpellGrams, several of the same kind included. Placing more removes the oldest (changeable in the config)
@@ -113,36 +110,30 @@
 
 - Reworked Trick: Fire Circle / Ice Circle
   + Added a Time input (1 to 120 seconds, 60 if left out). The Cost and integrity grow in proportion to the Time; the Cost is at least 50
-  + Each hit now deals 1 + Power, and the cost is 1600 × (1 + Power) × Time ÷ 60, so the cost follows the damage dealt
+  + Adjusted the damage formula so that the total damage follows the Cost
   + Armor now reduces the damage
-  + Where several of your own circles of the same kind overlap, only the strongest one hits (the highest Power, then the higher Phenomenon Interference when placed, then the older one). Circles of other kinds and other casters' circles hit on their own
+  + Several identical circles no longer hit the same target more than once
   + While its center is inside another caster's Trick: Interference Zone that wins against it, a circle does nothing (it stays and its time runs on)
-  + Trick: Fire Circle no longer sets wet targets on fire (they still take the damage)
-  + Trick: Ice Circle turns the water inside it into Frosted Ice like Frost Walker and keeps that ice from melting. This is the only way a circle changes the world. While it follows a boat floating on water it leaves the water alone, so you can row; on ice it keeps freezing, so an ice boat slides on
+  + Trick: Ice Circle now turns water into Frosted Ice, like the Frost Walker enchantment
   + The integrity cap (how far Trick: Extend SpellGram restores) is now twice the integrity at the longest Time, as for zones
-  + Psi's Trick: Add Motion, Mass Add Motion, Blink, Mass Blink and Mass Exodus can move your own circles. This costs no integrity, and a circle following with Trick: Circle Follow keeps following
 
 
 - Added spell pieces for SpellGram objects
   + Selector: Own Resident SpellGrams: lists your own Resident SpellGrams in the dimension, however far away, oldest first
   + Selector: SpellGram Integrity
   + Trick: Recall SpellGram: ends your own Resident SpellGrams, however far away
-  + Trick: Extend SpellGram: restores the integrity of your own Resident SpellGram so it lasts longer
-  + Trick: Circle Follow: makes your own circles follow you or a non-living entity such as a boat. Without a Follow Target it lets them go, and they stay where they are. A following circle uses up integrity as it moves
-  + Trick: Psi Bullet: fires a bullet of psions that strikes the first creature or SpellGram object it hits. Hitting a core wears away its integrity
-  + Trick: Gram Demolition: wears away the integrity of every SpellGram object in a cone in front of the caster (blocks do not stop it) and damages the creatures there
-  + Trick: Psi Bullet and Trick: Gram Demolition leave the caster's own SpellGram objects alone
+  + Trick: Extend SpellGram: restores the integrity of your own Resident SpellGram
+  + Trick: Circle Follow: makes your own circles follow you or a non-living entity. Without a Follow Target it lets them go, and they stay where they are. A following circle uses up extra integrity as it moves
+  + Trick: Psi Bullet: fires a bullet of psions that hits a creature or SpellGram object and wears away its health or integrity
+  + Trick: Gram Demolition: sends out a shockwave that wears away the integrity of the SpellGram objects in front of the caster all at once
   + Added the SpellGram Integrity Debugger (creative only), which wears away the integrity of the SpellGram object you look at
 
 
 - Removed Trick: Set SpellGram Follow Target
-  + Spells that contain it load with just that piece removed
-  + Trick: Circle Follow, which moves only your own circles, is a separate new piece
+  + Trick: Circle Follow was added as a piece that does something similar for circles
 
 
-- Disabled Trick: Radiation Injection for now (with Mekanism)
-  + Spells that contain it load with just that piece removed
-  + Trick: Cure Radiation still removes 0.4 Sv × 10^(Power − 1); the Radiation Injection multiplier setting no longer applies to it
+- Removed Trick: Radiation Injection
 
 
 - Renamed the attribute "Spell Damage Factor" to "Phenomenon Interference" (the ID is unchanged)
@@ -153,7 +144,7 @@
   + Trick: Crafting Table
   + Trick: Harvest
   + Trick: Harvest Sequence
-  + Trick: Mass Harvest (unlocked by research)
+  + Trick: Mass Harvest
   + Trick: Shear
   + Trick: Breed
   + Operator: Connected Blocks
@@ -163,6 +154,18 @@
 - Added list and matrix operators
   + Operator: List Keep Name Matches / List Remove Name Matches: filter an Entity, Item or Block list by display name (* ? [abc] work as in Operator: List Keep Matches)
   + Operator: Matrix Set Y Axis: turns a region matrix around its center so that its Y axis points along a direction
+  + Operator: Matrix Cuboid From Corners: builds an axis-aligned cuboid region matrix from two opposite corners. Block mode includes both corner blocks; Vector mode uses the two points as they are
+  + Operator: List Keep By Distance / Distance-Ranked Element: sort an Entity, Vector or Block list by distance from a position, and keep the nearest elements (the farthest with a negative Number) or take the one at an index
+  + Operator: List Keep In Value Range / List Keep By Value / Value-Ranked Element: filter or sort a list by a matching list of numbers (Values), such as the one from Selector: NBT Number List
+
+
+- Reworked the NBT spell pieces
+  + NBT paths follow the vanilla NBT path syntax ([n], [-1], [], [{...}]). An empty path is the whole NBT, keys with spaces are quoted automatically, and a wrong path counts as not found instead of an error
+  + Selector: NBT Value: added String / Number modes and a Fallback input
+  + Selector: NBT / NBT Keys: added an NBT Path input, to list what is inside compound tags and lists
+  + Added Selector: NBT Exists and Selector: NBT Number List
+  + Added Operator: List Keep NBT Matches / List Remove NBT Matches and List Keep NBT In Range / List Keep NBT Out Of Range for Entity, Item and Block lists
+  + One cast reads the NBT of up to 1024 targets (changeable in the config)
 
 
 - Added the Autonomous Caster (with Mekanism)
@@ -198,8 +201,11 @@
 - The Psi-Link Generator now makes 4x the energy per Psi (100 FE) and has 4x the capacity. It outputs FE from its back side automatically by default (up to 25600 FE/t)
 
 
-- Fixed the Program Research Table's power use to match what JEI and EMI show, and changed its capacity to 10M FE (it used only 1/2.5 of the shown amount)
+- Fixed the Program Research Table's power use to match what JEI and EMI show, and changed its capacity to 2,147,483,647 FE (it used only 1/2.5 of the shown amount)
   + Research recipes in JEI and EMI show non-stackable ingredients one per slot
+
+
+- Adjusted program research recipes overall
 
 
 - Changed existing spell pieces
@@ -207,7 +213,8 @@
   + Trick: Time Accelerate: casting it again now uses the new cast's multiplier and remaining time
   + Trick: FE Charge: supplies 4x the FE per Psi (80 FE)
   + Operator: Matrix Cuboid Region: added a Number mode that takes one number for all three sizes (the previous behavior is the Vector mode)
-  + Tooltip costs and stats now match the actual values (Trick: Molecular Divider, Blaze Ball, Time Accelerate, Flexible Die, Store Value, Store Entity, View Ideaspace Storage, Selector: Indexed Element (PT))
+  + A pattern starting with # now matches tags, such as #minecraft:logs
+  + Fixed tooltip costs and stats that did not match the actual values
 
 
 - Spell warnings are now shown with their position like Psi's errors, and can be hidden with error suppression
@@ -220,11 +227,14 @@
   + Tabs for bookmarks, recently used pieces (up to 50), selectors, operators, tricks and others. They work together with the search
   + Settings: list size (S / M / L), keep search text, right-click clears the search, right-click closes the list, sort by English name, show English names
   + Keyboard controls: Tab / Shift + Tab, Up / Down and PageUp / PageDown move the cursor
-  + The search now scores pieces in both the current language and English and uses the better match
+
+
+- (QoL) Added snippets to the Spell Programmer
 
 
 - Fixed spells built only from constants crashing or freezing the server
   + Chained replacements in Operator: Format String, wildcard matching, overflowing large values and lists growing without limit
+  + Added a limit on pattern-matching comparisons per cast
 
 
 - Fixed items being duplicated or lost
@@ -237,7 +247,7 @@
 - Fixed spell pieces that act on blocks or others' things skipping range and protection checks
   + Trick: Block Interact reached outside the spell range and unloaded chunks, and ignored protection mods
   + Trick: Block Freeze, Block Melt and Material Mutation, and Trick: Ideaspace Storage - Deposit / Withdraw (FE mode), did not check protected areas
-  + Selector: Stored Entity could get targets outside the spell range (a Third-Eye Device still lets you reach far as before)
+  + Selector: Stored Entity could get targets outside the spell range
 
 
 - (1.21.1) Fixed Trick: Radiation Filter having no effect
@@ -255,6 +265,9 @@
 - Fixed Operator: Equal to compare a Block and a Vector by block position
 
 
+- Fixed Operator: Matrix Cuboid Region being one block short or too long with a whole-number size, depending on the fraction of the position
+
+
 - Fixed vectors losing digits when turned into strings
 
 
@@ -268,7 +281,6 @@
 
 
 - Fixed Tunneler arrows piling up without disappearing
-  + They now disappear 60 seconds after being shot even near the shooter, and when they enter a chunk where entities do not tick
 
 
 - Fixed the outline of Trick: Show Region being invisible with pure-colored CADs such as white or red
