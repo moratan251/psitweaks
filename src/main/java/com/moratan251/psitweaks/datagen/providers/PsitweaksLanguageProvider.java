@@ -1234,7 +1234,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) adds upgraded tiers above the ordinary $(l:items/spell_bullet)$(o)$(item)Spell Bullet$(0)$(/l): Advanced, Resonant, Sublimated, Awakened, and Transcendent.$(p)Every Psi spell bullet variant has upgraded tiers available."},
             {"psi.book.page.psitweaks_spell_bullets.1", "Upgrading a spell bullet requires four bullets from the previous tier, making it very expensive."},
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, Meteor Lines, and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "Breaks the target block with Silk Touch."},
@@ -1339,7 +1339,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています."},
             {"psi.book.page.psitweaks_spell_bullets.1", "術式弾の強化は前段階の術式弾を4つ必要とするため, 非常に高コストです."},
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し, 強力な魔法を簡単に発動できるようになります."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト(常駐魔法式, 流星群の夜の核, マイクロブラックホール)を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト(常駐魔法式, 流星群, マイクロブラックホール)を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "対象ブロックをシルクタッチ付きで破壊します."},
@@ -1891,8 +1891,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     /** 作動式: ファイアサークル・アイスサークル・サークル追従の本のページ。 */
     private void addCircleBookPages(JsonObject root) {
-        String circleTailEn = " Overlapping circles of your own apply only the strongest.$(p)Move it with Trick: Circle Follow or movement tricks. Pauses inside a stronger opposing Interference Zone. See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for shared rules.";
-        String circleTailJa = " 自分のサークルが重なると最も強いものだけ当たります.$(p)作動式: サークル追従や移動系作動式で動かせます. 勝てない他人の領域干渉内では停止します. 共通の決まりは$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)を参照してください.";
+        String circleTailEn = " Overlapping circles of your own apply only the strongest.$(p)Move it with Trick: Circle Follow or movement tricks. Pauses inside a stronger opposing Interference Zone. See $(l:psitweaks/spellgram_objects)SpellGram Objects$(/l) for shared rules.";
+        String circleTailJa = " 自分のサークルが重なると最も強いものだけ当たります.$(p)作動式: サークル追従や移動系作動式で動かせます. 勝てない他人の領域干渉内では停止します. 共通の決まりは$(l:psitweaks/spellgram_objects)魔法式オブジェクト$(/l)を参照してください.";
         addBookPage(root, "trick_flare_circle.0",
                 "Places a fire circle at Position that deals fire damage every 0.5 s and ignites creatures inside for 2 s (Time: default 60 s, max 120 s)." + circleTailEn,
                 "「位置」に炎のサークルを張り, 中の生物へ0.5秒ごと炎ダメージと2秒の炎上を与えます (「時間」は省略時60秒, 最大120秒)." + circleTailJa);
@@ -2119,11 +2119,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
      * 項目はその領域だけの効き目にする。日本語は yomiyasu で推敲した。
      */
     private void addZoneMagicBook(JsonObject root) {
-        addLocalized(root, "psi.book.entry.psitweaks_resident_spellgrams", "Resident SpellGrams", "常駐魔法式");
-        addLocalized(root, "psi.book.page.psitweaks_resident_spellgrams.0",
-                "$(thing)Resident SpellGrams$(0) are persistent entities—such as $(l:psitweaks/zone_magic)Zone Magic$(/l), circles, and Decontamination—that remain active where placed and cannot be broken by attacks or explosions.$(p)Their integrity decays over time or from opposing spells like $(l:psitweaks_spell_pieces/trick_gram_demolition)Trick: Gram Demolition$(/l) and $(l:psitweaks_spell_pieces/trick_psi_bullet)Trick: Psi Bullet$(/l). Each caster can keep up to 32 at once (oldest ends first), and they vanish on logout or dimension change.",
-                "$(thing)常駐魔法式$(0)は設置後も場に残って働き続けるエンティティです. $(l:psitweaks/zone_magic)領域魔法$(/l)・サークル系・除染などが該当し, 攻撃や爆発では壊れません.$(p)耐久値は時間経過や他者の$(l:psitweaks_spell_pieces/trick_gram_demolition)作動式: 術式解体$(/l)・$(l:psitweaks_spell_pieces/trick_psi_bullet)作動式: サイ・ブリット$(/l)などで削られ, 尽きると消滅します. 1人につき合計32個まで設置でき, 超えると古いものから消えます. ログアウトや別ディメンション移動でも消えます.");
-        addLocalized(root, "psi.book.page.psitweaks_resident_spellgrams.1",
+        addLocalized(root, "psi.book.entry.psitweaks_spellgram_objects",
+                "SpellGram Objects",
+                "魔法式オブジェクト");
+        addLocalized(root, "psi.book.page.psitweaks_spellgram_objects.0",
+                "SpellGram objects are entities with their own integrity (Resident SpellGrams, Micro Black Holes, etc.). Opponents can wear down their integrity and destroy them with $(l:psitweaks_spell_pieces/trick_gram_demolition)Trick: Gram Demolition$(/l) or $(l:psitweaks_spell_pieces/trick_psi_bullet)Trick: Psi Bullet$(/l).$(p)Resident SpellGrams ($(l:psitweaks/zone_magic)Zone Magic$(/l), circles, Decontamination, etc.) stay active where placed. Each caster can keep up to 32, and they vanish on logout or dimension change.",
+                "魔法式オブジェクトは専用の耐久値を持つエンティティです (常駐魔法式・マイクロブラックホールなど). 他者の$(l:psitweaks_spell_pieces/trick_gram_demolition)作動式: 術式解体$(/l)や$(l:psitweaks_spell_pieces/trick_psi_bullet)作動式: サイ・ブリット$(/l)で耐久値を削り破壊できます.$(p)常駐魔法式 ($(l:psitweaks/zone_magic)領域魔法$(/l)・サークル系・除染など) は場に残って働き続けます. 1人32個まで設置でき, ログアウトやディメンション移動で消えます.");
+        addLocalized(root, "psi.book.page.psitweaks_spellgram_objects.1",
                 "Aim at a core within 5 blocks to see its name and remaining integrity.$(p)Manage your Resident SpellGrams with these pieces:$(li)$(l:psitweaks_spell_pieces/selector_own_spellgrams)Selector: Own Resident SpellGrams$(/l): get yours in the dimension as an Entity List$(li)$(l:psitweaks_spell_pieces/selector_spellgram_integrity)Selector: SpellGram Integrity$(/l) / $(l:psitweaks_spell_pieces/selector_spellgram_integrity_list)List$(/l): read remaining integrity$(li)$(l:psitweaks_spell_pieces/trick_extend_spellgram)Trick: Extend SpellGram$(/l): restore integrity$(li)$(l:psitweaks_spell_pieces/trick_recall_spellgram)Trick: Recall SpellGram$(/l): remove from any distance",
                 "5ブロック以内で核に照準を合わせると名前と残り耐久値を確認できます.$(p)自分の常駐魔法式は次のスペルピースで管理できます.$(li)$(l:psitweaks_spell_pieces/selector_own_spellgrams)取得子: 自分の常駐魔法式$(/l): 同ディメンション内の自分の常駐魔法式を Entity List で取得$(li)$(l:psitweaks_spell_pieces/selector_spellgram_integrity)取得子: 魔法式耐久値$(/l) / $(l:psitweaks_spell_pieces/selector_spellgram_integrity_list)魔法式耐久値リスト$(/l): 残り耐久値を取得$(li)$(l:psitweaks_spell_pieces/trick_extend_spellgram)作動式: 魔法式延長$(/l): 耐久値を回復$(li)$(l:psitweaks_spell_pieces/trick_recall_spellgram)作動式: 魔法式回収$(/l): 距離に関係なく消去");
         addLocalized(root, "psi.book.entry.psitweaks_zone_magic", "Zone Magic", "領域魔法");
@@ -2143,8 +2145,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.rename", "Rename it to a number in an anvil to use that amount",
                 "金床で名前を数にすると, その量を使う");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.0",
-                "Zone Magic places $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) that keep working inside an area, such as Gravity, Heat, and Freeze Zones.$(p)Zone tricks are unlocked by research (Program: Zone Magic for the basic zones, and dedicated programs for specialized zones). See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for shared integrity, limit, and management rules, and each piece's entry for its specific effects.",
-                "領域魔法は範囲内で効き続ける$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)で, 加重領域・加熱領域・凍結領域などがあります.$(p)研究で解禁でき, 基本的な領域はプログラム: 領域魔法, 一部の領域はそれぞれの専用プログラムで開きます. 耐久値・設置上限・管理方法は$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l), 個別の効果は各ピースの項目を参照してください.");
+                "Zone Magic places $(l:psitweaks/spellgram_objects)Resident SpellGrams$(/l) that keep working inside an area, such as Gravity, Heat, and Freeze Zones.$(p)Zone tricks are unlocked by research (Program: Zone Magic for the basic zones, and dedicated programs for specialized zones). See $(l:psitweaks/spellgram_objects)SpellGram Objects$(/l) for shared integrity, limit, and management rules, and each piece's entry for its specific effects.",
+                "領域魔法は範囲内で効き続ける$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)で, 加重領域・加熱領域・凍結領域などがあります.$(p)研究で解禁でき, 基本的な領域はプログラム: 領域魔法, 一部の領域はそれぞれの専用プログラムで開きます. 耐久値・設置上限・管理方法は$(l:psitweaks/spellgram_objects)魔法式オブジェクト$(/l), 個別の効果は各ピースの項目を参照してください.");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.1",
                 "Area is set by Matrix and Size (constant, max 16); omitting Matrix centers a cube on the caster. Preview areas with Trick: Show Region. Time is a constant up to 120 seconds (default 30).$(p)Power is a constant of at least 1. Gravity, Acceleration, Deceleration, and Contamination Zones cap at 10; Heat, Freeze, Turbulence, and Charged Zones accept higher Power to raise Cost and resource totals.",
                 "範囲は「行列」と「サイズ」(定数, 最大16)で決まり, 行列を省くと術者中心の立方体になります. 作動式: 領域表示で範囲を確認できます. 「時間」は最大120秒の定数で, 省略時は30秒です.$(p)「威力」は1以上の定数です. 加重・加速・減速・汚染領域は最大10で, 加熱・凍結・乱流・荷電領域は10を超えるとコストと総量だけが増えます.");
@@ -2228,8 +2230,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 作動式: 除染（領域ではない常駐魔法式）
         addBookPage(root, "trick_decontamination.0",
-                "Places a decontamination core at Position that weakens Mekanism radiation sources within 32 blocks every second. Does not reduce living beings' dose (use Trick: Cure Radiation).$(p)Takes Power and Time (default 30 s, max 120 s). See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for shared rules.",
-                "「位置」に除染の核を置き, 周囲32ブロック以内の Mekanism 放射線源を毎秒弱めます. 生物の被ばく量は減らしません (作動式: 放射線除去を使用).$(p)「威力」と「時間」 (省略時30秒, 最大120秒) を指定します. 共通の決まりは$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)を参照してください.");
+                "Places a decontamination core at Position that weakens Mekanism radiation sources within 32 blocks every second. Does not reduce living beings' dose (use Trick: Cure Radiation).$(p)Takes Power and Time (default 30 s, max 120 s). See $(l:psitweaks/spellgram_objects)SpellGram Objects$(/l) for shared rules.",
+                "「位置」に除染の核を置き, 周囲32ブロック以内の Mekanism 放射線源を毎秒弱めます. 生物の被ばく量は減らしません (作動式: 放射線除去を使用).$(p)「威力」と「時間」 (省略時30秒, 最大120秒) を指定します. 共通の決まりは$(l:psitweaks/spellgram_objects)魔法式オブジェクト$(/l)を参照してください.");
 
         // 汚染領域
         addBookPage(root, "trick_contamination_zone.0",
@@ -2288,7 +2290,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.", "CADメモリに保存されたUUIDからエンティティを取得します. ");
         addBookPage(root, "trick_store_value", "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot. String values longer than 128 characters are truncated when stored, and a warning is shown in the caster's chat.", "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます. 128文字を超えるStringは保存時に切り捨てられ, 術者のチャット欄に警告が表示されます.");
         addBookPage(root, "selector_stored_value", "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.", "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.");
-        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト(常駐魔法式, 流星群の夜の核, マイクロブラックホール)を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
+        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, Meteor Lines, and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト(常駐魔法式, 流星群, マイクロブラックホール)を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
         addBookPage(root, "selector_autonomous_caster_position",
                 "Outputs the center of the $(thing)Autonomous Caster$(0) block casting the spell, as a Vector. "
                         + "The Autonomous Caster's caster is in front of the machine, so the position of $(thing)Selector: Caster$(0) is the block in front. It fails when cast from anything but an Autonomous Caster.",
@@ -3082,9 +3084,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "取得子: 自分の常駐魔法式", "このディメンションにある自分の常駐魔法式(サークルと領域)を, 置いた順のリストで返す");
         addBookPage(root, "selector_own_spellgrams",
                 "Lists the Resident SpellGrams (circles and zones) you placed in this dimension, however far away they are, oldest first."
-                        + " An Autonomous Caster gets only the ones it placed itself. The core of a Meteor Line night is not a Resident SpellGram and is not included.",
+                        + " An Autonomous Caster gets only the ones it placed itself. A Meteor Line is not a Resident SpellGram and is not included.",
                 "術者が置いた, このディメンションの常駐魔法式(サークルと領域)を, 距離に関係なく, 置いた順(古い順)のリストで返します. "
-                        + "自律詠唱機は, その機械が置いたものだけを返します. 流星群の夜の核は常駐魔法式ではないので含みません.");
+                        + "自律詠唱機は, その機械が置いたものだけを返します. 流星群は常駐魔法式ではないので含みません.");
         addSpellPiece(root, "trick_recall_spellgram", "Trick: Recall SpellGram",
                 "Takes back your own Resident SpellGrams",
                 "作動式: 魔法式回収", "自分の常駐魔法式を消す");
@@ -3092,13 +3094,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Ends your own Resident SpellGrams given as the Target (an entity or a list, such as Selector: Own Resident SpellGrams), however far away they are."
                         + " If anything else is in the target, nothing is ended and the spell errors. Psi is not refunded.",
                 "「対象」に入れた自分の常駐魔法式を, 距離に関係なく消します. エンティティでもリストでもよく, 取得子: 自分の常駐魔法式をそのまま渡せます. "
-                        + "自分のもの以外や常駐魔法式でないもの(流星群の夜の核など)が混ざっているとエラーになり, 何も消しません. Psi は戻りません.");
+                        + "自分のもの以外や常駐魔法式でないもの(流星群など)が混ざっているとエラーになり, 何も消しません. Psi は戻りません.");
         addSpellPiece(root, "selector_spellgram_integrity", "Selector: SpellGram Integrity",
                 "Returns the current integrity of a SpellGram object",
                 "取得子: 魔法式耐久値", "魔法式オブジェクトの今の耐久値を返す");
         addBookPage(root, "selector_spellgram_integrity",
-                "Returns the current integrity of a SpellGram object (Resident SpellGram, Meteor Line core, or Micro Black Hole) as a Number.$(p)Matches the integrity shown when aiming at the core, useful before Trick: Extend SpellGram.",
-                "「対象」に入れた魔法式オブジェクト (常駐魔法式・流星群の夜の核・マイクロブラックホール) の今の耐久値を数値で返します.$(p)核に照準を合わせたときに表示される耐久値と同じ値で, 作動式: 魔法式延長を使う前などに残りを確かめられます.");
+                "Returns the current integrity of a SpellGram object (Resident SpellGram, Meteor Line, or Micro Black Hole) as a Number.$(p)Matches the integrity shown when aiming at the core, useful before Trick: Extend SpellGram.",
+                "「対象」に入れた魔法式オブジェクト (常駐魔法式・流星群・マイクロブラックホール) の今の耐久値を数値で返します.$(p)核に照準を合わせたときに表示される耐久値と同じ値で, 作動式: 魔法式延長を使う前などに残りを確かめられます.");
         addSpellPiece(root, "selector_spellgram_integrity_list", "Selector: SpellGram Integrity List",
                 "Returns the current integrity of each SpellGram object in the List, as a Number List in the same order",
                 "取得子: 魔法式耐久値リスト", "リストの魔法式オブジェクトそれぞれの今の耐久値を, 同じ順の Number List で返す");

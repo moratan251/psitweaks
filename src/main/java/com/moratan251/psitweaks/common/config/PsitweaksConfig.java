@@ -296,8 +296,8 @@ public class PsitweaksConfig {
                     .push("spellgram");
 
             spellGramIntegrityMultiplier = builder
-                    .comment("魔法式オブジェクト（ファイアサークル・アイスサークル・流星群の夜など）の耐久値に適用する倍率",
-                            "Multiplier for the integrity of SpellGram objects (Fire Circle, Ice Circle, Meteor Line night, ...)")
+                    .comment("魔法式オブジェクト（ファイアサークル・アイスサークル・流星群など）の耐久値に適用する倍率",
+                            "Multiplier for the integrity of SpellGram objects (Fire Circle, Ice Circle, Meteor Line, ...)")
                     .translation("psitweaks.configuration.spells.spellgram.integrity_multiplier")
                     .defineInRange("integrityMultiplier", 1.0, MIN_DAMAGE_MULTIPLIER, MAX_DAMAGE_MULTIPLIER);
 

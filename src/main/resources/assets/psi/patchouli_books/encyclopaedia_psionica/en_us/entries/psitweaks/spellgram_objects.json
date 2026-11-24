@@ -1,16 +1,16 @@
 {
-  "name": "psi.book.entry.psitweaks_resident_spellgrams",
+  "name": "psi.book.entry.psitweaks_spellgram_objects",
   "category": "psi:psitweaks",
   "icon": "psitweaks:textures/spell/selector_own_spellgrams.png",
   "sortnum": -6,
   "pages": [
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_resident_spellgrams.0"
+      "text": "psi.book.page.psitweaks_spellgram_objects.0"
     },
     {
       "type": "text",
-      "text": "psi.book.page.psitweaks_resident_spellgrams.1"
+      "text": "psi.book.page.psitweaks_spellgram_objects.1"
     }
   ]
 }
