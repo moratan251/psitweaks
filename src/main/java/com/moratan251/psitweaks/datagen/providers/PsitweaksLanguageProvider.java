@@ -518,11 +518,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
         // 作動式: 除染: 使った量 / 除染能力（1 秒あたり）、半径の中の線源。
         root.addProperty("psitweaks.hud.decontamination.sources", switch (locale) {
-            case "ja_jp" -> "除染能力: %s / %s Sv/h（毎秒）";
+            case "ja_jp" -> "除染能力: %s / %s Sv/h(毎秒)";
             default -> "Decontamination: %s / %s Sv/h a second";
         });
         root.addProperty("psitweaks.hud.decontamination.left", switch (locale) {
-            case "ja_jp" -> "半径の中の線源: %s 個（計 %s Sv/h）";
+            case "ja_jp" -> "半径の中の線源: %s 個(計 %s Sv/h)";
             default -> "Sources in range: %s (%s Sv/h in all)";
         });
         root.addProperty("psitweaks.hud.zone_contamination", switch (locale) {
@@ -749,16 +749,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "領域の床に出る魔法陣の画質です. "
                         + "低くするとビデオメモリの使用量が減り, 近くで見たときの線が少しぼやけます. "
                         + "遠くで小さく見えるときは, どの画質でも小さい画像を使います.");
-        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.high", "High (1024 px)", "高（1024 px）");
-        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.medium", "Medium (512 px)", "中（512 px）");
-        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.low", "Low (256 px)", "低（256 px）");
+        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.high", "High (1024 px)", "高(1024 px)");
+        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.medium", "Medium (512 px)", "中(512 px)");
+        addConfigLabel(root, "psitweaks.configuration.effects.zone_circle_quality.low", "Low (256 px)", "低(256 px)");
         addConfigValue(root, "psitweaks.configuration.effects.zone_particle_limit",
                 "Zone Particle Limit", "領域のパーティクルの上限",
                 "Maximum number of particles that all zone spellgrams together spawn per tick,"
                         + " such as the storms of Heat Storm and Blizzard."
                         + " When more are wanted, every zone spawns fewer at the same rate."
                         + " Zones far from the camera always spawn fewer. 0 turns them off.",
-                "すべての領域魔法を合わせて, 1 tickに出すパーティクルの数の上限です（熱乱流や吹雪の渦など）. "
+                "すべての領域魔法を合わせて, 1 tickに出すパーティクルの数の上限です(熱乱流や吹雪の渦など). "
                         + "超えるときは, すべての領域で同じ割合で減らします. "
                         + "カメラから遠い領域は, いつも少なめに出します. 0にすると出しません.");
         addConfigLabel(root, "psitweaks.configuration.windows", "Window Positions", "ウィンドウの位置");
@@ -806,16 +806,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigValue(root, "psitweaks.configuration.spells.gravity_zone.contraption_multiplier", "Contraption Multiplier",
                 "物理で動く構造物への倍率",
                 "Multiplier for how hard a Gravity Zone pushes physics contraptions (such as Create Aeronautics airships). 0 disables it.",
-                "加重領域が物理で動く構造物（Create Aeronautics の機体など）を押す強さの倍率です. 0 で無効になります.");
+                "加重領域が物理で動く構造物(Create Aeronautics の機体など)を押す強さの倍率です. 0 で無効になります.");
         addConfigLabel(root, "psitweaks.configuration.spells.spellgram", "SpellGram Objects", "魔法式オブジェクト");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.integrity_multiplier", "Integrity Multiplier", "耐久値の倍率",
                 "Multiplier applied to the integrity of SpellGram objects.", "魔法式オブジェクトの耐久値に適用する倍率です.");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.max_objects_per_player", "Objects per Player", "プレイヤー1人が置ける数",
                 "How many Resident SpellGrams (circles and zones together) one player can keep at once. Placing more ends the oldest.",
-                "プレイヤー1人が同時に置ける常駐魔法式（サークルと領域を合わせた数）です. 超えて置くと古いものから消えます.");
+                "プレイヤー1人が同時に置ける常駐魔法式(サークルと領域を合わせた数)です. 超えて置くと古いものから消えます.");
         addConfigValue(root, "psitweaks.configuration.spells.spellgram.max_objects_per_autonomous_caster", "Objects per Autonomous Caster", "自律詠唱機1台が置ける数",
                 "How many Resident SpellGrams (circles and zones together) one Autonomous Caster can keep at once, counted apart from its owner.",
-                "自律詠唱機1台が同時に置ける常駐魔法式（サークルと領域を合わせた数）です. 持ち主のプレイヤーの数とは別に数えます.");
+                "自律詠唱機1台が同時に置ける常駐魔法式(サークルと領域を合わせた数)です. 持ち主のプレイヤーの数とは別に数えます.");
         addConfigLabel(root, "psitweaks.configuration.spells.nbt_pieces", "NBT Pieces", "NBT系のピース");
         addConfigValue(root, "psitweaks.configuration.spells.nbt_pieces.max_targets_per_cast", "Targets per Cast", "1回の詠唱で読める対象の数",
                 "How many targets one cast can read the NBT of. Targets without NBT and targets read again in the same cast do not count. Reading more stops the spell with an error.",
@@ -823,7 +823,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addConfigLabel(root, "psitweaks.configuration.spells.pattern_matching", "Pattern Matching", "パターンの照合");
         addConfigValue(root, "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast", "Comparisons per Cast", "1回の詠唱で比べられる回数",
                 "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. Going past it stops the spell with an error.",
-                "パターン（* ? [abc]）との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます（# のタグの照合は数えません）. 超えると術式はエラーで止まります.");
+                "パターン(* ? [abc])との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます(# のタグの照合は数えません). 超えると術式はエラーで止まります.");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
@@ -1236,7 +1236,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.2", "Higher tiers greatly improve cost efficiency, making powerful spells easier to cast."},
             {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "Gets an entity from the UUID stored in CAD memory. Only an entity within the spell's range is found."},
-            {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "Breaks the target block with Fortune."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "Breaks the target block with Silk Touch."},
             {"psi.book.page.psitweaks_spellpiece.trick_cure_radiation", "Removes the target's radiation exposure."},
@@ -1293,8 +1292,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.cadAssembler.3", "A $(thing)CAD$(0) is built from up to five components; the simplest $(thing)CAD$(0) only uses one component, an $(l:components/assembly)$(o)$(item)Assembly$(0)$(/l), though this is only useful for crafting $(l:components/psidust)$(o)$(item)Psidust$(0)$(/l).$(p)A $(thing)CAD$(0) capable of casting $(thing)Spells$(0) requires a $(l:components/core)$(o)$(item)Core$(0)$(/l) and a $(l:components/socket)$(o)$(item)Socket$(0)$(/l) as well.$(p)Adding a $(l:components/battery)$(o)$(item)Battery$(0)$(/l) slightly increases a user's maximum $(thing)Psi energy$(0), and adding a $(l:components/colorizer)$(o)$(item)Colorizer$(0)$(/l) changes the color of cast $(thing)Spells$(0), which is purely cosmetic."},
             {"psi.book.page.cadAssembler.4", "Once a $(thing)CAD$(0) is created, it can be placed in the leftmost panel of the $(item)CAD Assembler$(0).$(p)When placed there, the slots below open; $(item)Spell Bullets$(0) can be placed in these slots to be loaded into the $(thing)CAD$(0).$(p)Once the $(l:items/spell_bullet)$(o)$(thing)Bullets$(0)$(/l) are loaded, the $(thing)CAD$(0) is removed and held, and the $(thing)Psi master keybind$(0) ($(k:psimisc.keybind)) is held, the $(l:items/spell_bullet)$(o)$(thing)Bullets$(0)$(/l)' $(thing)Spells$(0) will be displayed on a radial menu, ready to be selected and cast."},
             {"psi.book.page.cadAssembler.5", "A CAD with one bullet loaded"},
-            {"psi.book.page.introduction.0", "$(thing)Psi$(0)へようこそ！ 宇宙で最も偉大なスペルプログラムベースの魔法技術MODです！$(p)$(thing)Psi$(0)は（魔法科高校の劣等生シリーズにインスパイアされた）MODで, あなたの命令を実行する$(thing)魔法$(0)$(o)を創造・発動して意のままに操るmodです.$(p)魔法を操る魔法師への道へ踏み出すには, まず$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)という素材が必要です――ただし, これを単純にクラフトできるものではありません."},
-            {"psi.book.page.introduction.1", "代わりに, まず$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)と$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を作成してください.$(p)$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)を配置し, 開いて$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を挿入し, 非常に簡素な$(thing)術式補助演算機$(0)（略して$(thing)CAD$(0)）を構築します.$(p)そこから地面に$(item)レッドストーンダスト$(0)を数個落とし, 新しく作成した$(thing)CAD$(0)をダストに向けて, $(k:use)を発動して$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)を生成します."},
+            {"psi.book.page.introduction.0", "$(thing)Psi$(0)へようこそ！ 宇宙で最も偉大なスペルプログラムベースの魔法技術MODです！$(p)$(thing)Psi$(0)は(魔法科高校の劣等生シリーズにインスパイアされた)MODで, あなたの命令を実行する$(thing)魔法$(0)$(o)を創造・発動して意のままに操るmodです.$(p)魔法を操る魔法師への道へ踏み出すには, まず$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)という素材が必要です――ただし, これを単純にクラフトできるものではありません."},
+            {"psi.book.page.introduction.1", "代わりに, まず$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)と$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を作成してください.$(p)$(l:basics/cad_assembler)$(o)$(item)CAD組立機$(0)$(/l)を配置し, 開いて$(l:components/assembly#iron)$(o)$(item)鉄のCAD素体$(0)$(/l)を挿入し, 非常に簡素な$(thing)術式補助演算機$(0)(略して$(thing)CAD$(0))を構築します.$(p)そこから地面に$(item)レッドストーンダスト$(0)を数個落とし, 新しく作成した$(thing)CAD$(0)をダストに向けて, $(k:use)を発動して$(l:components/psidust)$(o)$(item)サイダスト$(0)$(/l)を生成します."},
             {"psi.book.page.psitweaks_cad_and_gear.0", "PsiTweaks には, 術式の携行, 自動化, 専門化を助けるアイテムが複数あります. CADに直接関わる道具もあれば, 術式弾の管理や魔法師の戦闘能力を支える装備もあります."},
             {"psi.book.page.psitweaks_cad_and_gear.2", "PsiTweaks は, 高コストなインゴットを素材とした強力なCAD素体を追加します. 通常のPsi装備では物足りなくなったら, 高位術式弾などと組み合わせて使ってください."},
             {"psi.book.page.psitweaks_cad_and_gear.3", "$(thing)PsiTweaks$(0) はCAD素材として, $(l:components/psitweaks_alloy_psion)サイオニック合金$(/l), $(l:components/psitweaks_chaotic_psimetal)カオティックサイメタル$(/l), $(l:components/psitweaks_flashmetal)フラッシュメタル$(/l), $(l:components/psitweaks_heavy_psimetal)ヘビーサイメタル$(/l), $(l:components/psitweaks_psycheonic_metal_ingot)プシオニックメタル$(/l) の5系統を追加します.$(p)サイオニック合金CADは効率が非常に優れる一方で, 規模は非常に小さいCADです. 他のCAD素体は, 後半の素材ほど効率と規模が相応に強化されています."},
@@ -1340,9 +1339,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spell_bullets.0", "$(thing)PsiTweaks$(0) は通常の$(l:items/spell_bullet)$(o)$(item)術式弾$(0)$(/l)より上位の強化ティアとして, 改良, 共鳴, 昇華, 覚醒, 超越を追加します.$(p)Psiの術式弾のバリエーション全てにそれぞれ上位Tierが用意されています."},
             {"psi.book.page.psitweaks_spell_bullets.1", "術式弾の強化は前段階の術式弾を4つ必要とするため, 非常に高コストです."},
             {"psi.book.page.psitweaks_spell_bullets.2", "上位のTierになるほどコスト効率が著しく改善し, 強力な魔法を簡単に発動できるようになります."},
-            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式, 流星群の夜の核, マイクロブラックホール）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
+            {"psi.book.page.psitweaks_spellpiece.selector_nearby_spellgram", "指定座標の周囲にある魔法式オブジェクト(常駐魔法式, 流星群の夜の核, マイクロブラックホール)を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います."},
             {"psi.book.page.psitweaks_spellpiece.selector_stored_entity", "CADメモリに保存されたUUIDからエンティティを取得します. 術式の射程の中にいるエンティティだけを取得できます."},
-            {"psi.book.page.psitweaks_spellpiece.trick_blaze_ball", "前方へ火の弾を放つ序盤用の攻撃術式です."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_fortune", "対象ブロックを幸運付きで破壊します."},
             {"psi.book.page.psitweaks_spellpiece.trick_break_silk", "対象ブロックをシルクタッチ付きで破壊します."},
             {"psi.book.page.psitweaks_spellpiece.trick_cure_radiation", "対象の被ばく量を除去します."},
@@ -1475,11 +1473,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Ideaspace Storage";
         });
         root.addProperty("psi.book.page.psitweaks_idea_storage.0", switch (locale) {
-            case "ja_jp" -> "$(thing)イデアストレージ$(0)はプレイヤーごとに1つ用意される専用の仮想保管庫です. アイテム・液体・Mekanism の化学物質・FE を保管でき, ワールドにプレイヤー単位で保存されるため死亡しても失われません（種類数や容量の上限はコンフィグで変更可）.$(p)中身は$(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)作動式: イデアストレージ閲覧$(0)$(/l)で操作でき, 術式での転送・参照や$(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)作動式: イデアコネクター$(0)$(/l)による外部機器連携にも対応します.";
-            default -> "$(thing)Ideaspace Storage$(0) is a personal virtual storage for each player holding items, fluids, Mekanism chemicals, and FE. Saved per player in the world, it is never lost on death (limits are configurable).$(p)Access it via $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)Trick: View Ideaspace Storage$(0)$(/l), automate it with transfer/selector pieces, or link pipes via $(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)Trick: Ideaspace Connector$(0)$(/l).";
+            case "ja_jp" -> "$(thing)イデアストレージ$(0)はプレイヤーごとに1つ用意される専用の仮想保管庫です. アイテム・液体・Mekanism の化学物質・FE を保管でき, 死亡しても失われません.$(p)中身は$(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)作動式: イデアストレージ閲覧$(0)$(/l)で操作でき, 術式での転送・参照や$(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)作動式: イデアコネクター$(0)$(/l)による外部機器連携にも対応します.";
+            default -> "$(thing)Ideaspace Storage$(0) is a personal virtual storage for each player holding items, fluids, Mekanism chemicals, and FE, and is never lost on death.$(p)Access it via $(l:psitweaks_spell_pieces/trick_idea_storage_view)$(o)Trick: View Ideaspace Storage$(0)$(/l), automate it with transfer/selector pieces, or link pipes via $(l:psitweaks_spell_pieces/trick_ideaspace_connector)$(o)Trick: Ideaspace Connector$(0)$(/l).";
         });
         root.addProperty("psi.book.page.psitweaks_idea_storage.1", switch (locale) {
-            case "ja_jp" -> "イデアストレージ系のスペルピースは, この$(item)プログラム: イデアストレージ$(0)を右クリックするだけでまとめて解禁されます（プログラムは消費されません）.$(p)プログラムの作り方は$(l:psitweaks/research)研究$(/l)を参照してください.";
+            case "ja_jp" -> "この$(item)プログラム: イデアストレージ$(0)を右クリックすると, イデアストレージ系のスペルピースがまとめて解禁されます. プログラムは消費されません.$(p)プログラムの作り方は$(l:psitweaks/research)研究$(/l)を参照してください.";
             default -> "Right-clicking this $(item)Program: Ideaspace Storage$(0) unlocks all Ideaspace Storage spell pieces at once without consuming the program.$(p)See $(l:psitweaks/research)Research$(/l) for how to craft programs.";
         });
         root.addProperty("psi.book.entry.psitweaks_magician", switch (locale) {
@@ -1513,14 +1511,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Types Added by PsiTweaks",
                 "PsiTweaks 追加の型");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.0",
-                "$(thing)PsiTweaks$(0) adds String, Block, Item, and Matrix types to Psi spell programming.$(p)Values are grouped into Plain Values (world-independent: Number, Vector, String, Matrix; storable in CAD memory) and Contextual Values (world/target-dependent: Entity, Block, Item).",
-                "$(thing)PsiTweaks$(0)は Psi のスペルプログラミングに String・Block・Item・Matrix 型を追加します.$(p)値はワールド状態に依存しない Plain Value（Number・Vector・String・Matrix 等, CAD メモリへ保存可能）と, 対象やワールドに依存する Contextual Value（Entity・Block・Item 等）に分かれます.");
+                "$(thing)PsiTweaks$(0) adds String, Block, Item, and Matrix types to Psi spell programming.$(p)Values split into Plain Values (Number, Vector, String, Matrix, etc.), which can be stored in CAD memory, and world-dependent Contextual Values (Entity, Block, Item, etc.).",
+                "$(thing)PsiTweaks$(0) は Psi のスペルプログラミングに String・Block・Item・Matrix 型を追加します.$(p)値はワールドに依存せず CAD メモリへ保存できる Plain Value (Number・Vector・String・Matrix 等) と, ワールドに依存する Contextual Value (Entity・Block・Item 等) に分かれます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.1",
-                "String holds text such as IDs, names, NBT paths, filter patterns, and messages.$(p)Runtime Strings cap at 8,192 characters (Constant: String pieces cap at 1,024 since they are saved in the spell), and pattern matching (* ? [abc]) enforces a per-cast comparison limit.",
-                "String 型は ID・名前・NBT パス・検索条件・表示メッセージなどの文字列を扱います.$(p)実行時の上限は8,192文字（定数子: 文字列は術式内に保存するため1ピース最大1,024文字）で, パターン照合（* ? [abc]）にも1詠唱あたりの比較回数上限があります.");
+                "String holds text such as IDs, names, NBT paths, and filter patterns.$(p)Runtime Strings cap at 8,192 characters, and Constant: String pieces cap at 1,024. Pattern matching (* ? [abc]) enforces a per-cast comparison limit.",
+                "String 型は ID・名前・NBT パス・検索条件などの文字列を扱います.$(p)実行時の上限は8,192文字, 定数子: 文字列は1ピース最大1,024文字です. パターン照合 (* ? [abc]) には1詠唱あたりの比較回数上限があります.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.2",
-                "Block represents a world block (position, state, ID, tags, display name) and auto-converts with Vector on most inputs (Block List and Vector List likewise; Any inputs keep the original type).$(p)Item represents an ItemStack (type, count, NBT, display name) obtained from hands, slots, inventories, or dropped items.",
-                "Block 型はワールド上のブロック（座標・状態・ID・タグ・表示名等）を扱い, 多くの入力で Vector と相互自動変換されます（Block List と Vector List も同様. Any 入力は元の型を維持）.$(p)Item 型は ItemStack（種類・個数・NBT・表示名等）を扱い, 手持ち・インベントリ・ドロップ等から取得できます.");
+                "Block represents a world block with its position, state, ID, tags, and name, and auto-converts with Vector and Vector List on most inputs.$(p)Item represents an ItemStack obtained from hands, inventories, or dropped items.",
+                "Block 型はワールド上のブロックを扱い, 座標や状態・ID・タグ・表示名などを参照できます. 多くの入力で Vector や Vector List と相互に自動変換されます.$(p)Item 型は ItemStack を扱い, 手持ち・インベントリ・ドロップなどから取得できます.");
         addLocalized(root, "psi.book.page.psitweaks_programming_types.3",
                 "Matrix is a Plain Value representing a 1×1 to 4×4 numeric matrix. Like Number and Vector, it can be stored in CAD memory and converted to text.$(p)Dedicated operators build, add, multiply, slice, transpose, and invert matrices, transform vectors, and define 3D regions.",
                 "Matrix 型は 1×1〜4×4 の数値行列を表す Plain Value 型です. Number や Vector と同様に CAD メモリへの保存や文字列変換ができ, 専用演算子で行列の作成・加減乗算・行/列抽出・転置・行列式・逆行列・ベクトル変換や3D領域の定義を行えます.");
@@ -1836,23 +1834,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Unknown spell unlock: %s";
         });
         root.addProperty("message.psitweaks.spell_unlock.command.all.no_change", switch (locale) {
-            case "ja_jp" -> "全術式の解禁状態は変更されませんでした（対象%s人・術式%s個）";
+            case "ja_jp" -> "全術式の解禁状態は変更されませんでした(対象%s人・術式%s個)";
             default -> "No all-spell unlock status was changed (%s player(s), %s spell(s))";
         });
         root.addProperty("message.psitweaks.spell_unlock.command.all.grant.single", switch (locale) {
-            case "ja_jp" -> "%s に全術式の解禁を付与しました（%s/%s 件変更）";
+            case "ja_jp" -> "%s に全術式の解禁を付与しました(%s/%s 件変更)";
             default -> "Granted all spell unlocks to %s (%s/%s changed)";
         });
         root.addProperty("message.psitweaks.spell_unlock.command.all.grant.multi", switch (locale) {
-            case "ja_jp" -> "全術式の解禁を付与しました（%s/%s 件変更, 対象変更%s/%s人）";
+            case "ja_jp" -> "全術式の解禁を付与しました(%s/%s 件変更, 対象変更%s/%s人)";
             default -> "Granted all spell unlocks: %s/%s changes, players changed %s/%s";
         });
         root.addProperty("message.psitweaks.spell_unlock.command.all.revoke.single", switch (locale) {
-            case "ja_jp" -> "%s から全術式の解禁を剥奪しました（%s/%s 件変更）";
+            case "ja_jp" -> "%s から全術式の解禁を剥奪しました(%s/%s 件変更)";
             default -> "Revoked all spell unlocks from %s (%s/%s changed)";
         });
         root.addProperty("message.psitweaks.spell_unlock.command.all.revoke.multi", switch (locale) {
-            case "ja_jp" -> "全術式の解禁を剥奪しました（%s/%s 件変更, 対象変更%s/%s人）";
+            case "ja_jp" -> "全術式の解禁を剥奪しました(%s/%s 件変更, 対象変更%s/%s人)";
             default -> "Revoked all spell unlocks: %s/%s changes, players changed %s/%s";
         });
         root.addProperty("message.psitweaks.spell_unlock.command.all.status", switch (locale) {
@@ -1893,34 +1891,20 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     /** 作動式: ファイアサークル・アイスサークル・サークル追従の本のページ。 */
     private void addCircleBookPages(JsonObject root) {
-        String timeEn = "$(p)Cost (min 50) and integrity scale with Time (constant 1–120 s, default 60). See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for integrity, limits, and management.";
-        String timeJa = "$(p)「時間」（1〜120秒, 省略時60秒）に応じてコスト（最低50）と耐久値が決まります. 耐久値・設置上限・管理方法などは$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)を参照してください.";
+        String circleTailEn = " Overlapping circles of your own apply only the strongest.$(p)Move it with Trick: Circle Follow or movement tricks. Pauses inside a stronger opposing Interference Zone. See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for shared rules.";
+        String circleTailJa = " 自分のサークルが重なると最も強いものだけ当たります.$(p)作動式: サークル追従や移動系作動式で動かせます. 勝てない他人の領域干渉内では停止します. 共通の決まりは$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)を参照してください.";
         addBookPage(root, "trick_flare_circle.0",
-                "Places a fire Resident SpellGram circle at Position, dealing fire damage every 0.5 s (scaling with Power and Phenomenon Interference) and igniting targets for 2 s (wet beings take damage without catching fire)." + timeEn,
-                "「位置」に炎の常駐魔法式サークルを張ります. 中の生物に0.5秒ごと炎ダメージ（威力と事象干渉力で増加）を与え, 2秒間燃やします（濡れた生物は炎上せずダメージのみ）." + timeJa);
-        addBookPage(root, "trick_flare_circle.1", circleRulesEn("Fire Circles"), circleRulesJa("ファイアサークル"));
+                "Places a fire circle at Position that deals fire damage every 0.5 s and ignites creatures inside for 2 s (Time: default 60 s, max 120 s)." + circleTailEn,
+                "「位置」に炎のサークルを張り, 中の生物へ0.5秒ごと炎ダメージと2秒の炎上を与えます (「時間」は省略時60秒, 最大120秒)." + circleTailJa);
         addBookPage(root, "trick_ice_circle.0",
-                "Places an ice Resident SpellGram circle at Position, dealing freezing damage every 0.5 s (scaling with Power and Phenomenon Interference) and chilling targets." + timeEn,
-                "「位置」に氷の常駐魔法式サークルを張り, 中の生物に0.5秒ごと凍結ダメージ（威力と事象干渉力で増加）と凍結を与えます." + timeJa);
+                "Places an ice circle at Position that deals freezing damage and chills creatures inside every 0.5 s (Time: default 60 s, max 120 s)." + circleTailEn,
+                "「位置」に氷のサークルを張り, 中の生物へ0.5秒ごと凍結ダメージと凍結を与えます (「時間」は省略時60秒, 最大120秒)." + circleTailJa);
         addBookPage(root, "trick_ice_circle.1",
-                "Turns open water sources inside (same level and one block below) into Frosted Ice and keeps it from melting while covered (skips protected blocks and Heat Zones; melts normally once gone).$(p)While following via Trick: Circle Follow, freezes only on ground movement like Frost Walker—ice/land boats freeze water ahead, while floating boats do not.",
-                "氷渡りのように範囲内（同じ高さと1段下）の開いた水源を薄氷に変えて維持します（離れるか消えると通常どおり融解. 保護ブロックや加熱領域内は対象外）.$(p)作動式: サークル追従中は氷渡り同様に移動時のみ足元1段下を凍らせ, 氷上・陸上のボートは先の水面を凍らせつつ, 水上ボートでは凍らせません.");
-        addBookPage(root, "trick_ice_circle.2", circleRulesEn("Ice Circles"), circleRulesJa("アイスサークル"));
+                "Turns open water sources inside into Frosted Ice and keeps them frozen (skips Heat Zones).$(p)While following via Trick: Circle Follow, freezes only on ground movement; ice/land boats freeze water ahead, while floating boats do not.",
+                "氷渡りのように範囲内の水源を薄氷に変えて維持します (加熱領域内は対象外).$(p)作動式: サークル追従中は移動時のみ足元1段下を凍らせます. 氷上・陸上のボートは先の水面を凍らせますが, 水上ボートでは凍らせません.");
         addBookPage(root, "trick_circle_follow.0",
-                "Makes your Target circles (Fire/Ice Circle; omits to your newest in this dimension, any distance) follow Follow Target every tick. Follow Target must be you or a non-living entity in range (boats, minecarts, items, etc.; not armor stands or entities ridden by others).$(p)Omit Follow Target to release the circles in place.",
-                "「対象」の自分のサークル（省略時は同ディメンションの最新サークル, 距離不問）を毎 tick「追従先」へ追従させます. 「追従先」は術者自身か射程内の非生物エンティティ（ボート・トロッコ・アイテム等. 防具立てや他生物が乗っているものは不可）に限ります.$(p)「追従先」を省くと追従を解除してその場に残ります.");
-        addBookPage(root, "trick_circle_follow.1",
-                "Errors without changes if Target includes anything other than your own circles; zones cannot be moved.$(p)Moving consumes extra integrity (1 tick per block moved). Detaches in place if the Follow Target disappears, leaves the dimension or loaded chunks, moves over 32 blocks from you, or is ridden by another living entity.",
-                "自分のサークル以外が対象に含まれるとエラーになります. 領域は動かせません.$(p)追従中は移動距離に応じて耐久値を追加消費し（1ブロックあたり1 tick 分）, 追従先の消滅・別ディメンション・未ロードチャンク・術者から32ブロック超過・他生物の騎乗のいずれかで追従を解除します.");
-    }
-
-    /** サークルの共通の決まり（重なり・領域干渉・移動）の本のページ。 */
-    private static String circleRulesEn(String kind) {
-        return "Where your own " + kind + " overlap, only the strongest hits (other kinds and other casters' circles hit separately). Does nothing while centered inside a stronger opposing Interference Zone, though time still passes.$(p)Move your circles with Trick: Circle Follow or Psi movement tricks (Add Motion, Blink, Mass Exodus; no integrity cost).";
-    }
-
-    private static String circleRulesJa(String kind) {
-        return "自分の" + kind + "が重なる場合, 最も強いものだけが当たります（異種や他人のサークルは別々に命中）. 中心が勝てない他人の領域干渉内にある間は停止します（時間は経過）.$(p)自分のサークルは作動式: サークル追従や Psi の移動系作動式（運動追加・瞬間移動・大移動. 耐久消費なし）で動かせます.";
+                "Makes your circles (newest one if omitted) follow Follow Target every tick. Follow Target must be you or a non-living entity in range (such as a boat or item); omit it to detach.$(p)Zones cannot be moved. Moving consumes extra integrity, and detaches if the target vanishes or moves over 32 blocks from you.",
+                "自分のサークル (省略時は最新の1つ) を「追従先」へ毎 tick 追従させます. 「追従先」は術者か射程内の非生物エンティティ (ボート・アイテム等) で, 省くと追従を解除します.$(p)領域は動かせません. 移動距離に応じて耐久値を追加消費し, 追従先が消えたり術者から32ブロック離れると解除されます.");
     }
 
     private void addSpellPieces(JsonObject root) {
@@ -2033,7 +2017,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "selector_held_items", "Selector: Carried Items", "Outputs the target entity's carried items as an Item List.", "取得子: 所持アイテム", "対象 Entity の所持アイテムを Item List として取得します.");
         addSpellPiece(root, "selector_internal_items", "Selector: Internal Items", "Outputs the target block's internal inventory as an Item List.", "取得子: 内部アイテム", "対象ブロックの内部インベントリを Item List として取得します.");
         addSpellPiece(root, "selector_indexed_element", "Selector: Indexed Element (PT)", "Outputs the element at a zero-based index from the selected List mode. Negative indexes count back from the end.", "取得子: インデックス要素 (PT)", "選択中の List モードから0始まりのインデックスにある要素を取得します. 負のインデックスは末尾から数えます.");
-        addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the entries of the compound or list at the NBT Path (the whole NBT when unconnected) as a String List.", "取得子: NBT", "NBTパスにある複合タグかリストの中身を String List で出力します（未接続なら全体）.");
+        addSpellPiece(root, "selector_nbt", "Selector: NBT", "Outputs the entries of the compound or list at the NBT Path (the whole NBT when unconnected) as a String List.", "取得子: NBT", "NBTパスにある複合タグかリストの中身を String List で出力します(未接続なら全体).");
         addSpellPiece(root, "selector_nbt_keys", "Selector: NBT Keys", "Outputs the keys of the compound at the NBT Path, or the indexes of a list, as a String List.", "取得子: NBTキー", "NBTパスにある複合タグのキー, またはリストの番号を String List で出力します.");
         addSpellPiece(root, "selector_nbt_value", "Selector: NBT Value", "Outputs the value at the NBT Path as a String or a Number, chosen by the mode. Outputs the Fallback when nothing is found.", "取得子: NBT値", "NBTパスにある値を, モードに応じて文字列か数値で出力します. 見つからないときは既定値を出力します.");
         addSpellPiece(root, "selector_nbt_exists", "Selector: NBT Exists", "Outputs 1 if the NBT Path reaches anything in the target's NBT, otherwise 0.", "取得子: NBT存在", "対象のNBTにNBTパスで指す値があれば1, なければ0を出力します.");
@@ -2059,7 +2043,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_random_element", "Operator: Random Element", "Outputs one random element from the input List.", "演算子: ランダム要素", "入力した List からランダムに1要素を出力します.");
         addSpellPiece(root, "operator_list_distance_keep", "Operator: List Keep By Distance", "Keeps as many elements as the Number, closest to the position first. A negative Number keeps the farthest ones.", "演算子: 距離順抽出", "位置から近い順に, 数値の分だけ要素を残します. 数値が負なら遠い順に残します.");
         addSpellPiece(root, "operator_list_distance_element", "Operator: Distance-Ranked Element", "Outputs the element at the index when the List is sorted closest first. 0 is the closest; negative numbers count from the farthest.", "演算子: 距離順要素", "位置から近い順に並べたときの, 指定番号の要素を出力します. 0が一番近く, 負の数は遠い方から数えます.");
-        addSpellPiece(root, "selector_nbt_number_list", "Selector: NBT Number List", "Outputs one number per List element: the number at the NBT Path, or the Fallback (0 when unconnected).", "取得子: NBT数値リスト", "リストの要素ごとに, NBTパスにある数値（なければ既定値, 未接続なら0）を並べた Number List を出力します.");
+        addSpellPiece(root, "selector_nbt_number_list", "Selector: NBT Number List", "Outputs one number per List element: the number at the NBT Path, or the Fallback (0 when unconnected).", "取得子: NBT数値リスト", "リストの要素ごとに, NBTパスにある数値(なければ既定値, 未接続なら0)を並べた Number List を出力します.");
         addSpellPiece(root, "operator_list_value_range", "Operator: List Keep In Value Range", "Keeps the List elements whose value in Values is between Min and Max. An unconnected bound is open.", "演算子: 基準値範囲抽出", "基準値が最小以上・最大以下の要素だけを残します. 未接続の側は制限しません.");
         addSpellPiece(root, "operator_list_value_keep", "Operator: List Keep By Value", "Keeps the Number elements with the smallest values. A negative Number keeps the largest ones.", "演算子: 基準値順抽出", "基準値の小さい順に, 数値の分だけ要素を残します. 数値が負なら大きい順に残します.");
         addSpellPiece(root, "operator_list_value_element", "Operator: Value-Ranked Element", "Outputs the element at the index when the List is sorted by value, smallest first. 0 is the smallest; negative numbers count from the largest.", "演算子: 基準値順要素", "基準値の小さい順に並べたときの, 指定番号の要素を出力します. 0が一番小さく, 負の数は大きい方から数えます.");
@@ -2122,8 +2106,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "macro_caster_axial_rotation_3d", "Macro: Caster Axial Rotation (3D)", "Like Macro: Caster Axial Rotation, but the facing also follows the pitch (X = right, Y = view-up, Z = forward), including when looking straight up or down.", "マクロ: 術者方角回転 (3D)", "マクロ: 術者方角回転と同じですが, 視線の上下も基準に含みます. X=右, Y=視点上, Z=前で, 真上や真下を向いた時も視点に追随します.");
         addSpellPiece(root, "macro_face_axial_offset", "Macro: Face Axial Offset", "Offsets a position along axes aligned to the block face under the caster's crosshair. If Position is omitted, the hit block is used. Positive values move screen-right, into the block, and screen-up.", "マクロ: 面基準平行移動", "術者の視線が命中したブロック面を基準に, 位置を左右・前後・上下へ平行移動します. 位置を省略した場合は命中ブロックを使います. 正の値で画面右・ブロック内側・画面上へ移動します.");
         addSpellPiece(root, "macro_face_axial_rotation", "Macro: Face Axial Rotation", "Rotates a direction vector using the orientation of the block face hit by the caster's raycast as its reference.", "マクロ: 面基準回転", "方向ベクトルを, 術者の視線が命中したブロック面の方向を基準として回転させます.");
-        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Drops go into the caster's inventory; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List（Block List も可）の座標にあるブロックを破壊します. ドロップは術者のインベントリに入り, 入りきらない分だけ落ちます.");
-        addSpellPiece(root, "selector_idea_storage_amount", "Selector: Ideaspace Storage - Amount", "Returns the stored amount of the resource chosen by the mode: items, fluids, chemicals or FE.", "取得子: イデアストレージ-貯蔵量", "モードで選んだ資源（アイテム・液体・化学物質・FE）の貯蔵量を取得します.");
+        addSpellPiece(root, "trick_mass_block_break", "Trick: Mass Block Break", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Drops go into the caster's inventory; only overflow is dropped.", "作動式: 大規模ブロック破壊", "Vector List(Block List も可)の座標にあるブロックを破壊します. ドロップは術者のインベントリに入り, 入りきらない分だけ落ちます.");
+        addSpellPiece(root, "selector_idea_storage_amount", "Selector: Ideaspace Storage - Amount", "Returns the stored amount of the resource chosen by the mode: items, fluids, chemicals or FE.", "取得子: イデアストレージ-貯蔵量", "モードで選んだ資源(アイテム・液体・化学物質・FE)の貯蔵量を取得します.");
         addSpellPiece(root, "selector_idea_storage_free_capacity", "Selector: Ideaspace Storage - Free Capacity", "Returns how much more of the resource chosen by the mode can be stored right now.", "取得子: イデアストレージ-空き容量", "モードで選んだ資源を, 今あとどれだけ格納できるかを取得します.");
         addSpellPiece(root, "selector_idea_storage_type_count", "Selector: Ideaspace Storage - Type Count", "Returns the number of stored types of the resource chosen by the mode.", "取得子: イデアストレージ-種類数", "モードで選んだ資源の, 格納中の種類数を取得します.");
         addSpellPiece(root, "selector_idea_storage_last_transfer", "Selector: Ideaspace Storage - Last Transfer Amount", "Returns the amount actually moved by the most recent Ideaspace transfer trick earlier in this cast.", "取得子: イデアストレージ-最終転送量", "この詠唱で直前に実行したイデア転送が, 実際に移した量を取得します.");
@@ -2137,23 +2121,23 @@ public class PsitweaksLanguageProvider implements DataProvider {
     private void addZoneMagicBook(JsonObject root) {
         addLocalized(root, "psi.book.entry.psitweaks_resident_spellgrams", "Resident SpellGrams", "常駐魔法式");
         addLocalized(root, "psi.book.page.psitweaks_resident_spellgrams.0",
-                "$(thing)Resident SpellGrams$(0) are persistent entities—such as $(l:psitweaks/zone_magic)Zone Magic$(/l), circles, and Decontamination—that remain active where placed. They are immune to ordinary attacks and explosions and are not saved with chunks.$(p)Each has integrity scaled by Phenomenon Interference when placed and Time, decaying over time or from opposing spells like $(l:psitweaks_spell_pieces/trick_gram_demolition)Trick: Gram Demolition$(/l) and $(l:psitweaks_spell_pieces/trick_psi_bullet)Trick: Psi Bullet$(/l). One caster (or Autonomous Caster) may keep up to 32 combined (configurable; oldest ends first), and they vanish on logout or dimension change.",
-                "$(thing)常駐魔法式$(0)は設置後も場に残って働き続けるエンティティです（$(l:psitweaks/zone_magic)領域魔法$(/l)・サークル系・除染など）. 通常の攻撃や爆発では壊れず, チャンクには保存されません.$(p)置いた時点の事象干渉力と時間に応じた耐久値を持ち, 時間経過や他者の$(l:psitweaks_spell_pieces/trick_gram_demolition)作動式: 術式解体$(/l)・$(l:psitweaks_spell_pieces/trick_psi_bullet)作動式: サイ・ブリット$(/l)などで削られて尽きると消滅します. 1人（自律詠唱機1台）につき合計32個まで設置でき（超過時は古いものから消滅, 設定変更可）, ログアウトや別ディメンション移動でも消えます.");
+                "$(thing)Resident SpellGrams$(0) are persistent entities—such as $(l:psitweaks/zone_magic)Zone Magic$(/l), circles, and Decontamination—that remain active where placed and cannot be broken by attacks or explosions.$(p)Their integrity decays over time or from opposing spells like $(l:psitweaks_spell_pieces/trick_gram_demolition)Trick: Gram Demolition$(/l) and $(l:psitweaks_spell_pieces/trick_psi_bullet)Trick: Psi Bullet$(/l). Each caster can keep up to 32 at once (oldest ends first), and they vanish on logout or dimension change.",
+                "$(thing)常駐魔法式$(0)は設置後も場に残って働き続けるエンティティです. $(l:psitweaks/zone_magic)領域魔法$(/l)・サークル系・除染などが該当し, 攻撃や爆発では壊れません.$(p)耐久値は時間経過や他者の$(l:psitweaks_spell_pieces/trick_gram_demolition)作動式: 術式解体$(/l)・$(l:psitweaks_spell_pieces/trick_psi_bullet)作動式: サイ・ブリット$(/l)などで削られ, 尽きると消滅します. 1人につき合計32個まで設置でき, 超えると古いものから消えます. ログアウトや別ディメンション移動でも消えます.");
         addLocalized(root, "psi.book.page.psitweaks_resident_spellgrams.1",
-                "Aim at a core within 5 blocks to see its name and remaining integrity (toggleable in client config).$(p)Manage your Resident SpellGrams with these pieces:$(li)$(l:psitweaks_spell_pieces/selector_own_spellgrams)Selector: Own Resident SpellGrams$(/l): get yours in the dimension as an Entity List$(li)$(l:psitweaks_spell_pieces/selector_spellgram_integrity)Selector: SpellGram Integrity$(/l) / $(l:psitweaks_spell_pieces/selector_spellgram_integrity_list)List$(/l): read remaining integrity$(li)$(l:psitweaks_spell_pieces/trick_extend_spellgram)Trick: Extend SpellGram$(/l): restore integrity$(li)$(l:psitweaks_spell_pieces/trick_recall_spellgram)Trick: Recall SpellGram$(/l): remove from any distance",
-                "5ブロック以内で核に照準を合わせると名前と残り耐久値を確認できます（クライアント設定で切替可）.$(p)自分の常駐魔法式は次のスペルピースで管理できます.$(li)$(l:psitweaks_spell_pieces/selector_own_spellgrams)取得子: 自分の常駐魔法式$(/l): 同ディメンション内の自分の常駐魔法式を Entity List で取得$(li)$(l:psitweaks_spell_pieces/selector_spellgram_integrity)取得子: 魔法式耐久値$(/l) / $(l:psitweaks_spell_pieces/selector_spellgram_integrity_list)魔法式耐久値リスト$(/l): 残り耐久値を取得$(li)$(l:psitweaks_spell_pieces/trick_extend_spellgram)作動式: 魔法式延長$(/l): 耐久値を回復$(li)$(l:psitweaks_spell_pieces/trick_recall_spellgram)作動式: 魔法式回収$(/l): 距離に関係なく消去");
+                "Aim at a core within 5 blocks to see its name and remaining integrity.$(p)Manage your Resident SpellGrams with these pieces:$(li)$(l:psitweaks_spell_pieces/selector_own_spellgrams)Selector: Own Resident SpellGrams$(/l): get yours in the dimension as an Entity List$(li)$(l:psitweaks_spell_pieces/selector_spellgram_integrity)Selector: SpellGram Integrity$(/l) / $(l:psitweaks_spell_pieces/selector_spellgram_integrity_list)List$(/l): read remaining integrity$(li)$(l:psitweaks_spell_pieces/trick_extend_spellgram)Trick: Extend SpellGram$(/l): restore integrity$(li)$(l:psitweaks_spell_pieces/trick_recall_spellgram)Trick: Recall SpellGram$(/l): remove from any distance",
+                "5ブロック以内で核に照準を合わせると名前と残り耐久値を確認できます.$(p)自分の常駐魔法式は次のスペルピースで管理できます.$(li)$(l:psitweaks_spell_pieces/selector_own_spellgrams)取得子: 自分の常駐魔法式$(/l): 同ディメンション内の自分の常駐魔法式を Entity List で取得$(li)$(l:psitweaks_spell_pieces/selector_spellgram_integrity)取得子: 魔法式耐久値$(/l) / $(l:psitweaks_spell_pieces/selector_spellgram_integrity_list)魔法式耐久値リスト$(/l): 残り耐久値を取得$(li)$(l:psitweaks_spell_pieces/trick_extend_spellgram)作動式: 魔法式延長$(/l): 耐久値を回復$(li)$(l:psitweaks_spell_pieces/trick_recall_spellgram)作動式: 魔法式回収$(/l): 距離に関係なく消去");
         addLocalized(root, "psi.book.entry.psitweaks_zone_magic", "Zone Magic", "領域魔法");
         // デバッグ用: 魔法式耐久値デバッガー。
         addLocalized(root, "psitweaks.debug.spellgram_integrity.amount", "Amount to remove: %s", "減らす量: %s");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.no_target", "No SpellGram object in sight", "魔法式オブジェクトを見ていません");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.reduced", "Removed %2$s integrity from %1$s (%3$s left)",
-                "%1$s の耐久値を %2$s 減らしました（残り %3$s）");
+                "%1$s の耐久値を %2$s 減らしました(残り %3$s)");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.destroyed", "Removed %2$s integrity from %1$s; it broke",
                 "%1$s の耐久値を %2$s 減らし, 壊しました");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.amount", "Amount: %s", "減らす量: %s");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.use",
                 "Right-click: remove integrity from the SpellGram object you look at (yours too)",
-                "右クリック: 見ている魔法式オブジェクト（自分のものも）の耐久値を減らす");
+                "右クリック: 見ている魔法式オブジェクト(自分のものも)の耐久値を減らす");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.cycle", "Sneak + right-click: change the amount",
                 "しゃがんで右クリック: 量を切り替える");
         addLocalized(root, "psitweaks.debug.spellgram_integrity.tooltip.rename", "Rename it to a number in an anvil to use that amount",
@@ -2162,101 +2146,95 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Zone Magic places $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) that keep working inside an area, such as Gravity, Heat, and Freeze Zones.$(p)Zone tricks are unlocked by research (Program: Zone Magic for the basic zones, and dedicated programs for specialized zones). See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for shared integrity, limit, and management rules, and each piece's entry for its specific effects.",
                 "領域魔法は範囲内で効き続ける$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)で, 加重領域・加熱領域・凍結領域などがあります.$(p)研究で解禁でき, 基本的な領域はプログラム: 領域魔法, 一部の領域はそれぞれの専用プログラムで開きます. 耐久値・設置上限・管理方法は$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l), 個別の効果は各ピースの項目を参照してください.");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.1",
-                "Area is set by a Matrix (region matrix) and Size (constant, max 16); omitting the Matrix centers a cube on the caster. Use Trick: Show Region (Block mode) to preview it. Time is a constant up to 120 seconds (default 30; fixed at 30 for Gravity Zone's Vector mode).$(p)Zones that take Power require a constant of at least 1. Heat, Freeze, Turbulence, and Charged Zones accept Power above 10 to increase Cost and resource totals (Gravity, Acceleration, Deceleration, and Contamination Zones cap at 10).",
-                "範囲は「行列」（領域行列）と「サイズ」（定数, 最大16）で決まり, 行列を省くと術者を中心にした立方体になります（作動式: 領域表示のブロックモードで確認可能）. 「時間」は最大120秒の定数です（省略時30秒, 加重領域のベクトルモードは30秒固定）.$(p)威力を持つ領域では1以上の定数が必要です. 加熱・凍結・乱流・荷電領域は10を超える威力でコストと総量だけを増やせます（加重・加速・減速・汚染領域は最大10）.");
+                "Area is set by Matrix and Size (constant, max 16); omitting Matrix centers a cube on the caster. Preview areas with Trick: Show Region. Time is a constant up to 120 seconds (default 30).$(p)Power is a constant of at least 1. Gravity, Acceleration, Deceleration, and Contamination Zones cap at 10; Heat, Freeze, Turbulence, and Charged Zones accept higher Power to raise Cost and resource totals.",
+                "範囲は「行列」と「サイズ」(定数, 最大16)で決まり, 行列を省くと術者中心の立方体になります. 作動式: 領域表示で範囲を確認できます. 「時間」は最大120秒の定数で, 省略時は30秒です.$(p)「威力」は1以上の定数です. 加重・加速・減速・汚染領域は最大10で, 加熱・凍結・乱流・荷電領域は10を超えるとコストと総量だけが増えます.");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.2",
-                "Overlapping your own matching zones adds their resource totals (heat, cooling, FE, wind) and applies only the strongest of other effects (Gravity Zones add pushes up to Power 10). Overlapping your own Turbulence Zone upgrades Heat, Freeze, Soak, and Charged Zones into storms (see Trick: Turbulence Zone), while your own Heat and Freeze Zones cancel each other out.$(p)Where different casters' zones overlap, only the owner with the highest Phenomenon Interference when placed takes effect.",
-                "自分の同じ種類の領域を重ねると, 資源の総量（熱・冷却・FE・風量）は合算され, その他の効果は最も強いものが効きます（加重領域は押す向きを合算, 最大威力10）. 自分の乱流領域を他領域に重ねると熱乱流・吹雪・暴風雨・雷雲へ強化され（詳しくは作動式: 乱流領域）, 自分の加熱領域と凍結領域が重なる部分は打ち消し合います.$(p)他人の領域と重なる場所では, 種類を問わず置いた時点の事象干渉力が高い持ち主の領域だけが効きます.");
+                "Overlapping your own matching zones adds heat, cooling, FE, and wind totals while applying only the strongest of other effects. Gravity Zones add pushes, Heat and Freeze Zones cancel where they overlap, and your Turbulence Zone upgrades other zones into storms.$(p)Where different casters' zones overlap, only the owner with higher Phenomenon Interference when placed takes effect.",
+                "自分の同じ領域を重ねると熱・冷却・FE・風量の総量は合算され, 他の効果は最も強いものが効きます. 加重領域は押す向きを合算し, 加熱領域と凍結領域の重なりは打ち消し合います. 自分の乱流領域を他領域に重ねると嵐へ強化されます.$(p)他人の領域と重なる場所では, 置いた時点の事象干渉力が高い持ち主の領域だけが効きます.");
         addLocalized(root, "psi.book.page.psitweaks_zone_magic.3",
-                "Heat, cooling, FE, and wind are zone-wide totals determined by Cost and shared by everything inside (per-tick totals do not depend on Time).$(p)Processing speed for Create, Mekanism, and Applied Energistics 2 scales with Phenomenon Interference when placed, and dropped items do not despawn while processing. Create bulk processing only works where your own Turbulence Zone overlaps. With Create Aeronautics (Sable) installed, zones also affect blocks and machines on overlapping Simulated Contraptions.",
-                "熱・冷却・FE・風量はコストで決まる領域全体の総量で, 範囲内の対象で分け合います（1 tick あたりの総量は時間によりません）.$(p)Create・Mekanism・Applied Energistics 2 への加工や供給の速さは置いた時点の事象干渉力で決まり, 加工中のドロップアイテムは消えません. Create の一括加工は自分の乱流領域が重なる場所でのみ働きます. Create Aeronautics (Sable) 導入時は, 範囲に重なった Simulated Contraption 上のブロックや機械にも効きます.");
+                "Heat, cooling, FE, and wind are zone-wide totals determined by Cost and shared by everything inside.$(p)Processing and output speed for other mods' machines scales with Phenomenon Interference, and Create bulk processing only works where your own Turbulence Zone overlaps. With Create Aeronautics (Sable), zones also affect Simulated Contraptions.",
+                "熱・冷却・FE・風量はコストで決まる領域全体の総量で, 範囲内の対象で分け合います.$(p)他 Mod の機械への加工・供給速度は事象干渉力で決まり, Create の一括加工は自分の乱流領域との重なりでのみ働きます. Create Aeronautics (Sable) 導入時は Simulated Contraption 上にも効きます.");
 
         // 湿潤領域
         addBookPage(root, "trick_soak_zone.0",
-                "Keeps living beings inside soaked (lasting 3 seconds after leaving), preventing fire and increasing Trick: Chain Lightning and Thundercloud bolt damage by 25%%. Also extinguishes fire, campfires, and candles, hardens concrete powder, and randomly moistens farmland and wets Sponges where block changes are allowed. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内の生物を濡らし続け（出たあとも3秒持続）, 炎上を防いで作動式: 連鎖電光や雷雲の雷撃ダメージを25%%増やします. 炎・焚き火・ろうそくを消し, コンクリートパウダーを固め, 耕地の保湿やスポンジの湿潤も行います（ブロック変更が可能な場所のみ）. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
-        addBookPage(root, "trick_soak_zone.1",
-                "With Create installed, bulk-washes dropped items and items on Depots and Mechanical Belts inside, but only where your own Turbulence Zone overlaps (a Rainstorm). Higher interference and turbulence speed up washing.",
-                "Create 導入時は, 自分の乱流領域が重なる場所（暴風雨）に限り, ドロップアイテムやデポ・メカニカルベルト上のアイテムを一括洗浄します. 事象干渉力や乱流が強いほど速くなります.");
+                "Keeps living beings inside soaked and prevents fire. Extinguishes fire, campfires, and candles, hardens concrete powder, moistens farmland, and wets Sponges.$(p)With Create installed, bulk-washes items where your own Turbulence Zone overlaps (Rainstorm). See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内の生物を濡らし続け, 炎上を防ぎます. 炎・焚き火・ろうそくを消し, コンクリートパウダーの固化や耕地の保湿・スポンジの湿潤も行います.$(p)Create 導入時は, 自分の乱流領域が重なる暴風雨の範囲に限りアイテムを一括洗浄します. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
 
         // 加重領域
         addBookPage(root, "trick_gravity_zone.0",
-                "Continuously pushes entities inside (including living beings, items, projectiles, minecarts, boats, and the caster) according to Power (constant 1–10). Power 4 roughly balances gravity, and upward push prevents fall damage. With Create Aeronautics (Sable), also pushes and tilts Simulated Contraptions; overlapping Gravity Zones combine pushes up to Power 10. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内のエンティティ（生物・アイテム・飛び道具・トロッコ・ボート・術者自身など）に, 「威力」（1〜10の定数）に応じた運動を毎 tick 与えます. 威力4前後で重力と釣り合い, 上向きに押している間は落下ダメージを受けません. Create Aeronautics (Sable) 導入時は Simulated Contraption も押し傾け, 加重領域の重なりは威力10を上限に押す向きを合算します. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Continuously pushes entities inside according to Power. Power 4 roughly balances gravity, and upward push prevents fall damage.$(p)With Create Aeronautics (Sable), also pushes and tilts Simulated Contraptions. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内のエンティティへ「威力」に応じた運動を毎 tick 与えます. 威力4前後で重力と釣り合い, 上向きに押している間は落下ダメージを受けません.$(p)Create Aeronautics (Sable) 導入時は Simulated Contraption も押し傾けます. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
         addBookPage(root, "trick_gravity_zone.1",
-                "Has two modes. Vector mode (default) pushes along Direction and lasts 30 seconds. Matrix mode pushes along the Matrix's Y axis (straight up if omitted; reversed with negative Power) and accepts a Time input. Use Operator: Matrix Set Y Axis to aim in any direction.",
-                "2つのモードがあります. ベクトルモード（既定）は指定した「方向」へ押し, 30秒間持続します. 行列モードは行列の Y 軸方向（省略時は真上, 負の威力で逆向き）へ押し, 「時間」も指定できます. 演算子: Y軸方向指定で行列を回せば任意の向きへ押せます.");
+                "Default Vector mode pushes along Direction for 30 seconds. Matrix mode pushes along the Matrix's Y axis (reversed with negative Power) and accepts Time. Use Operator: Matrix Set Y Axis to aim in any direction.",
+                "既定のベクトルモードは指定した「方向」へ押し, 30秒間持続します. 行列モードは行列の Y 軸方向へ押し (負の威力で逆向き), 「時間」も指定できます. 演算子: Y軸方向指定で行列を回せば任意の向きへ押せます.");
 
         // 加熱領域
         addBookPage(root, "trick_heat_zone.0",
-                "Ignites living beings inside according to Power (constant of at least 1), sparing the caster, pets, allies, and wet beings. Randomly melts Ice, Frosted Ice, and snow layers and dries Wet Sponges (Packed Ice, Blue Ice, and Snow Blocks are unaffected). See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "「威力」（1以上の定数）に応じて範囲内の生物を炎上させます（術者・ペット・味方・濡れた生物は対象外）. ランダムに氷・薄氷や雪を溶かし, 濡れたスポンジを乾かします（氷塊・青氷・雪ブロックは対象外）. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Ignites living beings inside according to Power, sparing you, pets, allies, and wet creatures.$(p)Randomly melts Ice, Frosted Ice, and snow layers, and dries Wet Sponges. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "「威力」に応じて範囲内の生物を炎上させます. 術者・ペット・味方・濡れた生物には効きません.$(p)ランダムに氷・薄氷・雪を溶かし, 濡れたスポンジを乾かします. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
         addBookPage(root, "trick_heat_zone.1",
-                "Produces a Cost-based heat total that heats Create Blaze Burners without fuel (nearest first) and shares remaining heat among Mekanism heat blocks, plus any heat transferred from touching or overlapping Freeze Zones of yours.$(p)With Create installed, overlapping your own Turbulence Zone (Heat Storm) bulk-smokes items on the ground, Depots, or Mechanical Belts; adding your own Charged Zone switches it to bulk-blasting.",
-                "コストに応じた熱の総量を持ち, 燃料なしで Create のブレイズバーナーを近いものから加熱し, 残りの熱を Mekanism の熱ブロックへ分け与えます（隣接・重複する自分の凍結領域が運んだ熱も加算されます）.$(p)Create 導入時は, 自分の乱流領域が重なる場所（熱乱流）でアイテムを一括燻製し, さらに自分の荷電領域も重なると一括製錬に切り替わります.");
+                "Produces a Cost-based heat total that heats Create Blaze Burners without fuel and shares remaining heat with Mekanism heat blocks, plus heat transferred from your Freeze Zones.$(p)With Create installed, overlapping your Turbulence Zone bulk-smokes items, and adding your Charged Zone switches it to bulk-blasting.",
+                "コストに応じた熱の総量を持ち, 燃料なしで Create のブレイズバーナーを加熱し, 残りの熱を Mekanism の熱ブロックへ分け与えます. 自分の凍結領域が運んだ熱も加算されます.$(p)Create 導入時は, 自分の乱流領域が重なる熱乱流で一括燻製し, さらに自分の荷電領域も重なると一括製錬になります.");
 
         // 凍結領域
         addBookPage(root, "trick_freeze_zone.0",
-                "Freezes living beings inside like Powder Snow according to Power (constant of at least 1), slowing and damaging them once frozen; wet beings freeze twice as fast. Spares the caster, pets, allies, and beings immune to Powder Snow such as those in leather armor. Randomly freezes open water sources into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "「威力」（1以上の定数）に応じて範囲内の生物を粉雪のように凍えさせ, 凍えきると鈍足と凍結ダメージを与えます（濡れた生物は半分の時間で凍えます）. 術者・ペット・味方・革の防具装備者など粉雪で凍えない相手は対象外です. 真上が空気の水源をランダムに氷へ変えます. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Chills living beings inside like Powder Snow according to Power, slowing and damaging them once frozen. Wet creatures freeze twice as fast, while you, pets, allies, and leather armor wearers are spared.$(p)Randomly freezes open water sources into ice. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "「威力」に応じて範囲内の生物を粉雪のように凍えさせ, 鈍足と凍結ダメージを与えます. 濡れた生物は半分の時間で凍え, 術者・ペット・味方や革の防具装備者は対象外です.$(p)開いた水源をランダムに氷へ変えます. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
         addBookPage(root, "trick_freeze_zone.1",
-                "With Mekanism installed, cools heat-holding blocks inside (such as Resistive Heaters, Boiler Valves, and Fission Reactor Ports) using a Cost-based cooling total.$(p)When touching or overlapping your own Heat Zone (the overlap itself still cancels out), heat drawn from blocks hotter than ambient temperature is transferred into that Heat Zone's heat total.",
-                "Mekanism 導入時は, コストに応じた冷却量で範囲内の熱を持つブロック（抵抗型発熱器・ボイラーバルブ・核分裂炉ポートなど）を冷やします.$(p)自分の加熱領域と隣接または重複している場合, 周囲温度より熱いブロックから奪った熱をその加熱領域へ運んで熱の総量に加えます（重なった部分は打ち消し合います）.");
+                "With Mekanism installed, cools heat-holding blocks and machines inside using a Cost-based cooling total.$(p)When touching or overlapping your own Heat Zone, heat drawn from hot blocks is transferred into that Heat Zone's heat total.",
+                "Mekanism 導入時は, コストに応じた冷却量で範囲内の熱を持つ機械やブロックを冷やします.$(p)自分の加熱領域と隣接または重複している場合, 奪った熱をその加熱領域へ運んで熱の総量に加えます.");
 
         // 乱流領域
         addBookPage(root, "trick_turbulence_zone.0",
-                "Blows a gale that sharply deflects non-magic projectiles shot by others (arrows, tridents, fireballs, etc.) according to Power (constant of at least 1), and quickly disperses lingering potion and dragon's breath clouds. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "暴風で他者の飛び道具（矢・トライデント・火の玉など. 魔法の弾は除く）の向きを大きく曲げ, 残留ポーションやドラゴンブレスの雲を素早く吹き散らします. 「威力」（1以上の定数）が大きいほど大きく曲がります. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Blows a gale that deflects others' projectiles (excluding magic projectiles) according to Power, and disperses lingering potion and dragon's breath clouds. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "暴風で他者の飛び道具 (魔法の弾は除く) の向きを「威力」に応じて大きく曲げ, 残留ポーションやドラゴンブレスの雲を吹き散らします. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
         addBookPage(root, "trick_turbulence_zone.1",
-                "Overlapping your own zones upgrades them: Heat Zone becomes a Heat Storm (fire damage, extra Mekanism heat), Freeze Zone a Blizzard (freezing damage, faster freezing), Soak Zone a Rainstorm (water damage to vulnerable mobs), and Charged Zone a Thundercloud (random lightning, faster charging). With Create installed, these overlaps also enable bulk smoking (Heat), bulk blasting (Heat + Charged), and bulk washing (Soak), scaling with turbulence strength.",
-                "自分の他領域に重ねると強化されます. 加熱領域とは熱乱流（火ダメージ・熱増加）, 凍結領域とは吹雪（凍結ダメージ・凍結加速）, 湿潤領域とは暴風雨（水に弱い生物へのダメージ）, 荷電領域とは雷雲（ランダム雷撃・充電加速）になります. Create 導入時はこれらの重なりでのみ一括加工（熱乱流で燻製, さらに荷電領域も重ねると製錬, 暴風雨で洗浄）も行われ, 乱流が強いほど速くなります.");
+                "Overlapping your own zones upgrades them into storms: Heat Zone becomes a Heat Storm, Freeze Zone a Blizzard, Soak Zone a Rainstorm, and Charged Zone a Thundercloud, boosting their attacks and output.$(p)With Create installed, Heat Storms bulk-smoke, adding Charged Zone bulk-blasts, and Rainstorms bulk-wash, scaling with turbulence.",
+                "自分の他領域に重ねると強化され, 加熱領域とは熱乱流, 凍結領域とは吹雪, 湿潤領域とは暴風雨, 荷電領域とは雷雲になります. それぞれの攻撃効果や供給量が増えます.$(p)Create 導入時は熱乱流で一括燻製, さらに荷電領域も重ねると一括製錬, 暴風雨で一括洗浄が働き, 乱流が強いほど速くなります.");
         addBookPage(root, "trick_turbulence_zone.2",
-                "Generates Wind Units (WU) scaled by area, Power, and Phenomenon Interference when placed. Mekanism Generators Wind Generators (up to 10 WU each, working at any height even under roofs) and Immersive Engineering Windmills with a Kinetic Dynamo (up to 4 WU each, even with blocked fronts) share this wind to generate power.",
-                "範囲の広さ・威力・事象干渉力に応じた風量（WU）を生み出します. Mekanism Generators の風力発電機（1台最大10 WU, 屋根の下や高度を問わず稼働）や, Immersive Engineering の動力ダイナモ付き風車（1台最大4 WU, 前面が塞がっていても稼働）で風量を分け合って発電できます.");
+                "Generates wind scaled by area, Power, and Phenomenon Interference.$(p)Mekanism Generators Wind Generators and Immersive Engineering Windmills with a Kinetic Dynamo inside share this wind to generate power, even indoors or obstructed.",
+                "範囲・威力・事象干渉力に応じた風量を生み出します.$(p)Mekanism Generators の風力発電機や Immersive Engineering の動力ダイナモ付き風車を範囲内に置くと, 屋根の下や塞がれた場所でも風量を分け合って発電できます.");
 
         // 領域干渉
         addBookPage(root, "trick_interference_zone.0",
-                "Stops other casters with lower Phenomenon Interference from targeting blocks, positions, or entities inside (those inside cannot target themselves or center zones there). Does not affect equal/higher interference, your own or your Autonomous Casters' spells, or other mods' magic.$(p)Also blocks non-caster ender teleports (Endermen, Shulkers, Ender Pearls, Chorus Fruit) into or out of the area. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "置いた時点の自分の事象干渉力より低い他者は, 範囲内のブロック・位置・エンティティを対象にできず作動式が失敗します（範囲内の相手は自分自身も対象にできず, 領域の中心も置けません）. 同値以上の相手や自分・自分の自律詠唱機, 他 Mod の魔法は止めません.$(p)範囲内では術者以外のエンダー系テレポート（エンダーマン・シュルカー・エンダーパール・コーラスフルーツ）を内外ともに防ぎます. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Stops other casters with lower Phenomenon Interference from running tricks or placing zones inside. Does not affect you, your Autonomous Casters, or other mods' magic.$(p)Also blocks non-caster ender teleports into or out of the area. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "置いた時点の自分の事象干渉力より低い他者は, 範囲内を対象にする作動式や領域設置が失敗します. 自分や自律詠唱機, 他 Mod の魔法は止めません.$(p)範囲内では術者以外のエンダー系テレポートを内外ともに防ぎます. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
 
         // 荷電領域
         addBookPage(root, "trick_charged_zone.0",
-                "Distributes a Cost-based FE capacity (Power: constant of at least 1) evenly to FE-accepting blocks, dropped items, FE entities, and players carrying a Zone Receiver inside. Randomly scrapes one oxidation stage off unwaxed copper blocks, and with Applied Energistics 2 processes dropped items like a Charger. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "「威力」（1以上の定数）とコストに応じた充電能力を, 範囲内の FE 対応ブロック・ドロップアイテム・FE 対応エンティティ・領域受電器を持つプレイヤーの持ち物へ均等に配ります. 錆止め以外の銅の錆をランダムに1段ずつ落とし, Applied Energistics 2 導入時はドロップアイテムをチャージャー同様に加工します. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Distributes a Cost-based FE capacity evenly to FE blocks, entities, dropped items, and players carrying a Zone Receiver inside.$(p)Randomly scrapes oxidation off unwaxed copper, and with Applied Energistics 2 processes dropped items like a Charger. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "「威力」とコストに応じた充電能力を, 範囲内の FE 対応ブロック・エンティティ・アイテムや領域受電器を持つプレイヤーへ均等に配ります.$(p)錆止め以外の銅の錆をランダムに落とし, Applied Energistics 2 導入時はドロップアイテムをチャージャー同様に加工します. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
         addBookPage(root, "trick_charged_zone.1",
-                "Overlapping your own Turbulence Zone creates a Thundercloud that strikes up to three living beings below at random (25%% stronger on wet targets) and increases FE output (with Create installed, adding your Heat Zone enables bulk blasting).$(p)If your own $(l:psitweaks_machines/zone_feeder)Zone Feeder$(/l) is inside, the zone draws stored FE from it whenever its own capacity is not enough (never charging the feeder itself).",
-                "自分の乱流領域と重なる場所は雷雲となり, 下の生物へランダムに雷撃を落とし（濡れた相手には1.25倍）, FE 供給量も増えます（Create 導入時は, さらに加熱領域も重なると一括製錬になります）.$(p)範囲内に自分の$(l:psitweaks_machines/zone_feeder)領域給電機$(/l)があると, 充電能力で足りない分の FE を給電機から補って配ります（給電機自身には送りません）.");
+                "Overlapping your Turbulence Zone creates a Thundercloud that strikes creatures below (1.25x damage on wet creatures) and boosts FE output. With Create, adding your Heat Zone enables bulk blasting.$(p)If your $(l:psitweaks_machines/zone_feeder)Zone Feeder$(/l) is inside, it supplies extra FE whenever the zone's own capacity runs short.",
+                "自分の乱流領域と重なる場所は雷雲となり, 下の生物へランダムに雷撃を落として FE 供給量も増えます. 濡れている生物には雷撃ダメージが1.25倍になります. Create 導入時は加熱領域も重ねると一括製錬になります.$(p)範囲内に自分の$(l:psitweaks_machines/zone_feeder)領域給電機$(/l)があると, 足りない分の FE をそこから補って配ります.");
         addBookPage(root, "trick_charged_zone.2",
-                "Keep this in your inventory inside a Charged Zone to charge your FE items (armor first, then main hand, off hand, and remaining inventory). Right-click to toggle on or off. Players without one and other mobs' gear do not receive FE.",
-                "持ち物に入れておくと, 荷電領域内で自分の FE 対応アイテム（防具・メインハンド・オフハンド・その他の順）に給電されます. 右クリックで入／切を切り替えられます. 持たないプレイヤーやほかの生物の装備には給電されません.");
+                "Keep this in your inventory inside a Charged Zone to charge your FE items. Right-click to toggle on or off; without it, carried items and gear are not charged.",
+                "持ち物に入れておくと, 荷電領域内で自分の FE 対応アイテムへ給電されます. 右クリックで入／切を切り替えられます. 持っていないと手持ちや装備には給電されません.");
 
         // 遮音領域
         addBookPage(root, "trick_silence_zone.0",
-                "Silences sounds made inside (footsteps, blocks, mobs, and the caster; global sounds like music remain) and blocks vibrations like wool across, into, or out of the area.$(p)Sculk Sensors, Sculk Shriekers, and Wardens cannot detect blocked vibrations, and Shriekers inside or stepped on from inside will not shriek—though Wardens can still sniff out nearby targets. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内で鳴る音（足音・ブロック操作・モブの声・術者自身の音など. 音楽などは除く）を消し, 羊毛と同様に範囲を通る振動を遮断します.$(p)スカルクセンサー・スカルクシュリーカー・ウォーデンは遮られた振動に気づかず, 範囲内のシュリーカーや範囲内から踏んだシュリーカーも叫びません（においは消えないためウォーデンは近くで嗅ぎつけます）. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Silences sounds made inside and blocks vibrations like wool.$(p)Sculk Sensors, Sculk Shriekers, and Wardens cannot detect blocked vibrations, and Shriekers inside will not shriek. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内で鳴る音を消し, 羊毛と同様に範囲を通る振動を遮断します.$(p)スカルクセンサー・スカルクシュリーカー・ウォーデンは遮られた振動に気づかず, 範囲内のシュリーカーも叫びません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
 
         // 加速領域
         addBookPage(root, "trick_acceleration_zone.0",
-                "Adds extra random ticks to growing plants inside (crops, saplings, Budding Amethyst, Bamboo, Sugar Cane, Nether Wart, etc.), accelerating growth to (Power + 5) times normal speed (Power: constant 1–10; follows randomTickSpeed; block entities and living beings are unaffected).$(p)Also speeds up random block changes of your own overlapping zones by the same factor. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内の育つもの（作物・苗木・芽生えたアメジスト・竹・サトウキビ・ネザーウォートなど）にランダムティックを上乗せし, 通常と合わせて（威力＋5）倍の速さで育てます（「威力」は1〜10の定数. randomTickSpeed に従い, ブロックエンティティと生き物には効きません）.$(p)自分の他領域と重なると, そのランダムなブロック変化も同じ倍率で速くなります. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Accelerates crops, saplings, and other growing plants inside to (Power + 5) times normal speed. Block entities and living beings are unaffected.$(p)Also speeds up random block changes of your own overlapping zones by the same factor. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内の作物や苗木などの成長を通常と合わせて (威力＋5) 倍に速めます. ブロックエンティティや生物には効きません.$(p)自分の他領域と重なると, そのランダムなブロック変化も同じ倍率で速くなります. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
 
         // 減速領域
         addBookPage(root, "trick_deceleration_zone.0",
-                "Applies Torpor to living beings inside, heavily reducing movement and flying speed (and players' attack speed) according to Power (constant 1–10); non-player mobs are also slowed every tick. Spares you, pets, allies, bosses, and other players when PvP is off. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内の生き物に鈍化を与え, 「威力」（1〜10の定数）に応じて移動・飛行速度（プレイヤーは攻撃速度も）を大きく下げます. プレイヤー以外の生き物は毎 tick 速度自体も落ちます. 術者・ペット・味方・PvP 無効時の他プレイヤー・ボスには効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
-        addBookPage(root, "trick_deceleration_zone.1",
-                "Also slows projectiles inside every tick, sparing magic projectiles, projectiles from unaffected shooters, stuck arrows, Elytra rockets, fishing bobbers, items, minecarts, and boats. Does not cancel out Acceleration Zones.",
-                "範囲内の飛び道具も毎 tick 大きく減速します（魔法の弾・対象外が放った飛び道具・刺さった矢・エリトラ用ロケット花火・浮き・アイテム・トロッコ・ボート等は対象外）. 加速領域とは打ち消し合いません.");
+                "Applies Torpor to living beings inside, heavily reducing movement and flying speed (and players' attack speed) according to Power. Spares you, pets, allies, and bosses.$(p)Also slows projectiles inside every tick (excluding magic projectiles). Does not cancel out Acceleration Zones. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内の生物に鈍化を与え, 「威力」に応じて移動・飛行速度 (プレイヤーは攻撃速度も) を大きく下げます. 術者・ペット・味方・ボスには効きません.$(p)範囲内の飛び道具も毎 tick 減速します (魔法の弾などは対象外). 加速領域とは打ち消し合いません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
 
         // 作動式: 除染（領域ではない常駐魔法式）
         addBookPage(root, "trick_decontamination.0",
-                "Places a non-zone $(l:psitweaks/resident_spellgrams)Resident SpellGram$(/l) core at Position that weakens Mekanism radiation sources within 32 blocks every second according to Cost (nearer and stronger sources weaken faster and vanish once weak enough). Does not reduce living beings' dose (use Trick: Cure Radiation).$(p)Takes Power (constant of at least 1) and Time (max 120 s, default 30).",
-                "「位置」に除染の核（領域ではない$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)）を置き, 周囲32ブロック以内の Mekanism 放射線源をコストに応じて毎秒弱めます（近く強い線源ほど早く弱まり, 十分弱まると消えます）. 生き物の被ばく量は減らしません（作動式: 放射線除去を使用）.$(p)「威力」（1以上の定数）と「時間」（最大120秒, 省略時30秒）を指定します.");
+                "Places a decontamination core at Position that weakens Mekanism radiation sources within 32 blocks every second. Does not reduce living beings' dose (use Trick: Cure Radiation).$(p)Takes Power and Time (default 30 s, max 120 s). See $(l:psitweaks/resident_spellgrams)Resident SpellGrams$(/l) for shared rules.",
+                "「位置」に除染の核を置き, 周囲32ブロック以内の Mekanism 放射線源を毎秒弱めます. 生物の被ばく量は減らしません (作動式: 放射線除去を使用).$(p)「威力」と「時間」 (省略時30秒, 最大120秒) を指定します. 共通の決まりは$(l:psitweaks/resident_spellgrams)常駐魔法式$(/l)を参照してください.");
 
         // 汚染領域
         addBookPage(root, "trick_contamination_zone.0",
-                "Exposes living beings inside to radiation every second without leaving radiation sources, raising their dose up to a limit set by Power (constant 1–10); blocked by MekaSuit and Trick: Radiation Filter.$(p)Spares you, pets, allies, armor stands, and other players when PvP is off, and cannot be placed if Mekanism radiation is disabled. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内の生き物を毎秒放射線にさらします（放射線源は残しません）. 「威力」（1〜10の定数）に応じた上限まで被ばく量が上がり, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方・防具立て・PvP 無効時の他プレイヤーには効かず, Mekanism 設定で放射線が無効なときは置けません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Exposes living beings inside to radiation every second up to a limit set by Power, leaving no radiation sources. Blocked by MekaSuit and Trick: Radiation Filter.$(p)Spares you, pets, and allies. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内の生物を毎秒放射線にさらし, 「威力」に応じた上限まで被ばくさせます. 放射線源は残さず, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方などには効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -2266,11 +2244,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addUtilitySpellPieces(root);
         addIdeaStorageSelectorPages(root);
         addBookPage(root, "trick_idea_storage_view.0",
-                "Opens your personal Ideaspace Storage for items, fluids, Mekanism chemicals, and FE (transferred via Deposit/Withdraw FE mode; defaults to 256 item, 64 fluid, and 64 chemical types, configurable).$(p)Left-click the grid with a held item (right-click for 1) or Shift-click in your inventory to store. With an empty cursor, left-click withdraws up to a stack and right-click up to half (hold Shift to move directly to inventory).",
-                "自分専用のイデアストレージ画面を開きます. アイテム・液体・Mekanism の化学物質・FE（FE モードの格納／取出で転送）を保管でき, 既定ではアイテム256種・液体64種・化学物質64種まで入ります（設定変更可）.$(p)カーソルで持って左クリック（右クリックで1個）またはインベントリから Shift クリックで格納し, 空の手で左クリックすると最大1スタック, 右クリックで半分（Shift 併用で直接インベントリへ）取り出せます.");
+                "Opens your personal Ideaspace Storage for items, fluids, Mekanism chemicals, and FE (default limits: 256 item, 64 fluid, and 64 chemical types).$(p)Left-click (right-click for 1) or Shift-click to store items. With an empty cursor, left-click withdraws a stack and right-click takes half.",
+                "自分専用のイデアストレージ画面を開きます. アイテム・液体・Mekanism の化学物質・FE を保管でき, 既定ではアイテム256種・液体64種・化学物質64種まで入ります.$(p)アイテムは左クリック (右クリックで1個) か Shift クリックで格納します. 空の手で左クリックすると1スタック, 右クリックで半分を取り出せます.");
         addBookPage(root, "trick_idea_storage_view.1",
-                "Right-click the grid with a fluid or chemical container to store or fill its contents (Shift + right-click repeats). With an empty cursor, left-clicking a stored fluid fills one stored empty bucket if supported.$(p)The side crafting button opens a 3x3 grid that auto-refills consumed ingredients from storage (Shift-click crafts roughly a stack; supports clearing to storage, search, sorting, and JEI/EMI recipe transfer).",
-                "液体や化学物質の容器を持って右クリックすると中身を格納／充填できます（Shift＋右クリックで連続転送）. 空の手で液体を左クリックすると, 保存済みの空バケツ1個に汲み出せます.$(p)左の作業台ボタンで3×3クラフト欄が開き, 消費した材料は在庫から自動補充されます（Shift クリックでまとめて作成, 材料返却・検索・並べ替え・JEI/EMI 材料配置にも対応）.");
+                "Right-click with a fluid or chemical container to store or fill it (hold Shift to repeat). Left-click a fluid with an empty cursor to fill a stored empty bucket.$(p)The side crafting button opens a 3x3 grid that auto-refills ingredients from storage, with search, sorting, and JEI/EMI recipe transfer.",
+                "液体や化学物質の容器を持って右クリックすると格納・充填でき, Shift 併用で連続転送します. 空の手で液体を左クリックすると空バケツに汲み出せます.$(p)左の作業台ボタンで3×3クラフト欄が開き, 消費した材料は在庫から自動補充されます. 検索・並べ替え・JEI/EMI の材料配置にも対応します.");
         root.addProperty("psi.book.category.psitweaks_spell_pieces", switch (locale) {
             case "ja_jp" -> "追加術式";
             default -> "Additional Spell Pieces";
@@ -2310,7 +2288,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_stored_entity", "Gets an entity from the UUID stored in CAD memory.", "CADメモリに保存されたUUIDからエンティティを取得します. ");
         addBookPage(root, "trick_store_value", "Stores a Plain Value in CAD memory. The memory slot uses Psi's standard numbering: 1 is the first slot. Number, Vector, and String values overwrite each other in the same slot. String values longer than 128 characters are truncated when stored, and a warning is shown in the caster's chat.", "Plain ValueをCADメモリに保存します. メモリ番号はPsi標準と同じく1が最初のスロットです. Number, Vector, Stringは同じスロットで互いに上書きされます. 128文字を超えるStringは保存時に切り捨てられ, 術者のチャット欄に警告が表示されます.");
         addBookPage(root, "selector_stored_value", "Gets a Plain Value from CAD memory. Use the mode button to choose String, Number, or Vector. String conversions are strict; Number and Vector cannot be converted directly.", "CADメモリからPlain Valueを取得します. モードボタンでString, Number, Vectorを選択します. String変換は厳格で, NumberとVectorは直接変換できません.");
-        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト（常駐魔法式, 流星群の夜の核, マイクロブラックホール）を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
+        addBookPage(root, "selector_nearby_spellgram", "Gets SpellGram objects (Resident SpellGrams, the cores of Meteor Line nights and Micro Black Holes) around the specified coordinates. It is mainly used by tricks that control placed SpellGram objects.", "指定座標の周囲にある魔法式オブジェクト(常駐魔法式, 流星群の夜の核, マイクロブラックホール)を取得します. 設置済みの魔法式オブジェクトを制御する術式で主に使います.");
         addBookPage(root, "selector_autonomous_caster_position",
                 "Outputs the center of the $(thing)Autonomous Caster$(0) block casting the spell, as a Vector. "
                         + "The Autonomous Caster's caster is in front of the machine, so the position of $(thing)Selector: Caster$(0) is the block in front. It fails when cast from anything but an Autonomous Caster.",
@@ -2320,32 +2298,40 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
         addBookPage(root, "trick_cocytus.0",
-                "Takes no input. Blows a blizzard the way the caster is looking, through the same cone in front of the caster as $(thing)Trick: Gram Demolition$(0) (blocks do not stop it), and freezes the minds of the mobs it catches forever. A frozen mob's AI stops and it is sealed in ice, unable to move or make a sound.",
-                "入力はありません. 術者の視線の方向へ吹雪を放ち, $(thing)作動式: 術式解体$(0)と同じ前方の円錐の範囲 (ブロックは貫通します) にいるモブの精神を永久に凍結させます. 凍結したモブは AI が止まって氷に閉じ込められ, 動くことも音を立てることもなくなります.");
+                "Takes no input. Blows a blizzard in front of the caster (passing through blocks) and freezes the minds of the mobs it catches forever. A frozen mob's AI stops and it is sealed in ice, unable to move or make a sound.",
+                "入力はありません. 前方へ吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ブロックは貫通します). 凍結したモブは AI が止まって氷に閉じ込められ, 動くことも音を立てることもなくなります.");
         addBookPage(root, "trick_cocytus.1",
                 "Players, the caster, the caster's pets and allies, and bosses are not frozen. The blizzard itself deals no damage.$(br2)If something else turns a frozen mob's AI back on, the ice melts and the mob can make sounds again.",
                 "プレイヤー, 術者自身とそのペット・味方, ボスは凍結しません. 吹雪そのものはダメージを与えません.$(br2)ほかの方法で AI が戻ると, 氷が溶けて再び音を立てるようになります.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき, 1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0",
-                "Pulls up to one stack (capped by optional Max) from the specified face of the target block into your inventory; errors if there is no inventory, nothing to move, or the block is protected.$(p)Filter modes: String (ID wildcards, optional namespace, or # tag), Item (item type), and Item (Strict) (matches data components). Item modes also accept an Item List.",
-                "位置のブロックのインベントリから指定面経由で最大1スタック（任意入力「最大」で上限変更可）を術者のインベントリへ引き出します（インベントリなし・対象なし・保護ブロックはエラー）.$(p)フィルタは String（ID ワイルドカード・名前空間省略・# タグ）, Item（アイテム種）, Item (Strict)（データコンポーネントまで一致）の3モードで, Item 系は Item List も受け付けます.");
+                "Pulls up to one stack (capped by optional Max) from the specified face of the block into your inventory.$(p)Filter modes: String (ID, *, or # tag), Item, and data-matching Item (Strict). Item modes also accept an Item List.",
+                "位置のブロックの指定面から, 術者のインベントリへ最大1スタック (「最大」で変更可) を引き出します.$(p)フィルタは String (ID・*・# タグ), Item, データまで一致する Item (Strict) の3モードがあり, Item 系は Item List も使えます.");
         addBookPage(root, "trick_send_item.0", "Moves items from the caster's inventory into the inventory of the block at the target position, through the specified face. Only one stack is moved per cast; if the destination cannot hold it all, only what fits is moved. CADs are never moved.", "術者のインベントリから, 入力位置のブロックのインベントリへ, 入力方向の面を経由してアイテムを移動させます. 1回の実行で移動できるのは1スタックまでで, 移動先に入りきらない場合は入る分だけ移動します. CADは移動対象から除外されます.");
         addBookPage(root, "trick_send_item.1", "The filter modes and the optional Max input behave like Trick: Pull Item, including Item Lists in both Item modes. Casting fails with an error if the block has no inventory, no matching item is held, or the block is protected.", "フィルタのモードと任意入力の最大は作動式: アイテム引き出しと同様で, Item と Item (Strict) モードでは Item List も接続できます. インベントリが無い, 対象アイテムを所持していない, 保護されている場合はエラーになります.");
         addBookPage(root, "trick_time_accelerate", "Multiplies the target block's tick progression by (2 ^ power). The upper limit is 512x speed.", "対象ブロックのtick進行を (2 ^ 威力) 倍にします. 上限は512倍速まで.");
-        addBookPage(root, "trick_phonon_maser", "Fires a high-power heat ray using ultrasonic vibration.", "超音波振動による高威力の熱線を放ちます.");
+        addBookPage(root, "trick_phonon_maser",
+                "Fires a high-power heat ray using ultrasonic vibration, dealing $(thing)2 × Power$(0) damage per tick.",
+                "超音波振動による高威力の熱線を放ち, 毎tick $(thing)2×威力$(0) のダメージを与えます.");
         addBookPage(root, "trick_meteor_line.0",
                 "Spreads a sphere of night around the position, with a radius of $(thing)Radius$(0) blocks (16 to 32, 16 if left out). Stars light up in its upper half, and after one second they rain streaks of light for one second: at least one at every creature inside that the spell may harm, and the rest onto the ground.",
                 "指定位置を中心に, $(thing)半径$(0) ブロック (16〜32, 省略時は16) の球の夜を広げます. 夜の上半分に星が灯り, 1秒後から1秒間, 星から光条が降り注ぎます. 光条は夜の中にいる攻撃できる生物それぞれに少なくとも1本ずつ向かい, 残りは地面に落ちます.");
         addBookPage(root, "trick_meteor_line.1",
-                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit. The night is a SpellGram object whose core sits at the top of the sphere. Its integrity does not wear away over time; if it runs out, the night shatters and its streaks vanish with it.",
-                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き, 触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット, 味方には当たりません. 夜は魔法式オブジェクトで, 核は球のてっぺんにあります. 耐久値は時間では減りません. 耐久値が尽きると夜は砕け散り, 光条も一緒に消えます.");
+                "A streak passes through blocks without breaking them, so a roof gives no cover, and deals lethal damage to whatever it touches. Creatures outside the night when a streak falls are not aimed at. The caster, their pets and allies are never hit.",
+                "光条はブロックを壊さずにすり抜けるので屋根の下にも届き, 触れたものに致死的なダメージを与えます. 光条が降る瞬間に夜の外にいる生物は狙われません. 術者とそのペット, 味方には当たりません.");
         addBookPage(root, "trick_supreme_infusion", "Infusion-converts Echo Shards into Psionic Echo.", "残響の欠片をサイオニックエコーへ注入変換します.");
-        addBookPage(root, "trick_molecular_divider", "Cuts living beings along a plane defined by three points.", "三点で定義した平面で生物を切断します.");
+        addBookPage(root, "trick_molecular_divider",
+                "Cuts living beings along a plane defined by three points, dealing $(thing)60 × Power$(0) damage.",
+                "三点で定義した平面で生物を切断し, $(thing)60×威力$(0) のダメージを与えます.");
         addBookPage(root, "trick_aqua_cutter",
-                "Fires a water-blade projectile forward as an early-game offensive trick. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0), $(thing)Trick: Burst$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
-                "前方へ水刃の発射体を放つ序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) や $(thing)作動式: 爆裂$(0), 雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
-        addBookPage(root, "trick_dry_meteor", "Fires a dry ice projectile forward, dealing freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.", "前方にドライアイスの弾丸を発射し, 命中した相手に凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
-        addBookPage(root, "trick_blaze_ball", "Fires a ball of flame forward as an early-game offensive trick.", "前方へ火の弾を放つ序盤用の攻撃術式です.");
+                "Fires a water-blade projectile forward as an early-game offensive trick, dealing $(thing)2 + 3 × Power$(0) damage. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0), $(thing)Trick: Burst$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
+                "前方へ水刃の発射体を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) や $(thing)作動式: 爆裂$(0), 雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
+        addBookPage(root, "trick_dry_meteor",
+                "Fires a dry ice projectile forward, dealing $(thing)14$(0) freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.",
+                "前方にドライアイスの弾丸を発射し, 命中した相手に $(thing)14$(0) の凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
+        addBookPage(root, "trick_blaze_ball",
+                "Fires a ball of flame forward as an early-game offensive trick, dealing $(thing)2 + 2 × Power$(0) damage.",
+                "前方へ火の弾を放ち, $(thing)2 + 2×威力$(0) のダメージを与える序盤用の攻撃術式です.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
         addCircleBookPages(root);
         addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
@@ -2358,34 +2344,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_radiation_injection", "Applies Mekanism radiation exposure to the target.", "対象へMekanismの放射線被ばくを付与します. ");
         addBookPage(root, "trick_radiation_filter", "Applies a radiation protection effect to the target.", "対象に放射線防護効果を付与します.");
         addBookPage(root, "trick_cure_radiation", "Removes the target's radiation exposure.", "対象の被ばく量を除去します.");
-        addBookPage(root, "trick_guillotine", "Deals powerful slash damage to the target and makes it drop a head when killed.", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
+        addBookPage(root, "trick_guillotine",
+                "Deals $(thing)24$(0) slash damage to the target and makes it drop a head when killed.",
+                "対象に $(thing)24$(0) の斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         addBookPage(root, "trick_chain_lightning.0",
-                "Discharges lightning from the focal point along $(thing)Direction$(0), striking the nearest hostile creature within 24 blocks (discharges harmlessly into air if none is found). Chains to up to 3 hostile creatures within 8 blocks, then up to 2 more from each within 8 blocks without hitting the same target twice.",
-                "焦点から$(thing)方向$(0)へ雷撃を放ち, 24ブロック以内で最も近い敵対的な生物に命中させます（対象がいなくても失敗せず空中へ放電）. 最初の対象から8ブロック以内の敵対生物最大3体, さらに各8ブロック以内の最大2体へ連鎖します（同一対象には1回のみ）.");
+                "Discharges lightning from the focal point along $(thing)Direction$(0), striking the nearest hostile creature within 24 blocks. Chains to up to 3 hostile creatures within 8 blocks, then up to 2 more from each within 8 blocks.",
+                "焦点から$(thing)方向$(0)へ雷撃を放ち, 24ブロック以内で最も近い敵対的な生物に命中させます. 最初の対象から8ブロック以内の敵対生物最大3体, さらに各8ブロック以内の最大2体へ連鎖します.");
         addBookPage(root, "trick_chain_lightning.1",
-                "Deals $(thing)9 + 9 × Power$(0) on the first hit, 40%% on the first chain, and 20%% on the second; wet creatures take 1.25x damage.$(p)Set optional $(thing)Indiscriminate$(0) to non-zero to also hit animals and villagers (still sparing you, allies, and pets; connect $(thing)Selector: Sneak Status$(0) to toggle).",
-                "ダメージは初撃$(thing)9 + 9×威力$(0), 1段目40%%, 2段目20%%です. 濡れている生物には与えるダメージが1.25倍になります.$(p)$(thing)無差別$(0)（省略可）に0以外を入れると動物や村人も対象になります（術者・味方・ペットは除く. $(thing)取得子: スニーク状態$(0)で切替可）.");
+                "Deals $(thing)9 + 9 × Power$(0) on the first hit, 40%% on the first chain, and 20%% on the second; wet creatures take 1.25x damage.$(p)Set optional $(thing)Indiscriminate$(0) to non-zero to also hit animals and villagers (sparing you, allies, and pets).",
+                "ダメージは初撃$(thing)9 + 9×威力$(0), 1段目40%%, 2段目20%%です. 濡れている生物には与えるダメージが1.25倍になります.$(p)$(thing)無差別$(0) (省略可) に0以外を入れると動物や村人も対象になります (術者・味方・ペットは除く).");
         addBookPage(root, "trick_mine_genesis.0",
-                "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.",
-                "指定位置の地面を打ち, $(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ, すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.");
-        addBookPage(root, "trick_mine_genesis.1",
-                "Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 40%% at the edge. Shields cannot block it, and a higher Power throws targets higher. The tremor only moves creatures; it never breaks blocks.",
-                "ダメージは中心で $(thing)16 + 12×威力$(0), 外縁では40%%まで下がります. 盾では防げず, 威力が高いほど高く打ち上げます. 揺れが動かすのは生物だけで, ブロックは壊れません.");
+                "Strikes the ground at the position so a shockwave ring spreads out to $(thing)Radius$(0) blocks (2 to 12). Everything standing on the ground when the ring passes takes damage and is thrown into the air; anything already in the air is unharmed. The position must be within 3 blocks above the ground.$(p)Damage is $(thing)16 + 12 × Power$(0) at the centre and falls to 40%% at the edge.",
+                "指定位置の地面を打ち, $(thing)半径$(0) ブロック (2〜12) まで広がる衝撃波の輪を起こします. 輪が通過したときに地面に立っている生物はダメージを受けて宙へ打ち上げられ, すでに空中にいるものは無傷です. 位置は地面から3ブロック以内の高さである必要があります.$(p)ダメージは中心で $(thing)16 + 12×威力$(0), 外縁では40%%まで下がります.");
         addBookPage(root, "trick_burst.0",
-                "Vaporizes the liquid inside the target, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. Works on bosses too. Wet creatures take 1.25x damage.",
-                "対象の体内の液体を気化させ, 防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. ボスにも効きます. 濡れている生物には与えるダメージが1.25倍になります.");
-        addBookPage(root, "trick_burst.1",
-                "If the target dies from it, its body bursts and hits nearby hostile creatures for up to 40%% of the damage.",
-                "この術式で対象が倒れると体が破裂し, 付近の敵対的な生物に最大でダメージの40%%を与えます.");
+                "Vaporizes the liquid inside the target, dealing $(thing)36 + 30 × Power$(0) damage that ignores armor and shields. Works on bosses too. Wet creatures take 1.25x damage.$(p)If the target dies from it, its body bursts and hits nearby hostile creatures for up to 40%% of the damage.",
+                "対象の体内の液体を気化させ, 防具と盾を無視する $(thing)36 + 30×威力$(0) のダメージを与えます. ボスにも効きます. 濡れている生物には与えるダメージが1.25倍になります.$(p)この術式で対象が倒れると体が破裂し, 付近の敵対的な生物に最大でダメージの40%%を与えます.");
         addBookPage(root, "trick_psi_bullet",
                 "Fires a bullet of psions from the position in the direction. The bullet's range is 24 blocks, and it stops at the first creature, SpellGram object or block it hits.$(br)"
                         + "A creature it hits takes $(thing)2 + Power$(0) damage. When it hits the core of a SpellGram object, it removes $(thing)8 + 2 × Power$(0) times the caster's Phenomenon Interference from that object's integrity. It flies through the caster's own SpellGram objects.",
                 "指定位置から方向へ想子の弾を撃ち出します. 弾丸の射程は24ブロックで, 最初に当たった生物, 魔法式オブジェクト, ブロックで消えます.$(br)"
                         + "生物には $(thing)2 + 威力$(0) のダメージを与えます. 魔法式オブジェクトの核に当たると, その耐久値を $(thing)8 + 2×威力$(0) に術者の事象干渉力を掛けた分だけ減らします. 術者自身の魔法式オブジェクトはすり抜けます.");
         addBookPage(root, "trick_gram_demolition",
-                "Takes no input. Blasts every SpellGram object whose core is within 16 blocks in front of the caster, inside a cone of 30 degrees around the line of sight, and removes $(thing)300$(0) times the caster's Phenomenon Interference from each one's integrity. Blocks do not stop it.$(br)"
+                "Takes no input. Blasts every SpellGram object in front of the caster, removing $(thing)300$(0) times the caster's Phenomenon Interference from each one's integrity. Blocks do not stop it.$(br)"
                         + "Creatures in the same range take $(thing)6$(0) damage. The caster's own SpellGram objects are left alone.",
-                "入力はありません. 術者の視線の先16ブロック以内で, 視線から30度の円錐の中に核がある魔法式オブジェクトすべての耐久値を, $(thing)300$(0) に術者の事象干渉力を掛けた分だけ減らします. ブロックは貫通します.$(br)"
+                "入力はありません. 前方の魔法式オブジェクトすべての耐久値を, $(thing)300$(0) に術者の事象干渉力を掛けた分だけ減らします. ブロックは貫通します.$(br)"
                         + "同じ範囲の生物には $(thing)6$(0) のダメージを与えます. 術者自身の魔法式オブジェクトは削りません.");
         addBookPage(root, "trick_air_bullet",
                 "Fires a bullet of compressed air from the position in the direction. The bullet's range is 24 blocks.$(br)"
@@ -2397,18 +2379,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "術者の$(l:items/psitweaks_blade_pouch)$(o)$(item)ブレードポーチ$(0)$(/l)に入っている剣をすべて術者の周囲に展開します. 刃は16ブロック以内の敵対的な生物へ飛びかかって斬りつけ, 術者のもとへ戻ります. 刃は3回の攻撃を行うか15秒の経過で消滅します.");
         addBookPage(root, "trick_dancing_blades.1",
                 "Each slash deals the sword's attack damage scaled by Phenomenon Interference and applies enchantments without consuming durability. Recasting redeploys the blades.$(p)Set optional $(thing)Indiscriminate$(0) to non-zero to also target animals and villagers (sparing you, allies, and pets).",
-                "1回の斬撃のダメージは, その剣で攻撃した際のダメージに事象干渉力を掛けたもので, エンチャント効果も働きます. 剣の耐久値は減りません. もう一度唱えると刃を再展開します.$(p)$(thing)無差別$(0) (省略可) に0以外を入れると, 刃は動物や村人を含むあらゆる生物を狙います（術者・味方・ペットは除く）.");
+                "1回の斬撃のダメージは, その剣で攻撃した際のダメージに事象干渉力を掛けたもので, エンチャント効果も働きます. 剣の耐久値は減りません. もう一度唱えると刃を再展開します.$(p)$(thing)無差別$(0) (省略可) に0以外を入れると, 刃は動物や村人を含むあらゆる生物を狙います(術者・味方・ペットは除く).");
         addBookPage(root, "trick_pseudo_meteor.0",
-                "Calls down $(thing)Number$(0) pseudo meteors (max 16) around the position, homing in on nearby hostile creatures in order or landing near the position. Explodes on impact for up to $(thing)25 + 20 × Power$(0) damage and 3 s of fire; passes through terrain without breaking blocks and is reduced by Blast Protection.$(p)Set optional $(thing)Indiscriminate$(0) to non-zero to also target animals and villagers (sparing you, allies, and pets).",
-                "$(thing)数値$(0)個（上限16）の疑似隕石を指定位置の周囲へ順に降らせます. 近くの敵対的な生物を近い順に追尾し, 該当がいなければ指定位置周辺に落ちます. 着弾時に爆発し, 範囲内へ最大$(thing)25 + 20×威力$(0)ダメージと3秒の炎上を与えます. 地形をすり抜けてブロックを壊さず, 爆発耐性で軽減できます.$(p)$(thing)無差別$(0)（省略可）に0以外を入れると動物や村人も狙います（術者・味方・ペットは除く）.");
+                "Calls down Number pseudo meteors (max 16) around the position, homing in on nearby hostile creatures in order or landing near the position.$(p)Set optional Indiscriminate to non-zero to also target animals and villagers (sparing you, allies, and pets).",
+                "数値個(上限16)の疑似隕石を指定位置の周囲へ順に降らせます. 近くの敵対的な生物を近い順に追尾し, 該当がいなければ指定位置周辺に落ちます.$(p)無差別(省略可)に0以外を入れると動物や村人も狙います(術者・味方・ペットは除く).");
+        addBookPage(root, "trick_pseudo_meteor.1",
+                "Explodes on impact for up to $(thing)25 + 20 × Power$(0) damage and 3 s of fire. Passes through terrain without breaking blocks and is reduced by Blast Protection.",
+                "着弾時に爆発し, 範囲内へ最大 $(thing)25 + 20×威力$(0) ダメージと3秒の炎上を与えます. 地形をすり抜けてブロックを壊さず, 爆発耐性で軽減できます.");
         addBookPage(root, "trick_micro_black_hole.0",
                 "Creates a micro black hole at the position. For 10 seconds it drags creatures within $(thing)Radius$(0) blocks (16 to 32) and swings them around its centre at speed; a creature whipping past the centre may be flung out of range. In the last 1.5 seconds it swallows them, then collapses and crushes everything within three tenths of $(thing)Radius$(0) of the centre.",
                 "指定位置にマイクロブラックホールを生み出します. 10秒間, $(thing)半径$(0) ブロック (16〜32) 以内の生物を引き寄せ, 中心のまわりで勢いよく振り回します. 中心のそばを回り込んだ勢いで, 範囲の外へ投げ飛ばされることもあります. 最後の1.5秒で中心へ呑み込み, 崩壊して中心から $(thing)半径$(0) の3割以内のものを押し潰します.");
         addBookPage(root, "trick_micro_black_hole.1",
-                "The collapse deals $(thing)30 + 25 × Power$(0) damage that ignores armor and shields, falling to half at the edge. While being pulled, creatures build up no fall damage."
-                        + " The black hole is a SpellGram object: it has integrity, which does not wear away over time. If its integrity runs out before the collapse, it vanishes without crushing anything.",
-                "崩壊のダメージは防具と盾を無視する $(thing)30 + 25×威力$(0) で, 外縁では半分になります. 引き寄せられている間は落下ダメージが溜まりません. "
-                        + "ブラックホールは魔法式オブジェクトで, 耐久値を持ちます. 耐久値は時間では減りません. 崩壊する前に耐久値が尽きると, 何も押し潰さずに消えます.");
+                "The collapse deals $(thing)30 + 25 × Power$(0) damage that ignores armor and shields, falling to half at the edge.",
+                "崩壊のダメージは防具と盾を無視する $(thing)30 + 25×威力$(0) で, 外縁では半分になります.");
         addBookPage(root, "trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo.", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます.");
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし, Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");
@@ -2431,7 +2414,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_get_id_list", "Outputs registry IDs from a Contextual Value List as a String List. Entity List, Item List, and Block List preserve their input order. Vector List input is converted to Block List by reading the blocks at those world coordinates. Unsupported or empty elements become empty strings.", "Contextual Value List から各要素のレジストリIDを String List として出力します. Entity List, Item List, Block List は入力順を維持します. Vector List 入力はそのワールド座標のブロックを読む Block List として変換されます. 対応していない要素や空要素は空文字列になります.");
         addBookPage(root, "selector_display_name", "Outputs the display name of a Contextual Value as a String in the caster's current language. Players and custom-named entities keep their visible names; other entities use their EntityType name, Items use their hover name, and Blocks use their block name. If the caster's language or a translation is missing, English is used, then the translation key itself.", "Contextual Value の表示名を, 術者の現在言語に応じた String として出力します. プレイヤーやカスタム名付き Entity は表示されている名前を返し, 通常の Entity は EntityType の名前, Item は hover name, Block はブロック名を返します. 術者の言語や翻訳が見つからなければ English, それもなければ翻訳キーを返します.");
         addBookPage(root, "selector_display_name_list", "Outputs display names from a Contextual Value List as a String List while preserving input order. Entity List, Item List, and Block List are supported. Vector List input is converted to Block List by reading the blocks at those world coordinates. Each element uses the same language fallback as Selector: Display Name.", "Contextual Value List から各要素の表示名を String List として出力し, 入力順を維持します. Entity List, Item List, Block List に対応します. Vector List 入力はそのワールド座標のブロックを読む Block List として変換されます. 各要素は 取得子: 表示名 と同じ言語 fallback を使います.");
-        addBookPage(root, "selector_effect_list", "Outputs the registry ID of each active Mob Effect on the target Entity as a String List, including the namespace (for example, minecraft:speed). Non-living entities and living entities without active effects output an empty String List.", "対象 Entity に付与されている各 Mob Effect のレジストリ ID を, namespace を含む String List として出力します（例: minecraft:speed）. LivingEntity ではない Entity と, 有効なエフェクトがない LivingEntity は空の String List を出力します.");
+        addBookPage(root, "selector_effect_list", "Outputs the registry ID of each active Mob Effect on the target Entity as a String List, including the namespace (for example, minecraft:speed). Non-living entities and living entities without active effects output an empty String List.", "対象 Entity に付与されている各 Mob Effect のレジストリ ID を, namespace を含む String List として出力します(例: minecraft:speed). LivingEntity ではない Entity と, 有効なエフェクトがない LivingEntity は空の String List を出力します.");
         addBookPage(root, "selector_block", "Outputs the block at the target position as a Block value. Block is a read-only snapshot containing the saved position, dimension, block state, registry ID, and block tags. Pieces that take a Block also accept a Vector directly, so this is mainly for viewing Block information with Trick: Debug.", "対象座標にあるブロックを Block 型として出力します. Block は保存座標, ディメンション, ブロック状態, レジストリID, ブロックタグを持つ読み取り用スナップショットです. Block を受け取るピースには Vector をそのまま接続できるので, 主に 作動式: デバッグ で Block の情報を見たいときに使います.");
         addBookPage(root, "selector_block_list", "Gets the blocks at the positions in a Vector List as a Block List. Use this when you want to handle positions as blocks, such as when searching a list by block type.", "Vector List の座標にあるブロックを Block List として取得します. ブロックの種類でリストを検索したいなど, 座標をブロックとして扱いたい場合に使います.");
         addBookPage(root, "operator_block_state", "Outputs the block state saved in a Block value as a String, using Minecraft's command-style form such as minecraft:oak_stairs[facing=north,half=bottom]. The value comes from the Block snapshot and does not change if the world changes later.", "Block 値に保存されたブロックステートを String として出力します. 出力は minecraft:oak_stairs[facing=north,half=bottom] のような Minecraft のコマンド風表記です. 値は Block のスナップショットから取得され, 後からワールドが変化しても変わりません.");
@@ -2454,11 +2437,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_nbt", "Outputs the entries of the compound or list at the NBT Path as a String List: \"key:value\" for a compound, sorted by key, and \"index:value\" for a list, with values as SNBT. Unconnected or empty, the whole NBT is read. Any other value, a missing path or a target without NBT gives an empty List. Paths work as in Selector: NBT Value.", "NBTパスにある複合タグかリストの中身を String List で出力します. 複合タグは \"キー:値\" をキー順に, リストは \"番号:値\" を並べ, 値はSNBTです. NBTパスを接続しないか空文字にすると, NBT全体を読みます. それ以外の値, 存在しないパス, NBTのない対象は空のリストです. パスの書き方は 取得子: NBT値 と同じです.");
         addBookPage(root, "selector_nbt_keys", "Outputs the keys of the compound at the NBT Path, sorted, or the indexes \"0\", \"1\", ... of a list, as a String List. Unconnected or empty, the top-level keys are given. Any other value or a missing path gives an empty List. Paths work as in Selector: NBT Value.", "NBTパスにある複合タグのキーをキー順に, リストなら番号 \"0\", \"1\", ... を String List で出力します. NBTパスを接続しないか空文字にすると, 一番上のキーを出力します. それ以外の値や存在しないパスは空のリストです. パスの書き方は 取得子: NBT値 と同じです.");
         addBookPage(root, "selector_nbt_value",
-                "Reads the target's NBT (Entity saved data, Item id/count/components, or Block entity) using command NBT path syntax (Inventory[0].id, [-1], [], [{...}]; keys with spaces are quoted automatically) and returns the first match. Reads up to 1,024 targets per cast by default.",
-                "対象の NBT（エンティティ保存データ・アイテムの id/count/components・ブロックエンティティ）をコマンド準拠の NBT パス（Inventory[0].id・[-1]・[]・[{...}] 等. 空白キーは自動引用）で読み, 最初に一致した値を返します（1詠唱あたり既定1,024対象まで）.");
-        addBookPage(root, "selector_nbt_value.1",
-                "String mode returns strings as-is, numbers without type suffixes, and compounds/lists as SNBT. Number mode returns numeric values only (strings like \"5\" count as not found).$(p)Missing values or invalid paths never error, returning Fallback (or empty String / 0 if unset).",
-                "文字列モードは文字列をそのまま, 数値は型記号を外し, 複合タグやリストは SNBT で出力します. 数値モードは数値のみ返し,\"5\" のような文字列は未検出扱いです.$(p)値がない場合や不正なパスでもエラーにならず, 既定値（未接続なら空文字または0）を返します.");
+                "Reads NBT from an entity, item, or block using command NBT path syntax (e.g., Inventory[0].id) and returns the first match.$(p)String mode returns values as text, while Number mode returns numbers only. Missing values or invalid paths never error, returning Fallback (empty String or 0 if unset).",
+                "対象 (エンティティ・アイテム・ブロック) の NBT をコマンド準拠のパス (例: Inventory[0].id) で読み, 最初に一致した値を返します.$(p)文字列モードは値を文字列で, 数値モードは数値のみ返します. 値がない場合や不正なパスでもエラーにならず, 既定値 (省略時は空文字または0) を返します.");
         addBookPage(root, "selector_nbt_exists", "Outputs 1 if the NBT Path reaches anything in the target's NBT, otherwise 0. Paths work as in Selector: NBT Value, so it also tells whether a list has an element or whether a filter such as Inventory[{Slot:0b}] matches. A target without NBT, such as a block without a block entity, gives 0.", "対象のNBTにNBTパスで指す値があれば1, なければ0を出力します. パスの書き方は 取得子: NBT値 と同じなので, リストに要素があるかや, Inventory[{Slot:0b}] のような絞り込みに一致するかも調べられます. ブロックエンティティのないブロックなど, NBTのない対象は0です.");
         addBookPage(root, "operator_string_partial_match", "Searches String 1 with String 2 and checks whether it contains matching text. * matches any text, ? matches one character, and [abc] matches one of the listed characters. Escape wildcard characters with a backslash. Matching is case-sensitive.", "文字列1を文字列2で検索してマッチする文字列を含むか判定します. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. ワイルドカード文字はバックスラッシュでエスケープできます. 比較は大文字小文字を区別します.");
         addBookPage(root, "operator_string_starts_with", "Outputs 1 if String 1 starts with String 2, otherwise outputs 0. The comparison is case-sensitive.", "文字列1が文字列2で始まるなら1, そうでなければ0を出力します. 比較は大文字小文字を区別します.");
@@ -2468,15 +2448,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_string_slice", "Returns a selected range of characters from the input String as a new String. If A or B is not connected, the beginning or end is used. Negative numbers count from the end, out-of-range values are clamped to the valid range, and an end position at or before the start returns an empty String. Decimal values are truncated toward zero.", "入力文字列の文字数を指定して範囲を切り出して新しい文字列として返します. AまたはBが未接続なら先頭または末尾を使います. 負数は末尾から数え, 範囲外は有効範囲に収め, 終了位置が開始位置以下なら空文字列を返します. 小数部分は0方向へ切り捨てます.");
         addBookPage(root, "operator_string_length", "Returns the number of characters in the input String.", "入力した String の文字数を Number として返します.");
         addBookPage(root, "operator_string_replace", "Replaces every literal, case-sensitive occurrence of String 2 in String 1 with String 3. String 2 is evaluated only as an exact match. If String 2 is empty, String 1 is returned unchanged. The result is limited by the runtime String length limit.", "文字列1のうち, 文字列2と大文字小文字を区別してリテラル一致するすべての部分を文字列3へ置換します. 文字列2は完全一致のみ判定します. 文字列2が空の場合は文字列1をそのまま返します. 結果は実行時のString文字数上限に従います.");
-        addBookPage(root, "operator_string_trim", "Removes whitespace characters (such as spaces, tabs, and line breaks) from the beginning and end of the input String. Whitespace inside the String is preserved.", "入力した文字列の先頭と末尾にある空白（スペース, タブ, 改行など）を削除します. 文字列の途中にある空白は残ります.");
+        addBookPage(root, "operator_string_trim", "Removes whitespace characters (such as spaces, tabs, and line breaks) from the beginning and end of the input String. Whitespace inside the String is preserved.", "入力した文字列の先頭と末尾にある空白(スペース, タブ, 改行など)を削除します. 文字列の途中にある空白は残ります.");
         addBookPage(root, "operator_string_list_join", "Joins the input String List with String 2 and outputs a String. If String 2 is not connected, a comma is used. Empty delimiters are allowed and concatenate the elements directly.", "入力リストを文字列2で結合し, String を出力します. 文字列2が未接続の場合はカンマを使います. 空の区切り文字は許可され, 要素を直接連結します.");
         addBookPage(root, "operator_player_name", "Outputs the player's name when the input Entity is a player. Non-player entities output an empty String.", "入力 Entity がプレイヤーならプレイヤー名を出力します. プレイヤーでない Entity は空文字列になります.");
         addBookPage(root, "operator_list_search",
-                "Keeps elements in the selected List mode matching the pattern (full match with * ? [abc]; Entity, Item, and Block match by registry ID with optional namespace, others as Operator: To String).$(p)In Entity, Item, and Block modes, patterns starting with # match tags instead (e.g., #minecraft:logs).",
-                "選択中の List モードからパターンに一致する要素を残します（全体一致で * ? [abc] 対応. Entity・Item・Block はレジストリ ID を名前空間省略可で照合し, その他は演算子: 文字列へ変換と同等）.$(p)Entity・Item・Block モードでは # 始まり（例: #minecraft:logs）でタグ照合になります.");
+                "Keeps elements in the selected List matching the pattern (* ? [abc]).$(p)Entity, Item, and Block match by ID, or by tag when starting with # (e.g., #minecraft:logs).",
+                "選択中の List からパターン (* ? [abc] 対応) に一致する要素を残します.$(p)Entity・Item・Block は ID で照合し, # 始まり (例: #minecraft:logs) でタグ照合になります.");
         addBookPage(root, "operator_list_search_exclude",
-                "Removes elements in the selected List mode matching the pattern (full match with * ? [abc]; Entity, Item, and Block match by registry ID with optional namespace, others as Operator: To String).$(p)In Entity, Item, and Block modes, patterns starting with # match tags instead (e.g., #minecraft:logs).",
-                "選択中の List モードからパターンに一致する要素を除きます（全体一致で * ? [abc] 対応. Entity・Item・Block はレジストリ ID を名前空間省略可で照合し, その他は演算子: 文字列へ変換と同等）.$(p)Entity・Item・Block モードでは # 始まり（例: #minecraft:logs）でタグ照合になります.");
+                "Removes elements in the selected List matching the pattern (* ? [abc]).$(p)Entity, Item, and Block match by ID, or by tag when starting with # (e.g., #minecraft:logs).",
+                "選択中の List からパターン (* ? [abc] 対応) に一致する要素を除きます.$(p)Entity・Item・Block は ID で照合し, # 始まり (例: #minecraft:logs) でタグ照合になります.");
         addBookPage(root, "operator_list_name_search", "Keeps only the elements of the selected List mode (Entity, Item or Block) whose display name matches the pattern. Names are the same as Selector: Display Name: a player's name, the custom name of an entity or item, and otherwise the name in the caster's language, so that last kind can give different results for casters with different languages. * matches any text, ? one character, and [abc] one of the listed characters. The whole name must match and case matters; use *Zombie* for a partial match.", "選択中の List モード (Entity, Item, Block) から, 表示名がパターンに一致する要素だけを残します. 表示名は 取得子: 表示名 と同じで, プレイヤーはプレイヤー名, 名前を付けた Entity や Item はその名前, それ以外は術者の言語での名前になります. 最後の場合は, 術者の言語によって結果が変わります. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で大文字と小文字を区別し, 部分一致には *ゾンビ* のように前後に * を付けます.");
         addBookPage(root, "operator_list_name_search_exclude", "Removes the elements of the selected List mode (Entity, Item or Block) whose display name matches the pattern. Names are the same as Selector: Display Name: a player's name, the custom name of an entity or item, and otherwise the name in the caster's language, so that last kind can give different results for casters with different languages. * matches any text, ? one character, and [abc] one of the listed characters. The whole name must match and case matters; use *Zombie* for a partial match.", "選択中の List モード (Entity, Item, Block) から, 表示名がパターンに一致する要素を除きます. 表示名は 取得子: 表示名 と同じで, プレイヤーはプレイヤー名, 名前を付けた Entity や Item はその名前, それ以外は術者の言語での名前になります. 最後の場合は, 術者の言語によって結果が変わります. * は任意の文字列, ? は任意の1文字, [abc] は a/b/c のいずれか1文字に一致します. 比較は全体一致で大文字と小文字を区別し, 部分一致には *ゾンビ* のように前後に * を付けます.");
         addBookPage(root, "operator_list_nbt_search", "Keeps the elements of the selected List mode (Entity, Item or Block) whose NBT value at the NBT Path matches the pattern. Values become text as in the String mode of Selector: NBT Value, and the whole text must match (* ? [abc], case kept). If the path reaches several values, one match is enough; elements where it reaches nothing are not kept. Unlike Operator: List Keep Matches, there is no namespace rule and no # tags.", "選択中の List モード (Entity, Item, Block) から, NBTパスの値がパターンに一致する要素だけを残します. 値は 取得子: NBT値 の文字列モードと同じ形にして, 全体一致で比べます (* ? [abc], 大文字と小文字を区別). パスが複数の値に当たるときは1つ一致すれば十分で, 何にも当たらない要素は残しません. 演算子: リスト一致抽出 と違い, 名前空間の省略や # のタグはありません.");
@@ -2524,11 +2504,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう, 元の行列は2列以上である必要があります.");
         addBookPage(root, "operator_matrix_cuboid_region", "Builds a 4x4 matrix that defines an axis-aligned cuboid centered at the input position. Whole-number size components are treated as block counts around the block that contains the input position: odd counts are centered on that block, positive even counts include one extra block in the positive direction, and negative even counts include one extra block in the negative direction. Non-integer components keep continuous edge lengths. Pass the matrix to Operator: Region Vector List to turn the region into block coordinates before using Trick: Mass Block Break. In Number mode the Size is one number used for all three axes, so a Size of 5 makes a 5x5x5 cube.", "入力位置を中心とする軸平行直方体を表す 4×4 行列を生成します. 整数のサイズ成分はブロック数として扱われ, 入力位置が入っているブロックを基準にします. 奇数はそのブロックを中心に対称, 正の偶数は正方向へ1ブロック多く, 負の偶数は負方向へ1ブロック多く含みます. 非整数の成分は連続的な辺の長さとして扱われます. 作動式: 大規模ブロック破壊で使う前に, 演算子: 領域ベクトルリスト化へ渡して領域をブロック座標に変換します. Number モードではサイズを1つの数値で受け取り, 3軸すべてに使うので, サイズ5なら5×5×5の立方体になります.");
         addBookPage(root, "operator_matrix_cuboid_corners.0",
-                "Builds an axis-aligned 4×4 cuboid matrix from opposite corners Vector A and Vector B (order does not matter). Block mode (default) includes both corner blocks; Vector mode uses the raw points (flat zero-thickness boxes error when used).$(p)Pass to zone tricks, Operator: Inside Region, or Operator: Region Vector List (up to 4,096 blocks).",
-                "「ベクトル A」「ベクトル B」を向かい合う角（順不同）とする軸平行直方体の 4×4 行列を作ります. Block モード（既定）は両角のブロックを含む箱を作り, Vector モードは2点をそのまま角にします（同座標の軸があると厚さ0でエラー）.$(p)領域魔法の「行列」や演算子: 領域内, 演算子: 領域ベクトルリスト化（最大4,096ブロック）に渡して使えます.");
+                "Builds an axis-aligned 4×4 cuboid matrix from opposite corners Vector A and Vector B. Default Block mode includes both corner blocks; Vector mode uses the raw points.$(p)Pass to zone tricks, Operator: Inside Region, or Operator: Region Vector List.",
+                "「ベクトル A」「ベクトル B」を向かい合う角とする軸平行直方体の 4×4 行列を作ります. 既定の Block モードは両角のブロックを含み, Vector モードは2点をそのまま角にします.$(p)領域魔法の「行列」や演算子: 領域内, 演算子: 領域ベクトルリスト化に渡して使えます.");
         addBookPage(root, "operator_region_vector_list", "Returns all block position vectors inside a 3D parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Vectors are returned in fixed local u, v, and w order. The operator does not inspect the world, so air, unloaded chunks, and unbreakable blocks are not filtered. The returned Vector List can be passed to Trick: Mass Block Break. Regions above the shared internal limit raise an error.", "3×4 または 4×4 の行列で定義された平行六面体の内部にあるすべてのブロック座標を Vector List として返します. 最初の3列は辺ベクトル, 第4列は開始点です. Vector は局所u, v, w軸の固定順序で返されます. ワールド状態は確認しないため, 空気, 未読み込みチャンク, 破壊不能ブロックも除外されません. 返した Vector List は作動式: 大規模ブロック破壊へ渡せます. 領域が共通の内部上限を超える場合はエラーになります.");
         String regionModesEn = "Choose the list type in the mode menu. Entity (default) tests the center of each bounding box, Vector tests each vector as given, and Block tests block positions, the same points Operator: Region Vector List returns.";
-        String regionModesJa = "リストの種類はモードで選びます. Entity（既定）は当たり判定の中心, Vector はそのベクトル, Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.";
+        String regionModesJa = "リストの種類はモードで選びます. Entity(既定)は当たり判定の中心, Vector はそのベクトル, Block はブロックの座標で判定します. Block の判定は 演算子: 領域ベクトルリスト化 が返す座標と同じ基準です.";
         addBookPage(root, "operator_inside_region.0", "Filters a list and returns only the elements inside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside.", "3×4 または 4×4 の行列で定義された平行六面体の内部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル, 第4列は開始点です. 境界面上にあるものも内部とみなします.");
         addBookPage(root, "operator_inside_region.1", regionModesEn, regionModesJa);
         addBookPage(root, "operator_outside_region.0", "Filters a list and returns only the elements outside the parallelepiped defined by a 3x4 or 4x4 matrix. The first three columns are the edge vectors and the fourth column is the start point. Points exactly on the boundary are counted as inside, so they are excluded.", "3×4 または 4×4 の行列で定義された平行六面体の外部にある要素だけを残したリストを返します. 最初の3列は辺ベクトル, 第4列は開始点です. 境界面上にあるものは内部とみなすため, 結果から除外されます.");
@@ -2558,14 +2538,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "macro_caster_axial_offset_3d", "Like Macro: Caster Axial Offset, but the facing is rounded to the nearest of the six axis directions, including straight up and down. When looking straight up or down, forward points vertically and the Up/Down axis becomes horizontal, so offsets form a horizontal plane. This is useful for effects like 3x3 area mining, where the mined plane should become the floor or ceiling when looking up or down. The mode button switches to vector input: a single vector whose components are distances in the caster's view frame (X = right, Y = view-up, Z = forward), equivalent to adding the result of Macro: Caster Axial Rotation (3D) to the position.", "マクロ: 術者方角平行移動と同じですが, 向きは真上・真下を含む6方角の最も近い方向へ丸められます. 真上や真下を向いた時は前後が垂直になり, 上下の軸が水平になるため, オフセット平面が水平に張られます. 上や下を向いた時に掘削平面を床や天井にしたい 3×3 範囲破壊などに有用です. モードボタンでベクトル入力に切り替えると, 視点座標(X=右, Y=視点上, Z=前)の距離を成分とするベクトル1つで指定できます. これは位置にマクロ: 術者方角回転 (3D) の結果を加算するのと同等です.");
         addBookPage(root, "macro_caster_axial_rotation_3d", "Like Macro: Caster Axial Rotation, but the facing is rounded to the nearest of the six axis directions, including straight up and down. The X component is treated as right, Y as view-up, and Z as forward. When looking straight up or down, Z points vertically and Y becomes horizontal, matching the orientation of the view.", "マクロ: 術者方角回転と同じですが, 向きは真上・真下を含む6方角の最も近い方向へ丸められます. X成分を右, Y成分を視点上, Z成分を前として変換します. 真上や真下を向いた時はZが垂直, Yが水平になり, 視点の向きに一致します.");
         addBookPage(root, "macro_face_axial_offset.0",
-                "Offsets a position relative to the block face hit by a raycast from the caster (defaults to that hit block if Position is omitted). Positive values move right, inward into the block, and up as viewed (top/bottom faces follow horizontal facing); Vector mode takes (X=right, Y=up, Z=inward). Errors if the raycast misses.",
-                "術者のレイキャストが命中したブロック面を基準に位置ベクトルを移動します（「位置」省略時は命中ブロック座標を使用）. 正の値は面から見て右・ブロック内側・上方向へ動き（上下面では術者の水平向き基準）, ベクトル入力モードでは X=右・Y=上・Z=内側の1ベクトルで指定できます（未命中時はエラー）.");
+                "Offsets a position relative to the block face hit by a raycast from the caster, using the hit block if Position is omitted.$(p)Positive values move right, inward, and up as viewed; Vector mode takes one vector with X=right, Y=up, Z=inward.",
+                "術者のレイキャストが命中したブロック面を基準に位置ベクトルを移動します. 「位置」を省くと命中ブロックの座標を使います.$(p)正の値は面から見て右・内側・上へ動き, ベクトル入力モードでは X=右・Y=上・Z=内側の1ベクトルで指定できます.");
         addBookPage(root, "macro_face_axial_offset.1",
-                "When a spell uses multiple Face Axial Offset or Rotation pieces, only the first executed performs the raycast and shares its hit block and face with the rest (unaffected if the block breaks mid-spell; an explicit Position still takes precedence).",
-                "同じプログラム内に面基準平行移動や面基準回転が複数ある場合, 最初の1回だけレイキャストを行い, 命中ブロックと面を後続ピースで共有します（途中でブロックを壊しても影響なし. 位置入力がある場合はそちらを優先）.");
+                "When a spell uses multiple Face Axial Offset or Rotation pieces, only the first executed performs the raycast and shares its hit block and face with the rest, even if the block breaks mid-spell.",
+                "同じプログラム内に面基準平行移動や面基準回転が複数ある場合, 最初の1回だけレイキャストを行い, 命中ブロックと面を後続ピースで共有します. 途中でブロックを壊しても影響ありません.");
         addBookPage(root, "macro_face_axial_rotation.0", "Rotates the specified direction vector according to the orientation of the block face hit by a raycast from the caster. X points right as the face is viewed, Y points toward the top as the face is viewed, and Z points inward into the block. On the top and bottom faces, the caster's horizontal facing determines the rotation within the face. The vector's magnitude is preserved. If the raycast misses, a null-vector error is raised.", "術者からのレイキャストが命中したブロック面の向きに応じて, 指定した方向ベクトルを回転します. Xは面を見た時の右, Yは面を見た時の上, Zはブロック内側方向です. 上面と下面では, 術者の水平向きによって面内の回転を決めます. ベクトルの大きさは保存されます. レイキャストが命中しなかった場合は null vector エラーになります.");
         addBookPage(root, "macro_face_axial_rotation.1", "Face Axial Offset and Face Axial Rotation in the same program share the raycast result of the first one executed. See page 2 of $(l:psitweaks_spell_pieces/macro_face_axial_offset)$(o)Macro: Face Axial Offset$(0)$(/l) for details.", "同じプログラムにある 面基準平行移動 と 面基準回転 は, 最初に実行されたピースのレイキャスト結果を共有します. 詳しくは $(l:psitweaks_spell_pieces/macro_face_axial_offset)$(o)マクロ: 面基準平行移動$(0)$(/l) の2ページ目を参照してください.");
-        addBookPage(root, "trick_mass_block_break", "Breaks blocks at the coordinates in a Vector List (a Block List also works). Duplicate positions count once, and only the first positions up to the maximum block count (at most 4096) are processed. The maximum must be a positive integer constant. Drops go into the caster's inventory; overflow drops at the caster's position, or at the focal point if the task is interrupted.", "Vector List（Block List も可）の座標にあるブロックを破壊します. 重複した座標は1回だけ扱い, 先頭から破壊数の上限まで(最大4096)を処理します. 上限は正の整数定数である必要があります. ドロップは術者のインベントリに入り, 入りきらない分は術者の位置(タスクが中断されたときは焦点位置)に落ちます.");
+        addBookPage(root, "trick_mass_block_break",
+                "Breaks blocks at the coordinates in a Vector List or Block List, up to the limit (positive integer constant, max 4096), counting duplicates once.$(p)Drops go into the caster's inventory, with overflow dropping at the caster's position.",
+                "Vector List または Block List の座標にあるブロックを, 先頭から上限数 (最大4096の正の整数定数) まで破壊します. 重複座標は1回だけ処理します.$(p)ドロップは術者のインベントリに入り, 入りきらない分は術者の位置に落ちます.");
     }
 
     private void addZoneFeeder(JsonObject root) {
@@ -2574,13 +2556,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "%s / %s FE, Charged Zones drawing: %s";
         });
         root.addProperty("psi.book.page.psitweaks_machine.zone_feeder", switch (locale) {
-            case "ja_jp" -> "荷電領域へ FE を送り込むブロックです. どの面からも FE を入出力でき（1 tick に究極ユニバーサルケーブル相当まで）, 壊してもためた FE は残ります.";
-            default -> "Feeds FE into Charged Zones. Accepts and outputs FE from any side (up to Ultimate Universal Cable throughput per tick) and retains stored FE when broken.";
+            case "ja_jp" -> "荷電領域へ FE を送り込むブロックです. どの面からも FE を入出力でき, 壊してもためた FE は残ります.";
+            default -> "Feeds FE into Charged Zones. Accepts and outputs FE from any side and retains stored FE when broken.";
         });
         root.addProperty("tooltip.psitweaks.zone_feeder.stored", "%s / %s FE");
         root.addProperty("psi.book.page.psitweaks_machine.zone_feeder.1", switch (locale) {
-            case "ja_jp" -> "置いた人の$(l:psitweaks_spell_pieces/trick_charged_zone)荷電領域$(/l)がこのブロックを範囲に含むと, 領域自身の充電能力で足りない分の FE をここから補って配ります. 供給中は光り, 素手で右クリックすると残量を確認できます.$(p)ケーブルは範囲の外から引いてください（範囲内のケーブルには領域からの FE が逆流します）.";
-            default -> "When the owner's $(l:psitweaks_spell_pieces/trick_charged_zone)Charged Zone$(/l) covers this block, it draws stored FE here to cover demand beyond the zone's own capacity. Glows while feeding; right-click with an empty hand to check stored FE.$(p)Connect cables from outside the zone, as cables inside also receive the zone's FE.";
+            case "ja_jp" -> "置いた人の$(l:psitweaks_spell_pieces/trick_charged_zone)荷電領域$(/l)がこのブロックを範囲に含むと, 足りない分の FE をここから補って配ります. 供給中は光り, 素手で右クリックすると残量を確認できます.$(p)範囲内のケーブルには領域からの FE が逆流するため, 範囲の外から引いてください.";
+            default -> "When the owner's $(l:psitweaks_spell_pieces/trick_charged_zone)Charged Zone$(/l) covers this block, it supplies extra FE whenever the zone's own capacity runs short. Glows while feeding; right-click with an empty hand to check stored FE.$(p)Connect cables from outside the zone, as cables inside also receive the zone's FE.";
         });
     }
 
@@ -2764,7 +2746,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         boolean japanese = "ja_jp".equals(locale);
         root.addProperty("block.psitweaks.ideaspace_connector", japanese ? "イデアコネクター" : "Ideaspace Connector");
         String[][] labels = {
-                {"published", "公開する資源（9枠）", "Published resources (9 slots)"},
+                {"published", "公開する資源(9枠)", "Published resources (9 slots)"},
                 {"settings", "搬入出設定(共通)", "I/O settings (Shared)"},
                 {"export_settings", "自動搬出量・間隔", "Export rate"},
                 {"export_common_title", "搬出量・間隔(共通)", "Export rate (Shared)"},
@@ -2813,7 +2795,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 {"clear_hint", "何も持たずに右クリックで解除", "Right-click with an empty cursor to clear"},
                 {"load_failed", "ストレージを読み込めません.", "Storage could not be loaded."},
                 {"input_filters", "搬入フィルタ", "Input filter"},
-                {"input_list", "搬入フィルタ（9枠）", "Input filter (9 slots)"},
+                {"input_list", "搬入フィルタ(9枠)", "Input filter (9 slots)"},
                 {"input_mode.any", "すべて許可", "Accept all"},
                 {"input_mode.allow_list", "許可リスト", "Allow list"},
                 {"input_mode.deny_list", "拒否リスト", "Deny list"},
@@ -2854,32 +2836,32 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places an Ideaspace Connector linked to your Ideaspace Storage at the specified position.",
                 "作動式: イデアコネクター", "指定位置に, 自分のイデアストレージへ接続するイデアコネクターを設置します.");
         addBookPage(root, "trick_ideaspace_connector.0",
-                "Places an Ideaspace Connector linked directly to your Ideaspace Storage at the input position (never expires; breaking drops no item and keeps storage intact). Incoming items, fluids, chemicals (with Mekanism), and FE go straight to storage; right-click to publish up to 9 resources for extraction. Only the owner can configure it, and it works offline while chunk-loaded.",
-                "位置(Vector)に自分のイデアストレージと直結するイデアコネクターを設置します（時間経過で消えず, 破壊してもドロップなし・在庫は保持）. 搬入されたアイテム・液体・化学物質（Mekanism 導入時）・FE は直接ストレージに入り, 右クリックで最大9種類を公開して外部機器から搬出できます. 設定変更は設置者のみで, チャンク読込中ならオフラインでも稼働します.");
+                "Places an Ideaspace Connector linked to your Ideaspace Storage. It never expires, and breaking it keeps storage intact.$(p)Incoming resources go straight to storage; right-click to publish up to 9 resources for extraction. Works offline while chunk-loaded.",
+                "指定位置に自分のイデアストレージと直結するイデアコネクターを設置します. 時間経過では消えず, 壊しても在庫は失われません.$(p)搬入された資源は直接ストレージに入り, 右クリックで最大9種類を公開して外部機器から搬出できます. チャンク読込中ならオフラインでも稼働します.");
         addBookPage(root, "trick_ideaspace_connector.1",
-                "All six faces default to I/O enabled with automatic export off. Face I/O, redstone mode (always / powered / unpowered), export rate/interval, and stock rules (minimum storage stock and destination target stock) can be overridden per published slot.$(p)The Input filter (all faces) restricts accepted resources via Accept all, Allow list, Deny list, or Stored types only (FE is always accepted).",
-                "初期状態では全6面から搬入・搬出でき, 自動搬出は無効です. 面設定・動作条件（常時／信号あり／信号なし）・自動搬出の量と間隔・在庫条件（開始在庫・目標在庫）は共通設定を基本に公開枠ごとに上書きできます.$(p)「搬入フィルタ」（全6面共通）では, すべて許可／許可リスト／拒否リスト／在庫のある種類のみ（FE は常時許可）の4方式で受け入れを制限できます.");
+                "All six faces default to I/O enabled with automatic export off. Face I/O, redstone rules, export rate and interval, and stock limits can be overridden per published slot.$(p)The Input filter restricts accepted resources across all faces; FE is always accepted.",
+                "初期状態では全6面から搬入・搬出でき, 自動搬出は無効です. 面設定・レッドストーン条件・自動搬出の量と間隔・在庫条件は, 共通設定をもとに公開枠ごとに上書きできます.$(p)「搬入フィルタ」では全6面共通で受け入れる資源を制限できます. FE は常に受け入れます.");
         addBookPage(root, "trick_ideaspace_connector.2",
-                "Use Copy / Paste (or Ctrl+C / Ctrl+V) on the main page to transfer published slots, face settings, export rates, stock rules, and input filters as JSON between connectors. Removing sections from the JSON leaves those parts unchanged; faces keep their world directions.",
-                "メイン画面の「コピー」「貼り付け」（Ctrl+C / Ctrl+V）で, 公開枠・面設定・搬出量・在庫条件・搬入フィルタを JSON として別のコネクターへ複製できます. JSON から一部項目を削ればその箇所を変更せずに貼り付けられ, 面は方角（東西南北等）のまま適用されます.");
+                "Use Copy and Paste on the main page to transfer published slots, face settings, stock limits, and input filters as JSON between connectors.$(p)Removing sections leaves those parts unchanged, and faces keep their world directions.",
+                "メイン画面の「コピー」「貼り付け」で, 公開枠や面設定・在庫条件・搬入フィルタを JSON として別のコネクターへ複製できます.$(p)JSON から一部項目を削ればその箇所を変更せずに貼り付けられ, 面は方角のまま適用されます.");
     }
 
     private void addIdeaStorageSelectorPages(JsonObject root) {
         addBookPage(root, "selector_idea_storage_last_transfer.0",
-                "Returns the amount actually moved by the most recent Ideaspace transfer trick (Deposit, Withdraw, Slot Deposit/Withdraw in any mode) executed earlier in the same cast, or 0 if none ran, moved nothing, or failed.$(p)Because tricks run in reading order from top left, connect this selector only to tricks placed after the transfer.",
-                "同じ詠唱内で直前に実行されたイデア転送作動式（格納・取出・スロット格納・スロット取出の全モード）が実際に移した量を Number で取得します（未実行・移動量0・エラー時は0）.$(p)作動式は左上から順に実行されるため, 転送より後ろに配置した作動式へ接続して使います.");
+                "Returns the amount actually moved by the most recent Ideaspace transfer trick earlier in the same cast, or 0 if none ran or moved nothing.$(p)Because tricks run from top left, connect this selector to tricks placed after the transfer.",
+                "同じ詠唱内で直前に実行されたイデア転送作動式が実際に移した量を Number で取得します. 未実行や移動量0のときは0を返します.$(p)作動式は左上から順に実行されるため, 転送より後ろの作動式へ接続して使います.");
         addBookPage(root, "selector_idea_storage_amount.0",
-                "Returns how much of a resource your Ideaspace Storage holds as a Number (Item: count, Fluid/Chemical: mB, FE: FE).$(p)Item mode takes an ID String or Item; Fluid and Chemical modes take an ID String (FE takes no input). Items and fluids with the same ID are summed across data components; invalid IDs, empty items, and missing stock return 0.",
-                "自分のイデアストレージにある資源量を Number で取得します（モード: アイテム I＝個数, 液体 F・化学物質 C＝mB, FE＝FE）.$(p)アイテムは ID の String か Item, 液体・化学物質は ID の String を入力します（FE は入力なし）. アイテムと液体は同じ ID ならデータコンポーネント違いも合算し, 不正 ID・空 Item・在庫なしは0を返します.");
+                "Returns how much of a resource your Ideaspace Storage holds as a Number (count for items, mB for fluids and chemicals, FE for FE).$(p)Takes an ID String or Item for items, an ID String for fluids and chemicals, and no input for FE. Items and fluids with the same ID are summed across data components.",
+                "自分のイデアストレージにある資源量を Number で取得します. アイテムは個数, 液体・化学物質は mB, FE は FE です.$(p)アイテムは ID の String か Item, 液体・化学物質は ID の String を入力し, FE は入力不要です. 同じ ID のアイテムや液体はデータ違いも合算します.");
         addBookPage(root, "selector_idea_storage_free_capacity.0",
-                "Returns how much more of a resource your Ideaspace Storage can accept as a Number (Item, Fluid, Chemical, or FE mode; returns 0 for a new type when the type limit is full).$(p)Item mode takes an ID String (no extra data) or Item (with its data components); Fluid and Chemical modes take an ID String (FE takes no input). Invalid inputs and Chemical mode without Mekanism return 0.",
-                "自分のイデアストレージにあとどれだけ格納できるかを Number で取得します（モード: アイテム I・液体 F・化学物質 C・FE. 種類数上限に達している場合, 新規種類は0）.$(p)アイテムは ID の String（追加データなし）か Item（データ込み）, 液体・化学物質は ID の String を入力します（FE は入力なし）. 不正入力や Mekanism 未導入時の化学物質モードは0を返します.");
+                "Returns how much more of a resource your Ideaspace Storage can accept as a Number, returning 0 for a new type when the type limit is full.$(p)Takes an ID String or Item (including data) for items, an ID String for fluids and chemicals, and no input for FE.",
+                "自分のイデアストレージにあとどれだけ格納できるかを Number で取得します. 種類数上限に達している場合, 新規種類は0を返します.$(p)アイテムは ID の String か Item (データ込み), 液体・化学物質は ID の String を入力し, FE は入力不要です.");
         addBookPage(root, "selector_idea_storage_type_count",
                 "Returns the number of types of one resource kind currently stored in your Ideaspace Storage, as a Number."
                         + " The mode picks Item (I), Fluid (F) or Chemical (C)."
                         + " Items and fluids with different data components count as separate types, as in the storage's type limit.",
                 "自分のイデアストレージに現在格納されている, ある種類の資源の種類数をNumberとして取得します. "
-                        + "モードでアイテム（I）・液体（F）・化学物質（C）を選びます. "
+                        + "モードでアイテム(I)・液体(F)・化学物質(C)を選びます. "
                         + "アイテムと液体は, ストレージの種類数上限と同じく, データコンポーネントが異なるものを別の種類として数えます.");
     }
 
@@ -2902,25 +2884,25 @@ public class PsitweaksLanguageProvider implements DataProvider {
                     ? "Deposits the resource chosen by the mode (items, fluids, chemicals or FE) from the specified face of the block at Position into your Ideaspace Storage."
                     : "Withdraws the resource chosen by the mode (items, fluids, chemicals or FE) from your Ideaspace Storage into the specified face of the block at Position.";
             String jp = deposit
-                    ? "位置のブロックの指定面から, モードで選んだ資源（アイテム・液体・化学物質・FE）を自分のイデアストレージへ格納します."
-                    : "自分のイデアストレージから, モードで選んだ資源（アイテム・液体・化学物質・FE）を位置のブロックの指定面へ取り出します.";
+                    ? "位置のブロックの指定面から, モードで選んだ資源(アイテム・液体・化学物質・FE)を自分のイデアストレージへ格納します."
+                    : "自分のイデアストレージから, モードで選んだ資源(アイテム・液体・化学物質・FE)を位置のブロックの指定面へ取り出します.";
             addSpellPiece(root, id, "Trick: Ideaspace Storage - " + (deposit ? "Deposit" : "Withdraw"), en,
                     "作動式: イデアストレージ-" + (deposit ? "格納" : "取出"), jp);
             if (!deposit) {
                 addBookPage(root, id + ".0",
-                        "Withdraws the chosen resource (Item I, Fluid F, Chemical C, or FE) from your Ideaspace Storage into the specified block face, up to Number items, Power * 1000 mB, or Power * 4000 FE (rounded down).$(p)Filters, block rules, and Exact Transfer (I=, F=, C=) match $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l); multiple matching types are withdrawn in turn up to the limit.",
-                        "自分のイデアストレージから位置のブロックの指定面へ, モードで選んだ資源（アイテム I・液体 F・化学物質 C・FE）を取り出します. 上限はアイテムが「数値」個, 液体・化学物質が威力×1000 mB, FE が威力×4000 FE です（端数切り捨て）.$(p)フィルタ・ブロック転送・完全転送（I=・F=・C=）の仕様は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じで, 複数種類が一致する場合は上限まで順に取り出します.");
+                        "Withdraws the chosen resource (Item, Fluid, Chemical, or FE) from your Ideaspace Storage into the specified block face, up to Number items, Power * 1000 mB, or Power * 4000 FE.$(p)Filters and Exact Transfer match $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l); multiple matches are withdrawn in turn up to the limit.",
+                        "自分のイデアストレージから位置のブロックの指定面へ, 選んだモードの資源 (アイテム・液体・化学物質・FE) を取り出します. 上限はアイテムが「数値」個, 液体・化学物質が威力×1000 mB, FE が威力×4000 FE です.$(p)フィルタ・完全転送の仕様は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じで, 複数種類が一致すると上限まで順に取り出します.");
                 continue;
             }
             addBookPage(root, id + ".0",
-                    "Deposits the chosen resource (Item I, Fluid F, Chemical C, or FE) from the specified block face into your Ideaspace Storage, up to Number items, Power * 1000 mB, or Power * 4000 FE (rounded down).$(p)Follows face I/O rules, errors on protected blocks, and skips unloaded chunks, your own Ideaspace Connector (except FE), and Chemical mode without Mekanism.",
-                    "位置のブロックの指定面から, 選んだモードの資源（アイテム I・液体 F・化学物質 C・FE）を自分のイデアストレージへ格納します. 上限はアイテムが「数値」個, 液体・化学物質が威力×1000 mB, FE が威力×4000 FE です（端数切り捨て）.$(p)ブロックの面設定に従い, 保護ブロックではエラー, 未ロードチャンク・自分のイデアコネクター（FE 以外）・Mekanism 未導入時の化学物質モードでは作用しません.");
+                    "Deposits the chosen resource (Item, Fluid, Chemical, or FE) from the specified block face into your Ideaspace Storage, up to Number items, Power * 1000 mB, or Power * 4000 FE.$(p)Follows face I/O rules and errors on protected blocks; skips your own Ideaspace Connector except for FE.",
+                    "位置のブロックの指定面から, 選んだモードの資源 (アイテム・液体・化学物質・FE) を自分のイデアストレージへ格納します. 上限はアイテムが「数値」個, 液体・化学物質が威力×1000 mB, FE が威力×4000 FE です.$(p)ブロックの面設定に従い, 保護ブロックではエラーになります. 自分のイデアコネクターには FE 以外作用しません.");
             addBookPage(root, id + ".1",
-                    "The filter is optional (absent in FE mode). Fluid and Chemical modes match ID Strings with * and ? wildcards, optional namespace omission, or # tag matching.$(p)Item mode adapts to the connected type: String (ID/wildcard/#tag), Item (same type), Item List (any match), or Operator: Strict Item (matches data components such as enchantments and durability).",
-                    "フィルタは省略可能です（FE モードはなし）. 液体・化学物質は資源 ID を String で照合し, *・?・名前空間省略・# タグ指定に対応します.$(p)アイテムモードは接続した値で照合方法が決まります：String（ID／ワイルドカード／# タグ）, Item（その種類）, Item List（いずれか）, 演算子: 厳密一致アイテム（エンチャントや耐久値等のデータまで一致）.");
+                    "The filter is optional and absent in FE mode. Fluid and Chemical modes match ID Strings with *, ?, and # tags.$(p)Item mode matches by ID or # tag via String, by type via Item or Item List, or by exact data via Operator: Strict Item.",
+                    "フィルタは省略可能で, FE モードにはありません. 液体・化学物質は資源 ID を String で照合し, *・?・# タグが使えます.$(p)アイテムモードは String で ID や # タグ, Item や Item List でアイテム種, 演算子: 厳密一致アイテムでデータまで一致するものを照合します.");
             addBookPage(root, id + ".2",
-                    "Exact Transfer modes (I=, F=, C=; white badge) move the exact full amount of a single resource type or nothing at all without raising an error.$(p)Different items, data components, fluids, or chemicals are never combined; the first qualifying type is moved (fluid deposits require a single full drain, while matching chemicals across tanks combine).",
-                    "FE 以外は完全転送モード（I=・F=・C=, 白地バッジ）も選べます. 1種類の資源を指定量ちょうど移せる場合のみ実行し, 足りない場合は何も移さず終了します（エラーにはなりません）.$(p)別アイテムやデータ違いを合算せず, 条件を満たす最初の1種類を転送します（液体格納は1回の排出で全量が必要, 化学物質は同種の複数タンクを合算）.");
+                    "Exact Transfer modes (I=, F=, C=) move the exact full amount of one resource type, or nothing at all without raising an error.$(p)Different types or data components are never combined; the first qualifying type is moved.",
+                    "FE 以外は完全転送モード (I=・F=・C=) も選べます. 1種類の資源を指定量ちょうど移せる場合のみ実行し, 足りないときは何も移さず終了します.$(p)別の種類やデータ違いは合算せず, 条件を満たす最初の1種類を転送します.");
         }
     }
 
@@ -2929,16 +2911,16 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "指定スロットとのイデア転送に失敗しました. 詳細はサーバーログを確認してください";
             default -> "Ideaspace transfer with the target slot failed. Check the server log for details";
         });
-        String enSlot = "The target slot matches Psi's Trick: Place Block (default: hotbar slot right of the CAD; changeable via Trick: Switch Focus Slot or Trick: Slot Change (Inventory)). Skips the active CAD or casting tool slot, and errors if you have no CAD.";
-        String jpSlot = "指定スロットは Psi の作動式: ブロック設置(単)等と共通です（既定は CAD の右隣で, 作動式: 指定スロット切替や Trick: Slot Change (Inventory) で変更可）. 使用中の CAD や詠唱中の道具があるスロットには作用せず, CAD 未所持時はエラーになります.";
+        String enSlot = "The target slot matches Psi's Trick: Place Block (default: right of the CAD) and can be changed with Trick: Switch Focus Slot.$(p)Skips the active CAD or casting tool slot.";
+        String jpSlot = "指定スロットは Psi の作動式: ブロック設置(単)等と共通で, 既定は CAD の右隣です. 作動式: 指定スロット切替などで変更できます.$(p)使用中の CAD や詠唱中の道具があるスロットには作用しません.";
 
         String depositEn = "Deposits the item in the spell's target slot into your Ideaspace Storage, up to the count given by Number.";
         String depositJp = "術式の指定スロットにあるアイテムを, 自分のイデアストレージへ格納します. 上限は「数値」で指定した個数です.";
         addSpellPiece(root, "trick_idea_storage_deposit_slot", "Trick: Ideaspace Storage - Slot Deposit", depositEn,
                 "作動式: イデアストレージ-スロット格納", depositJp);
         addBookPage(root, "trick_idea_storage_deposit_slot.0",
-                depositEn + " Moves as much as fits (fractions rounded down).$(p)The filter is optional (unconnected or empty matches any item) and uses the same matching rules as $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l).",
-                depositJp + " 空きが足りない場合は移せる分だけ移します（端数切り捨て）.$(p)フィルタは省略可能（未接続・空文字なら種類を問わず格納）で, 照合方法は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じです.");
+                depositEn + " Moves as much as fits.$(p)The filter is optional and uses the same matching rules as $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l).",
+                depositJp + " 空きが足りない場合は移せる分だけ移します.$(p)フィルタは省略可能で, 照合方法は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じです.");
         addBookPage(root, "trick_idea_storage_deposit_slot.1", enSlot, jpSlot);
 
         String withdrawEn = "Withdraws items from your Ideaspace Storage into the spell's target slot, up to the count given by Number.";
@@ -2946,8 +2928,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_idea_storage_withdraw_slot", "Trick: Ideaspace Storage - Slot Withdraw", withdrawEn,
                 "作動式: イデアストレージ-スロット取出", withdrawJp);
         addBookPage(root, "trick_idea_storage_withdraw_slot.0",
-                withdrawEn + " Fills up to the item's max stack size (fractions rounded down).$(p)Occupied slots only top up with identical data components; empty slots take the first type matching the filter (does nothing if empty with no filter). Filter rules match $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l).",
-                withdrawJp + " 最大スタック数まで入ります（端数切り捨て）.$(p)既存アイテムがあるスロットにはデータまで同一のものを補充し, 空スロットにはフィルタに一致する最初の種類を取り出します（空＋フィルタなしは何もしません）. フィルタ照合は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じです.");
+                withdrawEn + " Fills up to the item's max stack size.$(p)Occupied slots only top up with identical data; empty slots take the first type matching the filter. Filter rules match $(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)Trick: Ideaspace Storage - Deposit$(0)$(/l).",
+                withdrawJp + " 最大スタック数まで入ります.$(p)既存アイテムがあるスロットにはデータまで同一のものを補充し, 空スロットにはフィルタに一致する最初の種類を取り出します. フィルタ照合は$(l:psitweaks_spell_pieces/trick_idea_storage_deposit)$(o)作動式: イデアストレージ-格納$(0)$(/l)と同じです.");
         addBookPage(root, "trick_idea_storage_withdraw_slot.1", enSlot, jpSlot);
     }
 
@@ -2955,8 +2937,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
     private void addItemBlockMatrixPieces(JsonObject root) {
         // Mode labels of Operator: Caster Basis Matrix and the block resource operators.
         String[][] modes = {
-                {"caster_basis_2d", "2D (Horizontal)", "2D（水平）"},
-                {"caster_basis_3d", "3D (With Pitch)", "3D（上下を含む）"},
+                {"caster_basis_2d", "2D (Horizontal)", "2D(水平)"},
+                {"caster_basis_3d", "3D (With Pitch)", "3D(上下を含む)"},
                 {"caster_basis_face", "Face", "面基準"},
                 {"resource_item", "Item", "アイテム"},
                 {"resource_fluid", "Fluid", "液体"},
@@ -2994,11 +2976,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addSpellPiece(root, "operator_block_resource_amount", "Operator: Block Resource Amount",
                 "Outputs the items, fluids, chemicals or FE stored in a block, chosen by the mode. String narrows it down by ID, or by tag when it starts with #.",
-                "演算子: ブロック資源量", "ブロック内のアイテム・液体・化学物質・FEの量を, モードに応じて出力します. 「文字列」でID（#で始めるとタグ）を絞り込めます.");
+                "演算子: ブロック資源量", "ブロック内のアイテム・液体・化学物質・FEの量を, モードに応じて出力します. 「文字列」でID(#で始めるとタグ)を絞り込めます.");
         addBookPage(root, "operator_block_resource_amount.0",
                 "Outputs how much a block holds of the kind chosen in the mode menu: items (count), fluids or chemicals (mB), or FE."
                         + " Direction picks the face to read, following the block's per-face input and output; unconnected, the whole block is read.",
-                "モードで選んだ種類について, ブロックが持つ量を出力します（アイテムは個数, 液体と化学物質はmB, FEはFE）. "
+                "モードで選んだ種類について, ブロックが持つ量を出力します(アイテムは個数, 液体と化学物質はmB, FEはFE). "
                         + "「方向」で読み取る面を選べ, 面ごとの入出力に従います. "
                         + "接続しない場合はブロック全体を読みます.");
         addBookPage(root, "operator_block_resource_amount.1",
@@ -3007,7 +2989,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " Unconnected or empty, everything is counted."
                         + " Blocks with no such storage, in unloaded chunks or in other dimensions read as 0, as do chemicals without Mekanism."
                         + " A protected block fails with an error.",
-                "任意の「文字列」は資源IDで絞り込み, *（任意の文字列）と?（任意の1文字）が使えます. "
+                "任意の「文字列」は資源IDで絞り込み, *(任意の文字列)と?(任意の1文字)が使えます. "
                         + "「minecraft:」のような先頭部分を省くと, どのModでも後半部分だけで照合します. "
                         + "#で始めると, #c:ingotsのようにタグで照合します. "
                         + "接続しないか空文字にすると, すべてを数えます. "
@@ -3021,7 +3003,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Outputs how much more a block accepts right now, by simulating an insertion; nothing moves."
                         + " Everything but String works as in Operator: Block Resource Amount."
                         + " String takes one exact ID such as minecraft:coal: no wildcards, \"minecraft:\" may be omitted, and unknown IDs read as 0.",
-                "ブロックが今あとどれだけ受け入れられるかを, 搬入を試算して出力します（実際には移しません）. "
+                "ブロックが今あとどれだけ受け入れられるかを, 搬入を試算して出力します(実際には移しません). "
                         + "「文字列」以外は演算子: ブロック資源量と同じです. "
                         + "「文字列」には minecraft:coal のようなIDを1つ指定します. "
                         + "ワイルドカードは使えず, 「minecraft:」は省略でき, 存在しないIDは0です.");
@@ -3043,22 +3025,19 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addSpellPiece(root, "operator_matrix_caster_basis", "Operator: Caster Basis Matrix",
                 "Builds a 4x4 matrix from the caster's axis-rounded facing (columns: right, up, forward, origin), so regions can follow the caster.",
-                "演算子: 術者基準行列", "術者の向きを軸に丸めた 4×4 行列（列: 右・上・前・原点）を作ります. 領域を術者の向きに合わせるのに使います.");
+                "演算子: 術者基準行列", "術者の向きを軸に丸めた 4×4 行列(列: 右・上・前・原点)を作ります. 領域を術者の向きに合わせるのに使います.");
         addBookPage(root, "operator_matrix_caster_basis.0",
-                "Builds a 4×4 matrix with the caster's axis-rounded right, up, and forward directions as columns and an origin (Position, or the caster's block if omitted). Modes: 2D (level forward), 3D (includes pitch), and Face (hit block face; errors on miss).",
-                "術者の右・上・前をブロック軸に丸めて列に並べ, 4列目を原点（「位置」, 省略時は術者のブロック）とした 4×4 行列を作ります. モードは 2D（水平固定）・3D（視線の上下含む）・面基準（見ているブロック面, 未命中エラー）の3種です.");
-        addBookPage(root, "operator_matrix_caster_basis.1",
-                "Maps local (X=right, Y=up, Z=forward) to world space: left-multiply a region matrix around (0, 0, 0) via Operator: Matrix Multiply to orient it with the caster (e.g., building a forward tunnel for Trick: Mass Block Break).",
-                "局所座標（X=右・Y=上・Z=前）をワールド座標へ写すため, (0, 0, 0) 基準の領域に左から演算子: 行列積で掛けると術者の向きへ追従させられます（例: 演算子: 直方体領域と組み合わせて前方の掘削領域を作成）.");
+                "Builds a 4×4 matrix from the caster's axis-rounded right, up, and forward directions plus an origin (the caster's block if omitted), in 2D, 3D, or Face mode.$(p)Left-multiply a region around (0, 0, 0) via Operator: Matrix Multiply to orient it with the caster.",
+                "術者の右・上・前をブロック軸に丸めて列に並べ, 原点 (省略時は術者のブロック) を加えた 4×4 行列を作ります. モードは 2D・3D・面基準の3種です.$(p)(0, 0, 0) 基準の領域に左から演算子: 行列積で掛けると, 領域を術者の向きへ追従させられます.");
 
         addSpellPiece(root, "operator_matrix_rotation", "Operator: Rotation Matrix",
                 "Builds a 4x4 matrix that rotates around Axis by Angle in radians, like Operator: Rotate Vector.",
-                "演算子: 回転行列", "Axis（軸）の周りに Angle（ラジアン）だけ回す 4×4 行列を作ります. Operator: Rotate Vector と同じ回転です.");
+                "演算子: 回転行列", "Axis(軸)の周りに Angle(ラジアン)だけ回す 4×4 行列を作ります. Operator: Rotate Vector と同じ回転です.");
         addBookPage(root, "operator_matrix_rotation.0",
                 "Builds a 4x4 matrix that rotates around Axis, through the origin, by Angle in radians, the same rotation as Operator: Rotate Vector."
                         + " Quarter turns come out exact, so rotated regions keep their block positions."
                         + " A zero axis is an error.",
-                "原点を通る Axis（軸）の周りに Angle（ラジアン）だけ回す 4×4 行列で, Operator: Rotate Vector と同じ回転です. "
+                "原点を通る Axis(軸)の周りに Angle(ラジアン)だけ回す 4×4 行列で, Operator: Rotate Vector と同じ回転です. "
                         + "90度単位の回転は誤差なく計算されるので, 回転した領域でもブロック座標がずれません. "
                         + "軸がゼロベクトルだとエラーです.");
         addBookPage(root, "operator_matrix_rotation.1",
@@ -3080,8 +3059,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Turns a region matrix around its center so that its Y axis points along Direction.",
                 "演算子: Y軸方向指定", "領域行列をその中心のまわりに回し, Y 軸を「方向」へ向けます.");
         addBookPage(root, "operator_matrix_set_y_axis.0",
-                "Rotates a 3×4 or 4×4 region matrix around its center by the smallest turn so its Y axis (column 2) points along Direction (size and center unchanged; exact for quarter turns; zero Direction errors).$(p)Useful for aiming Trick: Gravity Zone in Matrix mode (zones always apply within the axis-aligned box enclosing the turned matrix).",
-                "領域行列（3×4 または 4×4）を中心のまわりに最小回転させ, Y 軸（2列目）を「方向」へ向けます（箱のサイズと中心は不変, 90度回転は誤差なし, ゼロベクトルはエラー）.$(p)作動式: 加重領域の行列モードなどで任意の向きへ押す領域を作るときに便利です（領域は回転後の箱を囲む軸平行範囲で効きます）.");
+                "Rotates a region matrix around its center so its Y axis points along Direction.$(p)Useful for aiming Trick: Gravity Zone in Matrix mode.",
+                "領域行列を中心のまわりに回転させ, Y 軸を「方向」へ向けます.$(p)作動式: 加重領域の行列モードなどで任意の向きへ押す領域を作るときに使います.");
 
         addSpellPiece(root, "trick_soak_zone", "Trick: Soak Zone",
                 "Places a Resident SpellGram zone that keeps living beings inside it soaked",
@@ -3100,11 +3079,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 乱流領域", "暴風で飛び道具をそらし, 重ねた自分の領域を強める常駐魔法式を置く");
         addSpellPiece(root, "selector_own_spellgrams", "Selector: Own Resident SpellGrams",
                 "Lists your own Resident SpellGrams (circles and zones) in this dimension, in the order you placed them",
-                "取得子: 自分の常駐魔法式", "このディメンションにある自分の常駐魔法式（サークルと領域）を, 置いた順のリストで返す");
+                "取得子: 自分の常駐魔法式", "このディメンションにある自分の常駐魔法式(サークルと領域)を, 置いた順のリストで返す");
         addBookPage(root, "selector_own_spellgrams",
                 "Lists the Resident SpellGrams (circles and zones) you placed in this dimension, however far away they are, oldest first."
                         + " An Autonomous Caster gets only the ones it placed itself. The core of a Meteor Line night is not a Resident SpellGram and is not included.",
-                "術者が置いた, このディメンションの常駐魔法式（サークルと領域）を, 距離に関係なく, 置いた順（古い順）のリストで返します. "
+                "術者が置いた, このディメンションの常駐魔法式(サークルと領域)を, 距離に関係なく, 置いた順(古い順)のリストで返します. "
                         + "自律詠唱機は, その機械が置いたものだけを返します. 流星群の夜の核は常駐魔法式ではないので含みません.");
         addSpellPiece(root, "trick_recall_spellgram", "Trick: Recall SpellGram",
                 "Takes back your own Resident SpellGrams",
@@ -3113,17 +3092,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Ends your own Resident SpellGrams given as the Target (an entity or a list, such as Selector: Own Resident SpellGrams), however far away they are."
                         + " If anything else is in the target, nothing is ended and the spell errors. Psi is not refunded.",
                 "「対象」に入れた自分の常駐魔法式を, 距離に関係なく消します. エンティティでもリストでもよく, 取得子: 自分の常駐魔法式をそのまま渡せます. "
-                        + "自分のもの以外や常駐魔法式でないもの（流星群の夜の核など）が混ざっているとエラーになり, 何も消しません. Psi は戻りません.");
+                        + "自分のもの以外や常駐魔法式でないもの(流星群の夜の核など)が混ざっているとエラーになり, 何も消しません. Psi は戻りません.");
         addSpellPiece(root, "selector_spellgram_integrity", "Selector: SpellGram Integrity",
                 "Returns the current integrity of a SpellGram object",
                 "取得子: 魔法式耐久値", "魔法式オブジェクトの今の耐久値を返す");
         addBookPage(root, "selector_spellgram_integrity",
-                "Returns the current integrity of the Target, a SpellGram object (a Resident SpellGram, the core of a Meteor Line night or a Micro Black Hole), as a number."
-                        + " Any other entity is an error. It is the integrity shown when you aim at the core (the display rounds it up),"
-                        + " so a spell can tell how much is left before Trick: Extend SpellGram or before taking a SpellGram apart.",
-                "「対象」に入れた魔法式オブジェクト（常駐魔法式, 流星群の夜の核, マイクロブラックホール）の, 今の耐久値を数値で返します. "
-                        + "魔法式オブジェクトでないエンティティを入れるとエラーになります. "
-                        + "値は核に照準を合わせたときに表示される耐久値と同じで（表示は切り上げ）, 作動式: 魔法式延長を使う前などに, 残りを術式で確かめられます.");
+                "Returns the current integrity of a SpellGram object (Resident SpellGram, Meteor Line core, or Micro Black Hole) as a Number.$(p)Matches the integrity shown when aiming at the core, useful before Trick: Extend SpellGram.",
+                "「対象」に入れた魔法式オブジェクト (常駐魔法式・流星群の夜の核・マイクロブラックホール) の今の耐久値を数値で返します.$(p)核に照準を合わせたときに表示される耐久値と同じ値で, 作動式: 魔法式延長を使う前などに残りを確かめられます.");
         addSpellPiece(root, "selector_spellgram_integrity_list", "Selector: SpellGram Integrity List",
                 "Returns the current integrity of each SpellGram object in the List, as a Number List in the same order",
                 "取得子: 魔法式耐久値リスト", "リストの魔法式オブジェクトそれぞれの今の耐久値を, 同じ順の Number List で返す");
@@ -3132,7 +3107,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " so it can be the Values of Operator: Value-Ranked Element and the other value-ranked list operators. The numbers are the same as Selector: SpellGram Integrity."
                         + " Any element that is not a SpellGram object is an error. Example: with Selector: Own Resident SpellGrams as the List,"
                         + " Operator: Value-Ranked Element with 0 picks your SpellGram with the least integrity for Trick: Extend SpellGram.",
-                "リストに入れた魔法式オブジェクトそれぞれの今の耐久値を, リストと同じ順（Entity の List は Psi の決まった順）の Number List で返します. "
+                "リストに入れた魔法式オブジェクトそれぞれの今の耐久値を, リストと同じ順(Entity の List は Psi の決まった順)の Number List で返します. "
                         + "演算子: 基準値順要素などの基準値にそのまま使えます. 値は取得子: 魔法式耐久値と同じで, 魔法式オブジェクトでない要素があるとエラーになります. "
                         + "例: 取得子: 自分の常駐魔法式をリストに入れて, 演算子: 基準値順要素に0を渡すと, 耐久値が一番少ない自分の常駐魔法式を作動式: 魔法式延長に渡せます.");
         addSpellPiece(root, "trick_extend_spellgram", "Trick: Extend SpellGram",
@@ -3143,10 +3118,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " It gives back the share of the integrity the object had when placed that this cost is of what the object cost when placed, so costly objects are harder to restore."
                         + " Integrity lost to spells comes back first. Integrity wears away at a steady rate, so anything restored beyond that makes the object last longer."
                         + " Integrity can be restored up to a cap: twice what the object would have had if placed with the longest Time (120 seconds), whatever Time it was placed with.",
-                "「対象」に入れた自分の常駐魔法式の耐久値を, 距離に関係なく回復します. コストは威力（最大100の定数）×100です. "
+                "「対象」に入れた自分の常駐魔法式の耐久値を, 距離に関係なく回復します. コストは威力(最大100の定数)×100です. "
                         + "置いたときのコストのうち, このコストが占める割合だけ, 置いたときの耐久値が戻るので, 多くコストを払ったものほど回復しにくくなります. "
                         + "術式で削られた分から先に戻ります. 耐久値は一定の速さで減るので, それを超えて戻した分だけ長く残ります. "
-                        + "回復できる上限は, 領域でもサークルでも, 置いたときの「時間」によらず, 「時間」を最大（120秒）にして置いたときの耐久値の2倍です.");
+                        + "回復できる上限は, 領域でもサークルでも, 置いたときの「時間」によらず, 「時間」を最大(120秒)にして置いたときの耐久値の2倍です.");
         addSpellPiece(root, "trick_circle_follow", "Trick: Circle Follow",
                 "Makes your own circles follow you or an entity that is not a living being; without a Follow Target, lets them go",
                 "作動式: サークル追従", "自分のサークルを, 術者か生き物でないエンティティに追従させる. 追従先を入れなければ放す");
@@ -3176,10 +3151,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: 減速領域", "範囲の中の生き物と飛び道具を遅くする常駐魔法式を置く");
         addSpellPiece(root, "trick_decontamination", "Trick: Decontamination",
                 "Places a Resident SpellGram core that clears the radiation sources within 32 blocks of it (needs Mekanism)",
-                "作動式: 除染", "周り32ブロックの放射線源を取り除く常駐魔法式の核を置く（Mekanism が必要）");
+                "作動式: 除染", "周り32ブロックの放射線源を取り除く常駐魔法式の核を置く(Mekanism が必要)");
         addSpellPiece(root, "trick_contamination_zone", "Trick: Contamination Zone",
                 "Places a Resident SpellGram zone that exposes the living beings inside it to radiation, up to a limit (needs Mekanism)",
-                "作動式: 汚染領域", "範囲の中の生き物を, 上限まで放射線にさらす常駐魔法式を置く（Mekanism が必要）");
+                "作動式: 汚染領域", "範囲の中の生き物を, 上限まで放射線にさらす常駐魔法式を置く(Mekanism が必要)");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を, CADの色のパーティクルで描きます.");
@@ -3188,7 +3163,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " Block mode (default) wraps the blocks that Operator: Region Vector List picks from the region; Vector mode draws the parallelepiped exactly as defined.",
                 "3×4 または 4×4 の行列で定義された領域の輪郭を, CADの色のパーティクルの軌跡で描きます. "
                         + "作業前の範囲確認に使います. "
-                        + "Block モード（既定）は演算子: 領域ベクトルリスト化が選ぶブロックを囲むように, Vector モードは定義どおりの平行六面体を描きます.");
+                        + "Block モード(既定)は演算子: 領域ベクトルリスト化が選ぶブロックを囲むように, Vector モードは定義どおりの平行六面体を描きます.");
         addBookPage(root, "trick_show_region.1",
                 "Time is an optional constant and works like the Time of Trick: Particle Trail: 20 by default, at most 1200, and it must be positive."
                         + " Every corner must be within the spell radius, or casting fails with an error."
@@ -3335,11 +3310,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addSpellPiece(root, "trick_mass_harvest", "Trick: Mass Harvest",
                 "Harvests and replants the ripe crops at the coordinates in a Vector List (a Block List also works). The harvest goes into the caster's inventory.",
-                "作動式: 大規模収穫", "Vector List（Block List も可）の座標にある熟した作物を収穫して植え直します. 収穫物は術者のインベントリに入ります.");
+                "作動式: 大規模収穫", "Vector List(Block List も可)の座標にある熟した作物を収穫して植え直します. 収穫物は術者のインベントリに入ります.");
         addBookPage(root, "trick_mass_harvest.0",
                 "Harvests the crops at the first $(thing)Max$(0) coordinates (at most 4096) in a Vector List (a Block List also"
                         + " works), the same way as $(thing)Trick: Harvest$(0).",
-                "Vector List（Block List も可）の座標にある作物を, 先頭から $(thing)最大$(0) 個 (上限4096) まで, $(thing)作動式: 収穫$(0) と同じように収穫します.");
+                "Vector List(Block List も可)の座標にある作物を, 先頭から $(thing)最大$(0) 個 (上限4096) まで, $(thing)作動式: 収穫$(0) と同じように収穫します.");
         addBookPage(root, "trick_mass_harvest.1",
                 "If any position is out of range, the spell fails before harvesting anything. The crops are harvested a little"
                         + " at a time, and the caster gets the whole harvest at the end.",

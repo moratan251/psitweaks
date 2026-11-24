@@ -817,7 +817,7 @@ public final class AutonomousCasterGameTests {
             circle.setCaster(caster);
             circle.setFollowTarget(caster, true);
             helper.assertTrue(circle.getCaster() == caster && circle.getFollowTargetEntity() == caster,
-                    "A Flare Circle cast by the machine followed someone else");
+                    "A Fire Circle cast by the machine followed someone else");
 
             decoy.configure(caster, 3, 200, 0xFFFFFF);
             helper.assertTrue(!owner.getUUID().equals(decoy.getOwnerUUID()) && !decoy.isOwnedBy(owner)

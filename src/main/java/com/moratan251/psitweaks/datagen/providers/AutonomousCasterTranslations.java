@@ -48,7 +48,7 @@ final class AutonomousCasterTranslations {
     }
 
     private void addGui() {
-        put(GUI + "psi", "Psi: %s / %s (+%s/t)", "Psi: %s / %s（+%s/t）");
+        put(GUI + "psi", "Psi: %s / %s (+%s/t)", "Psi: %s / %s(+%s/t)");
         put(GUI + "bullet", "Bullet %s", "術式弾 %s");
         put(GUI + "bullet.tooltip", "Select the Spell Bullet to cast", "詠唱する術式弾を選びます");
         put(GUI + "item", "Slot %s", "スロット %s");
@@ -58,22 +58,22 @@ final class AutonomousCasterTranslations {
         put(GUI + "interval", "Interval: %st", "間隔: %st");
         put(GUI + "interval.tooltip",
                 "Minimum ticks between casts (4 or more). Press Enter to apply",
-                "詠唱から次の詠唱までの最小tick数です（4以上）. Enterで確定します");
+                "詠唱から次の詠唱までの最小tick数です(4以上). Enterで確定します");
         put(GUI + "yaw", "Yaw: %s°", "左右: %s°");
         put(GUI + "yaw.tooltip",
                 "Horizontal look angle relative to the front face (-180 to 180). Press Enter to apply",
-                "正面を0とした水平方向の視線角度です（-180〜180）. Enterで確定します");
+                "正面を0とした水平方向の視線角度です(-180〜180). Enterで確定します");
         put(GUI + "pitch", "Pitch: %s°", "上下: %s°");
         put(GUI + "pitch.tooltip",
                 "Vertical look angle (-90 is straight up, 90 is straight down). Press Enter to apply",
-                "垂直方向の視線角度です（-90で真上, 90で真下）. Enterで確定します");
+                "垂直方向の視線角度です(-90で真上, 90で真下). Enterで確定します");
         put(GUI + "loop", "Loop: %s", "ループ: %s");
         put(GUI + "loop.reset", "Reset the loop counter to 0", "ループカウンタを0に戻します");
         put(GUI + "memory", "Memory: %s/%s", "メモリ: %s/%s");
         put(GUI + "memory.clear", "Clear", "消去");
         put(GUI + "memory.clear.tooltip",
                 "Clear all values in internal CAD memory (kept when broken)",
-                "内部 CAD のメモリをすべて消去します（回収しても保持されます）");
+                "内部 CAD のメモリをすべて消去します(回収しても保持されます)");
         put(GUI + "memory.clear.confirm", "Clear the internal CAD's memory?", "内蔵CADのメモリを消去しますか？");
         put(GUI + "trigger.pulse", "Pulse", "パルス");
         put(GUI + "trigger.level", "Level", "レベル");
@@ -83,7 +83,7 @@ final class AutonomousCasterTranslations {
         put(GUI + "cast_now", "Cast", "詠唱");
         put(GUI + "cast_now.tooltip",
                 "Test-cast the selected bullet once (runs after cooldown)",
-                "選択中の術式弾を1回テスト詠唱します（クールダウン終了後に実行）");
+                "選択中の術式弾を1回テスト詠唱します(クールダウン終了後に実行)");
         put(GUI + "settings", "Config", "設定");
         put(GUI + "settings.tooltip",
                 "Open the window to configure the bullet, interval, look angles, trigger, and more",
@@ -97,7 +97,7 @@ final class AutonomousCasterTranslations {
         put(GUI + "status.idle", "Signal %s | Waiting", "信号 %s ｜ 待機中");
         put(GUI + "status.success", "Signal %s | Last cast succeeded", "信号 %s ｜ 前回は成功");
         put(GUI + "status.failure", "Signal %s | %s", "信号 %s ｜ %s");
-        put(GUI + "status.failure_unknown", "Cast failed (see the log)", "詠唱に失敗しました（ログを参照）");
+        put(GUI + "status.failure_unknown", "Cast failed (see the log)", "詠唱に失敗しました(ログを参照)");
         put(GUI + "detail.signal", "Redstone signal: %s", "レッドストーン信号: %s");
         put(GUI + "detail.cooldown", "Cooldown: %st left", "クールダウン: 残り%st");
         put(GUI + "detail.outcome", "Last cast: %s", "前回の詠唱: %s");
@@ -153,7 +153,7 @@ final class AutonomousCasterTranslations {
         put(tooltip + "range", "Spell range +%s blocks", "術式の射程 +%sブロック");
         put(tooltip + "usage",
                 "Install in an Autonomous Caster's Upgrades tab (1 per kind)",
-                "自律詠唱機のアップグレードタブに搭載（同種は1台につき1つまで）");
+                "自律詠唱機のアップグレードタブに搭載(同種は1台につき1つまで)");
     }
 
     private void addErrors() {
@@ -163,7 +163,7 @@ final class AutonomousCasterTranslations {
         put(ERROR + "no_psi", "The internal Psi is empty", "内部Psiが空です");
         put(ERROR + "not_enough_psi",
                 "Not enough internal Psi (needs %s, has %s)",
-                "内部Psiが足りません（必要 %s / 残り %s）");
+                "内部Psiが足りません(必要 %s / 残り %s)");
         put(ERROR + "no_cad", "The internal CAD could not be assembled", "内部CADを組み立てられません");
         put(ERROR + "no_caster", "The caster is not ready", "詠唱主体の準備ができていません");
         put(ERROR + "cast_failed", "The spell was not cast", "術式を詠唱できませんでした");
@@ -188,19 +188,19 @@ final class AutonomousCasterTranslations {
                 "自律詠唱機の内部Psi容量です.");
         configValue("echo_per_operation", "Echo per Recovery", "回復1回あたりのエコー消費量",
                 "Psionic Echo Gas (mB) consumed by one Psi recovery operation.",
-                "Psi回復1回で消費する気化サイオニックエコーの量（mB）です.");
+                "Psi回復1回で消費する気化サイオニックエコーの量(mB)です.");
         configValue("psi_per_operation", "Psi per Recovery", "回復1回あたりのPsi",
                 "Psi restored by one recovery operation. One operation runs per tick.",
                 "Psi回復1回で得られるPsiです. 1tickに1回回復します.");
         configValue("echo_tank_capacity", "Echo Tank Capacity", "エコータンク容量",
                 "Psionic Echo Gas tank capacity (mB). Applies after the machine is reloaded.",
-                "気化サイオニックエコータンクの容量（mB）です. 機械の再読み込み後に反映されます.");
+                "気化サイオニックエコータンクの容量(mB)です. 機械の再読み込み後に反映されます.");
         configValue("min_cast_interval", "Minimum Cast Interval", "詠唱間隔の下限",
                 "Shortest cast interval in ticks. Cannot be lower than 4.",
-                "詠唱間隔の下限（tick）です. 4未満にはできません.");
+                "詠唱間隔の下限(tick)です. 4未満にはできません.");
         configValue("default_cast_interval", "Default Cast Interval", "詠唱間隔の初期値",
                 "Cast interval in ticks for newly placed Autonomous Casters.",
-                "新しく設置した自律詠唱機の詠唱間隔（tick）です.");
+                "新しく設置した自律詠唱機の詠唱間隔(tick)です.");
         configValue("cast_volume", "Cast Volume", "詠唱音の音量",
                 "Volume of the cast sound. 0 is silent.",
                 "詠唱音の音量です. 0で無音になります.");
@@ -233,13 +233,13 @@ final class AutonomousCasterTranslations {
                 "アップグレードで増える, 1tickに回復するPsiです.");
         configValue("upgrade_conversion_efficiency", "Psyon Conversion Efficiency Upgrade", "サイオン変換効率アップグレード",
                 "Psionic Echo Gas (mB) per Psi the upgrade saves. The cost never drops below a tenth of the base.",
-                "アップグレードで減る, Psi 1あたりの気化サイオニックエコーの量（mB）です. 基本値の1割より少なくはなりません.");
+                "アップグレードで減る, Psi 1あたりの気化サイオニックエコーの量(mB)です. 基本値の1割より少なくはなりません.");
         configValue("upgrade_interference", "Phenomenon Interference Upgrade", "事象干渉力アップグレード",
                 "Phenomenon Interference the upgrade adds to the machine's caster (0.3 is +30%%).",
-                "アップグレードで詠唱主体の事象干渉力に足す値です（0.3で+30%%）.");
+                "アップグレードで詠唱主体の事象干渉力に足す値です(0.3で+30%%).");
         configValue("upgrade_range", "Interference Range Upgrade", "干渉距離アップグレード",
                 "Spell range (blocks) the upgrade adds to spells the machine casts. The base range is 32.",
-                "アップグレードで延びる, 機械が詠唱する術式の射程（ブロック）です. 基本の射程は32です.");
+                "アップグレードで延びる, 機械が詠唱する術式の射程(ブロック)です. 基本の射程は32です.");
     }
 
     private void configValue(String id, String enUs, String jaJp, String enUsTooltip, String jaJpTooltip) {
@@ -254,46 +254,40 @@ final class AutonomousCasterTranslations {
                         + "$(li)Feed $(item)Psionic Echo Gas$(0) to build internal Psi"
                         + "$(li)Apply a redstone signal",
                 "術式弾を自動で詠唱する機械です. Psi は使用者ではなく機械の内部 Psi を使います."
-                        + "$(li)左上に術式弾を入れる（ループ型は不可）"
+                        + "$(li)左上に術式弾を入れる(ループ型は不可)"
                         + "$(li)$(item)気化サイオニックエコー$(0)で内部 Psi を貯める"
                         + "$(li)レッドストーン信号を送る");
         put(BOOK + ".1",
-                "Use $(item)Config$(0) to choose the bullet, trigger ($(item)Pulse$(0): once on signal / $(item)Level$(0): repeat at interval), "
-                        + "and look angles ($(item)Yaw$(0)/$(item)Pitch$(0)). Signals during cooldown are ignored; $(item)Cast$(0) runs a single test cast.$(p)"
-                        + "Casts from the front along the set direction (previewable via the left tab; position via $(item)Selector: Autonomous Caster Position$(0)). "
-                        + "Its loop counter increments per cast and resets on manual bullet change, swap, the $(item)0$(0) button, or $(item)Trick: Break Loop$(0).",
-                "$(item)設定$(0)ウィンドウで術式弾・トリガー（$(item)パルス$(0): 信号入力時に1回 / $(item)レベル$(0): 信号中に間隔ごと）・"
-                        + "視線（$(item)左右$(0)・$(item)上下$(0)）を選びます. クールダウン中は信号を無視し, $(item)詠唱$(0)ボタンで単発テストできます.$(p)"
-                        + "正面から指定方向へ詠唱し, 左タブで視線を可視化できます（機械座標は$(item)取得子: 詠唱機位置$(0)）. "
-                        + "ループ回数は詠唱成功ごとに増え, 設定での弾切替・入替・0ボタン・$(item)Trick: Break Loop$(0)で0に戻ります.");
+                "Use $(item)Config$(0) to choose the bullet, trigger, and look angles. Pulse casts once on signal, Level repeats at the interval, and $(item)Cast$(0) runs a single test cast.$(p)"
+                        + "Casts from the front along the set direction, previewable via the left tab. "
+                        + "The loop counter increments per cast and resets on bullet change, the $(item)0$(0) button, or $(item)Trick: Break Loop$(0).",
+                "$(item)設定$(0)で術式弾・トリガー・視線方向を選びます. パルスは信号入力時に1回, レベルは信号中に間隔ごと詠唱し, $(item)詠唱$(0)ボタンで単発テストできます.$(p)"
+                        + "正面から指定方向へ詠唱し, 左タブで視線を可視化できます. "
+                        + "ループ回数は詠唱成功ごとに増え, 弾切替や $(item)0$(0) ボタン・$(item)Trick: Break Loop$(0) で0に戻ります.");
         put(BOOK + ".2",
                 baseStats("Base internal CAD stats: Efficiency %d, Potency %d, Complexity %d, Projection %d, Bandwidth %d, Memory %d. ")
-                        + "Install up to 3 upgrades (1 per kind) in the right $(item)Upgrades$(0) tab, and place a Colorizer in the lower slot right of the gauges.$(p)"
-                        + "The 36 lower slots act as the caster's inventory (bottom row is the hotbar); "
-                        + "the slot chosen in $(item)Config$(0) counts as right of the CAD, and overflow drops in front.",
+                        + "Install up to 3 upgrades in the right $(item)Upgrades$(0) tab, and place a Colorizer below the gauges.$(p)"
+                        + "The 36 lower slots act as the caster's inventory, with the bottom row as the hotbar. "
+                        + "The slot chosen in $(item)Config$(0) counts as right of the CAD, and overflow drops in front.",
                 baseStats("内部 CAD の基本性能は, 効率 %d・規模 %d・複雑性 %d・作動量 %d・帯域幅 %d・メモリ %d です. ")
-                        + "右の$(item)アップグレード$(0)タブに専用アップグレードを3つまで搭載できます（同種は1つまで）. 着色器はゲージ右下のスロットに入れます.$(p)"
-                        + "下段36スロットは術者のインベントリ（最下段がホットバー）で, $(item)設定$(0)で選んだスロットを CAD の右隣として扱います. "
-                        + "入りきらないアイテムは機械の前に落ちます.");
+                        + "右の$(item)アップグレード$(0)タブに専用アップグレードを3つまで搭載でき, 着色器はゲージ右下のスロットに入れます.$(p)"
+                        + "下段36スロットは術者のインベントリで, 最下段がホットバーです. $(item)設定$(0)で選んだスロットを CAD の右隣として扱い, 入りきらないアイテムは機械の前に落ちます.");
         put(BOOK + ".3",
                 "By default, converts 10 mB of $(item)Psionic Echo Gas$(0) per Psi (up to 25 Psi/t, max 10,000 Psi). "
-                        + "Feed gas from any side or the upper slot right of the gauges, supply bullets via a side set to $(item)Input (2)$(0), "
-                        + "and read internal Psi with a Comparator.$(p)"
-                        + "Debug output, errors, and warnings go to the $(item)Activity Log$(0). "
-                        + "Breaking the machine keeps everything except the log and loop counter (memory can be cleared in $(item)Config$(0)).",
-                "初期設定では$(item)気化サイオニックエコー$(0) 10 mB で 1 Psi を回復します（最大 25 Psi/t, 上限 10,000 Psi）. "
-                        + "気体はどの面やゲージ右上のスロットからも搬入でき, $(item)搬入(2)$(0)設定面から術式弾を補充できます. 内部 Psi はコンパレーターで読めます.$(p)"
-                        + "デバッグ出力・エラー・警告は GUI の$(item)作動ログ$(0)に記録されます. "
-                        + "回収してもログとループ回数以外はすべて保持されます（メモリは$(item)設定$(0)で消去可）.");
+                        + "Feed gas from any side or the upper gauge slot, supply bullets via an input side, and read internal Psi with a Comparator.$(p)"
+                        + "Debug output and errors go to the $(item)Activity Log$(0). Breaking the machine keeps everything except the log and loop counter.",
+                "初期設定では$(item)気化サイオニックエコー$(0) 10 mB で 1 Psi を回復します (最大 25 Psi/t, 上限 10,000 Psi). "
+                        + "気体はどの面やゲージ右上のスロットからも搬入でき, 搬入設定面から術式弾を補充できます. 内部 Psi はコンパレーターで読めます.$(p)"
+                        + "デバッグ出力やエラーは$(item)作動ログ$(0)に記録されます. 壊して回収してもログとループ回数以外はすべて保持されます.");
         put(BOOK + ".4",
                 "Ideaspace Storage spells access the owner's storage. "
-                        + "$(item)Trick: Spin Chamber$(0) and $(item)Trick: Russian Roulette$(0) switch the selected bullet slot without resetting the loop counter.$(p)"
-                        + "$(item)Trick: Psi Bullet$(0) and $(item)Trick: Gram Demolition$(0) spare SpellGram objects belonging to the machine, "
-                        + "its owner, and the owner's other casters. Spells that open GUIs or use the Eidos Changelog (e.g., $(item)Ender Chest$(0), $(item)Eidos Anchor$(0)) have no effect.",
+                        + "$(item)Trick: Spin Chamber$(0) and $(item)Trick: Russian Roulette$(0) switch the selected bullet without resetting the loop counter.$(p)"
+                        + "$(item)Trick: Psi Bullet$(0) and $(item)Trick: Gram Demolition$(0) spare SpellGram objects belonging to the machine and its owner. "
+                        + "Spells that open GUIs or use the Eidos Changelog have no effect.",
                 "イデアストレージ系術式は機械の所有者のストレージを使用します. "
-                        + "$(item)Trick: Spin Chamber$(0)・$(item)Trick: Russian Roulette$(0)は選択中の術式弾スロットを切り替え, ループ回数も維持します.$(p)"
+                        + "$(item)Trick: Spin Chamber$(0)・$(item)Trick: Russian Roulette$(0)はループ回数を保ったまま術式弾を切り替えます.$(p)"
                         + "$(item)作動式: サイ・ブリット$(0)・$(item)術式解体$(0)は自身や所有者側の魔法式オブジェクトを削りません. "
-                        + "GUI を開く術式（$(item)エンダーチェスト$(0)等）やエイドス履歴系（$(item)エイドスアンカー$(0)等）は効果がありません.");
+                        + "GUI を開く術式やエイドス履歴系の術式は効果がありません.");
     }
 
     /** アップグレードなしの内蔵 CAD の性能値を、効率・規模・複雑性・作動量・帯域幅・メモリの順に埋め込む。 */

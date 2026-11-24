@@ -286,9 +286,9 @@ public final class AttackTargetGameTests {
         }));
         helper.runAfterDelay(AFTER_SPAWN_INVULNERABILITY + 6, guarded(cleanup, () -> {
             helper.assertTrue(husk.getHealth() < huskHealth && stranger.getHealth() < strangerHealth,
-                    "The Flare Circle did not burn the monster and the other player with PvP on");
-            helper.assertTrue(ownPet.getHealth() == petHealth, "The Flare Circle burned its caster's pet");
-            helper.assertTrue(mate.getHealth() == mateHealth, "The Flare Circle burned a team mate with friendly fire on");
+                    "The Fire Circle did not burn the monster and the other player with PvP on");
+            helper.assertTrue(ownPet.getHealth() == petHealth, "The Fire Circle burned its caster's pet");
+            helper.assertTrue(mate.getHealth() == mateHealth, "The Fire Circle burned a team mate with friendly fire on");
             cleanup.run();
             helper.succeed();
         }));
