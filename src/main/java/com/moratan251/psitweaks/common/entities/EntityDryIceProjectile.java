@@ -80,6 +80,10 @@ public class EntityDryIceProjectile extends ThrowableItemProjectile {
         return super.canHitEntity(target) && AttackRules.canProjectileHarm(this, target, AttackRules.Options.of(safeToPlayers));
     }
 
+    /**
+     * A part of a multipart creature (the Ender Dragon's head, body and wings) takes the hit itself, so the creature
+     * applies its rule for that part, while the carbon poisoning goes on the creature.
+     */
     @Override
     protected void onHitEntity(EntityHitResult result) {
         if (level().isClientSide) {
@@ -87,8 +91,8 @@ public class EntityDryIceProjectile extends ThrowableItemProjectile {
         }
 
         Entity target = result.getEntity();
-        if (!(safeToPlayers && target instanceof Player) && target instanceof LivingEntity livingTarget) {
-            AttackRules.harmByProjectile(this, livingTarget, AttackRules.Options.of(safeToPlayers), createDryMeteorDamageSource(), damage);
+        if (!(safeToPlayers && target instanceof Player) && AttackRules.wholeEntity(target) instanceof LivingEntity livingTarget) {
+            AttackRules.harmByProjectile(this, target, AttackRules.Options.of(safeToPlayers), createDryMeteorDamageSource(), damage);
             if (livingTarget.isAlive()) {
                 livingTarget.addEffect(
                         new MobEffectInstance(PsitweaksEffects.CARBON_POISONING, CARBON_POISONING_DURATION_TICKS),

@@ -1,7 +1,9 @@
 package com.moratan251.psitweaks.common.handler;
 
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -73,7 +75,8 @@ public final class BowSpellProjectileHandler {
     }
 
     // 運搬側の命中を Psi 本体の EntitySpellProjectile#onHit と同じ分岐（生物なら attackedEntity を設定）で
-    // 一度だけ cast する。マーカーは発火前に外し、多重命中する投射物でも再発火させない。
+    // 一度だけ cast する。生物の部位（エンダードラゴンの頭など）に当たったときは、その生物を attackedEntity にする。
+    // マーカーは発火前に外し、多重命中する投射物でも再発火させない。
     @SubscribeEvent
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         Projectile projectile = event.getProjectile();
@@ -95,7 +98,8 @@ public final class BowSpellProjectileHandler {
         for (EntitySpellProjectile spell : spells) {
             spell.stopRiding();
             spell.setPos(impactPosition.x, impactPosition.y, impactPosition.z);
-            if (hitResult instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity target) {
+            LivingEntity target = attackedEntity(hitResult);
+            if (target != null) {
                 spell.cast(context -> {
                     if (context != null) {
                         context.attackedEntity = target;
@@ -105,5 +109,15 @@ public final class BowSpellProjectileHandler {
                 spell.cast();
             }
         }
+    }
+
+    /**
+     * 命中した生物。複数部位の生き物の部位（エンダードラゴンの頭・胴体・翼など）なら、その生き物
+     * （{@link AttackRules#wholeEntity}）。生物でなければ null。
+     */
+    @Nullable
+    public static LivingEntity attackedEntity(HitResult hitResult) {
+        return hitResult instanceof EntityHitResult entityHit
+                && AttackRules.wholeEntity(entityHit.getEntity()) instanceof LivingEntity target ? target : null;
     }
 }

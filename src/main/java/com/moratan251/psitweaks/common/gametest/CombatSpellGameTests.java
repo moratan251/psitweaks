@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile;
 import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.attachments.PsitweaksAttachments;
 import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
+import com.moratan251.psitweaks.common.entities.EntityAquaCutterProjectile;
+import com.moratan251.psitweaks.common.entities.EntityDryIceProjectile;
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
@@ -15,6 +17,8 @@ import com.moratan251.psitweaks.common.entities.combat.EntityGroundShockwave;
 import com.moratan251.psitweaks.common.entities.combat.EntityAirBullet;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.entities.combat.EntityPseudoMeteor;
+import com.moratan251.psitweaks.common.handler.AquaCutterProjectileHandler;
+import com.moratan251.psitweaks.common.handler.BowSpellProjectileHandler;
 import com.moratan251.psitweaks.common.items.BladePouches;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.menu.BladePouchMenu;
@@ -74,12 +78,14 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -118,6 +124,8 @@ public final class CombatSpellGameTests {
     private static final float EPSILON = 1.0E-3F;
     /** Health of the creatures {@link #tough} prepares. */
     private static final float TOUGH_HEALTH = 200.0F;
+    /** The damage of the shots {@link #shootTheDragonsHead} fires. */
+    private static final float DRAGON_SHOT_DAMAGE = 14.0F;
 
     private interface CompileAction {
         void run() throws SpellCompilationException;
@@ -1062,6 +1070,93 @@ public final class CombatSpellGameTests {
             dragon.discard();
         }
         helper.succeed();
+    }
+
+    /**
+     * Dry Meteor's dry ice meets the Ender Dragon only through its parts, as the dragon itself cannot be picked: a shot
+     * at the head deals its full damage to the dragon.
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_dragon_dry_meteor")
+    public static void dryMeteorHitsTheEnderDragonThroughItsHead(GameTestHelper helper) {
+        var player = caster(helper, new BlockPos(0, 0, 0), "dry-meteor-dragon");
+        var shot = new EntityDryIceProjectile(helper.getLevel(), player);
+        shot.setDamage(DRAGON_SHOT_DAMAGE);
+        shootTheDragonsHead(helper, player, shot, "psitweaks_dry_meteor_dragon");
+    }
+
+    /** {@link #dryMeteorHitsTheEnderDragonThroughItsHead} for Aqua Cutter's water blade. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_dragon_aqua_cutter")
+    public static void aquaCutterHitsTheEnderDragonThroughItsHead(GameTestHelper helper) {
+        var player = caster(helper, new BlockPos(0, 0, 0), "aqua-cutter-dragon");
+        var shot = new EntityAquaCutterProjectile(helper.getLevel(), player);
+        shot.getPersistentData().putBoolean(AquaCutterProjectileHandler.TAG_AQUA_CUTTER, true);
+        shot.getPersistentData().putFloat(AquaCutterProjectileHandler.TAG_AQUA_CUTTER_DAMAGE, DRAGON_SHOT_DAMAGE);
+        shootTheDragonsHead(helper, player, shot, "psitweaks_aqua_cutter_dragon");
+    }
+
+    /** A spell on a bow arrow that hits a part of the Ender Dragon takes the dragon as its attack target. */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_dragon_bow")
+    public static void bowSpellsTakeTheEnderDragonAsTheAttackTarget(GameTestHelper helper) {
+        var dragon = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new BlockPos(2, 2, 2));
+        dragon.setNoAi(true);
+        try {
+            for (var part : dragon.getSubEntities()) {
+                helper.assertTrue(BowSpellProjectileHandler.attackedEntity(new EntityHitResult(part)) == dragon,
+                        "A hit on the dragon's " + part.name + " must give the dragon");
+            }
+            var husk = husk(helper, new Vec3(1.5, 1.0, 1.5), false);
+            helper.assertTrue(BowSpellProjectileHandler.attackedEntity(new EntityHitResult(husk)) == husk,
+                    "A hit on a creature must give the creature");
+            var arrow = helper.spawn(EntityType.ARROW, new Vec3(3.5, 1.0, 3.5));
+            helper.assertTrue(BowSpellProjectileHandler.attackedEntity(new EntityHitResult(arrow)) == null,
+                    "A hit on something that is not a creature must give no attack target");
+        } finally {
+            dragon.discard();
+        }
+        helper.succeed();
+    }
+
+    /**
+     * Spawns an Ender Dragon without AI, so its parts stay where they are put: the head in the middle of the test area,
+     * the other parts far below it. A dragon on the caster's team must let {@code shot} pass through its head; off the
+     * team, {@code shot} is fired straight at the head, and the test passes once it is gone and the dragon has lost
+     * {@link #DRAGON_SHOT_DAMAGE}. Each dragon test runs in a batch of its own: the dragon is wide, and with other tests
+     * in its batch it was sometimes removed from the level before the shot arrived.
+     */
+    private static void shootTheDragonsHead(GameTestHelper helper, FakePlayer player, Projectile shot, String teamName) {
+        var dragon = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new BlockPos(2, 2, 0));
+        dragon.setNoAi(true);
+        for (var part : dragon.getSubEntities()) {
+            part.setPos(dragon.getX(), dragon.getY() - 32.0, dragon.getZ());
+        }
+        Vec3 head = helper.absoluteVec(new Vec3(2.5, 2.0, 3.5));
+        dragon.head.setPos(head.x, head.y, head.z);
+        Vec3 aim = head.add(0.0, dragon.head.getBbHeight() * 0.5, 0.0);
+
+        PlayerTeam team = GameTestPlayers.team(helper, teamName, false, player.getScoreboardName(), dragon.getScoreboardName());
+        try {
+            helper.assertTrue(!AttackRules.canProjectileHarm(shot, dragon.head, AttackRules.Options.DEFAULT),
+                    "A part of a creature on the caster's team must let the shot pass");
+        } finally {
+            GameTestPlayers.removeTeam(helper, team);
+        }
+        helper.assertTrue(AttackRules.canProjectileHarm(shot, dragon.head, AttackRules.Options.DEFAULT),
+                "A part of the dragon must be hit");
+
+        shot.setPos(aim.x, aim.y, aim.z - 2.5);
+        shot.shoot(0.0, 0.0, 1.0, 1.5F, 0.0F);
+        helper.getLevel().addFreshEntity(shot);
+        float before = dragon.getHealth();
+        helper.startSequence()
+                .thenWaitUntil(() -> helper.assertTrue(shot.isRemoved(), "The shot is still flying"))
+                .thenExecute(() -> {
+                    boolean removed = dragon.isRemoved();
+                    float taken = before - dragon.getHealth();
+                    dragon.discard();
+                    helper.assertTrue(!removed, "The dragon was removed before the shot arrived");
+                    helper.assertTrue(near(taken, DRAGON_SHOT_DAMAGE), "The head must take the shot's full damage: " + taken);
+                })
+                .thenSucceed();
     }
 
     /**

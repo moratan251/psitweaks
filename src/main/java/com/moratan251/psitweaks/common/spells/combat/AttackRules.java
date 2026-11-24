@@ -87,12 +87,13 @@ public final class AttackRules {
     }
 
     /**
-     * For an attack trick's projectile ({@code canHitEntity}): creatures are hit by {@link #canHarm} as the caster who
-     * shot it, so the caster's side lets it pass instead of only the moment after the shot; other entities as vanilla.
-     * The client keeps vanilla's rule, as it does not know the Safe to Players option.
+     * For an attack trick's projectile ({@code canHitEntity}): creatures, and the parts of multipart creatures
+     * ({@link #wholeEntity}), are hit by {@link #canHarm} as the caster who shot it, so the caster's side lets it pass
+     * instead of only the moment after the shot; other entities as vanilla. The client keeps vanilla's rule, as it does
+     * not know the Safe to Players option.
      */
     public static boolean canProjectileHarm(Projectile projectile, Entity target, Options options) {
-        if (projectile.level().isClientSide || !(target instanceof LivingEntity)) {
+        if (projectile.level().isClientSide || !(wholeEntity(target) instanceof LivingEntity)) {
             return true;
         }
         return canHarm(projectile.getOwner() instanceof LivingEntity owner ? owner : null, target, options);
@@ -283,7 +284,11 @@ public final class AttackRules {
         }
     }
 
-    /** {@link #harm} for an attack trick's projectile hitting the entity, by {@link #canProjectileHarm}. */
+    /**
+     * {@link #harm} for an attack trick's projectile hitting the entity, by {@link #canProjectileHarm}. Pass the entity
+     * the projectile hit, even when it is a part of a multipart creature: the part hands the damage to the creature by
+     * the creature's own rule (the Ender Dragon takes the full damage on its head and less on its other parts).
+     */
     public static boolean harmByProjectile(Projectile projectile, Entity target, Options options, DamageSource source,
                                            float amount) {
         return canProjectileHarm(projectile, target, options) && target.hurt(source, amount);

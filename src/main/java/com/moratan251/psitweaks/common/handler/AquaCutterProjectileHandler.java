@@ -50,19 +50,21 @@ public class AquaCutterProjectileHandler {
         }
 
         HitResult hitResult = event.getRayTraceResult();
-        if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {
-            if (target instanceof Player && data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)) {
+        if (hitResult instanceof EntityHitResult entityHitResult
+                && AttackRules.wholeEntity(entityHitResult.getEntity()) instanceof LivingEntity) {
+            Entity hit = entityHitResult.getEntity();
+            if (hit instanceof Player && data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)) {
                 projectile.discard();
                 event.setCanceled(true);
                 return;
             }
-            strike(projectile, target, Math.max(0.0F, data.getFloat(TAG_AQUA_CUTTER_DAMAGE)),
+            strike(projectile, hit, Math.max(0.0F, data.getFloat(TAG_AQUA_CUTTER_DAMAGE)),
                     AttackRules.Options.of(data.getBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS)));
 
-            // The water breaks on the side of the creature it struck and splashes back off it.
+            // The water breaks on the side of the creature (or the part of it) it struck and splashes back off it.
             Vec3 flight = flightDirection(projectile);
-            Vec3 surface = new Vec3(target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ())
-                    .subtract(flight.scale(target.getBbWidth() * 0.5));
+            Vec3 surface = new Vec3(hit.getX(), hit.getY() + hit.getBbHeight() * 0.5, hit.getZ())
+                    .subtract(flight.scale(hit.getBbWidth() * 0.5));
             playSplashEffect(projectile, surface, flight.scale(-1.0));
         } else if (hitResult instanceof BlockHitResult blockHitResult) {
             Vec3 face = Vec3.atLowerCornerOf(blockHitResult.getDirection().getNormal());
@@ -78,9 +80,14 @@ public class AquaCutterProjectileHandler {
      * burning one. The blade leaves the creature wet (see {@link CombatStatuses}), even when the hurt cooldown took the
      * damage; on a burning creature the water flashes into steam instead, which puts the fire out but leaves it dry.
      * The fire goes out only after the hit, so a creature the blade kills still counts as burning for its drops.
+     * <p>
+     * {@code hit} is the entity the blade struck: a creature, or a part of a multipart creature (the Ender Dragon's
+     * head, body and wings). A part takes the damage itself, so the creature applies its rule for that part, while
+     * the bonuses and the wet state follow the creature.
      */
-    public static void strike(Projectile projectile, LivingEntity target, float damage, AttackRules.Options options) {
-        if (!AttackRules.canProjectileHarm(projectile, target, options)) {
+    public static void strike(Projectile projectile, Entity hit, float damage, AttackRules.Options options) {
+        if (!(AttackRules.wholeEntity(hit) instanceof LivingEntity target)
+                || !AttackRules.canProjectileHarm(projectile, hit, options)) {
             return;
         }
         boolean burning = target.isOnFire();
@@ -92,7 +99,7 @@ public class AquaCutterProjectileHandler {
         }
         Entity owner = projectile.getOwner();
         DamageSource source = projectile.damageSources().thrown(projectile, owner);
-        AttackRules.harmByProjectile(projectile, target, options, source, damage);
+        AttackRules.harmByProjectile(projectile, hit, options, source, damage);
         if (burning) {
             putOutFire(target);
         } else if (target.isAlive()) {
