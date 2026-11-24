@@ -59,7 +59,7 @@ public class EntityDecontamination extends SpellGramObject {
 
     /** 術者の CAD の色（核の魔法陣の色）。 */
     private int color = 0xFFFFFF;
-    /** 入れた威力（10 を超えた分はコスト＝能力だけを増やす）。照準の表示と記録のためだけに持つ。 */
+    /** 入れた威力。照準の表示と記録のためだけに持つ。 */
     private float power = 1.0F;
     /** 置いた人の側と、置いた時点の事象干渉力（領域干渉と比べる）。サーバー側だけ。 */
     @Nullable

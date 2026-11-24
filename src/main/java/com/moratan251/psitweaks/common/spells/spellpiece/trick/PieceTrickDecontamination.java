@@ -29,9 +29,9 @@ import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
  * 作動式: 除染（Decontamination、Mekanism があるときだけ登録）。「位置」に除染の核（{@link EntityDecontamination}、領域ではない
- * 常駐魔法式）を置き、半径 32 ブロックの中の放射線源を取り除く（生き物の被ばく量には触れない）。入力は位置・威力（1 以上の定数、10 を
- * 超えた分はコスト＝除染能力だけを増やす）・時間（秒の定数、省略できる）。
- * コスト = (50 + 威力 × 100) × 時間 ÷ 30、規模 = 50 + min(威力, 10) × 30。Mekanism の設定で放射線が切ってあれば、置かずに警告する。
+ * 常駐魔法式）を置き、半径 32 ブロックの中の放射線源を取り除く（生き物の被ばく量には触れない）。入力は位置・威力（1 以上の定数）・
+ * 時間（秒の定数、省略できる）。
+ * コスト = (50 + 威力 × 100) × 時間 ÷ 30、規模 = 50 + 威力 × 30。Mekanism の設定で放射線が切ってあれば、置かずに警告する。
  */
 public class PieceTrickDecontamination extends PieceTrick {
     /** コストの固定分（30 秒）。 */
@@ -40,13 +40,11 @@ public class PieceTrickDecontamination extends PieceTrick {
     public static final int COST_PER_POWER = 100;
     /** 規模の固定分。 */
     public static final int POTENCY_BASE = 50;
-    /** 威力 1 あたりの規模（威力 10 まで）。 */
+    /** 威力 1 あたりの規模。 */
     public static final int POTENCY_PER_POWER = 30;
     /** 威力の下限と上限（上限はコストの桁あふれよけ）。 */
     public static final double MIN_POWER = 1.0;
     public static final double MAX_POWER = 1000.0;
-    /** 規模に数える威力の上限。 */
-    public static final double MAX_POTENCY_POWER = 10.0;
     /** 「時間」を省いたときの存続時間（秒）。コストと耐久値はこの時間を基準に、時間に比例する。 */
     public static final int DEFAULT_TIME_SECONDS = 30;
     public static final int MIN_TIME_SECONDS = 1;
@@ -62,7 +60,7 @@ public class PieceTrickDecontamination extends PieceTrick {
         super(spell);
         StatLabel powerLabel = new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER).min(MAX_POWER);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_POWER, true).max(MIN_POWER)
-                .min(MAX_POTENCY_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
+                .min(MAX_POWER).mul(POTENCY_PER_POWER).add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, powerLabel.mul(COST_PER_POWER).add(COST_BASE).parenthesize()
                 .mul(new StatLabel(SpellParam.GENERIC_NAME_TIME, true)).div(DEFAULT_TIME_SECONDS).ceil());
     }
@@ -80,9 +78,9 @@ public class PieceTrickDecontamination extends PieceTrick {
         return Math.max(1, (int) Math.ceil(base * clampSeconds(seconds) / DEFAULT_TIME_SECONDS));
     }
 
-    /** 規模: 50 + min(威力, 10) × 30。 */
+    /** 規模: 50 + 威力 × 30（切り捨て、威力は 1〜1000 にそろえる）。 */
     public static int potencyFor(double power) {
-        return POTENCY_BASE + (int) Math.floor(Math.min(clampPower(power), MAX_POTENCY_POWER) * POTENCY_PER_POWER);
+        return POTENCY_BASE + (int) Math.floor(clampPower(power) * POTENCY_PER_POWER);
     }
 
     /** 置いたときの耐久値: 30 × 置いた時点の事象干渉力 × 時間 ÷ 30（領域と同じ決まり）。 */

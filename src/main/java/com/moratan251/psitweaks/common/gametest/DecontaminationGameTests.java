@@ -53,8 +53,9 @@ public final class DecontaminationGameTests {
         helper.assertTrue(PieceTrickDecontamination.costFor(10.0, 30.0) == 1050, "Power 10 for 30 seconds must cost 1050");
         helper.assertTrue(PieceTrickDecontamination.costFor(12.5, 60.0) == 2600, "Power 12.5 for 60 seconds must cost 2600");
         helper.assertTrue(PieceTrickDecontamination.costFor(5000.0, 30.0) == 100050, "Power above 1000 must count as 1000");
-        helper.assertTrue(PieceTrickDecontamination.potencyFor(5.0) == 200 && PieceTrickDecontamination.potencyFor(50.0) == 350,
-                "Potency must be 50 + min(Power, 10) × 30");
+        helper.assertTrue(PieceTrickDecontamination.potencyFor(5.0) == 200 && PieceTrickDecontamination.potencyFor(11.0) == 380
+                        && PieceTrickDecontamination.potencyFor(20.0) == 650, "Potency must be 50 + Power × 30");
+        helper.assertTrue(PieceTrickDecontamination.potencyFor(5000.0) == 30050, "Power above 1000 must count as 1000 for Potency");
         assertClose(helper, EntityDecontamination.capacityPerSecond(1050.0F, 600, 0.5), SOURCE_CAPACITY, "source capacity");
         assertClose(helper, EntityDecontamination.capacityPerSecond(2100.0F, 1200, 0.5), SOURCE_CAPACITY,
                 "the capacity must not depend on the Time");
