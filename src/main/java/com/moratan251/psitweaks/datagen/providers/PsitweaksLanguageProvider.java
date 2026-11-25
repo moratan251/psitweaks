@@ -2270,8 +2270,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
         addBookPage(root, "trick_barrier.0",
-                "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for one minute. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. Damage beyond what is left goes through, and the shield breaks.",
-                "対象を $(thing)威力×10$(0) のシールドで1分間包みます. シールドがある間, 対象が受けるダメージは体力の代わりにシールドから差し引かれ, 対象の周りにハニカム模様の球が一瞬光ります. 残量を超えたダメージはそのまま通り, シールドは砕けます.");
+                "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for one minute. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. A hit bigger than what is left breaks the shield, but none of that hit gets through.",
+                "対象を $(thing)威力×10$(0) のシールドで1分間包みます. シールドがある間, 対象が受けるダメージは体力の代わりにシールドから差し引かれ, 対象の周りにハニカム模様の球が一瞬光ります. 残量を超える一撃を受けるとシールドは砕けますが, その一撃も体力には通りません.");
         addBookPage(root, "trick_barrier.1",
                 "Casting it again replaces the shield, restarting the minute, unless the shield left is stronger than the new one. While shielded, the target does not catch fire. It does not absorb falling, drowning, poison and the like. A bar above your health shows the shield you have left and the seconds remaining.",
                 "もう一度かけると, 残りのシールドが新しいシールドより多いとき以外は置き換わり, 1分が数え直されます. シールドがある間, 対象は炎上しません. 落下, 溺れ, 毒などのダメージは防げません. 自分のシールドの残量と残り秒数は体力ゲージの上のバーに表示されます.");

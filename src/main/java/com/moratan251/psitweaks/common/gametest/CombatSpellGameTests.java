@@ -383,21 +383,21 @@ public final class CombatSpellGameTests {
         helper.assertTrue(near(shield(husk), 10), "Power 1 must raise a shield of 10: " + shield(husk));
 
         husk.hurt(sources.generic(), 15.0F);
-        helper.assertTrue(near(husk.getHealth(), 15) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
-                "Damage beyond the shield must go through and break it: health " + husk.getHealth());
+        helper.assertTrue(near(husk.getHealth(), 20) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
+                "A hit beyond the shield must break it without going through: health " + husk.getHealth());
 
         husk.invulnerableTime = 0;
         barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(context);
         husk.hurt(sources.starve(), 4.0F);
-        helper.assertTrue(near(husk.getHealth(), 11) && near(shield(husk), 10),
+        helper.assertTrue(near(husk.getHealth(), 16) && near(shield(husk), 10),
                 "Starvation must bypass the shield: health " + husk.getHealth() + ", shield " + shield(husk));
 
         // Within the hurt cooldown only the part of a hit above the last one counts, as in vanilla.
         husk.hurt(sources.generic(), 6.0F);
-        helper.assertTrue(near(husk.getHealth(), 11) && near(shield(husk), 8),
+        helper.assertTrue(near(husk.getHealth(), 16) && near(shield(husk), 8),
                 "During the cooldown the shield must pay only 6 - 4: shield " + shield(husk));
         husk.hurt(sources.generic(), 3.0F);
-        helper.assertTrue(near(husk.getHealth(), 11) && near(shield(husk), 8),
+        helper.assertTrue(near(husk.getHealth(), 16) && near(shield(husk), 8),
                 "A weaker hit during the cooldown must cost nothing: shield " + shield(husk));
         helper.succeed();
     }
@@ -503,27 +503,27 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void barrierShieldBreakKeepsTheWholeHitForTheCooldown(GameTestHelper helper) throws Exception {
+    public static void barrierShieldBreakTakesTheWholeHit(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(0, 0, 0), "barrier-break");
         var husk = husk(helper, new BlockPos(2, 0, 2), false);
         var sources = helper.getLevel().damageSources();
         barrier(Map.of(TARGET, husk, POWER, 1.0)).execute(new SpellContext().setPlayer(player));
 
         husk.hurt(sources.generic(), 14.0F);
-        helper.assertTrue(near(husk.getHealth(), 16) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
-                "A hit of 14 must break the shield of 10 and pass 4: health " + husk.getHealth());
+        helper.assertTrue(near(husk.getHealth(), 20) && husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
+                "A hit of 14 must break the shield of 10 and pass nothing: health " + husk.getHealth());
 
-        // The rest of the cooldown is measured against the whole 14, not the 4 that went past the shield.
+        // The rest of the cooldown is measured against the whole 14.
         husk.hurt(sources.generic(), 12.0F);
-        helper.assertTrue(near(husk.getHealth(), 16),
+        helper.assertTrue(near(husk.getHealth(), 20),
                 "A hit of 12 during the cooldown must cost nothing: health " + husk.getHealth());
         husk.hurt(sources.generic(), 17.0F);
-        helper.assertTrue(near(husk.getHealth(), 13),
+        helper.assertTrue(near(husk.getHealth(), 17),
                 "A hit of 17 during the cooldown must pass only 17 - 14: health " + husk.getHealth());
 
         husk.invulnerableTime = 0;
         husk.hurt(sources.generic(), 5.0F);
-        helper.assertTrue(near(husk.getHealth(), 8), "After the cooldown a hit counts in full: health " + husk.getHealth());
+        helper.assertTrue(near(husk.getHealth(), 12), "After the cooldown a hit counts in full: health " + husk.getHealth());
         helper.succeed();
     }
 

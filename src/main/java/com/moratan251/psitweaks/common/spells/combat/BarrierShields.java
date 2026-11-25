@@ -6,7 +6,6 @@ import com.moratan251.psitweaks.common.network.MessageSphereFlash.Style;
 import com.moratan251.psitweaks.common.registries.PsitweaksTags;
 import com.moratan251.psitweaks.mixin.LivingEntityAccessor;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.WeakHashMap;
@@ -24,8 +23,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * The shield of Trick: Barrier. A shield holds a number of points; while it lasts, incoming damage is taken from
- * those points instead of from the entity, before armour. A hit the shield takes completely causes no knockback,
- * no hurt flash and no hurt sound, only the honeycomb flash. Damage in {@code #psitweaks:bypasses_barrier}
+ * those points instead of from the entity, before armour. The shield always takes a hit whole: one larger than the
+ * points left breaks it, but none of that hit reaches the entity. A hit the shield takes causes no knockback, no hurt
+ * flash and no hurt sound, only the honeycomb flash. Damage in {@code #psitweaks:bypasses_barrier}
  * (void, starvation, drowning, falling, poison and other damage over time) goes past it. A shielded entity does not
  * catch fire ({@code EntityBarrierFireMixin}).
  */
@@ -37,11 +37,6 @@ public final class BarrierShields {
 
     /** Entities whose hit was cancelled this tick; NeoForge leaves that hit's damage container behind. */
     private static final Set<LivingEntity> PENDING_CONTAINER_CLEANUP = Collections.newSetFromMap(new WeakHashMap<>());
-    /**
-     * Hits that broke a shield, kept for the rest of their hurt cooldown. Vanilla records only the part that went past
-     * the shield as the hit, so the next hits of the cooldown would be measured against that smaller part.
-     */
-    private static final Map<LivingEntity, BrokenHit> BROKEN_HITS = new WeakHashMap<>();
 
     private BarrierShields() {
     }
@@ -108,54 +103,29 @@ public final class BarrierShields {
             return;
         }
 
-        float absorbed = Math.min(shield.amount(), effective);
-        float remaining = shield.amount() - absorbed;
+        float remaining = shield.amount() - effective;
         Vec3 direction = impactDirection(entity, source);
         if (remaining <= 0.001F) {
+            // The hit breaks the shield, which still takes all of it.
             entity.removeData(PsitweaksAttachments.BARRIER_SHIELD);
             flash(entity, shield, Style.BARRIER_BREAK, direction, 1.0F);
             playSound(entity, SoundEvents.GLASS_BREAK, 1.0F, 1.3F);
             playSound(entity, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 0.8F);
         } else {
             entity.setData(PsitweaksAttachments.BARRIER_SHIELD, shield.withAmount(remaining));
-            float strength = 0.6F + 0.8F * Mth.clamp(absorbed / Math.max(1.0F, shield.maxAmount() * 0.5F), 0.0F, 1.0F);
+            float strength = 0.6F + 0.8F * Mth.clamp(effective / Math.max(1.0F, shield.maxAmount() * 0.5F), 0.0F, 1.0F);
             flash(entity, shield, Style.BARRIER_HIT, direction, strength);
             playSound(entity, SoundEvents.AMETHYST_BLOCK_HIT, 1.0F, 1.4F);
             playSound(entity, SoundEvents.SHIELD_BLOCK, 0.5F, 1.6F);
         }
 
-        if (absorbed >= effective - 1.0E-4F) {
-            event.setCanceled(true);
-            accessor.psitweaks$setLastHurt(amount);
-            if (!cooldown) {
-                entity.invulnerableTime = event.getContainer().getPostAttackInvulnerabilityTicks();
-            }
-            PENDING_CONTAINER_CLEANUP.add(entity);
-        } else {
-            float passed = amount - absorbed;
-            event.setAmount(passed);
-            BROKEN_HITS.put(entity, new BrokenHit(passed, amount));
+        event.setCanceled(true);
+        // Record the whole hit, as vanilla would, so the rest of the hurt cooldown is measured against it.
+        accessor.psitweaks$setLastHurt(amount);
+        if (!cooldown) {
+            entity.invulnerableTime = event.getContainer().getPostAttackInvulnerabilityTicks();
         }
-    }
-
-    /**
-     * Measures the rest of a hurt cooldown against the whole hit that broke a shield, not the part that went past it,
-     * as vanilla does for armour and absorption hearts. Runs first among incoming-damage listeners.
-     */
-    public static void restoreBrokenHit(LivingIncomingDamageEvent event) {
-        if (BROKEN_HITS.isEmpty()) {
-            return;
-        }
-        LivingEntity entity = event.getEntity();
-        BrokenHit hit = BROKEN_HITS.remove(entity);
-        if (hit == null || entity.invulnerableTime <= 10) {
-            return;
-        }
-        LivingEntityAccessor accessor = (LivingEntityAccessor) entity;
-        // Only when vanilla recorded just the part that passed; otherwise something changed the hit after the shield.
-        if (Math.abs(accessor.psitweaks$getLastHurt() - hit.passed()) < 1.0E-4F) {
-            accessor.psitweaks$setLastHurt(hit.whole());
-        }
+        PENDING_CONTAINER_CLEANUP.add(entity);
     }
 
     /** Removes a timed-out shield. Called regularly while the entity ticks. */
@@ -166,14 +136,8 @@ public final class BarrierShields {
         }
     }
 
-    /**
-     * Drops the damage containers that cancelled hits left behind, and forgets broken hits whose hurt cooldown is over.
-     * Call at the end of a server tick.
-     */
+    /** Drops the damage containers that cancelled hits left behind. Call at the end of a server tick. */
     public static void cleanUpAfterTick() {
-        if (!BROKEN_HITS.isEmpty()) {
-            BROKEN_HITS.keySet().removeIf(entity -> entity.invulnerableTime <= 10);
-        }
         if (PENDING_CONTAINER_CLEANUP.isEmpty()) {
             return;
         }
@@ -218,9 +182,5 @@ public final class BarrierShields {
     private static void playSound(LivingEntity entity, SoundEvent sound, float volume, float pitch) {
         entity.level().playSound(null, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
                 sound, SoundSource.PLAYERS, volume, pitch);
-    }
-
-    /** A hit that broke a shield: the part that went past the shield, and the whole hit. */
-    private record BrokenHit(float passed, float whole) {
     }
 }
