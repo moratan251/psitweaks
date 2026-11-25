@@ -20,6 +20,7 @@ import com.moratan251.psitweaks.common.spells.util.SnbtText;
 import com.moratan251.psitweaks.common.spells.util.WildcardBudget;
 import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
+import com.moratan251.psitweaks.common.spells.wrapper.SpellListLimits;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
 import com.moratan251.psitweaksqol.api.StringSpellHelper;
@@ -642,6 +643,31 @@ public final class NbtPiecesGameTests {
         helper.assertTrue(Double.valueOf(1.0).equals(exists.execute(context)), "The root of an item must exist");
         inputs.put(TARGET, BlockValue.snapshot(helper.getLevel(), helper.absolutePos(new BlockPos(1, 1, 1))));
         helper.assertTrue(Double.valueOf(0.0).equals(exists.execute(context)), "A block without a block entity has no NBT");
+        helper.succeed();
+    }
+
+    /** 取得子: NBT キー一覧は、大きい配列でも String List の要素数の上限までの番号を、0 から順に出す。 */
+    @GameTest(template = TEMPLATE)
+    public static void nbtKeysStopAtTheListLimitForLargeArrays(GameTestHelper helper) throws SpellRuntimeException {
+        var context = context(helper);
+        Map<String, Object> inputs = new HashMap<>();
+        CompoundTag data = new CompoundTag();
+        data.put("big", new IntArrayTag(new int[SpellListLimits.MAX_ELEMENTS * 4]));
+        ItemStack stack = new ItemStack(Items.STONE);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(data));
+        inputs.put(TARGET, SpellItemValue.snapshot(stack));
+        inputs.put(PATH, DATA + ".big");
+        var keys = new PieceSelectorNbtKeys(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return inputs.get(param.name);
+            }
+        };
+
+        List<String> indexes = strings(keys.execute(context));
+        helper.assertTrue(indexes.size() == SpellListLimits.MAX_ELEMENTS && "0".equals(indexes.get(0))
+                        && Integer.toString(SpellListLimits.MAX_ELEMENTS - 1).equals(indexes.get(indexes.size() - 1)),
+                "NBT Keys on a large array must give the indexes 0 to " + (SpellListLimits.MAX_ELEMENTS - 1) + ", got "
+                        + indexes.size() + " indexes");
         helper.succeed();
     }
 

@@ -55,6 +55,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMicroBl
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickAirBullet;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorLine;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMolecularDivider;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPseudoMeteor;
 import com.moratan251.psitweaks.mixin.DragonStrafePlayerPhaseAccessor;
@@ -908,6 +909,24 @@ public final class CombatSpellGameTests {
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         helper.assertTrue(decoy != null && near(decoy.getDistance(), -2.0), "Fractions must be dropped toward zero");
         decoy.vanish(false);
+        helper.succeed();
+    }
+
+    /**
+     * ツールチップの式が、実際の計算の下限と切り捨てを表す（分子ディバイダーは威力を 0.1 以上にし、仮装行列は数値を整数の
+     * ブロック数に切り捨てる）。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void statLabelsShowTheClampsTheStatsUse(GameTestHelper helper) {
+        String dividerCost = new PieceTrickMolecularDivider(new Spell()).getStatLabels().get(EnumSpellStat.COST).toString();
+        helper.assertTrue(dividerCost.contains("max("),
+                "The Molecular Divider's shown Cost must raise the Power to 0.1 like the Cost does, got " + dividerCost);
+        var paradeLabels = new PieceTrickParade(new Spell()).getStatLabels();
+        for (EnumSpellStat stat : new EnumSpellStat[] {EnumSpellStat.POTENCY, EnumSpellStat.COST}) {
+            String label = paradeLabels.get(stat).toString();
+            helper.assertTrue(label.contains("min(\u230A|"),
+                    "Trick: Parade's shown " + stat + " must drop the fraction of the Number before capping it, got " + label);
+        }
         helper.succeed();
     }
 

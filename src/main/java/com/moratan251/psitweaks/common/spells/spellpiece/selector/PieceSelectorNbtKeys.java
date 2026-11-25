@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.selector;
 
+import com.moratan251.psitweaks.common.spells.wrapper.SpellListLimits;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,8 +33,10 @@ public class PieceSelectorNbtKeys extends PieceSelectorNbtBase {
             return StringListWrapper.make(sortedKeys(compound));
         }
         if (tag instanceof CollectionTag<?> list) {
-            List<String> indexes = new ArrayList<>(list.size());
-            for (int i = 0; i < list.size(); i++) {
+            // List に入るのは先頭の MAX_ELEMENTS 個までなので、大きい配列でもそこまでしか作らない。
+            int count = Math.min(list.size(), SpellListLimits.MAX_ELEMENTS);
+            List<String> indexes = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
                 indexes.add(Integer.toString(i));
             }
             return StringListWrapper.make(indexes);

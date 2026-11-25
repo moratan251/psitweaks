@@ -123,8 +123,8 @@ public final class MekanismMaterialMutationRecipeHandler {
         }
         Item inputItem = BuiltInRegistries.ITEM.get(inputItemId);
         if (inputItem == Items.AIR && !ResourceLocation.withDefaultNamespace("air").equals(inputItemId)) {
-            LOGGER.warn("Skipping machine mutation recipe {} because input item '{}' was not found", fileId,
-                    inputItemId);
+            MaterialMutationRecipeHandler.logMissing(inputItemId,
+                    "Skipping machine mutation recipe {} because input item '{}' was not found", fileId, inputItemId);
             return null;
         }
         return inputItem;

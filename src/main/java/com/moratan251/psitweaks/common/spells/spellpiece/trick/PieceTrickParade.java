@@ -44,11 +44,11 @@ public class PieceTrickParade extends PieceTrick {
         super(spell);
         setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_TIME, true)
                 .mul(POTENCY_PER_SECOND)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().min(MAX_DISTANCE).mul(POTENCY_PER_BLOCK))
+                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().floor().min(MAX_DISTANCE).mul(POTENCY_PER_BLOCK))
                 .add(POTENCY_BASE).floor());
         setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_TIME, true)
                 .mul(COST_PER_SECOND)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().min(MAX_DISTANCE).mul(COST_PER_BLOCK))
+                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().floor().min(MAX_DISTANCE).mul(COST_PER_BLOCK))
                 .add(COST_BASE).floor());
     }
 

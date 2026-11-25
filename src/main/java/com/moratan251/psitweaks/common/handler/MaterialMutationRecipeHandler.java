@@ -20,6 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.jetbrains.annotations.Nullable;
@@ -54,6 +55,18 @@ public final class MaterialMutationRecipeHandler {
 
     public static Map<Block, ItemStack> getAllMutationOutputs() {
         return trickRecipesByInputBlock;
+    }
+
+    /**
+     * ブロックやアイテムが見つからず項目を飛ばすときのログ。ID の名前空間の mod が入っていないとき（Mekanism Generators の
+     * 発電機など、任意の mod 向けの項目）は想定どおりなので DEBUG にし、入っているのに見つからないとき（書き間違いなど）だけ WARN にする。
+     */
+    static void logMissing(ResourceLocation missingId, String message, Object... args) {
+        if (ModList.get().isLoaded(missingId.getNamespace())) {
+            LOGGER.warn(message, args);
+        } else {
+            LOGGER.debug(message, args);
+        }
     }
 
 
@@ -117,7 +130,7 @@ public final class MaterialMutationRecipeHandler {
 
         Block inputBlock = BuiltInRegistries.BLOCK.get(inputBlockId);
         if (inputBlock == Blocks.AIR && !ResourceLocation.withDefaultNamespace("air").equals(inputBlockId)) {
-            LOGGER.warn("Skipping mutation entry in {} because input block '{}' was not found", fileId, inputBlockId);
+            logMissing(inputBlockId, "Skipping mutation entry in {} because input block '{}' was not found", fileId, inputBlockId);
             return null;
         }
         return inputBlock;
@@ -145,7 +158,8 @@ public final class MaterialMutationRecipeHandler {
             Block outputBlock = BuiltInRegistries.BLOCK.get(outputBlockId);
             Item outputItem = outputBlock.asItem();
             if (outputBlock == Blocks.AIR || outputItem == Items.AIR) {
-                LOGGER.warn("Skipping mutation entry in {} because output block '{}' was not found or has no item", fileId, outputBlockId);
+                logMissing(outputBlockId, "Skipping mutation entry in {} because output block '{}' was not found or has no item",
+                        fileId, outputBlockId);
                 return null;
             }
             return new ItemStack(outputItem, count);
@@ -164,7 +178,7 @@ public final class MaterialMutationRecipeHandler {
         }
         Item outputItem = BuiltInRegistries.ITEM.get(outputItemId);
         if (outputItem == Items.AIR && !ResourceLocation.withDefaultNamespace("air").equals(outputItemId)) {
-            LOGGER.warn("Skipping mutation entry in {} because output item '{}' was not found", fileId, outputItemId);
+            logMissing(outputItemId, "Skipping mutation entry in {} because output item '{}' was not found", fileId, outputItemId);
             return null;
         }
         return new ItemStack(outputItem, count);
