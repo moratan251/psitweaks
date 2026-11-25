@@ -14,6 +14,7 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
  * Path lookup and value formatting shared by the NBT pieces. A path uses the vanilla NBT path syntax (keys joined by
@@ -27,6 +28,8 @@ import net.minecraft.nbt.Tag;
 public final class NbtPathHelper {
     /** The depth NBT stops at when it is read. The vanilla path parser recurses once per level and has no limit. */
     private static final int MAX_NESTING = 512;
+    /** How many character comparisons of the {@link WildcardBudget} one step of writing SNBT ({@link SnbtText#work()}) counts as. */
+    public static final long SNBT_STEP_COST = 1;
     private static final Pattern WHOLE_INDEX = Pattern.compile("\\[\\s*(-?\\d+)\\.0+\\s*]");
     private static final Pattern WHOLE_INTEGER_TAG = Pattern.compile("(?<![\\w.])(-?\\d+)\\.0+([bBsSlL])(?!\\w)");
 
@@ -119,9 +122,33 @@ public final class NbtPathHelper {
 
     /**
      * The text of a tag: a String as it is, a number without its type suffix (1b is 1, 2.0d is 2.0), and anything
-     * else (compounds, lists, arrays) as SNBT. Control characters are dropped and the length is capped.
+     * else (compounds, lists, arrays) as SNBT. Control characters are dropped and the length is capped; SNBT is written
+     * only up to the cap ({@link SnbtText}).
      */
     public static String text(Tag tag) {
+        String plain = plainText(tag);
+        return plain != null ? plain : SnbtText.write(tag, StringSpellHelper.MAX_STRING_LENGTH).text();
+    }
+
+    /**
+     * {@link #text(Tag)}, taking the writing of SNBT from the budget: {@link #SNBT_STEP_COST} comparisons for each step of
+     * {@link SnbtText#work()}. Strings and numbers cost nothing here. Going past the budget stops the spell with
+     * {@link WildcardBudget#ERROR_TOO_MANY_COMPARISONS}.
+     */
+    public static String text(Tag tag, WildcardBudget budget) throws SpellRuntimeException {
+        String plain = plainText(tag);
+        if (plain != null) {
+            return plain;
+        }
+        SnbtText snbt = SnbtText.write(tag, StringSpellHelper.MAX_STRING_LENGTH);
+        budget.spend(snbt.work() * SNBT_STEP_COST);
+        budget.throwIfSpent();
+        return snbt.text();
+    }
+
+    /** The text of a String or number tag; null for the tags written as SNBT. */
+    @Nullable
+    private static String plainText(Tag tag) {
         if (tag instanceof StringTag string) {
             return StringSpellHelper.sanitize(string.getAsString());
         }
@@ -134,7 +161,7 @@ public final class NbtPathHelper {
         if (tag instanceof NumericTag number) {
             return Long.toString(number.getAsLong());
         }
-        return StringSpellHelper.sanitize(tag.toString());
+        return null;
     }
 
     /** The value of a number tag; empty for every other tag, numeric-looking Strings included, and for NaN or infinity. */

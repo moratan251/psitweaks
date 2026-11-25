@@ -203,6 +203,29 @@ public final class SpellLimitGameTests {
         helper.succeed();
     }
 
+    /** 閉じない [ は文字のまま。たくさん並べても、] を探すのは最初の 1 回だけなので読み取りは長さに比例する。 */
+    @GameTest(template = TEMPLATE)
+    public static void unclosedBracketsAreTextAndReadOnce(GameTestHelper helper) {
+        helper.assertTrue(WildcardStringMatcher.compile("[a[b").matches("[a[b") && !WildcardStringMatcher.compile("[a[b").matches("a"),
+                "Unclosed [ must stay text");
+        helper.assertTrue(WildcardStringMatcher.compile("[a]x[").matches("ax[") && WildcardStringMatcher.compile("x[\\][").matches("x[][")
+                        && WildcardStringMatcher.compile("[]a[").matches("[]a["),
+                "A closed or empty class before an unclosed [ must keep its meaning");
+        helper.assertTrue(WildcardStringMatcher.compile("[*[?").matches("[abc[d"), "* and ? after an unclosed [ must stay wildcards");
+
+        String brackets = "[".repeat(StringSpellHelper.MAX_STRING_LENGTH);
+        long start = System.nanoTime();
+        boolean all = true;
+        for (int i = 0; i < 200; i++) {
+            all &= WildcardStringMatcher.compile(brackets).matches(brackets);
+        }
+        long elapsed = System.nanoTime() - start;
+        helper.assertTrue(all, "A run of unclosed [ must match itself");
+        // Looking for ] again after each [ took about 20 ms for one such pattern.
+        helper.assertTrue(elapsed < SLOW_NANOS, "Reading 200 patterns of unclosed [ took " + elapsed / 1_000_000 + " ms");
+        helper.succeed();
+    }
+
     @GameTest(template = TEMPLATE)
     public static void statsThatDoNotFitStopCompilingInsteadOfGoingNegative(GameTestHelper helper) throws Exception {
         int[] normal = stats(phononMaser(2, 3));

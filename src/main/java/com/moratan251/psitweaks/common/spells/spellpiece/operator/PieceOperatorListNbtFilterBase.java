@@ -14,7 +14,8 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 /**
  * Filters by the text of the NBT values at the path. Each value is turned into text as in Selector: NBT Value's
  * String mode and compared with the pattern as a whole (* ? [abc], case kept). One matching value is enough; an
- * element where the path reaches nothing never matches. The comparisons count against the cast's {@link WildcardBudget}.
+ * element where the path reaches nothing never matches. The comparisons, and the writing of compounds, lists and
+ * arrays as SNBT ({@link NbtPathHelper#text(Tag, WildcardBudget)}), count against the cast's {@link WildcardBudget}.
  */
 public abstract class PieceOperatorListNbtFilterBase extends PieceOperatorListNbtBase {
     private SpellParam<String> pattern;
@@ -35,7 +36,7 @@ public abstract class PieceOperatorListNbtFilterBase extends PieceOperatorListNb
         return found -> {
             boolean matches = false;
             for (Tag tag : found) {
-                if (matcher.matches(NbtPathHelper.text(tag), budget)) {
+                if (matcher.matches(NbtPathHelper.text(tag, budget), budget)) {
                     matches = true;
                     break;
                 }

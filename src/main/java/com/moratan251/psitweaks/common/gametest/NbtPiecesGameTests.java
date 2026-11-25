@@ -16,29 +16,36 @@ import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorN
 import com.moratan251.psitweaks.common.spells.spellpiece.selector.PieceSelectorNbtValue;
 import com.moratan251.psitweaks.common.spells.util.NbtPathHelper;
 import com.moratan251.psitweaks.common.spells.util.NbtTargetReader;
+import com.moratan251.psitweaks.common.spells.util.SnbtText;
 import com.moratan251.psitweaks.common.spells.util.WildcardBudget;
 import com.moratan251.psitweaks.common.spells.wrapper.BlockListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.SpellItemListWrapper;
 import com.moratan251.psitweaks.common.spells.wrapper.StringListWrapper;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOptions;
+import com.moratan251.psitweaksqol.api.StringSpellHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
@@ -265,6 +272,190 @@ public final class NbtPiecesGameTests {
         helper.succeed();
     }
 
+    /** SNBT の書き出しは、どこで切っても、バニラの SNBT を術式の文字列と同じく整えて切ったものと同じになる。 */
+    @GameTest(template = TEMPLATE)
+    public static void snbtTextIsVanillaSnbtCutWherever(GameTestHelper helper) {
+        Random random = new Random(20261125L);
+        for (int round = 0; round < 300; round++) {
+            Tag tag = randomTag(random, 0);
+            String whole = tag.toString();
+            for (int cut = 0; cut <= whole.length() + 2; cut++) {
+                String written = SnbtText.write(tag, cut).text();
+                String expected = StringSpellHelper.sanitize(whole, cut);
+                if (!written.equals(expected)) {
+                    helper.fail("Cut " + cut + " of " + whole + ": wrote " + written + ", expected " + expected);
+                }
+            }
+        }
+        helper.succeed();
+    }
+
+    /** 大きなまとまりも、残す文字数のぶんしか書かない。キーの多い複合タグも、並べ替えるのは書くキーのぶんだけ。 */
+    @GameTest(template = TEMPLATE)
+    public static void snbtTextStopsWritingAtTheCut(GameTestHelper helper) {
+        int max = StringSpellHelper.MAX_STRING_LENGTH;
+        ListTag books = new ListTag();
+        for (int i = 0; i < 100_000; i++) {
+            CompoundTag book = new CompoundTag();
+            book.putString("id", "minecraft:written_book");
+            book.putString("text", "page ".repeat(20));
+            books.add(book);
+        }
+        CompoundTag root = new CompoundTag();
+        root.put("Items", books);
+        long start = System.nanoTime();
+        SnbtText snbt = SnbtText.write(root, max);
+        long elapsed = System.nanoTime() - start;
+        helper.assertTrue(snbt.text().equals(root.toString().substring(0, max)), "The text must be vanilla's SNBT, cut");
+        helper.assertTrue(snbt.work() < 3L * max, "Writing must stop at the cut, took " + snbt.work() + " steps");
+        helper.assertTrue(elapsed < 100_000_000L, "Writing took " + elapsed / 1_000_000 + " ms");
+        helper.assertTrue(NbtPathHelper.text(root).equals(snbt.text()), "Selector: NBT Value must use the same text");
+
+        CompoundTag manyKeys = new CompoundTag();
+        for (int i = 0; i < 100_000; i++) {
+            manyKeys.putInt("k" + i, i);
+        }
+        SnbtText keys = SnbtText.write(manyKeys, 64);
+        helper.assertTrue(keys.text().equals(StringSpellHelper.sanitize(manyKeys.toString(), 64)),
+                "The keys must come in vanilla's order: " + keys.text());
+        // A heap puts in order only the keys it writes; sorting all of them would take more steps than this.
+        helper.assertTrue(keys.work() < 100_000L * 16, "Only the written keys should be sorted, took " + keys.work() + " steps");
+        helper.succeed();
+    }
+
+    /**
+     * NBT一致抽出は、まとまりを文字列にする手間も詠唱の予算から引く。パターンが 1 文字で照らし合わせが 0 回でも、大きな
+     * まとまりを並べれば予算が尽きる。文字列と数は手間に数えない。
+     */
+    @GameTest(template = TEMPLATE, timeoutTicks = 400)
+    public static void nbtMatchesCountTheWritingOfSnbt(GameTestHelper helper) throws SpellRuntimeException {
+        ListTag books = new ListTag();
+        for (int i = 0; i < 2000; i++) {
+            CompoundTag book = new CompoundTag();
+            book.putString("id", "minecraft:written_book");
+            book.putInt("n", i);
+            books.add(book);
+        }
+        SpellItemValue first = chestOfBooks(0, books);
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put(LIST, SpellItemListWrapper.make(List.of(first)));
+        inputs.put(PATTERN, "a");
+        var keep = filter(true, inputs);
+        keep.setModeOption(PsitweaksModeOptions.ITEM);
+        int max = StringSpellHelper.MAX_STRING_LENGTH;
+        long budget = PsitweaksConfig.COMMON.wildcardMaxComparisonsPerCast.get();
+        var context = context(helper);
+        CompoundTag firstNbt = NbtTargetReader.read(context, first).orElseThrow();
+
+        inputs.put(PATH, DATA + ".s");
+        keep.execute(context);
+        long usedByString = budget - WildcardBudget.forCast(context).remaining();
+        helper.assertTrue(usedByString == 0, "A String value has no SNBT to write, used " + usedByString);
+
+        inputs.put(PATH, DATA + ".list");
+        long perList = SnbtText.write(NbtPathHelper.find(firstNbt, DATA + ".list").get(0), max).work() * NbtPathHelper.SNBT_STEP_COST;
+        keep.execute(context);
+        long usedByList = budget - WildcardBudget.forCast(context).remaining();
+        helper.assertTrue(perList > 0 && usedByList == perList, "Writing the list must cost its steps, used " + usedByList + " for " + perList);
+        helper.assertTrue(perList < 3L * max * NbtPathHelper.SNBT_STEP_COST, "A long list must be written only up to the cut, cost " + perList);
+
+        inputs.put(PATH, DATA + ".list[]");
+        long perChest = 0;
+        for (Tag book : NbtPathHelper.find(firstNbt, DATA + ".list[]")) {
+            perChest += SnbtText.write(book, max).work() * NbtPathHelper.SNBT_STEP_COST;
+        }
+        long chests = WildcardBudget.forCast(context).remaining() / perChest + 1;
+        helper.assertTrue(chests < PsitweaksConfig.COMMON.nbtMaxTargetsPerCast.get(), "The test needs " + chests + " chests");
+        List<SpellItemValue> many = new ArrayList<>();
+        for (int i = 0; i < chests; i++) {
+            SpellItemValue chest = chestOfBooks(i, books);
+            NbtTargetReader.read(context, chest);
+            many.add(chest);
+        }
+        inputs.put(LIST, SpellItemListWrapper.make(many));
+        long start = System.nanoTime();
+        try {
+            keep.execute(context);
+            helper.fail("Writing SNBT must stop at the budget");
+        } catch (SpellRuntimeException e) {
+            helper.assertTrue(WildcardBudget.ERROR_TOO_MANY_COMPARISONS.equals(e.getMessage()), "Wrong error: " + e.getMessage());
+        }
+        long elapsed = System.nanoTime() - start;
+        helper.assertTrue(elapsed < 1_000_000_000L, "Stopping at the budget took " + elapsed / 1_000_000 + " ms");
+        helper.succeed();
+    }
+
+    /** A chest whose custom data is {i:index, s:"short", list:books}. */
+    private static SpellItemValue chestOfBooks(int index, ListTag books) {
+        CompoundTag data = new CompoundTag();
+        data.putInt("i", index);
+        data.putString("s", "short");
+        data.put("list", books);
+        ItemStack stack = new ItemStack(Items.CHEST);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(data));
+        return SpellItemValue.snapshot(stack);
+    }
+
+    private static Tag randomTag(Random random, int depth) {
+        return switch (random.nextInt(depth >= 4 ? 10 : 13)) {
+            case 0 -> ByteTag.valueOf((byte) random.nextInt());
+            case 1 -> ShortTag.valueOf((short) random.nextInt());
+            case 2 -> IntTag.valueOf(random.nextInt());
+            case 3 -> LongTag.valueOf(random.nextLong());
+            case 4 -> FloatTag.valueOf(switch (random.nextInt(4)) {
+                case 0 -> Float.NaN;
+                case 1 -> -0.0F;
+                default -> (random.nextFloat() - 0.5F) * (float) Math.pow(10, random.nextInt(40) - 20);
+            });
+            case 5 -> DoubleTag.valueOf(switch (random.nextInt(4)) {
+                case 0 -> Double.POSITIVE_INFINITY;
+                case 1 -> 1.0E-300;
+                default -> (random.nextDouble() - 0.5) * Math.pow(10, random.nextInt(60) - 30);
+            });
+            case 6, 7 -> StringTag.valueOf(randomText(random));
+            case 8 -> {
+                byte[] values = new byte[random.nextInt(4)];
+                random.nextBytes(values);
+                yield new ByteArrayTag(values);
+            }
+            case 9 -> random.nextBoolean()
+                    ? new IntArrayTag(random.ints(random.nextInt(4)).toArray())
+                    : new LongArrayTag(random.longs(random.nextInt(4)).toArray());
+            case 10, 11 -> {
+                CompoundTag compound = new CompoundTag();
+                int size = random.nextInt(6);
+                for (int i = 0; i < size; i++) {
+                    compound.put(randomText(random), randomTag(random, depth + 1));
+                }
+                yield compound;
+            }
+            default -> {
+                ListTag list = new ListTag();
+                Tag first = randomTag(random, depth + 1);
+                list.add(first);
+                int size = random.nextInt(5);
+                for (int i = 1; i < size; i++) {
+                    Tag next = randomTag(random, depth + 1);
+                    if (next.getId() == first.getId()) {
+                        list.add(next);
+                    }
+                }
+                yield list;
+            }
+        };
+    }
+
+    /** Short text full of the characters SNBT quotes or escapes and the spell strings drop or change. */
+    private static String randomText(Random random) {
+        String tricky = "aZ09._+-\"'\\\r\n\t\u0000\u0007\u007f\u0085\u00e9\u6f22\uD83D\uDE00 :,{}[]";
+        StringBuilder out = new StringBuilder();
+        int length = random.nextInt(8);
+        for (int i = 0; i < length; i++) {
+            out.append(random.nextInt(3) == 0 ? (char) ('a' + random.nextInt(26)) : tricky.charAt(random.nextInt(tricky.length())));
+        }
+        return out.toString();
+    }
+
     @GameTest(template = TEMPLATE, timeoutTicks = 400)
     public static void patternMatchingOfOneCastStopsAtTheBudget(GameTestHelper helper) throws SpellRuntimeException {
         long budget = PsitweaksConfig.COMMON.wildcardMaxComparisonsPerCast.get();
@@ -451,6 +642,69 @@ public final class NbtPiecesGameTests {
         helper.assertTrue(Double.valueOf(1.0).equals(exists.execute(context)), "The root of an item must exist");
         inputs.put(TARGET, BlockValue.snapshot(helper.getLevel(), helper.absolutePos(new BlockPos(1, 1, 1))));
         helper.assertTrue(Double.valueOf(0.0).equals(exists.execute(context)), "A block without a block entity has no NBT");
+        helper.succeed();
+    }
+
+    /**
+     * 取得子: NBT は、長い値も多い要素も、前と同じ所で切った String List を出す（SNBT 全体を作らずに）。長い値は 1 つの
+     * 文字列の上限で、要素は String List の要素数と文字数の上限で切れる。
+     */
+    @GameTest(template = TEMPLATE)
+    public static void nbtEntriesOfLargeTagsAreCutAsBefore(GameTestHelper helper) throws SpellRuntimeException {
+        CompoundTag data = new CompoundTag();
+        data.putString("long", "x".repeat(5000) + "\r\n\ty" + "z".repeat(5000));
+        ListTag pages = new ListTag();
+        for (int i = 0; i < 20; i++) {
+            CompoundTag page = new CompoundTag();
+            page.putString("text", "p".repeat(5000));
+            pages.add(page);
+        }
+        data.put("pages", pages);
+        CompoundTag many = new CompoundTag();
+        for (int i = 0; i < 10_000; i++) {
+            many.putInt("k" + i, i);
+        }
+        data.put("many", many);
+        ListTag books = new ListTag();
+        for (int i = 0; i < 100_000; i++) {
+            CompoundTag book = new CompoundTag();
+            book.putString("id", "minecraft:written_book");
+            book.putInt("n", i);
+            books.add(book);
+        }
+        data.put("books", books);
+        ItemStack stack = new ItemStack(Items.CHEST);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(data));
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put(TARGET, SpellItemValue.snapshot(stack));
+        var nbt = new PieceSelectorNbt(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return inputs.get(param.name);
+            }
+        };
+        var context = context(helper);
+        CompoundTag root = NbtTargetReader.read(context, inputs.get(TARGET)).orElseThrow();
+
+        for (String path : List.of(DATA, DATA + ".pages", DATA + ".many", DATA + ".books")) {
+            inputs.put(PATH, path);
+            Tag tag = NbtPathHelper.find(root, path).get(0);
+            List<String> whole = new ArrayList<>();
+            if (tag instanceof CompoundTag compound) {
+                compound.getAllKeys().stream().sorted().forEach(key -> whole.add(key + ":" + compound.get(key)));
+            } else {
+                ListTag list = (ListTag) tag;
+                for (int i = 0; i < list.size(); i++) {
+                    whole.add(i + ":" + list.get(i));
+                }
+            }
+            List<String> expected = StringListWrapper.make(whole).asList();
+            long start = System.nanoTime();
+            List<String> got = strings(nbt.execute(context));
+            long elapsed = System.nanoTime() - start;
+            helper.assertTrue(got.equals(expected), "NBT at " + path + " must cut where the whole SNBT was cut: "
+                    + got.size() + " entries for " + expected.size());
+            helper.assertTrue(elapsed < 100_000_000L, "Listing " + path + " took " + elapsed / 1_000_000 + " ms");
+        }
         helper.succeed();
     }
 

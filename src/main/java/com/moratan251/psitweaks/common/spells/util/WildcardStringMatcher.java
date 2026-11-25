@@ -18,6 +18,10 @@ import vazkii.psi.api.spell.SpellRuntimeException;
  */
 public final class WildcardStringMatcher {
     private static final int ANY = -1;
+    /** {@link #characterClassEnd}: the class has nothing in it. */
+    private static final int EMPTY_CLASS = -1;
+    /** {@link #characterClassEnd}: no ] closes the class. */
+    private static final int UNCLOSED_CLASS = -2;
 
     /** Each piece is a run of single-character tests: a code point, {@link #ANY}, or an index into {@link #choices}. */
     private final int[][] pieces;
@@ -133,6 +137,9 @@ public final class WildcardStringMatcher {
         }
 
         boolean escaped = false;
+        // Once a [ finds no ] after it, no later [ can, so those are read as text without looking again: otherwise n
+        // unclosed [ would cost about n^2 / 2 steps.
+        boolean unclosed = false;
         for (int i = 0; i < pattern.length; i++) {
             int c = pattern[i];
             if (escaped) {
@@ -152,7 +159,10 @@ public final class WildcardStringMatcher {
             } else if (c == '?') {
                 current.add(ANY);
             } else if (c == '[') {
-                int close = characterClassEnd(pattern, i);
+                int close = unclosed ? UNCLOSED_CLASS : characterClassEnd(pattern, i);
+                if (close == UNCLOSED_CLASS) {
+                    unclosed = true;
+                }
                 if (close < 0) {
                     current.add('[');
                 } else {
@@ -178,7 +188,10 @@ public final class WildcardStringMatcher {
         return c == '*' || c == '?' || c == '[' || c == ']' || c == '\\';
     }
 
-    /** Where the class opened at {@code open} closes, or -1 when it is empty or never closes (then [ is literal). */
+    /**
+     * Where the class opened at {@code open} closes, or {@link #EMPTY_CLASS} / {@link #UNCLOSED_CLASS} when it is empty or
+     * never closes (then [ is literal). An empty class is found at the first ], so only an unclosed one reads to the end.
+     */
     private static int characterClassEnd(int[] pattern, int open) {
         boolean escaped = false;
         boolean empty = true;
@@ -190,12 +203,12 @@ public final class WildcardStringMatcher {
             } else if (c == '\\') {
                 escaped = true;
             } else if (c == ']') {
-                return empty ? -1 : i;
+                return empty ? EMPTY_CLASS : i;
             } else {
                 empty = false;
             }
         }
-        return -1;
+        return UNCLOSED_CLASS;
     }
 
     /** The characters of a class, sorted for {@link #accepts}. */

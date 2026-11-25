@@ -830,8 +830,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "1回の詠唱でNBTを読める対象の数です. NBTを持たない対象と, 同じ詠唱で読み直した対象は数えません. 超えると術式はエラーで止まります.");
         addConfigLabel(root, "psitweaks.configuration.spells.pattern_matching", "Pattern Matching", "パターンの照合");
         addConfigValue(root, "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast", "Comparisons per Cast", "1回の詠唱で比べられる回数",
-                "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. Going past it stops the spell with an error.",
-                "パターン(* ? [abc])との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます(# のタグの照合は数えません). 超えると術式はエラーで止まります.");
+                "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. NBT Matches also counts turning compound, list and array values into text, one per character. Going past it stops the spell with an error.",
+                "パターン(* ? [abc])との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます(# のタグの照合は数えません). NBT一致抽出・除外は, 複合タグ・リスト・配列の値を文字列にする手間も1文字1回として数えます. 超えると術式はエラーで止まります.");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");

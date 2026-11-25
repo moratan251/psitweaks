@@ -1231,7 +1231,7 @@
   "psitweaks.configuration.spells.nbt_pieces.max_targets_per_cast.tooltip": "1回の詠唱でNBTを読める対象の数です. NBTを持たない対象と, 同じ詠唱で読み直した対象は数えません. 超えると術式はエラーで止まります.",
   "psitweaks.configuration.spells.pattern_matching": "パターンの照合",
   "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast": "1回の詠唱で比べられる回数",
-  "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast.tooltip": "パターン(* ? [abc])との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます(# のタグの照合は数えません). 超えると術式はエラーで止まります.",
+  "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast.tooltip": "パターン(* ? [abc])との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます(# のタグの照合は数えません). NBT一致抽出・除外は, 複合タグ・リスト・配列の値を文字列にする手間も1文字1回として数えます. 超えると術式はエラーで止まります.",
   "psitweaks.configuration.spells.phonon_maser": "フォノンメーザー",
   "psitweaks.configuration.spells.phonon_maser.damage_multiplier": "ダメージ倍率",
   "psitweaks.configuration.spells.phonon_maser.damage_multiplier.tooltip": "フォノンメーザーのダメージに適用する倍率です.",

@@ -334,10 +334,10 @@ public class PsitweaksConfig {
                     .push("pattern_matching");
 
             wildcardMaxComparisonsPerCast = builder
-                    .comment("パターン（* ? [abc]）との照合で、1回の詠唱が文字を比べられる回数。演算子: 部分一致、リスト一致抽出・除外、表示名一致抽出・除外、NBT一致抽出・除外が数える。超えると術式はエラーで止まる",
-                            "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them. Going past it stops the spell with an error")
+                    .comment("パターン（* ? [abc]）との照合で、1回の詠唱が文字を比べられる回数。演算子: 部分一致、リスト一致抽出・除外、表示名一致抽出・除外、NBT一致抽出・除外が数える。NBT一致抽出・除外は、複合タグ・リスト・配列の値を文字列にする手間も1文字1回として数える。超えると術式はエラーで止まる",
+                            "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them. NBT Matches also counts turning compound, list and array values into text, one per character. Going past it stops the spell with an error")
                     .translation("psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast")
-                    .defineInRange("maxComparisonsPerCast", 50_000_000L, 1L, Long.MAX_VALUE);
+                    .defineInRange("maxComparisonsPerCast", 10_000_000L, 1L, Long.MAX_VALUE);
 
             builder.pop(); // pattern_matching カテゴリ終了
 

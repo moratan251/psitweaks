@@ -1166,7 +1166,7 @@
   "psitweaks.configuration.spells.nbt_pieces.max_targets_per_cast.tooltip": "How many targets one cast can read the NBT of. Targets without NBT and targets read again in the same cast do not count. Reading more stops the spell with an error.",
   "psitweaks.configuration.spells.pattern_matching": "Pattern Matching",
   "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast": "Comparisons per Cast",
-  "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast.tooltip": "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. Going past it stops the spell with an error.",
+  "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast.tooltip": "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. NBT Matches also counts turning compound, list and array values into text, one per character. Going past it stops the spell with an error.",
   "psitweaks.configuration.spells.phonon_maser": "Phonon Maser",
   "psitweaks.configuration.spells.phonon_maser.damage_multiplier": "Damage Multiplier",
   "psitweaks.configuration.spells.phonon_maser.damage_multiplier.tooltip": "Multiplier applied to Phonon Maser damage.",
