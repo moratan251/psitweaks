@@ -17,16 +17,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
 
 /**
  * Trick: Parade, after the Kudou family's secret magic: an image a few blocks in front of or behind the caster carries
  * the caster's "coordinates", so enemies go for it instead. While it stands, mobs that go for the caster target it,
- * melee and ranged alike, attacks that still reach the caster miss by chance, and other players' spells that name the
- * caster directly act on the image and achieve nothing; Operator: Entity Position reports where the image is, and
+ * melee and ranged alike, bosses included; attacks that still reach the caster miss by chance, and other players'
+ * spells that name the caster directly act on the image and achieve nothing; Operator: Entity Position reports where
+ * the image is, and
  * other players no longer see the caster at all. The caster and their team mates are unaffected.
  * The image's time and integrity are a Resident SpellGram's ({@link EntityParadeCore}), so it can be extended,
  * recalled and dispelled like one, but other players' Interference Zones do not stop it.
@@ -131,14 +133,14 @@ public final class Parades {
     /**
      * Turns the mobs near the image or its owner that are after the owner onto the image. Done when it appears and
      * then every so often, for mobs that pick their target without going through the target change event (a warden's
-     * anger, for example).
+     * anger, the Wither's side heads, for example). The Ender Dragon's attacks check for the image themselves.
      */
     public static void lureFrom(ServerLevel level, Player owner, EntityParadeDecoy decoy) {
         AABB around = decoy.getBoundingBox();
         if (owner.level() == level) {
             around = around.minmax(owner.getBoundingBox());
         }
-        for (Mob mob : level.getEntitiesOfClass(Mob.class, around.inflate(LURE_RANGE), Parades::canBeLured)) {
+        for (Mob mob : level.getEntitiesOfClass(Mob.class, around.inflate(LURE_RANGE), other -> other != decoy)) {
             if (mob.getTarget() == owner) {
                 mob.setTarget(decoy);
             }
@@ -146,6 +148,13 @@ public final class Parades {
             if (mob.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)
                     && mob.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) == owner) {
                 mob.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, decoy);
+            }
+            if (mob instanceof WitherBoss wither) {
+                for (int head = 0; head < 3; head++) {
+                    if (wither.getAlternativeTarget(head) == owner.getId()) {
+                        wither.setAlternativeTarget(head, decoy.getId());
+                    }
+                }
             }
         }
     }
@@ -183,23 +192,31 @@ public final class Parades {
         return decoy;
     }
 
-    /** Whether the mob may be turned onto an image; bosses keep their own targeting. */
-    public static boolean canBeLured(Mob mob) {
-        return !mob.getType().is(Tags.EntityTypes.BOSSES);
-    }
-
-    /** The image a mob should go for instead of {@code newTarget}, or null to leave the target alone. */
+    /**
+     * The image a mob should go for instead of {@code newTarget}, or null to leave the target alone: the target's image,
+     * when the mob is within {@link #LURE_RANGE} of it or of the target. Bosses are fooled like any other mob; the Ender
+     * Dragon, which circles the whole island and strikes from afar, at any distance.
+     */
     @Nullable
     public static EntityParadeDecoy lureTarget(LivingEntity attacker, @Nullable LivingEntity newTarget) {
-        if (!(attacker instanceof Mob mob) || !canBeLured(mob)) {
+        if (!(attacker instanceof Mob mob)) {
             return null;
         }
         EntityParadeDecoy decoy = activeDecoy(newTarget);
+        if (decoy == null || decoy == mob || decoy.level() != mob.level()) {
+            return null;
+        }
         double range = LURE_RANGE * LURE_RANGE;
-        if (decoy == null || decoy.level() != mob.level()
-                || (mob.distanceToSqr(decoy) > range && mob.distanceToSqr(newTarget) > range)) {
+        if (!(mob instanceof EnderDragon) && mob.distanceToSqr(decoy) > range && mob.distanceToSqr(newTarget) > range) {
             return null;
         }
         return decoy;
+    }
+
+    /** {@code target}'s image if {@code attacker} should go for it instead ({@link #lureTarget}), else {@code target}. */
+    @Nullable
+    public static LivingEntity lureOrKeep(LivingEntity attacker, @Nullable LivingEntity target) {
+        EntityParadeDecoy decoy = lureTarget(attacker, target);
+        return decoy != null ? decoy : target;
     }
 }

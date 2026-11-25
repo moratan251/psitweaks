@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,7 +12,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -40,13 +44,35 @@ public final class CocytusIceRenderer {
         if (!CocytusFreezes.isFrozen(entity)) {
             return;
         }
+        float halfWidth = entity.getBbWidth() / 2.0F;
+        drawIce(event.getPoseStack().last(), event.getMultiBufferSource(),
+                new AABB(-halfWidth, 0.0, -halfWidth, halfWidth, entity.getBbHeight(), halfWidth), event.getPackedLight());
+    }
+
+    /**
+     * The Ender Dragon is not drawn as a living entity, so it gets its ice here, from its renderer: one block of ice
+     * around each of its parts (head, neck, body, tail, wings).
+     */
+    public static void drawDragonIce(EnderDragon dragon, float partialTick, PoseStack poseStack, MultiBufferSource buffers,
+                                     int light) {
+        if (!CocytusFreezes.isFrozen(dragon)) {
+            return;
+        }
+        double x = Mth.lerp(partialTick, dragon.xo, dragon.getX());
+        double y = Mth.lerp(partialTick, dragon.yo, dragon.getY());
+        double z = Mth.lerp(partialTick, dragon.zo, dragon.getZ());
+        for (EnderDragonPart part : dragon.getSubEntities()) {
+            drawIce(poseStack.last(), buffers, part.getBoundingBox().move(-x, -y, -z), light);
+        }
+    }
+
+    /** A block of ice around {@code box} (relative to the pose), a little larger, sitting slightly into the ground. */
+    private static void drawIce(PoseStack.Pose pose, MultiBufferSource buffers, AABB box, int light) {
         TextureAtlasSprite ice = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper()
                 .getParticleIcon(Blocks.ICE.defaultBlockState());
-        VertexConsumer consumer = event.getMultiBufferSource().getBuffer(Sheets.translucentCullBlockSheet());
-        float halfWidth = entity.getBbWidth() / 2.0F + MARGIN;
-        float height = entity.getBbHeight() + MARGIN;
-        drawBox(consumer, event.getPoseStack().last(), ice, -halfWidth, -MARGIN * 0.5F, -halfWidth,
-                halfWidth, height, halfWidth, event.getPackedLight());
+        VertexConsumer consumer = buffers.getBuffer(Sheets.translucentCullBlockSheet());
+        drawBox(consumer, pose, ice, (float) box.minX - MARGIN, (float) box.minY - MARGIN * 0.5F, (float) box.minZ - MARGIN,
+                (float) box.maxX + MARGIN, (float) box.maxY + MARGIN, (float) box.maxZ + MARGIN, light);
     }
 
     /** Frost drifting off the ice now and then. */

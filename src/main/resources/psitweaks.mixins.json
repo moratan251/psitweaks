@@ -6,9 +6,13 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractArrowAccessor",
+    "AbstractHurtingProjectileParadeMixin",
     "BlazeBurnerHeatZoneMixin",
     "ConcretePowderBlockAccessor",
     "DisableDamagePsiDeduction",
+    "DragonSittingScanningPhaseParadeMixin",
+    "DragonStrafePlayerPhaseAccessor",
+    "DragonStrafePlayerPhaseParadeMixin",
     "EntityBarrierFireMixin",
     "EntityCombatStatusMixin",
     "EntityParadeInvisibleMixin",
@@ -39,9 +43,12 @@
     "VibrationListenerSilenceZoneMixin",
     "SpellHelpersRangeLimitMixin",
     "WindGeneratorTurbulenceMixin",
-    "WindmillTurbulenceMixin"
+    "WindmillTurbulenceMixin",
+    "WitherBossAccessor",
+    "WitherBossParadeMixin"
   ],
   "client": [
+    "client.EnderDragonRendererCocytusMixin",
     "client.EntityRenderDispatcherParadeMixin",
     "client.PatchouliGuiButtonEntryMixin",
     "client.SpellPieceRendererMixin"

@@ -56,6 +56,8 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMeteorL
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMineGenesis;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickParade;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickPseudoMeteor;
+import com.moratan251.psitweaks.mixin.DragonStrafePlayerPhaseAccessor;
+import com.moratan251.psitweaks.mixin.WitherBossAccessor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -79,6 +81,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -86,9 +89,11 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.DragonFireball;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -1102,6 +1107,137 @@ public final class CombatSpellGameTests {
         helper.succeed();
     }
 
+    /**
+     * 仮装行列の虚像はボスもだます。ウィザーの狙いは虚像に移り、自分で狙いを選ぶ横の頭も術者を選ぶと虚像を狙う。唱えた
+     * ときに術者を狙っていた頭も虚像に移る。虚像が消えれば術者を狙える。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_parade_wither")
+    public static void paradeFoolsTheWither(GameTestHelper helper) throws Exception {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "parade-wither", new Vec3(1.5, 0.0, 4.5));
+        var wither = helper.spawnWithNoFreeWill(EntityType.WITHER, new Vec3(4.5, 0.0, 1.5));
+        try {
+            wither.setAlternativeTarget(2, player.getId());
+            parade(Map.of(NUMBER, -3.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+            EntityParadeDecoy decoy = Parades.activeDecoy(player);
+            helper.assertTrue(decoy != null && wither.getAlternativeTarget(2) == decoy.getId(),
+                    "A head after the caster must turn to the image when it appears");
+            wither.setTarget(player);
+            helper.assertTrue(wither.getTarget() == decoy, "The Wither must go for the image");
+            wither.setAlternativeTarget(1, player.getId());
+            helper.assertTrue(wither.getAlternativeTarget(1) == decoy.getId(), "A side head that picks the caster must get the image");
+            decoy.vanish(false);
+            wither.setAlternativeTarget(1, player.getId());
+            helper.assertTrue(wither.getAlternativeTarget(1) == player.getId(), "Once the image is gone the caster can be picked");
+        } finally {
+            wither.discard();
+            EntityParadeDecoy left = Parades.activeDecoy(player);
+            if (left != null) {
+                left.vanish(false);
+            }
+            GameTestPlayers.remove(helper, player);
+        }
+        helper.succeed();
+    }
+
+    /**
+     * 仮装行列の虚像はエンダードラゴンもだます。術者に急降下して火の玉を撃とうとするドラゴンは、虚像に向かう（ドラゴンは
+     * 島じゅうを飛ぶので距離によらない）。止まり木から術者を見つけて飛び立つドラゴンは、虚像に突進する。上のドラゴンから
+     * 術者が見えるよう、区画の天井（バリア）は付けない（skyAccess）。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_parade_dragon", skyAccess = true)
+    public static void paradeFoolsTheEnderDragon(GameTestHelper helper) throws Exception {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "parade-dragon", new Vec3(2.5, 0.0, 2.5));
+        // 14 blocks up, too high for the perched dragon's close look (it would turn to breathe fire): it takes off to charge.
+        var dragon = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new Vec3(2.5, 14.0, 2.5));
+        try {
+            parade(Map.of(NUMBER, 4.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+            EntityParadeDecoy decoy = Parades.activeDecoy(player);
+            helper.assertTrue(decoy != null, "The image must appear");
+            var far = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new Vec3(2.5, 0.0, 2.5 + Parades.LURE_RANGE * 3.0));
+            try {
+                helper.assertTrue(Parades.lureTarget(far, player) == decoy, "The dragon must be fooled from afar");
+            } finally {
+                far.discard();
+            }
+
+            var phases = dragon.getPhaseManager();
+            phases.setPhase(EnderDragonPhase.STRAFE_PLAYER);
+            var strafe = phases.getPhase(EnderDragonPhase.STRAFE_PLAYER);
+            strafe.setTarget(player);
+            strafe.doServerTick();
+            LivingEntity strafed = ((DragonStrafePlayerPhaseAccessor) strafe).psitweaks$getAttackTarget();
+            helper.assertTrue(strafed == decoy, "A strafe on the caster must turn to the image: " + strafed);
+
+            phases.setPhase(EnderDragonPhase.SITTING_SCANNING);
+            var scanning = phases.getCurrentPhase();
+            for (int tick = 0; tick < 200 && phases.getCurrentPhase() == scanning; tick++) {
+                scanning.doServerTick();
+            }
+            helper.assertTrue(phases.getCurrentPhase().getPhase() == EnderDragonPhase.CHARGING_PLAYER,
+                    "The dragon must take off to charge: " + phases.getCurrentPhase().getPhase());
+            Vec3 charge = phases.getPhase(EnderDragonPhase.CHARGING_PLAYER).getFlyTargetLocation();
+            helper.assertTrue(charge != null && charge.distanceTo(decoy.position()) < 1.0E-4,
+                    "The dragon must charge at the image: " + charge + ", image at " + decoy.position());
+        } finally {
+            dragon.discard();
+            EntityParadeDecoy left = Parades.activeDecoy(player);
+            if (left != null) {
+                left.vanish(false);
+            }
+            GameTestPlayers.remove(helper, player);
+        }
+        helper.succeed();
+    }
+
+    /**
+     * 火の玉の類（エンダードラゴンの火の玉、ウィザーの頭蓋骨、ガスト・ブレイズの火の玉）は、ブロックをすり抜けるものに当たら
+     * ないのがバニラの決まりだが、虚像には矢と同じく当たる。術者の撃った火の玉は今までどおり虚像をすり抜ける。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeImageTakesFireballs(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 0), "parade-fireball");
+        parade(Map.of(NUMBER, 3.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        List<Entity> spawned = new ArrayList<>();
+        try {
+            helper.assertTrue(decoy != null && decoy.noPhysics, "The image must stand, passing through blocks");
+            // The caster faces south, so the image stands at (2.5, 0, 3.5); each shot crosses it from the east in turn.
+            var hostile = flyingFireball(helper, null);
+            spawned.add(hostile);
+            hostile.tick();
+            hostile.tick();
+            helper.assertTrue(hostile.isRemoved(), "A dragon fireball must burst on the image, not fly through it");
+            var clouds = helper.getLevel().getEntitiesOfClass(AreaEffectCloud.class, decoy.getBoundingBox().inflate(4.0));
+            spawned.addAll(clouds);
+            helper.assertTrue(!clouds.isEmpty(), "The burst must leave its cloud at the image");
+
+            var own = flyingFireball(helper, player);
+            spawned.add(own);
+            for (int tick = 0; tick < 3; tick++) {
+                own.tick();
+            }
+            helper.assertTrue(!own.isRemoved() && own.getX() < decoy.getX() - 0.5,
+                    "The caster's own fireball must pass through the image: at " + (own.getX() - decoy.getX()));
+        } finally {
+            spawned.forEach(Entity::discard);
+            if (decoy != null) {
+                decoy.vanish(false);
+            }
+        }
+        helper.succeed();
+    }
+
+    /** An Ender Dragon fireball flying west at the height of the image's chest, from 2 blocks east of the image. */
+    private static DragonFireball flyingFireball(GameTestHelper helper, Entity owner) {
+        DragonFireball fireball = EntityType.DRAGON_FIREBALL.create(helper.getLevel());
+        Vec3 from = helper.absoluteVec(new Vec3(4.5, 0.6, 3.5));
+        fireball.setPos(from.x, from.y, from.z);
+        fireball.setOwner(owner);
+        fireball.setDeltaMovement(-1.0, 0.0, 0.0);
+        helper.getLevel().addFreshEntity(fireball);
+        return fireball;
+    }
+
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void paradeHidesItsCasterFromOtherPlayersSpells(GameTestHelper helper) throws Exception {
         var server = helper.getLevel().getServer();
@@ -1380,8 +1516,8 @@ public final class CombatSpellGameTests {
     }
 
     /**
-     * コキュートスは入力を取らず、術式解体と同じ視線の先の円錐の中のモブだけを凍らせる。後ろ・横のモブ、術者のペット、ボス、
-     * プレイヤーは凍らない。ダメージは与えない。円錐は 16 ブロック先まで届くので、専用のバッチで動かす。
+     * コキュートスは入力を取らず、術式解体と同じ視線の先の円錐の中のモブだけを凍らせる。ボスも凍る。後ろ・横のモブ、術者の
+     * ペット、プレイヤーは凍らない。ダメージは与えない。円錐は 16 ブロック先まで届くので、専用のバッチで動かす。
      */
     @GameTest(template = TEMPLATE, batch = BATCH + "_cocytus")
     public static void cocytusFreezesTheMobsInGramDemolitionsCone(GameTestHelper helper) throws Exception {
@@ -1414,13 +1550,13 @@ public final class CombatSpellGameTests {
                         "Mobs behind or to the side must be left alone");
             }
             helper.assertTrue(!pet.isNoAi() && !CocytusFreezes.isFrozen(pet), "The caster's pet must not be frozen");
-            helper.assertTrue(!wither.isNoAi() && !CocytusFreezes.isFrozen(wither), "A boss must not be frozen");
+            helper.assertTrue(CocytusFreezes.isFrozen(wither), "A boss in the cone must be frozen too");
             helper.assertTrue(!CocytusFreezes.canFreeze(player, other, AttackRules.Options.DEFAULT),
                     "A player has no AI to freeze");
             var again = PieceTrickCocytus.freezeInCone(helper.getLevel(), context, player.getEyePosition(),
                     player.getLookAngle());
-            helper.assertTrue(again.size() == 2 && again.containsAll(List.of(front, far)),
-                    "Casting again must catch the same two mobs, got " + again);
+            helper.assertTrue(again.size() == 3 && again.containsAll(List.of(front, far, wither)),
+                    "Casting again must catch the same three mobs, got " + again);
         } finally {
             List.of(front, far, behind, side, pet, wither).forEach(Entity::discard);
         }
@@ -1465,6 +1601,93 @@ public final class CombatSpellGameTests {
                     "Cocytus must freeze only the two mobs outside the stronger foreign zone, got " + frozen);
         } finally {
             spawned.forEach(Entity::discard);
+        }
+        helper.succeed();
+    }
+
+    /**
+     * コキュートスはウィザーも凍らせる。凍らせると頭の狙いを外し、凍っている間もボスバーは体力に合わせて減る。召喚直後に
+     * 力を溜めている間のウィザーは、凍らせると無敵のまま止まってしまうので凍らせない。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_cocytus_wither")
+    public static void cocytusFreezesTheWitherButNotWhileItGathersStrength(GameTestHelper helper) {
+        var player = caster(helper, new BlockPos(0, 0, 2), "cocytus-wither");
+        var level = helper.getLevel();
+        var wither = helper.spawnWithNoFreeWill(EntityType.WITHER, new Vec3(4.5, 0.0, 2.5));
+        var charging = helper.spawnWithNoFreeWill(EntityType.WITHER, new Vec3(4.5, 0.0, 6.5));
+        Husk husk = husk(helper, new Vec3(1.5, 0.0, 6.5), false);
+        try {
+            charging.makeInvulnerable();
+            helper.assertTrue(!CocytusFreezes.canFreeze(player, charging, AttackRules.Options.DEFAULT),
+                    "A Wither still gathering strength after being built must not be frozen");
+            helper.assertTrue(CocytusFreezes.canFreeze(player, wither, AttackRules.Options.DEFAULT), "The Wither must be freezable");
+
+            for (int head = 0; head < 3; head++) {
+                wither.setAlternativeTarget(head, husk.getId());
+            }
+            CocytusFreezes.freeze(level, wither);
+            helper.assertTrue(CocytusFreezes.isFrozen(wither) && wither.getAlternativeTarget(0) == 0
+                            && wither.getAlternativeTarget(1) == 0 && wither.getAlternativeTarget(2) == 0,
+                    "A frozen Wither must be frozen with its heads aiming at nothing");
+
+            var bar = ((WitherBossAccessor) wither).psitweaks$getBossEvent();
+            bar.setProgress(1.0F);
+            helper.assertTrue(wither.hurt(level.damageSources().playerAttack(player), 60.0F)
+                    && wither.getHealth() < wither.getMaxHealth(), "A frozen Wither must take damage");
+            CocytusFreezes.tick(level, wither);
+            helper.assertTrue(CocytusFreezes.isFrozen(wither) && near(bar.getProgress(), wither.getHealth() / wither.getMaxHealth()),
+                    "A frozen Wither's boss bar must follow its health: " + bar.getProgress());
+        } finally {
+            List.of(wither, charging, husk).forEach(Entity::discard);
+        }
+        helper.succeed();
+    }
+
+    /**
+     * コキュートスはエンダードラゴンも凍らせる。凍ったまま読み込まれて部位が置かれていないドラゴンは、部位を周りに並べ直す。
+     * 凍ったドラゴンは傷を負い、倒されたら溶けて息絶える（息絶える途中は AI が要るので、凍らせもしない）。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_cocytus_dragon")
+    public static void cocytusFreezesTheEnderDragonUntilItIsDefeated(GameTestHelper helper) {
+        var player = caster(helper, new BlockPos(0, 0, 4), "cocytus-dragon");
+        var level = helper.getLevel();
+        var dragon = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new BlockPos(2, 2, 2));
+        try {
+            // Hovering counts as sitting, where a dragon brought down dies on the spot; in flight it is first dying.
+            dragon.getPhaseManager().setPhase(EnderDragonPhase.HOLDING_PATTERN);
+            helper.assertTrue(CocytusFreezes.canFreeze(player, dragon, AttackRules.Options.DEFAULT), "The Ender Dragon must be freezable");
+            CocytusFreezes.freeze(level, dragon);
+            helper.assertTrue(CocytusFreezes.isFrozen(dragon), "The Ender Dragon must be frozen");
+
+            for (var part : dragon.getSubEntities()) {
+                part.setPos(dragon.getX(), dragon.getY() - 64.0, dragon.getZ());
+            }
+            CocytusFreezes.layOutFrozenDragon(dragon);
+            float yaw = dragon.getYRot() * Mth.DEG_TO_RAD;
+            Vec3 headAt = dragon.position().add(Mth.sin(yaw) * 6.5, 0.0, -Mth.cos(yaw) * 6.5);
+            helper.assertTrue(dragon.head.position().distanceTo(headAt) < 1.0E-4,
+                    "A frozen dragon's head must be laid out in front of it: " + dragon.head.position().subtract(dragon.position()));
+            for (var part : dragon.getSubEntities()) {
+                helper.assertTrue(part.distanceTo(dragon) < 12.0, "Every part must be laid out around the dragon: " + part.name);
+            }
+            Vec3 moved = dragon.position().add(0.0, 1.0, 0.0);
+            dragon.head.setPos(moved);
+            CocytusFreezes.layOutFrozenDragon(dragon);
+            helper.assertTrue(dragon.head.position().equals(moved), "Parts already around the dragon must stay where they are");
+
+            float health = dragon.getHealth();
+            helper.assertTrue(dragon.hurt(dragon.head, level.damageSources().playerAttack(player), 10.0F) && dragon.getHealth() < health,
+                    "A frozen dragon must take damage");
+            dragon.invulnerableTime = 0;
+            dragon.hurt(dragon.head, level.damageSources().playerAttack(player), 1000.0F);
+            helper.assertTrue(dragon.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.DYING,
+                    "The dragon must be dying: " + dragon.getPhaseManager().getCurrentPhase().getPhase());
+            helper.assertTrue(!CocytusFreezes.canFreeze(player, dragon, AttackRules.Options.DEFAULT), "A dying dragon must not be frozen");
+            CocytusFreezes.tick(level, dragon);
+            helper.assertTrue(!dragon.isNoAi() && !CocytusFreezes.isFrozen(dragon) && !dragon.hasData(PsitweaksAttachments.COCYTUS_FREEZE),
+                    "A defeated dragon must thaw so that it can die");
+        } finally {
+            dragon.discard();
         }
         helper.succeed();
     }

@@ -2283,8 +2283,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Projects an image of the caster $(thing)Number$(0) blocks in front of them, or behind for a negative value (a constant, 1 to 32 blocks, fractions dropped). It keeps that spot as the caster moves and turns, at the height of their feet, and passes through blocks. It fades after $(thing)Time$(0) seconds or when its integrity runs out. Casting it again replaces it.",
                 "術者の前方 $(thing)数値$(0) ブロックに術者そっくりの虚像を映します. 負の値なら後方です (定数, 1〜32ブロック, 小数は切り捨て). 虚像は術者の移動や旋回についてきて, 地形の影響を受けずブロックにもめり込みます. $(thing)時間$(0) 秒たつか, 耐久値が尽きると消えます. もう一度唱えると入れ替わります.");
         addBookPage(root, "trick_parade.1",
-                "While it stands, creatures that go for the caster go for the image instead, melee and ranged alike (bosses excepted). Shots are real, so one aimed at an image behind the caster can reach the caster on the way, but attacks on the caster miss $(thing)60%% + 5%% × |Number|$(0) of the time (up to 95%%): the farther the image, the more they miss.",
-                "虚像がある間, 術者を狙う生物は近接・遠距離を問わず虚像を狙います (ボスを除く). 飛び道具は本物なので後ろの虚像を狙った矢は途中の術者に届きますが, 術者への攻撃は $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で外れ, 虚像が遠いほど外れやすくなります.");
+                "While it stands, creatures that go for the caster go for the image instead, melee and ranged alike, bosses included. Shots are real, so one aimed at an image behind the caster can reach the caster on the way, but attacks on the caster miss $(thing)60%% + 5%% × |Number|$(0) of the time (up to 95%%): the farther the image, the more they miss.",
+                "虚像がある間, 術者を狙う生物は近接・遠距離を問わず, ボスも含めて虚像を狙います. 飛び道具は本物なので後ろの虚像を狙った矢は途中の術者に届きますが, 術者への攻撃は $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で外れ, 虚像が遠いほど外れやすくなります.");
         addBookPage(root, "trick_parade.2",
                 "The image is a $(l:psitweaks/spellgram_objects)Resident SpellGram$(/l). Its integrity starts at $(thing)4 × Power × Phenomenon Interference$(0) and wears away over Time; each attack on the image takes 2, whatever its damage, while Trick: Gram Demolition and Trick: Psi Bullet take their own amounts. Trick: Extend SpellGram lengthens it and Trick: Recall SpellGram ends it. Others' Interference Zones do not stop it.",
                 "虚像は$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)です. 耐久値は $(thing)4×威力×事象干渉力$(0) で時間とともに減り, 虚像が攻撃されるとダメージによらず2減ります (作動式: 術式解体・サイ・ブリットはそれぞれの量). 作動式: 魔法式延長で延ばし, 作動式: 魔法式回収で消せます. 他人の領域干渉では止まりません.");
@@ -2317,8 +2317,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Takes no input. Blows a blizzard in front of the caster (passing through blocks) and freezes the minds of the mobs it catches forever. A frozen mob's AI stops and it is sealed in ice, unable to move or make a sound.",
                 "入力はありません. 前方へ吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ブロックは貫通します). 凍結したモブは AI が止まって氷に閉じ込められ, 動くことも音を立てることもなくなります.");
         addBookPage(root, "trick_cocytus.1",
-                "Players, the caster, the caster's pets and allies, and bosses are not frozen. The blizzard itself deals no damage.$(br2)If something else turns a frozen mob's AI back on, the ice melts and the mob can make sounds again.",
-                "プレイヤー, 術者自身とそのペット・味方, ボスは凍結しません. 吹雪そのものはダメージを与えません.$(br2)ほかの方法で AI が戻ると, 氷が溶けて再び音を立てるようになります.");
+                "Players, the caster, and the caster's pets and allies are not frozen. Bosses are, except a Wither still gathering strength after being built; a frozen Ender Dragon thaws when defeated and dies as usual. The blizzard itself deals no damage.$(br2)If something else turns a frozen mob's AI back on, the ice melts and the mob can make sounds again.",
+                "プレイヤー, 術者自身とそのペット・味方は凍結しません. ボスも凍結しますが, 召喚直後で力を溜めているウィザーは凍結しません. 凍結したエンダードラゴンは倒されると氷が溶け, いつもどおり息絶えます. 吹雪そのものはダメージを与えません.$(br2)ほかの方法で AI が戻ると, 氷が溶けて再び音を立てるようになります.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき, 1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0",
                 "Pulls up to one stack (capped by optional Max) from the specified face of the block into your inventory.$(p)Filter modes: String (ID, *, or # tag), Item, and data-matching Item (Strict). Item modes also accept an Item List.",

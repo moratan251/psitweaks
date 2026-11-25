@@ -4,11 +4,15 @@ import com.moratan251.psitweaks.Psitweaks;
 import com.moratan251.psitweaks.common.spells.combat.CocytusFreezes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
-/** Melts the ice of Trick: Cocytus once something turns a frozen mob's AI back on. */
+/**
+ * Looks after mobs frozen by Trick: Cocytus: lays out a frozen Ender Dragon's parts on both sides, and on the server
+ * keeps frozen bosses beatable and melts the ice once something turns a frozen mob's AI back on.
+ */
 @EventBusSubscriber(modid = Psitweaks.MOD_ID)
 public final class CocytusFreezeHandler {
     private CocytusFreezeHandler() {
@@ -16,7 +20,13 @@ public final class CocytusFreezeHandler {
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
-        if (event.getEntity() instanceof Mob mob && mob.level() instanceof ServerLevel level) {
+        if (!(event.getEntity() instanceof Mob mob)) {
+            return;
+        }
+        if (mob instanceof EnderDragon dragon && CocytusFreezes.isFrozen(dragon)) {
+            CocytusFreezes.layOutFrozenDragon(dragon);
+        }
+        if (mob.level() instanceof ServerLevel level) {
             CocytusFreezes.tick(level, mob);
         }
     }
