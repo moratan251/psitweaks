@@ -59,7 +59,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
-import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -442,77 +441,20 @@ public final class AutonomousCasterGameTests {
         });
     }
 
+    /** 作動式: 仮装行列は機械からは何もしない。像を出さず、所有者を隠さない。 */
     @GameTest(template = TEMPLATE)
-    public static void paradeDecoyFollowsTheDedicatedCasterUntilDetached(GameTestHelper helper) {
-        StubHost host = new StubHost();
-        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, host);
-        EntityParadeDecoy decoy = new EntityParadeDecoy(helper.getLevel(), helper.absoluteVec(new Vec3(2.5, 1.0, 2.5)));
+    public static void paradeFromTheMachineDoesNothing(GameTestHelper helper) {
+        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), UUID.randomUUID(), new StubHost());
+        Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
+        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
         try {
-            decoy.configure(caster, 3, 200, 0xFFFFFF);
-            helper.assertTrue(decoy.getOwnerPlayer() == caster, "The decoy lost the dedicated caster");
-            caster.detach();
-            helper.assertTrue(decoy.getOwnerPlayer() == null, "The decoy kept following a detached caster");
+            helper.assertTrue(Parades.conjure(helper.getLevel(), caster, 2.0, 3, 200, 1000.0F) == null && Parades.activeDecoy(caster) == null,
+                    "The machine projected a Parade image");
+            helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityParadeDecoy.class, helper.getBounds().inflate(4.0)).isEmpty(),
+                    "A Parade image appeared around the machine");
             helper.succeed();
         } finally {
             caster.detach();
-            decoy.discard();
-        }
-    }
-
-    /**
-     * 専用 Caster が出す分身は、機械の所有者の姿と名前で機械の手持ちを持つ。頭の内蔵 CAD は写さず、Trick: Break Block が
-     * 手を内蔵 CAD に持ち替えている間も写さない。分身の持ち主は機械ごとの内部キーのまま（所有者本人を隠さない）。
-     */
-    @GameTest(template = TEMPLATE)
-    public static void paradeDecoyOfTheDedicatedCasterLooksLikeTheMachineOwner(GameTestHelper helper) {
-        UUID owner = UUID.randomUUID();
-        StubHost host = new StubHost();
-        host.ownerName = "psitweaks_owner";
-        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner, host);
-        AutonomousCasterPlayer ownerless = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), null, new StubHost());
-        ItemStack cad = VirtualCad.rebuild(helper.getLevel().registryAccess(), ItemStack.EMPTY, ItemStack.EMPTY);
-        caster.getInventory().setItem(AutonomousCasterPlayer.CAD_SLOT, cad);
-        caster.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-        Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
-        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
-        EntityParadeDecoy decoy = new EntityParadeDecoy(helper.getLevel(), at);
-        EntityParadeDecoy anonymous = new EntityParadeDecoy(helper.getLevel(), at);
-        boolean ticking = false;
-        try {
-            decoy.configure(caster, 3, 200, 0xFFFFFF);
-            helper.assertTrue(decoy.getItemBySlot(EquipmentSlot.HEAD).isEmpty(), "The decoy wears the internal CAD");
-            helper.assertTrue(decoy.getMainHandItem().is(Items.IRON_SWORD), "The decoy does not hold the machine's item");
-            helper.assertTrue(decoy.getCustomName() != null && "psitweaks_owner".equals(decoy.getCustomName().getString()),
-                    "The decoy is not named after the machine owner: " + decoy.getCustomName());
-            helper.assertTrue(owner.equals(decoy.getLookUUID()), "The decoy does not wear the machine owner's skin");
-            helper.assertTrue(caster.casterKey().equals(decoy.getOwnerUUID()), "The decoy is not kept by the machine's key");
-
-            anonymous.configure(ownerless, 3, 200, 0xFFFFFF);
-            helper.assertTrue(anonymous.getCustomName() == null && ownerless.casterKey().equals(anonymous.getLookUUID()),
-                    "The decoy of an ownerless machine took a name or someone's skin");
-
-            // 分身は毎 tick 持ち主の装備を写し直す。
-            caster.setItemInHand(InteractionHand.MAIN_HAND, cad);
-            helper.getLevel().addFreshEntity(decoy);
-            ticking = true;
-            helper.runAfterDelay(2, () -> {
-                try {
-                    helper.assertTrue(decoy.isAlive() && decoy.getMainHandItem().isEmpty()
-                                    && decoy.getItemBySlot(EquipmentSlot.HEAD).isEmpty(),
-                            "The decoy copied the internal CAD held while breaking a block");
-                    helper.succeed();
-                } finally {
-                    caster.detach();
-                    decoy.discard();
-                }
-            });
-        } finally {
-            ownerless.detach();
-            anonymous.discard();
-            if (!ticking) {
-                caster.detach();
-                decoy.discard();
-            }
         }
     }
 
@@ -798,12 +740,10 @@ public final class AutonomousCasterGameTests {
         target.setNoAi(true);
         caster.lookAt(EntityAnchorArgument.Anchor.EYES, target.position().add(0.0, target.getBbHeight() / 2.0, 0.0));
         EntityFlareCircle circle = new EntityFlareCircle(helper.getLevel());
-        EntityParadeDecoy decoy = new EntityParadeDecoy(helper.getLevel(), helper.absoluteVec(new Vec3(2.5, 1.0, 0.5)));
         EntityPhononMaserBeam beam = new EntityPhononMaserBeam(helper.getLevel(), caster, 1, 40);
         Runnable cleanup = () -> {
             caster.detach();
             beam.discard();
-            decoy.discard();
             removeOwner(helper, owner);
         };
         try {
@@ -818,11 +758,6 @@ public final class AutonomousCasterGameTests {
             circle.setFollowTarget(caster, true);
             helper.assertTrue(circle.getCaster() == caster && circle.getFollowTargetEntity() == caster,
                     "A Fire Circle cast by the machine followed someone else");
-
-            decoy.configure(caster, 3, 200, 0xFFFFFF);
-            helper.assertTrue(!owner.getUUID().equals(decoy.getOwnerUUID()) && !decoy.isOwnedBy(owner)
-                            && decoy.isOwnedBy(caster) && decoy.getOwnerPlayer() == caster,
-                    "The Parade lookalike of the machine stands for its owner, who would be hidden");
 
             helper.getLevel().addFreshEntity(beam);
         } catch (RuntimeException e) {
@@ -843,47 +778,6 @@ public final class AutonomousCasterGameTests {
                 cleanup.run();
             }
         });
-    }
-
-    /**
-     * 機械の分身は設置者の代わりに敵を引きつける。設置者を狙う敵も、狙う相手のいない敵対 mob も分身へ向かい、中立の mob は
-     * 挑発しない。設置者自身の分身ではないので、設置者は分身に隠れた扱いにならない。
-     */
-    @GameTest(template = TEMPLATE, batch = OWNER_ONLINE_BATCH)
-    public static void paradeDecoyOfTheMachineDrawsMobsInItsPlacersStead(GameTestHelper helper) {
-        FakePlayer owner = onlineOwner(helper, new Vec3(4.5, 1.0, 4.5));
-        AutonomousCasterPlayer caster = new AutonomousCasterPlayer(helper.getLevel(), UUID.randomUUID(), owner.getUUID(), new StubHost());
-        Vec3 at = helper.absoluteVec(new Vec3(0.5, 1.0, 0.5));
-        caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
-        Husk afterPlacer = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 1.0, 4.5));
-        Husk idle = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(4.5, 1.0, 1.5));
-        ZombifiedPiglin neutral = helper.spawnWithNoFreeWill(EntityType.ZOMBIFIED_PIGLIN, new Vec3(3.5, 1.0, 0.5));
-        EntityParadeDecoy decoy = null;
-        try {
-            afterPlacer.setTarget(owner);
-            helper.assertTrue(afterPlacer.getTarget() == owner, "The husk did not go for the placer to begin with");
-            decoy = Parades.conjure(helper.getLevel(), caster, helper.absoluteVec(new Vec3(2.5, 1.0, 2.5)), 3, 200);
-            helper.assertTrue(afterPlacer.getTarget() == decoy, "A mob after the placer did not turn to the machine's lookalike");
-            helper.assertTrue(idle.getTarget() == decoy, "A hostile mob with no target did not notice the machine's lookalike");
-            helper.assertTrue(neutral.getTarget() == null, "The machine's lookalike provoked a neutral mob");
-            afterPlacer.setTarget(owner);
-            helper.assertTrue(afterPlacer.getTarget() == decoy, "A mob that picks the placer again did not get the lookalike");
-            helper.assertTrue(Parades.activeDecoy(owner) == null, "The placer counts as hiding behind the machine's lookalike");
-            decoy.vanish(false);
-            afterPlacer.setTarget(owner);
-            helper.assertTrue(afterPlacer.getTarget() == owner, "Once the lookalike is gone the placer can be targeted");
-            helper.succeed();
-        } finally {
-            caster.detach();
-            if (decoy != null) {
-                decoy.discard();
-            }
-            // kill() would drop loot that other tests' "nothing dropped" checks could see.
-            afterPlacer.discard();
-            idle.discard();
-            neutral.discard();
-            removeOwner(helper, owner);
-        }
     }
 
     /** 所有者がオンラインでも、機械が一括破壊したブロックのドロップは本人ではなく機械に届く。 */

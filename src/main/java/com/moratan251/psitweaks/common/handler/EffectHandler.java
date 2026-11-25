@@ -31,10 +31,7 @@ public final class EffectHandler {
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getSource().is(PsitweaksDamageTypes.CARBON_POISONING)) {
             event.setInvulnerabilityTicks(0);
-            return;
         }
-
-        // Trick: Parade no longer uses its effect to evade; it conjures a lookalike (see Parades).
     }
 
     @SubscribeEvent

@@ -15,10 +15,11 @@ import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 /**
- * Trick: Parade hides its caster: while their lookalike is around, other players do not see the caster's body, gear or
- * name at all, and the caster counts as invisible to them ({@link ParadeSight}), which other mods' overlays respect.
- * Team mates still see them. The set of hidden players is rebuilt from the loaded lookalikes every tick, so nothing
- * outlives the lookalike or the connection.
+ * Trick: Parade hides its caster: while their image is around, other players do not see the caster at all. The level
+ * renderer skips them (body, gear, name, shadow and what other mods draw with the entity, see
+ * {@code EntityRenderDispatcherParadeMixin}), their player rendering is cancelled for any other path, and the caster
+ * counts as invisible to them ({@link ParadeSight}). Team mates still see them. The set of hidden players is rebuilt
+ * from the loaded images every tick, so nothing outlives the image or the connection.
  */
 public final class ParadeHiddenPlayers {
     private static final Set<UUID> HIDDEN = new HashSet<>();
@@ -27,7 +28,7 @@ public final class ParadeHiddenPlayers {
     }
 
     public static void registerEvents() {
-        ParadeSight.install(ParadeHiddenPlayers::isHiddenFrom);
+        ParadeSight.install(ParadeHiddenPlayers::isHiddenFrom, ParadeHiddenPlayers::isLocalPlayer);
         NeoForge.EVENT_BUS.addListener(ParadeHiddenPlayers::onClientTick);
         NeoForge.EVENT_BUS.addListener(ParadeHiddenPlayers::onRenderPlayer);
         NeoForge.EVENT_BUS.addListener(ParadeHiddenPlayers::onLoggingOut);
@@ -57,6 +58,11 @@ public final class ParadeHiddenPlayers {
     public static boolean isHiddenFrom(Entity entity, Player viewer) {
         return entity instanceof Player player && player != viewer && HIDDEN.contains(player.getUUID())
                 && !viewer.isAlliedTo(player);
+    }
+
+    private static boolean isLocalPlayer(UUID id) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        return player != null && player.getUUID().equals(id);
     }
 
     private static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {

@@ -26,6 +26,7 @@
     "PieceTrickBreakLoopAutonomousCasterMixin",
     "PieceTrickMassExodusMixin",
     "ProjectileAutonomousCasterMixin",
+    "ProjectileParadeMixin",
     "PsiNetworkAutonomousCasterMixin",
     "RadiationUtilMixin",
     "SculkShriekerSilenceZoneMixin",
@@ -41,6 +42,7 @@
     "WindmillTurbulenceMixin"
   ],
   "client": [
+    "client.EntityRenderDispatcherParadeMixin",
     "client.PatchouliGuiButtonEntryMixin",
     "client.SpellPieceRendererMixin"
   ],

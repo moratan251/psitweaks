@@ -335,6 +335,19 @@ public class PsitweaksEntities {
                             .noSummon()
                             .build(Psitweaks.MOD_ID + ":parade_decoy"));
 
+    /** The invisible core of Trick: Parade, a Resident SpellGram inside the image. */
+    public static final DeferredHolder<EntityType<?>, EntityType<com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore>> PARADE_CORE =
+            ENTITY_TYPES.register("parade_core",
+                    () -> EntityType.Builder.<com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore>of(
+                                    com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(10)
+                            .updateInterval(2)
+                            .fireImmune()
+                            .noSave()
+                            .noSummon()
+                            .build(Psitweaks.MOD_ID + ":parade_core"));
+
     public static void register(IEventBus bus) {
         ENTITY_TYPES.register(bus);
     }

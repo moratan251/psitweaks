@@ -107,7 +107,8 @@ public class EntityPsiBullet extends CombatSpellEntity {
             SpellGramObject object = null;
             double nearest = reach;
             for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(start, end).inflate(REACH + 2.0))) {
-                if (!canAffect(caster, living)) {
+                // A Trick: Parade image is not a body: the bullet goes on to the core inside it.
+                if (!canAffect(caster, living) || living instanceof EntityParadeDecoy) {
                     continue;
                 }
                 double along = reachOf(living, start, direction);

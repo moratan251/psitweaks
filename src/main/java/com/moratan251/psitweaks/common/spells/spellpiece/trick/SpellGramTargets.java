@@ -3,6 +3,7 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramCircle;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
+import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import vazkii.psi.api.spell.SpellContext;
@@ -20,8 +21,13 @@ final class SpellGramTargets {
     private SpellGramTargets() {
     }
 
-    /** {@code entity} が術者の常駐魔法式なら返す。そうでなければエラー。 */
+    /**
+     * {@code entity} が術者の常駐魔法式なら返す。そうでなければエラー。作動式: 仮装行列の虚像は、その核（常駐魔法式）として扱う。
+     */
     static SpellGramObject own(SpellContext context, @Nullable Entity entity) throws SpellRuntimeException {
+        if (entity instanceof EntityParadeDecoy image) {
+            entity = image.getCore();
+        }
         if (!(entity instanceof SpellGramObject object) || !object.isResident() || object.isRemoved()) {
             throw new SpellRuntimeException(ERROR_NOT_SPELLGRAM);
         }

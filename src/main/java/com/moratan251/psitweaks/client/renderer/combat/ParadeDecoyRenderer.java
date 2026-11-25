@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.client.renderer.combat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
+import com.moratan251.psitweaks.common.spells.combat.Parades;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidArmorModel;
@@ -21,12 +22,13 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Draws the Trick: Parade lookalike as its owner: the owner's skin (slim or wide arms), armour, held items and name.
- * An autonomous caster's lookalike wears the skin of whoever placed the machine.
+ * Draws the Trick: Parade image as its owner: the owner's skin (slim or wide arms), armour, held items and name.
  * The owner sees it as a faint ghost without gear or name, so they can tell it from a real player; it wavers the same
  * way for everyone when it takes a hit.
  */
@@ -59,10 +61,22 @@ public class ParadeDecoyRenderer extends LivingEntityRenderer<EntityParadeDecoy,
         super.render(entity, entityYaw, partialTick, poseStack, buffers, packedLight);
     }
 
-    /** Crouching lowers the body like a player's. */
+    /**
+     * Draws the image exactly where its owner projects it this frame, so it keeps up with the owner's movement and
+     * turning between ticks. Crouching lowers the body like a player's.
+     */
     @Override
     public Vec3 getRenderOffset(EntityParadeDecoy entity, float partialTick) {
-        return entity.isCrouching() ? new Vec3(0.0, entity.getScale() * -2.0F / 16.0, 0.0) : super.getRenderOffset(entity, partialTick);
+        Vec3 offset = super.getRenderOffset(entity, partialTick);
+        Player owner = entity.getOwnerPlayer();
+        if (owner != null) {
+            Vec3 wanted = owner.getPosition(partialTick)
+                    .add(Parades.horizontalOffset(owner.getViewYRot(partialTick), entity.getDistance()));
+            Vec3 drawn = new Vec3(Mth.lerp(partialTick, entity.xOld, entity.getX()), Mth.lerp(partialTick, entity.yOld, entity.getY()),
+                    Mth.lerp(partialTick, entity.zOld, entity.getZ()));
+            offset = offset.add(wanted.subtract(drawn));
+        }
+        return entity.isCrouching() ? offset.add(0.0, entity.getScale() * -2.0F / 16.0, 0.0) : offset;
     }
 
     @Override
@@ -91,15 +105,13 @@ public class ParadeDecoyRenderer extends LivingEntityRenderer<EntityParadeDecoy,
         return isOwnerView(entity) || entity.getWaver(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false)) > 0.0F;
     }
 
-    /** The owner, and whoever placed the autonomous caster that conjured it: it is their own lookalike. */
+    /** Whether the local player is the one the image stands for. */
     private static boolean isOwnerView(EntityParadeDecoy entity) {
-        Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.player != null
-                && (entity.isOwnedBy(minecraft.player) || minecraft.player.getUUID().equals(entity.getLookUUID()));
+        return entity.isOwnedBy(Minecraft.getInstance().player);
     }
 
     private static PlayerSkin skin(EntityParadeDecoy entity) {
-        UUID look = entity.getLookUUID();
+        UUID look = entity.getOwnerUUID();
         if (look == null) {
             return DefaultPlayerSkin.get(entity.getUUID());
         }
@@ -108,7 +120,7 @@ public class ParadeDecoyRenderer extends LivingEntityRenderer<EntityParadeDecoy,
         return info != null ? info.getSkin() : DefaultPlayerSkin.get(look);
     }
 
-    /** A layer drawn only while the lookalike looks solid: no floating armour on the see-through ghost. */
+    /** A layer drawn only while the image looks solid: no floating armour on the see-through ghost. */
     private static final class ShownWhenSolid extends RenderLayer<EntityParadeDecoy, PlayerModel<EntityParadeDecoy>> {
         private final RenderLayer<EntityParadeDecoy, PlayerModel<EntityParadeDecoy>> layer;
 

@@ -28,7 +28,10 @@ public final class SpellGramAim {
         return new AABB(object.position(), object.position()).inflate(CORE_HALF);
     }
 
-    /** {@code viewer} の視線の先の、ブロックに遮られていない魔法式オブジェクトの核のうち最も近いもの（{@link #RANGE} まで）。 */
+    /**
+     * {@code viewer} の視線の先の、ブロックに遮られていない魔法式オブジェクトの核のうち最も近いもの（{@link #RANGE} まで）。
+     * {@code viewer} に見せないもの（{@link SpellGramObject#isShownTo}）は選ばない。
+     */
     @Nullable
     public static SpellGramObject aimedAt(Level level, Entity viewer, float partialTicks) {
         return aimedAt(level, viewer, partialTicks, RANGE);
@@ -43,7 +46,7 @@ public final class SpellGramAim {
         double limit = block.getType() == HitResult.Type.MISS ? range * range : eye.distanceToSqr(block.getLocation());
         SpellGramObject nearest = null;
         for (SpellGramObject object : level.getEntitiesOfClass(SpellGramObject.class, new AABB(eye, end).inflate(CORE_HALF + 1.0))) {
-            if (object.isRemoved() || object.isEnded()) {
+            if (object.isRemoved() || object.isEnded() || !object.isShownTo(viewer)) {
                 continue;
             }
             AABB core = coreBox(object);

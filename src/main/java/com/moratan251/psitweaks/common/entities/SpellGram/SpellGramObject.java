@@ -53,6 +53,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     }
 
     /**
+     * 照準を合わせたときに、核と名前・耐久値を {@code viewer} に見せるか（{@link SpellGramAim}）。見せないものは照準で選ばれない。
+     * 既定は誰にでも見せる。
+     */
+    public boolean isShownTo(Entity viewer) {
+        return true;
+    }
+
+    /**
      * 照準を合わせたときに、耐久値の行（領域はリソースの行）の下に出す行（クライアント側）。自分の強さ（加速の倍率、除染の能力
      * など）を出すのに使う。既定はなし。
      */

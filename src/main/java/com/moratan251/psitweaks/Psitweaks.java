@@ -416,6 +416,7 @@ public class Psitweaks {
             event.registerEntityRenderer(PsitweaksEntities.PSI_BULLET.get(), PsiBulletRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.DANCING_BLADE.get(), DancingBladeRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.PARADE_DECOY.get(), ParadeDecoyRenderer::new);
+            event.registerEntityRenderer(PsitweaksEntities.PARADE_CORE.get(), NoopRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.PSEUDO_METEOR.get(), PseudoMeteorRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.MICRO_BLACK_HOLE.get(), MicroBlackHoleRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.CHAIN_LIGHTNING.get(), NoopRenderer::new);

@@ -100,8 +100,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Dancing Blade";
         });
         root.addProperty("entity.psitweaks.parade_decoy", switch (locale) {
-            case "ja_jp" -> "仮装行列の分身";
-            default -> "Parade Lookalike";
+            case "ja_jp" -> "仮装行列の虚像";
+            default -> "Parade Image";
+        });
+        root.addProperty("entity.psitweaks.parade_core", switch (locale) {
+            case "ja_jp" -> "仮装行列";
+            default -> "Parade";
         });
         root.addProperty("entity.psitweaks.pseudo_meteor", switch (locale) {
             case "ja_jp" -> "疑似隕石";
@@ -451,6 +455,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.spellerror.parade_disguised", switch (locale) {
             case "ja_jp" -> "エラー: 対象の情報は偽装されています.";
             default -> "ERROR: The target's information is disguised.";
+        });
+        root.addProperty("psitweaks.spellerror.parade_zero_distance", switch (locale) {
+            case "ja_jp" -> "エラー: 数値が 0 では虚像を映せません.";
+            default -> "ERROR: The image cannot be projected with a Number of 0.";
         });
         root.addProperty("psitweaks.spellerror.no_ground", switch (locale) {
             case "ja_jp" -> "指定位置の下に地面がありません";
@@ -1912,7 +1920,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "対象に, 受けるダメージを1分間肩代わりするシールドを張る");
         addSpellPiece(root, "selector_barrier_amount", "Selector: Barrier Amount", "Gets the shield the target's Barrier has left. 0 when it has none.", "取得子: 障壁量", "対象の障壁のシールド残量を取得します. 障壁がなければ0を返します.");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時, 一定値まで減少させる");
-        addSpellPiece(root, "trick_parade", "Trick: Parade", "Conjures a lookalike of the caster that draws enemies' attacks and spells", "作動式: 仮装行列", "術者そっくりの分身を作り, 敵の攻撃と魔法を引きつける");
+        addSpellPiece(root, "trick_parade", "Trick: Parade", "Projects an image of the caster in front of or behind them that draws enemies' attacks and spells", "作動式: 仮装行列", "術者の前後に術者そっくりの虚像を映し, 敵の攻撃と魔法を引きつける");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します. Psiを消費し続けることでクリエイティブ飛行を可能にします.");
         addSpellPiece(root, "trick_interact_block", "Trick: Block Interact", "Right-click with the off-hand item on the target block", "作動式: ブロック作用", "座標のブロックに, オフハンドのアイテムで右クリックの動作を行う");
         addSpellPiece(root, "trick_freeze_block", "Trick: Block Freeze", "Freeze the block at the target position into its next colder form", "作動式: ブロック凍結", "指定座標のブロックを次の凍結段階に変化させる");
@@ -2272,11 +2280,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade.0",
-                "Conjures a lookalike of the caster at the position, which wanders around it. It wavers away after $(thing)Time$(0) seconds or after taking $(thing)2 × Power$(0) hits. Casting it again replaces the current lookalike.",
-                "指定位置に術者そっくりの分身を作り, その近くを歩き回らせます. 分身は $(thing)時間$(0) 秒たつか, $(thing)2×威力$(0) 回攻撃を受けると揺らいで消えます. もう一度唱えると, 今ある分身と入れ替わります.");
+                "Projects an image of the caster $(thing)Number$(0) blocks in front of them, or behind for a negative value (a constant, 1 to 32 blocks, fractions dropped). It keeps that spot as the caster moves and turns, at the height of their feet, and passes through blocks. It fades after $(thing)Time$(0) seconds or when its integrity runs out. Casting it again replaces it.",
+                "術者の前方 $(thing)数値$(0) ブロックに術者そっくりの虚像を映します. 負の値なら後方です (定数, 1〜32ブロック, 小数は切り捨て). 虚像は術者の移動や旋回についてきて, 地形の影響を受けずブロックにもめり込みます. $(thing)時間$(0) 秒たつか, 耐久値が尽きると消えます. もう一度唱えると入れ替わります.");
         addBookPage(root, "trick_parade.1",
-                "While it stands, hostile creatures within 32 blocks that go for the caster go for the lookalike instead (bosses excepted). Other players no longer see the caster, and their spells aimed at the caster go to the lookalike and never reach the caster. Team mates are unaffected.",
-                "分身がいる間, 術者を狙う32ブロック以内の敵対的な生物は分身を狙います (ボスを除く). 他のプレイヤーからは術者の姿が見えなくなり, 術者を狙った術式は分身に向かい, 術者には届きません. 同じチームの味方には影響しません.");
+                "While it stands, creatures that go for the caster go for the image instead, melee and ranged alike (bosses excepted). Shots are real, so one aimed at an image behind the caster can reach the caster on the way, but attacks on the caster miss $(thing)60%% + 5%% × |Number|$(0) of the time (up to 95%%): the farther the image, the more they miss.",
+                "虚像がある間, 術者を狙う生物は近接・遠距離を問わず虚像を狙います (ボスを除く). 飛び道具は本物なので後ろの虚像を狙った矢は途中の術者に届きますが, 術者への攻撃は $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で外れ, 虚像が遠いほど外れやすくなります.");
+        addBookPage(root, "trick_parade.2",
+                "The image is a $(l:psitweaks/spellgram_objects)Resident SpellGram$(/l). Its integrity starts at $(thing)4 × Power × Phenomenon Interference$(0) and wears away over Time; each attack on the image takes 2, whatever its damage, while Trick: Gram Demolition and Trick: Psi Bullet take their own amounts. Trick: Extend SpellGram lengthens it and Trick: Recall SpellGram ends it. Others' Interference Zones do not stop it.",
+                "虚像は$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)です. 耐久値は $(thing)4×威力×事象干渉力$(0) で時間とともに減り, 虚像が攻撃されるとダメージによらず2減ります (作動式: 術式解体・サイ・ブリットはそれぞれの量). 作動式: 魔法式延長で延ばし, 作動式: 魔法式回収で消せます. 他人の領域干渉では止まりません.");
+        addBookPage(root, "trick_parade.3",
+                "Other players no longer see the caster, and their spells aimed at the caster go to the image. Team mates are unaffected. Only the caster sees the image's integrity when aiming at it. Cast from an autonomous caster, it does nothing.",
+                "他のプレイヤーからは術者の姿が見えなくなり, 術者を狙った術式は虚像に向かいます. 同じチームの味方には影響しません. 照準を合わせたときの耐久値は術者にだけ見えます. 自律詠唱機から唱えても効果はありません.");
         addBookPage(root, "trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively.", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です.");
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
         addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");

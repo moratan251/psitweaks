@@ -127,7 +127,7 @@ public final class AutonomousCasterPlayer extends FakePlayer implements IdeaStor
         return owner.isPresent() ? level().getScoreboard().getPlayersTeam(owner.get()) : super.getTeam();
     }
 
-    /** 機械の所有者の名前。チームを引くのと、作動式: 仮装行列の分身が名乗るのに使う。所有者が不明なら空。 */
+    /** 機械の所有者の名前。チームを引くのに使う。所有者が不明なら空。 */
     public Optional<String> ownerName() {
         AutonomousCasterHost current = host;
         return current == null ? Optional.empty() : current.ownerName();

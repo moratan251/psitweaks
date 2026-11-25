@@ -9,6 +9,9 @@ import com.moratan251.psitweaks.common.entities.EntityDryIceProjectile;
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramLimits;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
@@ -41,6 +44,8 @@ import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickBurst;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChainLightning;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickCocytus;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickDancingBlades;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickExtendSpellGram;
+import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickRecallSpellGram;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickGramDemolition;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickMicroBlackHole;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickAirBullet;
@@ -68,6 +73,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -78,6 +85,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -500,8 +508,9 @@ public final class CombatSpellGameTests {
         helper.assertTrue(mine[0] == 185 && mine[1] == 990, "Mine Genesis P1 R3: 100+40P+15R / 300+150P+60R², got " + mine[0] + "/" + mine[1]);
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
         helper.assertTrue(burst[0] == 1240 && burst[1] == 700, "Burst P1: 1180+60P / 400+300P, got " + burst[0] + "/" + burst[1]);
-        int[] parade = stats(parade(Map.of(POWER, 2.0, TIME, 30.0)));
-        helper.assertTrue(parade[0] == 660 && parade[1] == 900, "Parade P2 T30: 300+150P+2T / 400+100P+10T, got " + parade[0] + "/" + parade[1]);
+        int[] parade = stats(parade(Map.of(NUMBER, -2.0, POWER, 2.0, TIME, 30.0)));
+        helper.assertTrue(parade[0] == 700 && parade[1] == 1000,
+                "Parade N-2 P2 T30: 300+150P+2T+20|N| / 400+100P+10T+50|N|, got " + parade[0] + "/" + parade[1]);
         int[] airBullet = stats(airBullet(Map.of(POWER, 1.0)));
         helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
@@ -837,53 +846,155 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void paradeConjuresALookalikeThatTakesHitsForItsOwner(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 4), "parade-caster");
-        player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-        Vec3 spot = helper.absoluteVec(new Vec3(3.5, 0.0, 1.5));
-        parade(Map.of(POSITION, vector(spot), POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+    public static void paradeDistanceMustBeAWholeBlockWithinReach(GameTestHelper helper) throws Exception {
+        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, 0.0, POWER, 1.0, TIME, 10.0)))))
+                        && PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, -0.5, POWER, 1.0, TIME, 10.0))))),
+                "Less than a block away must not compile");
+        helper.assertTrue(SpellRuntimeException.OUTSIDE_RADIUS.equals(compileError(() -> stats(parade(Map.of(NUMBER, -33.0, POWER, 1.0, TIME, 10.0))))),
+                "Beyond 32 blocks must not compile");
+        helper.assertTrue(compileError(() -> stats(parade(Map.of(NUMBER, 32.9, POWER, 1.0, TIME, 10.0)))) == null
+                        && compileError(() -> stats(parade(Map.of(NUMBER, -1.0, POWER, 1.0, TIME, 10.0)))) == null,
+                "1 to 32 blocks either way must compile");
+        var player = caster(helper, new BlockPos(2, 0, 2), "parade-distance");
+        var context = new SpellContext().setPlayer(player);
+        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(castError(() -> parade(Map.of(NUMBER, 0.3, POWER, 1.0, TIME, 10.0)).execute(context)))
+                && Parades.activeDecoy(player) == null, "A computed distance under a block must fail when cast");
+        parade(Map.of(NUMBER, -2.7, POWER, 1.0, TIME, 10.0)).execute(context);
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
-        helper.assertTrue(decoy != null && decoy.isOwnedBy(player) && decoy.position().distanceTo(spot) < 0.5,
-                "A lookalike must stand at the position");
+        helper.assertTrue(decoy != null && near(decoy.getDistance(), -2.0), "Fractions must be dropped toward zero");
+        decoy.vanish(false);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeProjectsAnImageThatTakesHitsForItsOwner(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 4), "parade-caster");
+        player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+        parade(Map.of(NUMBER, -2.0, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        // The caster faces south (yaw 0), so behind is north.
+        helper.assertTrue(decoy != null && decoy.isOwnedBy(player) && decoy.position().distanceTo(player.position().add(0.0, 0.0, -2.0)) < 1.0E-4,
+                "The image must stand 2 blocks behind the caster");
         helper.assertTrue(decoy.getItemBySlot(EquipmentSlot.HEAD).is(Items.IRON_HELMET)
                         && player.getName().getString().equals(decoy.getName().getString()),
-                "The lookalike must wear the caster's gear and name");
-        helper.assertTrue(decoy.getHitsLeft() == PieceTrickParade.HITS_PER_POWER, "Power 1 must last 2 hits");
+                "The image must wear the caster's gear and name");
+        EntityParadeCore core = decoy.getCore();
+        helper.assertTrue(core != null && core.isResident() && near(core.getMaxIntegrity(), Parades.integrityFor(player, 1))
+                        && near(Parades.integrityFor(player, 1), 2 * EntityParadeCore.ATTACK_WEAR),
+                "At Power 1 the core must hold two attacks' worth of integrity");
         var sources = helper.getLevel().damageSources();
-        helper.assertTrue(decoy.hurt(sources.generic(), 5.0F) && decoy.isAlive() && decoy.getHealth() == decoy.getMaxHealth(),
-                "A hit must use up one hit, not health");
+        var husk = husk(helper, new BlockPos(2, 0, 0), false);
+        helper.assertTrue(!decoy.hurt(sources.inWall(), 1.0F) && !decoy.hurt(sources.lava(), 4.0F) && !decoy.hurt(sources.fall(), 4.0F)
+                        && !decoy.hurt(sources.playerAttack(player), 5.0F)
+                        && !decoy.hurt(AttackRules.source(helper.getLevel(), PsitweaksDamageTypes.GRAM_DEMOLITION, husk, husk), 6.0F)
+                        && !decoy.hurt(AttackRules.source(helper.getLevel(), PsitweaksDamageTypes.PSI_BULLET, husk, husk), 6.0F)
+                        && core.getWorn() == 0.0F,
+                "The terrain, the caster's own attacks, Gram Demolition and Psi Bullet must not wear the image down");
+        helper.assertTrue(decoy.hurt(sources.mobAttack(husk), 1.0F) && decoy.isAlive() && decoy.getHealth() == decoy.getMaxHealth()
+                && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR), "An attack must take 2 integrity, not health");
+        // Nothing else a mob suffers takes hold either, even when another mod calls it directly.
+        decoy.setHealth(0.0F);
+        decoy.die(sources.mobAttack(husk));
+        helper.assertTrue(decoy.getHealth() == decoy.getMaxHealth() && decoy.isAlive() && !decoy.isDeadOrDying(),
+                "Setting its health or killing it directly must not take hold");
+        decoy.setDeltaMovement(1.0, 1.0, 1.0);
+        decoy.push(0.5, 0.5, 0.5);
+        helper.assertTrue(decoy.getDeltaMovement().equals(Vec3.ZERO) && decoy.isIgnoringBlockTriggers(),
+                "Nothing may push the image, and it must not trigger blocks");
+        decoy.igniteForSeconds(5.0F);
+        helper.assertTrue(!decoy.addEffect(new MobEffectInstance(MobEffects.WITHER, 100)) && decoy.getActiveEffects().isEmpty()
+                        && decoy.getRemainingFireTicks() == 0 && !decoy.canFreeze(),
+                "The image must take no effects, fire or frost");
+        decoy.setArrowCount(2);
+        decoy.setCustomName(Component.literal("renamed"));
         helper.startSequence()
-                .thenExecuteAfter(11, () -> {
-                    decoy.hurt(sources.generic(), 5.0F);
-                    helper.assertTrue(decoy.isRemoved() && Parades.activeDecoy(player) == null, "The last hit must end it");
+                .thenExecuteAfter(2, () -> helper.assertTrue(decoy.getArrowCount() == 0
+                                && player.getName().getString().equals(decoy.getName().getString()),
+                        "Arrows must not stay in the image, and it must keep its owner's name"))
+                .thenExecuteAfter(9, () -> {
+                    // A heavier blow takes no more than the first.
+                    decoy.hurt(sources.mobAttack(husk), 100.0F);
+                    helper.assertTrue(decoy.isRemoved() && core.isEnded() && Parades.activeDecoy(player) == null,
+                            "The second attack must wear it out, image and core");
                 })
+                .thenExecute(husk::discard)
                 .thenSucceed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void paradeLookalikeMimicsItsOwnerAndFacesItsEnemy(GameTestHelper helper) throws Exception {
-        var player = caster(helper, new BlockPos(0, 0, 4), "parade-mimic");
-        player.setYRot(90.0F);
-        player.setYHeadRot(90.0F);
-        parade(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(2.5, 0.0, 2.5))), POWER, 2.0, TIME, 10.0))
-                .execute(new SpellContext().setPlayer(player));
+    public static void paradeIsAResidentSpellGram(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 2), "parade-resident");
+        var rival = caster(helper, new BlockPos(4, 0, 4), "parade-resident-rival");
+        var context = new SpellContext().setPlayer(player);
+        parade(Map.of(NUMBER, 2.0, POWER, 2.0, TIME, 20.0)).execute(context);
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
-        helper.assertTrue(decoy != null, "No lookalike");
+        EntityParadeCore core = decoy != null ? decoy.getCore() : null;
+        helper.assertTrue(core != null && SpellGramLimits.placedBy(helper.getLevel(), player.getUUID()).contains(core),
+                "The core must count as one of the caster's Resident SpellGrams");
+        helper.assertTrue(core.getLifetimeTicks() == 400 && near(core.getPlacementCost(), PieceTrickParade.costFor(2, 20, 2)),
+                "The core must last Time and remember what the trick cost");
+        helper.assertTrue(core.position().distanceTo(decoy.position().add(0.0, EntityParadeCore.CHEST_HEIGHT, 0.0)) < 1.0E-4,
+                "The core must sit in the image's chest");
+        helper.assertTrue(core.isShownTo(player) && !core.isShownTo(rival), "Only the caster may see the core's integrity");
+
+        // Trick: Extend SpellGram and Trick: Recall SpellGram take the image for its core.
+        int before = core.getRemainingTicks();
+        new PieceTrickExtendSpellGram(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return param.name.equals(TARGET) ? decoy : 5.0;
+            }
+        }.execute(context);
+        helper.assertTrue(core.getRemainingTicks() > before, "Extending the image must lengthen its time: " + before + " -> "
+                + core.getRemainingTicks());
+        new PieceTrickRecallSpellGram(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                return decoy;
+            }
+        }.execute(context);
+        helper.assertTrue(core.isEnded() && decoy.isRemoved() && Parades.activeDecoy(player) == null,
+                "Recalling must end the core and the image");
+
+        // Another caster's Gram Demolition dispels it outright.
+        parade(Map.of(NUMBER, 2.0, POWER, 2.0, TIME, 20.0)).execute(context);
+        EntityParadeDecoy second = Parades.activeDecoy(player);
+        EntityParadeCore secondCore = second != null ? second.getCore() : null;
+        helper.assertTrue(secondCore != null && !SpellGramIntegrity.isSparedBy(secondCore, rival)
+                        && SpellGramIntegrity.reduce(secondCore, PieceTrickGramDemolition.INTEGRITY_DAMAGE, rival) > 0.0F
+                        && secondCore.isEnded() && second.isRemoved(),
+                "Gram Demolition must break the core and the image");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeImageFollowsItsOwnerAndFacesItsEnemy(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 2), "parade-mimic");
+        parade(Map.of(NUMBER, 2.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        helper.assertTrue(decoy != null && decoy.position().distanceTo(player.position().add(0.0, 0.0, 2.0)) < 1.0E-4,
+                "The image must stand 2 blocks in front of the caster");
+        // The caster turns west, looks down a little, rises half a block, crouches and draws a sword.
+        player.moveTo(player.getX(), player.getY() + 0.5, player.getZ(), 90.0F, 20.0F);
+        player.setYHeadRot(90.0F);
+        player.setYBodyRot(90.0F);
         player.setShiftKeyDown(true);
         player.setPose(Pose.CROUCHING);
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
+        player.swing(InteractionHand.MAIN_HAND);
         Husk[] hunter = new Husk[1];
         helper.startSequence()
+                // The swing plays out over a few ticks, so wait for the arm to move.
+                .thenWaitUntil(() -> helper.assertTrue(decoy.getAttackAnim(1.0F) > 0.0F,
+                        "The image must swing its arm when its owner does"))
                 .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(decoy.position().distanceTo(player.position().add(-2.0, 0.0, 0.0)) < 1.0E-4,
+                            "The image must turn and rise with the caster: " + decoy.position() + ", caster at " + player.position());
                     helper.assertTrue(decoy.isCrouching() && decoy.getMainHandItem().is(Items.DIAMOND_SWORD),
-                            "The lookalike must crouch and change gear with its owner");
-                    // It wanders, so check where it wants to look rather than where its head is right now.
-                    Vec3 wanted = new Vec3(decoy.getLookControl().getWantedX(), decoy.getLookControl().getWantedY(),
-                            decoy.getLookControl().getWantedZ()).subtract(decoy.getEyePosition());
-                    helper.assertTrue(wanted.normalize().dot(player.getLookAngle()) > 0.99,
-                            "With no enemy it must look where its owner looks, wants " + wanted);
-                    // A husk east of the lookalike that goes for it.
-                    hunter[0] = husk(helper, new BlockPos(5, 0, 2), false);
+                            "The image must crouch and change gear with its owner");
+                    helper.assertTrue(near(Mth.wrapDegrees(decoy.yBodyRot - 90.0F), 0.0) && near(Mth.wrapDegrees(decoy.getYHeadRot() - 90.0F), 0.0)
+                                    && near(decoy.getXRot(), 20.0),
+                            "With no enemy it must face the way its owner faces");
+                    // A husk north of the image, off to its right, that goes for it.
+                    hunter[0] = husk(helper, new BlockPos(0, 0, 0), false);
                     hunter[0].setTarget(decoy);
                 })
                 // It rescans who is after it every few ticks; wait for it rather than for an exact tick.
@@ -891,10 +1002,85 @@ public final class CombatSpellGameTests {
                     var husk = hunter[0];
                     Vec3 wanted = new Vec3(decoy.getLookControl().getWantedX(), decoy.getLookControl().getWantedY(),
                             decoy.getLookControl().getWantedZ());
+                    float turn = Math.abs(Mth.wrapDegrees(decoy.getYHeadRot() - decoy.yBodyRot));
                     helper.assertTrue(wanted.distanceTo(husk.getEyePosition()) < 0.5,
-                            "It must turn to the mob after it, wants " + wanted + ", husk at " + husk.getEyePosition());
+                            "It must look at the mob after it, wants " + wanted + ", husk at " + husk.getEyePosition());
+                    helper.assertTrue(decoy.isWatching() && near(Mth.wrapDegrees(decoy.yBodyRot - 90.0F), 0.0)
+                                    && turn > 45.0F && turn <= 75.0F + EPSILON,
+                            "Only its head must turn to the mob, as far as a player's would: head " + decoy.getYHeadRot()
+                                    + ", body " + decoy.yBodyRot);
+                })
+                .thenExecute(() -> {
+                    hunter[0].discard();
+                    decoy.vanish(false);
                 })
                 .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeImageLetsItsOwnersShotsThrough(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 0), "parade-archer");
+        parade(Map.of(NUMBER, 2.0, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        helper.assertTrue(decoy != null, "No image");
+        var husk = husk(helper, new BlockPos(4, 0, 4), false);
+        Arrow own = new Arrow(helper.getLevel(), player, new ItemStack(Items.ARROW), null);
+        Arrow theirs = new Arrow(helper.getLevel(), husk, new ItemStack(Items.ARROW), null);
+        try {
+            // Both fly straight south through the image's chest.
+            Vec3 chest = decoy.position().add(0.0, 1.0, 0.0);
+            for (Arrow arrow : List.of(own, theirs)) {
+                arrow.setNoGravity(true);
+                arrow.setPos(chest.x, chest.y, chest.z - 1.5);
+                arrow.setDeltaMovement(0.0, 0.0, 1.0);
+            }
+            for (int i = 0; i < 3; i++) {
+                own.tick();
+            }
+            EntityParadeCore core = decoy.getCore();
+            helper.assertTrue(decoy.isAlive() && core != null && core.getWorn() == 0.0F && !own.isRemoved(),
+                    "The caster's arrow must fly through the image");
+            for (int i = 0; i < 3 && !theirs.isRemoved(); i++) {
+                theirs.tick();
+            }
+            helper.assertTrue(near(core.getWorn(), EntityParadeCore.ATTACK_WEAR) && theirs.isRemoved(), "A mob's arrow must hit the image");
+        } finally {
+            own.discard();
+            theirs.discard();
+            husk.discard();
+            decoy.vanish(false);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeLetsAttacksOnItsCasterMissByChance(GameTestHelper helper) throws Exception {
+        helper.assertTrue(near(Parades.evasionChance(1), 0.65) && near(Parades.evasionChance(-2), 0.70)
+                        && near(Parades.evasionChance(6), 0.90) && near(Parades.evasionChance(-7), 0.95)
+                        && near(Parades.evasionChance(32), 0.95),
+                "Attacks must miss 60% + 5% per block between the caster and the image, up to 95%");
+        var player = caster(helper, new BlockPos(2, 0, 2), "parade-evader");
+        var husk = husk(helper, new BlockPos(2, 0, 4), false);
+        var sources = helper.getLevel().damageSources();
+        Arrow arrow = new Arrow(helper.getLevel(), husk, new ItemStack(Items.ARROW), null);
+        try {
+            helper.assertTrue(!Parades.evades(player, sources.mobAttack(husk), 0.0), "Without an image nothing may miss");
+            parade(Map.of(NUMBER, -2.0, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+            helper.assertTrue(Parades.evades(player, sources.mobAttack(husk), 0.69) && !Parades.evades(player, sources.mobAttack(husk), 0.71),
+                    "With the image 2 blocks away an attack must miss 70% of the time");
+            helper.assertTrue(Parades.evades(player, sources.arrow(arrow, husk), 0.5), "Shots must miss as well");
+            helper.assertTrue(!Parades.evades(player, sources.fall(), 0.0) && !Parades.evades(player, sources.lava(), 0.0)
+                            && !Parades.evades(player, sources.fellOutOfWorld(), 0.0),
+                    "Falls, the terrain and the void must never miss");
+        } finally {
+            EntityParadeDecoy decoy = Parades.activeDecoy(player);
+            if (decoy != null) {
+                decoy.vanish(false);
+            }
+            arrow.discard();
+            husk.discard();
+        }
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
@@ -902,15 +1088,14 @@ public final class CombatSpellGameTests {
         var player = caster(helper, new BlockPos(0, 0, 4), "parade-lure");
         var husk = husk(helper, new BlockPos(1, 0, 1), false);
         husk.setTarget(player);
-        parade(Map.of(POSITION, vector(helper.absoluteVec(new Vec3(4.5, 0.0, 1.5))), POWER, 2.0, TIME, 10.0))
-                .execute(new SpellContext().setPlayer(player));
+        parade(Map.of(NUMBER, -3.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
-        helper.assertTrue(decoy != null && husk.getTarget() == decoy, "A mob after the caster must turn to the lookalike");
+        helper.assertTrue(decoy != null && husk.getTarget() == decoy, "A mob after the caster must turn to the image");
         husk.setTarget(player);
-        helper.assertTrue(husk.getTarget() == decoy, "A mob that picks the caster again must get the lookalike");
+        helper.assertTrue(husk.getTarget() == decoy, "A mob that picks the caster again must get the image");
         decoy.vanish(false);
         husk.setTarget(player);
-        helper.assertTrue(husk.getTarget() == player, "Once the lookalike is gone the caster can be targeted");
+        helper.assertTrue(husk.getTarget() == player, "Once the image is gone the caster can be targeted");
         helper.succeed();
     }
 
@@ -931,10 +1116,9 @@ public final class CombatSpellGameTests {
             rival.moveTo(Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(4, 0, 4))));
             var own = new SpellContext().setPlayer(player);
             var theirs = new SpellContext().setPlayer(rival);
-            Vec3 spot = helper.absoluteVec(new Vec3(2.5, 0.0, 0.5));
-            parade(Map.of(POSITION, vector(spot), POWER, 1.0, TIME, 10.0)).execute(own);
+            parade(Map.of(NUMBER, -2.0, POWER, 1.0, TIME, 10.0)).execute(own);
             EntityParadeDecoy decoy = Parades.activeDecoy(player);
-            helper.assertTrue(decoy != null, "No lookalike");
+            helper.assertTrue(decoy != null, "No image");
 
             helper.assertTrue(Parades.ERROR_DISGUISED.equals(castError(() -> theirs.verifyEntity(player))),
                     "Psi tricks of another player must fail on the hidden caster");
