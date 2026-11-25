@@ -516,9 +516,9 @@ public final class CombatSpellGameTests {
         helper.assertTrue(mine[0] == 185 && mine[1] == 990, "Mine Genesis P1 R3: 100+40P+15R / 300+150P+60R², got " + mine[0] + "/" + mine[1]);
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
         helper.assertTrue(burst[0] == 1240 && burst[1] == 700, "Burst P1: 1180+60P / 400+300P, got " + burst[0] + "/" + burst[1]);
-        int[] parade = stats(parade(Map.of(NUMBER, -2.0, POWER, 2.0, TIME, 30.0)));
-        helper.assertTrue(parade[0] == 700 && parade[1] == 1000,
-                "Parade N-2 P2 T30: 300+150P+2T+20|N| / 400+100P+10T+50|N|, got " + parade[0] + "/" + parade[1]);
+        int[] parade = stats(parade(Map.of(NUMBER, -2.0, TIME, 30.0)));
+        helper.assertTrue(parade[0] == 640 && parade[1] == 1100,
+                "Parade N-2 T30: 300+10T+20|N| / 400+20T+50|N|, got " + parade[0] + "/" + parade[1]);
         int[] airBullet = stats(airBullet(Map.of(POWER, 1.0)));
         helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
@@ -855,19 +855,25 @@ public final class CombatSpellGameTests {
 
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void paradeDistanceMustBeAWholeBlockWithinReach(GameTestHelper helper) throws Exception {
-        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, 0.0, POWER, 1.0, TIME, 10.0)))))
-                        && PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, -0.5, POWER, 1.0, TIME, 10.0))))),
+        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)))))
+                        && PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0))))),
                 "Less than a block away must not compile");
-        helper.assertTrue(SpellRuntimeException.OUTSIDE_RADIUS.equals(compileError(() -> stats(parade(Map.of(NUMBER, -33.0, POWER, 1.0, TIME, 10.0))))),
-                "Beyond 32 blocks must not compile");
-        helper.assertTrue(compileError(() -> stats(parade(Map.of(NUMBER, 32.9, POWER, 1.0, TIME, 10.0)))) == null
-                        && compileError(() -> stats(parade(Map.of(NUMBER, -1.0, POWER, 1.0, TIME, 10.0)))) == null,
-                "1 to 32 blocks either way must compile");
+        helper.assertTrue(compileError(() -> stats(parade(Map.of(NUMBER, 16.9, TIME, 10.0)))) == null
+                        && compileError(() -> stats(parade(Map.of(NUMBER, -1.0, TIME, 10.0)))) == null
+                        && compileError(() -> stats(parade(Map.of(NUMBER, -40.0, TIME, 10.0)))) == null,
+                "Any Number a block or more away must compile");
+        int[] farthest = stats(parade(Map.of(NUMBER, -16.0, TIME, 10.0)));
+        int[] beyond = stats(parade(Map.of(NUMBER, -40.0, TIME, 10.0)));
+        helper.assertTrue(farthest[0] == beyond[0] && farthest[1] == beyond[1] && beyond[1] == 400 + 200 + 50 * 16,
+                "Beyond 16 blocks the cost must stay at 16 blocks': " + beyond[0] + "/" + beyond[1]);
+        helper.assertTrue(PieceTrickParade.wholeBlocks(40.0) == 16 && PieceTrickParade.wholeBlocks(-17.5) == -16
+                        && PieceTrickParade.wholeBlocks(-2.7) == -2,
+                "Beyond 16 blocks the image must stand 16 blocks away, on the same side");
         var player = caster(helper, new BlockPos(2, 0, 2), "parade-distance");
         var context = new SpellContext().setPlayer(player);
-        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(castError(() -> parade(Map.of(NUMBER, 0.3, POWER, 1.0, TIME, 10.0)).execute(context)))
+        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(castError(() -> parade(Map.of(NUMBER, 0.3, TIME, 10.0)).execute(context)))
                 && Parades.activeDecoy(player) == null, "A computed distance under a block must fail when cast");
-        parade(Map.of(NUMBER, -2.7, POWER, 1.0, TIME, 10.0)).execute(context);
+        parade(Map.of(NUMBER, -2.7, TIME, 10.0)).execute(context);
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         helper.assertTrue(decoy != null && near(decoy.getDistance(), -2.0), "Fractions must be dropped toward zero");
         decoy.vanish(false);
@@ -878,7 +884,8 @@ public final class CombatSpellGameTests {
     public static void paradeProjectsAnImageThatTakesHitsForItsOwner(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 0, 4), "parade-caster");
         player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-        parade(Map.of(NUMBER, -2.0, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        // Time 4: integrity 4 at an Interference of 1, two attacks' worth.
+        parade(Map.of(NUMBER, -2.0, TIME, 4.0)).execute(new SpellContext().setPlayer(player));
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         // The caster faces south (yaw 0), so behind is north.
         helper.assertTrue(decoy != null && decoy.isOwnedBy(player) && decoy.position().distanceTo(player.position().add(0.0, 0.0, -2.0)) < 1.0E-4,
@@ -887,9 +894,9 @@ public final class CombatSpellGameTests {
                         && player.getName().getString().equals(decoy.getName().getString()),
                 "The image must wear the caster's gear and name");
         EntityParadeCore core = decoy.getCore();
-        helper.assertTrue(core != null && core.isResident() && near(core.getMaxIntegrity(), Parades.integrityFor(player, 1))
-                        && near(Parades.integrityFor(player, 1), 2 * EntityParadeCore.ATTACK_WEAR),
-                "At Power 1 the core must hold two attacks' worth of integrity");
+        helper.assertTrue(core != null && core.isResident() && near(core.getMaxIntegrity(), Parades.integrityFor(player, 4))
+                        && near(Parades.integrityFor(player, 4), 4.0) && core.getLifetimeTicks() == 80,
+                "The core must last Time and hold 1 integrity per second of it");
         var sources = helper.getLevel().damageSources();
         var husk = husk(helper, new BlockPos(2, 0, 0), false);
         helper.assertTrue(!decoy.hurt(sources.inWall(), 1.0F) && !decoy.hurt(sources.lava(), 4.0F) && !decoy.hurt(sources.fall(), 4.0F)
@@ -898,12 +905,17 @@ public final class CombatSpellGameTests {
                         && !decoy.hurt(AttackRules.source(helper.getLevel(), PsitweaksDamageTypes.PSI_BULLET, husk, husk), 6.0F)
                         && core.getWorn() == 0.0F,
                 "The terrain, the caster's own attacks, Gram Demolition and Psi Bullet must not wear the image down");
-        helper.assertTrue(decoy.hurt(sources.mobAttack(husk), 1.0F) && decoy.isAlive() && decoy.getHealth() == decoy.getMaxHealth()
-                && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR), "An attack must take 2 integrity, not health");
+        helper.assertTrue(near(decoy.getMaxHealth(), core.getMaxIntegrity()) && near(decoy.getHealth(), core.getIntegrity()),
+                "The image's health must be the core's integrity: " + decoy.getHealth() + "/" + decoy.getMaxHealth()
+                        + " vs " + core.getIntegrity() + "/" + core.getMaxIntegrity());
+        // A hit of 1 still takes 2 integrity, and the health goes with it.
+        helper.assertTrue(decoy.hurt(sources.mobAttack(husk), 1.0F) && decoy.isAlive()
+                        && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR) && near(decoy.getHealth(), core.getIntegrity()),
+                "An attack must take 2 integrity, and the health must follow it");
         // Nothing else a mob suffers takes hold either, even when another mod calls it directly.
         decoy.setHealth(0.0F);
         decoy.die(sources.mobAttack(husk));
-        helper.assertTrue(decoy.getHealth() == decoy.getMaxHealth() && decoy.isAlive() && !decoy.isDeadOrDying(),
+        helper.assertTrue(near(decoy.getHealth(), core.getIntegrity()) && decoy.isAlive() && !decoy.isDeadOrDying(),
                 "Setting its health or killing it directly must not take hold");
         decoy.setDeltaMovement(1.0, 1.0, 1.0);
         decoy.push(0.5, 0.5, 0.5);
@@ -934,12 +946,12 @@ public final class CombatSpellGameTests {
         var player = caster(helper, new BlockPos(2, 0, 2), "parade-resident");
         var rival = caster(helper, new BlockPos(4, 0, 4), "parade-resident-rival");
         var context = new SpellContext().setPlayer(player);
-        parade(Map.of(NUMBER, 2.0, POWER, 2.0, TIME, 20.0)).execute(context);
+        parade(Map.of(NUMBER, 2.0, TIME, 20.0)).execute(context);
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         EntityParadeCore core = decoy != null ? decoy.getCore() : null;
         helper.assertTrue(core != null && SpellGramLimits.placedBy(helper.getLevel(), player.getUUID()).contains(core),
                 "The core must count as one of the caster's Resident SpellGrams");
-        helper.assertTrue(core.getLifetimeTicks() == 400 && near(core.getPlacementCost(), PieceTrickParade.costFor(2, 20, 2)),
+        helper.assertTrue(core.getLifetimeTicks() == 400 && near(core.getPlacementCost(), PieceTrickParade.costFor(20, 2)),
                 "The core must last Time and remember what the trick cost");
         helper.assertTrue(core.position().distanceTo(decoy.position().add(0.0, EntityParadeCore.CHEST_HEIGHT, 0.0)) < 1.0E-4,
                 "The core must sit in the image's chest");
@@ -962,11 +974,20 @@ public final class CombatSpellGameTests {
         helper.assertTrue(core.isEnded() && decoy.isRemoved() && Parades.activeDecoy(player) == null,
                 "Recalling must end the core and the image");
 
-        // Another caster's Gram Demolition dispels it outright.
-        parade(Map.of(NUMBER, 2.0, POWER, 2.0, TIME, 20.0)).execute(context);
+        // Interference raises the integrity, not the time.
+        var interference = player.getAttribute(PsitweaksAttributes.SPELL_DAMAGE_FACTOR);
+        double baseInterference = interference.getBaseValue();
+        interference.setBaseValue(2.0);
+        parade(Map.of(NUMBER, 2.0, TIME, 20.0)).execute(context);
+        interference.setBaseValue(baseInterference);
         EntityParadeDecoy second = Parades.activeDecoy(player);
         EntityParadeCore secondCore = second != null ? second.getCore() : null;
-        helper.assertTrue(secondCore != null && !SpellGramIntegrity.isSparedBy(secondCore, rival)
+        helper.assertTrue(secondCore != null && near(secondCore.getMaxIntegrity(), 40.0) && secondCore.getLifetimeTicks() == 400
+                        && near(second.getMaxHealth(), 40.0),
+                "Interference 2 must double the integrity but keep the time: " + (secondCore == null ? "none"
+                        : secondCore.getMaxIntegrity() + " / " + secondCore.getLifetimeTicks()));
+        // Another caster's Gram Demolition dispels it outright.
+        helper.assertTrue(!SpellGramIntegrity.isSparedBy(secondCore, rival)
                         && SpellGramIntegrity.reduce(secondCore, PieceTrickGramDemolition.INTEGRITY_DAMAGE, rival) > 0.0F
                         && secondCore.isEnded() && second.isRemoved(),
                 "Gram Demolition must break the core and the image");
@@ -976,7 +997,7 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void paradeImageFollowsItsOwnerAndFacesItsEnemy(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 0, 2), "parade-mimic");
-        parade(Map.of(NUMBER, 2.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        parade(Map.of(NUMBER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         helper.assertTrue(decoy != null && decoy.position().distanceTo(player.position().add(0.0, 0.0, 2.0)) < 1.0E-4,
                 "The image must stand 2 blocks in front of the caster");
@@ -1028,7 +1049,7 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void paradeImageLetsItsOwnersShotsThrough(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 0, 0), "parade-archer");
-        parade(Map.of(NUMBER, 2.0, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        parade(Map.of(NUMBER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         helper.assertTrue(decoy != null, "No image");
         var husk = husk(helper, new BlockPos(4, 0, 4), false);
@@ -1073,7 +1094,7 @@ public final class CombatSpellGameTests {
         Arrow arrow = new Arrow(helper.getLevel(), husk, new ItemStack(Items.ARROW), null);
         try {
             helper.assertTrue(!Parades.evades(player, sources.mobAttack(husk), 0.0), "Without an image nothing may miss");
-            parade(Map.of(NUMBER, -2.0, POWER, 1.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+            parade(Map.of(NUMBER, -2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
             helper.assertTrue(Parades.evades(player, sources.mobAttack(husk), 0.69) && !Parades.evades(player, sources.mobAttack(husk), 0.71),
                     "With the image 2 blocks away an attack must miss 70% of the time");
             helper.assertTrue(Parades.evades(player, sources.arrow(arrow, husk), 0.5), "Shots must miss as well");
@@ -1096,7 +1117,7 @@ public final class CombatSpellGameTests {
         var player = caster(helper, new BlockPos(0, 0, 4), "parade-lure");
         var husk = husk(helper, new BlockPos(1, 0, 1), false);
         husk.setTarget(player);
-        parade(Map.of(NUMBER, -3.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        parade(Map.of(NUMBER, -3.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         helper.assertTrue(decoy != null && husk.getTarget() == decoy, "A mob after the caster must turn to the image");
         husk.setTarget(player);
@@ -1117,7 +1138,7 @@ public final class CombatSpellGameTests {
         var wither = helper.spawnWithNoFreeWill(EntityType.WITHER, new Vec3(4.5, 0.0, 1.5));
         try {
             wither.setAlternativeTarget(2, player.getId());
-            parade(Map.of(NUMBER, -3.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+            parade(Map.of(NUMBER, -3.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
             EntityParadeDecoy decoy = Parades.activeDecoy(player);
             helper.assertTrue(decoy != null && wither.getAlternativeTarget(2) == decoy.getId(),
                     "A head after the caster must turn to the image when it appears");
@@ -1150,7 +1171,7 @@ public final class CombatSpellGameTests {
         // 14 blocks up, too high for the perched dragon's close look (it would turn to breathe fire): it takes off to charge.
         var dragon = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new Vec3(2.5, 14.0, 2.5));
         try {
-            parade(Map.of(NUMBER, 4.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+            parade(Map.of(NUMBER, 4.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
             EntityParadeDecoy decoy = Parades.activeDecoy(player);
             helper.assertTrue(decoy != null, "The image must appear");
             var far = helper.spawnWithNoFreeWill(EntityType.ENDER_DRAGON, new Vec3(2.5, 0.0, 2.5 + Parades.LURE_RANGE * 3.0));
@@ -1196,7 +1217,7 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void paradeImageTakesFireballs(GameTestHelper helper) throws Exception {
         var player = caster(helper, new BlockPos(2, 0, 0), "parade-fireball");
-        parade(Map.of(NUMBER, 3.0, POWER, 2.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        parade(Map.of(NUMBER, 3.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         List<Entity> spawned = new ArrayList<>();
         try {
@@ -1255,7 +1276,7 @@ public final class CombatSpellGameTests {
             rival.moveTo(Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(4, 0, 4))));
             var own = new SpellContext().setPlayer(player);
             var theirs = new SpellContext().setPlayer(rival);
-            parade(Map.of(NUMBER, -2.0, POWER, 1.0, TIME, 10.0)).execute(own);
+            parade(Map.of(NUMBER, -2.0, TIME, 10.0)).execute(own);
             EntityParadeDecoy decoy = Parades.activeDecoy(player);
             helper.assertTrue(decoy != null, "No image");
 

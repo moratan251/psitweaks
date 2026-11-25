@@ -33,7 +33,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -84,6 +86,8 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     /** Server side: the Resident SpellGram that holds the image's time and integrity. */
     @Nullable
     private WeakReference<EntityParadeCore> coreRef;
+    /** Server side: the highest integrity the core has had, the image's max health. */
+    private float peakIntegrity;
     /** The chance that an attack on the owner misses while the image stands. */
     private double evasionChance;
     /** Client side: ticks left of the waver after a hit. */
@@ -193,9 +197,32 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         return entityData.get(WATCHING);
     }
 
-    /** Server side: ties the image to its core; the image goes when the core does, and the core when the image does. */
+    /**
+     * Server side: ties the image to its core; the image goes when the core does, and the core when the image does, and
+     * the image's health is the core's integrity ({@link #linkHealthToCore}).
+     */
     public void bindCore(EntityParadeCore core) {
         coreRef = new WeakReference<>(core);
+        linkHealthToCore();
+    }
+
+    /**
+     * Server side: sets the image's health to the core's integrity, and its max health to the highest integrity the
+     * core has had (Trick: Extend SpellGram can take it above what it was cast with). Max health cannot go past the
+     * attribute's limit (1024), so health stops there too.
+     */
+    private void linkHealthToCore() {
+        EntityParadeCore core = getCore();
+        if (core == null) {
+            return;
+        }
+        float integrity = core.getIntegrity();
+        peakIntegrity = Math.max(peakIntegrity, Math.max(core.getMaxIntegrity(), integrity));
+        AttributeInstance maxHealth = getAttribute(Attributes.MAX_HEALTH);
+        if (maxHealth != null && maxHealth.getBaseValue() != peakIntegrity) {
+            maxHealth.setBaseValue(peakIntegrity);
+        }
+        super.setHealth(integrity);
     }
 
     /** Server side: the core while it lasts. */
@@ -249,6 +276,7 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         }
         follow(owner);
         mimic(owner);
+        linkHealthToCore();
         // Arrows and stingers that hit it do not stay stuck in it.
         if (getArrowCount() > 0) {
             setArrowCount(0);
@@ -385,6 +413,7 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
             core.wearByAttack();
         }
         if (!isRemoved()) {
+            linkHealthToCore();
             level().broadcastEntityEvent(this, EVENT_WAVER);
             CombatEffects.sound((ServerLevel) level(), position(), SoundEvents.AMETHYST_BLOCK_HIT, 1.0F, 1.4F);
         }
@@ -474,10 +503,14 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         return false;
     }
 
-    /** Its health stays full, even when another mod sets it directly. */
+    /**
+     * Its health is its core's integrity, whatever anyone else sets it to (another mod setting it directly, healing):
+     * this puts it back to the integrity, or to full while there is no core yet.
+     */
     @Override
     public void setHealth(float health) {
-        super.setHealth(getMaxHealth());
+        EntityParadeCore core = coreRef != null ? coreRef.get() : null;
+        super.setHealth(core != null && !core.isEnded() ? core.getIntegrity() : getMaxHealth());
     }
 
     /** Nothing gets past {@link #hurt} into the usual damage handling, even when called directly. */

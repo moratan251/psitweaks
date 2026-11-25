@@ -39,10 +39,11 @@ public final class Parades {
     /** Mobs this close to the image or its owner are drawn to the image instead of the owner. */
     public static final double LURE_RANGE = 32.0;
     /**
-     * The core's integrity per Power at an Interference of 1: two attacks' worth ({@link EntityParadeCore#ATTACK_WEAR})
-     * when just cast. It wears away over Time like other Resident SpellGrams.
+     * The core's integrity per second of Time at an Interference of 1, the same as Zone Magic's: integrity is the time
+     * left, and each attack ({@link EntityParadeCore#ATTACK_WEAR}) takes two seconds of it. Interference raises the
+     * integrity but not the time: it wears away over Time like other Resident SpellGrams.
      */
-    public static final float INTEGRITY_PER_POWER = 4.0F;
+    public static final float INTEGRITY_PER_SECOND = 1.0F;
     /**
      * The chance that an attack on the caster misses: the base, plus this much per block between the caster and the
      * image (the farther the false coordinates, the wider attacks go), up to the cap.
@@ -56,13 +57,12 @@ public final class Parades {
 
     /**
      * Projects the caster's image {@code distance} blocks in front of them (behind if negative), replacing an earlier
-     * one, and turns nearby mobs onto it. Its core, a Resident SpellGram, lasts {@code lifetimeTicks} with
+     * one, and turns nearby mobs onto it. Its core, a Resident SpellGram, lasts {@code seconds} with
      * {@link #integrityFor} integrity, and counts {@code placementCost} as what it cost for Trick: Extend SpellGram.
      * Null for an autonomous caster, where the trick does nothing.
      */
     @Nullable
-    public static EntityParadeDecoy conjure(ServerLevel level, Player caster, double distance, int power, int lifetimeTicks,
-                                            float placementCost) {
+    public static EntityParadeDecoy conjure(ServerLevel level, Player caster, double distance, int seconds, float placementCost) {
         if (caster instanceof AutonomousCasterPlayer) {
             return null;
         }
@@ -75,8 +75,8 @@ public final class Parades {
         decoy.configure(caster, distance, CombatSpellHelper.spellColor(caster));
         EntityParadeCore core = new EntityParadeCore(level);
         core.setCaster(caster);
-        core.setMaxIntegrity(integrityFor(caster, power));
-        core.setLifetimeTicks(lifetimeTicks);
+        core.setMaxIntegrity(integrityFor(caster, seconds));
+        core.setLifetimeTicks(Math.max(1, seconds) * 20);
         core.setPlacementCost(placementCost);
         core.bind(decoy);
         decoy.bindCore(core);
@@ -107,9 +107,12 @@ public final class Parades {
         return new Vec3(-Mth.sin(radians) * distance, 0.0, Mth.cos(radians) * distance);
     }
 
-    /** The core's integrity when cast: {@link #INTEGRITY_PER_POWER} x Power x the caster's Interference (and the config's multiplier). */
-    public static float integrityFor(@Nullable LivingEntity caster, int power) {
-        return SpellGramIntegrity.initial(INTEGRITY_PER_POWER, caster, Math.max(1, power));
+    /**
+     * The core's integrity when cast: {@link #INTEGRITY_PER_SECOND} x Time x the caster's Interference (and the
+     * config's multiplier).
+     */
+    public static float integrityFor(@Nullable LivingEntity caster, int seconds) {
+        return SpellGramIntegrity.initial(INTEGRITY_PER_SECOND, caster, Math.max(1, seconds));
     }
 
     /** The chance that an attack on the caster misses while their image stands {@code distance} blocks away. */

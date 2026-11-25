@@ -448,7 +448,7 @@ public final class AutonomousCasterGameTests {
         Vec3 at = helper.absoluteVec(new Vec3(2.5, 1.0, 2.5));
         caster.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
         try {
-            helper.assertTrue(Parades.conjure(helper.getLevel(), caster, 2.0, 3, 200, 1000.0F) == null && Parades.activeDecoy(caster) == null,
+            helper.assertTrue(Parades.conjure(helper.getLevel(), caster, 2.0, 10, 1000.0F) == null && Parades.activeDecoy(caster) == null,
                     "The machine projected a Parade image");
             helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityParadeDecoy.class, helper.getBounds().inflate(4.0)).isEmpty(),
                     "A Parade image appeared around the machine");
