@@ -26,21 +26,20 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * so saved spells still load; the Time parameter was removed, and a piece still wired to it is simply left unused.
  */
 public class PieceTrickBarrier extends PieceTrick {
-    // The bases include what the removed Time parameter cost at 30 seconds (1 potency and 4 cost per second), though the
-    // shield lasts one minute.
+    // Potency and cost grow with Power in a straight line, as the shield does.
     private static final double POTENCY_BASE = 50.0;
-    private static final double POTENCY_PER_POWER_SQUARED = 15.0;
-    private static final double COST_BASE = 160.0;
-    private static final double COST_PER_POWER_SQUARED = 60.0;
+    private static final double POTENCY_PER_POWER = 100.0;
+    private static final double COST_BASE = 300.0;
+    private static final double COST_PER_POWER = 200.0;
 
     private SpellParam<Entity> target;
     private SpellParam<Number> power;
 
     public PieceTrickBarrier(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).square().mul(POTENCY_PER_POWER_SQUARED)
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel("psi.spellparam.power", true).mul(POTENCY_PER_POWER)
                 .add(POTENCY_BASE));
-        setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).square().mul(COST_PER_POWER_SQUARED)
+        setStatLabel(EnumSpellStat.COST, new StatLabel("psi.spellparam.power", true).mul(COST_PER_POWER)
                 .add(COST_BASE));
     }
 
@@ -54,10 +53,8 @@ public class PieceTrickBarrier extends PieceTrick {
     public void addToMetadata(SpellMetadata meta) throws SpellCompilationException {
         super.addToMetadata(meta);
         int powerVal = CombatTrickStats.positiveInteger(getParamEvaluation(power), x, y);
-        meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(
-                POTENCY_BASE + POTENCY_PER_POWER_SQUARED * powerVal * (double) powerVal));
-        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(
-                COST_BASE + COST_PER_POWER_SQUARED * powerVal * (double) powerVal));
+        meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + POTENCY_PER_POWER * powerVal));
+        meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(COST_BASE + COST_PER_POWER * powerVal));
     }
 
     @Override

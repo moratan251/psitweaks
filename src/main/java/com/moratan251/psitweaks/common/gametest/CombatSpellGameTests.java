@@ -530,7 +530,9 @@ public final class CombatSpellGameTests {
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void combatTrickStatsFollowTheirFormulas(GameTestHelper helper) throws Exception {
         int[] barrier = stats(barrier(Map.of(POWER, 2.0)));
-        helper.assertTrue(barrier[0] == 110 && barrier[1] == 400, "Barrier P2: 50+15P² / 160+60P², got " + barrier[0] + "/" + barrier[1]);
+        helper.assertTrue(barrier[0] == 250 && barrier[1] == 700, "Barrier P2: 50+100P / 300+200P, got " + barrier[0] + "/" + barrier[1]);
+        barrier = stats(barrier(Map.of(POWER, 5.0)));
+        helper.assertTrue(barrier[0] == 550 && barrier[1] == 1300, "Barrier P5: 50+100P / 300+200P, got " + barrier[0] + "/" + barrier[1]);
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_INTEGER.equals(compileError(
                 () -> stats(barrier(Map.of(POWER, 1.5))))), "Barrier Power must be a whole number");
 
