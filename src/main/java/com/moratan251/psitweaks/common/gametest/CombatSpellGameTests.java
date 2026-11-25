@@ -13,6 +13,9 @@ import com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIntegrity;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramLimits;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
+import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
 import com.moratan251.psitweaks.common.entities.combat.EntityChainLightning;
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.entities.combat.EntityMicroBlackHole;
@@ -1414,14 +1417,70 @@ public final class CombatSpellGameTests {
             helper.assertTrue(!wither.isNoAi() && !CocytusFreezes.isFrozen(wither), "A boss must not be frozen");
             helper.assertTrue(!CocytusFreezes.canFreeze(player, other, AttackRules.Options.DEFAULT),
                     "A player has no AI to freeze");
-            var again = PieceTrickCocytus.freezeInCone(helper.getLevel(), player, player.getEyePosition(),
-                    player.getLookAngle(), AttackRules.Options.DEFAULT);
+            var again = PieceTrickCocytus.freezeInCone(helper.getLevel(), context, player.getEyePosition(),
+                    player.getLookAngle());
             helper.assertTrue(again.size() == 2 && again.containsAll(List.of(front, far)),
                     "Casting again must catch the same two mobs, got " + again);
         } finally {
             List.of(front, far, behind, side, pet, wither).forEach(Entity::discard);
         }
         helper.succeed();
+    }
+
+    /**
+     * コキュートスは、術者より事象干渉力の高い他者の領域干渉の中のモブ（他者のペットを含む）を凍らせない。弱い他者の
+     * 領域干渉と、術者自身の領域干渉の中のモブは凍らせる。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH + "_cocytus_interference")
+    public static void cocytusCannotFreezeInsideAStrongerForeignInterferenceZone(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 2), "cocytus-intf-caster");
+        var other = caster(helper, new BlockPos(0, 0, 6), "cocytus-intf-other");
+        var context = new SpellContext().setPlayer(player);
+        Wolf othersPet = helper.spawnWithNoFreeWill(EntityType.WOLF, new Vec3(4.5, 0.0, 2.5));
+        othersPet.setTame(true, false);
+        othersPet.setOwnerUUID(other.getUUID());
+        Husk guarded = husk(helper, new Vec3(5.5, 0.0, 2.5), true);
+        Husk underWeak = husk(helper, new Vec3(8.5, 0.0, 2.5), true);
+        Husk underOwn = husk(helper, new Vec3(11.5, 0.0, 2.5), true);
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, player.getEyePosition().add(1.0, 0.0, 0.0));
+        List<Entity> spawned = new ArrayList<>(List.of(othersPet, guarded, underWeak, underOwn));
+        try {
+            double casterInterference = SpellGramObject.interferenceOf(player);
+            spawned.add(interferenceZone(helper, new BlockPos(5, 0, 2), other, casterInterference + 0.5));
+            spawned.add(interferenceZone(helper, new BlockPos(8, 0, 2), other, casterInterference - 0.5));
+            spawned.add(interferenceZone(helper, new BlockPos(11, 0, 2), player, casterInterference + 4.0));
+            helper.assertTrue(CocytusFreezes.canFreeze(player, othersPet, AttackRules.Options.DEFAULT),
+                    "Another player's pet is a mob Cocytus may freeze outside an Interference Zone");
+
+            var frozen = PieceTrickCocytus.freezeInCone(helper.getLevel(), context, player.getEyePosition(),
+                    player.getLookAngle());
+
+            for (var spared : List.of(othersPet, guarded)) {
+                helper.assertTrue(!spared.isNoAi() && !CocytusFreezes.isFrozen(spared),
+                        "A mob inside a stronger foreign Interference Zone must not be frozen: " + spared);
+            }
+            helper.assertTrue(CocytusFreezes.isFrozen(underWeak), "A weaker foreign Interference Zone must not stop Cocytus");
+            helper.assertTrue(CocytusFreezes.isFrozen(underOwn), "The caster's own Interference Zone must not stop Cocytus");
+            helper.assertTrue(frozen.size() == 2 && frozen.containsAll(List.of(underWeak, underOwn)),
+                    "Cocytus must freeze only the two mobs outside the stronger foreign zone, got " + frozen);
+        } finally {
+            spawned.forEach(Entity::discard);
+        }
+        helper.succeed();
+    }
+
+    /** 3 x 3 x 3 の領域干渉を、{@code owner} が事象干渉力 {@code interference} で置いたものとして出す。 */
+    private static EntityInterferenceZone interferenceZone(GameTestHelper helper, BlockPos relativeCenter, ServerPlayer owner,
+                                                           double interference) throws SpellRuntimeException {
+        var zone = new EntityInterferenceZone(helper.getLevel());
+        zone.configureZone(ZoneArea.cube(helper.absolutePos(relativeCenter), 3), 0xFFFFFF);
+        zone.setMachineSpeed(SpellGramZone.machineSpeedFor(interference));
+        zone.setPlacement(owner.getUUID(), interference);
+        zone.setCaster(owner);
+        zone.setLifetimeTicks(1000);
+        zone.setMaxIntegrity(1.0E6F);
+        helper.getLevel().addFreshEntity(zone);
+        return zone;
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)

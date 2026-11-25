@@ -23,7 +23,8 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * 作動式: コキュートス。入力なし。術者の目から視線の方向へ吹雪を放ち、作動式: 術式解体と同じ円錐
  * （{@link PieceTrickGramDemolition#creaturesInCone}、ブロックは貫通する）の中のモブの精神を永久に凍結させる
  * （{@link CocytusFreezes#freeze}: AI を止めて氷に閉じ込める）。凍結するのは {@link CocytusFreezes#canFreeze} が許すモブだけで、
- * プレイヤー・術者の側（ペット・味方）・ボスは凍らない。ダメージは与えない。
+ * プレイヤー・術者の側（ペット・味方）・ボスは凍らない。術式の射程（{@link SpellContext#isInRadius(net.minecraft.world.entity.Entity)}）
+ * の外のモブも凍らないので、術者より事象干渉力の高い他者の領域干渉の中のモブは凍らない。ダメージは与えない。
  */
 public class PieceTrickCocytus extends PieceTrick {
     private static final int POTENCY = 1250;
@@ -50,7 +51,7 @@ public class PieceTrickCocytus extends PieceTrick {
         LivingEntity caster = context.caster;
         Vec3 eye = caster.getEyePosition();
         Vec3 look = caster.getLookAngle().normalize();
-        freezeInCone(level, caster, eye, look, AttackRules.Options.from(context));
+        freezeInCone(level, context, eye, look);
 
         CombatEffects.coneBlizzard(level, eye, look, (float) PieceTrickGramDemolition.RANGE, 1.0F);
         CombatEffects.sound(level, eye, SoundEvents.BREEZE_WIND_CHARGE_BURST, 1.2F, 0.6F);
@@ -59,12 +60,16 @@ public class PieceTrickCocytus extends PieceTrick {
         return null;
     }
 
-    /** 円錐の中の、凍らせてよいモブ（{@link CocytusFreezes#canFreeze}）をすべて凍結させ、凍らせたモブを返す。 */
-    public static List<Mob> freezeInCone(ServerLevel level, LivingEntity caster, Vec3 eye, Vec3 look,
-                                         AttackRules.Options options) {
+    /**
+     * 目 {@code eye} から {@code look} の方向への円錐の中の、凍らせてよい（{@link CocytusFreezes#canFreeze}）、術式の射程の中の
+     * モブをすべて凍結させ、凍らせたモブを返す。
+     */
+    public static List<Mob> freezeInCone(ServerLevel level, SpellContext context, Vec3 eye, Vec3 look) {
+        LivingEntity caster = context.caster;
+        AttackRules.Options options = AttackRules.Options.from(context);
         List<Mob> frozen = new ArrayList<>();
         for (LivingEntity living : PieceTrickGramDemolition.creaturesInCone(level, caster, eye, look)) {
-            if (living instanceof Mob mob && CocytusFreezes.canFreeze(caster, mob, options)) {
+            if (living instanceof Mob mob && CocytusFreezes.canFreeze(caster, mob, options) && context.isInRadius(mob)) {
                 CocytusFreezes.freeze(level, mob);
                 frozen.add(mob);
             }
