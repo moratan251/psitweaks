@@ -47,13 +47,14 @@ public final class BarrierShields {
     }
 
     /**
-     * Raises the shield on the entity, or replaces a weaker one. A shield with at least as many points left stays as
-     * it is, so a weak barrier (anyone may raise one on others in range) cannot overwrite a strong one.
+     * Raises the shield on the entity, or replaces one with no more points left. A shield with more points left stays
+     * as it is, so a weak barrier (anyone may raise one on others in range) cannot overwrite a strong one. An equal one
+     * replaces it, so casting the same barrier again on an untouched shield restarts its time.
      *
      * @return whether the new shield was raised
      */
     public static boolean raise(LivingEntity entity, float amount, int durationTicks, int color) {
-        if (amount(entity) >= amount) {
+        if (amount(entity) > amount) {
             return false;
         }
         long expiresAt = entity.level().getGameTime() + Math.max(1, durationTicks);

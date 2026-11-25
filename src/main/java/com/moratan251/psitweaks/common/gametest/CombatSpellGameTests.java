@@ -398,14 +398,30 @@ public final class CombatSpellGameTests {
         long lasts = raised == null ? 0L : raised.expiresAt() - helper.getLevel().getGameTime();
         helper.assertTrue(lasts == 1200L, "The shield must last one minute, got " + lasts + " ticks");
 
-        // A minute is too long to wait for here, so a one-second shield stands in for the timer. A shield as strong
-        // stays as it is, so the minute shield is taken off first.
-        helper.assertTrue(!BarrierShields.raise(husk, 10.0F, 20, 0xFFFFFF), "An equal shield must not replace the one there");
-        husk.removeData(PsitweaksAttachments.BARRIER_SHIELD);
-        BarrierShields.raise(husk, 10.0F, 20, 0xFFFFFF);
+        // A minute is too long to wait for here, so a one-second shield as strong replaces it and stands in for the
+        // timer.
+        helper.assertTrue(BarrierShields.raise(husk, 10.0F, 20, 0xFFFFFF), "An equal shield must replace the one there");
         helper.runAtTickTime(10, () -> helper.assertTrue(near(shield(husk), 10), "The shield faded too early"));
         helper.succeedWhen(() -> helper.assertTrue(husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD) == null,
                 "A one-second shield must be gone after its time"));
+    }
+
+    /** Casting the same barrier again on a shield that took no hits restarts its minute without adding to it. */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void sameBarrierAgainRestartsTheMinute(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(0, 0, 0), "barrier-recast");
+        var husk = husk(helper, new BlockPos(2, 0, 2), false);
+        var context = new SpellContext().setPlayer(player);
+        barrier(Map.of(TARGET, husk, POWER, 2.0)).execute(context);
+        helper.runAfterDelay(20, () -> {
+            helper.assertTrue(castError(() -> barrier(Map.of(TARGET, husk, POWER, 2.0)).execute(context)) == null,
+                    "Casting the barrier again must not fail");
+            BarrierShield shield = husk.getExistingDataOrNull(PsitweaksAttachments.BARRIER_SHIELD);
+            long lasts = shield == null ? 0L : shield.expiresAt() - helper.getLevel().getGameTime();
+            helper.assertTrue(lasts == 1200L, "The same barrier cast again must restart the minute, got " + lasts + " ticks left");
+            helper.assertTrue(near(shield(husk), 20), "The shield must stay at 20, not add up: " + shield(husk));
+            helper.succeed();
+        });
     }
 
     /** F-018: casting a weaker barrier again leaves the stronger shield; a stronger one replaces it. */
