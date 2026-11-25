@@ -177,8 +177,8 @@ final class AutonomousCasterTranslations {
                 "An error occurred while casting. See the server log",
                 "詠唱中にエラーが発生しました. サーバーログを確認してください");
         put("psitweaks.spellerror.idea_storage_owner_unavailable",
-                "Cannot tell whose Ideaspace Storage to use",
-                "使用するイデアストレージの持ち主を特定できません");
+                "ERROR: Cannot tell whose Ideaspace Storage to use.",
+                "エラー: 使用するイデアストレージの持ち主を特定できません.");
     }
 
     private void addConfig() {

@@ -49,7 +49,7 @@ public abstract class PieceOperatorBlockResourceBase extends PieceOperator imple
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String TAG_MODE = "psitweaksMode";
     public static final String ERROR_READ = "psitweaks.spellerror.block_resource_read_failed";
-    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.accessdenyed";
+    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.access_denied";
 
     private PsitweaksModeOption mode = BlockResourceModes.ITEM;
     private SpellParam<?> target;

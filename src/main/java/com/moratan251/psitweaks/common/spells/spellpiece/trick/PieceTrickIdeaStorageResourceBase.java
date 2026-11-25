@@ -155,7 +155,7 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
         }
         if (!level.hasChunkAt(blockPos)) return null;
         if (!level.mayInteract(player, blockPos) || PieceTrickItemTransferBase.isProtectedFromInteraction(player, blockPos, facing))
-            throw new SpellRuntimeException("psitweaks.spellerror.accessdenyed");
+            throw new SpellRuntimeException("psitweaks.spellerror.access_denied");
         if (level.getBlockEntity(blockPos) instanceof IdeaspaceConnectorBlockEntity connector && owner.equals(connector.owner()))
             return null;
         var storage = IdeaStorageService.get(player.server, owner);
@@ -181,7 +181,7 @@ public abstract class PieceTrickIdeaStorageResourceBase extends PieceTrick imple
         var level = player.serverLevel();
         if (!level.hasChunkAt(blockPos)) return;
         if (!level.mayInteract(player, blockPos) || PieceTrickItemTransferBase.isProtectedFromInteraction(player, blockPos, facing))
-            throw new SpellRuntimeException("psitweaks.spellerror.accessdenyed");
+            throw new SpellRuntimeException("psitweaks.spellerror.access_denied");
         var handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, blockPos, facing);
         if (handler == null) return;
         var storage = IdeaStorageService.get(player.server, owner);

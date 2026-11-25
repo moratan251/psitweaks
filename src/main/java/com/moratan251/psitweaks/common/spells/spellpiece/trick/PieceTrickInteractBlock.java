@@ -22,7 +22,7 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * スペルピース：対象座標のブロックに右クリック動作を実行
  */
 public class PieceTrickInteractBlock extends PieceTrick {
-    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.accessdenyed";
+    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.access_denied";
 
     ParamVector position;
 
@@ -116,7 +116,7 @@ public class PieceTrickInteractBlock extends PieceTrick {
 
         } catch (Exception e) {
             // エラーハンドリング
-            throw new SpellRuntimeException("psitweaks.spellerror.failedToInteract");
+            throw new SpellRuntimeException("psitweaks.spellerror.failed_to_interact");
         }
 
         return null;

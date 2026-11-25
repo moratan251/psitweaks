@@ -461,20 +461,20 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "ERROR: The image cannot be projected with a Number of 0.";
         });
         root.addProperty("psitweaks.spellerror.no_ground", switch (locale) {
-            case "ja_jp" -> "指定位置の下に地面がありません";
-            default -> "No ground below the position";
+            case "ja_jp" -> "エラー: 指定位置の下に地面がありません.";
+            default -> "ERROR: No ground below the position.";
         });
         root.addProperty("psitweaks.spellerror.nbt_too_many_targets", switch (locale) {
-            case "ja_jp" -> "1回の詠唱でNBTを読める対象の数を超えました";
-            default -> "Too many targets had their NBT read in one cast";
+            case "ja_jp" -> "エラー: 1 回の詠唱で NBT を読める対象の数を超えました.";
+            default -> "ERROR: Too many targets had their NBT read in one cast.";
         });
         root.addProperty("psitweaks.spellerror.wildcard_too_many_comparisons", switch (locale) {
-            case "ja_jp" -> "1回の詠唱でパターンと文字を比べられる回数を超えました";
-            default -> "Too many characters were compared with patterns in one cast";
+            case "ja_jp" -> "エラー: 1 回の詠唱でパターンと文字を比べられる回数を超えました.";
+            default -> "ERROR: Too many characters were compared with patterns in one cast.";
         });
         root.addProperty("psitweaks.spellerror.value_list_size_mismatch", switch (locale) {
-            case "ja_jp" -> "リストと基準値の要素数が違います";
-            default -> "The List and the Values have different sizes";
+            case "ja_jp" -> "エラー: リストと基準値の要素数が違います.";
+            default -> "ERROR: The List and the Values have different sizes.";
         });
         root.addProperty("psitweaks.spellparam.values", switch (locale) {
             case "ja_jp" -> "基準値";
@@ -539,119 +539,119 @@ public class PsitweaksLanguageProvider implements DataProvider {
         });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません.";
-            default -> "Error: The target is not a Resident SpellGram.";
+            default -> "ERROR: The target is not a Resident SpellGram.";
         });
         root.addProperty("psitweaks.spellerror.not_own_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 自分の常駐魔法式ではありません.";
-            default -> "Error: The target is not your own Resident SpellGram.";
+            default -> "ERROR: The target is not your own Resident SpellGram.";
         });
         root.addProperty("psitweaks.spellerror.not_autonomous_caster", switch (locale) {
             case "ja_jp" -> "エラー: 自律詠唱機からの詠唱ではありません.";
-            default -> "Error: Not cast from an Autonomous Caster.";
+            default -> "ERROR: Not cast from an Autonomous Caster.";
         });
         root.addProperty("psitweaks.spellerror.no_jump_anchor", switch (locale) {
-            case "ja_jp" -> "前方に一致するジャンプアンカーがありません";
-            default -> "No matching Jump Anchor found ahead";
+            case "ja_jp" -> "エラー: 前方に一致するジャンプアンカーがありません.";
+            default -> "ERROR: No matching Jump Anchor found ahead.";
         });
         root.addProperty("psitweaks.spellerror.nullitem", switch (locale) {
-            case "ja_jp" -> "エラー: 魔法の対象となるアイテムは存在しません.";
-            default -> "Error: The target item of the spell does not exist.";
+            case "ja_jp" -> "エラー: 扱えるアイテムがありません.";
+            default -> "ERROR: There are no items to work with.";
         });
-        root.addProperty("psitweaks.spellerror.accessdenyed", switch (locale) {
+        root.addProperty("psitweaks.spellerror.access_denied", switch (locale) {
             case "ja_jp" -> "エラー: 保護されたブロックにアクセスを試みました.";
-            default -> "Error: Attempted to access a protected block.";
+            default -> "ERROR: Attempted to access a protected block.";
         });
         // 毎朝レビュー F-043: コードで使っているのに訳がなかったキー。
         root.addProperty("psitweaks.spellerror.not_spellgram_object", switch (locale) {
             case "ja_jp" -> "エラー: 対象が魔法式オブジェクトではありません.";
-            default -> "Error: The target is not a SpellGram object.";
+            default -> "ERROR: The target is not a SpellGram object.";
         });
         root.addProperty("psitweaks.spellerror.zone_empty", switch (locale) {
             case "ja_jp" -> "エラー: 領域の範囲にブロックがありません.";
-            default -> "Error: The zone contains no blocks.";
+            default -> "ERROR: The zone contains no blocks.";
         });
-        root.addProperty("psitweaks.spellerror.failedToInteract", switch (locale) {
+        root.addProperty("psitweaks.spellerror.failed_to_interact", switch (locale) {
             case "ja_jp" -> "エラー: ブロックに作用できませんでした.";
-            default -> "Error: Could not interact with the block.";
+            default -> "ERROR: Could not interact with the block.";
         });
         root.addProperty("psitweaks.event.custom_tick", switch (locale) {
             case "ja_jp" -> "§bイベント§7: カスタムtick";
             default -> "§bEvent§7: Custom Tick";
         });
         root.addProperty("psitweaks.spellerror.safety_insufficient_psi", switch (locale) {
-            case "ja_jp" -> "安全装置が作動しました: Psiが不足しています";
-            default -> "Safety activated: not enough Psi";
+            case "ja_jp" -> "エラー: 安全装置が作動しました. Psi が不足しています.";
+            default -> "ERROR: Safety activated. Not enough Psi.";
         });
         root.addProperty("psitweaks.spellerror.plain_memory_type", switch (locale) {
-            case "ja_jp" -> "保存された値を選択中の型として読み取れません";
-            default -> "Stored value cannot be read as the selected type";
+            case "ja_jp" -> "エラー: 保存された値を選択中の型として読み取れません.";
+            default -> "ERROR: The stored value cannot be read as the selected type.";
         });
         root.addProperty("psitweaks.spellerror.plain_memory_parse", switch (locale) {
-            case "ja_jp" -> "保存された文字列を選択中の型へ変換できません";
-            default -> "Stored string cannot be converted to the selected type";
+            case "ja_jp" -> "エラー: 文字列を選択中の型へ変換できません.";
+            default -> "ERROR: The string cannot be converted to the selected type.";
         });
         root.addProperty("psitweaks.spellerror.empty_delimiter", switch (locale) {
-            case "ja_jp" -> "区切り文字が空です";
-            default -> "Delimiter cannot be empty";
+            case "ja_jp" -> "エラー: 区切り文字が空です.";
+            default -> "ERROR: The delimiter cannot be empty.";
         });
         root.addProperty("psitweaks.spellerror.expected_three_numbers", switch (locale) {
-            case "ja_jp" -> "Number List の要素数は3である必要があります";
-            default -> "Number List must contain exactly 3 elements";
+            case "ja_jp" -> "エラー: Number List の要素数は 3 である必要があります.";
+            default -> "ERROR: The Number List must contain exactly 3 elements.";
         });
         root.addProperty("psitweaks.spellerror.matrix_incompatible_sizes", switch (locale) {
-            case "ja_jp" -> "行列のサイズが整合しません";
-            default -> "Matrix dimensions are incompatible";
+            case "ja_jp" -> "エラー: 行列のサイズが整合しません.";
+            default -> "ERROR: Matrix dimensions are incompatible.";
         });
         root.addProperty("psitweaks.spellerror.matrix_not_square", switch (locale) {
-            case "ja_jp" -> "行列は正方行列である必要があります";
-            default -> "Matrix must be square";
+            case "ja_jp" -> "エラー: 行列は正方行列である必要があります.";
+            default -> "ERROR: Matrix must be square.";
         });
         root.addProperty("psitweaks.spellerror.matrix_singular", switch (locale) {
-            case "ja_jp" -> "行列が特異であり逆行列を求められません";
-            default -> "Matrix is singular and cannot be inverted";
+            case "ja_jp" -> "エラー: 行列が特異であり逆行列を求められません.";
+            default -> "ERROR: Matrix is singular and cannot be inverted.";
         });
         root.addProperty("psitweaks.spellerror.matrix_out_of_bounds", switch (locale) {
-            case "ja_jp" -> "行列のインデックスが範囲外です";
-            default -> "Matrix index is out of bounds";
+            case "ja_jp" -> "エラー: 行列のインデックスが範囲外です.";
+            default -> "ERROR: Matrix index is out of bounds.";
         });
         root.addProperty("psitweaks.spellerror.matrix_too_large", switch (locale) {
-            case "ja_jp" -> "行列またはリストが最大サイズ4を超えています";
-            default -> "Matrix or list exceeds the maximum size of 4";
+            case "ja_jp" -> "エラー: 行列またはリストが最大サイズ 4 を超えています.";
+            default -> "ERROR: Matrix or list exceeds the maximum size of 4.";
         });
         root.addProperty("psitweaks.spellerror.matrix_invalid_dimension", switch (locale) {
-            case "ja_jp" -> "行列の次元は1〜4である必要があります";
-            default -> "Matrix dimension must be between 1 and 4";
+            case "ja_jp" -> "エラー: 行列の次元は 1〜4 である必要があります.";
+            default -> "ERROR: Matrix dimension must be between 1 and 4.";
         });
         root.addProperty("psitweaks.spellerror.matrix_invalid_transform", switch (locale) {
-            case "ja_jp" -> "変換行列は3×3または4×4である必要があります";
-            default -> "Transform matrix must be 3x3 or 4x4";
+            case "ja_jp" -> "エラー: 変換行列は 3×3 または 4×4 である必要があります.";
+            default -> "ERROR: Transform matrix must be 3x3 or 4x4.";
         });
         root.addProperty("psitweaks.spellerror.matrix_non_finite_result", switch (locale) {
-            case "ja_jp" -> "行列演算の結果が有限値ではありません";
-            default -> "Matrix operation produced a non-finite result";
+            case "ja_jp" -> "エラー: 行列演算の結果が有限値ではありません.";
+            default -> "ERROR: Matrix operation produced a non-finite result.";
         });
         root.addProperty("psitweaks.spellerror.matrix_zero_w", switch (locale) {
-            case "ja_jp" -> "変換後のw成分が0です";
-            default -> "Transformed w component is zero";
+            case "ja_jp" -> "エラー: 変換後の w 成分が 0 です.";
+            default -> "ERROR: Transformed w component is zero.";
         });
         root.addProperty("psitweaks.spellerror.region_invalid_matrix", switch (locale) {
-            case "ja_jp" -> "領域演算には3×4または4×4の行列が必要です";
-            default -> "Region operations require a 3x4 or 4x4 matrix";
+            case "ja_jp" -> "エラー: 領域演算には 3×4 または 4×4 の行列が必要です.";
+            default -> "ERROR: Region operations require a 3x4 or 4x4 matrix.";
         });
         root.addProperty("psitweaks.spellerror.region_degenerate_edges", switch (locale) {
-            case "ja_jp" -> "3つの辺ベクトルが退化しています";
-            default -> "The three edge vectors are degenerate";
+            case "ja_jp" -> "エラー: 3 つの辺ベクトルが退化しています.";
+            default -> "ERROR: The three edge vectors are degenerate.";
         });
         root.addProperty("psitweaks.spellerror.region_too_large", switch (locale) {
-            case "ja_jp" -> "領域に含まれるブロックが多すぎます";
-            default -> "The region contains too many blocks";
+            case "ja_jp" -> "エラー: 領域に含まれるブロックが多すぎます.";
+            default -> "ERROR: The region contains too many blocks.";
         });
         root.addProperty("psitweaks.spellerror.mass_break_too_many_pending", switch (locale) {
-            case "ja_jp" -> "保留中の一括破壊ブロック数が上限を超えています";
-            default -> "Too many pending mass-break blocks";
+            case "ja_jp" -> "エラー: 保留中の一括破壊ブロック数が上限を超えています.";
+            default -> "ERROR: Too many pending mass-break blocks.";
         });
         root.addProperty("psitweaks.spellwarning.cad_memory_string_truncated", switch (locale) {
-            case "ja_jp" -> "警告: CADメモリスロット%sのStringは%s文字から%s文字に切り捨てられました.";
+            case "ja_jp" -> "警告: CAD メモリスロット %s の String は %s 文字から %s 文字に切り捨てられました.";
             default -> "WARNING: String CAD memory value in slot %s was truncated from %s to %s characters.";
         });
         root.addProperty("psitweaks.spellwarning.position", switch (locale) {
@@ -663,8 +663,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "WARNING: The target is already down.";
         });
         root.addProperty("psitweaks.spellwarning.radiation_disabled", switch (locale) {
-            case "ja_jp" -> "警告: Mekanism の設定で放射線が無効なので, 領域を置きませんでした.";
-            default -> "WARNING: Radiation is turned off in Mekanism's config, so the zone was not placed.";
+            case "ja_jp" -> "警告: Mekanism の設定で放射線が無効なので, 魔法式を設置しませんでした.";
+            default -> "WARNING: Radiation is turned off in Mekanism's config, so the SpellGram was not placed.";
         });
         root.addProperty("psitweaks.spellwarning.no_breeding_food", switch (locale) {
             case "ja_jp" -> "警告: %sを繁殖させる餌を持っていません.";
@@ -2877,8 +2877,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     private void addIdeaResourceLogistics(JsonObject root) {
         root.addProperty("psitweaks.spellerror.idea_storage_transfer_failed", switch (locale) {
-            case "ja_jp" -> "外部機器とのイデア転送に失敗しました. 詳細はサーバーログを確認してください";
-            default -> "Ideaspace transfer with the external device failed. Check the server log for details";
+            case "ja_jp" -> "エラー: 外部機器とのイデア転送に失敗しました. 詳細はサーバーログを確認してください.";
+            default -> "ERROR: Ideaspace transfer with the external device failed. Check the server log for details.";
         });
         // Exact-transfer labels of the mode menu (IdeaStorageResourceModes); the plain kinds share the block resource labels.
         String[][] modes = {
@@ -2918,8 +2918,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     private void addIdeaSlotLogistics(JsonObject root) {
         root.addProperty("psitweaks.spellerror.idea_storage_slot_transfer_failed", switch (locale) {
-            case "ja_jp" -> "指定スロットとのイデア転送に失敗しました. 詳細はサーバーログを確認してください";
-            default -> "Ideaspace transfer with the target slot failed. Check the server log for details";
+            case "ja_jp" -> "エラー: 指定スロットとのイデア転送に失敗しました. 詳細はサーバーログを確認してください.";
+            default -> "ERROR: Ideaspace transfer with the target slot failed. Check the server log for details.";
         });
         String enSlot = "The target slot matches Psi's Trick: Place Block (default: right of the CAD) and can be changed with Trick: Switch Focus Slot.$(p)Skips the active CAD or casting tool slot.";
         String jpSlot = "指定スロットは Psi の作動式: ブロック設置(単)等と共通で, 既定は CAD の右隣です. 作動式: 指定スロット切替などで変更できます.$(p)使用中の CAD や詠唱中の道具があるスロットには作用しません.";
@@ -2959,8 +2959,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         }
         addLocalized(root, "psitweaks.datatype.item_or_item_list", "Item/Item List", "Item/Item List");
         addLocalized(root, "psitweaks.spellerror.block_resource_read_failed",
-                "Reading the block's resources failed. Check the server log for details",
-                "ブロックの資源の読み取りに失敗しました. 詳細はサーバーログを確認してください");
+                "ERROR: Reading the block's resources failed. Check the server log for details.",
+                "エラー: ブロックの資源の読み取りに失敗しました. 詳細はサーバーログを確認してください.");
 
         addSpellPiece(root, "operator_strict_item", "Operator: Strict Item",
                 "Turns an Item or Item List into a filter that also compares data components.",
@@ -3137,12 +3137,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "作動式: サークル追従", "自分のサークルを, 術者か生き物でないエンティティに追従させる. 追従先を入れなければ放す");
         addLocalized(root, "psitweaks.spellparam.follow_target", "Follow Target", "追従先");
         addLocalized(root, "psitweaks.spellerror.not_circle",
-                "Error: The target is not a circle.", "エラー: 対象がサークルではありません.");
+                "ERROR: The target is not a circle.", "エラー: 対象がサークルではありません.");
         addLocalized(root, "psitweaks.spellerror.invalid_follow_target",
-                "Error: The follow target must be the caster or an entity that is not a living being.",
+                "ERROR: The follow target must be the caster or an entity that is not a living being.",
                 "エラー: 追従先は術者か, 生き物でないエンティティにしてください.");
         addLocalized(root, "psitweaks.spellerror.follow_target_ridden",
-                "Error: A living being other than the caster is riding the follow target.",
+                "ERROR: A living being other than the caster is riding the follow target.",
                 "エラー: 追従先に術者以外の生き物が乗っています.");
         addSpellPiece(root, "trick_interference_zone", "Trick: Interference Zone",
                 "Places a Resident SpellGram zone that keeps weaker casters' Psi spells out of it and stops others' ender teleports",
@@ -3192,7 +3192,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 japanese ? "待機中: 先に見つかる別のブレードポーチが使われます" : "Idle: another Blade Pouch found first is in use");
         root.addProperty("gui.psitweaks.blade_pouch.deployed", japanese ? "刃を展開中" : "Blades out");
         root.addProperty("psitweaks.spellerror.required_item_missing",
-                japanese ? "エラー: 術式に必要なアイテムが存在しません." : "ERROR: An item the spell needs is missing.");
+                japanese ? "エラー: 術式に必要な%sがありません." : "ERROR: The required item is missing: %s.");
+        root.addProperty("psitweaks.spellerror.required_item_empty",
+                japanese ? "エラー: %sに術式で使えるものが入っていません." : "ERROR: The %s holds nothing the spell can use.");
         root.addProperty("psi.book.page.psitweaks_item.blade_pouch.0", japanese
                 ? "剣を8本まで入れておけるポーチです. 使うとGUIが開き, $(thing)#minecraft:swords$(0) の剣だけを入れられます.$(p)$(l:psitweaks_spell_pieces/trick_dancing_blades)$(o)作動式: ダンシングブレイズ$(0)$(/l) は, このポーチの剣をすべて展開して斬りつけます. 刃を展開している間は, ポーチの剣を出し入れできません."
                 : "A pouch that holds up to 8 swords. Using it opens a GUI that only accepts items in $(thing)#minecraft:swords$(0).$(p)$(l:psitweaks_spell_pieces/trick_dancing_blades)$(o)Trick: Dancing Blades$(0)$(/l) deploys every sword in it. While the blades are out, swords cannot be put in or taken out.");
@@ -3280,8 +3282,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
     /** 1.0.0 utility tricks: ender chest, crafting table, harvesting, shearing and breeding, and Operator: Connected Blocks. */
     private void addUtilitySpellPieces(JsonObject root) {
         addLocalized(root, "psitweaks.datatype.entity_or_entity_list", "Entity/Entity List", "Entity/Entity List");
-        addLocalized(root, "psitweaks.spellerror.mass_harvest_too_many_pending", "Too many pending mass-harvest blocks",
-                "保留中の一括収穫ブロック数が上限を超えています");
+        addLocalized(root, "psitweaks.spellerror.mass_harvest_too_many_pending", "ERROR: Too many pending mass-harvest blocks.",
+                "エラー: 保留中の一括収穫ブロック数が上限を超えています.");
 
         addSpellPiece(root, "trick_ender_chest", "Trick: Ender Chest", "Opens the caster's ender chest.",
                 "作動式: エンダーチェスト", "術者のエンダーチェストを開きます.");
@@ -3382,12 +3384,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("tooltip.psitweaks.filter_card.idle",
                 japanese ? "待機中: 先に見つかる別のフィルタカードが使われます" : "Idle: another Filter Card found first is in use");
         root.addProperty("psitweaks.spellerror.no_filter_card",
-                japanese ? "エラー: フィルタカードを持っていません." : "Error: You have no Filter Card.");
+                japanese ? "エラー: フィルタカードを持っていません." : "ERROR: You have no Filter Card.");
         root.addProperty("psitweaks.spellerror.filter_card_slot_empty",
-                japanese ? "エラー: フィルタカードの %s 番の枠は空です." : "Error: Slot %s of the Filter Card is empty.");
+                japanese ? "エラー: フィルタカードの %s 番の枠は空です." : "ERROR: Slot %s of the Filter Card is empty.");
         root.addProperty("psitweaks.spellerror.filter_card_slot_range",
                 japanese ? "エラー: フィルタカードの番号は 1〜9 の整数で指定してください."
-                        : "Error: The Filter Card slot must be an integer from 1 to 9.");
+                        : "ERROR: The Filter Card slot must be an integer from 1 to 9.");
         addSpellPiece(root, "selector_filter_card", "Selector: Filter Card",
                 "Gets the item registered in the given slot (1-9) of the Filter Card in use",
                 "取得子: フィルタカード", "使用中のフィルタカードの指定した番号(1〜9)に登録したアイテムを取得する");

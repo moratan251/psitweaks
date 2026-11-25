@@ -53,7 +53,7 @@ public abstract class PieceTrickItemTransferBase extends PieceTrick implements M
 
     private static final String TAG_MODE = "psitweaksMode";
     private static final String ERROR_NULL_ITEM = "psitweaks.spellerror.nullitem";
-    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.accessdenyed";
+    private static final String ERROR_ACCESS_DENIED = "psitweaks.spellerror.access_denied";
     private static final List<PsitweaksModeOption> MODES = List.of(PsitweaksModeOptions.STRING,
             PsitweaksModeOptions.ITEM, PsitweaksModeOptions.ITEM_STRICT);
 

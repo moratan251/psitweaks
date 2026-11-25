@@ -1067,7 +1067,7 @@ public final class ItemBlockMatrixGameTests {
         } finally {
             NeoForge.EVENT_BUS.unregister(deny);
         }
-        helper.assertTrue("psitweaks.spellerror.accessdenyed".equals(denied), "A protected block must fail");
+        helper.assertTrue("psitweaks.spellerror.access_denied".equals(denied), "A protected block must fail");
         helper.succeed();
     }
 

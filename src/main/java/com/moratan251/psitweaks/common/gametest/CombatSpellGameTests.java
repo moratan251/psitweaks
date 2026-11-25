@@ -30,6 +30,7 @@ import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.menu.BladePouchMenu;
 import com.moratan251.psitweaks.common.registries.PsitweaksDamageTypes;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.RequiredItemPiece;
 import com.moratan251.psitweaks.common.spells.SpellWarning;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.BarrierShield;
@@ -230,12 +231,24 @@ public final class CombatSpellGameTests {
 
     /** The error key casting fails with, or null when it succeeds. */
     private static String castError(CastAction action) {
+        SpellRuntimeException failure = castFailure(action);
+        return failure == null ? null : failure.getMessage();
+    }
+
+    /** The error casting fails with, or null when it succeeds. */
+    private static SpellRuntimeException castFailure(CastAction action) {
         try {
             action.run();
             return null;
         } catch (SpellRuntimeException failure) {
-            return failure.getMessage();
+            return failure;
         }
+    }
+
+    /** Whether the error is the given required-item error and names the Blade Pouch. */
+    private static boolean namesBladePouch(SpellRuntimeException failure, String key) {
+        return failure != null && key.equals(failure.getMessage()) && failure.arguments.length == 1
+                && PsitweaksItems.BLADE_POUCH.get().getDescription().equals(failure.arguments[0]);
     }
 
     @SuppressWarnings("unchecked")
@@ -1863,11 +1876,13 @@ public final class CombatSpellGameTests {
     public static void dancingBladesNeedSwordsInABladePouch(GameTestHelper helper) {
         var player = caster(helper, new BlockPos(2, 0, 2), "blades-no-pouch");
         var context = new SpellContext().setPlayer(player);
-        helper.assertTrue(PieceTrickDancingBlades.ERROR_NO_SWORDS.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
-                "Without a pouch the spell must fail");
+        helper.assertTrue(namesBladePouch(castFailure(() -> dancingBlades(Map.of()).execute(context)),
+                        RequiredItemPiece.ERROR_REQUIRED_ITEM_MISSING),
+                "Without a pouch the spell must fail with the missing-item error naming the Blade Pouch");
         player.getInventory().setItem(9, new ItemStack(PsitweaksItems.BLADE_POUCH.get()));
-        helper.assertTrue(PieceTrickDancingBlades.ERROR_NO_SWORDS.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
-                "With an empty pouch the spell must fail");
+        helper.assertTrue(namesBladePouch(castFailure(() -> dancingBlades(Map.of()).execute(context)),
+                        RequiredItemPiece.ERROR_REQUIRED_ITEM_EMPTY),
+                "With an empty pouch the spell must fail with the empty-item error naming the Blade Pouch");
         helper.assertTrue(!BladePouches.isSword(new ItemStack(Items.IRON_AXE)) && BladePouches.isSword(new ItemStack(Items.IRON_SWORD)),
                 "Only #minecraft:swords go in a pouch");
         helper.succeed();
@@ -1931,7 +1946,7 @@ public final class CombatSpellGameTests {
         player.getInventory().setItem(9, pouch);
         helper.assertTrue(BladePouches.isBroken(broken) && !BladePouches.isBroken(new ItemStack(Items.IRON_SWORD)),
                 "A sword with no durability left is broken");
-        helper.assertTrue(PieceTrickDancingBlades.ERROR_NO_SWORDS.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
+        helper.assertTrue(RequiredItemPiece.ERROR_REQUIRED_ITEM_EMPTY.equals(castError(() -> dancingBlades(Map.of()).execute(context))),
                 "Only broken swords: the spell must fail");
         BladePouches.setContents(pouch, List.of(broken, new ItemStack(Items.WOODEN_SWORD)));
         dancingBlades(Map.of()).execute(context);

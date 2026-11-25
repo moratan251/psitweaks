@@ -50,7 +50,7 @@ import vazkii.psi.common.item.base.ModItems;
 @PrefixGameTestTemplate(false)
 public final class SpellProtectionGameTests {
     private static final String TEMPLATE = "connector_empty";
-    private static final String ACCESS_DENIED = "psitweaks.spellerror.accessdenyed";
+    private static final String ACCESS_DENIED = "psitweaks.spellerror.access_denied";
 
     private SpellProtectionGameTests() {
     }

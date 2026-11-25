@@ -2,14 +2,18 @@ package com.moratan251.psitweaks.common.spells.spellpiece.trick;
 
 import com.moratan251.psitweaks.common.entities.combat.EntityDancingBlade;
 import com.moratan251.psitweaks.common.items.BladePouches;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
+import com.moratan251.psitweaks.common.spells.RequiredItemPiece;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatEffects;
 import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
@@ -28,8 +32,7 @@ import vazkii.psi.api.spell.piece.PieceTrick;
  * psimetal sword) is not deployed. With a non-zero Indiscriminate input the blades go after any creature instead (see
  * {@link CombatSpellHelper#isIndiscriminateTarget}).
  */
-public class PieceTrickDancingBlades extends PieceTrick {
-    public static final String ERROR_NO_SWORDS = "psitweaks.spellerror.required_item_missing";
+public class PieceTrickDancingBlades extends PieceTrick implements RequiredItemPiece {
     /** Fixed, since how many swords the pouch holds is only known when the spell runs: sized for a full pouch. */
     public static final int POTENCY = 900;
     public static final int COST = 1500;
@@ -55,10 +58,19 @@ public class PieceTrickDancingBlades extends PieceTrick {
     }
 
     @Override
+    public ItemLike getRequiredItem() {
+        return PsitweaksItems.BLADE_POUCH;
+    }
+
+    @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
-        List<ItemStack> swords = BladePouches.findActive(context.caster).map(BladePouches::deployableSwords).orElse(List.of());
+        Optional<ItemStack> pouch = BladePouches.findActive(context.caster);
+        if (pouch.isEmpty()) {
+            throw requiredItemMissing();
+        }
+        List<ItemStack> swords = BladePouches.deployableSwords(pouch.get());
         if (swords.isEmpty()) {
-            throw new SpellRuntimeException(ERROR_NO_SWORDS);
+            throw requiredItemEmpty();
         }
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
