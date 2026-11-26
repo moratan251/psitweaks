@@ -2262,11 +2262,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
         addBookPage(root, "trick_barrier.0",
-                "Wraps the target in a psionic shield worth $(thing)Power × 10$(0) points for one minute. While the shield lasts, damage the target takes comes off the shield instead of its health, and a honeycomb sphere flashes around it. A hit bigger than what is left breaks the shield, but none of that hit gets through.",
-                "対象を $(thing)威力×10$(0) のシールドで1分間包みます. シールドがある間, 対象が受けるダメージは体力の代わりにシールドから差し引かれ, 対象の周りにハニカム模様の球が一瞬光ります. 残量を超える一撃を受けるとシールドは砕けますが, その一撃も体力には通りません.");
-        addBookPage(root, "trick_barrier.1",
-                "Casting it again replaces the shield, restarting the minute, unless the shield left is stronger than the new one. While shielded, the target does not catch fire. It does not absorb falling, drowning, poison and the like. A bar above your health shows the shield you have left and the seconds remaining.",
-                "もう一度かけると, 残りのシールドが新しいシールドより多いとき以外は置き換わり, 1分が数え直されます. シールドがある間, 対象は炎上しません. 落下, 溺れ, 毒などのダメージは防げません. 自分のシールドの残量と残り秒数は体力ゲージの上のバーに表示されます.");
+                "Raises a $(thing)Power × 10$(0) shield on the target for 1 minute that absorbs damage instead of health. Even a hit exceeding the remaining shield only breaks it without hurting health.$(p)While shielded, the target cannot catch fire, and recasting overwrites the shield if the new value is at least what remains. Does not block falling, drowning, poison, or similar damage.",
+                "対象に $(thing)威力×10$(0) のシールドを1分間張り, 体力の代わりにダメージを肩代わりさせます. 残量を超える一撃でもシールドが砕けるだけで体力は減りません.$(p)シールド中は炎上せず, かけ直すと残量以上であれば上書きされます. 落下・溺れ・毒などのダメージは防げません.");
         addBookPage(root, "selector_barrier_amount",
                 "Outputs the shield points the target's $(thing)Trick: Barrier$(0) has left, as a Number. It outputs 0 when the target has no shield or is not a living entity.",
                 "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");
@@ -3152,8 +3149,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places a Resident SpellGram zone that slows the living beings and projectiles inside it",
                 "作動式: 減速領域", "範囲の中の生き物と飛び道具を遅くする常駐魔法式を置く");
         addSpellPiece(root, "trick_decontamination", "Trick: Decontamination",
-                "Places a Resident SpellGram core that clears the radiation sources within 32 blocks of it (needs Mekanism)",
-                "作動式: 除染", "周り32ブロックの放射線源を取り除く常駐魔法式の核を置く(Mekanism が必要)");
+                "Places a Resident SpellGram core that clears the radiation sources within 32 blocks of it",
+                "作動式: 除染", "周り32ブロックの放射線源を取り除く常駐魔法式の核を置く");
         addSpellPiece(root, "trick_contamination_zone", "Trick: Contamination Zone",
                 "Places a Resident SpellGram zone that exposes the living beings inside it to radiation",
                 "作動式: 汚染領域", "範囲の中の生き物を放射線にさらす常駐魔法式を置く");
