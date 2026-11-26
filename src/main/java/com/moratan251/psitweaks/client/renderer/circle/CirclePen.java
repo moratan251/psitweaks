@@ -298,6 +298,48 @@ public final class CirclePen {
             float[] q = points[(i + 1) % n];
             mesh.quad(cx, cy, b, cx, cy, b, p[0], p[1], b, q[0], q[1], b);
         }
+        feather(points, b);
+    }
+
+    /**
+     * 曲がった帯の塗り。{@code rows[i][j]} は帯に沿って i 番目、帯を横切って j 番目の点（{x, y}）で、どの行も同じ数の点を持つ。
+     * 隣り合う点の間を四角形で埋め、外まわりのふちだけ外向きにぼかす。
+     */
+    public void fillGrid(float[][][] rows, float b) {
+        int n = rows.length;
+        if (n < 2 || rows[0].length < 2) {
+            return;
+        }
+        int m = rows[0].length;
+        for (int i = 0; i + 1 < n; i++) {
+            for (int j = 0; j + 1 < m; j++) {
+                float[] p0 = rows[i][j];
+                float[] p1 = rows[i][j + 1];
+                float[] p2 = rows[i + 1][j + 1];
+                float[] p3 = rows[i + 1][j];
+                mesh.quad(p0[0], p0[1], b, p1[0], p1[1], b, p2[0], p2[1], b, p3[0], p3[1], b);
+            }
+        }
+        float[][] outline = new float[2 * (n - 1) + 2 * (m - 1)][];
+        int k = 0;
+        for (int j = 0; j < m - 1; j++) {
+            outline[k++] = rows[0][j];
+        }
+        for (int i = 0; i < n - 1; i++) {
+            outline[k++] = rows[i][m - 1];
+        }
+        for (int j = m - 1; j > 0; j--) {
+            outline[k++] = rows[n - 1][j];
+        }
+        for (int i = n - 1; i > 0; i--) {
+            outline[k++] = rows[i][0];
+        }
+        feather(outline, b);
+    }
+
+    /** 閉じた輪郭 {@code points}（頂点を順に並べたもの）のふちを、外向きにぼかす。 */
+    private void feather(float[][] points, float b) {
+        int n = points.length;
         float area = 0.0F;
         for (int i = 0; i < n; i++) {
             float[] p = points[i];

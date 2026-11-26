@@ -380,35 +380,34 @@ public class Psitweaks {
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.FLARE_COLOR));
             event.registerEntityRenderer(PsitweaksEntities.ICE_CIRCLE.get(),
                     context -> new SpellGramCircleRenderer<>(context, SpellGramCircleRenderer.ICE_COLOR));
-            // 領域の床の魔法陣（図案は CircleDesigns から選ぶ。画像を焼いてある図案だけ: CONSTRUCTION、HEX_CHAIN）。
-            // 2026-11-10 試しに B 案（HEX_CHAIN）にしている。F 案に戻すなら CircleDesigns.CONSTRUCTION。
+            // 領域の床の魔法陣（図案は CircleDesigns から選ぶ。画像を焼いてある図案だけ: SPIRAL_FLOW、CONSTRUCTION、HEX_CHAIN）。
             event.registerEntityRenderer(PsitweaksEntities.SOAK_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.GRAVITY_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.HEAT_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.FREEZE_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.TURBULENCE_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.INTERFERENCE_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.SILENCE_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.CHARGED_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.ACCELERATION_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             event.registerEntityRenderer(PsitweaksEntities.DECELERATION_ZONE.get(),
-                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                    context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             if (PsitweaksEntities.DECONTAMINATION != null) {
                 event.registerEntityRenderer(PsitweaksEntities.DECONTAMINATION.get(),
                         com.moratan251.psitweaks.client.renderer.DecontaminationRenderer::new);
             }
             if (PsitweaksEntities.CONTAMINATION_ZONE != null) {
                 event.registerEntityRenderer(PsitweaksEntities.CONTAMINATION_ZONE.get(),
-                        context -> new SpellGramZoneRenderer<>(context, CircleDesigns.HEX_CHAIN));
+                        context -> new SpellGramZoneRenderer<>(context, CircleDesigns.SPIRAL_FLOW));
             }
             event.registerEntityRenderer(PsitweaksEntities.TUNNELER_ARROW.get(), TunnelerArrowRenderer::new);
             event.registerEntityRenderer(PsitweaksEntities.GROUND_SHOCKWAVE.get(), GroundShockwaveRenderer::new);

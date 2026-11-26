@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * 領域などに使う魔法陣の図案（A〜G）。白の濃淡で描き、ゲームでは CAD の色を掛ける。座標は「外周の半径が 64」の図面の単位で、
- * ドット絵の候補（128px、G だけ 256px）と同じ寸法で描き直したもの。
+ * 領域などに使う魔法陣の図案（A〜G と螺旋流）。白の濃淡で描き、ゲームでは CAD の色を掛ける。座標は「外周の半径が 64」の図面の
+ * 単位。A〜G はドット絵の候補（128px、G だけ 256px）と同じ寸法で描き直したもの。
  */
 public final class CircleDesigns {
     private static final float SQRT3 = (float) Math.sqrt(3.0);
@@ -69,8 +69,17 @@ public final class CircleDesigns {
             .layer(0.35F, CircleDesigns::polyhexInner)
             .build();
 
+    /**
+     * 螺旋流: 対数らせんの帯が 6 本ずつ 2 層、逆向きに回る。2 層が重なったところが明るい四角形になり、中心へ流れて見える。
+     * 左巻きの帯のふちだけ白。外周と内外の輪は回しても同じ形なので、右巻きの層に入れてある。
+     */
+    public static final CircleDesign SPIRAL_FLOW = CircleDesign.builder("spiral_flow")
+            .layer(0.22F, CircleDesigns::spiralFlowRight)
+            .layer(-0.22F, CircleDesigns::spiralFlowLeft)
+            .build();
+
     public static final List<CircleDesign> ALL = List.of(GAUGE, HEX_CHAIN, SQUARE_SEAL, CODE_RING, ORBITAL,
-            CONSTRUCTION, POLYHEX_RING);
+            CONSTRUCTION, POLYHEX_RING, SPIRAL_FLOW);
 
     private CircleDesigns() {
     }
@@ -191,6 +200,73 @@ public final class CircleDesigns {
         }
         p.polygonAt(0.0F, 0.0F, 7.0F, 6, 30.0F, 1, FULL);
         p.dot(0.0F, 0.0F, 1.0F, FULL);
+    }
+
+    // ================================================================== 螺旋流
+
+    /** 螺旋流の帯のいちばん外の半径。 */
+    private static final float SPIRAL_OUTER = 59.5F;
+    /** らせんの本数（右巻き・左巻きそれぞれ）。帯はらせん 1 本おきの間を塗るので、帯の数はこの半分。 */
+    private static final int SPIRAL_ARMS = 12;
+    /** 帯が内へ進む段数。1 段はらせんの交点 1 つぶん（ln r で π / 本数）。 */
+    private static final int SPIRAL_STEPS = 7;
+    /** 帯の塗りの明るさ。2 層が重なったところでちょうど 1 になる。 */
+    private static final float SPIRAL_FILL = 0.5F;
+
+    /** 螺旋流の帯のいちばん内の半径。 */
+    private static float spiralInner() {
+        return SPIRAL_OUTER * (float) Math.exp(-Math.PI * SPIRAL_STEPS / SPIRAL_ARMS);
+    }
+
+    private static void spiralFlowRight(CirclePen p) {
+        p.weight(1.6F).ring(62.5F, FULL);
+        p.reset();
+        p.ring(SPIRAL_OUTER, MID);
+        p.ring(spiralInner(), MID);
+        spiralFlowBands(p, 1.0F, false);
+    }
+
+    private static void spiralFlowLeft(CirclePen p) {
+        spiralFlowBands(p, -1.0F, true);
+    }
+
+    /**
+     * 対数らせん「角度 = {@code turn} × ln(半径 / 外の半径) + 定数」に沿った帯を 6 本。{@code turn} が 1 と -1 の層を重ねると、
+     * らせんどうしは直角に交わり、交点の四角形は内へ行くほど同じ比で小さくなる。帯の両端は内外の円に沿う。
+     */
+    private static void spiralFlowBands(CirclePen p, float turn, boolean whiteEdges) {
+        int along = 64;
+        int across = 8;
+        float depth = (float) (Math.PI * SPIRAL_STEPS / SPIRAL_ARMS);
+        float pitch = 360.0F / SPIRAL_ARMS;
+        for (int band = 0; band < SPIRAL_ARMS / 2; band++) {
+            float[][][] rows = new float[along + 1][across + 1][];
+            for (int i = 0; i <= along; i++) {
+                float u = -depth * i / along;
+                float r = SPIRAL_OUTER * (float) Math.exp(u);
+                float deg = 2 * band * pitch + turn * (float) Math.toDegrees(u);
+                for (int j = 0; j <= across; j++) {
+                    rows[i][j] = polar(r, deg + pitch * j / across);
+                }
+            }
+            p.color().fillGrid(rows, SPIRAL_FILL);
+            if (whiteEdges) {
+                p.white();
+            }
+            p.polyline(false, FULL, column(rows, 0));
+            p.polyline(false, FULL, column(rows, across));
+            p.color();
+        }
+    }
+
+    /** {@code rows[i][j]} の j 番目の点を i の順に並べた折れ線（x, y を交互に）。 */
+    private static float[] column(float[][][] rows, int j) {
+        float[] xy = new float[rows.length * 2];
+        for (int i = 0; i < rows.length; i++) {
+            xy[2 * i] = rows[i][j][0];
+            xy[2 * i + 1] = rows[i][j][1];
+        }
+        return xy;
     }
 
     // ================================================================== C 方陣
