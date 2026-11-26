@@ -520,10 +520,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "加速: ×%s";
             default -> "Acceleration: ×%s";
         });
-        root.addProperty("psitweaks.hud.zone_deceleration", switch (locale) {
-            case "ja_jp" -> "減速: 移動 −%s%%・飛び道具 ×%s/tick";
-            default -> "Deceleration: movement −%s%%, projectiles ×%s/tick";
-        });
         // 作動式: 除染: 使った量 / 除染能力（1 秒あたり）、半径の中の線源。
         root.addProperty("psitweaks.hud.decontamination.sources", switch (locale) {
             case "ja_jp" -> "除染能力: %s / %s Sv/h(毎秒)";
@@ -532,10 +528,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psitweaks.hud.decontamination.left", switch (locale) {
             case "ja_jp" -> "半径の中の線源: %s 個(計 %s Sv/h)";
             default -> "Sources in range: %s (%s Sv/h in all)";
-        });
-        root.addProperty("psitweaks.hud.zone_contamination", switch (locale) {
-            case "ja_jp" -> "被ばく: 上限 %s mSv";
-            default -> "Dose: up to %s mSv";
         });
         root.addProperty("psitweaks.spellerror.not_spellgram", switch (locale) {
             case "ja_jp" -> "エラー: 対象が常駐魔法式ではありません.";
@@ -2243,8 +2235,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 汚染領域
         addBookPage(root, "trick_contamination_zone.0",
-                "Exposes living beings inside to radiation every second up to a limit set by Power, leaving no radiation sources. Blocked by MekaSuit and Trick: Radiation Filter.$(p)Spares you, pets, and allies. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内の生物を毎秒放射線にさらし, 「威力」に応じた上限まで被ばくさせます. 放射線源は残さず, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方などには効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Exposes living beings inside to radiation every second at a dose rate set by Power; their dose keeps rising while they stay inside. Leaves no radiation sources. Blocked by MekaSuit and Trick: Radiation Filter.$(p)Spares you, pets, and allies. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "範囲内の生物を, 「威力」に応じた線量率で毎秒被ばくさせます. 範囲内にいる間は被ばく量が増え続けます. 放射線源は残さず, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方などには効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -3163,8 +3155,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Places a Resident SpellGram core that clears the radiation sources within 32 blocks of it (needs Mekanism)",
                 "作動式: 除染", "周り32ブロックの放射線源を取り除く常駐魔法式の核を置く(Mekanism が必要)");
         addSpellPiece(root, "trick_contamination_zone", "Trick: Contamination Zone",
-                "Places a Resident SpellGram zone that exposes the living beings inside it to radiation, up to a limit (needs Mekanism)",
-                "作動式: 汚染領域", "範囲の中の生き物を, 上限まで放射線にさらす常駐魔法式を置く(Mekanism が必要)");
+                "Places a Resident SpellGram zone that exposes the living beings inside it to radiation",
+                "作動式: 汚染領域", "範囲の中の生き物を放射線にさらす常駐魔法式を置く");
         addSpellPiece(root, "trick_show_region", "Trick: Show Region",
                 "Draws the 12 edges of a region matrix with particles in your CAD's color.",
                 "作動式: 領域表示", "領域行列の12本の辺を, CADの色のパーティクルで描きます.");

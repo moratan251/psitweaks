@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,14 +18,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
-import java.util.List;
-
 /**
  * 作動式: 汚染領域（Contamination Zone、Mekanism があるときだけ）の範囲。{@link #INTERVAL} tick ごとに、範囲の中の生き物
  * （攻撃術式の共通ルールで選ぶ、{@link #followsAttackRules}）を Mekanism の放射線にさらす。場所に線源は置かない。
- * 被ばく量の上限は 中の威力 × {@link #DOSE_LIMIT_PER_POWER}（{@link #doseLimitFor}）で、1 秒に上限の
- * 1/{@link #RISE_STEPS} ずつ上げる。上限より多い相手には何もしない。防護（防具、作動式: 放射線フィルタ）の割り引きは
- * Mekanism 側で効く。
+ * 範囲の中は、入れた威力 1 で {@link #BASE_DOSE_RATE} Sv/h、威力が {@link #POWER_PER_TENFOLD} 上がるごとに 10 倍になる線量率
+ * （{@link #doseRateFor}）の場所として扱い、Mekanism が場所の線量率から生き物に足すのと同じく、1 秒ごとに 線量率 ÷ 3600 を
+ * 被ばく量に足す（{@link #doseFor}）。上限はなく、中にいるあいだ増え続ける。防護（防具、作動式: 放射線フィルタ）の割り引き、
+ * 被ばく量の減り方、ダメージは Mekanism 側で効く。
  * <p>
  * 同じ種類が重なったところでは、威力の一番高いものだけが効く。
  * <p>
@@ -44,10 +42,11 @@ public class EntityContaminationZone extends SpellGramZone {
     public static final int STORM_INTERVAL = 10;
     /** さらす間隔（tick）。 */
     public static final int INTERVAL = 20;
-    /** 中の威力 1 あたりの、被ばく量の上限（Sv）: 0.1 mSv。 */
-    public static final double DOSE_LIMIT_PER_POWER = 1.0E-4;
-    /** 上限まで何回に分けて上げるか（1 回に上限の 1/5）。 */
-    public static final int RISE_STEPS = 5;
+    /** 入れた威力 1 の範囲の中の線量率（Sv/h）。 */
+    public static final double BASE_DOSE_RATE = 1.0;
+    /** 線量率が 10 倍になる威力の差。 */
+    public static final double POWER_PER_TENFOLD = 3.0;
+    private static final double TICKS_PER_HOUR = 72000.0;
     /** 威力の既定値（置く前に設定しなかったとき、中の威力）。 */
     public static final float DEFAULT_POWER = 5.0F;
     private static final int MAX_MOTES_PER_TICK = 3;
@@ -85,14 +84,18 @@ public class EntityContaminationZone extends SpellGramZone {
         return com.moratan251.psitweaks.common.spells.combat.AttackRules.Options.of(safeToPlayers);
     }
 
-    /** 中の威力 {@code power} の被ばく量の上限（Sv）: 中の威力 × 0.1 mSv（入れた威力 1 で 0.5 mSv、10 で 1.4 mSv）。 */
-    public static double doseLimitFor(float power) {
-        return Math.max(0.0F, power) * DOSE_LIMIT_PER_POWER;
+    /**
+     * 中の威力 {@code power} の範囲の中の線量率（Sv/h）: 入れた威力（{@link #enteredPowerOf}、1〜10）が 1 で 1 Sv/h、3 上がる
+     * ごとに 10 倍（4 で 10、7 で 100、10 で 1,000 Sv/h）。Mekanism のダメージは被ばく量の対数で決まるので、威力に対して
+     * 指数で増やす。
+     */
+    public static double doseRateFor(float power) {
+        return BASE_DOSE_RATE * Math.pow(10.0, (enteredPowerOf(power) - 1.0F) / POWER_PER_TENFOLD);
     }
 
-    /** 被ばく量 {@code dose}（Sv）の相手に 1 回で足す量（Sv）: 上限の 1/5、上限を超えない分だけ。上限以上なら 0。 */
-    public static double doseStep(double dose, double limit) {
-        return dose >= limit ? 0.0 : Math.min(limit / RISE_STEPS, limit - dose);
+    /** 中の威力 {@code power} の範囲が 1 回（{@link #INTERVAL} tick ぶん）で足す被ばく量（Sv）: 1 秒なら 線量率 ÷ 3600。 */
+    public static double doseFor(float power) {
+        return doseRateFor(power) * INTERVAL / TICKS_PER_HOUR;
     }
 
     @Override
@@ -117,10 +120,7 @@ public class EntityContaminationZone extends SpellGramZone {
                 || !ZoneRadiationCompat.isRadiationEnabled()) {
             return;
         }
-        double step = doseStep(ZoneRadiationCompat.exposure(living), doseLimitFor(power));
-        if (step > 0.0) {
-            ZoneRadiationCompat.radiate(living, step);
-        }
+        ZoneRadiationCompat.radiate(living, doseFor(power));
     }
 
     @Override
@@ -143,12 +143,6 @@ public class EntityContaminationZone extends SpellGramZone {
                             EntityTurbulenceZone.PARTNER_ATTACK_POWER_PER_POWER), target -> true, target -> {
                     }, attackOptions());
         }
-    }
-
-    /** 照準の表示: 被ばく量の上限（mSv）。 */
-    @Override
-    public List<Component> hudLines() {
-        return List.of(Component.translatable("psitweaks.hud.zone_contamination", hudNumber(doseLimitFor(power) * 1000.0)));
     }
 
     @Override

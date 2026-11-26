@@ -13,7 +13,7 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
 /**
- * 作動式: 汚染領域（Contamination Zone、Mekanism があるときだけ登録）。範囲の中の生き物を、被ばく量の上限まで放射線に
+ * 作動式: 汚染領域（Contamination Zone、Mekanism があるときだけ登録）。範囲の中の生き物を、威力で決まる線量率で放射線に
  * さらす（{@link EntityContaminationZone}）。「威力」は 1〜10 の定数（領域には中の威力 = 威力 + 4 を渡す、
  * {@link #resourcePower}）。コスト = 50 + ⌊広さ × (威力 + 4) × 2 / 5⌋（30 秒、時間に比例）、規模 = 10 + ⌊広さ × 威力 × 0.27⌋。
  * Mekanism の設定で放射線が切ってあれば、置かずに警告する。

@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -31,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 作動式: 減速領域（Deceleration Zone）の範囲。
@@ -195,14 +193,6 @@ public class EntityDecelerationZone extends SpellGramZone {
     @Override
     public int getOutlineColor() {
         return OUTLINE_COLOR;
-    }
-
-    /** 照準の表示: 移動速度の下げ幅と、飛び道具の速さに毎 tick 掛ける数。 */
-    @Override
-    public List<Component> hudLines() {
-        return List.of(Component.translatable("psitweaks.hud.zone_deceleration",
-                hudNumber(power * MOVEMENT_SLOW_PER_POWER * 100.0),
-                String.format(Locale.ROOT, "%.2f", projectileDragFor(power))));
     }
 
     @Override

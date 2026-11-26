@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
@@ -51,7 +50,7 @@ public final class DecelerationZoneGameTests {
 
     /**
      * 鈍化のレベルは 中の威力 × 5 で、移動速度・飛ぶ速さは 中の威力 × 5%、攻撃速度は 中の威力 × 3% 下がる。プレイヤー以外の
-     * 速さは毎 tick 1 − 中の威力 × 0.025 倍、飛び道具は 1 − 中の威力 × 0.04 倍。照準の表示は移動の下げ幅と飛び道具の倍率。
+     * 速さは毎 tick 1 − 中の威力 × 0.025 倍、飛び道具は 1 − 中の威力 × 0.04 倍。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_deceleration_numbers")
     public static void decelerationNumbersFollowPower(GameTestHelper helper) {
@@ -72,17 +71,16 @@ public final class DecelerationZoneGameTests {
     /** 威力 1: 中の生き物の移動速度は 75% になる。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_deceleration_power1", timeoutTicks = 100)
     public static void decelerationPower1SlowsBeings(GameTestHelper helper) {
-        slowsBeingsTest(helper, 1.0, 0.75, "25", "0.80");
+        slowsBeingsTest(helper, 1.0, 0.75);
     }
 
     /** 威力 10: 中の生き物の移動速度は 30% になる。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_deceleration_power10", timeoutTicks = 100)
     public static void decelerationPower10SlowsBeings(GameTestHelper helper) {
-        slowsBeingsTest(helper, 10.0, 0.30, "70", "0.44");
+        slowsBeingsTest(helper, 10.0, 0.30);
     }
 
-    private static void slowsBeingsTest(GameTestHelper helper, double power, double speedShare, String shownMove,
-                                        String shownProjectile) {
+    private static void slowsBeingsTest(GameTestHelper helper, double power, double speedShare) {
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_decel_" + (int) power, new Vec3(1.5, 2.0, 2.5));
         Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(0.5, 2.0, 1.5));
         double base = husk.getAttributeValue(Attributes.MOVEMENT_SPEED);
@@ -94,14 +92,10 @@ public final class DecelerationZoneGameTests {
         helper.runAfterDelay(5, () -> {
             double speed = husk.getAttributeValue(Attributes.MOVEMENT_SPEED);
             boolean casterSlowed = caster.hasEffect(PsitweaksEffects.TORPOR);
-            List<Object> shown = List.of(((TranslatableContents) zonesOf(helper, caster, EntityDecelerationZone.class).get(0)
-                    .hudLines().get(0).getContents()).getArgs());
             cleanup.run();
             helper.assertTrue(Math.abs(speed - base * speedShare) < 1.0E-6,
                     "Movement speed must be " + speedShare + " of " + base + ", got " + speed);
             helper.assertFalse(casterSlowed, "The Deceleration Zone must spare its own caster");
-            helper.assertTrue(shown.equals(List.of(shownMove, shownProjectile)), "The HUD must show " + shownMove + " and "
-                    + shownProjectile + ", got " + shown);
             helper.succeed();
         });
     }

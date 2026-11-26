@@ -49,16 +49,18 @@ import static com.moratan251.psitweaks.common.gametest.ZoneElementGameTests.cast
 /**
  * 汚染領域（作動式: 汚染領域、Mekanism のみ）。Mekanism がなければ、ピースなどが登録されていないことだけ
  * 確かめる（Mekanism があって放射線が切ってあれば落とす）。範囲はたいてい、テンプレートの (1, 1, 1) を中心にした一辺 3
- * （x・y・z 0〜2）。威力 10 で被ばく量の上限は 1.4 mSv、1 秒に 0.28 mSv ずつ上がる。
+ * （x・y・z 0〜2）。威力 10 で範囲の中の線量率は 1,000 Sv/h、被ばく量は 1 秒に約 0.28 Sv ずつ上がる。
  */
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class ContaminationZoneGameTests {
     private static final String TEMPLATE = "connector_empty";
     private static final String RADIATION_OFF_BATCH = "psitweaks_zone_contamination_radiation_off";
-    private static final double LIMIT = 1.4E-3;
-    private static final double STEP = LIMIT / 5.0;
-    /** 被ばくしていないとみなす量（Sv）。Mekanism はどの生き物にも 1.0E-7 Sv の自然の被ばく量を持たせる。1 回の量（0.28 mSv）よりずっと小さい。 */
+    /** 威力 10 の範囲の中の線量率（Sv/h）。 */
+    private static final double RATE = 1000.0;
+    /** 威力 10 の範囲が 1 回（1 秒ぶん）で足す被ばく量（Sv）。 */
+    private static final double STEP = RATE / 3600.0;
+    /** 被ばくしていないとみなす量（Sv）。Mekanism はどの生き物にも 1.0E-7 Sv の自然の被ばく量を持たせる。1 回の量（0.28 Sv）よりずっと小さい。 */
     private static final double UNTOUCHED = 1.0E-6;
     private static boolean savedRadiation = true;
 
@@ -80,14 +82,16 @@ public final class ContaminationZoneGameTests {
         }
     }
 
-    /** 上限は 中の威力 × 0.1 mSv、1 回に上限の 1/5、上限を超えない分だけ足す。 */
+    /** 線量率は入れた威力 1 で 1 Sv/h、3 上がるごとに 10 倍。1 回（1 秒ぶん）に足すのは 線量率 ÷ 3600。 */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contamination_numbers")
     public static void contaminationNumbersFollowPower(GameTestHelper helper) {
-        assertClose(helper, EntityContaminationZone.doseLimitFor(5.0F), 5.0E-4, "limit at Power 1");
-        assertClose(helper, EntityContaminationZone.doseLimitFor(14.0F), LIMIT, "limit at Power 10");
-        assertClose(helper, EntityContaminationZone.doseStep(0.0, LIMIT), STEP, "a fifth of the limit");
-        assertClose(helper, EntityContaminationZone.doseStep(1.3E-3, LIMIT), 1.0E-4, "only up to the limit");
-        assertClose(helper, EntityContaminationZone.doseStep(1.5E-3, LIMIT), 0.0, "nothing above the limit");
+        assertClose(helper, EntityContaminationZone.doseRateFor(5.0F), 1.0, "dose rate at Power 1");
+        assertClose(helper, EntityContaminationZone.doseRateFor(6.0F), Math.cbrt(10.0), "dose rate at Power 2");
+        assertClose(helper, EntityContaminationZone.doseRateFor(8.0F), 10.0, "dose rate at Power 4");
+        assertClose(helper, EntityContaminationZone.doseRateFor(11.0F), 100.0, "dose rate at Power 7");
+        assertClose(helper, EntityContaminationZone.doseRateFor(14.0F), RATE, "dose rate at Power 10");
+        assertClose(helper, EntityContaminationZone.doseFor(5.0F), 1.0 / 3600.0, "a second's dose at Power 1");
+        assertClose(helper, EntityContaminationZone.doseFor(14.0F), STEP, "a second's dose at Power 10");
         helper.succeed();
     }
 
@@ -105,16 +109,17 @@ public final class ContaminationZoneGameTests {
     }
 
     /**
-     * 範囲の中のハスクは上限まで被ばくし、上限で止まる（威力 10、6 秒で上限に届く）。術者と範囲の外のハスクは被ばくしない。
-     * 放射線フィルタのかかったハスクも被ばくしない。
+     * 範囲の中のハスクは、中にいるあいだ 1 秒ごとに 線量率 ÷ 3600 ずつ被ばくし続ける（威力 10、7.5 秒で 5〜7 回ぶん。上限は
+     * ない）。術者と範囲の外のハスクは被ばくしない。放射線フィルタのかかったハスクも被ばくしない。中のハスクは、放射線の
+     * ダメージで倒れないように体力を増やしておく。
      */
     @GameTest(template = TEMPLATE, batch = "psitweaks_zone_contamination_dose", timeoutTicks = 200)
-    public static void contaminationRaisesTheDoseUpToTheLimit(GameTestHelper helper) {
+    public static void contaminationKeepsRaisingTheDose(GameTestHelper helper) {
         if (!requireRadiation(helper)) {
             return;
         }
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_contaminate", new Vec3(0.5, 0.0, 0.5));
-        Husk inside = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 0.0, 1.5));
+        Husk inside = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 0.0, 1.5)), 100.0F);
         Husk filtered = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 0.0, 0.5));
         Husk outside = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(4.5, 0.0, 4.5));
         filtered.addEffect(new MobEffectInstance(PsitweaksEffects.RADIATION_FILTER, 1000));
@@ -131,8 +136,8 @@ public final class ContaminationZoneGameTests {
             double out = ZoneRadiationCompat.exposure(outside);
             double own = ZoneRadiationCompat.exposure(caster);
             cleanup.run();
-            helper.assertTrue(in > LIMIT * 0.8 && in <= LIMIT * (1.0 + 1.0E-9),
-                    "The husk inside must reach the limit " + LIMIT + " Sv and stop there, got " + in);
+            helper.assertTrue(in > STEP * 4.5 && in <= STEP * 8.0,
+                    "The husk inside must gain " + STEP + " Sv every second for as long as it stays, got " + in);
             helper.assertTrue(shielded < UNTOUCHED, "Radiation Filter must block it, got " + shielded);
             helper.assertTrue(out < UNTOUCHED, "The husk outside must not be exposed, got " + out);
             helper.assertTrue(own < UNTOUCHED, "The caster must be spared, got " + own);
@@ -147,7 +152,7 @@ public final class ContaminationZoneGameTests {
             return;
         }
         ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_contaminate_end", new Vec3(4.5, 0.0, 4.5));
-        Husk inside = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 0.0, 1.5));
+        Husk inside = GameTestPlayers.tough(helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(1.5, 0.0, 1.5)), 100.0F);
         Runnable cleanup = () -> {
             inside.discard();
             cleanup(helper, caster);
