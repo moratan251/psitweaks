@@ -122,6 +122,21 @@ public class EntityParadeCore extends SpellGramObject {
         }
     }
 
+    /**
+     * 残りの時間。仮装行列は時間と耐久値が一つ（耐久値は時間とともに減り切る）なので、今の耐久値が持つ時間を返す。攻撃で
+     * 削られた分も、そのぶん短くなる（耐久値は削られた分だけ早く尽きる）。
+     */
+    @Override
+    public int getRemainingTicks() {
+        float max = getMaxIntegrity();
+        float share = getTimeShare();
+        int byTime = super.getRemainingTicks();
+        if (max <= 0.0F || share <= 0.0F) {
+            return byTime;
+        }
+        return Math.min(byTime, (int) Math.ceil(getIntegrity() * getLifetimeTicks() / (max * share)));
+    }
+
     @Override
     public boolean isShownTo(Entity viewer) {
         EntityParadeDecoy image = getImage();

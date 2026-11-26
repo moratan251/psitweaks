@@ -97,6 +97,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.DragonFireball;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ShulkerBullet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -886,7 +887,7 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void paradeDistanceIsWholeBlocksWithinReach(GameTestHelper helper) throws Exception {
+    public static void paradeDistanceKeepsFractionsWithinReach(GameTestHelper helper) throws Exception {
         helper.assertTrue(compileError(() -> stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)))) == null
                         && compileError(() -> stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0)))) == null
                         && compileError(() -> stats(parade(Map.of(NUMBER, 16.9, TIME, 10.0)))) == null
@@ -895,33 +896,92 @@ public final class CombatSpellGameTests {
                 "Any Number must compile, under a block included");
         int[] none = stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)));
         int[] under = stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0)));
-        helper.assertTrue(none[0] == under[0] && none[1] == under[1] && none[1] == 400 + 200,
-                "Under a block the distance must cost nothing: " + under[0] + "/" + under[1]);
+        int[] fraction = stats(parade(Map.of(NUMBER, 2.7, TIME, 10.0)));
+        helper.assertTrue(none[1] == 400 + 200 && under[1] == 400 + 200 + 25 && fraction[0] == 300 + 100 + 54
+                        && fraction[1] == 400 + 200 + 135,
+                "Fractions of the Number must count toward the stats: " + none[1] + ", " + under[1] + ", "
+                        + fraction[0] + "/" + fraction[1]);
         int[] farthest = stats(parade(Map.of(NUMBER, -16.0, TIME, 10.0)));
         int[] beyond = stats(parade(Map.of(NUMBER, -40.0, TIME, 10.0)));
         helper.assertTrue(farthest[0] == beyond[0] && farthest[1] == beyond[1] && beyond[1] == 400 + 200 + 50 * 16,
                 "Beyond 16 blocks the cost must stay at 16 blocks': " + beyond[0] + "/" + beyond[1]);
-        helper.assertTrue(PieceTrickParade.wholeBlocks(40.0) == 16 && PieceTrickParade.wholeBlocks(-17.5) == -16
-                        && PieceTrickParade.wholeBlocks(-2.7) == -2,
-                "Beyond 16 blocks the image must stand 16 blocks away, on the same side");
+        helper.assertTrue(PieceTrickParade.distance(40.0) == 16 && PieceTrickParade.distance(-17.5) == -16
+                        && near(PieceTrickParade.distance(-2.7), -2.7) && PieceTrickParade.distance(Double.NaN) == 0.0,
+                "Beyond 16 blocks the image must stand 16 blocks away, on the same side, and fractions must stay");
         var player = caster(helper, new BlockPos(2, 0, 2), "parade-distance");
         var context = new SpellContext().setPlayer(player);
-        parade(Map.of(NUMBER, 0.3, TIME, 10.0)).execute(context);
+        parade(Map.of(NUMBER, 0.0, TIME, 10.0)).execute(context);
         EntityParadeDecoy onTheSpot = Parades.activeDecoy(player);
         helper.assertTrue(onTheSpot != null && near(onTheSpot.getDistance(), 0.0)
                         && onTheSpot.position().distanceTo(player.position()) < 1.0E-4
                         && near(onTheSpot.getEvasionChance(), Parades.evasionChance(0.0)),
-                "Under a block the image must stand where the caster stands");
+                "At 0 the image must stand where the caster stands");
+        parade(Map.of(NUMBER, 0.3, TIME, 10.0)).execute(context);
+        EntityParadeDecoy close = Parades.activeDecoy(player);
+        helper.assertTrue(close != null && near(close.getDistance(), 0.3)
+                        && Math.abs(close.position().distanceTo(player.position()) - 0.3) < 1.0E-4
+                        && near(close.getEvasionChance(), Parades.evasionChance(0.3)),
+                "0.3 must put the image 0.3 blocks ahead");
         parade(Map.of(NUMBER, -2.7, TIME, 10.0)).execute(context);
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
-        helper.assertTrue(decoy != null && near(decoy.getDistance(), -2.0), "Fractions must be dropped toward zero");
+        helper.assertTrue(decoy != null && near(decoy.getDistance(), -2.7), "Fractions must be kept");
         decoy.vanish(false);
         helper.succeed();
     }
 
     /**
-     * ツールチップの式が、実際の計算の下限と切り捨てを表す（分子ディバイダーは威力を 0.1 以上にし、仮装行列は数値を整数の
-     * ブロック数に切り捨てる）。
+     * 「方向」をつなぐと、虚像はその向き（上下も含む）に数値ブロックの位置に固定され、術者が振り向いても回らない。0 のベクトル
+     * ならつながないときと同じく、術者の向きに追従する。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeDirectionKeepsTheImageToOneSide(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 2), "parade-direction");
+        var context = new SpellContext().setPlayer(player);
+        // East (+x) and upward: the image stands 3 blocks along that way, up included.
+        Vec3 eastAndUp = new Vec3(2.0, 1.0, 0.0).normalize().scale(3.0);
+        parade(Map.of(NUMBER, 3.0, TIME, 10.0, DIRECTION, new Vector3(2.0, 1.0, 0.0))).execute(context);
+        EntityParadeDecoy fixed = Parades.activeDecoy(player);
+        helper.assertTrue(fixed != null && fixed.isDirectionFixed()
+                        && fixed.position().distanceTo(player.position().add(eastAndUp)) < 1.0E-3,
+                "With Direction east and up, the image must stand 3 blocks that way from the caster");
+        player.setYRot(90.0F);
+        player.setYHeadRot(90.0F);
+        player.setPos(player.getX(), player.getY(), player.getZ() + 1.0);
+        fixed.tick();
+        helper.assertTrue(fixed.position().distanceTo(player.position().add(eastAndUp)) < 1.0E-3,
+                "Turning must not swing the fixed image, and moving must carry it along: at "
+                        + fixed.position().subtract(player.position()));
+
+        player.setYRot(0.0F);
+        player.setYHeadRot(0.0F);
+        parade(Map.of(NUMBER, -2.0, TIME, 10.0, DIRECTION, new Vector3(1.0, 0.0, 0.0))).execute(context);
+        EntityParadeDecoy behind = Parades.activeDecoy(player);
+        helper.assertTrue(behind != null && behind.position().distanceTo(player.position().add(-2.0, 0.0, 0.0)) < 1.0E-3,
+                "A negative Number must put the fixed image on the other side");
+
+        parade(Map.of(NUMBER, 3.0, TIME, 10.0, DIRECTION, new Vector3(0.0, 1.0, 0.0))).execute(context);
+        EntityParadeDecoy above = Parades.activeDecoy(player);
+        helper.assertTrue(above != null && above.isDirectionFixed()
+                        && above.position().distanceTo(player.position().add(0.0, 3.0, 0.0)) < 1.0E-3,
+                "Straight up must put the image 3 blocks above the caster");
+
+        parade(Map.of(NUMBER, 3.0, TIME, 10.0, DIRECTION, new Vector3(0.0, 0.0, 0.0))).execute(context);
+        EntityParadeDecoy followsView = Parades.activeDecoy(player);
+        helper.assertTrue(followsView != null && !followsView.isDirectionFixed()
+                        && followsView.position().distanceTo(player.position().add(0.0, 0.0, 3.0)) < 1.0E-3,
+                "A zero vector must leave the image following the caster's view");
+        player.setYRot(90.0F);
+        player.setYHeadRot(90.0F);
+        followsView.tick();
+        helper.assertTrue(followsView.position().distanceTo(player.position().add(-3.0, 0.0, 0.0)) < 1.0E-3,
+                "Without a fixed Direction the image must swing with the caster's view");
+        followsView.vanish(false);
+        helper.succeed();
+    }
+
+    /**
+     * ツールチップの式が、実際の計算の下限と上限を表す（分子ディバイダーは威力を 0.1 以上にし、仮装行列は数値の絶対値を
+     * 16 で頭打ちにして、小数は切り捨てない）。
      */
     @GameTest(template = TEMPLATE, batch = BATCH)
     public static void statLabelsShowTheClampsTheStatsUse(GameTestHelper helper) {
@@ -931,8 +991,8 @@ public final class CombatSpellGameTests {
         var paradeLabels = new PieceTrickParade(new Spell()).getStatLabels();
         for (EnumSpellStat stat : new EnumSpellStat[] {EnumSpellStat.POTENCY, EnumSpellStat.COST}) {
             String label = paradeLabels.get(stat).toString();
-            helper.assertTrue(label.contains("min(\u230A|"),
-                    "Trick: Parade's shown " + stat + " must drop the fraction of the Number before capping it, got " + label);
+            helper.assertTrue(label.contains("min(|") && !label.contains("\u230A|"),
+                    "Trick: Parade's shown " + stat + " must cap the Number without dropping its fraction, got " + label);
         }
         helper.succeed();
     }
@@ -970,9 +1030,13 @@ public final class CombatSpellGameTests {
                 "The image must show the caster's name without counting as named");
         // A hit of 1 still takes 2 integrity, and the health stays the caster's.
         float healthBefore = decoy.getHealth();
+        int ticksBefore = core.getRemainingTicks();
         helper.assertTrue(decoy.hurt(sources.mobAttack(husk), 1.0F) && decoy.isAlive()
                         && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR) && near(decoy.getHealth(), healthBefore),
                 "An attack must take 2 integrity and leave the health as it is");
+        // Time and integrity are one: 2 integrity of 4 over 80 ticks is 40 ticks.
+        helper.assertTrue(Math.abs(ticksBefore - core.getRemainingTicks() - 40) <= 1,
+                "An attack must take the time its integrity stood for: " + ticksBefore + " -> " + core.getRemainingTicks());
         // Nothing else a mob suffers takes hold either, even when another mod calls it directly.
         decoy.setHealth(0.0F);
         decoy.die(sources.mobAttack(husk));
@@ -1314,6 +1378,56 @@ public final class CombatSpellGameTests {
             }
         }
         helper.succeed();
+    }
+
+    /**
+     * シュルカーの弾も、ブロックをすり抜けるものに当たらないのがバニラの決まりだが、虚像には矢と同じく当たって耐久値を減らす。
+     * 術者の撃った弾は今までどおり虚像をすり抜ける。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeImageTakesShulkerBullets(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(2, 0, 0), "parade-shulker-bullet");
+        parade(Map.of(NUMBER, 3.0, TIME, 10.0)).execute(new SpellContext().setPlayer(player));
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        EntityParadeCore core = decoy != null ? decoy.getCore() : null;
+        var husk = husk(helper, new BlockPos(6, 0, 3), false);
+        List<Entity> spawned = new ArrayList<>();
+        try {
+            helper.assertTrue(core != null && core.getWorn() == 0.0F, "The image and its core must stand untouched");
+            var hostile = flyingShulkerBullet(helper, husk);
+            spawned.add(hostile);
+            hostile.tick();
+            hostile.tick();
+            helper.assertTrue(hostile.isRemoved() && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR),
+                    "A shulker bullet must hit the image and wear its core, not fly through it: worn " + core.getWorn());
+
+            var own = flyingShulkerBullet(helper, player);
+            spawned.add(own);
+            for (int tick = 0; tick < 3; tick++) {
+                own.tick();
+            }
+            helper.assertTrue(!own.isRemoved() && own.getX() < decoy.getX() - 0.5 && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR),
+                    "The caster's own shulker bullet must pass through the image: at " + (own.getX() - decoy.getX()));
+        } finally {
+            spawned.forEach(Entity::discard);
+            husk.discard();
+            if (decoy != null) {
+                decoy.vanish(false);
+            }
+        }
+        helper.succeed();
+    }
+
+    /** A shulker bullet without a target flying west at the height of the image's chest, from 2 blocks east of the image. */
+    private static ShulkerBullet flyingShulkerBullet(GameTestHelper helper, Entity owner) {
+        ShulkerBullet bullet = EntityType.SHULKER_BULLET.create(helper.getLevel());
+        Vec3 from = helper.absoluteVec(new Vec3(4.5, 0.6, 3.5));
+        bullet.setPos(from.x, from.y, from.z);
+        bullet.setOwner(owner);
+        bullet.setNoGravity(true);
+        bullet.setDeltaMovement(-1.0, 0.0, 0.0);
+        helper.getLevel().addFreshEntity(bullet);
+        return bullet;
     }
 
     /** An Ender Dragon fireball flying west at the height of the image's chest, from 2 blocks east of the image. */

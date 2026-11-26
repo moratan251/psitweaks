@@ -63,6 +63,15 @@ public final class Parades {
      */
     @Nullable
     public static EntityParadeDecoy conjure(ServerLevel level, Player caster, double distance, int seconds, float placementCost) {
+        return conjure(level, caster, distance, seconds, placementCost, null);
+    }
+
+    /**
+     * As above; a {@code fixedDirection} (a unit vector) keeps the image {@code distance} blocks along it instead of
+     * turning with the caster's view ({@link EntityParadeDecoy#isDirectionFixed}).
+     */
+    public static EntityParadeDecoy conjure(ServerLevel level, Player caster, double distance, int seconds, float placementCost,
+                                            @Nullable Vec3 fixedDirection) {
         if (caster instanceof AutonomousCasterPlayer) {
             return null;
         }
@@ -71,8 +80,9 @@ public final class Parades {
             old.vanish(false);
         }
         SpellGramLimits.makeRoom(level, caster);
-        EntityParadeDecoy decoy = new EntityParadeDecoy(level, imagePosition(caster, distance));
-        decoy.configure(caster, distance, CombatSpellHelper.spellColor(caster));
+        EntityParadeDecoy decoy = new EntityParadeDecoy(level, caster.position().add(fixedDirection != null
+                ? fixedDirection.scale(distance) : horizontalOffset(caster.getYRot(), distance)));
+        decoy.configure(caster, distance, CombatSpellHelper.spellColor(caster), fixedDirection);
         EntityParadeCore core = new EntityParadeCore(level);
         core.setCaster(caster);
         core.setMaxIntegrity(integrityFor(caster, seconds));
@@ -91,14 +101,6 @@ public final class Parades {
         level.sendParticles(ParticleTypes.ENCHANT, caster.getX(), caster.getY() + 1.0, caster.getZ(), 20, 0.3, 0.6, 0.3, 0.6);
         CombatEffects.sound(level, center, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 1.0F, 1.2F);
         return decoy;
-    }
-
-    /**
-     * Where the image of {@code owner} stands: {@code distance} blocks along the way the owner looks, on the horizontal
-     * plane (behind for a negative distance), at the height of the owner's feet.
-     */
-    public static Vec3 imagePosition(Player owner, double distance) {
-        return owner.position().add(horizontalOffset(owner.getYRot(), distance));
     }
 
     /** {@code distance} blocks along the horizontal direction of {@code yaw}, as {@link Entity#getLookAngle} turns it. */

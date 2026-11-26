@@ -23,6 +23,7 @@ public final class PsitweaksClientConfig {
         public final ModConfigSpec.BooleanValue cameraShake;
         public final ModConfigSpec.DoubleValue cameraShakeStrength;
         public final ModConfigSpec.BooleanValue barrierHud;
+        public final ModConfigSpec.BooleanValue paradeHud;
         public final ModConfigSpec.BooleanValue spellGramIntegrityHud;
         public final ModConfigSpec.BooleanValue meteorLineNight;
         /** 領域の床の魔法陣の画質（使う画像の大きさの上限）。 */
@@ -55,6 +56,11 @@ public final class PsitweaksClientConfig {
                     .comment("Show the remaining shield and time of Trick: Barrier above the health bar")
                     .translation("psitweaks.configuration.effects.barrier_hud")
                     .define("barrierHud", true);
+
+            paradeHud = builder
+                    .comment("Show the remaining integrity and time of your own Trick: Parade above the health bar")
+                    .translation("psitweaks.configuration.effects.parade_hud")
+                    .define("paradeHud", true);
 
             spellGramIntegrityHud = builder
                     .comment("Show the name and remaining integrity of the SpellGram object whose core you aim at, below the crosshair")

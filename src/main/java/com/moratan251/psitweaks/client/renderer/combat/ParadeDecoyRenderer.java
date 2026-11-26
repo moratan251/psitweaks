@@ -2,7 +2,6 @@ package com.moratan251.psitweaks.client.renderer.combat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
-import com.moratan251.psitweaks.common.spells.combat.Parades;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidArmorModel;
@@ -71,7 +70,7 @@ public class ParadeDecoyRenderer extends LivingEntityRenderer<EntityParadeDecoy,
         Player owner = entity.getOwnerPlayer();
         if (owner != null) {
             Vec3 wanted = owner.getPosition(partialTick)
-                    .add(Parades.horizontalOffset(owner.getViewYRot(partialTick), entity.getDistance()));
+                    .add(entity.imageOffset(owner.getViewYRot(partialTick)));
             Vec3 drawn = new Vec3(Mth.lerp(partialTick, entity.xOld, entity.getX()), Mth.lerp(partialTick, entity.yOld, entity.getY()),
                     Mth.lerp(partialTick, entity.zOld, entity.getZ()));
             offset = offset.add(wanted.subtract(drawn));

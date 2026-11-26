@@ -59,6 +59,10 @@ public final class CombatEffectsClient {
     }
 
     public static void handleSphereFlash(MessageSphereFlash message) {
+        if (followsHiddenCaster(message)) {
+            // A flash on a Trick: Parade caster hidden from this player (Trick: Barrier's honeycomb) would show where they are.
+            return;
+        }
         if (FLASHES.size() >= MAX_FLASHES) {
             FLASHES.remove(0);
         }
@@ -77,6 +81,15 @@ public final class CombatEffectsClient {
             default -> {
             }
         }
+    }
+
+    private static boolean followsHiddenCaster(MessageSphereFlash message) {
+        if (message.entityId() == MessageSphereFlash.NO_ENTITY) {
+            return false;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        Entity followed = minecraft.level != null ? minecraft.level.getEntity(message.entityId()) : null;
+        return followed != null && ParadeHiddenPlayers.isHiddenFromLocalPlayer(followed);
     }
 
     public static void handleLightningArcs(MessageLightningArcs message) {
@@ -99,6 +112,7 @@ public final class CombatEffectsClient {
 
     private static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, Psitweaks.location("barrier_shield"), BarrierHudLayer::render);
+        event.registerAbove(Psitweaks.location("barrier_shield"), Psitweaks.location("parade_integrity"), ParadeHudLayer::render);
     }
 
     private static void onClientTick(ClientTickEvent.Post event) {

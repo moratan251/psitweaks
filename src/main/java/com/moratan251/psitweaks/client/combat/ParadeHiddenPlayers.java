@@ -1,10 +1,12 @@
 package com.moratan251.psitweaks.client.combat;
 
+import com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore;
 import com.moratan251.psitweaks.common.entities.combat.EntityParadeDecoy;
 import com.moratan251.psitweaks.common.spells.combat.ParadeSight;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,16 +21,20 @@ import net.neoforged.neoforge.common.NeoForge;
  * renderer skips them (body, gear, name, shadow and what other mods draw with the entity, see
  * {@code EntityRenderDispatcherParadeMixin}), their player rendering is cancelled for any other path, and the caster
  * counts as invisible to them ({@link ParadeSight}). Team mates still see them. The set of hidden players is rebuilt
- * from the loaded images every tick, so nothing outlives the image or the connection.
+ * from the loaded images every tick, so nothing outlives the image or the connection. The same pass finds the core of
+ * the local player's own image, for the integrity bar ({@code ParadeHudLayer}); only its entity ID is kept.
  */
 public final class ParadeHiddenPlayers {
     private static final Set<UUID> HIDDEN = new HashSet<>();
+    private static final int NO_CORE = -1;
+    private static int ownCoreId = NO_CORE;
 
     private ParadeHiddenPlayers() {
     }
 
     public static void registerEvents() {
-        ParadeSight.install(ParadeHiddenPlayers::isHiddenFrom, ParadeHiddenPlayers::isLocalPlayer);
+        ParadeSight.install(ParadeHiddenPlayers::isHiddenFrom, ParadeHiddenPlayers::isLocalPlayer,
+                ParadeHiddenPlayers::isHiddenFromLocalPlayer);
         NeoForge.EVENT_BUS.addListener(ParadeHiddenPlayers::onClientTick);
         NeoForge.EVENT_BUS.addListener(ParadeHiddenPlayers::onRenderPlayer);
         NeoForge.EVENT_BUS.addListener(ParadeHiddenPlayers::onLoggingOut);
@@ -36,15 +42,29 @@ public final class ParadeHiddenPlayers {
 
     private static void onClientTick(ClientTickEvent.Post event) {
         HIDDEN.clear();
+        ownCoreId = NO_CORE;
         var level = Minecraft.getInstance().level;
+        LocalPlayer viewer = Minecraft.getInstance().player;
         if (level == null) {
             return;
         }
         for (Entity entity : level.entitiesForRendering()) {
             if (entity instanceof EntityParadeDecoy decoy && decoy.isAlive() && decoy.getOwnerUUID() != null) {
                 HIDDEN.add(decoy.getOwnerUUID());
+            } else if (viewer != null && entity instanceof EntityParadeCore core && !core.isRemoved() && core.isShownTo(viewer)) {
+                ownCoreId = core.getId();
             }
         }
+    }
+
+    /** The core of the local player's own image, while it stands. */
+    @Nullable
+    public static EntityParadeCore ownCore() {
+        var level = Minecraft.getInstance().level;
+        if (ownCoreId == NO_CORE || level == null) {
+            return null;
+        }
+        return level.getEntity(ownCoreId) instanceof EntityParadeCore core && !core.isRemoved() ? core : null;
     }
 
     private static void onRenderPlayer(RenderPlayerEvent.Pre event) {
@@ -60,6 +80,12 @@ public final class ParadeHiddenPlayers {
                 && !viewer.isAlliedTo(player);
     }
 
+    /** Whether {@code entity} is a Parade caster hidden from the local player. */
+    public static boolean isHiddenFromLocalPlayer(Entity entity) {
+        LocalPlayer viewer = Minecraft.getInstance().player;
+        return viewer != null && isHiddenFrom(entity, viewer);
+    }
+
     private static boolean isLocalPlayer(UUID id) {
         LocalPlayer player = Minecraft.getInstance().player;
         return player != null && player.getUUID().equals(id);
@@ -67,5 +93,6 @@ public final class ParadeHiddenPlayers {
 
     private static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         HIDDEN.clear();
+        ownCoreId = NO_CORE;
     }
 }

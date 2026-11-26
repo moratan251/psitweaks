@@ -10,7 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Trick: Parade: a hidden caster also counts as invisible to the viewer, so other mods that draw over players (Neat's
- * name plates, for example) leave them out as well. Client side only.
+ * name plates, for example) leave them out as well, and kicks up no dust when sprinting where the viewer would see it.
+ * Client side only.
  */
 @Mixin(Entity.class)
 public abstract class EntityParadeInvisibleMixin {
@@ -19,6 +20,14 @@ public abstract class EntityParadeInvisibleMixin {
         Entity self = (Entity) (Object) this;
         if (self.level().isClientSide && ParadeSight.isHiddenFrom(self, viewer)) {
             cir.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "canSpawnSprintParticle", at = @At("HEAD"), cancellable = true)
+    private void psitweaks$paradeHiddenSprintDust(CallbackInfoReturnable<Boolean> cir) {
+        Entity self = (Entity) (Object) this;
+        if (self.level().isClientSide && ParadeSight.isHiddenFromLocalPlayer(self)) {
+            cir.setReturnValue(false);
         }
     }
 }

@@ -41,6 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 /**
  * The image projected by Trick: Parade. It wears the caster's skin, armour, held items, name and health, and draws the
@@ -49,7 +50,8 @@ import net.minecraft.world.phys.Vec3;
  * image goes when the core does (and the other way round). It is never saved.
  * <p>
  * It stays a fixed number of blocks in front of its owner (behind for a negative distance), measured along the way the
- * owner looks on the horizontal plane, at the height of the owner's feet. It turns with the owner, floats and passes
+ * owner looks on the horizontal plane, at the height of the owner's feet; or along a fixed way (up and down included),
+ * when the trick was given a Direction ({@link #isDirectionFixed}). It turns with the owner, floats and passes
  * through blocks, and nothing in the terrain (walls, lava, fire, water, falls) affects it. It copies the owner's gear,
  * crouching, arm swings, steps and the way they face, except that its head turns to whoever is after it (its last
  * attacker, else the nearest mob targeting it).
@@ -78,6 +80,9 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     /** Blocks in front of the owner (negative: behind) where the image stands. */
     private static final EntityDataAccessor<Float> DISTANCE =
             SynchedEntityData.defineId(EntityParadeDecoy.class, EntityDataSerializers.FLOAT);
+    /** The way (a unit vector) the image keeps to when it does not turn with the owner's view; zero when it does. */
+    private static final EntityDataAccessor<Vector3f> FIXED_DIRECTION =
+            SynchedEntityData.defineId(EntityParadeDecoy.class, EntityDataSerializers.VECTOR3);
     /** Whether the head is turned to an enemy; clients then keep the server's head rotation instead of the owner's. */
     private static final EntityDataAccessor<Boolean> WATCHING =
             SynchedEntityData.defineId(EntityParadeDecoy.class, EntityDataSerializers.BOOLEAN);
@@ -120,12 +125,14 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     /**
      * Copies the owner's look and gear, puts the image {@code distance} blocks in front of the owner (behind if
      * negative), and sets the owner's evasion from that distance ({@link Parades#evasionChance}). How long it lasts and
-     * how much it takes is up to its core ({@link #bindCore}).
+     * how much it takes is up to its core ({@link #bindCore}). A {@code fixedDirection} (a unit vector) keeps the image
+     * along it instead of the owner's view.
      */
-    public void configure(Player owner, double distance, int color) {
+    public void configure(Player owner, double distance, int color, @Nullable Vec3 fixedDirection) {
         entityData.set(OWNER, Optional.of(owner.getUUID()));
         entityData.set(COLOR, color & 0xFFFFFF);
         entityData.set(DISTANCE, (float) distance);
+        entityData.set(FIXED_DIRECTION, fixedDirection != null ? fixedDirection.toVector3f() : new Vector3f());
         ownerRef = new WeakReference<>(owner);
         setCustomName(owner.getName());
         copyGear(owner);
@@ -145,6 +152,7 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         builder.define(OWNER, Optional.empty());
         builder.define(COLOR, CombatSpellHelper.DEFAULT_SPELL_COLOR);
         builder.define(DISTANCE, 0.0F);
+        builder.define(FIXED_DIRECTION, new Vector3f());
         builder.define(WATCHING, false);
     }
 
@@ -191,6 +199,23 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     /** Blocks in front of the owner (negative: behind) where the image stands. */
     public double getDistance() {
         return entityData.get(DISTANCE);
+    }
+
+    /** Whether the image keeps to one side of its owner instead of turning with their view. */
+    public boolean isDirectionFixed() {
+        return entityData.get(FIXED_DIRECTION).lengthSquared() > 0.0F;
+    }
+
+    /**
+     * Where the image stands from its owner: {@link #getDistance} blocks along the fixed way, else along the horizontal
+     * direction of {@code ownerYaw}.
+     */
+    public Vec3 imageOffset(float ownerYaw) {
+        Vector3f fixed = entityData.get(FIXED_DIRECTION);
+        double distance = getDistance();
+        return fixed.lengthSquared() > 0.0F
+                ? new Vec3(fixed.x() * distance, fixed.y() * distance, fixed.z() * distance)
+                : Parades.horizontalOffset(ownerYaw, distance);
     }
 
     public boolean isWatching() {
@@ -282,7 +307,7 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
 
     /** Stands where the owner projects it, whatever is in the way. */
     private void follow(Player owner) {
-        Vec3 at = Parades.imagePosition(owner, getDistance());
+        Vec3 at = owner.position().add(imageOffset(owner.getYRot()));
         setPos(at.x, at.y, at.z);
         setDeltaMovement(Vec3.ZERO);
         resetFallDistance();

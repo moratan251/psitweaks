@@ -733,6 +733,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Barrier Shield Bar", "障壁シールドのバー",
                 "Show the remaining shield and time of Trick: Barrier above the health bar.",
                 "作動式: 障壁のシールド残量と残り時間を体力ゲージの上に表示します.");
+        addConfigValue(root, "psitweaks.configuration.effects.parade_hud",
+                "Parade Integrity Bar", "仮装行列の耐久値バー",
+                "Show the remaining integrity and time of Trick: Parade above the health bar.",
+                "作動式: 仮装行列の耐久値と残り時間を体力ゲージの上に表示します.");
         addConfigValue(root, "psitweaks.configuration.effects.spellgram_integrity_hud",
                 "SpellGram Integrity", "魔法式オブジェクトの耐久値",
                 "Show the name and remaining integrity of the SpellGram object whose core you aim at within 5 blocks, below the crosshair.",
@@ -1912,7 +1916,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "受けるダメージを1分間肩代わりするシールドを対象に張る");
         addSpellPiece(root, "selector_barrier_amount", "Selector: Barrier Amount", "Gets the shield the target's Barrier has left. 0 when it has none.", "取得子: 障壁量", "対象の障壁のシールド残量を取得します. 障壁がなければ0を返します.");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時, 一定値まで減少させる");
-        addSpellPiece(root, "trick_parade", "Trick: Parade", "Projects an image of the caster in front of or behind them that draws enemies' attacks and spells", "作動式: 仮装行列", "術者の前後にそっくりの虚像を映し, 敵の攻撃と魔法を引きつける");
+        addSpellPiece(root, "trick_parade", "Trick: Parade", "Projects a decoy image of the caster nearby that draws enemies' attacks and spells", "作動式: 仮装行列", "術者の周囲にそっくりの虚像を映し, 敵の攻撃と魔法を引きつける");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します. Psiを消費し続けることでクリエイティブ飛行を可能にします.");
         addSpellPiece(root, "trick_interact_block", "Trick: Block Interact", "Right-click with the off-hand item on the target block", "作動式: ブロック作用", "座標のブロックに, オフハンドのアイテムで右クリックの動作を行う");
         addSpellPiece(root, "trick_freeze_block", "Trick: Block Freeze", "Freeze the block at the target position into its next colder form", "作動式: ブロック凍結", "指定座標のブロックを次の凍結段階に変化させる");
@@ -2270,11 +2274,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade.0",
-                "Projects a decoy image of the caster $(thing)Number$(0) blocks ahead (0 on the spot, negative for behind, max 16) for $(thing)Time$(0) seconds. It passes through blocks, follows your movement and facing, and is replaced on recast.$(p)While active, hostile creatures target the image, and attacks on you are evaded $(thing)60%% + 5%% × |Number|$(0) of the time (max 95%%).",
-                "術者の前方 $(thing)数値$(0) ブロック (0ならその場, 負なら後方, 最大16) に術者そっくりの虚像を $(thing)時間$(0) 秒間映します. 虚像は地形をすり抜けて術者の移動と向きに追従し, 再詠唱で入れ替わります.$(p)虚像がある間, 敵対生物は虚像を狙い, 術者への攻撃も $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で回避します.");
+                "Projects a decoy image of the caster $(thing)Number$(0) blocks ahead (0 on the spot, negative for behind, max 16) for $(thing)Time$(0) seconds. It passes through blocks, follows your movement and facing, and is replaced on recast.$(p)With a non-zero vector in optional $(thing)Direction$(0), the offset stays along that direction (including vertically, still following your movement) instead of orbiting as you turn.",
+                "術者の前方 $(thing)数値$(0) ブロック (0ならその場, 負なら後方, 最大16) に術者そっくりの虚像を $(thing)時間$(0) 秒間映します. 虚像は地形をすり抜けて移動と向きに追従し, 再詠唱で入れ替わります.$(p)任意の $(thing)方向$(0) にゼロ以外のベクトルをつなぐと, 上下を含めその方向へ配置が固定され (移動には追従), 視線の向きで旋回しなくなります.");
         addBookPage(root, "trick_parade.1",
-                "Other players (except teammates) cannot see you, and their spells targeting you redirect to the image. Has no effect from an Autonomous Caster.$(p)The image is a $(l:psitweaks/spellgram_objects)Resident SpellGram$(/l) with $(thing)Time × Phenomenon Interference$(0) integrity, losing 2 whenever it is attacked.",
-                "他プレイヤー (味方を除く) からは術者が見えなくなり, 術者を狙った術式も虚像に向かいます. 自律詠唱機では効果がありません.$(p)虚像は$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)で, 耐久値は $(thing)時間×事象干渉力$(0) です. 攻撃を受けるたび2減少します.");
+                "While active, hostile creatures target the image, and attacks on you are evaded $(thing)60%% + 5%% × |Number|$(0) of the time (max 95%%). Other players (except teammates) cannot see you, and their spells targeting you redirect to the image (no effect from an Autonomous Caster).$(p)The image is a $(l:psitweaks/spellgram_objects)Resident SpellGram$(/l) with $(thing)Time × Phenomenon Interference$(0) integrity, losing 2 whenever it is attacked.",
+                "虚像がある間, 敵対生物は虚像を狙い, 術者への攻撃も $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で回避します. 他プレイヤー (味方を除く) からは術者が見えなくなり, 術者を狙った術式も虚像に向かいます (自律詠唱機では無効).$(p)虚像は$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)で, 耐久値は $(thing)時間×事象干渉力$(0) です. 攻撃を受けるたび2減少します.");
         addBookPage(root, "trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively.", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です.");
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
         addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");
