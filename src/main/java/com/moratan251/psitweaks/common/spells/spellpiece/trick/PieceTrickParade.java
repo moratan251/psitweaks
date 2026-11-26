@@ -29,7 +29,6 @@ public class PieceTrickParade extends PieceTrick {
      * mobs after the image lose sight of it.
      */
     public static final int MAX_DISTANCE = 16;
-    public static final String ERROR_ZERO_DISTANCE = "psitweaks.spellerror.parade_zero_distance";
     private static final double POTENCY_BASE = 300.0;
     private static final double POTENCY_PER_SECOND = 10.0;
     private static final double POTENCY_PER_BLOCK = 20.0;
@@ -63,10 +62,6 @@ public class PieceTrickParade extends PieceTrick {
         super.addToMetadata(meta);
         Number numberVal = getParamEvaluation(number);
         double value = numberVal == null ? 0.0 : numberVal.doubleValue();
-        String error = distanceError(value);
-        if (error != null) {
-            throw new SpellCompilationException(error, x, y);
-        }
         int blocks = Math.abs(wholeBlocks(value));
         int timeVal = CombatTrickStats.positiveInteger(getParamEvaluation(time), x, y);
         meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + (double) timeVal * POTENCY_PER_SECOND
@@ -86,10 +81,6 @@ public class PieceTrickParade extends PieceTrick {
     public Object execute(SpellContext context) throws SpellRuntimeException {
         Number numberVal = getParamValue(context, number);
         double value = numberVal == null ? 0.0 : numberVal.doubleValue();
-        String error = distanceError(value);
-        if (error != null) {
-            throw new SpellRuntimeException(error);
-        }
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
         }
@@ -101,18 +92,14 @@ public class PieceTrickParade extends PieceTrick {
 
     /**
      * The distance in whole blocks: fractions are dropped, toward zero, and anything beyond {@link #MAX_DISTANCE} is
-     * taken as {@link #MAX_DISTANCE}, keeping its sign.
+     * taken as {@link #MAX_DISTANCE}, keeping its sign. Under one block (0 included) it is 0, and the image stands where
+     * the caster stands.
      */
     public static int wholeBlocks(double value) {
+        if (Double.isNaN(value)) {
+            return 0;
+        }
         double whole = value < 0.0 ? Math.ceil(value) : Math.floor(value);
         return (int) Math.max(-MAX_DISTANCE, Math.min(MAX_DISTANCE, whole));
-    }
-
-    /** Why the image cannot stand {@code value} blocks away, or null if it can: it must be a whole block away at least. */
-    public static String distanceError(double value) {
-        if (Double.isNaN(value) || Math.abs(value) < 1.0) {
-            return ERROR_ZERO_DISTANCE;
-        }
-        return null;
     }
 }

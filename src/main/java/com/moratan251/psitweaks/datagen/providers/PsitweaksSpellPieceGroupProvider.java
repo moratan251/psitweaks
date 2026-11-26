@@ -23,6 +23,7 @@ public final class PsitweaksSpellPieceGroupProvider implements DataProvider {
         List<CompletableFuture<?>> saves = new ArrayList<>();
         group(output, saves, "trick_explode_no_destroy", "trick_explode_no_destroy");
         group(output, saves, "trick_parade", "trick_parade");
+        group(output, saves, "constant_signed_wrapper", "constant_signed_wrapper");
         group(output, saves, "trick_flight", "trick_flight");
         group(output, saves, "trick_hardening", "trick_hardening");
         group(output, saves, "trick_barrier", "trick_barrier", "selector_barrier_amount");

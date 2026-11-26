@@ -160,6 +160,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_equal", PieceOperatorEqual.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> CONSTANT_STRING =
             registerPiece("constant_string", PieceConstantString.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> CONSTANT_SIGNED_WRAPPER =
+            registerPiece("constant_signed_wrapper", PieceConstantSignedWrapper.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_FORMAT_STRING =
             registerPiece("operator_format_string", PieceOperatorFormatString.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_FROM_STRING =

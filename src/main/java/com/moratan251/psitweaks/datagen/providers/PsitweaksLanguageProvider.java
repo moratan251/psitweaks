@@ -456,9 +456,9 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "エラー: 対象の情報は偽装されています.";
             default -> "ERROR: The target's information is disguised.";
         });
-        root.addProperty("psitweaks.spellerror.parade_zero_distance", switch (locale) {
-            case "ja_jp" -> "エラー: 数値が 0 では虚像を映せません.";
-            default -> "ERROR: The image cannot be projected with a Number of 0.";
+        root.addProperty("psitweaks.spellerror.signed_wrapper_target", switch (locale) {
+            case "ja_jp" -> "エラー: 符号ラッパーは正負で同じ性能値になる定数入力にしかつなげません.";
+            default -> "ERROR: Signed Wrapper can only feed constant inputs with the same stats for both signs.";
         });
         root.addProperty("psitweaks.spellerror.no_ground", switch (locale) {
             case "ja_jp" -> "エラー: 指定位置の下に地面がありません.";
@@ -550,8 +550,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "ERROR: There are no items to work with.";
         });
         root.addProperty("psitweaks.spellerror.access_denied", switch (locale) {
-            case "ja_jp" -> "エラー: 保護されたブロックにアクセスを試みました.";
-            default -> "ERROR: Attempted to access a protected block.";
+            case "ja_jp" -> "エラー: 保護されたブロックには作用できません.";
+            default -> "ERROR: Cannot access a protected block.";
         });
         // 毎朝レビュー F-043: コードで使っているのに訳がなかったキー。
         root.addProperty("psitweaks.spellerror.not_spellgram_object", switch (locale) {
@@ -822,8 +822,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "1回の詠唱でNBTを読める対象の数です. NBTを持たない対象と, 同じ詠唱で読み直した対象は数えません. 超えると術式はエラーで止まります.");
         addConfigLabel(root, "psitweaks.configuration.spells.pattern_matching", "Pattern Matching", "パターンの照合");
         addConfigValue(root, "psitweaks.configuration.spells.pattern_matching.max_comparisons_per_cast", "Comparisons per Cast", "1回の詠唱で比べられる回数",
-                "How many character comparisons one cast can make when matching text against patterns (* ? [abc]). Operator: Partial Match and the List Keep/Remove Matches, Name Matches and NBT Matches pieces count them; # tag patterns do not. NBT Matches also counts turning compound, list and array values into text, one per character. Going past it stops the spell with an error.",
-                "パターン(* ? [abc])との照合で, 1回の詠唱が文字を比べられる回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が数えます(# のタグの照合は数えません). NBT一致抽出・除外は, 複合タグ・リスト・配列の値を文字列にする手間も1文字1回として数えます. 超えると術式はエラーで止まります.");
+                "Maximum character comparisons per cast when matching patterns (* ? [abc]). Counts Operator: Partial Match and the List Keep/Remove Matches, Name Matches, and NBT Matches pieces (# tag patterns are excluded). NBT Matches also counts converting compound, list, and array values to text at one per character. Exceeding this stops the spell with an error.",
+                "パターン (* ? [abc]) との照合における, 1回の詠唱あたりの比較上限回数です. 演算子: 部分一致, リスト一致抽出・除外, 表示名一致抽出・除外, NBT一致抽出・除外が対象です (# タグ照合は対象外). NBT一致抽出・除外では, 複合タグ・リスト・配列の文字列化も1文字1回として数えます. 上限を超えるとエラーで停止します.");
         addDamageMultiplierConfig(root, "guillotine", "Guillotine", "ギロチン");
         addDamageMultiplierConfig(root, "chain_lightning", "Chain Lightning", "連鎖電光");
         addDamageMultiplierConfig(root, "mine_genesis", "Mine Genesis", "地雷原");
@@ -1909,10 +1909,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
     private void addSpellPieces(JsonObject root) {
         addSpellPiece(root, "trick_explode_no_destroy", "Trick: Antipersonnel Explode", "Cause an explosion that does not destroy blocks", "作動式: 対人爆発", "ブロックを破壊しない爆発を起こす");
-        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "対象に, 受けるダメージを1分間肩代わりするシールドを張る");
+        addSpellPiece(root, "trick_barrier", "Trick: Barrier", "Raises a shield that takes damage in the target's place for one minute", "作動式: 障壁", "受けるダメージを1分間肩代わりするシールドを対象に張る");
         addSpellPiece(root, "selector_barrier_amount", "Selector: Barrier Amount", "Gets the shield the target's Barrier has left. 0 when it has none.", "取得子: 障壁量", "対象の障壁のシールド残量を取得します. 障壁がなければ0を返します.");
         addSpellPiece(root, "trick_hardening", "Trick: Hardening", "When taking heavy damage, reduce it to a certain value", "作動式: 硬化", "大ダメージを受けた時, 一定値まで減少させる");
-        addSpellPiece(root, "trick_parade", "Trick: Parade", "Projects an image of the caster in front of or behind them that draws enemies' attacks and spells", "作動式: 仮装行列", "術者の前後に術者そっくりの虚像を映し, 敵の攻撃と魔法を引きつける");
+        addSpellPiece(root, "trick_parade", "Trick: Parade", "Projects an image of the caster in front of or behind them that draws enemies' attacks and spells", "作動式: 仮装行列", "術者の前後にそっくりの虚像を映し, 敵の攻撃と魔法を引きつける");
         addSpellPiece(root, "trick_flight", "Trick: Flight", "Applies the Flight effect to the target. Creative flight is enabled by continuously consuming Psi.", "作動式: 飛行", "対象に飛行エフェクトを付与します. Psiを消費し続けることでクリエイティブ飛行を可能にします.");
         addSpellPiece(root, "trick_interact_block", "Trick: Block Interact", "Right-click with the off-hand item on the target block", "作動式: ブロック作用", "座標のブロックに, オフハンドのアイテムで右クリックの動作を行う");
         addSpellPiece(root, "trick_freeze_block", "Trick: Block Freeze", "Freeze the block at the target position into its next colder form", "作動式: ブロック凍結", "指定座標のブロックを次の凍結段階に変化させる");
@@ -1986,6 +1986,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0.", "演算子: ～以上", "値1が値2以上なら1, そうでなければ0を出力します.");
         addSpellPiece(root, "operator_equal", "Operator: Equal", "Outputs 1 if Value 1 equals Value 2, otherwise 0.", "演算子: 等しい", "値1と値2が等しいなら1, そうでなければ0を出力します.");
         addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1024 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します. 最大1024文字です.");
+        addSpellPiece(root, "constant_signed_wrapper", "Constant: Signed Wrapper", "Wraps a variable as a constant while keeping its sign. Only works on constant inputs with identical stats for both signs.", "定数子: 符号ラッパー", "変数の値を符号ごと定数としてラップします. 正負で性能値が変わらない定数入力にだけ使えます.");
         addSpellPiece(root, "operator_format_string", "Operator: Format String", "Returns the entered text with Values 1 to 3 filled into {1}, {2}, and {3}.", "演算子: フォーマット文字列", "入力した文字列の {1}〜{3} に値1〜3を埋め込んで返します.");
         addSpellPiece(root, "operator_from_string", "Operator: From String", "Returns the input String as-is, or converts it into a Number or Vector for the selected mode.", "演算子: 文字列から変換", "選択中のモードに応じて String をそのまま返すか, Number または Vector に変換します.");
         addSpellPiece(root, "operator_list_from_string_list", "Operator: From String List", "Returns the input String List as-is, or converts it into a Number List or Vector List for the selected mode.", "演算子: 文字列リストから変換", "選択中のモードに応じて String List をそのまま返すか, Number List または Vector List に変換します.");
@@ -2230,13 +2231,13 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // 作動式: 除染（領域ではない常駐魔法式）
         addBookPage(root, "trick_decontamination.0",
-                "Places a decontamination core at Position that weakens Mekanism radiation sources within 32 blocks every second. Does not reduce living beings' dose (use Trick: Cure Radiation).$(p)Takes Power and Time (default 30 s, max 120 s). See $(l:psitweaks/spellgram_objects)SpellGram Objects$(/l) for shared rules.",
-                "「位置」に除染の核を置き, 周囲32ブロック以内の Mekanism 放射線源を毎秒弱めます. 生物の被ばく量は減らしません (作動式: 放射線除去を使用).$(p)「威力」と「時間」 (省略時30秒, 最大120秒) を指定します. 共通の決まりは$(l:psitweaks/spellgram_objects)魔法式オブジェクト$(/l)を参照してください.");
+                "Places a decontamination core at Position that weakens radiation sources within 32 blocks every second. Does not reduce living beings' dose (use Trick: Cure Radiation).$(p)Takes Power and Time (default 30 s, max 120 s). See $(l:psitweaks/spellgram_objects)SpellGram Objects$(/l) for shared rules.",
+                "「位置」に除染の核を置き, 周囲32ブロック以内の放射線源を毎秒弱めます. 生物の被ばく量は減らしません (作動式: 放射線除去を使用).$(p)「威力」と「時間」 (省略時30秒, 最大120秒) を指定します. 共通の決まりは$(l:psitweaks/spellgram_objects)魔法式オブジェクト$(/l)を参照してください.");
 
         // 汚染領域
         addBookPage(root, "trick_contamination_zone.0",
-                "Exposes living beings inside to radiation every second at a dose rate set by Power; their dose keeps rising while they stay inside. Leaves no radiation sources. Blocked by MekaSuit and Trick: Radiation Filter.$(p)Spares you, pets, and allies. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
-                "範囲内の生物を, 「威力」に応じた線量率で毎秒被ばくさせます. 範囲内にいる間は被ばく量が増え続けます. 放射線源は残さず, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方などには効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
+                "Exposes living beings inside to radiation every second at a Power-based dose rate, accumulating while they stay inside. Leaves no radiation sources, and is blocked by MekaSuit and Trick: Radiation Filter.$(p)Spares you, pets, and allies. See $(l:psitweaks/zone_magic)Zone Magic$(/l) for shared rules.",
+                "「威力」に応じた線量率で範囲内の生物を毎秒被ばくさせ, 中にいる間は被ばく量が増え続けます. 放射線源は残さず, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方には効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.");
     }
 
     private void addSpellPiecesBook(JsonObject root) {
@@ -2263,14 +2264,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
         addBookPage(root, "trick_barrier.0",
                 "Raises a $(thing)Power × 10$(0) shield on the target for 1 minute that absorbs damage instead of health. Even a hit exceeding the remaining shield only breaks it without hurting health.$(p)While shielded, the target cannot catch fire, and recasting overwrites the shield if the new value is at least what remains. Does not block falling, drowning, poison, or similar damage.",
-                "対象に $(thing)威力×10$(0) のシールドを1分間張り, 体力の代わりにダメージを肩代わりさせます. 残量を超える一撃でもシールドが砕けるだけで体力は減りません.$(p)シールド中は炎上せず, かけ直すと残量以上であれば上書きされます. 落下・溺れ・毒などのダメージは防げません.");
+                "対象に $(thing)威力×10$(0) のシールドを1分間張り, 体力の代わりにダメージを肩代わりさせます. 残量を超える一撃でもシールドが砕けるだけで体力は減りません.$(p)シールド中は炎上せず, かけ直すと新しい値が残量以上なら上書きされます. 落下・溺れ・毒などのダメージは防げません.");
         addBookPage(root, "selector_barrier_amount",
                 "Outputs the shield points the target's $(thing)Trick: Barrier$(0) has left, as a Number. It outputs 0 when the target has no shield or is not a living entity.",
                 "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");
         addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
         addBookPage(root, "trick_parade.0",
-                "Projects a decoy image of the caster $(thing)Number$(0) blocks ahead (negative for behind, max 16) for $(thing)Time$(0) seconds. It passes through blocks, follows your movement and facing, and is replaced on recast.$(p)While active, hostile creatures target the image, and stray attacks on you are evaded $(thing)60%% + 5%% × |Number|$(0) of the time (max 95%%).",
-                "術者の前方 $(thing)数値$(0) ブロック (負なら後方, 最大16) に術者そっくりの虚像を $(thing)時間$(0) 秒間映します. 虚像は地形をすり抜けて術者の移動と向きに追従し, 再詠唱で入れ替わります.$(p)虚像がある間, 敵対生物は虚像を狙います. 術者への流れ弾も $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で回避します.");
+                "Projects a decoy image of the caster $(thing)Number$(0) blocks ahead (0 on the spot, negative for behind, max 16) for $(thing)Time$(0) seconds. It passes through blocks, follows your movement and facing, and is replaced on recast.$(p)While active, hostile creatures target the image, and attacks on you are evaded $(thing)60%% + 5%% × |Number|$(0) of the time (max 95%%).",
+                "術者の前方 $(thing)数値$(0) ブロック (0ならその場, 負なら後方, 最大16) に術者そっくりの虚像を $(thing)時間$(0) 秒間映します. 虚像は地形をすり抜けて術者の移動と向きに追従し, 再詠唱で入れ替わります.$(p)虚像がある間, 敵対生物は虚像を狙い, 術者への攻撃も $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で回避します.");
         addBookPage(root, "trick_parade.1",
                 "Other players (except teammates) cannot see you, and their spells targeting you redirect to the image. Has no effect from an Autonomous Caster.$(p)The image is a $(l:psitweaks/spellgram_objects)Resident SpellGram$(/l) with $(thing)Time × Phenomenon Interference$(0) integrity, losing 2 whenever it is attacked.",
                 "他プレイヤー (味方を除く) からは術者が見えなくなり, 術者を狙った術式も虚像に向かいます. 自律詠唱機では効果がありません.$(p)虚像は$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)で, 耐久値は $(thing)時間×事象干渉力$(0) です. 攻撃を受けるたび2減少します.");
@@ -2297,11 +2298,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel_beneficial", "Removes only beneficial effects from the target entity. It is suited for stripping enhancements from hostile targets.", "対象エンティティから有益なエフェクトだけを除去します. 敵対対象の強化を剥がす用途に向いています.");
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
         addBookPage(root, "trick_cocytus.0",
-                "Takes no input. Blows a blizzard in front of the caster (passing through blocks) and freezes the minds of the mobs it catches forever. A frozen mob's AI stops and it is sealed in ice, unable to move or make a sound.",
-                "入力はありません. 前方へ吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ブロックは貫通します). 凍結したモブは AI が止まって氷に閉じ込められ, 動くことも音を立てることもなくなります.");
-        addBookPage(root, "trick_cocytus.1",
-                "Players, the caster, and the caster's pets and allies are not frozen. Bosses are, except a Wither still gathering strength after being built; a frozen Ender Dragon thaws when defeated and dies as usual. The blizzard itself deals no damage.$(br2)If something else turns a frozen mob's AI back on, the ice melts and the mob can make sounds again.",
-                "プレイヤー, 術者自身とそのペット・味方は凍結しません. ボスも凍結しますが, 召喚直後で力を溜めているウィザーは凍結しません. 凍結したエンダードラゴンは倒されると氷が溶け, いつもどおり息絶えます. 吹雪そのものはダメージを与えません.$(br2)ほかの方法で AI が戻ると, 氷が溶けて再び音を立てるようになります.");
+                "Takes no input. Blows a block-piercing blizzard ahead that deals no damage and freezes caught mobs' minds forever, stopping their AI, movement, and sounds inside ice.$(p)Spares players, pets, and allies. Works on bosses, except a newly spawned Wither gathering strength; a frozen Ender Dragon thaws on defeat. Restoring a mob's AI by other means also melts the ice.",
+                "入力はありません. 前方へ地形貫通の吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ダメージなし). 凍結したモブは AI が止まって氷に閉じ込められ, 動かず音も立てなくなります.$(p)プレイヤーと術者のペット・味方は凍りません. ボスにも効きますが, 召喚直後のウィザーは対象外で, エンダードラゴンは撃破時に解凍されます. 他要因で AI が戻ると解凍されます.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき, 1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0",
                 "Pulls up to one stack (capped by optional Max) from the specified face of the block into your inventory.$(p)Filter modes: String (ID, *, or # tag), Item, and data-matching Item (Strict). Item modes also accept an Item List.",
@@ -2402,6 +2400,12 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_greater_than_or_equal", "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than or equal to Value 2, otherwise 0.", "値1と値2を Number として比較します. 値1が値2以上なら1, そうでなければ0を出力します.");
         addBookPage(root, "operator_equal", "Compares Value 1 and Value 2 as Any inputs. It outputs 1 when both values are equal, otherwise 0. Numbers compare by numeric value, Vectors compare by coordinates, Item values compare their item data and source, and Block values compare dimension, position, and block state. A Block compared with a Vector uses coordinate comparison.", "値1と値2を Any 入力として比較します. 2つの値が等しいなら1, そうでなければ0を出力します. Number は数値, Vector は座標, Item はアイテムデータと source, Block はディメンション, 座標, ブロック状態を比較します. Block と Vector の比較は座標比較です.");
         addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1024 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大1024文字です.");
+        addBookPage(root, "constant_signed_wrapper.0",
+                "Like Constant: Wrapper, the spell's stats come from $(thing)Constant$(0). When cast, it outputs $(thing)Target$(0) clamped to $(thing)±Constant$(0) while keeping its sign (Constant 5 gives -5 to 5).$(p)It only feeds constant inputs that compile with identical stats for both signs; wiring it to any other constant input causes a compile error.",
+                "定数子: ラッパーと同じく, 魔法の性能値は $(thing)定数$(0) から算出されます. 実行時は $(thing)対象$(0) の符号を保ったまま, $(thing)±定数$(0) の範囲に収めて出力します (定数5なら -5〜5).$(p)接続できるのは, 正負どちらの定数でも同じ性能値で組める定数入力だけです. それ以外の定数入力につなぐとエラーになります.");
+        addBookPage(root, "constant_signed_wrapper.1",
+                "For example, it feeds the Distance of Trick: Blink or the Number of $(l:psitweaks_spell_pieces/trick_parade)Trick: Parade$(/l), but not the Power of Trick: Explode, which rejects negative values.$(p)Example: feeding (Selector: Sneak Status - 0.5) × 10 through a Signed Wrapper (Constant 5) into Trick: Parade places the image 5 blocks behind you while sneaking and 5 blocks ahead otherwise.",
+                "作動式: 瞬間移動(単)の距離や$(l:psitweaks_spell_pieces/trick_parade)作動式: 仮装行列$(/l)の数値にはつなげますが, 負の値がエラーになる作動式: 爆発の威力などにはつなげません.$(p)例: (取得子: スニーク状態 - 0.5)×10 を定数5の符号ラッパー経由で仮装行列の数値へつなぐと, スニーク中は後方5ブロック, 通常時は前方5ブロックに虚像が映ります.");
         addBookPage(root, "operator_format_string", "Outputs a String by replacing {1}, {2}, and {3} in the saved template with up to three optional Any inputs. The template uses the same input window as Constant: String and is limited to 1024 characters. Unconnected inputs become empty text. Contextual Values such as Entity, Item, and Block use the same localized display name as Selector: Display Name. Contextual Value Lists use the same localized names as Selector: Display Name List and are joined with commas. Other values use the normal String conversion. The final output is capped by the runtime String limit.", "保存したテンプレート中の {1}, {2}, {3} を最大3つの任意 Any 入力で置換して String を出力します. テンプレートは 定数子: 文字列 と同じ入力ウィンドウで編集し, 最大1024文字です. 未接続の入力は空文字になります. Entity, Item, Block などの Contextual Value は 取得子: 表示名 と同じ現在言語表示名を使います. Contextual Value List は 取得子: 表示名リスト と同じ現在言語表示名へ変換し, コンマ区切りで埋め込みます. それ以外の値は通常の String 変換を使います. 最終出力は実行時 String 上限で制限されます.");
         addBookPage(root, "operator_from_string", "Converts the String input for the selected Plain mode. String mode returns the input as-is. Number mode parses finite numeric text and outputs 0 on invalid input. Vector mode accepts Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and outputs the zero vector when parsing fails.", "選択中の Plain モードに応じて String 入力を変換します. String モードは入力をそのまま返します. Number モードは有限の数値文字列を解析し, 無効な入力では0を出力します. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) を受け付けます. Vector は大文字小文字を区別せず, 解析失敗時はゼロベクトルを出力します.");
         addBookPage(root, "operator_list_from_string_list", "Converts a String List for the selected Plain mode. String mode returns the input list as-is. Number mode parses each entry as finite numeric text, so invalid entries become 0. Vector mode converts only entries matching Vector[x,y,z], Vector(x,y,z), [x,y,z], or (x,y,z), case-insensitive for Vector, and skips invalid entries.", "選択中の Plain モードに応じて String List を変換します. String モードは入力リストをそのまま返します. Number モードは各要素を有限の数値文字列として解析し, 無効な要素は0になります. Vector モードは Vector[x,y,z], Vector(x,y,z), [x,y,z], (x,y,z) に一致する要素のみ変換し, 無効な要素は無視します. Vector は大文字小文字を区別しません.");

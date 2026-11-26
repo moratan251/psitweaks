@@ -178,6 +178,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_equal");
     public static final DeferredHolder<Material, Material> CONSTANT_STRING =
             registerPieceMaterial("constant_string");
+    public static final DeferredHolder<Material, Material> CONSTANT_SIGNED_WRAPPER =
+            registerPieceMaterial("constant_signed_wrapper");
     public static final DeferredHolder<Material, Material> OPERATOR_FORMAT_STRING =
             registerPieceMaterial("operator_format_string");
     public static final DeferredHolder<Material, Material> OPERATOR_FROM_STRING =

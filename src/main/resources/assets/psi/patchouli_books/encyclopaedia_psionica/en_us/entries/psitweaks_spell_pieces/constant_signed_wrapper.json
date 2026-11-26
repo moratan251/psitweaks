@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.constant_signed_wrapper",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/constant_signed_wrapper.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.constant_signed_wrapper.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.constant_signed_wrapper.1"
+    }
+  ]
+}

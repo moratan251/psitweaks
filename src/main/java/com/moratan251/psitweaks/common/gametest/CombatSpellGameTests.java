@@ -886,14 +886,17 @@ public final class CombatSpellGameTests {
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)
-    public static void paradeDistanceMustBeAWholeBlockWithinReach(GameTestHelper helper) throws Exception {
-        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)))))
-                        && PieceTrickParade.ERROR_ZERO_DISTANCE.equals(compileError(() -> stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0))))),
-                "Less than a block away must not compile");
-        helper.assertTrue(compileError(() -> stats(parade(Map.of(NUMBER, 16.9, TIME, 10.0)))) == null
+    public static void paradeDistanceIsWholeBlocksWithinReach(GameTestHelper helper) throws Exception {
+        helper.assertTrue(compileError(() -> stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)))) == null
+                        && compileError(() -> stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0)))) == null
+                        && compileError(() -> stats(parade(Map.of(NUMBER, 16.9, TIME, 10.0)))) == null
                         && compileError(() -> stats(parade(Map.of(NUMBER, -1.0, TIME, 10.0)))) == null
                         && compileError(() -> stats(parade(Map.of(NUMBER, -40.0, TIME, 10.0)))) == null,
-                "Any Number a block or more away must compile");
+                "Any Number must compile, under a block included");
+        int[] none = stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)));
+        int[] under = stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0)));
+        helper.assertTrue(none[0] == under[0] && none[1] == under[1] && none[1] == 400 + 200,
+                "Under a block the distance must cost nothing: " + under[0] + "/" + under[1]);
         int[] farthest = stats(parade(Map.of(NUMBER, -16.0, TIME, 10.0)));
         int[] beyond = stats(parade(Map.of(NUMBER, -40.0, TIME, 10.0)));
         helper.assertTrue(farthest[0] == beyond[0] && farthest[1] == beyond[1] && beyond[1] == 400 + 200 + 50 * 16,
@@ -903,8 +906,12 @@ public final class CombatSpellGameTests {
                 "Beyond 16 blocks the image must stand 16 blocks away, on the same side");
         var player = caster(helper, new BlockPos(2, 0, 2), "parade-distance");
         var context = new SpellContext().setPlayer(player);
-        helper.assertTrue(PieceTrickParade.ERROR_ZERO_DISTANCE.equals(castError(() -> parade(Map.of(NUMBER, 0.3, TIME, 10.0)).execute(context)))
-                && Parades.activeDecoy(player) == null, "A computed distance under a block must fail when cast");
+        parade(Map.of(NUMBER, 0.3, TIME, 10.0)).execute(context);
+        EntityParadeDecoy onTheSpot = Parades.activeDecoy(player);
+        helper.assertTrue(onTheSpot != null && near(onTheSpot.getDistance(), 0.0)
+                        && onTheSpot.position().distanceTo(player.position()) < 1.0E-4
+                        && near(onTheSpot.getEvasionChance(), Parades.evasionChance(0.0)),
+                "Under a block the image must stand where the caster stands");
         parade(Map.of(NUMBER, -2.7, TIME, 10.0)).execute(context);
         EntityParadeDecoy decoy = Parades.activeDecoy(player);
         helper.assertTrue(decoy != null && near(decoy.getDistance(), -2.0), "Fractions must be dropped toward zero");

@@ -52,9 +52,9 @@ public final class Psi110CompatibilityGameTests {
                         .orElseThrow().key().location().equals(id), "Wrong group for " + member);
             }
         }
-        // サイ・ブリットと術式解体を含む。放射線注入は止めている間グループも登録しない。
+        // サイ・ブリット・術式解体・定数子: 符号ラッパーを含む。放射線注入は止めている間グループも登録しない。
         // Mekanism: 放射線フィルタ・放射線除去・自律詠唱機の位置・除染（放射線注入は止めている間は数えない）。
-        int expected = 90 + (ModList.get().isLoaded("mekanism") ? 4 : 0)
+        int expected = 91 + (ModList.get().isLoaded("mekanism") ? 4 : 0)
                 + (MekanismCompat.isRadiationInjectionEnabled() ? 1 : 0) + (ModList.get().isLoaded("sable") ? 1 : 0);
         helper.assertTrue(count == expected, "Expected " + expected + " groups, got " + count);
         helper.succeed();
