@@ -19,6 +19,8 @@ import snownee.jade.api.IWailaClientRegistration;
  *   <li>隠れている術者本人に照準を合わせても、何も表示しない。</li>
  *   <li>虚像に照準を合わせると、虚像ではなく術者本人として表示する（名前・体力・防具・mod 名）。術者がこのクライアントに
  *   いなければ何も表示しない。</li>
+ *   <li>虚像の胸にある核は、術者以外には透明（{@link com.moratan251.psitweaks.common.entities.SpellGram.SpellGramObject#isInvisibleTo}）
+ *   なので Jade の照準に選ばれず、ここには来ない。Jade は小さい箱をふくらませて照準を引くため、核が虚像より手前で当たる。</li>
  * </ul>
  * 術者本人と同じチームの味方には、ふだんどおり表示する。
  */

@@ -955,18 +955,24 @@ public final class CombatSpellGameTests {
                         && !decoy.hurt(AttackRules.source(helper.getLevel(), PsitweaksDamageTypes.PSI_BULLET, husk, husk), 6.0F)
                         && core.getWorn() == 0.0F,
                 "The terrain, the caster's own attacks, Gram Demolition and Psi Bullet must not wear the image down");
-        helper.assertTrue(near(decoy.getMaxHealth(), core.getMaxIntegrity()) && near(decoy.getHealth(), core.getIntegrity()),
-                "The image's health must be the core's integrity: " + decoy.getHealth() + "/" + decoy.getMaxHealth()
-                        + " vs " + core.getIntegrity() + "/" + core.getMaxIntegrity());
-        // A hit of 1 still takes 2 integrity, and the health goes with it.
+        helper.assertTrue(near(decoy.getMaxHealth(), player.getMaxHealth()) && near(decoy.getHealth(), player.getHealth()),
+                "The image's health must be the caster's: " + decoy.getHealth() + "/" + decoy.getMaxHealth()
+                        + " vs " + player.getHealth() + "/" + player.getMaxHealth());
+        // Health bars write a named entity's name in italics; the image goes by the caster's name like a player.
+        helper.assertTrue(!decoy.hasCustomName() && decoy.getDisplayName().getString().equals(player.getDisplayName().getString()),
+                "The image must show the caster's name without counting as named");
+        // A hit of 1 still takes 2 integrity, and the health stays the caster's.
+        float healthBefore = decoy.getHealth();
         helper.assertTrue(decoy.hurt(sources.mobAttack(husk), 1.0F) && decoy.isAlive()
-                        && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR) && near(decoy.getHealth(), core.getIntegrity()),
-                "An attack must take 2 integrity, and the health must follow it");
+                        && near(core.getWorn(), EntityParadeCore.ATTACK_WEAR) && near(decoy.getHealth(), healthBefore),
+                "An attack must take 2 integrity and leave the health as it is");
         // Nothing else a mob suffers takes hold either, even when another mod calls it directly.
         decoy.setHealth(0.0F);
         decoy.die(sources.mobAttack(husk));
-        helper.assertTrue(near(decoy.getHealth(), core.getIntegrity()) && decoy.isAlive() && !decoy.isDeadOrDying(),
+        helper.assertTrue(near(decoy.getHealth(), player.getHealth()) && decoy.isAlive() && !decoy.isDeadOrDying(),
                 "Setting its health or killing it directly must not take hold");
+        // The image's health goes with the caster's.
+        player.setHealth(12.0F);
         decoy.setDeltaMovement(1.0, 1.0, 1.0);
         decoy.push(0.5, 0.5, 0.5);
         helper.assertTrue(decoy.getDeltaMovement().equals(Vec3.ZERO) && decoy.isIgnoringBlockTriggers(),
@@ -978,9 +984,11 @@ public final class CombatSpellGameTests {
         decoy.setArrowCount(2);
         decoy.setCustomName(Component.literal("renamed"));
         helper.startSequence()
-                .thenExecuteAfter(2, () -> helper.assertTrue(decoy.getArrowCount() == 0
-                                && player.getName().getString().equals(decoy.getName().getString()),
-                        "Arrows must not stay in the image, and it must keep its owner's name"))
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(decoy.getArrowCount() == 0 && player.getName().getString().equals(decoy.getName().getString()),
+                            "Arrows must not stay in the image, and it must keep its owner's name");
+                    helper.assertTrue(near(decoy.getHealth(), 12.0F), "The image's health must follow the caster's: " + decoy.getHealth());
+                })
                 .thenExecuteAfter(9, () -> {
                     // A heavier blow takes no more than the first.
                     decoy.hurt(sources.mobAttack(husk), 100.0F);
@@ -1006,6 +1014,9 @@ public final class CombatSpellGameTests {
         helper.assertTrue(core.position().distanceTo(decoy.position().add(0.0, EntityParadeCore.CHEST_HEIGHT, 0.0)) < 1.0E-4,
                 "The core must sit in the image's chest");
         helper.assertTrue(core.isShownTo(player) && !core.isShownTo(rival), "Only the caster may see the core's integrity");
+        // Jade skips entities invisible to the viewer, so other players' Jade never names the core.
+        helper.assertTrue(!core.isInvisibleTo(player) && core.isInvisibleTo(rival),
+                "The core must count as invisible to everyone but the caster");
 
         // Trick: Extend SpellGram and Trick: Recall SpellGram take the image for its core.
         int before = core.getRemainingTicks();
@@ -1033,7 +1044,7 @@ public final class CombatSpellGameTests {
         EntityParadeDecoy second = Parades.activeDecoy(player);
         EntityParadeCore secondCore = second != null ? second.getCore() : null;
         helper.assertTrue(secondCore != null && near(secondCore.getMaxIntegrity(), 40.0) && secondCore.getLifetimeTicks() == 400
-                        && near(second.getMaxHealth(), 40.0),
+                        && near(second.getMaxHealth(), player.getMaxHealth()),
                 "Interference 2 must double the integrity but keep the time: " + (secondCore == null ? "none"
                         : secondCore.getMaxIntegrity() + " / " + secondCore.getLifetimeTicks()));
         // Another caster's Gram Demolition dispels it outright.

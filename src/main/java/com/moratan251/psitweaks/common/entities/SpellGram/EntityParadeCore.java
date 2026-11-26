@@ -20,7 +20,8 @@ import org.jetbrains.annotations.Nullable;
  *   作動式: 術式解体・サイ・ブリットは虚像ではなく核を、それぞれの量で削る。</li>
  *   <li>作動式: 魔法式延長・魔法式回収、取得子: 自分の常駐魔法式の対象になり、置ける数の上限にも数える。</li>
  *   <li>他人の領域干渉では止まらない。</li>
- *   <li>照準を合わせたときの名前と耐久値は術者にだけ見せる（{@link #isShownTo}）。他人に見えると虚像だと分かるため。</li>
+ *   <li>照準を合わせたときの名前と耐久値は術者にだけ見せる（{@link #isShownTo}）。他人に見えると虚像だと分かるため。
+ *   術者以外には透明として扱い（{@link SpellGramObject#isInvisibleTo}）、Jade などの照準の表示にも出さない。</li>
  * </ul>
  */
 public class EntityParadeCore extends SpellGramObject {

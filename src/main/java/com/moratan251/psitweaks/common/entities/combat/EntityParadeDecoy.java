@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -42,10 +43,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * The image projected by Trick: Parade. It wears the caster's skin, armour and held items and draws the attacks of
- * hostile mobs. Its time and integrity are held by an invisible Resident SpellGram inside it ({@link EntityParadeCore}):
- * nothing hurts the image, each attack only wears the core down by the same amount, and the image goes when the core
- * does (and the other way round). It is never saved.
+ * The image projected by Trick: Parade. It wears the caster's skin, armour, held items, name and health, and draws the
+ * attacks of hostile mobs. Its time and integrity are held by an invisible Resident SpellGram inside it
+ * ({@link EntityParadeCore}): nothing hurts the image, each attack only wears the core down by the same amount, and the
+ * image goes when the core does (and the other way round). It is never saved.
  * <p>
  * It stays a fixed number of blocks in front of its owner (behind for a negative distance), measured along the way the
  * owner looks on the horizontal plane, at the height of the owner's feet. It turns with the owner, floats and passes
@@ -86,8 +87,6 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     /** Server side: the Resident SpellGram that holds the image's time and integrity. */
     @Nullable
     private WeakReference<EntityParadeCore> coreRef;
-    /** Server side: the highest integrity the core has had, the image's max health. */
-    private float peakIntegrity;
     /** The chance that an attack on the owner misses while the image stands. */
     private double evasionChance;
     /** Client side: ticks left of the waver after a hit. */
@@ -130,6 +129,7 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         ownerRef = new WeakReference<>(owner);
         setCustomName(owner.getName());
         copyGear(owner);
+        copyHealth(owner);
         setLeftHanded(owner.getMainArm() == HumanoidArm.LEFT);
         evasionChance = Parades.evasionChance(distance);
         follow(owner);
@@ -197,32 +197,23 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         return entityData.get(WATCHING);
     }
 
-    /**
-     * Server side: ties the image to its core; the image goes when the core does, and the core when the image does, and
-     * the image's health is the core's integrity ({@link #linkHealthToCore}).
-     */
+    /** Server side: ties the image to its core; the image goes when the core does, and the core when the image does. */
     public void bindCore(EntityParadeCore core) {
         coreRef = new WeakReference<>(core);
-        linkHealthToCore();
     }
 
     /**
-     * Server side: sets the image's health to the core's integrity, and its max health to the highest integrity the
-     * core has had (Trick: Extend SpellGram can take it above what it was cast with). Max health cannot go past the
-     * attribute's limit (1024), so health stops there too.
+     * Server side: sets the image's health and max health to its owner's, so health bars (Neat and the like) show the
+     * owner's real health, never the core's integrity. Attacks on the image wear only the core and leave the health as
+     * it is, the way attacks on the owner miss while the image stands.
      */
-    private void linkHealthToCore() {
-        EntityParadeCore core = getCore();
-        if (core == null) {
-            return;
-        }
-        float integrity = core.getIntegrity();
-        peakIntegrity = Math.max(peakIntegrity, Math.max(core.getMaxIntegrity(), integrity));
+    private void copyHealth(Player owner) {
         AttributeInstance maxHealth = getAttribute(Attributes.MAX_HEALTH);
-        if (maxHealth != null && maxHealth.getBaseValue() != peakIntegrity) {
-            maxHealth.setBaseValue(peakIntegrity);
+        double ownerMax = owner.getMaxHealth();
+        if (maxHealth != null && maxHealth.getBaseValue() != ownerMax) {
+            maxHealth.setBaseValue(ownerMax);
         }
-        super.setHealth(integrity);
+        super.setHealth(owner.getHealth());
     }
 
     /** Server side: the core while it lasts. */
@@ -276,7 +267,7 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         }
         follow(owner);
         mimic(owner);
-        linkHealthToCore();
+        copyHealth(owner);
         // Arrows and stingers that hit it do not stay stuck in it.
         if (getArrowCount() > 0) {
             setArrowCount(0);
@@ -413,7 +404,6 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
             core.wearByAttack();
         }
         if (!isRemoved()) {
-            linkHealthToCore();
             level().broadcastEntityEvent(this, EVENT_WAVER);
             CombatEffects.sound((ServerLevel) level(), position(), SoundEvents.AMETHYST_BLOCK_HIT, 1.0F, 1.4F);
         }
@@ -504,13 +494,29 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     }
 
     /**
-     * Its health is its core's integrity, whatever anyone else sets it to (another mod setting it directly, healing):
-     * this puts it back to the integrity, or to full while there is no core yet.
+     * Its health is its owner's, whatever anyone else sets it to (another mod setting it directly, healing): this puts
+     * it back to the owner's health, or to full while it has no owner yet.
      */
     @Override
     public void setHealth(float health) {
-        EntityParadeCore core = coreRef != null ? coreRef.get() : null;
-        super.setHealth(core != null && !core.isEnded() ? core.getIntegrity() : getMaxHealth());
+        Player owner = getOwnerPlayer();
+        super.setHealth(owner != null ? owner.getHealth() : getMaxHealth());
+    }
+
+    /**
+     * Goes by its owner's name (kept as its custom name) without counting as named, like a player: Neat writes the
+     * names of named entities in italics.
+     */
+    @Override
+    public boolean hasCustomName() {
+        return false;
+    }
+
+    /** Shows its owner's name as the owner's own name shows (team colour and prefix, other mods' name formatting). */
+    @Override
+    public Component getDisplayName() {
+        Player owner = getOwnerPlayer();
+        return owner != null ? owner.getDisplayName() : super.getDisplayName();
     }
 
     /** Nothing gets past {@link #hurt} into the usual damage handling, even when called directly. */

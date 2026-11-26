@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
@@ -58,6 +59,15 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
      */
     public boolean isShownTo(Entity viewer) {
         return true;
+    }
+
+    /**
+     * {@link #isShownTo} で見せない相手には透明として扱う。Jade などの照準の表示は {@code isPickable} を見ずに自分で照準を
+     * 引くが、透明な相手は選ばないので、見せない核がそちらにも出ない。
+     */
+    @Override
+    public boolean isInvisibleTo(Player player) {
+        return !isShownTo(player) || super.isInvisibleTo(player);
     }
 
     /**
