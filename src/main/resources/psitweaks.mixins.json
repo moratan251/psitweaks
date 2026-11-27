@@ -19,6 +19,8 @@
     "EntitySpellCircleAutonomousCasterMixin",
     "EntitySpellProjectileAutonomousCasterMixin",
     "FireworkRocketEntityAccessor",
+    "GameTestRegistryClassFilterMixin",
+    "GameTestServerClassFilterMixin",
     "GameTestServerOriginMixin",
     "ItemCADAutonomousCasterMixin",
     "ItemCADPlainMemoryMixin",

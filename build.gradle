@@ -99,6 +99,10 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             // Start the test grid at x = z = 0 instead of a random spot up to 15M blocks away (Sable loses precision past 2^23).
             systemProperty 'psitweaks.gametest.fixedOrigin', 'true'
+            // Run only these GameTest classes: comma-separated simple names, case-insensitive (GameTestClassFilter), e.g.
+            // -Ppsitweaks.gametest.classes=AdvancementGameTests. Unset or empty runs every test. The value is read at
+            // configuration time, so changing it only makes Gradle store a new configuration cache entry.
+            systemProperty 'psitweaks.gametest.classes', providers.gradleProperty('psitweaks.gametest.classes').getOrElse('')
         }
 
         data {

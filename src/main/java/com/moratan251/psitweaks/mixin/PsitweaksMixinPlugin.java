@@ -27,6 +27,11 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
             "com.moratan251.psitweaks.mixin.GameTestServerOriginMixin";
     /** GameTest の場所を原点に固定するか（build.gradle の gameTestServer の run が true にする）。 */
     private static final String GAMETEST_FIXED_ORIGIN_PROPERTY = "psitweaks.gametest.fixedOrigin";
+    private static final Set<String> GAMETEST_CLASS_FILTER_MIXINS = Set.of(
+            "com.moratan251.psitweaks.mixin.GameTestRegistryClassFilterMixin",
+            "com.moratan251.psitweaks.mixin.GameTestServerClassFilterMixin");
+    /** 走らせる GameTest のクラス名（カンマ区切り）。空なら絞らない（build.gradle の gameTestServer の run が Gradle プロパティから渡す）。 */
+    private static final String GAMETEST_CLASSES_PROPERTY = "psitweaks.gametest.classes";
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -53,6 +58,9 @@ public final class PsitweaksMixinPlugin implements IMixinConfigPlugin {
         }
         if (GAMETEST_ORIGIN_MIXIN.equals(mixinClassName)) {
             return Boolean.getBoolean(GAMETEST_FIXED_ORIGIN_PROPERTY);
+        }
+        if (GAMETEST_CLASS_FILTER_MIXINS.contains(mixinClassName)) {
+            return !System.getProperty(GAMETEST_CLASSES_PROPERTY, "").isBlank();
         }
         return true;
     }
