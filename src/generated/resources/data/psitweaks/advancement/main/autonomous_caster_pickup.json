@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "parent": "psitweaks:main/hypostasis_control_circuit_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psitweaks:autonomous_caster"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:autonomous_caster_pickup.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:autonomous_caster"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:autonomous_caster_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

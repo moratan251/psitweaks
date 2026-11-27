@@ -31,7 +31,7 @@ import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
- * Material and CAD Assembly advancements, shown on Psi's own tab (psi:main) after Psigem.
+ * Material and CAD Assembly advancements, shown on Psitweaks' own tab, whose root is earned with a Psigem.
  * Their names live in {@link PsitweaksLanguageProvider} (addAdvancementTranslations).
  */
 public class PsitweaksAdvancementProvider extends AdvancementProvider {
@@ -70,9 +70,12 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
      * Mekanism may hang from them. Returns the Program Researcher one, the parent of the Generators advancements.
      */
     private static AdvancementHolder generateMekanismOnly(Consumer<AdvancementHolder> saver) {
-        // The parent is saved by generate(), so only its id is at hand here.
-        return add(saver, "program_researcher_pickup", byId(own("psionic_control_circuit_pickup")),
-                modItem(Psitweaks.location("program_researcher")));
+        // The parents are saved by generate(), so only their ids are at hand here.
+        AdvancementHolder programResearcher = add(saver, "program_researcher_pickup",
+                byId(own("psionic_control_circuit_pickup")), modItem(Psitweaks.location("program_researcher")));
+        add(saver, "autonomous_caster_pickup", byId(own("hypostasis_control_circuit_pickup")),
+                AdvancementType.CHALLENGE, modItem(Psitweaks.location("autonomous_caster")));
+        return programResearcher;
     }
 
     /** Advancements about Mekanism Generators (which needs Mekanism). */
@@ -89,7 +92,7 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
                 .save(saver, id.toString());
     }
 
-    /** Looked up by id so this class does not load other mods' classes; datagen runs with Mekanism and its Generators. */
+    /** Looked up by id so this class does not load other mods' classes; datagen runs with Psi, Mekanism and its Generators. */
     private static Item modItem(ResourceLocation id) {
         return BuiltInRegistries.ITEM.getOptional(id)
                 .orElseThrow(() -> new IllegalStateException(id + " is not registered; run datagen with Mekanism and Mekanism Generators"));
@@ -97,12 +100,18 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
 
     private static void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver,
             ExistingFileHelper existingFileHelper) {
-        // The data run cannot see Psi's advancements, so Psigem is named by id.
-        AdvancementHolder alloyPsion = add(saver, "alloy_psion_pickup",
-                byId(ResourceLocation.fromNamespaceAndPath("psi", "main/psigem_pickup")), PsitweaksItems.ALLOY_PSION);
+        // The tab opens with a Psigem, where the Psitweaks materials begin; it is named and drawn like the creative tab.
+        AdvancementHolder root = new Advancement.Builder()
+                .display(PsitweaksItems.ALLOY_PSION, Component.translatable("creativetabs.psitweaks"),
+                        Component.translatable("advancement.psitweaks:root.desc"),
+                        Psitweaks.location("textures/block/psycheonicmetal_block.png"), AdvancementType.TASK, false, false, false)
+                .addCriterion("has_psigem", InventoryChangeTrigger.TriggerInstance.hasItems(
+                        modItem(ResourceLocation.fromNamespaceAndPath("psi", "psigem"))))
+                .save(saver, own("root").toString());
+        AdvancementHolder alloyPsion = add(saver, "alloy_psion_pickup", root, PsitweaksItems.ALLOY_PSION);
         add(saver, "alloy_psion_assembly_pickup", alloyPsion, PsitweaksItems.CAD_ASSEMBLY_ALLOY_PSION);
         add(saver, "psionic_control_circuit_pickup", alloyPsion, PsitweaksItems.PSIONIC_CONTROL_CIRCUIT);
-        AdvancementHolder chaoticPsimetal = add(saver, "chaotic_psimetal_pickup", alloyPsion, PsitweaksItems.CHAOTIC_PSIMETAL);
+        AdvancementHolder chaoticPsimetal = add(saver, "chaotic_psimetal_pickup", root, PsitweaksItems.CHAOTIC_PSIMETAL);
         add(saver, "chaotic_psimetal_assembly_pickup", chaoticPsimetal, PsitweaksItems.CAD_ASSEMBLY_CHAOTIC_PSIMETAL);
         AdvancementHolder flashmetal = add(saver, "flashmetal_pickup", chaoticPsimetal, PsitweaksItems.FLASHMETAL);
         add(saver, "flashmetal_assembly_pickup", flashmetal, PsitweaksItems.CAD_ASSEMBLY_FLASHMETAL);
@@ -120,14 +129,20 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
         add(saver, "psycheonic_metal_assembly_pickup", psycheonicMetal, PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL);
     }
 
-    /** Saves {@code psitweaks:main/<id>}, completed by holding any one of {@code items}; the first is the icon. */
+    /** Saves {@code psitweaks:main/<id>} as a task, completed by holding any one of {@code items}; the first is the icon. */
     private static AdvancementHolder add(Consumer<AdvancementHolder> saver, String id, AdvancementHolder parent, ItemLike... items) {
+        return add(saver, id, parent, AdvancementType.TASK, items);
+    }
+
+    /** Saves {@code psitweaks:main/<id>} with {@code type}, completed by holding any one of {@code items}; the first is the icon. */
+    private static AdvancementHolder add(Consumer<AdvancementHolder> saver, String id, AdvancementHolder parent,
+            AdvancementType type, ItemLike... items) {
         String key = "advancement.psitweaks:" + id;
         // Not Builder.advancement(), which turns on the telemetry event vanilla sends for its own advancements.
         return new Advancement.Builder()
                 .parent(parent)
                 .display(items[0], Component.translatable(key), Component.translatable(key + ".desc"),
-                        null, AdvancementType.TASK, true, true, false)
+                        null, type, true, true, false)
                 .addCriterion("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items)))
                 .save(saver, own(id).toString());
     }

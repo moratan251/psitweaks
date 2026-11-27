@@ -1,5 +1,5 @@
 {
-  "parent": "psi:main/psigem_pickup",
+  "parent": "psitweaks:main/root",
   "criteria": {
     "has_item": {
       "conditions": {

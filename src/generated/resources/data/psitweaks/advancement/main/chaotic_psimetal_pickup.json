@@ -1,5 +1,5 @@
 {
-  "parent": "psitweaks:main/alloy_psion_pickup",
+  "parent": "psitweaks:main/root",
   "criteria": {
     "has_item": {
       "conditions": {

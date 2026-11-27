@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "has_psigem": {
+      "conditions": {
+        "items": [
+          {
+            "items": "psi:psigem"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "psitweaks:textures/block/psycheonicmetal_block.png",
+    "description": {
+      "translate": "advancement.psitweaks:root.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:alloy_psion"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "creativetabs.psitweaks"
+    }
+  },
+  "requirements": [
+    [
+      "has_psigem"
+    ]
+  ]
+}

@@ -3201,12 +3201,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
     }
 
     /**
-     * 1.0.0 advancements on Psi's tab; the tree itself is in {@link PsitweaksAdvancementProvider}.
+     * 1.0.0 advancements on the Psitweaks tab; the tree itself is in {@link PsitweaksAdvancementProvider}.
      * Each line: id, English name, English description, Japanese name, Japanese description.
      */
     private void addAdvancementTranslations(JsonObject root) {
-        addAdvancement(root, "alloy_psion_pickup", "One Small Step", "Obtain your first Psionic Alloy",
-                "未知への一歩", "サイオニック合金を初めて手に入れる");
+        // The tab's root takes its name from the creative tab (creativetabs.psitweaks), so only its description is here.
+        addLocalized(root, "advancement.psitweaks:root.desc", "Obtain a Psigem and go beyond Psi",
+                "サイジェムを手に入れて, Psi のその先へ進む");
+        addAdvancement(root, "alloy_psion_pickup", "Artificial Neuron", "Obtain your first Psionic Alloy",
+                "人工ニューロン", "サイオニック合金を初めて手に入れる");
         addAdvancement(root, "alloy_psion_assembly_pickup", "Lightweight Champion", "Craft a Psionic Alloy CAD Assembly",
                 "効率特化", "サイオニック合金のCAD素体を作る");
         addAdvancement(root, "psionic_control_circuit_pickup", "Perceptron", "Craft a Psionic Control Circuit",
@@ -3217,36 +3220,39 @@ public class PsitweaksLanguageProvider implements DataProvider {
         // Mekanism Generators only, hidden
         addAdvancement(root, "phonon_maser_fusion_ignition", "Sonofusion", "Ignite a Fusion Reactor with Trick: Phonon Maser",
                 "音響核融合", "作動式: フォノンメーザーで核融合炉を点火する");
-        addAdvancement(root, "chaotic_psimetal_pickup", "Perfect Harmony", "Blend Ebony and Ivory into Psimetal",
-                "陰陽混合", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
+        addAdvancement(root, "chaotic_psimetal_pickup", "Cognitive Dissonance", "Blend Ebony and Ivory into Psimetal",
+                "認知的不協和", "エボニーとアイボリーの力をサイメタルに混ぜ合わせる");
         addAdvancement(root, "chaotic_psimetal_assembly_pickup", "Aufheben", "Craft a Chaotic Psimetal CAD Assembly",
                 "アウフヘーベン", "カオティックサイメタルのCAD素体を作る");
-        addAdvancement(root, "flashmetal_pickup", "In a Flash", "Mix Chaotic Psimetal with Refined Glowstone and refine it",
-                "ピカイチ", "カオティックサイメタルと精製グロウストーンを混ぜ合わせて精製する");
-        addAdvancement(root, "flashmetal_assembly_pickup", "Faster Than Thought", "Craft a Flashmetal CAD Assembly",
-                "電光石火", "フラッシュメタルのCAD素体を作る");
-        addAdvancement(root, "psionic_echo_pickup", "Power from Beyond", "Research Trick: Supreme Infusion and use it on an Echo Shard",
-                "向こう側からの力", "研究で作動式: 超位注入を解禁し, 残響の欠片に使う");
-        addAdvancement(root, "alloy_psionic_echo_pickup", "Good Vibrations", "Infuse Psionic Alloy with Psionic Echo",
-                "反響を呼ぶ", "サイオニック合金にサイオニックエコーを注入する");
+        addAdvancement(root, "flashmetal_pickup", "Eureka", "Mix Chaotic Psimetal with Refined Glowstone and refine it",
+                "エウレカ", "カオティックサイメタルと精製グロウストーンを混ぜ合わせて精製する");
+        addAdvancement(root, "flashmetal_assembly_pickup", "Aha! Moment", "Craft a Flashmetal CAD Assembly",
+                "アハ体験", "フラッシュメタルのCAD素体を作る");
+        addAdvancement(root, "psionic_echo_pickup", "Anamnesis", "Research Trick: Supreme Infusion and use it on an Echo Shard",
+                "アナムネーシス", "研究で作動式: 超位注入を解禁し, 残響の欠片に使う");
+        addAdvancement(root, "alloy_psionic_echo_pickup", "Going Deeper", "Infuse Psionic Alloy with Psionic Echo",
+                "深層へ", "サイオニック合金にサイオニックエコーを注入する");
         addAdvancement(root, "echo_control_circuit_pickup", "Turing Test", "Craft an Echo Control Circuit",
                 "チューリングテスト", "感応制御回路を作る");
-        addAdvancement(root, "heavy_psimetal_pickup", "Heavy Metal", "Combine echo-infused Netherite Scrap with Flashmetal",
-                "重鎮", "サイオニックエコーを注入したネザライトの欠片とフラッシュメタルを合わせる");
-        addAdvancement(root, "heavy_psimetal_assembly_pickup", "It's All Greek to Me", "Craft a Heavy Psimetal CAD Assembly, α or β",
-                "重みが違う", "ヘビーサイメタルのCAD素体を α型か β型で作る");
-        addAdvancement(root, "antinite_pickup", "Two of a Kind", "Mine Antinite Ore on the outer End islands",
-                "対を成す", "ジ・エンドの外側の島でアンティナイト鉱石を掘る");
-        addAdvancement(root, "hypostasis_gem_pickup", "Awakening", "Research Trick: Material Mutation and use it on a Block of Antinite",
-                "目覚め", "研究で作動式: 物質変成を解禁し, アンティナイトブロックに使う");
-        addAdvancement(root, "alloy_hypostasis_pickup", "It Knows", "Infuse Echo Alloy with Hypostasis",
-                "「それ」は認識する", "感応合金にヒュポスタシスを注入する");
+        addAdvancement(root, "heavy_psimetal_pickup", "Askesis", "Combine echo-infused Netherite Scrap with Flashmetal",
+                "アスケーシス", "サイオニックエコーを注入したネザライトの欠片とフラッシュメタルを合わせる");
+        addAdvancement(root, "heavy_psimetal_assembly_pickup", "Hexis", "Craft a Heavy Psimetal CAD Assembly, α or β",
+                "ヘクシス", "ヘビーサイメタルのCAD素体を α型か β型で作る");
+        addAdvancement(root, "antinite_pickup", "Antithesis", "Mine Antinite Ore on the outer End islands",
+                "アンチテーゼ", "ジ・エンドの外側の島でアンティナイト鉱石を掘る");
+        addAdvancement(root, "hypostasis_gem_pickup", "Tabula Rasa", "Research Trick: Material Mutation and use it on a Block of Antinite",
+                "タブラ・ラーサ", "研究で作動式: 物質変成を解禁し, アンティナイトブロックに使う");
+        addAdvancement(root, "alloy_hypostasis_pickup", "Alignment Pending", "Infuse Echo Alloy with Hypostasis",
+                "アライメント未完了", "感応合金にヒュポスタシスを注入する");
         addAdvancement(root, "hypostasis_control_circuit_pickup", "Ascension is All You Need", "Craft a Hypostasis Control Circuit",
                 "Ascension is All You Need", "位格制御回路を作る");
-        addAdvancement(root, "psycheonic_metal_pickup", "Entelechy", "Infuse Heavy Psimetal with Hypostasis and craft an ingot from the nuggets",
-                "エンテレケイア", "ヘビーサイメタルにヒュポスタシスを注入し, ナゲットからインゴットを作る");
-        addAdvancement(root, "psycheonic_metal_assembly_pickup", "Body and Soul", "Craft a Psycheonic Metal CAD Assembly",
-                "一心同体", "プシオニックメタルのCAD素体を作る");
+        // Mekanism only
+        addAdvancement(root, "autonomous_caster_pickup", "Vibe Casting", "Craft an Autonomous Caster",
+                "バイブキャスティング", "自律詠唱機を作る");
+        addAdvancement(root, "psycheonic_metal_pickup", "Panpsychism", "Infuse Heavy Psimetal with Hypostasis and craft an ingot from the nuggets",
+                "汎心論", "ヘビーサイメタルにヒュポスタシスを注入し, ナゲットからインゴットを作る");
+        addAdvancement(root, "psycheonic_metal_assembly_pickup", "Entelechy", "Craft a Psycheonic Metal CAD Assembly",
+                "エンテレケイア", "プシオニックメタルのCAD素体を作る");
 
         // Psi ships no Japanese for its own tab, so only ja_jp gets these; English stays Psi's.
         if ("ja_jp".equals(locale)) {

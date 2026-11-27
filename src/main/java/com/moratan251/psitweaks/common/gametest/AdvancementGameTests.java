@@ -11,25 +11,28 @@ import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.common.item.base.ModItems;
 
-/** The 1.0.0 advancements load onto Psi's tab with the parents from the design. */
+/** The 1.0.0 advancements load onto the Psitweaks tab with the parents from the design. */
 @GameTestHolder(Psitweaks.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class AdvancementGameTests {
-    private static final ResourceLocation PSI_ROOT = ResourceLocation.fromNamespaceAndPath("psi", "main/root");
-    /** Advancement id → parent id; a parent without a namespace is another psitweaks:main/ advancement. */
+    private static final ResourceLocation ROOT = Psitweaks.location("main/root");
+    /** Advancement id → parent id (another psitweaks:main/ advancement); the root has none. */
     private static final Map<String, String> PARENTS = Map.ofEntries(
-            Map.entry("alloy_psion_pickup", "psi:main/psigem_pickup"),
+            Map.entry("alloy_psion_pickup", "root"),
             Map.entry("alloy_psion_assembly_pickup", "alloy_psion_pickup"),
             Map.entry("psionic_control_circuit_pickup", "alloy_psion_pickup"),
-            Map.entry("chaotic_psimetal_pickup", "alloy_psion_pickup"),
+            Map.entry("chaotic_psimetal_pickup", "root"),
             Map.entry("chaotic_psimetal_assembly_pickup", "chaotic_psimetal_pickup"),
             Map.entry("flashmetal_pickup", "chaotic_psimetal_pickup"),
             Map.entry("flashmetal_assembly_pickup", "flashmetal_pickup"),
@@ -46,13 +49,14 @@ public final class AdvancementGameTests {
             Map.entry("psycheonic_metal_assembly_pickup", "psycheonic_metal_pickup"));
     /** Same as {@link #PARENTS}, for the advancements that load only with Mekanism. */
     private static final Map<String, String> MEKANISM_PARENTS = Map.of(
-            "program_researcher_pickup", "psionic_control_circuit_pickup");
+            "program_researcher_pickup", "psionic_control_circuit_pickup",
+            "autonomous_caster_pickup", "hypostasis_control_circuit_pickup");
     /** Same as {@link #PARENTS}, for the advancements that load only with Mekanism Generators. */
     private static final Map<String, String> GENERATORS_PARENTS = Map.of(
             "phonon_maser_fusion_ignition", "program_researcher_pickup");
 
     @GameTest(template = "psi110_empty")
-    public static void advancementsHangFromTheirParentsOnPsiTab(GameTestHelper helper) {
+    public static void advancementsHangFromTheirParentsOnPsitweaksTab(GameTestHelper helper) {
         var advancements = helper.getLevel().getServer().getAdvancements();
         boolean mekanism = MekanismCompat.isMekanismLoaded();
         boolean generators = MekanismCompat.isGeneratorsLoaded();
@@ -66,7 +70,16 @@ public final class AdvancementGameTests {
         long loaded = advancements.getAllAdvancements().stream()
                 .filter(holder -> holder.id().getNamespace().equals(Psitweaks.MOD_ID) && holder.id().getPath().startsWith("main/"))
                 .count();
-        helper.assertTrue(loaded == parents.size(), "Expected " + parents.size() + " psitweaks:main advancements, got " + loaded);
+        helper.assertTrue(loaded == parents.size() + 1, "Expected " + (parents.size() + 1) + " psitweaks:main advancements, got " + loaded);
+        AdvancementNode root = advancements.tree().get(ROOT);
+        helper.assertTrue(root != null && root.parent() == null, "The Psitweaks tab root is missing or has a parent");
+        // A root without a background draws the tab with the missing texture.
+        helper.assertTrue(root.advancement().display().flatMap(display -> display.getBackground()).isPresent(),
+                "The Psitweaks tab root has no background");
+        helper.assertTrue(root.advancement().criteria().values().stream().anyMatch(criterion ->
+                        criterion.triggerInstance() instanceof InventoryChangeTrigger.TriggerInstance inventory
+                                && inventory.items().size() == 1 && inventory.items().get(0).test(new ItemStack(ModItems.psigem.get()))),
+                "The Psitweaks tab root must be earned by holding a Psigem");
         MEKANISM_PARENTS.keySet().forEach(id -> helper.assertTrue(
                 (advancements.get(Psitweaks.location("main/" + id)) != null) == mekanism,
                 id + " must load only with Mekanism (Mekanism loaded: " + mekanism + ")"));
@@ -76,10 +89,10 @@ public final class AdvancementGameTests {
         parents.forEach((id, parent) -> {
             AdvancementNode node = advancements.tree().get(Psitweaks.location("main/" + id));
             helper.assertTrue(node != null, "Advancement " + id + " is not in the tree (missing, or its parent did not load)");
-            ResourceLocation expected = parent.contains(":") ? ResourceLocation.parse(parent) : Psitweaks.location("main/" + parent);
+            ResourceLocation expected = Psitweaks.location("main/" + parent);
             helper.assertTrue(node.parent() != null && node.parent().holder().id().equals(expected),
                     id + " must hang from " + expected + ", got " + (node.parent() == null ? null : node.parent().holder().id()));
-            helper.assertTrue(node.root().holder().id().equals(PSI_ROOT), id + " is not on Psi's tab: " + node.root().holder().id());
+            helper.assertTrue(node.root().holder().id().equals(ROOT), id + " is not on the Psitweaks tab: " + node.root().holder().id());
             helper.assertTrue(node.advancement().display().isPresent(), id + " has no display");
         });
         helper.succeed();
@@ -101,6 +114,27 @@ public final class AdvancementGameTests {
         helper.assertTrue(criteria.keySet().equals(Set.of(PsitweaksAdvancements.CODE_TRIGGERED))
                         && criteria.get(PsitweaksAdvancements.CODE_TRIGGERED).triggerInstance() instanceof ImpossibleTrigger.TriggerInstance,
                 "Fusion ignition must only be awarded from code, got " + criteria.keySet());
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void autonomousCasterAdvancementIsVisibleChallengeForAutonomousCaster(GameTestHelper helper) {
+        if (!MekanismCompat.isMekanismLoaded()) {
+            helper.succeed();
+            return;
+        }
+        var holder = helper.getLevel().getServer().getAdvancements().get(Psitweaks.location("main/autonomous_caster_pickup"));
+        helper.assertTrue(holder != null, "Autonomous Caster advancement is missing");
+        var display = holder.value().display();
+        helper.assertTrue(display.isPresent() && !display.get().isHidden() && display.get().getType() == AdvancementType.CHALLENGE,
+                "Autonomous Caster advancement must be a visible challenge");
+        Item autonomousCaster = BuiltInRegistries.ITEM.getOptional(Psitweaks.location("autonomous_caster")).orElse(null);
+        helper.assertTrue(autonomousCaster != null, "psitweaks:autonomous_caster item is missing with Mekanism loaded");
+        var criteria = holder.value().criteria();
+        helper.assertTrue(criteria.size() == 1 && criteria.values().stream().anyMatch(criterion ->
+                        criterion.triggerInstance() instanceof InventoryChangeTrigger.TriggerInstance inventory
+                                && inventory.items().size() == 1 && inventory.items().get(0).test(new ItemStack(autonomousCaster))),
+                "Autonomous Caster advancement must be earned by holding an Autonomous Caster");
         helper.succeed();
     }
 
