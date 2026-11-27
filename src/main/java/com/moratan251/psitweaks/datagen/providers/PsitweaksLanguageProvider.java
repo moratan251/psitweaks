@@ -2267,7 +2267,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         addBookPage(root, "trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast.", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません.");
         addBookPage(root, "trick_barrier.0",
-                "Raises a $(thing)Power × 10$(0) shield on the target for 1 minute that absorbs damage instead of health. Even a hit exceeding the remaining shield only breaks it without hurting health.$(p)While shielded, the target cannot catch fire, and recasting overwrites the shield if the new value is at least what remains. Does not block falling, drowning, poison, or similar damage.",
+                "Raises a $(thing)Power × 10$(0) shield on the target for 1 minute that absorbs damage instead of health. A hit exceeding the remaining shield only breaks it without hurting health.$(p)While shielded, the target cannot catch fire, and recasting overwrites the shield if the new value is at least what remains. Does not block falling, drowning, poison, or similar damage.",
                 "対象に $(thing)威力×10$(0) のシールドを1分間張り, 体力の代わりにダメージを肩代わりさせます. 残量を超える一撃でもシールドが砕けるだけで体力は減りません.$(p)シールド中は炎上せず, かけ直すと新しい値が残量以上なら上書きされます. 落下・溺れ・毒などのダメージは防げません.");
         addBookPage(root, "selector_barrier_amount",
                 "Outputs the shield points the target's $(thing)Trick: Barrier$(0) has left, as a Number. It outputs 0 when the target has no shield or is not a living entity.",
@@ -2303,7 +2303,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact.", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います.");
         addBookPage(root, "trick_cocytus.0",
                 "Takes no input. Blows a block-piercing blizzard ahead that deals no damage and freezes caught mobs' minds forever, stopping their AI, movement, and sounds inside ice.$(p)Spares players, pets, and allies. Works on bosses, except a newly spawned Wither gathering strength; a frozen Ender Dragon thaws on defeat. Restoring a mob's AI by other means also melts the ice.",
-                "入力はありません. 前方へ地形貫通の吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ダメージなし). 凍結したモブは AI が止まって氷に閉じ込められ, 動かず音も立てなくなります.$(p)プレイヤーと術者のペット・味方は凍りません. ボスにも効きますが, 召喚直後のウィザーは対象外で, エンダードラゴンは撃破時に解凍されます. 他要因で AI が戻ると解凍されます.");
+                "入力はありません. 前方へ地形貫通の吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ダメージなし). 凍結したモブは AI が止まって氷に閉じ込められ, 動かず音も立てなくなります.$(p)プレイヤーと術者のペットや味方は凍りません. 召喚直後のウィザー以外のボスにも効き, エンダードラゴンは倒すと解凍されます. 他要因で AI が戻ると解凍されます.");
         addBookPage(root, "trick_supply_fe", "Supplies FE to the target block. When CAD Efficiency is 100, it supplies 80 FE per Psi.", "対象ブロックへFEを供給します. 供給量はCADの効率が100のとき, 1psiあたり80FEです.");
         addBookPage(root, "trick_pull_item.0",
                 "Pulls up to one stack (capped by optional Max) from the specified face of the block into your inventory.$(p)Filter modes: String (ID, *, or # tag), Item, and data-matching Item (Strict). Item modes also accept an Item List.",
