@@ -3250,17 +3250,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
 
         // Psi ships no Japanese for its own tab, so only ja_jp gets these; English stays Psi's.
         if ("ja_jp".equals(locale)) {
-            root.addProperty("psi.desc", "第四の壁を壊すジョークです. お楽しみください.");
+            root.addProperty("psi.desc", "第四の壁を破るジョークです. どうぞお楽しみください.");
             addPsiAdvancementJapanese(root, "iron_cad_pickup", "ナイスバディ", "鉄のCAD素体を作る");
             addPsiAdvancementJapanese(root, "gold_assembly_pickup", "値千金", "金のCAD素体を作る");
-            addPsiAdvancementJapanese(root, "encyclopaedia_psionica", "タブレットはつけで", "Psi のすべてを記した手引き書, Encyclopaedia Psionica を作る");
+            addPsiAdvancementJapanese(root, "encyclopaedia_psionica", "ツケはタブレットに", "Psi のすべてを記した手引き書, サイオニカ魔法大全を作る");
             addPsiAdvancementJapanese(root, "psidust", "クラフトできない…?", "初めてサイダストを作る");
-            addPsiAdvancementJapanese(root, "psimetal_pickup", "注目の鋳塊", "初めてサイメタルを注入して作る");
+            addPsiAdvancementJapanese(root, "psimetal_pickup", "注入の多い魔法店", "初めてサイメタルを注入して作る");
             addPsiAdvancementJapanese(root, "psimetal_assembly_pickup", "微サイな進歩", "サイメタルのCAD素体を作る");
             addPsiAdvancementJapanese(root, "psigem_pickup", "思考の結晶", "ダイヤモンドに注入して初めてサイジェムを作る");
-            addPsiAdvancementJapanese(root, "ebony_pickup", "成金", "石炭に注入して初めてエボニー実体を作る");
+            addPsiAdvancementJapanese(root, "ebony_pickup", "高価値", "石炭に注入して初めてエボニー実体を作る");
             addPsiAdvancementJapanese(root, "ebony_assembly_pickup", "ガチムチ", "エボニーサイメタルのCAD素体を作る");
-            addPsiAdvancementJapanese(root, "ivory_pickup", "真価", "クォーツに注入して初めてアイボリー実体を作る");
+            addPsiAdvancementJapanese(root, "ivory_pickup", "価値観の違い", "ネザークォーツに注入して初めてアイボリー実体を作る");
             addPsiAdvancementJapanese(root, "ivory_assembly_pickup", "魅惑的", "アイボリーサイメタルのCAD素体を作る");
         }
     }
