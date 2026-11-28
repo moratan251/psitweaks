@@ -75,5 +75,5 @@
   "psitweaks_qol.snippet.save_failed": "Could not save the snippet: %s",
   "psitweaks_qol.snippet.saved": "Saved snippet \"%s\"",
   "psitweaks_qol.snippet.size": "%s×%s",
-  "psitweaks_qol.snippet.unusable": "%s unusable pieces (skipped when pasting)"
+  "psitweaks_qol.snippet.unusable": "%s unlearned pieces"
 }

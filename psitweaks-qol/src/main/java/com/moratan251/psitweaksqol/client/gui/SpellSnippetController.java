@@ -89,6 +89,8 @@ public final class SpellSnippetController {
     private static final int ROW_HEIGHT = 11;
     private static final int DELETE_WIDTH = 9;
     private static final int PREVIEW_MAX_SIZE = 100;
+    private static final int PREVIEW_PADDING = 5;
+    private static final int PREVIEW_TITLE_MAX_WIDTH = 140;
 
     private enum Mode {
         NONE,
@@ -614,47 +616,60 @@ public final class SpellSnippetController {
         guiGraphics.pose().popPose();
     }
 
-    /** 一覧で指しているスニペットの絵を、GUI の右（入らなければ左）に出す。 */
+    /**
+     * 一覧で指しているスニペットの絵を、GUI の右（入らなければ左）に出す。
+     * 空きが狭いときは文を折り返し、絵を縮めて空きに収める。
+     */
     private static void renderListPreview(GuiProgrammer screen, GuiGraphics guiGraphics, SpellSnippet snippet) {
         if (listPreview == null || listPreview.layout() != snippet.layout()) {
             listPreview = SpellSnippetPreview.of(snippet.layout());
         }
         Font font = Minecraft.getInstance().font;
         SpellPieceLayout layout = snippet.layout();
+        int maxBoxWidth = SpellSnippetPreviewPlacement.maxWidth(screen.width, screen.left, screen.xSize);
+        int textWidth = Math.max(1, maxBoxWidth - PREVIEW_PADDING * 2);
+
+        List<FormattedCharSequence> lines = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+        lines.add(Component.literal(ellipsize(font, snippet.name(), Math.min(PREVIEW_TITLE_MAX_WIDTH, textWidth))).getVisualOrderText());
+        colors.add(TITLE_COLOR);
+        addWrapped(font, Component.translatable("psitweaks_qol.snippet.info",
+                layout.width(), layout.height(), layout.pieceCount()), textWidth, SUB_TEXT_COLOR, lines, colors);
+        int unusable = listPreview.unusableCount();
+        if (unusable > 0) {
+            addWrapped(font, Component.translatable("psitweaks_qol.snippet.unusable", unusable), textWidth, ERROR_COLOR, lines, colors);
+        }
+
         int contentWidth = layout.width() * CELL_SIZE - 2;
         int contentHeight = layout.height() * CELL_SIZE - 2;
-        float scale = Math.min(1.0F, (float) PREVIEW_MAX_SIZE / Math.max(contentWidth, contentHeight));
+        float scale = Math.min(1.0F, Math.min((float) PREVIEW_MAX_SIZE / Math.max(contentWidth, contentHeight),
+                (float) textWidth / contentWidth));
         int drawnWidth = Mth.ceil(contentWidth * scale);
         int drawnHeight = Mth.ceil(contentHeight * scale);
 
-        String title = ellipsize(font, snippet.name(), 140);
-        String info = Component.translatable("psitweaks_qol.snippet.info",
-                layout.width(), layout.height(), layout.pieceCount()).getString();
-        int unusable = listPreview.unusableCount();
-        String warning = unusable > 0
-                ? Component.translatable("psitweaks_qol.snippet.unusable", unusable).getString()
-                : "";
-        int textLines = unusable > 0 ? 3 : 2;
-        int boxWidth = Math.max(drawnWidth, Math.max(font.width(title), Math.max(font.width(info), font.width(warning)))) + 10;
-        int boxHeight = 5 + textLines * 10 + 3 + drawnHeight + 5;
-
-        int boxLeft = screen.left + screen.xSize + 4;
-        if (boxLeft + boxWidth > screen.width - 2) {
-            boxLeft = screen.left - boxWidth - 4;
-            if (boxLeft < 2) {
-                return;
-            }
+        int widest = drawnWidth;
+        for (FormattedCharSequence line : lines) {
+            widest = Math.max(widest, font.width(line));
         }
+        int boxWidth = widest + PREVIEW_PADDING * 2;
+        int boxHeight = 5 + lines.size() * 10 + 3 + drawnHeight + 5;
+        int boxLeft = SpellSnippetPreviewPlacement.left(screen.width, screen.left, screen.xSize, boxWidth);
         int boxTop = Mth.clamp(screen.top + 20, 2, Math.max(2, screen.height - boxHeight - 2));
 
         drawPanel(guiGraphics, boxLeft, boxTop, boxWidth, boxHeight);
-        guiGraphics.drawString(font, title, boxLeft + 5, boxTop + 5, TITLE_COLOR);
-        guiGraphics.drawString(font, info, boxLeft + 5, boxTop + 15, SUB_TEXT_COLOR);
-        if (unusable > 0) {
-            guiGraphics.drawString(font, warning, boxLeft + 5, boxTop + 25, ERROR_COLOR);
+        for (int i = 0; i < lines.size(); i++) {
+            guiGraphics.drawString(font, lines.get(i), boxLeft + PREVIEW_PADDING, boxTop + 5 + i * 10, colors.get(i));
         }
-        listPreview.draw(guiGraphics, boxLeft + (boxWidth - drawnWidth) / 2.0F, boxTop + 8 + textLines * 10,
+        listPreview.draw(guiGraphics, boxLeft + (boxWidth - drawnWidth) / 2.0F, boxTop + 8 + lines.size() * 10,
                 scale, 1.0F, true);
+    }
+
+    private static void addWrapped(Font font, Component text, int width, int color,
+                                   List<FormattedCharSequence> lines, List<Integer> colors) {
+        for (FormattedCharSequence line : font.split(text, width)) {
+            lines.add(line);
+            colors.add(color);
+        }
     }
 
     private static void startPlacing(SpellSnippet snippet) {

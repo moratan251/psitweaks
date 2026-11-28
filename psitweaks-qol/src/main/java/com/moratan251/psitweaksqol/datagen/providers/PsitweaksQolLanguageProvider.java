@@ -310,8 +310,8 @@ public class PsitweaksQolLanguageProvider implements DataProvider {
             default -> "Placing \"%s\": left click (hold Shift to keep placing) / right click or Esc to stop";
         });
         root.addProperty("psitweaks_qol.snippet.unusable", switch (locale) {
-            case "ja_jp" -> "使えないピース %s 個 (貼り付けでは飛ばす)";
-            default -> "%s unusable pieces (skipped when pasting)";
+            case "ja_jp" -> "未習得ピース %s 個";
+            default -> "%s unlearned pieces";
         });
         root.addProperty("psitweaks_qol.paste.skipped", switch (locale) {
             case "ja_jp" -> "使えないピース %s 個を飛ばして貼り付けました";
