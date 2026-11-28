@@ -112,6 +112,8 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import vazkii.psi.api.cad.CADComponentLookup;
+import vazkii.psi.api.cad.EnumCADStat;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.CompiledSpell;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -123,6 +125,7 @@ import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.common.item.base.ModItems;
 import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityLook;
 import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityPosition;
 import vazkii.psi.common.spell.operator.entity.PieceOperatorFocusedEntity;
@@ -549,7 +552,10 @@ public final class CombatSpellGameTests {
         int[] chain = stats(chainLightning(Map.of(POWER, 2.0)));
         helper.assertTrue(chain[0] == 260 && chain[1] == 710, "Chain Lightning P2: 180+40P / 470+120P, got " + chain[0] + "/" + chain[1]);
         int chainP1 = stats(chainLightning(Map.of(POWER, 1.0)))[0];
-        helper.assertTrue(chainP1 <= 350, "Chain Lightning at Power 1 must fit an ebony psimetal CAD (350), got " + chainP1);
+        int ebonyPotency = CADComponentLookup.statValue(helper.getLevel().registryAccess(),
+                new ItemStack(ModItems.cadAssemblyEbony.get()), EnumCADStat.POTENCY);
+        helper.assertTrue(chainP1 <= ebonyPotency, "Chain Lightning at Power 1 must fit an ebony psimetal CAD ("
+                + ebonyPotency + "), got " + chainP1);
         helper.assertTrue(SpellCompilationException.NON_POSITIVE_VALUE.equals(compileError(
                 () -> stats(chainLightning(Map.of(POWER, 0.0))))), "Chain Lightning Power must be positive");
 

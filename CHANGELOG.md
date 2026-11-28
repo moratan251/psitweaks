@@ -65,6 +65,7 @@
   + Program Research Table: aligned power consumption with JEI/EMI displays, greatly increased energy capacity, displayed non-stackable research ingredients one per slot in JEI/EMI, and rebalanced research recipes overall
   + Models and audio: remade models for the Program Research Table, Sculk Eroder, Psi-Link Generator, and Heavy Psimetal CAD Assembly α/β CADs; updated the Program Research Table's working sound
   + Magician villager and Magician's Head: gave Magician villagers (including zombie villagers) a white-coat researcher look, and replaced Magician's Brain with the placeable, wearable, note-block-compatible Magician's Head (existing items convert automatically)
+- Buffed Psi's CAD Assemblies: Ebony Psimetal CAD Assembly Potency 350 → 450, Ivory Psimetal CAD Assembly Potency 320 → 400
 
 ##### Removed
 - Removed Trick: Set SpellGram Follow Target (replaced for circles by Trick: Circle Follow)

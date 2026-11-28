@@ -96,6 +96,7 @@ import com.moratan251.psitweaks.common.registries.PsitweaksVillagers;
 import com.moratan251.psitweaks.common.spells.PsitweaksListAdapterRegistration;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpells;
 import com.moratan251.psitweaks.common.spells.translation.DisplayNameTranslationRepository;
+import com.moratan251.psitweaks.datagen.providers.PsiCadComponentOverrideProvider;
 import com.moratan251.psitweaks.datagen.providers.PsiTweaksFallbackRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.MaterialMutationRecipeProvider;
 import com.moratan251.psitweaks.datagen.providers.MysticalAgricultureModelProvider;
@@ -273,6 +274,7 @@ public class Psitweaks {
         generator.addProvider(event.includeClient(), new PsitweaksLanguageProvider(packOutput, "ja_jp"));
         generator.addProvider(event.includeServer(), new PsiTweaksLootTableProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsitweaksDamageTypeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new PsiCadComponentOverrideProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksTagsProvider(packOutput));
         generator.addProvider(event.includeServer(), new ProductiveBeesDataProvider(packOutput));
         generator.addProvider(event.includeServer(), new PsiTweaksRecipeProvider(packOutput));
