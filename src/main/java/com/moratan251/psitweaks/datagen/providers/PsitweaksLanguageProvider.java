@@ -2325,8 +2325,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Cuts living beings along a plane defined by three points, dealing $(thing)60 × Power$(0) damage.",
                 "三点で定義した平面で生物を切断し, $(thing)60×威力$(0) のダメージを与えます.");
         addBookPage(root, "trick_aqua_cutter",
-                "Fires a water blade from Position along Direction as an early-game offensive trick, dealing $(thing)2 + 3 × Power$(0) damage. Position and Direction are optional; omitting them fires from the caster along their look direction.$(p)Targets stay wet for 10 seconds, preventing fire and boosting spells like Chain Lightning and Burst. Burning targets take 1.25x damage and are extinguished instead (without staying wet).",
-                "位置から方向へ水刃を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です. 位置・方向は省略でき, 省くと術者から視線方向へ放ちます.$(p)当てた相手は10秒間濡れて燃えず, 連鎖電光や爆裂などのダメージが増えます. 燃えている相手には1.25倍のダメージを与えて火を消します (濡れはしません).");
+                "Fires a water blade from Position along Direction as an early-game offensive trick, dealing $(thing)2 + 3 × Power$(0) damage. Position and Direction are optional; omitting them fires from the caster along their look direction.$(p)Targets stay wet for 4 seconds, preventing fire and boosting spells like Chain Lightning and Burst. Burning targets take 1.25x damage and are extinguished instead (without staying wet).",
+                "位置から方向へ水刃を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です. 位置・方向は省略でき, 省くと術者から視線方向へ放ちます.$(p)当てた相手は4秒間濡れて燃えず, 連鎖電光や爆裂などのダメージが増えます. 燃えている相手には1.25倍のダメージを与えて火を消します (濡れはしません).");
         addBookPage(root, "trick_dry_meteor",
                 "Fires a dry ice projectile from Position along Direction, dealing $(thing)14$(0) freezing damage and inflicting Carbon Poisoning to slow targets and deal damage over time.$(p)Position and Direction are optional; omitting them fires from the caster along their look direction.",
                 "位置から方向へドライアイスの弾丸を放ち, 命中した相手に $(thing)14$(0) の凍結ダメージを与えます. さらに炭素中毒状態にして機動力を奪い, 継続ダメージを与えます.$(p)位置・方向は省略でき, 省くと術者から視線方向へ放ちます.");

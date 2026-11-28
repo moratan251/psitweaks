@@ -13,8 +13,8 @@ import net.minecraft.world.entity.LivingEntity;
  * Like a creature soaked by Ars Nouveau, it does not catch fire while wet.
  */
 public final class CombatStatuses {
-    /** How long Trick: Aqua Cutter leaves a creature wet: 10 seconds. */
-    public static final int AQUA_CUTTER_WET_TICKS = 200;
+    /** How long Trick: Aqua Cutter leaves a creature wet: 4 seconds. */
+    public static final int AQUA_CUTTER_WET_TICKS = 80;
 
     private CombatStatuses() {
     }

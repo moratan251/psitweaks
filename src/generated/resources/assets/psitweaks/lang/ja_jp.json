@@ -923,7 +923,7 @@
   "psi.book.page.psitweaks_spellpiece.trick_acceleration_zone.0": "範囲内の作物や苗木などの成長を通常と合わせて (威力＋5) 倍に速めます. ブロックエンティティや生物には効きません.$(p)自分の他領域と重なると, そのランダムなブロック変化も同じ倍率で速くなります. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.",
   "psi.book.page.psitweaks_spellpiece.trick_active_air_mine": "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.",
   "psi.book.page.psitweaks_spellpiece.trick_air_bullet": "指定位置から方向へ圧縮した空気の弾を撃ち出します. 弾丸の射程は24ブロックです.$(br)弾が直撃した生物には $(thing)4.5 + 4.5×威力$(0) のダメージを与え, 弾はそこで消えます. 弾の周りの圧力波にかすったときのダメージは直撃の1/3で, 弾はそのまま飛び続けます.",
-  "psi.book.page.psitweaks_spellpiece.trick_aqua_cutter": "位置から方向へ水刃を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です. 位置・方向は省略でき, 省くと術者から視線方向へ放ちます.$(p)当てた相手は10秒間濡れて燃えず, 連鎖電光や爆裂などのダメージが増えます. 燃えている相手には1.25倍のダメージを与えて火を消します (濡れはしません).",
+  "psi.book.page.psitweaks_spellpiece.trick_aqua_cutter": "位置から方向へ水刃を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です. 位置・方向は省略でき, 省くと術者から視線方向へ放ちます.$(p)当てた相手は4秒間濡れて燃えず, 連鎖電光や爆裂などのダメージが増えます. 燃えている相手には1.25倍のダメージを与えて火を消します (濡れはしません).",
   "psi.book.page.psitweaks_spellpiece.trick_barrier.0": "対象に $(thing)威力×10$(0) のシールドを1分間張り, 体力の代わりにダメージを肩代わりさせます. 残量を超える一撃でもシールドが砕けるだけで体力は減りません.$(p)シールド中は炎上せず, かけ直すと新しい値が残量以上なら上書きされます. 落下・溺れ・毒などのダメージは防げません.",
   "psi.book.page.psitweaks_spellpiece.trick_blaze_ball": "位置から方向へ火の弾を放ち, $(thing)2 + 2×威力$(0) のダメージを与える序盤用の攻撃術式です.$(p)位置・方向は省略でき, 省くと術者から視線方向へ放ちます.",
   "psi.book.page.psitweaks_spellpiece.trick_break_fortune": "対象ブロックを幸運付きで破壊します.",
