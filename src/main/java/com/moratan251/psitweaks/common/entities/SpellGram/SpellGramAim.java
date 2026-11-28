@@ -23,9 +23,9 @@ public final class SpellGramAim {
     private SpellGramAim() {
     }
 
-    /** 核の当たりの箱: オブジェクトの位置を中心にした一辺 {@link #CORE_HALF} × 2。 */
+    /** 核の当たりの箱（{@link SpellGramObject#coreBox}）。 */
     public static AABB coreBox(SpellGramObject object) {
-        return new AABB(object.position(), object.position()).inflate(CORE_HALF);
+        return object.coreBox();
     }
 
     /**

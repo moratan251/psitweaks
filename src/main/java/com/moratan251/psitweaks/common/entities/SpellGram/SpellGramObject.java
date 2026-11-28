@@ -62,6 +62,14 @@ public abstract class SpellGramObject extends Entity implements IEntityWithCompl
     }
 
     /**
+     * 核の当たりの箱: 照準（{@link SpellGramAim}）・作動式: 術式解体・サイ・ブリットが狙う所。既定は位置を中心にした一辺
+     * {@link SpellGramAim#CORE_HALF} × 2。
+     */
+    public AABB coreBox() {
+        return new AABB(position(), position()).inflate(SpellGramAim.CORE_HALF);
+    }
+
+    /**
      * {@link #isShownTo} で見せない相手には透明として扱う。Jade などの照準の表示は {@code isPickable} を見ずに自分で照準を
      * 引くが、透明な相手は選ばないので、見せない核がそちらにも出ない。
      */

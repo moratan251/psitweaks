@@ -28,6 +28,7 @@
     "LivingEntityParadeEffectParticlesMixin",
     "MessageSpamlessChatMixin",
     "PieceOperatorEntityPositionParadeMixin",
+    "PieceOperatorFocusedEntityParadeMixin",
     "PieceTrickAddMotionSpellGramMixin",
     "PieceTrickBlinkSpellGramMixin",
     "PieceTrickBreakLoopAutonomousCasterMixin",

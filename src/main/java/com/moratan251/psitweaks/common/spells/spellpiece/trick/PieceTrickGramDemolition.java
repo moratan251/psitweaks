@@ -74,7 +74,7 @@ public class PieceTrickGramDemolition extends PieceTrick {
         Vec3 look = caster.getLookAngle().normalize();
 
         for (SpellGramObject object : targets(level, caster, eye, look)) {
-            Vec3 core = object.position();
+            Vec3 core = object.coreBox().getCenter();
             SpellGramIntegrity.reduce(object, INTEGRITY_DAMAGE, caster);
             CombatEffects.sphereFlash(level, core, 1.6F, CombatSpellHelper.spellColor(caster),
                     MessageSphereFlash.Style.SHOCKWAVE, 0.8F);
@@ -115,7 +115,10 @@ public class PieceTrickGramDemolition extends PieceTrick {
                 living -> living != caster && inCone(eye, look, CombatSpellHelper.center(living), living.getBbWidth() * 0.5));
     }
 
-    /** 円錐の中にある、術者がよけない（{@link SpellGramIntegrity#isSparedBy}）魔法式オブジェクト（核の位置で比べる）。 */
+    /**
+     * 円錐の中にある、術者がよけない（{@link SpellGramIntegrity#isSparedBy}）魔法式オブジェクト（核の当たりの箱
+     * {@link SpellGramObject#coreBox} の中心で比べる）。
+     */
     public static List<SpellGramObject> targets(ServerLevel level, @Nullable LivingEntity caster, Vec3 eye, Vec3 look) {
         List<SpellGramObject> result = new ArrayList<>();
         for (SpellGramObject object : level.getEntitiesOfClass(SpellGramObject.class,
@@ -123,7 +126,7 @@ public class PieceTrickGramDemolition extends PieceTrick {
             if (object.isEnded() || SpellGramIntegrity.isSparedBy(object, caster)) {
                 continue;
             }
-            if (inCone(eye, look, object.position(), SpellGramAim.CORE_HALF)) {
+            if (inCone(eye, look, object.coreBox().getCenter(), SpellGramAim.CORE_HALF)) {
                 result.add(object);
             }
         }

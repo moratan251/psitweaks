@@ -10,12 +10,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * 作動式: 仮装行列の核。虚像（{@link EntityParadeDecoy}）の胸の高さに重なる見えない常駐魔法式で、仮装行列の残り時間と耐久値を
+ * 作動式: 仮装行列の核。虚像（{@link EntityParadeDecoy}）に重なる見えない常駐魔法式で、仮装行列の残り時間と耐久値を
  * 持つ。核が消えると虚像も消え、虚像が消えると核も消える。
  * <ul>
+ *   <li>位置は虚像の目の位置、向きは虚像の視線の向き（{@link #followImage}）。目の高さを 0 にしてあるので、Psi の
+ *   演算子: 実体の位置（位置に目の高さを足す）も位置そのものも虚像の目になり、演算子: 実体の視線と合わせて、核から
+ *   虚像の目で見たとおりの視線を引ける。</li>
+ *   <li>当たりの箱（{@link #coreBox}）は虚像の体。術式解体・サイ・ブリット・照準は虚像の体を狙えば核に届く。</li>
  *   <li>虚像が攻撃されるたびに、ダメージの量によらず耐久値が {@link #ATTACK_WEAR} 減る（{@link #wearByAttack}）。
  *   作動式: 術式解体・サイ・ブリットは虚像ではなく核を、それぞれの量で削る。</li>
  *   <li>作動式: 魔法式延長・魔法式回収、取得子: 自分の常駐魔法式の対象になり、置ける数の上限にも数える。</li>
@@ -27,9 +33,6 @@ import org.jetbrains.annotations.Nullable;
 public class EntityParadeCore extends SpellGramObject {
     /** 虚像が 1 回攻撃されたときに減る耐久値。 */
     public static final float ATTACK_WEAR = 2.0F;
-    /** 虚像の足元から核までの高さ（胸のあたり）。術式解体とサイ・ブリットは虚像の体を狙えば核に届く。 */
-    public static final double CHEST_HEIGHT = 1.0;
-
     private static final EntityDataAccessor<Integer> DATA_IMAGE_ID =
             SynchedEntityData.defineId(EntityParadeCore.class, EntityDataSerializers.INT);
     private static final int NO_IMAGE = -1;
@@ -93,6 +96,10 @@ public class EntityParadeCore extends SpellGramObject {
         return image != null ? image.getOwnerPlayer() : null;
     }
 
+    /**
+     * 核も自分で虚像に合わせる（クライアントの虚像は核を知らない）。サーバーでは虚像が自分の tick のあとにも核を合わせるので、
+     * tick の順によらず同じ tick の虚像に揃う（{@link EntityParadeDecoy#tick}）。
+     */
     @Override
     protected void tickMotion() {
         EntityParadeDecoy image = getImage();
@@ -101,8 +108,24 @@ public class EntityParadeCore extends SpellGramObject {
         }
     }
 
-    private void followImage(EntityParadeDecoy image) {
-        setPos(image.getX(), image.getY() + CHEST_HEIGHT, image.getZ());
+    /** 虚像の目の位置に立ち、虚像の視線の向き（頭の向きと上下の角度、{@code LivingEntity#getViewYRot}）を向く。 */
+    public void followImage(EntityParadeDecoy image) {
+        Vec3 eye = image.getEyePosition();
+        setPos(eye.x, eye.y, eye.z);
+        setYRot(image.getYHeadRot());
+        setXRot(image.getXRot());
+    }
+
+    /** 虚像の体。虚像が消えていれば位置のまわりの既定の箱。 */
+    @Override
+    public AABB coreBox() {
+        EntityParadeDecoy image = getImage();
+        return image != null ? image.getBoundingBox() : super.coreBox();
+    }
+
+    /** 虚像そのものか。核から引く視線は、内側にいる虚像を拾わない（{@code PieceOperatorFocusedEntityParadeMixin}）。 */
+    public boolean isImage(@Nullable Entity entity) {
+        return entity != null && entity == getImage();
     }
 
     @Override

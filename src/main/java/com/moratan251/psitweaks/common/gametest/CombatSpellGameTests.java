@@ -7,6 +7,7 @@ import com.moratan251.psitweaks.common.attributes.PsitweaksAttributes;
 import com.moratan251.psitweaks.common.entities.EntityAquaCutterProjectile;
 import com.moratan251.psitweaks.common.entities.EntityDryIceProjectile;
 import com.moratan251.psitweaks.common.entities.EntityMeteorLineBeam;
+import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramAim;
 import com.moratan251.psitweaks.common.entities.SpellGram.SpellGramIndex;
 import com.moratan251.psitweaks.common.entities.SpellGram.marker.EntityMeteorLineNight;
 import com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore;
@@ -122,7 +123,9 @@ import vazkii.psi.api.spell.SpellMetadata;
 import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellPiece;
 import vazkii.psi.api.spell.SpellRuntimeException;
+import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityLook;
 import vazkii.psi.common.spell.operator.entity.PieceOperatorEntityPosition;
+import vazkii.psi.common.spell.operator.entity.PieceOperatorFocusedEntity;
 
 /**
  * Trick: Barrier's shield and the combat tricks of 1.0.0: who they hit, how much, when, and what they cost.
@@ -1089,8 +1092,8 @@ public final class CombatSpellGameTests {
                 "The core must count as one of the caster's Resident SpellGrams");
         helper.assertTrue(core.getLifetimeTicks() == 400 && near(core.getPlacementCost(), PieceTrickParade.costFor(20, 2)),
                 "The core must last Time and remember what the trick cost");
-        helper.assertTrue(core.position().distanceTo(decoy.position().add(0.0, EntityParadeCore.CHEST_HEIGHT, 0.0)) < 1.0E-4,
-                "The core must sit in the image's chest");
+        helper.assertTrue(core.position().distanceTo(decoy.getEyePosition()) < 1.0E-4,
+                "The core must sit at the image's eyes");
         helper.assertTrue(core.isShownTo(player) && !core.isShownTo(rival), "Only the caster may see the core's integrity");
         // Jade skips entities invisible to the viewer, so other players' Jade never names the core.
         helper.assertTrue(!core.isInvisibleTo(player) && core.isInvisibleTo(rival),
@@ -1131,6 +1134,105 @@ public final class CombatSpellGameTests {
                         && secondCore.isEnded() && second.isRemoved(),
                 "Gram Demolition must break the core and the image");
         helper.succeed();
+    }
+
+    /**
+     * 核は虚像の目の位置に立ち、虚像の視線の向きを向く。Psi の演算子: 実体の位置・実体の視線は虚像の目と視線を返す。
+     * 演算子: 注視している実体は内側の虚像を拾わず、その先の生物を返す。しゃがむと目の高さが下がり、敵へ頭を向けると核の
+     * 向きもついていく。術式解体・サイ・ブリット・照準の当たりの箱は虚像の体。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeCoreSeesThroughItsImagesEyes(GameTestHelper helper) throws Exception {
+        var player = caster(helper, new BlockPos(4, 0, 2), "parade-core-eyes");
+        var rival = caster(helper, new BlockPos(2, 0, 4), "parade-core-eyes-rival");
+        var context = new SpellContext().setPlayer(player);
+        // The caster faces west and looks down a little, so the image stands 2 blocks west of them.
+        facePitchedWest(player);
+        parade(Map.of(NUMBER, 2.0, TIME, 10.0)).execute(context);
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        EntityParadeCore core = decoy != null ? decoy.getCore() : null;
+        helper.assertTrue(core != null && decoy.position().distanceTo(player.position().add(-2.0, 0.0, 0.0)) < 1.0E-4,
+                "The image must stand 2 blocks west of the caster");
+        assertCoreSeesAsImage(helper, context, core, decoy);
+        helper.assertTrue(near(core.getEyeHeight(), 0.0) && core.getLookAngle().distanceTo(player.getLookAngle()) < 1.0E-4,
+                "With no enemy the core must look the caster's way: " + core.getLookAngle() + " vs " + player.getLookAngle());
+
+        // Operator: Focused Entity from the core skips the image it stands in: nothing, then the husk in its line of sight.
+        var focusedFromCore = new PieceOperatorFocusedEntity(new Spell()) {
+            @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return core; }
+        };
+        helper.assertTrue("psi.spellerror.nulltarget".equals(castError(() -> focusedFromCore.execute(context))),
+                "With nothing ahead the core's look must find nothing, not its own image");
+        Husk ahead = husk(helper, new BlockPos(0, 0, 2), false);
+        Object focused = focusedFromCore.execute(context);
+        helper.assertTrue(focused == ahead, "The core's look must pass through its image to the husk, got " + focused);
+
+        // The core's box is the image's body: aiming at its knees reaches it.
+        helper.assertTrue(SpellGramAim.coreBox(core).equals(decoy.getBoundingBox()), "The core's box must be the image's body");
+        Vec3 knees = decoy.position().add(0.0, 0.4, 0.0);
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, knees);
+        helper.assertTrue(SpellGramAim.aimedAt(helper.getLevel(), player, 1.0F) == core,
+                "The caster aiming at the image's knees must aim at its core");
+        rival.lookAt(EntityAnchorArgument.Anchor.EYES, knees);
+        helper.assertTrue(PieceTrickGramDemolition.targets(helper.getLevel(), rival, rival.getEyePosition(), rival.getLookAngle())
+                        .contains(core),
+                "Another caster's Gram Demolition aimed at the image's knees must reach its core");
+        facePitchedWest(player);
+
+        player.setShiftKeyDown(true);
+        player.setPose(Pose.CROUCHING);
+        Husk[] hunter = new Husk[1];
+        helper.startSequence()
+                .thenExecuteAfter(2, () -> {
+                    helper.assertTrue(decoy.isCrouching() && near(decoy.getEyeHeight(), 1.27) && near(core.getY() - decoy.getY(), 1.27),
+                            "Crouching must lower the image's eyes and the core with them: " + (core.getY() - decoy.getY()));
+                    assertCoreSeesAsImage(helper, context, core, decoy);
+                    // A husk north of the image, off to its right, that goes for it.
+                    hunter[0] = husk(helper, new BlockPos(2, 0, 0), false);
+                    hunter[0].setTarget(decoy);
+                })
+                .thenWaitUntil(() -> helper.assertTrue(decoy.isWatching()
+                                && Math.abs(Mth.wrapDegrees(decoy.getYHeadRot() - decoy.yBodyRot)) > 45.0F,
+                        "The image must turn its head to the mob after it"))
+                .thenExecute(() -> {
+                    helper.assertTrue(near(Mth.wrapDegrees(core.getYRot() - decoy.getYHeadRot()), 0.0)
+                                    && near(core.getXRot(), decoy.getXRot()),
+                            "The core must turn with the image's head: core " + core.getYRot() + "/" + core.getXRot()
+                                    + ", head " + decoy.getYHeadRot() + "/" + decoy.getXRot());
+                    assertCoreSeesAsImage(helper, context, core, decoy);
+                    hunter[0].discard();
+                    ahead.discard();
+                    decoy.vanish(false);
+                })
+                .thenSucceed();
+    }
+
+    /** Turns {@code player} west, looking 20 degrees down. */
+    private static void facePitchedWest(Player player) {
+        player.moveTo(player.getX(), player.getY(), player.getZ(), 90.0F, 20.0F);
+        player.setYHeadRot(90.0F);
+        player.setYBodyRot(90.0F);
+    }
+
+    /** Psi's Operator: Entity Position and Operator: Entity Look on the core give the image's eyes and gaze. */
+    private static void assertCoreSeesAsImage(GameTestHelper helper, SpellContext context, EntityParadeCore core,
+                                              EntityParadeDecoy decoy) {
+        Vector3 position;
+        Vector3 look;
+        try {
+            position = (Vector3) entityPosition(core).execute(context);
+            look = (Vector3) new PieceOperatorEntityLook(new Spell()) {
+                @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) { return core; }
+            }.execute(context);
+        } catch (SpellRuntimeException e) {
+            throw new GameTestAssertException("Reading the core failed: " + e.getMessage());
+        }
+        Vec3 eye = decoy.getEyePosition();
+        Vec3 gaze = decoy.getViewVector(1.0F);
+        helper.assertTrue(core.position().distanceTo(eye) < 1.0E-4 && position.toVec3D().distanceTo(eye) < 1.0E-4,
+                "The core must stand at the image's eyes: " + position + " vs " + eye);
+        helper.assertTrue(look.toVec3D().distanceTo(gaze) < 1.0E-4,
+                "The core must look along the image's gaze: " + look + " vs " + gaze);
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)

@@ -341,6 +341,8 @@ public class PsitweaksEntities {
                     () -> EntityType.Builder.<com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore>of(
                                     com.moratan251.psitweaks.common.entities.SpellGram.EntityParadeCore::new, MobCategory.MISC)
                             .sized(0.25f, 0.25f)
+                            // 位置が虚像の目なので、位置に目の高さを足す計算（Psi の演算子: 実体の位置）でも同じ所になるように。
+                            .eyeHeight(0.0f)
                             .clientTrackingRange(10)
                             .updateInterval(2)
                             .fireImmune()

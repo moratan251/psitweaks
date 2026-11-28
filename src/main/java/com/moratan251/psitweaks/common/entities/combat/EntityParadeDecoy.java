@@ -26,6 +26,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -72,6 +73,8 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
     private static final float MAX_HEAD_TURN = 75.0F;
     /** How often the image takes over mobs that went for its owner without asking (wardens, brain-driven mobs). */
     private static final int LURE_INTERVAL = 10;
+    /** A crouching player's size and eye height, so the image's eyes (and its core) drop when it crouches. */
+    private static final EntityDimensions CROUCHING_DIMENSIONS = EntityDimensions.scalable(0.6F, 1.5F).withEyeHeight(1.27F);
 
     private static final EntityDataAccessor<Optional<UUID>> OWNER =
             SynchedEntityData.defineId(EntityParadeDecoy.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -293,6 +296,11 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
         follow(owner);
         mimic(owner);
         copyHealth(owner);
+        // The core stands at the image's eyes and looks its way, whichever of the two ticks first.
+        EntityParadeCore core = getCore();
+        if (core != null) {
+            core.followImage(this);
+        }
         // Arrows and stingers that hit it do not stay stuck in it.
         if (getArrowCount() > 0) {
             setArrowCount(0);
@@ -390,6 +398,12 @@ public class EntityParadeDecoy extends PathfinderMob implements OwnableEntity {
             watched = current != null ? new WeakReference<>(current) : null;
         }
         return current;
+    }
+
+    /** Crouching shrinks it and lowers its eyes as it does a player's. */
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return pose == Pose.CROUCHING ? CROUCHING_DIMENSIONS : super.getDefaultDimensions(pose);
     }
 
     /** Steps in time with the owner rather than with its own sweep as the owner turns. */
