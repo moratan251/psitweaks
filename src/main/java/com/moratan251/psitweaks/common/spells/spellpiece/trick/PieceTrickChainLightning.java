@@ -40,20 +40,22 @@ import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
 /**
- * Discharges lightning from the spell's focal point in the direction. The bolt strikes the nearest hostile creature that
- * way within {@link #RANGE} blocks, then branches twice: from that first target to up to {@link #FIRST_BRANCHES}
- * hostile creatures within {@link #BRANCH_RANGE} blocks, and from each of those to up to {@link #SECOND_BRANCHES} more.
- * No creature is struck twice. The branches deal a share of the first hit ({@link #branchDamage}) and land a moment
- * after it, one stage at a time; targets in water or rain take extra damage. With nothing to strike, the bolt
- * discharges into the air and the spell goes on. With a non-zero Indiscriminate input it picks and branches to any
- * creature instead (see {@link AttackRules#isIndiscriminateTarget}).
+ * Discharges lightning from the position in the direction. The bolt strikes the nearest hostile creature that way
+ * within {@link #RANGE} blocks, then branches twice: from that first target to up to {@link #FIRST_BRANCHES} hostile
+ * creatures within {@link #BRANCH_RANGE} blocks, and from each of those to up to {@link #SECOND_BRANCHES} more. No
+ * creature is struck twice. The branches deal a share of the first hit ({@link #branchDamage}) and land a moment after
+ * it, one stage at a time; targets in water or rain take extra damage. With nothing to strike, the bolt discharges into
+ * the air and the spell goes on. With a non-zero Indiscriminate input it picks and branches to any creature instead
+ * (see {@link AttackRules#isIndiscriminateTarget}).
  */
 public class PieceTrickChainLightning extends PieceTrick {
     private static final double MIN_POWER = 0.5;
     private static final float BASE_DAMAGE = 9.0F;
     private static final float DAMAGE_PER_POWER = 9.0F;
-    /** How far the bolt reaches from the focal point: the first target, or the end of a discharge into the air. */
+    /** How far the bolt reaches from where it starts: the first target, or the end of a discharge into the air. */
     public static final double RANGE = 24.0;
+    /** How near the caster's eyes the position counts as the caster's own, so the bolt is drawn from their hand. */
+    private static final double EYE_TOLERANCE = 0.01;
     /** How far a branch reaches from the creature it leaves. */
     public static final double BRANCH_RANGE = 8.0;
     /** How many creatures the first target branches to. */
@@ -72,6 +74,7 @@ public class PieceTrickChainLightning extends PieceTrick {
     private static final double COST_BASE = 470.0;
     private static final double COST_PER_POWER = 120.0;
 
+    private SpellParam<Vector3> position;
     private SpellParam<Vector3> direction;
     private SpellParam<Number> power;
     private SpellParam<Number> indiscriminate;
@@ -87,6 +90,7 @@ public class PieceTrickChainLightning extends PieceTrick {
     @Override
     public void initParams() {
         // Spells saved with the old Target and Number inputs still load: Psi only reads the inputs a piece has now.
+        addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, false, false));
         addParam(direction = new ParamVector(SpellParam.GENERIC_NAME_DIRECTION, SpellParam.GREEN, false, false));
         addParam(power = new ParamNumber(SpellParam.GENERIC_NAME_POWER, SpellParam.RED, false, true));
         addParam(indiscriminate = new ParamNumber(PsitweaksSpellParams.INDISCRIMINATE, SpellParam.PURPLE, true, false));
@@ -106,6 +110,13 @@ public class PieceTrickChainLightning extends PieceTrick {
         if (directionVal == null || directionVal.isZero()) {
             throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
         }
+        Vector3 positionVal = getParamValue(context, position);
+        if (positionVal == null) {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
+        }
+        if (!context.isInRadius(positionVal)) {
+            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
+        }
         if (!(context.caster.level() instanceof ServerLevel level)) {
             return null;
         }
@@ -113,10 +124,9 @@ public class PieceTrickChainLightning extends PieceTrick {
         boolean anyCreature = AttackRules.isIndiscriminate(getParamValue(context, indiscriminate));
         LivingEntity caster = context.caster;
         Entity focus = context.focalPoint != null ? context.focalPoint : caster;
-        Vec3 origin = focus.getEyePosition();
+        Vec3 origin = positionVal.toVec3D();
         Vec3 aim = directionVal.toVec3D().normalize();
-        // The bolt leaves the caster's hand when the caster is the focal point, else the focal point itself.
-        Vec3 start = focus == caster ? CombatSpellHelper.castPoint(caster) : origin;
+        Vec3 start = arcStart(caster, origin);
         int color = CombatSpellHelper.spellColor(caster);
 
         LivingEntity first = firstTarget(level, context, caster, focus, origin, aim, options, anyCreature);
@@ -173,6 +183,15 @@ public class PieceTrickChainLightning extends PieceTrick {
     }
 
     /**
+     * Where the bolt is drawn from: the caster's hand when the position is the caster's eyes (what Operator: Entity
+     * Position gives for the caster), else the position itself. Only the look changes; the bolt aims from the position.
+     */
+    private static Vec3 arcStart(LivingEntity caster, Vec3 origin) {
+        return origin.distanceToSqr(caster.getEyePosition()) < EYE_TOLERANCE * EYE_TOLERANCE
+                ? CombatSpellHelper.castPoint(caster) : origin;
+    }
+
+    /**
      * The damage of a creature struck at {@code stage}: 0 for the first target, 1 for the first branches and 2 for the
      * second, which deal 40% and 20% of the first hit.
      */
@@ -195,9 +214,10 @@ public class PieceTrickChainLightning extends PieceTrick {
 
     /**
      * The first target: the closest creature the bolt may strike ({@link AttackRules#isAutoTarget}) in the direction from
-     * the focal point, within {@link #RANGE} blocks, the spell radius and in sight. "In the direction" is within 30
-     * degrees of it, or on the line itself for a creature too big or too close for its centre to be in that cone.
-     * Creatures hidden by another player's Trick: Parade are passed over. Null when there is none.
+     * {@code origin} (the position), within {@link #RANGE} blocks, the spell radius and in sight. "In the direction" is
+     * within 30 degrees of it, or on the line itself for a creature too big or too close for its centre to be in that
+     * cone. The focal point itself and creatures hidden by another player's Trick: Parade are passed over. Null when
+     * there is none.
      */
     @Nullable
     private static LivingEntity firstTarget(ServerLevel level, SpellContext context, LivingEntity caster, Entity focus,

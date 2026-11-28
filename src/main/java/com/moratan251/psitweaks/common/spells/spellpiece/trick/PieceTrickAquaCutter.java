@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
@@ -23,8 +24,13 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
+import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
+/**
+ * Fires a water blade from Position along Direction. Both are optional: without Position the blade leaves from the
+ * caster's eyes, and without Direction it flies the way the caster looks.
+ */
 public class PieceTrickAquaCutter extends PieceTrick {
 
     private static final double MIN_POWER = 0.1;
@@ -32,6 +38,8 @@ public class PieceTrickAquaCutter extends PieceTrick {
     private static final float DAMAGE_PER_POWER = 3.0F;
     private static final double POTENCY_PER_POWER = 90.0;
 
+    private SpellParam<Vector3> position;
+    private SpellParam<Vector3> direction;
     private SpellParam<Number> power;
 
     public PieceTrickAquaCutter(Spell spell) {
@@ -42,6 +50,8 @@ public class PieceTrickAquaCutter extends PieceTrick {
 
     @Override
     public void initParams() {
+        addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, true, false));
+        addParam(direction = new ParamVector(SpellParam.GENERIC_NAME_DIRECTION, SpellParam.GREEN, true, false));
         addParam(power = new ParamNumber("psi.spellparam.power", SpellParam.RED, false, true));
     }
 
@@ -64,6 +74,8 @@ public class PieceTrickAquaCutter extends PieceTrick {
         if (powerVal <= 0.0) {
             throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
+        Vec3 from = CombatSpellHelper.optionalPosition(context, getParamValue(context, position));
+        Vec3 aim = CombatSpellHelper.optionalDirection(getParamValue(context, direction));
 
         Level level = context.caster.level();
         if (level.isClientSide) {
@@ -75,8 +87,12 @@ public class PieceTrickAquaCutter extends PieceTrick {
         float velocity = 1.8F + (float) (powerVal * 0.3);
 
         EntityAquaCutterProjectile projectile = new EntityAquaCutterProjectile(level, context.caster);
-        Vec3 look = context.caster.getLookAngle();
-        projectile.setPos(context.caster.getX(), context.caster.getEyeY() - 0.1, context.caster.getZ());
+        Vec3 look = aim != null ? aim : context.caster.getLookAngle();
+        if (from != null) {
+            CombatSpellHelper.placeCentered(projectile, from);
+        } else {
+            projectile.setPos(context.caster.getX(), context.caster.getEyeY() - 0.1, context.caster.getZ());
+        }
         projectile.shoot(look.x, look.y, look.z, velocity, 0.0F);
         projectile.setColor(CombatSpellHelper.spellColor(context.caster));
 
@@ -86,12 +102,13 @@ public class PieceTrickAquaCutter extends PieceTrick {
         data.putBoolean(SpellSafetyUtils.NBT_SAFE_TO_PLAYERS, SpellSafetyUtils.hasSafeToPlayers(context));
 
         level.addFreshEntity(projectile);
-        level.playSound(null, context.caster.getX(), context.caster.getY(), context.caster.getZ(),
+        Vec3 soundAt = from != null ? from : context.caster.position();
+        level.playSound(null, soundAt.x, soundAt.y, soundAt.z,
                 SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 0.6F, 1.3F);
 
         if (level instanceof ServerLevel serverLevel) {
-            // Spray where the blade leaves, a little in front of the caster's face.
-            Vec3 muzzle = context.caster.getEyePosition().add(look.scale(0.8));
+            // Spray where the blade leaves: a little in front of the caster's face, or of the position.
+            Vec3 muzzle = (from != null ? from : context.caster.getEyePosition()).add(look.scale(0.8));
             serverLevel.sendParticles(ParticleTypes.SPLASH, muzzle.x, muzzle.y, muzzle.z,
                     10, 0.15, 0.15, 0.15, 0.05);
         }

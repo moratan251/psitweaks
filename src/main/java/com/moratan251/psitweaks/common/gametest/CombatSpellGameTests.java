@@ -195,6 +195,11 @@ public final class CombatSpellGameTests {
         return target.isInWaterOrRain() ? 66.0F * 1.25F : 66.0F;
     }
 
+    /** The caster's eyes, as Psi's Operator: Entity Position gives them: Chain Lightning's Position input. */
+    private static Vector3 eyes(Player caster) {
+        return vector(caster.getEyePosition());
+    }
+
     /** The direction from the caster's eyes to the centre of {@code target}, for Chain Lightning's Direction input. */
     private static Vector3 toward(Player caster, Entity target) {
         return vector(CombatSpellHelper.center(target).subtract(caster.getEyePosition()));
@@ -634,7 +639,8 @@ public final class CombatSpellGameTests {
 
         // The caster looks away: only the Direction input aims the bolt.
         lookUp(player);
-        chainLightning(Map.of(DIRECTION, toward(player, first), POWER, 1.0)).execute(new SpellContext().setPlayer(player));
+        chainLightning(Map.of(POSITION, eyes(player), DIRECTION, toward(player, first), POWER, 1.0))
+                .execute(new SpellContext().setPlayer(player));
         float d1 = TOUGH_HEALTH - first.getHealth();
         helper.assertTrue(near(d1, 18) || near(d1, 22.5F), "The first hit must deal 9 + 9 x Power (x1.25 when wet): " + d1);
         helper.assertTrue(tookDamage(others, 0.0F) == others.size(), "The branches must land after the first hit, not with it");
@@ -683,7 +689,8 @@ public final class CombatSpellGameTests {
                 && !CombatSpellHelper.isIndiscriminate(null), "Only a non-zero number turns it on");
 
         // Aimed at the husk, the villager in between is the nearest creature that way, so it is struck first.
-        chainLightning(Map.of(DIRECTION, toward(player, first), POWER, 1.0, PsitweaksSpellParams.INDISCRIMINATE, 1.0))
+        chainLightning(Map.of(POSITION, eyes(player), DIRECTION, toward(player, first), POWER, 1.0,
+                        PsitweaksSpellParams.INDISCRIMINATE, 1.0))
                 .execute(new SpellContext().setPlayer(player));
         helper.assertTrue(!villager.isAlive() || villager.getHealth() < villager.getMaxHealth() - EPSILON,
                 "An indiscriminate bolt must strike the nearest creature in the direction, the villager");
@@ -713,7 +720,7 @@ public final class CombatSpellGameTests {
         var offAxis = tough(husk(helper, new BlockPos(3, 0, 3), false));
         lookUp(player);
 
-        chainLightning(Map.of(DIRECTION, new Vector3(1.0, 0.0, 0.0), POWER, 1.0)).execute(context);
+        chainLightning(Map.of(POSITION, eyes(player), DIRECTION, new Vector3(1.0, 0.0, 0.0), POWER, 1.0)).execute(context);
         helper.assertTrue(offAxis.getHealth() < TOUGH_HEALTH - EPSILON,
                 "The bolt must strike the nearest hostile within 30 degrees of the direction, not just what is straight ahead");
         helper.assertTrue(near(ahead.getHealth(), TOUGH_HEALTH) && near(beside.getHealth(), TOUGH_HEALTH),
@@ -724,14 +731,14 @@ public final class CombatSpellGameTests {
 
         // Straight up, where no creature stands: the bolt discharges into the air and the spell goes on.
         float offAxisHealth = offAxis.getHealth();
-        helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, new Vector3(0.0, 1.0, 0.0), POWER, 1.0))
+        helper.assertTrue(castError(() -> chainLightning(Map.of(POSITION, eyes(player), DIRECTION, new Vector3(0.0, 1.0, 0.0), POWER, 1.0))
                 .execute(context)) == null, "With nothing in the direction the bolt must discharge without an error");
         helper.assertTrue(near(offAxis.getHealth(), offAxisHealth) && near(ahead.getHealth(), TOUGH_HEALTH)
                 && near(beside.getHealth(), TOUGH_HEALTH), "A discharge into the air must hurt nothing");
         helper.assertTrue(helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).size() == 1,
                 "A discharge into the air must not branch");
         helper.assertTrue(SpellRuntimeException.NULL_VECTOR.equals(castError(() -> chainLightning(
-                        Map.of(DIRECTION, new Vector3(0.0, 0.0, 0.0), POWER, 1.0)).execute(context))),
+                        Map.of(POSITION, eyes(player), DIRECTION, new Vector3(0.0, 0.0, 0.0), POWER, 1.0)).execute(context))),
                 "A zero direction must fail");
         helper.getLevel().getEntitiesOfClass(EntityChainLightning.class, helper.getBounds().inflate(4)).forEach(Entity::discard);
         helper.succeed();
@@ -748,7 +755,7 @@ public final class CombatSpellGameTests {
         Vector3 up = new Vector3(0.0, 1.0, 0.0);
         // Its centre is about 25.4 blocks above the caster's eyes, beyond the bolt's reach of 24.
         var far = tough(husk(helper, new Vec3(2.5, 31.0, 2.5), false));
-        helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, up, POWER, 1.0)).execute(context)) == null
+        helper.assertTrue(castError(() -> chainLightning(Map.of(POSITION, eyes(player), DIRECTION, up, POWER, 1.0)).execute(context)) == null
                 && near(far.getHealth(), TOUGH_HEALTH), "A creature beyond 24 blocks must be out of reach");
         far.discard();
         // About 21.4 blocks up: within reach. The next husks are 7.5 and 8.5 blocks from it, too far up to be struck
@@ -757,7 +764,7 @@ public final class CombatSpellGameTests {
         var first = tough(husk(helper, new Vec3(2.5, 27.0, 2.5), false));
         var inBranch = tough(husk(helper, new Vec3(2.5, 34.5, 2.5), false));
         var outOfBranch = tough(husk(helper, new Vec3(0.5, 27.0 + Math.sqrt(8.5 * 8.5 - 8.0), 0.5), false));
-        chainLightning(Map.of(DIRECTION, up, POWER, 1.0)).execute(context);
+        chainLightning(Map.of(POSITION, eyes(player), DIRECTION, up, POWER, 1.0)).execute(context);
         float d1 = TOUGH_HEALTH - first.getHealth();
         helper.assertTrue(d1 > EPSILON, "A creature 21 blocks away must be struck");
         AABB area = first.getBoundingBox().inflate(20.0);
@@ -795,7 +802,7 @@ public final class CombatSpellGameTests {
         // Off to the side, out of Chain Lightning's direction, but within a branch of the fallen husk.
         var bystander = husk(helper, new BlockPos(4, 0, 4), false);
         // Chain Lightning picks its own targets: a fallen creature is no target, so the bolt discharges without a warning.
-        helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, toward(player, fallen), POWER, 1.0))
+        helper.assertTrue(castError(() -> chainLightning(Map.of(POSITION, eyes(player), DIRECTION, toward(player, fallen), POWER, 1.0))
                 .execute(context)) == null, "Chain Lightning must discharge past a fallen creature without an error");
         helper.assertTrue(castError(() -> burst(Map.of(TARGET, fallen, POWER, 1.0)).execute(context)) == null,
                 "Burst must skip a fallen target without an error");
@@ -874,7 +881,7 @@ public final class CombatSpellGameTests {
             float afterBurst = wither.getHealth();
             // Burst's hit is bigger than Chain Lightning's, so the hurt cooldown it leaves would swallow the bolt.
             wither.invulnerableTime = 0;
-            helper.assertTrue(castError(() -> chainLightning(Map.of(DIRECTION, toward(player, wither), POWER, 1.0))
+            helper.assertTrue(castError(() -> chainLightning(Map.of(POSITION, eyes(player), DIRECTION, toward(player, wither), POWER, 1.0))
                     .execute(context)) == null, "Chain Lightning must accept the Wither");
             helper.assertTrue(wither.getHealth() < afterBurst, "Chain Lightning must hurt the Wither");
             helper.assertTrue(castError(() -> burst(Map.of(TARGET, rider, POWER, 1.0)).execute(context)) == null

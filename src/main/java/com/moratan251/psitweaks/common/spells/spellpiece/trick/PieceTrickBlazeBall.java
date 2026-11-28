@@ -6,12 +6,14 @@ import com.moratan251.psitweaks.common.config.PsitweaksConfig;
 import com.moratan251.psitweaks.common.entities.EntityBlazeBall;
 import com.moratan251.psitweaks.common.entities.PsitweaksEntities;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
+import com.moratan251.psitweaks.common.spells.combat.CombatSpellHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellCompilationException;
@@ -21,8 +23,13 @@ import vazkii.psi.api.spell.SpellParam;
 import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.api.spell.StatLabel;
 import vazkii.psi.api.spell.param.ParamNumber;
+import vazkii.psi.api.spell.param.ParamVector;
 import vazkii.psi.api.spell.piece.PieceTrick;
 
+/**
+ * Fires a ball of flame from Position along Direction. Both are optional: without Position the ball leaves from in
+ * front of the caster's eyes, and without Direction it flies the way the caster looks.
+ */
 public class PieceTrickBlazeBall extends PieceTrick {
 
     private static final double MIN_POWER = 0.1;
@@ -35,6 +42,8 @@ public class PieceTrickBlazeBall extends PieceTrick {
     private static final double COST_BASE = 150.0;
     private static final double COST_PER_POWER = 150.0;
 
+    private SpellParam<Vector3> position;
+    private SpellParam<Vector3> direction;
     private SpellParam<Number> power;
 
     public PieceTrickBlazeBall(Spell spell) {
@@ -45,6 +54,8 @@ public class PieceTrickBlazeBall extends PieceTrick {
 
     @Override
     public void initParams() {
+        addParam(position = new ParamVector(SpellParam.GENERIC_NAME_POSITION, SpellParam.BLUE, true, false));
+        addParam(direction = new ParamVector(SpellParam.GENERIC_NAME_DIRECTION, SpellParam.GREEN, true, false));
         addParam(power = new ParamNumber("psi.spellparam.power", SpellParam.RED, false, true));
     }
 
@@ -68,6 +79,8 @@ public class PieceTrickBlazeBall extends PieceTrick {
             throw new SpellRuntimeException(SpellRuntimeException.NON_POSITIVE_VALUE);
         }
         powerVal = Math.max(MIN_POWER, powerVal);
+        Vec3 from = CombatSpellHelper.optionalPosition(context, getParamValue(context, position));
+        Vec3 aim = CombatSpellHelper.optionalDirection(getParamValue(context, direction));
 
         Level level = context.caster.level();
         if (level.isClientSide) {
@@ -80,22 +93,32 @@ public class PieceTrickBlazeBall extends PieceTrick {
 
         EntityBlazeBall projectile = new EntityBlazeBall(PsitweaksEntities.BLAZE_BALL.get(), level);
         projectile.setOwner(context.caster);
-        Vec3 look = context.caster.getLookAngle();
-        projectile.setPos(
-                context.caster.getX() + look.x * 0.5,
-                context.caster.getEyeY() - 0.1,
-                context.caster.getZ() + look.z * 0.5
-        );
-        projectile.shootFromRotation(context.caster, context.caster.getXRot(), context.caster.getYRot(), 0.0F, speed, 0.0F);
+        Vec3 flight = aim != null ? aim : context.caster.getLookAngle();
+        if (from != null) {
+            CombatSpellHelper.placeCentered(projectile, from);
+        } else {
+            projectile.setPos(
+                    context.caster.getX() + flight.x * 0.5,
+                    context.caster.getEyeY() - 0.1,
+                    context.caster.getZ() + flight.z * 0.5
+            );
+        }
+        if (from == null && aim == null) {
+            // Thrown from the caster's hand, it also carries the caster's own motion.
+            projectile.shootFromRotation(context.caster, context.caster.getXRot(), context.caster.getYRot(), 0.0F, speed, 0.0F);
+        } else {
+            projectile.shoot(flight.x, flight.y, flight.z, speed, 0.0F);
+        }
         projectile.setDamage(finalDamage);
         projectile.setSafeToPlayers(SpellSafetyUtils.hasSafeToPlayers(context));
 
         level.addFreshEntity(projectile);
+        Vec3 soundAt = from != null ? from : context.caster.position();
         level.playSound(
                 null,
-                context.caster.getX(),
-                context.caster.getY(),
-                context.caster.getZ(),
+                soundAt.x,
+                soundAt.y,
+                soundAt.z,
                 SoundEvents.BLAZE_SHOOT,
                 SoundSource.PLAYERS,
                 1.0F,
@@ -103,11 +126,13 @@ public class PieceTrickBlazeBall extends PieceTrick {
         );
 
         if (level instanceof ServerLevel serverLevel) {
+            Vec3 flash = from != null ? from
+                    : new Vec3(context.caster.getX(), context.caster.getEyeY() - 0.1, context.caster.getZ());
             serverLevel.sendParticles(
                     ParticleTypes.SMALL_FLAME,
-                    context.caster.getX(),
-                    context.caster.getEyeY() - 0.1,
-                    context.caster.getZ(),
+                    flash.x,
+                    flash.y,
+                    flash.z,
                     10,
                     0.15,
                     0.15,

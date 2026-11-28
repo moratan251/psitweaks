@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.cad.ICAD;
+import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellRuntimeException;
 
@@ -96,6 +97,42 @@ public final class CombatSpellHelper {
     public static boolean canSee(Level level, Vec3 from, Vec3 to, Entity viewer) {
         return level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, viewer))
                 .getType() == HitResult.Type.MISS;
+    }
+
+    /**
+     * The optional Position input of a trick that otherwise fires from the caster: null when it is not given, or its
+     * piece gave nothing, so the trick starts where it did before the input existed. A given position must be within the
+     * spell radius.
+     */
+    @Nullable
+    public static Vec3 optionalPosition(SpellContext context, @Nullable Vector3 position) throws SpellRuntimeException {
+        if (position == null) {
+            return null;
+        }
+        if (!context.isInRadius(position)) {
+            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
+        }
+        return position.toVec3D();
+    }
+
+    /**
+     * The optional Direction input of a trick that otherwise fires where the caster looks, as a unit vector: null when it
+     * is not given, or its piece gave nothing. A zero direction fails, as it does for the tricks that require one.
+     */
+    @Nullable
+    public static Vec3 optionalDirection(@Nullable Vector3 direction) throws SpellRuntimeException {
+        if (direction == null) {
+            return null;
+        }
+        if (direction.isZero()) {
+            throw new SpellRuntimeException(SpellRuntimeException.NULL_VECTOR);
+        }
+        return direction.toVec3D().normalize();
+    }
+
+    /** Moves {@code entity} so that the middle of its hitbox is at {@code center}: where a fired projectile starts. */
+    public static void placeCentered(Entity entity, Vec3 center) {
+        entity.setPos(center.x, center.y - entity.getBbHeight() * 0.5, center.z);
     }
 
     /** Linear falloff from full damage at the centre to {@code edgeFactor} at the radius. */

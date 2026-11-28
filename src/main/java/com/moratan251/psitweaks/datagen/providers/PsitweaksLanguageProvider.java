@@ -1947,14 +1947,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_meteor_line", "Trick: Meteor Line", "Covers the position in a night and rains streaks of light from its stars on the creatures inside", "作動式: 流星群", "指定位置を夜で覆い, 星から光条を降らせて中の生物を穿つ");
         addSpellPiece(root, "trick_supreme_infusion", "Trick: Supreme Infusion", "Infuse Echo Shards into Psionic Echoes", "作動式: 超位注入", "残響の欠片に注入してサイオニックエコーにします");
         addSpellPiece(root, "trick_molecular_divider", "Trick: Molecular Divider", "divide the living creatures within the area", "作動式: 分子ディバイダー", "三点で作られた平面で生物を切断する");
-        addSpellPiece(root, "trick_aqua_cutter", "Trick: Aqua Cutter", "Launches a water blade projectile that damages on hit", "作動式: アクアカッター", "水刃の発射体を前方に放ち, 命中した対象にダメージを与える");
-        addSpellPiece(root, "trick_dry_meteor", "Trick: Dry Meteor", "Launches dry ice forward and deals freezing damage on hit", "作動式: ドライミーティア", "ドライアイスを前方に射出し, 命中した対象に凍結属性ダメージを与える");
-        addSpellPiece(root, "trick_blaze_ball", "Trick: Blaze Ball", "Launches a fireball forward that deals fire damage on hit", "作動式: ブレイズボール", "前方へ火の玉を発射し, 命中した対象へ炎属性ダメージを与える");
+        addSpellPiece(root, "trick_aqua_cutter", "Trick: Aqua Cutter", "Launches a water blade projectile from the position in the direction that damages on hit; without them, from the caster where they look", "作動式: アクアカッター", "水刃の発射体を位置から方向へ放ち, 命中した対象にダメージを与える (省略時は術者から視線の方向へ)");
+        addSpellPiece(root, "trick_dry_meteor", "Trick: Dry Meteor", "Launches dry ice from the position in the direction and deals freezing damage on hit; without them, from the caster where they look", "作動式: ドライミーティア", "ドライアイスを位置から方向へ射出し, 命中した対象に凍結属性ダメージを与える (省略時は術者から視線の方向へ)");
+        addSpellPiece(root, "trick_blaze_ball", "Trick: Blaze Ball", "Launches a fireball from the position in the direction that deals fire damage on hit; without them, from the caster where they look", "作動式: ブレイズボール", "位置から方向へ火の玉を発射し, 命中した対象へ炎属性ダメージを与える (省略時は術者から視線の方向へ)");
         addSpellPiece(root, "trick_radiation_injection", "Trick: Radiation Injection", "Applies radiation exposure to the target", "作動式: 放射線注入", "対象を被ばくさせる");
         addSpellPiece(root, "trick_radiation_filter", "Trick: Radiation Filter", "Applies a radiation filter effect to the target", "作動式: 放射線フィルタ", "対象に放射線防護効果を付与する");
         addSpellPiece(root, "trick_cure_radiation", "Trick: Cure Radiation", "Removes radiation exposure from the target", "作動式: 放射線除去", "対象の被ばく量を除去する");
         addSpellPiece(root, "trick_guillotine", "Trick: Guillotine", "Deals a heavy slash to the target and drops a head on kill", "作動式: ギロチン", "対象に強力な斬撃ダメージを与え, 討伐時に頭をドロップさせる");
-        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Discharges lightning from the focal point in the direction; it strikes the nearest hostile creature and branches to nearby ones", "作動式: 連鎖電光", "焦点から方向へ雷撃を放ち, 最も近い敵対的な生物に当てて近くの敵対的な生物へ枝分かれさせる");
+        addSpellPiece(root, "trick_chain_lightning", "Trick: Chain Lightning", "Discharges lightning from the position in the direction; it strikes the nearest hostile creature and branches to nearby ones", "作動式: 連鎖電光", "位置から方向へ雷撃を放ち, 最も近い敵対的な生物に当てて近くの敵対的な生物へ枝分かれさせる");
         addSpellPiece(root, "trick_mine_genesis", "Trick: Mine Genesis", "Shakes the ground so a shockwave spreads out and throws up whatever stands on it", "作動式: 地雷原", "地面を振動させて衝撃波を広げ, 地上の生物を打ち上げる");
         addSpellPiece(root, "trick_burst", "Trick: Burst", "Vaporizes the liquid inside the target so it bursts from within", "作動式: 爆裂", "対象の体内の液体を気化させ, 内側から破裂させる");
         addSpellPiece(root, "trick_psi_bullet", "Trick: Psi Bullet",
@@ -2324,15 +2324,25 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_molecular_divider",
                 "Cuts living beings along a plane defined by three points, dealing $(thing)60 × Power$(0) damage.",
                 "三点で定義した平面で生物を切断し, $(thing)60×威力$(0) のダメージを与えます.");
+        // The first page keeps its old key, which other languages already translate.
         addBookPage(root, "trick_aqua_cutter",
-                "Fires a water-blade projectile forward as an early-game offensive trick, dealing $(thing)2 + 3 × Power$(0) damage. A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0), $(thing)Trick: Burst$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
-                "前方へ水刃の発射体を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です. 当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) や $(thing)作動式: 爆裂$(0), 雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
+                "Fires a water-blade projectile from $(thing)Position$(0) along $(thing)Direction$(0) as an early-game offensive trick, dealing $(thing)2 + 3 × Power$(0) damage."
+                        + "$(p)Both inputs are optional. Without Position the blade leaves from the caster's eyes, and without Direction it flies the way the caster looks.",
+                "$(thing)位置$(0)から$(thing)方向$(0)へ水刃の発射体を放ち, $(thing)2 + 3×威力$(0) のダメージを与える序盤用の攻撃術式です."
+                        + "$(p)位置と方向はどちらも省略できます. 位置を省くと術者の目元から, 方向を省くと術者の視線の方向へ撃ちます.");
+        addBookPage(root, "trick_aqua_cutter.1",
+                "A creature it hits stays wet for 10 seconds, as if in the rain: it does not catch fire, and $(thing)Trick: Chain Lightning$(0), $(thing)Trick: Burst$(0) and Thundercloud bolts deal it more. A burning creature takes 25%% more instead: the water turns to steam and puts out the fire, but the creature stays dry.",
+                "当てた相手は雨に打たれたように10秒間濡れ, その間は燃えず, $(thing)作動式: 連鎖電光$(0) や $(thing)作動式: 爆裂$(0), 雷雲の雷撃のダメージが増えます. 燃えている相手には水が蒸気になって25%%増しのダメージを与え, 火を消しますが, 濡れはしません.");
         addBookPage(root, "trick_dry_meteor",
-                "Fires a dry ice projectile forward, dealing $(thing)14$(0) freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time.",
-                "前方にドライアイスの弾丸を発射し, 命中した相手に $(thing)14$(0) の凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます.");
+                "Fires a dry ice projectile from $(thing)Position$(0) along $(thing)Direction$(0), dealing $(thing)14$(0) freezing damage to targets it hits. The dry ice sublimates into carbon dioxide, inflicting Carbon Poisoning that impairs the target's mobility and deals damage over time."
+                        + "$(p)Without Position it leaves from the caster's eyes, and without Direction it flies the way they look.",
+                "$(thing)位置$(0)から$(thing)方向$(0)へドライアイスの弾丸を発射し, 命中した相手に $(thing)14$(0) の凍結ダメージを与えます. ドライアイスは二酸化炭素へと気化し対象を炭素中毒状態にして機動力を奪い継続ダメージを与えます."
+                        + "$(p)位置と方向はどちらも省略できます. 位置を省くと術者の目元から, 方向を省くと術者の視線の方向へ撃ちます.");
         addBookPage(root, "trick_blaze_ball",
-                "Fires a ball of flame forward as an early-game offensive trick, dealing $(thing)2 + 2 × Power$(0) damage.",
-                "前方へ火の弾を放ち, $(thing)2 + 2×威力$(0) のダメージを与える序盤用の攻撃術式です.");
+                "Fires a ball of flame from $(thing)Position$(0) along $(thing)Direction$(0) as an early-game offensive trick, dealing $(thing)2 + 2 × Power$(0) damage."
+                        + "$(p)Both inputs are optional. Without Position the ball leaves from the caster's eyes, and without Direction it flies the way the caster looks.",
+                "$(thing)位置$(0)から$(thing)方向$(0)へ火の弾を放ち, $(thing)2 + 2×威力$(0) のダメージを与える序盤用の攻撃術式です."
+                        + "$(p)位置と方向はどちらも省略できます. 位置を省くと術者の目元から, 方向を省くと術者の視線の方向へ撃ちます.");
         addBookPage(root, "trick_active_air_mine", "Creates a spherical shockwave at the specified coordinates and damages living beings within range.", "指定座標に球状の衝撃波を作り, 範囲内の生物にダメージを与えます.");
         addCircleBookPages(root);
         addBookPage(root, "trick_die_flex", "Behaves similarly to Psi's Trick: Die and refunds the Psi cost of spell pieces that were not executed. With high-frequency casting, the client-side Psi display may temporarily desync.", "Psi本体の停止と同様の動作を行い, 未実行分のスペルピースのPsiコストを返還します. 高頻度詠唱ではクライアント側のPsi表示が一時的にずれることがあります.");
@@ -2349,8 +2359,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Deals $(thing)24$(0) slash damage to the target and makes it drop a head when killed.",
                 "対象に $(thing)24$(0) の斬撃ダメージを与え, 討伐時に頭をドロップさせます.");
         addBookPage(root, "trick_chain_lightning.0",
-                "Discharges lightning from the focal point along $(thing)Direction$(0), striking the nearest hostile creature within 24 blocks. Chains to up to 3 hostile creatures within 8 blocks, then up to 2 more from each within 8 blocks.",
-                "焦点から$(thing)方向$(0)へ雷撃を放ち, 24ブロック以内で最も近い敵対的な生物に命中させます. 最初の対象から8ブロック以内の敵対生物最大3体, さらに各8ブロック以内の最大2体へ連鎖します.");
+                "Discharges lightning from $(thing)Position$(0) along $(thing)Direction$(0), striking the nearest hostile creature within 24 blocks. Chains to up to 3 hostile creatures within 8 blocks, then up to 2 more from each within 8 blocks."
+                        + "$(p)To discharge it from yourself, connect $(thing)Selector: Caster$(0) to $(thing)Operator: Entity Position$(0), which gives the caster's eyes.",
+                "$(thing)位置$(0)から$(thing)方向$(0)へ雷撃を放ち, 24ブロック以内で最も近い敵対的な生物に命中させます. 最初の対象から8ブロック以内の敵対生物最大3体, さらに各8ブロック以内の最大2体へ連鎖します."
+                        + "$(p)術者から放つには, $(thing)取得子: 術者$(0) を $(thing)演算子: エンティティ位置$(0) につなぎます (術者の目元の位置になります).");
         addBookPage(root, "trick_chain_lightning.1",
                 "Deals $(thing)9 + 9 × Power$(0) on the first hit, 40%% on the first chain, and 20%% on the second; wet creatures take 1.25x damage.$(p)Set optional $(thing)Indiscriminate$(0) to non-zero to also hit animals and villagers (sparing you, allies, and pets).",
                 "ダメージは初撃$(thing)9 + 9×威力$(0), 1段目40%%, 2段目20%%です. 濡れている生物には与えるダメージが1.25倍になります.$(p)$(thing)無差別$(0) (省略可) に0以外を入れると動物や村人も対象になります (術者・味方・ペットは除く).");
