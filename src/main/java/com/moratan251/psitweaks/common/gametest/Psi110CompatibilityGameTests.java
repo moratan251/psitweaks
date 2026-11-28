@@ -83,7 +83,8 @@ public final class Psi110CompatibilityGameTests {
         String[][] renames = {
                 {"psitweaks:trick_kamaitachi", "trick_air_bullet"},
                 {"psitweaks:trick_gravity_collapse", "trick_micro_black_hole"},
-                {"trick_gravity_collapse", "trick_micro_black_hole"}
+                {"trick_gravity_collapse", "trick_micro_black_hole"},
+                {"psitweaks:operator_matrix_column_from_list", "operator_matrix_reshape"}
         };
         for (String[] rename : renames) {
             var tag = new CompoundTag();

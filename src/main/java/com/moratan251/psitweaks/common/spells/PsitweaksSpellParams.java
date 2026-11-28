@@ -40,6 +40,10 @@ public final class PsitweaksSpellParams {
     public static final String FILTER = PREFIX + "filter";
     /** Resource input of the ideaspace selectors (an ID String, or an Item in Item mode). */
     public static final String RESOURCE = PREFIX + "resource";
+    /** Number input of Operator: Conditional Select; an absolute value of 1 or more picks the If True input. */
+    public static final String CONDITION = PREFIX + "condition";
+    public static final String IF_TRUE = PREFIX + "if_true";
+    public static final String IF_FALSE = PREFIX + "if_false";
 
     public static final int STRING_COLOR = 0xE0A030;
     public static final int STRING_LIST_COLOR = 0xD2D22A;

@@ -28,12 +28,15 @@ public final class OptionalSpellPieceCompat {
             Psitweaks.location("trick_contamination_zone"));
 
     /**
-     * Pieces whose ID changed during 1.0.0 development (old ID → new ID). Psi cannot read an unknown namespaced ID
-     * (it fails the whole player or chunk), so spells saved before the rename load under the new ID.
+     * Pieces whose ID changed during 1.0.0 development (old ID → new ID), including pieces folded into another piece
+     * with the same input names. Psi cannot read an unknown namespaced ID (it fails the whole player or chunk), so
+     * spells saved before the change load under the new ID.
      */
     private static final Map<ResourceLocation, ResourceLocation> RENAMED_PIECES = Map.of(
             Psitweaks.location("trick_kamaitachi"), Psitweaks.location("trick_air_bullet"),
-            Psitweaks.location("trick_gravity_collapse"), Psitweaks.location("trick_micro_black_hole"));
+            Psitweaks.location("trick_gravity_collapse"), Psitweaks.location("trick_micro_black_hole"),
+            // Operator: Column Matrix From List = Operator: Matrix Reshape with both counts left out.
+            Psitweaks.location("operator_matrix_column_from_list"), Psitweaks.location("operator_matrix_reshape"));
 
     /**
      * Pieces removed from the mod. Spells saved while they existed load with the piece taken out of the grid, like a

@@ -13,6 +13,7 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceMacroCast
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorBlockResourceBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorMatrixCasterBasis;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorMatrixCuboidCorners;
+import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorFixedModeBase;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorMatrixCuboidRegion;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorMatrixTransformVector;
 import com.moratan251.psitweaks.common.spells.spellpiece.operator.PieceOperatorRegionFilterBase;
@@ -82,6 +83,8 @@ public abstract class SpellPieceRendererMixin {
         } else if (piece instanceof PieceOperatorBlockResourceBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         } else if (piece instanceof PieceTrickGravityZone custom) {
+            ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
+        } else if (piece instanceof PieceOperatorFixedModeBase custom) {
             ModeOverlayRenderer.drawModeOverlay(poses, buffers, light, custom.getModeOption());
         }
     }

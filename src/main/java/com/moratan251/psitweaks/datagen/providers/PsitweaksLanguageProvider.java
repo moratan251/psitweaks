@@ -280,6 +280,14 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "Vector/Number List";
             default -> "Vector/Number List";
         });
+        root.addProperty("psitweaks.datatype.matrix_line_source", switch (locale) {
+            case "ja_jp" -> "Vector/Number List/Vector List";
+            default -> "Vector/Number List/Vector List";
+        });
+        root.addProperty("psitweaks.datatype.number_or_number_list", switch (locale) {
+            case "ja_jp" -> "Number/Number List";
+            default -> "Number/Number List";
+        });
         root.addProperty("psitweaks.datatype.matrix", switch (locale) {
             case "ja_jp" -> "Matrix";
             default -> "Matrix";
@@ -476,9 +484,29 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "エラー: リストと基準値の要素数が違います.";
             default -> "ERROR: The List and the Values have different sizes.";
         });
+        root.addProperty("psitweaks.spellerror.list_size_mismatch", switch (locale) {
+            case "ja_jp" -> "エラー: リストの要素数がそろっていません.";
+            default -> "ERROR: The Lists have different sizes.";
+        });
+        root.addProperty("psitweaks.spellerror.list_empty", switch (locale) {
+            case "ja_jp" -> "エラー: リストが空です.";
+            default -> "ERROR: The List is empty.";
+        });
         root.addProperty("psitweaks.spellparam.values", switch (locale) {
             case "ja_jp" -> "基準値";
             default -> "Values";
+        });
+        root.addProperty("psitweaks.spellparam.condition", switch (locale) {
+            case "ja_jp" -> "条件";
+            default -> "Condition";
+        });
+        root.addProperty("psitweaks.spellparam.if_true", switch (locale) {
+            case "ja_jp" -> "真";
+            default -> "If True";
+        });
+        root.addProperty("psitweaks.spellparam.if_false", switch (locale) {
+            case "ja_jp" -> "偽";
+            default -> "If False";
         });
         root.addProperty("psitweaks.hud.spellgram_integrity", switch (locale) {
             case "ja_jp" -> "%s  %s";
@@ -1983,12 +2011,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "trick_send_item", "Trick: Send Item", "Moves items from the caster's inventory into the specified face of the block at Position, up to one stack or the count given by Max. CADs are skipped.", "作動式: アイテム転送", "術者のインベントリから, 位置のブロックの指定面へアイテムを移します. 上限は1スタック, または「最大」で指定した個数です. CADは移しません.");
         addSpellPiece(root, "operator_tan", "Operator: Tangent", "tan(A)", "演算子: タンジェント", "tan(A)");
         addSpellPiece(root, "operator_atan", "Operator: Arc Tangent", "atan(A)", "演算子: アークタンジェント", "atan(A)");
+        addSpellPiece(root, "operator_atan2", "Operator: Arc Tangent 2", "atan2(Y, X)", "演算子: アークタンジェント2", "atan2(Y, X)");
         addSpellPiece(root, "operator_sinh", "Operator: Hyperbolic Sine", "sinh(A)", "演算子: ハイパボリックサイン", "sinh(A)");
         addSpellPiece(root, "operator_cosh", "Operator: Hyperbolic Cosine", "cosh(A)", "演算子: ハイパボリックコサイン", "cosh(A)");
         addSpellPiece(root, "operator_tanh", "Operator: Hyperbolic Tangent", "tanh(A)", "演算子: ハイパボリックタンジェント", "tanh(A)");
         addSpellPiece(root, "operator_greater_than", "Operator: Greater Than", "Outputs 1 if Value 1 is greater than Value 2, otherwise 0.", "演算子: ～より大きい", "値1が値2より大きいなら1, そうでなければ0を出力します.");
         addSpellPiece(root, "operator_greater_than_or_equal", "Operator: Greater Than or Equal", "Outputs 1 if Value 1 is greater than or equal to Value 2, otherwise 0.", "演算子: ～以上", "値1が値2以上なら1, そうでなければ0を出力します.");
         addSpellPiece(root, "operator_equal", "Operator: Equal", "Outputs 1 if Value 1 equals Value 2, otherwise 0.", "演算子: 等しい", "値1と値2が等しいなら1, そうでなければ0を出力します.");
+        addSpellPiece(root, "operator_conditional_select", "Operator: Conditional Select", "Outputs If True when the absolute value of Condition is 1 or more, otherwise If False.", "演算子: 条件選択", "条件の絶対値が1以上なら真を, そうでなければ偽を出力します.");
+        addSpellPiece(root, "operator_list_conditional_select", "Operator: List Conditional Select", "Outputs the If True List when the absolute value of Condition is 1 or more, otherwise the If False List.", "演算子: リスト条件選択", "条件の絶対値が1以上なら真の List を, そうでなければ偽の List を出力します.");
         addSpellPiece(root, "constant_string", "Constant: String", "Outputs the entered string. Limited to 1024 characters.", "定数子: 文字列", "入力した文字列をそのまま出力します. 最大1024文字です.");
         addSpellPiece(root, "constant_signed_wrapper", "Constant: Signed Wrapper", "Wraps a variable as a constant while keeping its sign. Only works on constant inputs with identical stats for both signs.", "定数子: 符号ラッパー", "変数の値を符号ごと定数としてラップします. 正負で性能値が変わらない定数入力にだけ使えます.");
         addSpellPiece(root, "operator_format_string", "Operator: Format String", "Returns the entered text with Values 1 to 3 filled into {1}, {2}, and {3}.", "演算子: フォーマット文字列", "入力した文字列の {1}〜{3} に値1〜3を埋め込んで返します.");
@@ -2057,10 +2088,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_list_remove_indices", "Operator: Remove Indexed Elements", "Removes the elements at Number A and Number B from the input List.", "演算子: インデックス要素削除", "入力した List から数値Aと数値Bに対応するインデックスの要素を削除します.");
         addSpellPiece(root, "operator_list_insert", "Operator: List Insert", "Inserts the input element at the specified index in the input List.", "演算子: リストに挿入", "入力した List の指定インデックスへ要素を挿入します.");
         addSpellPiece(root, "operator_list_slice", "Operator: List Slice", "Returns the part of the List from Number A to Number B.", "演算子: リストスライス", "List を 数値A:数値B の範囲で切り出します.");
+        addSpellPiece(root, "operator_list_replace_element", "Operator: List Replace Element", "Replaces the element at the index of the input List with the input element.", "演算子: リスト要素置換", "入力した List の指定インデックスにある要素を, 入力した要素に置き換えます.");
+        addSpellPiece(root, "operator_list_remove_duplicates", "Operator: List Remove Duplicates", "Removes repeated elements from the List, keeping the first of each.", "演算子: リスト重複排除", "List の重複した要素を取り除き, それぞれ最初の1つだけを残します.");
+        addSpellPiece(root, "operator_list_reverse", "Operator: List Reverse", "Reverses the order of the List.", "演算子: リスト逆順", "List の並び順を逆にします.");
+        addSpellPiece(root, "operator_list_index_of", "Operator: List Index Of", "Returns the index of the first element equal to the input element, or -1.", "演算子: リスト要素検索", "入力した要素と等しい最初の要素のインデックスを返します. 見つからなければ -1 です.");
         addSpellPiece(root, "operator_list_size", "Operator: List Size (PT)", "Outputs the number of elements in the input List.", "演算子: リストサイズ (PT)", "入力した任意の List の要素数を出力します.");
         addSpellPiece(root, "operator_list_exclusion", "Operator: List Exclusion (PT)", "Removes the elements in List 2 from the input List 1.", "演算子: リスト除外 (PT)", "入力したリスト1からリスト2に含まれる要素を除外します.");
         addSpellPiece(root, "operator_list_intersection", "Operator: List Intersection (PT)", "Outputs the elements shared by the two input Lists.", "演算子: リスト共通部分 (PT)", "入力した2つの List に共通する要素を出力します.");
         addSpellPiece(root, "operator_list_concatenation", "Operator: List Concatenation (PT)", "Combines the two input Lists.", "演算子: リスト結合 (PT)", "入力した2つの List を結合します.");
+        addSpellPiece(root, "operator_entity_position_list", "Operator: Entity Position List", "Returns the position of each entity in an Entity List as a Vector List.", "演算子: エンティティ位置リスト", "Entity List の各エンティティの位置を Vector List で返します.");
+        addSpellPiece(root, "operator_list_sum", "Operator: List Sum", "Adds up all elements of a Number List or Vector List.", "演算子: リスト合計", "Number List または Vector List の要素をすべて足します.");
+        addSpellPiece(root, "operator_list_average", "Operator: List Average", "Returns the average of a Number List or Vector List.", "演算子: リスト平均", "Number List または Vector List の平均を返します.");
+        addSpellPiece(root, "operator_number_list_add", "Operator: Number List Add", "Computes Value 1 + Value 2 (+ Value 3) for each element.", "演算子: 数値リスト加算", "要素ごとに 値1 + 値2 (+ 値3) を計算します.");
+        addSpellPiece(root, "operator_number_list_subtract", "Operator: Number List Subtract", "Computes Value 1 - Value 2 (- Value 3) for each element.", "演算子: 数値リスト減算", "要素ごとに 値1 - 値2 (- 値3) を計算します.");
+        addSpellPiece(root, "operator_number_list_multiply", "Operator: Number List Multiply", "Computes Value 1 × Value 2 (× Value 3) for each element.", "演算子: 数値リスト乗算", "要素ごとに 値1 × 値2 (× 値3) を計算します.");
+        addSpellPiece(root, "operator_number_list_divide", "Operator: Number List Divide", "Computes Value 1 ÷ Value 2 for each element.", "演算子: 数値リスト除算", "要素ごとに 値1 ÷ 値2 を計算します.");
+        addSpellPiece(root, "operator_number_sequence", "Operator: Number Sequence", "Creates a Number List of Number B numbers that start at Number A and increase by Number C.", "演算子: 連番生成", "数値 A から 数値 C ずつ増える数を, 数値 B 個並べた Number List を作ります.");
         addSpellPiece(root, "operator_matrix_add", "Operator: Matrix Add", "Adds two or three matrices of the same size.", "演算子: 行列加算", "同じサイズの行列を2つまたは3つ加算します.");
         addSpellPiece(root, "operator_matrix_subtract", "Operator: Matrix Subtract", "Subtracts two or three matrices of the same size.", "演算子: 行列減算", "同じサイズの行列を2つまたは3つ減算します.");
         addSpellPiece(root, "operator_matrix_multiply", "Operator: Matrix Multiply", "Multiplies matrices with compatible dimensions.", "演算子: 行列積", "次元が整合する行列を乗算します.");
@@ -2074,13 +2117,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_matrix_row_count", "Operator: Matrix Row Count", "Returns the number of rows.", "演算子: 行数", "行列の行数を返します.");
         addSpellPiece(root, "operator_matrix_column_count", "Operator: Matrix Column Count", "Returns the number of columns.", "演算子: 列数", "行列の列数を返します.");
         addSpellPiece(root, "operator_matrix_multiply_vector", "Operator: Matrix Multiply Vector", "Multiplies a matrix by a column vector or Number List.", "演算子: 行列×ベクトル", "行列に列ベクトルまたは Number List を乗算します.");
-        addSpellPiece(root, "operator_matrix_column_from_list", "Operator: Column Matrix From List", "Converts a Number List or Vector into a column matrix.", "演算子: 数値リスト→列行列", "Number List または Vector を列行列に変換します.");
         addSpellPiece(root, "operator_matrix_flatten", "Operator: Matrix Flatten", "Flattens a matrix into a Number List in row-major order.", "演算子: 行列平坦化", "行列を行優先の Number List に平坦化します.");
+        addSpellPiece(root, "operator_matrix_reshape", "Operator: Matrix Reshape", "Fills a matrix row by row from a Number List or Vector.", "演算子: 行列整形", "Number List または Vector を行優先で並べて行列を作ります.");
         addSpellPiece(root, "operator_matrix_identity", "Operator: Identity Matrix", "Creates an identity matrix of the given size.", "演算子: 単位行列", "指定次数の単位行列を作ります.");
         addSpellPiece(root, "operator_matrix_zero", "Operator: Zero Matrix", "Creates a zero matrix with the given dimensions.", "演算子: ゼロ行列", "指定サイズのゼロ行列を作ります.");
         addSpellPiece(root, "operator_matrix_diagonal", "Operator: Diagonal Matrix", "Creates a diagonal matrix from a Number List or Vector.", "演算子: 対角行列", "Number List または Vector から対角行列を作ります.");
         addSpellPiece(root, "operator_matrix_replace_column", "Operator: Matrix Replace Column", "Replaces a column, expanding the matrix with zeros as needed.", "演算子: 列置換", "列を置換し, 必要に応じてゼロで拡張します.");
         addSpellPiece(root, "operator_matrix_replace_row", "Operator: Matrix Replace Row", "Replaces a row, expanding the matrix with zeros as needed.", "演算子: 行置換", "行を置換し, 必要に応じてゼロで拡張します.");
+        addSpellPiece(root, "operator_matrix_append_column", "Operator: Matrix Append Column", "Adds Vectors or Number Lists to a matrix as new columns.", "演算子: 列追加", "Vector や Number List を列として行列に足します.");
+        addSpellPiece(root, "operator_matrix_append_row", "Operator: Matrix Append Row", "Adds Vectors or Number Lists to a matrix as new rows.", "演算子: 行追加", "Vector や Number List を行として行列に足します.");
         addSpellPiece(root, "operator_matrix_replace_element", "Operator: Matrix Replace Element", "Replaces the element at the zero-based [row, column] indices with the input number.", "演算子: 行列要素置換", "0始まりの [行, 列] で指定した成分を入力数値で置換します.");
         addSpellPiece(root, "operator_matrix_delete_row", "Operator: Matrix Delete Row", "Deletes the specified row from the matrix and shifts the remaining rows up.", "演算子: 行削除", "指定した行を行列から削除し, 残りの行を詰めます.");
         addSpellPiece(root, "operator_matrix_delete_column", "Operator: Matrix Delete Column", "Deletes the specified column from the matrix and shifts the remaining columns left.", "演算子: 列削除", "指定した列を行列から削除し, 残りの列を詰めます.");
@@ -2095,6 +2140,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addSpellPiece(root, "operator_alive", "Operator: Alive", "Keeps only LivingEntity instances that are currently alive in the input Entity List.", "演算子: 生存", "入力した Entity List のうち, 生存中の LivingEntity のみを残します.");
         addSpellPiece(root, "operator_matrix_transform_vector", "Operator: Matrix Transform Vector", "Transforms a vector, or every vector of a Vector List, with a 3x3 or 4x4 matrix.", "演算子: 行列でベクトル変換", "3×3 または 4×4 行列でベクトル, または Vector List の各ベクトルを変換します.");
         addSpellPiece(root, "operator_matrix_linear_part", "Operator: Matrix Linear Part", "Extracts the top-left 3x3 submatrix.", "演算子: 行列線形部分", "左上の 3×3 部分行列を取り出します.");
+        addSpellPiece(root, "operator_matrix_affine", "Operator: Affine Matrix", "Makes a 4x4 matrix from the top-left 3x3 of a matrix and a position.", "演算子: アフィン行列", "行列の左上 3×3 と位置から 4×4 行列を作ります.");
         addSpellPiece(root, "operator_weak_raycast", "Operator: Vector Weak Raycast", "Raycasts from Position in the Ray direction and returns the coordinates of the hit block or fluid.", "演算子: ベクトルレイキャスト (弱)", "位置から Ray 方向へレイキャストし, 命中したブロックまたは流体の座標を返します.");
         addSpellPiece(root, "operator_weak_raycast_axis", "Operator: Vector Axis Weak Raycast", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "演算子: ベクトルレイキャスト方向 (弱)", "位置から Ray 方向へレイキャストし, 最初に命中したブロックまたは流体の面の法線方向を返します.");
         addSpellPiece(root, "operator_strong_raycast", "Operator: Vector Strong Raycast", "Raycasts from Position in the Ray direction, ignores blocks without a collision shape, and returns the coordinates of the hit block.", "演算子: ベクトルレイキャスト (強)", "位置から Ray 方向へレイキャストし, 当たり判定のないブロックを無視して命中したブロックの座標を返します.");
@@ -2397,12 +2443,15 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "trick_physical_propulsion", "Raycasts from the specified position in the Ray direction; if it hits a Simulated Contraption, applies propulsion to it.", "指定位置からRay方向へレイキャストし, Simulated Contraption に命中したならば推進力を与えます.");
         addBookPage(root, "operator_tan", "Returns the tangent of the target number.", "対象数値のタンジェントを返します.");
         addBookPage(root, "operator_atan", "Returns the arc tangent of the target number.", "対象数値のアークタンジェントを返します.");
+        addBookPage(root, "operator_atan2", "Returns the angle of the point (X, Y) in radians, from -π to π. It takes X and Y separately, so it can tell apart opposite directions that Operator: Arc Tangent cannot. It also works when X is 0.", "点 (X, Y) の向きの角度をラジアンで返します. 範囲は -π から π です. X と Y を別々に受け取るので, 演算子: アークタンジェント では区別できない逆向きも見分けられます. X が0のときも使えます.");
         addBookPage(root, "operator_sinh", "Returns the hyperbolic sine of the target number.", "対象数値のハイパボリックサインを返します.");
         addBookPage(root, "operator_cosh", "Returns the hyperbolic cosine of the target number.", "対象数値のハイパボリックコサインを返します.");
         addBookPage(root, "operator_tanh", "Returns the hyperbolic tangent of the target number.", "対象数値のハイパボリックタンジェントを返します.");
         addBookPage(root, "operator_greater_than", "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than Value 2, otherwise 0.", "値1と値2を Number として比較します. 値1が値2より大きいなら1, そうでなければ0を出力します.");
         addBookPage(root, "operator_greater_than_or_equal", "Compares Value 1 and Value 2 as Numbers. It outputs 1 when Value 1 is greater than or equal to Value 2, otherwise 0.", "値1と値2を Number として比較します. 値1が値2以上なら1, そうでなければ0を出力します.");
         addBookPage(root, "operator_equal", "Compares Value 1 and Value 2 as Any inputs. It outputs 1 when both values are equal, otherwise 0. Numbers compare by numeric value, Vectors compare by coordinates, Item values compare their item data and source, and Block values compare dimension, position, and block state. A Block compared with a Vector uses coordinate comparison.", "値1と値2を Any 入力として比較します. 2つの値が等しいなら1, そうでなければ0を出力します. Number は数値, Vector は座標, Item はアイテムデータと source, Block はディメンション, 座標, ブロック状態を比較します. Block と Vector の比較は座標比較です.");
+        addBookPage(root, "operator_conditional_select", "Outputs the If True value when the absolute value of Condition is 1 or more, otherwise the If False value. The result of Operator: Greater Than and similar pieces works as the Condition directly. The mode selects the value type. Both If True and If False are evaluated first, so an error in the unused one still stops the spell. To choose between Lists, use Operator: List Conditional Select.", "条件の絶対値が1以上なら「真」の値を, そうでなければ「偽」の値を出力します. 演算子: ～より大きい などの結果をそのまま条件に使えます. 値の型はモードで選びます. 真と偽は両方とも先に計算されます. 使わない側でエラーが起きても魔法式は止まります. List を選ぶときは 演算子: リスト条件選択 を使います.");
+        addBookPage(root, "operator_list_conditional_select", "The List version of Operator: Conditional Select. Outputs the If True List when the absolute value of Condition is 1 or more, otherwise the If False List. The mode selects the List type.", "演算子: 条件選択 の List 版です. 条件の絶対値が1以上なら「真」の List を, そうでなければ「偽」の List を出力します. List の種類はモードで選びます.");
         addBookPage(root, "constant_string", "Outputs the entered string as a String value. The value is saved with the spell and is limited to 1024 characters.", "入力した文字列をString値として出力します. 値は術式に保存され, 最大1024文字です.");
         addBookPage(root, "constant_signed_wrapper.0",
                 "Like Constant: Wrapper, the spell's stats come from $(thing)Constant$(0). When cast, it outputs $(thing)Target$(0) clamped to $(thing)±Constant$(0) while keeping its sign (Constant 5 gives -5 to 5).$(p)It only feeds constant inputs that compile with identical stats for both signs; wiring it to any other constant input causes a compile error.",
@@ -2482,10 +2531,22 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_list_remove_indices", "Removes the elements at Number A and Number B from the selected List mode. Negative indexes count from the end, so -1 removes the last element. Both indexes are resolved against the original List, and duplicate indexes remove only one element. An out-of-range index raises an out-of-bounds spell error.", "選択中の List モードから数値Aと数値Bに対応するインデックスの要素を削除します. 負数は末尾から数え, -1 は末尾要素を削除します. どちらのインデックスも元の List を基準に解決し, 同じインデックスの場合は1要素だけ削除します. 範囲外はインデックス範囲外エラーになります.");
         addBookPage(root, "operator_list_insert", "Inserts the input element before the specified index in the selected List mode. Index 0 inserts at the beginning and -1 inserts before the last element. Indexes above the List size insert at the end, while indexes below the negative range insert at the beginning.", "選択中の List モードの指定インデックス直前へ入力要素を挿入します. 0 は先頭へ, -1 は末尾要素の直前へ挿入します. List サイズより大きいインデックスは末尾へ, 負方向の範囲を超えたインデックスは先頭へ挿入します.");
         addBookPage(root, "operator_list_slice", "Returns a selected range of elements from the selected List mode as a new List. If A is omitted, the range starts at the beginning; if B is omitted, it continues to the end. Negative numbers count from the end, out-of-range values are clamped to the valid range, and an end position at or before the start returns an empty List. Decimal values are truncated toward zero.", "選択中の List モード に対しインデックスを指定して範囲を切り出して新しい List として返します. A を省略すると先頭から, B を省略すると末尾までが対象です. 負数は末尾から数え, 範囲外は有効範囲へ丸め, 終了位置が開始位置以前なら空の List を返します. 小数は0方向へ切り捨てます.");
+        addBookPage(root, "operator_list_replace_element", "Replaces the element at a zero-based index of the selected List mode with Element 1. Negative indexes count back from the end, so -1 is the last element. An index out of range is an error. An Entity List keeps a fixed order, so the new entity may move to another position. Entity Lists and Block Lists cannot hold the same element twice, so replacing with an element already in the List makes it one shorter.", "選択中の List モードで, 0始まりのインデックスにある要素を 要素1 に置き換えます. 負のインデックスは末尾から数え, -1 は末尾の要素です. 範囲外のインデックスはエラーになります. Entity List は並び順が固定なので, 置き換えたエンティティの位置は変わることがあります. Entity List と Block List は同じ要素を2つ持てません. すでに入っている要素で置き換えると, 要素数が1つ減ります.");
+        addBookPage(root, "operator_list_remove_duplicates", "Removes repeated elements from the List. The first of each group of equal elements stays, and the order is kept. Elements are compared like Operator: Equal. Entity Lists and Block Lists never hold duplicates, so they are not in the mode menu.", "List から重複した要素を取り除きます. 等しい要素のうち最初の1つだけが残り, 並び順は変わりません. 等しいかどうかは 演算子: 等しい と同じ基準で比べます. Entity List と Block List はもともと重複を持たないので, モードにありません.");
+        addBookPage(root, "operator_list_reverse", "Returns the List with its elements in reverse order. Psi always keeps an Entity List in a fixed order, so Entity is not in the mode menu.", "List の要素を逆の順に並べて返します. Entity List は Psi が並び順を固定しているので, モードにありません.");
+        addBookPage(root, "operator_list_index_of", "Searches the List for Element 1 and returns the zero-based index of the first equal element. It returns -1 when nothing matches. Elements are compared like Operator: Equal. The index can go into Selector: Indexed Element (PT) or Operator: List Replace Element.", "List の中から 要素1 を探し, 等しい最初の要素の0始まりのインデックスを返します. 見つからないときは -1 を返します. 等しいかどうかは 演算子: 等しい と同じ基準で比べます. 結果は 取得子: インデックス要素 (PT) や 演算子: リスト要素置換 に渡せます.");
         addBookPage(root, "operator_list_size", "Outputs the number of elements in the List.", "List の要素数を出力します.");
         addBookPage(root, "operator_list_exclusion", "Returns a new List by removing elements from List 1 when they are also present in List 2.", "入力したList 1 の要素のうち, List 2 にも含まれる要素を除外して新しいリストとして返します.");
         addBookPage(root, "operator_list_intersection", "Returns a new List containing elements that are present in both input Lists.", "入力した2つのリストでどちらにも含まれる要素を新しいリストとして返します.");
         addBookPage(root, "operator_list_concatenation", "Combines the two input Lists. For Contextual Value Lists, duplicate elements are removed.", "入力された2つのリストを結合します. Contextual Value List の場合, 重複した要素は削除されます.");
+        addBookPage(root, "operator_entity_position_list", "Returns the position of each entity in the Entity List as a Vector List in the same order. Each position is the one Operator: Entity Position gives. The result can go into pieces that take a Vector List, such as Operator: Matrix Transform Vector and Operator: Inside Region.", "Entity List の各エンティティの位置を, 同じ順の Vector List で返します. 位置は 演算子: エンティティ位置 と同じです. 結果は 演算子: 行列でベクトル変換 や 演算子: 領域内 など, Vector List を受け取るピースに渡せます.");
+        addBookPage(root, "operator_list_sum", "In Number mode, returns the sum of all elements of the Number List. In Vector mode, returns the sum of all vectors of the Vector List. An empty List gives 0 (the zero vector).", "Number モードでは Number List の要素をすべて足した数値を返します. Vector モードでは Vector List のベクトルをすべて足したベクトルを返します. 空の List なら0 (ゼロベクトル) です.");
+        addBookPage(root, "operator_list_average", "In Number mode, returns the average of the Number List. In Vector mode, returns the average position of the Vector List, which is its center. With Selector: Nearby Enemies and Operator: Entity Position List, it finds the center of a group of enemies. An empty List causes an error.", "Number モードでは Number List の平均を返します. Vector モードでは Vector List の位置の平均, つまり中心を返します. 取得子: 近くの敵 と 演算子: エンティティ位置リスト を組み合わせると, 敵の集団の中心が求まります. 空の List はエラーになります.");
+        addBookPage(root, "operator_number_list_add", "Adds the elements at the same index and returns a Number List. Each input takes a Number List or a Number. A Number is used as the same value for every element. Number Lists must have the same size. If every input is a Number, the result has one element.", "同じ位置の要素どうしを足して, Number List で返します. 各入力には Number List か Number をつなげます. Number は全ての要素に同じ値として使われます. Number List どうしは要素数をそろえます. 入力がすべて Number なら, 要素が1つの Number List になります.");
+        addBookPage(root, "operator_number_list_subtract", "Subtracts Value 2 and Value 3 from Value 1 at each index and returns a Number List. Each input takes a Number List or a Number. A Number is used as the same value for every element. Number Lists must have the same size. If every input is a Number, the result has one element.", "同じ位置の要素どうしで 値1 から 値2 と 値3 を引いて, Number List で返します. 各入力には Number List か Number をつなげます. Number は全ての要素に同じ値として使われます. Number List どうしは要素数をそろえます. 入力がすべて Number なら, 要素が1つの Number List になります.");
+        addBookPage(root, "operator_number_list_multiply", "Multiplies the elements at the same index and returns a Number List. Each input takes a Number List or a Number. A Number is used as the same value for every element. Number Lists must have the same size. If every input is a Number, the result has one element.", "同じ位置の要素どうしを掛けて, Number List で返します. 各入力には Number List か Number をつなげます. Number は全ての要素に同じ値として使われます. Number List どうしは要素数をそろえます. 入力がすべて Number なら, 要素が1つの Number List になります.");
+        addBookPage(root, "operator_number_list_divide", "Divides Value 1 by Value 2 at each index and returns a Number List. Each input takes a Number List or a Number. A Number is used as the same value for every element. Number Lists must have the same size. If every input is a Number, the result has one element. Dividing by 0 causes an error.", "同じ位置の要素どうしで 値1 を 値2 で割って, Number List で返します. 各入力には Number List か Number をつなげます. Number は全ての要素に同じ値として使われます. Number List どうしは要素数をそろえます. 入力がすべて Number なら, 要素が1つの Number List になります. 0 で割るとエラーになります.");
+        addBookPage(root, "operator_number_sequence", "Returns a Number List of Number B numbers that start at Number A and increase by Number C. Without Number C, the step is 1. For example, A = 0 and B = 5 give the five numbers from 0 to 4. The count must be 0 to 8192, and fractions are dropped.", "数値 A から始めて 数値 C ずつ増やした数を, 数値 B 個並べた Number List で返します. 数値 C を省略すると1ずつ増えます. 例えば A が0で B が5なら, 0 から 4 までの5個になります. 個数は0〜8192 です. 小数は切り捨てます.");
         addBookPage(root, "operator_matrix_add", "Adds matrices of the same size. The optional third matrix is added after the second.", "同じサイズの行列を加算します. 任意の第3行列は第2行列の後に加算されます.");
         addBookPage(root, "operator_matrix_subtract", "Subtracts matrices of the same size. The optional third matrix is subtracted after the second.", "同じサイズの行列を減算します. 任意の第3行列は第2行列の後に減算されます.");
         addBookPage(root, "operator_matrix_multiply", "Multiplies matrices from left to right. The columns of each matrix must match the rows of the next.", "左から右へ行列を乗算します. 各行列の列数が次の行列の行数と一致する必要があります.");
@@ -2499,13 +2560,17 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "operator_matrix_row_count", "Returns the number of rows as a Number.", "行数を Number として返します.");
         addBookPage(root, "operator_matrix_column_count", "Returns the number of columns as a Number.", "列数を Number として返します.");
         addBookPage(root, "operator_matrix_multiply_vector", "Treats the Vector or Number List as a column vector and multiplies it by the matrix on the left.", "Vector または Number List を列ベクトルとして扱い, 左側の行列を掛けます.");
-        addBookPage(root, "operator_matrix_column_from_list", "Converts a Number List or Vector into a column matrix. The input must contain 1 to 4 elements.", "Number List または Vector を列行列に変換します. 入力は1〜4要素である必要があります.");
         addBookPage(root, "operator_matrix_flatten", "Flattens the matrix into a Number List in row-major order.", "行列を行優先の順序で Number List に平坦化します.");
+        addBookPage(root, "operator_matrix_reshape", "Fills the values of a Number List or Vector into a matrix with Number A rows and Number B columns, starting from the first row. It is the reverse of Operator: Matrix Flatten. Without Number B, the column count is the element count divided by Number A. Without Number A, the row count is the element count divided by Number B. Without both, it makes a matrix with one column (a column matrix). Rows and columns must be 1 to 4, and the element count must equal rows × columns.", "Number List または Vector の値を, 1行目から順に詰めて 数値 A 行 数値 B 列の行列を作ります. 演算子: 行列平坦化 の逆の操作です. 数値 B を省略すると, 要素数を数値 A で割った数が列数になります. 数値 A を省略すると, 要素数を数値 B で割った数が行数になります. 両方を省略すると1列の行列 (列行列) になります. 行数と列数は1〜4です. 要素数は行数×列数と同じにします.");
         addBookPage(root, "operator_matrix_identity", "Creates an identity matrix of the given size. The size must be 1 to 4.", "指定した次数の単位行列を作ります. 次数は1〜4である必要があります.");
         addBookPage(root, "operator_matrix_zero", "Creates a zero matrix. If the second size is omitted, a square matrix is returned.", "ゼロ行列を作ります. 第2のサイズを省略すると正方行列を返します.");
         addBookPage(root, "operator_matrix_diagonal", "Creates a diagonal matrix from a Number List or Vector. The input must contain 1 to 4 elements.", "Number List または Vector から対角行列を作ります. 入力は1〜4要素である必要があります.");
         addBookPage(root, "operator_matrix_replace_column", "Replaces the specified column with a Number List or Vector. Missing rows are filled with zero, and specifying a column beyond the current size expands the matrix with zeros.", "指定列を Number List または Vector で置換します. 足りない行は0で埋められ, 現在のサイズを超える列を指定するとゼロで拡張されます.");
         addBookPage(root, "operator_matrix_replace_row", "Replaces the specified row with a Number List or Vector. Missing columns are filled with zero, and specifying a row beyond the current size expands the matrix with zeros.", "指定行を Number List または Vector で置換します. 足りない列は0で埋められ, 現在のサイズを超える行を指定するとゼロで拡張されます.");
+        addBookPage(root, "operator_matrix_append_column.0", "Adds Values 1 to 3 to the right of the matrix as new columns, in order. A Vector becomes a column of 3 rows. A Number List becomes one column. A Vector List adds one column per Vector.", "値1〜3 を新しい列として行列の右に順に足します. Vector は3行の列になります. Number List は1列になります. Vector List は中の Vector がそれぞれ1列になります.");
+        addBookPage(root, "operator_matrix_append_column.1", "Without a matrix, a new one is made. New columns need as many rows as the matrix. Up to 4 columns are allowed. For 4 Vectors, feed the output of one piece into the Matrix of a second one.", "行列を省略すると新しく作ります. 足す列の行数は行列と同じにします. 列は4つまでです. Vector 4つから作るときは, 1つ目の出力を2つ目の 行列 に入れます.");
+        addBookPage(root, "operator_matrix_append_row.0", "Adds Values 1 to 3 below the matrix as new rows, in order. A Vector becomes a row of 3 columns. A Number List becomes one row. A Vector List adds one row per Vector.", "値1〜3 を新しい行として行列の下に順に足します. Vector は3列の行になります. Number List は1行になります. Vector List は中の Vector がそれぞれ1行になります.");
+        addBookPage(root, "operator_matrix_append_row.1", "Without a matrix, a new one is made. New rows need as many columns as the matrix. Up to 4 rows are allowed. For 4 Vectors, feed the output of one piece into the Matrix of a second one.", "行列を省略すると新しく作ります. 足す行の列数は行列と同じにします. 行は4つまでです. Vector 4つから作るときは, 1つ目の出力を2つ目の 行列 に入れます.");
         addBookPage(root, "operator_matrix_replace_element", "Replaces the element at the zero-based [row, column] indices with the input number. The indices list must contain exactly two numbers.", "0始まりの [行, 列] で指定した成分を入力数値で置換します. 成分指定用のリストは必ず2つの数値を含む必要があります.");
         addBookPage(root, "operator_matrix_delete_row", "Deletes the row at the zero-based index from the matrix. The matrix must have at least 2 rows so that the result is not empty.", "0始まりのインデックスで指定した行を行列から削除します. 結果が空にならないよう, 元の行列は2行以上である必要があります.");
         addBookPage(root, "operator_matrix_delete_column", "Deletes the column at the zero-based index from the matrix. The matrix must have at least 2 columns so that the result is not empty.", "0始まりのインデックスで指定した列を行列から削除します. 結果が空にならないよう, 元の行列は2列以上である必要があります.");
@@ -2530,6 +2595,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                         + " w が0になるなど, 変換できない要素が1つでもあるとエラーです."
                         + " Block List もつなぐことができ, ブロックの座標が使われます.");
         addBookPage(root, "operator_matrix_linear_part", "Extracts the top-left 3x3 part of the matrix. Matrices smaller than 3x3 cause an error.", "行列の左上 3×3 部分を取り出します. 3×3 より小さい行列ではエラーになります.");
+        addBookPage(root, "operator_matrix_affine.0", "Makes a 4x4 matrix from the top-left 3x3 of the matrix and a position. It is the reverse of Operator: Matrix Linear Part. The position goes in the 4th column. The 4th row becomes 0, 0, 0, 1. Without a position, the 4th column of the matrix is used. Without a 4th column, the origin is used.", "行列の左上 3×3 と位置から 4×4 行列を作ります. 演算子: 行列線形部分 の逆の操作です. 位置は4列目に入ります. 4行目は 0, 0, 0, 1 になります. 位置を省略すると元の行列の4列目を使います. 4列目がなければ原点になります.");
+        addBookPage(root, "operator_matrix_affine.1", "In a region matrix, the position is the start corner. The result can go straight into Operator: Matrix Multiply and Operator: Matrix Transform Vector. Matrices smaller than 3x3 cause an error.", "領域行列では位置が始点になります. 結果は 演算子: 行列積 や 演算子: 行列でベクトル変換 にそのまま使えます. 3×3 より小さい行列ではエラーになります.");
         addBookPage(root, "operator_weak_raycast", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Water and lava can stop the ray.", "位置から Ray 方向へレイキャストし, 最初に命中したブロック座標を返します. 水や溶岩でも停止します.");
         addBookPage(root, "operator_weak_raycast_axis", "Raycasts from Position in the Ray direction and returns the normal direction of the face of the first block or fluid hit.", "位置から Ray 方向へレイキャストし, 最初に命中したブロックまたは流体の面の法線方向を返します.");
         addBookPage(root, "operator_strong_raycast", "Raycasts from Position in the Ray direction and returns the position of the first block hit. Blocks without a collision shape are ignored.", "位置から Ray 方向へレイキャストし, 最初に命中したブロック座標を返します. 当たり判定のないブロックを無視します.");

@@ -164,6 +164,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_tan");
     public static final DeferredHolder<Material, Material> OPERATOR_ATAN =
             registerPieceMaterial("operator_atan");
+    public static final DeferredHolder<Material, Material> OPERATOR_ATAN2 =
+            registerPieceMaterial("operator_atan2");
     public static final DeferredHolder<Material, Material> OPERATOR_SINH =
             registerPieceMaterial("operator_sinh");
     public static final DeferredHolder<Material, Material> OPERATOR_COSH =
@@ -176,6 +178,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_greater_than_or_equal");
     public static final DeferredHolder<Material, Material> OPERATOR_EQUAL =
             registerPieceMaterial("operator_equal");
+    public static final DeferredHolder<Material, Material> OPERATOR_CONDITIONAL_SELECT =
+            registerPieceMaterial("operator_conditional_select");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_CONDITIONAL_SELECT =
+            registerPieceMaterial("operator_list_conditional_select");
     public static final DeferredHolder<Material, Material> CONSTANT_STRING =
             registerPieceMaterial("constant_string");
     public static final DeferredHolder<Material, Material> CONSTANT_SIGNED_WRAPPER =
@@ -324,6 +330,14 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_insert");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_SLICE =
             registerPieceMaterial("operator_list_slice");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REPLACE_ELEMENT =
+            registerPieceMaterial("operator_list_replace_element");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REMOVE_DUPLICATES =
+            registerPieceMaterial("operator_list_remove_duplicates");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_REVERSE =
+            registerPieceMaterial("operator_list_reverse");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_INDEX_OF =
+            registerPieceMaterial("operator_list_index_of");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_SIZE =
             registerPieceMaterial("operator_list_size");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_EXCLUSION =
@@ -332,6 +346,22 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_list_intersection");
     public static final DeferredHolder<Material, Material> OPERATOR_LIST_CONCATENATION =
             registerPieceMaterial("operator_list_concatenation");
+    public static final DeferredHolder<Material, Material> OPERATOR_ENTITY_POSITION_LIST =
+            registerPieceMaterial("operator_entity_position_list");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_SUM =
+            registerPieceMaterial("operator_list_sum");
+    public static final DeferredHolder<Material, Material> OPERATOR_LIST_AVERAGE =
+            registerPieceMaterial("operator_list_average");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_LIST_ADD =
+            registerPieceMaterial("operator_number_list_add");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_LIST_SUBTRACT =
+            registerPieceMaterial("operator_number_list_subtract");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_LIST_MULTIPLY =
+            registerPieceMaterial("operator_number_list_multiply");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_LIST_DIVIDE =
+            registerPieceMaterial("operator_number_list_divide");
+    public static final DeferredHolder<Material, Material> OPERATOR_NUMBER_SEQUENCE =
+            registerPieceMaterial("operator_number_sequence");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ADD =
             registerPieceMaterial("operator_matrix_add");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_SUBTRACT =
@@ -358,10 +388,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_column_count");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_MULTIPLY_VECTOR =
             registerPieceMaterial("operator_matrix_multiply_vector");
-    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_COLUMN_FROM_LIST =
-            registerPieceMaterial("operator_matrix_column_from_list");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_FLATTEN =
             registerPieceMaterial("operator_matrix_flatten");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_RESHAPE =
+            registerPieceMaterial("operator_matrix_reshape");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_IDENTITY =
             registerPieceMaterial("operator_matrix_identity");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_ZERO =
@@ -372,6 +402,10 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_replace_column");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_ROW =
             registerPieceMaterial("operator_matrix_replace_row");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_APPEND_COLUMN =
+            registerPieceMaterial("operator_matrix_append_column");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_APPEND_ROW =
+            registerPieceMaterial("operator_matrix_append_row");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_REPLACE_ELEMENT =
             registerPieceMaterial("operator_matrix_replace_element");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_DELETE_ROW =
@@ -440,6 +474,8 @@ public final class PsitweaksClientSpells {
             registerPieceMaterial("operator_matrix_transform_vector");
     public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_LINEAR_PART =
             registerPieceMaterial("operator_matrix_linear_part");
+    public static final DeferredHolder<Material, Material> OPERATOR_MATRIX_AFFINE =
+            registerPieceMaterial("operator_matrix_affine");
     public static final DeferredHolder<Material, Material> OPERATOR_WEAK_RAYCAST =
             registerPieceMaterial("operator_weak_raycast");
     public static final DeferredHolder<Material, Material> OPERATOR_WEAK_RAYCAST_AXIS =

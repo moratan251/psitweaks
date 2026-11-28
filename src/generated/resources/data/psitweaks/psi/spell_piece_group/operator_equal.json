@@ -1,4 +1,7 @@
 {
   "main": "psitweaks:operator_equal",
-  "pieces": []
+  "pieces": [
+    "psitweaks:operator_conditional_select",
+    "psitweaks:operator_list_conditional_select"
+  ]
 }

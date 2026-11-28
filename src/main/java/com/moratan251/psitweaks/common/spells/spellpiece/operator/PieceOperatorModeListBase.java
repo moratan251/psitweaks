@@ -31,7 +31,17 @@ public abstract class PieceOperatorModeListBase extends PieceOperator implements
     @Override
     public final List<PsitweaksModeOption> getAvailableModeOptions() {
         PsitweaksValueKind valueKind = modeOptionKindFilter();
-        return valueKind == null ? PsitweaksListAdapters.modeOptions() : PsitweaksListAdapters.modeOptions(valueKind);
+        List<PsitweaksModeOption> options = valueKind == null
+                ? PsitweaksListAdapters.modeOptions() : PsitweaksListAdapters.modeOptions(valueKind);
+        return options.stream().filter(this::offersMode).toList();
+    }
+
+    /**
+     * Whether the mode menu offers this List type; every type by default. Called from the constructor, so overrides must
+     * not read instance fields.
+     */
+    protected boolean offersMode(PsitweaksModeOption option) {
+        return true;
     }
 
     @Override

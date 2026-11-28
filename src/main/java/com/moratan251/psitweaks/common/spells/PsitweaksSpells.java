@@ -146,6 +146,8 @@ public final class PsitweaksSpells {
             registerPiece("operator_tan", PieceOperatorTan.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ATAN =
             registerPiece("operator_atan", PieceOperatorAtan.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ATAN2 =
+            registerPiece("operator_atan2", PieceOperatorAtan2.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_SINH =
             registerPiece("operator_sinh", PieceOperatorSinh.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_COSH =
@@ -158,6 +160,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_greater_than_or_equal", PieceOperatorGreaterThanOrEqual.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_EQUAL =
             registerPiece("operator_equal", PieceOperatorEqual.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_CONDITIONAL_SELECT =
+            registerPiece("operator_conditional_select", PieceOperatorConditionalSelect.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_CONDITIONAL_SELECT =
+            registerPiece("operator_list_conditional_select", PieceOperatorListConditionalSelect.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> CONSTANT_STRING =
             registerPiece("constant_string", PieceConstantString.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> CONSTANT_SIGNED_WRAPPER =
@@ -306,6 +312,14 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_insert", PieceOperatorListInsert.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_SLICE =
             registerPiece("operator_list_slice", PieceOperatorListSlice.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_REPLACE_ELEMENT =
+            registerPiece("operator_list_replace_element", PieceOperatorListReplaceElement.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_REMOVE_DUPLICATES =
+            registerPiece("operator_list_remove_duplicates", PieceOperatorListRemoveDuplicates.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_REVERSE =
+            registerPiece("operator_list_reverse", PieceOperatorListReverse.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_INDEX_OF =
+            registerPiece("operator_list_index_of", PieceOperatorListIndexOf.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_SIZE =
             registerPiece("operator_list_size", PieceOperatorListSize.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_EXCLUSION =
@@ -314,6 +328,22 @@ public final class PsitweaksSpells {
             registerPiece("operator_list_intersection", PieceOperatorListIntersection.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_CONCATENATION =
             registerPiece("operator_list_concatenation", PieceOperatorListConcatenation.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_ENTITY_POSITION_LIST =
+            registerPiece("operator_entity_position_list", PieceOperatorEntityPositionList.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_SUM =
+            registerPiece("operator_list_sum", PieceOperatorListSum.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_LIST_AVERAGE =
+            registerPiece("operator_list_average", PieceOperatorListAverage.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_NUMBER_LIST_ADD =
+            registerPiece("operator_number_list_add", PieceOperatorNumberListAdd.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_NUMBER_LIST_SUBTRACT =
+            registerPiece("operator_number_list_subtract", PieceOperatorNumberListSubtract.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_NUMBER_LIST_MULTIPLY =
+            registerPiece("operator_number_list_multiply", PieceOperatorNumberListMultiply.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_NUMBER_LIST_DIVIDE =
+            registerPiece("operator_number_list_divide", PieceOperatorNumberListDivide.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_NUMBER_SEQUENCE =
+            registerPiece("operator_number_sequence", PieceOperatorNumberSequence.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_ADD =
             registerPiece("operator_matrix_add", PieceOperatorMatrixAdd.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_SUBTRACT =
@@ -340,10 +370,10 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_column_count", PieceOperatorMatrixColumnCount.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_MULTIPLY_VECTOR =
             registerPiece("operator_matrix_multiply_vector", PieceOperatorMatrixMultiplyVector.class);
-    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_COLUMN_FROM_LIST =
-            registerPiece("operator_matrix_column_from_list", PieceOperatorMatrixColumnFromList.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_FLATTEN =
             registerPiece("operator_matrix_flatten", PieceOperatorMatrixFlatten.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_RESHAPE =
+            registerPiece("operator_matrix_reshape", PieceOperatorMatrixReshape.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_IDENTITY =
             registerPiece("operator_matrix_identity", PieceOperatorMatrixIdentity.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_ZERO =
@@ -354,10 +384,16 @@ public final class PsitweaksSpells {
             registerPiece("operator_matrix_replace_column", PieceOperatorMatrixReplaceColumn.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_REPLACE_ROW =
             registerPiece("operator_matrix_replace_row", PieceOperatorMatrixReplaceRow.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_APPEND_COLUMN =
+            registerPiece("operator_matrix_append_column", PieceOperatorMatrixAppendColumn.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_APPEND_ROW =
+            registerPiece("operator_matrix_append_row", PieceOperatorMatrixAppendRow.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_TRANSFORM_VECTOR =
             registerPiece("operator_matrix_transform_vector", PieceOperatorMatrixTransformVector.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_LINEAR_PART =
             registerPiece("operator_matrix_linear_part", PieceOperatorMatrixLinearPart.class);
+    public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_AFFINE =
+            registerPiece("operator_matrix_affine", PieceOperatorMatrixAffine.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_REPLACE_ELEMENT =
             registerPiece("operator_matrix_replace_element", PieceOperatorMatrixReplaceElement.class);
     public static final DeferredHolder<SpellPieceType, SpellPieceType> OPERATOR_MATRIX_DELETE_ROW =

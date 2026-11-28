@@ -1,0 +1,15 @@
+{
+  "name": "psitweaks.spellpiece.operator_matrix_append_row",
+  "category": "psi:psitweaks_spell_pieces",
+  "icon": "psitweaks:textures/spell/operator_matrix_append_row.png",
+  "pages": [
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_append_row.0"
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_spellpiece.operator_matrix_append_row.1"
+    }
+  ]
+}

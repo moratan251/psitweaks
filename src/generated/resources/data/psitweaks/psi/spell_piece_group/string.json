@@ -53,9 +53,21 @@
     "psitweaks:operator_list_remove_indices",
     "psitweaks:operator_list_insert",
     "psitweaks:operator_list_slice",
+    "psitweaks:operator_list_replace_element",
+    "psitweaks:operator_list_remove_duplicates",
+    "psitweaks:operator_list_reverse",
+    "psitweaks:operator_list_index_of",
     "psitweaks:operator_list_size",
     "psitweaks:operator_list_exclusion",
     "psitweaks:operator_list_intersection",
-    "psitweaks:operator_list_concatenation"
+    "psitweaks:operator_list_concatenation",
+    "psitweaks:operator_entity_position_list",
+    "psitweaks:operator_list_sum",
+    "psitweaks:operator_list_average",
+    "psitweaks:operator_number_list_add",
+    "psitweaks:operator_number_list_subtract",
+    "psitweaks:operator_number_list_multiply",
+    "psitweaks:operator_number_list_divide",
+    "psitweaks:operator_number_sequence"
   ]
 }

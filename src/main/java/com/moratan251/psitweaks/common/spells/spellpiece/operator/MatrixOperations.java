@@ -247,17 +247,6 @@ public final class MatrixOperations {
         return NumberListWrapper.make(values);
     }
 
-    public static MatrixValue columnFromList(NumberListWrapper list) throws SpellRuntimeException {
-        if (list.size() < 1 || list.size() > MatrixValue.MAX_SIZE) {
-            throw new SpellRuntimeException(ERROR_TOO_LARGE);
-        }
-        double[] values = new double[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            values[i] = list.get(i);
-        }
-        return checkedMatrix(list.size(), 1, values);
-    }
-
     public static NumberListWrapper flatten(MatrixValue matrix) {
         List<Double> values = new ArrayList<>(matrix.rows() * matrix.cols());
         for (int r = 0; r < matrix.rows(); r++) {
@@ -266,6 +255,44 @@ public final class MatrixOperations {
             }
         }
         return NumberListWrapper.make(values);
+    }
+
+    /**
+     * The inverse of {@link #flatten}: fills a rows × cols matrix row by row from the list. A missing count is the list
+     * size divided by the other one, and with both missing the result is a column matrix (cols = 1).
+     */
+    public static MatrixValue reshape(NumberListWrapper list, Integer rows, Integer cols) throws SpellRuntimeException {
+        int rowCount;
+        int colCount;
+        if (rows == null) {
+            colCount = cols == null ? 1 : cols;
+            validateDimension(colCount);
+            if (list.size() % colCount != 0) {
+                throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+            }
+            rowCount = list.size() / colCount;
+        } else {
+            rowCount = rows;
+            validateDimension(rowCount);
+            if (cols == null) {
+                if (list.size() % rowCount != 0) {
+                    throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+                }
+                colCount = list.size() / rowCount;
+            } else {
+                colCount = cols;
+            }
+        }
+        validateDimension(rowCount);
+        validateDimension(colCount);
+        if (list.size() != rowCount * colCount) {
+            throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+        }
+        double[] values = new double[rowCount * colCount];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = list.get(i);
+        }
+        return checkedMatrix(rowCount, colCount, values);
     }
 
     public static MatrixValue identity(int size) throws SpellRuntimeException {
@@ -480,6 +507,74 @@ public final class MatrixOperations {
             }
         }
         return checkedMatrix(3, 3, values);
+    }
+
+    /**
+     * {@code base} with {@code columns} added on the right, in order. Without {@code base} the first column sets the
+     * row count. Every column must have the matrix's row count, and the result may have at most 4 columns.
+     */
+    public static MatrixValue appendColumns(MatrixValue base, List<double[]> columns) throws SpellRuntimeException {
+        int rows = base != null ? base.rows() : columns.isEmpty() ? 0 : columns.get(0).length;
+        int cols = (base != null ? base.cols() : 0) + columns.size();
+        for (double[] column : columns) {
+            if (column.length > MatrixValue.MAX_SIZE) {
+                throw new SpellRuntimeException(ERROR_TOO_LARGE);
+            }
+            if (column.length != rows) {
+                throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+            }
+        }
+        if (cols > MatrixValue.MAX_SIZE) {
+            throw new SpellRuntimeException(ERROR_TOO_LARGE);
+        }
+        validateDimension(rows);
+        validateDimension(cols);
+
+        double[] values = new double[rows * cols];
+        int firstNew = 0;
+        if (base != null) {
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < base.cols(); c++) {
+                    values[r * cols + c] = base.get(r, c);
+                }
+            }
+            firstNew = base.cols();
+        }
+        for (int i = 0; i < columns.size(); i++) {
+            for (int r = 0; r < rows; r++) {
+                values[r * cols + firstNew + i] = columns.get(i)[r];
+            }
+        }
+        return checkedMatrix(rows, cols, values);
+    }
+
+    /** {@code base} with {@code rows} added at the bottom: {@link #appendColumns} on the transposed matrix. */
+    public static MatrixValue appendRows(MatrixValue base, List<double[]> rows) throws SpellRuntimeException {
+        return transpose(appendColumns(base == null ? null : transpose(base), rows));
+    }
+
+    /**
+     * The 4x4 matrix [L t; 0 0 0 1]. L is the top-left 3x3 of {@code matrix}. t is {@code position}, or else the top
+     * three values of the 4th column of {@code matrix}, or else zero. Matrices smaller than 3x3 are refused.
+     */
+    public static MatrixValue affine(MatrixValue matrix, Vector3 position) throws SpellRuntimeException {
+        if (matrix.rows() < 3 || matrix.cols() < 3) {
+            throw new SpellRuntimeException(ERROR_INCOMPATIBLE_SIZES);
+        }
+        double[] translation = position != null
+                ? new double[]{position.x, position.y, position.z}
+                : matrix.cols() > 3
+                ? new double[]{matrix.get(0, 3), matrix.get(1, 3), matrix.get(2, 3)}
+                : new double[3];
+        double[] values = new double[16];
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                values[r * 4 + c] = matrix.get(r, c);
+            }
+            values[r * 4 + 3] = translation[r];
+        }
+        values[15] = 1.0;
+        return checkedMatrix(4, 4, values);
     }
 
     static MatrixValue checkedMatrix(int rows, int cols, double[] values) throws SpellRuntimeException {
