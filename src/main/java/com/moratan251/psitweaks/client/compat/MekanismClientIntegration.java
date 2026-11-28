@@ -7,7 +7,9 @@ import com.moratan251.psitweaks.client.gui.machine.GuiPsionicGenerator;
 import com.moratan251.psitweaks.client.gui.machine.GuiSculkEroder;
 import com.moratan251.psitweaks.client.gui.machine.GuiTranscendentEnergyCube;
 import com.moratan251.psitweaks.client.render.item.block.RenderTranscendentEnergyCubeItem;
+import com.moratan251.psitweaks.client.render.tile.ProgramHologramGlyphs;
 import com.moratan251.psitweaks.client.render.tile.RenderAutonomousCaster;
+import com.moratan251.psitweaks.client.render.tile.RenderProgramResearcher;
 import com.moratan251.psitweaks.common.caster.VirtualCad;
 import com.moratan251.psitweaks.common.items.PsitweaksDataComponents;
 import com.moratan251.psitweaks.common.registries.PsitweaksMekanismBlocks;
@@ -79,10 +81,12 @@ public final class MekanismClientIntegration {
 
     private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(PsitweaksMekanismTileEntityTypes.AUTONOMOUS_CASTER.get(), RenderAutonomousCaster::new);
+        event.registerBlockEntityRenderer(PsitweaksMekanismTileEntityTypes.PROGRAM_RESEARCHER.get(), RenderProgramResearcher::new);
     }
 
     private static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(RenderTranscendentEnergyCubeItem.RENDERER);
+        event.registerReloadListener(ProgramHologramGlyphs.RELOAD_LISTENER);
     }
 
     private static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {

@@ -8,8 +8,7 @@
     "top": "psitweaks:block/program_researcher/desk_top_active",
     "edge": "psitweaks:block/program_researcher/desk_side_active",
     "core": "psitweaks:block/program_researcher/core_active",
-    "screen": "psitweaks:block/program_researcher/screen_active",
-    "holo": "psitweaks:block/program_researcher/hologram"
+    "screen": "psitweaks:block/program_researcher/screen_active"
   },
   "elements": [
     {
@@ -554,44 +553,6 @@
           ],
           "texture": "#body"
         }
-      }
-    },
-    {
-      "name": "hologram",
-      "from": [
-        4,
-        11.5,
-        1.5
-      ],
-      "to": [
-        12,
-        11.5,
-        9.5
-      ],
-      "faces": {
-        "up": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#holo"
-        },
-        "down": {
-          "uv": [
-            0,
-            16,
-            16,
-            0
-          ],
-          "texture": "#holo"
-        }
-      },
-      "shade": false,
-      "neoforge_data": {
-        "block_light": 15,
-        "sky_light": 15
       }
     }
   ]

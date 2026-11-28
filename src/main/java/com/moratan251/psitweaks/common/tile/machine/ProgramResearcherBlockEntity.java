@@ -27,12 +27,17 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine {
@@ -44,6 +49,7 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
     private static final String NBT_MAX_PROGRESS = "max_progress";
     private static final String NBT_LEGACY_INVENTORY = "inventory";
     private static final String NBT_LEGACY_ENERGY = "energy";
+    private static final String NBT_RESEARCHING = "researching";
 
     private static final int INPUT_START_X = 38;
     private static final int INPUT_START_Y = 17;
@@ -63,6 +69,8 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
     @Nullable
     private ProgramResearchRecipe activeRecipe;
     private List<ItemStack> activeInputSnapshot = List.of();
+    /** 今のレシピの完成品。稼働中のホログラムに描くため、ブロックの更新でクライアントへ送る。 */
+    private Item researchingItem = Items.AIR;
 
     public ProgramResearcherBlockEntity(BlockPos pos, BlockState blockState) {
         super(PsitweaksMekanismBlocks.PROGRAM_RESEARCHER, pos, blockState);
@@ -129,12 +137,14 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
         }
 
         boolean changed = validateActiveInputs(recipe);
+        changed |= setResearchingItem(result.getItem());
         maxProgress = Math.max(1, recipe.getTime());
         // レシピの値は JEI・EMI と同じく FE/t。Mekanism の機械は J で持つので換算する（1.20.1 と同じ）。
         long energyCost = IEnergyConversionHelper.INSTANCE.feConversion().convertFrom(recipe.getEnergyPerTick());
         currentEnergyCost = energyCost;
         if (energyContainer.getEnergy() < energyCost) {
-            return sendUpdate || setActiveState(false);
+            changed |= setActiveState(false);
+            return sendUpdate || changed;
         }
 
         if (energyCost > 0) {
@@ -258,6 +268,36 @@ public class ProgramResearcherBlockEntity extends TileEntityConfigurableMachine 
         boolean changed = getActive() != active;
         setActive(active);
         return changed;
+    }
+
+    /** 変わったときだけ true を返し、呼び出し元の更新パケットに載せる。 */
+    private boolean setResearchingItem(Item item) {
+        if (researchingItem == item) {
+            return false;
+        }
+        researchingItem = item;
+        return true;
+    }
+
+    /** 最後に研究を始めた（または続けている）レシピの完成品。未研究なら {@link Items#AIR}。 */
+    public Item getResearchingItem() {
+        return researchingItem;
+    }
+
+    @Override
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+        if (researchingItem != Items.AIR) {
+            updateTag.putString(NBT_RESEARCHING, BuiltInRegistries.ITEM.getKey(researchingItem).toString());
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        ResourceLocation id = ResourceLocation.tryParse(tag.getString(NBT_RESEARCHING));
+        researchingItem = id == null ? Items.AIR : BuiltInRegistries.ITEM.getOptional(id).orElse(Items.AIR);
     }
 
     @Override
