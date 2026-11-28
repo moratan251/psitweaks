@@ -2664,8 +2664,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
             default -> "Equips in the Magic Calculation Area slot and removes Psi's normal spell radius check for the caster.$(p)This lets spells target positions far beyond ordinary CAD range limits, so use it carefully.";
         });
         root.addProperty("psi.book.page.psitweaks_item.sorcery_booster", switch (locale) {
-            case "ja_jp" -> "魔法演算領域スロットに装備し, 事象干渉力を30%%高めます.$(p)素材に $(item)魔法師の頭$(0) を使います.";
-            default -> "Equips in the Magic Calculation Area slot and increases Phenomenon Interference by 30%%.$(p)It is made from a $(item)Magician's Head$(0).";
+            case "ja_jp" -> "魔法演算領域スロットに装備し, 事象干渉力を30%%高めます. 装備できるのは1つまでです.$(p)素材に $(item)魔法師の頭$(0) を使います.";
+            default -> "Equips in the Magic Calculation Area slot and increases Phenomenon Interference by 30%%. Only one can be equipped at a time.$(p)It is made from a $(item)Magician's Head$(0).";
         });
         root.addProperty("psi.book.page.psitweaks_item.gravstringer.0", switch (locale) {
             case "ja_jp" -> "$(item)グラヴストリンガー$(0) は, サイメタルの弓の上位互換となる弓です. 矢のダメージと引き絞り速度が大幅に強化され, 耐久値を持たず, 11個の術式弾ソケットを備えます.$(p)専用弾の $(item)トンネラー$(0) を射出することが可能です.";

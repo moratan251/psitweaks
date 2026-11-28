@@ -693,7 +693,7 @@
   "psi.book.page.psitweaks_item.portable_cad_assembler": "手持ちで使えるCAD組立機です. ブロックを設置せずに組立機画面を開けるため, 拠点外でも簡単にCAD部品や装填済み術式弾を調整できます.",
   "psi.book.page.psitweaks_item.portable_spell_programmer.0": "手持ちで使える魔法構築機です. 右クリックすると, 魔法構築機と同じスペルプログラム画面を開くことができます.",
   "psi.book.page.psitweaks_item.portable_spell_programmer.1": "メインハンドに携帯型魔法構築機を, オフハンドに術式弾やCADを持ち, スニーク右クリックすると, 編集中の魔法を登録します. CADなどでは, 現在選択している術式弾に登録されます.",
-  "psi.book.page.psitweaks_item.sorcery_booster": "魔法演算領域スロットに装備し, 事象干渉力を30%%高めます.$(p)素材に $(item)魔法師の頭$(0) を使います.",
+  "psi.book.page.psitweaks_item.sorcery_booster": "魔法演算領域スロットに装備し, 事象干渉力を30%%高めます. 装備できるのは1つまでです.$(p)素材に $(item)魔法師の頭$(0) を使います.",
   "psi.book.page.psitweaks_item.spell_magazine": "最大12個の術式弾を保持し, 使用すると装備中のCADの対応スロットと入れ替えます.",
   "psi.book.page.psitweaks_item.third_eye_device": "魔法演算領域スロットに装備し, 術者に対する通常の術式射程チェックを無効化します.$(p)通常のCAD射程を大きく超える位置を対象にできるため, 扱いには注意してください.",
   "psi.book.page.psitweaks_item.tunneler.0": "$(item)トンネラー$(0) は, $(item)グラヴストリンガー$(0) の専用弾です. ブロックを貫通し, 防御力や耐性も無効化します. 射手自身には命中しません.$(p)矢はmobに命中しても消滅せず貫通し, 同じmobには1秒のクールタイム後に再度命中します.",
