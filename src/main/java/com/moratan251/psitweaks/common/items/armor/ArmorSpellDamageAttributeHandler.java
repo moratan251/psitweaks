@@ -29,7 +29,7 @@ public final class ArmorSpellDamageAttributeHandler {
     private static final double MOVAL_SUIT_SPELL_DAMAGE_BONUS = 0.10D;
     private static final double MOVAL_SUIT_PSI_REGEN_BONUS = 5.0D;
     private static final double MOVAL_SUIT_MAX_PSI_BONUS = 500.0D;
-    private static final double MEKASUIT_SPELL_DAMAGE_BONUS = 0.15D;
+    private static final double MEKASUIT_SPELL_DAMAGE_BONUS = 0.075D;
     private static final double MEKASUIT_PSI_REGEN_BONUS = 5.0D;
     private static final double MEKASUIT_MAX_PSI_BONUS = 1_000.0D;
 
