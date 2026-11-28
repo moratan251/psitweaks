@@ -71,6 +71,12 @@ public abstract class PieceOperatorListValueBase extends PieceOperatorModeListBa
         return RankedSelection.ascending(elements, values(context, elements));
     }
 
+    /** {@link RankedSelection#keep}: the {@code count} smallest, or the -{@code count} largest, by value. */
+    protected final List<Object> keep(SpellContext context, double count) throws SpellRuntimeException {
+        List<Object> elements = elements(context);
+        return RankedSelection.keep(elements, values(context, elements), count);
+    }
+
     /** A List of the current mode with these elements, in this order (an Entity List takes Psi's own order). */
     protected final Object makeList(List<Object> elements) {
         PsitweaksListAdapter<Object> adapter = currentAdapter();

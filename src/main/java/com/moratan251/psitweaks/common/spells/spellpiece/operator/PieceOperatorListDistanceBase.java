@@ -128,6 +128,18 @@ public abstract class PieceOperatorListDistanceBase extends PieceOperator implem
 
     /** The elements of the List input, closest to the position first. */
     protected final List<?> sortedByDistance(SpellContext context) throws SpellRuntimeException {
+        Ranked ranked = byDistance(context);
+        return RankedSelection.ascending(ranked.elements(), ranked.distances());
+    }
+
+    /** {@link RankedSelection#keep}: the {@code count} closest, or the -{@code count} farthest, to the position. */
+    protected final List<?> keepByDistance(SpellContext context, double count) throws SpellRuntimeException {
+        Ranked ranked = byDistance(context);
+        return RankedSelection.keep(ranked.elements(), ranked.distances(), count);
+    }
+
+    /** The elements of the List input in its order, with their squared distances to the position. */
+    private Ranked byDistance(SpellContext context) throws SpellRuntimeException {
         Vector3 origin = getNotNullParamValue(context, position);
         Level level = context.focalPoint == null ? null : context.focalPoint.level();
         List<Object> elements = new ArrayList<>();
@@ -155,7 +167,10 @@ public abstract class PieceOperatorListDistanceBase extends PieceOperator implem
         for (int i = 0; i < distances.length; i++) {
             distances[i] = distanceSquared(level, origin, points.get(i));
         }
-        return RankedSelection.ascending(elements, distances);
+        return new Ranked(elements, distances);
+    }
+
+    private record Ranked(List<Object> elements, double[] distances) {
     }
 
     /** A List of the current mode with the given elements, in that order (an Entity List takes Psi's own order). */

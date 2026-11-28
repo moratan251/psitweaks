@@ -181,12 +181,26 @@ public class EntityTurbulenceZone extends SpellGramZone {
     /** IE の風車 1 台が、重なった乱流から合わせて受け取れる WU（60 FE/t ぶん）。 */
     public static final double MAX_WU_PER_WINDMILL = 4.0;
 
-    /** {@code blockEntity} が風を受ける機械なら、1 台が受け取れる WU の上限。そうでなければ 0。 */
+    /** 風力発電機のブロックから、液体を見る位置までの高さ（Mekanism の getMultiplier と同じ）。 */
+    public static final int GENERATOR_FLUID_CHECK_HEIGHT = 4;
+
+    /**
+     * {@code blockEntity} が風を受ける機械なら、1 台が受け取れる WU の上限。そうでなければ 0。上が液体で止まっている風力発電機
+     * （{@link #isGeneratorBlockedByFluid}）は乱流の風を使わないので 0（分ける先に数えない）。
+     */
     private static double windCapOf(BlockEntity blockEntity) {
         if (MekanismGameplayCompat.isWindGenerator(blockEntity)) {
-            return MAX_WU_PER_GENERATOR;
+            return isGeneratorBlockedByFluid(blockEntity.getLevel(), blockEntity.getBlockPos()) ? 0.0 : MAX_WU_PER_GENERATOR;
         }
         return ImmersiveEngineeringCompat.isWindReceivingWindmill(blockEntity) ? MAX_WU_PER_WINDMILL : 0.0;
+    }
+
+    /**
+     * ブロック {@code pos} の風力発電機が、上が液体（{@link #GENERATOR_FLUID_CHECK_HEIGHT} ブロック上）で止まっているか。
+     * Mekanism はこのとき発電しないので、乱流の風も足さない（{@code WindGeneratorTurbulenceMixin}）。
+     */
+    public static boolean isGeneratorBlockedByFluid(@Nullable Level level, BlockPos pos) {
+        return level != null && !level.getFluidState(pos.above(GENERATOR_FLUID_CHECK_HEIGHT)).isEmpty();
     }
 
     /**
@@ -374,7 +388,7 @@ public class EntityTurbulenceZone extends SpellGramZone {
 
     /** 他者の飛び道具の向きを、入ってきたときに 1 回だけランダムに曲げる（速さは変えない）。 */
     private void deflect(ServerLevel level, Projectile projectile) {
-        if (ZoneProjectiles.isSpellProjectile(projectile) || CasterIds.matches(projectile.getOwner(), getCasterUuid())
+        if (ZoneProjectiles.isSpellProjectile(projectile) || isOwnSide(projectile.getOwner())
                 || !deflected.add(projectile.getUUID())) {
             return;
         }
@@ -401,6 +415,22 @@ public class EntityTurbulenceZone extends SpellGramZone {
         projectile.setXRot(pitch);
         level.sendParticles(ParticleTypes.CLOUD, projectile.getX(), projectile.getY(), projectile.getZ(), 4,
                 0.1, 0.1, 0.1, 0.02);
+    }
+
+    /**
+     * {@code owner} の飛び道具を曲げないか: 術者自身（{@link CasterIds}、自律詠唱機は機械ごと）か、置いた人の側の UUID
+     * （{@link #getCasterSide}。自律詠唱機が置いた領域なら持ち主）を名乗るもの。自律詠唱機の領域は、持ち主の飛び道具も、
+     * 同じ持ち主のほかの自律詠唱機の飛び道具も曲げない。
+     */
+    private boolean isOwnSide(@Nullable Entity owner) {
+        if (owner == null) {
+            return false;
+        }
+        if (CasterIds.matches(owner, getCasterUuid())) {
+            return true;
+        }
+        UUID side = getCasterSide();
+        return side != null && side.equals(owner.getUUID());
     }
 
     /** 残留ポーション・ドラゴンブレスの雲を早く縮める。 */

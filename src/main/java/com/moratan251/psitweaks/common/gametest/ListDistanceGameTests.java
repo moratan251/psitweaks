@@ -154,6 +154,10 @@ public final class ListDistanceGameTests {
         helper.assertTrue(xs(keep.execute(context)).equals(List.of(2.0)), "Ties must keep the input order");
         inputs[0] = VectorListWrapper.make(List.of(x(-2), x(2)));
         helper.assertTrue(xs(keep.execute(context)).equals(List.of(-2.0)), "Ties must keep the input order");
+        inputs[0] = VectorListWrapper.make(List.of(x(1), x(3), x(-3), x(-1)));
+        inputs[2] = -3.0;
+        helper.assertTrue(xs(keep.execute(context)).equals(List.of(3.0, -3.0, 1.0)),
+                "Ties must keep the input order for a negative Number too, got " + xs(keep.execute(context)));
         helper.succeed();
     }
 

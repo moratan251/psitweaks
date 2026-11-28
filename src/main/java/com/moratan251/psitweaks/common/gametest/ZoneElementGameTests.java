@@ -413,6 +413,41 @@ public final class ZoneElementGameTests {
     }
 
     /**
+     * 加熱領域の中で燃え続ける長さは、Fire Protection（属性 burning_time）で短くなる（バニラの火と同じ掛け方）。
+     * burning_time 0.4 なら、威力 × 0.6 秒の 0.4 倍を切らないよう 20 tick 単位で足す。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_heat_fire_protection", timeoutTicks = 100)
+    public static void heatZoneBurnTimeFollowsFireProtection(GameTestHelper helper) {
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_heat_fire_protection", new Vec3(4.5, 1.0, 4.5));
+        Husk plain = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 2.5));
+        Husk protectedHusk = helper.spawnWithNoFreeWill(EntityType.HUSK, new Vec3(2.5, 1.0, 3.5));
+        plain.setNoAi(true);
+        protectedHusk.setNoAi(true);
+        protectedHusk.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.BURNING_TIME).setBaseValue(0.4);
+        Runnable cleanup = () -> cleanup(helper, caster);
+        try {
+            cast(caster, heat(helper, CENTER), 5.0, 5.0F);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(40, () -> {
+            int plainTicks = plain.getRemainingFireTicks();
+            int protectedTicks = protectedHusk.getRemainingFireTicks();
+            int burnTicks = SpellGramIndex.all(helper.getLevel(), EntityHeatZone.class).stream().findFirst()
+                    .map(EntityHeatZone::burnTicks).orElse(-1);
+            int shortened = (int) Math.ceil(burnTicks * 0.4);
+            cleanup.run();
+            helper.assertTrue(burnTicks > 30, "The heat zone must burn for more than 30 ticks, got " + burnTicks);
+            helper.assertTrue(plainTicks >= burnTicks && plainTicks < burnTicks + 20,
+                    "Without Fire Protection the husk must keep " + burnTicks + " ticks of fire, got " + plainTicks);
+            helper.assertTrue(protectedTicks >= shortened && protectedTicks < shortened + 20,
+                    "Burning time 0.4 must shorten the fire to " + shortened + " ticks, got " + protectedTicks);
+            helper.succeed();
+        });
+    }
+
+    /**
      * Create があるとき、加熱領域は同じ術者の乱流領域が重なったところ（熱乱流）で、落ちているアイテムを一括燻製する
      * （生の牛肉 → ステーキ）。Create がなければ飛ばす。
      */
@@ -696,6 +731,62 @@ public final class ZoneElementGameTests {
     }
 
     /**
+     * 自律詠唱機が置いた乱流領域は、持ち主のプレイヤーの飛び道具を曲げない（持ち主は同じ側）。ほかの人の飛び道具は曲げる。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_zone_turbulence_machine_owner", timeoutTicks = 100)
+    public static void machineTurbulenceZoneSparesTheOwnersProjectiles(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer owner = GameTestPlayers.inLevel(helper, "zone_turbulence_machine_owner", new Vec3(0.5, 1.0, 0.5));
+        com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer machine =
+                new com.moratan251.psitweaks.common.caster.AutonomousCasterPlayer(level, java.util.UUID.randomUUID(),
+                        owner.getUUID(), new AttackTargetGameTests.OwnerHost(owner));
+        Vec3 machineAt = helper.absoluteVec(new Vec3(0.5, 1.0, 0.5));
+        machine.moveTo(machineAt.x, machineAt.y, machineAt.z);
+        Vec3 start = helper.absoluteVec(new Vec3(1.5, 3.2, 2.5));
+        Vec3 initial = new Vec3(0.4, 0.0, 0.0);
+        Arrow others = new Arrow(level, start.x, start.y, start.z, new ItemStack(Items.ARROW), null);
+        others.setNoGravity(true);
+        others.setDeltaMovement(initial);
+        Arrow owners = new Arrow(level, start.x, start.y, start.z - 1.0, new ItemStack(Items.ARROW), null);
+        owners.setOwner(owner);
+        owners.setNoGravity(true);
+        owners.setDeltaMovement(initial);
+        Runnable cleanup = () -> {
+            others.discard();
+            owners.discard();
+            List.copyOf(SpellGramIndex.ofCaster(level, com.moratan251.psitweaks.common.caster.CasterIds.idOf(machine)))
+                    .forEach(object -> object.discard());
+            machine.detach();
+            cleanup(helper, owner);
+        };
+        try {
+            cast(machine, turbulence(helper), 5.0, 10.0);
+            level.addFreshEntity(others);
+            level.addFreshEntity(owners);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        boolean placed = SpellGramIndex.ofCaster(level, com.moratan251.psitweaks.common.caster.CasterIds.idOf(machine)).stream()
+                .anyMatch(object -> object instanceof EntityTurbulenceZone);
+        if (!placed) {
+            cleanup.run();
+            helper.fail("The autonomous caster must place the turbulence zone");
+            return;
+        }
+        helper.runAfterDelay(4, () -> {
+            double othersTurn = Math.toDegrees(Math.acos(Math.min(1.0,
+                    others.getDeltaMovement().normalize().dot(initial.normalize()))));
+            double ownersTurn = Math.toDegrees(Math.acos(Math.min(1.0,
+                    owners.getDeltaMovement().normalize().dot(initial.normalize()))));
+            cleanup.run();
+            helper.assertTrue(othersTurn > 30.0, "An arrow shot by someone else must turn aside, turned " + othersTurn);
+            helper.assertTrue(ownersTurn < 5.0, "The machine owner's arrow must fly straight, turned " + ownersTurn);
+            helper.succeed();
+        });
+    }
+
+    /**
      * Mekanism Generators があるとき、乱流領域の中の風力発電機は屋根の下でも乱流の風だけで発電し、空の下の発電機には風が上乗せ
      * になる。風量は置いた時点の事象干渉力で増える。外の風力発電機は屋根の下で止まったまま。Mekanism Generators が
      * なければ飛ばす。
@@ -810,6 +901,67 @@ public final class ZoneElementGameTests {
             cleanup.run();
             helper.assertTrue(Math.abs(received - 10.0) < 1.0E-6, "A generator must take 10 WU at most, got " + received);
             helper.assertTrue(Math.abs(used - 10.0) < 1.0E-3, "The two zones must count 10 WU in use together, got " + used);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * 4 ブロック上（発電機のてっぺん）が液体の風力発電機は止まっているので、乱流領域は風を分ける先に数えない。中のもう 1 台が
+     * 風を全部受け取る。Mekanism Generators がなければ飛ばす。
+     */
+    @GameTest(template = WIND_TEMPLATE, batch = "psitweaks_zone_turbulence_wind_fluid", timeoutTicks = 200, skyAccess = true)
+    public static void turbulenceZoneSkipsWindGeneratorsUnderFluid(GameTestHelper helper) {
+        Optional<Block> windGenerator = block("mekanismgenerators:wind_generator");
+        if (!MekanismCompat.isGeneratorsLoaded() || windGenerator.isEmpty()) {
+            helper.succeed();
+            return;
+        }
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "zone_turbulence_wind_fluid", new Vec3(0.5, 1.0, 0.5));
+        BlockPos dry = new BlockPos(1, 1, 2);
+        BlockPos wet = new BlockPos(3, 1, 2);
+        helper.setBlock(dry, windGenerator.get());
+        helper.setBlock(wet, windGenerator.get());
+        // Mekanism が見る 4 ブロック上（ふつうは発電機のてっぺんの当たり判定のブロック。GameTest の setBlock では作られない）に
+        // 水を置く。流れ出さないよう下と横を石で囲む。
+        BlockPos top = wet.above(EntityTurbulenceZone.GENERATOR_FLUID_CHECK_HEIGHT);
+        List<BlockPos> walls = List.of(top.below(), top.east(), top.west(), top.north(), top.south());
+        walls.forEach(wall -> helper.setBlock(wall, Blocks.STONE));
+        helper.setBlock(top, Blocks.WATER);
+        BlockPos wetTop = helper.absolutePos(top);
+        Runnable cleanup = () -> {
+            helper.setBlock(top, Blocks.AIR);
+            helper.setBlock(dry, Blocks.AIR);
+            helper.setBlock(wet, Blocks.AIR);
+            walls.forEach(wall -> helper.setBlock(wall, Blocks.AIR));
+            cleanup(helper, caster);
+        };
+        if (level.getFluidState(wetTop).isEmpty()) {
+            cleanup.run();
+            helper.fail("The top of the second Wind Generator must hold water for this test: " + level.getBlockState(wetTop));
+            return;
+        }
+        try {
+            cast(caster, turbulence(helper), 5.0, 10.0);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(60, () -> {
+            double dryUnits = EntityTurbulenceZone.windUnitsAt(level, helper.absolutePos(dry));
+            double wetUnits = EntityTurbulenceZone.windUnitsAt(level, helper.absolutePos(wet));
+            double wetMultiplier = MekanismGameplayCompat.windMultiplierOf(level.getBlockEntity(helper.absolutePos(wet)));
+            double amount = SpellGramIndex.ofCaster(level, caster.getUUID()).stream()
+                    .filter(zone -> zone instanceof EntityTurbulenceZone).mapToDouble(zone -> ((EntityTurbulenceZone) zone).windAmount())
+                    .findFirst().orElse(-1.0);
+            cleanup.run();
+            helper.assertTrue(amount > 0.0 && amount < EntityTurbulenceZone.MAX_WU_PER_GENERATOR,
+                    "The zone must blow less than one generator can take, got " + amount);
+            helper.assertTrue(wetUnits == 0.0 && wetMultiplier == 0.0,
+                    "A Wind Generator with fluid on top must get no wind and stay still, got " + wetUnits + " WU, multiplier "
+                            + wetMultiplier);
+            helper.assertTrue(Math.abs(dryUnits - amount) < 1.0E-6,
+                    "The other Wind Generator must take all the wind, " + dryUnits + " vs " + amount);
             helper.succeed();
         });
     }

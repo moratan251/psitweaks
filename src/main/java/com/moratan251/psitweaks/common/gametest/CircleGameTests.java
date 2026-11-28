@@ -13,6 +13,8 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenc
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntitySoakZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.ZoneArea;
+import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.items.curios.CuriosSlotChecker;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickCircleFollow;
@@ -42,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.psi.api.PsiAPI;
 import vazkii.psi.api.internal.Vector3;
 import vazkii.psi.api.spell.EnumSpellStat;
@@ -277,6 +280,41 @@ public final class CircleGameTests {
         helper.runAfterDelay(9, guarded(cleanup, () -> {
             helper.assertTrue(!circle.isEntityFollowMode() && Math.abs(circle.getY() - (baseY + 30.0)) < 1.0E-6,
                     "Beyond 32 blocks the circle must let go and stay: y " + circle.getY());
+            cleanup.run();
+            helper.succeed();
+        }));
+    }
+
+    /**
+     * 射程が延びていれば（干渉距離延長デバイスの 64 ブロック）、術者から 32 ブロックより遠い追従先も、その射程までは追従し続ける。
+     */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_circle_follow_leash_extended", timeoutTicks = 60)
+    public static void extendedRangeKeepsFollowTargetsUpToTheRange(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer caster = GameTestPlayers.inLevel(helper, "circle_leash_far_caster", new Vec3(0.5, 1.0, 0.5));
+        CuriosApi.getCuriosInventory(caster).orElseThrow().setEquippedCurio(CuriosSlotChecker.MAGIC_CALCULATION_AREA, 0,
+                new ItemStack(PsitweaksItems.INTERFERENCE_RANGE_EXTENDER.get()));
+        Boat boat = boat(helper, new Vec3(2.5, 1.0, 2.5), true);
+        EntityIceCircle circle = place(helper, new EntityIceCircle(level), caster, new Vec3(2.5, 1.0, 2.5), 1.0F, 0.0F, 10, 1.0F);
+        circle.setMaxIntegrity(1.0E6F);
+        Runnable cleanup = () -> cleanup(helper, List.of(caster), boat);
+        double baseY = boat.getY();
+        try {
+            follow(caster, circle, boat);
+        } catch (RuntimeException | SpellRuntimeException e) {
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
+        helper.runAfterDelay(3, guarded(cleanup, () -> boat.setPos(boat.getX(), baseY + 50.0, boat.getZ())));
+        helper.runAfterDelay(6, guarded(cleanup, () -> {
+            helper.assertTrue(circle.isEntityFollowMode() && Math.abs(circle.getY() - boat.getY()) < 1.0E-6,
+                    "Within the extended range (64) the circle must keep following past 32 blocks: " + circle.getY()
+                            + " vs " + boat.getY());
+            boat.setPos(boat.getX(), baseY + 70.0, boat.getZ());
+        }));
+        helper.runAfterDelay(9, guarded(cleanup, () -> {
+            helper.assertTrue(!circle.isEntityFollowMode() && Math.abs(circle.getY() - (baseY + 50.0)) < 1.0E-6,
+                    "Beyond the extended range the circle must let go and stay: y " + circle.getY());
             cleanup.run();
             helper.succeed();
         }));

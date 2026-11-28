@@ -83,7 +83,7 @@ public final class PsitweaksPlainValues {
             value -> new Vector3(value.x, value.y, value.z),
             PsitweaksPlainValues::serializeVector,
             PsitweaksPlainValues::deserializeVector,
-            value -> StringSpellHelper.sanitize(String.valueOf(value)),
+            PsitweaksPlainValues::vectorToString,
             StringSpellHelper::parseVector
     ));
 
@@ -102,6 +102,16 @@ public final class PsitweaksPlainValues {
     ));
 
     private PsitweaksPlainValues() {
+    }
+
+    /**
+     * The String form of a vector, {@code Vector[x, y, z]} with every component written in full, which
+     * {@link StringSpellHelper#parseVector} reads back exactly. Psi's {@code Vector3.toString} keeps only 5 significant
+     * digits, so (123456.7, 64, 0) would come back as x = 123460.
+     */
+    public static String vectorToString(Vector3 vector) {
+        return StringSpellHelper.sanitize("Vector[" + StringSpellHelper.numberToString(vector.x) + ", "
+                + StringSpellHelper.numberToString(vector.y) + ", " + StringSpellHelper.numberToString(vector.z) + "]");
     }
 
     /**

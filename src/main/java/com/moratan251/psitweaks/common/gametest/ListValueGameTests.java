@@ -245,10 +245,31 @@ public final class ListValueGameTests {
         inputs.put(VALUES, numbers(2.0, 1.0, 2.0, 1.0));
         inputs.put(NUMBER, 4.0);
         helper.assertTrue(xs(keep.execute(context)).equals(List.of(20.0, 40.0, 10.0, 30.0)), "Equal values must keep the List's order");
+        inputs.put(NUMBER, -4.0);
+        helper.assertTrue(xs(keep.execute(context)).equals(List.of(10.0, 30.0, 20.0, 40.0)),
+                "Equal values must keep the List's order for a negative Number too, got " + xs(keep.execute(context)));
+        inputs.put(NUMBER, -1.0);
+        helper.assertTrue(xs(keep.execute(context)).equals(List.of(10.0)),
+                "-1 must keep the first of the equal largest values, got " + xs(keep.execute(context)));
         inputs.put(VALUES, numbers(1.0, 2.0, 3.0));
         helper.assertTrue(failsWith(keep, context, PieceOperatorListValueBase.ERROR_SIZE_MISMATCH)
                         && failsWith(element, context, PieceOperatorListValueBase.ERROR_SIZE_MISMATCH),
                 "Different sizes must be an error");
+        helper.succeed();
+    }
+
+    /** CAD メモリのベクトルを String として読むと、各成分を全桁で書く（Psi の 5 桁に丸めない）。読み戻すと同じベクトル。 */
+    @GameTest(template = TEMPLATE)
+    public static void cadMemoryVectorsReadAsStringsKeepEveryDigit(GameTestHelper helper) throws SpellRuntimeException {
+        Vector3 vector = new Vector3(123456.7, 64, -0.125);
+        Object text = com.moratan251.psitweaks.api.PsitweaksPlainValues.convert(
+                com.moratan251.psitweaks.api.PsitweaksPlainValues.memoryValueUnchecked(
+                        com.moratan251.psitweaks.api.PsitweaksPlainValues.VECTOR, vector),
+                com.moratan251.psitweaks.api.PsitweaksPlainValues.STRING);
+        helper.assertTrue("Vector[123456.7, 64, -0.125]".equals(text), "A stored vector must read as every digit, got " + text);
+        var back = com.moratan251.psitweaksqol.api.StringSpellHelper.parseVector((String) text).orElse(null);
+        helper.assertTrue(back != null && back.x == vector.x && back.y == vector.y && back.z == vector.z,
+                "The String must read back as the same vector, got " + back);
         helper.succeed();
     }
 

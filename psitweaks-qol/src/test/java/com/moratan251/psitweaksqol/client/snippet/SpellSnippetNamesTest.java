@@ -17,6 +17,14 @@ class SpellSnippetNamesTest {
     }
 
     @Test
+    void laterFileNameCandidatesGetANumberBeforeTheExtension() {
+        assertEquals("a_b.snbt", SpellSnippetNames.fileNameFor("a:b", 1));
+        assertEquals("a_b~2.snbt", SpellSnippetNames.fileNameFor("a:b", 2));
+        assertEquals("_con~3.snbt", SpellSnippetNames.fileNameFor("con", 3));
+        assertEquals("名前~2.snbt", SpellSnippetNames.fileNameFor("名前. ", 2));
+    }
+
+    @Test
     void nameMustBeShortAndPrintable() {
         assertEquals(Optional.of("abc"), SpellSnippetNames.validateName("  abc "));
         assertEquals(Optional.empty(), SpellSnippetNames.validateName("   "));

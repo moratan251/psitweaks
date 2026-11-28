@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.entities.SpellGram;
 
 import com.moratan251.psitweaks.common.caster.CasterIds;
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityInterferenceZone;
+import com.moratan251.psitweaks.common.spells.SpellRange;
 import com.moratan251.psitweaks.common.spells.combat.AttackRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -45,7 +46,10 @@ public abstract class SpellGramCircle extends SpellGramObject {
         return true;
     }
 
-    /** 術者以外の追従先を、術者からこれより遠くへは連れていけない（ブロック、Psi の射程と同じ）。 */
+    /**
+     * 術者以外の追従先を、術者からこれより遠くへは連れていけない（ブロック、Psi の射程と同じ）。射程を延ばす装備や自律詠唱機の
+     * アップグレードがあれば、その射程まで（{@link #followLeash}）。
+     */
     public static final double FOLLOW_LEASH = 32.0D;
 
     private static final String NBT_SAFE_TO_PLAYERS = "SafeToPlayers";
@@ -202,7 +206,7 @@ public abstract class SpellGramCircle extends SpellGramObject {
 
     /**
      * 追従をやめるか（サーバー側）: 追従先を引けない・消えた、別のディメンション、エンティティの動くチャンクにいない、術者以外の
-     * 追従先が術者から {@link #FOLLOW_LEASH} より遠い、術者以外の追従先に術者以外の生き物が乗っている。
+     * 追従先が術者から射程（{@link #followLeash}）より遠い、術者以外の追従先に術者以外の生き物が乗っている。
      */
     protected boolean shouldRelease(@Nullable Entity target) {
         if (target == null || target.isRemoved() || !target.isAlive() || target.level() != level()) {
@@ -215,10 +219,26 @@ public abstract class SpellGramCircle extends SpellGramObject {
             return false;
         }
         LivingEntity caster = getCaster();
-        if (caster == null || caster.position().distanceToSqr(target.position()) > FOLLOW_LEASH * FOLLOW_LEASH) {
+        if (caster == null) {
+            return true;
+        }
+        double leash = followLeash(caster);
+        if (caster.position().distanceToSqr(target.position()) > leash * leash) {
             return true;
         }
         return isRiddenByOthers(target, getCasterUuid());
+    }
+
+    /**
+     * 術者以外の追従先を連れていける距離: 追従を始めるときに受け付けた射程と同じ（{@link SpellRange#maxDistance}、干渉距離延長
+     * デバイスの 64 ブロックや自律詠唱機のアップグレード）。サードアイデバイスは射程の判定をしないので、距離では外さない。
+     * プレイヤーでない術者は {@link #FOLLOW_LEASH}。
+     */
+    public static double followLeash(LivingEntity caster) {
+        if (!(caster instanceof Player player)) {
+            return FOLLOW_LEASH;
+        }
+        return SpellRange.ignoresRange(player) ? Double.POSITIVE_INFINITY : SpellRange.maxDistance(player);
     }
 
     /** {@code vehicle} に、術者（{@code casterId}）以外の生き物が（何段でも）乗っているか。 */

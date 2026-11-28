@@ -109,7 +109,7 @@ public class EntitySilenceZone extends SpellGramZone {
     protected void spawnClientParticles() {
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int motes = (int) Math.min(MAX_MOTES_PER_TICK, Math.max(1, volume / 300.0));
+        int motes = particleCount(Math.min(MAX_MOTES_PER_TICK, Math.max(1.0, volume / 300.0)));
         for (int i = 0; i < motes; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();
             double y = box.minY + random.nextDouble() * box.getYsize();

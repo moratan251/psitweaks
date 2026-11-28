@@ -457,7 +457,7 @@ public final class AttackTargetGameTests {
     }
 
     /** 機械の代わりに、所有者の UUID と名前だけを答える。 */
-    private static final class OwnerHost implements AutonomousCasterHost {
+    static final class OwnerHost implements AutonomousCasterHost {
         private final UUID owner;
         private String name;
 

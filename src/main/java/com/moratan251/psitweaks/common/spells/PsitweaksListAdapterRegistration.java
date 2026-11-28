@@ -2,6 +2,7 @@ package com.moratan251.psitweaks.common.spells;
 
 import com.moratan251.psitweaks.api.PsitweaksListAdapter;
 import com.moratan251.psitweaks.api.PsitweaksListAdapters;
+import com.moratan251.psitweaks.api.PsitweaksPlainValues;
 import com.moratan251.psitweaks.api.value.BlockValue;
 import com.moratan251.psitweaks.api.value.BlockValueHelper;
 import com.moratan251.psitweaksqol.api.PsitweaksModeOption;
@@ -472,13 +473,9 @@ public final class PsitweaksListAdapterRegistration {
         return VectorListWrapper.make(result);
     }
 
-    /**
-     * Psi's {@code Vector3.toString} keeps 5 significant digits, so (123456.7, 64, 0) came back as x = 123460. Every
-     * component is written in full, in the same {@code Vector[x, y, z]} form, which reads back exactly.
-     */
+    /** {@link PsitweaksPlainValues#vectorToString}: every component in full, so it reads back exactly. */
     static String vectorToString(Vector3 vector) {
-        return "Vector[" + StringSpellHelper.numberToString(vector.x) + ", " + StringSpellHelper.numberToString(vector.y)
-                + ", " + StringSpellHelper.numberToString(vector.z) + "]";
+        return PsitweaksPlainValues.vectorToString(vector);
     }
 
     private static String debugString(Object value) {

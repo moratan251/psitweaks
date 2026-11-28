@@ -1934,8 +1934,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "Turns open water sources inside into Frosted Ice and keeps them frozen (skips Heat Zones).$(p)While following via Trick: Circle Follow, freezes only on ground movement; ice/land boats freeze water ahead, while floating boats do not.",
                 "氷渡りのように範囲内の水源を薄氷に変えて維持します (加熱領域内は対象外).$(p)作動式: サークル追従中は移動時のみ足元1段下を凍らせます. 氷上・陸上のボートは先の水面を凍らせますが, 水上ボートでは凍らせません.");
         addBookPage(root, "trick_circle_follow.0",
-                "Makes your circles (newest one if omitted) follow Follow Target every tick. Follow Target must be you or a non-living entity in range (such as a boat or item); omit it to detach.$(p)Zones cannot be moved. Moving consumes extra integrity, and detaches if the target vanishes or moves over 32 blocks from you.",
-                "自分のサークル (省略時は最新の1つ) を「追従先」へ毎 tick 追従させます. 「追従先」は術者か射程内の非生物エンティティ (ボート・アイテム等) で, 省くと追従を解除します.$(p)領域は動かせません. 移動距離に応じて耐久値を追加消費し, 追従先が消えたり術者から32ブロック離れると解除されます.");
+                "Makes your circles (newest one if omitted) follow Follow Target every tick. Follow Target must be you or a non-living entity in range (such as a boat or item); omit it to detach.$(p)Zones cannot be moved. Moving consumes extra integrity, and detaches if the target vanishes or leaves your spell range.",
+                "自分のサークル (省略時は最新の1つ) を「追従先」へ毎 tick 追従させます. 「追従先」は術者か射程内の非生物エンティティ (ボート・アイテム等) で, 省くと追従を解除します.$(p)領域は動かせません. 移動距離に応じて耐久値を追加消費し, 追従先が消えたり術者の射程の外へ出ると解除されます.");
     }
 
     private void addSpellPieces(JsonObject root) {

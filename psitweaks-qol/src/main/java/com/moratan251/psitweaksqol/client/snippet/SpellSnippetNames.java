@@ -62,6 +62,19 @@ public final class SpellSnippetNames {
         return base + EXTENSION;
     }
 
+    /**
+     * 名前の {@code index} 番目（1 から）の保存先の候補。1 番目は {@link #fileNameFor(String)}、2 番目からは拡張子の前に
+     * {@code ~2}・{@code ~3}… を付ける。「a:b」と「a_b」のように同じファイル名になる名前（Windows・macOS では大文字と小文字
+     * だけ違う名前も）は、空いている次の候補に保存する。
+     */
+    public static String fileNameFor(String name, int index) {
+        String fileName = fileNameFor(name);
+        if (index <= 1) {
+            return fileName;
+        }
+        return fileName.substring(0, fileName.length() - EXTENSION.length()) + "~" + index + EXTENSION;
+    }
+
     /** 中身に名前がないファイルの表示名。拡張子を除いたファイル名を、長さの上限で切る。 */
     public static String nameFromFileName(String fileName) {
         String stem = fileName.endsWith(EXTENSION)

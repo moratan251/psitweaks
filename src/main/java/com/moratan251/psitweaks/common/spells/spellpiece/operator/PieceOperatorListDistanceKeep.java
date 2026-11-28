@@ -1,6 +1,5 @@
 package com.moratan251.psitweaks.common.spells.spellpiece.operator;
 
-import com.moratan251.psitweaks.common.spells.util.RankedSelection;
 import net.minecraft.network.chat.Component;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
@@ -18,7 +17,7 @@ public class PieceOperatorListDistanceKeep extends PieceOperatorListDistanceBase
     @Override
     public Object execute(SpellContext context) throws SpellRuntimeException {
         double value = numberValue(context);
-        return makeList(RankedSelection.keep(sortedByDistance(context), value));
+        return makeList(keepByDistance(context, value));
     }
 
     @Override

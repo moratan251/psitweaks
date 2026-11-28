@@ -836,22 +836,13 @@ public abstract class SpellGramZone extends SpellGramObject {
         return heatSides;
     }
 
-    /** 粒が見える距離: 範囲の箱からこれより遠い（目の位置で）プレイヤーしかいなければ、中の演出を作らない。 */
-    private static final double PARTICLE_VIEW_DISTANCE = 40.0;
-
     /**
-     * クライアント側: 演出を見る人が近くにいるか。Minecraft は 32 ブロックより遠い粒を出さないので、遠くの領域の演出の準備
-     * （位置の計算や、Create の加工の粒のための走査）を飛ばす。カメラが体から離れる三人称の分を足して
-     * 40 ブロックで見る。
+     * クライアント側: 演出が見えるか。Minecraft はカメラから 32 ブロックより遠い粒を出さないので、範囲の箱がカメラからそれより
+     * 遠ければ、演出の準備（位置の計算や、Create の加工の粒のための走査）を飛ばす。ほかのプレイヤーの近くは見ない
+     * （遠くの仲間の領域が、描かれない粒ですべての領域の上限を使わないように）。
      */
     private boolean hasNearbyViewer() {
-        AABB box = getOutline();
-        for (Player player : level().players()) {
-            if (box.distanceToSqr(player.getEyePosition()) <= PARTICLE_VIEW_DISTANCE * PARTICLE_VIEW_DISTANCE) {
-                return true;
-            }
-        }
-        return false;
+        return ZoneParticleBudget.isWithinParticleRange(getOutline());
     }
 
     /** この tick の演出の粒の、カメラからの距離による倍率（クライアント側、{@link ZoneParticleBudget#distanceFactor}）。 */
@@ -871,10 +862,18 @@ public abstract class SpellGramZone extends SpellGramObject {
      * 端数は確率で切り上げるので、平均では {@code count} × 倍率になる。出したい数は、すべての領域の上限の計算に足す。
      */
     protected int particleCount(double count) {
+        return particleCount(count, 1.0);
+    }
+
+    /**
+     * {@link #particleCount(double)} の、1 つが {@code particlesEach} 個の粒になる演出（放電の線など）。減らし方は同じで、
+     * すべての領域の上限の計算には粒の数（{@code count} × {@code particlesEach}）で足す。
+     */
+    protected int particleCount(double count, double particlesEach) {
         if (count <= 0.0) {
             return 0;
         }
-        ZoneParticleBudget.request(count * particleDistanceFactor);
+        ZoneParticleBudget.request(count * particlesEach * particleDistanceFactor);
         double scaled = count * particleFactor;
         int whole = (int) scaled;
         return random.nextDouble() < scaled - whole ? whole + 1 : whole;
@@ -886,7 +885,7 @@ public abstract class SpellGramZone extends SpellGramObject {
         if (level().isClientSide && !isRemoved() && hasNearbyViewer()) {
             particleDistanceFactor = ZoneParticleBudget.distanceFactor(getOutline());
             if (particleDistanceFactor > 0.0) {
-                particleFactor = particleDistanceFactor * ZoneParticleBudget.sharedFactor(level());
+                particleFactor = particleDistanceFactor * ZoneParticleBudget.sharedFactor();
                 spawnClientParticles();
             }
         }

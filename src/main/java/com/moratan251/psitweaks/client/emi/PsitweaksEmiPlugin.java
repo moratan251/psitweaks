@@ -61,7 +61,7 @@ public class PsitweaksEmiPlugin implements EmiPlugin {
         );
         registry.addCategory(materialMutation);
         registry.addWorkstation(materialMutation, EmiStack.of(PsitweaksItems.PROGRAM_MATERIAL_MUTATION.get()));
-        for (var entry : MaterialMutationRecipeHandler.getAllMutationOutputs().entrySet()) {
+        for (var entry : MaterialMutationRecipeHandler.getClientMutationOutputs().entrySet()) {
             Block inputBlock = entry.getKey();
             ItemStack input = new ItemStack(inputBlock);
             ItemStack output = entry.getValue();

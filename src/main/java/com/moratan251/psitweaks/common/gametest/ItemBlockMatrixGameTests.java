@@ -590,6 +590,39 @@ public final class ItemBlockMatrixGameTests {
         helper.succeed();
     }
 
+    /**
+     * 座標が int の範囲を超える行列でも、領域の範囲の計算はあふれない。遠すぎる中心は射程外のエラーになり（中心を -1 にして
+     * 原点の近くで通ることはない）、int の範囲をまたぐ広い行列は、本当の真ん中を中心にする。
+     */
+    @GameTest(template = "psi110_empty")
+    public static void zoneAreasBeyondTheIntRangeDoNotOverflow(GameTestHelper helper) throws SpellRuntimeException {
+        MatrixValue far = new MatrixValue(4, 4, new double[]{
+                5, 0, 0, 3.0E9,
+                0, 5, 0, 60,
+                0, 0, 5, 3.0E9,
+                0, 0, 0, 1});
+        String error = null;
+        try {
+            ZoneArea.of(far, 5);
+        } catch (SpellRuntimeException e) {
+            error = e.getMessage();
+        }
+        helper.assertTrue(SpellRuntimeException.OUTSIDE_RADIUS.equals(error),
+                "A zone centred past the int range must be out of range, got " + error);
+
+        MatrixValue wide = new MatrixValue(4, 4, new double[]{
+                6.0E9, 0, 0, -3.0E9 + 100.5,
+                0, 5, 0, 59.5,
+                0, 0, 6.0E9, -3.0E9 - 40.5,
+                0, 0, 0, 1});
+        ZoneArea area = ZoneArea.of(wide, 5);
+        helper.assertTrue(area.center().equals(new BlockPos(100, 62, -41)),
+                "A wide zone across the int range must centre on its true middle, got " + area.center());
+        helper.assertTrue(area.bounds().equals(ZoneArea.cube(new BlockPos(100, 62, -41), 5).bounds()),
+                "A wide zone across the int range must keep its size around the middle, got " + area.bounds());
+        helper.succeed();
+    }
+
     private static Set<BlockPos> regionBlocks(MatrixValue matrix) throws SpellRuntimeException {
         return new HashSet<>(MassBlockBreakHelper.collectRegionPositions(matrix));
     }

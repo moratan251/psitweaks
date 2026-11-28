@@ -6,7 +6,6 @@ import com.moratan251.psitweaks.common.spells.spellpiece.operator.RegionMatrix;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -30,6 +29,10 @@ import java.util.List;
 public final class ZoneArea {
     static final ZoneArea EMPTY = new ZoneArea(null, null, BlockPos.ZERO, false, 0, 0, 0, 0, -1, -1, -1);
     private static final double EPSILON = 1.0E-9;
+    /**
+     * 中心のブロックの座標の上限（絶対値）。ワールドの端（3000 万）よりずっと遠く、サイズの立方体を足しても int に収まる。
+     */
+    private static final double MAX_CENTER = 1 << 30;
 
     @Nullable
     private final MatrixValue matrix;
@@ -101,12 +104,13 @@ public final class ZoneArea {
             highY = Math.max(highY, corner.y);
             highZ = Math.max(highZ, corner.z);
         }
-        int firstX = Mth.ceil(lowX - EPSILON);
-        int firstY = Mth.ceil(lowY - EPSILON);
-        int firstZ = Mth.ceil(lowZ - EPSILON);
-        int lastX = Mth.floor(highX + EPSILON);
-        int lastY = Mth.floor(highY + EPSILON);
-        int lastZ = Mth.floor(highZ + EPSILON);
+        // ブロックの番号は double のまま数える。行列の座標は int の範囲を超えられ、int にするとあふれる。
+        double firstX = Math.ceil(lowX - EPSILON);
+        double firstY = Math.ceil(lowY - EPSILON);
+        double firstZ = Math.ceil(lowZ - EPSILON);
+        double lastX = Math.floor(highX + EPSILON);
+        double lastY = Math.floor(highY + EPSILON);
+        double lastZ = Math.floor(highZ + EPSILON);
         // 中心は行列の中にあるブロックの真ん中。行列の真ん中の点を切り捨てると、端数のある行列（平行移動行列で半端に
         // ずらしたものなど）では中にあるブロックとずれ、サイズちょうどの行列でも 1 列欠ける。
         BlockPos center = fixedCenter != null ? fixedCenter : new BlockPos(
@@ -117,25 +121,31 @@ public final class ZoneArea {
         // 演算子: 直方体領域と同じ: 中心から負の向きに (edge - 1) / 2、残りを正の向きに。
         int low = -((edge - 1) / 2);
         int high = low + edge - 1;
+        // 中心は MAX_CENTER の内側なので、中心 ± サイズは int に収まる。行列のブロックの端（first・last）との重なりだけを残す
+        // （その軸にブロックがなければ first > last で空になる。int にするときは端で止まる）。
         return new ZoneArea(matrix, region, center, fixedCenter != null, edge,
-                Math.max(center.getX() + low, firstX),
-                Math.max(center.getY() + low, firstY),
-                Math.max(center.getZ() + low, firstZ),
-                Math.min(center.getX() + high, lastX),
-                Math.min(center.getY() + high, lastY),
-                Math.min(center.getZ() + high, lastZ));
+                (int) Math.max(center.getX() + low, firstX),
+                (int) Math.max(center.getY() + low, firstY),
+                (int) Math.max(center.getZ() + low, firstZ),
+                (int) Math.min(center.getX() + high, lastX),
+                (int) Math.min(center.getY() + high, lastY),
+                (int) Math.min(center.getZ() + high, lastZ));
     }
 
     /**
      * 1 つの軸で、ブロック {@code first}〜{@code last} の真ん中（数が偶数なら負の側。サイズの立方体は正の向きに 1 つ多いので、
      * サイズちょうどならちょうど収まる）。その軸にブロックがなければ、行列の真ん中の点（{@code startPlusFar} の半分）を
      * 切り捨てたもの。
+     * <p>
+     * 中心が {@link #MAX_CENTER} より遠い範囲は、どの術者の射程にも入らない（ワールドの端より遠い）ので、射程外のエラーにする。
+     * 中心を int にするとあふれ、別の場所（-1 など）を中心にしてしまう。
      */
-    private static int middle(int first, int last, double startPlusFar) {
-        if (first > last) {
-            return Mth.floor(startPlusFar * 0.5 + EPSILON);
+    private static int middle(double first, double last, double startPlusFar) throws SpellRuntimeException {
+        double middle = first > last ? Math.floor(startPlusFar * 0.5 + EPSILON) : Math.floor((first + last) * 0.5);
+        if (!(Math.abs(middle) <= MAX_CENTER)) {
+            throw new SpellRuntimeException(SpellRuntimeException.OUTSIDE_RADIUS);
         }
-        return (int) Math.floorDiv((long) first + last, 2L);
+        return (int) middle;
     }
 
     /**

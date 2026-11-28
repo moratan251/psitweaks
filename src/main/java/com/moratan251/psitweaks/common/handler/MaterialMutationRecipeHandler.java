@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import com.moratan251.psitweaks.Psitweaks;
+import com.moratan251.psitweaks.common.network.MessageMaterialMutationSync;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,6 +24,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -36,9 +39,13 @@ public final class MaterialMutationRecipeHandler {
     /**
      * サーバーのデータパックから読む表。クライアントの資源の再読み込み（F3+T、資源パック・言語の切り替え）には登録しない。
      * 同じ表を使っていたため、シングルプレイでは資源の再読み込みでサーバー側の表まで空になっていた（資源側にファイルはない）。
-     * シングルプレイの JEI・EMI はこの表を読む。
      */
     private static volatile Map<Block, ItemStack> trickRecipesByInputBlock = Map.of();
+    /**
+     * サーバーから送られた表（クライアント側。JEI・EMI が読む）。専用サーバーではクライアントにデータパックがないので、
+     * 参加したときと /reload のときにサーバーが送る（{@link #onDatapackSync}）。切断したら空にする。
+     */
+    private static volatile Map<Block, ItemStack> clientRecipesByInputBlock = Map.of();
 
     private MaterialMutationRecipeHandler() {
     }
@@ -55,6 +62,30 @@ public final class MaterialMutationRecipeHandler {
 
     public static Map<Block, ItemStack> getAllMutationOutputs() {
         return trickRecipesByInputBlock;
+    }
+
+    /**
+     * 表をクライアントへ送る。レシピの送信（JEI・EMI の読み直しのきっかけ）より前に呼ばれるので、JEI・EMI は届いた表を読む。
+     */
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        MessageMaterialMutationSync message = MessageMaterialMutationSync.of(trickRecipesByInputBlock);
+        event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, message));
+    }
+
+    /** サーバーから送られた表（クライアント側）。JEI・EMI 用。 */
+    public static Map<Block, ItemStack> getClientMutationOutputs() {
+        return clientRecipesByInputBlock;
+    }
+
+    /** サーバーから送られた表を、クライアント側の表にする。 */
+    public static void applyClientRecipes(Map<Block, ItemStack> recipes) {
+        clientRecipesByInputBlock = Map.copyOf(recipes);
+    }
+
+    /** 切断したとき、接続先のサーバーから送られた表を捨てる。 */
+    public static void clearClientRecipes() {
+        clientRecipesByInputBlock = Map.of();
     }
 
     /**

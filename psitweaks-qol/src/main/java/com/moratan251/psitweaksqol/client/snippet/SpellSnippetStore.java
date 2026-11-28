@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public final class SpellSnippetStore {
     static final long MAX_FILE_BYTES = 1L << 20;
     static final String EXTENSION = SpellSnippetNames.EXTENSION;
     static final int FORMAT_VERSION = 1;
+    /** 同じファイル名になる名前を、いくつまで別のファイルに分けるか（{@link SpellSnippetNames#fileNameFor(String, int)}）。 */
+    static final int MAX_FILE_CANDIDATES = 64;
 
     private static final String TAG_VALID = "validSpell";
     private static final String TAG_NAME = "spellName";
@@ -83,20 +86,35 @@ public final class SpellSnippetStore {
                 PsitweaksQol.LOGGER.warn("Skipped spell snippet {}: not a regular file or too large", file);
                 return Optional.empty();
             }
-            CompoundTag tag = TagParser.parseTag(Files.readString(file, StandardCharsets.UTF_8));
+            String text = Files.readString(file, StandardCharsets.UTF_8);
+            if (SnbtNesting.deeperThan(text, SnbtNesting.MAX_DEPTH)) {
+                PsitweaksQol.LOGGER.warn("Skipped spell snippet {}: nested deeper than {}", file, SnbtNesting.MAX_DEPTH);
+                return Optional.empty();
+            }
+            CompoundTag tag = TagParser.parseTag(text);
             return Optional.of(fromTag(tag, fileName));
-        } catch (IOException | CommandSyntaxException | RuntimeException e) {
+        } catch (IOException | CommandSyntaxException | RuntimeException | StackOverflowError e) {
             PsitweaksQol.LOGGER.warn("Skipped unreadable spell snippet {}", file, e);
             return Optional.empty();
         }
     }
 
-    /** 同じ名前（同じファイル名になる名前）のスニペットがすでにあるか。 */
+    /**
+     * 同じ名前のスニペットがすでにあるか。ファイル名ではなく、中に書いた名前で比べる（「a:b」と「a_b」は別の名前）。
+     * 名前をファイル名にできない（Linux で文字コードが UTF-8 でないときの日本語など）ときは偽。
+     */
     public static boolean exists(String name) {
-        return Files.exists(directory().resolve(fileNameFor(name)));
+        try {
+            return findSlot(directory(), name).map(Slot::existing).orElse(false);
+        } catch (InvalidPathException e) {
+            return false;
+        }
     }
 
-    /** 名前のファイルへ書く。同じファイルがあれば置き換える。 */
+    /**
+     * 名前のファイルへ書く。同じ名前のスニペットがあれば、そのファイルを置き換える。ほかの名前のスニペットが同じファイル名を
+     * 使っていれば、空いている次の候補（{@code ~2} など）に書く。
+     */
     public static SpellSnippet save(String name, SpellPieceLayout layout) throws IOException {
         String validName = validateName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid spell snippet name: " + name));
@@ -106,7 +124,9 @@ public final class SpellSnippetStore {
 
         Path directory = directory();
         Files.createDirectories(directory);
-        String fileName = fileNameFor(validName);
+        String fileName = findSlot(directory, validName)
+                .orElseThrow(() -> new IOException("Too many spell snippets share the file name " + fileNameFor(validName)))
+                .fileName();
         Path target = directory.resolve(fileName);
         Path temporary = directory.resolve(fileName + ".tmp");
         String text = new SnbtPrinterTagVisitor().visit(toTag(validName, layout, SpellSnippetStore::modVersion));
@@ -117,6 +137,31 @@ public final class SpellSnippetStore {
             Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING);
         }
         return new SpellSnippet(validName, layout, fileName);
+    }
+
+    /**
+     * 名前 {@code name} の保存先: 候補（{@link SpellSnippetNames#fileNameFor(String, int)}）を順に見て、同じ名前のスニペットの
+     * ファイルか、最初の空いているファイル。候補がすべてほかの名前で埋まっていれば空。読めないファイルの候補は飛ばす
+     * （上書きしない）。
+     *
+     * @throws InvalidPathException 名前をファイル名にできないとき
+     */
+    private static Optional<Slot> findSlot(Path directory, String name) {
+        for (int index = 1; index <= MAX_FILE_CANDIDATES; index++) {
+            String fileName = SpellSnippetNames.fileNameFor(name, index);
+            Path file = directory.resolve(fileName);
+            if (!Files.exists(file)) {
+                return Optional.of(new Slot(fileName, false));
+            }
+            if (load(file).map(snippet -> snippet.name().equals(name)).orElse(false)) {
+                return Optional.of(new Slot(fileName, true));
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** 保存先のファイル名と、そこに同じ名前のスニペットがすでにあるか。 */
+    private record Slot(String fileName, boolean existing) {
     }
 
     public static void delete(SpellSnippet snippet) throws IOException {

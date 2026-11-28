@@ -957,7 +957,7 @@
   "psi.book.page.psitweaks_spellpiece.trick_charged_zone.0": "「威力」とコストに応じた充電能力を, 範囲内の FE 対応ブロック・エンティティ・アイテムや領域受電器を持つプレイヤーへ均等に配ります.$(p)錆止め以外の銅の錆をランダムに落とし, Applied Energistics 2 導入時はドロップアイテムをチャージャー同様に加工します. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.",
   "psi.book.page.psitweaks_spellpiece.trick_charged_zone.1": "自分の乱流領域と重なる場所は雷雲となり, 下の生物へランダムに雷撃を落として FE 供給量も増えます. 濡れている生物には雷撃ダメージが1.25倍になります. Create 導入時は加熱領域も重ねると一括製錬になります.$(p)範囲内に自分の$(l:psitweaks_machines/zone_feeder)領域給電機$(/l)があると, 足りない分の FE をそこから補って配ります.",
   "psi.book.page.psitweaks_spellpiece.trick_charged_zone.2": "持ち物に入れておくと, 荷電領域内で自分の FE 対応アイテムへ給電されます. 右クリックで入／切を切り替えられます. 持っていないと手持ちや装備には給電されません.",
-  "psi.book.page.psitweaks_spellpiece.trick_circle_follow.0": "自分のサークル (省略時は最新の1つ) を「追従先」へ毎 tick 追従させます. 「追従先」は術者か射程内の非生物エンティティ (ボート・アイテム等) で, 省くと追従を解除します.$(p)領域は動かせません. 移動距離に応じて耐久値を追加消費し, 追従先が消えたり術者から32ブロック離れると解除されます.",
+  "psi.book.page.psitweaks_spellpiece.trick_circle_follow.0": "自分のサークル (省略時は最新の1つ) を「追従先」へ毎 tick 追従させます. 「追従先」は術者か射程内の非生物エンティティ (ボート・アイテム等) で, 省くと追従を解除します.$(p)領域は動かせません. 移動距離に応じて耐久値を追加消費し, 追従先が消えたり術者の射程の外へ出ると解除されます.",
   "psi.book.page.psitweaks_spellpiece.trick_cocytus.0": "入力はありません. 前方へ地形貫通の吹雪を放ち, 範囲内のモブの精神を永久に凍結させます (ダメージなし). 凍結したモブは AI が止まって氷に閉じ込められ, 動かず音も立てなくなります.$(p)プレイヤーと術者のペットや味方は凍りません. 召喚直後のウィザー以外のボスにも効き, エンダードラゴンを倒したときや他要因で AI が戻ったときは解凍されます.",
   "psi.book.page.psitweaks_spellpiece.trick_contamination_zone.0": "「威力」に応じた線量率で範囲内の生物を毎秒被ばくさせ, 中にいる間は被ばく量が増え続けます. 放射線源は残さず, MekaSuit や作動式: 放射線フィルタで防げます.$(p)術者・ペット・味方には効きません. 共通の決まりは$(l:psitweaks/zone_magic)領域魔法$(/l)を参照してください.",
   "psi.book.page.psitweaks_spellpiece.trick_crafting_table": "作業台がなくても, 作業台と同じ3×3のクラフト画面を開きます.",

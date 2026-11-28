@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -196,7 +197,7 @@ public class EntityHeatZone extends SpellGramZone {
     protected void affect(Entity target) {
         if (target instanceof LivingEntity living) {
             int remaining = living.getRemainingFireTicks();
-            int keep = keepBurning();
+            int keep = keepBurning(living);
             if (remaining < keep) {
                 living.setRemainingFireTicks(Math.max(0, remaining) + 20 * Mth.positiveCeilDiv(keep - Math.max(0, remaining), 20));
             }
@@ -209,11 +210,13 @@ public class EntityHeatZone extends SpellGramZone {
     }
 
     /**
-     * 中にいる間、燃える残り時間をこれより短くしない（tick）: 威力 × 0.6 秒。ただし次に足すまで（{@link #INTERVAL} tick）
-     * 火が消えない長さは保つ。
+     * 中にいる間、燃える残り時間をこれより短くしない（tick）: 威力 × 0.6 秒 × 燃える長さの倍率（属性 {@code burning_time}。
+     * Fire Protection で短くなる。バニラの {@link LivingEntity#igniteForTicks} と同じ掛け方）。ただし次に足すまで
+     * （{@link #INTERVAL} tick）火が消えない長さは保つ。
      */
-    private int keepBurning() {
-        return Math.max(burnTicks(), INTERVAL + 1);
+    private int keepBurning(LivingEntity living) {
+        int scaled = Mth.ceil(burnTicks() * living.getAttributeValue(Attributes.BURNING_TIME));
+        return Math.max(scaled, INTERVAL + 1);
     }
 
     @Override
@@ -455,6 +458,8 @@ public class EntityHeatZone extends SpellGramZone {
 
     /** 電気炉の放電 1 本あたりの、火花を置く間隔（ブロック）。 */
     private static final double ARC_STEP = 0.18;
+    /** 電気炉の放電 1 本のおおよその粒の数（長さ 2 ブロックほどの火花の線と両端）。領域の粒の上限の計算に使う。 */
+    private static final double ARC_PARTICLES = 15.0;
     /** 電気炉の放電の、横へのぶれの大きさ（ブロック）。 */
     private static final double ARC_JITTER = 0.14;
 
@@ -465,12 +470,10 @@ public class EntityHeatZone extends SpellGramZone {
      */
     private void spawnArcFurnaceParticles(AABB overlap) {
         double volume = overlap.getXsize() * overlap.getYsize() * overlap.getZsize();
-        // 放電: 地表から 1.5 ブロックまでの高さで、2 点のあいだを火花でぎざぎざに結ぶ。
-        int arcs = (int) Math.min(3, Math.max(1, volume / 150.0));
+        // 放電: 地表から 1.5 ブロックまでの高さで、2 点のあいだを火花でぎざぎざに結ぶ。平均で 4 tick に 1 回、1 本はおよそ
+        // ARC_PARTICLES 個の粒（領域の粒の上限に数える）。
+        int arcs = particleCount(Math.min(3.0, Math.max(1.0, volume / 150.0)) * 0.25, ARC_PARTICLES);
         for (int i = 0; i < arcs; i++) {
-            if (random.nextInt(4) != 0) {
-                continue;
-            }
             double fromX = overlap.minX + random.nextDouble() * overlap.getXsize();
             double fromZ = overlap.minZ + random.nextDouble() * overlap.getZsize();
             double fromFloor = arcFloor(overlap, fromX, fromZ);
@@ -502,7 +505,7 @@ public class EntityHeatZone extends SpellGramZone {
             level().addParticle(ParticleTypes.SMALL_FLAME, to.x, to.y, to.z, 0.0, 0.03, 0.0);
         }
         // 炉の熱: 地表から白い火の粉と炎がゆっくり昇る。
-        int glows = (int) Math.min(4, Math.max(1, volume / 120.0));
+        int glows = particleCount(Math.min(4.0, Math.max(1.0, volume / 120.0)));
         for (int i = 0; i < glows; i++) {
             double x = overlap.minX + random.nextDouble() * overlap.getXsize();
             double z = overlap.minZ + random.nextDouble() * overlap.getZsize();

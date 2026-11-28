@@ -107,7 +107,7 @@ public class PsitweaksJeiPlugin implements IModPlugin {
 
     private static List<MaterialMutationJeiRecipe> getMaterialMutationJeiRecipes() {
         List<MaterialMutationJeiRecipe> recipes = new ArrayList<>();
-        for (Map.Entry<Block, ItemStack> entry : MaterialMutationRecipeHandler.getAllMutationOutputs().entrySet()) {
+        for (Map.Entry<Block, ItemStack> entry : MaterialMutationRecipeHandler.getClientMutationOutputs().entrySet()) {
             ItemStack output = entry.getValue();
             if (output.isEmpty()) {
                 continue;

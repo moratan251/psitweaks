@@ -159,7 +159,7 @@ public class EntityGravityZone extends SpellGramZone {
         }
         AABB box = getOutline();
         double volume = box.getXsize() * box.getYsize() * box.getZsize();
-        int streaks = (int) Math.min(MAX_STREAKS_PER_TICK, Math.max(1, volume / 200.0));
+        int streaks = particleCount(Math.min(MAX_STREAKS_PER_TICK, Math.max(1.0, volume / 200.0)));
         Vec3 velocity = direction.scale(0.25);
         for (int i = 0; i < streaks; i++) {
             double x = box.minX + random.nextDouble() * box.getXsize();

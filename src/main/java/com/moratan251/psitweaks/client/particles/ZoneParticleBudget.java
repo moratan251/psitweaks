@@ -4,7 +4,6 @@ import com.moratan251.psitweaks.client.config.PsitweaksClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 /**
@@ -25,8 +24,13 @@ public final class ZoneParticleBudget {
     static final double FAR_DENSITY = 0.3;
     /** ビデオ設定の「パーティクルの表示」が「少し」のときの倍率。 */
     static final double DECREASED_DENSITY = 0.5;
+    /** Minecraft がカメラからこれより遠い粒を出さない距離（ブロック）。 */
+    static final double PARTICLE_RANGE = 32.0;
 
-    /** 割合を決めた tick（ゲーム内時刻）。 */
+    /**
+     * 割合を決めた tick（クライアントの tick の数、{@code LevelRenderer#getTicks}）。ゲーム内時刻はサーバーからの補正で
+     * 飛ぶので使わない（飛ぶと前の tick の数を捨て、その tick だけ上限が外れる）。
+     */
     private static long tick = Long.MIN_VALUE;
     /** この tick に、すべての領域が出そうとした粒の数（距離で減らしたあと、上限で減らす前）。 */
     private static double requested;
@@ -55,9 +59,15 @@ public final class ZoneParticleBudget {
         return Mth.lerp((distance - NEAR_DISTANCE) / (FAR_DISTANCE - NEAR_DISTANCE), 1.0, FAR_DENSITY);
     }
 
+    /** 範囲 {@code box} が、カメラから粒の見える距離（{@link #PARTICLE_RANGE}）の中にかかっているか。 */
+    public static boolean isWithinParticleRange(AABB box) {
+        Minecraft minecraft = Minecraft.getInstance();
+        return box.distanceToSqr(minecraft.gameRenderer.getMainCamera().getPosition()) <= PARTICLE_RANGE * PARTICLE_RANGE;
+    }
+
     /** この tick の、すべての領域に共通の倍率: 上限による倍率 ×「パーティクルの表示」による倍率。 */
-    public static double sharedFactor(Level level) {
-        rollover(level);
+    public static double sharedFactor() {
+        rollover();
         double setting = Minecraft.getInstance().options.particles().get() == ParticleStatus.DECREASED ? DECREASED_DENSITY : 1.0;
         return limitScale * setting;
     }
@@ -68,8 +78,8 @@ public final class ZoneParticleBudget {
     }
 
     /** tick が変わったら、前の tick に出そうとした数から上限による倍率を決め直す。 */
-    private static void rollover(Level level) {
-        long now = level.getGameTime();
+    private static void rollover() {
+        long now = Minecraft.getInstance().levelRenderer.getTicks();
         if (now == tick) {
             return;
         }
