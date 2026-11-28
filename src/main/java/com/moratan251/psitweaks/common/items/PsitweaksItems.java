@@ -270,7 +270,7 @@ public final class PsitweaksItems {
     );
     public static final DeferredItem<Item> DIMENSIONAL_CRYSTAL = ITEMS.registerSimpleItem(
             "dimensional_crystal",
-            new Item.Properties()
+            new Item.Properties().component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
     public static final DeferredItem<Item> HYPOSTASIS_GEM = ITEMS.registerSimpleItem(
             "hypostasis_gem",

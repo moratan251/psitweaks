@@ -1,0 +1,17 @@
+{
+  "name": "item.psitweaks.cad_battery_reactive",
+  "category": "psi:components",
+  "icon": "psitweaks:cad_battery_reactive",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.cad_battery_reactive",
+      "item": "psitweaks:cad_battery_reactive",
+      "link_recipe": true
+    },
+    {
+      "type": "crafting",
+      "recipe": "psitweaks:cad_battery_reactive"
+    }
+  ]
+}

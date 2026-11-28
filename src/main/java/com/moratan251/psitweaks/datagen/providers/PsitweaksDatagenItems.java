@@ -22,7 +22,7 @@ final class PsitweaksDatagenItems {
             item("enriched_psigem", "Enriched Psigem", "濃縮サイジェム"),
             item("enriched_ebony", "Enriched Ebony", "濃縮エボニー"),
             item("enriched_ivory", "Enriched Ivory", "濃縮アイボリー"),
-            item("enriched_echo", "Enriched Echo", "濃縮エコー "),
+            item("enriched_echo", "Enriched Echo", "濃縮エコー"),
             item("psionic_factor", "Psionic Factor", "サイオニック因子"),
             item("psionic_factor_ivory", "Ivory Psionic Factor", "偏陽サイオニック因子"),
             item("psionic_factor_ebony", "Ebony Psionic Factor", "偏陰サイオニック因子"),

@@ -1,0 +1,17 @@
+{
+  "name": "item.psitweaks.cad_core_absorptive",
+  "category": "psi:components",
+  "icon": "psitweaks:cad_core_absorptive",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.cad_core_absorptive",
+      "item": "psitweaks:cad_core_absorptive",
+      "link_recipe": true
+    },
+    {
+      "type": "crafting",
+      "recipe": "psitweaks:cad_core_absorptive"
+    }
+  ]
+}

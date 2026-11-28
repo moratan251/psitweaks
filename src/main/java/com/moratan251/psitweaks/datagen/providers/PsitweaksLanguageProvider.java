@@ -1277,8 +1277,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "Removes non-beneficial effects from the target entity. Use it when you want to cleanse harmful effects while leaving allied buffs intact."},
             {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "Creates an explosion that deals damage without destroying blocks. Dropped items and experience orbs are not erased by the blast."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively."},
-            {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "Freezes the target block one stage. Water becomes ice, ice becomes packed ice, packed ice becomes blue ice, lava becomes magma block, and magma block becomes obsidian."},
-            {"psi.book.page.psitweaks_spellpiece.trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2)."},
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "Breaks specific blocks and transmutes them into other items. The Material Mutator can perform this process using power and Vaporized Psionic Echo."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "Melts the target block one stage. Ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma block; and magma block becomes lava."},
@@ -1381,8 +1379,6 @@ public class PsitweaksLanguageProvider implements DataProvider {
             {"psi.book.page.psitweaks_spellpiece.trick_dispel_non_beneficial", "対象エンティティから有益でないエフェクトを除去します. 味方のバフを残したまま悪性効果を消したい時に使います."},
             {"psi.book.page.psitweaks_spellpiece.trick_explode_no_destroy", "ブロックを破壊しない爆発を起こしてダメージを与えます. ドロップアイテムや経験値オーブは爆発で消滅しません."},
             {"psi.book.page.psitweaks_spellpiece.trick_flight", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です."},
-            {"psi.book.page.psitweaks_spellpiece.trick_freeze_block", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります."},
-            {"psi.book.page.psitweaks_spellpiece.trick_hardening", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます."},
             {"psi.book.page.psitweaks_spellpiece.trick_interact_block", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します."},
             {"psi.book.page.psitweaks_spellpiece.trick_material_mutation", "特定のブロックを破壊して別のアイテムへ変成させます. 物質変成機はこの処理を電力と気化サイオニックエコーで実行できます."},
             {"psi.book.page.psitweaks_spellpiece.trick_melt_block", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります."},
@@ -2317,7 +2313,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
         addBookPage(root, "selector_barrier_amount",
                 "Outputs the shield points the target's $(thing)Trick: Barrier$(0) has left, as a Number. It outputs 0 when the target has no shield or is not a living entity.",
                 "対象の $(thing)作動式: 障壁$(0) のシールド残量を Number として出力します. 対象にシールドがないときや, 生物でないときは 0 を出力します.");
-        addBookPage(root, "trick_hardening", "Applies a hardening effect that limits large incoming damage to a fixed value. Maximum damage taken is capped at (level - 2).", "大きな被ダメージを一定値まで抑える硬化効果を付与します. 受ける最大ダメージを(レベル - 2)に抑えます.");
+        addBookPage(root, "trick_hardening", "Gives the target Hardening for the Time in seconds. A single hit deals at most $(thing)12 - 2 × Power$(0) damage, or 1 at Power 6 and above.$(p)It caps damage that armor reduces, plus falling and flying into a wall with an elytra. Poison, magic, /kill and similar damage are not capped.", "対象に硬化の効果を「時間」秒間与えます. 一撃で受けるダメージは $(thing)12 - 2×威力$(0) までになり, 威力6以上では1までです.$(p)抑えるのは防具で減るダメージと, 落下やエリトラでの衝突のダメージです. 毒や魔法, /kill などは抑えられません.");
         addBookPage(root, "trick_parade.0",
                 "Projects a decoy image of the caster $(thing)Number$(0) blocks ahead (0 on the spot, negative for behind, max 16) for $(thing)Time$(0) seconds (max 240 s). It passes through blocks, follows your movement and facing, and is replaced on recast.$(p)Connecting optional $(thing)Direction$(0) fixes the offset along that direction (including vertically).",
                 "術者の前方 $(thing)数値$(0) ブロック (0ならその場, 負なら後方, 最大16) に術者そっくりの虚像を $(thing)時間$(0) 秒間 (最大240秒) 映します. 虚像は地形をすり抜けて移動と向きに追従し, 再詠唱で入れ替わります.$(p)任意の $(thing)方向$(0) を指定すると, 上下を含めその方向へ配置を固定できます.");
@@ -2326,7 +2322,7 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "虚像がある間, 敵対生物は虚像を狙い, 術者への流れ弾も $(thing)60%% + 5%%×|数値|$(0) (最大95%%) の確率で回避します. 他プレイヤー (味方を除く) からは術者が見えなくなり, 術者を狙った術式も虚像に向かいます.$(p)虚像は$(l:psitweaks/spellgram_objects)常駐魔法式$(/l)で, 耐久値は $(thing)時間×事象干渉力$(0) です. 攻撃を受けるたび2減少します. 自律詠唱機では無効です.");
         addBookPage(root, "trick_flight", "Applies the Flight effect to the target. The Flight effect enables creative flight but consumes Psi every 0.5 seconds. The amount consumed varies based on the Flight effect level, the efficiency of the CAD used to apply the effect, and the spell bullet's cost multiplier. The base consumption at effect levels 1, 2, 3, 4, and 5 or higher is 1000 / 750 / 500 / 250 / 5 Psi every 0.5 seconds, respectively.", "対象に飛行エフェクトを付与します. 飛行エフェクトはクリエイティブ飛行を可能にしますが, 0.5秒ごとにPsiを消費します. 消費量は飛行エフェクトのレベル, 付与したCADの効率, 術式弾のコスト倍率によって変動し, エフェクトレベルが 1/2/3/4/5以上の際の基本消費量は 0.5秒ごとに 1000 / 750 / 500 / 250 / 5 です.");
         addBookPage(root, "trick_interact_block", "Acts on the target block as if right-clicked with the item in the caster's off hand.", "対象ブロックに対して, 術者のオフハンドのアイテムで右クリックしたように作用します.");
-        addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります.");
+        addBookPage(root, "trick_freeze_block", "Freezes the target block one step: water to ice, ice to packed ice, packed ice to blue ice, lava to magma block, and magma block to obsidian. Flowing water and lava do not freeze.", "対象ブロックを1段階凍結させます. 水は氷, 氷は氷塊, 氷塊は青氷, 溶岩はマグマブロック, マグマブロックは黒曜石になります. 流れている水と溶岩は凍りません.");
         addBookPage(root, "trick_melt_block", "Melts the target block one step: ice, packed ice, and blue ice become water; obsidian, stone-like blocks, and cobblestone-like blocks become magma blocks; magma blocks become lava.", "対象ブロックを1段階溶解させます. 氷, 氷塊, 青氷は水に, 黒曜石, 石系, 丸石系はマグマブロックに, マグマブロックは溶岩になります.");
         addBookPage(root, "trick_pulsar", "Generates a magical Pulsar block at Position. The block emits a redstone signal with strength 15 in every direction and glows in the color of the caster's CAD. If Time is positive, it disappears after that many ticks; if Time is omitted or zero or less, it remains until broken.", "位置に魔法パルサーブロックを生成します. ブロックは全方向へ強度15のレッドストーン信号を出力し, 術者のCADの色で輝きます. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります.");
         addBookPage(root, "trick_pulsar_sequence", "Constructs solid Pulsars in a straight line from Position in the direction of Target. The number generated is limited by the lesser of the length of the Target vector and Max. Each Pulsar emits a redstone signal with strength 15. If Time is positive, they disappear after that many ticks; if Time is omitted or zero or less, they remain until broken.", "位置を始点として, 対象の方向へ固体のパルサーを直線状に構築します. 生成数は対象ベクトルの長さと最大数の小さい方までです. 各パルサーは強度15のレッドストーン信号を出力します. 時間に正の値を指定するとそのtick数後に消滅し, 未指定または0以下では破壊されるまで残ります.");
@@ -2644,8 +2640,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("message.psitweaks.zone_receiver.on", japanese ? "領域受電器: 入" : "Zone Receiver: On");
         root.addProperty("message.psitweaks.zone_receiver.off", japanese ? "領域受電器: 切" : "Zone Receiver: Off");
         root.addProperty("tooltip.psitweaks.zone_receiver.effect", japanese
-                ? "持っていると, 荷電領域の中で持ち物の FE を受け取るアイテムに給電されます"
-                : "While carried, Charged Zones send FE to the items you carry that take FE");
+                ? "持つか Curios スロットに付けると, 荷電領域の中で持ち物の FE を受け取るアイテムに給電されます"
+                : "While carried or worn in a Curios slot, Charged Zones send FE to the items you carry that take FE");
         root.addProperty("tooltip.psitweaks.zone_receiver.toggle", japanese
                 ? "右クリックで入と切を切り替えます"
                 : "Right-click to switch it on or off");
@@ -2697,6 +2693,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
             case "ja_jp" -> "術式をコンパイルできません";
             default -> "The spell cannot be compiled.";
         });
+        root.addProperty("message.psitweaks.dimensional_crystal.obtained", switch (locale) {
+            case "ja_jp" -> "術式から %s が生まれました";
+            default -> "A %s formed from your spell.";
+        });
         root.addProperty("psi.book.page.psitweaks_item.portable_spell_programmer.0", switch (locale) {
             case "ja_jp" -> "手持ちで使える魔法構築機です. 右クリックすると, 魔法構築機と同じスペルプログラム画面を開くことができます.";
             default -> "A handheld Spell Programmer. Right-click to open the same spell programming screen as the Spell Programmer.";
@@ -2744,6 +2744,30 @@ public class PsitweaksLanguageProvider implements DataProvider {
         root.addProperty("psi.book.page.psitweaks_item.tunneler.0", switch (locale) {
             case "ja_jp" -> "$(item)トンネラー$(0) は, $(item)グラヴストリンガー$(0) の専用弾です. ブロックを貫通し, 防御力や耐性も無効化します. 射手自身には命中しません.$(p)矢はmobに命中しても消滅せず貫通し, 同じmobには1秒のクールタイム後に再度命中します.";
             default -> "The $(item)Tunneler$(0) is the dedicated ammunition of the $(item)Gravstringer$(0). It pierces through blocks and nullifies armor and resistances. It never strikes its shooter.$(p)The arrow pierces through mobs instead of disappearing, striking the same target again after a 1-second cooldown.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.psimetal_bow.0", switch (locale) {
+            case "ja_jp" -> "$(item)サイメタルの弓$(0) は術式弾を3つまで装填できる弓です. 矢を放つたびに, 選んだ術式弾の術式を詠唱します.$(p)詠唱には持ち物の CAD を使います. Psi が半分より多いあいだは, Psi を使って耐久値が少しずつ回復します.";
+            default -> "The $(item)Psimetal Bow$(0) holds up to three spell bullets. Each arrow you shoot casts the spell of the selected bullet.$(p)Casting uses the CAD in your inventory. While your Psi is above half, the bow slowly repairs itself with Psi.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.psimetal_bow.1", switch (locale) {
+            case "ja_jp" -> "術式弾は $(l:basics/cad_assembler)CAD組立機$(/l) で装填し, $(k:psimisc.keybind) を押しながら選びます.$(p)$(item)発射型術式弾$(0) の術式は矢に乗って飛び, 当たった場所で発動します. 生物に当たると, その生物が $(piece)取得子: 攻撃対象$(0) になります.$(p)$(item)榴弾型術式弾$(0) など弾として飛ぶ術式も矢に乗ります. 発動の決まりは CAD で撃ったときと同じです.";
+            default -> "Load bullets in a $(l:basics/cad_assembler)CAD Assembler$(/l) and pick one while holding $(k:psimisc.keybind).$(p)A $(item)Projectile Spell Bullet$(0)'s spell rides the arrow and goes off where it lands. If the arrow hits a creature, that creature becomes the $(piece)Selector: Attack Target$(0).$(p)Other spells that fly, such as a $(item)Grenade Spell Bullet$(0)'s, also ride the arrow. They go off by the same rules as when cast from a CAD.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.cad_core_absorptive", switch (locale) {
+            case "ja_jp" -> "$(item)吸収性CADコア$(0) は $(item)放射性CADコア$(0) を強化したコアです. 作動量は 10 で, 複雑性は 46 です.$(p)作動量が多く, 一度に多くの作動式を使う術式に向きます.";
+            default -> "The $(item)Absorptive CAD Core$(0) is an improved $(item)Radiative CAD Core$(0). It has 10 Projection and 46 Complexity.$(p)Its high Projection suits spells that use many tricks at once.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.cad_core_ultraclocked", switch (locale) {
+            case "ja_jp" -> "$(item)ウルトラクロックCADコア$(0) は $(item)ハイパークロックCADコア$(0) を強化したコアです. 作動量は 9 で, 複雑性は 54 です.$(p)複雑性が高く, ステップ数の多い術式に向きます.";
+            default -> "The $(item)Ultraclocked CAD Core$(0) is an improved $(item)Hyperclocked CAD Core$(0). It has 9 Projection and 54 Complexity.$(p)Its high Complexity suits spells with many steps.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.cad_battery_reactive", switch (locale) {
+            case "ja_jp" -> "$(item)反応式CADバッテリー$(0) は $(item)過密CADバッテリー$(0) から作るバッテリーです. 容量は 1000 です.$(p)このバッテリーを付けた CAD を持っていると, Psi再生速度が 10 上がります.";
+            default -> "The $(item)Reactive CAD Battery$(0) is made from an $(item)Ultradense CAD Battery$(0). It has 1000 Overflow.$(p)While you carry a CAD with this battery, your Psi Regen rises by 10.";
+        });
+        root.addProperty("psi.book.page.psitweaks_item.cad_battery_quantum", switch (locale) {
+            case "ja_jp" -> "$(item)量子CADバッテリー$(0) は $(item)過密CADバッテリー$(0) から作るバッテリーです. 容量は 1500 です.$(p)このバッテリーを付けた CAD を持っていると, 最大Psi が 1500 上がります.";
+            default -> "The $(item)Quantum CAD Battery$(0) is made from an $(item)Ultradense CAD Battery$(0). It has 1500 Overflow.$(p)While you carry a CAD with this battery, your Max Psi rises by 1500.";
         });
     }
 
@@ -3265,8 +3289,8 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "サイジェムを手に入れて, Psi のその先へ進む");
         addAdvancement(root, "alloy_psion_pickup", "Artificial Neuron", "Obtain your first Psionic Alloy",
                 "人工ニューロン", "サイオニック合金を初めて手に入れる");
-        addAdvancement(root, "alloy_psion_assembly_pickup", "Lightweight Champion", "Craft a Psionic Alloy CAD Assembly",
-                "効率特化", "サイオニック合金のCAD素体を作る");
+        addAdvancement(root, "alloy_psion_assembly_pickup", "Potency Considered Harmful", "Craft a Psionic Alloy CAD Assembly",
+                "規模は有害とみなされる", "サイオニック合金のCAD素体を作る");
         addAdvancement(root, "psionic_control_circuit_pickup", "Perceptron", "Craft a Psionic Control Circuit",
                 "パーセプトロン", "サイオニック制御回路を作る");
         // Mekanism only
@@ -3289,10 +3313,10 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "深層へ", "サイオニック合金にサイオニックエコーを注入する");
         addAdvancement(root, "echo_control_circuit_pickup", "Turing Test", "Craft an Echo Control Circuit",
                 "チューリングテスト", "感応制御回路を作る");
-        addAdvancement(root, "heavy_psimetal_pickup", "Askesis", "Combine echo-infused Netherite Scrap with Flashmetal",
-                "アスケーシス", "サイオニックエコーを注入したネザライトの欠片とフラッシュメタルを合わせる");
-        addAdvancement(root, "heavy_psimetal_assembly_pickup", "Hexis", "Craft a Heavy Psimetal CAD Assembly, α or β",
-                "ヘクシス", "ヘビーサイメタルのCAD素体を α型か β型で作る");
+        addAdvancement(root, "heavy_psimetal_pickup", "The Heavy Lesson", "Combine echo-infused Netherite Scrap with Flashmetal",
+                "重い教訓", "サイオニックエコーを注入したネザライトの欠片とフラッシュメタルを合わせる");
+        addAdvancement(root, "heavy_psimetal_assembly_pickup", "More Is Different", "Craft a Heavy Psimetal CAD Assembly, α or β",
+                "多は異なり", "ヘビーサイメタルのCAD素体を α型か β型で作る");
         addAdvancement(root, "antinite_pickup", "Antithesis", "Mine Antinite Ore on the outer End islands",
                 "アンチテーゼ", "ジ・エンドの外側の島でアンティナイト鉱石を掘る");
         addAdvancement(root, "hypostasis_gem_pickup", "Tabula Rasa", "Research Trick: Material Mutation and use it on a Block of Antinite",
@@ -3308,6 +3332,11 @@ public class PsitweaksLanguageProvider implements DataProvider {
                 "汎心論", "ヘビーサイメタルにヒュポスタシスを注入し, ナゲットからインゴットを作る");
         addAdvancement(root, "psycheonic_metal_assembly_pickup", "Entelechy", "Craft a Psycheonic Metal CAD Assembly",
                 "エンテレケイア", "プシオニックメタルのCAD素体を作る");
+        addAdvancement(root, "transcendent_spell_bullet_pickup", "Yes, Silver Bullet", "Craft any Transcendent Spell Bullet",
+                "銀の弾はある", "いずれかの超越術式弾を作る");
+        // Hidden
+        addAdvancement(root, "dimensional_crystal_from_cast", "Hallucination", "Obtain a Dimensional Crystal by casting a spell",
+                "ハルシネーション", "術式の詠唱で次元の結晶を手に入れる");
 
         // Psi ships no Japanese for its own tab, so only ja_jp gets these; English stays Psi's.
         if ("ja_jp".equals(locale)) {

@@ -1,0 +1,17 @@
+{
+  "name": "item.psitweaks.cad_core_ultraclocked",
+  "category": "psi:components",
+  "icon": "psitweaks:cad_core_ultraclocked",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.cad_core_ultraclocked",
+      "item": "psitweaks:cad_core_ultraclocked",
+      "link_recipe": true
+    },
+    {
+      "type": "crafting",
+      "recipe": "psitweaks:cad_core_ultraclocked"
+    }
+  ]
+}

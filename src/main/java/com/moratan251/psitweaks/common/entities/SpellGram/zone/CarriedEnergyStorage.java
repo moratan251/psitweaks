@@ -1,5 +1,6 @@
 package com.moratan251.psitweaks.common.entities.SpellGram.zone;
 
+import com.moratan251.psitweaks.common.items.CarriedItems;
 import com.moratan251.psitweaks.common.items.ItemZoneReceiver;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * プレイヤー 1 人の持ち物の FE アイテムをまとめた、荷電領域の受け手 1 つぶんの窓口。受け取った FE を、防具 → 選んでいるメインハンド →
- * オフハンド → 残りの持ち物の順に詰める。引き出しはできない。作った時点で満タンのアイテムは含めない。
+ * オフハンド → 残りの持ち物 → Curios のスロットの順に詰める。引き出しはできない。作った時点で満タンのアイテムは含めない。
  */
 public final class CarriedEnergyStorage implements IEnergyStorage {
     private final List<IEnergyStorage> storages;
@@ -37,6 +38,7 @@ public final class CarriedEnergyStorage implements IEnergyStorage {
                 addStorage(storages, inventory.items.get(i));
             }
         }
+        CarriedItems.curios(player).forEach(stack -> addStorage(storages, stack));
         return storages.isEmpty() ? null : new CarriedEnergyStorage(storages);
     }
 

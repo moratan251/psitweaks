@@ -1,0 +1,27 @@
+{
+  "parent": "psitweaks:main/root",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:dimensional_crystal_from_cast.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:dimensional_crystal"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:dimensional_crystal_from_cast"
+    }
+  },
+  "requirements": [
+    [
+      "code_triggered"
+    ]
+  ]
+}

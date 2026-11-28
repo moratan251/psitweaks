@@ -1,0 +1,40 @@
+{
+  "parent": "psitweaks:main/psycheonic_metal_pickup",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "psitweaks:transcendent_spell_bullet",
+              "psitweaks:transcendent_spell_bullet_loop",
+              "psitweaks:transcendent_spell_bullet_mine",
+              "psitweaks:transcendent_spell_bullet_charge",
+              "psitweaks:transcendent_spell_bullet_grenade",
+              "psitweaks:transcendent_spell_bullet_projectile",
+              "psitweaks:transcendent_spell_bullet_circle"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.psitweaks:transcendent_spell_bullet_pickup.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "psitweaks:transcendent_spell_bullet"
+    },
+    "title": {
+      "translate": "advancement.psitweaks:transcendent_spell_bullet_pickup"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

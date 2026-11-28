@@ -15,7 +15,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 /**
- * 領域受電器。持ち物のどこか（防具・オフハンドも含む）に「入」のものがあるプレイヤーだけが、荷電領域の受け手になる。
+ * 領域受電器。持ち物（防具・オフハンドも含む）か Curios のスロットのどこかに「入」のものがあるプレイヤーだけが、荷電領域の受け手になる。
  * 右クリックで入と切を切り替える。入のときはエンチャントの光を出す。
  */
 public class ItemZoneReceiver extends Item {
@@ -32,16 +32,24 @@ public class ItemZoneReceiver extends Item {
         stack.set(PsitweaksDataComponents.ZONE_RECEIVER_ENABLED.get(), enabled);
     }
 
-    /** {@code player} の持ち物のどこかに、入の領域受電器があるか。 */
+    /** {@code player} の持ち物か Curios のスロットのどこかに、入の領域受電器があるか。 */
     public static boolean isCarriedBy(Player player) {
         Inventory inventory = player.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stack = inventory.getItem(i);
-            if (stack.getItem() instanceof ItemZoneReceiver && isEnabled(stack)) {
+            if (isEnabledReceiver(inventory.getItem(i))) {
+                return true;
+            }
+        }
+        for (ItemStack stack : CarriedItems.curios(player)) {
+            if (isEnabledReceiver(stack)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static boolean isEnabledReceiver(ItemStack stack) {
+        return stack.getItem() instanceof ItemZoneReceiver && isEnabled(stack);
     }
 
     @Override

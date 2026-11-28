@@ -1,0 +1,21 @@
+{
+  "name": "item.psitweaks.psimetal_bow",
+  "category": "psi:items",
+  "icon": "psitweaks:psimetal_bow",
+  "pages": [
+    {
+      "type": "spotlight",
+      "text": "psi.book.page.psitweaks_item.psimetal_bow.0",
+      "item": "psitweaks:psimetal_bow",
+      "link_recipe": true
+    },
+    {
+      "type": "text",
+      "text": "psi.book.page.psitweaks_item.psimetal_bow.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "psitweaks:psimetal_bow"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import com.moratan251.psitweaks.common.entities.SpellGram.zone.EntityTurbulenceZ
 import com.moratan251.psitweaks.common.entities.SpellGram.zone.SpellGramZone;
 import com.moratan251.psitweaks.common.items.ItemZoneReceiver;
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import com.moratan251.psitweaks.common.items.curios.CuriosSlotChecker;
 import com.moratan251.psitweaks.common.spells.PsitweaksSpellParams;
 import com.moratan251.psitweaks.common.spells.combat.CombatStatuses;
 import com.moratan251.psitweaks.common.spells.spellpiece.trick.PieceTrickChargedZone;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -44,6 +46,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.psi.api.spell.Spell;
 import vazkii.psi.api.spell.SpellContext;
 import vazkii.psi.api.spell.SpellParam;
@@ -482,6 +485,46 @@ public final class ChargedZoneGameTests {
                 }
             }
             helper.assertTrue(CarriedEnergyStorage.of(player) == null, "A player whose FE items are all full must not be a receiver");
+            helper.succeed();
+        } finally {
+            GameTestPlayers.remove(helper, player);
+        }
+    }
+
+    /** Curios のスロットに付けた受電器も効き、Curios のスロットの FE アイテムにも持ち物のあとで給電する。 */
+    @GameTest(template = TEMPLATE, batch = "psitweaks_charged_curios_receiver", timeoutTicks = 40)
+    public static void zoneReceiverWorksFromCurios(GameTestHelper helper) {
+        ServerPlayer player = GameTestPlayers.inLevel(helper, "charged_curios_receiver", new Vec3(1.5, 1.0, 1.5));
+        try {
+            ItemStack receiver = new ItemStack(PsitweaksItems.ZONE_RECEIVER.get());
+            helper.assertTrue(receiver.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "curio"))),
+                    "The Zone Receiver must be in curios:curio so tag-validated Curios slots accept it");
+            var curios = CuriosApi.getCuriosInventory(player).orElseThrow();
+            curios.setEquippedCurio(CuriosSlotChecker.MAGIC_CALCULATION_AREA, 3, receiver);
+            helper.assertTrue(ItemZoneReceiver.isCarriedBy(player), "A receiver in a Curios slot must count");
+            ItemStack equipped = CuriosSlotChecker.getItemFromSelectedMagicSlot(player, 3);
+            ItemZoneReceiver.setEnabled(equipped, false);
+            helper.assertTrue(!ItemZoneReceiver.isCarriedBy(player), "A switched-off receiver in a Curios slot must not count");
+            ItemZoneReceiver.setEnabled(equipped, true);
+
+            Item tablet = ModList.get().isLoaded("mekanism") ? item("mekanism:energy_tablet") : null;
+            if (tablet != null) {
+                helper.assertTrue(CarriedEnergyStorage.of(player) == null, "A player with no FE item must not be a receiver");
+                ItemStack curioTablet = new ItemStack(tablet);
+                curios.setEquippedCurio(CuriosSlotChecker.MAGIC_CALCULATION_AREA, 0, curioTablet);
+                ItemStack equippedTablet = CuriosSlotChecker.getItemFromSelectedMagicSlot(player, 0);
+                CarriedEnergyStorage storage = CarriedEnergyStorage.of(player);
+                helper.assertTrue(storage != null && storage.receiveEnergy(100, false) > 0 && stored(equippedTablet) > 0,
+                        "An FE item in a Curios slot must take FE");
+
+                ItemStack backpackTablet = new ItemStack(tablet);
+                player.getInventory().setItem(BACKPACK_SLOT, backpackTablet);
+                int curioBefore = stored(equippedTablet);
+                storage = CarriedEnergyStorage.of(player);
+                helper.assertTrue(storage != null && storage.receiveEnergy(100, false) > 0, "The inventory tablet must take FE");
+                helper.assertTrue(stored(backpackTablet) > 0 && stored(equippedTablet) == curioBefore,
+                        "The inventory must fill before the Curios slots");
+            }
             helper.succeed();
         } finally {
             GameTestPlayers.remove(helper, player);

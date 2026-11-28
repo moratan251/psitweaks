@@ -10,6 +10,8 @@ public final class PsitweaksAdvancements {
     public static final String CODE_TRIGGERED = "code_triggered";
     /** Hidden: Trick: Phonon Maser lit a Fusion Reactor. Loads only with Mekanism Generators. */
     public static final ResourceLocation PHONON_MASER_FUSION_IGNITION = Psitweaks.location("main/phonon_maser_fusion_ignition");
+    /** Hidden: a cast yielded a Dimensional Crystal (DimensionalCrystalDropHandler). */
+    public static final ResourceLocation DIMENSIONAL_CRYSTAL_FROM_CAST = Psitweaks.location("main/dimensional_crystal_from_cast");
 
     private PsitweaksAdvancements() {
     }

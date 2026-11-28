@@ -41,6 +41,17 @@ public final class CarriedItems {
     }
 
     private static void collectCurios(Player player, Predicate<ItemStack> matches, List<ItemStack> found, Set<ItemStack> seen) {
+        for (ItemStack stack : curios(player)) {
+            add(matches, found, seen, stack);
+        }
+    }
+
+    /**
+     * The stacks in the player's active Curios slots, in Curios' slot order (empty stacks included). The returned stacks are
+     * the live stacks, not copies.
+     */
+    public static List<ItemStack> curios(Player player) {
+        List<ItemStack> stacks = new ArrayList<>();
         CuriosApi.getCuriosInventory(player).ifPresent(curios -> {
             List<Map.Entry<String, ICurioStacksHandler>> handlers = new ArrayList<>(curios.getCurios().entrySet());
             // The map order is not guaranteed to match between server and client; sort like the Curios screen does.
@@ -54,10 +65,11 @@ public final class CarriedItems {
                     if (slot < activeStates.size() && !activeStates.get(slot)) {
                         continue;
                     }
-                    add(matches, found, seen, handler.getStacks().getStackInSlot(slot));
+                    stacks.add(handler.getStacks().getStackInSlot(slot));
                 }
             }
         });
+        return stacks;
     }
 
     private static int slotOrder(Player player, String identifier) {

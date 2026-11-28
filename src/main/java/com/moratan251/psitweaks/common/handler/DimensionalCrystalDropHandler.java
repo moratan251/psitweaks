@@ -1,6 +1,11 @@
 package com.moratan251.psitweaks.common.handler;
 
 import com.moratan251.psitweaks.common.items.PsitweaksItems;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import vazkii.psi.api.spell.PreSpellCastEvent;
@@ -8,11 +13,11 @@ import vazkii.psi.api.spell.SpellCastEvent;
 import vazkii.psi.api.spell.SpellContext;
 
 public final class DimensionalCrystalDropHandler {
-    // Test-friendly tuning constants; adjust later.
     // Drop chance = min(MAX_CHANCE, consumedPsi * CHANCE_PER_PSI).
-    private static final float CHANCE_PER_PSI = 0.00001F;
+    private static final float CHANCE_PER_PSI = 0.000001F;
     private static final float MAX_CHANCE = 1.0F;
     private static final String COST_CONTEXT_KEY = "psitweaks:dimensional_crystal_cost";
+    private static final String OBTAINED_MESSAGE = "message.psitweaks.dimensional_crystal.obtained";
 
     private DimensionalCrystalDropHandler() {
     }
@@ -36,9 +41,24 @@ public final class DimensionalCrystalDropHandler {
         }
 
         ItemStack stack = new ItemStack(PsitweaksItems.DIMENSIONAL_CRYSTAL.get());
+        Component name = stack.getDisplayName();
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
         }
+        notifyObtained(player, name);
+        if (player instanceof ServerPlayer serverPlayer) {
+            PsitweaksAdvancements.award(serverPlayer, PsitweaksAdvancements.DIMENSIONAL_CRYSTAL_FROM_CAST);
+        }
+    }
+
+    /**
+     * Rings an amethyst chime for the caster alone and shows a message above their hotbar, since the crystal is rare and
+     * easy to miss.
+     */
+    private static void notifyObtained(Player player, Component crystalName) {
+        player.playNotifySound(SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.0F);
+        player.displayClientMessage(Component.translatable(OBTAINED_MESSAGE, crystalName)
+                .withStyle(ChatFormatting.LIGHT_PURPLE), true);
     }
 
     private static int getConsumedPsi(SpellContext context) {

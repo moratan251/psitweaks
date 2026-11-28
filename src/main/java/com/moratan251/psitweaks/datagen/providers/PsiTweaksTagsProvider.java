@@ -211,6 +211,10 @@ public class PsiTweaksTagsProvider implements DataProvider {
                 "minecraft:on_fire",
                 "minecraft:dry_out",
                 carbonPoisoning);
+        // Trick: Hardening caps damage that armor reduces, and these even though they bypass armor.
+        tag(tags, "psitweaks", "hardening_reduces",
+                "minecraft:fall",
+                "minecraft:fly_into_wall");
     }
 
     private static void addEntityTypeTags(Map<ResourceLocation, JsonObject> tags) {
@@ -293,8 +297,9 @@ public class PsiTweaksTagsProvider implements DataProvider {
         tag(tags, "minecraft", "enchantable/foot_armor", item(PsitweaksItems.MOVAL_SUIT_BOOTS));
         tag(tags, "minecraft", "enchantable/bow", item(PsitweaksItems.PSIMETAL_BOW), item(PsitweaksItems.GRAVSTRINGER));
         tag(tags, "curios", "charm", item(PsitweaksItems.FLASH_CHARM));
-        // curios:curio lets the card and the pouch go in any Curios slot that uses the tag validator.
-        tag(tags, "curios", "curio", item(PsitweaksItems.FILTER_CARD), item(PsitweaksItems.BLADE_POUCH));
+        // curios:curio lets the card, the pouch and the zone receiver go in any Curios slot that uses the tag validator.
+        tag(tags, "curios", "curio", item(PsitweaksItems.FILTER_CARD), item(PsitweaksItems.BLADE_POUCH),
+                item(PsitweaksItems.ZONE_RECEIVER));
         tag(tags, "curios", "magic_calculation_area",
                 item(PsitweaksItems.AUTO_CASTER_TICK),
                 item(PsitweaksItems.AUTO_CASTER_CUSTOM_TICK),

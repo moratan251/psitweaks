@@ -46,7 +46,9 @@ public final class AdvancementGameTests {
             Map.entry("alloy_hypostasis_pickup", "hypostasis_gem_pickup"),
             Map.entry("hypostasis_control_circuit_pickup", "alloy_hypostasis_pickup"),
             Map.entry("psycheonic_metal_pickup", "hypostasis_gem_pickup"),
-            Map.entry("psycheonic_metal_assembly_pickup", "psycheonic_metal_pickup"));
+            Map.entry("psycheonic_metal_assembly_pickup", "psycheonic_metal_pickup"),
+            Map.entry("transcendent_spell_bullet_pickup", "psycheonic_metal_pickup"),
+            Map.entry("dimensional_crystal_from_cast", "root"));
     /** Same as {@link #PARENTS}, for the advancements that load only with Mekanism. */
     private static final Map<String, String> MEKANISM_PARENTS = Map.of(
             "program_researcher_pickup", "psionic_control_circuit_pickup",
@@ -114,6 +116,41 @@ public final class AdvancementGameTests {
         helper.assertTrue(criteria.keySet().equals(Set.of(PsitweaksAdvancements.CODE_TRIGGERED))
                         && criteria.get(PsitweaksAdvancements.CODE_TRIGGERED).triggerInstance() instanceof ImpossibleTrigger.TriggerInstance,
                 "Fusion ignition must only be awarded from code, got " + criteria.keySet());
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void dimensionalCrystalAdvancementIsHiddenAndAwardedByCode(GameTestHelper helper) {
+        var holder = helper.getLevel().getServer().getAdvancements().get(PsitweaksAdvancements.DIMENSIONAL_CRYSTAL_FROM_CAST);
+        helper.assertTrue(holder != null, "Dimensional Crystal advancement is missing");
+        var display = holder.value().display();
+        helper.assertTrue(display.isPresent() && display.get().isHidden() && display.get().getType() == AdvancementType.CHALLENGE,
+                "Dimensional Crystal advancement must be a hidden challenge");
+        var criteria = holder.value().criteria();
+        // Holding a crystal from elsewhere must not complete it; only DimensionalCrystalDropHandler awards it.
+        helper.assertTrue(criteria.keySet().equals(Set.of(PsitweaksAdvancements.CODE_TRIGGERED))
+                        && criteria.get(PsitweaksAdvancements.CODE_TRIGGERED).triggerInstance() instanceof ImpossibleTrigger.TriggerInstance,
+                "Dimensional Crystal advancement must only be awarded from code, got " + criteria.keySet());
+        helper.succeed();
+    }
+
+    @GameTest(template = "psi110_empty")
+    public static void anyTranscendentBulletCompletesItsAdvancement(GameTestHelper helper) {
+        var holder = helper.getLevel().getServer().getAdvancements().get(Psitweaks.location("main/transcendent_spell_bullet_pickup"));
+        helper.assertTrue(holder != null, "Transcendent Spell Bullet advancement is missing");
+        var criteria = holder.value().criteria();
+        helper.assertTrue(criteria.size() == 1 && criteria.values().iterator().next().triggerInstance()
+                        instanceof InventoryChangeTrigger.TriggerInstance, "It must be one inventory_changed criterion");
+        var items = ((InventoryChangeTrigger.TriggerInstance) criteria.values().iterator().next().triggerInstance()).items();
+        helper.assertTrue(items.size() == 1, "It must have one item predicate (all of them are required), got " + items.size());
+        for (ItemLike bullet : new ItemLike[]{PsitweaksItems.TRANSCENDENT_SPELL_BULLET, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE}) {
+            helper.assertTrue(items.get(0).test(new ItemStack(bullet)), bullet.asItem() + " must complete the advancement");
+        }
+        helper.assertTrue(!items.get(0).test(new ItemStack(PsitweaksItems.SUBLIMATED_SPELL_BULLET.get())),
+                "A lower-tier bullet must not complete it");
         helper.succeed();
     }
 

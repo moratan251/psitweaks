@@ -80,16 +80,9 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
 
     /** Advancements about Mekanism Generators (which needs Mekanism). */
     private static void generateMekanismGeneratorsOnly(Consumer<AdvancementHolder> saver, AdvancementHolder programResearcher) {
-        // Hidden; awarded from code when Trick: Phonon Maser lights a Fusion Reactor (MekanismGeneratorsGameplayIntegration).
-        ResourceLocation id = PsitweaksAdvancements.PHONON_MASER_FUSION_IGNITION;
-        String key = "advancement.psitweaks:" + id.getPath().substring("main/".length());
-        new Advancement.Builder()
-                .parent(programResearcher)
-                .display(modItem(ResourceLocation.fromNamespaceAndPath("mekanismgenerators", "fusion_reactor_controller")),
-                        Component.translatable(key), Component.translatable(key + ".desc"),
-                        null, AdvancementType.CHALLENGE, true, true, true)
-                .addCriterion(PsitweaksAdvancements.CODE_TRIGGERED, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
-                .save(saver, id.toString());
+        // Awarded when Trick: Phonon Maser lights a Fusion Reactor (MekanismGeneratorsGameplayIntegration).
+        addHiddenChallenge(saver, PsitweaksAdvancements.PHONON_MASER_FUSION_IGNITION, programResearcher,
+                modItem(ResourceLocation.fromNamespaceAndPath("mekanismgenerators", "fusion_reactor_controller")));
     }
 
     /** Looked up by id so this class does not load other mods' classes; datagen runs with Psi, Mekanism and its Generators. */
@@ -127,6 +120,25 @@ public class PsitweaksAdvancementProvider extends AdvancementProvider {
         add(saver, "hypostasis_control_circuit_pickup", alloyHypostasis, PsitweaksItems.HYPOSTASIS_CONTROL_CIRCUIT);
         AdvancementHolder psycheonicMetal = add(saver, "psycheonic_metal_pickup", hypostasisGem, PsitweaksItems.PSYCHEONIC_METAL_INGOT);
         add(saver, "psycheonic_metal_assembly_pickup", psycheonicMetal, PsitweaksItems.CAD_ASSEMBLY_PSYCHEONIC_METAL);
+        add(saver, "transcendent_spell_bullet_pickup", psycheonicMetal,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_LOOP,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET_MINE, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CHARGE,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET_GRENADE, PsitweaksItems.TRANSCENDENT_SPELL_BULLET_PROJECTILE,
+                PsitweaksItems.TRANSCENDENT_SPELL_BULLET_CIRCLE);
+        // Off the material line. Awarded when a cast yields a Dimensional Crystal (DimensionalCrystalDropHandler).
+        addHiddenChallenge(saver, PsitweaksAdvancements.DIMENSIONAL_CRYSTAL_FROM_CAST, root, PsitweaksItems.DIMENSIONAL_CRYSTAL);
+    }
+
+    /** Saves a hidden challenge whose only criterion is {@link PsitweaksAdvancements#CODE_TRIGGERED}, so only code awards it. */
+    private static void addHiddenChallenge(Consumer<AdvancementHolder> saver, ResourceLocation id, AdvancementHolder parent,
+            ItemLike icon) {
+        String key = "advancement.psitweaks:" + id.getPath().substring("main/".length());
+        new Advancement.Builder()
+                .parent(parent)
+                .display(icon, Component.translatable(key), Component.translatable(key + ".desc"),
+                        null, AdvancementType.CHALLENGE, true, true, true)
+                .addCriterion(PsitweaksAdvancements.CODE_TRIGGERED, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+                .save(saver, id.toString());
     }
 
     /** Saves {@code psitweaks:main/<id>} as a task, completed by holding any one of {@code items}; the first is the icon. */

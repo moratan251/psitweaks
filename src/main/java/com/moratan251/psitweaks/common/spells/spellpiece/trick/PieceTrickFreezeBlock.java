@@ -70,7 +70,11 @@ public class PieceTrickFreezeBlock extends PieceTrick {
         return null;
     }
 
+    /** The next colder block, or null. Only source water and lava freeze, so a flowing stream can't be frozen block by block. */
     private static BlockState getFrozenState(BlockState state) {
+        if ((state.is(Blocks.WATER) || state.is(Blocks.LAVA)) && !state.getFluidState().isSource()) {
+            return null;
+        }
         if (state.is(Blocks.WATER)) {
             return Blocks.ICE.defaultBlockState();
         }

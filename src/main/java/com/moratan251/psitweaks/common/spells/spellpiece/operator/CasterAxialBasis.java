@@ -54,7 +54,8 @@ final class CasterAxialBasis {
     }
 
     /**
-     * 術者の通常レイキャストが命中した面を基準にする座標系。
+     * 術者の通常レイキャストが命中した面を基準にする座標系。レイキャストの長さは {@link SpellRange#reach} で、
+     * Psi のレイキャストのピースと同じく射程を延ばす装備で延びる。
      * 前はブロックの内側を向き、側面では上がワールド上方向になる。
      * 上下面では面内の回転を術者の水平向きから決める。
      * 同じ術式実行中は最初の命中結果を平行移動・回転の両方で共有する。
@@ -71,7 +72,7 @@ final class CasterAxialBasis {
                 context.caster,
                 origin,
                 look,
-                SpellRange.maxDistance(context.caster),
+                SpellRange.reach(context.caster, SpellContext.MAX_DISTANCE),
                 RaycastHelper.Mode.NORMAL
         );
         if (hit.getType() == HitResult.Type.MISS) {
