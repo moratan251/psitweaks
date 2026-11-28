@@ -45,6 +45,11 @@ public final class Parades {
      */
     public static final float INTEGRITY_PER_SECOND = 1.0F;
     /**
+     * The longest the image lasts, in seconds: a longer Time is taken as this, and Trick: Extend SpellGram restores the
+     * core's integrity up to what this many seconds would give, so the time left never goes past it either.
+     */
+    public static final int MAX_SECONDS = 240;
+    /**
      * The chance that an attack on the caster misses: the base, plus this much per block between the caster and the
      * image (the farther the false coordinates, the wider attacks go), up to the cap.
      */
@@ -85,8 +90,10 @@ public final class Parades {
         decoy.configure(caster, distance, CombatSpellHelper.spellColor(caster), fixedDirection);
         EntityParadeCore core = new EntityParadeCore(level);
         core.setCaster(caster);
-        core.setMaxIntegrity(integrityFor(caster, seconds));
-        core.setLifetimeTicks(Math.max(1, seconds) * 20);
+        int lasting = Math.min(MAX_SECONDS, Math.max(1, seconds));
+        core.setMaxIntegrity(integrityFor(caster, lasting));
+        core.setIntegrityCap(integrityFor(caster, MAX_SECONDS));
+        core.setLifetimeTicks(lasting * 20);
         core.setPlacementCost(placementCost);
         core.bind(decoy);
         decoy.bindCore(core);

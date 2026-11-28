@@ -558,8 +558,8 @@ public final class CombatSpellGameTests {
         int[] burst = stats(burst(Map.of(POWER, 1.0)));
         helper.assertTrue(burst[0] == 1240 && burst[1] == 700, "Burst P1: 1180+60P / 400+300P, got " + burst[0] + "/" + burst[1]);
         int[] parade = stats(parade(Map.of(NUMBER, -2.0, TIME, 30.0)));
-        helper.assertTrue(parade[0] == 640 && parade[1] == 1100,
-                "Parade N-2 T30: 300+10T+20|N| / 400+20T+50|N|, got " + parade[0] + "/" + parade[1]);
+        helper.assertTrue(parade[0] == 500 && parade[1] == 3150,
+                "Parade N-2 T30: 400+50|N| / T(75+15|N|), got " + parade[0] + "/" + parade[1]);
         int[] airBullet = stats(airBullet(Map.of(POWER, 1.0)));
         helper.assertTrue(airBullet[0] == 120 && airBullet[1] == 420, "Air Bullet P1, got " + airBullet[0] + "/" + airBullet[1]);
         int[] blades = stats(dancingBlades(Map.of()));
@@ -907,13 +907,13 @@ public final class CombatSpellGameTests {
         int[] none = stats(parade(Map.of(NUMBER, 0.0, TIME, 10.0)));
         int[] under = stats(parade(Map.of(NUMBER, -0.5, TIME, 10.0)));
         int[] fraction = stats(parade(Map.of(NUMBER, 2.7, TIME, 10.0)));
-        helper.assertTrue(none[1] == 400 + 200 && under[1] == 400 + 200 + 25 && fraction[0] == 300 + 100 + 54
-                        && fraction[1] == 400 + 200 + 135,
+        // Cost Time x (75 + 15 x |Number|), potency 400 + 50 x |Number|.
+        helper.assertTrue(none[1] == 10 * 75 && under[1] == 825 && fraction[0] == 400 + 135 && fraction[1] == 1155,
                 "Fractions of the Number must count toward the stats: " + none[1] + ", " + under[1] + ", "
                         + fraction[0] + "/" + fraction[1]);
         int[] farthest = stats(parade(Map.of(NUMBER, -16.0, TIME, 10.0)));
         int[] beyond = stats(parade(Map.of(NUMBER, -40.0, TIME, 10.0)));
-        helper.assertTrue(farthest[0] == beyond[0] && farthest[1] == beyond[1] && beyond[1] == 400 + 200 + 50 * 16,
+        helper.assertTrue(farthest[0] == beyond[0] && farthest[1] == beyond[1] && beyond[1] == 10 * (75 + 15 * 16),
                 "Beyond 16 blocks the cost must stay at 16 blocks': " + beyond[0] + "/" + beyond[1]);
         helper.assertTrue(PieceTrickParade.distance(40.0) == 16 && PieceTrickParade.distance(-17.5) == -16
                         && near(PieceTrickParade.distance(-2.7), -2.7) && PieceTrickParade.distance(Double.NaN) == 0.0,
@@ -1005,6 +1005,82 @@ public final class CombatSpellGameTests {
                     "Trick: Parade's shown " + stat + " must cap the Number without dropping its fraction, got " + label);
         }
         helper.succeed();
+    }
+
+    /** 仮装行列のコストは時間に比例し、規模は時間によらない（ほかの常駐魔法式と同じ）。 */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeCostFollowsTimeButItsPotencyDoesNot(GameTestHelper helper) throws Exception {
+        int[] brief = stats(parade(Map.of(NUMBER, 2.0, TIME, 10.0)));
+        int[] standard = stats(parade(Map.of(NUMBER, 2.0, TIME, 30.0)));
+        int[] longer = stats(parade(Map.of(NUMBER, 2.0, TIME, 60.0)));
+        helper.assertTrue(brief[0] == 500 && standard[0] == 500 && longer[0] == 500,
+                "Time must not change the potency: " + brief[0] + ", " + standard[0] + ", " + longer[0]);
+        helper.assertTrue(brief[1] == 1050 && standard[1] == 3150 && longer[1] == 6300,
+                "The cost must grow in proportion to Time: " + brief[1] + ", " + standard[1] + ", " + longer[1]);
+        helper.assertTrue(near(PieceTrickParade.costFor(30, 2.0), standard[1]) && near(PieceTrickParade.costFor(10, 2.0), brief[1]),
+                "The core's placement cost must be the cost shown");
+        helper.succeed();
+    }
+
+    /**
+     * 仮装行列は最大 240 秒もつ。時間は 240 で頭打ちになり、作動式: 魔法式延長で戻せるのも 240 秒ぶんの耐久値まで。延長で
+     * 増えた耐久値の最高は、そのあと耐久値が減っても耐久値のバーの最大に残る。
+     */
+    @GameTest(template = TEMPLATE, batch = BATCH)
+    public static void paradeLastsAtMostFourMinutesAndKeepsItsPeak(GameTestHelper helper) throws Exception {
+        helper.assertTrue(PieceTrickParade.seconds(300) == Parades.MAX_SECONDS && PieceTrickParade.seconds(0) == 1,
+                "Time must be taken as 1 to 240 seconds");
+        int[] longest = stats(parade(Map.of(NUMBER, 2.0, TIME, 240.0)));
+        int[] beyond = stats(parade(Map.of(NUMBER, 2.0, TIME, 300.0)));
+        helper.assertTrue(longest[1] == beyond[1] && beyond[1] == 240 * (75 + 15 * 2),
+                "Beyond 240 seconds the cost must stay at 240 seconds': " + longest[1] + " / " + beyond[1]);
+        var player = caster(helper, new BlockPos(2, 0, 2), "parade-longest");
+        var context = new SpellContext().setPlayer(player);
+        parade(Map.of(NUMBER, 2.0, TIME, 300.0)).execute(context);
+        EntityParadeDecoy longDecoy = Parades.activeDecoy(player);
+        EntityParadeCore longCore = longDecoy != null ? longDecoy.getCore() : null;
+        float fourMinutes = Parades.integrityFor(player, Parades.MAX_SECONDS);
+        helper.assertTrue(longCore != null && longCore.getLifetimeTicks() == Parades.MAX_SECONDS * 20
+                        && near(longCore.getMaxIntegrity(), fourMinutes) && near(longCore.getIntegrityCap(), fourMinutes),
+                "A Time of 300 must last 240 seconds");
+
+        parade(Map.of(NUMBER, 2.0, TIME, 10.0)).execute(context);
+        EntityParadeDecoy decoy = Parades.activeDecoy(player);
+        EntityParadeCore core = decoy != null ? decoy.getCore() : null;
+        helper.assertTrue(core != null && near(core.getPeakIntegrity(), core.getMaxIntegrity())
+                        && near(core.getIntegrityCap(), fourMinutes),
+                "Before any extension the bar's top must be the integrity it was cast with");
+        PieceTrickExtendSpellGram[] extend = new PieceTrickExtendSpellGram[2];
+        for (int i = 0; i < 2; i++) {
+            double power = i == 0 ? 5.0 : 100.0;
+            extend[i] = new PieceTrickExtendSpellGram(new Spell()) {
+                @Override public Object getRawParamValue(SpellContext ignored, SpellParam<?> param) {
+                    return param.name.equals(TARGET) ? decoy : power;
+                }
+            };
+        }
+        extend[0].execute(context);
+        float peak = core.getIntegrity();
+        helper.assertTrue(peak > core.getMaxIntegrity() && near(core.getPeakIntegrity(), peak),
+                "An extension past the cast integrity must raise the bar's top: " + peak + " / " + core.getPeakIntegrity());
+        helper.startSequence()
+                .thenExecuteAfter(20, () -> helper.assertTrue(core.getIntegrity() < peak - 0.5F && near(core.getPeakIntegrity(), peak),
+                        "As the integrity wears down the bar's top must stay: " + core.getIntegrity() + " / " + core.getPeakIntegrity()))
+                .thenExecute(() -> {
+                    try {
+                        for (int i = 0; i < 5; i++) {
+                            extend[1].execute(context);
+                        }
+                    } catch (SpellRuntimeException e) {
+                        throw new GameTestAssertException("Extending failed: " + e.getMessage());
+                    }
+                    helper.assertTrue(Math.abs(core.getIntegrity() - fourMinutes) < 0.05F
+                                    && core.getRemainingTicks() <= Parades.MAX_SECONDS * 20
+                                    && Math.abs(core.getPeakIntegrity() - fourMinutes) < 0.05F,
+                            "Extending must stop at 240 seconds: " + core.getIntegrity() + ", " + core.getRemainingTicks() + " ticks");
+                    decoy.vanish(false);
+                })
+                .thenSucceed();
     }
 
     @GameTest(template = TEMPLATE, batch = BATCH)

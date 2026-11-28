@@ -33,12 +33,12 @@ public class PieceTrickParade extends PieceTrick {
      * mobs after the image lose sight of it.
      */
     public static final int MAX_DISTANCE = 16;
-    private static final double POTENCY_BASE = 300.0;
-    private static final double POTENCY_PER_SECOND = 10.0;
-    private static final double POTENCY_PER_BLOCK = 20.0;
-    private static final double COST_BASE = 400.0;
-    private static final double COST_PER_SECOND = 20.0;
-    private static final double COST_PER_BLOCK = 50.0;
+    private static final double POTENCY_BASE = 400.0;
+    private static final double POTENCY_PER_BLOCK = 50.0;
+    /** The cost per second of Time, so the cost grows in proportion to Time as other Resident SpellGrams' does. */
+    private static final double COST_PER_SECOND = 75.0;
+    /** What each block of |Number| adds to {@link #COST_PER_SECOND}. */
+    private static final double COST_PER_SECOND_PER_BLOCK = 15.0;
 
     private SpellParam<Number> number;
     private SpellParam<Number> time;
@@ -46,14 +46,12 @@ public class PieceTrickParade extends PieceTrick {
 
     public PieceTrickParade(Spell spell) {
         super(spell);
-        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_TIME, true)
-                .mul(POTENCY_PER_SECOND)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().min(MAX_DISTANCE).mul(POTENCY_PER_BLOCK))
-                .add(POTENCY_BASE).floor());
-        setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_TIME, true)
-                .mul(COST_PER_SECOND)
-                .add(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().min(MAX_DISTANCE).mul(COST_PER_BLOCK))
-                .add(COST_BASE).floor());
+        setStatLabel(EnumSpellStat.POTENCY, new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().min(MAX_DISTANCE)
+                .mul(POTENCY_PER_BLOCK).add(POTENCY_BASE).floor());
+        setStatLabel(EnumSpellStat.COST, new StatLabel(SpellParam.GENERIC_NAME_TIME, true).min(Parades.MAX_SECONDS)
+                .mul(new StatLabel(SpellParam.GENERIC_NAME_NUMBER, true).abs().min(MAX_DISTANCE)
+                        .mul(COST_PER_SECOND_PER_BLOCK).add(COST_PER_SECOND).parenthesize())
+                .floor());
     }
 
     @Override
@@ -69,18 +67,26 @@ public class PieceTrickParade extends PieceTrick {
         Number numberVal = getParamEvaluation(number);
         double value = numberVal == null ? 0.0 : numberVal.doubleValue();
         double blocks = Math.abs(distance(value));
-        int timeVal = CombatTrickStats.positiveInteger(getParamEvaluation(time), x, y);
-        meta.addStat(EnumSpellStat.POTENCY, CombatTrickStats.stat(POTENCY_BASE + (double) timeVal * POTENCY_PER_SECOND
-                + blocks * POTENCY_PER_BLOCK));
+        int timeVal = seconds(CombatTrickStats.positiveInteger(getParamEvaluation(time), x, y));
+        meta.addStat(EnumSpellStat.POTENCY, potencyFor(blocks));
         meta.addStat(EnumSpellStat.COST, CombatTrickStats.stat(costFor(timeVal, blocks)));
     }
 
     /**
-     * Cost: 400 + 20 x Time + 50 x |Number| ({@code blocks} as {@link #distance} gives it, at most 16; the stat drops the
-     * fraction of the total). Also what the core counts as its placement cost for Trick: Extend SpellGram.
+     * Potency: 400 + 50 x |Number| ({@code blocks} as {@link #distance} gives it, at most 16; the fraction of the total
+     * dropped). Time does not count.
+     */
+    public static int potencyFor(double blocks) throws SpellCompilationException {
+        return CombatTrickStats.stat(POTENCY_BASE + Math.abs(blocks) * POTENCY_PER_BLOCK);
+    }
+
+    /**
+     * Cost: Time x (75 + 15 x |Number|) ({@code seconds} as {@link #seconds} gives it, at most 240; {@code blocks} as
+     * {@link #distance} gives it, at most 16; the stat drops the fraction of the total). Also what the core counts as its placement cost for Trick: Extend SpellGram, so an
+     * extension buys back the same seconds whatever the Time.
      */
     public static double costFor(int seconds, double blocks) {
-        return COST_BASE + (double) seconds * COST_PER_SECOND + Math.abs(blocks) * COST_PER_BLOCK;
+        return seconds * (COST_PER_SECOND + Math.abs(blocks) * COST_PER_SECOND_PER_BLOCK);
     }
 
     @Override
@@ -91,10 +97,15 @@ public class PieceTrickParade extends PieceTrick {
             return null;
         }
         double blocks = distance(value);
-        int seconds = Math.max(1, getParamValue(context, time).intValue());
+        int seconds = seconds(getParamValue(context, time).intValue());
         Vec3 fixedDirection = fixedDirection(getParamValue(context, direction));
         Parades.conjure(level, context.caster, blocks, seconds, (float) costFor(seconds, blocks), fixedDirection);
         return null;
+    }
+
+    /** The image's time in seconds: at least 1, and anything beyond {@link Parades#MAX_SECONDS} is taken as that. */
+    public static int seconds(int time) {
+        return Math.min(Parades.MAX_SECONDS, Math.max(1, time));
     }
 
     /**

@@ -35,6 +35,9 @@ public class EntityParadeCore extends SpellGramObject {
     public static final float ATTACK_WEAR = 2.0F;
     private static final EntityDataAccessor<Integer> DATA_IMAGE_ID =
             SynchedEntityData.defineId(EntityParadeCore.class, EntityDataSerializers.INT);
+    /** 作動式: 魔法式延長で置いたときより増えた耐久値のうち、最も高かった値（増えていなければ 0）。 */
+    private static final EntityDataAccessor<Float> DATA_PEAK_INTEGRITY =
+            SynchedEntityData.defineId(EntityParadeCore.class, EntityDataSerializers.FLOAT);
     private static final int NO_IMAGE = -1;
 
     @Nullable
@@ -56,6 +59,7 @@ public class EntityParadeCore extends SpellGramObject {
     @Override
     protected void defineSpellGramSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_IMAGE_ID, NO_IMAGE);
+        builder.define(DATA_PEAK_INTEGRITY, 0.0F);
     }
 
     /** 置く前に呼ぶ。核を重ねる虚像。 */
@@ -74,6 +78,24 @@ public class EntityParadeCore extends SpellGramObject {
         }
         int id = entityData.get(DATA_IMAGE_ID);
         return id != NO_IMAGE && level().getEntity(id) instanceof EntityParadeDecoy image && !image.isRemoved() ? image : null;
+    }
+
+    /** 戻した結果の耐久値がこれまでより高ければ覚える（{@link #getPeakIntegrity}）。 */
+    @Override
+    public float restoreIntegrity(float amount) {
+        float added = super.restoreIntegrity(amount);
+        if (added > 0.0F) {
+            entityData.set(DATA_PEAK_INTEGRITY, Math.max(entityData.get(DATA_PEAK_INTEGRITY), getIntegrity()));
+        }
+        return added;
+    }
+
+    /**
+     * これまでで最も高かった耐久値: 置いたときの耐久値か、作動式: 魔法式延長で増えたときの最高。耐久値のバーの最大に使い、
+     * 延長のあとに耐久値が減っても縮まない。
+     */
+    public float getPeakIntegrity() {
+        return Math.max(getMaxIntegrity(), entityData.get(DATA_PEAK_INTEGRITY));
     }
 
     /** 虚像が攻撃されたとき: ダメージの量によらず耐久値を {@link #ATTACK_WEAR} 減らす。尽きれば核も虚像も消える。 */

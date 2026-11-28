@@ -13,8 +13,9 @@ import net.minecraft.util.Mth;
 
 /**
  * A bar above the armour row (above Trick: Barrier's bar when both show) for the local player's own Trick: Parade:
- * fill = the core's integrity / its highest, text = integrity / highest and the seconds left, with the Parade piece's
- * icon to the left so it is not taken for the barrier. It blinks during the last three seconds, like the barrier's.
+ * fill = the core's integrity / its highest so far ({@link EntityParadeCore#getPeakIntegrity}), text = integrity / highest
+ * and the seconds left, with the Parade piece's icon to the left so it is not taken for the barrier. It blinks during
+ * the last three seconds, like the barrier's.
  */
 final class ParadeHudLayer {
     private static final ResourceLocation ICON = Psitweaks.location("textures/spell/trick_parade.png");
@@ -44,7 +45,7 @@ final class ParadeHudLayer {
         minecraft.gui.leftHeight += HEIGHT + 1;
 
         float integrity = core.getIntegrity();
-        float highest = Math.max(core.getMaxIntegrity(), integrity);
+        float highest = Math.max(core.getPeakIntegrity(), integrity);
         int remaining = core.getRemainingTicks();
         float alpha = 1.0F;
         if (remaining < EXPIRY_WARNING_TICKS) {
